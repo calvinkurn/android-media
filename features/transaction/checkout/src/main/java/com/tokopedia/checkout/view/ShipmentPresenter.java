@@ -12,59 +12,8 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormGqlUseCase;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
-import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
-import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter;
-import com.tokopedia.logisticcart.shipping.model.CartItemModel;
-import com.tokopedia.logisticcart.shipping.model.CodModel;
-import com.tokopedia.logisticcart.shipping.model.CourierItemData;
-import com.tokopedia.logisticcart.shipping.model.Product;
-import com.tokopedia.logisticcart.shipping.model.RatesParam;
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
-import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
-import com.tokopedia.logisticcart.shipping.model.ShippingParam;
-import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
-import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase;
-import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase;
-import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
-import com.tokopedia.logisticdata.data.entity.address.Token;
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.network.utils.TKPDMapParam;
-import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
-import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel;
-import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
-import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
-import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics;
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField;
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData;
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout;
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData;
-import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException;
-import com.tokopedia.checkout.data.api.CommonPurchaseApiUrl;
-import com.tokopedia.purchase_platform.common.feature.editaddress.domain.param.EditAddressParam;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.CheckoutRequest;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.EgoldData;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.ProductDataCheckoutRequest;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.PromoRequest;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.RatesFeature;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.ShopProductCheckoutRequest;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.TokopediaCornerData;
-import com.tokopedia.purchase_platform.common.feature.helpticket.data.request.SubmitHelpTicketRequest;
-import com.tokopedia.purchase_platform.common.feature.cod.Data;
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartGqlResponse;
-import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
-import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult;
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase;
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
+import com.tokopedia.checkout.data.api.CommonPurchaseApiUrl;
 import com.tokopedia.checkout.data.model.request.DataChangeAddressRequest;
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.SaveShipmentStateRequest;
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateDropshipData;
@@ -79,12 +28,11 @@ import com.tokopedia.checkout.domain.model.cartmultipleshipment.SetShippingAddre
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
+import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.CodCheckoutUseCase;
-import com.tokopedia.purchase_platform.common.feature.editaddress.domain.usecase.EditAddressUseCase;
-import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormOneClickShipementUseCase;
-import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormGqlUseCase;
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
 import com.tokopedia.checkout.view.converter.RatesDataConverter;
@@ -94,22 +42,71 @@ import com.tokopedia.checkout.view.helper.ShipmentCartItemModelHelper;
 import com.tokopedia.checkout.view.subscriber.ClearNotEligiblePromoSubscriber;
 import com.tokopedia.checkout.view.subscriber.ClearShipmentCacheAutoApplyAfterClashSubscriber;
 import com.tokopedia.checkout.view.subscriber.GetCourierRecommendationSubscriber;
-import com.tokopedia.checkout.view.subscriber.GetShipmentAddressFormReloadFromMultipleAddressSubscriber;
 import com.tokopedia.checkout.view.subscriber.GetShipmentAddressFormSubscriber;
 import com.tokopedia.checkout.view.subscriber.SaveShipmentStateSubscriber;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel;
-import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter;
+import com.tokopedia.logisticcart.shipping.model.CartItemModel;
+import com.tokopedia.logisticcart.shipping.model.CodModel;
+import com.tokopedia.logisticcart.shipping.model.CourierItemData;
+import com.tokopedia.logisticcart.shipping.model.Product;
+import com.tokopedia.logisticcart.shipping.model.RatesParam;
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingParam;
+import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
+import com.tokopedia.logisticcart.shipping.model.ShopShipment;
+import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase;
+import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase;
+import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticdata.data.entity.address.Token;
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.network.utils.TKPDMapParam;
+import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
+import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
+import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
+import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics;
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField;
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData;
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout;
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData;
+import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException;
+import com.tokopedia.purchase_platform.common.feature.checkout.request.CheckoutRequest;
+import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest;
+import com.tokopedia.purchase_platform.common.feature.checkout.request.EgoldData;
+import com.tokopedia.purchase_platform.common.feature.checkout.request.ProductDataCheckoutRequest;
+import com.tokopedia.purchase_platform.common.feature.checkout.request.PromoRequest;
+import com.tokopedia.purchase_platform.common.feature.checkout.request.RatesFeature;
+import com.tokopedia.purchase_platform.common.feature.checkout.request.ShopProductCheckoutRequest;
+import com.tokopedia.purchase_platform.common.feature.checkout.request.TokopediaCornerData;
+import com.tokopedia.purchase_platform.common.feature.cod.Data;
+import com.tokopedia.purchase_platform.common.feature.editaddress.domain.param.EditAddressParam;
+import com.tokopedia.purchase_platform.common.feature.editaddress.domain.usecase.EditAddressUseCase;
+import com.tokopedia.purchase_platform.common.feature.helpticket.data.request.SubmitHelpTicketRequest;
+import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult;
+import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase;
+import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartGqlResponse;
+import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ClashingInfoDetailUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoClashOptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoClashVoucherOrdersUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel;
+import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata;
+import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -531,17 +528,37 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment,
-                                               boolean isTradeIn, boolean isSkipUpdateOnboardingState,
+    public void processInitialLoadCheckoutPage(boolean isReloadData,
+                                               boolean isOneClickShipment,
+                                               boolean isTradeIn,
+                                               boolean isSkipUpdateOnboardingState,
                                                boolean isReloadAfterPriceChangeHinger,
-                                               @Nullable String cornerId, String deviceId, String leasingId) {
-
+                                               @Nullable String cornerId,
+                                               @Nullable String deviceId,
+                                               @Nullable String leasingId) {
         if (isReloadData) {
             getView().showLoading();
         } else {
             getView().showInitialLoading();
         }
 
+        Map<String, Object> params = generateParamShipmentAddressForm(isTradeIn, isSkipUpdateOnboardingState, cornerId, deviceId, leasingId);
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putAll(params);
+        compositeSubscription.add(
+                getShipmentAddressFormGqlUseCase.createObservable(requestParams)
+                        .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
+                                isReloadData, isReloadAfterPriceChangeHinger, true))
+        );
+    }
+
+    @NotNull
+    private Map<String, Object> generateParamShipmentAddressForm(boolean isTradeIn,
+                                                                 boolean isSkipUpdateOnboardingState,
+                                                                 @Nullable String cornerId,
+                                                                 @Nullable String deviceId,
+                                                                 @Nullable String leasingId) {
         Map<String, Object> params = new HashMap<>();
         params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_LANG, "id");
         params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_SKIP_ONBOARDING_UPDATE_STATE, isSkipUpdateOnboardingState ? 1 : 0);
@@ -562,17 +579,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             }
         }
         if (isTradeIn) {
-            params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_IS_TRADEIN, isTradeIn);
-            params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_DEVICE_ID, deviceId);
+            params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_IS_TRADEIN, true);
+            params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_DEVICE_ID, deviceId != null ? deviceId : 0);
         }
-
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putAll(params);
-        compositeSubscription.add(
-                getShipmentAddressFormGqlUseCase.createObservable(requestParams)
-                        .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
-                                isReloadData, isReloadAfterPriceChangeHinger, true))
-        );
+        return params;
     }
 
     public void initializePresenterData(CartShipmentAddressFormData cartShipmentAddressFormData) {
@@ -642,20 +652,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void processReloadCheckoutPageFromMultipleAddress(RecipientAddressModel oldRecipientAddressModel,
                                                              ArrayList<ShipmentCartItemModel> oldShipmentCartItemModels) {
-        getView().showLoading();
-        TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
-        paramGetShipmentForm.put("lang", "id");
-
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS,
-                getGeneratedAuthParamNetwork(paramGetShipmentForm));
-
-        compositeSubscription.add(
-                getShipmentAddressFormGqlUseCase.createObservable(requestParams)
-                        .subscribe(new GetShipmentAddressFormReloadFromMultipleAddressSubscriber(
-                                this, getView(), oldRecipientAddressModel, oldShipmentCartItemModels)
-                        )
-        );
+        processInitialLoadCheckoutPage(true, false, false, true, false, null, null, null);
     }
 
     public boolean checkAddressHasChanged(RecipientAddressModel oldModel, RecipientAddressModel newModel) {
@@ -706,29 +703,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
     }
 
-    @Override
-    public void processReloadCheckoutPageBecauseOfError(boolean isOneClickShipment, boolean isTradeIn, String deviceId) {
-        getView().showLoading();
-
-        Map<String, Object> params = new HashMap<>();
-        params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_LANG, "id");
-        if (isTradeIn) {
-            params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_IS_TRADEIN, isTradeIn);
-            params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_DEVICE_ID, deviceId);
-        }
-
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putAll(params);
-
-        requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS, params);
-        compositeSubscription.add(
-                getShipmentAddressFormGqlUseCase.createObservable(requestParams)
-                        .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
-                                true, false, true))
-
-        );
-    }
-
     private Map<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
         return originParams == null
                 ? AuthHelper.generateParamsNetwork(
@@ -771,7 +745,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
     }
 
-    private boolean removeErrorShopProduct() {
+    private void removeErrorShopProduct() {
         List<ShipmentCartItemModel> newShipmentCartItemModelList = new ArrayList<>();
         for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
             List<CartItemModel> cartItemModels = new ArrayList<>(shipmentCartItemModel.getCartItemModels());
@@ -830,9 +804,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             dataCheckoutRequestList = getView().generateNewCheckoutRequest(newShipmentCartItemModelList, false);
             partialCheckout = true;
-            return true;
         }
-        return false;
     }
 
     @Override
@@ -1386,8 +1358,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 .subscribe(new SaveShipmentStateSubscriber(getView())));
     }
 
-    private JsonArray getShipmentItemSaveStateData
-            (List<ShipmentCartItemModel> shipmentCartItemModels) {
+    private JsonArray getShipmentItemSaveStateData(List<ShipmentCartItemModel> shipmentCartItemModels) {
         SaveShipmentStateRequest saveShipmentStateRequest;
         if (recipientAddressModel != null) {
             saveShipmentStateRequest = generateSaveShipmentStateRequestSingleAddress(shipmentCartItemModels);
@@ -1398,9 +1369,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         return new JsonParser().parse(saveShipmentDataString).getAsJsonArray();
     }
 
-    private SaveShipmentStateRequest generateSaveShipmentStateRequestSingleAddress(
-            List<ShipmentCartItemModel> shipmentCartItemModels) {
-
+    private SaveShipmentStateRequest generateSaveShipmentStateRequestSingleAddress(List<ShipmentCartItemModel> shipmentCartItemModels) {
         List<ShipmentStateShopProductData> shipmentStateShopProductDataList = new ArrayList<>();
 
         List<ShipmentStateRequestData> shipmentStateRequestDataList = new ArrayList<>();
@@ -1944,7 +1913,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             public void onError(Throwable e) {
                 Timber.d(e);
                 mTrackerCod.eventClickBayarDiTempatShipmentNotSuccessIncomplete();
-                processReloadCheckoutPageBecauseOfError(isOneClickShipment, isTradeIn, deviceId);
+                processInitialLoadCheckoutPage(true, isOneClickShipment, isTradeIn, true, false, null, deviceId, leasingId);
             }
 
             @Override
@@ -1953,7 +1922,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 CodResponse response = graphqlResponse.getData(CodResponse.class);
                 if (getView() == null || !response.getValidateCheckoutCod().getHeader().getErrorCode().equals("200")) {
                     mTrackerCod.eventClickBayarDiTempatShipmentNotSuccessIncomplete();
-                    processReloadCheckoutPageBecauseOfError(isOneClickShipment, isTradeIn, deviceId);
+                    processInitialLoadCheckoutPage(true, isOneClickShipment, isTradeIn, true, false, null, deviceId, leasingId);
                     getView().showToastError("");
                 } else if (response.getValidateCheckoutCod().getData() != null &&
                         response.getValidateCheckoutCod().getData().getData() != null) {

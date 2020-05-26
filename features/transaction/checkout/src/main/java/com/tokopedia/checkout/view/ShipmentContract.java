@@ -218,8 +218,6 @@ public interface ShipmentContract {
         void processReloadCheckoutPageFromMultipleAddress(RecipientAddressModel recipientAddressModel,
                                                           ArrayList<ShipmentCartItemModel> shipmentCartItemModels);
 
-        void processReloadCheckoutPageBecauseOfError(boolean isOneClickShipment, boolean isTradeIn, String deviceId);
-
         void processCheckout(boolean hasInsurance,
                              boolean isOneClickShipment, boolean isTradeIn,
                              boolean isTradeInDropOff, String deviceId,

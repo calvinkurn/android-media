@@ -1,7 +1,9 @@
 package com.tokopedia.checkout.data.api
 
 import retrofit2.Response
-import retrofit2.http.*
+import retrofit2.http.FieldMap
+import retrofit2.http.FormUrlEncoded
+import retrofit2.http.POST
 import rx.Observable
 
 /**
@@ -9,12 +11,6 @@ import rx.Observable
  */
 
 interface CheckoutApi {
-
-    @GET(CheckoutApiUrl.PATH_SHIPMENT_ADDRESS_FORM_DIRECT)
-    fun getShipmentAddressForm(@QueryMap params: Map<String, String>): Observable<Response<CartResponse>>
-
-    @GET(CheckoutApiUrl.PATH_SHIPMENT_ADDRESS_ONE_CLICK_CHECKOUT)
-    fun getShipmentAddressFormOneClickCheckout(@QueryMap params: Map<String, String>): Observable<Response<CartResponse>>
 
     @FormUrlEncoded
     @POST(CheckoutApiUrl.PATH_SAVE_SHIPMENT)

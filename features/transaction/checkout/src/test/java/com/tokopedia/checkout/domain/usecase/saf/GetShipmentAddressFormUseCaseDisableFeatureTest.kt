@@ -7,7 +7,6 @@ import com.tokopedia.checkout.data.model.response.shipment_address_form.Shipment
 import com.tokopedia.checkout.data.repository.ICheckoutRepository
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
-import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase
 import com.tokopedia.purchase_platform.common.utils.each
 import com.tokopedia.usecase.RequestParams
 import io.mockk.every

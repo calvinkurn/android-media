@@ -10,10 +10,6 @@ import rx.Observable
 
 interface ICheckoutRepository {
 
-    fun getShipmentAddressForm(param: Map<String, String>): Observable<ShipmentAddressFormDataResponse>
-
-    fun getShipmentAddressFormOneClickCheckout(param: Map<String, String>): Observable<ShipmentAddressFormDataResponse>
-
     fun saveShipmentState(params: Map<String, String>): Observable<SaveShipmentStateResponse>
 
 }
