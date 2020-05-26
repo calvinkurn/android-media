@@ -9,6 +9,7 @@ object ProductManageDataLayer {
     private const val CLICK_ON_SORTING_FILTER = "click on sorting filter"
     private const val CLICK_ON_OTHERS_FILTER = "click on others filter"
     private const val CLICK_ON_MORE_OTHERS_FILTER = "click on more others filter"
+    private const val VARIANTS = "variants"
 
     const val EVENT_NAME = "clickManageProduct"
     const val EVENT_CATEGORY = "product list page"
@@ -69,4 +70,13 @@ object ProductManageDataLayer {
     const val EVENT_ACTION_CLICK_CASHBACK_VALUE = "click cashback "
     const val EVENT_ACTION_CLICK_NO_CASHBACK_VALUE = "click no cashback"
     const val EVENT_ACTION_CLICK_SAVE_PROMOTION = "click save promotion"
+
+    const val EVENT_ACTION_CLICK_ON_EDIT_PRICE_VARIANT = "$EVENT_ACTION_CLICK_EDIT_PRICE - $VARIANTS"
+    const val EVENT_ACTION_CLICK_ON_EDIT_PRICE_VARIANT_SAVE = "$EVENT_ACTION_CLICK_ON_EDIT_PRICE_VARIANT - save"
+    const val EVENT_ACTION_CLICK_ON_EDIT_STOCK_VARIANT = "$EVENT_ACTION_CLICK_EDIT_STOCK - $VARIANTS"
+    const val EVENT_ACTION_CLICK_ON_STATUS_TOGGLE_VARIANT = "click status toogle - $VARIANTS"
+    const val EVENT_ACTION_CLICK_ON_CHANGE_AMOUNT_VARIANT = "click change amount - $VARIANTS"
+    const val EVENT_ACTION_CLICK_ON_EDIT_STOCK_VARIANT_SAVE = "$EVENT_ACTION_CLICK_ON_EDIT_STOCK_VARIANT - save"
+    const val STATUS_TOGGLE_ON = "{on}"
+    const val STATUS_TOGGLE_OFF = "{off}"
 }
