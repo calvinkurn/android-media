@@ -86,7 +86,7 @@ class SearchProductFirstPageGqlUseCase extends UseCase<SearchProductModel> {
             "    $headline_params: String\n" +
             ") {\n" +
             "    searchProduct(params: $params) {\n" +
-            "        query\n" +
+            "        quer\n" +
             "        source\n" +
             "        isFilter\n" +
             "        response_code\n" +
