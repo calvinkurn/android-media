@@ -55,8 +55,6 @@ import kotlinx.android.synthetic.main.fragment_talk_reading.pageLoading
 import kotlinx.android.synthetic.main.fragment_talk_reply.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
 import kotlinx.android.synthetic.main.widget_talk_reply_textbox.*
-import kotlinx.android.synthetic.main.widget_talk_reply_textbox.view.*
-import kotlinx.android.synthetic.main.widget_talk_reply_textbox.view.replyEditText
 import javax.inject.Inject
 
 class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>, OnReplyBottomSheetClickedListener,
@@ -202,11 +200,11 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     override fun onSendButtonClicked(text: String) {
-        if(text.length > MINIMUM_TEXT_LENGTH && replyEditText.hasFocus()) {
+        if(text.length < MINIMUM_TEXT_LENGTH && replyEditText.hasFocus()) {
+            showErrorToaster(getString(R.string.reply_toaster_length_too_short_error), resources.getBoolean(R.bool.reply_adjust_toaster_height))
+        } else {
             TalkReplyTracking.eventSendAnswer(viewModel.userId, productId, questionId)
             sendComment(text)
-        } else {
-            showErrorToaster(getString(R.string.reply_toaster_length_too_short_error), resources.getBoolean(R.bool.reply_adjust_toaster_height))
         }
     }
 
