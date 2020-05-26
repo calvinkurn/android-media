@@ -1,13 +1,14 @@
 package com.tokopedia.promotionstarget.data.di.modules
 
 import android.content.Context
-import com.tokopedia.promotionstarget.data.gql.GraphqlHelper
 import com.tokopedia.promotionstarget.R
 import com.tokopedia.promotionstarget.data.di.AUTO_APPLY
 import com.tokopedia.promotionstarget.data.di.CLAIM_POP_GRATIFICATION
 import com.tokopedia.promotionstarget.data.di.GET_COUPON_DETAIL
 import com.tokopedia.promotionstarget.data.di.GET_POP_GRATIFICATION
 import com.tokopedia.promotionstarget.data.di.scopes.PromoTargetScope
+import com.tokopedia.promotionstarget.data.gql.GraphqlHelper
+import com.tokopedia.user.session.UserSession
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -49,5 +50,11 @@ class PromoTargetModule {
     fun provideCouponDetailString(context: Context): String = context.resources.openRawResource(R.raw.query_hachiko_catalog_detail)
             .bufferedReader()
             .readText()
+
+    @Provides
+    @PromoTargetScope
+    fun provideUserSession(context: Context): UserSession {
+        return UserSession(context)
+    }
 
 }

@@ -68,9 +68,9 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
         newPasswordTextField = view.findViewById(R.id.wrapper_new)
         confPasswordTextField = view.findViewById(R.id.wrapper_conf)
 
-        oldPasswordTextField.textFieldInput.setSimpleListener { processInput(it.toString(), oldPasswordTextField) }
-        newPasswordTextField.textFieldInput.setSimpleListener { processInput(it.toString(), newPasswordTextField) }
-        confPasswordTextField.textFieldInput.setSimpleListener { processInput(it.toString(), confPasswordTextField) }
+        oldPasswordTextField.textFieldInput.setSimpleListener { processInput(it.toString(), oldPasswordTextField, false) }
+        newPasswordTextField.textFieldInput.setSimpleListener { processInput(it.toString(), newPasswordTextField, true) }
+        confPasswordTextField.textFieldInput.setSimpleListener { processInput(it.toString(), confPasswordTextField, true) }
 
         submit_button?.setOnClickListener {
             onSubmitClicked()
@@ -83,7 +83,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when(requestCode) {
+        when (requestCode) {
             REQUEST_LOGOUT -> {
                 if (resultCode == Activity.RESULT_OK) {
                     context?.let {
@@ -109,13 +109,27 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
         }
     }
 
-    private fun processInput(input: String, textField: TextFieldUnify) {
-        if(input.isBlank()){
-            textField.setError(true)
-        } else {
-            textField.setError(false)
+    private fun processInput(input: String, textField: TextFieldUnify, isShowErrorValidate: Boolean) {
+        when {
+            input.isEmpty() && isShowErrorValidate -> {
+                setTextFieldStatus(textField, isShowErrorValidate, ERROR_FIELD_REQUIRED)
+            }
+            input.length < MIN_COUNT && isShowErrorValidate -> {
+                setTextFieldStatus(textField, isShowErrorValidate, ERROR_MIN_CHAR)
+            }
+            input.length > MAX_COUNT && isShowErrorValidate -> {
+                setTextFieldStatus(textField, isShowErrorValidate, ERROR_MAX_CHAR)
+            }
+            else -> {
+                setTextFieldStatus(textField, false, "")
+            }
         }
         checkIsValidForm()
+    }
+
+    private fun setTextFieldStatus(textField: TextFieldUnify, isShowErrorValidate: Boolean, message: String) {
+        textField.setError(isShowErrorValidate)
+        textField.setMessage(message)
     }
 
     private fun onGoToForgotPass() {
@@ -234,7 +248,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 }
 
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int){
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
                 }
             }
@@ -244,5 +258,11 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     companion object {
         private const val REQUEST_LOGOUT = 1000
         private const val REQUEST_LOGIN = 2000
+
+        private const val MIN_COUNT = 8
+        private const val MAX_COUNT = 32
+        private const val ERROR_FIELD_REQUIRED = "Harus diisi"
+        private const val ERROR_MIN_CHAR = "Minimum $MIN_COUNT karakter"
+        private const val ERROR_MAX_CHAR = "Maksimum $MAX_COUNT karakter"
     }
 }
