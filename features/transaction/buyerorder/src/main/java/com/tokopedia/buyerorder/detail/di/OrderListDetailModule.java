@@ -32,7 +32,7 @@ public class OrderListDetailModule {
     }
 
     @Provides
-    FinishOrderUseCase provideFinishOrderUseCasee(@ApplicationContext Context context) {
+    FinishOrderUseCase provideFinishOrderUseCase(@ApplicationContext Context context) {
         List<Interceptor> interceptorList = new ArrayList<>(2);
         interceptorList.add(new TkpdOldAuthInterceptor(context,
                 (NetworkRouter) context, new UserSession(context)));
