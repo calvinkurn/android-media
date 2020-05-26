@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.topads.edit.di.DaggerTopAdsEditComponent
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
+import com.tokopedia.topads.edit.di.module.TopAdEditModule
 import com.tokopedia.topads.edit.view.fragment.select.NegKeywordAdsListFragment
 
 /**
@@ -19,7 +20,7 @@ class SelectNegKeywordActivity : BaseSimpleActivity(), HasComponent<TopAdsEditCo
 
     override fun getComponent(): TopAdsEditComponent {
         return DaggerTopAdsEditComponent.builder().baseAppComponent(
-                (application as BaseMainApplication).baseAppComponent).build()
+                (application as BaseMainApplication).baseAppComponent).topAdEditModule(TopAdEditModule(this)).build()
     }
 
 }

@@ -43,7 +43,6 @@ class EditGroupAdFragment : BaseDaggerFragment() {
 
     private var btnState: Boolean = true
     private var buttonStateCallback: SaveButtonStateCallBack? = null
-    lateinit var viewModel: EditFormDefaultViewModel
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private var minBid = 0
@@ -52,11 +51,19 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     private var validation1 = true
     private var validation2 = true
     private var validation3 = true
-    private lateinit var sharedViewModel: SharedViewModel
     private var currentBudget = 0
     private var productId: MutableList<String> = mutableListOf()
     private var groupId: Int? = 0
     private var priceDaily = 0
+    private val viewModelProvider by lazy {
+        ViewModelProviders.of(this, viewModelFactory)
+    }
+    private val viewModel by lazy {
+        viewModelProvider.get(EditFormDefaultViewModel::class.java)
+    }
+    private val sharedViewModel by lazy {
+        ViewModelProviders.of(requireActivity()).get(SharedViewModel::class.java)
+    }
 
     companion object {
 
@@ -76,8 +83,6 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(EditFormDefaultViewModel::class.java)
-        sharedViewModel = ViewModelProviders.of(requireActivity()).get(SharedViewModel::class.java)
         return inflater.inflate(resources.getLayout(R.layout.topads_edit_activity_edit_form_ad), container, false)
     }
 
@@ -144,9 +149,9 @@ class EditGroupAdFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        groupId = arguments?.getString(GROUP_ID)!!.toInt()
-        sharedViewModel.setGroupName(arguments?.getString(GROUPKEY)!!)
-        sharedViewModel.setGroupId(arguments?.getString(GROUP_ID)!!.toInt())
+        groupId = arguments?.getString(GROUP_ID)?.toInt()
+        sharedViewModel.setGroupName(arguments?.getString(GROUPKEY) ?: " ")
+        sharedViewModel.setGroupId(arguments?.getString(GROUP_ID)?.toInt() ?: 0)
         if (radio1.isChecked) {
             daily_budget.visibility = View.GONE
 
@@ -241,7 +246,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        sharedViewModel.productId.observe(viewLifecycleOwner, Observer {
+        sharedViewModel.getProuductIds().observe(viewLifecycleOwner, Observer {
             productId = it
             getLatestBid()
         })

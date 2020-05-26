@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.ResponseProductList
+import com.tokopedia.topads.common.di.ActivityContext
 import com.tokopedia.topads.edit.R
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -16,7 +17,7 @@ import javax.inject.Inject
  * Created by Pika on 24/5/20.
  */
 
-class GetProductUseCase @Inject constructor(val context: Context?, graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface) : GraphqlUseCase<ResponseProductList.Result>(graphqlRepository) {
+class GetProductUseCase @Inject constructor(@ActivityContext val context: Context?, graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface) : GraphqlUseCase<ResponseProductList.Result>(graphqlRepository) {
 
 
     fun setParams(keyword: String, etalaseId: String, sortBy: String, promoted: String, rows: Int, start: Int) {

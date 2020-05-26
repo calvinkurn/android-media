@@ -50,8 +50,6 @@ import javax.inject.Inject
  */
 class EditKeywordsFragment : BaseDaggerFragment() {
 
-    private lateinit var sharedViewModel: SharedViewModel
-    lateinit var viewmodel: EditFormDefaultViewModel
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -70,6 +68,15 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private var selectedData: ArrayList<KeywordSuggestionResponse.Result.TopAdsGetKeywordSuggestionV3.DataItem.KeywordDataItem>? = arrayListOf()
     private var manualData: ArrayList<KeywordSuggestionResponse.Result.TopAdsGetKeywordSuggestionV3.DataItem.KeywordDataItem>? = arrayListOf()
 
+    private val viewModelProvider by lazy {
+        ViewModelProviders.of(this, viewModelFactory)
+    }
+    private val viewModel by lazy {
+        viewModelProvider.get(EditFormDefaultViewModel::class.java)
+    }
+    private val sharedViewModel by lazy {
+        ViewModelProviders.of(requireActivity()).get(SharedViewModel::class.java)
+    }
 
     private var groupId = 0
     private var productIds = ""
@@ -88,8 +95,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewmodel = ViewModelProviders.of(this, viewModelFactory).get(EditFormDefaultViewModel::class.java)
-        sharedViewModel = ViewModelProviders.of(requireActivity()).get(SharedViewModel::class.java)
         return inflater.inflate(resources.getLayout(R.layout.topads_edit_keword_layout), container, false)
     }
 
@@ -98,7 +103,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         val suggestions = java.util.ArrayList<DataSuggestions>()
         val dummyId: MutableList<Int> = mutableListOf()
         suggestions.add(DataSuggestions("group", dummyId))
-        viewmodel.getBidInfo(suggestions, this::onSuccessSuggestion)
+        viewModel.getBidInfo(suggestions, this::onSuccessSuggestion)
     }
 
     private fun getMinMax(): MutableMap<String, Int> {
@@ -208,12 +213,12 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sharedViewModel.productId.observe(viewLifecycleOwner, Observer {
+        sharedViewModel.getProuductIds().observe(viewLifecycleOwner, Observer {
             productIds = it.toString()
         })
-        sharedViewModel.groupId.observe(viewLifecycleOwner, Observer {
+        sharedViewModel.getGroupId().observe(viewLifecycleOwner, Observer {
             groupId = it
-            viewmodel.getAdKeyword(groupId, this::onSuccessKeyword)
+            viewModel.getAdKeyword(groupId, this::onSuccessKeyword)
         })
 
         add_keyword.setOnClickListener {

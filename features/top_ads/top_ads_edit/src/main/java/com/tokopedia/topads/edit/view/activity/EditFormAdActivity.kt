@@ -10,6 +10,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.di.DaggerTopAdsEditComponent
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
+import com.tokopedia.topads.edit.di.module.TopAdEditModule
 import com.tokopedia.topads.edit.view.adapter.TopAdsEditPagerAdapter
 import com.tokopedia.topads.edit.view.fragment.edit.BaseEditKeywordFragment
 import com.tokopedia.topads.edit.view.fragment.edit.EditGroupAdFragment
@@ -89,7 +90,7 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
 
     override fun getComponent(): TopAdsEditComponent {
         val toAdsEditComponent = DaggerTopAdsEditComponent.builder().baseAppComponent(
-                (application as BaseMainApplication).baseAppComponent).build()
+                (application as BaseMainApplication).baseAppComponent).topAdEditModule(TopAdEditModule(this)).build()
         toAdsEditComponent.inject(this)
         return toAdsEditComponent
     }

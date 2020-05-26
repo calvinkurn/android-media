@@ -53,5 +53,9 @@ class KeywordAdsViewModel @Inject constructor(
         selectedKeywordList.postValue(item)
         return item
     }
+    override fun onCleared() {
+        super.onCleared()
+        suggestionKeywordUseCase.cancelJobs()
+    }
 
 }

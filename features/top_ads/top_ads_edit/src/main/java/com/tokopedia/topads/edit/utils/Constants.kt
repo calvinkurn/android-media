@@ -76,7 +76,6 @@ object Constants {
     const val INPUT = "input"
     const val DEBOUNCE_CONST:Long = 200
 
-
     var locale = Locale("in", "ID")
 
 
@@ -87,7 +86,7 @@ object Constants {
 
     fun dismissKeyboard(context: Context?, view: View?) {
         val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-        if (inputMethodManager?.isAcceptingText!!)
+        if (inputMethodManager?.isAcceptingText == true)
             inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 }

@@ -47,4 +47,12 @@ class ProductAdsListViewModel @Inject constructor(
     fun addSemuaProduk(): ResponseEtalase.Data.ShopShowcasesByShopID.Result {
         return ResponseEtalase.Data.ShopShowcasesByShopID.Result(totalCount, "", "Semua Etalase", 0)
     }
+
+    override fun onCleared() {
+        super.onCleared()
+        getEtalaseUseCase.cancelJobs()
+        getProductUseCase.cancelJobs()
+
+    }
+
 }

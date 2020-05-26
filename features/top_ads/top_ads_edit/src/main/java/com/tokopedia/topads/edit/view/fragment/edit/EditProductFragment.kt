@@ -39,13 +39,20 @@ class EditProductFragment : BaseDaggerFragment() {
     private var buttonStateCallback: SaveButtonStateCallBack? = null
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    lateinit var viewModel: EditFormDefaultViewModel
-    private lateinit var sharedViewModel: SharedViewModel
     private lateinit var adapter: EditProductListAdapter
     private var originalIdList: MutableList<Int> = arrayListOf()
     private var deletedProducts: MutableList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem> = mutableListOf()
     private var addedProducts: MutableList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem> = mutableListOf()
     private var btnState = true
+    private val viewModelProvider by lazy {
+        ViewModelProviders.of(this, viewModelFactory)
+    }
+    private val viewModel by lazy {
+        viewModelProvider.get(EditFormDefaultViewModel::class.java)
+    }
+    private val sharedViewModel by lazy {
+        ViewModelProviders.of(requireActivity()).get(SharedViewModel::class.java)
+    }
 
     companion object {
 
@@ -65,13 +72,11 @@ class EditProductFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        sharedViewModel = ViewModelProviders.of(requireActivity()).get(SharedViewModel::class.java)
         return inflater.inflate(resources.getLayout(R.layout.topads_edit_fragment_product_list_edit), container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(EditFormDefaultViewModel::class.java)
         adapter = EditProductListAdapter(EditProductListAdapterTypeFactoryImpl(this::onProductListDeleted))
     }
 

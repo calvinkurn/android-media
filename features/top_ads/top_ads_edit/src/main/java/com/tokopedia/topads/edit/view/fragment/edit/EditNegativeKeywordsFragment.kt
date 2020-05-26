@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -27,6 +28,7 @@ import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.EditNegKeywordLis
 import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.viewmodel.EditNegKeywordEmptyViewModel
 import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.viewmodel.EditNegKeywordItemViewModel
 import kotlinx.android.synthetic.main.topads_edit_negative_keyword_layout.*
+import javax.inject.Inject
 
 /**
  * Created by Pika on 12/4/20.
@@ -34,13 +36,16 @@ import kotlinx.android.synthetic.main.topads_edit_negative_keyword_layout.*
 
 class EditNegativeKeywordsFragment : BaseDaggerFragment() {
 
-    private lateinit var sharedViewModel: SharedViewModel
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
     private var deletedKeywords: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
     private var addedKeywords: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
     private var originalKeyList: MutableList<String> = arrayListOf()
     private lateinit var adapter: EditNegKeywordListAdapter
     private var restoreData: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
-
+    private val sharedViewModel by lazy {
+        ViewModelProviders.of(requireActivity()).get(SharedViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +53,6 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        sharedViewModel = ViewModelProviders.of(requireActivity()).get(SharedViewModel::class.java)
         return inflater.inflate(resources.getLayout(R.layout.topads_edit_negative_keyword_layout), container, false)
     }
 
@@ -121,7 +125,7 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        sharedViewModel.negKeyword.observe(viewLifecycleOwner, Observer {
+        sharedViewModel.getnegKeywords().observe(viewLifecycleOwner, Observer {
             adapter.items.clear()
             it.forEach { item ->
                 adapter.items.add(EditNegKeywordItemViewModel(item))

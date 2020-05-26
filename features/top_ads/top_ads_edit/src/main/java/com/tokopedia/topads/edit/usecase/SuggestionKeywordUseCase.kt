@@ -8,8 +8,8 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.KeywordSuggestionResponse
+import com.tokopedia.topads.common.di.ActivityContext
 import com.tokopedia.topads.edit.R
-import com.tokopedia.topads.edit.data.response.GroupInfoResponse
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -17,7 +17,7 @@ import javax.inject.Inject
  * Created by Pika on 24/5/20.
  */
 
-class SuggestionKeywordUseCase @Inject constructor(val context: Context?, graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface) : GraphqlUseCase<KeywordSuggestionResponse.Result>(graphqlRepository) {
+class SuggestionKeywordUseCase @Inject constructor(@ActivityContext val context: Context?, graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface) : GraphqlUseCase<KeywordSuggestionResponse.Result>(graphqlRepository) {
 
     fun setParams(groupId: Int?, productIds: String?) {
         val queryMap = HashMap<String, Any?>()

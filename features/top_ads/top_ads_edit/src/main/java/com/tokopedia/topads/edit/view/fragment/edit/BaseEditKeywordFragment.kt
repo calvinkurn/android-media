@@ -6,11 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.topads.edit.R
-import com.tokopedia.topads.edit.data.SharedViewModel
 import com.tokopedia.topads.edit.data.response.GetKeywordResponse
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORDS_ADDED
@@ -22,17 +19,11 @@ import com.tokopedia.topads.edit.utils.Constants.POSITIVE_DELETE
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_EDIT
 import com.tokopedia.topads.edit.view.activity.SaveButtonStateCallBack
 import com.tokopedia.topads.edit.view.adapter.KeywordEditPagerAdapter
-import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
 import kotlinx.android.synthetic.main.topads_edit_keyword_base_layout.*
-import javax.inject.Inject
 
 class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.ButtonAction {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    private var buttonStateCallback: SaveButtonStateCallBack? = null
-    private lateinit var sharedViewModel: SharedViewModel
-    lateinit var viewModel: EditFormDefaultViewModel
+   private var buttonStateCallback: SaveButtonStateCallBack? = null
     private var btnState = true
 
     companion object {
@@ -44,8 +35,6 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(EditFormDefaultViewModel::class.java)
-        sharedViewModel = ViewModelProviders.of(requireActivity()).get(SharedViewModel::class.java)
         return inflater.inflate(resources.getLayout(R.layout.topads_edit_keyword_base_layout), container, false)
     }
 

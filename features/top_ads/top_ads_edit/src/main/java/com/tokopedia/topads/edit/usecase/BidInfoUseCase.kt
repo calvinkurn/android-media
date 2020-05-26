@@ -7,6 +7,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.di.ActivityContext
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.param.DataSuggestions
 import com.tokopedia.topads.edit.data.response.ResponseBidInfo
@@ -17,12 +18,12 @@ import javax.inject.Inject
  * Created by Pika on 24/5/20.
  */
 
-class BidInfoUseCase @Inject constructor(val context: Context?, graphqlRepository: GraphqlRepository,val userSession: UserSessionInterface) : GraphqlUseCase<ResponseBidInfo.Result>(graphqlRepository) {
+class BidInfoUseCase @Inject constructor(@ActivityContext val context: Context?, graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface) : GraphqlUseCase<ResponseBidInfo.Result>(graphqlRepository) {
 
 
     fun setParams(suggestion: List<DataSuggestions>, requestType: String) {
         val queryMap = HashMap<String, Any?>()
-        queryMap[ParamObject.SHOP_Id] = userSession.userId.toInt()
+        queryMap[ParamObject.SHOP_Id] = userSession.shopId.toInt()
         queryMap[ParamObject.SOURCE] = ParamObject.SOURCE_VALUE
         queryMap[ParamObject.SUGGESTION] = suggestion
         queryMap[ParamObject.REQUEST_TYPE] = requestType

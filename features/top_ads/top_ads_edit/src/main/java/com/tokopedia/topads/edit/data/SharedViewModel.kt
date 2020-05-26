@@ -10,10 +10,10 @@ import com.tokopedia.topads.edit.data.response.GetKeywordResponse
 
 class SharedViewModel : ViewModel() {
 
-    var productId: MutableLiveData<MutableList<String>> = MutableLiveData()
-    var groupName: MutableLiveData<String> = MutableLiveData()
-    var groupId: MutableLiveData<Int> = MutableLiveData()
-    var negKeyword: MutableLiveData<List<GetKeywordResponse.KeywordsItem>> = MutableLiveData()
+    private var productId: MutableLiveData<MutableList<String>> = MutableLiveData()
+    private var groupName: MutableLiveData<String> = MutableLiveData()
+    private var groupId: MutableLiveData<Int> = MutableLiveData()
+    private var negKeyword: MutableLiveData<List<GetKeywordResponse.KeywordsItem>> = MutableLiveData()
 
     fun setProductIds(text: MutableList<String>) {
         productId.value = text
@@ -32,5 +32,17 @@ class SharedViewModel : ViewModel() {
         negKeyword.value = data
 
     }
+    fun getProuductIds(): MutableLiveData<MutableList<String>> {
+        return productId
+    }
+
+    fun getGroupId(): MutableLiveData<Int> {
+        return groupId
+    }
+
+    fun getnegKeywords(): MutableLiveData<List<GetKeywordResponse.KeywordsItem>> {
+        return negKeyword
+    }
+
 
 }

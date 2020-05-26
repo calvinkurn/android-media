@@ -100,5 +100,15 @@ class EditFormDefaultViewModel @Inject constructor(
                     throwable.printStackTrace()
                 })
     }
+
+    override fun onCleared() {
+        super.onCleared()
+        validGroupUseCase.cancelJobs()
+        bidInfoUseCase.cancelJobs()
+        getAdsUseCase.cancelJobs()
+        getAdKeywordUseCase.cancelJobs()
+        groupInfoUseCase.cancelJobs()
+        topAdsCreateUseCase.cancelJobs()
+    }
 }
 
