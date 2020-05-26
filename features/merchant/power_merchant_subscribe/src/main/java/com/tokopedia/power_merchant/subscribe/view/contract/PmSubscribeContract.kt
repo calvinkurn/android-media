@@ -12,8 +12,8 @@ interface PmSubscribeContract {
         fun cancelMembership()
         fun onSuccessCancelMembership()
         fun onErrorCancelMembership(throwable: Throwable)
+        fun showLoading()
         fun hideLoading()
-
     }
 
     interface Presenter : CustomerPresenter<View> {

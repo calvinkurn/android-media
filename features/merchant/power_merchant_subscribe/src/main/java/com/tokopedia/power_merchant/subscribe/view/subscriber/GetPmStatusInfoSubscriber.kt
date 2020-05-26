@@ -7,6 +7,7 @@ import timber.log.Timber
 
 class GetPmStatusInfoSubscriber(private val view: PmSubscribeContract.View) : Subscriber<PowerMerchantStatus>() {
     override fun onNext(data: PowerMerchantStatus) {
+        view.hideLoading()
         view.onSuccessGetPmInfo(data)
     }
 
@@ -16,6 +17,7 @@ class GetPmStatusInfoSubscriber(private val view: PmSubscribeContract.View) : Su
 
     override fun onError(e: Throwable) {
         Timber.d(e)
+        view.hideLoading()
         view.showEmptyState(e)
     }
 }
