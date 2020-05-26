@@ -391,12 +391,17 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
                         bottomSheet.isFullpage = true
                         fragmentManager?.let { bottomSheet.show(it, bottomSheet.tag)}
                         bottomSheet.setCloseClickListener {
+                            reviewTracker.onClickDismissIncentiveOvoBottomSheetTracker("")
                             bottomSheet.dismiss()
                         }
+                        reviewTracker.onClickReadSkIncentiveOvoTracker(tickerTitle, "")
                     }
 
-                    override fun onDismiss() {}
+                    override fun onDismiss() {
+                        reviewTracker.onClickDismissIncentiveOvoTracker(tickerTitle, "")
+                    }
                 })
+                reviewTracker.onSuccessGetIncentiveOvoTracker(tickerTitle, "")
             }
         }
     }

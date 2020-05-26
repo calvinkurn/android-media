@@ -47,9 +47,7 @@ class IncentiveOvoBottomSheet(private val productRevIncentiveOvoDomain: ProductR
         val reputationTracking = ReputationTracking()
         view.btnContinueReview.setOnClickListener {
             dismiss()
-            if(category.isNotEmpty()) {
-                reputationTracking.onClickContinueIncentiveOvoBottomSheetTracker(category)
-            }
+            reputationTracking.onClickContinueIncentiveOvoBottomSheetTracker(category)
         }
     }
 
