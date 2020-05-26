@@ -1,6 +1,7 @@
 package com.tokopedia.discovery.categoryrevamp.data.catalogModel
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.common_category.data.catalogModel.CatalogItem
 
 data class SearchCatalog(
 

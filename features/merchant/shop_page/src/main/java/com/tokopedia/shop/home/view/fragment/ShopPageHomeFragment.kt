@@ -36,6 +36,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
+import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
@@ -490,7 +491,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     "",
                     "",
                     0,
-                    customDimensionShopPage
+                    CustomDimensionShopPageAttribution.create(
+                            shopId,
+                            isOfficialStore,
+                            isGoldMerchant,
+                            shopHomeProductViewModel.id,
+                            shopAttribution,
+                            shopRef
+                    )
             )
             goToPDP(it.id ?: "")
         }
@@ -512,7 +520,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     "",
                     "",
                     0,
-                    customDimensionShopPage
+                    CustomDimensionShopPageAttribution.create(
+                            shopId,
+                            isOfficialStore,
+                            isGoldMerchant,
+                            shopHomeProductViewModel.id,
+                            shopAttribution,
+                            shopRef
+                    )
             )
         }
     }
@@ -545,7 +560,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     shopHomeCarousellProductUiModel?.widgetId ?: "",
                     shopHomeCarousellProductUiModel?.header?.title ?: "",
                     shopHomeCarousellProductUiModel?.header?.isATC ?: 0,
-                    customDimensionShopPage
+                    CustomDimensionShopPageAttribution.create(
+                            shopId,
+                            isOfficialStore,
+                            isGoldMerchant,
+                            shopHomeProductViewModel.id,
+                            shopAttribution,
+                            shopRef
+                    )
             )
             goToPDP(it.id ?: "")
         }
@@ -570,7 +592,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 shopHomeCarousellProductUiModel?.widgetId ?: "",
                 shopHomeCarousellProductUiModel?.header?.title ?: "",
                 shopHomeCarousellProductUiModel?.header?.isATC ?: 0,
-                customDimensionShopPage
+                CustomDimensionShopPageAttribution.create(
+                        shopId,
+                        isOfficialStore,
+                        isGoldMerchant,
+                        shopHomeProductViewModel?.id.orEmpty(),
+                        shopAttribution,
+                        shopRef
+                )
         )
     }
 

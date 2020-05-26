@@ -1,11 +1,11 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
 import com.tkpd.library.utils.legacy.AnalyticsLog;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
 import com.tokopedia.user.session.UserSession;
@@ -138,7 +138,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
 
     protected boolean isTimezoneNotAutomatic() {
-        return MethodChecker.isTimezoneNotAutomatic();
+        return MethodChecker.isTimezoneNotAutomatic(CoreNetworkApplication.getAppContext());
     }
 
     protected boolean isForbiddenRequest(String bodyResponse, int code) {
