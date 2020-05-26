@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
-import com.tokopedia.abstraction.base.view.activity.BaseActivity;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -21,7 +21,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 /**
  * Created by zulfikarrahman on 9/25/17.
  */
-public class ProductManageActivity extends BaseActivity {
+public class ProductManageActivity extends BaseSimpleActivity {
 
     public static final String TAG = ProductManageActivity.class.getSimpleName();
 
@@ -31,6 +31,13 @@ public class ProductManageActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         userSession = new UserSession(this);
+        setupLayout(savedInstanceState);
+    }
+
+    @Nullable
+    @Override
+    protected Fragment getNewFragment() {
+        return new ProductManageSellerFragment();
     }
 
     @Override

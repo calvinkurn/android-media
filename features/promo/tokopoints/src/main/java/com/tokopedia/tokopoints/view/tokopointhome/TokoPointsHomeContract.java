@@ -38,8 +38,6 @@ public interface TokoPointsHomeContract {
 
         void showTokoPointCoupon(TokoPointSumCoupon data);
 
-        void onFinishRendering();
-
         /* New UI callback contract*/
 
         /**

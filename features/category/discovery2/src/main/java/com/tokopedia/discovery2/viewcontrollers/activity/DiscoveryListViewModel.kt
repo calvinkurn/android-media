@@ -10,13 +10,21 @@ class DiscoveryListViewModel(private val applicationContext: Application) : Andr
 
     fun getViewHolderModel(viewModel: KFunction<DiscoveryBaseViewModel>, componentItem: ComponentsItem, position: Int): DiscoveryBaseViewModel {
         if (viewHolderViewModelList.size - 1 >= position) {
-            return viewHolderViewModelList.get(position)
+            return viewHolderViewModelList[position]
         }
         val viewModelObject = viewModel.call(applicationContext, componentItem);
         viewHolderViewModelList.add(viewModelObject)
         return viewModelObject
-
     }
+
+    //temp code
+    fun getInnerComponentViewModel(position: Int): DiscoveryBaseViewModel? {
+        if (viewHolderViewModelList.size - 1 >= position) {
+            return viewHolderViewModelList[position]
+        }
+        return null
+    }
+
 
     override fun onCleared() {
         super.onCleared()

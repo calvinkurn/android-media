@@ -31,7 +31,10 @@ import com.tokopedia.design.component.Tooltip
 import com.tokopedia.design.label.LabelView
 import com.tokopedia.design.utils.DateLabelUtils
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
+import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationPromoBottomSheet
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.auto.view.activity.EmptyProductActivity
 import com.tokopedia.topads.auto.view.widget.AutoAdsWidgetView
@@ -57,6 +60,7 @@ import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAutoTopUpActivity
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.fragment_top_ads_dashboard.*
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.partial_top_ads_shop_info.*
@@ -169,6 +173,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         swipe_refresh_layout.setOnRefreshListener {
             refreshData()
         }
+        initSellerMigrationTicker()
         initTicker()
         initShopInfoComponent()
         initSummaryComponent()
@@ -187,11 +192,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
                     activity?.finish()
 
                 } else {
-                    if (isShowAutoAddPromo) {
-                        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, TopAdsDashboardConstant.URL_ONECLICKPROMO);
-                    } else {
-                        RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL)
-                    }
+                   openDashboard()
                 }
             }
         }
@@ -226,6 +227,31 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         topAdsDashboardPresenter.clearTotalAdCache()
         loadData()
         loadAutoAds()
+    }
+
+    private fun initSellerMigrationTicker() {
+        if(isSellerMigrationEnabled(context)) {
+            topAdsSellerMigrationTicker.apply {
+                tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_topads_ticker_title)
+                setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_topads_ticker_description))
+                setDescriptionClickEvent(object: TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        showSellerMigrationBottomSheet()
+                    }
+                    override fun onDismiss() {
+                        // No op
+                    }
+                })
+                show()
+            }
+        }
+    }
+
+    private fun showSellerMigrationBottomSheet() {
+        context?.let {
+            val sellerMigrationBottomSheet =  SellerMigrationPromoBottomSheet.createNewInstance(it)
+            sellerMigrationBottomSheet.show(this.childFragmentManager, "")
+        }
     }
 
     private fun initTicker() {

@@ -8,17 +8,19 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import com.tokopedia.encryption.security.AESEncryptorECB
-import com.tokopedia.logger.datasource.cloud.LoggerCloudDatasource
+import com.tokopedia.logger.datasource.cloud.LoggerCloudLogentriesDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudScalyrDataSource
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.datasource.db.LoggerRoomDatabase
+import com.tokopedia.logger.model.ScalyrConfig
 import com.tokopedia.logger.repository.LoggerRepository
 import com.tokopedia.logger.service.ServerJobService
 import com.tokopedia.logger.service.ServerService
 import com.tokopedia.logger.utils.Constants
-import com.tokopedia.logger.utils.TimberReportingTree
 import com.tokopedia.logger.utils.globalScopeLaunch
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -40,29 +42,16 @@ class LogManager(val application: Application) : CoroutineScope {
         CoroutineExceptionHandler { _, _ -> }
     }
 
-    fun setLogEntriesToken(tokenList: Array<String>) {
-        TOKEN = tokenList
-    }
-
-    private suspend fun sendLogToDB(message: String, timeStamp: Long, priority: Int, serverChannel: String) {
-        getLogger()?.let { logger ->
-            val truncatedMessage: String = if (message.length > Constants.MAX_BUFFER) {
-                message.substring(0, Constants.MAX_BUFFER)
-            } else {
-                message
-            }
-            val log = Logger(timeStamp, serverChannel, priority, truncatedMessage)
-            logger.insert(log)
-        }
-    }
-
     companion object {
         @JvmStatic
-        var TOKEN: Array<String> = arrayOf()
+        var logentriesToken: Array<String> = arrayOf()
+        @JvmStatic
+        var scalyrConfigList: List<ScalyrConfig> = mutableListOf()
         var scalyrEnabled: Boolean = false
         var logentriesEnabled: Boolean = true
         var isPrimaryLogentries: Boolean = true
         var isPrimaryScalyr: Boolean = false
+        var queryLimits: List<Int> = mutableListOf(5,5)
 
         @JvmField
         var instance: LogManager? = null
@@ -77,11 +66,14 @@ class LogManager(val application: Application) : CoroutineScope {
                 val instance = instance ?: return null
                 val context = instance.application.applicationContext
                 val logsDao = LoggerRoomDatabase.getDatabase(context).logDao()
-                val server = LoggerCloudDatasource()
-                val scalyrLogger = LoggerCloudScalyrDataSource(context)
+                val loggerCloudLogentriesDataSource = LoggerCloudLogentriesDataSource()
+                val loggerCloudScalyrDataSource = LoggerCloudScalyrDataSource()
                 val encryptor = AESEncryptorECB()
                 val secretKey = encryptor.generateKey(Constants.ENCRYPTION_KEY)
-                loggerRepository = LoggerRepository(logsDao, server, scalyrLogger, encryptor, secretKey)
+                loggerRepository = LoggerRepository(logsDao,
+                        loggerCloudLogentriesDataSource, loggerCloudScalyrDataSource,
+                        logentriesToken, scalyrConfigList,
+                        encryptor, secretKey)
             }
             return loggerRepository
         }
@@ -109,86 +101,48 @@ class LogManager(val application: Application) : CoroutineScope {
          * To give message log to logging server
          * logPriority to be handled are: Logger.ERROR, Logger.WARNING
          */
-
-        @JvmStatic
         fun log(message: String, timeStamp: Long, priority: Int, serverChannel: String) {
             instance?.run {
-                globalScopeLaunch({
-                    sendLogToDB(message, timeStamp, priority, serverChannel)
-                    runService()
-                }, {
-                    it.printStackTrace()
-                }, {
-                    return@globalScopeLaunch
-                })
+                sendLogToDB(message, timeStamp, priority, serverChannel)
+                runService()
             }
         }
 
         private fun runService() {
-            if (android.os.Build.VERSION.SDK_INT > 21) {
-                jobScheduler.schedule(jobInfo)
-            } else {
-                pi.send()
-            }
+            globalScopeLaunch({
+                if (android.os.Build.VERSION.SDK_INT > 21
+                        && ::jobScheduler.isInitialized && ::jobInfo.isInitialized) {
+                    jobScheduler.schedule(jobInfo)
+                } else if (::pi.isInitialized) {
+                    pi.send()
+                }
+            })
         }
 
-        suspend fun sendLogToServer() = coroutineScope {
-            getLogger()?.let { logger ->
-                val highPriorityLoggers: List<Logger> = logger.getHighPostPrio(Constants.SEND_PRIORITY_OFFLINE)
-                val lowPriorityLoggers: List<Logger> = logger.getLowPostPrio(Constants.SEND_PRIORITY_ONLINE)
-                val logs = highPriorityLoggers.toMutableList()
-
-                for (lowPriorityLogger in lowPriorityLoggers) {
-                    logs.add(lowPriorityLogger)
-                }
-
-                var scalyrSuccessCode = Constants.LOG_DEFAULT_ERROR_CODE
-                if (scalyrEnabled) {
-                    try {
-                        scalyrSuccessCode = logger.sendScalyrLogToServer(logs)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
+        private fun sendLogToDB(message: String, timeStamp: Long, priority: Int, serverChannel: String) {
+            globalScopeLaunch({
+                getLogger()?.let { logger ->
+                    val truncatedMessage: String = if (message.length > Constants.MAX_BUFFER) {
+                        message.substring(0, Constants.MAX_BUFFER)
+                    } else {
+                        message
                     }
+                    val log = Logger(timeStamp, serverChannel, priority, truncatedMessage)
+                    logger.insert(log)
                 }
-
-                if (logentriesEnabled) {
-                    for (log in logs) {
-                        val ts = log.timeStamp
-                        val severity = getSeverity(log.serverChannel)
-                        if (severity != Constants.SEVERITY_NONE) {
-                            val errorCode = logger.sendLogToServer(severity, TOKEN, log)
-                            if (isPrimaryLogentries) {
-                                if (errorCode == Constants.LOGENTRIES_SUCCESS_CODE) {
-                                    logger.deleteEntry(ts)
-                                }
-                            }
-                            delay(100)
-                        }
-                    }
-                }
-
-                if (isPrimaryScalyr) {
-                    if (scalyrSuccessCode == Constants.SCALYR_SUCCESS_CODE) {
-                        logger.deleteEntries(logs)
-                    }
-                }
-            }
+            })
         }
 
-        suspend fun deleteExpiredLogs() {
-            getLogger()?.run {
-                val currentTimestamp = System.currentTimeMillis()
-                deleteExpiredHighPrio(currentTimestamp - Constants.OFFLINE_TAG_THRESHOLD)
-                deleteExpiredLowPrio(currentTimestamp - Constants.ONLINE_TAG_THRESHOLD)
-            }
+        fun sendLogToServer() {
+            globalScopeLaunch({
+                getLogger()?.sendLogToServer(queryLimits)
+            })
         }
 
-        private fun getSeverity(serverChannel: String): Int {
-            return when (serverChannel) {
-                TimberReportingTree.P1 -> Constants.SEVERITY_HIGH
-                TimberReportingTree.P2 -> Constants.SEVERITY_MEDIUM
-                else -> Constants.SEVERITY_NONE
-            }
+        fun deleteExpiredLogs() {
+            globalScopeLaunch({
+                getLogger()?.deleteExpiredData()
+            })
         }
     }
 }

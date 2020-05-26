@@ -14,15 +14,36 @@ class DiscoveryDataMapper {
 
     companion object {
 
-        fun mapListToComponentList(itemList: List<com.tokopedia.discovery2.data.DataItem>, subComponentName: String = ""): ArrayList<ComponentsItem> {
+        fun mapListToComponentList(itemList: List<DataItem>, subComponentName: String = ""): ArrayList<ComponentsItem> {
             val list = ArrayList<ComponentsItem>()
             itemList.forEach {
                 val componentsItem = ComponentsItem()
                 componentsItem.name = subComponentName
-                val dataItem = mutableListOf<com.tokopedia.discovery2.data.DataItem>()
+                val dataItem = mutableListOf<DataItem>()
                 dataItem.add(it)
                 componentsItem.data = dataItem
                 list.add(componentsItem)
+            }
+            return list
+        }
+
+        // temporary code
+        fun mapTabsListToComponentList(itemList: List<DataItem>, subComponentName: String = ""): ArrayList<ComponentsItem> {
+            val list = ArrayList<ComponentsItem>()
+            var isSelectedFound = false
+            itemList.forEach {
+                if(it.isSelected){
+                    isSelectedFound = true
+                }
+                val componentsItem = ComponentsItem()
+                componentsItem.name = subComponentName
+                val dataItem = mutableListOf<DataItem>()
+                dataItem.add(it)
+                componentsItem.data = dataItem
+                list.add(componentsItem)
+            }
+            if(!isSelectedFound){
+                list[0].data?.get(0)?.isSelected = true
             }
             return list
         }
@@ -53,8 +74,8 @@ class DiscoveryDataMapper {
         listOfProduct?.forEachIndexed { index, element ->
             val componentsItem = ComponentsItem()
             componentsItem.name = getComponentName(index)
-            val litDataItem = mutableListOf<com.tokopedia.discovery2.data.DataItem>()
-            val dataItem = com.tokopedia.discovery2.data.DataItem()
+            val litDataItem = mutableListOf<DataItem>()
+            val dataItem = DataItem()
             dataItem.name = element?.name
             dataItem.imageUrlMobile = element?.imageProduct?.imageUrl
             dataItem.applinks = element?.applinks
@@ -93,8 +114,8 @@ class DiscoveryDataMapper {
         child?.forEach {
             val componentsItem = ComponentsItem()
             componentsItem.name = "horizontal_category_navigation_item"
-            val dataItemlist = mutableListOf<com.tokopedia.discovery2.data.DataItem>()
-            val dataItem = com.tokopedia.discovery2.data.DataItem()
+            val dataItemlist = mutableListOf<DataItem>()
+            val dataItem = DataItem()
             dataItem.imageUrlMobile = it?.thumbnailImage
             dataItem.name = it?.name
             dataItem.applinks = it?.applinks

@@ -220,5 +220,5 @@ class DiscoveryFragment : Fragment(), AddChildAdapterCallback {
             mergeAdapters.notifyDataSetChanged()
         }
     }
-
+    fun getDiscoveryRecyclerViewAdapter() = discoveryRecycleAdapter
 }

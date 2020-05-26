@@ -35,6 +35,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         tabsViewModel = discoveryBaseViewModel as TabsViewModel
+        tabsViewModel.setAdapterPositionToChildItems(adapterPosition)
         setUpObservers()
     }
 

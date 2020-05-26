@@ -11,21 +11,22 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.unifyprinciples.Typography
 
 class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
     private val tabImageView: ImageView = itemView.findViewById(R.id.tab_image)
     private val selectedView: View = itemView.findViewById(R.id.selected_view)
     private val tabTextView: TextView = itemView.findViewById(R.id.tab_text)
     private lateinit var tabsItemViewModel: TabsItemViewModel
+    private var positionForParentAdapter: Int = -1
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         tabsItemViewModel = discoveryBaseViewModel as TabsItemViewModel
         tabsItemViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer {
             val itemData = it.data?.get(0)
+            positionForParentAdapter = itemData?.positionForParentItem ?: -1
             itemData?.let { item ->
                 ImageHandler.LoadImage(tabImageView, item.backgroundImage)
                 item.name?.let { name ->
@@ -34,9 +35,9 @@ class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : Abstr
                 item.fontColor?.let { fontColor ->
                     setFontColor(fontColor)
                 }
-                if (adapterPosition == 0) {
-                    item.isSelected = true
-                }
+//                if (adapterPosition == 0) {
+//                    item.isSelected = true
+//                }
                 showSelectedView(item.isSelected)
                 setClick(item)
             }
@@ -56,11 +57,33 @@ class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : Abstr
 
     private fun setClick(data: DataItem) {
         tabImageView.setOnClickListener {
-            (it as ImageView).apply {
-                data.isSelected = !data.isSelected
-                showSelectedView(data.isSelected)
+            if(!data.isSelected) {
+                (it as ImageView).apply {
+                    data.isSelected = !data.isSelected
+                    showSelectedView(data.isSelected)
+                }
+                changeDataInTabsViewModel()
             }
         }
+    }
+
+    //temp code
+    private fun changeDataInTabsViewModel() {
+        (fragment as? DiscoveryFragment)?.let { discoveryFragment ->
+            (discoveryFragment.getDiscoveryRecyclerViewAdapter().getChildHolderViewModel(positionForParentAdapter) as? TabsViewModel)?.let { tabsViewModel ->
+                val tabsListData = tabsViewModel.getListDataLiveData().value
+                tabsListData?.let { listData ->
+                    listData.forEach { item ->
+                        if (item.data?.get(0)?.isSelected == true
+                                && item.data?.get(0)?.name != tabsItemViewModel.getComponentLiveData().value?.data?.get(0)?.name) {
+                            item.data?.get(0)?.isSelected = false
+                        }
+                    }
+                    tabsViewModel.getListDataLiveData().value = listData
+                }
+            }
+        }
+
     }
 
     private fun showSelectedView(isSelected: Boolean) {

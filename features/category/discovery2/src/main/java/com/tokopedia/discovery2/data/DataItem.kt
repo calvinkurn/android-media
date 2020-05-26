@@ -292,7 +292,9 @@ data class DataItem(
         val topadsClickUrl: String? = "",
 
         @SerializedName("free_ongkir")
-        val freeOngkir: FreeOngkir? = null
+        val freeOngkir: FreeOngkir? = null,
+
+        var positionForParentItem:Int = 0
 
         ) {
     val leftMargin: Int
