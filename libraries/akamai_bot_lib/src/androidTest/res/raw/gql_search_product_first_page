@@ -4,8 +4,7 @@ query SearchProduct(
     $headline_params: String
 ) {
     searchProduct(params: $params) {
-        quer
-        query_id
+        query
         source
         isFilter
         response_code
