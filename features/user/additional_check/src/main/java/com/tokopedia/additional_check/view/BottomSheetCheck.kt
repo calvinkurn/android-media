@@ -35,7 +35,7 @@ class BottomSheetCheck(val mActivity: Context?): BottomSheetUnify() {
     }
 
     fun checkStatus(){
-        activity?.run {
+        mActivity?.run {
             println("Check status...........")
         }
     }
