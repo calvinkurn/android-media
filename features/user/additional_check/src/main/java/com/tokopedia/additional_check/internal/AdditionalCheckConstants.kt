@@ -26,4 +26,6 @@ object AdditionalCheckConstants {
     const val OS_TYPE_VALUE = "1"
 
     const val DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss ZZZ"
+
+    const val QUERY_CHECK_BOTTOM_SHEET = "query_check_bottomsheet"
 }
