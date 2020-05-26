@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ll_search"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_play_search_bar"
+    >
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:layout_marginTop="@dimen/play_dp_6"
+        android:layout_marginBottom="@dimen/play_dp_6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:srcCompat="@drawable/ic_play_search_gray"
+        />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/et_search"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl1"
+        android:layout_marginLeft="@dimen/spacing_lvl1"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:background="@android:color/transparent"
+        android:hint="@string/play_etalase_search_hint"
+        android:imeOptions="actionSearch"
+        android:inputType="textNoSuggestions"
+        android:lines="1"
+        android:textColorHint="@color/Neutral_N700_32"
+        android:textCursorDrawable="@drawable/ic_play_search_cursor"
+        android:textSize="@dimen/fontSize_lvl3"
+        app:layout_constraintBottom_toBottomOf="@id/iv_search"
+        app:layout_constraintEnd_toStartOf="@id/iv_clear"
+        app:layout_constraintStart_toEndOf="@id/iv_search"
+        app:layout_constraintTop_toTopOf="@id/iv_search"
+        />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_clear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/play_dp_12"
+        android:layout_marginRight="@dimen/play_dp_12"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/iv_search"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/iv_search"
+        app:srcCompat="@drawable/ic_play_clear_input"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,24 +7,32 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.broadcaster.R
-import kotlinx.android.synthetic.main.bottom_sheet_play_broadcast_setup.view.*
+import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastNavigator
+import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
+import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 
 /**
  * Created by jegul on 26/05/20
  */
-class PlayBroadcastSetupBottomSheet : BottomSheetDialogFragment() {
+class PlayBroadcastSetupBottomSheet : BottomSheetDialogFragment(), PlayBroadcastNavigator {
 
-    private lateinit var flContent: FrameLayout
+    private lateinit var flFragment: FrameLayout
+    private lateinit var ivBack: ImageView
+    private lateinit var tvTitle: TextView
+    private lateinit var clContent: ConstraintLayout
     private lateinit var flOverlay: FrameLayout
+
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -69,7 +77,10 @@ class PlayBroadcastSetupBottomSheet : BottomSheetDialogFragment() {
 
     private fun initView(view: View) {
         with(view) {
-            flContent = findViewById(R.id.fl_content)
+            flFragment = findViewById(R.id.fl_fragment)
+            ivBack = findViewById(R.id.iv_back)
+            tvTitle = findViewById(R.id.tv_title)
+            clContent = findViewById(R.id.cl_content)
             flOverlay = findViewById(R.id.fl_overlay)
         }
     }
@@ -77,6 +88,25 @@ class PlayBroadcastSetupBottomSheet : BottomSheetDialogFragment() {
     private fun setupView(view: View) {
         flOverlay.setOnClickListener {
             Toast.makeText(requireContext(), "Overlay", Toast.LENGTH_SHORT).show()
+        }
+
+        navigateToFragment(PlayEtalasePickerFragment.newInstance())
+    }
+
+    override fun navigateToFragment(fragment: Fragment) {
+        childFragmentManager.beginTransaction()
+                .replace(R.id.fl_fragment, fragment)
+                .commit()
+
+        if (fragment is PlayBaseSetupFragment) {
+            tvTitle.text = fragment.getTitle()
+            ivBack.setImageResource(
+                    if (fragment.isRootFragment()) com.tokopedia.unifycomponents.R.drawable.unify_bottomsheet_close
+                    else R.drawable.ic_system_close_default
+            )
+        } else {
+            tvTitle.text = ""
+            ivBack.setImageResource(com.tokopedia.unifycomponents.R.drawable.unify_bottomsheet_close)
         }
     }
 
