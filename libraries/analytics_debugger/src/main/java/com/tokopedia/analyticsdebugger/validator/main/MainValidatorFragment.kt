@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.validator.Utils
+import com.tokopedia.analyticsdebugger.validator.core.GtmLogUi
 import com.tokopedia.analyticsdebugger.validator.core.Validator
 import com.tokopedia.analyticsdebugger.validator.core.toJson
 import com.tokopedia.analyticsdebugger.validator.core.toJsonMap
@@ -70,14 +71,13 @@ class MainValidatorFragment : Fragment() {
 
     private fun goToDetail(item: Validator) {
         val exp = item.data.toJson()
-        val act = item.match?.data ?: ""
-        val ts = Utils.getTimeStampFormat(item.match?.timestamp)
+        val act = item.matches
 
-        callback?.goDetail(exp, act, ts)
+        callback?.goDetail(exp, act)
     }
 
     interface Listener {
-        fun goDetail(expected: String, actual: String, timestamp: String)
+        fun goDetail(expected: String, actual: List<GtmLogUi>)
     }
 
     companion object {
