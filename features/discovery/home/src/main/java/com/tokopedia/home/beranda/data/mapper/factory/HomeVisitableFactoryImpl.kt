@@ -5,15 +5,17 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.HomePageTrackingV2
-import com.tokopedia.home.analytics.v2.MixTopTracking
 import com.tokopedia.home.analytics.v2.ProductHighlightTracking
-import com.tokopedia.home.beranda.domain.model.*
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home.beranda.domain.model.HomeData
+import com.tokopedia.home.beranda.domain.model.HomeFlag
+import com.tokopedia.home.beranda.domain.model.Spotlight
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
@@ -27,6 +29,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 
+@Suppress("DEPRECATION")
 class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) : HomeVisitableFactory {
     private var context: Context? = null
     private var trackingQueue: TrackingQueue? = null
@@ -34,18 +37,32 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
     private var isCache: Boolean = true
     private var visitableList: MutableList<Visitable<*>> = mutableListOf()
 
-    val DEFAULT_BANNER_APPLINK_1 = "tokopedia://category-explore?type=1"
-    val DEFAULT_BANNER_APPLINK_2 = ApplinkConst.OFFICIAL_STORE
-    val DEFAULT_BANNER_APPLINK_3 = ApplinkConst.PROMO
+    companion object{
+        private const val DEFAULT_BANNER_APPLINK_1 = "tokopedia://category-explore?type=1"
+        private const val DEFAULT_BANNER_APPLINK_2 = ApplinkConst.OFFICIAL_STORE
+        private const val DEFAULT_BANNER_APPLINK_3 = ApplinkConst.PROMO
 
-    val DEFAULT_BANNER_IMAGE_URL_1 = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja500new.jpg"
-    val DEFAULT_BANNER_IMAGE_URL_2 = "https://ecs7.tokopedia.net/defaultpage/banner/banneros500new.jpg"
-    val DEFAULT_BANNER_IMAGE_URL_3 = "https://ecs7.tokopedia.net/defaultpage/banner/bannerpromo500new.jpg"
+        private const val DEFAULT_BANNER_IMAGE_URL_1 = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja500new.jpg"
+        private const val DEFAULT_BANNER_IMAGE_URL_2 = "https://ecs7.tokopedia.net/defaultpage/banner/banneros500new.jpg"
+        private const val DEFAULT_BANNER_IMAGE_URL_3 = "https://ecs7.tokopedia.net/defaultpage/banner/bannerpromo500new.jpg"
+        private const val PROMO_NAME_LEGO_6_IMAGE = "/ - p%s - lego banner - %s"
+        private const val PROMO_NAME_LEGO_3_IMAGE = "/ - p%s - lego banner 3 image - %s"
+        private const val PROMO_NAME_LEGO_4_IMAGE = "/ - p%s - lego banner 4 image - %s"
+        private const val PROMO_NAME_MIX_LEFT = "/ - p%s - mix left - %s"
+        private const val PROMO_NAME_SPRINT = "/ - p%s - %s"
+        private const val PROMO_NAME_SPOTLIGHT_BANNER = "/ - p%s - spotlight banner"
+        private const val PROMO_NAME_GIF_BANNER = "/ - p%s - lego banner gif - %s"
+        private const val PROMO_NAME_DC_MIX_BANNER = "/ - p%s - dynamic channel mix - banner - %s"
+        private const val PROMO_NAME_UNKNOWN = "/ - p%s - %s - %s"
+
+        private const val VALUE_BANNER_UNKNOWN = "banner unknown"
+        private const val VALUE_BANNER_UNKNOWN_LAYOUT_TYPE = "lego banner unknown"
+    }
 
     override fun buildVisitableList(homeData: HomeData, isCache: Boolean, trackingQueue: TrackingQueue, context: Context): HomeVisitableFactory {
         this.homeData = homeData
         this.isCache = isCache
-        this.visitableList = mutableListOf<Visitable<*>>()
+        this.visitableList = mutableListOf()
         this.trackingQueue = trackingQueue
         this.context = context
         return this
@@ -56,7 +73,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
         val bannerDataModel = homeData?.banner
         bannerViewModel.isCache = isCache
 
-        if (bannerDataModel == null || bannerDataModel.slides == null || bannerDataModel.slides.isEmpty()) {
+        if (bannerDataModel?.slides == null || bannerDataModel.slides.isEmpty()) {
             val defaultSlides = mutableListOf<BannerSlidesModel>()
             val defaultBannerSlidesModel1 = BannerSlidesModel()
             defaultBannerSlidesModel1.applink = DEFAULT_BANNER_APPLINK_1
@@ -90,20 +107,12 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
 
     override fun addTickerVisitable(): HomeVisitableFactory {
         if (!isCache) {
-            val tmpTickers = ArrayList<Ticker.Tickers>()
-            val tickers = homeData?.ticker?.tickers
-            if (!HomeFragment.HIDE_TICKER) {
-                tickers?.let {
-                    for (tmpTicker in tickers) {
-                        if (tmpTicker.layout != StickyLoginConstant.LAYOUT_FLOATING) {
-                            tmpTickers.add(tmpTicker)
+            homeData?.ticker?.tickers?.let { ticker ->
+                if (!HomeFragment.HIDE_TICKER) {
+                    ticker.filter { it.layout != StickyLoginConstant.LAYOUT_FLOATING }.let {
+                        if (it.isNotEmpty()) {
+                            visitableList.add(TickerDataModel(tickers = it))
                         }
-                    }
-                    if (tmpTickers.isNotEmpty()) {
-                        val viewModel = TickerDataModel()
-                        viewModel.tickers = tmpTickers
-
-                        visitableList.add(viewModel)
                     }
                 }
             }
@@ -115,9 +124,6 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
         val needToShowUserWallet = homeData?.homeFlag?.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)?: false
         if (needToShowUserWallet) {
             val headerViewModel = HeaderDataModel()
-            headerViewModel.isPendingTokocashChecked = false
-            headerViewModel.isUserLogin = userSessionInterface?.isLoggedIn?:false
-
             visitableList.add(headerViewModel)
         }
         return this
@@ -131,23 +137,10 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
     override fun addDynamicIconVisitable(): HomeVisitableFactory {
         val isDynamicIconWrapType = homeData?.homeFlag?.getFlag(HomeFlag.TYPE.DYNAMIC_ICON_WRAP)?: false
         val iconList = homeData?.dynamicHomeIcon?.dynamicIcon?: listOf()
-
-        val viewModelDynamicIcon = DynamicIconSectionDataModel()
-        viewModelDynamicIcon.dynamicIconWrap = isDynamicIconWrapType
-        for (icon in iconList) {
-            viewModelDynamicIcon.addItem(HomeIconItem(
-                    icon.id,
-                    icon.name,
-                    icon.imageUrl,
-                    icon.applinks,
-                    icon.url,
-                    icon.bu_identifier,
-                    icon.galaxyAttribution,
-                    icon.persona,
-                    icon.brandId,
-                    icon.categoryPersona
-            ))
-        }
+        val viewModelDynamicIcon = DynamicIconSectionDataModel(
+                dynamicIconWrap = isDynamicIconWrapType,
+                itemList = iconList
+        )
 
         if (!isCache) {
             viewModelDynamicIcon.setTrackingData(
@@ -242,14 +235,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
 
     private fun createPlayWidget(channel: DynamicHomeChannel.Channels) {
         if (!isCache) {
-            val playBanner = mappingPlayChannel(channel, HashMap(), isCache)
-            if (!visitableList.contains(playBanner)) visitableList.add(playBanner)
-        }
-    }
-
-    private fun createMixTopWidget(channel: DynamicHomeChannel.Channels) {
-        if (!isCache) {
-            val playBanner = mappingPlayChannel(channel, HashMap(), isCache)
+            val playBanner = PlayCardDataModel(channel, null)
             if (!visitableList.contains(playBanner)) visitableList.add(playBanner)
         }
     }
@@ -277,23 +263,11 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
     }
 
     private fun setDynamicChannelPromoName(position: Int, channel: DynamicHomeChannel.Channels) {
-        val PROMO_NAME_LEGO_6_IMAGE = "/ - p%s - lego banner - %s"
-        val PROMO_NAME_LEGO_3_IMAGE = "/ - p%s - lego banner 3 image - %s"
-        val PROMO_NAME_LEGO_4_IMAGE = "/ - p%s - lego banner 4 image - %s"
-        val PROMO_NAME_MIX_LEFT = "/ - p%s - mix left - %s"
-        val PROMO_NAME_SPRINT = "/ - p%s - %s"
-        val PROMO_NAME_SPOTLIGHT_BANNER = "/ - p%s - spotlight banner"
-        val PROMO_NAME_GIF_BANNER = "/ - p%s - lego banner gif - %s"
-        val PROMO_NAME_DC_MIX_BANNER = "/ - p%s - dynamic channel mix - banner - %s"
-        val PROMO_NAME_UNKNOWN = "/ - p%s - %s - %s"
-
-        val VALUE_BANNER_UNKNOWN = "banner unknown"
-        val VALUE_BANNER_UNKNOWN_LAYOUT_TYPE = "lego banner unknown"
-
         if (!isCache) {
             if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT) {
                 channel.setPosition(position)
             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL) {
+                // do nothing
             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_6_IMAGE) {
                 channel.promoName = String.format(PROMO_NAME_LEGO_6_IMAGE, position.toString(), channel.header.name)
             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE) {
@@ -405,16 +379,6 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
             viewModel.isTrackingCombined = false
         }
         visitableList.add(viewModel)
-    }
-
-    private fun mappingPlayChannel(channel: DynamicHomeChannel.Channels,
-                                   trackingData: MutableMap<String, Any>,
-                                   isCache: Boolean): Visitable<*> {
-        val playCardViewModel = PlayCardDataModel(channel, null)
-        if (!isCache) {
-            playCardViewModel.setTrackingData(trackingData)
-        }
-        return playCardViewModel
     }
 
     private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {
