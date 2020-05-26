@@ -68,7 +68,7 @@ class PowerMerchantRegistrationView : ConstraintLayout {
             else -> {
                 val text = context.getString(R.string.power_merchant_shop_score_description)
                 val clickableText = context.getString(R.string.power_merchant_see_tips)
-                val clickableTextColor = ContextCompat.getColor(context, R.color.pm_main_color)
+                val clickableTextColor = ContextCompat.getColor(context, R.color.light_G500)
 
                 createSpannableString(text, clickableText, clickableTextColor) { goToLearMorePage() }
             }

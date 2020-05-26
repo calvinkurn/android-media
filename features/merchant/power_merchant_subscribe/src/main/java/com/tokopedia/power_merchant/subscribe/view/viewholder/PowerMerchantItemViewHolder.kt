@@ -37,7 +37,7 @@ class PowerMerchantItemViewHolder(itemView: View) : RecyclerView.ViewHolder(item
 
         textDescription.text = if (clickableText != null) {
             val clickableUrl = item.clickableUrl
-            val clickableTextColor = ContextCompat.getColor(context, R.color.pm_main_color)
+            val clickableTextColor = ContextCompat.getColor(context, R.color.light_G500)
             createSpannableString(description, clickableText, clickableTextColor) {
                 clickableUrl?.let { url -> goToWebViewPage(url) }
             }

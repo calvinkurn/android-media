@@ -103,7 +103,7 @@ class PowerMerchantMembershipView: ConstraintLayout {
     private fun showPremiumAccountView() {
         val description = context.getString(R.string.power_merchant_premium_account_description)
         val clickableText = context.getString(R.string.power_merchant_premium_account_clickable_text)
-        val clickableTextColor = ContextCompat.getColor(context, R.color.pm_main_color)
+        val clickableTextColor = ContextCompat.getColor(context, R.color.light_G500)
 
         textPremiumAccountDescription.movementMethod = LinkMovementMethod.getInstance()
         textPremiumAccountDescription.text = createSpannableString(description, clickableText, clickableTextColor) {
