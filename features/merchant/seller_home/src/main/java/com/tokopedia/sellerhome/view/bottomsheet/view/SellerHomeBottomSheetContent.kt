@@ -12,7 +12,7 @@ import com.tokopedia.sellerhome.view.bottomsheet.adapter.BottomSheetAdapterTypeF
 import com.tokopedia.sellerhome.view.bottomsheet.model.BaseBottomSheetUiModel
 import com.tokopedia.sellerhome.view.bottomsheet.model.BottomSheetContentUiModel
 import com.tokopedia.sellerhome.view.bottomsheet.model.BottomSheetListItemUiModel
-import com.tokopedia.sellerhome.view.model.TooltipUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
 import kotlinx.android.synthetic.main.sah_bottom_sheet_content.view.*
 
 class SellerHomeBottomSheetContent : LinearLayout {
