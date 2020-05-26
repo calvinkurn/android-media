@@ -173,7 +173,6 @@ class SellerHomeViewModel @Inject constructor(
         launchCatchError(block = {
             _carouselWidgetData.value = Success(withContext(Dispatchers.IO) {
                 getCarouselDataUseCase.params = GetCarouselDataUseCase.getRequestParams(dataKeys)
-                delay(20000L)
                 return@withContext getCarouselDataUseCase.executeOnBackground()
             })
         }, onError = {
