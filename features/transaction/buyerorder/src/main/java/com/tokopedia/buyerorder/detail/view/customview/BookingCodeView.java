@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.transaction.R;
+import com.tokopedia.buyerorder.R;
 import com.tokopedia.unifycomponents.Toaster;
 
 import static android.content.Context.CLIPBOARD_SERVICE;

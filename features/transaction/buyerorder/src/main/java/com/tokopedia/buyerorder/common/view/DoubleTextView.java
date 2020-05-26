@@ -13,7 +13,7 @@ import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.transaction.R;
+import com.tokopedia.buyerorder.R;
 
 public class DoubleTextView extends LinearLayout {
     private LinearLayout layout = null;
