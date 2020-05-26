@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.pro
 
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -9,6 +10,7 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
 class ProductCardSaleSprintCarouselViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
 
@@ -25,15 +27,19 @@ class ProductCardSaleSprintCarouselViewHolder(itemView: View, private val fragme
     
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         productCardSprintSaleCarouselViewModel = discoveryBaseViewModel as ProductCardSprintSaleCarouselViewModel
-        setUpObserver()
+        init()
     }
 
-    private fun setUpObserver() {
-        productCardSprintSaleCarouselViewModel.listData.observe(fragment.viewLifecycleOwner,Observer { item ->
+    private fun init() {
+        setUpDataObserver(fragment.viewLifecycleOwner)
+        productCardSprintSaleCarouselViewModel.fetchProductCarouselData((fragment as DiscoveryFragment).pageEndPoint)
+    }
+
+    private fun setUpDataObserver(lifecycleOwner: LifecycleOwner) {
+        productCardSprintSaleCarouselViewModel.getProductCarouselItemsListData().observe(lifecycleOwner, Observer { item ->
             discoveryRecycleAdapter.setDataList(item)
         })
     }
-
 
 
 }

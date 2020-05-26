@@ -43,14 +43,14 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     fun getDiscoveryData() {
         launchCatchError(
                 block = {
-                    val data = discoveryDataUseCase.getDiscoveryData(pageIdentifier)
-                        data.let {
-                            withContext(Dispatchers.Default) {
-                                checkLoginAndUpdateList(it.components)
-                                findCustomTopChatComponentsIfAny(it.components)
-                            }
-                            setPageInfo(it.pageInfo)
+                    val data = discoveryDataUseCase.getDiscoveryPageDataUseCase(pageIdentifier)
+                    data.let {
+                        withContext(Dispatchers.Default) {
+                            checkLoginAndUpdateList(it.components)
+                            findCustomTopChatComponentsIfAny(it.components)
                         }
+                        setPageInfo(it.pageInfo)
+                    }
                 },
                 onError = {
                     discoveryPageInfo.value = Fail(it)
@@ -60,7 +60,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     }
 
     private fun setPageInfo(pageInfo: PageInfo?) {
-        if(pageInfo!=null)
+        if (pageInfo != null)
             discoveryPageInfo.value = Success(pageInfo)
     }
 

@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class DiscoveryResponse(
 
         @SerializedName("components")
-        val components: List<ComponentsItem>? = null,
+        val components: MutableList<ComponentsItem>? = null,
 
         @SerializedName("component")
         val component: ComponentsItem? = null,
