@@ -47,8 +47,20 @@ class BrandlistSearchViewModel @Inject constructor(
 
     private var firstLetterChanged = false
     private var totalBrandSize = 0
+    private var totalBrandOnTheChipHeader = 0
     var currentOffset = INITIAL_OFFSET
     var currentLetter = INITIAL_LETTER
+
+
+    private fun getRequestSize(totalBrandSize: Int, renderedBrands: Int): Int {
+        if (renderedBrands == 0) return ALL_BRANDS_REQUEST_SIZE
+        val remainingBrands = totalBrandSize - renderedBrands
+        return if (remainingBrands > ALL_BRANDS_REQUEST_SIZE) {
+            ALL_BRANDS_REQUEST_SIZE
+        } else {
+            remainingBrands
+        }
+    }
 
     fun loadInitialBrands() {
         searchAllBrands(
@@ -71,6 +83,23 @@ class BrandlistSearchViewModel @Inject constructor(
         )
     }
 
+    fun loadMoreBrands(brandFirstLetter: String){
+        val requestSize = getRequestSize(totalBrandSize, currentOffset)
+        searchAllBrands(
+                offset = currentOffset,
+                query = ALL_BRANDS_QUERY,
+                brandSize = requestSize,
+                sortType = ALPHABETIC_ASC_SORT,
+                firstLetter = brandFirstLetter
+        )
+    }
+
+    fun getTotalBrandSizeForChipHeader(): Int = totalBrandOnTheChipHeader
+    fun updateTotalBrandSizeForChipHeader(totalNumber: Int) {
+        this.totalBrandOnTheChipHeader = totalNumber
+    }
+
+    fun getTotalBrandSize(): Int = totalBrandSize
     fun updateTotalBrandSize(totalBrandSize: Int) {
         this.totalBrandSize = totalBrandSize
     }
@@ -79,20 +108,10 @@ class BrandlistSearchViewModel @Inject constructor(
         currentOffset += renderedBrands
     }
 
-    fun updateCurrentLetter() {
-        val firstLetter = getFirstLetter(totalBrandSize, currentOffset)
-        if (firstLetter != currentLetter) {
-            currentLetter = firstLetter
-            firstLetterChanged = true
-        }
-    }
-
-    fun updateEndlessRequestParameter() {
-        if (firstLetterChanged) {
-            totalBrandSize = 0
-            currentOffset = 0
-            firstLetterChanged = false
-        }
+    fun resetParams() {
+        firstLetterChanged = false
+        totalBrandSize = 0
+        currentOffset = INITIAL_OFFSET
     }
 
     fun searchBrand(
@@ -172,29 +191,5 @@ class BrandlistSearchViewModel @Inject constructor(
         }) {
             _brandlistAllBrandTotal.value = Fail(it)
         }
-    }
-
-    fun resetParams() {
-        firstLetterChanged = false
-        totalBrandSize = 0
-        currentOffset = INITIAL_OFFSET
-        currentLetter = INITIAL_LETTER
-    }
-
-    private fun getRequestSize(totalBrandSize: Int, renderedBrands: Int): Int {
-        if (renderedBrands == 0) return ALL_BRANDS_REQUEST_SIZE
-        val remainingBrands = totalBrandSize - renderedBrands
-        return if (remainingBrands > ALL_BRANDS_REQUEST_SIZE) {
-            ALL_BRANDS_REQUEST_SIZE
-        } else {
-            remainingBrands
-        }
-    }
-
-    private fun getFirstLetter(totalBrandSize: Int, currentOffset: Int): Char {
-        return if (totalBrandSize == currentOffset) {
-            val newLetter = currentLetter + 1
-            newLetter
-        } else currentLetter
     }
 }

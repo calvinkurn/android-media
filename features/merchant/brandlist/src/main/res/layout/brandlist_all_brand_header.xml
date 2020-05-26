@@ -30,6 +30,7 @@
         android:lineSpacingExtra="@dimen/sp_6"
         android:textColor="@color/charcoal_grey_68"
         android:textSize="@dimen/sp_12"
+        android:text="13455 Brand"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1"
