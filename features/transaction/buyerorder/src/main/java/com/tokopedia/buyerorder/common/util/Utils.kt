@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.util
+package com.tokopedia.buyerorder.common.util
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -8,10 +8,9 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 
 import android.content.Context.CLIPBOARD_SERVICE
-import com.tokopedia.transaction.R
+import com.tokopedia.buyerorder.R
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.concurrent.TimeUnit
 
 
 object Utils {

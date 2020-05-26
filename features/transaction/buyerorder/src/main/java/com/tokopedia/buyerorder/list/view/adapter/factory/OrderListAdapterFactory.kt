@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics
-import com.tokopedia.buyerorder.list.view.adapter.viewModel.OrderListRecomViewModel
 import com.tokopedia.buyerorder.list.view.adapter.viewholder.*
 import com.tokopedia.buyerorder.list.view.adapter.viewmodel.*
 

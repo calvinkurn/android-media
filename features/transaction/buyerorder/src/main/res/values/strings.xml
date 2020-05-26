@@ -64,4 +64,16 @@
     <string name="item_count">(+ %1$d Produk Lainnya)</string>
     <string name="tokopedia_care">Tokopedia Care</string>
     <string name="lihat_order_detail">Lihat Order Detail</string>
+    <string name="month_1">Jan</string>
+    <string name="month_2">Feb</string>
+    <string name="month_3">Mar</string>
+    <string name="month_4">Apr</string>
+    <string name="month_5">Mei</string>
+    <string name="month_6">Jun</string>
+    <string name="month_7">Jul</string>
+    <string name="month_8">Ags</string>
+    <string name="month_9">Sep</string>
+    <string name="month_10">Okt</string>
+    <string name="month_11">Nov</string>
+    <string name="month_12">Des</string>
 </resources>
