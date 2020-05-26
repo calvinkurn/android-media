@@ -247,7 +247,6 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         }
     }
 
-
     private fun initListener() {
         server_error_view?.setErrorButtonClickListener { view -> mPresenter.onErrorButtonClick() }
     }
