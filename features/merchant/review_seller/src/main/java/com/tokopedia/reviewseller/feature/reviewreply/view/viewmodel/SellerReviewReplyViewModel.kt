@@ -10,6 +10,7 @@ import com.tokopedia.reviewseller.feature.reviewreply.domain.InsertSellerRespons
 import com.tokopedia.reviewseller.feature.reviewreply.domain.UpdateSellerResponseUseCase
 import com.tokopedia.reviewseller.feature.reviewreply.util.mapper.SellerReviewReplyMapper
 import com.tokopedia.reviewseller.feature.reviewreply.view.model.InsertReplyResponseUiModel
+import com.tokopedia.reviewseller.feature.reviewreply.view.model.InsertTemplateReplyUiModel
 import com.tokopedia.reviewseller.feature.reviewreply.view.model.ReplyTemplateUiModel
 import com.tokopedia.reviewseller.feature.reviewreply.view.model.UpdateReplyResponseUiModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -40,6 +41,10 @@ class SellerReviewReplyViewModel @Inject constructor(
     private val _reviewTemplate = MutableLiveData<Result<List<ReplyTemplateUiModel>>>()
     val reviewTemplate: LiveData<Result<List<ReplyTemplateUiModel>>>
         get() = _reviewTemplate
+
+    private val _insertTemplateReply = MutableLiveData<Result<InsertTemplateReplyUiModel>>()
+    val insertTemplateReply: LiveData<Result<InsertTemplateReplyUiModel>>
+        get() = _insertTemplateReply
 
     fun getTemplateListReply(shopId: Int) {
         launchCatchError(block = {
