@@ -144,6 +144,6 @@
 
     <string name="power_merchant_registration_status_label">Status Pendaftaraan:</string>
     <string name="power_merchant_ok_label">Oke</string>
-    <string name="power_merchant_success_title">Selamat! Tokomu sudah menjadi\\nPower Merchant</string>
+    <string name="power_merchant_success_title">Selamat! Tokomu sudah menjadi\nPower Merchant</string>
     <string name="power_merchant_success_description">Tingkatkan penjualan tokomu dengan mengakses fitur-fitur andalan **Power Merchant!**</string>
 </resources>
