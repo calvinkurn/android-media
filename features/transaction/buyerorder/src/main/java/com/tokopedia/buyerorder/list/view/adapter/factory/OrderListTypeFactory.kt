@@ -1,6 +1,5 @@
 package com.tokopedia.buyerorder.list.view.adapter.factory
 
-import com.tokopedia.buyerorder.list.view.adapter.viewModel.OrderListRecomViewModel
 import com.tokopedia.buyerorder.list.view.adapter.viewmodel.*
 
 interface OrderListTypeFactory {
