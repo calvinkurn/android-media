@@ -4,11 +4,11 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
+import com.tokopedia.buyerorder.detail.domain.ErrorResponse;
 import com.tokopedia.buyerorder.detail.domain.FinishOrderUseCase;
 import com.tokopedia.buyerorder.detail.domain.PostCancelReasonUseCase;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor;
-import com.tokopedia.transaction.orders.orderdetails.domain.ErrorResponse;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;

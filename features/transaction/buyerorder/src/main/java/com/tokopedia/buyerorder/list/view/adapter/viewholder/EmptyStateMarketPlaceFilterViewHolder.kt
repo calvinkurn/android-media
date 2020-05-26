@@ -5,8 +5,8 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.transaction.R
-import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.EmptyStateMarketPlaceFilterViewModel
+import com.tokopedia.buyerorder.R
+import com.tokopedia.buyerorder.list.view.adapter.viewmodel.EmptyStateMarketPlaceFilterViewModel
 
 class EmptyStateMarketPlaceFilterViewHolder(itemView: View?, val filterListener: ActionListener) : AbstractViewHolder<EmptyStateMarketPlaceFilterViewModel>(itemView) {
 

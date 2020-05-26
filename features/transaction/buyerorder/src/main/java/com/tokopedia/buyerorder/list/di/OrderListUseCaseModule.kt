@@ -1,19 +1,19 @@
 package com.tokopedia.buyerorder.list.di
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.buyerorder.R
+import com.tokopedia.buyerorder.detail.di.OrderListDetailModule
+import com.tokopedia.buyerorder.detail.domain.FinishOrderUseCase
+import com.tokopedia.buyerorder.detail.domain.PostCancelReasonUseCase
+import com.tokopedia.buyerorder.detail.view.OrderListAnalytics
+import com.tokopedia.buyerorder.list.view.presenter.OrderListPresenterImpl
+import com.tokopedia.core.base.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
-import com.tokopedia.transaction.R
-import com.tokopedia.transaction.orders.orderdetails.di.OrderListDetailModule
-import com.tokopedia.transaction.orders.orderdetails.domain.FinishOrderUseCase
-import com.tokopedia.transaction.orders.orderdetails.domain.PostCancelReasonUseCase
-import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics
-import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListPresenterImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase

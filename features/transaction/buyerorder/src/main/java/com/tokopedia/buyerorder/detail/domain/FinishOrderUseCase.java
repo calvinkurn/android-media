@@ -3,6 +3,8 @@ package com.tokopedia.buyerorder.detail.domain;
 import android.content.Context;
 
 import com.google.gson.reflect.TypeToken;
+import com.tokopedia.buyerorder.detail.data.CancelReplacementPojo;
+import com.tokopedia.buyerorder.detail.data.DataResponseCommon;
 import com.tokopedia.common.network.data.model.RequestType;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;

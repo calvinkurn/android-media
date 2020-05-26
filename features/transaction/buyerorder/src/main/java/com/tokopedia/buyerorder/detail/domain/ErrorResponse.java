@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.orders.orderdetails.domain;
+package com.tokopedia.buyerorder.detail.domain;
 
 
 import java.io.IOException;

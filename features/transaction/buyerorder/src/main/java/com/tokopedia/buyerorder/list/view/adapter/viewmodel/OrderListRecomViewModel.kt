@@ -1,8 +1,8 @@
-package com.tokopedia.buyerorder.list.view.adapter.viewModel
+package com.tokopedia.buyerorder.list.view.adapter.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.buyerorder.list.view.adapter.factory.OrderListTypeFactory
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.transaction.orders.orderlist.view.adapter.factory.OrderListTypeFactory
 
 class OrderListRecomViewModel(val recommendationItem: RecommendationItem, val recomTitle: String) : Visitable<OrderListTypeFactory> {
 
