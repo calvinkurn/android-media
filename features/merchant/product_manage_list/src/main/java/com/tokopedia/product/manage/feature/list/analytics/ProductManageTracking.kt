@@ -38,10 +38,6 @@ object ProductManageTracking {
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_MULTIPLE, "")
     }
 
-    fun eventEditVariants(label: String) {
-        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_EDIT_VARIANTS, label)
-    }
-
     fun eventEditPrice(label: String) {
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_EDIT_PRICE, label)
     }
