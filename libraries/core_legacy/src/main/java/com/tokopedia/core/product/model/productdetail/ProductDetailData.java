@@ -1,15 +1,10 @@
 package com.tokopedia.core.product.model.productdetail;
 
-import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.TextUtils;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.network.entity.variant.Campaign;
-import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
-import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,15 +66,6 @@ public class ProductDetailData implements Parcelable {
     @Expose
     private String checkoutType;
 
-    /**
-     * this is not supposed to be here
-     * because it is ViewModel
-     * but because this pojo used in the view
-     */
-    private LatestTalkViewModel latestTalkViewModel;
-    private List<Review> reviewList;
-    private Campaign campaign;
-
     public ProductDetailData() {
     }
 
@@ -116,10 +102,6 @@ public class ProductDetailData implements Parcelable {
         this.wholesalePrice = wholesalePrice;
     }
 
-    public List<ProductBreadcrumb> getBreadcrumb() {
-        return breadcrumb;
-    }
-
     public void setBreadcrumb(List<ProductBreadcrumb> breadcrumb) {
         this.breadcrumb = breadcrumb;
     }
@@ -132,16 +114,8 @@ public class ProductDetailData implements Parcelable {
         this.cashBack = cashBack;
     }
 
-    public ProductCashback getCashBack() {
-        return cashBack;
-    }
-
     public ProductPreOrder getPreOrder() {
         return preOrder;
-    }
-
-    public void setPreOrder(ProductPreOrder preOrder) {
-        this.preOrder = preOrder;
     }
 
     public void setRating(ProductRating rating) {
@@ -154,38 +128,6 @@ public class ProductDetailData implements Parcelable {
 
     public void setProductImages(List<ProductImage> productImages) {
         this.productImages = productImages;
-    }
-
-    public void setLatestTalkViewModel(LatestTalkViewModel latestTalkViewModel) {
-        this.latestTalkViewModel = latestTalkViewModel;
-    }
-
-    public LatestTalkViewModel getLatestTalkViewModel() {
-        return latestTalkViewModel;
-    }
-
-    public List<Review> getReviewList() {
-        return reviewList;
-    }
-
-    public void setReviewList(List<Review> reviewList) {
-        this.reviewList = reviewList;
-    }
-
-    public Campaign getCampaign() {
-        return campaign;
-    }
-
-    public void setCampaign(Campaign campaign) {
-        this.campaign = campaign;
-    }
-
-    public boolean isBigPromo() {
-        return isBigPromo;
-    }
-
-    public String getCheckoutType() {
-        return checkoutType;
     }
 
     public void setBigPromo(boolean bigPromo) {
@@ -308,9 +250,6 @@ public class ProductDetailData implements Parcelable {
         dest.writeParcelable(this.preOrder, flags);
         dest.writeParcelable(this.cashBack, flags);
         dest.writeTypedList(this.productImages);
-        dest.writeParcelable(this.latestTalkViewModel, flags);
-        dest.writeTypedList(this.reviewList);
-        dest.writeParcelable(this.campaign, flags);
         dest.writeLong(this.serverTimeUnix);
         dest.writeByte(this.isBigPromo ? (byte) 1 : (byte) 0);
         dest.writeString(this.checkoutType);
@@ -326,9 +265,6 @@ public class ProductDetailData implements Parcelable {
         this.preOrder = in.readParcelable(ProductPreOrder.class.getClassLoader());
         this.cashBack = in.readParcelable(ProductCashback.class.getClassLoader());
         this.productImages = in.createTypedArrayList(ProductImage.CREATOR);
-        this.latestTalkViewModel = in.readParcelable(LatestTalkViewModel.class.getClassLoader());
-        this.reviewList = in.createTypedArrayList(Review.CREATOR);
-        this.campaign = in.readParcelable(Campaign.class.getClassLoader());
         this.serverTimeUnix = in.readLong();
         this.isBigPromo = in.readByte() == 1;
         this.checkoutType = in.readString();
@@ -345,27 +281,4 @@ public class ProductDetailData implements Parcelable {
             return new ProductDetailData[size];
         }
     };
-
-    public String getEnhanceCategoryFormatted() {
-        List<String> list = new ArrayList<>();
-        for (int i = 0; i < getBreadcrumb().size(); i++) {
-            list.add(getBreadcrumb().get(i).getDepartmentName());
-        }
-        return TextUtils.join("/", list);
-    }
-
-    public String getEnhanceUrl(String url) {
-        Uri uri = Uri.parse(url);
-        return uri.getLastPathSegment();
-    }
-
-    public String getEnhanceShopType() {
-        if (getShopInfo().getShopIsOfficial() == 1) {
-            return "official_store";
-        } else if (getShopInfo().getShopIsGold() == 1) {
-            return "gold_merchant";
-        } else {
-            return "regular";
-        }
-    }
 }
