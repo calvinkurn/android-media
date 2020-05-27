@@ -28,4 +28,9 @@
     <string name="seller_migration_promo_bottom_sheet_content">Pilih jenis promosi yang sesuai strategi bisnismu atau gunakan rekomendasi dari kami agar lebih optimal beriklan.</string>
     <string name="seller_migration_promo_bottom_sheet_content_second_page">Laporan performa iklan akan diperbarui secara berkala, agar kamu bisa mengatur strategi promosi untuk tingkatkan penjualan.</string>
 
+    <string name="seller_migration_review_ticker_title">Ulasan dari pembeli sudah berpindah </string>
+    <string name="seller_migration_review_ticker_description">Lihat penilaian dari pembeli setelah beli produkmu di aplikasi Tokopedia Seller. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
+    <string name="seller_migration_review_bottom_sheet_title">Cek ulasan dari pembeli langsung di aplikasi Tokopedia Seller</string>
+    <string name="seller_migration_review_bottom_sheet_content">Temukan ulasan lengkap untuk setiap produkmu, mulai dari kemasan hingga kualitas produk.</string>
+
 </resources>
