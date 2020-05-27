@@ -5,17 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.di.DaggerPlayBroadcasterComponent
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayFollowerItemDecoration
 import com.tokopedia.play.broadcaster.view.adapter.PlayFollowersAdapter
-import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastSetupCoordinator
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayPrepareBroadcastViewModel
 import com.tokopedia.unifycomponents.UnifyButton
 import javax.inject.Inject
@@ -24,7 +23,8 @@ import javax.inject.Inject
  * Created by jegul on 20/05/20
  */
 class PlayPrepareBroadcastFragment @Inject constructor(
-        private val viewModelFactory: ViewModelFactory
+        private val viewModelFactory: ViewModelFactory,
+        private val fragmentFactory: FragmentFactory
 ) : TkpdBaseV4Fragment() {
 
     private lateinit var parentViewModel: PlayPrepareBroadcastViewModel
@@ -33,9 +33,6 @@ class PlayPrepareBroadcastFragment @Inject constructor(
     private lateinit var rvFollowers: RecyclerView
 
     private val followersAdapter = PlayFollowersAdapter()
-
-    private val broadcastSetupCoordinator: PlayBroadcastSetupCoordinator
-        get() = requireActivity() as PlayBroadcastSetupCoordinator
 
     override fun getScreenName(): String = "Play Prepare Page"
 
@@ -69,7 +66,7 @@ class PlayPrepareBroadcastFragment @Inject constructor(
 
     private fun setupView(view: View) {
         btnSetup.setOnClickListener {
-            broadcastSetupCoordinator.openBroadcastSetupPage()
+            openBroadcastSetupPage()
         }
 
         rvFollowers.adapter = followersAdapter
@@ -80,6 +77,12 @@ class PlayPrepareBroadcastFragment @Inject constructor(
                 return true
             }
         })
+    }
+
+    private fun openBroadcastSetupPage() {
+        val setupClass = PlayBroadcastSetupBottomSheet::class.java
+        val setupFragment = fragmentFactory.instantiate(setupClass.classLoader!!, setupClass.name) as PlayBroadcastSetupBottomSheet
+        setupFragment.show(childFragmentManager)
     }
 
     //region observe

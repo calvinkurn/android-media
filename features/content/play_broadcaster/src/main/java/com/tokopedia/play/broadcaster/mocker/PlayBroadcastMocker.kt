@@ -2,11 +2,7 @@ package com.tokopedia.play.broadcaster.mocker
 
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.model.Configuration
-import com.tokopedia.play.broadcaster.view.uimodel.ChannelInfoUiModel
-import com.tokopedia.play.broadcaster.view.uimodel.FollowerUiModel
-import com.tokopedia.play.broadcaster.view.uimodel.PlayEtalaseUiModel
-import com.tokopedia.play.broadcaster.view.uimodel.ProductUiModel
-import com.tokopedia.play.broadcaster.view.uimodel.PlayChannelStatus
+import com.tokopedia.play.broadcaster.view.uimodel.*
 
 /**
  * Created by jegul on 20/05/20
@@ -23,6 +19,7 @@ object PlayBroadcastMocker {
             else -> R.color.play_follower_yellow
         })
     }
+
     fun getMockUserFollower() = List(3) { FollowerUiModel.User("https://www.tokopedia.com") }
 
     /**
