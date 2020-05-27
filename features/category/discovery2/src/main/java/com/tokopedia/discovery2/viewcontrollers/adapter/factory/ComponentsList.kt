@@ -46,5 +46,6 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     PrductCardSprintSaleCarousel(R.layout.horizontal_recycler_view_layout, ComponentNames.PrductCardSprintSaleCarousel.componentName),
     ProductCardRevamp(R.layout.product_card_revamp_layout, ComponentNames.ProductCardRevamp.componentName),
     ProductCardItem(R.layout.product_item_layout, ComponentNames.ProductCardItem.componentName),
-    ShimmerProductCard(R.layout.discovery_shimmer_product_card_layout, ComponentNames.ShimmerProductCard.componentName)
+    ShimmerProductCard(R.layout.discovery_shimmer_product_card_layout, ComponentNames.ShimmerProductCard.componentName),
+    Shimmer(R.layout.discovery_shimmer_layout, ComponentNames.Shimmer.componentName)
 }

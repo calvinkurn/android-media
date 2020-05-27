@@ -42,5 +42,6 @@ enum class ComponentNames(val componentName: String) {
     PrductCardSprintSaleCarousel("product_card_sprint_sale_carousel"),
     ProductCardItem("product_card_item"),
     TimerSprintSale("timer_sprint_sale"),
-    ShimmerProductCard("shimmer_product_card")
+    ShimmerProductCard("shimmer_product_card"),
+    Shimmer("shimmer")
 }

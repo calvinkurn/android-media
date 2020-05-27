@@ -32,5 +32,11 @@ data class ComponentsItem (
         val skiprender: Boolean = false,
 
         @SerializedName("properties")
-        var properties: Properties? = null
+        var properties: Properties? = null,
+
+        var shimmerHeight: Int = 0,
+
+        var shimmerWidth: Int = 0,
+
+        var constraintRatio: String? = null
 )
