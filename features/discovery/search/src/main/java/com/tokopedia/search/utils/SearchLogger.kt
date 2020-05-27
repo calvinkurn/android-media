@@ -37,11 +37,11 @@ internal open class SearchLogger {
     fun logWarning(message: String?, throwable: Throwable?, context: Context) {
         if (message == null || throwable == null || isExceptionExcluded(throwable)) return
 
-        timberLogWarning(message, ExceptionUtils.getStackTrace(throwable), context)
+        timberLogWarning(message, ExceptionUtils.getStackTrace(throwable), isExceptionExcluded(throwable), context)
     }
 
-    protected open fun timberLogWarning(message: String, stackTrace: String, context: Context) {
+    protected open fun timberLogWarning(message: String, stackTrace: String, isExceptionExcluded: Boolean, context: Context) {
         Timber.w(DISCOVERY_SEARCH_ERROR_TAG, message, stackTrace)
-        Toast.makeText(context, stackTrace, Toast.LENGTH_LONG).show()
+        Toast.makeText(context, "$isExceptionExcluded\n$message\n$stackTrace" , Toast.LENGTH_LONG).show()
     }
 }
