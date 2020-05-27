@@ -39,10 +39,11 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
+import com.tokopedia.topads.sdk.listener.ImpressionListener
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import kotlinx.coroutines.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelChildren
@@ -81,7 +82,6 @@ open class HomeViewModel @Inject constructor(
         private val popularKeywordUseCase: GetPopularKeywordUseCase,
         private val sendGeolocationInfoUseCase: Lazy<SendGeolocationInfoUseCase>,
         private val stickyLoginUseCase: StickyLoginUseCase,
-        private val sendTopAdsUseCase: SendTopAdsUseCase,
         private val getRechargeRecommendationUseCase: GetRechargeRecommendationUseCase,
         private val declineRechargeRecommendationUseCase: DeclineRechargeRecommendationUseCase,
         private val injectCouponTimeBasedUseCase: InjectCouponTimeBasedUseCase,
@@ -268,35 +268,35 @@ open class HomeViewModel @Inject constructor(
                                       isWalletDataError: Boolean? = null,
                                       isTokoPointDataError: Boolean? = null) {
         if(headerDataModel == null){
-            headerDataModel = (_homeLiveData.value?.list?.find { visitable-> visitable is HeaderDataModel } as HeaderDataModel?)?.copy()
+            headerDataModel = (_homeLiveData.value?.list?.find { visitable-> visitable is HeaderDataModel } as HeaderDataModel?)
         }
 
         val currentPosition = _homeLiveData.value?.list?.withIndex()?.find { (_, model) ->  model is HeaderDataModel }?.index ?: -1
 
         headerDataModel?.let { headerViewModel ->
             tokopointsDrawer?.let {
-                headerViewModel.tokopointsDrawerHomeData = it
+                headerDataModel = headerDataModel?.copy(tokopointsDrawerHomeData = it)
             }
             homeHeaderWalletAction?.let {
-                headerViewModel.homeHeaderWalletActionData = it
+                headerDataModel = headerDataModel?.copy(homeHeaderWalletActionData = it)
             }
             cashBackData?.let {
-                headerViewModel.cashBackData = it
+                headerDataModel = headerDataModel?.copy(cashBackData = it)
             }
             tokopointHomeDrawerData?.let {
-                headerViewModel.tokoPointDrawerData = it
+                headerDataModel = headerDataModel?.copy(tokoPointDrawerData = it)
             }
             isPendingTokocashChecked?.let {
-                headerViewModel.isPendingTokocashChecked = it
+                headerDataModel = headerDataModel?.copy(isPendingTokocashChecked = it)
             }
             isWalletDataError?.let {
-                headerViewModel.isWalletDataError = it
+                headerDataModel = headerDataModel?.copy(isWalletDataError = it)
             }
             isTokoPointDataError?.let {
-                headerViewModel.isTokoPointDataError = it
+                headerDataModel = headerDataModel?.copy(isTokoPointDataError = it)
             }
-            headerViewModel.isUserLogin = userSession.isLoggedIn
-            launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, headerViewModel, currentPosition)) }
+            headerDataModel = headerDataModel?.copy(isUserLogin = userSession.isLoggedIn)
+            launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, headerViewModel.copy(), currentPosition)) }
         }
 
     }
@@ -386,12 +386,6 @@ open class HomeViewModel @Inject constructor(
         val playIndex = _homeLiveData.value?.list.copy().indexOfFirst { visitable -> visitable is PlayCardDataModel }
         if(playIndex != -1) {
             launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_DELETE, null, playIndex )) }
-        }
-    }
-
-    fun onBannerClicked(slidesModel: BannerSlidesModel) {
-        if (slidesModel.redirectUrl.isNotEmpty()) {
-            sendTopAdsUseCase.executeOnBackground(slidesModel.redirectUrl)
         }
     }
 
@@ -755,6 +749,8 @@ open class HomeViewModel @Inject constructor(
 
     private fun getRechargeRecommendation() {
         if(getRechargeRecommendationJob?.isActive == true) return
+        if(!isRechargeModelAvailable()) return
+
         getRechargeRecommendationJob = launchCatchError(coroutineContext, block = {
             getRechargeRecommendationUseCase.setParams()
             val data = getRechargeRecommendationUseCase.executeOnBackground()
@@ -762,6 +758,12 @@ open class HomeViewModel @Inject constructor(
         }) {
             removeRechargeRecommendation()
         }
+    }
+
+    private fun isRechargeModelAvailable(): Boolean {
+        return _homeLiveData.value?.list?.find {
+            visitable -> visitable is RechargeRecommendationViewModel
+        } != null
     }
 
     fun declineRechargeRecommendationItem(requestParams: Map<String, String>) {
@@ -872,10 +874,6 @@ open class HomeViewModel @Inject constructor(
         }){
             _stickyLogin.postValue(Result.error(it))
         }
-    }
-
-    fun sendTopAds(url: String){
-        sendTopAdsUseCase.executeOnBackground(url)
     }
 
     fun getOneClickCheckout(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int){

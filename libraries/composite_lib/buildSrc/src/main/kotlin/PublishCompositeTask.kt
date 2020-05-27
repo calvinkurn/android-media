@@ -35,7 +35,8 @@ open class PublishCompositeTask : DefaultTask() {
         println("Dep Hash Set: $dependenciesProjectNameHashSet")
         println("Project to Artifact: ${projectToArtifactInfoList.map {
             it.key + "-" + it.value.groupId + ":" + it.value.artifactId +
-                ":" + it.value.versionName + "/" + it.value.maxCurrentVersionName
+                ":" + it.value.versionName + "/" + it.value.maxCurrentVersionName+ 
+                "/" + it.value.increaseVersionString
         }}")
         println("Artifact to Project: $artifactIdToProjectNameList")
         println("Module to Publish: $moduleToPublishList")
@@ -208,7 +209,7 @@ open class PublishCompositeTask : DefaultTask() {
     private fun deleteBackup() {
         val backupFile = File(LIBRARIES_BACKUP_PATH)
         if (backupFile.exists()) {
-            backup.delete()
+            backupFile.delete()
         }
         changedModuleList.forEach {
             val backup = File("${it}/.build_backup")

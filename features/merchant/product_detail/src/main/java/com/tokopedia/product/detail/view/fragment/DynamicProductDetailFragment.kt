@@ -11,6 +11,7 @@ import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.util.SparseIntArray
 import android.view.*
 import android.view.animation.AlphaAnimation
@@ -114,6 +115,7 @@ import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.constant.Constant
 import com.tokopedia.purchase_platform.common.sharedata.ShipmentFormRequest
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -243,6 +245,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        (context as? ProductDetailActivity)?.startMonitoringPltNetworkRequest()
         super.onViewCreated(view, savedInstanceState)
         if (::remoteConfig.isInitialized) {
             viewModel.enableCaching = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_MAIN_APP_ENABLED_CACHE_PDP, true)
@@ -1040,6 +1043,15 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         pdpHashMapUtil?.updateDataP1(updatedDynamicProductInfo)
         updateButtonAfterClickVariant(indexOfSelectedVariant)
 
+        if (pdpHashMapUtil?.productNewVariantDataModel?.isPartialySelected() == false && shouldFireVariantTracker) {
+            shouldFireVariantTracker = false
+            DynamicProductDetailTracking.Click.onVariantLevel1Clicked(
+                    viewModel.getDynamicProductInfoP1,
+                    pdpHashMapUtil?.productNewVariantDataModel,
+                    viewModel.variantData,
+                    dynamicAdapter.getVariantPosition(pdpHashMapUtil?.productNewVariantDataModel))
+        }
+
         renderFullfillment()
         dynamicAdapter.notifyGeneralInfo(pdpHashMapUtil?.productFullfilmentMap)
         dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap)
@@ -1103,6 +1115,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun observeP1() {
         viewLifecycleOwner.observe(viewModel.productLayout) { data ->
+            (activity as? ProductDetailActivity)?.startMonitoringPltRenderPage()
             data.doSuccessOrFail({
                 context?.let { context ->
                     pdpHashMapUtil = DynamicProductDetailHashMap(context, DynamicProductDetailMapper.hashMapLayout(it.data))
@@ -1113,6 +1126,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 renderPageError(it)
             })
             (activity as? ProductDetailActivity)?.stopMonitoringP1()
+            (activity as? ProductDetailActivity)?.stopMonitoringPltRenderPage()
         }
     }
 
@@ -1243,7 +1257,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun goToOneClickCheckout() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT).apply {
+            putExtra(Constant.EXTRA_OCC_SOURCE_PDP, true)
+        }
         startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_CHECKOUT)
     }
 
@@ -1560,15 +1576,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
         val isPartialySelected = pdpHashMapUtil?.productNewVariantDataModel?.isPartialySelected()
                 ?: false
-
-        if (!isPartialySelected && shouldFireVariantTracker) {
-            shouldFireVariantTracker = false
-            DynamicProductDetailTracking.Click.onVariantLevel1Clicked(
-                    viewModel.getDynamicProductInfoP1,
-                    pdpHashMapUtil?.productNewVariantDataModel,
-                    viewModel.variantData,
-                    dynamicAdapter.getVariantPosition(pdpHashMapUtil?.productNewVariantDataModel))
-        }
 
         viewModel.onVariantClicked(viewModel.variantData, pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant, isPartialySelected, variantOptions.level,
                 variantOptions.imageOriginal)

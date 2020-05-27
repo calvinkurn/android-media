@@ -106,14 +106,29 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_product_price"/>
 
         <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_atc"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_32"
+            android:text="@string/notifcenter_btn_atc"
+            android:textSize="@dimen/sp_12"
+            android:layout_marginTop="@dimen/dp_8"
+            app:layout_constraintWidth_default="percent"
+            app:layout_constraintWidth_percent="0.49"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_thumbnail"
+            app:unifyButtonType="transaction"
+            app:unifyButtonVariant="ghost" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_checkout"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="@dimen/dp_32"
             android:text="@string/notifcenter_btn_buy"
             android:textSize="@dimen/sp_12"
             android:layout_marginTop="@dimen/dp_8"
+            app:layout_constraintWidth_default="percent"
+            app:layout_constraintWidth_percent="0.49"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_thumbnail"
             app:unifyButtonType="transaction" />
 

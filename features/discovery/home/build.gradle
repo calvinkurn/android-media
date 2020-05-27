@@ -191,6 +191,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.weaver)
 
     implementation "com.google.android.exoplayer:exoplayer:$newExoPlayerVersion"
+    implementation rootProject.ext.supportLibDependencies.kotlinReflection
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner

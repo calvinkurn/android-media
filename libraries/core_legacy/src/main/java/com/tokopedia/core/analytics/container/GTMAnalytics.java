@@ -170,14 +170,11 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public static class PurchaseKey {
-        private static final String KEY_NAME = "name";
         private static final String KEY_ID = "id";
         private static final String KEY_AFFILIATION = "affiliation";
         private static final String KEY_REVENUE = "revenue";
         private static final String KEY_TAX = "tax";
         public static final String KEY_SHIPPING = "shipping";
-        private static final String KEY_VARIANT = "variant";
-        private static final String KEY_QTY = "quantity";
         public static final String KEY_COUPON = "coupon";
     }
 
