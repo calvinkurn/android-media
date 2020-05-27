@@ -1,10 +1,8 @@
 package com.tokopedia.play.broadcaster.di
 
-import com.tokopedia.play.broadcaster.view.PlayPrepareBroadcastActivity
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
-import com.tokopedia.play.broadcaster.view.fragment.PlayEtalaseDetailFragment
-import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
-import com.tokopedia.play.broadcaster.view.fragment.PlayPrepareBroadcastFragment
+import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
+import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment
+import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastInteractionFragment
 import dagger.Component
 
 /**
@@ -14,5 +12,9 @@ import dagger.Component
 @PlayBroadcasterScope
 interface PlayBroadcasterComponent {
 
-    fun inject(prepareBroadcastActivity: PlayPrepareBroadcastActivity)
+    fun inject(broadcastActivity: PlayBroadcastActivity)
+
+    fun inject(broadcastFragment: PlayBroadcastFragment)
+
+    fun inject(broadcastInteractionFragment: PlayBroadcastInteractionFragment)
 }

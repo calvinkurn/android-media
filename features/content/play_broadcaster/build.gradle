@@ -13,6 +13,7 @@ buildscript {
 }
 
 dependencies {
+    implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
 
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.applink)
@@ -21,6 +22,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.websocket)
 
     implementation project(rootProject.ext.features.playCommon)
     implementation project(rootProject.ext.features.resourcesCommon)
