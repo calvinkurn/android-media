@@ -66,6 +66,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     override var categoryId = TelcoCategoryType.CATEGORY_PASCABAYAR
 
     private var inputNumberActionType = InputNumberActionType.MANUAL
+
+    //TODO remove shared model from postpaid, we dont need this again after separate the class
     private lateinit var sharedModel: SharedProductTelcoViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
