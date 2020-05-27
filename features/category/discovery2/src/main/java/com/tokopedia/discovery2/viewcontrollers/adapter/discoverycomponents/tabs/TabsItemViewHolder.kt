@@ -15,10 +15,9 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.unifycomponents.ImageUnify
 
 class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
-    private val tabImageView: ImageUnify = itemView.findViewById(R.id.tab_image)
+    private val tabImageView: ImageView = itemView.findViewById(R.id.tab_image)
     private val selectedView: View = itemView.findViewById(R.id.selected_view)
     private val tabTextView: TextView = itemView.findViewById(R.id.tab_text)
     private lateinit var tabsItemViewModel: TabsItemViewModel
