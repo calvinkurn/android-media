@@ -3,6 +3,7 @@ package com.tokopedia.analyticsdebugger.validator.detail
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analyticsdebugger.R
@@ -38,6 +39,8 @@ class ValidatorDetailAdapter(actual: List<GtmLogUi>) : RecyclerView.Adapter<Vali
                 text = item.data.data ?: ""
                 visibility = if (item.expanded) View.VISIBLE else View.GONE
             }
+            val expandStateId = if (item.expanded) R.drawable.ic_expand_less_black_24dp else R.drawable.ic_expand_more_black_24dp
+            view.findViewById<ImageView>(R.id.iv_expand).setImageResource(expandStateId)
         }
     }
 

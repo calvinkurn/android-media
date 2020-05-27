@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analyticsdebugger.R
@@ -25,10 +26,12 @@ class ValidatorDetailFragment : Fragment() {
         val actuals: List<GtmLogUi> = arguments?.getParcelableArrayList<GtmLogUi>(EXTRA_ACTUAL)?.toList() ?: emptyList()
 
         view.findViewById<TextView>(R.id.tv_expected).text = exp
+        view.findViewById<TextView>(R.id.tv_found_number).text = "Found ${actuals.size}"
 
         with(view.findViewById<RecyclerView>(R.id.rv)) {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
+            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
             adapter = ValidatorDetailAdapter(actuals)
         }
     }
