@@ -239,4 +239,5 @@ class DiscoveryFragment : Fragment(), AddChildAdapterCallback {
     }
 
     fun getDiscoveryRecyclerViewAdapter() = discoveryRecycleAdapter
+    fun getMergeAdapter() = mergeAdapters
 }

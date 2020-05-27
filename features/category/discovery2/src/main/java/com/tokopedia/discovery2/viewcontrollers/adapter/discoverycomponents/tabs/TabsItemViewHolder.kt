@@ -12,8 +12,6 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.AddChildAdapterCallback
-import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
@@ -25,13 +23,6 @@ class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : Abstr
     private val tabTextView: TextView = itemView.findViewById(R.id.tab_text)
     private lateinit var tabsItemViewModel: TabsItemViewModel
     private var positionForParentAdapter: Int = -1
-    private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
-    private var addChildAdapterCallback: AddChildAdapterCallback
-
-    init {
-        mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
-        addChildAdapterCallback = (fragment as AddChildAdapterCallback)
-    }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         tabsItemViewModel = discoveryBaseViewModel as TabsItemViewModel
@@ -62,7 +53,9 @@ class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : Abstr
             }
         })
         tabsItemViewModel.getCompositeComponentLiveData().observe(viewLifecycleOwner, Observer {
-
+//            (fragment as? DiscoveryFragment)?.let { discoveryFragment ->
+//                discoveryFragment.getMergeAdapter().removeTabAdapter(it)
+//            }
         })
 
     }
@@ -92,7 +85,6 @@ class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : Abstr
                     data.isSelected = !data.isSelected
                     showSelectedView(data.isSelected)
                 }
-                addChildAdapterCallback.addChildAdapter(mDiscoveryRecycleAdapter)
                 tabsItemViewModel.populateTabCompositeComponents(data)
                 changeDataInTabsViewModel()
             }

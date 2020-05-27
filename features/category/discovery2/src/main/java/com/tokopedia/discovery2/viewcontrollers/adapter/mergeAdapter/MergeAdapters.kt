@@ -4,6 +4,8 @@ import android.content.Context
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 
@@ -74,6 +76,7 @@ class MergeAdapters<T : RecyclerView.Adapter<AbstractViewHolder>>() : RecyclerVi
             currentChildAdapter = childAdapterList[index]
             val newlistDataCount = listDataCount + currentChildAdapter.mAdapter.itemCount
             if (position < newlistDataCount) {
+
                 currentChildAdapter.mLocalPosition = position - listDataCount
                 return currentChildAdapter
             }
@@ -101,4 +104,18 @@ class MergeAdapters<T : RecyclerView.Adapter<AbstractViewHolder>>() : RecyclerVi
             else -> layoutParams.isFullSpan = true
         }
     }
+
+//    fun removeTabAdapter(tabListComponents: List<ComponentsItem>) {
+//        if (!childAdapterList.isNullOrEmpty() && childAdapterList.size > 1) {
+//            when (val adapter = childAdapterList[0].mAdapter) {
+//                is DiscoveryRecycleAdapter -> adapter.removeExistingTabsComponent(tabListComponents)
+//            }
+//            childAdapterList.removeAt(1)
+//            notifyDataSetChanged()
+//        } else if (!childAdapterList.isNullOrEmpty()) {
+//            when (val adapter = childAdapterList[0].mAdapter) {
+//                is DiscoveryRecycleAdapter -> adapter.setDataRetainingOldData(tabListComponents as ArrayList<ComponentsItem>)
+//            }
+//        }
+//    }
 }

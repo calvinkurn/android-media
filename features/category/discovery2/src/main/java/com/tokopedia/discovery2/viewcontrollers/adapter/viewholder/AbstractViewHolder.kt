@@ -8,10 +8,13 @@ abstract class AbstractViewHolder(itemView: View) : RecyclerView.ViewHolder(item
 
     abstract fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel)
 
-    open fun getInnerRecycleView() : RecyclerView? {
+    open fun getInnerRecycleView(): RecyclerView? {
         return null
     }
+
     open fun onViewAttachedToWindow() {}
 
     open fun onViewDetachedToWindow() {}
+
+    open fun onViewRemoving() {}
 }

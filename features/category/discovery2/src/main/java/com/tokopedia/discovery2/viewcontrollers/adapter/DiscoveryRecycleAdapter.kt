@@ -49,11 +49,14 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment)
     fun setDataList(dataList: ArrayList<ComponentsItem>?) {
         if (dataList != null) {
             componentList.clear()
+            viewHolderListModel.clearList()
             componentList.addAll(dataList)
         }
         // TODO : Remove notify for horizontal adapter
         notifyDataSetChanged()
     }
+
+
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder) {
         super.onViewAttachedToWindow(holder)
@@ -68,4 +71,24 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment)
     fun getChildHolderViewModel(position: Int): DiscoveryBaseViewModel? {
         return viewHolderListModel.getInnerComponentViewModel(position)
     }
+
+//    fun setDataRetainingOldData(dataList: ArrayList<ComponentsItem>?) {
+//        if (dataList != null) {
+//            componentList.addAll(dataList)
+//        }
+//        // TODO : Remove notify for horizontal adapter
+//        notifyDataSetChanged()
+//    }
+
+//    fun removeExistingTabsComponent(tabListComponents: List<ComponentsItem>) {
+//        val position: Int = componentList.size - tabListComponents.size
+//        if (!componentList.isNullOrEmpty()) {
+//            for (index in componentList.size - 1 downTo position) {
+//                componentList.removeAt(index)
+//                viewHolderListModel.removeViewHolderModel(index)
+//            }
+//        }
+//        componentList.addAll(tabListComponents)
+//        notifyDataSetChanged()
+//    }
 }

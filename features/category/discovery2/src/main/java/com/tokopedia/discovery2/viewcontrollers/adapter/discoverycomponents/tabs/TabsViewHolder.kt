@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.list.adapter.SpaceItemDecoration
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.AddChildAdapterCallback
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -16,9 +17,14 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
     private val tabsRecyclerView: RecyclerView = itemView.findViewById(R.id.bannerRecyclerView)
     private lateinit var tabsViewModel: TabsViewModel
     private val tabsRecyclerViewAdapter: DiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
+    private lateinit var mDiscoveryRecycleAdapter : DiscoveryRecycleAdapter
+    private var addChildAdapterCallback: AddChildAdapterCallback
 
     init {
         attachRecyclerView()
+        mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
+        addChildAdapterCallback = (fragment as AddChildAdapterCallback)
+        addChildAdapterCallback.addChildAdapter(mDiscoveryRecycleAdapter)
     }
 
     private fun attachRecyclerView() {
