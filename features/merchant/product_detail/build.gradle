@@ -7,6 +7,10 @@ android {
         it.java.srcDirs += "src/$it.name/kotlin"
     }
 
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+
     testOptions {
         unitTests.all {
             testLogging.events = ["passed", "skipped", "failed"]
@@ -15,7 +19,7 @@ android {
 
     defaultConfig {
         multiDexEnabled true
-        testInstrumentationRunner "com.tokopedia.search.application.SearchInstrumentationTestRunner"
+        testInstrumentationRunner "com.tokopedia.test.application.environment.MockInstrumentationTestRunner"
     }
 }
 
@@ -80,6 +84,7 @@ dependencies {
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.variantCommon)
     implementation rootProject.ext.miscDependencies.viewPager2
+    implementation project(rootProject.ext.libraries.analyticAnnotationCentral)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -108,7 +113,7 @@ dependencies {
     implementation (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
-    
+
     //video player
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayerUi
@@ -131,6 +136,12 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
 
+    // UI Test
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
 }
 
 project.ext {

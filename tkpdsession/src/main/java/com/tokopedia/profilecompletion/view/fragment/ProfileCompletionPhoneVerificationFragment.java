@@ -1,16 +1,18 @@
 package com.tokopedia.profilecompletion.view.fragment;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import com.google.android.material.snackbar.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.tkpd.library.utils.CommonUtils;
+import androidx.annotation.Nullable;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.phoneverification.view.fragment.PhoneVerificationFragment;
 import com.tokopedia.profilecompletion.domain.EditUserProfileUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
@@ -112,7 +114,6 @@ public class ProfileCompletionPhoneVerificationFragment extends PhoneVerificatio
         parentView.getUserSession().setIsMSISDNVerified(true);
         userSession.setPhoneNumber(getPhoneNumber());
         parentView.onSuccessEditProfile(EditUserProfileUseCase.EDIT_VERIF);
-        CommonUtils.UniversalToast(getActivity(), getString(R.string
-                .success_verify_phone_number));
+        Toast.makeText(getActivity(), MethodChecker.fromHtml(getString(R.string.success_verify_phone_number)), Toast.LENGTH_LONG).show();
     }
 }

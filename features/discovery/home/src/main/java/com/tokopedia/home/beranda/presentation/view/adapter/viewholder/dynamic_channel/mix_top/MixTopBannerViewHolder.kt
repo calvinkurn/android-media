@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.MixTopTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -21,6 +22,7 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SimpleHorizontalLinearLayoutDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.SeeMorePdpDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.typeFactory.FlashSaleCardViewTypeFactoryImpl
 import com.tokopedia.home.util.setGradientBackground
@@ -85,13 +87,15 @@ class MixTopBannerViewHolder(
     }
 
     override fun onBannerSeeMoreClicked(applink: String, channel: DynamicHomeChannel.Channels) {
-        homeCategoryListener.sendEETracking(MixTopTracking.getMixTopSeeAllClick(channel.header.name) as HashMap<String, Any>)
+        RouteManager.route(itemView.context, applink)
+        homeCategoryListener.sendEETracking(MixTopTracking.getMixTopSeeAllCardClick(channel.header.name) as HashMap<String, Any>)
     }
 
-    override fun onFlashSaleCardImpressed(position: Int, channel: DynamicHomeChannel.Channels) {
-        homeCategoryListener.trackingQueue?.putEETracking(
+    override fun onFlashSaleCardImpressed(position: Int, channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid) {
+        val grid = MixTopTracking.mapGridToProductTracker(grid, channel.id, position, channel.persoType, channel.categoryID)
+        homeCategoryListener.getTrackingQueueObj()?.putEETracking(
                 MixTopTracking.getMixTopView(
-                        MixTopTracking.mapChannelToProductTracker(channel),
+                        listOf(grid),
                         channel.header.name,
                         position.toString()
                 ) as HashMap<String, Any>)
@@ -231,6 +235,7 @@ class MixTopBannerViewHolder(
         val channelProductData = convertDataToProductData(channel)
         setRecyclerViewAndCardHeight(channelProductData)
         visitables.addAll(channelProductData)
+        if(homeCategoryListener.isShowSeeAllCard() && channel.grids.size > 1 && channel.header.applink.isNotEmpty()) visitables.add(SeeMorePdpDataModel(channel.header.applink, channel.header.backImage, this))
         return visitables
     }
 

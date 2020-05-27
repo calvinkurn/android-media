@@ -1,10 +1,10 @@
 package com.tokopedia.search.result.domain.usecase.getdynamicfilter;
 
-import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.search.result.data.response.GqlDynamicFilterResponse;
 import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -16,8 +16,6 @@ import rx.Observable;
 import rx.functions.Func1;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_PARAMS;
-import static com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_QUERY;
-import static com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_SOURCE;
 
 class GetDynamicFilterGqlUseCase extends UseCase<DynamicFilterModel> {
 
@@ -25,10 +23,12 @@ class GetDynamicFilterGqlUseCase extends UseCase<DynamicFilterModel> {
     private GraphqlUseCase graphqlUseCase;
     private Func1<GraphqlResponse, DynamicFilterModel> dynamicFilterModelGqlMapper;
 
-    GetDynamicFilterGqlUseCase(GraphqlRequest graphqlRequest,
-                               GraphqlUseCase graphqlUseCase,
+    GetDynamicFilterGqlUseCase(GraphqlUseCase graphqlUseCase,
                                Func1<GraphqlResponse, DynamicFilterModel> dynamicFilterModelGqlMapper) {
-        this.graphqlRequest = graphqlRequest;
+        graphqlRequest = new GraphqlRequest(
+                GQL_QUERY,
+                GqlDynamicFilterResponse.class
+        );
         this.graphqlUseCase = graphqlUseCase;
         this.dynamicFilterModelGqlMapper = dynamicFilterModelGqlMapper;
     }
@@ -52,4 +52,60 @@ class GetDynamicFilterGqlUseCase extends UseCase<DynamicFilterModel> {
         variables.put(KEY_PARAMS, UrlParamUtils.generateUrlParamString(parameters));
         return variables;
     }
+
+    private static final String GQL_QUERY = "query SearchProduct(\n" +
+            " $params: String!\n" +
+            ") {\n" +
+            "filter_sort_product(params: $params) {\n" +
+            "      data {\n" +
+            "        filter {\n" +
+            "          title\n" +
+            "          search {\n" +
+            "            searchable\n" +
+            "            placeholder\n" +
+            "          }\n" +
+            "      template_name\n" +
+            "          options {\n" +
+            "            name\n" +
+            "            key\n" +
+            "            icon\n" +
+            "            Description\n" +
+            "            value\n" +
+            "            inputType\n" +
+            "            totalData\n" +
+            "            valMax\n" +
+            "            valMin\n" +
+            "            isPopular\n" +
+            "            isNew\n" +
+            "            hexColor\n" +
+            "            child {\n" +
+            "              key\n" +
+            "              value\n" +
+            "              name\n" +
+            "              icon\n" +
+            "              inputType\n" +
+            "              totalData\n" +
+            "              isPopular\n" +
+            "              child {\n" +
+            "                key\n" +
+            "                value\n" +
+            "                name\n" +
+            "                icon\n" +
+            "                inputType\n" +
+            "                totalData\n" +
+            "                isPopular\n" +
+            "              }\n" +
+            "            }\n" +
+            "          }\n" +
+            "        }\n" +
+            "        sort {\n" +
+            "          name\n" +
+            "          key\n" +
+            "          value\n" +
+            "          inputType\n" +
+            "          applyFilter\n" +
+            "        }\n" +
+            "     }\n" +
+            "  }\n" +
+            "}";
 }

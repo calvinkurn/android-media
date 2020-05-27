@@ -149,7 +149,7 @@ public class ShopPageTrackingConstant {
     public static final String SHOP_ID = "shopId";
     public static final String SHOP_NAME = "shop_name";
     public static final String PAGE_TYPE = "pageType";
-    public static final String PRODUCT_ID = "product_id";
+    public static final String PRODUCT_ID = "productId";
     public static final String ECOMMERCE = "ecommerce";
     public static final String ACTION_FIELD = "actionField";
     public static final String SHOPPAGE = "/shoppage";

@@ -26,6 +26,7 @@ import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.UnsupportedEncodingException;
@@ -34,6 +35,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import static com.tokopedia.abstraction.common.utils.network.AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE;
+import static com.tokopedia.user.session.Constants.GCM_ID;
+import static com.tokopedia.user.session.Constants.GCM_STORAGE;
 
 /**
  * Created by nisie on 11/30/16.
@@ -44,8 +47,6 @@ public class TkpdWebView extends WebView {
     private static final String FORMAT_UTF_8 = "UTF-8";
     private static final String HEADER_TKPD_SESSION_ID = "tkpd-sessionid";
     private static final String HEADER_TKPD_USER_AGENT = "tkpd-useragent";
-    private static final String GCM_STORAGE = "GCM_STORAGE";
-    private static final String GCM_ID = "gcm_id";
     private RemoteConfig remoteConfig;
     private static final String KEY_FINGERPRINT_DATA = "Fingerprint-Data";
     private static final String KEY_FINGERPRINT_HASH = "Fingerprint-Hash";

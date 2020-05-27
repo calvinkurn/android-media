@@ -268,6 +268,22 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
         )
     }
 
+    fun eventClickYukCobaLagiInOnboardingTicker() {
+        sendEventCategoryAction(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_YUK_COBA_LAGI_IN_ONBOARDING_TICKER
+        )
+    }
+
+    fun eventViewOnboardingTicker() {
+        sendEventCategoryAction(
+                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_ONBOARDING_TICKER
+        )
+    }
+
     companion object {
         private const val NOT_SUCCESS = "not success"
 
