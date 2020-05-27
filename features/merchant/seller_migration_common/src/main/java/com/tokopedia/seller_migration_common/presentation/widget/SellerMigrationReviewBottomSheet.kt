@@ -15,7 +15,7 @@ class SellerMigrationReviewBottomSheet(titles: List<String>,
             with(context) {
                 val titles = listOf(getString(R.string.seller_migration_review_bottom_sheet_title))
                 val contents = listOf(getString(R.string.seller_migration_review_bottom_sheet_content))
-                val images = arrayListOf(SellerMigrationConstants.SELLER_MIGRATION_PRODUCT_IMAGE_LINK)
+                val images = arrayListOf(SellerMigrationConstants.SELLER_MIGRATION_REVIEW_IMAGE_LINK)
                 return SellerMigrationProductBottomSheet(titles, contents, images).apply {
                     val view = View.inflate(context, R.layout.widget_seller_migration_bottom_sheet, null)
                     setChild(view)
