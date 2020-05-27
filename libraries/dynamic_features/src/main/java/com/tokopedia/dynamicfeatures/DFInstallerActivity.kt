@@ -89,7 +89,6 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         private const val CONFIRMATION_REQUEST_CODE = 1
         private const val SETTING_REQUEST_CODE = 2
         const val DOWNLOAD_MODE_PAGE = "Page"
-        const val TIMEOUT_INSTALL_DELAY = 60000L // 60s
         const val TIMEOUT_ERROR_MESSAGE = "timeout" // 60s
     }
 
@@ -219,7 +218,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
                 } catch (ignored: Exception) {
                 }
                 //show timeoutError
-                onFailed(TIMEOUT_ERROR_MESSAGE + "after" + TIMEOUT_INSTALL_DELAY)
+                onFailed(TIMEOUT_ERROR_MESSAGE + "after" + timeout)
             }
         }
     }
