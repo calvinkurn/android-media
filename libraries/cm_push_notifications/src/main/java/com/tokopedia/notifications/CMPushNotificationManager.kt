@@ -73,7 +73,7 @@ class CMPushNotificationManager : CoroutineScope {
         try {
 
             if (::applicationContext.isInitialized && token != null && isForegroundTokenUpdateEnabled) {
-                Log.d("","token: $token")
+                Log.d("FCMTOKEN","token: $token")
                 if (TextUtils.isEmpty(token)) {
                     return
                 }
