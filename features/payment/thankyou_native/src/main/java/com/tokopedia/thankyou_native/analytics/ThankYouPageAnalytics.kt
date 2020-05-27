@@ -1,26 +1,32 @@
 package com.tokopedia.thankyou_native.analytics
 
-import android.util.Log
 import com.appsflyer.AFInAppEventParameterName
 import com.appsflyer.AFInAppEventType
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.LinkerCommerceData
-import com.tokopedia.thankyou_native.domain.model.MonthlyNewBuyer
+import com.tokopedia.thankyou_native.data.mapper.*
+import com.tokopedia.thankyou_native.di.qualifier.CoroutineBackgroundDispatcher
+import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.thankyou_native.domain.model.PurchaseItem
 import com.tokopedia.thankyou_native.domain.model.ShopOrder
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
-import com.tokopedia.thankyou_native.helper.*
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.user.session.UserSession
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import javax.inject.Inject
 
-class ThankYouPageAnalytics @Inject constructor() {
+class ThankYouPageAnalytics @Inject constructor(
+        @CoroutineMainDispatcher val mainDispatcher: CoroutineDispatcher,
+        @CoroutineBackgroundDispatcher val bgDispatcher: CoroutineDispatcher
+) {
 
     private val IDR = "IDR"
 
@@ -31,15 +37,20 @@ class ThankYouPageAnalytics @Inject constructor() {
 
     fun sendThankYouPageDataLoadEvent(thanksPageData: ThanksPageData) {
         this.thanksPageData = thanksPageData
-        thanksPageData.shopOrder.forEach { shopOrder ->
-            val data = getParentTrackingNode(thanksPageData, shopOrder)
-            data[ParentTrackingKey.KEY_SHOP_ID] = shopOrder.storeId
-            data[ParentTrackingKey.KEY_SHOP_TYPE] = shopOrder.storeType
-            data[ParentTrackingKey.KEY_LOGISTIC_TYPE] = shopOrder.logisticType
-            data[ParentTrackingKey.KEY_ECOMMERCE] = getEnhancedECommerceNode(shopOrder)
-            analyticTracker.sendEnhanceEcommerceEvent(data)
-            Log.d("ThankYouPageAnalytics","GTM DONE")
-        }
+        CoroutineScope(mainDispatcher).launchCatchError(block = {
+            withContext(bgDispatcher) {
+                thanksPageData.shopOrder.forEach { shopOrder ->
+                    val data = getParentTrackingNode(thanksPageData, shopOrder)
+                    data[ParentTrackingKey.KEY_SHOP_ID] = shopOrder.storeId
+                    data[ParentTrackingKey.KEY_SHOP_TYPE] = shopOrder.storeType
+                    data[ParentTrackingKey.KEY_LOGISTIC_TYPE] = shopOrder.logisticType
+                    data[ParentTrackingKey.KEY_ECOMMERCE] = getEnhancedECommerceNode(shopOrder)
+                    analyticTracker.sendEnhanceEcommerceEvent(data)
+                }
+            }
+        }, onError = {
+            it.printStackTrace()
+        })
     }
 
     private fun getParentTrackingNode(thanksPageData: ThanksPageData, shopOrder: ShopOrder): MutableMap<String, Any> {
@@ -155,95 +166,98 @@ class ThankYouPageAnalytics @Inject constructor() {
     }
 
     fun appsFlyerPurchaseEvent(thanksPageData: ThanksPageData) {
-        val orderIds: MutableList<String> = arrayListOf()
+        CoroutineScope(mainDispatcher).launchCatchError(block = {
+            withContext(bgDispatcher) {
+                val orderIds: MutableList<String> = arrayListOf()
 
-        val afValue: MutableMap<String, Any> = mutableMapOf()
-        var quantity = 0
-        val productList: MutableList<String> = arrayListOf()
-        val productIds: MutableList<String> = arrayListOf()
-        val productCategory: MutableList<String> = arrayListOf()
-        val productArray: org.json.JSONArray = JSONArray()
+                val afValue: MutableMap<String, Any> = mutableMapOf()
+                var quantity = 0
+                val productList: MutableList<String> = arrayListOf()
+                val productIds: MutableList<String> = arrayListOf()
+                val productCategory: MutableList<String> = arrayListOf()
+                val productArray = JSONArray()
 
-        var shipping = 0f
+                var shipping = 0f
 
-        thanksPageData.shopOrder.forEach { shopOrder ->
-            orderIds.add(shopOrder.orderId)
-            shipping += shopOrder.shippingAmount
-            shopOrder.purchaseItemList.forEach { productItem ->
-                val productObj: org.json.JSONObject = org.json.JSONObject()
-                productIds.add(productItem.productId)
-                productList.add(productItem.productName)
-                productCategory.add(productItem.category)
-                productObj.put(ParentTrackingKey.KEY_ID, productItem.productId)
-                productObj.put(ParentTrackingKey.KEY_QTY, productItem.quantity)
-                quantity += productItem.quantity
-                productArray.put(productObj)
+                thanksPageData.shopOrder.forEach { shopOrder ->
+                    orderIds.add(shopOrder.orderId)
+                    shipping += shopOrder.shippingAmount
+                    shopOrder.purchaseItemList.forEach { productItem ->
+                        val productObj: org.json.JSONObject = org.json.JSONObject()
+                        productIds.add(productItem.productId)
+                        productList.add(productItem.productName)
+                        productCategory.add(productItem.category)
+                        productObj.put(ParentTrackingKey.KEY_ID, productItem.productId)
+                        productObj.put(ParentTrackingKey.KEY_QTY, productItem.quantity)
+                        quantity += productItem.quantity
+                        productArray.put(productObj)
+                    }
+                }
+
+                afValue[AFInAppEventParameterName.REVENUE] = thanksPageData.amount
+                afValue[AFInAppEventParameterName.CONTENT_ID] = productIds
+                afValue[AFInAppEventParameterName.QUANTITY] = quantity
+                afValue[AFInAppEventParameterName.RECEIPT_ID] = thanksPageData.paymentID
+                afValue[AFInAppEventType.ORDER_ID] = orderIds
+                afValue[ParentTrackingKey.AF_SHIPPING_PRICE] = shipping
+                afValue[ParentTrackingKey.AF_PURCHASE_SITE] = ThankPageTypeMapper.getThankPageType(thanksPageData)
+                afValue[AFInAppEventParameterName.CURRENCY] = ParentTrackingKey.VALUE_IDR
+                afValue[ParentTrackingKey.AF_VALUE_PRODUCTTYPE] = productList
+                afValue[ParentTrackingKey.AF_KEY_CATEGORY_NAME] = productCategory
+                afValue[AFInAppEventParameterName.CONTENT_TYPE] = ParentTrackingKey.AF_VALUE_PRODUCT_TYPE
+
+                val criteoAfValue: Map<String, Any> = java.util.HashMap(afValue)
+                if (productArray.length() > 0) {
+                    val afContent: String = productArray.toString()
+                    afValue[AFInAppEventParameterName.CONTENT] = afContent
+                }
+                TrackApp.getInstance().appsFlyer.sendTrackEvent(AFInAppEventType.PURCHASE, afValue)
+                TrackApp.getInstance().appsFlyer.sendTrackEvent(ParentTrackingKey.AF_KEY_CRITEO, criteoAfValue)
             }
-        }
-
-        afValue[AFInAppEventParameterName.REVENUE] = thanksPageData.amount
-        afValue[AFInAppEventParameterName.CONTENT_ID] = productIds
-        afValue[AFInAppEventParameterName.QUANTITY] = quantity
-        afValue[AFInAppEventParameterName.RECEIPT_ID] = thanksPageData.paymentID
-        afValue[AFInAppEventType.ORDER_ID] = orderIds
-        afValue[ParentTrackingKey.AF_SHIPPING_PRICE] = shipping
-        afValue[ParentTrackingKey.AF_PURCHASE_SITE] = ThankPageTypeMapper.getThankPageType(thanksPageData)
-        afValue[AFInAppEventParameterName.CURRENCY] = ParentTrackingKey.VALUE_IDR
-        afValue[ParentTrackingKey.AF_VALUE_PRODUCTTYPE] = productList
-        afValue[ParentTrackingKey.AF_KEY_CATEGORY_NAME] = productCategory
-        afValue[AFInAppEventParameterName.CONTENT_TYPE] = ParentTrackingKey.AF_VALUE_PRODUCT_TYPE
-
-        val criteoAfValue: Map<String, Any> = java.util.HashMap(afValue)
-        if (productArray.length() > 0) {
-            val afContent: String = productArray.toString()
-            afValue[AFInAppEventParameterName.CONTENT] = afContent
-        }
-        TrackApp.getInstance().appsFlyer.sendTrackEvent(AFInAppEventType.PURCHASE, afValue)
-        TrackApp.getInstance().appsFlyer.sendTrackEvent(ParentTrackingKey.AF_KEY_CRITEO, criteoAfValue)
-        Log.d("ThankYouPageAnalytics","APPSF DONE")
-
+        }, onError = { it.printStackTrace() })
     }
 
-    fun sendBranchIOEvent(thanksPageData: ThanksPageData, monthlyNewBuyer: MonthlyNewBuyer) {
-        Log.d("ThankYouPageAnalytics", "APPSF DONE$monthlyNewBuyer")
+    fun sendBranchIOEvent(thanksPageData: ThanksPageData) {
+        CoroutineScope(mainDispatcher).launchCatchError(block = {
+            withContext(bgDispatcher) {
+                thanksPageData.shopOrder.forEach { shopOrder ->
+                    val linkerCommerceData = LinkerCommerceData()
+                    val userSession = UserSession(LinkerManager.getInstance().context)
+                    val userData: com.tokopedia.linker.model.UserData = com.tokopedia.linker.model.UserData()
+                    userData.userId = userSession.userId
+                    userData.phoneNumber = userSession.phoneNumber
+                    userData.name = userSession.name
+                    userData.email = userSession.email
+                    linkerCommerceData.userData = userData
+                    val branchIOPayment: com.tokopedia.linker.model.PaymentData = com.tokopedia.linker.model.PaymentData()
+                    branchIOPayment.setPaymentId(thanksPageData.paymentID.toString())
+                    branchIOPayment.setOrderId(shopOrder.orderId)
+                    branchIOPayment.setShipping(shopOrder.shippingAmountStr)
+                    branchIOPayment.setRevenue(thanksPageData.amountStr)
+                    branchIOPayment.setProductType(LinkerConstants.PRODUCTTYPE_MARKETPLACE)
+                    branchIOPayment.isNewBuyer = thanksPageData.isNewUser
+                    branchIOPayment.isMonthlyNewBuyer = thanksPageData.isMonthlyNewUser
+                    var price = 0F
+                    shopOrder.purchaseItemList.forEach { productItem ->
+                        val product = HashMap<String, String>()
+                        product[LinkerConstants.ID] = productItem.productId
+                        product[LinkerConstants.NAME] = productItem.productName
+                        price += productItem.price
+                        product[LinkerConstants.PRICE] = productItem.priceStr
+                        product[LinkerConstants.PRICE_IDR_TO_DOUBLE] = productItem.priceStr
+                        product[LinkerConstants.QTY] = productItem.quantity.toString()
+                        product[LinkerConstants.CATEGORY] = productItem.category
+                        branchIOPayment.setProduct(product)
+                    }
+                    branchIOPayment.setItemPrice(price.toString())
+                    linkerCommerceData.paymentData = branchIOPayment
+                    LinkerManager.getInstance()
+                            .sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_COMMERCE_VAL,
+                                    linkerCommerceData))
 
-        thanksPageData.shopOrder.forEach { shopOrder ->
-            val linkerCommerceData = LinkerCommerceData()
-            val userSession = UserSession(LinkerManager.getInstance().context)
-            val userData: com.tokopedia.linker.model.UserData = com.tokopedia.linker.model.UserData()
-            userData.userId = userSession.userId
-            userData.phoneNumber = userSession.phoneNumber
-            userData.name = userSession.name
-            userData.email = userSession.email
-            linkerCommerceData.userData = userData
-            val branchIOPayment: com.tokopedia.linker.model.PaymentData = com.tokopedia.linker.model.PaymentData()
-            branchIOPayment.setPaymentId(thanksPageData.paymentID.toString())
-            branchIOPayment.setOrderId(shopOrder.orderId)
-            branchIOPayment.setShipping(shopOrder.shippingAmountStr)
-            branchIOPayment.setRevenue(thanksPageData.amountStr)
-            branchIOPayment.setProductType(LinkerConstants.PRODUCTTYPE_MARKETPLACE)
-            //todo  branchIOPayment.setNewBuyer(orderData.isNewBuyer())--- waiting for BE
-            branchIOPayment.isMonthlyNewBuyer = monthlyNewBuyer.isMonthlyFirstTransaction != 0
-            var price = 0F
-            shopOrder.purchaseItemList.forEach { productItem ->
-                val product = HashMap<String, String>()
-                product[LinkerConstants.ID] = productItem.productId
-                product[LinkerConstants.NAME] = productItem.productName
-                price += productItem.price
-                product[LinkerConstants.PRICE] = productItem.priceStr
-                product[LinkerConstants.PRICE_IDR_TO_DOUBLE] = productItem.priceStr
-                product[LinkerConstants.QTY] = productItem.quantity.toString()
-                product[LinkerConstants.CATEGORY] = productItem.category
-                branchIOPayment.setProduct(product)
+                }
             }
-            branchIOPayment.setItemPrice(price.toString())
-            linkerCommerceData.paymentData = branchIOPayment
-            LinkerManager.getInstance()
-                    .sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_COMMERCE_VAL,
-                            linkerCommerceData))
-            Log.d("ThankYouPageAnalytics","BRANCH DONE")
-
-        }
+        }, onError = { it.printStackTrace() })
     }
 
     companion object {

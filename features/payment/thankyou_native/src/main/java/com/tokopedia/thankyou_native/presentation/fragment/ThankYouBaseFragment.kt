@@ -3,39 +3,134 @@ package com.tokopedia.thankyou_native.presentation.fragment
 import android.app.TaskStackBuilder
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.LinearLayout
+import androidx.annotation.LayoutRes
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
+import com.tokopedia.thankyou_native.data.mapper.*
+import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
-import com.tokopedia.thankyou_native.helper.*
+import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import com.tokopedia.thankyou_native.presentation.dialog.CloseableBottomSheetFragment
 import com.tokopedia.thankyou_native.presentation.helper.DialogHelper
 import com.tokopedia.thankyou_native.presentation.helper.OnDialogRedirectListener
-import com.tokopedia.thankyou_native.recommendation.presentation.view.PDPThankYouPageView
+import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
+import com.tokopedia.thankyou_native.recommendation.presentation.view.IRecommendationView
+import com.tokopedia.thankyou_native.recommendation.presentation.view.MarketPlaceRecommendation
 import com.tokopedia.thankyou_native.recommendation.presentation.view.WishList
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import javax.inject.Inject
 
 abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectListener {
+
+    abstract fun getRecommendationContainer(): LinearLayout?
+    abstract fun bindThanksPageDataToUI(thanksPageData: ThanksPageData)
+    abstract fun getLoadingView(): View?
+    abstract fun onThankYouPageDataReLoaded(data: ThanksPageData)
 
     private lateinit var invoiceBottomSheets: CloseableBottomSheetFragment
     private lateinit var dialogHelper: DialogHelper
 
-    abstract fun getThankPageData(): ThanksPageData
-    abstract fun getRecommendationView(): PDPThankYouPageView?
-    abstract fun getThankPageAnalytics(): ThankYouPageAnalytics
+    @Inject
+    lateinit var thankYouPageAnalytics: ThankYouPageAnalytics
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    var iRecommendationView: IRecommendationView? = null
+
+    val marketRecommendationPlaceLayout = R.layout.thank_layout_market_place_recom
+
+    private val thanksPageDataViewModel: ThanksPageDataViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+        viewModelProvider.get(ThanksPageDataViewModel::class.java)
+    }
+
+
+    lateinit var thanksPageData: ThanksPageData
+
+    override fun initInjector() {
+        getComponent(ThankYouPageComponent::class.java).inject(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            if (it.containsKey(ARG_THANK_PAGE_DATA)) {
+                thanksPageData = it.getParcelable(ARG_THANK_PAGE_DATA)
+            }
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getRecommendationView()?.loadRecommendation(this)
+        if (!::thanksPageData.isInitialized)
+            activity?.finish()
+        else {
+            bindThanksPageDataToUI(thanksPageData)
+            observeViewModel()
+            addRecommendation()
+        }
+    }
+
+    private fun addRecommendation() {
+        val merchantType = ThankPageTypeMapper.getThankPageType(thanksPageData)
+        val recomContainer = getRecommendationContainer()
+        recomContainer?.let { container ->
+            iRecommendationView = when (merchantType) {
+                is MarketPlaceThankPage -> {
+                    val view = getRecommendationView(marketRecommendationPlaceLayout)
+                    container.addView(view)
+                    view.findViewById<MarketPlaceRecommendation>(R.id.marketPlaceRecommendationView)
+                }
+                is DigitalThankPage -> null
+            }
+            iRecommendationView?.loadRecommendation(this)
+        }
+    }
+
+    private fun getRecommendationView(@LayoutRes layout: Int): View {
+        return LayoutInflater.from(context).inflate(layout, null, false)
+    }
+
+    fun refreshThanksPageData() {
+        getLoadingView()?.visible()
+        arguments?.let {
+            if (it.containsKey(ThankYouPageActivity.ARG_PAYMENT_ID) && it.containsKey(ThankYouPageActivity.ARG_MERCHANT)) {
+                thanksPageDataViewModel.getThanksPageData(it.getLong(ThankYouPageActivity.ARG_PAYMENT_ID),
+                        it.getString(ThankYouPageActivity.ARG_MERCHANT, ""))
+            }
+        }
+    }
+
+    private fun observeViewModel() {
+        thanksPageDataViewModel.thanksPageDataResultLiveData.observe(this, Observer {
+            when (it) {
+                is Success -> onThankYouPageDataReLoaded(it.data)
+                is Fail -> onThankYouPageDataLoadingFail(it.throwable)
+            }
+        })
+    }
+
+    private fun onThankYouPageDataLoadingFail(throwable: Throwable) {
+        getLoadingView()?.gone()
     }
 
     fun openHowTOPay(thanksPageData: ThanksPageData) {
-        getThankPageAnalytics().sendOnHowtoPayClickEvent()
         RouteManager.route(context, thanksPageData.howToPay)
+        thankYouPageAnalytics.sendOnHowtoPayClickEvent()
     }
 
     fun showPaymentStatusDialog(isTimerFinished: Boolean,
@@ -61,8 +156,6 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     }
 
     fun openInvoiceDetail(thanksPageData: ThanksPageData) {
-        getThankPageAnalytics().sendLihatDetailClickEvent(PaymentPageMapper
-                .getPaymentPageType(thanksPageData.pageType))
         if (!::invoiceBottomSheets.isInitialized)
             invoiceBottomSheets = CloseableBottomSheetFragment
                     .newInstance(InvoiceFragment.getInvoiceFragment(thanksPageData),
@@ -73,11 +166,14 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         activity?.let {
             invoiceBottomSheets.showNow(it.supportFragmentManager, "")
         }
+
+        thankYouPageAnalytics.sendLihatDetailClickEvent(PaymentPageMapper
+                .getPaymentPageType(thanksPageData.pageType))
     }
 
     override fun gotoHomePage() {
-        getThankPageAnalytics().sendBelanjaLagiClickEvent()
         RouteManager.route(context, ApplinkConst.HOME, "")
+        thankYouPageAnalytics.sendBelanjaLagiClickEvent()
         activity?.finish()
     }
 
@@ -95,8 +191,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     override fun gotoOrderList() {
         try {
-
-            getThankPageAnalytics().sendCheckTransactionListEvent()
+            thankYouPageAnalytics.sendCheckTransactionListEvent()
             val homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME, "")
             val orderListListIntent = getOrderListPageIntent()
             orderListListIntent?.let {
@@ -110,25 +205,16 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         }
     }
 
-
     private fun getOrderListPageIntent(): Intent? {
         //todo need multi deeplink once other type of transaction integrated.
         // ..currently it is for only market place
         return RouteManager.getIntent(context, ApplinkConst.MARKETPLACE_ORDER)
     }
 
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            WishList.REQUEST_FROM_PDP -> {
-                if (data != null) {
-                    val wishListStatusFromPdp = data
-                            .getBooleanExtra(WishList.PDP_WIHSLIST_STATUS_IS_WISHLIST, false)
-                    val position = data.getIntExtra(WishList.PDP_EXTRA_UPDATED_POSITION, -1)
-                    getRecommendationView()?.onActivityResult(position, wishListStatusFromPdp)
-                }
-            }
+        if (iRecommendationView != null) {
+            iRecommendationView?.onActivityResult(requestCode, resultCode, data)
         }
     }
 
@@ -146,4 +232,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         view?.let { Toaster.make(it, message, Toaster.LENGTH_SHORT) }
     }
 
+    companion object {
+        const val ARG_THANK_PAGE_DATA = "arg_thank_page_data"
+    }
 }

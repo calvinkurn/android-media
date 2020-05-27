@@ -11,98 +11,31 @@ import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+import android.widget.LinearLayout
 import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
-import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
-import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
+import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
-import com.tokopedia.thankyou_native.helper.*
-import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
-import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
 import com.tokopedia.thankyou_native.presentation.views.ThankYouPageTimerView
-import com.tokopedia.thankyou_native.recommendation.presentation.view.PDPThankYouPageView
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_fragment_deferred.*
-import javax.inject.Inject
 
 class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.ThankTimerViewListener {
 
-    private lateinit var thanksPageDataViewModel: ThanksPageDataViewModel
-
-    @Inject
-    lateinit var thankYouPageAnalytics: ThankYouPageAnalytics
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
     var paymentType: PaymentType? = null
 
-    private lateinit var thanksPageData: ThanksPageData
-
     override fun getScreenName(): String = SCREEN_NAME
-
-    override fun initInjector() {
-        getComponent(ThankYouPageComponent::class.java).inject(this)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            if (it.containsKey(ARG_THANK_PAGE_DATA)) {
-                thanksPageData = it.getParcelable(ARG_THANK_PAGE_DATA)
-            }
-        }
-        initViewModels()
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.thank_fragment_deferred, container, false)
     }
 
-    private fun initViewModels() {
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-        thanksPageDataViewModel = viewModelProvider.get(ThanksPageDataViewModel::class.java)
-    }
+    override fun getRecommendationContainer(): LinearLayout? = recommendationContainer
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        observeViewModel()
-        bindDataToUi()
-    }
 
-    override fun getThankPageData(): ThanksPageData {
-        return thanksPageData
-    }
-
-    override fun getRecommendationView(): PDPThankYouPageView? {
-        return deferredPDPView
-    }
-
-    override fun getThankPageAnalytics(): ThankYouPageAnalytics {
-        return thankYouPageAnalytics
-    }
-
-    private fun observeViewModel() {
-        thanksPageDataViewModel.thanksPageDataResultLiveData.observe(this, Observer {
-            when (it) {
-                is Success -> onThankYouPageDataLoaded(it.data)
-                is Fail -> onThankYouPageDataLoadingFail(it.throwable)
-            }
-        })
-    }
-
-    private fun bindDataToUi() {
-        activity?.let {
-            if (!::thanksPageData.isInitialized)
-                it.finish()
-        }
+    override fun bindThanksPageDataToUI(thanksPageData: ThanksPageData) {
         paymentType = PaymentTypeMapper.getPaymentTypeByStr(thanksPageData.paymentType)
         paymentType?.let {
             when (it) {
@@ -122,6 +55,8 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
         }
         initCheckPaymentWidgetData()
     }
+
+    override fun getLoadingView(): View? = loading_layout
 
     private fun highlightLastThreeDigits(amountStr: String) {
         tvTotalAmount.setTextColor(resources.getColor(com.tokopedia.design.R.color.grey_796))
@@ -172,23 +107,9 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
 
     private fun initCheckPaymentWidgetData() {
         btnCheckPaymentStatus.setOnClickListener {
-            checkPaymentStatus()
+            refreshThanksPageData()
         }
         btnShopAgain.setOnClickListener { gotoHomePage() }
-    }
-
-    private fun checkPaymentStatus() {
-        arguments?.let {
-            if (it.containsKey(ThankYouPageActivity.ARG_PAYMENT_ID) && it.containsKey(ThankYouPageActivity.ARG_MERCHANT)) {
-                refreshThanksPageData(it.getLong(ThankYouPageActivity.ARG_PAYMENT_ID),
-                        it.getString(ThankYouPageActivity.ARG_MERCHANT, ""))
-            }
-        }
-    }
-
-    private fun refreshThanksPageData(paymentId: Long, merchantID: String) {
-        loading_layout.visible()
-        thanksPageDataViewModel.getThanksPageData(paymentId, merchantID)
     }
 
     private fun showDigitAnnouncementTicker() {
@@ -200,7 +121,6 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
 
     private fun copyAccountNumberToClipboard(accountNumberStr: String?) {
         val extraSpaceRegexStr = "\\s+".toRegex()
-        thankYouPageAnalytics.sendSalinButtonClickEvent(thanksPageData.gatewayName)
         accountNumberStr?.let { str ->
             context?.let { context ->
                 val clipboard = context.getSystemService(Activity.CLIPBOARD_SERVICE)
@@ -211,6 +131,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
                 showToastCopySuccessFully(context)
             }
         }
+        thankYouPageAnalytics.sendSalinButtonClickEvent(thanksPageData.gatewayName)
     }
 
     private fun showToastCopySuccessFully(context: Context) {
@@ -230,7 +151,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
     }
 
     override fun onTimerFinished() {
-        checkPaymentStatus()
+        refreshThanksPageData()
     }
 
     override fun onStart() {
@@ -243,11 +164,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
         tvDeadlineTimer.stopTimer()
     }
 
-    private fun onThankYouPageDataLoadingFail(throwable: Throwable) {
-        loading_layout.gone()
-    }
-
-    private fun onThankYouPageDataLoaded(data: ThanksPageData) {
+    override fun onThankYouPageDataReLoaded(data: ThanksPageData) {
         loading_layout.gone()
         thanksPageData = data
         showPaymentStatusDialog(isTimerExpired(data), thanksPageData)
@@ -267,7 +184,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
 
     internal fun onBackPressed(): Boolean {
         if (!isPaymentTimerExpired()) {
-            checkPaymentStatus()
+            refreshThanksPageData()
             return true
         }
         return false
@@ -281,7 +198,6 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
 
         const val GATEWAY_KLIK_BCA = "KlikBCA"
 
-        private const val ARG_THANK_PAGE_DATA = "arg_thank_page_data"
         fun getFragmentInstance(bundle: Bundle, thanksPageData: ThanksPageData):
                 DeferredPaymentFragment = DeferredPaymentFragment().apply {
             bundle.let {

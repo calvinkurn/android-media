@@ -22,7 +22,6 @@ class InvoiceFragment : BaseDaggerFragment() {
 
     override fun getScreenName(): String = ""
 
-    private lateinit var detailInvoiceViewModel: DetailInvoiceViewModel
     private lateinit var thanksPageData: ThanksPageData
 
     @Inject
@@ -31,7 +30,14 @@ class InvoiceFragment : BaseDaggerFragment() {
     @Inject
     lateinit var invoiceAdapter: DetailedInvoiceAdapter
 
-    override fun initInjector() {
+    private val detailInvoiceViewModel: DetailInvoiceViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+        viewModelProvider.get(DetailInvoiceViewModel::class.java)
+    }
+
+
+    override
+    fun initInjector() {
         getComponent(ThankYouPageComponent::class.java).inject(this)
     }
 
@@ -42,13 +48,8 @@ class InvoiceFragment : BaseDaggerFragment() {
                 thanksPageData = it.getParcelable(ARG_THANK_PAGE_DATA)
             }
         }
-        initViewModels()
     }
 
-    private fun initViewModels() {
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-        detailInvoiceViewModel = viewModelProvider.get(DetailInvoiceViewModel::class.java)
-    }
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {

@@ -214,7 +214,6 @@
                 app:typographyType="body_3" />
 
 
-
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btnCheckPaymentStatus"
                 android:layout_width="0dp"
@@ -222,31 +221,29 @@
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_16"
-                app:unifyButtonSize="medium"
-                app:unifyButtonType="main"
-                app:unifyButtonVariant="filled"
                 android:text="@string/thank_check_payment_status"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvCheckPaymentStatusTitle"/>
-
-
+                app:layout_constraintTop_toBottomOf="@id/tvCheckPaymentStatusTitle"
+                app:unifyButtonSize="medium"
+                app:unifyButtonType="main"
+                app:unifyButtonVariant="filled" />
 
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btnShopAgain"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:unifyButtonSize="medium"
-                app:unifyButtonType="main"
-                app:unifyButtonVariant="ghost"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:text="@string/thank_shop_again"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/btnCheckPaymentStatus"/>
+                app:layout_constraintTop_toBottomOf="@id/btnCheckPaymentStatus"
+                app:unifyButtonSize="medium"
+                app:unifyButtonType="main"
+                app:unifyButtonVariant="ghost" />
 
 
             <View
@@ -259,13 +256,13 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btnShopAgain" />
 
-            <com.tokopedia.thankyou_native.recommendation.presentation.view.PDPThankYouPageView
-                android:id="@+id/deferredPDPView"
+            <LinearLayout
+                android:id="@+id/recommendationContainer"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/view_divider_5" />
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

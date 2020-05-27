@@ -1,10 +1,19 @@
 package com.tokopedia.thankyou_native.recommendation.analytics
 
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.thankyou_native.recommendation.di.qualifier.CoroutineBackgroundDispatcher
+import com.tokopedia.thankyou_native.recommendation.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class RecommendationAnalytics {
+class RecommendationAnalytics @Inject constructor(
+        @CoroutineMainDispatcher val mainDispatcher: CoroutineDispatcher,
+        @CoroutineBackgroundDispatcher val backgroundDispatcher: CoroutineDispatcher) {
 
     private val analyticTracker: ContextAnalytics
         get() = TrackApp.getInstance().gtm
@@ -12,25 +21,42 @@ class RecommendationAnalytics {
 
     fun sendRecommendationItemDisplayed(recommendationItem: RecommendationItem,
                                         position: Int) {
-        val data: MutableMap<String, Any> = mutableMapOf(
-                KEY_EVENT to EVENT_PRODUCT_VIEW,
-                KEY_EVENT_CATEGORY to EVENT_CATEGORY_ORDER_COMPLETE,
-                KEY_EVENT_ACTION to EVENT_ACTION_PRODUCT_VIEW,
-                KEY_EVENT_LABEL to position,
-                KEY_E_COMMERCE to getProductViewECommerceData(recommendationItem, position))
-        analyticTracker.sendEnhanceEcommerceEvent(data)
+        CoroutineScope(mainDispatcher).launchCatchError(
+                block = {
+                    withContext(backgroundDispatcher) {
+                        val data: MutableMap<String, Any> = mutableMapOf(
+                                KEY_EVENT to EVENT_PRODUCT_VIEW,
+                                KEY_EVENT_CATEGORY to EVENT_CATEGORY_ORDER_COMPLETE,
+                                KEY_EVENT_ACTION to EVENT_ACTION_PRODUCT_VIEW,
+                                KEY_EVENT_LABEL to position,
+                                KEY_E_COMMERCE to getProductViewECommerceData(recommendationItem, position))
+                        analyticTracker.sendEnhanceEcommerceEvent(data)
+                    }
+                }, onError = {
+            it.printStackTrace()
+        }
+        )
     }
 
 
     fun sendRecommendationItemClick(recommendationItem: RecommendationItem,
                                     position: Int) {
-        val data: MutableMap<String, Any> = mutableMapOf(
-                KEY_EVENT to EVENT_PRODUCT_CLICK,
-                KEY_EVENT_CATEGORY to EVENT_CATEGORY_ORDER_COMPLETE,
-                KEY_EVENT_ACTION to EVENT_ACTION_CLICK_PRODUCT,
-                KEY_EVENT_LABEL to position,
-                KEY_E_COMMERCE to getProductClickECommerceData(recommendationItem, position))
-        analyticTracker.sendEnhanceEcommerceEvent(data)
+
+        CoroutineScope(mainDispatcher).launchCatchError(
+                block = {
+                    withContext(backgroundDispatcher) {
+                        val data: MutableMap<String, Any> = mutableMapOf(
+                                KEY_EVENT to EVENT_PRODUCT_CLICK,
+                                KEY_EVENT_CATEGORY to EVENT_CATEGORY_ORDER_COMPLETE,
+                                KEY_EVENT_ACTION to EVENT_ACTION_CLICK_PRODUCT,
+                                KEY_EVENT_LABEL to position,
+                                KEY_E_COMMERCE to getProductClickECommerceData(recommendationItem, position))
+                        analyticTracker.sendEnhanceEcommerceEvent(data)
+                    }
+                }, onError = {
+            it.printStackTrace()
+        }
+        )
     }
 
     private fun getProductViewECommerceData(recommendationItem: RecommendationItem,

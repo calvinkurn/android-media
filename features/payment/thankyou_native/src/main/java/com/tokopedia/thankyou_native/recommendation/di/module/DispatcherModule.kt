@@ -1,5 +1,7 @@
 package com.tokopedia.thankyou_native.recommendation.di.module
 
+import com.tokopedia.thankyou_native.recommendation.di.qualifier.CoroutineBackgroundDispatcher
+import com.tokopedia.thankyou_native.recommendation.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.thankyou_native.recommendation.di.scope.RecommendationScope
 import dagger.Module
 import dagger.Provides
@@ -13,17 +15,12 @@ class DispatcherModule {
 
     @RecommendationScope
     @Provides
-    @Named(MAIN)
+    @CoroutineMainDispatcher
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
     @RecommendationScope
     @Provides
-    @Named(IO)
-    fun provideWorkerDispatcher(): CoroutineDispatcher = Dispatchers.IO
-
-    companion object {
-        const val MAIN = "MAIN"
-        const val IO = "IO"
-    }
+    @CoroutineBackgroundDispatcher
+    fun provideBackgroundDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
 }

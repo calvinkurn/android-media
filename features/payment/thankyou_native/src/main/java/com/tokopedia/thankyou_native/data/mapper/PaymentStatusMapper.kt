@@ -1,4 +1,4 @@
-package com.tokopedia.thankyou_native.helper
+package com.tokopedia.thankyou_native.data.mapper
 
 sealed class PaymentStatus
 object PaymentActive : PaymentStatus()

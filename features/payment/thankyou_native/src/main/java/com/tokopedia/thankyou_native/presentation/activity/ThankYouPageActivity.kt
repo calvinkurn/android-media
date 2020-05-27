@@ -1,7 +1,5 @@
 package com.tokopedia.thankyou_native.presentation.activity
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -12,10 +10,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
+import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.di.component.DaggerThankYouPageComponent
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
-import com.tokopedia.thankyou_native.helper.*
 import com.tokopedia.thankyou_native.presentation.fragment.*
 import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCallback
 import kotlinx.android.synthetic.main.thank_activity_thank_you.*
@@ -79,7 +77,6 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         ThanksPageAnalyticsFragment.postThanksPageLoadEvent(supportFragmentManager,
                 thanksPageData)
     }
-
 
     override fun onInvalidThankYouPage() {
         gotoHomePage()
@@ -171,17 +168,9 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     }
 
     companion object {
-
         const val SCREEN_NAME = "Finish Transaction"
-
         const val ARG_PAYMENT_ID = "payment_id"
         const val ARG_MERCHANT = "merchant"
-
-        fun createIntent(context: Context, paymentID: String,
-                         merchant: String) = Intent(context, ThankYouPageActivity::class.java).apply {
-            putExtra(ARG_MERCHANT, merchant)
-            putExtra(ARG_PAYMENT_ID, paymentID)
-        }
     }
 }
 

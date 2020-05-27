@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.thankyou_native.di.scope.ThankYouPageScope
 import com.tokopedia.thankyou_native.presentation.viewModel.CheckWhiteListViewModel
 import com.tokopedia.thankyou_native.presentation.viewModel.DetailInvoiceViewModel
-import com.tokopedia.thankyou_native.presentation.viewModel.MonthlyBuyerViewModel
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
 import dagger.Binds
 import dagger.Module
@@ -36,12 +35,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(DetailInvoiceViewModel::class)
     internal abstract fun provideDetailInvoiceViewModel(viewModel: DetailInvoiceViewModel): ViewModel
-
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(MonthlyBuyerViewModel::class)
-    internal abstract fun provideMonthlyBuyerViewModel(viewModel: MonthlyBuyerViewModel): ViewModel
 
 
 }

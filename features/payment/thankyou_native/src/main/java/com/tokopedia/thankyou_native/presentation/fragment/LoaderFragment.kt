@@ -15,27 +15,21 @@ import com.airbnb.lottie.LottieDrawable
 import com.airbnb.lottie.LottieTask
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.thankyou_native.R
-import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
+import com.tokopedia.thankyou_native.data.mapper.Invalid
+import com.tokopedia.thankyou_native.data.mapper.PaymentStatusMapper
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
-import com.tokopedia.thankyou_native.helper.Invalid
-import com.tokopedia.thankyou_native.helper.PaymentStatusMapper
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCallback
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_fragment_loader.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.withContext
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.zip.ZipInputStream
@@ -43,19 +37,13 @@ import javax.inject.Inject
 
 class LoaderFragment : BaseDaggerFragment() {
 
-    private val job = Job()
-    private val mainDispatcher = Dispatchers.Main + job
-    private val ioDispatcher = Dispatchers.IO
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    @Inject
-    lateinit var thankYouPageAnalytics: ThankYouPageAnalytics
-
-    private lateinit var thanksPageDataViewModel: ThanksPageDataViewModel
-
-    lateinit var thanksPageData: ThanksPageData
+    private val thanksPageDataViewModel: ThanksPageDataViewModel by lazy(LazyThreadSafetyMode.NONE)  {
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+        viewModelProvider.get(ThanksPageDataViewModel::class.java)
+    }
 
     private val handler = Handler()
 
@@ -67,18 +55,8 @@ class LoaderFragment : BaseDaggerFragment() {
         getComponent(ThankYouPageComponent::class.java).inject(this)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initViewModels()
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.thank_fragment_loader, container, false)
-    }
-
-    private fun initViewModels() {
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-        thanksPageDataViewModel = viewModelProvider.get(ThanksPageDataViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -115,7 +93,6 @@ class LoaderFragment : BaseDaggerFragment() {
             }
         })
     }
-
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -164,8 +141,7 @@ class LoaderFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onThankYouPageDataLoaded(data: ThanksPageData) {
-        thanksPageData = data
+    private fun onThankYouPageDataLoaded(thanksPageData: ThanksPageData) {
         hideLoaderView()
         if (PaymentStatusMapper.getPaymentStatusByInt(thanksPageData.paymentStatus) == Invalid) {
             callback?.onInvalidThankYouPage()
@@ -189,14 +165,9 @@ class LoaderFragment : BaseDaggerFragment() {
     }
 
     private fun loadLoaderInputStream() {
-        CoroutineScope(mainDispatcher).launchCatchError(
-                block = {
-                    val task = getLottieTask()
-                    addLottieAnimationToView(task)
-                }, onError = {
-            it.printStackTrace()
-        })
-
+        val lottieFileZipStream = ZipInputStream(context!!.assets.open(LOADER_JSON_ZIP_FILE))
+        val task = LottieCompositionFactory.fromZipStream(lottieFileZipStream, null)
+        addLottieAnimationToView(task)
     }
 
     private fun addLottieAnimationToView(task: LottieTask<LottieComposition>) {
@@ -206,11 +177,6 @@ class LoaderFragment : BaseDaggerFragment() {
             lottieAnimationView?.repeatMode = LottieDrawable.RESTART
             lottieAnimationView.playAnimation()
         }
-    }
-
-    private suspend fun getLottieTask(): LottieTask<LottieComposition> = withContext(ioDispatcher) {
-        val lottieFileZipStream = ZipInputStream(context!!.assets.open(LOADER_JSON_ZIP_FILE))
-        return@withContext LottieCompositionFactory.fromZipStream(lottieFileZipStream, null)
     }
 
     companion object {
