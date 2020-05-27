@@ -131,7 +131,7 @@ abstract class BaseTracking {
         }
 
         private fun getPromotionsMap(promotions: List<Promotion>): Map<String, Any> {
-            return DataLayer.mapOf((PROMOTIONS, getPromotions(promotions))
+            return DataLayer.mapOf(PROMOTIONS, getPromotions(promotions))
         }
 
         fun getEcommerceProductClick(products: List<Product>, list: String): Map<String, Any> {
