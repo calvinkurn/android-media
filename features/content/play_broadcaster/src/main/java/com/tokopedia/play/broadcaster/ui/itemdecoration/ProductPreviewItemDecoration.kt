@@ -59,8 +59,11 @@ class ProductPreviewItemDecoration : RecyclerView.ItemDecoration() {
     }
 
     private fun isLastSpanGroupIndex(position: Int, gridLayoutManager: GridLayoutManager): Boolean {
+        val itemCount = gridLayoutManager.itemCount
+        if (position == itemCount - 1) return true
+
         val spanSizeLookup = gridLayoutManager.spanSizeLookup
         val spanCount = gridLayoutManager.spanCount
-        return spanSizeLookup.getSpanGroupIndex(position, spanCount) == spanSizeLookup.getSpanGroupIndex(gridLayoutManager.itemCount - 1, spanCount)
+        return spanSizeLookup.getSpanGroupIndex(position, spanCount) == spanSizeLookup.getSpanGroupIndex(itemCount - 1, spanCount)
     }
 }

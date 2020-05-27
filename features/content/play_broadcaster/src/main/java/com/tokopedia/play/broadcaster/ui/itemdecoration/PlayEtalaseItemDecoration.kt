@@ -12,16 +12,22 @@ import androidx.recyclerview.widget.RecyclerView
 class PlayEtalaseItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
 
     private val offset4 = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
+    private val offset16 = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val position = parent.getChildAdapterPosition(view)
         val gridLayoutManager = parent.layoutManager as GridLayoutManager
-        val spanCount = gridLayoutManager.spanCount
 
-        if (position % spanCount != 0) { //right
+        if (isNotFirstColumn(position, gridLayoutManager)) {
             outRect.left = offset4
         } else {
             outRect.right = offset4
         }
+
+        outRect.bottom = offset16
+    }
+
+    private fun isNotFirstColumn(position: Int, gridLayoutManager: GridLayoutManager): Boolean {
+        return position % gridLayoutManager.spanCount != 0
     }
 }
