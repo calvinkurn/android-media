@@ -289,7 +289,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
-    fun onLoadingMenuDetail(showLoading: Boolean) {
+    override fun onLoadingMenuDetail(showLoading: Boolean) {
         if (showLoading) {
             layoutProgressBar.visibility = View.VISIBLE
             recentNumbersWidget.visibility = View.GONE

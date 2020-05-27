@@ -19,9 +19,9 @@ class DigitalTelcoCustomViewModel @Inject constructor(private val graphqlReposit
                                                       val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
-    fun getCustomDataPrepaid(rawQuery: String, menuId: Int,
-                             onSuccess: (TelcoCatalogPrefixSelect) -> Unit,
-                             onError: (Throwable) -> Unit) {
+    fun getPrefixOperator(rawQuery: String, menuId: Int,
+                          onSuccess: (TelcoCatalogPrefixSelect) -> Unit,
+                          onError: (Throwable) -> Unit) {
         launchCatchError(block = {
             var mapParam = HashMap<String, kotlin.Any>()
             mapParam[KEY_COMPONENT_ID] = menuId

@@ -7,7 +7,10 @@
     android:layout_height="match_parent"
     android:fillViewport="true">
 
+    <include layout="@layout/layout_shimmering_product_telco" />
+
     <RelativeLayout
+        android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:descendantFocusability="blocksDescendants"
@@ -40,13 +43,6 @@
             android:layout_below="@+id/telco_input_number"
             android:layout_marginLeft="@dimen/spacing_lvl4"
             android:layout_marginRight="@dimen/spacing_lvl4" />
-
-        <ProgressBar
-            android:id="@+id/layout_progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:visibility="gone" />
 
         <com.tokopedia.common.topupbills.widget.TopupBillsPromoListWidget
             android:id="@+id/promo_widget"

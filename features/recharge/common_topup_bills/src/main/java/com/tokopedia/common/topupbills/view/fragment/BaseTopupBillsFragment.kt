@@ -111,6 +111,10 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
             }
         })
 
+        topupBillsViewModel.loadingMenuData.observe(this, Observer {
+            onLoadingMenuDetail(it)
+        })
+
         topupBillsViewModel.catalogPluginData.observe(this, Observer {
             it.run {
                 when (it) {
@@ -386,10 +390,13 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
 
     abstract fun processEnquiry(data: TopupBillsEnquiryData)
 
+    //TODO nyalain ini as true
     open fun processMenuDetail(data: TopupBillsMenuDetail) {
         isExpressCheckout = data.isExpressCheckout
         categoryName = data.catalog.label
     }
+
+    abstract fun onLoadingMenuDetail(showLoading:  Boolean)
 
     abstract fun processFavoriteNumbers(data: TopupBillsFavNumber)
 
