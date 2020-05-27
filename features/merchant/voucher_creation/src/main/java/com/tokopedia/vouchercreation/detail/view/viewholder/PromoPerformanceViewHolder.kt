@@ -1,6 +1,5 @@
 package com.tokopedia.vouchercreation.detail.view.viewholder
 
-import android.annotation.SuppressLint
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -27,7 +26,7 @@ class PromoPerformanceViewHolder(
             tvMvcNominalTotalSpending.text = element.totalSpending
             tvMvcPromoUsedQuota.text = element.voucherUsed.toString()
             tvMvcPromoTotalQuota.text = String.format("/%d",element.voucherQuota)
-            imgInfo.setOnClickListener {
+            mvcImgInfo.setOnClickListener {
                 setOnTooltipClick()
             }
         }

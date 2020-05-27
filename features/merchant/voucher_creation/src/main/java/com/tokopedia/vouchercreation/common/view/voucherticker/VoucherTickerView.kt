@@ -37,8 +37,8 @@ class VoucherTickerView(context: Context, attrs: AttributeSet?) : ConstraintLayo
         }
 
     fun setOnTooltipClick(callback: () -> Unit) {
-        imgInfo.visible()
-        imgInfo.setOnClickListener {
+        mvcImgInfo.visible()
+        mvcImgInfo.setOnClickListener {
             callback()
         }
     }

@@ -28,7 +28,7 @@ class UsageProgressViewHolder(
             progressMvcUsage.setValue(element.voucherUsed, true)
             progressMvcUsage.progressBarHeight = context.pxToDp(6).toInt()
 
-            imgInfo.setOnClickListener {
+            mvcImgInfo.setOnClickListener {
                 setOnTooltipClick()
             }
 

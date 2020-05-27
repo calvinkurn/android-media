@@ -23,7 +23,7 @@ class PromotionExpenseEstimationViewHolder(itemView: View): AbstractViewHolder<P
                 setMargin(0,0,0,0)
             }
             tickerView?.run {
-                imgInfo?.visibility =
+                mvcImgInfo?.visibility =
                         if (element.isHaveToolTip) {
                             View.VISIBLE
                         } else {
