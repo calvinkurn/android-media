@@ -22,6 +22,7 @@ import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusGQLRe
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusRepository
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRepository
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRestRepository
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -104,4 +105,8 @@ class DiscoveryModule {
     fun provideGetStringMethod(@ApplicationContext context: Context): (Int) -> String {
         return { id -> GraphqlHelper.loadRawString(context.resources, id) }
     }
+
+    @DiscoveryScope
+    @Provides
+    fun providesTrackingQueue(@ApplicationContext context: Context): TrackingQueue = TrackingQueue(context)
 }

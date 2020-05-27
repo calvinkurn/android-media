@@ -10,6 +10,7 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.unifyprinciples.Typography
 
 
@@ -27,16 +28,17 @@ class CategoryNavigationItemViewHolder(itemView: View, private val fragment: Fra
             val data = item.data?.getOrElse(0) { DataItem() }
 
             ImageHandler.LoadImage(imageView, data?.imageUrlMobile)
-            setClick(data?.applinks)
+            setClick(data?.applinks, data)
 
             title.text = data?.name
         })
 
     }
 
-    private fun setClick(applinks: String?) {
+    private fun setClick(applinks: String?, data: DataItem?) {
         if (!applinks.isNullOrEmpty()) {
             itemView.setOnClickListener {
+                (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackCategoryNavigationClick(data, adapterPosition)
                 RouteManager.route(itemView.context, applinks)
             }
         }

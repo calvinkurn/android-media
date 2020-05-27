@@ -2,12 +2,12 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.spa
 
 import android.app.Application
 import android.graphics.Color
-import android.view.ViewGroup
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
-class SpacingViewModel(val application: Application, private val components: ComponentsItem) : DiscoveryBaseViewModel() {
+class SpacingViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
     private val spacingComponentData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val viewHeight: MutableLiveData<Int> = MutableLiveData()
     private val viewBackgroundColor: MutableLiveData<String> = MutableLiveData()
@@ -19,9 +19,9 @@ class SpacingViewModel(val application: Application, private val components: Com
     override fun initDaggerInject() {
     }
 
-    fun getComponentData() = spacingComponentData
-    fun getViewHeight() = viewHeight
-    fun getViewBackgroundColor() = viewBackgroundColor
+    fun getComponentData(): LiveData<ComponentsItem> = spacingComponentData
+    fun getViewHeight(): LiveData<Int> = viewHeight
+    fun getViewBackgroundColor(): LiveData<String> = viewBackgroundColor
 
     fun setupSpacingView() {
         if (!components.data?.get(0)?.sizeMobile.isNullOrEmpty()) {

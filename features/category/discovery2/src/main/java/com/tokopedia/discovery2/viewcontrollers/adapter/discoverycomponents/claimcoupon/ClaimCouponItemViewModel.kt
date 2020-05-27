@@ -5,7 +5,6 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.ClaimCouponConstant
 import com.tokopedia.discovery2.ClaimCouponConstant.Companion.DOUBLE_COLUMNS
 import com.tokopedia.discovery2.GenerateUrl
@@ -22,9 +21,8 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class ClaimCouponItemViewModel(val application: Application, private val components: ComponentsItem) : DiscoveryBaseViewModel(), CoroutineScope {
+class ClaimCouponItemViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
-    private val claimStatus = MutableLiveData<String>()
     private val couponCode = MutableLiveData<String>()
     private val componentData = MutableLiveData<DataItem>()
 
@@ -38,18 +36,14 @@ class ClaimCouponItemViewModel(val application: Application, private val compone
     }
 
     fun getComponentData(): LiveData<DataItem> {
+        val status = checkClaimStatus(components.data?.getOrElse(0) { DataItem() })
+        components.data?.get(0)?.status = status
         componentData.value = components.data?.get(0)
         return componentData
     }
 
     fun getIsDouble(): Boolean {
         return components.properties?.columns?.equals(DOUBLE_COLUMNS) ?: false
-    }
-
-    fun getClaimStatus(): LiveData<String> {
-        val status = checkClaimStatus(components.data?.getOrElse(0) { DataItem() })
-        claimStatus.value = status
-        return claimStatus
     }
 
     fun getRedeemCouponCode(): LiveData<String> {
@@ -98,15 +92,9 @@ class ClaimCouponItemViewModel(val application: Application, private val compone
         navigate(context, applink)
     }
 
-//    fun navigate(context: Context, applink: String) {
-//        if (applink.isNotEmpty()) {
-//            RouteManager.route(context, applink)
-//        }
-//    }
-
     private fun getQueryMap(): Map<String, Any> {
         return mapOf("catalogId" to (try {
-            components.data?.get(0)?.claimCouponid?.toInt() ?: 0
+            components.data?.get(0)?.id?.toInt() ?: 0
         } catch (e: NumberFormatException) {
             0
         }),

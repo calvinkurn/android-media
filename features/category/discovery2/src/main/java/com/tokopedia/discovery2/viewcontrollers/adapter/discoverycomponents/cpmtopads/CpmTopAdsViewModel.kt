@@ -22,7 +22,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
 
-class CpmTopAdsViewModel(val application: Application, private val components: ComponentsItem) : DiscoveryBaseViewModel(), CoroutineScope {
+class CpmTopAdsViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
     private val cpmTopAdsList = MutableLiveData<Result<ArrayList<ComponentsItem>>>()
     private val promotedText = MutableLiveData<Result<String>>()

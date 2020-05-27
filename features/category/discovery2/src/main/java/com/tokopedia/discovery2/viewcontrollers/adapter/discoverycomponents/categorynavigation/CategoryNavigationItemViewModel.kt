@@ -6,18 +6,18 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
-class CategoryNavigationItemViewModel(val application: Application, private  val components: ComponentsItem) : DiscoveryBaseViewModel() {
+class CategoryNavigationItemViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
+    private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
+
+    init {
+        componentData.value = components
+    }
+
     override fun initDaggerInject() {
 
     }
 
-    private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
-
-
     fun getComponentData(): LiveData<ComponentsItem> {
-        componentData.value =components
         return componentData
     }
-
-
 }

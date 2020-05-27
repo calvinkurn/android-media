@@ -11,24 +11,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
-class TabsViewModel(val application: Application, components: ComponentsItem) : DiscoveryBaseViewModel(), CoroutineScope {
+class TabsViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val listData: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
 
     init {
         components.data?.let {
-            listData.value = DiscoveryDataMapper.mapTabsListToComponentList(it, ComponentNames.TabsItem.componentName)
+            listData.value = DiscoveryDataMapper.mapTabsListToComponentList(it, ComponentNames.TabsItem.componentName, position)
         }
     }
 
     fun getListDataLiveData(): MutableLiveData<ArrayList<ComponentsItem>> {
         return listData
-    }
-
-    //temp code
-    fun setAdapterPositionToChildItems(position: Int){
-        listData.value?.let {list ->
-            list.forEach { it.data?.forEach { it.positionForParentItem = position } }
-        }
     }
 
     override val coroutineContext: CoroutineContext

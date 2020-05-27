@@ -63,6 +63,9 @@ data class DataItem(
         @SerializedName("image_url_mobile")
         var imageUrlMobile: String? = "",
 
+        @SerializedName("promo_id")
+        var promoId: String? = "",
+
         @SerializedName("image_url_dynamic_mobile")
         val imageUrlDynamicMobile: String? = "",
 
@@ -71,6 +74,15 @@ data class DataItem(
 
         @SerializedName("name", alternate = ["text"])
         var name: String? = "",
+
+        @SerializedName("persona")
+        var persona: String? = "",
+
+        @SerializedName("bu")
+        var attribution: String? = "",
+
+        @SerializedName("category")
+        var category: String? = "",
 
         @SerializedName("action")
         val action: String? = "",
@@ -118,7 +130,7 @@ data class DataItem(
         var creativeName: String? = "",
 
         @SerializedName("title")
-        val title: String? = "",
+        var title: String? = "",
 
         @SerializedName("thumbnail_url_mobile", alternate = ["imageURL", "icon_url"])
         val thumbnailUrlMobile: String? = "",
@@ -166,7 +178,7 @@ data class DataItem(
         val categoryLabel: String = "",
 
         @SerializedName("ID")
-        val id: String? = "",
+        val dynamicComponentId: String? = "",
 
         @SerializedName("shop_id")
         val shopId: String? = "",
@@ -187,7 +199,7 @@ data class DataItem(
         val disabledErrMsg: String? = "",
 
         @SerializedName("id")
-        val claimCouponid: String? = "",
+        var id: String? = "",
 
         @SerializedName("image_url")
         val imageUrl: String? = "",
@@ -293,6 +305,10 @@ data class DataItem(
 
         @SerializedName("free_ongkir")
         val freeOngkir: FreeOngkir? = null,
+
+        var status: String? = null,
+
+        var parentComponentName: String? = "",
 
         var positionForParentItem:Int = 0
 
