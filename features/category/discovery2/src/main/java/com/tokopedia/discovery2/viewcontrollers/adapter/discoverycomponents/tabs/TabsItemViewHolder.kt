@@ -5,11 +5,15 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.AddChildAdapterCallback
+import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
@@ -21,10 +25,25 @@ class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : Abstr
     private val tabTextView: TextView = itemView.findViewById(R.id.tab_text)
     private lateinit var tabsItemViewModel: TabsItemViewModel
     private var positionForParentAdapter: Int = -1
+    private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
+    private var addChildAdapterCallback: AddChildAdapterCallback
+
+    init {
+        mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
+        addChildAdapterCallback = (fragment as AddChildAdapterCallback)
+    }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         tabsItemViewModel = discoveryBaseViewModel as TabsItemViewModel
-        tabsItemViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer {
+
+    }
+
+    override fun onViewAttachedToWindow() {
+        setUpDataObserver(fragment.viewLifecycleOwner)
+    }
+
+    private fun setUpDataObserver(viewLifecycleOwner: LifecycleOwner) {
+        tabsItemViewModel.getComponentLiveData().observe(viewLifecycleOwner, Observer {
             val itemData = it.data?.get(0)
             positionForParentAdapter = itemData?.positionForParentItem ?: -1
             itemData?.let { item ->
@@ -42,7 +61,18 @@ class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : Abstr
                 setClick(item)
             }
         })
+        tabsItemViewModel.getCompositeComponentLiveData().observe(viewLifecycleOwner, Observer {
+
+        })
+
     }
+
+//    override fun onViewDetachedToWindow() {
+//        val lifecycleOwner = fragment.viewLifecycleOwner
+//        if (tabsItemViewModel.getComponentLiveData().hasObservers()) {
+//
+//        }
+//    }
 
     private fun setTabText(name: String) {
         tabTextView.text = name
@@ -57,11 +87,13 @@ class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : Abstr
 
     private fun setClick(data: DataItem) {
         tabImageView.setOnClickListener {
-            if(!data.isSelected) {
+            if (!data.isSelected) {
                 (it as ImageView).apply {
                     data.isSelected = !data.isSelected
                     showSelectedView(data.isSelected)
                 }
+                addChildAdapterCallback.addChildAdapter(mDiscoveryRecycleAdapter)
+                tabsItemViewModel.populateTabCompositeComponents(data)
                 changeDataInTabsViewModel()
             }
         }

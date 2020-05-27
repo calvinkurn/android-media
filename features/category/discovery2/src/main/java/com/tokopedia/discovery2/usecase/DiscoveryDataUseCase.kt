@@ -7,14 +7,15 @@ import javax.inject.Inject
 class DiscoveryDataUseCase @Inject constructor(private val discoveryPageRepository: DiscoveryPageRepository) {
 
     suspend fun getDiscoveryPageDataUseCase(pageIdentifier: String): DiscoveryResponse {
-        return removeComponents(discoveryPageRepository.getDiscoveryPageData(pageIdentifier))
+        val discoveryResponseData = discoveryPageRepository.getDiscoveryPageData(pageIdentifier).copy()
+        discoveryResponseData.components
+        return removeComponents(discoveryResponseData)
     }
 
     private fun removeComponents(discoveryPageData: DiscoveryResponse): DiscoveryResponse {
         if (!discoveryPageData.components.isNullOrEmpty()) {
-            val componentsList = discoveryPageData.components.filter { it.renderByDefault }
-            discoveryPageData.components.clear()
-            discoveryPageData.components.addAll(componentsList)
+            val componentsList = discoveryPageData.components!!.filter { it.renderByDefault }
+            discoveryPageData.components = componentsList
         }
         return discoveryPageData
     }

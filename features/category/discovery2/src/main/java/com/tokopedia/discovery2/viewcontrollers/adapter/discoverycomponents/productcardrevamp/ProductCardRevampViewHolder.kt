@@ -15,10 +15,8 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
 class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
 
-    private lateinit var mProductCarouselRecyclerView: RecyclerView
-    private lateinit var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
+    private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
     private lateinit var mProductRevampComponentViewModel: ProductCardRevampViewModel
-    private lateinit var layoutManager: StaggeredGridLayoutManager
     private var addChildAdapterCallback: AddChildAdapterCallback
 
 
