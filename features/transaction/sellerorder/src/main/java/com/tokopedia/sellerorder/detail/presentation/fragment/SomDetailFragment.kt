@@ -161,7 +161,8 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     private var detailResponse = SomDetailOrder.Data.GetSomDetail()
     private var acceptOrderResponse = SomAcceptOrder.Data.AcceptOrder()
     private var rejectOrderResponse = SomRejectOrder.Data.RejectOrder()
-    private var editAwbResponse = SomEditAwbResponse.Data()
+    private var successEditAwbResponse = SomEditAwbResponse.Data()
+    private var failEditAwbResponse = SomEditAwbResponse.Error()
     private var rejectReasonResponse = listOf<SomReasonRejectData.Data.SomRejectReason>()
     private var listDetailData: ArrayList<SomDetailData> = arrayListOf()
     private lateinit var somDetailAdapter: SomDetailAdapter
@@ -281,9 +282,12 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     }
 
     private fun loadDetail() {
-        activity?.let { SomAnalytics.sendScreenName(it, SomConsts.DETAIL_ORDER_SCREEN_NAME + orderId) }
-        somDetailViewModel.loadDetailOrder(
-            GraphqlHelper.loadRawString(resources, R.raw.gql_som_detail), orderId)
+        activity?.let {
+            SomAnalytics.sendScreenName(it, SomConsts.DETAIL_ORDER_SCREEN_NAME + orderId)
+            it.resources?.let { r ->
+                somDetailViewModel.loadDetailOrder(GraphqlHelper.loadRawString(r, R.raw.gql_som_detail), orderId)
+            }
+        }
     }
 
     override fun getScreenName(): String = ""
@@ -825,6 +829,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
             btn_cancel_order_canceled?.setOnClickListener { bottomSheetUbahResi.dismiss() }
             btn_cancel_order_confirmed?.text = getString(R.string.change_no_resi_btn_ubah)
             btn_cancel_order_confirmed?.setOnClickListener {
+                secondaryBottomSheet?.dismiss()
                 bottomSheetUbahResi.dismiss()
                 doEditAwb(tf_cancel_notes?.textFieldInput?.text.toString())
             }
@@ -852,15 +857,21 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         somDetailViewModel.editRefNumResult.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    editAwbResponse = it.data
-                    if (editAwbResponse.mpLogisticEditRefNum.listMessage.isNotEmpty()) {
-                        showCommonToaster(editAwbResponse.mpLogisticEditRefNum.listMessage.first())
+                    successEditAwbResponse = it.data
+                    if (successEditAwbResponse.mpLogisticEditRefNum.listMessage.isNotEmpty()) {
+                        showCommonToaster(successEditAwbResponse.mpLogisticEditRefNum.listMessage.first())
+                        loadDetail()
                     } else {
                         showToasterError(getString(R.string.global_error), view)
                     }
                 }
                 is Fail -> {
-                    showToasterError(getString(R.string.global_error), view)
+                    failEditAwbResponse.message = it.throwable.message.toString()
+                    if(failEditAwbResponse.message.isNotEmpty()) {
+                        showToasterError(failEditAwbResponse.message, view)
+                    } else {
+                        showToasterError(getString(R.string.global_error), view)
+                    }
                 }
             }
         })
@@ -1270,7 +1281,9 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     }
 
     private fun doRejectOrder(orderRejectRequest: SomRejectRequest) {
-        somDetailViewModel.rejectOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_reject_order), orderRejectRequest)
+        activity?.resources?.let {
+            somDetailViewModel.rejectOrder(GraphqlHelper.loadRawString(it, R.raw.gql_som_reject_order), orderRejectRequest)
+        }
         SomAnalytics.eventClickTolakPesanan(detailResponse.statusText, orderRejectRequest.reason)
     }
 

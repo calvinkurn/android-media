@@ -55,14 +55,14 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
             if (it) {
                 val fragment = HiddenTrialFragment.newInstance()
                 val transaction = supportFragmentManager.beginTransaction()
-                transaction.replace(R.id.parent_view, fragment, HiddenTrialFragment::class.java.name)
+                transaction.replace(R.id.parent_view, fragment, TAG)
                 transaction.commit()
 
             } else {
 
                 val fragment = TopAdsDashboardFragment.createInstance()
                 val transaction = supportFragmentManager.beginTransaction()
-                transaction.replace(R.id.parent_view, fragment, TopAdsDashboardFragment::class.java.name)
+                transaction.replace(R.id.parent_view, fragment, TAG)
                 transaction.commit()
 
             }
