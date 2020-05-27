@@ -2,7 +2,8 @@ package com.tokopedia.topads.dashboard.view.model;
 
 import android.os.Parcel;
 
-import com.tokopedia.seller.base.view.model.StepperModel;
+import com.tokopedia.abstraction.base.view.model.StepperModel;
+
 
 /**
  * Created by zulfikarrahman on 8/9/17.

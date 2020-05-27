@@ -3,11 +3,9 @@ package com.tokopedia.topads.keyword.di.module;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.product.manage.item.common.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;
-import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.topads.dashboard.data.repository.ShopInfoRepository;
 import com.tokopedia.topads.dashboard.di.qualifier.TopAdsManagementQualifier;
 import com.tokopedia.topads.keyword.data.repository.TopAdsOldKeywordRepositoryImpl;
 import com.tokopedia.topads.keyword.data.source.KeywordDashboardDataSouce;
@@ -58,12 +56,6 @@ public class TopAdsKeywordEditDetailModule {
     @Provides
     KeywordApi provideKeywordApi(@TopAdsManagementQualifier Retrofit retrofit){
         return retrofit.create(KeywordApi.class);
-    }
-
-    @TopAdsKeywordScope
-    @Provides
-    SimpleDataResponseMapper<ShopModel> provideMapper(){
-        return new SimpleDataResponseMapper<>();
     }
 
     @TopAdsKeywordScope

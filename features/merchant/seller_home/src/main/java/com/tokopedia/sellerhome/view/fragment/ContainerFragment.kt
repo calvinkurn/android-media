@@ -116,6 +116,7 @@ class ContainerFragment : Fragment() {
                 FragmentType.PRODUCT -> showFragment(productManageFragment, page, getString(R.string.sah_product_list))
                 FragmentType.CHAT -> showFragment(chatFragment, page, getString(R.string.sah_chat))
                 FragmentType.ORDER -> showFragment(somListFragment, page, getString(R.string.sah_sale))
+                else -> updateFragmentVisibilityHint(null)
             }
         })
     }
@@ -163,6 +164,22 @@ class ContainerFragment : Fragment() {
                     NotificationDotBadge(it).showBadge(menuItem)
                 }
             }
+            updateFragmentVisibilityHint(fragment)
+        }
+    }
+
+    @Suppress("DEPRECATION")
+    private fun updateFragmentVisibilityHint(visibleFragment: Fragment?) {
+        if (visibleFragment == null) {
+            homeFragment.userVisibleHint = false
+            productManageFragment?.userVisibleHint = false
+            chatFragment?.userVisibleHint = false
+            somListFragment?.userVisibleHint = false
+        } else {
+            homeFragment.userVisibleHint = visibleFragment == homeFragment
+            productManageFragment?.userVisibleHint = visibleFragment == productManageFragment
+            chatFragment?.userVisibleHint = visibleFragment == chatFragment
+            somListFragment?.userVisibleHint = visibleFragment == somListFragment
         }
     }
 

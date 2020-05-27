@@ -25,6 +25,7 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsFilterGroupActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsSortByActivity;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewScheduleNewGroupFragment;
+import com.tokopedia.topads.group.di.component.TopAdsGroupAdListComponent;
 import com.tokopedia.topads.group.di.component.DaggerTopAdsGroupAdListComponent;
 import com.tokopedia.topads.group.view.listener.TopAdsGroupAdListView;
 import com.tokopedia.topads.group.view.presenter.TopAdsGroupAdListPresenter;

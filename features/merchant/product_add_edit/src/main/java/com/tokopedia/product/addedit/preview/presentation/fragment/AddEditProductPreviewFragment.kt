@@ -116,6 +116,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
     private var isProductStatusSwitchFirstTime = false
     private var countTouchPhoto = 0
+    private var dataBackPressed: Int? = null
 
     private var toolbar: Toolbar? = null
 
@@ -226,6 +227,15 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
     fun isEditing(): Boolean {
         return viewModel.isEditing.value ?: false
+    }
+
+    fun dataBackPressedLoss(): Boolean {
+        // when stepper page has no data, dataBackPressed is null but if stepper page has data, dataBackPressed has data too
+        // dataBackPressed is a sign of activity where data is obtained
+        if(dataBackPressed == null) {
+            return true
+        }
+        return false
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -458,7 +468,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     }
                 }
                 REQUEST_CODE_DETAIL -> {
-                    val dataBackPressed = data.getIntExtra(EXTRA_BACK_PRESSED, 0)
+                    dataBackPressed = data.getIntExtra(EXTRA_BACK_PRESSED, 0)
                     val cacheManagerId = data.getStringExtra(EXTRA_CACHE_MANAGER_ID) ?: ""
                     SaveInstanceCacheManager(requireContext(), cacheManagerId).run {
                         viewModel.productAddResult.value = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
