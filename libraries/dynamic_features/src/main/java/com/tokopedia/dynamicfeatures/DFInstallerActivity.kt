@@ -466,6 +466,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
     }
 
     override fun onInstalled() {
+        timerJob.cancel()
         endDownloadTimeStamp = System.currentTimeMillis()
         onSuccessfulLoad(moduleName, true)
     }
@@ -475,6 +476,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
     }
 
     override fun onFailed(errorString: String) {
+        timerJob.cancel()
         endDownloadTimeStamp = System.currentTimeMillis()
         showFailedMessage(errorString)
     }
