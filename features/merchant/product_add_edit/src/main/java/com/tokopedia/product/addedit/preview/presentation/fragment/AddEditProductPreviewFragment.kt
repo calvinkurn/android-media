@@ -90,6 +90,7 @@ import com.tokopedia.product.addedit.preview.presentation.model.ProductInputMode
 import com.tokopedia.product.addedit.preview.presentation.model.SetCashbackResult
 import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductAddService
 import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductEditService
+import com.tokopedia.product.addedit.preview.presentation.service.UpdateShopActiveService
 import com.tokopedia.product.addedit.preview.presentation.viewmodel.AddEditProductPreviewViewModel
 import com.tokopedia.product.addedit.shipment.presentation.activity.AddEditProductShipmentActivity
 import com.tokopedia.product.addedit.tooltip.model.ImageTooltipModel
@@ -427,6 +428,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 ProductEditStepperTracking.trackChangePromotion(shopId)
             }
             setCashback()
+        }
+
+        if(viewModel.isAdding) {
+            context?.let { UpdateShopActiveService.startService(it, "desktop") }
         }
 
         //If you add another observe, don't forget to remove observers at removeObservers()
