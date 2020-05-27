@@ -8,8 +8,12 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_play_summary_bg"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <View
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:background="@color/Neutral_N700_68" />
+        android:background="@color/Neutral_N700_68"/>
 
     <LinearLayout
         android:id="@+id/layout_live_summary_meta"
@@ -35,12 +39,21 @@
             android:textColor="@color/Neutral_N0"
             app:typographyType="heading_4" />
 
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/ticker_live_summary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tickerShapeType="loose"
+            android:layout_marginTop="@dimen/play_dp_12"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_play_summary_cover"
             android:layout_width="@dimen/play_summary_cover_width"
             android:layout_height="@dimen/play_summary_cover_height"
             android:layout_marginTop="@dimen/spacing_lvl4"
-            tools:background="@color/Neutral_N0" />
+            android:background="@drawable/bg_play_dark_gray_rounded_corner" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_play_summary_live_title"
@@ -57,10 +70,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl3"
-            android:paddingStart="@dimen/spacing_lvl2"
-            android:paddingLeft="@dimen/spacing_lvl2"
-            android:paddingEnd="@dimen/spacing_lvl2"
-            android:paddingRight="@dimen/spacing_lvl2"
+            android:paddingStart="@dimen/play_dp_6"
+            android:paddingLeft="@dimen/play_dp_6"
+            android:paddingEnd="@dimen/play_dp_6"
+            android:paddingRight="@dimen/play_dp_6"
+            android:paddingTop="@dimen/spacing_lvl1"
+            android:paddingBottom="@dimen/spacing_lvl1"
             android:textColor="@color/Neutral_N0"
             app:typographyType="body_3"
             android:background="@drawable/bg_play_dark_gray_rounded_corner"
@@ -81,7 +96,8 @@
         android:paddingBottom="@dimen/spacing_lvl3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_live_summary_meta"
-        tools:background="@color/Neutral_N700_96">
+        android:background="@color/Neutral_N700_68"
+        android:animateLayoutChanges="true">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_play_summary_live_information"
@@ -89,7 +105,8 @@
             android:layout_height="0dp"
             android:layout_marginBottom="@dimen/spacing_lvl4"
             app:layout_constraintBottom_toTopOf="@id/btn_play_summary_finish"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:overScrollMode="never"/>
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_play_summary_finish"
@@ -97,7 +114,7 @@
             android:layout_height="wrap_content"
             android:text="@string/play_summary_button_finish"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:unifyButtonSize="large" />
+            app:unifyButtonSize="medium" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

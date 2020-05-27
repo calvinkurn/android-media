@@ -13,5 +13,12 @@
             android:windowSoftInputMode="stateAlwaysHidden"
             android:theme="@style/Theme.PlayBroadcast"
             />
+
+        <activity
+            android:name=".view.PlayBroadcastSummaryActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:theme="@style/Theme.PlayBroadcast"/>
     </application>
 </manifest>

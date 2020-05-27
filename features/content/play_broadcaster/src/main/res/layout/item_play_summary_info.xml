@@ -38,6 +38,8 @@
         app:layout_constraintStart_toEndOf="@id/iv_item_play_summary_info_icon"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
+        android:maxLines="1"
+        android:ellipsize="end"
         tools:text="Penonton" />
 
     <com.tokopedia.unifyprinciples.Typography

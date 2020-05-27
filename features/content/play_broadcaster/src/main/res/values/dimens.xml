@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="play_dp_6">6dp</dimen>
     <dimen name="play_dp_12">12dp</dimen>
     <dimen name="play_dp_18">18dp</dimen>
 
-    <dimen name="play_summary_cover_width">145dp</dimen>
+    <dimen name="play_summary_cover_width">100dp</dimen>
     <dimen name="play_summary_cover_height">180dp</dimen>
 </resources>
