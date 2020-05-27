@@ -392,7 +392,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         } else {
             Toaster.toasterCustomBottomHeight = 105.toPx()
         }
-        view?.let { Toaster.build(it, getString(R.string.reply_toaster_message_too_long), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.talk_ok)).show() }
+        view?.let { Toaster.build(it, getString(R.string.reply_toaster_message_too_long), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_ok)).show() }
     }
 
     private fun onSuccessCreateComment() {
