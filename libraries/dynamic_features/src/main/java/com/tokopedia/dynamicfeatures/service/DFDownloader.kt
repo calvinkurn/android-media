@@ -114,7 +114,6 @@ object DFDownloader {
     private fun cancelJob(context: Context) {
         val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as? JobScheduler
             ?: return
-        // blind fix for com.android.server.job.controllers.JobStatus.getUid()' on a null object reference
         try {
             jobScheduler.cancel(JOB_ID)
         } catch (e: Exception) {

@@ -60,6 +60,14 @@ data class DFConfig(
         return useSingletonService &&
             downloadInBackground &&
             !downloadInBackgroundExcludedSdkVersion.contains(Build.VERSION.SDK_INT) &&
-            moduleRestrictInBackground!= null && moduleName !in moduleRestrictInBackground
+            isModuleAllowedDownloadInBg(moduleName)
+    }
+
+    private fun isModuleAllowedDownloadInBg(moduleName: String): Boolean {
+        return if (moduleRestrictInBackground.isNullOrEmpty()) {
+            true
+        } else {
+            moduleName !in moduleRestrictInBackground
+        }
     }
 }
