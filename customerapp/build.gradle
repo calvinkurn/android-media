@@ -400,6 +400,7 @@ dependencies {
     implementation project(rootProject.ext.features.catalog)
     implementation project(rootProject.ext.features.commonTradein)
     implementation project(rootProject.ext.features.kategori)
+    implementation project(rootProject.ext.features.categoryLevels)
     implementation project(rootProject.ext.features.hotlist)
     implementation project(rootProject.ext.features.exploreCategory)
     implementation project(rootProject.ext.libraries.inappupdate)
