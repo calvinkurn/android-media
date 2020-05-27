@@ -125,6 +125,9 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_USER_SETTINGS = "df_user_settings"
     const val DF_GAMIFICATION = "df_gamification"
 
+    const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
+    var dfUsageList = mutableListOf<String>()
+
     private var manager: SplitInstallManager? = null
     private val deeplinkDFPatternListCustomerApp: List<DFP> by lazy {
         mutableListOf<DFP>().apply {
@@ -346,6 +349,7 @@ object DeeplinkDFMapper : CoroutineScope {
         getSplitManager(context)?.let {
             val hasInstalled = it.installedModules.contains(moduleId)
             if (hasInstalled) {
+                trackDFUsageOnce(context.applicationContext, moduleId)
                 return null
             } else {
                 return UriUtil.buildUri(
@@ -356,6 +360,24 @@ object DeeplinkDFMapper : CoroutineScope {
                     fallbackUrl)
             }
         } ?: return null
+    }
+
+    private fun trackDFUsageOnce(context: Context, moduleId: String) {
+        if (moduleId == DF_BASE || moduleId in dfUsageList) {
+            return
+        }
+        launch(Dispatchers.IO) {
+            try {
+                val sp = context.getSharedPreferences(SHARED_PREF_TRACK_DF_USAGE, Context.MODE_PRIVATE)
+                val hasAccessedModule = sp.getBoolean(moduleId, false)
+                if (!hasAccessedModule) {
+                    Timber.w("P1#DF_USE#%s", moduleId)
+                    dfUsageList.add(moduleId)
+                    sp.edit().putBoolean(moduleId, true).apply()
+                }
+            } catch (ignored: Exception) {
+            }
+        }
     }
 
     private fun getSplitManager(context: Context): SplitInstallManager? {
