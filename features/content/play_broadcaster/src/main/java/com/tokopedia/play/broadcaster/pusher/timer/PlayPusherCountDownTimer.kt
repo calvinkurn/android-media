@@ -58,8 +58,8 @@ class PlayPusherCountDownTimer(val context: Context,
     private fun getCountDownTimer(maxLiveStreamDuration: Long): CountDownTimer {
         return object : CountDownTimer(maxLiveStreamDuration, DEFAULT_COUNT_DOWN_INTERVAL) {
             override fun onFinish() {
-                clear()
                 callback?.onCountDownFinish()
+                clear()
             }
 
             override fun onTick(millisUntilFinished: Long) {
