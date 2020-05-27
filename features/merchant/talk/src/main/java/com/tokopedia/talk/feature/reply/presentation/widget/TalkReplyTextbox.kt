@@ -7,6 +7,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat.getSystemService
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
+import com.tokopedia.talk.feature.reply.presentation.util.TalkDebouncer
 import com.tokopedia.talk.feature.reply.presentation.util.textwatcher.TalkReplyTextWatcher
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyTextboxListener
 import com.tokopedia.talk_old.R
@@ -35,11 +36,13 @@ class TalkReplyTextbox : BaseCustomView {
         replyAttachProduct.setOnClickListener {
             talkReplyTextboxListener.onAttachProductButtonClicked()
         }
-        replySendButton.setOnClickListener {
-            if(replyEditText.text.toString().length <= textLimit) {
-                talkReplyTextboxListener.onSendButtonClicked(replyEditText.text.toString())
+        replySendButton.setOnClickListener(object : TalkDebouncer() {
+            override fun onDebouncedClick(v: View?) {
+                if(replyEditText.text.toString().length <= textLimit) {
+                    talkReplyTextboxListener.onSendButtonClicked(replyEditText.text.toString())
+                }
             }
-        }
+        })
         val textWatcher = TalkReplyTextWatcher(textLimit, talkReplyTextboxListener, replyEditText)
         replyEditText.apply {
             addTextChangedListener(textWatcher)
