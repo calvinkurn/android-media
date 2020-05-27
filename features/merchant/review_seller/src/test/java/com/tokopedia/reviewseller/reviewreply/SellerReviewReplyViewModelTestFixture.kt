@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import com.tokopedia.reviewseller.coroutine.TestCoroutineDispatchers
 import com.tokopedia.reviewseller.feature.reviewreply.domain.GetReviewTemplateListUseCase
 import com.tokopedia.reviewseller.feature.reviewreply.domain.InsertSellerResponseUseCase
+import com.tokopedia.reviewseller.feature.reviewreply.domain.InsertTemplateReviewReplyUseCase
 import com.tokopedia.reviewseller.feature.reviewreply.domain.UpdateSellerResponseUseCase
 import com.tokopedia.reviewseller.feature.reviewreply.view.viewmodel.SellerReviewReplyViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -28,13 +29,17 @@ abstract class SellerReviewReplyViewModelTestFixture {
     @RelaxedMockK
     lateinit var updateSellerResponseUseCase: UpdateSellerResponseUseCase
 
+    @RelaxedMockK
+    lateinit var insertTemplateReviewReplyUseCase: InsertTemplateReviewReplyUseCase
+
     protected lateinit var viewModel: SellerReviewReplyViewModel
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
         viewModel = SellerReviewReplyViewModel(TestCoroutineDispatchers,
-                getReviewTemplateListUseCase, insertSellerResponseUseCase, updateSellerResponseUseCase)
+                getReviewTemplateListUseCase, insertSellerResponseUseCase,
+                updateSellerResponseUseCase, insertTemplateReviewReplyUseCase)
     }
 
     protected fun LiveData<*>.verifyValueEquals(expected: Any) {
