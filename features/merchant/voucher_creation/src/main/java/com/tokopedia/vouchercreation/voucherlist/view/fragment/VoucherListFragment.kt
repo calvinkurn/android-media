@@ -154,7 +154,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         if (isActiveVoucher) {
             mViewModel.getActiveVoucherList()
         } else {
-            mViewModel.getVoucherListHistory()
+            mViewModel.getVoucherListHistory(null, null, null)
         }
     }
 

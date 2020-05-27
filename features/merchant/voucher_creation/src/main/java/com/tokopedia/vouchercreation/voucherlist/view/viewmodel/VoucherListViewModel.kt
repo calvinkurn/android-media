@@ -7,11 +7,15 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
+import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherListParam
+import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherSort
+import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherStatus
+import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherTarget
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetVoucherListUseCase
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
@@ -29,10 +33,13 @@ class VoucherListViewModel @Inject constructor(
     val voucherList: LiveData<Result<List<VoucherUiModel>>>
         get() = _voucherList
 
+    private val activeVoucherRequestParam by lazy {
+        VoucherListParam.createParam(status = VoucherStatus.ACTIVE)
+    }
+
     fun getActiveVoucherList() {
         launchCatchError(block = {
-            delay(1000)
-            getVoucherListUseCase.isActive = true
+            getVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(activeVoucherRequestParam)
             _voucherList.value = Success(withContext(Dispatchers.IO) {
                 getVoucherListUseCase.executeOnBackground()
             })
@@ -41,9 +48,17 @@ class VoucherListViewModel @Inject constructor(
         })
     }
 
-    fun getVoucherListHistory() {
+    fun getVoucherListHistory(@VoucherTypeConst type: Int?,
+                              @VoucherTarget target: String?,
+                              @VoucherSort sort: String?) {
         launchCatchError(block = {
-            delay(1000)
+            getVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(
+                    VoucherListParam.createParam(
+                            status = VoucherStatus.HISTORY,
+                            type = type,
+                            target = target,
+                            sort = sort)
+            )
             getVoucherListUseCase.isActive = false
             _voucherList.value = Success(withContext(Dispatchers.IO) {
                 getVoucherListUseCase.executeOnBackground()

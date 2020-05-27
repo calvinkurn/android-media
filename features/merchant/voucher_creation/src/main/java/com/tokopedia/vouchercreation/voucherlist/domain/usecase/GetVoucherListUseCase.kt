@@ -1,7 +1,8 @@
 package com.tokopedia.vouchercreation.voucherlist.domain.usecase
 
-import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.vouchercreation.common.base.BaseGqlUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.mapper.VoucherMapper
@@ -20,8 +21,8 @@ class GetVoucherListUseCase @Inject constructor(
 ) : BaseGqlUseCase<List<VoucherUiModel>>() {
 
     companion object {
-        private const val QUERY = "query getAllMerchantPromotion {\n" +
-                "              MerchantPromotionGetMVList(Filter: {}) {\n" +
+        private const val QUERY = "query getAllMerchantPromotion(\$filter : MVFilter!) {\n" +
+                "              MerchantPromotionGetMVList(Filter: \$filter) {\n" +
                 "                data {\n" +
                 "                  paging {\n" +
                 "                    per_page\n" +
@@ -81,23 +82,23 @@ class GetVoucherListUseCase @Inject constructor(
     var isActive = false
 
     override suspend fun executeOnBackground(): List<VoucherUiModel> {
-//        val gqlRequest = GraphqlRequest(QUERY, GetMerchantVoucherListResponse::class.java, params.parameters)
-//        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest))
-//
-//        val errors = gqlResponse.getError(GetMerchantVoucherListResponse::class.java)
-//        if (errors.isNullOrEmpty()) {
-//            val data = gqlResponse.getData<GetMerchantVoucherListResponse>()
-//            return mapper.mapRemoteModelToUiModel(data.result.data.vouchers)
-//        } else {
-//            throw MessageErrorException(errors.joinToString(", ") { it.message })
-//        }
-        if (isActive) {
-            val gqlResponse = Gson().fromJson(DummyVoucherList.DUMMY_ACTIVE_VOUCHER, GetMerchantVoucherListResponse::class.java)
-            return mapper.mapRemoteModelToUiModel(gqlResponse.result.data.vouchers)
+        val gqlRequest = GraphqlRequest(QUERY, GetMerchantVoucherListResponse::class.java, params.parameters)
+        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest))
+
+        val errors = gqlResponse.getError(GetMerchantVoucherListResponse::class.java)
+        if (errors.isNullOrEmpty()) {
+            val data = gqlResponse.getData<GetMerchantVoucherListResponse>()
+            return mapper.mapRemoteModelToUiModel(data.result.data.vouchers)
         } else {
-            val gqlResponse = Gson().fromJson(DummyVoucherList.DUMMY_VOUCHER_HISTORY, GetMerchantVoucherListResponse::class.java)
-            return mapper.mapRemoteModelToUiModel(gqlResponse.result.data.vouchers)
+            throw MessageErrorException(errors.joinToString(", ") { it.message })
         }
+//        if (isActive) {
+//            val gqlResponse = Gson().fromJson(DummyVoucherList.DUMMY_ACTIVE_VOUCHER, GetMerchantVoucherListResponse::class.java)
+//            return mapper.mapRemoteModelToUiModel(gqlResponse.result.data.vouchers)
+//        } else {
+//            val gqlResponse = Gson().fromJson(DummyVoucherList.DUMMY_VOUCHER_HISTORY, GetMerchantVoucherListResponse::class.java)
+//            return mapper.mapRemoteModelToUiModel(gqlResponse.result.data.vouchers)
+//        }
     }
 
     object DummyVoucherList {
