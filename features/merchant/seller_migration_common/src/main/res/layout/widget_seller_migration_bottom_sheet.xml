@@ -15,6 +15,8 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
+        android:paddingStart="@dimen/layout_lvl2"
+        android:paddingEnd="@dimen/layout_lvl2"
         app:typographyType="heading_2"
         app:typographyWeight="bold"/>
 
@@ -22,14 +24,17 @@
         android:id="@+id/seller_migration_warning"
         android:layout_below="@id/sellerMigrationBottomSheetTitle"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent" />
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_10"/>
 
     <RelativeLayout
         android:id="@+id/image_or_carousel_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/seller_migration_warning"
-        android:layout_marginTop="@dimen/layout_lvl2">
+        android:layout_marginTop="@dimen/layout_lvl3">
 
         <com.tokopedia.carousel.CarouselUnify
             android:id="@+id/sellerMigrationCarousel"
@@ -51,6 +56,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/image_or_carousel_layout"
         android:layout_marginTop="@dimen/layout_lvl2"
+        android:paddingStart="@dimen/layout_lvl2"
+        android:paddingEnd="@dimen/layout_lvl2"
         app:typographyType="body_2"
         app:typographyWeight="reguler"/>
 

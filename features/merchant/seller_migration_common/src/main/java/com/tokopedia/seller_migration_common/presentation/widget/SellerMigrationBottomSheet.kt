@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Spannable
 import android.view.View
+import android.widget.LinearLayout
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
@@ -17,6 +18,7 @@ import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_PLAYSTORE
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.partial_seller_migration_footer.*
 import kotlinx.android.synthetic.main.widget_seller_migration_bottom_sheet.*
 
@@ -25,13 +27,20 @@ abstract class SellerMigrationBottomSheet(private val titles: List<String> = emp
                                           private val images: ArrayList<String> = arrayListOf()) : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        setupPadding()
         setUpButtons()
         setupText()
         setupImages()
         super.onViewCreated(view, savedInstanceState)
     }
 
-
+    private fun setupPadding() {
+        setShowListener {
+            val headerMargin = 16.toPx()
+            bottomSheetWrapper.setPadding(0,0,0,0)
+            (bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(headerMargin,headerMargin,headerMargin,headerMargin)
+        }
+    }
 
     private fun setUpButtons() {
         sellerMigrationBottomSheetButton.setOnClickListener {

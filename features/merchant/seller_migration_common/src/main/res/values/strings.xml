@@ -36,4 +36,6 @@
     <string name="seller_migration_review_bottom_sheet_title">Cek ulasan dari pembeli langsung di aplikasi Tokopedia Seller</string>
     <string name="seller_migration_review_bottom_sheet_content">Temukan ulasan lengkap untuk setiap produkmu, mulai dari kemasan hingga kualitas produk.</string>
 
+    <string name="seller_migration_account_home_bottom_sheet_content">Tampilan baru Tokopedia Seller App membuat pengaturan stok dan berkomunikasi dengan pembeli jadi semakin mudah. Penuhi semua kebutuhanmu sebagai seller cukup dari 1 aplikasi.</string>
+
 </resources>
