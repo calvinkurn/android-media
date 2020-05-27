@@ -84,6 +84,8 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
                 } else {
                     presenter.getUserInfo()
                 }
+            }else {
+                activity?.finish()
             }
         }else if (requestCode == REQUEST_SECURITY_QUESTION
                 && resultCode == Activity.RESULT_OK
