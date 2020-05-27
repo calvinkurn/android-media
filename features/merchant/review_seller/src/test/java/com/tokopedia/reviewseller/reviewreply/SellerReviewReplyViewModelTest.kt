@@ -1,10 +1,12 @@
 package com.tokopedia.reviewseller.reviewreply
 
 import com.tokopedia.reviewseller.feature.reviewreply.data.ReviewReplyInsertResponse
+import com.tokopedia.reviewseller.feature.reviewreply.data.ReviewReplyInsertTemplateResponse
 import com.tokopedia.reviewseller.feature.reviewreply.data.ReviewReplyTemplateListResponse
 import com.tokopedia.reviewseller.feature.reviewreply.data.ReviewReplyUpdateResponse
 import com.tokopedia.reviewseller.feature.reviewreply.view.fragment.SellerReviewReplyFragment.Companion.DATE_REVIEW_FORMAT
 import com.tokopedia.reviewseller.feature.reviewreply.view.model.InsertReplyResponseUiModel
+import com.tokopedia.reviewseller.feature.reviewreply.view.model.InsertTemplateReplyUiModel
 import com.tokopedia.reviewseller.feature.reviewreply.view.model.UpdateReplyResponseUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -37,7 +39,7 @@ class SellerReviewReplyViewModelTest : SellerReviewReplyViewModelTestFixture() {
             onInsertReviewReply_thenReturn()
             viewModel.insertReviewReply(anyInt(), anyInt(), anyInt(), anyString())
 
-            verifySuccessInsertReviewReply()
+            verifySuccessInsertReviewReplyUseCalled()
             val expectedValue = Success(InsertReplyResponseUiModel(anyInt()))
             assertTrue(viewModel.insertReviewReply.value is Success)
             viewModel.insertReviewReply.verifyValueEquals(expectedValue)
@@ -57,6 +59,30 @@ class SellerReviewReplyViewModelTest : SellerReviewReplyViewModelTestFixture() {
         }
     }
 
+    @Test
+    fun `when insert template reply should return success`() {
+        runBlocking {
+            onInsertTemplateReply_thenReturn()
+            viewModel.insertTemplateReviewReply(anyInt(), anyString(), anyString())
+
+            verifySuccessInsertTemplateReplyUseCaseCalled()
+            val expectedValue = Success(InsertTemplateReplyUiModel())
+            assertTrue(viewModel.insertTemplateReply.value is Success)
+            viewModel.insertTemplateReply.verifyValueEquals(expectedValue)
+        }
+    }
+
+    @Test
+    fun `when insert template reply should return fail`() {
+        runBlocking {
+            val error = NullPointerException()
+            onInsertTemplateReply_thenError(error)
+
+            viewModel.insertTemplateReviewReply(anyInt(), anyString(), anyString())
+            val expectedResult = Fail(error)
+            viewModel.insertTemplateReply.verifyErrorEquals(expectedResult)
+        }
+    }
 
     @Test
     fun `when get reply template list should return fail`() {
@@ -112,6 +138,10 @@ class SellerReviewReplyViewModelTest : SellerReviewReplyViewModelTestFixture() {
         coEvery { updateSellerResponseUseCase.executeOnBackground() } coAnswers { throw exception }
     }
 
+    private fun onInsertTemplateReply_thenError(exception: NullPointerException) {
+        coEvery { insertTemplateReviewReplyUseCase.executeOnBackground() } coAnswers { throw exception }
+    }
+
     private fun onReplyTemplateList_thenReturn() {
         coEvery { getReviewTemplateListUseCase.executeOnBackground() } returns ReviewReplyTemplateListResponse.ReviewResponseTemplateList()
     }
@@ -124,7 +154,11 @@ class SellerReviewReplyViewModelTest : SellerReviewReplyViewModelTestFixture() {
         coEvery { updateSellerResponseUseCase.executeOnBackground() } returns ReviewReplyUpdateResponse.ProductrevUpdateSellerResponse()
     }
 
-    private fun verifySuccessInsertReviewReply() {
+    private fun onInsertTemplateReply_thenReturn() {
+        coEvery { insertTemplateReviewReplyUseCase.executeOnBackground() } returns ReviewReplyInsertTemplateResponse.InsertResponseTemplate()
+    }
+
+    private fun verifySuccessInsertReviewReplyUseCalled() {
         coVerify { insertSellerResponseUseCase.executeOnBackground() }
     }
 
@@ -134,5 +168,9 @@ class SellerReviewReplyViewModelTest : SellerReviewReplyViewModelTestFixture() {
 
     private fun verifySuccessReplyTemplateListUseCaseCalled() {
         coVerify { getReviewTemplateListUseCase.executeOnBackground() }
+    }
+
+    private fun verifySuccessInsertTemplateReplyUseCaseCalled() {
+        coVerify { insertTemplateReviewReplyUseCase.executeOnBackground() }
     }
 }
