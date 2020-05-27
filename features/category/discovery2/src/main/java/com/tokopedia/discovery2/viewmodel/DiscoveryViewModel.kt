@@ -47,14 +47,14 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     fun getDiscoveryData() {
         launchCatchError(
                 block = {
-                    val data = discoveryDataUseCase.getDiscoveryData(pageIdentifier)
-                        data.let {
-                            withContext(Dispatchers.Default) {
-                                checkLoginAndUpdateList(it.components)
-                                findCustomTopChatComponentsIfAny(it.components)
-                            }
-                            setPageInfo(it.pageInfo)
+                    val data = discoveryDataUseCase.getDiscoveryPageDataUseCase(pageIdentifier)
+                    data.let {
+                        withContext(Dispatchers.Default) {
+                            checkLoginAndUpdateList(it.components)
+                            findCustomTopChatComponentsIfAny(it.components)
                         }
+                        setPageInfo(it.pageInfo)
+                    }
                 },
                 onError = {
                     discoveryPageInfo.value = Fail(it)

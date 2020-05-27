@@ -1,12 +1,14 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem
 
 import android.graphics.Paint
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.discovery2.R
@@ -42,6 +44,7 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
     private var stockPercentageProgress: ProgressBarUnify
     private var linearLayoutImageRating: LinearLayout
     private lateinit var productCardItemViewModel: ProductCardItemViewModel
+    var lifecycleOwner: LifecycleOwner
 
 
     init {
@@ -61,6 +64,7 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
         imageFreeOngkirPromo = itemView.findViewById(R.id.imageFreeOngkirPromo)
         stockPercentageProgress = itemView.findViewById(R.id.stockPercentageProgress)
         productCardView = itemView.findViewById(R.id.cardViewProductCard)
+        lifecycleOwner = fragment.viewLifecycleOwner
     }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
@@ -70,14 +74,24 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
 
     fun init() {
         productCardItemViewModel.setContext(productCardView.context)
+    }
+
+    override fun onViewAttachedToWindow() {
+        super.onViewAttachedToWindow()
         setUpObserver()
     }
 
+    override fun onViewDetachedToWindow() {
+        if (productCardItemViewModel.getDataItemValue().hasObservers()) {
+            productCardItemViewModel.getDataItemValue().removeObservers(lifecycleOwner)
+        }
+    }
+
     private fun setUpObserver() {
-        val lifecycleOwner = fragment.viewLifecycleOwner
         productCardItemViewModel.getDataItemValue().observe(lifecycleOwner, Observer {
             populateData(it)
         })
+
         productCardItemViewModel.getShopBadge().observe(lifecycleOwner, Observer {
             if (it == OFFICIAL_STORE)
                 shopBadge.setImageResource(R.drawable.discovery_official_store_icon)
@@ -94,6 +108,7 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
         }
     }
 
+
     private fun showFreeOngKir(freeOngkirActive: String) {
         if (freeOngkirActive.isNotEmpty()) {
             ImageHandler.LoadImage(imageFreeOngkirPromo, freeOngkirActive)
@@ -104,6 +119,7 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
     }
 
     private fun populateData(dataItem: DataItem) {
+        Log.d("populateData", this.toString() + dataItem)
         productName.setTextAndCheckShow(dataItem.name)
         textViewShopName.setTextAndCheckShow(dataItem.shopName)
         textViewPrice.setTextAndCheckShow(dataItem.price)
@@ -130,11 +146,12 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
     }
 
     private fun setProductImage(imageUrlMobile: String?) {
+        Log.d("setProductImage", this.toString() + imageUrlMobile)
         ImageHandler.LoadImage(productImage, imageUrlMobile)
     }
 
     private fun setStockProgress(stockPercent: String?) {
-        if (!stockPercent.isNullOrEmpty()){
+        if (!stockPercent.isNullOrEmpty()) {
             stockPercentageProgress.setValue(stockPercent.toIntOrZero())
             stockPercentageProgress.show()
         }

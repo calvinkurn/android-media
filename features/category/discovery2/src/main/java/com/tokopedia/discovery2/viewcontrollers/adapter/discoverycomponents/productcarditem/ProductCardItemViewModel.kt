@@ -65,7 +65,6 @@ class ProductCardItemViewModel(val application: Application, private val compone
 
     fun handleUIClick() {
         navigate(context, dataItem.value?.applinks)
-
     }
 
 }

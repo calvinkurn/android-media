@@ -19,7 +19,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     CarouselBannerItemView(R.layout.carousel_banner_item_layout, ComponentNames.CarouselBannerItemView.componentName),
     SliderBanner(R.layout.slider_banner_layout, ComponentNames.SliderBanner.componentName),
     BannerTimer(R.layout.banner_timer_layout, ComponentNames.BannerTimer.componentName),
-    Tokopoints(R.layout.tokopoints_layout, ComponentNames.Tokopoints.componentName),
+    Tokopoints(R.layout.horizontal_recycler_view_layout, ComponentNames.Tokopoints.componentName),
     TokopointsItem(R.layout.tokopoints_item_layout, ComponentNames.TokopointsItem.componentName),
     LihatSemua(R.layout.lihat_semua, ComponentNames.LihatSemua.componentName),
     CpmTopAds(R.layout.cpm_topads_layout, ComponentNames.CpmTopAds.componentName),
@@ -41,9 +41,9 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     DynamicCategory(R.layout.dynamic_category_layout, ComponentNames.DynamicCategory.componentName),
     DynamicCategoryItem(R.layout.dynamic_category_single_item_layout, ComponentNames.DynamicCategoryItem.componentName),
     LihatFlashSaleTimer(R.layout.lihat_flash_sale_timer_widget, ComponentNames.FlashSaleTimer.componentName),
-    ProductCardRevamp(R.layout.tokopoints_layout, ComponentNames.ProductCardRevamp.componentName),
-    ProductCardCarousel(R.layout.tokopoints_layout, ComponentNames.ProductCardCarousel.componentName),
+    TimerSprintSale(R.layout.discovery_timer_sprint_sale_layout, ComponentNames.TimerSprintSale.componentName),
+    ProductCardCarousel(R.layout.horizontal_recycler_view_layout, ComponentNames.ProductCardCarousel.componentName),
+    PrductCardSprintSaleCarousel(R.layout.horizontal_recycler_view_layout, ComponentNames.PrductCardSprintSaleCarousel.componentName),
+    ProductCardRevamp(R.layout.product_card_revamp_layout, ComponentNames.ProductCardRevamp.componentName),
     ProductCardItem(R.layout.product_item_layout, ComponentNames.ProductCardItem.componentName),
-    PrductCardSprintSaleCarousel(R.layout.tokopoints_layout, ComponentNames.PrductCardSprintSaleCarousel.componentName),
-    TimerSprintSale(R.layout.discovery_timer_sprint_sale_layout, ComponentNames.TimerSprintSale.componentName)
 }

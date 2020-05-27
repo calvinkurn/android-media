@@ -3,23 +3,25 @@ package com.tokopedia.discovery2.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponGQLRepository
 import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponRestRepository
 import com.tokopedia.discovery2.repository.claimCoupon.IClaimCouponGqlRepository
 import com.tokopedia.discovery2.repository.claimCoupon.IClaimCouponRepository
-import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.discovery2.repository.cpmtopads.CpmTopAdsGQLRepository
 import com.tokopedia.discovery2.repository.cpmtopads.CpmTopAdsRepository
 import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatGqlRepository
 import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatRepository
-import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusGQLRepository
-import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusRepository
-import com.tokopedia.discovery2.repository.tokopoints.TokopointsRepository
-import com.tokopedia.discovery2.repository.tokopoints.TokopointsRestRepository
+import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
+import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRestRepository
 import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRepository
 import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRestRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRestRepository
+import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusGQLRepository
+import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusRepository
+import com.tokopedia.discovery2.repository.tokopoints.TokopointsRepository
+import com.tokopedia.discovery2.repository.tokopoints.TokopointsRestRepository
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -89,6 +91,14 @@ class DiscoveryModule {
     fun provideProductCardsRestRepository(@ApplicationContext context: Context): ProductCardsRepository {
         return ProductCardsRestRepository()
     }
+
+    @DiscoveryScope
+    @Provides
+    fun provideDiscoveryPageRepository(@ApplicationContext context: Context): DiscoveryPageRepository {
+        return DiscoveryPageRestRepository()
+    }
+
+
 
     @DiscoveryScope
     @Provides
