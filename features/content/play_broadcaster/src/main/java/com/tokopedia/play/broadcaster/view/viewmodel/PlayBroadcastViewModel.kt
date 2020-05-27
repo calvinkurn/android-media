@@ -1,11 +1,13 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.play.broadcaster.dispatcher.PlayBroadcastDispatcher
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
+import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -47,18 +49,7 @@ class PlayBroadcastViewModel  @Inject constructor(
 
     }
 
-    fun onCreate() {
-    }
-
-    fun onResume() {
-        playPusher.resume()
-    }
-
-    fun onPause() {
-        playPusher.pause()
-    }
-
-    fun onDestroy() {
-        playPusher.destroy()
+    fun getPlayPusher(): PlayPusher {
+        return playPusher
     }
 }

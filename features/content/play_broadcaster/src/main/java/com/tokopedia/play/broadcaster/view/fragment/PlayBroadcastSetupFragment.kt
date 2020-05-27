@@ -2,9 +2,11 @@ package com.tokopedia.play.broadcaster.view.fragment
 
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.di.DaggerPlayBroadcasterComponent
+import com.tokopedia.play.broadcaster.di.PlayBroadcasterModule
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayPrepareBroadcastViewModel
 import javax.inject.Inject
 
@@ -21,7 +23,12 @@ class PlayBroadcastSetupFragment : BaseDaggerFragment() {
     override fun getScreenName(): String = "Play Broadcast Setup Page"
 
     override fun initInjector() {
-        DaggerPlayBroadcasterComponent.create()
+        DaggerPlayBroadcasterComponent.builder()
+                .baseAppComponent(
+                        (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+                )
+                .playBroadcasterModule(PlayBroadcasterModule())
+                .build()
                 .inject(this)
     }
 

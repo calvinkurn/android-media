@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.di.DaggerPlayBroadcasterComponent
+import com.tokopedia.play.broadcaster.di.PlayBroadcasterModule
 import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastSetupCoordinator
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayPrepareBroadcastFragment
@@ -45,7 +47,12 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastSetupCoordinator {
     }
 
     private fun inject() {
-        DaggerPlayBroadcasterComponent.create()
+        DaggerPlayBroadcasterComponent.builder()
+                .baseAppComponent(
+                        (applicationContext as BaseMainApplication).baseAppComponent
+                )
+                .playBroadcasterModule(PlayBroadcasterModule())
+                .build()
                 .inject(this)
     }
 
