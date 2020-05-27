@@ -76,6 +76,10 @@ data class ShopStatusModel(
         return powerMerchant.status == STATUS_INACTIVE
     }
 
+    fun isPowerMerchantRegistered(): Boolean {
+        return (isPowerMerchantActive() || isPowerMerchantIdle()) && isAutoExtend()
+    }
+
     fun getMinimumShopScore(): Int {
         return if (isPowerMerchantInactive()) {
             MINIMUM_SCORE_ACTIVATE_REGULAR
