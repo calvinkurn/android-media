@@ -21,7 +21,11 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
     private val tvEtalaseAmount: TextView = itemView.findViewById(R.id.tv_etalase_amount)
     private val rvProductPreview: RecyclerView = itemView.findViewById(R.id.rv_product_preview)
 
-    private val productPreviewAdapter = PlayProductPreviewAdapter()
+    private val productPreviewAdapter = PlayProductPreviewAdapter(object : ProductPreviewViewHolder.Listener {
+        override fun onProductImagesClicked() {
+            itemView.performClick()
+        }
+    })
 
     private val context: Context = itemView.context
 

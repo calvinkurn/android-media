@@ -1,15 +1,12 @@
 package com.tokopedia.play.broadcaster.ui.viewholder
 
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.ImageView
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.util.changeConstraint
 import com.tokopedia.play.broadcaster.view.uimodel.ProductUiModel
@@ -17,7 +14,11 @@ import com.tokopedia.play.broadcaster.view.uimodel.ProductUiModel
 /**
  * Created by jegul on 26/05/20
  */
-class ProductPreviewViewHolder(itemView: View, gridLayoutManager: GridLayoutManager) : BaseViewHolder(itemView) {
+class ProductPreviewViewHolder(
+        itemView: View,
+        gridLayoutManager: GridLayoutManager,
+        listener: Listener
+) : BaseViewHolder(itemView) {
 
     private val ivImage: ImageView = itemView.findViewById(R.id.iv_image)
 
@@ -26,35 +27,55 @@ class ProductPreviewViewHolder(itemView: View, gridLayoutManager: GridLayoutMana
     private val spanSizeLookup = gridLayoutManager.spanSizeLookup
     private val spanCount = gridLayoutManager.spanCount
 
+    init {
+        itemView.setOnClickListener { listener.onProductImagesClicked() }
+    }
+
     fun bind(item: ProductUiModel, itemCount: Int) {
-        itemView.viewTreeObserver.addOnPreDrawListener {
-            when (itemCount) {
-                1 -> {
-                    itemView.changeConstraint {
-                        setDimensionRatio(ivImage.id, "W, 1:1")
-                    }
+        if (itemView.height != 0) {
+            adjustSize(itemCount)
+        } else {
+            itemView.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+                override fun onPreDraw(): Boolean {
+                    adjustSize(itemCount)
+                    itemView.viewTreeObserver.removeOnPreDrawListener(this)
+                    return true
                 }
-                else -> {
-                    itemView.changeConstraint {
-                        val ratio = if (spanSizeLookup.getSpanSize(adapterPosition) == spanCount) {
-                            val widthRatio = itemView.height / ((itemView.height - spacing) / 2f)
-                            widthRatio.toString()
-                        } else "1"
-
-                        val finalRatio = "W, 1:$ratio"
-
-                        val constraint = getConstraint(ivImage.id)
-                        if (constraint.layout.dimensionRatio != finalRatio) setDimensionRatio(ivImage.id, finalRatio)
-                    }
-                }
-            }
-            true
+            })
         }
 
         ivImage.loadImage(item.imageUrl)
     }
 
+    private fun adjustSize(itemCount: Int) {
+        when (itemCount) {
+            1 -> {
+                itemView.changeConstraint {
+                    setDimensionRatio(ivImage.id, "W, 1:1")
+                }
+            }
+            else -> {
+                itemView.changeConstraint {
+                    val ratio = if (spanSizeLookup.getSpanSize(adapterPosition) == spanCount) {
+                        val widthRatio = itemView.height / ((itemView.height - spacing) / 2f)
+                        widthRatio.toString()
+                    } else "1"
+
+                    val finalRatio = "W, 1:$ratio"
+
+                    val constraint = getConstraint(ivImage.id)
+                    if (constraint.layout.dimensionRatio != finalRatio) setDimensionRatio(ivImage.id, finalRatio)
+                }
+            }
+        }
+    }
+
     companion object {
         val LAYOUT = R.layout.item_product_preview
+    }
+
+    interface Listener {
+
+        fun onProductImagesClicked()
     }
 }

@@ -79,6 +79,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
         viewModel.observableSelectedEtalase.observe(viewLifecycleOwner, Observer {
             etalaseDetailAdapter.setItemsAndAnimateChanges(it.productList)
             broadcastCoordinator.setupTitle(it.name)
+            tvInfo.text = getString(R.string.play_product_select_max_info, viewModel.maxProduct)
         })
     }
 

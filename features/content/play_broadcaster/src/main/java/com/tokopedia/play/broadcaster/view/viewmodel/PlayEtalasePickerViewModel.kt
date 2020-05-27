@@ -8,6 +8,7 @@ import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.view.uimodel.PlayEtalaseUiModel
 import com.tokopedia.play.broadcaster.view.uimodel.ProductUiModel
 import kotlinx.coroutines.*
+import org.jetbrains.annotations.TestOnly
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -32,6 +33,8 @@ class PlayEtalasePickerViewModel @Inject constructor(
     private val _observableSelectedEtalase = MutableLiveData<PlayEtalaseUiModel>()
 
     private val etalaseMap = mutableMapOf<Long, PlayEtalaseUiModel>()
+
+    val maxProduct = PlayBroadcastMocker.getMaxSelectedProduct()
 
     init {
         fetchEtalaseList()

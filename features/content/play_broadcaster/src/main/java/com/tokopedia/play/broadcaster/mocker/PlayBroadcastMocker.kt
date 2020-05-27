@@ -48,4 +48,6 @@ object PlayBroadcastMocker {
                 stock = (it + 1) * 10
         )
     }
+
+    fun getMaxSelectedProduct() = 15
 }
