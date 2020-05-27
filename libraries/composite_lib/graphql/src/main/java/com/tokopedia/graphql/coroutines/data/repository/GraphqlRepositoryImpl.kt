@@ -69,6 +69,7 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
     private fun GraphqlResponseInternal.toGraphqlResponse(requests: List<GraphqlRequest>): GraphqlResponse {
         val errors = mutableMapOf<Type, List<GraphqlError>>()
         val tempRequest = requests.regroup(indexOfEmptyCached)
+        mResults.clear()
 
         originalResponse?.forEachIndexed { index, jsonElement ->
             try {
@@ -88,7 +89,7 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
                 e.printStackTrace()
             }
         }
-
+?
         val graphqlResponse = GraphqlResponse(mResults, errors, mIsCachedData)
 
         if (mRefreshRequests.isEmpty()) {
