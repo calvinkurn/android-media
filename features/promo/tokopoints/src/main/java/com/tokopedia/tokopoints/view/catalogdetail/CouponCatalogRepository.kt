@@ -16,17 +16,10 @@ import javax.inject.Named
 @TokoPointScope
 class CouponCatalogRepository @Inject constructor(private val map: Map<String, String>,  @Named(CommonConstant.GQLQuery.TP_GQL_CURRENT_POINTS) val tp_gql_current_Point : String) : CatalogPurchaseRedeemptionRepository(map) {
 
-
-
-
     @Inject
     lateinit var mGetCouponDetail: MultiRequestGraphqlUseCase
-
     @Inject
     lateinit var mStartSendGift: MultiRequestGraphqlUseCase
-
-
-
 
     suspend fun getcatalogDetail(uniqueCatalogCode: String): GraphqlResponse = withContext(Dispatchers.IO) {
         val variables: MutableMap<String, Any> = HashMap()

@@ -5,6 +5,8 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -35,6 +37,7 @@ class ProductCheckoutViewHolder(
     private val btnAtc: UnifyButton = itemView.findViewById(R.id.btn_atc)
 
     private var multiProductAdapter: MultipleProductCardAdapter? = null
+    private val context by lazy { itemView.context }
 
     override fun bindProductView(element: NotificationItemViewBean) {
         val product = element.getAtcProduct() ?: return
@@ -108,16 +111,31 @@ class ProductCheckoutViewHolder(
         val product = element.getAtcProduct() ?: return
         btnCheckout.setOnClickListener {
             notificationItemMarkedClick(element)
-            listener.getAnalytic().trackAtcOnSingleProductClick(notification = element)
             if (product.stock < SINGLE_PRODUCT) {
                 listener.onItemStockHandlerClick(element)
             } else {
-                listener.addProductToCheckout(element.userInfo, element)
+                listener.addProductToCart(product) {
+                    // goto cart page
+                    routeCartPage()
+
+                    // tracker
+                    listener.getAnalytic().trackAtcOnSingleProductClick(
+                            notification = element,
+                            cartId = it.cartId
+                    )
+                }
             }
         }
 
         btnAtc.setOnClickListener {
+            notificationItemMarkedClick(element)
+
             listener.addProductToCart(product) {
+                // show toaster
+                val message = it.message.first()
+                listener.onSuccessAddToCart(message)
+
+                // tracker
                 trackAddToCartClicked(element, product, it)
             }
         }
@@ -130,10 +148,13 @@ class ProductCheckoutViewHolder(
         listener.getAnalytic().trackAtcOnClick(
                 templateKey = element.templateKey,
                 notificationId = element.notificationId,
-                userId = element.userInfo.userId,
                 product = product,
                 atc = data
         )
+    }
+
+    private fun routeCartPage() {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
     }
 
     companion object {
