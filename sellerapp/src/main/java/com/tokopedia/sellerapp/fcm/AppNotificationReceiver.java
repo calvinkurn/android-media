@@ -4,11 +4,11 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.moengage.push.PushManager;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.FCMCacheManager;
@@ -16,16 +16,17 @@ import com.tokopedia.core.gcm.INotificationAnalyticsReceiver;
 import com.tokopedia.core.gcm.NotificationAnalyticsReceiver;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
-import com.tokopedia.topchat.chatlist.view.ChatNotifInterface;
 import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 import com.tokopedia.sellerapp.SellerMainApplication;
+import com.tokopedia.topchat.chatlist.view.ChatNotifInterface;
 
 import java.util.Map;
-import timber.log.Timber;
+
 import rx.Observable;
+import timber.log.Timber;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
 

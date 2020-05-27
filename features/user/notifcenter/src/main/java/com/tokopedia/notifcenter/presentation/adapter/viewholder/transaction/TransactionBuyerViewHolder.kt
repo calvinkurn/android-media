@@ -4,8 +4,8 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.applink.ApplinkConst.PURCHASE_ORDER
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.notifcenter.GlobalNavConstant.MENUNGGU_PEMBAYARAN
-import com.tokopedia.notifcenter.GlobalNavConstant.PEMBELIAN
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.MENUNGGU_PEMBAYARAN
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.PEMBELIAN
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.viewbean.BuyerNotificationViewBean
 import com.tokopedia.notifcenter.listener.TransactionMenuListener

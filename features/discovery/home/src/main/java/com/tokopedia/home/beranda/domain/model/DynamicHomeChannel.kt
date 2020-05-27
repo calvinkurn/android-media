@@ -14,7 +14,6 @@ data class DynamicHomeChannel(
     var channels: List<Channels> = listOf()
 ) {
 
-
     data class Channels(
             @Expose
             @SerializedName("id")
@@ -102,7 +101,6 @@ data class DynamicHomeChannel(
             }
             return list
         }
-
 
         fun getEnhanceClickSprintSaleLegoHomePage(position: Int): Map<String, Any> {
             return DataLayer.mapOf(

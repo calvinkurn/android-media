@@ -87,6 +87,7 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             flightHomepageViewModel = viewModelProvider.get(FlightHomepageViewModel::class.java)
+            flightHomepageViewModel.init()
 
             arguments?.let {
                 if (it.getString(EXTRA_TRIP, "").isNotEmpty() &&

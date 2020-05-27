@@ -64,6 +64,8 @@ public interface ShipmentContract {
 
         void renderErrorPage(String message);
 
+        void onCacheExpired(String message);
+
         void renderCheckoutPage(boolean isInitialRender, boolean isReloadAfterPriceChangeHigher, boolean isFromPdp);
 
         void renderInsuranceCartData(InsuranceCartResponse insuranceCartResponse);
@@ -158,6 +160,8 @@ public interface ShipmentContract {
         boolean isTradeInByDropOff();
 
         void updateButtonPromoCheckout(PromoUiModel promoUiModel);
+
+        void resetCourier(ShipmentCartItemModel shipmentCartItemModel);
     }
 
     interface AnalyticsActionListener {
