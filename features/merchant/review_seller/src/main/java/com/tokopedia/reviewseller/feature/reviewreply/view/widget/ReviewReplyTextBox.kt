@@ -47,7 +47,7 @@ class ReviewReplyTextBox : BaseCustomView {
     }
 
     fun clickAddTemplate(listener: () -> Unit) {
-        btnAddTemplate.setOnClickListener {
+        btnAddTemplate?.setOnClickListener {
             listener.invoke()
         }
     }
