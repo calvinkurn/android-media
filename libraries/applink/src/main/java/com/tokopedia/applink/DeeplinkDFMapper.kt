@@ -349,7 +349,7 @@ object DeeplinkDFMapper : CoroutineScope {
         getSplitManager(context)?.let {
             val hasInstalled = it.installedModules.contains(moduleId)
             if (hasInstalled) {
-                trackDFUsageOnce(context.applicationContext, moduleId)
+                trackDFUsageOnce(context.applicationContext, moduleId, deeplink)
                 return null
             } else {
                 return UriUtil.buildUri(
@@ -362,7 +362,7 @@ object DeeplinkDFMapper : CoroutineScope {
         } ?: return null
     }
 
-    private fun trackDFUsageOnce(context: Context, moduleId: String) {
+    private fun trackDFUsageOnce(context: Context, moduleId: String, deeplink: String) {
         if (moduleId == DF_BASE || moduleId in dfUsageList) {
             return
         }
@@ -371,7 +371,7 @@ object DeeplinkDFMapper : CoroutineScope {
                 val sp = context.getSharedPreferences(SHARED_PREF_TRACK_DF_USAGE, Context.MODE_PRIVATE)
                 val hasAccessedModule = sp.getBoolean(moduleId, false)
                 if (!hasAccessedModule) {
-                    Timber.w("P1#DF_USE#%s", moduleId)
+                    Timber.w("P1#DFM_OPENED#%s;deeplink='%s'", moduleId, deeplink)
                     sp.edit().putBoolean(moduleId, true).apply()
                 }
                 dfUsageList.add(moduleId)

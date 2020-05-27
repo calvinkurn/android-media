@@ -47,7 +47,7 @@ data class DFConfig(
     @Expose
     val useSingletonService: Boolean = true,
 
-    @SerializedName("module_restrict_in_bg")
+    @SerializedName("module_restricted_in_bg")
     @Expose
     val moduleRestrictInBackground: List<String>? = emptyList(),
 
