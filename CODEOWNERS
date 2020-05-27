@@ -199,6 +199,7 @@
 /features/payment/common_payment                        @tokopedia/minion-yoda
 /features/digital/instant_debit_bca                     @tokopedia/minion-yoda
 /features/fintech/wallet                				@tokopedia/minion-yoda
+/features/payment/thankyou_native                		@tokopedia/minion-yoda
 
 
 /libraries/adapter_delegate/							@tokopedia/core-team
