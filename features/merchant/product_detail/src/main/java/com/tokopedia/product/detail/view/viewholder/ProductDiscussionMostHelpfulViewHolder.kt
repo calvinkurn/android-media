@@ -1,10 +1,8 @@
 package com.tokopedia.product.detail.view.viewholder
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
@@ -20,13 +18,11 @@ import kotlinx.android.synthetic.main.partial_dynamic_discussion_most_helpful_em
 import kotlinx.android.synthetic.main.partial_dynamic_discussion_most_helpful_single_question.view.*
 
 class ProductDiscussionMostHelpfulViewHolder(view: View,
-                                             private val listener: DynamicProductDetailListener,
-                                             private val userId: String,
-                                             private val sharedPrefs: SharedPreferences?) : AbstractViewHolder<ProductDiscussionMostHelpfulDataModel>(view) {
+                                             private val listener: DynamicProductDetailListener
+) : AbstractViewHolder<ProductDiscussionMostHelpfulDataModel>(view) {
 
     companion object {
         const val SINGLE_QUESTION_TRACKING = "1"
-        const val SHOW_LABEL_SHARED_PREFERENCE_KEY = "discussion_show_new_%s"
         private const val EMPTY_TALK_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/talk_product_detail_empty.png"
         val LAYOUT = R.layout.item_dynamic_discussion_most_helpful
     }
@@ -131,9 +127,9 @@ class ProductDiscussionMostHelpfulViewHolder(view: View,
     private fun showTitle(totalQuestion: Int, type: String, name: String, numberOfThreadsShown: String) {
         itemView.apply {
             productDiscussionMostHelpfulTitle.text = String.format(getString(R.string.product_detail_discussion_title), totalQuestion)
-            if(isFirstTimeSeeDiscussion()) {
+            if(listener.isFirstTimeSeeDiscussion()) {
                 productDetailDiscussionNewLabel.show()
-                setFirstTimeSeeDiscussion()
+                listener.setFirstTimeSeeDiscussion()
             }
             productDiscussionMostHelpfulTitle.show()
             productDiscussionMostHelpfulSeeAll.setOnClickListener {
@@ -277,16 +273,6 @@ class ProductDiscussionMostHelpfulViewHolder(view: View,
 
     private fun hideLocalLoad() {
         itemView.productDiscussionLocalLoadLayout.hide()
-    }
-
-    private fun isFirstTimeSeeDiscussion(): Boolean {
-        return sharedPrefs?.getBoolean(String.format(SHOW_LABEL_SHARED_PREFERENCE_KEY, userId), true) ?: false
-    }
-
-    private fun setFirstTimeSeeDiscussion() {
-        sharedPrefs?.let {
-            it.edit().putBoolean(String.format(SHOW_LABEL_SHARED_PREFERENCE_KEY, userId), false).apply()
-        }
     }
 
 }

@@ -31,7 +31,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductLastSeenDataMode
 import com.tokopedia.product.detail.data.model.datamodel.ProductOpenShopDataModel
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
-import com.tokopedia.product.detail.data.util.DynamicProductDetailLastAction
+import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkLastAction
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.usecase.*
@@ -173,7 +173,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var buttonActionText: String = ""
     var tradeinDeviceId: String = ""
     var shippingMinimumPrice: Int = getDynamicProductInfoP1?.basic?.getDefaultOngkirInt() ?: 30000
-    var lastAction: DynamicProductDetailLastAction? = null
+    var talkLastAction: DynamicProductDetailTalkLastAction? = null
     private var forceRefresh: Boolean = false
     private var shopDomain: String? = null
     private var submitTicketSubscription: Subscription? = null
@@ -686,8 +686,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    fun updateLastAction(lastAction: DynamicProductDetailLastAction) {
-        this.lastAction = lastAction
+    fun updateLastAction(talkLastAction: DynamicProductDetailTalkLastAction) {
+        this.talkLastAction = talkLastAction
     }
 
     private fun getProductInfoP2ShopAsync(shopId: Int, productId: String,

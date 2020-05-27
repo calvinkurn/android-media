@@ -51,6 +51,8 @@ interface DynamicProductDetailListener {
     fun goToTalkReading(componentTrackDataModel: ComponentTrackDataModel, numberOfThreadsShown: String)
     fun goToTalkReply(questionId: String, componentTrackDataModel: ComponentTrackDataModel, numberOfThreadsShown: String)
     fun onUserDetailsClicked(userId: String)
+    fun isFirstTimeSeeDiscussion(): Boolean
+    fun setFirstTimeSeeDiscussion()
 
     /**
      * ProductReviewViewHolder

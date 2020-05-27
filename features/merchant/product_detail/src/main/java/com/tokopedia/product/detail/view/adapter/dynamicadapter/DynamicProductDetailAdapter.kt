@@ -136,6 +136,9 @@ class DynamicProductDetailAdapter(
     fun notifyDiscussion(productDiscussionMostHelpfulDataModel: ProductDiscussionMostHelpfulDataModel?) {
         productDiscussionMostHelpfulDataModel?.let {
             val indexOfDiscussion = list.indexOf(it)
+            if(indexOfDiscussion == -1) {
+                return
+            }
             notifyItemChanged(indexOfDiscussion)
         }
     }

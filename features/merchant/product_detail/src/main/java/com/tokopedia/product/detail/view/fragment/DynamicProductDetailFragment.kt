@@ -6,12 +6,12 @@ import android.app.Application
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.util.SparseIntArray
 import android.view.*
 import android.view.animation.AlphaAnimation
@@ -229,11 +229,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private lateinit var topAdsDetailSheet: TopAdsDetailSheet
     private var shouldShowCartAnimation = false
     private var loadingProgressDialog: ProgressDialog? = null
-    private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this, this, viewModel.userId, context?.getSharedPreferences("${this.javaClass.simpleName}.pref", Context.MODE_PRIVATE)) }
+    private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this, this) }
     private val dynamicAdapter by lazy { DynamicProductDetailAdapter(adapterFactory, this) }
     private var menu: Menu? = null
     private var tradeinDialog: ProductAccessRequestDialogFragment? = null
     private val recommendationCarouselPositionSavedState = SparseIntArray()
+    private var talkSharedPrefs: SharedPreferences? = null
 
     private val irisSessionId by lazy {
         context?.let { IrisSession(it).getSessionId() } ?: ""
@@ -299,6 +300,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
         context?.let {
             pdpHashMapUtil = DynamicProductDetailHashMap(it, mapOf(ProductDetailConstant.PRODUCT_SNAPSHOT to ProductSnapshotDataModel()))
+            talkSharedPrefs = it.getSharedPreferences("${this.javaClass.simpleName}.pref", Context.MODE_PRIVATE)
         }
         setHasOptionsMenu(true)
     }
@@ -455,9 +457,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 shouldRenderSticky = true
                 updateStickyContent()
                 if(resultCode == Activity.RESULT_OK && viewModel.userSessionInterface.isLoggedIn) {
-                    when(viewModel.lastAction) {
-                        is DynamicProductDetailGoToWriteDiscussion -> goToWriteActivity()
-                        is DynamicProductDetailGoToReplyDiscussion -> goToReplyActivity((viewModel.lastAction as DynamicProductDetailGoToReplyDiscussion).questionId)
+                    when(viewModel.talkLastAction) {
+                        is DynamicProductDetailTalkGoToWriteDiscussion -> goToWriteActivity()
+                        is DynamicProductDetailTalkGoToReplyDiscussion -> goToReplyActivity((viewModel.talkLastAction as DynamicProductDetailTalkGoToReplyDiscussion).questionId)
                     }
                 }
             }
@@ -957,7 +959,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
             goToWriteActivity()
         })
-        viewModel.updateLastAction(DynamicProductDetailGoToWriteDiscussion)
+        viewModel.updateLastAction(DynamicProductDetailTalkGoToWriteDiscussion)
     }
 
     override fun goToTalkReading(componentTrackDataModel: ComponentTrackDataModel, numberOfThreadsShown: String) {
@@ -974,11 +976,19 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
             goToReplyActivity(questionId)
         })
-        viewModel.updateLastAction(DynamicProductDetailGoToReplyDiscussion(questionId))
+        viewModel.updateLastAction(DynamicProductDetailTalkGoToReplyDiscussion(questionId))
     }
 
     override fun onUserDetailsClicked(userId: String) {
         goToProfileActivity(userId)
+    }
+
+    override fun isFirstTimeSeeDiscussion(): Boolean {
+        return talkSharedPrefs?.getBoolean(String.format(ProductDetailConstant.SHOW_LABEL_SHARED_PREFERENCE_KEY, viewModel.userId), true) ?: false
+    }
+
+    override fun setFirstTimeSeeDiscussion() {
+        talkSharedPrefs?.edit()?.putBoolean(String.format(ProductDetailConstant.SHOW_LABEL_SHARED_PREFERENCE_KEY, viewModel.userId), false)?.apply()
     }
 
     private fun disscussionClicked() {

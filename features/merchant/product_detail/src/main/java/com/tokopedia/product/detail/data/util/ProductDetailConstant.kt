@@ -187,4 +187,5 @@ object ProductDetailConstant {
     const val OVO_INSUFFICIENT_BALANCE_STATUS = 2;
 
     const val ENABLE_NEW_DISCUSSION_REMOTE_CONFIG = "android_enable_new_discussion"
+    const val SHOW_LABEL_SHARED_PREFERENCE_KEY = "discussion_show_new_%s"
 }
