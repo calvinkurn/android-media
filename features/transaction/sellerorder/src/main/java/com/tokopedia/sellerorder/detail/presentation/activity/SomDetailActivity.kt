@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.detail.presentation.activity
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -23,6 +24,12 @@ import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailFragment
  */
 class SomDetailActivity: BaseSimpleActivity(), HasComponent<SomDetailComponent> {
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        setWhiteStatusBarBackground()
+    }
 
     override fun getNewFragment(): Fragment? {
         var bundle = Bundle()
@@ -59,13 +66,14 @@ class SomDetailActivity: BaseSimpleActivity(), HasComponent<SomDetailComponent> 
                 .somComponent(SomComponentInstance.getSomComponent(application))
                 .build()
 
-    override fun setupLayout(savedInstanceState: Bundle?) {
-        setWhiteStatusBarBackground()
-    }
-
     private fun setWhiteStatusBarBackground() {
         if (GlobalConfig.isSellerApp() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             setStatusBarColor(Color.WHITE)
         }
+    }
+
+    @SuppressLint("MissingSuperCall")
+    override fun onSaveInstanceState(outState: Bundle) {
+        // Do not put super, avoid crash "Can not perform this action after onSaveInstanceState"
     }
 }
