@@ -311,7 +311,9 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
                     feedbackUiModel?.feedbackID.orZero().toString())
         }
         btnAddTemplate?.setOnClickListener {
-            initBottomSheetAddTemplate()
+            reviewReplyTextBoxWidget?.clickAddTemplate {
+                initBottomSheetAddTemplate()
+            }
         }
     }
 
@@ -343,8 +345,12 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
 
     private fun initBottomSheetAddTemplate() {
         val titleBottomSheet = getString(R.string.add_template_reply_label)
-        val bottomSheet = viewModelReviewReply?.let { AddTemplateBottomSheet(activity, titleBottomSheet, it, userSession) }
-        bottomSheet?.showDialog()
+        val bottomSheet = AddTemplateBottomSheet(activity, titleBottomSheet, ::submitTemplateReview)
+        bottomSheet.showDialog()
+    }
+
+    private fun submitTemplateReview(title: String, desc: String) {
+        viewModelReviewReply?.insertTemplateReviewReply(userSession.shopId.toIntOrZero(), title, desc)
     }
 
     private fun initBottomSheetReplyReview() {

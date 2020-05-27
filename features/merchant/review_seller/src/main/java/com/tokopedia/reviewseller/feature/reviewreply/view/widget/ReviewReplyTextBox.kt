@@ -6,7 +6,6 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.reviewseller.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_reply_textbox.view.*
@@ -30,7 +29,6 @@ class ReviewReplyTextBox : BaseCustomView {
     }
 
     fun setReplyAction() {
-        btnAddTemplate?.show()
         replyEditText?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
 
@@ -46,5 +44,11 @@ class ReviewReplyTextBox : BaseCustomView {
                 }
             }
         })
+    }
+
+    fun clickAddTemplate(listener: () -> Unit) {
+        btnAddTemplate.setOnClickListener {
+            listener.invoke()
+        }
     }
 }
