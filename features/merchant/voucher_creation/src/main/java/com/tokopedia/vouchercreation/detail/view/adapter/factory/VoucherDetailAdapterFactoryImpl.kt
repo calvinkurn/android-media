@@ -44,6 +44,8 @@ class VoucherDetailAdapterFactoryImpl(
 
     override fun type(model: PostVoucherUiModel): Int = PostVoucherViewHolder.RES_LAYOUT
 
+    override fun type(model: DetailLoadingStateUiModel): Int = DetailLoadingStateViewHolder.RES_LAYOUT
+
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             HeaderViewHolder.RES_LAYOUT -> HeaderViewHolder(parent) {
@@ -76,6 +78,8 @@ class VoucherDetailAdapterFactoryImpl(
                 voucherDetailListener.onInfoContainerCtaClick(it)
             }
             PostVoucherViewHolder.RES_LAYOUT -> PostVoucherViewHolder(parent, activity)
+            DetailLoadingStateViewHolder.RES_LAYOUT -> DetailLoadingStateViewHolder(parent)
+
             else -> super.createViewHolder(parent, type)
         }
     }

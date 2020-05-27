@@ -108,7 +108,7 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
     }
 
     private fun setupView() = view?.run {
-
+        viewModel.getVoucherDetail(voucherId)
     }
 
     private fun showShareBottomSheet() {

@@ -49,6 +49,13 @@
     <dimen name="mvc_download_voucher_instastory_width">100dp</dimen>
     <dimen name="mvc_download_voucher_banner_width">215dp</dimen>
 
+    <!-- shimmer -->
+    <dimen name="mvc_detail_shimmer_extra_long_width">185dp</dimen>
+    <dimen name="mvc_detail_shimmer_long_width">97dp</dimen>
+    <dimen name="mvc_detail_shimmer_medium_width">73dp</dimen>
+    <dimen name="mvc_detail_shimmer_small_width">54dp</dimen>
+    <dimen name="mvc_detail_shimmer_tiny_width">32dp</dimen>
+
     <dimen name="mvc_create_target_description_line_spacing">4sp</dimen>
     <dimen name="mvc_voucher_preview_value_text_size">13sp</dimen>
     <dimen name="mvc_voucher_preview_scale_text_size">6sp</dimen>
