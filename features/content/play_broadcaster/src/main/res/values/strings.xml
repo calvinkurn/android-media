@@ -10,7 +10,7 @@
 
     <string name="play_product_stock_amount">Stok: %d</string>
     <string name="play_product_select_max_info">Pilih maks. %d produk</string>
-
+    <string name="play_empty_stock">Stok Habis</string>
 
     <string name="play_default_title">Buat Live Streaming</string>
     <string name="play_allow_title">Aktifkan kamera &amp; mikrofon</string>

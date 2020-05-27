@@ -3,6 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:background="@color/Blue_B600"
     >
 
     <FrameLayout
@@ -29,7 +31,6 @@
         android:layout_height="@dimen/layout_lvl0"
         android:focusable="true"
         android:clickable="true"
-        android:background="@drawable/bottomsheet_background"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -40,6 +41,9 @@
             android:id="@+id/bottom_sheet_header"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             layout="@layout/layout_bottom_sheet_header"/>
 
         <FrameLayout
