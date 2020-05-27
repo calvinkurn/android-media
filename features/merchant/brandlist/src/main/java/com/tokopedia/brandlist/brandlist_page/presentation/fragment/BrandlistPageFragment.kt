@@ -30,6 +30,7 @@ import com.tokopedia.brandlist.brandlist_page.di.DaggerBrandlistPageComponent
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPageAdapter
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.BrandlistPageAdapterTypeFactory
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.AllBrandNotFoundViewHolder
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.AllBrandViewHolder
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.adapter.BrandlistHeaderBrandInterface
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.*
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.MarginItemDecoration
@@ -82,6 +83,7 @@ class BrandlistPageFragment :
     private var categoryName = ""
     private var totalBrandsNumber: Int = 0
     private var selectedChip: Int = DEFAULT_SELECTED_CHIPS
+    private var selectedCategoryName: String = ""
     private var stateLoadBrands: String = LoadAllBrandState.LOAD_INITIAL_ALL_BRAND
     private var isLoadMore: Boolean = false
     private val defaultBrandLetter: String = ""
@@ -130,6 +132,21 @@ class BrandlistPageFragment :
         adapter = BrandlistPageAdapter(adapterTypeFactory, this)
         recyclerView?.adapter = adapter
         recyclerView?.addItemDecoration(MarginItemDecoration(resources.getDimension(R.dimen.dp_16).toInt()))
+//        layoutManager?.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+//            override fun getSpanSize(position: Int): Int {
+//                val _visitables = adapter?.getVisitables()
+//                _visitables?.let {
+//                    if (_visitables[position].type(adapterTypeFactory) == AllBrandViewHolder.LAYOUT) {
+//
+//                    } else if () {
+//
+//                    } else {
+//                        return BRANDLIST_GRID_SPAN_COUNT
+//                    }
+//                }
+//                return BRANDLIST_GRID_SPAN_COUNT
+//            }
+//        }
         layoutManager?.spanSizeLookup = adapter?.spanSizeLookup
 
         recyclerView?.addOnScrollListener(endlessScrollListener)
@@ -413,7 +430,12 @@ class BrandlistPageFragment :
     }
 
     override fun onClickedChip(position: Int, chipName: String, recyclerViewState: Parcelable?) {
+        if (position == selectedChip && categoryName == selectedCategoryName) {
+            return
+        }
+
         selectedChip = position
+        selectedCategoryName = categoryName
         recyclerViewLastState = recyclerViewState
         isChipSelected = true
 

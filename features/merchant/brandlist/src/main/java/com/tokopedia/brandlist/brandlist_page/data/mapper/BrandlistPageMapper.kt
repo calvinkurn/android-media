@@ -78,13 +78,20 @@ class BrandlistPageMapper {
                 adapter?.notifyItemChanged(ALL_BRAND_POSITION, AllbrandNotFoundViewModel())
 
                 adapter?.let {
-                    val totalData: Int = it.getVisitables().size ?: 0
-                    val _totalLoadingViewModel: Int = it.getVisitables().filterIsInstance<LoadingModel>().size
-                            ?: 0
+                    val _totalLoadingViewModel: Int = it.getVisitables().filterIsInstance<LoadingModel>().size ?: 0
+                    val _totalAllBrandViewModel: Int = it.getVisitables().filterIsInstance<AllBrandViewModel>().size ?: 0
 
-                    if (_totalLoadingViewModel > 0) {
-                        val _totalUpdated = totalData - (ALL_BRAND_POSITION + 1)
-                        it.getVisitables().subList(ALL_BRAND_POSITION + 1, totalData).clear()
+                    if (_totalLoadingViewModel > 0 && it.getVisitables().size > ALL_BRAND_POSITION) {
+                        val _totalData: Int = it.getVisitables().size ?: 0
+                        val _totalUpdated = _totalData - (ALL_BRAND_POSITION + 1)
+                        it.getVisitables().subList(ALL_BRAND_POSITION + 1, _totalData).clear()
+                        it.notifyItemRangeRemoved(ALL_BRAND_POSITION + 1, _totalUpdated)
+                    }
+
+                    if (_totalAllBrandViewModel > 0 && it.getVisitables().size > ALL_BRAND_POSITION) {
+                        val _totalData: Int = it.getVisitables().size ?: 0
+                        val _totalUpdated = _totalData - (ALL_BRAND_POSITION + 1)
+                        it.getVisitables().subList(ALL_BRAND_POSITION + 1, _totalData).clear()
                         it.notifyItemRangeRemoved(ALL_BRAND_POSITION + 1, _totalUpdated)
                     }
                 }
@@ -107,6 +114,13 @@ class BrandlistPageMapper {
                         }
                         it.notifyItemRangeRemoved(ALL_BRAND_POSITION, it.getVisitables().size)
                         it.notifyItemChanged(ALL_BRAND_POSITION)
+
+                        val _totalLoadingViewModel: Int = it.getVisitables().filterIsInstance<LoadingModel>().size ?: 0
+                        if (_totalLoadingViewModel > 0 && it.getVisitables().size > ALL_BRAND_POSITION) {
+                            val _position = it.getVisitables().indexOf(LoadingModel())
+                            it.getVisitables().remove(LoadingModel())
+                            it.notifyItemRangeRemoved(_position, _totalLoadingViewModel)
+                        }
                     }
                 } else {
                     adapter?.let {
@@ -126,6 +140,13 @@ class BrandlistPageMapper {
                         }
                         it.notifyItemRangeRemoved(ALL_BRAND_POSITION, it.getVisitables().size)
                         it.notifyItemRangeInserted(ALL_BRAND_POSITION, allBrand.brands.size)
+
+                        val _totalLoadingViewModel: Int = it.getVisitables().filterIsInstance<LoadingModel>().size ?: 0
+                        if (_totalLoadingViewModel > 0 && it.getVisitables().size > ALL_BRAND_POSITION) {
+                            val _position = it.getVisitables().indexOf(LoadingModel())
+                            it.getVisitables().remove(LoadingModel())
+                            it.notifyItemRangeRemoved(_position, _totalLoadingViewModel)
+                        }
                     }
                 } else {
                     adapter?.let {
@@ -139,6 +160,15 @@ class BrandlistPageMapper {
             } else if (stateLoadBrands == LoadAllBrandState.LOAD_INITIAL_ALL_BRAND) {
                 getLoadMoreData(allBrand, listener, adapter)
             }
+
+//            adapter?.let {
+//                val _totalLoadingViewModel: Int = it.getVisitables().filterIsInstance<LoadingModel>().size ?: 0
+//                if (_totalLoadingViewModel > 0 && it.getVisitables().size > ALL_BRAND_POSITION) {
+//                    val _position = it.getVisitables().indexOf(LoadingModel())
+//                    it.getVisitables().remove(LoadingModel())
+//                    it.notifyItemRangeRemoved(_position, _totalLoadingViewModel)
+//                }
+//            }
         }
 
         private fun getLoadMoreData(allBrand: OfficialStoreAllBrands,
