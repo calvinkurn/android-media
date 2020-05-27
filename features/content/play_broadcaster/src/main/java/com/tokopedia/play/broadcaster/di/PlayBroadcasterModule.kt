@@ -32,6 +32,11 @@ class PlayBroadcasterModule {
 
     @Provides
     @PlayBroadcasterScope
+    @Named(PlayBroadcastDispatcher.COMPUTATION)
+    fun provideComputationDispatcher(): CoroutineDispatcher = Dispatchers.Default
+
+    @Provides
+    @PlayBroadcasterScope
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }

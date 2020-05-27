@@ -12,4 +12,8 @@ class PlayUserFollowerViewHolder(itemView: View) : BaseViewHolder(itemView) {
     fun bind(item: FollowerUiModel.User) {
 
     }
+
+    companion object {
+        const val LAYOUT = 0
+    }
 }

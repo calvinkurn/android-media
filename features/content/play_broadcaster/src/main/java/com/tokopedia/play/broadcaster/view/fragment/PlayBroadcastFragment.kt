@@ -20,7 +20,6 @@ import com.tokopedia.play.broadcaster.di.PlayBroadcasterModule
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import javax.inject.Inject
 
-
 /**
  * Created by mzennis on 19/05/20.
  */
