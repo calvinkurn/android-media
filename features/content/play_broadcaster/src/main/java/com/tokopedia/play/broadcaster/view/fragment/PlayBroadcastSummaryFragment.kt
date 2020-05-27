@@ -70,7 +70,7 @@ class PlayBroadcastSummaryFragment : BaseDaggerFragment() {
             ticker_live_summary.setHtmlDescription(summaryUiModel.tickerContent.tickerDescription)
         } else ticker_live_summary.hide()
 
-        iv_play_summary_bg.loadImage(summaryUiModel.coverImage)
+        iv_play_summary_cover.loadImage(summaryUiModel.coverImage)
 
         tv_play_summary_live_duration.text = summaryUiModel.liveDuration
 
