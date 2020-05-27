@@ -77,13 +77,10 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val productIds = arguments?.getString(PRODUCT_ID) ?: ""
-        if (productIds.isNotEmpty()) {
-            productId = productIds.substring(1, productIds.length - 1)
-        }
         val groupId = arguments?.getInt(GROUP_ID)
         originalList = arguments?.getStringArrayList(ORIGINAL_LIST)!!
         minSuggestedBid = arguments?.getInt(MIN_SUGGESTION)!!
-        viewModel.getSuggestionKeyword(productId, groupId, this::onSuccessSuggestion)
+        viewModel.getSuggestionKeyword(productIds, groupId, this::onSuccessSuggestion)
     }
 
     private fun onKeywordSelected(pos: Int) {
