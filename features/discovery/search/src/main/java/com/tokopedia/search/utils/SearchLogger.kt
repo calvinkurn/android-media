@@ -42,6 +42,6 @@ internal open class SearchLogger {
 
     protected open fun timberLogWarning(message: String, stackTrace: String, context: Context) {
         Timber.w(DISCOVERY_SEARCH_ERROR_TAG, message, stackTrace)
-        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        Toast.makeText(context, stackTrace, Toast.LENGTH_LONG).show()
     }
 }
