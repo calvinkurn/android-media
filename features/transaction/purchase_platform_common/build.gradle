@@ -39,6 +39,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.irisSession)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.graphql)
 
     implementation rootProject.ext.firebase.core
 
@@ -52,7 +53,6 @@ dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.network
