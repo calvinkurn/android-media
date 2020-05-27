@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.reviewseller.common.util.CoroutineDispatcherProvider
 import com.tokopedia.reviewseller.feature.reviewreply.domain.GetReviewTemplateListUseCase
 import com.tokopedia.reviewseller.feature.reviewreply.domain.InsertSellerResponseUseCase
+import com.tokopedia.reviewseller.feature.reviewreply.domain.InsertTemplateReviewReplyUseCase
 import com.tokopedia.reviewseller.feature.reviewreply.domain.UpdateSellerResponseUseCase
 import com.tokopedia.reviewseller.feature.reviewreply.util.mapper.SellerReviewReplyMapper
 import com.tokopedia.reviewseller.feature.reviewreply.view.model.InsertReplyResponseUiModel
@@ -25,7 +26,8 @@ class SellerReviewReplyViewModel @Inject constructor(
         private val dispatcherProvider: CoroutineDispatcherProvider,
         private val getReviewTemplateListUseCase: GetReviewTemplateListUseCase,
         private val insertSellerResponseUseCase: InsertSellerResponseUseCase,
-        private val updateSellerResponseUseCase: UpdateSellerResponseUseCase)
+        private val updateSellerResponseUseCase: UpdateSellerResponseUseCase,
+        private val insertTemplateReviewReplyUseCase: InsertTemplateReviewReplyUseCase)
     : BaseViewModel(dispatcherProvider.main()) {
 
     private val DATE_REVIEW_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
@@ -72,6 +74,21 @@ class SellerReviewReplyViewModel @Inject constructor(
             _insertReviewReply.postValue(Success(responseInsertReply))
         }, onError = {
             _insertReviewReply.postValue(Fail(it))
+        })
+    }
+
+    fun insertTemplateReviewReply(shopID: Int, title: String, message: String) {
+        launchCatchError(block = {
+            val responseInsertTemplate = withContext(dispatcherProvider.io()) {
+                insertTemplateReviewReplyUseCase.params = InsertTemplateReviewReplyUseCase.createParams(
+                        shopID,
+                        title,
+                        message)
+                SellerReviewReplyMapper.mapToInsertTemplateReplyUiModel(insertTemplateReviewReplyUseCase.executeOnBackground())
+            }
+            _insertTemplateReply.postValue(Success(responseInsertTemplate))
+        }, onError = {
+            _insertTemplateReply.postValue(Fail(it))
         })
     }
 
