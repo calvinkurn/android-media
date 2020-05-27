@@ -4,38 +4,37 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.di.DaggerPlayBroadcasterComponent
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayFollowerItemDecoration
 import com.tokopedia.play.broadcaster.view.adapter.PlayFollowersAdapter
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayPrepareBroadcastCreatePromoBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayPrepareBroadcastViewModel
+import com.tokopedia.unifycomponents.UnifyButton
 import javax.inject.Inject
 
 /**
  * Created by jegul on 20/05/20
  */
-class PlayPrepareBroadcastFragment : BaseDaggerFragment() {
+class PlayPrepareBroadcastFragment @Inject constructor(
+        private val viewModelFactory: ViewModelFactory,
+        private val fragmentFactory: FragmentFactory
+) : TkpdBaseV4Fragment() {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
     private lateinit var parentViewModel: PlayPrepareBroadcastViewModel
 
+    private lateinit var btnSetup: UnifyButton
     private lateinit var rvFollowers: RecyclerView
 
     private val followersAdapter = PlayFollowersAdapter()
 
     override fun getScreenName(): String = "Play Prepare Page"
-
-    override fun initInjector() {
-        DaggerPlayBroadcasterComponent.create()
-                .inject(this)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,19 +58,31 @@ class PlayPrepareBroadcastFragment : BaseDaggerFragment() {
     }
 
     private fun initView(view: View) {
-        with(view) {
+        with (view) {
+            btnSetup = findViewById(R.id.btn_setup)
             rvFollowers = findViewById(R.id.rv_followers)
         }
     }
 
     private fun setupView(view: View) {
-        rvFollowers.adapter = followersAdapter
-        rvFollowers.viewTreeObserver.addOnPreDrawListener {
-            if (rvFollowers.itemDecorationCount == 0)
-                rvFollowers.addItemDecoration(PlayFollowerItemDecoration())
-
-            true
+        btnSetup.setOnClickListener {
+            openBroadcastSetupPage()
         }
+
+        rvFollowers.adapter = followersAdapter
+        rvFollowers.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+            override fun onPreDraw(): Boolean {
+                if (rvFollowers.itemDecorationCount == 0) rvFollowers.addItemDecoration(PlayFollowerItemDecoration())
+                rvFollowers.viewTreeObserver.removeOnPreDrawListener(this)
+                return true
+            }
+        })
+    }
+
+    private fun openBroadcastSetupPage() {
+        val setupClass = PlayBroadcastSetupBottomSheet::class.java
+        val setupFragment = fragmentFactory.instantiate(setupClass.classLoader!!, setupClass.name) as PlayBroadcastSetupBottomSheet
+        setupFragment.show(childFragmentManager)
     }
 
     //region observe
@@ -85,11 +96,4 @@ class PlayPrepareBroadcastFragment : BaseDaggerFragment() {
         })
     }
     //endregion
-
-    companion object {
-
-        fun newInstance(): PlayPrepareBroadcastFragment {
-            return PlayPrepareBroadcastFragment()
-        }
-    }
 }
