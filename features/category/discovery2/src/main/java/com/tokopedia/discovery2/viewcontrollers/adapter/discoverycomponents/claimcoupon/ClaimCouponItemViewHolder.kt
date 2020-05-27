@@ -12,8 +12,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.ClaimCouponConstant
 import com.tokopedia.discovery2.GenerateUrl
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
@@ -28,30 +30,31 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         claimCouponItemViewModel = discoveryBaseViewModel as ClaimCouponItemViewModel
+        claimCouponItemViewModel.getComponentData().observe(fragment.viewLifecycleOwner, Observer {
+            setData(it, claimCouponItemViewModel.getIsDouble())
+        })
 
-        if (claimCouponItemViewModel.getIsDouble()) {
+    }
+
+    private fun setData(dataItem: DataItem?, isDouble:Boolean) {
+        if (isDouble) {
             claimCouponImageDouble.show()
             claimCouponImage.hide()
-            claimCouponItemViewModel.getComponentData().observe(fragment.viewLifecycleOwner, Observer {
-                ImageHandler.LoadImage(claimCouponImageDouble, it.smallImageUrlMobile)
-            })
+            ImageHandler.LoadImage(claimCouponImageDouble, dataItem?.smallImageUrlMobile)
         } else {
             claimCouponImageDouble.hide()
             claimCouponImage.show()
-            claimCouponItemViewModel.getComponentData().observe(fragment.viewLifecycleOwner, Observer {
-                ImageHandler.LoadImage(claimCouponImage, it.imageUrlMobile)
-            })
+            ImageHandler.LoadImage(claimCouponImage, dataItem?.imageUrlMobile)
         }
 
-        claimCouponItemViewModel.getClaimStatus().observe(fragment.viewLifecycleOwner, Observer { status ->
-            setBtn(status)
-            itemView.setOnClickListener {
-                claimCouponItemViewModel.setClick(itemView.context, status)
-
-            }
-        })
+        setBtn(dataItem?.status)
+        itemView.setOnClickListener {
+            (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventClickCoupon(dataItem, adapterPosition, isDouble)
+            claimCouponItemViewModel.setClick(itemView.context, dataItem?.status)
+        }
 
         claimBtn.setOnClickListener {
+            (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickClaimCoupon(dataItem?.title, dataItem?.slug)
             claimCouponItemViewModel.redeemCoupon()
             claimCouponItemViewModel.getRedeemCouponCode().observe(fragment.viewLifecycleOwner, Observer { item ->
                 if (!item.isNullOrEmpty() && item != ClaimCouponConstant.NOT_LOGGEDIN) {
@@ -68,11 +71,10 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
             })
 
         }
-
     }
 
-    private fun setBtn(status: String) {
-        claimBtn.text = if (status == ClaimCouponConstant.OUT_OF_STOCK)
+    private fun setBtn(status: String?) {
+        claimBtn.text = if (status == ClaimCouponConstant.OUT_OF_STOCK || status == null)
             ClaimCouponConstant.UNCLAIMED
         else
             status

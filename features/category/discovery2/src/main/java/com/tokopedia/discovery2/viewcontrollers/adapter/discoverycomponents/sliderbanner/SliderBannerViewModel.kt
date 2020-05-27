@@ -12,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
-class SliderBannerViewModel(val application: Application, components: ComponentsItem) : DiscoveryBaseViewModel(), CoroutineScope {
+class SliderBannerViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
     private val componentsData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val listData: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
@@ -23,7 +23,7 @@ class SliderBannerViewModel(val application: Application, components: Components
     init {
         componentsData.value = components
         components.data?.let {
-            listData.value = DiscoveryDataMapper.mapListToComponentList(it, ComponentNames.SingleBanner.componentName)
+            listData.value = DiscoveryDataMapper.mapListToComponentList(it, ComponentNames.SingleBanner.componentName, components.name, position)
         }
     }
 

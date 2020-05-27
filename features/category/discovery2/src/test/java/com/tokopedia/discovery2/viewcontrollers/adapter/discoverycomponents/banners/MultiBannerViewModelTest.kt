@@ -29,7 +29,7 @@ class MultiBannerViewModelTest {
     private val multiBannerDataUseCase: CheckPushStatusUseCase = mockk(relaxed = true)
 
     private val viewModel: MultiBannerViewModel by lazy {
-        spyk(MultiBannerViewModel(application, componentsItem))
+        spyk(MultiBannerViewModel(application, componentsItem, 0))
     }
 
 
@@ -65,7 +65,7 @@ class MultiBannerViewModelTest {
 
         viewModel.onBannerClicked(0)
 
-        assertTrue(viewModel.getshowLoginData().value ?: false)
+        assertTrue(viewModel.getShowLoginData().value ?: false)
 
     }
 
