@@ -11,6 +11,7 @@ import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -191,7 +192,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var _animator: Animator? = null
     private val ANIMATION_TYPE = "translationY"
     private val ANIMATION_DURATION_IN_MILIS = 1000L
-    private val TRANSLATION_LENGTH = 1800f
+    //    private val TRANSLATION_LENGTH = 1800f
+    private var TRANSLATION_LENGTH = 0f
     private var isKeyboardOpened = false
 
     companion object {
@@ -527,29 +529,29 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         return
                     }
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        _animator?.end()
-                        ObjectAnimator.ofFloat(llPromoCheckout, ANIMATION_TYPE, 0f).apply {
-                            duration = ANIMATION_DURATION_IN_MILIS
-                            addListener(object : Animator.AnimatorListener {
-                                override fun onAnimationRepeat(p0: Animator?) {
-                                }
-
-                                override fun onAnimationCancel(p0: Animator?) {
-                                    isButtonAnimating = false
-                                }
-
-                                override fun onAnimationStart(animation: Animator) {
-                                    isButtonAnimating = true
-                                }
-
-                                override fun onAnimationEnd(animation: Animator) {
-                                    isButtonAnimating = false
-                                }
-                            })
-                            if (!isButtonAnimating) {
-                                start()
-                            }
-                        }
+//                        _animator?.end()
+//                        ObjectAnimator.ofFloat(llPromoCheckout, ANIMATION_TYPE, 0f).apply {
+//                            duration = ANIMATION_DURATION_IN_MILIS
+//                            addListener(object : Animator.AnimatorListener {
+//                                override fun onAnimationRepeat(p0: Animator?) {
+//                                }
+//
+//                                override fun onAnimationCancel(p0: Animator?) {
+//                                    isButtonAnimating = false
+//                                }
+//
+//                                override fun onAnimationStart(animation: Animator) {
+//                                    isButtonAnimating = true
+//                                }
+//
+//                                override fun onAnimationEnd(animation: Animator) {
+//                                    isButtonAnimating = false
+//                                }
+//                            })
+//                            if (!isButtonAnimating) {
+//                                start()
+//                            }
+//                        }
                     }
                 }
 
@@ -563,55 +565,62 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     } else {
                         enableSwipeRefresh()
                     }
-                    if (dy > 0) {
-                        ObjectAnimator.ofFloat(llPromoCheckout, ANIMATION_TYPE, TRANSLATION_LENGTH).apply {
-                            duration = ANIMATION_DURATION_IN_MILIS
-                            addListener(object : Animator.AnimatorListener {
-                                override fun onAnimationRepeat(p0: Animator?) {
-                                }
-
-                                override fun onAnimationCancel(p0: Animator?) {
-                                    isButtonAnimating = false
-                                    _animator = null
-                                }
-
-                                override fun onAnimationStart(animation: Animator) {
-                                    isButtonAnimating = true
-                                    _animator = animation
-                                }
-
-                                override fun onAnimationEnd(animation: Animator) {
-                                    isButtonAnimating = false
-                                    _animator = null
-
-                                }
-                            })
-                            if (!isButtonAnimating) {
-                                start()
+                    if (!isButtonAnimating && TRANSLATION_LENGTH < 5000 && !(TRANSLATION_LENGTH == 0f && dy < 0)) {
+                        TRANSLATION_LENGTH += (dy * 10f)
+                    }
+                    Log.d("Translation 0", TRANSLATION_LENGTH.toString())
+                    ObjectAnimator.ofFloat(llPromoCheckout, ANIMATION_TYPE, TRANSLATION_LENGTH).apply {
+                        duration = ANIMATION_DURATION_IN_MILIS
+                        addListener(object : Animator.AnimatorListener {
+                            override fun onAnimationRepeat(p0: Animator?) {
                             }
-                        }
-                    } else if (dy < 0) {
-                        ObjectAnimator.ofFloat(llPromoCheckout, ANIMATION_TYPE, 0f).apply {
-                            duration = ANIMATION_DURATION_IN_MILIS
-                            addListener(object : Animator.AnimatorListener {
-                                override fun onAnimationRepeat(p0: Animator?) {
-                                }
 
-                                override fun onAnimationCancel(p0: Animator?) {
-                                    isButtonAnimating = false
-                                }
-
-                                override fun onAnimationStart(animation: Animator) {
-                                    isButtonAnimating = true
-                                }
-
-                                override fun onAnimationEnd(animation: Animator) {
-                                    isButtonAnimating = false
-                                }
-                            })
-                            if (!isButtonAnimating) {
-                                start()
+                            override fun onAnimationCancel(p0: Animator?) {
+                                isButtonAnimating = false
+//                                _animator = null
+                                Log.d("Translation 1", TRANSLATION_LENGTH.toString())
+                                TRANSLATION_LENGTH = 0f
                             }
+
+                            override fun onAnimationStart(animation: Animator) {
+                                isButtonAnimating = true
+//                                _animator = animation
+                                Log.d("Translation 2", TRANSLATION_LENGTH.toString())
+                            }
+
+                            override fun onAnimationEnd(animation: Animator) {
+                                isButtonAnimating = false
+//                                _animator = null
+                                Log.d("Translation 3", TRANSLATION_LENGTH.toString())
+                                TRANSLATION_LENGTH = 0f
+
+                                ObjectAnimator.ofFloat(llPromoCheckout, ANIMATION_TYPE, 0f).apply {
+                                    duration = ANIMATION_DURATION_IN_MILIS
+                                    addListener(object : Animator.AnimatorListener {
+                                        override fun onAnimationRepeat(p0: Animator?) {
+                                        }
+
+                                        override fun onAnimationCancel(p0: Animator?) {
+                                            isButtonAnimating = false
+                                        }
+
+                                        override fun onAnimationStart(animation: Animator) {
+                                            isButtonAnimating = true
+                                        }
+
+                                        override fun onAnimationEnd(animation: Animator) {
+                                            isButtonAnimating = false
+                                        }
+                                    })
+                                    if (!isButtonAnimating) {
+                                        start()
+                                    }
+                                }
+
+                            }
+                        })
+                        if (!isButtonAnimating) {
+                            start()
                         }
                     }
                 }
@@ -2055,7 +2064,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun showSnackbarRetry(message: String) {
         view?.let {
             Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    activity?.getString(R.string.label_action_snackbar_retry) ?: "", View.OnClickListener {
+                    activity?.getString(R.string.label_action_snackbar_retry)
+                            ?: "", View.OnClickListener {
                 dPresenter.processInitialGetCartData(getCartId(), dPresenter.getCartListData() == null, false)
             })
         }
