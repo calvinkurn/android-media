@@ -1,6 +1,8 @@
 package com.tokopedia.play.broadcaster.di
 
 import com.tokopedia.play.broadcaster.view.PlayPrepareBroadcastActivity
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
+import com.tokopedia.play.broadcaster.view.fragment.PlayEtalaseDetailFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayPrepareBroadcastFragment
 import dagger.Component
@@ -17,4 +19,8 @@ interface PlayBroadcasterComponent {
     fun inject(prepareBroadcastFragment: PlayPrepareBroadcastFragment)
 
     fun inject(etalasePickerFragment: PlayEtalasePickerFragment)
+
+    fun inject(etalaseDetailFragment: PlayEtalaseDetailFragment)
+
+    fun inject(setupBottomSheetFragment: PlayBroadcastSetupBottomSheet)
 }

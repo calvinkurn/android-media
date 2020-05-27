@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 /**
  * Created by jegul on 26/05/20
  */
-class PlayEtalaseItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
+class PlayGridTwoItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
 
     private val offset4 = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
     private val offset16 = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)

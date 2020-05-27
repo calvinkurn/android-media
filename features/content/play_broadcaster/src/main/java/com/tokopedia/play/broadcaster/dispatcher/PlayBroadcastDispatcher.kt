@@ -7,4 +7,5 @@ object PlayBroadcastDispatcher {
 
     const val MAIN = "main"
     const val IO = "io"
+    const val COMPUTATION = "computation"
 }

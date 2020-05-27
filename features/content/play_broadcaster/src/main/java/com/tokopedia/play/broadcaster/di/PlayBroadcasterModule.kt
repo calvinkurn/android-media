@@ -22,4 +22,9 @@ class PlayBroadcasterModule {
     @PlayBroadcasterScope
     @Named(PlayBroadcastDispatcher.IO)
     fun provideIODispatcher(): CoroutineDispatcher = Dispatchers.IO
+
+    @Provides
+    @PlayBroadcasterScope
+    @Named(PlayBroadcastDispatcher.COMPUTATION)
+    fun provideComputationDispatcher(): CoroutineDispatcher = Dispatchers.Default
 }

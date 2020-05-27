@@ -5,7 +5,9 @@ import androidx.fragment.app.Fragment
 /**
  * Created by jegul on 26/05/20
  */
-interface PlayBroadcastNavigator {
+interface PlayBroadcastCoordinator {
 
     fun navigateToFragment(fragment: Fragment)
+
+    fun setupTitle(title: String)
 }

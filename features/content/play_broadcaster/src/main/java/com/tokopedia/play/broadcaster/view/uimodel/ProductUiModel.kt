@@ -5,5 +5,12 @@ package com.tokopedia.play.broadcaster.view.uimodel
  */
 data class ProductUiModel(
         val id: Long,
-        val imageUrl: String
-)
+        val name: String,
+        val imageUrl: String,
+        val stock: Int,
+        val isSelected: Boolean
+) {
+
+    val hasStock: Boolean
+        get() = stock != 0
+}

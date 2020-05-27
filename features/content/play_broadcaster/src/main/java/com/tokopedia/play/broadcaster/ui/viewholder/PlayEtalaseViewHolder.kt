@@ -15,7 +15,7 @@ import com.tokopedia.play.broadcaster.view.uimodel.PlayEtalaseUiModel
 /**
  * Created by jegul on 26/05/20
  */
-class PlayEtalaseViewHolder(itemView: View) : BaseViewHolder(itemView) {
+class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : BaseViewHolder(itemView) {
 
     private val tvEtalaseTitle: TextView = itemView.findViewById(R.id.tv_etalase_title)
     private val tvEtalaseAmount: TextView = itemView.findViewById(R.id.tv_etalase_amount)
@@ -51,10 +51,18 @@ class PlayEtalaseViewHolder(itemView: View) : BaseViewHolder(itemView) {
     fun bind(item: PlayEtalaseUiModel) {
         tvEtalaseTitle.text = item.name
         tvEtalaseAmount.text = getString(R.string.play_etalase_product_amount, item.totalProduct)
-        productPreviewAdapter.setItemsAndAnimateChanges(item.productPreviewList)
+        productPreviewAdapter.setItemsAndAnimateChanges(item.productList)
+
+        itemView.setOnClickListener {
+            listener.onEtalaseClicked(item.id)
+        }
     }
 
     companion object {
         val LAYOUT = R.layout.item_etalase_play
+    }
+
+    interface Listener {
+        fun onEtalaseClicked(etalaseId: Long)
     }
 }

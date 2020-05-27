@@ -13,19 +13,29 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastNavigator
+import com.tokopedia.play.broadcaster.di.DaggerPlayBroadcasterComponent
+import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
+import javax.inject.Inject
 
 /**
  * Created by jegul on 26/05/20
  */
-class PlayBroadcastSetupBottomSheet : BottomSheetDialogFragment(), PlayBroadcastNavigator {
+class PlayBroadcastSetupBottomSheet : BottomSheetDialogFragment(), PlayBroadcastCoordinator {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private lateinit var viewModel: PlayEtalasePickerViewModel
 
     private lateinit var flFragment: FrameLayout
     private lateinit var ivBack: ImageView
@@ -34,6 +44,20 @@ class PlayBroadcastSetupBottomSheet : BottomSheetDialogFragment(), PlayBroadcast
     private lateinit var flOverlay: FrameLayout
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return object : BottomSheetDialog(requireContext(), theme) {
+            override fun onBackPressed() {
+                Toast.makeText(requireContext(), "Back", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        inject()
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.bottom_sheet_play_broadcast_setup, container, false)
@@ -49,6 +73,11 @@ class PlayBroadcastSetupBottomSheet : BottomSheetDialogFragment(), PlayBroadcast
 
     fun show(fragmentManager: FragmentManager) {
         show(fragmentManager, TAG)
+    }
+
+    private fun inject() {
+        DaggerPlayBroadcasterComponent.create()
+                .inject(this)
     }
 
     private fun setupDialog(dialog: Dialog) {
@@ -99,15 +128,19 @@ class PlayBroadcastSetupBottomSheet : BottomSheetDialogFragment(), PlayBroadcast
                 .commit()
 
         if (fragment is PlayBaseSetupFragment) {
-            tvTitle.text = fragment.getTitle()
+            setupTitle(fragment.getTitle())
             ivBack.setImageResource(
                     if (fragment.isRootFragment()) com.tokopedia.unifycomponents.R.drawable.unify_bottomsheet_close
-                    else R.drawable.ic_system_close_default
+                    else R.drawable.ic_system_action_back_grayscale_24
             )
         } else {
-            tvTitle.text = ""
+            setupTitle("")
             ivBack.setImageResource(com.tokopedia.unifycomponents.R.drawable.unify_bottomsheet_close)
         }
+    }
+
+    override fun setupTitle(title: String) {
+        tvTitle.text = title
     }
 
     private fun maxHeight(): Int = (getScreenHeight() * MAX_HEIGHT_MULTIPLIER).toInt()

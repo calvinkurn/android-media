@@ -12,17 +12,15 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.di.DaggerPlayBroadcasterComponent
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
-import com.tokopedia.play.broadcaster.ui.viewholder.PlayEtalaseViewHolder
-import com.tokopedia.play.broadcaster.view.adapter.PlayEtalaseAdapter
-import com.tokopedia.play.broadcaster.view.custom.PlaySearchBar
+import com.tokopedia.play.broadcaster.view.adapter.PlayEtalaseDetailAdapter
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import javax.inject.Inject
 
 /**
- * Created by jegul on 26/05/20
+ * Created by jegul on 27/05/20
  */
-class PlayEtalasePickerFragment : PlayBaseSetupFragment(), PlayEtalaseViewHolder.Listener {
+class PlayEtalaseDetailFragment : PlayBaseSetupFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -30,16 +28,19 @@ class PlayEtalasePickerFragment : PlayBaseSetupFragment(), PlayEtalaseViewHolder
     private lateinit var viewModel: PlayEtalasePickerViewModel
 
     private lateinit var tvInfo: TextView
-    private lateinit var psbSearch: PlaySearchBar
-    private lateinit var rvEtalase: RecyclerView
+    private lateinit var rvProduct: RecyclerView
 
-    private val etalaseAdapter = PlayEtalaseAdapter(this)
+    private val etalaseDetailAdapter = PlayEtalaseDetailAdapter()
 
-    override fun getTitle(): String = "Select Products or Collection"
+    override fun getTitle(): String {
+        return ""
+    }
 
-    override fun isRootFragment(): Boolean = true
+    override fun isRootFragment(): Boolean {
+        return false
+    }
 
-    override fun getScreenName(): String = "Play Etalase Picker"
+    override fun getScreenName(): String = "Etalase Detail"
 
     override fun initInjector() {
         DaggerPlayBroadcasterComponent.create()
@@ -49,10 +50,11 @@ class PlayEtalasePickerFragment : PlayBaseSetupFragment(), PlayEtalaseViewHolder
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(requireParentFragment(), viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
+        arguments?.getLong(EXTRA_ETALASE_ID)?.let { etalaseId -> viewModel.setSelectedEtalase(etalaseId) }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_play_etalase_picker, container, false)
+        return inflater.inflate(R.layout.fragment_play_etalase_detail, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -64,54 +66,38 @@ class PlayEtalasePickerFragment : PlayBaseSetupFragment(), PlayEtalaseViewHolder
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        observeEtalase()
-    }
-
-    override fun onEtalaseClicked(etalaseId: Long) {
-        broadcastCoordinator.navigateToFragment(
-                PlayEtalaseDetailFragment.newInstance(etalaseId)
-        )
+        observeProductsInSelectedEtalase()
     }
 
     private fun initView(view: View) {
         with(view) {
             tvInfo = findViewById(R.id.tv_info)
-            psbSearch = findViewById(R.id.psb_search)
-            rvEtalase = findViewById(R.id.rv_etalase)
+            rvProduct = findViewById(R.id.rv_product)
         }
     }
 
     private fun setupView(view: View) {
-        psbSearch.isEnabled = false
-        psbSearch.setOnClickListener {
-            enterSearchMode()
-        }
-
-        rvEtalase.adapter = etalaseAdapter
-        rvEtalase.addItemDecoration(PlayGridTwoItemDecoration(requireContext()))
+        rvProduct.adapter = etalaseDetailAdapter
+        rvProduct.addItemDecoration(PlayGridTwoItemDecoration(requireContext()))
     }
 
-    private fun enterSearchMode() {
-
-    }
-
-    private fun exitSearchMode() {
-
-    }
-
-    //region observe
-    /**
-     * Observe
-     */
-    private fun observeEtalase() {
-        viewModel.observableEtalase.observe(viewLifecycleOwner, Observer {
-            etalaseAdapter.setItemsAndAnimateChanges(it)
+    private fun observeProductsInSelectedEtalase() {
+        viewModel.observableSelectedEtalase.observe(viewLifecycleOwner, Observer {
+            etalaseDetailAdapter.setItemsAndAnimateChanges(it.productList)
+            broadcastCoordinator.setupTitle(it.name)
         })
     }
-    //endregion
 
     companion object {
 
-        fun newInstance(): PlayEtalasePickerFragment = PlayEtalasePickerFragment()
+        private const val EXTRA_ETALASE_ID = "etalase_id"
+
+        fun newInstance(etalaseId: Long): PlayEtalaseDetailFragment {
+            return PlayEtalaseDetailFragment().apply {
+                val bundle = Bundle()
+                bundle.putLong(EXTRA_ETALASE_ID, etalaseId)
+                arguments = bundle
+            }
+        }
     }
 }
