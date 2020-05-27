@@ -244,7 +244,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
         when {
             shopStatus.isPowerMerchantInactive() -> showRegisterBtn(powerMerchantStatus)
-            shopStatus.isPowerMerchantActive() -> showCancelMembershipBtn()
+            shopStatus.isPowerMerchantActive() && shopStatus.isAutoExtend() -> showCancelMembershipBtn()
             else -> btnCallToAction.hide()
         }
     }
