@@ -47,7 +47,9 @@ class PowerMerchantMembershipView: ConstraintLayout {
     }
 
     private fun showTextWarning(shopStatus: ShopStatusModel) {
-        if(shopStatus.isPowerMerchantIdle()) {
+        if(shopStatus.isAutoExtend()) {
+            containerWarning.hide()
+        } else {
             containerWarning.show()
 
             val cancellationDate = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD,
@@ -56,8 +58,6 @@ class PowerMerchantMembershipView: ConstraintLayout {
             val highlightTextColor = ContextCompat.getColor(context, R.color.light_N700)
 
             textWarning.text = createSpannableString(warningText, cancellationDate, highlightTextColor, true)
-        } else {
-            containerWarning.hide()
         }
     }
 
