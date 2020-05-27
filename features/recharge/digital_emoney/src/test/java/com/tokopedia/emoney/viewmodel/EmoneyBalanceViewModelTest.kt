@@ -189,20 +189,6 @@ class EmoneyBalanceViewModelTest {
     }
 
     @Test
-    fun processTagIntent_CardIsNotEmoney_ContinueProcessTagOnBrizzi() {
-        //given
-        initSuccessData()
-        every { NFCUtils.toHex(byteNfc) } returns "2000"
-
-        //when
-        emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0)
-
-        //then
-        assertNotNull(emoneyBalanceViewModel.cardIsNotEmoney.value)
-        assertEquals(emoneyBalanceViewModel.cardIsNotEmoney.value, true)
-    }
-
-    @Test
     fun processTagIntent_ErrorOnTryCatch_ShowingErrorFailedReadCard() {
         //given
         initSuccessData()
