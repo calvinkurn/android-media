@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.util;
+package com.tokopedia.buyerorder.common.util;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;

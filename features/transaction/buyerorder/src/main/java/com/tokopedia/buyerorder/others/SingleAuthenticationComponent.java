@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.others;
+package com.tokopedia.buyerorder.others;
 
 import dagger.Component;
 

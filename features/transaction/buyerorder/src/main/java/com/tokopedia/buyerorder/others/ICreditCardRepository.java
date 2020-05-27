@@ -1,7 +1,7 @@
-package com.tokopedia.transaction.others;
+package com.tokopedia.buyerorder.others;
 
 import com.google.gson.JsonObject;
-import com.tokopedia.transaction.others.creditcard.authenticator.AuthenticatorUpdateWhiteListResponse;
+import com.tokopedia.buyerorder.others.creditcard.authenticator.AuthenticatorUpdateWhiteListResponse;
 
 import rx.Observable;
 

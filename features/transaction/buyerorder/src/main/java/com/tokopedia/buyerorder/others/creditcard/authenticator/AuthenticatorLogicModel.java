@@ -1,7 +1,4 @@
-package com.tokopedia.transaction.others.creditcard.authenticator;
-
-import android.os.Parcel;
-import android.os.Parcelable;
+package com.tokopedia.buyerorder.others.creditcard.authenticator;
 
 /**
  * Created by kris on 10/10/17. Tokopedia

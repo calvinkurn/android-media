@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.others.creditcard.authenticator;
+package com.tokopedia.buyerorder.others.creditcard.authenticator;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

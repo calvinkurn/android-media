@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.others.creditcard.authenticator;
+package com.tokopedia.buyerorder.others.creditcard.authenticator;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -9,11 +9,11 @@ import java.util.List;
  * Created by kris on 10/11/17. Tokopedia
  */
 
-public class AuthenticatorCheckWhiteListResponse {
+public class AuthenticatorUpdateWhiteListResponse {
 
     @SerializedName("data")
     @Expose
-    private List<AuthenticatorCheckWhitelistData> datas;
+    private List<AuthenticatorUpdateData> datas;
 
     @SerializedName("status_code")
     @Expose
@@ -23,11 +23,11 @@ public class AuthenticatorCheckWhiteListResponse {
     @Expose
     private String message;
 
-    public List<AuthenticatorCheckWhitelistData> getDatas() {
+    public List<AuthenticatorUpdateData> getDatas() {
         return datas;
     }
 
-    public void setDatas(List<AuthenticatorCheckWhitelistData> datas) {
+    public void setDatas(List<AuthenticatorUpdateData> datas) {
         this.datas = datas;
     }
 

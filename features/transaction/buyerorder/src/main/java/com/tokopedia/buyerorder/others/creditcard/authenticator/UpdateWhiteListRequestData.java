@@ -1,13 +1,13 @@
-package com.tokopedia.transaction.others.creditcard.authenticator;
+package com.tokopedia.buyerorder.others.creditcard.authenticator;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by kris on 10/11/17. Tokopedia
+ * Created by kris on 10/12/17. Tokopedia
  */
 
-public class AuthenticatorUpdateData {
+public class UpdateWhiteListRequestData {
 
     @SerializedName("user_email")
     @Expose
@@ -32,5 +32,4 @@ public class AuthenticatorUpdateData {
     public void setState(int state) {
         this.state = state;
     }
-
 }

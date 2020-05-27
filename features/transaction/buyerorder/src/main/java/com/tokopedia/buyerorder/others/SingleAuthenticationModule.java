@@ -1,9 +1,9 @@
-package com.tokopedia.transaction.others;
+package com.tokopedia.buyerorder.others;
 
 import com.tokopedia.core.network.apiservices.transaction.CreditCardAuthService;
 import com.tokopedia.core.network.apiservices.transaction.CreditCardVaultService;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
-import com.tokopedia.transaction.others.creditcardauthentication.UserInfoRepository;
+import com.tokopedia.buyerorder.others.creditcardauthentication.UserInfoRepository;
 
 import dagger.Module;
 import dagger.Provides;

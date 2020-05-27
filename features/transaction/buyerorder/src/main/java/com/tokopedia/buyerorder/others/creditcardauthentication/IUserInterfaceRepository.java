@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.others.creditcardauthentication;
+package com.tokopedia.buyerorder.others.creditcardauthentication;
 
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
