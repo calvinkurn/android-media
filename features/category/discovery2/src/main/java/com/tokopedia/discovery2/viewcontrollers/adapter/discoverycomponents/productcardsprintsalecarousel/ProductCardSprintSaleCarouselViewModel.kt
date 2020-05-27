@@ -16,8 +16,6 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class ProductCardSprintSaleCarouselViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
-
-class ProductCardSprintSaleCarouselViewModel(val application: Application, components: ComponentsItem) : DiscoveryBaseViewModel(), CoroutineScope {
     private val productCarouselComponentData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val productCarouselList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
 

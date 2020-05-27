@@ -23,7 +23,6 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.adapter.AddChildAdapterCallback
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.mergeAdapter.MergeAdapters
-import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.globalerror.GlobalError
@@ -39,9 +38,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class DiscoveryFragment : BaseDaggerFragment(), RecyclerView.OnChildAttachStateChangeListener {
-    private lateinit var mDiscoveryViewModel: DiscoveryViewModel
-class DiscoveryFragment : Fragment(), AddChildAdapterCallback {
+class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback {
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryFab: CustomTopChatView
@@ -52,7 +49,7 @@ class DiscoveryFragment : Fragment(), AddChildAdapterCallback {
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     private lateinit var globalError: GlobalError
     var pageEndPoint = ""
-    private lateinit var mergeAdapters: MergeAdapters<RecyclerView.Adapter<AbstractViewHolder>>
+    private lateinit var mergeAdapters: MergeAdapters
     private lateinit var discoveryRecycleAdapter: DiscoveryRecycleAdapter
 
     @Inject
@@ -110,10 +107,9 @@ class DiscoveryFragment : Fragment(), AddChildAdapterCallback {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         discoveryViewModel = (activity as DiscoveryActivity).getViewModel()
-//        mDiscoveryViewModel = ViewModelProviders.of(requireActivity()).get((activity as BaseViewModelActivity<DiscoveryViewModel>).getViewModelType())
 
         discoveryRecycleAdapter = DiscoveryRecycleAdapter(this)
-        recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        recyclerView.layoutManager = StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
         mergeAdapters = MergeAdapters()
         mergeAdapters.addAdapter(discoveryRecycleAdapter)
         recyclerView.adapter = mergeAdapters
@@ -268,7 +264,7 @@ class DiscoveryFragment : Fragment(), AddChildAdapterCallback {
     fun getDiscoveryRecyclerViewAdapter() = discoveryRecycleAdapter
 
     fun getDiscoveryAnalytics(): DiscoveryAnalytics {
-        val discoveryAnalytics: DiscoveryAnalytics by lazy { DiscoveryAnalytics(trackingQueue = trackingQueue, pagePath = mDiscoveryViewModel.pagePath, pageType = mDiscoveryViewModel.pageType) }
+        val discoveryAnalytics: DiscoveryAnalytics by lazy { DiscoveryAnalytics(trackingQueue = trackingQueue, pagePath = discoveryViewModel.pagePath, pageType = discoveryViewModel.pageType) }
         return discoveryAnalytics
     }
 }

@@ -301,4 +301,62 @@ class DiscoveryAnalytics(val pageType: String = "",
         map[KEY_E_COMMERCE] = promotions
         getTracker().sendEnhanceEcommerceEvent(map)
     }
+
+    //55
+    fun trackEventImpressionTopAdsShop(dataItem: DataItem?) {
+        val list = ArrayList<Map<String, Any>>()
+        dataItem?.let {
+            val map = HashMap<String, Any>()
+            map[KEY_ID] = it.shopId ?: EMPTY_STRING
+            map[KEY_NAME] = "/discovery/${pagePath} - topads - headline"
+            map[KEY_CREATIVE] = it.shopName ?: EMPTY_STRING
+            map[KEY_POSITION] = it.positionForParentItem + 1
+            list.add(map)
+        }
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+                EVENT_PROMO_VIEW to mapOf(
+                        KEY_PROMOTIONS to list))
+        val map = createGeneralImpressionEvent(eventAction = TOP_ADS_HEADLINE_IMPRESSION, eventLabel = dataItem?.imageUrlMobile
+                ?: "")
+        map[KEY_E_COMMERCE] = eCommerce
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
+    }
+
+    fun trackClickTopAdsShop(shop: DataItem) {
+        val map = createGeneralClickEvent(eventName = EVENT_PROMO_CLICK, eventAction = TOP_ADS_HEADLINE_SHOP, eventLabel = shop.imageUrlMobile
+                ?: "")
+        val list = ArrayList<Map<String, Any>>()
+        shop.let {
+            list.add(mapOf(
+                    KEY_ID to it.shopId.toString(),
+                    KEY_NAME to "/discovery/${pagePath} - topads - headline shop",
+                    KEY_CREATIVE to (it.shopName ?: EMPTY_STRING),
+                    KEY_POSITION to shop.positionForParentItem + 1
+            ))
+        }
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+                EVENT_PROMO_CLICK to mapOf(
+                        KEY_PROMOTIONS to list))
+        map[KEY_E_COMMERCE] = eCommerce
+        getTracker().sendEnhanceEcommerceEvent(map)
+    }
+
+    fun trackClickTopAdsProducts(item: DataItem) {
+        val map = createGeneralClickEvent(eventName = EVENT_PROMO_CLICK, eventAction = TOP_ADS_HEADLINE_PRODUCT)
+        val list = ArrayList<Map<String, Any>>()
+        item.let {
+            list.add(mapOf(
+                    KEY_ID to it.id.toString(),
+                    KEY_NAME to "/discovery/${pagePath} - topads - headline product",
+                    KEY_CREATIVE to (it.name ?: EMPTY_STRING),
+                    KEY_POSITION to item.positionForParentItem + 1
+            ))
+        }
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+                EVENT_PROMO_CLICK to mapOf(
+                        KEY_PROMOTIONS to list))
+        map[KEY_E_COMMERCE] = eCommerce
+        getTracker().sendEnhanceEcommerceEvent(map)
+    }
+
 }

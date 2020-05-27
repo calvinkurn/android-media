@@ -50,6 +50,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                     val data = discoveryDataUseCase.getDiscoveryPageDataUseCase(pageIdentifier)
                     data.let {
                         withContext(Dispatchers.Default) {
+                            findAndRemoveSecondYoutubeComponent(it.components)
                             checkLoginAndUpdateList(it.components)
                             findCustomTopChatComponentsIfAny(it.components)
                         }
@@ -61,6 +62,17 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 }
         )
 
+    }
+
+    // temp code
+    private fun findAndRemoveSecondYoutubeComponent(components: MutableList<ComponentsItem>?) {
+        val videoComponentToRemove = components?.filter { it.name == ComponentNames.Video.componentName }
+        videoComponentToRemove?.let {
+            var index = 0
+            while (++index < it.size){
+                components.remove(it[index])
+            }
+        }
     }
 
     private fun setPageInfo(pageInfo: PageInfo?) {

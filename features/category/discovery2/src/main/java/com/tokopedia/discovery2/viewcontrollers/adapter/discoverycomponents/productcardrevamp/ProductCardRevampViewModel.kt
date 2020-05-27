@@ -59,7 +59,6 @@ class ProductCardRevampViewModel(val application: Application, components: Compo
                         productCarouselComponentData.value?.id.toIntOrZero(),
                         queryMap,
                         pageEndPoint)
-                Log.d("page no", pageNumber.toString())
                 productPerPageSize = list.size
                 productCarouselList.value = list
             }, onError = {
