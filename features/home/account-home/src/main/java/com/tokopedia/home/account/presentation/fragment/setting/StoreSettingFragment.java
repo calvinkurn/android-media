@@ -9,6 +9,7 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
@@ -79,7 +80,8 @@ public class StoreSettingFragment extends BaseGeneralSettingFragment{
             switch (settingId) {
                 case SettingConstant.SETTING_SHOP_ETALASE_ID:
                     accountAnalytics.eventClickShopSetting(ETALASE);
-                    RouteManager.route(getActivity(), ApplinkConstInternalMarketplace.SHOP_SETTINGS_ETALASE);
+                    RouteManager.route(getActivity(), ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST);
+                    // RouteManager.route(getActivity(), ApplinkConstInternalMarketplace.SHOP_SETTINGS_ETALASE);
                     break;
                 case SettingConstant.SETTING_SHOP_LOCATION_ID:
                     accountAnalytics.eventClickShopSetting(LOCATION);

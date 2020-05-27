@@ -6,6 +6,5 @@ query {
     subLocation
     image
     metaDescription
-    searchID
   }
 }

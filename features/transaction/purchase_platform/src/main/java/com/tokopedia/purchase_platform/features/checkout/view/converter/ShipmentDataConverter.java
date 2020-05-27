@@ -264,6 +264,7 @@ public class ShipmentDataConverter {
                 shipmentCartItemModel.setFulfillmentId(groupShop.getFulfillmentId());
                 shipmentCartItemModel.setFulfillmentName(groupShop.getFulfillmentName());
                 setCartItemModelError(shipmentCartItemModel);
+                shipmentCartItemModel.setEligibleNewShippingExperience(cartShipmentAddressFormData.isEligibleNewShippingExperience());
                 shipmentCartItemModels.add(shipmentCartItemModel);
             }
         }

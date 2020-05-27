@@ -45,12 +45,12 @@ class PartialSnapshotView(private val view: View,
         }
 
         if (campaign.isActive) {
-            renderCampaignActive(campaign, data.stock.getFinalStockWording(nearestWarehouseStockWording))
+            renderCampaignActive(campaign, nearestWarehouseStockWording)
         } else {
             renderCampaignInactive(data.price.value.getCurrencyFormatted())
         }
 
-        renderStockAvailable(campaign, data.variant.isVariant, data.stock.getFinalStockWording(nearestWarehouseStockWording), basic.isActive())
+        renderStockAvailable(campaign, data.variant.isVariant, nearestWarehouseStockWording, basic.isActive())
         label_prescription.showWithCondition(basic.needPrescription)
         divider.show()
     }
