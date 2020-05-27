@@ -6,8 +6,8 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 
 class ShimmerProductCardViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
-    private lateinit var viewModel: ShimmerProductCardViewModel
+    private lateinit var viewModel: ShimmerViewModel
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
-        viewModel = discoveryBaseViewModel as ShimmerProductCardViewModel
+        viewModel = discoveryBaseViewModel as ShimmerViewModel
     }
 }

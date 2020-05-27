@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
-class ShimmerProductCardViewModel(val application: Application, private val components: ComponentsItem) : DiscoveryBaseViewModel() {
+class ShimmerViewModel(val application: Application, private val components: ComponentsItem) : DiscoveryBaseViewModel() {
     override fun initDaggerInject() {
 
     }
