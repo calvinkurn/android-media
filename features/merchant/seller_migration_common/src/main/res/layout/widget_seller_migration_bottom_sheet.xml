@@ -18,11 +18,17 @@
         app:typographyType="heading_2"
         app:typographyWeight="bold"/>
 
+    <include layout="@layout/partial_seller_migration_warning"
+        android:id="@+id/seller_migration_warning"
+        android:layout_below="@id/sellerMigrationBottomSheetTitle"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent" />
+
     <RelativeLayout
         android:id="@+id/image_or_carousel_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/sellerMigrationBottomSheetTitle"
+        android:layout_below="@id/seller_migration_warning"
         android:layout_marginTop="@dimen/layout_lvl2">
 
         <com.tokopedia.carousel.CarouselUnify
