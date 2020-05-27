@@ -15,6 +15,16 @@ object ProductManageTracking {
         ).dataTracking)
     }
 
+    private fun eventEditProduct(action: String, shopId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(EventTracking(
+                ProductManageDataLayer.EVENT_NAME_EDIT_PRODUCT,
+                ProductManageDataLayer.EVENT_CATEGORY_EDIT_PRODUCT,
+                action,
+                "",
+                shopId
+        ).dataTracking)
+    }
+
     fun eventAddProduct() {
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ADD, "")
     }
@@ -182,6 +192,26 @@ object ProductManageTracking {
     fun eventOthersFilterName(filterName: String) {
         val action = "${ProductManageDataLayer.EVENT_ACTION_CLICK_ON_OTHERS_FILTER_NAME} - $filterName"
         eventProductManage(action, "")
+    }
+
+    fun eventClickBackOnPromotionPage(shopId: String) {
+        val action = ProductManageDataLayer.EVENT_ACTION_CLICK_ON_PROMOTION_PAGE
+        eventEditProduct(action, shopId)
+    }
+
+    fun eventClickCashbackValue(value: Int, shopId: String) {
+        val action = "${ProductManageDataLayer.EVENT_ACTION_CLICK_CASHBACK_VALUE} $value%"
+        eventEditProduct(action, shopId)
+    }
+
+    fun eventClickNoCashbackValue(shopId: String) {
+        val action = ProductManageDataLayer.EVENT_ACTION_CLICK_NO_CASHBACK_VALUE
+        eventEditProduct(action, shopId)
+    }
+
+    fun eventClickSavePromotion(shopId: String) {
+        val action = ProductManageDataLayer.EVENT_ACTION_CLICK_SAVE_PROMOTION
+        eventEditProduct(action, shopId)
     }
 
 }

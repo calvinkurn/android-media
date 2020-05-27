@@ -21,11 +21,6 @@ class LabelUtils {
     private var detailView: Boolean = false
     internal var textLength = DEFAULT_MAX_TEXT_LENGTH
 
-    fun giveLabel(userRole: String) {
-        detailView = true
-        userNameTextViewLabelling(userRole)
-    }
-
     fun giveSquareLabel(userRole: String) {
         detailView = false
         userNameTextViewLabelling(userRole)

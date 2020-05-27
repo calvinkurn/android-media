@@ -196,6 +196,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     companion object {
 
+        private const val className: String = "com.tokopedia.purchase_platform.features.cart.view.CartFragment"
         private const val LOYALTY_ACTIVITY_REQUEST_CODE = 12345
         private var FLAG_BEGIN_SHIPMENT_PROCESS = false
         private var FLAG_SHOULD_CLEAR_RECYCLERVIEW = false
@@ -1188,7 +1189,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         when {
             topAds -> {
-                ImpresionTask().execute(clickUrl)
+                activity?.let { ImpresionTask(it::class.qualifiedName).execute(clickUrl) }
             }
         }
         onProductClicked(productId)
@@ -1197,7 +1198,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onRecommendationProductImpression(topAds: Boolean, trackingImageUrl: String) {
         when {
             topAds -> {
-                ImpresionTask().execute(trackingImageUrl)
+                activity?.let { ImpresionTask(it::class.qualifiedName).execute(trackingImageUrl) }
             }
         }
     }

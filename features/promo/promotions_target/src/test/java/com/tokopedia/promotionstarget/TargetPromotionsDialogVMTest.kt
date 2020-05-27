@@ -28,7 +28,7 @@ class TargetPromotionsDialogVMTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = TargetPromotionsDialogVM(dispatcher, dispatcher, autoApplyUseCase, mockk())
+        viewModel = TargetPromotionsDialogVM(dispatcher, dispatcher, autoApplyUseCase, mockk(), mockk(), mockk())
     }
 
     @Test

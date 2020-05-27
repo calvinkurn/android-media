@@ -9,7 +9,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFact
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 
 /**
- * @author anggaprasetiyo on 11/12/17.
+ * @author Lukas on 18/05/2020.
  */
 
 data class HeaderDataModel(

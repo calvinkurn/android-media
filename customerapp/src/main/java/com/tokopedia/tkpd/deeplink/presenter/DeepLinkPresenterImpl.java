@@ -17,12 +17,15 @@ import com.tokopedia.applink.DeepLinkChecker;
 import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.constant.DeeplinkConstant;
 import com.tokopedia.applink.internal.ApplinkConsInternalHome;
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel;
+import com.tokopedia.catalog.ui.activity.CatalogDetailPageActivity;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -34,14 +37,11 @@ import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.session.model.AccountsModel;
 import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.session.model.InfoModel;
 import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.discovery.catalogrevamp.ui.activity.CatalogDetailPageActivity;
-import com.tokopedia.discovery.categoryrevamp.view.activity.CategoryNavActivity;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException;
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo;
@@ -378,7 +378,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openPeluangPage(List<String> linkSegment, Uri uriData, Bundle bundle) {
         String query = uriData.getQueryParameter("q");
-        Intent intent = SellerRouter.getActivitySellingTransactionOpportunity(context, query);
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.SELLER_OPPORTUNITY);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -784,12 +784,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openCategory(String uriData, Bundle bundle) {
-        URLParser urlParser = new URLParser(uriData);
-        if (!urlParser.getParamKeyValueMap().isEmpty()) {
-            context.startActivity(CategoryNavActivity.getCategoryIntentWithFilter(context,uriData));
-        } else {
-            RouteManager.route(context, bundle, ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, urlParser.getDepIDfromURI(context));
+        Uri uri = Uri.parse(uriData);
+        String deeplink = DeeplinkConstant.SCHEME_TOKOPEDIA + ":/" + uri.getPath();
+        if (uri.getQuery() != null) {
+            deeplink =  deeplink+"?"+uri.getQuery();
         }
+        RouteManager.route(context, deeplink);
     }
 
     private void openBrowseProduct(List<String> linkSegment, Uri uriData, Bundle defaultBundle) {
@@ -808,7 +808,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             intent.putExtras(defaultBundle);
             context.startActivity(intent);
         } else {
-            context.startActivity(CategoryNavActivity.getCategoryIntentWithDepartmentId(context,departmentId));
+           String deeplink =  UriUtil.buildUri(ApplinkConstInternalCategory.INTERNAL_CATEGORY_DETAIL, departmentId);
+            RouteManager.route(context,deeplink);
         }
     }
 
