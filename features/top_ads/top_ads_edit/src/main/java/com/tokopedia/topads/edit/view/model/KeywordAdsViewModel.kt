@@ -22,7 +22,7 @@ class KeywordAdsViewModel @Inject constructor(
 
     fun getSuggestionKeyword(productIds: String?, groupId: Int?, onSuccess: ((List<KeywordSuggestionResponse.Result.TopAdsGetKeywordSuggestionV3.DataItem>) -> Unit)) {
 
-        suggestionKeywordUseCase.setParams(groupId, productIds)
+        suggestionKeywordUseCase.setParams(groupId, productIds?.trim())
         suggestionKeywordUseCase.executeQuerySafeMode({
             onSuccess(it.topAdsGetKeywordSuggestionV3.data)
             updateList(it.topAdsGetKeywordSuggestionV3.data)
