@@ -12,6 +12,12 @@
     <include
         layout="@layout/view_digital_empty_product_list" />
 
+    <include
+        layout="@layout/layout_shimmering_product_grid" />
+
+    <include
+        layout="@layout/layout_shimmering_product_list" />
+
     <ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"

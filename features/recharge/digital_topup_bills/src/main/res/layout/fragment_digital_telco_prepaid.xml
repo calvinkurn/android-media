@@ -78,8 +78,8 @@
                 app:tabIndicatorColor="@color/tkpd_main_green"
                 app:tabMode="fixed"
                 app:tabSelectedTextColor="@color/tkpd_main_green"
-                app:tabTextAppearance="@style/Tabs.Secondary"
-                app:tabTextColor="@color/font_black_disabled_38"
+                app:tabTextAppearance="@style/Tabs.Secondary.Bold"
+                app:tabTextColor="@color/Neutral_N700_68"
                 tools:visibility="visible" />
 
             <View

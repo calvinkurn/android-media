@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/layout_lvl1"
-            app:srcCompat="@drawable/digital_telco_empty_product"/>
+            android:src="@drawable/digital_telco_empty_product"/>
 
 
         <com.tokopedia.unifyprinciples.Typography
