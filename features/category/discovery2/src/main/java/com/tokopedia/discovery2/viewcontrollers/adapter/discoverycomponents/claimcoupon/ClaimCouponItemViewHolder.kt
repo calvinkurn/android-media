@@ -37,11 +37,11 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
         if (isDouble) {
             claimCouponImageDouble.show()
             claimCouponImage.hide()
-            claimCouponImageDouble.loadImage(dataItem.smallImageUrlMobile ?: "")
+            claimCouponImageDouble.loadImage(dataItem?.smallImageUrlMobile ?: "")
         } else {
             claimCouponImageDouble.hide()
             claimCouponImage.show()
-            claimCouponImage.loadImage(dataItem.imageUrlMobile ?: "")
+            claimCouponImage.loadImage(dataItem?.imageUrlMobile ?: "")
         }
 
         setBtn(dataItem?.status)
