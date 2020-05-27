@@ -3,18 +3,14 @@ package com.tokopedia.reviewseller.feature.reviewreply.view.bottomsheet
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.FragmentActivity
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.reviewseller.R
-import com.tokopedia.reviewseller.feature.reviewreply.view.viewmodel.SellerReviewReplyViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.user.session.UserSessionInterface
 
 class AddTemplateBottomSheet(mActivity: FragmentActivity?,
                              private val titleBottomSheet: String,
-                             private val viewModel: SellerReviewReplyViewModel,
-                             private val userSession: UserSessionInterface) : BottomSheetUnify() {
+                             private val listener: (title: String, desc: String) -> Unit) : BottomSheetUnify() {
 
     private var tvTitleTemplate: TextFieldUnify? = null
     private var tvDescTemplate: TextFieldUnify? = null
@@ -52,7 +48,7 @@ class AddTemplateBottomSheet(mActivity: FragmentActivity?,
             val desc = tvDescTemplate?.textFieldInput?.text.toString()
 
             if(title.isNotEmpty() && desc.isNotEmpty()) {
-                viewModel.insertTemplateReviewReply(userSession.shopId.toIntOrZero(), title, desc)
+                listener.invoke(title, desc)
             } else {
                 if (title.isEmpty()) {
                     tvTitleTemplate?.setMessage(getString(R.string.empty_message_add_template_label))

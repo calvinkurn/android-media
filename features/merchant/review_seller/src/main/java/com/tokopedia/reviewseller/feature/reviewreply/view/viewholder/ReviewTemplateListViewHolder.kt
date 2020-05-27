@@ -16,7 +16,7 @@ class ReviewTemplateListViewHolder(
                 centerText = true
                 chipText = data.title
                 chipSize = ChipsUnify.SIZE_MEDIUM
-                chipType = ChipsUnify.TYPE_SELECTED
+                chipType = ChipsUnify.TYPE_ALTERNATE
                 setOnClickListener {
                     reviewTemplateListener.onItemReviewTemplateClicked(view, chipText.orEmpty())
                 }
