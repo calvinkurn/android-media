@@ -6,13 +6,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
@@ -168,7 +170,7 @@ public class OpportunityTncFragment extends BaseWebViewFragment implements Oppor
     @Override
     public void onSuccessTakeOpportunity(ActionViewData actionViewData) {
         finishLoadingProgress();
-        CommonUtils.UniversalToast(getActivity(), actionViewData.getMessage());
+        Toast.makeText(getActivity(), MethodChecker.fromHtml(actionViewData.getMessage()), Toast.LENGTH_LONG).show();
         Intent intent = new Intent();
         intent.putExtra(ACCEPTED_OPPORTUNITY, true);
         getActivity().setResult(Activity.RESULT_OK, intent);
