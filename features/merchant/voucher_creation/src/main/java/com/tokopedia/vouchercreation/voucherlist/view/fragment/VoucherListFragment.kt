@@ -183,9 +183,11 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         }
     }
 
-    override fun onVoucherClickListener(voucher: VoucherUiModel) {
+    override fun onVoucherClickListener(shopId: Int) {
         context?.run {
-            startActivity(VoucherDetailActivity.createDetailIntent(this, VoucherDetailActivity.DETAIL_PAGE))
+            startActivity(
+                    VoucherDetailActivity.createDetailIntent(this, VoucherDetailActivity.DETAIL_PAGE)
+                            .putExtra(VoucherDetailActivity.SHOP_ID, shopId))
         }
     }
 

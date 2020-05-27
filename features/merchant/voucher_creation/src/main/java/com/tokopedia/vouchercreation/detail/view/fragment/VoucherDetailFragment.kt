@@ -18,10 +18,10 @@ import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.Sh
  * Created By @ilhamsuaib on 30/04/20
  */
 
-class VoucherDetailFragment : BaseDetailFragment() {
+class VoucherDetailFragment(val shopId: Int) : BaseDetailFragment() {
 
     companion object {
-        fun newInstance(): VoucherDetailFragment = VoucherDetailFragment()
+        fun newInstance(shopId: Int): VoucherDetailFragment = VoucherDetailFragment(shopId)
     }
 
     private val dummyVoucher = VoucherMapper().mapRemoteModelToUiModel(listOf(MerchantVoucherModel(
@@ -104,6 +104,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
     private fun showDummyData() {
         val dummy = listOf(
                 //PromoPerformanceUiModel("Rp3.000.000", 30, 120),
+//                VoucherHeaderUiModel(),
                 UsageProgressUiModel(30),
                 DividerUiModel(8),
                 TipsUiModel(

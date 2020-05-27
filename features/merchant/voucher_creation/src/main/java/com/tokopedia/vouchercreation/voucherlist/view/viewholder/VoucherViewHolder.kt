@@ -48,7 +48,7 @@ class VoucherViewHolder(
                 listener.onMoreMenuClickListener(element)
             }
             setOnClickListener {
-                listener.onVoucherClickListener(element)
+                listener.onVoucherClickListener(element.shopId)
             }
         }
     }
@@ -178,7 +178,7 @@ class VoucherViewHolder(
 
     interface Listener {
 
-        fun onVoucherClickListener(voucher: VoucherUiModel)
+        fun onVoucherClickListener(shopId: Int)
 
         fun onMoreMenuClickListener(voucher: VoucherUiModel)
 
