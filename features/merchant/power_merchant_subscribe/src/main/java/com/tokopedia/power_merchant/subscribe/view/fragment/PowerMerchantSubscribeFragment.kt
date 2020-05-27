@@ -163,6 +163,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         bottomSheetCancel?.setListener(object : PowerMerchantCancelBottomSheet.BottomSheetCancelListener {
             override fun onClickCancelButton() {
                 cancelMembership()
+                bottomSheetCancel?.dismiss()
             }
         })
     }
