@@ -93,7 +93,7 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
                 presenter.reloginAfterSQ(validateToken)
             }
         } else {
-            activity?.finish()
+            super.onActivityResult(requestCode, resultCode, data)
         }
     }
 }
