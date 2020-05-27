@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_see_more_banner_mix"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    android:layout_width="@dimen/play_banner_item_carousel_width"
+    android:layout_height="@dimen/play_banner_item_carousel_height"
     app:cardCornerRadius="@dimen/dp_8"
     app:cardElevation="@dimen/dp_4"
     app:cardPreventCornerOverlap="false"
-    app:cardUseCompatPadding="true"
-    tools:layout_width="match_parent"
-    android:clickable="true"
-    android:focusable="true"
-    android:background="?attr/selectableItemBackground"
-    android:layout_width="@dimen/play_banner_item_carousel_width"
-    android:layout_height="match_parent"
-    tools:layout_height="match_parent">
+    app:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_banner_mix_more"

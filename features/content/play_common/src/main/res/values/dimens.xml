@@ -13,5 +13,6 @@
 
     <dimen name="play_placeholder_variant_option_size">58dp</dimen>
     <dimen name="play_placeholder_variant_divider_height">1dp</dimen>
-    <dimen name="play_banner_item_carousel_width">132dp</dimen>
+    <dimen name="play_banner_item_carousel_width">134dp</dimen>
+    <dimen name="play_banner_item_carousel_height">210dp</dimen>
 </resources>
