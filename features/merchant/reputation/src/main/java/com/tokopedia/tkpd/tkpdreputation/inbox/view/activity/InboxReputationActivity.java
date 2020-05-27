@@ -52,7 +52,7 @@ public class InboxReputationActivity extends BaseTabActivity implements HasCompo
 
     private static final int MARGIN_TAB = 8;
     private static final int MARGIN_START_END_TAB = 16;
-
+    public static String tickerTitle;
 
     private ViewPager viewPager;
     private TabLayout indicator;
@@ -102,6 +102,9 @@ public class InboxReputationActivity extends BaseTabActivity implements HasCompo
             public void onTabSelected(TabLayout.Tab tab) {
                 super.onTabSelected(tab);
                 reputationTracking.onTabReviewSelectedTracker(tab.getPosition());
+                if(tickerTitle != null) {
+                    reputationTracking.onSuccessGetIncentiveOvoTracker(tickerTitle);
+                }
             }
         });
 
@@ -204,6 +207,7 @@ public class InboxReputationActivity extends BaseTabActivity implements HasCompo
             RouteManager.route(this, ApplinkConst.HOME);
             finish();
         }
+        tickerTitle = null;
         super.onBackPressed();
     }
 

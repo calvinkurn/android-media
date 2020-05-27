@@ -3,13 +3,16 @@ package com.tokopedia.topads
 import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import java.util.TreeMap
+import java.text.NumberFormat
+import java.util.*
 
 /**
  * Author errysuprayogi on 15,November,2019
  */
 object Utils {
     private val suffixes = TreeMap<Long, String>()
+    var locale = Locale("in", "ID")
+
 
     init {
         suffixes[1_0L] = " puluh"
@@ -32,9 +35,14 @@ object Utils {
         return if (hasDecimal) (truncated / 10.0).toString() + suffix else (truncated / 10).toString() + suffix
     }
 
+        fun convertToCurrencyString(value: Long): String {
+            return (NumberFormat.getNumberInstance(locale).format(value)+" kali")
+        }
+
     fun dismissKeyboard(context: Context?, view: View?) {
-        val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        if (inputMethodManager.isAcceptingText)
+        val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        if (inputMethodManager != null && inputMethodManager.isAcceptingText) {
             inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
+        }
     }
 }

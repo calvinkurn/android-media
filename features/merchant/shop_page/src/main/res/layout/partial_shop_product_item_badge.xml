@@ -19,7 +19,7 @@
         style="@style/TextView.Micro.BlackDisabled"
         android:layout_marginEnd="@dimen/dp_4"
         android:layout_marginRight="@dimen/dp_4"
-        android:background="@drawable/bg_rect_stroke_green"
+        android:background="@drawable/bg_rect_stroke_green_shop_open"
         android:paddingBottom="@dimen/dp_2"
         android:paddingLeft="@dimen/dp_3"
         android:paddingRight="@dimen/dp_3"
