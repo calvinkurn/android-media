@@ -941,13 +941,13 @@ public class OrderListFragment extends BaseDaggerFragment implements
         switch (actionButton.label().toLowerCase()) {
             case ACTION_BUY_AGAIN:
                 if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))
-                    presenter.setOrderDetails(selectedOrderId, mOrderCategory, actionButton.label().toLowerCase(), order.paymentID(), order.cartString());
+                    presenter.setOrderDetails(selectedOrderId, mOrderCategory, actionButton.label().toLowerCase());
                 else
                     handleDefaultCase(actionButton);
                 break;
             case ACTION_SUBMIT_CANCELLATION:
             case ACTION_ASK_SELLER:
-                presenter.setOrderDetails(selectedOrderId, mOrderCategory, actionButton.label().toLowerCase(), "", "");
+                presenter.setOrderDetails(selectedOrderId, mOrderCategory, actionButton.label().toLowerCase());
                 break;
             case ACTION_TRACK_IT:
                 trackOrder();

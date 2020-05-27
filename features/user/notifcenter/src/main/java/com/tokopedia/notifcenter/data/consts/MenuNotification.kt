@@ -2,8 +2,16 @@ package com.tokopedia.notifcenter.data.consts
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.notifcenter.GlobalNavConstant.*
 import com.tokopedia.notifcenter.R
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.MENUNGGU_KONFIRMASI
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.MENUNGGU_PEMBAYARAN
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.PEMBELIAN
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.PENJUALAN
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.PESANAN_BARU
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.PESANAN_DIPROSES
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.SAMPAI_TUJUAN
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.SEDANG_DIKIRIM
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.SIAP_DIKIRIM
 import com.tokopedia.notifcenter.data.model.DrawerNotification
 import com.tokopedia.notifcenter.data.viewbean.BuyerNotificationViewBean
 import com.tokopedia.notifcenter.data.viewbean.SellerNotificationViewBean

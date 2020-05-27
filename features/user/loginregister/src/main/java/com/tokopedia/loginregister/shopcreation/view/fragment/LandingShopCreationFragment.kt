@@ -131,6 +131,9 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 if (userSession.isLoggedIn) {
                     RouteManager.route(it, ApplinkConstInternalGlobal.LOGOUT)
                     it.finish()
+                } else if(it.intent.hasExtra(ApplinkConstInternalGlobal.PARAM_SOURCE)) {
+                    RouteManager.route(it, ApplinkConst.LOGIN)
+                    it.finish()
                 } else {
                     RouteManager.route(it, ApplinkConstInternalSellerapp.WELCOME)
                     it.finish()
