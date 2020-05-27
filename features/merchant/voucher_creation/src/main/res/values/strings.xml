@@ -237,8 +237,11 @@
     <!-- voucher list -->
     <string name="mvc_is_ongoing">Sedang Berlangsung</string>
     <string name="mvc_not_started_yet">Belum Dimulai</string>
-    <string name="mvc_ended">Sudah Berakhir</string>
+    <string name="mvc_already_ended">Sudah Berakhir</string>
     <string name="mvc_stopped">Dibatalkan</string>
+    <string name="mvc_future">Mendatang</string>
+    <string name="mvc_ended">Berakhir</string>
+    <string name="mvc_stopped_at">Dibatalkan pada %s</string>
     <string name="mvc_find_shop_voucher">Cari voucher toko</string>
     <string name="mvc_success_update_period">Periode tampil berhasil diubah.</string>
 

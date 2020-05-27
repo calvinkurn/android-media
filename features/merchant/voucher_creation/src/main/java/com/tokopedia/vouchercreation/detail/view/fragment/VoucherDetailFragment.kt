@@ -103,7 +103,6 @@ class VoucherDetailFragment : BaseDetailFragment() {
 
     private fun showDummyData() {
         val dummy = listOf(
-                VoucherHeaderUiModel(),
                 //PromoPerformanceUiModel("Rp3.000.000", 30, 120),
                 UsageProgressUiModel(30),
                 DividerUiModel(8),
