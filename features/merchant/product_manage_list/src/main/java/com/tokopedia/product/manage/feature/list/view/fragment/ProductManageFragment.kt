@@ -45,6 +45,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
+import com.tokopedia.product.manage.feature.cashback.presentation.activity.ProductManageSetCashbackActivity
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.PARAM_SET_CASHBACK_PRODUCT_PRICE
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.PARAM_SET_CASHBACK_VALUE
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_CACHE_MANAGER_KEY
@@ -1114,15 +1115,12 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun onSetCashbackClicked(productManageViewModel: ProductViewModel) {
-        val newUri = UriUtil.buildUri(ApplinkConstInternalMarketplace.SET_CASHBACK, productManageViewModel.id, productManageViewModel.title)
-        val uri = Uri.parse(newUri)
-                .buildUpon()
-                .appendQueryParameter(PARAM_SET_CASHBACK_VALUE, productManageViewModel.cashBack.toString())
-                .appendQueryParameter(PARAM_SET_CASHBACK_PRODUCT_PRICE, productManageViewModel.price)
-                .build()
-                .toString()
-        val intent = RouteManager.getIntent(context, uri)
-        startActivityForResult(intent, SET_CASHBACK_REQUEST_CODE)
+        with(productManageViewModel) {
+            context?.let {
+                val intent = ProductManageSetCashbackActivity.createIntent(it, id, title, cashBack, price)
+                startActivityForResult(intent, SET_CASHBACK_REQUEST_CODE)
+            }
+        }
     }
 
     private fun goToDuplicateProduct(productId: String) {

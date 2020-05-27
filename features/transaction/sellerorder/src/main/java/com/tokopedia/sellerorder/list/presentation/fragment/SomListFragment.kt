@@ -76,6 +76,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.empty_list.*
 import kotlinx.android.synthetic.main.fragment_som_list.*
+import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -129,6 +130,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var onLoadMore = false
     private var isFilterButtonAnimating = false
     private var _animator: Animator? = null
+    private var textChangedJob: Job? = null
 
     private val somListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomListViewModel::class.java]
@@ -319,7 +321,9 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun loadTicker() {
-        somListViewModel.loadTickerList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_ticker))
+        activity?.resources?.let {
+            somListViewModel.loadTickerList(GraphqlHelper.loadRawString(it, R.raw.gql_som_ticker))
+        }
     }
 
     private fun observingTicker() = somListViewModel.tickerListResult.observe(this, Observer {
@@ -371,16 +375,22 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     })
 
     private fun loadFilterStatusList() {
-        somListViewModel.loadStatusList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_status_list))
+        activity?.resources?.let {
+            somListViewModel.loadStatusList(GraphqlHelper.loadRawString(it, R.raw.gql_som_status_list))
+        }
     }
 
     private fun loadOrderList(nextOrderId: Int) {
         paramOrder.nextOrderId = nextOrderId
-        somListViewModel.loadOrderList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_order), paramOrder)
+        activity?.resources?.let {
+            somListViewModel.loadOrderList(GraphqlHelper.loadRawString(it, R.raw.gql_som_order), paramOrder)
+        }
     }
 
     private fun loadFilterList() {
-        somListViewModel.loadFilterList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_filter))
+        activity?.resources?.let {
+            somListViewModel.loadFilterList(GraphqlHelper.loadRawString(it, R.raw.gql_som_filter))
+        }
     }
 
     private fun renderInfoTicker(tickerList: List<SomListTicker.Data.OrderTickers.Tickers>) {
@@ -612,9 +622,13 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     override fun onSearchTextChanged(text: String?) {
-        text?.let {
-            paramOrder.search = text
-            refreshHandler?.startRefresh()
+        textChangedJob?.cancel()
+        textChangedJob = GlobalScope.launch(Dispatchers.Main) {
+            delay(500L)
+            text?.let {
+                paramOrder.search = text
+                refreshHandler?.startRefresh()
+            }
         }
     }
 
