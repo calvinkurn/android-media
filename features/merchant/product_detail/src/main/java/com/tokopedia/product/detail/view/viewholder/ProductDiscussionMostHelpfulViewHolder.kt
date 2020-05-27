@@ -127,10 +127,6 @@ class ProductDiscussionMostHelpfulViewHolder(view: View,
     private fun showTitle(totalQuestion: Int, type: String, name: String, numberOfThreadsShown: String) {
         itemView.apply {
             productDiscussionMostHelpfulTitle.text = String.format(getString(R.string.product_detail_discussion_title), totalQuestion)
-            if(listener.isFirstTimeSeeDiscussion()) {
-                productDetailDiscussionNewLabel.show()
-                listener.setFirstTimeSeeDiscussion()
-            }
             productDiscussionMostHelpfulTitle.show()
             productDiscussionMostHelpfulSeeAll.setOnClickListener {
                 listener.goToTalkReading(ComponentTrackDataModel(type, name, adapterPosition + 1), numberOfThreadsShown)

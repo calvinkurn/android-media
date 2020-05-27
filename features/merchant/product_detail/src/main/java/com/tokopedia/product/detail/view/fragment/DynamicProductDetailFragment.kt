@@ -234,7 +234,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private var menu: Menu? = null
     private var tradeinDialog: ProductAccessRequestDialogFragment? = null
     private val recommendationCarouselPositionSavedState = SparseIntArray()
-    private var talkSharedPrefs: SharedPreferences? = null
 
     private val irisSessionId by lazy {
         context?.let { IrisSession(it).getSessionId() } ?: ""
@@ -300,7 +299,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
         context?.let {
             pdpHashMapUtil = DynamicProductDetailHashMap(it, mapOf(ProductDetailConstant.PRODUCT_SNAPSHOT to ProductSnapshotDataModel()))
-            talkSharedPrefs = it.getSharedPreferences("${this.javaClass.simpleName}.pref", Context.MODE_PRIVATE)
         }
         setHasOptionsMenu(true)
     }
@@ -981,14 +979,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun onUserDetailsClicked(userId: String) {
         goToProfileActivity(userId)
-    }
-
-    override fun isFirstTimeSeeDiscussion(): Boolean {
-        return talkSharedPrefs?.getBoolean(String.format(ProductDetailConstant.SHOW_LABEL_SHARED_PREFERENCE_KEY, viewModel.userId), true) ?: false
-    }
-
-    override fun setFirstTimeSeeDiscussion() {
-        talkSharedPrefs?.edit()?.putBoolean(String.format(ProductDetailConstant.SHOW_LABEL_SHARED_PREFERENCE_KEY, viewModel.userId), false)?.apply()
     }
 
     private fun disscussionClicked() {

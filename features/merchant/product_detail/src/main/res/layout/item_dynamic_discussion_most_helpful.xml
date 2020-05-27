@@ -25,20 +25,6 @@
         app:layout_constraintTop_toBottomOf="@id/talk_top_separator"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <com.tokopedia.unifycomponents.NotificationUnify
-        android:id="@+id/productDetailDiscussionNewLabel"
-        android:layout_width="@dimen/layout_lvl4"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl1"
-        android:layout_marginLeft="@dimen/layout_lvl1"
-        android:visibility="gone"
-        app:notificationTitle="@string/product_detail_discussion_new_label"
-        app:notificationType="text_type"
-        app:notificationColor="color_text_type"
-        app:layout_constraintStart_toEndOf="@id/productDiscussionMostHelpfulTitle"
-        app:layout_constraintTop_toTopOf="@id/productDiscussionMostHelpfulTitle"
-        app:layout_constraintBottom_toBottomOf="@id/productDiscussionMostHelpfulTitle" />
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/productDiscussionMostHelpfulSeeAll"
         android:layout_width="wrap_content"
