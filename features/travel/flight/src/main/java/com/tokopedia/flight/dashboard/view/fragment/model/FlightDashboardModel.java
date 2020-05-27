@@ -3,12 +3,13 @@ package com.tokopedia.flight.dashboard.view.fragment.model;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
-import androidx.core.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
+
+import androidx.core.content.ContextCompat;
 
 import com.tokopedia.flight.airport.view.model.FlightAirportModel;
 
@@ -166,8 +167,8 @@ public class FlightDashboardModel implements Parcelable, Cloneable {
         return departureAirportFmt;
     }
 
-    public CharSequence getAirportTextForView(Context context, boolean isDeparture){
-        FlightAirportModel flightAirportDB = isDeparture? departureAirport: arrivalAirport;
+    public CharSequence getAirportTextForView(Context context, boolean isDeparture) {
+        FlightAirportModel flightAirportDB = isDeparture ? departureAirport : arrivalAirport;
 
         SpannableStringBuilder text = new SpannableStringBuilder();
         String depAirportID = flightAirportDB.getAirportCode();
@@ -195,7 +196,7 @@ public class FlightDashboardModel implements Parcelable, Cloneable {
     }
 
     private SpannableStringBuilder makeBold(Context context, SpannableStringBuilder text) {
-        if (TextUtils.isEmpty(text)){
+        if (TextUtils.isEmpty(text)) {
             return text;
         }
         text.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
@@ -210,7 +211,7 @@ public class FlightDashboardModel implements Parcelable, Cloneable {
     }
 
     private SpannableStringBuilder makeSmall(SpannableStringBuilder text) {
-        if (TextUtils.isEmpty(text)){
+        if (TextUtils.isEmpty(text)) {
             return text;
         }
         text.setSpan(new RelativeSizeSpan(0.75f),
@@ -231,8 +232,13 @@ public class FlightDashboardModel implements Parcelable, Cloneable {
     }
 
     @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
+    public Object clone() {
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to Clone FlightDashboardModel");
+        }
     }
 
     public FlightClassModel getFlightClass() {

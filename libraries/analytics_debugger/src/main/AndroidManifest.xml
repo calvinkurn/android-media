@@ -28,6 +28,15 @@
             android:launchMode="singleTask"
             android:taskAffinity="com.tokopedia.analytics.task"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
+            android:name=".debugger.ui.activity.TopAdsDebuggerActivity"
+            android:launchMode="singleTask"
+            android:label="Topads Verificator"
+            android:taskAffinity="com.tokopedia.analytics.task"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:exported="true"/>
+
         <activity
             android:name=".debugger.ui.activity.AnalyticsDebuggerActivity"
             android:exported="true"
@@ -62,6 +71,11 @@
         <activity
             android:name=".debugger.ui.activity.FpmDebuggerDetailActivity"
             android:theme="@style/Theme.Green" />
+
+        <activity
+            android:name=".debugger.ui.activity.TopAdsDebuggerDetailActivity"
+            android:theme="@style/Theme.Green" />
+
         <activity
             android:name=".debugger.ui.activity.ApplinkDebuggerDetailActivity"
             android:theme="@style/Theme.Green" />
