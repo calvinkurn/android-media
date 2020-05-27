@@ -372,9 +372,9 @@ object DeeplinkDFMapper : CoroutineScope {
                 val hasAccessedModule = sp.getBoolean(moduleId, false)
                 if (!hasAccessedModule) {
                     Timber.w("P1#DF_USE#%s", moduleId)
-                    dfUsageList.add(moduleId)
                     sp.edit().putBoolean(moduleId, true).apply()
                 }
+                dfUsageList.add(moduleId)
             } catch (ignored: Exception) {
             }
         }
