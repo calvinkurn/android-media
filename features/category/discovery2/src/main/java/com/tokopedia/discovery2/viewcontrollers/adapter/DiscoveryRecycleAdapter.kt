@@ -10,7 +10,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryListViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.DiscoveryHomeFactory
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 
-class DiscoveryRecycleAdapter(private val fragment: Fragment)
+class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parentComponent : AbstractViewHolder? = null)
     : RecyclerView.Adapter<AbstractViewHolder>() {
 
     companion object {
@@ -28,7 +28,7 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment)
 
     override fun onBindViewHolder(holder: AbstractViewHolder, position: Int) {
         holder.bindView(viewHolderListModel.getViewHolderModel(
-                DiscoveryHomeFactory.createViewModel(getItemViewType(position)), componentList[position], position))
+                DiscoveryHomeFactory.createViewModel(getItemViewType(position)), componentList[position], position), parentComponent)
         holder.getInnerRecycleView()?.setRecycledViewPool(viewPool)
     }
 
@@ -52,7 +52,6 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment)
             viewHolderListModel.clearList()
             componentList.addAll(dataList)
         }
-        // TODO : Remove notify for horizontal adapter
         notifyDataSetChanged()
     }
 

@@ -12,12 +12,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
-class DynamicCategoryViewModel(val application: Application, components: ComponentsItem) : DiscoveryBaseViewModel(), CoroutineScope {
+class DynamicCategoryViewModel(val application: Application, components: ComponentsItem, val position:Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val componentData: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
 
     init {
         components.data?.let {
-            componentData.value = DiscoveryDataMapper.mapListToComponentList(it, ComponentNames.DynamicCategoryItem.componentName)
+            componentData.value = DiscoveryDataMapper.mapListToComponentList(it, ComponentNames.DynamicCategoryItem.componentName, components.name, position)
         }
     }
 

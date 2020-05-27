@@ -15,13 +15,14 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class TokopointsViewModel(val application: Application, components: ComponentsItem) : DiscoveryBaseViewModel(), CoroutineScope {
+private const val RPC_PAGE_NUMBER_KEY = "rpc_page_number"
+private const val RPC_PAGE_SIZE = "rpc_page_size"
+
+class TokopointsViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val tokopointsComponentData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val tokopointsList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     @Inject
     lateinit var tokopointsListDataUseCase: TokopointsListDataUseCase
-    private val RPC_PAGE_NUMBER_KEY = "rpc_page_number"
-    private val RPC_PAGE_SIZE = "rpc_page_size"
     private var pageNumber = 1
     private var productPerPage = 6
 

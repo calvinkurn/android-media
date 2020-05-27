@@ -9,6 +9,7 @@ import com.google.android.youtube.player.YouTubePlayerSupportFragment
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
 
 
@@ -28,9 +29,10 @@ class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) : Ab
 
     private fun setUpObserver() {
         youTubeViewViewModel.getVideoId().observe(fragment.viewLifecycleOwner, Observer {
-            videoId = it
+            videoId = it.videoId ?: ""
             youTubePlayerSupportFragment.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, this)
-
+            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackClickVideo(it.videoId
+                    ?: "", it.name ?: "", "")
         })
 
     }

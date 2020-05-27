@@ -9,17 +9,20 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.analytics.DiscoveryAnalytics
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.PageInfo
+import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.END_POINT
 import com.tokopedia.discovery2.viewcontrollers.adapter.AddChildAdapterCallback
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.mergeAdapter.MergeAdapters
-import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.globalerror.GlobalError
@@ -27,13 +30,15 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import javax.inject.Inject
 
-class DiscoveryFragment : Fragment(), AddChildAdapterCallback {
+class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback {
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryFab: CustomTopChatView
@@ -44,9 +49,11 @@ class DiscoveryFragment : Fragment(), AddChildAdapterCallback {
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     private lateinit var globalError: GlobalError
     var pageEndPoint = ""
-    private lateinit var mergeAdapters: MergeAdapters<RecyclerView.Adapter<AbstractViewHolder>>
+    private lateinit var mergeAdapters: MergeAdapters
     private lateinit var discoveryRecycleAdapter: DiscoveryRecycleAdapter
 
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
 
     companion object {
         fun getInstance(endPoint: String?): Fragment {
@@ -64,6 +71,17 @@ class DiscoveryFragment : Fragment(), AddChildAdapterCallback {
         return inflater.inflate(R.layout.fragment_discovery, container, false)
     }
 
+    override fun getScreenName(): String {
+        return ""
+    }
+
+    override fun initInjector() {
+        DaggerDiscoveryComponent.builder()
+                .baseAppComponent((context?.applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
@@ -75,6 +93,10 @@ class DiscoveryFragment : Fragment(), AddChildAdapterCallback {
         typographyHeader = view.findViewById(R.id.typography_header)
         ivShare = view.findViewById(R.id.iv_share)
         ivSearch = view.findViewById(R.id.iv_search)
+        view.findViewById<ImageView>(R.id.iv_back).setOnClickListener {
+            getDiscoveryAnalytics().trackBackClick()
+            activity?.onBackPressed()
+        }
         globalError = view.findViewById(R.id.global_error)
         view.findViewById<ImageView>(R.id.iv_back).setOnClickListener { activity?.onBackPressed() }
         recyclerView = view.findViewById(R.id.discovery_recyclerView)
@@ -158,6 +180,7 @@ class DiscoveryFragment : Fragment(), AddChildAdapterCallback {
         if (data?.share?.enabled == true) {
             ivShare.show()
             ivShare.setOnClickListener {
+                getDiscoveryAnalytics().trackShareClick()
                 permissionHelper {
                     Utils.shareData(activity, data.share.description, data.share.url, discoveryViewModel.getBitmapFromURL(data.share.image))
                 }
@@ -191,6 +214,7 @@ class DiscoveryFragment : Fragment(), AddChildAdapterCallback {
 
     private fun setClick(appLinks: String, shopId: Int) {
         mDiscoveryFab.getFabButton().setOnClickListener {
+            getDiscoveryAnalytics().trackClickCustomTopChat()
             if (appLinks.isNotEmpty() && shopId != 0) {
                 activity?.let { it1 -> discoveryViewModel.openCustomTopChat(it1, appLinks, shopId) }
             }
@@ -239,5 +263,9 @@ class DiscoveryFragment : Fragment(), AddChildAdapterCallback {
     }
 
     fun getDiscoveryRecyclerViewAdapter() = discoveryRecycleAdapter
-    fun getMergeAdapter() = mergeAdapters
+
+    fun getDiscoveryAnalytics(): DiscoveryAnalytics {
+        val discoveryAnalytics: DiscoveryAnalytics by lazy { DiscoveryAnalytics(trackingQueue = trackingQueue, pagePath = discoveryViewModel.pagePath, pageType = discoveryViewModel.pageType) }
+        return discoveryAnalytics
+    }
 }

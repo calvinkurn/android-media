@@ -15,7 +15,7 @@ class DiscoveryDataUseCase @Inject constructor(private val discoveryPageReposito
     private fun removeComponents(discoveryPageData: DiscoveryResponse): DiscoveryResponse {
         if (!discoveryPageData.components.isNullOrEmpty()) {
             val componentsList = discoveryPageData.components!!.filter { it.renderByDefault }
-            discoveryPageData.components = componentsList
+            discoveryPageData.components = componentsList.toMutableList()
         }
         return discoveryPageData
     }

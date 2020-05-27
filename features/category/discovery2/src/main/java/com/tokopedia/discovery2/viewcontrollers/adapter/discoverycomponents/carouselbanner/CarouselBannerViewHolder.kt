@@ -14,11 +14,13 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.customview.BannerDotIndicator
 import com.tokopedia.discovery2.viewcontrollers.customview.BannerPagerSnapHelper
 import com.tokopedia.discovery2.viewcontrollers.customview.DiscoveryBannerView
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.widget_recycler_view.view.*
 
-class CarouselBannerViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView), DiscoveryBannerView.DiscoveryBannerViewInteraction {
+class CarouselBannerViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView),
+        DiscoveryBannerView.DiscoveryBannerViewInteraction, BannerDotIndicator.ClickSeeAllInterface {
 
     private val carouselBannerTitle: Typography = itemView.findViewById(R.id.title)
     private val discoveryBannerView: DiscoveryBannerView = itemView.findViewById(R.id.carousel_banner_view)
@@ -47,6 +49,8 @@ class CarouselBannerViewHolder(itemView: View, private val fragment: Fragment) :
 
         carouselBannerViewModel.getListDataLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
             carouselBannerRecycleAdapter.setDataList(item)
+            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(
+                    item?.get(0)?.data ?: ArrayList())
         })
 
         carouselBannerViewModel.getSeeAllButtonLiveData().observe(fragment.viewLifecycleOwner, Observer {
@@ -79,7 +83,7 @@ class CarouselBannerViewHolder(itemView: View, private val fragment: Fragment) :
             val indicatorPadding = resources.getDimensionPixelSize(R.dimen.dp_8)
             val activeColor = ContextCompat.getColor(context, R.color.activeBannerDot)
             val inActiveColor = ContextCompat.getColor(context, R.color.inActiveBannerDot)
-            return BannerDotIndicator(radius, padding, indicatorPadding, activeColor, inActiveColor, BannerDotIndicator.CAROUSEL_BANNER_INDICATOR)
+            return BannerDotIndicator(radius, padding, indicatorPadding, activeColor, inActiveColor, BannerDotIndicator.CAROUSEL_BANNER_INDICATOR, this@CarouselBannerViewHolder)
         }
     }
 
@@ -101,5 +105,9 @@ class CarouselBannerViewHolder(itemView: View, private val fragment: Fragment) :
         override fun isAutoScrollOnProgress(): Boolean {
             return discoveryBannerView.getAutoScrollOnProgressLiveData().value ?: false
         }
+    }
+
+    override fun onClickSeeAll() {
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackClickSeeAllBanner()
     }
 }

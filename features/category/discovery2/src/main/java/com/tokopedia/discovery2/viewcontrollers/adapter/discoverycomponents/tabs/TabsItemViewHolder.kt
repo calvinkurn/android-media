@@ -9,7 +9,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.discovery2.R
-import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -26,7 +25,6 @@ class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : Abstr
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         tabsItemViewModel = discoveryBaseViewModel as TabsItemViewModel
-
     }
 
     override fun onViewAttachedToWindow() {
@@ -45,27 +43,15 @@ class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : Abstr
                 item.fontColor?.let { fontColor ->
                     setFontColor(fontColor)
                 }
-//                if (adapterPosition == 0) {
-//                    item.isSelected = true
-//                }
                 showSelectedView(item.isSelected)
                 setClick(item)
             }
         })
         tabsItemViewModel.getCompositeComponentLiveData().observe(viewLifecycleOwner, Observer {
-//            (fragment as? DiscoveryFragment)?.let { discoveryFragment ->
-//                discoveryFragment.getMergeAdapter().removeTabAdapter(it)
-//            }
+            (parentAbstractViewHolder as? TabsViewHolder)?.getCompositeComponentsList(it)
         })
 
     }
-
-//    override fun onViewDetachedToWindow() {
-//        val lifecycleOwner = fragment.viewLifecycleOwner
-//        if (tabsItemViewModel.getComponentLiveData().hasObservers()) {
-//
-//        }
-//    }
 
     private fun setTabText(name: String) {
         tabTextView.text = name
@@ -81,6 +67,8 @@ class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : Abstr
     private fun setClick(data: DataItem) {
         tabImageView.setOnClickListener {
             if (!data.isSelected) {
+                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackTabsClick(data.name
+                        ?: "")
                 (it as ImageView).apply {
                     data.isSelected = !data.isSelected
                     showSelectedView(data.isSelected)

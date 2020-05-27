@@ -56,10 +56,16 @@ class ChipsFilterItemViewHolder(itemView: View, private val fragment: Fragment) 
                         SELECTED
                     }
                 }
+                sendChipClickEvent(chipData)
                 setChipType(chipData)
                 changeDataInChipsViewModel()
             }
         }
+    }
+
+    private fun sendChipClickEvent(chipData: DataItem) {
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackClickChipsFilter(chipData.title
+                ?: "")
     }
 
     private fun isSelected(chipsUnify: ChipsUnify): Boolean {
