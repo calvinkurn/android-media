@@ -192,15 +192,6 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == LoginEmailPhoneFragment.REQUEST_SECURITY_QUESTION
-                && resultCode == Activity.RESULT_OK
-                && data != null
-                && data.extras != null) {
-            onSuccessLoginToken()
-        }else super.onActivityResult(requestCode, resultCode, data)
-    }
-
     private fun goToSecurityQuestion(){
         activity?.let {
             it.setResult(Activity.RESULT_OK, Intent().putExtra(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, true))
