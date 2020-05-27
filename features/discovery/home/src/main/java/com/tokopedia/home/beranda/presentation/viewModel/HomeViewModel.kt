@@ -5,7 +5,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.base.view.viewmodel.BaseCoRoutineScope
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel.Companion.STATUS_OK
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
@@ -62,28 +62,28 @@ import javax.inject.Inject
 @ExperimentalCoroutinesApi
 open class HomeViewModel @Inject constructor(
         private val homeUseCase: Lazy<HomeUseCase>,
-        private val userSession: UserSessionInterface,
-        private val closeChannelUseCase: CloseChannelUseCase,
-        private val dismissHomeReviewUseCase: DismissHomeReviewUseCase,
-        private val getAtcUseCase: AddToCartOccUseCase,
-        private val getBusinessUnitDataUseCase: GetBusinessUnitDataUseCase,
-        private val getBusinessWidgetTab: GetBusinessWidgetTab,
-        private val getDynamicChannelsUseCase: GetDynamicChannelsUseCase,
-        private val getHomeReviewSuggestedUseCase: GetHomeReviewSuggestedUseCase,
-        private val getHomeTokopointsDataUseCase: GetHomeTokopointsDataUseCase,
-        private val getKeywordSearchUseCase: GetKeywordSearchUseCase,
-        private val getPendingCashbackUseCase: GetCoroutinePendingCashbackUseCase,
-        private val getPlayCardHomeUseCase: GetPlayLiveDynamicUseCase,
-        private val getRecommendationTabUseCase: GetRecommendationTabUseCase,
-        private val getWalletBalanceUseCase: GetCoroutineWalletBalanceUseCase,
-        private val popularKeywordUseCase: GetPopularKeywordUseCase,
+        private val userSession: Lazy<UserSessionInterface>,
+        private val closeChannelUseCase: Lazy<CloseChannelUseCase>,
+        private val dismissHomeReviewUseCase: Lazy<DismissHomeReviewUseCase>,
+        private val getAtcUseCase: Lazy<AddToCartOccUseCase>,
+        private val getBusinessUnitDataUseCase: Lazy<GetBusinessUnitDataUseCase>,
+        private val getBusinessWidgetTab: Lazy<GetBusinessWidgetTab>,
+        private val getDynamicChannelsUseCase: Lazy<GetDynamicChannelsUseCase>,
+        private val getHomeReviewSuggestedUseCase: Lazy<GetHomeReviewSuggestedUseCase>,
+        private val getHomeTokopointsDataUseCase: Lazy<GetHomeTokopointsDataUseCase>,
+        private val getKeywordSearchUseCase: Lazy<GetKeywordSearchUseCase>,
+        private val getPendingCashbackUseCase: Lazy<GetCoroutinePendingCashbackUseCase>,
+        private val getPlayCardHomeUseCase: Lazy<GetPlayLiveDynamicUseCase>,
+        private val getRecommendationTabUseCase: Lazy<GetRecommendationTabUseCase>,
+        private val getWalletBalanceUseCase: Lazy<GetCoroutineWalletBalanceUseCase>,
+        private val popularKeywordUseCase: Lazy<GetPopularKeywordUseCase>,
         private val sendGeolocationInfoUseCase: Lazy<SendGeolocationInfoUseCase>,
-        private val stickyLoginUseCase: StickyLoginUseCase,
-        private val sendTopAdsUseCase: SendTopAdsUseCase,
-        private val getRechargeRecommendationUseCase: GetRechargeRecommendationUseCase,
-        private val declineRechargeRecommendationUseCase: DeclineRechargeRecommendationUseCase,
-        private val homeDispatcher: HomeDispatcherProvider
-) : BaseViewModel(homeDispatcher.io()){
+        private val stickyLoginUseCase: Lazy<StickyLoginUseCase>,
+        private val sendTopAdsUseCase: Lazy<SendTopAdsUseCase>,
+        private val getRechargeRecommendationUseCase: Lazy<GetRechargeRecommendationUseCase>,
+        private val declineRechargeRecommendationUseCase: Lazy<DeclineRechargeRecommendationUseCase>,
+        private val homeDispatcher: Lazy<HomeDispatcherProvider>
+) : BaseCoRoutineScope(homeDispatcher.get().io()){
 
     companion object {
         private const val ACTION_ADD = 1
@@ -101,7 +101,7 @@ open class HomeViewModel @Inject constructor(
         private val REQUEST_DELAY_SEND_GEOLOCATION = TimeUnit.HOURS.toMillis(1) // 1 hour
     }
 
-    private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.get().getHomeData().flowOn(homeDispatcher.io())
+    private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.get().getHomeData().flowOn(homeDispatcher.get().io())
 
 // ============================================================================================
 // ================================ Live data UI Controller ===================================
@@ -235,7 +235,7 @@ open class HomeViewModel @Inject constructor(
     }
 
     fun getHeaderData() {
-        if (!userSession.isLoggedIn) return
+        if (!userSession.get().isLoggedIn) return
         getTokocashBalance()
         getTokopoint()
     }
@@ -287,7 +287,7 @@ open class HomeViewModel @Inject constructor(
             isTokoPointDataError?.let {
                 headerDataModel = headerDataModel?.copy(isTokoPointDataError = it)
             }
-            headerDataModel = headerDataModel?.copy(isUserLogin = userSession.isLoggedIn)
+            headerDataModel = headerDataModel?.copy(isUserLogin = userSession.get().isLoggedIn)
             launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, headerViewModel.copy(), currentPosition)) }
         }
 
@@ -305,7 +305,7 @@ open class HomeViewModel @Inject constructor(
         if(getSuggestedReviewJob?.isActive == true) return
         if (!isNeedShowGeoLocation) {
             getSuggestedReviewJob = launchCatchError(coroutineContext, block = {
-                val data = getHomeReviewSuggestedUseCase.executeOnBackground()
+                val data = getHomeReviewSuggestedUseCase.get().executeOnBackground()
                 insertSuggestedReview(data)
             }) {
                 onRemoveSuggestedReview()
@@ -383,7 +383,7 @@ open class HomeViewModel @Inject constructor(
 
     fun onBannerClicked(slidesModel: BannerSlidesModel) {
         if (slidesModel.redirectUrl.isNotEmpty()) {
-            sendTopAdsUseCase.executeOnBackground(slidesModel.redirectUrl)
+            sendTopAdsUseCase.get().executeOnBackground(slidesModel.redirectUrl)
         }
     }
 
@@ -442,8 +442,8 @@ open class HomeViewModel @Inject constructor(
         val dynamicChannelDataModel = _homeLiveData.value?.list?.find { visitable -> visitable is DynamicChannelDataModel && visitable.channel?.id == channel.id }
         if (dynamicChannelDataModel is DynamicChannelDataModel){
             launchCatchError(coroutineContext, block = {
-                closeChannelUseCase.setParams(channel.id)
-                val closeChannel = closeChannelUseCase.executeOnBackground()
+                closeChannelUseCase.get().setParams(channel.id)
+                val closeChannel = closeChannelUseCase.get().executeOnBackground()
                 if(closeChannel.success){
                     updateWidget(UpdateLiveDataModel(ACTION_DELETE, dynamicChannelDataModel, position))
                 } else {
@@ -475,7 +475,7 @@ open class HomeViewModel @Inject constructor(
     }
 
     fun onRefreshTokoPoint() {
-        if (!userSession.isLoggedIn) return
+        if (!userSession.get().isLoggedIn) return
         updateHeaderViewModel(
                 isTokoPointDataError = false,
                 tokopointsDrawer = null,
@@ -485,7 +485,7 @@ open class HomeViewModel @Inject constructor(
     }
 
     fun onRefreshTokoCash() {
-        if (!userSession.isLoggedIn) return
+        if (!userSession.get().isLoggedIn) return
         updateHeaderViewModel(
                 isWalletDataError = false,
                 homeHeaderWalletAction = null
@@ -630,17 +630,19 @@ open class HomeViewModel @Inject constructor(
         launchCatchError(coroutineContext, block = {
             homeFlowData.collect { homeDataModel ->
                 if (homeDataModel?.isCache == false) {
-                    _isRequestNetworkLiveData.postValue(Event(false))
-                    updateWidget(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel))
-                    getHeaderData()
-                    getReviewData()
-                    getPlayBanner()
-                    getPopularKeyword()
-                    getRechargeRecommendation()
-                    _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>() ?: listOf()))
+                    if(homeDataModel?.list.isEmpty() == true) {
+                        _isRequestNetworkLiveData.postValue(Event(false))
+                        updateWidget(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel))
+                        getHeaderData()
+                        getReviewData()
+                        getPlayBanner()
+                        getPopularKeyword()
+                        getRechargeRecommendation()
+                        _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>()
+                                ?: listOf()))
+                    }
                 } else {
                     updateWidget(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel))
-                    refreshHomeData()
                 }
             }
         }) {
@@ -652,7 +654,7 @@ open class HomeViewModel @Inject constructor(
         channel = Channel()
         if(channel != null) {
             jobChannel?.cancelChildren()
-            jobChannel = launch(homeDispatcher.ui()) {
+            jobChannel = launch(homeDispatcher.get().ui()) {
                 updateChannel(channel!!)
             }
         }
@@ -674,13 +676,13 @@ open class HomeViewModel @Inject constructor(
         onRemoveSuggestedReview()
         if(dismissReviewJob?.isActive == true) return
         dismissReviewJob = launchCatchError(coroutineContext, block = {
-            dismissHomeReviewUseCase.executeOnBackground()
+            dismissHomeReviewUseCase.get().executeOnBackground()
         }){}
     }
 
     fun getBusinessUnitTabData(position: Int){
         launchCatchError(coroutineContext, block = {
-            val data = getBusinessWidgetTab.executeOnBackground()
+            val data = getBusinessWidgetTab.get().executeOnBackground()
             (_homeLiveData.value?.list?.getOrNull(position) as? NewBusinessUnitWidgetDataModel)?.let{ buWidget ->
                 val buWidgetData = buWidget.copy(
                         tabList = data.tabBusinessList,
@@ -698,8 +700,8 @@ open class HomeViewModel @Inject constructor(
     fun getBusinessUnitData(tabId: Int, position: Int){
         if(buWidgetJob?.isActive == true) return
         buWidgetJob = launchCatchError(coroutineContext, block = {
-            getBusinessUnitDataUseCase.setParams(tabId)
-            val data = getBusinessUnitDataUseCase.executeOnBackground()
+            getBusinessUnitDataUseCase.get().setParams(tabId)
+            val data = getBusinessUnitDataUseCase.get().executeOnBackground()
             _homeLiveData.value?.list?.withIndex()?.find { it.value is NewBusinessUnitWidgetDataModel }?.let { buModel ->
                 val oldBuData = buModel.value as NewBusinessUnitWidgetDataModel
                 val newBuList = oldBuData.contentsList.copy().toMutableList()
@@ -721,8 +723,8 @@ open class HomeViewModel @Inject constructor(
 
     fun getDynamicChannelData(dynamicChannelDataModel: DynamicChannelDataModel, position: Int){
         launchCatchError(coroutineContext, block = {
-            getDynamicChannelsUseCase.setParams(dynamicChannelDataModel.channel?.groupId ?: "")
-            val data = getDynamicChannelsUseCase.executeOnBackground()
+            getDynamicChannelsUseCase.get().setParams(dynamicChannelDataModel.channel?.groupId ?: "")
+            val data = getDynamicChannelsUseCase.get().executeOnBackground()
             if(data.isEmpty()){
                 updateWidget(UpdateLiveDataModel(ACTION_DELETE, dynamicChannelDataModel, position))
             } else {
@@ -747,8 +749,8 @@ open class HomeViewModel @Inject constructor(
         if(!isRechargeModelAvailable()) return
 
         getRechargeRecommendationJob = launchCatchError(coroutineContext, block = {
-            getRechargeRecommendationUseCase.setParams()
-            val data = getRechargeRecommendationUseCase.executeOnBackground()
+            getRechargeRecommendationUseCase.get().setParams()
+            val data = getRechargeRecommendationUseCase.get().executeOnBackground()
             insertRechargeRecommendation(data)
         }) {
             removeRechargeRecommendation()
@@ -765,14 +767,14 @@ open class HomeViewModel @Inject constructor(
         removeRechargeRecommendation()
         if(declineRechargeRecommendationJob?.isActive == true) return
         declineRechargeRecommendationJob = launchCatchError(coroutineContext, block = {
-            declineRechargeRecommendationUseCase.setParams(requestParams)
-            declineRechargeRecommendationUseCase.executeOnBackground()
+            declineRechargeRecommendationUseCase.get().setParams(requestParams)
+            declineRechargeRecommendationUseCase.get().executeOnBackground()
         }){}
     }
 
     fun getFeedTabData() {
         launchCatchError(coroutineContext, block={
-            val homeRecommendationTabs = getRecommendationTabUseCase.executeOnBackground()
+            val homeRecommendationTabs = getRecommendationTabUseCase.get().executeOnBackground()
             val findRetryModel = _homeLiveData.value?.list?.find {
                 visitable -> visitable is HomeRetryModel
             }
@@ -806,8 +808,8 @@ open class HomeViewModel @Inject constructor(
     fun getLoadPlayBannerFromNetwork(playBanner: PlayCardDataModel){
         if(getPlayWidgetJob?.isActive == true) return
         getPlayWidgetJob = launchCatchError(coroutineContext, block = {
-            getPlayCardHomeUseCase.setParams()
-            val data = getPlayCardHomeUseCase.executeOnBackground()
+            getPlayCardHomeUseCase.get().setParams()
+            val data = getPlayCardHomeUseCase.get().executeOnBackground()
             if (data.playChannels.isEmpty() || data.playChannels.first().coverUrl.isEmpty()) {
                 clearPlayBanner()
             }
@@ -827,8 +829,8 @@ open class HomeViewModel @Inject constructor(
     fun getPopularKeywordData() {
         if(getPopularKeywordJob?.isActive == true) return
         getPopularKeywordJob = launchCatchError(coroutineContext, {
-            popularKeywordUseCase.setParams()
-            val results = popularKeywordUseCase.executeOnBackground()
+            popularKeywordUseCase.get().setParams()
+            val results = popularKeywordUseCase.get().executeOnBackground()
             if (results.data.keywords.isNotEmpty()) {
                 val resultList = convertPopularKeywordDataList(results.data.keywords)
                 _homeLiveData.value?.list?.withIndex()?.find { it.value is PopularKeywordListDataModel }?.let { indexedData ->
@@ -846,8 +848,8 @@ open class HomeViewModel @Inject constructor(
     fun getSearchHint(isFirstInstall: Boolean) {
         if(getSearchHintJob?.isActive == true) return
         getSearchHintJob = launchCatchError(coroutineContext, block={
-            getKeywordSearchUseCase.params = getKeywordSearchUseCase.createParams(isFirstInstall)
-            val data = getKeywordSearchUseCase.executeOnBackground()
+            getKeywordSearchUseCase.get().params = getKeywordSearchUseCase.get().createParams(isFirstInstall)
+            val data = getKeywordSearchUseCase.get().executeOnBackground()
             _searchHint.postValue(data.searchData)
         }){}
     }
@@ -855,10 +857,10 @@ open class HomeViewModel @Inject constructor(
     fun getStickyContent() {
         if(getStickyLoginJob?.isActive == true) return
         getStickyLoginJob = launchCatchError(coroutineContext, block = {
-            stickyLoginUseCase.setParam(RequestParams.create().apply {
+            stickyLoginUseCase.get().setParam(RequestParams.create().apply {
                 putString(StickyLoginConstant.PARAMS_PAGE, StickyLoginConstant.Page.HOME.toString())
             })
-            val response = stickyLoginUseCase.executeOnBackground()
+            val response = stickyLoginUseCase.get().executeOnBackground()
             val data = response.response.tickers.find { it.layout == StickyLoginConstant.LAYOUT_FLOATING }
             if(data == null){
                 _stickyLogin.postValue(Result.error(Exception()))
@@ -872,7 +874,7 @@ open class HomeViewModel @Inject constructor(
     }
 
     fun sendTopAds(url: String){
-        sendTopAdsUseCase.executeOnBackground(url)
+        sendTopAdsUseCase.get().executeOnBackground(url)
     }
 
     fun getOneClickCheckout(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int){
@@ -886,7 +888,7 @@ open class HomeViewModel @Inject constructor(
                 productName = grid.name,
                 price = grid.price
         ))
-        getAtcUseCase.createObservable(requestParams)
+        getAtcUseCase.get().createObservable(requestParams)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .subscribe (
@@ -916,7 +918,7 @@ open class HomeViewModel @Inject constructor(
     private fun getTokocashBalance() {
         if(getTokocashJob?.isActive == true) return
         getTokocashJob = launchCatchError(coroutineContext, block = {
-            val homeHeaderWalletAction = mapToHomeHeaderWalletAction(getWalletBalanceUseCase.executeOnBackground())
+            val homeHeaderWalletAction = mapToHomeHeaderWalletAction(getWalletBalanceUseCase.get().executeOnBackground())
             updateHeaderViewModel(
                     isWalletDataError = false,
                     homeHeaderWalletAction = homeHeaderWalletAction
@@ -935,7 +937,7 @@ open class HomeViewModel @Inject constructor(
     fun getTokocashPendingBalance(){
         if(getPendingCashBalanceJob?.isActive != true){
             getPendingCashBalanceJob = launchCatchError(coroutineContext, block={
-                val data = getPendingCashbackUseCase.executeOnBackground()
+                val data = getPendingCashbackUseCase.get().executeOnBackground()
                 val cashBackData = CashBackData(data.amount, data.amountText)
                 updateHeaderViewModel(
                         isWalletDataError = false,
@@ -952,7 +954,7 @@ open class HomeViewModel @Inject constructor(
         if(getTokopointJob?.isActive == true) return
 
         getTokopointJob = launchCatchError(coroutineContext, block={
-            val data = getHomeTokopointsDataUseCase.executeOnBackground()
+            val data = getHomeTokopointsDataUseCase.get().executeOnBackground()
             updateHeaderViewModel(
                     isTokoPointDataError = false,
                     tokopointsDrawer = data.tokopointsDrawer
@@ -966,7 +968,7 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getUserId() = userSession.userId ?: ""
+    fun getUserId() = userSession.get().userId ?: ""
 
 // ============================================================================================
 // ================================ Live Data Controller ======================================
