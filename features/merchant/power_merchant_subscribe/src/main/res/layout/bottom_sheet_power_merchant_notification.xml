@@ -9,8 +9,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/image"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
+        android:layout_width="@dimen/power_merchant_notification_image_size"
+        android:layout_height="@dimen/power_merchant_notification_image_size"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
