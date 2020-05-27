@@ -85,5 +85,8 @@
     <string name="desc_template_label">Isi Template Label</string>
     <string name="save_template_label">Simpan</string>
     <string name="add_template_reply_label">Tambah template balasan</string>
-    <string name="empty_message_add_template_label">Oops, judul harus diisi</string>
+    <string name="empty_title_add_template_label">Oops, judul harus diisi.</string>
+    <string name="empty_desc_add_template_label">Oops, isi template harus diisi.</string>
+    <string name="error_message_maximum_template_reply">Maksimum 5 template balas ulasan</string>
+
 </resources>

@@ -55,9 +55,9 @@ class SellerReviewReplyViewModel @Inject constructor(
             val reviewTemplateList = withContext(dispatcherProvider.io()) {
                 getTemplateList(shopId)
             }
-            _reviewTemplate.postValue(Success(reviewTemplateList))
+            _reviewTemplate.value = Success(reviewTemplateList)
         }, onError = {
-            _reviewTemplate.postValue(Fail(it))
+            _reviewTemplate.value = Fail(it)
         })
     }
 
@@ -71,9 +71,9 @@ class SellerReviewReplyViewModel @Inject constructor(
                         responseMessage)
                 SellerReviewReplyMapper.mapToInsertReplyUiModel(insertSellerResponseUseCase.executeOnBackground())
             }
-            _insertReviewReply.postValue(Success(responseInsertReply))
+            _insertReviewReply.value = Success(responseInsertReply)
         }, onError = {
-            _insertReviewReply.postValue(Fail(it))
+            _insertReviewReply.value = Fail(it)
         })
     }
 
@@ -86,9 +86,9 @@ class SellerReviewReplyViewModel @Inject constructor(
                         message)
                 SellerReviewReplyMapper.mapToInsertTemplateReplyUiModel(insertTemplateReviewReplyUseCase.executeOnBackground())
             }
-            _insertTemplateReply.postValue(Success(responseInsertTemplate))
+            _insertTemplateReply.value = Success(responseInsertTemplate)
         }, onError = {
-            _insertTemplateReply.postValue(Fail(it))
+            _insertTemplateReply.value = Fail(it)
         })
     }
 
@@ -100,9 +100,9 @@ class SellerReviewReplyViewModel @Inject constructor(
                         responseMessage)
                 SellerReviewReplyMapper.mapToUpdateReplyUiModel(updateSellerResponseUseCase.executeOnBackground())
             }
-            _updateReviewReply.postValue(Success(responseUpdateReply))
+            _updateReviewReply.value = Success(responseUpdateReply)
         }, onError = {
-            _updateReviewReply.postValue(Fail(it))
+            _updateReviewReply.value = Fail(it)
         })
     }
 

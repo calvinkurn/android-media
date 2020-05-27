@@ -2,13 +2,14 @@ package com.tokopedia.reviewseller.feature.reviewreply.view.bottomsheet
 
 import android.os.Bundle
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.reviewseller.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
-class AddTemplateBottomSheet(mActivity: FragmentActivity?,
+class AddTemplateBottomSheet(private val mActivity: FragmentActivity?,
                              private val titleBottomSheet: String,
                              private val listener: (title: String, desc: String) -> Unit) : BottomSheetUnify() {
 
@@ -18,6 +19,8 @@ class AddTemplateBottomSheet(mActivity: FragmentActivity?,
 
     init {
         val contentView = View.inflate(mActivity, R.layout.bottom_sheet_insert_template, null)
+        contentView.layoutParams = ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT)
         tvTitleTemplate = contentView?.findViewById(R.id.tfuTitleTemplate)
         tvDescTemplate = contentView?.findViewById(R.id.tfuDescTemplate)
         btnSubmitTemplate = contentView?.findViewById(R.id.btnSubmitTemplate)
@@ -37,8 +40,8 @@ class AddTemplateBottomSheet(mActivity: FragmentActivity?,
     }
 
     fun showDialog() {
-        fragmentManager?.let {
-            show(it, titleBottomSheet)
+        mActivity?.supportFragmentManager?.run {
+            show(this, titleBottomSheet)
         }
     }
 
@@ -47,14 +50,15 @@ class AddTemplateBottomSheet(mActivity: FragmentActivity?,
             val title = tvTitleTemplate?.textFieldInput?.text.toString()
             val desc = tvDescTemplate?.textFieldInput?.text.toString()
 
-            if(title.isNotEmpty() && desc.isNotEmpty()) {
+            if (title.isNotEmpty() && desc.isNotEmpty()) {
+                btnSubmitTemplate?.isLoading = true
                 listener.invoke(title, desc)
             } else {
                 if (title.isEmpty()) {
-                    tvTitleTemplate?.setMessage(getString(R.string.empty_message_add_template_label))
+                    tvTitleTemplate?.setMessage(getString(R.string.empty_title_add_template_label))
                 }
                 if (desc.isEmpty()) {
-                    tvDescTemplate?.setMessage(getString(R.string.empty_message_add_template_label))
+                    tvDescTemplate?.setMessage(getString(R.string.empty_desc_add_template_label))
                 }
             }
         }

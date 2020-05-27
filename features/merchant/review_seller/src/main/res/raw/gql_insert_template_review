@@ -11,4 +11,3 @@ mutation insert_template_review($shopID: Int!, $title: String!, $message: String
              error
           }
       }
-}
