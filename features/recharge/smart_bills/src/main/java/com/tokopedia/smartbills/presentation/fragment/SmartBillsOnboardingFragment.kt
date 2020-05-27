@@ -1,5 +1,7 @@
 package com.tokopedia.smartbills.presentation.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -12,6 +14,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.smartbills.R
 import kotlinx.android.synthetic.main.fragment_smart_bills_onboarding.*
 
@@ -43,9 +48,19 @@ class SmartBillsOnboardingFragment: BaseDaggerFragment() {
             secondDesc.setSpan(bulletSpan, 0, firstDesc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             smart_bills_onboarding_desc_2.text = secondDesc
 
+            // Request login from user
             smart_bills_onboarding_button.setOnClickListener {
-                activity.finish()
+                val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
+                startActivityForResult(intent, REQUEST_CODE_LOGIN)
             }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        // If user has logged in, redirect to smart bills page
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_LOGIN) {
+            activity?.finish()
         }
     }
 
@@ -62,6 +77,8 @@ class SmartBillsOnboardingFragment: BaseDaggerFragment() {
     }
 
     companion object {
+        const val REQUEST_CODE_LOGIN = 1010
+
         const val BULLET_GAP_WIDTH_PX = 12f
         const val BULLET_RADIUS_PX = 4f
     }

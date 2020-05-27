@@ -8,6 +8,7 @@ import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
+import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.view_topup_bills_checkout.view.*
 import org.jetbrains.annotations.NotNull
 
@@ -42,6 +43,10 @@ class TopupBillsCheckoutWidget @JvmOverloads constructor(@NotNull context: Conte
 
     fun getPromoTicker(): TickerPromoStackingCheckoutView {
         return recharge_checkout_promo_ticker
+    }
+
+    fun getCheckoutButton(): UnifyButton {
+        return btn_recharge_checkout_next
     }
 
     fun setTotalPrice(price: String) {

@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/smart_bills_item_container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/spacing_lvl4"
+    android:layout_marginRight="@dimen/spacing_lvl4">
 
     <LinearLayout
         android:id="@+id/smart_bills_item_content_container"
@@ -101,7 +103,6 @@
         android:id="@+id/ticker_smart_bills_item_error"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/smart_bills_item_padding"
         android:visibility="gone"
         app:closeButtonVisibility="gone"

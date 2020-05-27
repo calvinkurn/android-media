@@ -54,7 +54,7 @@ class SmartBillsViewModel @Inject constructor(
                 mutableStatementMonths.postValue(Success(data.response))
             } else {
                 mutableStatementMonths.postValue(
-                    Fail(MessageErrorException("Terdapat kesalahan pada pengambilan data"))
+                    Fail(MessageErrorException(STATEMENT_MONTHS_EMPTY_ERROR))
                 )
             }
         }) {
@@ -91,7 +91,7 @@ class SmartBillsViewModel @Inject constructor(
             }
         } else {
             mutableMultiCheckout.postValue(
-                Fail(MessageErrorException("Terjadi kesalahan pada pemrosesan data"))
+                Fail(MessageErrorException(MULTI_CHECKOUT_EMPTY_REQUEST))
             )
         }
     }
@@ -126,6 +126,9 @@ class SmartBillsViewModel @Inject constructor(
         const val PARAM_LIMIT = "limit"
         const val PARAM_MONTH = "month"
         const val PARAM_YEAR = "year"
+
+        const val STATEMENT_MONTHS_EMPTY_ERROR = "STATEMENT_MONTHS_EMPTY_ERROR"
+        const val MULTI_CHECKOUT_EMPTY_REQUEST = "MULTI_CHECKOUT_EMPTY_REQUEST"
 
         const val DEFAULT_OS_TYPE = "1"
     }

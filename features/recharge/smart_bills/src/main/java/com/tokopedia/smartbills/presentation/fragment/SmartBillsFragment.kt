@@ -1,5 +1,6 @@
 package com.tokopedia.smartbills.presentation.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -27,11 +28,11 @@ import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
-import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.analytics.SmartBillsAnalytics
@@ -43,12 +44,13 @@ import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapterFactory
 import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsViewHolder
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsViewModel
 import com.tokopedia.smartbills.presentation.widget.SmartBillsItemDetailBottomSheet
+import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import io.hansel.core.utils.HSLUtils.dpToPx
 import kotlinx.android.synthetic.main.fragment_smart_bills.*
-import kotlinx.android.synthetic.main.view_smart_bills_item.view.*
 import java.util.*
 import javax.inject.Inject
 
@@ -108,7 +110,11 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                 }
                 is Fail -> {
                     view_smart_bills_shimmering.hide()
-                    showGetListError(it.throwable)
+                    var throwable = it.throwable
+                    if (throwable.message == SmartBillsViewModel.STATEMENT_MONTHS_EMPTY_ERROR) {
+                        throwable = MessageErrorException(getString(R.string.smart_bills_empty_months_statement_error))
+                    }
+                    showGetListError(throwable)
                 }
             }
         })
@@ -176,10 +182,20 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                 }
                 is Fail -> {
                     smartBillsAnalytics.clickPayFailed()
-                    NetworkErrorHelper.showRedSnackbar(activity, it.throwable.message)
+                    var throwable = it.throwable
+                    if (throwable.message == SmartBillsViewModel.MULTI_CHECKOUT_EMPTY_REQUEST) {
+                        throwable = MessageErrorException(getString(R.string.smart_bills_checkout_error))
+                    }
+                    NetworkErrorHelper.showRedSnackbar(activity, throwable.message)
                 }
             }
         })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        // Handle user not logging in from onboarding
+        if (resultCode == Activity.RESULT_CANCELED) activity?.finish()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -188,10 +204,15 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
     }
 
     private fun initView() {
-        // If user is not logged in, redirect to login page
-        if (!userSession.isLoggedIn) {
-            val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
-            startActivityForResult(intent, BaseTopupBillsFragment.REQUEST_CODE_LOGIN)
+        // If user is not logged in, redirect to onboarding page;
+        // Add sharedpref to make sure onboarding page is not visited more than once in each session
+        // (support for phones with don't keep activities)
+        if (!userSession.isLoggedIn && !sharedPrefs.getBoolean(SMART_BILLS_VISITED_ONBOARDING_PAGE, false)) {
+            sharedPrefs.edit().putBoolean(SMART_BILLS_VISITED_ONBOARDING_PAGE, true).apply()
+            startActivityForResult(Intent(context,
+                    SmartBillsOnboardingActivity::class.java),
+                    REQUEST_CODE_SMART_BILLS_ONBOARDING
+            )
         } else {
             smartBillsAnalytics.userId = userSession.userId
 
@@ -286,7 +307,9 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
         return R.id.rv_smart_bills_items
     }
 
-    override fun hasInitialSwipeRefresh(): Boolean { return true }
+    override fun hasInitialSwipeRefresh(): Boolean {
+        return true
+    }
 
     override fun getSwipeRefreshLayoutResourceId(): Int {
         return R.id.smart_bills_swipe_refresh_layout
@@ -343,35 +366,43 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
 
     private fun showOnboarding() {
         // Render onboarding coach mark if there are bills & if it's the first visit
-//        if (adapter.dataSize > 0 && !sharedPrefs.getBoolean(SMART_BILLS_VIEWED_ONBOARDING, false)) {
-        sharedPrefs.edit().putBoolean(SMART_BILLS_VIEWED_ONBOARDING, true).apply()
+        if (adapter.dataSize > 0 && !sharedPrefs.getBoolean(SMART_BILLS_VIEWED_ONBOARDING_COACH_MARK, false)) {
+            sharedPrefs.edit().putBoolean(SMART_BILLS_VIEWED_ONBOARDING_COACH_MARK, true).apply()
 
-        // Get first viewholder item for coach marks
-        rv_smart_bills_items.post {
-            val billItemView = (rv_smart_bills_items.findViewHolderForAdapterPosition(0) as? SmartBillsViewHolder)?.itemView
-            val coachMarks = ArrayList<CoachMarkItem>()
-            coachMarks.add(
-                    CoachMarkItem(
-                            view_smart_bills_select_all_checkbox_container,
-                            getString(R.string.smart_bills_onboarding_title_1),
-                            getString(R.string.smart_bills_onboarding_description_1)
-                    )
-            )
-            billItemView?.run {
+            // Get first viewholder item for coach marks
+            rv_smart_bills_items.post {
+                val billItemView = (rv_smart_bills_items.findViewHolderForAdapterPosition(0) as? SmartBillsViewHolder)?.itemView
+                val coachMarks = ArrayList<CoachMarkItem>()
                 coachMarks.add(
                         CoachMarkItem(
-                                this,
-                                getString(R.string.smart_bills_onboarding_title_2),
-                                getString(R.string.smart_bills_onboarding_description_2)
+                                view_smart_bills_select_all_checkbox_container,
+                                getString(R.string.smart_bills_onboarding_title_1),
+                                getString(R.string.smart_bills_onboarding_description_1)
                         )
                 )
-            }
+                billItemView?.run {
+                    coachMarks.add(
+                            CoachMarkItem(
+                                    this,
+                                    getString(R.string.smart_bills_onboarding_title_2),
+                                    getString(R.string.smart_bills_onboarding_description_2)
+                            )
+                    )
+                }
+                coachMarks.add(
+                        CoachMarkItem(
+                                smart_bills_checkout_view.getCheckoutButton(),
+                                getString(R.string.smart_bills_onboarding_title_3),
+                                getString(R.string.smart_bills_onboarding_description_3)
+                        )
+                )
 
-            val coachMark = CoachMarkBuilder().build()
-            coachMark.enableSkip = true
-            coachMark.show(activity, "SmartBillsOnboardingCoachMark", coachMarks)
+                val coachMark = CoachMarkBuilder().build()
+                coachMark.enableSkip = true
+                coachMark.setHighlightMargin(SMART_BILLS_COACH_MARK_HIGHLIGHT_MARGIN)
+                coachMark.show(activity, "SmartBillsOnboardingCoachMark", coachMarks)
+            }
         }
-//        }
     }
 
     override fun onShowBillDetail(bill: RechargeBills, bottomSheet: SmartBillsItemDetailBottomSheet) {
@@ -413,14 +444,20 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
         }
     }
 
+    override fun onDestroy() {
+        // Reset visited onboarding state after each session
+        sharedPrefs.edit().remove(SMART_BILLS_VISITED_ONBOARDING_PAGE).apply()
+        super.onDestroy()
+    }
+
     companion object {
         const val RECHARGE_SMART_BILLS_PAGE_PERFORMANCE = "dg_smart_bills_pdp"
 
         const val SMART_BILLS_PREF = "SMART_BILLS"
-        const val SMART_BILLS_VISITED_ONBOARDING = "SMART_BILLS_VISITED_ONBOARDING"
-        const val SMART_BILLS_VIEWED_ONBOARDING = "SMART_BILLS_VIEWED_ONBOARDING"
+        const val SMART_BILLS_VIEWED_ONBOARDING_COACH_MARK = "SMART_BILLS_VIEWED_ONBOARDING_COACH_MARK"
+        const val SMART_BILLS_VISITED_ONBOARDING_PAGE = "SMART_BILLS_VISITED_ONBOARDING_PAGE"
+        const val SMART_BILLS_COACH_MARK_HIGHLIGHT_MARGIN = 4
 
-        const val REQUEST_CODE_LOGIN = 1010
         const val REQUEST_CODE_SMART_BILLS_ONBOARDING = 1700
 
         const val LANGGANAN_URL = "https://www.tokopedia.com/langganan"
