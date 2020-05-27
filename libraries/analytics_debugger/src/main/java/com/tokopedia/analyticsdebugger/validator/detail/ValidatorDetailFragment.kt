@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.validator.core.GtmLogUi
 import java.util.ArrayList
@@ -20,11 +22,15 @@ class ValidatorDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val exp = arguments?.getString(EXTRA_EXPECTED)
-        val act = arguments?.getParcelableArrayList<GtmLogUi>(EXTRA_ACTUAL)
+        val actuals: List<GtmLogUi> = arguments?.getParcelableArrayList<GtmLogUi>(EXTRA_ACTUAL)?.toList() ?: emptyList()
 
         view.findViewById<TextView>(R.id.tv_expected).text = exp
-        view.findViewById<TextView>(R.id.tv_actual).text = act?.first()?.data
-        view.findViewById<TextView>(R.id.tv_timestamp).text = "Timestamp: ${act?.first()?.timestamp}"
+
+        with(view.findViewById<RecyclerView>(R.id.rv)) {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(context)
+            adapter = ValidatorDetailAdapter(actuals)
+        }
     }
 
     companion object {
