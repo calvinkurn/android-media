@@ -312,6 +312,9 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
         }
         btnAddTemplate?.setOnClickListener {
             reviewReplyTextBoxWidget?.clickAddTemplate {
+                tracking.eventClickAddTemplateReview(userSession.shopId.orEmpty(),
+                                                productReplyUiModel?.productID.orZero().toString(),
+                                                feedbackUiModel?.feedbackID.orZero().toString())
                 initBottomSheetAddTemplate()
             }
         }
