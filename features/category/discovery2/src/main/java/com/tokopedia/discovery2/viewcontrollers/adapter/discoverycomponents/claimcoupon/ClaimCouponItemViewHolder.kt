@@ -6,6 +6,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.ClaimCouponConstant
 import com.tokopedia.discovery2.GenerateUrl
 import com.tokopedia.discovery2.R
@@ -58,7 +61,9 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
                         claimCouponItemViewModel.navigate(itemView.context, applink)
                     })
                 } else {
-                    Toaster.make(itemView.rootView, itemView.context.getString(R.string.discovery_please_log_in), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, "", View.OnClickListener {})
+                    Toaster.make(itemView.rootView, itemView.context.getString(R.string.discovery_please_log_in), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, itemView.context.getString(R.string.discovery_login), View.OnClickListener {
+                        RouteManager.route(itemView.context, ApplinkConst.LOGIN)
+                    })
                 }
             })
 
@@ -72,6 +77,10 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
         else
             status
         claimBtn.isEnabled = status == ClaimCouponConstant.CLAIMED
+        if(claimBtn.isEnabled)
+            claimBtn.setTextColor(MethodChecker.getColor(itemView.context, R.color.white))
+        else
+            claimBtn.setTextColor(MethodChecker.getColor(itemView.context, R.color.voucher_text_color_disable))
     }
 
 }
