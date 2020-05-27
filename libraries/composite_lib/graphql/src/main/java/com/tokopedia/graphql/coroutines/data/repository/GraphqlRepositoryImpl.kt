@@ -89,7 +89,7 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
                 e.printStackTrace()
             }
         }
-?
+
         val graphqlResponse = GraphqlResponse(mResults, errors, mIsCachedData)
 
         if (mRefreshRequests.isEmpty()) {
