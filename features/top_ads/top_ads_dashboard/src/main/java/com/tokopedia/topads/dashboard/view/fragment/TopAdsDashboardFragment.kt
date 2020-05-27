@@ -180,7 +180,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         initSummaryComponent()
         initStatisticComponent()
         initEmptyStateView()
-        button_topads_add_promo.button.setOnClickListener {
+        button_topads_add_promo?.button?.setOnClickListener {
             activity?.let {
                 if (GlobalConfig.isSellerApp()) {
                     when (adStatus) {
@@ -720,7 +720,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         isAutoAds = false
         groupSummaryLabelView?.visibility = View.VISIBLE
         getKeywordLabelView?.visibility = View.VISIBLE
-        button_topads_add_promo.visibility = View.VISIBLE
+        button_topads_add_promo?.visibility = View.VISIBLE
     }
 
     private fun gotoAutoTopup() {
