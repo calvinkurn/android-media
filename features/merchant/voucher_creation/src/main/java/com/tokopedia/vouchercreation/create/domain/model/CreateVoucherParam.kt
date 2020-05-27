@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.create.domain.model
 
+import com.tokopedia.vouchercreation.common.base.VoucherSource
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel
 

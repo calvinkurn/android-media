@@ -22,7 +22,7 @@ class VoucherDetailActivity : BaseActivity() {
 
     companion object {
         private const val PAGE_TYPE = "page_type"
-        const val SHOP_ID = "shop_id"
+        const val VOUCHER_ID = "voucher_id"
         const val DETAIL_PAGE = 0
         const val DUPLICATE_PAGE = 1
 
@@ -41,7 +41,7 @@ class VoucherDetailActivity : BaseActivity() {
 
     private val pageType by getIntIntentExtra(PAGE_TYPE, DETAIL_PAGE)
 
-    private val shopId by getIntIntentExtra(SHOP_ID, 0)
+    private val voucherId by getIntIntentExtra(VOUCHER_ID, 0)
 
     override fun getScreenName(): String = this::class.java.simpleName
 
@@ -61,7 +61,7 @@ class VoucherDetailActivity : BaseActivity() {
 
     private fun getPageFragment(): Fragment {
         return if (pageType == DETAIL_PAGE) {
-            VoucherDetailFragment.newInstance(shopId)
+            VoucherDetailFragment.newInstance(voucherId)
         } else {
             DuplicateVoucherFragment.newInstance()
         }

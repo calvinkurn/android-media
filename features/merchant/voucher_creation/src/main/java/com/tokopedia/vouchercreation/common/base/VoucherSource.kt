@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.create.domain.model
+package com.tokopedia.vouchercreation.common.base
 
 import com.tokopedia.usecase.RequestParams
 

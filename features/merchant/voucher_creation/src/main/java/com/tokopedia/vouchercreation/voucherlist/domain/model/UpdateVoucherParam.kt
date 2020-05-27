@@ -1,7 +1,7 @@
 package com.tokopedia.vouchercreation.voucherlist.domain.model
 
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
-import com.tokopedia.vouchercreation.create.domain.model.VoucherSource
+import com.tokopedia.vouchercreation.common.base.VoucherSource
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.enums.CouponType
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel

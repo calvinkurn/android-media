@@ -183,11 +183,11 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         }
     }
 
-    override fun onVoucherClickListener(shopId: Int) {
+    override fun onVoucherClickListener(voucherId: Int) {
         context?.run {
             startActivity(
                     VoucherDetailActivity.createDetailIntent(this, VoucherDetailActivity.DETAIL_PAGE)
-                            .putExtra(VoucherDetailActivity.SHOP_ID, shopId))
+                            .putExtra(VoucherDetailActivity.VOUCHER_ID, voucherId))
         }
     }
 
@@ -203,7 +203,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         dismissBottomSheet<MoreMenuBottomSheet>(MoreMenuBottomSheet.TAG)
         when (menu) {
             is EditQuota -> showEditQuotaBottomSheet(voucher)
-            is ViewDetail -> viewVoucherDetail()
+            is ViewDetail -> viewVoucherDetail(voucher.id)
             is ShareVoucher -> showShareBottomSheet(voucher)
             is EditPeriod -> showEditPeriodBottomSheet(voucher)
             is DownloadVoucher -> showDownloadBottomSheet(voucher)
@@ -223,9 +223,11 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         }
     }
 
-    private fun viewVoucherDetail() {
+    private fun viewVoucherDetail(voucherId: Int) {
         activity?.let {
-            startActivity(VoucherDetailActivity.createDetailIntent(it, VoucherDetailActivity.DETAIL_PAGE))
+            startActivity(
+                    VoucherDetailActivity.createDetailIntent(it, VoucherDetailActivity.DETAIL_PAGE)
+                            .putExtra(VoucherDetailActivity.VOUCHER_ID, voucherId))
         }
     }
 

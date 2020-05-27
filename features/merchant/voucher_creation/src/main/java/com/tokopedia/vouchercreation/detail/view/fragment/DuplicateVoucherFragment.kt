@@ -8,9 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.VoucherPeriodBottomSheet
+import com.tokopedia.vouchercreation.common.model.MerchantVoucherModel
+import com.tokopedia.vouchercreation.common.model.VoucherMapper
 import com.tokopedia.vouchercreation.detail.model.*
-import com.tokopedia.vouchercreation.voucherlist.domain.mapper.VoucherMapper
-import com.tokopedia.vouchercreation.voucherlist.model.remote.MerchantVoucherModel
 import kotlinx.android.synthetic.main.fragment_mvc_voucher_detail.view.*
 
 /**

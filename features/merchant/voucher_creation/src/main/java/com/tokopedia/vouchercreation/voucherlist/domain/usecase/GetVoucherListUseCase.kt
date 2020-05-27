@@ -5,7 +5,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.vouchercreation.common.base.BaseGqlUseCase
-import com.tokopedia.vouchercreation.voucherlist.domain.mapper.VoucherMapper
+import com.tokopedia.vouchercreation.common.model.VoucherMapper
 import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherListParam
 import com.tokopedia.vouchercreation.voucherlist.model.remote.GetMerchantVoucherListResponse
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel

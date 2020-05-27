@@ -4,29 +4,46 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.TipsTrickBottomSheet
+import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.model.MerchantVoucherModel
+import com.tokopedia.vouchercreation.common.model.VoucherMapper
 import com.tokopedia.vouchercreation.detail.model.*
-import com.tokopedia.vouchercreation.voucherlist.domain.mapper.VoucherMapper
-import com.tokopedia.vouchercreation.voucherlist.model.remote.MerchantVoucherModel
+import com.tokopedia.vouchercreation.detail.view.viewmodel.VoucherDetailViewModel
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
+import javax.inject.Inject
 
 /**
  * Created By @ilhamsuaib on 30/04/20
  */
 
-class VoucherDetailFragment(val shopId: Int) : BaseDetailFragment() {
+class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
 
     companion object {
-        fun newInstance(shopId: Int): VoucherDetailFragment = VoucherDetailFragment(shopId)
+        fun newInstance(voucherId: Int): VoucherDetailFragment = VoucherDetailFragment(voucherId)
     }
 
     private val dummyVoucher = VoucherMapper().mapRemoteModelToUiModel(listOf(MerchantVoucherModel(
             voucherName = "Voucher Hura Test Doang", discountAmtFormatted = "Cashback 10%"
     ))).first()
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModelProvider by lazy {
+        ViewModelProvider(this, viewModelFactory)
+    }
+
+    private val viewModel by lazy {
+        viewModelProvider.get(VoucherDetailViewModel::class.java)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -46,7 +63,10 @@ class VoucherDetailFragment(val shopId: Int) : BaseDetailFragment() {
     override fun getScreenName(): String = this::class.java.simpleName
 
     override fun initInjector() {
-
+        DaggerVoucherCreationComponent.builder()
+                .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
+                .build()
+                .inject(this)
     }
 
     override fun loadData(page: Int) {

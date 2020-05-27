@@ -1,6 +1,5 @@
-package com.tokopedia.vouchercreation.voucherlist.domain.mapper
+package com.tokopedia.vouchercreation.common.model
 
-import com.tokopedia.vouchercreation.voucherlist.model.remote.MerchantVoucherModel
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import javax.inject.Inject
 
