@@ -23,8 +23,8 @@ import kotlinx.android.synthetic.main.fragment_login_with_phone.view.*
 class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
     companion object {
         private const val REMOTE_CONFIG_SEAMLESS_LOGIN = "android_user_seamless_login"
-
         const val REQUEST_SEAMLESS_LOGIN = 122
+
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = SeamlessLoginEmailPhoneFragment()
             fragment.arguments = bundle
@@ -66,17 +66,17 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
     }
 
     private fun hideFullProgressBar(){
-        view?.container?.hide()
-        view?.progress_bar?.show()
+        view?.container?.show()
+        view?.progress_bar?.hide()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if(requestCode == REQUEST_SEAMLESS_LOGIN) {
             if(resultCode == Activity.RESULT_OK) {
                 if (data != null) {
-                    data.extras?.run {
-                        if (getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, false)) {
-                            onGoToSecurityQuestion("")
+                    if(data.extras != null) {
+                        if (data.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, false) == true) {
+                            onGoToSecurityQuestion("").invoke()
                         } else {
                             presenter.getUserInfo()
                         }
@@ -84,9 +84,16 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
                 } else {
                     presenter.getUserInfo()
                 }
-            }else {
-                activity?.finish()
             }
+        }else if (requestCode == REQUEST_SECURITY_QUESTION
+                && resultCode == Activity.RESULT_OK
+                && data != null) {
+            data.extras?.let {
+                val validateToken = it.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
+                presenter.reloginAfterSQ(validateToken)
+            }
+        } else {
+            activity?.finish()
         }
     }
 }
