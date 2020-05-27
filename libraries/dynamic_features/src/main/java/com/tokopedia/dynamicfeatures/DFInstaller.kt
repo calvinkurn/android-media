@@ -249,7 +249,7 @@ object DFInstaller {
             // this is to filter which module that download in background, or defered-background, based on remote config
             var restrictedInBgModuleNameList: List<String>? = null
             val eligibleInBgModuleNameList: List<String>
-            if (dfConfig.moduleRestrictInBackground != null) {
+            if (dfConfig.moduleRestrictInBackground.isNullOrEmpty()) {
                 val pair = filteredModuleNameList.partition { it in dfConfig.moduleRestrictInBackground }
                 restrictedInBgModuleNameList = pair.first
                 eligibleInBgModuleNameList = pair.second
