@@ -13,6 +13,7 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.di.DaggerPlayBroadcasterComponent
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayFollowerItemDecoration
 import com.tokopedia.play.broadcaster.view.adapter.PlayFollowersAdapter
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayPrepareBroadcastCreatePromoBottomSheet
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayPrepareBroadcastViewModel
 import javax.inject.Inject
 
@@ -58,7 +59,7 @@ class PlayPrepareBroadcastFragment : BaseDaggerFragment() {
     }
 
     private fun initView(view: View) {
-        with (view) {
+        with(view) {
             rvFollowers = findViewById(R.id.rv_followers)
         }
     }
