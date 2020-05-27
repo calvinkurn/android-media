@@ -12,7 +12,7 @@ class DiscoveryListViewModel(private val applicationContext: Application) : Andr
         if (viewHolderViewModelList.size - 1 >= position) {
             return viewHolderViewModelList[position]
         }
-        val viewModelObject = viewModel.call(applicationContext, componentItem);
+        val viewModelObject = viewModel.call(applicationContext, componentItem, position)
         viewHolderViewModelList.add(viewModelObject)
         return viewModelObject
     }

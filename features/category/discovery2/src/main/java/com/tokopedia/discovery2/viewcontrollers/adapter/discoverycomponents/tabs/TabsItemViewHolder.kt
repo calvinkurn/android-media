@@ -36,9 +36,6 @@ class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : Abstr
                 item.fontColor?.let { fontColor ->
                     setFontColor(fontColor)
                 }
-//                if (adapterPosition == 0) {
-//                    item.isSelected = true
-//                }
                 showSelectedView(item.isSelected)
                 setClick(item)
             }
@@ -58,7 +55,9 @@ class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : Abstr
 
     private fun setClick(data: DataItem) {
         tabImageView.setOnClickListener {
-            if(!data.isSelected) {
+            if (!data.isSelected) {
+                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackTabsClick(data.name
+                        ?: "")
                 (it as ImageView).apply {
                     data.isSelected = !data.isSelected
                     showSelectedView(data.isSelected)

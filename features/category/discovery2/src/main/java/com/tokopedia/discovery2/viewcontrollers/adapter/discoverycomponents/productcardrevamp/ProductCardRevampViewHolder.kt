@@ -4,8 +4,6 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.AddChildAdapterCallback
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
@@ -15,31 +13,18 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
 class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
 
-    private lateinit var mProductCarouselRecyclerView: RecyclerView
-    private lateinit var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
+    private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
     private lateinit var mProductRevampComponentViewModel: ProductCardRevampViewModel
-    private lateinit var layoutManager: StaggeredGridLayoutManager
-    private var addChildAdapterCallback: AddChildAdapterCallback
-
+    private var addChildAdapterCallback: AddChildAdapterCallback = (fragment as AddChildAdapterCallback)
 
     init {
-        mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
-        addChildAdapterCallback = (fragment as AddChildAdapterCallback)
         addChildAdapterCallback.addChildAdapter(mDiscoveryRecycleAdapter)
     }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         mProductRevampComponentViewModel = discoveryBaseViewModel as ProductCardRevampViewModel
-        initView()
         setUpDataObserver(fragment.viewLifecycleOwner)
         mProductRevampComponentViewModel.fetchProductCarouselData((fragment as DiscoveryFragment).pageEndPoint)
-    }
-
-    private fun initView() {
-//        mProductCarouselRecyclerView = itemView.findViewById(R.id.productCardRecyclerView)
-//        layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-//        mProductCarouselRecyclerView.layoutManager = layoutManager
-//        mProductCarouselRecyclerView.adapter = mDiscoveryRecycleAdapter
     }
 
     private fun setUpDataObserver(lifecycleOwner: LifecycleOwner) {

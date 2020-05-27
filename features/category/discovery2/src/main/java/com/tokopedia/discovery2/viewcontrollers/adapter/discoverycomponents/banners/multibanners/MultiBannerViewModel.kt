@@ -5,6 +5,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.widget.Toast
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
@@ -23,13 +24,15 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class MultiBannerViewModel(val application: Application, components: ComponentsItem) : DiscoveryBaseViewModel(), CoroutineScope {
+class MultiBannerViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val bannerData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val pushBannerStatus: MutableLiveData<Int> = MutableLiveData()
     private val pushBannerSubscription: MutableLiveData<Int> = MutableLiveData()
     private val showLogin: MutableLiveData<Boolean> = MutableLiveData()
+
     @Inject
     lateinit var checkPushStatusUseCase: CheckPushStatusUseCase
+
     @Inject
     lateinit var subScribeToUseCase: SubScribeToUseCase
 
@@ -50,10 +53,10 @@ class MultiBannerViewModel(val application: Application, components: ComponentsI
                 .inject(this)
     }
 
-    fun getComponentData() = bannerData
-    fun getPushBannerStatusData() = pushBannerStatus
-    fun getshowLoginData() = showLogin
-    fun getPushBannerSubscriptionData() = pushBannerSubscription
+    fun getComponentData(): LiveData<ComponentsItem> = bannerData
+    fun getPushBannerStatusData(): LiveData<Int> = pushBannerStatus
+    fun getShowLoginData(): LiveData<Boolean> = showLogin
+    fun getPushBannerSubscriptionData(): LiveData<Int> = pushBannerSubscription
     fun getBannerUrlHeight() = Utils.extractDimension(bannerData.value?.data?.get(0)?.imageUrlDynamicMobile)
     fun getBannerUrlWidth() = Utils.extractDimension(bannerData.value?.data?.get(0)?.imageUrlDynamicMobile, "width")
 

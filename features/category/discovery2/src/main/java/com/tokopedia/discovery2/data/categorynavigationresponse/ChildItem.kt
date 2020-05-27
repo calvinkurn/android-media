@@ -11,7 +11,7 @@ data class ChildItem(
         val name: String? = null,
 
         @SerializedName("id")
-        val id: Int? = null,
+        val id: String? = null,
 
         @SerializedName("url")
         val url: String? = null,

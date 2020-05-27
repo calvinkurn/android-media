@@ -6,9 +6,11 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
 
@@ -16,7 +18,7 @@ class BrandRecommendationViewHolder(itemView: View, private val fragment: Fragme
 
     private val recyclerView: RecyclerView = itemView.findViewById(R.id.brand_recom_rv)
     private val brandRecomTitle: Typography = itemView.findViewById(R.id.brand_recom_title) as Typography
-    private  var discoveryRecycleAdapter: DiscoveryRecycleAdapter
+    private var discoveryRecycleAdapter: DiscoveryRecycleAdapter
 
     private lateinit var brandRecommendationViewModel: BrandRecommendationViewModel
 
@@ -25,26 +27,31 @@ class BrandRecommendationViewHolder(itemView: View, private val fragment: Fragme
         discoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
         recyclerView.adapter = discoveryRecycleAdapter
     }
-    
+
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         brandRecommendationViewModel = discoveryBaseViewModel as BrandRecommendationViewModel
         setUpObserver()
     }
 
     private fun setUpObserver() {
-        brandRecommendationViewModel.componentData.observe(fragment.viewLifecycleOwner, Observer { item ->
+        brandRecommendationViewModel.getComponentDataLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
             if (!item.title.isNullOrEmpty()) setTitle(item.title)
         })
 
-        brandRecommendationViewModel.listData.observe(fragment.viewLifecycleOwner,Observer { item ->
+        brandRecommendationViewModel.getListDataLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
             discoveryRecycleAdapter.setDataList(item)
+            sendBrandRecommendationImpressionGtm(item?.get(0)?.data ?: ArrayList())
         })
     }
 
+    private fun sendBrandRecommendationImpressionGtm(item: List<DataItem>) {
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(
+                item)
+    }
 
     private fun setTitle(title: String) {
         brandRecomTitle.show()
-        brandRecomTitle.text=title
+        brandRecomTitle.text = title
     }
 
 

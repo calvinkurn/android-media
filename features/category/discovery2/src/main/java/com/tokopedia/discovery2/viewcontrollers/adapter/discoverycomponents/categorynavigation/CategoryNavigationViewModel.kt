@@ -21,7 +21,7 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 
-class CategoryNavigationViewModel(val application: Application, private val components: ComponentsItem) : DiscoveryBaseViewModel(), CoroutineScope {
+class CategoryNavigationViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
     private val listData = MutableLiveData<Result<ArrayList<ComponentsItem>>>()
     private val title = MutableLiveData<Result<String>>()
@@ -42,8 +42,7 @@ class CategoryNavigationViewModel(val application: Application, private val comp
         launchCatchError(
                 block = {
                     withContext(Dispatchers.IO) {
-                        val dataList = categoryNavigationUseCase.
-                                getCategoryNavigationData(components.data?.getOrElse(0) { DataItem() }?.categoryDetailUrl
+                        val dataList = categoryNavigationUseCase.getCategoryNavigationData(components.data?.getOrElse(0) { DataItem() }?.categoryDetailUrl
                                 ?: "")
                         listData.postValue(Success(dataList))
                     }
@@ -61,7 +60,7 @@ class CategoryNavigationViewModel(val application: Application, private val comp
                 .inject(this)
     }
 
-    fun getListData():LiveData<Result<ArrayList<ComponentsItem>>> = listData
+    fun getListData(): LiveData<Result<ArrayList<ComponentsItem>>> = listData
 
     fun getTitle(): LiveData<Result<String>> {
         title.postValue(Success(components.title ?: ""))

@@ -52,7 +52,6 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment)
             viewHolderListModel.clearList()
             componentList.addAll(dataList)
         }
-        // TODO : Remove notify for horizontal adapter
         notifyDataSetChanged()
     }
 
