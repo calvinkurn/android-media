@@ -9,7 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -108,18 +107,17 @@
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
-                tools:visibility="visible"
                 android:textColor="@color/black_54"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/tvDeadlineTime"
                 app:layout_constraintTop_toBottomOf="@+id/view_divider_2"
                 app:typographyType="body_3"
-                tools:text="Kode Pembayaran" />
+                tools:text="Kode Pembayaran"
+                tools:visibility="visible" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvAccountNumber"
                 android:layout_width="0dp"
-                tools:visibility="visible"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_2"
                 android:textColor="@color/black_70"
@@ -127,7 +125,8 @@
                 app:layout_constraintTop_toBottomOf="@+id/tvAccountNumberTypeTag"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
-                tools:text="KDSLDNFS4759834759" />
+                tools:text="KDSLDNFS4759834759"
+                tools:visibility="visible" />
 
 
             <com.tokopedia.unifyprinciples.Typography
@@ -148,10 +147,10 @@
                 android:id="@+id/tvAccountNumberCopy"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/thank_copy"
-                android:textColor="@color/thank_green_41"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
+                android:text="@string/thank_copy"
+                android:textColor="@color/thank_green_41"
                 app:layout_constraintBottom_toBottomOf="@+id/tvAccountNumber"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tvAccountNumber"
@@ -187,9 +186,9 @@
                 android:id="@+id/tvSeeDetail"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/thank_see_detail"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
+                android:text="@string/thank_see_detail"
                 android:textColor="@color/thank_green_41"
                 app:layout_constraintBottom_toBottomOf="@+id/tvTotalAmount"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -263,7 +262,6 @@
                 app:typographyType="body_3" />
 
 
-
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btnCheckPaymentStatus"
                 android:layout_width="0dp"
@@ -271,10 +269,10 @@
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_16"
+                android:text="@string/thank_check_payment_status"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvCheckPaymentStatusTitle"
-                android:text="@string/thank_check_payment_status"
                 app:unifyButtonSize="medium"
                 app:unifyButtonType="main"
                 app:unifyButtonVariant="filled" />
@@ -287,10 +285,10 @@
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_16"
+                android:text="@string/thank_shop_again"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/btnCheckPaymentStatus"
-                android:text="@string/thank_shop_again"
                 app:unifyButtonSize="medium"
                 app:unifyButtonType="main"
                 app:unifyButtonVariant="ghost" />
@@ -306,13 +304,16 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btnShopAgain" />
 
-            <com.tokopedia.thankyou_native.recommendation.presentation.view.PDPThankYouPageView
-                android:id="@+id/deferredPDPView"
+            <LinearLayout
+                android:id="@+id/recommendationContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/view_divider_5" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.core.widget.NestedScrollView>
 
     <RelativeLayout

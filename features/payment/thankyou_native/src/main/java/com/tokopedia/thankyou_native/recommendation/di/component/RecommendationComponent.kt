@@ -8,7 +8,7 @@ import com.tokopedia.thankyou_native.recommendation.di.module.GqlQueryModule
 import com.tokopedia.thankyou_native.recommendation.di.module.RecommendationModule
 import com.tokopedia.thankyou_native.recommendation.di.module.ViewModelModule
 import com.tokopedia.thankyou_native.recommendation.di.scope.RecommendationScope
-import com.tokopedia.thankyou_native.recommendation.presentation.view.PDPThankYouPageView
+import com.tokopedia.thankyou_native.recommendation.presentation.view.MarketPlaceRecommendation
 import dagger.Component
 
 @RecommendationScope
@@ -20,5 +20,5 @@ interface RecommendationComponent{
     @ApplicationContext
     fun context(): Context
 
-    fun inject(view: PDPThankYouPageView)
+    fun inject(view: MarketPlaceRecommendation)
 }

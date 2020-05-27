@@ -62,7 +62,13 @@ data class ThanksPageData(
         @SerializedName("event_label")
         val eventLabel: String,
         @SerializedName("push_gtm")
-        val pushGtm: Boolean
+        val pushGtm: Boolean,
+        @SerializedName("merchant_code")
+        val merchantCode: String,
+        @SerializedName("new_user")
+        val isNewUser: Boolean,
+        @SerializedName("is_mub")
+        val isMonthlyNewUser: Boolean
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readLong(),
@@ -90,6 +96,9 @@ data class ThanksPageData(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
+            parcel.readByte() != 0.toByte(),
+            parcel.readString() ?: "",
+            parcel.readByte() != 0.toByte(),
             parcel.readByte() != 0.toByte())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -119,6 +128,9 @@ data class ThanksPageData(
         parcel.writeString(eventAction)
         parcel.writeString(eventLabel)
         parcel.writeByte(if (pushGtm) 1 else 0)
+        parcel.writeString(merchantCode)
+        parcel.writeByte(if (isNewUser) 1 else 0)
+        parcel.writeByte(if (isMonthlyNewUser) 1 else 0)
     }
 
     override fun describeContents(): Int {

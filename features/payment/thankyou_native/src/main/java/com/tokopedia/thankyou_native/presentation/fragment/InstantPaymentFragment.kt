@@ -5,49 +5,42 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
-import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
-import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
+import com.tokopedia.thankyou_native.data.mapper.CashOnDelivery
+import com.tokopedia.thankyou_native.data.mapper.PaymentTypeMapper
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
-import com.tokopedia.thankyou_native.helper.CashOnDelivery
-import com.tokopedia.thankyou_native.helper.PaymentTypeMapper
 import com.tokopedia.thankyou_native.helper.getMaskedNumberSubStringPayment
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import com.tokopedia.thankyou_native.presentation.viewModel.CheckWhiteListViewModel
-import com.tokopedia.thankyou_native.recommendation.presentation.view.PDPThankYouPageView
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
-import javax.inject.Inject
 
 class InstantPaymentFragment : ThankYouBaseFragment() {
 
     private lateinit var dialogUnify: DialogUnify
 
+    private val checkWhiteListViewModel: CheckWhiteListViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+        viewModelProvider.get(CheckWhiteListViewModel::class.java)
+    }
 
-    @Inject
-    lateinit var thankYouPageAnalytics: ThankYouPageAnalytics
+    override fun getLoadingView(): View? = loadingView
 
+    override fun getRecommendationContainer(): LinearLayout? = recommendationContainer
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    private lateinit var checkWhiteListViewModel: CheckWhiteListViewModel
-
-    private lateinit var thanksPageData: ThanksPageData
+    override fun onThankYouPageDataReLoaded(data: ThanksPageData) {
+        //not reuquired
+    }
 
     override fun getScreenName(): String = SCREEN_NAME
-
-    override fun initInjector() {
-        getComponent(ThankYouPageComponent::class.java).inject(this)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,12 +49,6 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
                 thanksPageData = it.getParcelable(ARG_THANK_PAGE_DATA)
             }
         }
-        initViewModels()
-    }
-
-    private fun initViewModels() {
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-        checkWhiteListViewModel = viewModelProvider.get(CheckWhiteListViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -71,9 +58,6 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setActionMenu()
-        if (!::thanksPageData.isInitialized)
-            activity?.finish()
-        bindDataToUI()
         context?.let {
             checkCreditCardRegisteredForRBA(it)
         }
@@ -86,17 +70,21 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
         headerUnify.actionTextView?.setOnClickListener { openInvoiceDetail(thanksPageData) }
     }
 
-    override fun getThankPageData(): ThanksPageData {
-        return thanksPageData
-    }
 
-
-    override fun getRecommendationView(): PDPThankYouPageView? {
-        return pdp_recommendation_instant
-    }
-
-    override fun getThankPageAnalytics(): ThankYouPageAnalytics {
-        return thankYouPageAnalytics
+    override fun bindThanksPageDataToUI(thanksPageData: ThanksPageData) {
+        tv_payment_success.text = getString(R.string.thank_instant_payment_successful)
+        tv_payment_success_check_order.text = getString(R.string.thank_instant_payment_check_order)
+        ImageLoader.LoadImage(iv_payment, thanksPageData.gatewayImage)
+        if (thanksPageData.additionalInfo.maskedNumber.isNotBlank()) {
+            tv_payment_method_name.text = thanksPageData.additionalInfo.maskedNumber.getMaskedNumberSubStringPayment()
+            if (thanksPageData.additionalInfo.installmentInfo.isNotBlank()) {
+                tv_payment_interest.text = thanksPageData.additionalInfo.installmentInfo
+                tv_payment_interest.visible()
+            }
+        } else
+            tv_payment_method_name.text = thanksPageData.gatewayName
+        tv_payment_amount.text = getString(R.string.thankyou_rp_without_space, thanksPageData.amountStr)
+        btn_see_transaction_list.setOnClickListener { gotoOrderList() }
     }
 
     private fun observeViewModel() {
@@ -117,23 +105,6 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     private fun onSuccessFullyRegister() {
         loadingView.gone()
         showToaster(getString(R.string.thank_enable_single_authentication_success))
-    }
-
-    private fun bindDataToUI() {
-
-        tv_payment_success.text = getString(R.string.thank_instant_payment_successful)
-        tv_payment_success_check_order.text = getString(R.string.thank_instant_payment_check_order)
-        ImageLoader.LoadImage(iv_payment, thanksPageData.gatewayImage)
-        if (thanksPageData.additionalInfo.maskedNumber.isNotBlank()) {
-            tv_payment_method_name.text = thanksPageData.additionalInfo.maskedNumber.getMaskedNumberSubStringPayment()
-            if (thanksPageData.additionalInfo.installmentInfo.isNotBlank()) {
-                tv_payment_interest.text = thanksPageData.additionalInfo.installmentInfo
-                tv_payment_interest.visible()
-            }
-        } else
-            tv_payment_method_name.text = thanksPageData.gatewayName
-        tv_payment_amount.text = getString(R.string.thankyou_rp_without_space, thanksPageData.amountStr)
-        btn_see_transaction_list.setOnClickListener { gotoOrderList() }
     }
 
     private fun checkCreditCardRegisteredForRBA(context: Context) {
@@ -163,11 +134,8 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
         checkWhiteListViewModel.registerForSingleAuth()
     }
 
-
     companion object {
         const val SCREEN_NAME = "Pembayaran Berhasil"
-        private const val ARG_THANK_PAGE_DATA = "arg_thank_page_data"
-
         fun getFragmentInstance(bundle: Bundle?, thanksPageData: ThanksPageData)
                 : InstantPaymentFragment = InstantPaymentFragment().apply {
 

@@ -1,32 +1,49 @@
 package com.tokopedia.hotel.search.presentation.widget
 
-import android.app.Dialog
-import android.graphics.Typeface
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.recyclerview.widget.RecyclerView
+import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.TextView
-import com.tokopedia.design.component.BottomSheets
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+import com.tokopedia.hotel.R
 import com.tokopedia.hotel.search.data.model.Sort
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter.Companion.MODE_NORMAL
+import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class HotelClosedSortBottomSheets : BottomSheets() {
-    private var title: String = ""
+class HotelClosedSortBottomSheets : BottomSheetUnify() {
+    private var sheetTitle: String = ""
     private var mode: Int = MODE_NORMAL
     private var menu: List<Sort> = listOf()
     var selectedItem: Sort? = null
     var onMenuSelect: HotelOptionMenuAdapter.OnSortMenuSelected? = null
 
-    fun setTitle(titleText: String): HotelClosedSortBottomSheets = this.apply { title = titleText }
+    fun setSheetTitle(_sheetTitle: String): HotelClosedSortBottomSheets = this.apply { sheetTitle = _sheetTitle }
     fun setMode(_mode: Int): HotelClosedSortBottomSheets = this.apply { mode = _mode }
     fun setMenu(_menu: List<Sort>): HotelClosedSortBottomSheets = this.apply { menu = _menu }
-    fun setSelecetedItem(_sort: Sort): HotelClosedSortBottomSheets = this.apply { selectedItem = _sort }
+    fun setSelectedItem(_sort: Sort): HotelClosedSortBottomSheets = this.apply { selectedItem = _sort }
 
-    override fun getLayoutResourceId(): Int = com.tokopedia.baselist.R.layout.fragment_base_list
+    init {
+        setTitle(sheetTitle)
+        isFullpage = false
+        isDragable = false
+    }
 
-    override fun initView(view: View?) {
-        val recyclerView = view?.findViewById<RecyclerView>(com.tokopedia.baselist.R.id.recycler_view)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        initChildLayout()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun initChildLayout() {
+        val view = View.inflate(context, R.layout.bottom_sheets_hotel_closed_sort, null)
+        setChild(view)
+        initView(view)
+    }
+
+    private fun initView(view: View) {
+        val recyclerView = view.findViewById<VerticalRecyclerView>(R.id.hotel_closed_sort_recycler_view)
+        recyclerView.clearItemDecoration()
         val adapter = HotelOptionMenuAdapter(mode, menu)
                 .apply {
                     listener = onMenuSelect
@@ -34,17 +51,4 @@ class HotelClosedSortBottomSheets : BottomSheets() {
                 }
         recyclerView?.adapter = adapter
     }
-
-    override fun title(): String = title
-
-    override fun setupDialog(dialog: Dialog, style: Int) {
-        super.setupDialog(dialog, style)
-        val btnClose = getDialog()?.findViewById<AppCompatImageView>(com.tokopedia.design.R.id.btn_close)
-        btnClose?.setOnClickListener { dismiss() }
-
-        val title = getDialog()?.findViewById<TextView>(com.tokopedia.design.R.id.tv_title)
-        title?.typeface = Typeface.DEFAULT_BOLD
-    }
-
-    override fun state(): BottomSheetsState = BottomSheetsState.FLEXIBLE
 }

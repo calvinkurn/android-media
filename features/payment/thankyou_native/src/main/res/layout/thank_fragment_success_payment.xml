@@ -20,8 +20,8 @@
 
             <ImageView
                 android:id="@+id/iv_payment_success"
-                android:layout_width="@dimen/dp_192"
-                android:layout_height="@dimen/dp_144"
+                android:layout_width="@dimen/thank_dp_192"
+                android:layout_height="@dimen/thank_dp_144"
                 android:layout_marginTop="@dimen/dp_24"
                 android:src="@drawable/thank_instant_payment_banner"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -188,10 +188,11 @@
                 android:background="@color/thank_divider_color"
                 app:layout_constraintTop_toBottomOf="@id/btn_see_transaction_list" />
 
-            <com.tokopedia.thankyou_native.recommendation.presentation.view.PDPThankYouPageView
-                android:id="@+id/pdp_recommendation_instant"
+            <LinearLayout
+                android:id="@+id/recommendationContainer"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/view_divider_2" />
 

@@ -104,6 +104,8 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
     currency_code
     whitelisted_rba
     push_gtm
+    new_user
+    is_mub
   }
 }
 

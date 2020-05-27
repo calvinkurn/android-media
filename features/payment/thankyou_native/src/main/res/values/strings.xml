@@ -107,5 +107,7 @@
     <string name="thank_cod_payment_successful">Selamat, transaksimu berhasil!</string>
     <string name="thank_cod_payment_check_order">Pembayaranmu berhasil diverifikasi. Terima kasih telah berbelanja di Tokopedia.</string>
     <string name="thankyou_klikbca_virtual_account_copied">User ID KlikBCA berhasil disalin</string>
+    <string name="thank_wait_for_minute">Tunggu sebentar, ya..</string>
+    <string name="thank_processing_payment">Pembayaranmu lagi diproses</string>
 
 </resources>

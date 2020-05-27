@@ -36,9 +36,8 @@
             android:divider="@android:color/transparent"
             android:dividerHeight="0dp" />
 
-        <include
+        <com.tokopedia.common_category.customview.NoDataView
             android:id="@+id/layout_no_data"
-            layout="@layout/layout_nav_no_product"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"

@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.annotation.StringRes
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.thankyou_native.R
-import com.tokopedia.thankyou_native.helper.*
+import com.tokopedia.thankyou_native.data.mapper.*
 
 class DialogHelper(val context: Context, val listener: OnDialogRedirectListener) {
 

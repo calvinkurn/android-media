@@ -1,6 +1,5 @@
 package com.tokopedia.profilecompletion.addemail.view.fragment
 
-//import com.tokopedia.unifycomponents.Toaster
 import android.app.Activity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -33,12 +32,9 @@ import javax.inject.Inject
 
 class AddEmailFragment : BaseDaggerFragment() {
 
-    @Inject
-    lateinit var userSession: UserSessionInterface
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var userSession: UserSessionInterface
+  
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
 
     private val viewModel by lazy { viewModelProvider.get(AddEmailViewModel::class.java) }
@@ -162,9 +158,10 @@ class AddEmailFragment : BaseDaggerFragment() {
 
     private fun onSuccessAddEmail(result: AddEmailResult) {
         dismissLoading()
-        activity?.run {
-            userSession.email = result.email
+      
+        userSession.email = result.email
 
+        activity?.run {
             val intent = Intent()
             val bundle = Bundle()
             bundle.putInt(EXTRA_PROFILE_SCORE, result.addEmailPojo.data.completionScore)

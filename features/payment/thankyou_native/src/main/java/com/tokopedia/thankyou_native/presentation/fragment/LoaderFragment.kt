@@ -2,23 +2,28 @@ package com.tokopedia.thankyou_native.presentation.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.airbnb.lottie.LottieComposition
+import com.airbnb.lottie.LottieCompositionFactory
+import com.airbnb.lottie.LottieDrawable
+import com.airbnb.lottie.LottieTask
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.thankyou_native.R
-import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
+import com.tokopedia.thankyou_native.data.mapper.Invalid
+import com.tokopedia.thankyou_native.data.mapper.PaymentStatusMapper
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
-import com.tokopedia.thankyou_native.helper.Invalid
-import com.tokopedia.thankyou_native.helper.PaymentStatusMapper
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCallback
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
@@ -27,6 +32,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_fragment_loader.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.zip.ZipInputStream
 import javax.inject.Inject
 
 class LoaderFragment : BaseDaggerFragment() {
@@ -34,10 +40,12 @@ class LoaderFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    @Inject
-    lateinit var thankYouPageAnalytics: ThankYouPageAnalytics
+    private val thanksPageDataViewModel: ThanksPageDataViewModel by lazy(LazyThreadSafetyMode.NONE)  {
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+        viewModelProvider.get(ThanksPageDataViewModel::class.java)
+    }
 
-    private lateinit var thanksPageDataViewModel: ThanksPageDataViewModel
+    private val handler = Handler()
 
     var callback: ThankYouPageDataLoadCallback? = null
 
@@ -47,28 +55,27 @@ class LoaderFragment : BaseDaggerFragment() {
         getComponent(ThankYouPageComponent::class.java).inject(this)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initViewModels()
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.thank_fragment_loader, container, false)
-    }
-
-    private fun initViewModels() {
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-        thanksPageDataViewModel = viewModelProvider.get(ThanksPageDataViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeViewModel()
+        showLoaderView()
+        handler.postDelayed(delayLoadingRunnable, DELAY_MILLIS)
+    }
+
+    override fun onDestroyView() {
+        handler.removeCallbacks(delayLoadingRunnable)
+        super.onDestroyView()
+    }
+
+    private val delayLoadingRunnable = Runnable {
         loadThankPageData()
     }
 
     private fun loadThankPageData() {
-        loading_layout.visible()
         globalError.gone()
         arguments?.let {
             if (it.containsKey(ThankYouPageActivity.ARG_PAYMENT_ID) && it.containsKey(ThankYouPageActivity.ARG_MERCHANT)) {
@@ -99,58 +106,83 @@ class LoaderFragment : BaseDaggerFragment() {
     }
 
     private fun onThankYouPageDataLoadingFail(throwable: Throwable) {
-        loading_layout.gone()
+        hideLoaderView()
         when (throwable) {
             is MessageErrorException -> {
-                if (throwable.message?.startsWith("rpc error:") == true) {
+                if (throwable.message?.startsWith(RPC_ERROR_STR) == true) {
                     callback?.onInvalidThankYouPage()
                 } else {
-                    showServerError()
+                    showServerError(::loadThankPageData)
                 }
             }
-            is UnknownHostException -> showNoConnectionError()
-            is SocketTimeoutException -> showNoConnectionError()
-            else -> showServerError()
+            is UnknownHostException -> showNoConnectionError(::loadThankPageData)
+            is SocketTimeoutException -> showNoConnectionError(::loadThankPageData)
+            else -> showServerError(::loadThankPageData)
         }
     }
 
-    private fun showNoConnectionError() {
+    private fun showNoConnectionError(retryAction: () -> Unit) {
         globalError.visible()
         globalError.setType(GlobalError.NO_CONNECTION)
         globalError.errorAction.visible()
         globalError.errorAction.setOnClickListener {
-            loadThankPageData()
+            showLoaderView()
+            retryAction.invoke()
         }
     }
 
-    private fun showServerError() {
+    private fun showServerError(retryAction: () -> Unit) {
         globalError.visible()
         globalError.setType(GlobalError.SERVER_ERROR)
-        globalError.errorAction.gone()
+        globalError.errorAction.visible()
+        globalError.errorAction.setOnClickListener {
+            showLoaderView()
+            retryAction.invoke()
+        }
     }
 
-    private fun onThankYouPageDataLoaded(data: ThanksPageData) {
-        loading_layout.gone()
-        if (PaymentStatusMapper.getPaymentStatusByInt(data.paymentStatus) == Invalid) {
+    private fun onThankYouPageDataLoaded(thanksPageData: ThanksPageData) {
+        hideLoaderView()
+        if (PaymentStatusMapper.getPaymentStatusByInt(thanksPageData.paymentStatus) == Invalid) {
             callback?.onInvalidThankYouPage()
             return
         } else {
-            sendThankYouPageAnalytics(data)
-            callback?.onThankYouPageDataLoaded(data)
+            callback?.onThankYouPageDataLoaded(thanksPageData)
         }
     }
 
-    /**
-     *ThanksPageData.pushGtm is used to prevent duplicate firing of event...
-     * */
-    private fun sendThankYouPageAnalytics(thanksPageData: ThanksPageData) {
-        if (thanksPageData.pushGtm)
-            thankYouPageAnalytics.sendThankYouPageData(thanksPageData)
-        thankYouPageAnalytics.appsFlyerPurchaseEvent(thanksPageData,"MarketPlace")
-        thankYouPageAnalytics.sendBranchIOEvent(thanksPageData)
+    private fun showLoaderView() {
+        tvWaitForMinute.visible()
+        tvProcessingPayment.visible()
+        lottieAnimationView.visible()
+        loadLoaderInputStream()
+    }
+
+    private fun hideLoaderView() {
+        lottieAnimationView.gone()
+        tvWaitForMinute.hide()
+        tvProcessingPayment.hide()
+    }
+
+    private fun loadLoaderInputStream() {
+        val lottieFileZipStream = ZipInputStream(context!!.assets.open(LOADER_JSON_ZIP_FILE))
+        val task = LottieCompositionFactory.fromZipStream(lottieFileZipStream, null)
+        addLottieAnimationToView(task)
+    }
+
+    private fun addLottieAnimationToView(task: LottieTask<LottieComposition>) {
+        task.addListener { result: LottieComposition? ->
+            lottieAnimationView?.setComposition(result!!)
+            lottieAnimationView.repeatCount = LottieDrawable.INFINITE
+            lottieAnimationView?.repeatMode = LottieDrawable.RESTART
+            lottieAnimationView.playAnimation()
+        }
     }
 
     companion object {
+        const val RPC_ERROR_STR = "rpc error:"
+        const val DELAY_MILLIS = 2000L
+        const val LOADER_JSON_ZIP_FILE = "thanks_payment_data_loader.zip"
         fun getLoaderFragmentInstance(bundle: Bundle): LoaderFragment = LoaderFragment().apply {
             arguments = bundle
         }

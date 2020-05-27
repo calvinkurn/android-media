@@ -5,8 +5,9 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 
 class DetailedInvoiceAdapter(val visitableList: ArrayList<Visitable<*>>,
                              typeFactory: InvoiceTypeFactory) :
-        BaseAdapter<InvoiceTypeFactory>(typeFactory, visitableList){
-    fun addItems(data: ArrayList<Visitable<*>>){
+        BaseAdapter<InvoiceTypeFactory>(typeFactory, visitableList) {
+    fun addItems(data: ArrayList<Visitable<*>>) {
+        visitableList.clear()
         visitableList.addAll(data)
     }
 }
