@@ -620,7 +620,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     private inline fun <reified D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> Throwable.setOnErrorWidgetState(widgetType: String) {
         val message = this.message.orEmpty()
         widgetHasMap[widgetType]?.forEach { widget ->
-            if (widget is W) {
+            if (widget is W && widget.data == null && widget.isLoaded) {
                 widget.data = D::class.java.newInstance().apply {
                     error = message
                 }
