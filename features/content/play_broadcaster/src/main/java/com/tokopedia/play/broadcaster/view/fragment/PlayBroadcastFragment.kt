@@ -7,17 +7,22 @@ import android.os.Bundle
 import android.view.*
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProviders
 import com.alivc.live.pusher.SurfaceStatus
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.di.DaggerPlayBroadcasterComponent
-import com.tokopedia.play.broadcaster.pusher.DeviceInfoUtil
+import com.tokopedia.play.broadcaster.pusher.util.DeviceInfoUtil
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
 import com.tokopedia.play.broadcaster.pusher.PlayPusherImpl
 import com.tokopedia.play.broadcaster.pusher.PlayPusherImplNoop
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import javax.inject.Inject
 
 
 /**
@@ -25,12 +30,17 @@ import com.tokopedia.play.broadcaster.pusher.PlayPusherImplNoop
  */
 class PlayBroadcastFragment: BaseDaggerFragment() {
 
-    private var playPusher: PlayPusher? = null
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private lateinit var parentViewModel: PlayBroadcastViewModel
+
+//    private var playPusher: PlayPusher? = null
 
     private lateinit var surfaceView: SurfaceView
     private lateinit var containerPermission: View
-    private lateinit var textSwitchCamera: TextView
-    private lateinit var textClose: TextView
+    private lateinit var textSwitchCamera: AppCompatImageView
+    private lateinit var textClose: AppCompatImageView
 
     private var surfaceStatus = SurfaceStatus.UNINITED
 
@@ -43,7 +53,7 @@ class PlayBroadcastFragment: BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupPusher()
+        parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -80,7 +90,7 @@ class PlayBroadcastFragment: BaseDaggerFragment() {
 
         textSwitchCamera = view.findViewById(R.id.iv_switch)
         textSwitchCamera.setOnClickListener {
-            playPusher?.switchCamera()
+//            playPusher?.switchCamera()
         }
 
         textClose = view.findViewById(R.id.iv_close)
@@ -126,38 +136,31 @@ class PlayBroadcastFragment: BaseDaggerFragment() {
     private fun startPreview() {
         if (surfaceStatus != SurfaceStatus.UNINITED &&
                 surfaceStatus != SurfaceStatus.DESTROYED) {
-            playPusher?.startPreview(surfaceView)
+//            playPusher?.startPreview(surfaceView)
         }
     }
 
     private fun setupPusher() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            playPusher = getPlayPusher()
-            playPusher?.create()
+//            playPusher = getPlayPusher()
+//            playPusher?.create()
         } else {
             // TODO ("handle user with android version < 18")
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-    private fun getPlayPusher(): PlayPusher = if (DeviceInfoUtil.isSupportedAbi()) {
-        PlayPusherImpl.Builder(requireContext()).build()
-    } else {
-        PlayPusherImplNoop()
-    }
-
     override fun onResume() {
         super.onResume()
-        playPusher?.resume()
+//        playPusher?.resume()
     }
 
     override fun onPause() {
         super.onPause()
-        playPusher?.pause()
+//        playPusher?.pause()
     }
 
     override fun onDestroy() {
-        playPusher?.destroy()
+//        playPusher?.destroy()
         super.onDestroy()
     }
 

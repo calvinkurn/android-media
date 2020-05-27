@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.play.broadcaster.dispatcher.PlayBroadcastDispatcher
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
+import com.tokopedia.play.broadcaster.pusher.PlayPusher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -17,6 +18,7 @@ import javax.inject.Named
  * Created by mzennis on 24/05/20.
  */
 class PlayBroadcastViewModel  @Inject constructor(
+        private val playPusher: PlayPusher,
         @Named(PlayBroadcastDispatcher.MAIN) dispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
@@ -26,6 +28,10 @@ class PlayBroadcastViewModel  @Inject constructor(
     val observablePage: LiveData<Boolean>
         get() = _observablePage
     private val _observablePage = MutableLiveData<Boolean>()
+
+    init {
+        playPusher.create()
+    }
 
     fun getConfiguration() {
         val configuration = PlayBroadcastMocker.getMockConfiguration()
@@ -39,5 +45,20 @@ class PlayBroadcastViewModel  @Inject constructor(
 
     fun getChannel(channelId: String) {
 
+    }
+
+    fun onCreate() {
+    }
+
+    fun onResume() {
+        playPusher.resume()
+    }
+
+    fun onPause() {
+        playPusher.pause()
+    }
+
+    fun onDestroy() {
+        playPusher.destroy()
     }
 }

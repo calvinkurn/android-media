@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.pusher
+package com.tokopedia.play.broadcaster.pusher.util
 
 import android.os.Build
 
@@ -13,10 +13,19 @@ object DeviceInfoUtil {
 
     private val supportedAbi = arrayOf(ARMEABI_V7A, ARM64_V8A)
 
-    fun isSupportedAbi(): Boolean {
+    fun checkDeviceAbi(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             supportedAbi.contains(Build.SUPPORTED_ABIS[0])
         }
         else supportedAbi.contains(Build.CPU_ABI)
+    }
+
+    fun checkDeviceApi(): Boolean {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2
+    }
+
+    fun isDeviceSupported(): Boolean {
+        return DeviceInfoUtil.checkDeviceAbi()
+                && DeviceInfoUtil.checkDeviceApi()
     }
 }

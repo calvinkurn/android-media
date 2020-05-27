@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.pusher
+package com.tokopedia.play.broadcaster.pusher.type
 
 
 /**
