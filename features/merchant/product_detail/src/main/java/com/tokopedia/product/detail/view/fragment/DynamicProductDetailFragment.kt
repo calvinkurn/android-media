@@ -114,6 +114,7 @@ import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.constant.Constant
 import com.tokopedia.purchase_platform.common.sharedata.ShipmentFormRequest
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -1304,7 +1305,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun goToOneClickCheckout() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT).apply {
+            putExtra(Constant.EXTRA_OCC_SOURCE_PDP, true)
+        }
         startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_CHECKOUT)
     }
 

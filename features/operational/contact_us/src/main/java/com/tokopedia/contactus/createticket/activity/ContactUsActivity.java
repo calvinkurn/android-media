@@ -4,11 +4,11 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -148,7 +148,7 @@ public class ContactUsActivity extends BaseSimpleActivity implements
 
     @Override
     public void onFinishCreateTicket() {
-        CommonUtils.UniversalToast(this, getString(R.string.title_contact_finish));
+        Toast.makeText(this, getString(R.string.title_contact_finish), Toast.LENGTH_LONG).show();
         UserSessionInterface userSession = new UserSession(this);
         if (GlobalConfig.isSellerApp() && userSession.isLoggedIn()) {
             Intent intent = ((TkpdCoreRouter) getApplication()).getHomeIntent(this);
