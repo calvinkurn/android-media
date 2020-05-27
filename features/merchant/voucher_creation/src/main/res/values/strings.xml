@@ -211,6 +211,7 @@
     <string name="mvc_statistic_detail">Detail Statistik</string>
     <string name="mvc_voucher_view">Tampilan Voucher</string>
     <string name="mvc_share_voucher">Bagikan Voucher</string>
+    <string name="mvc_duplicate_voucher">Duplikat Voucher</string>
     <string name="mvc_voucher_code_copied">Kode voucher sudah disalin</string>
     <string name="mvc_voucher_review">Review voucher</string>
     <string name="mvc_add_voucher">Tambah Voucher</string>
@@ -224,6 +225,7 @@
     <string name="mvc_detail_ticker_share">Bagikan voucher untuk menjangkau lebih banyak pembeli. Lihat Tips &amp; Trik</string>
     <string name="mvc_detail_ticker_see_tips">Lihat Tips &amp; Trik</string>
     <string name="mvc_detail_ticker_stop_promo">Untuk menghentikan promosi, klik di sini</string>
+    <string name="mvc_detail_ticker_cancel_promo">Untuk membatalkan promosi, klik di sini</string>
     <string name="mvc_detail_ticker_here">di sini</string>
     <string name="mvc_review_agreement">Dengan klik Tambah Voucher, saya menyetujui syarat dan ketentuan yang berlaku.</string>
     <string name="mvc_review_terms">syarat dan ketentuan</string>

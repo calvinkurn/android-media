@@ -5,10 +5,12 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.vouchercreation.common.base.BaseGqlUseCase
 import com.tokopedia.vouchercreation.common.base.VoucherSource
-import com.tokopedia.vouchercreation.common.model.MerchantVoucherModel
+import com.tokopedia.vouchercreation.common.model.VoucherMapper
+import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import javax.inject.Inject
 
-class VoucherDetailUseCase @Inject constructor(private val gqlRepository: GraphqlRepository): BaseGqlUseCase<MerchantVoucherModel>() {
+class VoucherDetailUseCase @Inject constructor(private val gqlRepository: GraphqlRepository,
+                                               private val voucherMapper: VoucherMapper): BaseGqlUseCase<VoucherUiModel>() {
 
     companion object {
         const val QUERY = "query GetVoucherDataById (\$voucher_id: Int!, \$source: String!){\n" +
@@ -66,14 +68,14 @@ class VoucherDetailUseCase @Inject constructor(private val gqlRepository: Graphq
                 }
     }
 
-    override suspend fun executeOnBackground(): MerchantVoucherModel {
+    override suspend fun executeOnBackground(): VoucherUiModel {
         val request = GraphqlRequest(QUERY, VoucherDetailResponse::class.java, params.parameters)
         val response = gqlRepository.getReseponse(listOf(request))
 
         val errors = response.getError(VoucherDetailResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val data = response.getData<VoucherDetailResponse>()
-            return data.result.merchantVoucherModel
+            return voucherMapper.mapRemoteModelToUiModel(data.result.merchantVoucherModel)
         } else {
             throw MessageErrorException(errors.joinToString(", ") { it.message })
         }

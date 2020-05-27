@@ -1,22 +1,34 @@
 package com.tokopedia.vouchercreation.detail.view.fragment
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.TipsTrickBottomSheet
+import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
+import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.model.MerchantVoucherModel
 import com.tokopedia.vouchercreation.common.model.VoucherMapper
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.DATE_FORMAT
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.HOUR_FORMAT
+import com.tokopedia.vouchercreation.create.view.enums.BenefitType
+import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.detail.model.*
 import com.tokopedia.vouchercreation.detail.view.viewmodel.VoucherDetailViewModel
+import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
 import javax.inject.Inject
 
@@ -45,12 +57,23 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
         viewModelProvider.get(VoucherDetailViewModel::class.java)
     }
 
+    private val shareButtonUiModel by lazy {
+        FooterButtonUiModel(context?.getString(R.string.mvc_share_voucher).toBlankOrString(), "")
+    }
+    private val duplicateButtonUiModel by lazy {
+        FooterButtonUiModel(context?.getString(R.string.mvc_duplicate_voucher).toBlankOrString(), "")
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        observeLiveData()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
 
         setupView()
-        showDummyData()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -107,8 +130,31 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
                 .show(childFragmentManager)
     }
 
+    private fun observeLiveData() {
+        viewLifecycleOwner.observe(viewModel.merchantVoucherModelLiveData) { result ->
+            when(result) {
+                is Success -> {
+                    adapter.clearAllElements()
+                    //Todo: add information
+                    renderVoucherDetailInformation(result.data)
+                }
+                is Fail -> {
+                    //Todo: show error state
+                }
+            }
+        }
+    }
+
     private fun setupView() = view?.run {
+        showLoadingState()
         viewModel.getVoucherDetail(voucherId)
+    }
+
+    private fun showLoadingState() {
+        adapter.clearAllElements()
+        renderList(listOf(
+                DetailLoadingStateUiModel()
+        ))
     }
 
     private fun showShareBottomSheet() {
@@ -119,6 +165,89 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
 
                 }
                 .show(childFragmentManager)
+    }
+
+    private fun renderVoucherDetailInformation(voucherUiModel: VoucherUiModel) {
+        with(voucherUiModel) {
+            val startDate = DateTimeUtils.reformatUnsafeDateTime(startTime, DATE_FORMAT)
+            val endDate = DateTimeUtils.reformatUnsafeDateTime(finishTime, DATE_FORMAT)
+            val startHour = DateTimeUtils.reformatUnsafeDateTime(startTime, HOUR_FORMAT)
+            val endHour = DateTimeUtils.reformatUnsafeDateTime(finishTime, HOUR_FORMAT)
+            val fullDisplayedDate = getDisplayedDateString(startDate, startHour, endDate, endHour)
+
+            val voucherDetailInfoList = listOf(
+                    VoucherHeaderUiModel(
+                            status = status,
+                            voucherImageUrl = imageSquare,
+                            startTime = startTime,
+                            finishTime = finishTime,
+                            cancelTime =
+                            if (status == VoucherStatusConst.STOPPED) {
+                                updatedTime
+                            } else {
+                                null
+                            }),
+                    getVoucherInfoSection(type, name, code),
+                    DividerUiModel(DividerUiModel.THIN),
+                    getVoucherImageType(type, discountTypeFormatted, discountAmt, discountAmtMax)?.let { imageType ->
+                        getVoucherBenefitSection(imageType, minimumAmt, quota)
+                    },
+                    DividerUiModel(DividerUiModel.THIN),
+                    getPeriodSection(fullDisplayedDate),
+                    DividerUiModel(DividerUiModel.THICK),
+                    getButtonUiModel(status),
+                    getFooterUiModel(status))
+
+            renderList(voucherDetailInfoList)
+        }
+    }
+
+    private fun getVoucherImageType(@VoucherTypeConst voucherType: Int,
+                                    @BenefitType benefitType: String,
+                                    amount: Int,
+                                    amountMax: Int): VoucherImageType? {
+        when (voucherType) {
+            VoucherTypeConst.FREE_ONGKIR -> {
+                return VoucherImageType.FreeDelivery(amount)
+            }
+            VoucherTypeConst.CASHBACK -> {
+                return when(benefitType) {
+                    BenefitType.IDR -> {
+                        VoucherImageType.Rupiah(amount)
+                    }
+                    BenefitType.PERCENT -> {
+                        VoucherImageType.Percentage(amountMax, amount)
+                    }
+                    else -> null
+                }
+            }
+            else -> return null
+        }
+    }
+
+    private fun getButtonUiModel(@VoucherStatusConst status: Int): FooterButtonUiModel? {
+        return when(status) {
+            VoucherStatusConst.ENDED -> duplicateButtonUiModel
+            VoucherStatusConst.STOPPED -> duplicateButtonUiModel
+            VoucherStatusConst.ONGOING -> shareButtonUiModel
+            else -> null
+        }
+    }
+
+    private fun getFooterUiModel(@VoucherStatusConst status: Int): FooterUiModel? {
+        return when(status) {
+            VoucherStatusConst.NOT_STARTED -> {
+                FooterUiModel(
+                        context?.getString(R.string.mvc_detail_ticker_cancel_promo).toBlankOrString(),
+                        context?.getString(R.string.mvc_detail_ticker_here).toBlankOrString())
+            }
+            VoucherStatusConst.ONGOING -> {
+                FooterUiModel(
+                        context?.getString(R.string.mvc_detail_ticker_stop_promo).toBlankOrString(),
+                        context?.getString(R.string.mvc_detail_ticker_here).toBlankOrString())
+            }
+            else -> null
+        }
     }
 
     private fun showDummyData() {

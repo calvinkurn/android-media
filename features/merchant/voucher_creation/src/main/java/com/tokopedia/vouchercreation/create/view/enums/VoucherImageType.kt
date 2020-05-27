@@ -10,7 +10,7 @@ sealed class VoucherImageType(val value: Int,
                               @CouponType val couponType: String) {
     class FreeDelivery(value: Int) : VoucherImageType(value, BenefitType.IDR, CouponType.SHIPPING)
     class Rupiah(value: Int) : VoucherImageType(value, BenefitType.IDR, CouponType.CASHBACK)
-    class Percentage(value: Int, val percentage: Int) : VoucherImageType(value, BenefitType.PERCENT, CouponType.DISCOUNT)
+    class Percentage(value: Int, val percentage: Int) : VoucherImageType(value, BenefitType.PERCENT, CouponType.CASHBACK)
 }
 
 enum class VoucherImageTextType(@DimenRes val dimenRes: Int) {

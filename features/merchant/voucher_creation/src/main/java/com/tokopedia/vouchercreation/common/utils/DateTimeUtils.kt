@@ -17,6 +17,9 @@ object DateTimeUtils {
     const val TIME_STAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
     const val TIME_STAMP_MILLISECONDS_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'"
 
+    const val DATE_FORMAT = "dd MMM yyyy"
+    const val HOUR_FORMAT = "HH:mm 'Z'"
+
     const val EXTRA_HOUR = 3
     const val EXTRA_MINUTE = 30
     const val EXTRA_WEEK = 7

@@ -7,8 +7,8 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.vouchercreation.common.model.MerchantVoucherModel
 import com.tokopedia.vouchercreation.detail.domain.usecase.VoucherDetailUseCase
+import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,8 +19,8 @@ class VoucherDetailViewModel @Inject constructor(
         @Named("Main") dispatcher: CoroutineDispatcher,
         private val voucherDetailUseCase: VoucherDetailUseCase) : BaseViewModel(dispatcher) {
 
-    private val mMerchantVoucherModelLiveData = MutableLiveData<Result<MerchantVoucherModel>>()
-    val merchantVoucherModelLiveData: LiveData<Result<MerchantVoucherModel>>
+    private val mMerchantVoucherModelLiveData = MutableLiveData<Result<VoucherUiModel>>()
+    val merchantVoucherModelLiveData: LiveData<Result<VoucherUiModel>>
         get() = mMerchantVoucherModelLiveData
 
     fun getVoucherDetail(voucherId: Int) {

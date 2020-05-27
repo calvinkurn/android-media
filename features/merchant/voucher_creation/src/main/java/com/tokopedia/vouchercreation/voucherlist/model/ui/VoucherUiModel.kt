@@ -2,6 +2,7 @@ package com.tokopedia.vouchercreation.voucherlist.model.ui
 
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
+import com.tokopedia.vouchercreation.create.view.enums.BenefitType
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactory
 
 /**
@@ -18,7 +19,7 @@ data class VoucherUiModel(
         val imageSquare: String,
         @VoucherStatusConst val status: Int,
         val statusFormatted: String,
-        val discountType: Int,
+        @BenefitType val discountType: Int,
         val discountTypeFormatted: String,
         val discountAmt: Int,
         val discountAmtFormatted: String,
