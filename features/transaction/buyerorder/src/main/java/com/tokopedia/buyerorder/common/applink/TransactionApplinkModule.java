@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.applink;
+package com.tokopedia.buyerorder.common.applink;
 
 import com.airbnb.deeplinkdispatch.DeepLinkModule;
 

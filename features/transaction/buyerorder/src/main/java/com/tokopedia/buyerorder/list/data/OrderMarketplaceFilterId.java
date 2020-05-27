@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.orders.orderlist.data;
+package com.tokopedia.buyerorder.list.data;
 
 public interface OrderMarketplaceFilterId {
 
