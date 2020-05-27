@@ -303,8 +303,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             // tracking
             if (viewModel.isEditing.value == true) {
                 ProductEditStepperTracking.trackClickChangeProductPic(shopId)
-            } else {
-                ProductAddStepperTracking.trackStart(shopId)
             }
 
             productPhotoAdapter?.run {
@@ -463,6 +461,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                             viewModel.updateProductPhotos(imagePickerResult, originalImageUrl, isEditted)
                         } else {
                             // this only executed when we came from empty stepper page (add product)
+                            ProductAddStepperTracking.trackStart(shopId)
                             val newProductInputModel = viewModel.getNewProductInputModel(imagePickerResult)
                             startAddEditProductDetailActivity(newProductInputModel, isEditing = false, isAdding = true)
                         }
