@@ -45,12 +45,21 @@ data class DFConfig(
 
     @SerializedName("df_singleton_service")
     @Expose
-    val useSingletonService: Boolean = true
+    val useSingletonService: Boolean = true,
+
+    @SerializedName("module_restrict_in_bg")
+    @Expose
+    val moduleRestrictInBackground: List<String>? = emptyList(),
+
+    @SerializedName("timeout")
+    @Expose
+    val timeout: Long = 60
 
 ) {
-    fun allowRunningServiceFromActivity(): Boolean {
+    fun allowRunningServiceFromActivity(moduleName: String): Boolean {
         return useSingletonService &&
             downloadInBackground &&
-            !downloadInBackgroundExcludedSdkVersion.contains(Build.VERSION.SDK_INT)
+            !downloadInBackgroundExcludedSdkVersion.contains(Build.VERSION.SDK_INT) &&
+            moduleRestrictInBackground!= null && moduleName !in moduleRestrictInBackground
     }
 }

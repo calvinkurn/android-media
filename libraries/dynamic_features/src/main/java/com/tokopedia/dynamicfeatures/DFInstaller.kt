@@ -222,13 +222,23 @@ object DFInstaller {
         installOnBackground(context, moduleNameList, message)
     }
 
+    @JvmStatic
+    fun stopInstall(context: Context) {
+        DFDownloader.stopService(context)
+        sessionId?.let {
+            getManager(context)?.cancelInstall(it)
+        }
+        sessionId = null
+    }
+
     /**
      * Non suspended function to trigger the schedule of the service.
      * The service will run suspend function of install on background.
      */
     @JvmStatic
     fun installOnBackground(context: Context, moduleNameList: List<String>, message: String) {
-        val filteredModuleNameList = ArrayList<String>()
+        val filteredModuleNameList = mutableListOf<String>()
+
         for (moduleName in moduleNameList) {
             if (!isInstalled(context, moduleName)) {
                 filteredModuleNameList.add(moduleName)
@@ -236,7 +246,18 @@ object DFInstaller {
         }
         val dfConfig = DFRemoteConfig.getConfig(context.applicationContext)
         if (dfConfig.downloadInBackground && !dfConfig.downloadInBackgroundExcludedSdkVersion.contains(Build.VERSION.SDK_INT)) {
+            // this is to filter which module that download in background, or defered-background, based on remote config
+            val restrictedInBgModuleNameList = mutableListOf<String>()
+            if (dfConfig.moduleRestrictInBackground != null) {
+                for (moduleName in filteredModuleNameList) {
+                    if (moduleName in dfConfig.moduleRestrictInBackground) {
+                        filteredModuleNameList.remove(moduleName)
+                        restrictedInBgModuleNameList.add(moduleName)
+                    }
+                }
+            }
             DFDownloader.startSchedule(context.applicationContext, filteredModuleNameList, true)
+            startDeferredInstall(context, restrictedInBgModuleNameList, message)
         } else {
             startDeferredInstall(context, filteredModuleNameList, message)
         }

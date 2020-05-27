@@ -114,7 +114,7 @@ import kotlin.coroutines.CoroutineContext
  * applink=[tokopedia-android-internal://marketplace/shop-settings-info]&auto=true&name=Pengaturan Toko&image=
  *
  */
-object DeeplinkDFMapper: CoroutineScope {
+object DeeplinkDFMapper : CoroutineScope {
     // it should have the same name with the folder of dynamic feature
     private const val DF_BASE = "df_base"
     private const val DF_CATEGORY_TRADE_IN = "df_category_trade_in"
@@ -208,11 +208,12 @@ object DeeplinkDFMapper: CoroutineScope {
 
             // Promo
             add(DFP({ it.startsWith(INTERNAL_TOKOPOINTS) }, DF_BASE, R.string.title_tokopoints))
-            add(DFP({ it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_CRACK) ||
+            add(DFP({
+                it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_CRACK) ||
                     it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_TAP_TAP_MANTAP) ||
                     it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_SMC_REFERRAL) ||
                     it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_DAILY_GIFT)
-            }, DF_GAMIFICATION,R.string.internet_title_gamification))
+            }, DF_GAMIFICATION, R.string.internet_title_gamification))
 
             //Entertainment
             add(DFP({ it.startsWith(EVENT_HOME) }, DF_BASE, R.string.title_home_event))
@@ -230,7 +231,8 @@ object DeeplinkDFMapper: CoroutineScope {
             add(DFP({ it.startsWith(GROUPCHAT_LIST) }, DF_BASE, R.string.title_groupchat))
             add(DFP({ it.startsWith(GROUPCHAT_DETAIL) }, DF_BASE, R.string.title_groupchat))
 
-            add(DFP({ (it.startsWith(SETTING_PROFILE)
+            add(DFP({
+                (it.startsWith(SETTING_PROFILE)
                     || it.startsWith(ADD_PHONE)
                     || it.startsWith(ADD_EMAIL)
                     || it.startsWith(ADD_BOD)
@@ -241,7 +243,8 @@ object DeeplinkDFMapper: CoroutineScope {
                     || it.startsWith(ADD_PIN_ONBOARDING)
                     || it.startsWith(ADD_PIN)
                     || it.startsWith(ADD_PIN_COMPLETE)
-                    )}, DF_USER_SETTINGS, R.string.applink_profile_completion_title, { DFWebviewFallbackUrl.USER_PROFILE_SETTINGS }))
+                    )
+            }, DF_USER_SETTINGS, R.string.applink_profile_completion_title, { DFWebviewFallbackUrl.USER_PROFILE_SETTINGS }))
             add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DF_USER_SETTINGS, R.string.applink_report_title, ::getDefaultFallbackUrl))
             add(DFP({ it.startsWith(CHANGE_PHONE_NUMBER) }, DF_BASE, R.string.applink_change_phone_number))
             add(DFP({ it.startsWith(CHANGE_PASSWORD) }, DF_BASE, R.string.applink_change_password))
@@ -278,8 +281,10 @@ object DeeplinkDFMapper: CoroutineScope {
             add(DFP({ it.startsWith(PAYMENT_SETTING) }, DF_BASE, R.string.payment_settings_title))
             add(DFP({ it.startsWith(PRODUCT_MANAGE_LIST) }, DF_BASE, R.string.title_applink_product_manage))
             add(DFP({ it.startsWith(USER_IDENTIFICATION_FORM) }, DF_BASE, R.string.user_identification_common_title))
-            add(DFP({ it.startsWith(TOPADS_DASHBOARD_SELLER) ||
-                it.startsWith(TOPADS_DASHBOARD_INTERNAL) }, DF_BASE, R.string.applink_topads_dashboard_title))
+            add(DFP({
+                it.startsWith(TOPADS_DASHBOARD_SELLER) ||
+                    it.startsWith(TOPADS_DASHBOARD_INTERNAL)
+            }, DF_BASE, R.string.applink_topads_dashboard_title))
             add(DFP({ it.startsWith(MERCHANT_SHOP_SHOWCASE_LIST) }, DF_BASE, R.string.merchant_seller))
         }
     }
@@ -410,7 +415,7 @@ object DeeplinkDFMapper: CoroutineScope {
     }
 
     override val coroutineContext: CoroutineContext
-        get() = Dispatchers.IO + CoroutineExceptionHandler { _, _ ->  }
+        get() = Dispatchers.IO + CoroutineExceptionHandler { _, _ -> }
 
 }
 
