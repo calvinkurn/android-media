@@ -1,12 +1,13 @@
 package com.tokopedia.entertainment.pdp.data.pdp.mapper
 
+import com.tokopedia.entertainment.pdp.common.util.EventDateUtil
 import com.tokopedia.entertainment.pdp.data.ProductDetailData
 import java.util.*
 
 object EventDateMapper{
 
     fun getSizeSchedule(productDetailData: ProductDetailData):Boolean {
-        return productDetailData.schedules.size > 1
+        return productDetailData.dates.size > 1
     }
 
     fun getEndDate(productDetailData: ProductDetailData): String {
@@ -14,21 +15,35 @@ object EventDateMapper{
     }
 
     fun getStartDate(productDetailData: ProductDetailData): String {
-        if(productDetailData.schedules.isNotEmpty()){
-            return productDetailData.schedules[0].schedule.startDate
-        } else{
-            return ""
-        }
+        return productDetailData.saleStartDate
     }
 
     fun getActiveDate(productDetailData: ProductDetailData): List<Date>{
-        var listActiveDate : MutableList<Date> = mutableListOf()
-        val schedules = productDetailData.schedules
-        for (schedule in schedules){
-            listActiveDate.add(Date(schedule.schedule.startDate.toLong() * 1000))
+        val listActiveDate : MutableList<Date> = mutableListOf()
+        val dates = productDetailData.dates
+        for (date in dates){
+            listActiveDate.add(Date(date.toLong() * 1000))
         }
 
         return listActiveDate
+    }
+
+    fun checkDate(list : List<String>, selectedDate: String): Boolean {
+        for(date in list){
+            if(EventDateUtil.convertUnixToToday(date.toLong()) == selectedDate.toLong()){
+                return true
+            }
+        }
+        return false
+    }
+
+    fun getDate(list : List<String>, selectedDate: String): String {
+        for(date in list){
+            if(EventDateUtil.convertUnixToToday(date.toLong()) == selectedDate.toLong()){
+                return date
+            }
+        }
+        return selectedDate
     }
 
 }

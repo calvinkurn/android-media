@@ -60,7 +60,8 @@
     <string name="ent_checkout_error">Oke</string>
 
     <string name="ent_checkout_location_span"><![CDATA["<font color='black'><b> %s </b></font> %s]]></string>
-    <string name="ent_checkout_summary_packet">%s x%d</string>
+    <string name="ent_checkout_summary_amount">(x%d)</string>
     <string name="ent_checkout_to_order_detail">%s?from_payment=true</string>
     <string name="ent_pdp_param_to_package">%s/%s?selectedDate=%s&amp;startDate=%s&amp;endDate=%s</string>
+    <string name="ent_checkout_price_expand">Mulai dari <![CDATA["<font color='black'><b> %s </b></font>]]> </string>
 </resources>

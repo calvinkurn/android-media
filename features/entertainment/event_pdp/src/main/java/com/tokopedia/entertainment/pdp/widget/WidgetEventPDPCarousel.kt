@@ -116,7 +116,7 @@ class WidgetEventPDPCarousel @JvmOverloads constructor(context: Context, attrs: 
     }
 
     fun resizeIndicator(id: Int, size: Int): GradientDrawable{
-        val getDisplayWidth = Resources.getSystem().getDisplayMetrics().widthPixels/(size+1)
+        val getDisplayWidth = Resources.getSystem().displayMetrics.widthPixels/(size+1)
         val gradientDrawable : GradientDrawable = context.resources.getDrawable(id) as GradientDrawable
         gradientDrawable.setSize(getDisplayWidth,16)
         return gradientDrawable

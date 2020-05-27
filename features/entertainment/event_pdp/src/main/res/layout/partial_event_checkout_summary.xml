@@ -20,38 +20,18 @@
         android:textColor="@color/Neutral_N700"
         />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/tg_event_checkout_summary_packet"
-        tools:text="Day 1 - GA Presale Super Sale"
-        app:typographyWeight="reguler"
-        app:typographyType="body_3"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        app:layout_constraintTop_toBottomOf="@+id/tg_event_checkout_summary_title"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl6"
-        />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/tg_event_checkout_summary_price"
-        tools:text="Rp 1,356,115"
-        android:textColor="@color/Neutral_N700"
-        app:typographyWeight="bold"
-        app:typographyType="body_3"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_event_checkout_price"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tg_event_checkout_summary_title"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         />
 
     <View
         android:id="@+id/view_event_checkout_summary"
-        app:layout_constraintTop_toBottomOf="@+id/tg_event_checkout_summary_price"
+        app:layout_constraintTop_toBottomOf="@+id/rv_event_checkout_price"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginRight="@dimen/spacing_lvl4"

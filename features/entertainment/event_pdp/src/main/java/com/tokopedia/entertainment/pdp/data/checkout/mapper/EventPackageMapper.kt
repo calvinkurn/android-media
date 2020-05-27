@@ -1,8 +1,11 @@
 package com.tokopedia.entertainment.pdp.data.checkout.mapper
 
-import com.tokopedia.entertainment.pdp.data.ProductDetailData
-import com.tokopedia.entertainment.pdp.data.Package
-import com.tokopedia.entertainment.pdp.data.Schedule
+import com.tokopedia.entertainment.pdp.data.*
+import com.tokopedia.entertainment.pdp.data.pdp.ItemMap
+import com.tokopedia.entertainment.pdp.data.pdp.ItemMapResponse
+import com.tokopedia.entertainment.pdp.data.pdp.MetaDataResponse
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 object EventPackageMapper {
 
@@ -30,6 +33,42 @@ object EventPackageMapper {
         return packet
     }
 
+
+    fun getPackage(productDetailData: ProductDetailData, packageID: String):PackageV3{
+        var packageV3 = PackageV3()
+        for(i in 0..productDetailData.packages.size-1){
+            if(packageID.equals(productDetailData.packages[i].id)){
+                packageV3 = productDetailData.packages[i]
+            }
+        }
+        return packageV3
+    }
+
+
+    fun getItemMap(metadata: MetaDataResponse): ItemMapResponse{
+        var itemMapResponse = ItemMapResponse()
+        if (!metadata.itemMap.isNullOrEmpty()){
+            for (itemMap in metadata.itemMap){
+                itemMapResponse = itemMap
+            }
+        }
+
+        return itemMapResponse
+    }
+
+    fun getPackageItem(productDetailData: ProductDetailData, packageID: String):PackageItem{
+        var packageItem = PackageItem()
+        for(packageV3 in productDetailData.packages){
+            if(packageID.equals(packageV3.id)){
+                for (packageItems in packageV3.packageItems){
+                    packageItem = packageItems
+                }
+            }
+        }
+        return packageItem
+    }
+
+
     fun getSchedule(scheduleId: String, productDetailData: ProductDetailData): Schedule {
 
         var schedule = Schedule()
@@ -41,6 +80,15 @@ object EventPackageMapper {
         }
 
         return schedule
+    }
+
+    fun getDigit(str: String): Int{
+        if(str.isNotBlank()){
+            val pattern = Pattern.compile("[^0-9]")
+            val matcher: Matcher = pattern.matcher(str)
+            return matcher.replaceAll("").toInt()
+        }
+        else return -1
     }
 
 

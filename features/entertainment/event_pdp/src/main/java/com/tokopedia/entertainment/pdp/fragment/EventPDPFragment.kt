@@ -15,6 +15,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
@@ -73,6 +74,8 @@ import javax.inject.Inject
 class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(), OnBindItemListener,
         EventPDPActivity.PDPListener, AppBarLayout.OnOffsetChangedListener {
 
+    lateinit var performanceMonitoring: PerformanceMonitoring
+
     private var urlPDP: String? = ""
 
     var listHoliday: List<Legend> = arrayListOf()
@@ -96,6 +99,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initializePerformance()
         urlPDP = arguments?.getString(EXTRA_URL_PDP, "")
     }
 
@@ -110,7 +114,6 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
             clearAllData()
             it?.run {
                 renderList(this)
-
             }
         })
 
@@ -126,6 +129,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                 if (it.error) {
                     NetworkErrorHelper.showEmptyState(context, view?.rootView) {
                         loadDataAll()
+                        performanceMonitoring.stopTrace()
                     }
                 }
             }
@@ -136,10 +140,14 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         })
     }
 
+    private fun initializePerformance(){
+        performanceMonitoring = PerformanceMonitoring.start(ENT_PDP_PERFORMANCE)
+    }
+
     private fun requestData() {
         urlPDP?.let {
-            eventPDPViewModel.getDataProductDetail(GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_product_detail),
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_content_by_id), it)
+            eventPDPViewModel.getDataProductDetail(GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_product_detail_v3),
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_content_by_id), it, GraphqlHelper.loadRawString(resources, R.raw.dummy_response))
         }
 
     }
@@ -291,8 +299,8 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         rv_event_pdp.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                    widget_event_pdp_tab_section.setScrolledSection((rv_event_pdp.layoutManager
-                            as LinearLayoutManager).findFirstVisibleItemPosition())
+                widget_event_pdp_tab_section.setScrolledSection((rv_event_pdp.layoutManager
+                        as LinearLayoutManager).findFirstVisibleItemPosition())
             }
         })
     }
@@ -421,10 +429,19 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         share(productDetailData)
     }
 
+    override fun performancePdp() {
+        performanceMonitoring.stopTrace()
+    }
+
+    override fun onDestroyView() {
+        performanceMonitoring.stopTrace()
+        super.onDestroyView()
+    }
 
     companion object {
 
         const val DEFAULT_PIN = "DEFAULT_PIN"
+        const val ENT_PDP_PERFORMANCE = "et_event_pdp"
 
         fun newInstance(urlPDP: String) = EventPDPFragment().also {
             it.arguments = Bundle().apply {

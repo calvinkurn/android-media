@@ -8,7 +8,7 @@ import com.tokopedia.entertainment.pdp.R
 import com.tokopedia.entertainment.pdp.data.ValueAccordion
 import kotlinx.android.synthetic.main.item_event_pdp_information.view.*
 
-class EventPDPInformationAdapter(): RecyclerView.Adapter<EventPDPInformationAdapter.EventPDPInformationViewHolder>() {
+class EventPDPInformationAdapter: RecyclerView.Adapter<EventPDPInformationAdapter.EventPDPInformationViewHolder>() {
 
     private var listAccordion = emptyList<ValueAccordion>()
 

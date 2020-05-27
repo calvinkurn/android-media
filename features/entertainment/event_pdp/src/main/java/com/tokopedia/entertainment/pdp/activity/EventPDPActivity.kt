@@ -36,10 +36,6 @@ class EventPDPActivity : BaseSimpleActivity(), HasComponent<EventPDPComponent> {
         supportActionBar?.hide()
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-    }
-
     fun onClickShare() {
         if (fragment is PDPListener) {
             (fragment as PDPListener).shareLink()

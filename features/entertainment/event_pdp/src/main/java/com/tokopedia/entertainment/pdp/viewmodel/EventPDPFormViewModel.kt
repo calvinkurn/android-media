@@ -1,11 +1,8 @@
 package com.tokopedia.entertainment.pdp.viewmodel
 
-import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.entertainment.pdp.R
 import com.tokopedia.entertainment.pdp.data.Form
 import com.tokopedia.entertainment.pdp.usecase.EventProductDetailUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -17,7 +14,6 @@ import javax.inject.Inject
 class EventPDPFormViewModel@Inject constructor(private val dispatcher: CoroutineDispatcher,
                                                private val usecase: EventProductDetailUseCase) : BaseViewModel(dispatcher) {
 
-    lateinit var resources: Resources
 
     val errorMutable = MutableLiveData<String>()
     val error : LiveData<String>
@@ -25,12 +21,12 @@ class EventPDPFormViewModel@Inject constructor(private val dispatcher: Coroutine
 
     val mFormDataMutable = MutableLiveData<MutableList<Form>>()
     val mFormData : LiveData<MutableList<Form>>
-    get() = mFormDataMutable
+        get() = mFormDataMutable
 
-    fun getData(url: String){
+    fun getData(url: String, rawQueryPDP: String,rawQueryContent: String, dummyResponse:String){
         val formData: MutableList<Form> = mutableListOf()
         launch {
-            when(val data = usecase.executeUseCase(getRawQueryPDP(), getRawQueryContent(), false, url)){
+            when(val data = usecase.executeUseCase(rawQueryPDP, rawQueryContent, false, url, dummyResponse)){
                 is Success -> {
                     data.data.eventProductDetailEntity.eventProductDetail.productDetailData.forms.forEach {
                         formData.add(it)
@@ -43,18 +39,5 @@ class EventPDPFormViewModel@Inject constructor(private val dispatcher: Coroutine
                 }
             }
         }
-    }
-
-    private fun getRawQueryPDP(): String {
-        if (::resources.isInitialized){
-            return GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_product_detail)
-        }
-        else return ""
-    }
-
-    private fun getRawQueryContent(): String {
-        if (::resources.isInitialized)
-            return GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_content_by_id)
-        else return ""
     }
 }

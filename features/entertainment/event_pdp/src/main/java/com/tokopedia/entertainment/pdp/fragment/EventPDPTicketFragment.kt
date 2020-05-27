@@ -10,9 +10,11 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.ApplinkConst
@@ -30,20 +32,29 @@ import com.tokopedia.entertainment.pdp.activity.EventPDPTicketActivity.Companion
 import com.tokopedia.entertainment.pdp.activity.EventPDPTicketActivity.Companion.START_DATE
 import com.tokopedia.entertainment.pdp.activity.EventPDPTicketActivity.Companion.SELECTED_DATE
 import com.tokopedia.entertainment.pdp.activity.EventPDPTicketActivity.Companion.END_DATE
-import com.tokopedia.entertainment.pdp.adapter.BaseListPackageAdapter
+import com.tokopedia.entertainment.pdp.adapter.EventPDPParentPackageAdapter
 import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
+import com.tokopedia.entertainment.pdp.common.util.CurrencyFormatter.getRupiahFormat
+import com.tokopedia.entertainment.pdp.data.PackageItem
+import com.tokopedia.entertainment.pdp.data.ProductDetailData
+import com.tokopedia.entertainment.pdp.data.pdp.*
+import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventVerifyMapper.getInitialVerify
+import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventVerifyMapper.getItemIds
+import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventVerifyMapper.getItemMap
+import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventVerifyMapper.getListItemMap
+import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventVerifyMapper.getTotalPrice
+import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventVerifyMapper.getTotalQuantity
+import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.ent_ticket_listing_activity.*
 import kotlinx.android.synthetic.main.widget_event_pdp_calendar.view.*
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeFactory>() {
+class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageTypeFactory>(), OnBindItemTicketListener {
 
-    private var urlPDP  = ""
+    private var urlPDP = ""
     private var startDate = ""
     private var endDate = ""
     private var selectedDate = ""
@@ -52,8 +63,13 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
     private var PRODUCT_NAME = ""
     private var PRODUCT_ID = ""
     private var PRODUCT_PRICE = ""
+    private var idPackageActive = ""
+    private var metaDataResponse = MetaDataResponse()
     lateinit var bottomSheets: BottomSheetUnify
-    private var packageTypeFactoryImp = PackageTypeFactoryImp()
+    private var eventVerifyRequest: VerifyRequest = VerifyRequest()
+    private var hashItemMap: HashMap<String, ItemMap> = hashMapOf()
+    private var pdpData: ProductDetailData = ProductDetailData()
+    private var packageTypeFactoryImp = PackageTypeFactoryImp(this)
 
     @Inject
     lateinit var viewModel: EventPDPTicketViewModel
@@ -78,11 +94,17 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh_layout
 
     override fun loadData(p0: Int) {
-        viewModel.getData(resources,urlPDP, selectedDate, swipe_refresh_layout.isRefreshing)
+        viewModel.getData(urlPDP, selectedDate, swipe_refresh_layout.isRefreshing, GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_product_detail_v3),
+                GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_content_by_id), GraphqlHelper.loadRawString(resources, R.raw.dummy_response))
     }
 
+    override fun createAdapterInstance(): BaseListAdapter<EventPDPTicketModel, PackageTypeFactory> {
+        return EventPDPParentPackageAdapter(packageTypeFactoryImp)
+    }
+
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.ent_ticket_listing_fragment, container,false)
+        return inflater.inflate(R.layout.ent_ticket_listing_fragment, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,29 +115,36 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
         super.onCreate(savedInstanceState)
     }
 
-    override fun createAdapterInstance(): BaseListAdapter<EventPDPTicketModel, PackageTypeFactory> {
-        return BaseListPackageAdapter(packageTypeFactoryImp, ::setSelectedPackages, eventPDPTracking)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupView()
         observeData()
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun setSelectedPackages(idPackages: String, nominal: String, qty: String, isError: Boolean, product_name: String, product_id: String, price: String){
-        this.EXTRA_PACKAGES_ID = idPackages
+    override fun quantityEditorValueButtonClicked(idPackages: String, idPackagesItem: String, packageItem: PackageItem, totalPrice: Int,
+                                                  qty: String, isError: Boolean, product_name: String,
+                                                  product_id: String, price: String, selectedDate: String) {
+        this.EXTRA_PACKAGES_ID = idPackagesItem
         this.AMOUNT_TICKET = qty
         this.PRODUCT_NAME = product_name
         this.PRODUCT_ID = product_id
         this.PRODUCT_PRICE = price
-        setTotalPrice(nominal)
+
+        if (!idPackageActive.equals(idPackages)) {
+            hashItemMap.clear()
+            idPackageActive = idPackages
+        }
+        hashItemMap.put(idPackagesItem, getItemMap(packageItem, pdpData, qty.toInt(), totalPrice, selectedDate))
+
+        setTotalPrice(getRupiahFormat(getTotalPrice(hashItemMap)))
         showViewBottom(!isError)
     }
 
-    private fun setTotalPrice(nominal: String){ txtTotalHarga.text = nominal }
+    private fun setTotalPrice(nominal: String) {
+        txtTotalHarga.text = nominal
+    }
 
-    private fun setupView(){
+    private fun setupView() {
         setupTicker()
         setupRecycler()
         setupSwipeRefresh()
@@ -123,24 +152,24 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
         setupPilihTicketButton()
     }
 
-    private fun setupTicker(){
+    private fun setupTicker() {
         activity?.pdp_ticket_ticker?.setTextDescription(getSpannableText())
     }
 
-    private fun getSpannableText(): SpannableStringBuilder{
+    private fun getSpannableText(): SpannableStringBuilder {
         val spannable = SpannableStringBuilder(String.format(resources.getString(R.string.ent_pdp_ticket_tickertext)))
-        spannable.setSpan(StyleSpan(Typeface.BOLD),15, 32, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannable.setSpan(StyleSpan(Typeface.BOLD), 15, 32, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         return spannable
     }
 
-    private fun setupRecycler(){
+    private fun setupRecycler() {
         recycler_viewParent.apply {
             setHasFixedSize(true)
             itemAnimator = null
         }
     }
 
-    private fun setupSwipeRefresh(){
+    private fun setupSwipeRefresh() {
         swipe_refresh_layout.apply {
             setOnRefreshListener {
                 showViewTop(false)
@@ -151,15 +180,15 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
         }
     }
 
-    private fun setupBottomSheet(){
-        if(startDate.isNotBlank() && endDate.isNotBlank() && selectedDate.isNotBlank()){
+    private fun setupBottomSheet() {
+        if (startDate.isNotBlank() && endDate.isNotBlank() && selectedDate.isNotBlank()) {
             bottomSheets = BottomSheetUnify()
             val view = LayoutInflater.from(context).inflate(R.layout.widget_event_pdp_calendar, null)
             view.bottom_sheet_calendar.run {
-                calendarPickerView?.init(Date(startDate.toLong() * 1000), Date(endDate.toLong()* 1000), ArrayList(), viewModel.listsActiveDate)
+                calendarPickerView?.init(Date(startDate.toLong() * 1000), Date(endDate.toLong() * 1000), ArrayList(), viewModel.listsActiveDate)
                         ?.inMode(CalendarPickerView.SelectionMode.SINGLE)
                         ?.withSelectedDate(Date(selectedDate.toLong() * 1000))
-                calendarPickerView?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener{
+                calendarPickerView?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
                     override fun onDateSelected(date: Date) {
                         activity?.txtDate?.text = DateFormatUtils.getFormattedDate(date.time, DateFormatUtils.FORMAT_D_MMMM_YYYY)
                         selectedDate = (date.time / 1000L).toString()
@@ -182,32 +211,28 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
         }
     }
 
-    private fun setupHeader(){
+    private fun setupHeader() {
         activity?.txtDate?.text = getTimestamptoText(selectedDate.isNotBlank())
-        if(startDate.isNotBlank() && endDate.isNotBlank()){
+        if (startDate.isNotBlank() && endDate.isNotBlank()) {
             activity?.loaderUbah?.visibility = View.VISIBLE
             setupUbahButton()
         } else activity?.txtUbah?.visibility = View.GONE
     }
 
-    private fun setupPilihTicketButton(){
+    private fun setupPilihTicketButton() {
         pilihTicketBtn.setOnClickListener {
-            eventPDPTracking.onClickPesanTiket(viewModel.categoryData,
-                    PRODUCT_NAME, PRODUCT_ID, PRODUCT_PRICE, AMOUNT_TICKET.toInt(), EXTRA_PACKAGES_ID)
-            if(userSession.isLoggedIn) {
-                startActivity(EventCheckoutActivity.createIntent(context!!, urlPDP,
-                        viewModel.EXTRA_SCHEDULE_ID, viewModel.EXTRA_GROUPS_ID, EXTRA_PACKAGES_ID, AMOUNT_TICKET.toInt()))
-            } else {
-                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                        REQUEST_CODE_LOGIN)
-            }
+            eventVerifyRequest.cartdata.metadata.totalPrice = getTotalPrice(hashItemMap)
+            eventVerifyRequest.cartdata.metadata.itemIds = getItemIds(hashItemMap)
+            eventVerifyRequest.cartdata.metadata.itemMaps = getListItemMap(hashItemMap)
+            eventVerifyRequest.cartdata.metadata.quantity = getTotalQuantity(hashItemMap)
+            viewModel.verify(GraphqlHelper.loadRawString(resources, R.raw.gql_mutation_event_verify_v2), eventVerifyRequest)
         }
     }
 
-    private fun showUbah(state: Boolean){
-        if(startDate.isNotBlank() && endDate.isNotBlank()){
-            activity?.loaderUbah?.visibility = if(state) View.GONE else View.VISIBLE
-            activity?.txtUbah?.visibility = if(state) View.VISIBLE else View.GONE
+    private fun showUbah(state: Boolean) {
+        if (startDate.isNotBlank() && endDate.isNotBlank()) {
+            activity?.loaderUbah?.visibility = if (state) View.GONE else View.VISIBLE
+            activity?.txtUbah?.visibility = if (state) View.VISIBLE else View.GONE
         }
     }
 
@@ -215,16 +240,14 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                REQUEST_CODE_LOGIN -> context?.let{
-                    startActivity(EventCheckoutActivity.createIntent(it, urlPDP,
-                            viewModel.EXTRA_SCHEDULE_ID, viewModel.EXTRA_GROUPS_ID, EXTRA_PACKAGES_ID, AMOUNT_TICKET.toInt()))
+                REQUEST_CODE_LOGIN -> context?.let {
+                    startActivity(EventCheckoutActivity.createIntent(it, urlPDP, metaDataResponse, idPackageActive))
                 }
             }
         }
     }
 
-    private fun observeData(){
-
+    private fun observeData() {
         viewModel.ticketModel.observe(this, Observer {
             clearAllData()
             swipe_refresh_layout.isRefreshing = false
@@ -235,26 +258,42 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
         })
 
         viewModel.error.observe(this, Observer {
-            NetworkErrorHelper.createSnackbarRedWithAction(activity, String.format(resources.getString(R.string.ent_error_network_message))){
+            NetworkErrorHelper.createSnackbarRedWithAction(activity, String.format(resources.getString(R.string.ent_error_network_message))) {
                 showViewTop(false)
                 showViewBottom(false)
                 loadInitialData()
             }.showRetrySnackbar()
         })
+
+        viewModel.productDetailEntity.observe(this, Observer {
+            pdpData = it.eventProductDetail.productDetailData
+            eventVerifyRequest = getInitialVerify(pdpData)
+
+        })
+
+        viewModel.verifyResponse.observe(this, Observer {
+            metaDataResponse = it.eventVerify.metadata
+            if (userSession.isLoggedIn) {
+                startActivity(EventCheckoutActivity.createIntent(context!!, urlPDP, metaDataResponse, idPackageActive))
+            } else {
+                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                        REQUEST_CODE_LOGIN)
+            }
+        })
     }
 
-    private fun showViewTop(state: Boolean){
-        pdp_ticket_ticker?.visibility = if(state) View.VISIBLE else View.GONE
-        viewTop?.visibility = if(state) View.VISIBLE else View.GONE
+    private fun showViewTop(state: Boolean) {
+        pdp_ticket_ticker?.visibility = if (state) View.VISIBLE else View.GONE
+        viewTop?.visibility = if (state) View.VISIBLE else View.GONE
     }
 
-    private fun showViewBottom(state: Boolean){
-        viewBottom?.visibility = if(state) View.VISIBLE else View.GONE
-        constraintLayout?.visibility = if(state) View.VISIBLE else View.GONE
-        if(!state) txtTotalHarga.text = String.format(resources.getString(R.string.ent_default_totalPrice))
+    private fun showViewBottom(state: Boolean) {
+        viewBottom?.visibility = if (state) View.VISIBLE else View.GONE
+        constraintLayout?.visibility = if (state) View.VISIBLE else View.GONE
+        if (!state) txtTotalHarga.text = String.format(resources.getString(R.string.ent_default_totalPrice))
     }
 
-    private fun setupUbahButton(){
+    private fun setupUbahButton() {
         activity?.txtUbah?.setOnClickListener {
             fragmentManager?.let {
                 bottomSheets.show(it, "")
@@ -262,14 +301,18 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
         }
     }
 
-    private fun getTimestamptoText(state: Boolean): String{
-        return DateFormatUtils.getFormattedDate(if(state) selectedDate else getTodayDates(), DateFormatUtils.FORMAT_DD_MMMM_YYYY)
+    private fun getTimestamptoText(state: Boolean): String {
+        return DateFormatUtils.getFormattedDate(if (state) selectedDate else getTodayDates(), DateFormatUtils.FORMAT_DD_MMMM_YYYY)
     }
 
     private fun getTodayDates(): String = (Date().time / 1000L).toString()
 
-    companion object{
-        fun newInstance(url: String, selectedDate:String, startDate: String, endDate: String) = EventPDPTicketFragment().also {
+    override fun getSelectedDate(): String {
+        return selectedDate
+    }
+
+    companion object {
+        fun newInstance(url: String, selectedDate: String, startDate: String, endDate: String) = EventPDPTicketFragment().also {
             it.arguments = Bundle().apply {
                 putString(EXTRA_URL_PDP, url)
                 putString(START_DATE, startDate)
@@ -277,6 +320,7 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
                 putString(END_DATE, endDate)
             }
         }
+
         val EMPTY_VALUE = "-"
         val REQUEST_CODE_LOGIN = 100
     }

@@ -6,7 +6,7 @@ import com.tokopedia.entertainment.pdp.adapter.factory.PackageTypeFactory
 import java.io.Serializable
 
 data class EventProductDetailEntity (
-        @SerializedName("event_product_detail")
+        @SerializedName("event_product_detail_v3")
         @Expose
         val eventProductDetail : EventProductDetail = EventProductDetail()
 )
@@ -18,6 +18,12 @@ data class EventProductDetail(
 )
 
 data class ProductDetailData(
+        @SerializedName("app_url")
+        @Expose
+        val appUrl: String = "",
+        @SerializedName("web_url")
+        @Expose
+        val webUrl: String = "",
         @SerializedName("action_text")
         @Expose
         val actionText: String = "",
@@ -75,6 +81,9 @@ data class ProductDetailData(
         @SerializedName("custom_text_5")
         @Expose
         val customText5: String = "",
+        @SerializedName("dates")
+        @Expose
+        val dates: List<String> = emptyList(),
         @SerializedName("date_range")
         @Expose
         val dateRange: Boolean = false,
@@ -135,6 +144,9 @@ data class ProductDetailData(
         @SerializedName("likes")
         @Expose
         val likes: Int = 0,
+        @SerializedName("location")
+        @Expose
+        val location: String = "",
         @SerializedName("long_rich_desc")
         @Expose
         val longRichDesc: String = "",
@@ -177,6 +189,9 @@ data class ProductDetailData(
         @SerializedName("outlets")
         @Expose
         val outlets: List<Outlet> = emptyList(),
+        @SerializedName("packages")
+        @Expose
+        val packages: List<PackageV3> = emptyList(),
         @SerializedName("parent_id")
         @Expose
         val parentId: String = "",
@@ -636,12 +651,7 @@ data class Package(
         @SerializedName("venue_id")
         @Expose
         val venueId: String = ""
-): EventPDPTicketModel(){
-
-        override fun type(typeFactory: PackageTypeFactory): Int {
-                return typeFactory.type(this)
-        }
-}
+)
 
 data class Schedules(
         @SerializedName("address_detail")
@@ -749,4 +759,113 @@ data class Media(
         @SerializedName("url")
         @Expose
         val url: String = ""
+)
+
+data class PackageV3(
+        @SerializedName("id")
+        @Expose
+        val id: String = "",
+        @SerializedName("name")
+        @Expose
+        val name: String = "",
+        @SerializedName("product_id")
+        @Expose
+        val productId: String = "",
+        @SerializedName("provider_package_id")
+        @Expose
+        val providerPackageId: String = "",
+        @SerializedName("provider_package_name")
+        @Expose
+        val providerPackageName: String = "",
+        @SerializedName("description")
+        @Expose
+        val description: String = "",
+        @SerializedName("sales_price")
+        @Expose
+        val salesPrice: String = "",
+        @SerializedName("status")
+        @Expose
+        val status: Int = 0,
+        @SerializedName("start_date")
+        @Expose
+        val startDate: String = "",
+        @SerializedName("dates")
+        @Expose
+        val dates: List<String> = emptyList(),
+        @SerializedName("end_date")
+        @Expose
+        val endDate: String = "",
+        @SerializedName("package_items")
+        @Expose
+        val packageItems: List<PackageItem> = emptyList()
+): EventPDPTicketModel(){
+
+        override fun type(typeFactory: PackageTypeFactory): Int {
+                return typeFactory.type(this)
+        }
+}
+
+data class PackageItem(
+        @SerializedName("id")
+        @Expose
+        val id: String = "",
+        @SerializedName("name")
+        @Expose
+        val name: String = "",
+        @SerializedName("product_id")
+        @Expose
+        val productId: String = "",
+        @SerializedName("provider_schedule_id")
+        @Expose
+        val providerScheduleId: String = "",
+        @SerializedName("provider_ticket_id")
+        @Expose
+        val providerTicketId: String = "",
+        @SerializedName("description")
+        @Expose
+        val description: String = "",
+        @SerializedName("tnc")
+        @Expose
+        val tnc: String = "",
+        @SerializedName("convenience_fee")
+        @Expose
+        val convenienceFee: String = "",
+        @SerializedName("mrp")
+        @Expose
+        val mrp: String = "",
+        @SerializedName("sales_price")
+        @Expose
+        val salesPrice: String = "",
+        @SerializedName("available")
+        @Expose
+        val available: String = "",
+        @SerializedName("provider_meta_data")
+        @Expose
+        val providerMetaData: String = "",
+        @SerializedName("provider_status")
+        @Expose
+        val providerStatus: String = "",
+        @SerializedName("status")
+        @Expose
+        val status: Int = 0,
+        @SerializedName("dates")
+        @Expose
+        val dates: List<String> = emptyList(),
+        @SerializedName("min_qty")
+        @Expose
+        val minQty: String = "",
+        @SerializedName("max_qty")
+        @Expose
+        val maxQty: String = "",
+        @SerializedName("start_date")
+        @Expose
+        val startDate: String = "",
+        @SerializedName("end_date")
+        @Expose
+        val endDate: String = "",
+        @SerializedName("provider_custom_text")
+        @Expose
+        val providerCustomText: String = "",
+        var isClicked: Boolean = false
+
 )

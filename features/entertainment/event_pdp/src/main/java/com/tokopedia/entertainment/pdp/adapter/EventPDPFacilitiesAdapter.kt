@@ -9,7 +9,7 @@ import com.tokopedia.entertainment.pdp.data.Facilities
 import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.item_event_pdp_facilities.view.*
 
-class EventPDPFacilitiesAdapter(): RecyclerView.Adapter<EventPDPFacilitiesAdapter.EventPDPFacilitiesViewHolder>() {
+class EventPDPFacilitiesAdapter: RecyclerView.Adapter<EventPDPFacilitiesAdapter.EventPDPFacilitiesViewHolder>() {
 
     private var listFacilities = emptyList<Facilities>()
 

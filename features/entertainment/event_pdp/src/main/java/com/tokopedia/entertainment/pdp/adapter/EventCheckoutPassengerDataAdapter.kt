@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.entertainment.pdp.R
 import kotlinx.android.synthetic.main.item_event_checkout_passenger.view.*
 
-class EventCheckoutPassengerDataAdapter(): RecyclerView.Adapter<EventCheckoutPassengerDataAdapter.EventCheckoutPassengerViewHolder>() {
+class EventCheckoutPassengerDataAdapter : RecyclerView.Adapter<EventCheckoutPassengerDataAdapter.EventCheckoutPassengerViewHolder>() {
 
     private var listData = emptyList<String>()
 

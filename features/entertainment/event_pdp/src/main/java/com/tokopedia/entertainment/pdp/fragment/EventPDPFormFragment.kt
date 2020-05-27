@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.entertainment.pdp.R
 import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.viewmodel.EventPDPFormViewModel
@@ -56,7 +57,6 @@ class EventPDPFormFragment : BaseDaggerFragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupAdapter()
-        setViewModel()
         setupView()
         observeViewModel()
         setupData()
@@ -65,10 +65,6 @@ class EventPDPFormFragment : BaseDaggerFragment(){
 
     private fun setupAdapter(){
         formAdapter = EventPDPFormAdapter(userSession)
-    }
-
-    private fun setViewModel(){
-        viewModel.resources = resources
     }
 
     private fun setupView(){
@@ -138,7 +134,8 @@ class EventPDPFormFragment : BaseDaggerFragment(){
             renderList(mDataIntent.toMutableList())
             showData()
         } else{
-            viewModel.getData(urlPDP)
+            viewModel.getData(urlPDP, GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_product_detail_v3),
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_content_by_id),GraphqlHelper.loadRawString(resources, R.raw.dummy_response))
         }
     }
 

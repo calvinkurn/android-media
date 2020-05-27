@@ -15,4 +15,5 @@ interface OnBindItemListener {
     fun seeAllAbout(value : String, title: String)
     fun seeLocationDetail(outlet: Outlet)
 
+    fun performancePdp()
 }

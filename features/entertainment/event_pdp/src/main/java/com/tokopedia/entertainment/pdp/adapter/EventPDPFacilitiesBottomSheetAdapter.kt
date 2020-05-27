@@ -9,7 +9,7 @@ import com.tokopedia.entertainment.pdp.data.Facilities
 import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.item_event_pdp_facilities_bottom_sheet.view.*
 
-class EventPDPFacilitiesBottomSheetAdapter(): RecyclerView.Adapter<EventPDPFacilitiesBottomSheetAdapter.EventPDPFacilitiesBottomSheetViewHolder>() {
+class EventPDPFacilitiesBottomSheetAdapter: RecyclerView.Adapter<EventPDPFacilitiesBottomSheetAdapter.EventPDPFacilitiesBottomSheetViewHolder>() {
 
     private var listOpenHour = emptyList<Facilities>()
 

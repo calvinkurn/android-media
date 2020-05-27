@@ -2,6 +2,7 @@ package com.tokopedia.entertainment.pdp.fragment
 
 import android.app.Activity
 import android.app.ProgressDialog
+import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -13,32 +14,36 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.Observer
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.ApplinkConstInternalSalam
+import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.entertainment.pdp.R
-import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_AMOUNT
-import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_GROUP_ID
-import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_PACKET_ID
-import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_SCHEDULE_ID
+import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_META_DATA
+import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_PACKAGE_ID
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_URL_PDP
+import com.tokopedia.entertainment.pdp.adapter.EventCheckoutPriceAdapter
 import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
 import com.tokopedia.entertainment.pdp.common.util.CurrencyFormatter.getRupiahFormat
 import com.tokopedia.entertainment.pdp.common.util.EventDateUtil.getDateString
 import com.tokopedia.entertainment.pdp.data.EventProductDetailEntity
 import com.tokopedia.entertainment.pdp.data.Form
 import com.tokopedia.entertainment.pdp.data.ProductDetailData
-import com.tokopedia.entertainment.pdp.data.Schedule
+import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventMetaDataMapper.getCheckoutParam
+import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventMetaDataMapper.getPassengerMetaData
+import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPackageMapper.getItemMap
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPackageMapper.getPackage
-import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPackageMapper.getSchedule
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPaymentMapper.getJsonMapper
-import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventVerifyMapper.getEntityPessangerVerify
-import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventVerifyMapper.getVerifyBody
+import com.tokopedia.entertainment.pdp.data.pdp.MetaDataResponse
 import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.viewmodel.EventCheckoutViewModel
 import com.tokopedia.kotlin.extensions.view.gone
@@ -72,17 +77,17 @@ import javax.inject.Inject
 class EventCheckoutFragment : BaseDaggerFragment() {
 
     private var urlPDP: String = ""
-    private var scheduleID: String = ""
-    private var groupID: String = ""
-    private var packetID: String = ""
+    private var metadata = MetaDataResponse()
     private var amount: Int = 0
-
+    private var packageID : String = ""
 
     private var name: String = ""
     private var email: String = ""
     private var promoCode: String = ""
 
     private var forms: List<Form> = emptyList()
+
+    lateinit var performanceMonitoring: PerformanceMonitoring
 
     @Inject
     lateinit var eventCheckoutViewModel: EventCheckoutViewModel
@@ -100,14 +105,17 @@ class EventCheckoutFragment : BaseDaggerFragment() {
         getComponent(EventPDPComponent::class.java).inject(this)
     }
 
+    private fun initializePerformance(){
+        performanceMonitoring = PerformanceMonitoring.start(ENT_CHECKOUT_PERFORMANCE)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initializePerformance()
         arguments?.let {
             urlPDP = it.getString(EXTRA_URL_PDP, "")
-            scheduleID = it.getString(EXTRA_SCHEDULE_ID, "")
-            groupID = it.getString(EXTRA_GROUP_ID, "")
-            packetID = it.getString(EXTRA_PACKET_ID, "")
-            amount = it.getInt(EXTRA_AMOUNT, 0)
+            metadata = it.getParcelable(EXTRA_META_DATA)
+            packageID = it.getString(EXTRA_PACKAGE_ID, "")
         }
     }
 
@@ -122,6 +130,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
         eventCheckoutViewModel.eventProductDetail.observe(this, Observer {
             it.run {
                 renderLayout(it)
+                performanceMonitoring.stopTrace()
             }
         })
 
@@ -163,9 +172,26 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                 context?.let {
                     progressDialog.dismiss()
 
-                    val paymentData = Utils.transform(getJsonMapper(data))
-                    val paymentURL: String = data.data.url
+                    val paymentData = data.checkout.data.data.queryString
+                    val paymentURL: String = data.checkout.data.data.redirectUrl
                     ScroogePGUtil.openScroogePage(activity, paymentURL, true, paymentData, it.resources.getString(R.string.pembayaran))
+
+//                    val taskStackBuilder = TaskStackBuilder.create(it)
+//                    val intentHomeUmrah = RouteManager.getIntent(it, ApplinkConstInternalSalam.SALAM_UMRAH_HOME_PAGE)
+//                    taskStackBuilder.addNextIntent(intentHomeUmrah)
+//
+//                    val checkoutResultData = PaymentPassData()
+//                    checkoutResultData.queryString = data.checkout.data.data.queryString
+//                    checkoutResultData.redirectUrl = data.checkout.data.data.redirectUrl
+//
+//                    val paymentCheckoutString = ApplinkConstInternalPayment.PAYMENT_CHECKOUT
+//                    val intent = RouteManager.getIntent(context, paymentCheckoutString)
+//                    progressDialog.dismiss()
+//                    intent?.run {
+//                        putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, checkoutResultData)
+//                        taskStackBuilder.addNextIntent(this)
+//                        taskStackBuilder.startActivities()
+//                    }
                 }
             }
         })
@@ -179,8 +205,8 @@ class EventCheckoutFragment : BaseDaggerFragment() {
 
     private fun requestData() {
         urlPDP.let {
-            eventCheckoutViewModel.getDataProductDetail(GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_product_detail),
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_content_by_id), it)
+            eventCheckoutViewModel.getDataProductDetail(GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_product_detail_v3),
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_content_by_id), it,GraphqlHelper.loadRawString(resources, R.raw.dummy_response))
         }
     }
 
@@ -198,14 +224,13 @@ class EventCheckoutFragment : BaseDaggerFragment() {
         renderPassenger()
         renderSummary(eventProductDetailEntity.eventProductDetail.productDetailData)
         renderFooter(eventProductDetailEntity.eventProductDetail.productDetailData)
+
     }
 
     private fun renderDesc(pdp: ProductDetailData) {
-        pdp.schedules.firstOrNull()?.let {
-            tg_event_checkout_date.text = getDateString(DATE_FORMAT, it.schedule.startDate.toInt())
-        }
+        tg_event_checkout_date.text = getDateString(DATE_FORMAT, getItemMap(metadata).scheduleTimestamp.toInt())
         tg_event_checkout_name.text = pdp.displayName
-        tg_event_checkout_packet.text = getPackage(scheduleID, groupID, packetID, pdp).displayName
+        tg_event_checkout_packet.text = getPackage(pdp, packageID).name
         iv_event_checkout_image.loadImageRounded(pdp.imageApp, 25f)
     }
 
@@ -220,21 +245,26 @@ class EventCheckoutFragment : BaseDaggerFragment() {
     }
 
     private fun renderSummary(pdp: ProductDetailData) {
-        val schedule: Schedule = getSchedule(scheduleID, pdp)
-        tg_event_checkout_summary_packet.text = getString(R.string.ent_checkout_summary_packet,
-                getPackage(scheduleID, groupID, packetID, pdp).displayName,amount)
-        tg_event_checkout_summary_price.text = getRupiahFormat(getPackage(scheduleID, groupID, packetID, pdp).salesPrice.toInt() * amount)
-        tg_event_checkout_summary_price_price.text = getRupiahFormat(getPackage(scheduleID, groupID, packetID, pdp).salesPrice.toInt() * amount)
+        val adapterItemPrice = EventCheckoutPriceAdapter()
+        adapterItemPrice.setList(metadata.itemMap)
+
+        rv_event_checkout_price.apply {
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            adapter = adapterItemPrice
+        }
+
+
+        tg_event_checkout_summary_price_price.text = getRupiahFormat(metadata.totalPrice)
 
         context?.let {
             tg_event_checkout_tnc.makeLinks(
                     Pair(getString(R.string.ent_event_checkout_summary_tnc_click), View.OnClickListener {
-                        showBottomSheetTnc(it.context, schedule)
+                        showBottomSheetTnc(it.context, pdp.tnc)
                     })
             )
         }
 
-        eventPDPTracking.onViewCheckoutPage(getPackage(scheduleID, groupID, packetID, pdp), pdp, amount)
+//        eventPDPTracking.onViewCheckoutPage(getPackage(scheduleID, groupID, packetID, pdp), pdp, amount)
     }
 
     private fun renderFooter(productDetailData: ProductDetailData) {
@@ -254,10 +284,12 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                         Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
                     } else {
                         progressDialog.show()
-                        eventPDPTracking.onClickCheckoutButton(getPackage(scheduleID, groupID, packetID, productDetailData), productDetailData, amount)
+                        // eventPDPTracking.onClickCheckoutButton(getPackage(scheduleID, groupID, packetID, productDetailData), productDetailData, amount)
                         if (name.isEmpty()) name = userSessionInterface.name
                         if (email.isEmpty()) email = userSessionInterface.email
-                        eventCheckoutViewModel.checkVerify(true, getVerifyMapped(productDetailData))
+                        metadata = getPassengerMetaData(metadata, forms)
+                        eventCheckoutViewModel.checkoutEvent(GraphqlHelper.loadRawString(resources, R.raw.gql_mutation_event_checkout_v2),
+                                getCheckoutParam(metadata))
                     }
                 }
             }
@@ -299,7 +331,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showBottomSheetTnc(context: Context, schedule: Schedule) {
+    private fun showBottomSheetTnc(context: Context, tnc:String) {
         val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_event_checkout, null)
         val bottomSheets = BottomSheetUnify()
         bottomSheets.apply {
@@ -308,7 +340,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
             setCloseClickListener { bottomSheets.dismiss() }
         }
         view.tg_event_checkout_tnc_bottom_sheet.apply {
-            text = schedule.tnc
+            text = tnc
         }
         fragmentManager?.let {
             bottomSheets.show(it, "")
@@ -430,15 +462,21 @@ class EventCheckoutFragment : BaseDaggerFragment() {
 
 
     fun getVerifyMapped(productDetailData: ProductDetailData): EventVerifyBody {
-        if (name.isEmpty()) name = userSessionInterface.name
-        if (email.isEmpty()) email = userSessionInterface.email
+//        if (name.isEmpty()) name = userSessionInterface.name
+//        if (email.isEmpty()) email = userSessionInterface.email
+//
+//        return getVerifyBody(name, email, groupID.toInt(), packetID.toInt(), scheduleID.toInt(), productDetailData.id.toInt(),
+//                productDetailData.categoryId.toInt(), productDetailData.providerId.toInt(),
+//                amount, getPackage(scheduleID, groupID, packetID, productDetailData).salesPrice.toInt(),
+//                getPackage(scheduleID, groupID, packetID, productDetailData).salesPrice.toInt() * amount,
+//                productDetailData.catalog.digitalProductId.toInt(),
+//                getEntityPessangerVerify(forms), promoCode)
+        return EventVerifyBody()
+    }
 
-        return getVerifyBody(name, email, groupID.toInt(), packetID.toInt(), scheduleID.toInt(), productDetailData.id.toInt(),
-                productDetailData.categoryId.toInt(), productDetailData.providerId.toInt(),
-                amount, getPackage(scheduleID, groupID, packetID, productDetailData).salesPrice.toInt(),
-                getPackage(scheduleID, groupID, packetID, productDetailData).salesPrice.toInt() * amount,
-                productDetailData.catalog.digitalProductId.toInt(),
-                getEntityPessangerVerify(forms), promoCode)
+    override fun onDestroyView() {
+        performanceMonitoring.stopTrace()
+        super.onDestroyView()
     }
 
     companion object {
@@ -455,14 +493,14 @@ class EventCheckoutFragment : BaseDaggerFragment() {
         const val PASSENGER_NAME = "fullname"
         const val PASSENGER_EMAIL = "email"
 
-        fun newInstance(urlPDP: String, scheduleID: String, groupID: String,
-                        packetID: String, amount: Int) = EventCheckoutFragment().also {
+        const val ENT_CHECKOUT_PERFORMANCE = "et_event_checkout"
+        const val EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA"
+
+        fun newInstance(urlPDP: String, metadata: MetaDataResponse, packageID: String) = EventCheckoutFragment().also {
             it.arguments = Bundle().apply {
                 putString(EXTRA_URL_PDP, urlPDP)
-                putString(EXTRA_SCHEDULE_ID, scheduleID)
-                putString(EXTRA_GROUP_ID, groupID)
-                putString(EXTRA_PACKET_ID, packetID)
-                putInt(EXTRA_AMOUNT, amount)
+                putParcelable(EXTRA_META_DATA, metadata)
+                putString(EXTRA_PACKAGE_ID, packageID)
             }
         }
     }

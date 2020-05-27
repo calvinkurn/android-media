@@ -20,12 +20,19 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/spacing_lvl4"
-        android:paddingTop="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         android:focusableInTouchMode="true">
 
+        <View
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_dp_1"
+            android:background="@color/Neutral_N100" />
+
         <com.tokopedia.unifyprinciples.Typography
+            android:paddingLeft="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
             android:id="@+id/txtTitle_ticket"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -42,7 +49,7 @@
             android:layout_marginLeft="@dimen/spacing_lvl2"
             android:layout_marginRight="@dimen/spacing_lvl4"
             android:background="@drawable/ent_pdp_ticket_termurah_bg"
-            android:paddingLeft="@dimen/spacing_lvl2"
+            android:paddingLeft="@dimen/spacing_lvl4"
             android:paddingTop="@dimen/spacing_lvl1"
             android:paddingRight="@dimen/spacing_lvl2"
             android:paddingBottom="@dimen/spacing_lvl1"
@@ -55,6 +62,7 @@
             tools:text="Termurah" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:paddingLeft="@dimen/spacing_lvl4"
             android:id="@+id/txtSubtitle_ticket"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -66,6 +74,7 @@
 
 
         <com.tokopedia.unifyprinciples.Typography
+            android:paddingLeft="@dimen/spacing_lvl4"
             android:id="@+id/txtMulaidari_ticket"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -76,6 +85,7 @@
             tools:text="Mulai dari" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:paddingLeft="@dimen/spacing_lvl4"
             android:id="@+id/txtPrice_ticket"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

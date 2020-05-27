@@ -8,7 +8,7 @@ import com.tokopedia.entertainment.pdp.R
 import com.tokopedia.entertainment.pdp.data.pdp.OpenHour
 import kotlinx.android.synthetic.main.item_event_pdp_open_hour.view.*
 
-class EventPDPOpenHourAdapter(): RecyclerView.Adapter<EventPDPOpenHourAdapter.EventPDPOpenHourViewHolder>() {
+class EventPDPOpenHourAdapter: RecyclerView.Adapter<EventPDPOpenHourAdapter.EventPDPOpenHourViewHolder>() {
 
     private var listOpenHour = emptyList<OpenHour>()
 

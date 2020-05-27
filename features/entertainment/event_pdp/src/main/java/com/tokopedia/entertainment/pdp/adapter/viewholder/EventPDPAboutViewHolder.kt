@@ -27,7 +27,7 @@ class EventPDPAboutViewHolder(view: View, val onBindItemListener: OnBindItemList
                 if(!element.longDesc.isNullOrEmpty()) {
                     tg_event_pdp_about_desc.apply {
                         setLines(MAX_LINE)
-                        setText(Html.fromHtml(element.longDesc))
+                        text = Html.fromHtml(element.longDesc)
                     }
                 } else {
                     tg_event_pdp_about_desc.gone()

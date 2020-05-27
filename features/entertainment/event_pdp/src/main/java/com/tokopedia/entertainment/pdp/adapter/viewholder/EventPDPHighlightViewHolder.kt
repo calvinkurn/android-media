@@ -44,6 +44,7 @@ class EventPDPHighlightViewHolder(view: View, val onBindItemListener: OnBindItem
                                 RecyclerView.VERTICAL, false
                         )
                     }
+                    onBindItemListener.performancePdp()
                 } else {
                     rv_event_pdp_highlight.gone()
                 }
