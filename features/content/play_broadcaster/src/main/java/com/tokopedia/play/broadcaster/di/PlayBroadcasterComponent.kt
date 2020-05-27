@@ -10,17 +10,9 @@ import dagger.Component
 /**
  * Created by jegul on 20/05/20
  */
-@Component(modules = [PlayBroadcasterViewModelModule::class, PlayBroadcasterModule::class])
+@Component(modules = [PlayBroadcasterViewModelModule::class, PlayBroadcasterModule::class, PlayBroadcasterFragmentModule::class])
 @PlayBroadcasterScope
 interface PlayBroadcasterComponent {
 
     fun inject(prepareBroadcastActivity: PlayPrepareBroadcastActivity)
-
-    fun inject(prepareBroadcastFragment: PlayPrepareBroadcastFragment)
-
-    fun inject(etalasePickerFragment: PlayEtalasePickerFragment)
-
-    fun inject(etalaseDetailFragment: PlayEtalaseDetailFragment)
-
-    fun inject(setupBottomSheetFragment: PlayBroadcastSetupBottomSheet)
 }

@@ -20,10 +20,9 @@ import javax.inject.Inject
 /**
  * Created by jegul on 27/05/20
  */
-class PlayEtalaseDetailFragment : PlayBaseSetupFragment() {
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+class PlayEtalaseDetailFragment @Inject constructor(
+        private val viewModelFactory: ViewModelFactory
+) : PlayBaseSetupFragment() {
 
     private lateinit var viewModel: PlayEtalasePickerViewModel
 
@@ -41,11 +40,6 @@ class PlayEtalaseDetailFragment : PlayBaseSetupFragment() {
     }
 
     override fun getScreenName(): String = "Etalase Detail"
-
-    override fun initInjector() {
-        DaggerPlayBroadcasterComponent.create()
-                .inject(this)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,14 +84,6 @@ class PlayEtalaseDetailFragment : PlayBaseSetupFragment() {
 
     companion object {
 
-        private const val EXTRA_ETALASE_ID = "etalase_id"
-
-        fun newInstance(etalaseId: Long): PlayEtalaseDetailFragment {
-            return PlayEtalaseDetailFragment().apply {
-                val bundle = Bundle()
-                bundle.putLong(EXTRA_ETALASE_ID, etalaseId)
-                arguments = bundle
-            }
-        }
+        const val EXTRA_ETALASE_ID = "etalase_id"
     }
 }

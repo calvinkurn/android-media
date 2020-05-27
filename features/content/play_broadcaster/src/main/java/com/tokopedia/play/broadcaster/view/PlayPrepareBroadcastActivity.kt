@@ -1,6 +1,8 @@
 package com.tokopedia.play.broadcaster.view
 
 import android.os.Bundle
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -20,13 +22,15 @@ class PlayPrepareBroadcastActivity: BaseActivity(), PlayBroadcastSetupCoordinato
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private lateinit var viewModel: PlayPrepareBroadcastViewModel
+    @Inject
+    lateinit var fragmentFactory: FragmentFactory
 
-    private lateinit var bottomSheet: PlayBroadcastSetupBottomSheet
+    private lateinit var viewModel: PlayPrepareBroadcastViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         initViewModel()
+        setFragmentFactory()
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_prepare_broadcast)
@@ -34,16 +38,8 @@ class PlayPrepareBroadcastActivity: BaseActivity(), PlayBroadcastSetupCoordinato
     }
 
     override fun openBroadcastSetupPage() {
-//        val setupFragment = supportFragmentManager.findFragmentByTag(SETUP_FRAGMENT_TAG)
-//        if (setupFragment == null) {
-//            supportFragmentManager.beginTransaction()
-//                    .replace(R.id.fl_setup, getSetupFragment(), SETUP_FRAGMENT_TAG)
-//                    .commit()
-//        }
-//        supportFragmentManager.beginTransaction()
-//                .replace(R.id.fl_setup, getSetupFragment(), SETUP_FRAGMENT_TAG)
-//                .commit()
-        getBroadcastSetupBottomSheet().show(supportFragmentManager)
+        val setupFragment = fragmentFactory.instantiate(classLoader, PlayBroadcastSetupBottomSheet::class.java.name) as PlayBroadcastSetupBottomSheet
+        setupFragment.show(supportFragmentManager)
     }
 
     private fun inject() {
@@ -55,6 +51,10 @@ class PlayPrepareBroadcastActivity: BaseActivity(), PlayBroadcastSetupCoordinato
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayPrepareBroadcastViewModel::class.java)
     }
 
+    private fun setFragmentFactory() {
+        supportFragmentManager.fragmentFactory = fragmentFactory
+    }
+
     private fun setupContent() {
         val prepareFragment = supportFragmentManager.findFragmentByTag(PREPARE_FRAGMENT_TAG)
         if (prepareFragment == null) {
@@ -64,14 +64,7 @@ class PlayPrepareBroadcastActivity: BaseActivity(), PlayBroadcastSetupCoordinato
         }
     }
 
-    private fun getPrepareFragment() = PlayPrepareBroadcastFragment.newInstance()
-
-    private fun getBroadcastSetupBottomSheet() : PlayBroadcastSetupBottomSheet {
-        if (!::bottomSheet.isInitialized) {
-            bottomSheet = PlayBroadcastSetupBottomSheet.newInstance()
-        }
-        return bottomSheet
-    }
+    private fun getPrepareFragment() = fragmentFactory.instantiate(classLoader, PlayPrepareBroadcastFragment::class.java.name)
 
     companion object {
         private const val PREPARE_FRAGMENT_TAG = "prepare_fragment"

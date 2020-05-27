@@ -22,10 +22,9 @@ import javax.inject.Inject
 /**
  * Created by jegul on 26/05/20
  */
-class PlayEtalasePickerFragment : PlayBaseSetupFragment(), PlayEtalaseViewHolder.Listener {
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+class PlayEtalasePickerFragment @Inject constructor(
+        private val viewModelFactory: ViewModelFactory
+) : PlayBaseSetupFragment(), PlayEtalaseViewHolder.Listener {
 
     private lateinit var viewModel: PlayEtalasePickerViewModel
 
@@ -40,11 +39,6 @@ class PlayEtalasePickerFragment : PlayBaseSetupFragment(), PlayEtalaseViewHolder
     override fun isRootFragment(): Boolean = true
 
     override fun getScreenName(): String = "Play Etalase Picker"
-
-    override fun initInjector() {
-        DaggerPlayBroadcasterComponent.create()
-                .inject(this)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,7 +63,10 @@ class PlayEtalasePickerFragment : PlayBaseSetupFragment(), PlayEtalaseViewHolder
 
     override fun onEtalaseClicked(etalaseId: Long) {
         broadcastCoordinator.navigateToFragment(
-                PlayEtalaseDetailFragment.newInstance(etalaseId)
+                PlayEtalaseDetailFragment::class.java,
+                Bundle().apply {
+                    putLong(PlayEtalaseDetailFragment.EXTRA_ETALASE_ID, etalaseId)
+                }
         )
     }
 
@@ -109,9 +106,4 @@ class PlayEtalasePickerFragment : PlayBaseSetupFragment(), PlayEtalaseViewHolder
         })
     }
     //endregion
-
-    companion object {
-
-        fun newInstance(): PlayEtalasePickerFragment = PlayEtalasePickerFragment()
-    }
 }

@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.di.DaggerPlayBroadcasterComponent
@@ -22,10 +23,10 @@ import javax.inject.Inject
 /**
  * Created by jegul on 20/05/20
  */
-class PlayPrepareBroadcastFragment : BaseDaggerFragment() {
+class PlayPrepareBroadcastFragment @Inject constructor(
+        private val viewModelFactory: ViewModelFactory
+) : TkpdBaseV4Fragment() {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
     private lateinit var parentViewModel: PlayPrepareBroadcastViewModel
 
     private lateinit var btnSetup: UnifyButton
@@ -37,11 +38,6 @@ class PlayPrepareBroadcastFragment : BaseDaggerFragment() {
         get() = requireActivity() as PlayBroadcastSetupCoordinator
 
     override fun getScreenName(): String = "Play Prepare Page"
-
-    override fun initInjector() {
-        DaggerPlayBroadcasterComponent.create()
-                .inject(this)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,11 +93,4 @@ class PlayPrepareBroadcastFragment : BaseDaggerFragment() {
         })
     }
     //endregion
-
-    companion object {
-
-        fun newInstance(): PlayPrepareBroadcastFragment {
-            return PlayPrepareBroadcastFragment()
-        }
-    }
 }

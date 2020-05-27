@@ -12,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -20,20 +21,21 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.di.DaggerPlayBroadcasterComponent
+import com.tokopedia.play.broadcaster.util.BreadcrumbsModel
 import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
+import java.util.*
 import javax.inject.Inject
 
 /**
  * Created by jegul on 26/05/20
  */
-class PlayBroadcastSetupBottomSheet : BottomSheetDialogFragment(), PlayBroadcastCoordinator {
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+class PlayBroadcastSetupBottomSheet @Inject constructor(
+        private val viewModelFactory: ViewModelFactory,
+        private val fragmentFactory: FragmentFactory
+): BottomSheetDialogFragment(), PlayBroadcastCoordinator {
 
     private lateinit var viewModel: PlayEtalasePickerViewModel
 
@@ -45,18 +47,23 @@ class PlayBroadcastSetupBottomSheet : BottomSheetDialogFragment(), PlayBroadcast
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
+    private val fragmentBreadcrumbs = Stack<BreadcrumbsModel>()
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : BottomSheetDialog(requireContext(), theme) {
             override fun onBackPressed() {
-                Toast.makeText(requireContext(), "Back", Toast.LENGTH_SHORT).show()
+                if (!fragmentBreadcrumbs.empty()) {
+                    val lastFragmentBreadcrumbs = fragmentBreadcrumbs.pop()
+                    navigateToFragment(lastFragmentBreadcrumbs.fragmentClass, lastFragmentBreadcrumbs.extras, recordBreadcrumbs = false)
+                } else super.onBackPressed()
             }
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        inject()
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
+        childFragmentManager.fragmentFactory = fragmentFactory
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -71,13 +78,28 @@ class PlayBroadcastSetupBottomSheet : BottomSheetDialogFragment(), PlayBroadcast
         setupView(view)
     }
 
-    fun show(fragmentManager: FragmentManager) {
-        show(fragmentManager, TAG)
+    override fun navigateToFragment(fragmentClass: Class<out Fragment>, extras: Bundle, recordBreadcrumbs: Boolean) {
+        if (recordBreadcrumbs) addBreadcrumb()
+        val fragment = openFragment(fragmentClass, extras)
+
+        if (fragment is PlayBaseSetupFragment) {
+            setupTitle(fragment.getTitle())
+            ivBack.setImageResource(
+                    if (fragment.isRootFragment()) com.tokopedia.unifycomponents.R.drawable.unify_bottomsheet_close
+                    else R.drawable.ic_system_action_back_grayscale_24
+            )
+        } else {
+            setupTitle("")
+            ivBack.setImageResource(com.tokopedia.unifycomponents.R.drawable.unify_bottomsheet_close)
+        }
     }
 
-    private fun inject() {
-        DaggerPlayBroadcasterComponent.create()
-                .inject(this)
+    override fun setupTitle(title: String) {
+        tvTitle.text = title
+    }
+
+    fun show(fragmentManager: FragmentManager) {
+        show(fragmentManager, TAG)
     }
 
     private fun setupDialog(dialog: Dialog) {
@@ -115,41 +137,41 @@ class PlayBroadcastSetupBottomSheet : BottomSheetDialogFragment(), PlayBroadcast
     }
 
     private fun setupView(view: View) {
-        flOverlay.setOnClickListener {
-            Toast.makeText(requireContext(), "Overlay", Toast.LENGTH_SHORT).show()
-        }
+        flOverlay.setOnClickListener { dialog?.onBackPressed() }
+        ivBack.setOnClickListener { dialog?.onBackPressed() }
 
-        navigateToFragment(PlayEtalasePickerFragment.newInstance())
-    }
-
-    override fun navigateToFragment(fragment: Fragment) {
-        childFragmentManager.beginTransaction()
-                .replace(R.id.fl_fragment, fragment)
-                .commit()
-
-        if (fragment is PlayBaseSetupFragment) {
-            setupTitle(fragment.getTitle())
-            ivBack.setImageResource(
-                    if (fragment.isRootFragment()) com.tokopedia.unifycomponents.R.drawable.unify_bottomsheet_close
-                    else R.drawable.ic_system_action_back_grayscale_24
-            )
-        } else {
-            setupTitle("")
-            ivBack.setImageResource(com.tokopedia.unifycomponents.R.drawable.unify_bottomsheet_close)
-        }
-    }
-
-    override fun setupTitle(title: String) {
-        tvTitle.text = title
+        navigateToFragment(PlayEtalasePickerFragment::class.java)
     }
 
     private fun maxHeight(): Int = (getScreenHeight() * MAX_HEIGHT_MULTIPLIER).toInt()
+
+    private fun openFragment(fragmentClass: Class<out Fragment>, extras: Bundle): Fragment {
+        val fragmentTransaction = childFragmentManager.beginTransaction()
+        val destFragment = getFragmentByClassName(fragmentClass)
+        destFragment.arguments = extras
+        fragmentTransaction
+                .replace(R.id.fl_fragment, destFragment, fragmentClass.name)
+                .commit()
+
+        return destFragment
+    }
+
+    private fun getFragmentByClassName(fragmentClass: Class<out Fragment>): Fragment {
+        return fragmentFactory.instantiate(fragmentClass.classLoader!!, fragmentClass.name)
+    }
+
+    private fun addBreadcrumb() {
+        val currentFragment = childFragmentManager.findFragmentById(R.id.fl_fragment)
+        currentFragment?.let { fragment ->
+            fragmentBreadcrumbs.add(
+                    BreadcrumbsModel(fragment.javaClass, fragment.arguments ?: Bundle.EMPTY)
+            )
+        }
+    }
 
     companion object {
         private const val TAG = "PlayBroadcastSetupBottomSheet"
 
         private const val MAX_HEIGHT_MULTIPLIER = 0.8
-
-        fun newInstance(): PlayBroadcastSetupBottomSheet = PlayBroadcastSetupBottomSheet()
     }
 }
