@@ -1671,7 +1671,7 @@ public class ProductListFragment
 
     @Override
     public void logWarning(String message, @Nullable Throwable throwable) {
-        new SearchLogger().logWarning(message, throwable);
+        new SearchLogger().logWarning(message, throwable, requireContext());
     }
 
     @Override

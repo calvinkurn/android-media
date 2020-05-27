@@ -1,5 +1,7 @@
 package com.tokopedia.search.utils
 
+import android.content.Context
+import android.widget.Toast
 import okhttp3.internal.http2.ConnectionShutdownException
 import org.apache.commons.lang3.exception.ExceptionUtils
 import timber.log.Timber
@@ -30,5 +32,16 @@ internal open class SearchLogger {
 
     protected open fun timberLogWarning(message: String, stackTrace: String) {
         Timber.w(DISCOVERY_SEARCH_ERROR_TAG, message, stackTrace)
+    }
+
+    fun logWarning(message: String?, throwable: Throwable?, context: Context) {
+        if (message == null || throwable == null || isExceptionExcluded(throwable)) return
+
+        timberLogWarning(message, ExceptionUtils.getStackTrace(throwable), context)
+    }
+
+    protected open fun timberLogWarning(message: String, stackTrace: String, context: Context) {
+        Timber.w(DISCOVERY_SEARCH_ERROR_TAG, message, stackTrace)
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
     }
 }
