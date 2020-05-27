@@ -23,6 +23,7 @@ import com.tokopedia.reviewseller.feature.reviewreply.analytics.SellerReviewRepl
 import com.tokopedia.reviewseller.feature.reviewreply.di.component.ReviewReplyComponent
 import com.tokopedia.reviewseller.feature.reviewreply.util.mapper.SellerReviewReplyMapper
 import com.tokopedia.reviewseller.feature.reviewreply.view.adapter.ReviewTemplateListAdapter
+import com.tokopedia.reviewseller.feature.reviewreply.view.bottomsheet.AddTemplateBottomSheet
 import com.tokopedia.reviewseller.feature.reviewreply.view.model.InsertReplyResponseUiModel
 import com.tokopedia.reviewseller.feature.reviewreply.view.model.ProductReplyUiModel
 import com.tokopedia.reviewseller.feature.reviewreply.view.model.ReplyTemplateUiModel
@@ -163,7 +164,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
                 }
                 is Fail -> {
                     view?.let { it1 ->
-                        Toaster.make(it1, it.throwable.message.orEmpty(), Toaster.TYPE_ERROR)
+                        Toaster.make(it1, it.throwable.message.orEmpty(), type = Toaster.TYPE_ERROR)
                     }
                 }
             }
@@ -176,14 +177,30 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
                 }
                 is Fail -> {
                     view?.let { it1 ->
-                        Toaster.make(it1, it.throwable.message.orEmpty(), Toaster.TYPE_ERROR)
+                        Toaster.make(it1, it.throwable.message.orEmpty(), type = Toaster.TYPE_ERROR)
+                    }
+                }
+            }
+        })
+
+        viewModelReviewReply?.insertReviewReply?.observe(this, Observer {
+            when(it) {
+                is Success -> {
+                    getReviewTemplate()
+                }
+                is Fail -> {
+                    view?.let { it1 ->
+                        Toaster.make(it1, it.throwable.message.orEmpty(), type = Toaster.TYPE_ERROR)
                     }
                 }
             }
         })
 
         getReviewTemplate()
+        submitReplyReview()
+    }
 
+    private fun submitReplyReview() {
         replySendButton.setOnClickListener {
             if (replyEditText.text?.isNotEmpty() == true) {
                 tracking.eventClickSendReviewReply(
@@ -287,12 +304,14 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
             reviewReplyTextBoxWidget?.show()
             showTextReplyEditText(feedbackUiModel?.replyText.orEmpty())
         }
-
         replyEditText?.setOnFocusChangeListener { _, hasFocus ->
             if(hasFocus) tracking.eventClickResponseReview(
                     userSession.shopId.orEmpty(),
                     productReplyUiModel?.productID.orZero().toString(),
                     feedbackUiModel?.feedbackID.orZero().toString())
+        }
+        btnAddTemplate?.setOnClickListener {
+            initBottomSheetAddTemplate()
         }
     }
 
@@ -322,12 +341,18 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
         getComponent(ReviewReplyComponent::class.java).inject(this)
     }
 
+    private fun initBottomSheetAddTemplate() {
+        val titleBottomSheet = getString(R.string.add_template_reply_label)
+        val bottomSheet = viewModelReviewReply?.let { AddTemplateBottomSheet(activity, titleBottomSheet, it, userSession) }
+        bottomSheet?.showDialog()
+    }
+
     private fun initBottomSheetReplyReview() {
         val optionMenuReport = context?.let { SellerReviewReplyMapper.mapToItemUnifyMenuReport(it) }
         optionMenuReport?.let { optionMenuReplyReview?.setData(it) }
-        val title = context?.getString(R.string.option_menu_label)
+        val title = getString(R.string.option_menu_label)
         bottomSheetReplyReview?.apply {
-            setTitle(title.orEmpty())
+            setTitle(title)
             showCloseIcon = true
             setCloseClickListener {
                 dismiss()
@@ -353,7 +378,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
         }
 
         fragmentManager?.let {
-            bottomSheetReplyReview?.show(it, getString(R.string.option_menu_label))
+            bottomSheetReplyReview?.show(it, title)
         }
     }
 
