@@ -31,6 +31,7 @@ import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationAccountBottomSheet;
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationGenericBottomSheet;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.unifycomponents.BottomSheetUnify;
@@ -290,7 +291,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
 
     private void openSellerMigrationBottomSheet() {
         if(getContext() != null) {
-            BottomSheetUnify sellerMigrationBottomSheet = SellerMigrationGenericBottomSheet.Companion.createNewInstance(getContext());
+            BottomSheetUnify sellerMigrationBottomSheet = SellerMigrationAccountBottomSheet.Companion.createNewInstance(getContext());
             sellerMigrationBottomSheet.show(getChildFragmentManager(), "");
         }
     }
