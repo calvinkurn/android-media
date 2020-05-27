@@ -4,7 +4,6 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerhomecommon.R
-import com.tokopedia.sellerhomecommon.analytics.SellerHomeTracking
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.customview.ShopScorePMWidget
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
@@ -77,8 +76,7 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
     private fun addImpressionTracker(progressWidgetUiModel: ProgressWidgetUiModel) {
         with(progressWidgetUiModel) {
             itemView.addOnImpressionListener(impressHolder) {
-                SellerHomeTracking.sendImpressionProgressBarEvent(dataKey, data?.colorState.toString(), data?.value
-                        ?: 0)
+                listener.sendProgressImpressionEvent(dataKey, data?.colorState.toString(), data?.value.orZero())
             }
         }
     }
@@ -86,8 +84,7 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
     private fun goToDetails(element: ProgressWidgetUiModel) {
         with(element) {
             if (com.tokopedia.applink.RouteManager.route(itemView.context, appLink)) {
-                SellerHomeTracking.sendClickProgressBarEvent(dataKey, data?.colorState.toString(), data?.value
-                        ?: 0)
+                listener.sendProgressCtaClickEvent(dataKey, data?.colorState.toString(), data?.value.orZero())
             }
         }
     }
@@ -160,6 +157,10 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
     }
 
     interface Listener : BaseViewHolderListener {
-        fun getProgressData()
+        fun getProgressData() {}
+
+        fun sendProgressImpressionEvent(dataKey: String, stateColor: String, valueScore: Int) {}
+
+        fun sendProgressCtaClickEvent(dataKey: String, stateColor: String, valueScore: Int) {}
     }
 }

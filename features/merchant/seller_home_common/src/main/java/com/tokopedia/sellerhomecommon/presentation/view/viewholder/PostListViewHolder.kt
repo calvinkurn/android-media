@@ -11,7 +11,6 @@ import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhomecommon.R
-import com.tokopedia.sellerhomecommon.analytics.SellerHomeTracking
 import com.tokopedia.sellerhomecommon.presentation.adapter.ListAdapterTypeFactory
 import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostUiModel
@@ -99,7 +98,7 @@ class PostListViewHolder(
     private fun addImpressionTracker(dataKey: String, impressHolder: ImpressHolder) {
         this@PostListViewHolder.dataKey = dataKey
         itemView.addOnImpressionListener(impressHolder) {
-            SellerHomeTracking.sendImpressionPostEvent(dataKey)
+            listener.sendPostListImpressionEvent(dataKey)
         }
     }
 
@@ -171,7 +170,7 @@ class PostListViewHolder(
 
     private fun goToDetails(appLink: String) {
         if (RouteManager.route(itemView.context, appLink)) {
-            SellerHomeTracking.sendClickPostSeeMoreEvent(dataKey)
+            listener.sendPostListCtaClickEvent(dataKey)
         }
     }
 
@@ -194,11 +193,17 @@ class PostListViewHolder(
 
     override fun onItemClicked(post: PostUiModel) {
         if (RouteManager.route(itemView.context, post.appLink)) {
-            SellerHomeTracking.sendClickPostItemEvent(dataKey, post.title)
+            listener.sendPosListItemClickEvent(dataKey, post.title)
         }
     }
 
     interface Listener : BaseViewHolderListener {
-        fun getPostData()
+        fun getPostData() {}
+
+        fun sendPosListItemClickEvent(dataKey: String, title: String) {}
+
+        fun sendPostListCtaClickEvent(dataKey: String) {}
+
+        fun sendPostListImpressionEvent(dataKey: String) {}
     }
 }

@@ -9,7 +9,6 @@ import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
-import com.tokopedia.sellerhomecommon.analytics.SellerHomeTracking
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import kotlinx.android.synthetic.main.shc_card_widget.view.*
 
@@ -79,15 +78,13 @@ class CardViewHolder(
             tvCardValue.text = element.data?.value ?: "0"
             tvCardSubValue.text = element.data?.description?.parseAsHtml()
             addOnImpressionListener(element.impressHolder) {
-                SellerHomeTracking.sendImpressionCardEvent(element.dataKey,
-                        element.data?.state.orEmpty(), element.data?.value ?: "0")
+                listener.sendCardImpressionEvent(element)
             }
 
             setOnClickListener {
                 if (element.appLink.isNotBlank()) {
                     if (RouteManager.route(context, element.appLink)) {
-                        SellerHomeTracking.sendClickCardEvent(element.dataKey,
-                                element.data?.state.orEmpty(), element.data?.value ?: "0")
+                        listener.sendCardClickTracking(element)
                     }
                 }
             }
@@ -113,6 +110,10 @@ class CardViewHolder(
     }
 
     interface Listener : BaseViewHolderListener {
-        fun getCardData()
+        fun getCardData() {}
+
+        fun sendCardImpressionEvent(model: CardWidgetUiModel) {}
+
+        fun sendCardClickTracking(model: CardWidgetUiModel) {}
     }
 }

@@ -36,7 +36,6 @@ import com.tokopedia.sellerhome.domain.model.GetShopStatusResponse
 import com.tokopedia.sellerhome.domain.model.PROVINCE_ID_EMPTY
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
-import com.tokopedia.sellerhome.view.bottomsheet.view.SellerHomeBottomSheetContent
 import com.tokopedia.sellerhome.view.model.TickerUiModel
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
 import com.tokopedia.sellerhome.view.widget.toolbar.NotificationDotBadge
@@ -44,6 +43,7 @@ import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.SellerHomeBottomSheetContent
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -301,6 +301,64 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         showErrorToaster()
     }
 
+    override fun sendCardImpressionEvent(model: CardWidgetUiModel) {
+        SellerHomeTracking.sendImpressionCardEvent(model.dataKey,
+                model.data?.state.orEmpty(), model.data?.value ?: "0")
+    }
+
+    override fun sendCardClickTracking(model: CardWidgetUiModel) {
+        SellerHomeTracking.sendClickCardEvent(model.dataKey,
+                model.data?.state.orEmpty(), model.data?.value ?: "0")
+    }
+
+    override fun sendCarouselImpressionEvent(dataKey: String, carouselItems: List<CarouselItemUiModel>, position: Int) {
+        SellerHomeTracking.sendImpressionCarouselItemBannerEvent(dataKey, carouselItems, position)
+    }
+
+    override fun sendCarouselClickTracking(dataKey: String, carouselItems: List<CarouselItemUiModel>, position: Int) {
+        SellerHomeTracking.sendClickCarouselItemBannerEvent(dataKey, carouselItems, position)
+    }
+
+    override fun sendCarouselCtaClickEvent(dataKey: String) {
+        SellerHomeTracking.sendClickCarouselCtaEvent(dataKey)
+    }
+
+    override fun sendDescriptionImpressionEvent(descriptionTitle: String) {
+        SellerHomeTracking.sendImpressionDescriptionEvent(descriptionTitle)
+    }
+
+    override fun sendDescriptionCtaClickEvent(descriptionTitle: String) {
+        SellerHomeTracking.sendClickDescriptionEvent(descriptionTitle)
+    }
+
+    override fun sendLineGraphImpressionEvent(dataKey: String, cardValue: String) {
+        SellerHomeTracking.sendImpressionLineGraphEvent(dataKey, cardValue)
+    }
+
+    override fun sendLineGraphCtaClickEvent(dataKey: String, cardValue: String) {
+        SellerHomeTracking.sendClickLineGraphEvent(dataKey, cardValue)
+    }
+
+    override fun sendPostListImpressionEvent(dataKey: String) {
+        SellerHomeTracking.sendImpressionPostEvent(dataKey)
+    }
+
+    override fun sendPosListItemClickEvent(dataKey: String, title: String) {
+        SellerHomeTracking.sendClickPostItemEvent(dataKey, title)
+    }
+
+    override fun sendPostListCtaClickEvent(dataKey: String) {
+        SellerHomeTracking.sendClickPostSeeMoreEvent(dataKey)
+    }
+
+    override fun sendProgressImpressionEvent(dataKey: String, stateColor: String, valueScore: Int) {
+        SellerHomeTracking.sendImpressionProgressBarEvent(dataKey, stateColor, valueScore)
+    }
+
+    override fun sendProgressCtaClickEvent(dataKey: String, stateColor: String, valueScore: Int) {
+        SellerHomeTracking.sendClickProgressBarEvent(dataKey, stateColor, valueScore)
+    }
+
     private fun showNotificationBadge() {
         Handler().postDelayed({
             context?.let {
@@ -472,7 +530,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                         getPostData()
                     }
                 }
-                widget.data?.error = ""
                 widget.data = null
                 adapter.notifyItemChanged(index)
             }

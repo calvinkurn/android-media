@@ -4,10 +4,10 @@
     android:id="@+id/bannerImagesShimmering"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="@dimen/layout_lvl2"
-    android:paddingLeft="@dimen/layout_lvl2"
-    android:paddingEnd="@dimen/layout_lvl2"
-    android:paddingRight="@dimen/layout_lvl2">
+    android:paddingStart="@dimen/layout_lvl1"
+    android:paddingLeft="@dimen/layout_lvl1"
+    android:paddingEnd="@dimen/layout_lvl1"
+    android:paddingRight="@dimen/layout_lvl1">
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmering_title"

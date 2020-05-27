@@ -7,7 +7,6 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
-import com.tokopedia.sellerhomecommon.analytics.SellerHomeTracking
 import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
 import kotlinx.android.synthetic.main.shc_description_widget.view.*
 
@@ -15,7 +14,10 @@ import kotlinx.android.synthetic.main.shc_description_widget.view.*
  * Created By @ilhamsuaib on 20/05/20
  */
 
-class DescriptionViewHolder(view: View?) : AbstractViewHolder<DescriptionWidgetUiModel>(view) {
+class DescriptionViewHolder(
+        view: View?,
+        private val listener: Listener
+) : AbstractViewHolder<DescriptionWidgetUiModel>(view) {
 
     companion object {
         val RES_LAYOUT = R.layout.shc_description_widget
@@ -47,14 +49,20 @@ class DescriptionViewHolder(view: View?) : AbstractViewHolder<DescriptionWidgetU
             }
 
             addOnImpressionListener(element.impressHolder) {
-                SellerHomeTracking.sendImpressionDescriptionEvent(element.title)
+                listener.sendDescriptionImpressionEvent(element.title)
             }
         }
     }
 
     private fun goToDetails(appLink: String, descriptionTitle: String) {
         if (RouteManager.route(itemView.context, appLink)) {
-            SellerHomeTracking.sendClickDescriptionEvent(descriptionTitle)
+            listener.sendDescriptionCtaClickEvent(descriptionTitle)
         }
+    }
+
+    interface Listener : BaseViewHolderListener {
+        fun sendDescriptionImpressionEvent(descriptionTitle: String) {}
+
+        fun sendDescriptionCtaClickEvent(descriptionTitle: String) {}
     }
 }

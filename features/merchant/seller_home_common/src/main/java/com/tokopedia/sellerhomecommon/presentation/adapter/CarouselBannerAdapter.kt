@@ -9,8 +9,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.sellerhomecommon.R
-import com.tokopedia.sellerhomecommon.analytics.SellerHomeTracking
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselItemUiModel
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.CarouselViewHolder
 import kotlinx.android.synthetic.main.shc_banner_item_layout.view.*
 
 /**
@@ -19,7 +19,8 @@ import kotlinx.android.synthetic.main.shc_banner_item_layout.view.*
 
 class CarouselBannerAdapter(
         private val dataKey: String,
-        private val items: List<CarouselItemUiModel>
+        private val items: List<CarouselItemUiModel>,
+        private val listener: CarouselViewHolder.Listener
 ) : RecyclerView.Adapter<CarouselBannerAdapter.CarouselBannerViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CarouselBannerViewHolder {
@@ -41,12 +42,12 @@ class CarouselBannerAdapter(
 
             imgCarouselBanner.setOnClickListener {
                 if (RouteManager.route(context, item.appLink)) {
-                    SellerHomeTracking.sendClickCarouselItemBannerEvent(dataKey, items, adapterPosition)
+                    listener.sendCarouselImpressionEvent(dataKey, items, adapterPosition)
                 }
             }
 
             addOnImpressionListener(item.impressHolder) {
-                SellerHomeTracking.sendImpressionCarouselItemBannerEvent(dataKey, items, adapterPosition)
+                listener.sendCarouselClickTracking(dataKey, items, adapterPosition)
             }
         }
     }

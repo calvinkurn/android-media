@@ -89,19 +89,19 @@
             tools:text="Lihat Semua" />
 
         <include
-            layout="@layout/shc_partial_carousel_widget_shimmering"
+            layout="@layout/shc_partial_common_widget_state_error"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="gone" />
 
         <include
-            layout="@layout/shc_partial_common_widget_state_error"
+            layout="@layout/shc_partial_carousel_widget_shimmering"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

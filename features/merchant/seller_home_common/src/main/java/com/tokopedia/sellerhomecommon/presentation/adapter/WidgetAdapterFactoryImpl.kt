@@ -36,7 +36,7 @@ class WidgetAdapterFactoryImpl(
             CardViewHolder.RES_LAYOUT -> CardViewHolder(parent, listener)
             LineGraphViewHolder.RES_LAYOUT -> LineGraphViewHolder(parent, listener)
             CarouselViewHolder.RES_LAYOUT -> CarouselViewHolder(parent, listener)
-            DescriptionViewHolder.RES_LAYOUT -> DescriptionViewHolder(parent)
+            DescriptionViewHolder.RES_LAYOUT -> DescriptionViewHolder(parent, listener)
             ProgressViewHolder.RES_LAYOUT -> ProgressViewHolder(parent, listener)
             PostListViewHolder.RES_LAYOUT -> PostListViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)

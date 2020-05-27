@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerhomecommon.R
-import com.tokopedia.sellerhomecommon.analytics.SellerHomeTracking
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.linegraphconfig.LineGraphConfig
@@ -56,7 +55,7 @@ class LineGraphViewHolder(
 
     private fun openAppLink(appLink: String, dataKey: String, value: String) {
         if (RouteManager.route(itemView.context, appLink)) {
-            SellerHomeTracking.sendClickLineGraphEvent(dataKey, value)
+            listener.sendLineGraphCtaClickEvent(dataKey, value)
         }
     }
 
@@ -141,7 +140,7 @@ class LineGraphViewHolder(
         if (isShown) {
             showLineGraph(element)
             itemView.addOnImpressionListener(element.impressHolder) {
-                SellerHomeTracking.sendImpressionLineGraphEvent(element.dataKey, element.data?.header.orEmpty())
+                listener.sendLineGraphImpressionEvent(element.dataKey, element.data?.header.orEmpty())
             }
         }
     }
@@ -199,6 +198,10 @@ class LineGraphViewHolder(
     }
 
     interface Listener : BaseViewHolderListener {
-        fun getLineGraphData()
+        fun getLineGraphData() {}
+
+        fun sendLineGraphImpressionEvent(dataKey: String, cardValue: String) {}
+
+        fun sendLineGraphCtaClickEvent(dataKey: String, cardValue: String) {}
     }
 }

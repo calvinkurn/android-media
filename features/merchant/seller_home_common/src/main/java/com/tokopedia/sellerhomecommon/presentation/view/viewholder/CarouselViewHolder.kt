@@ -10,8 +10,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
-import com.tokopedia.sellerhomecommon.analytics.SellerHomeTracking
 import com.tokopedia.sellerhomecommon.presentation.adapter.CarouselBannerAdapter
+import com.tokopedia.sellerhomecommon.presentation.model.CarouselItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
 import kotlinx.android.synthetic.main.shc_carousel_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_carousel_widget_shimmering.view.*
@@ -39,6 +39,7 @@ class CarouselViewHolder(
 
     private fun observeState(element: CarouselWidgetUiModel) {
         val data = element.data
+        println("is data null : ${null == data}")
         when {
             null == data -> setOnLoadingState()
             data.error.isNotBlank() -> {
@@ -93,7 +94,7 @@ class CarouselViewHolder(
         indicatorCarouselBanner.visibility = indicatorVisibility
         indicatorCarouselBanner.setIndicator(banners.size)
 
-        val bannerAdapter = CarouselBannerAdapter(element.dataKey, banners)
+        val bannerAdapter = CarouselBannerAdapter(element.dataKey, banners, listener)
         val linearLayoutManager = getLayoutManager()
 
         rvCarouselBanner.layoutManager = linearLayoutManager
@@ -125,8 +126,9 @@ class CarouselViewHolder(
             btnCarouselSeeAll.visible()
             btnCarouselSeeAll.text = element.ctaText
             btnCarouselSeeAll.setOnClickListener {
-                if (RouteManager.route(context, element.appLink))
-                    SellerHomeTracking.sendClickCarouselCtaEvent(element.dataKey)
+                if (RouteManager.route(context, element.appLink)) {
+                    listener.sendCarouselCtaClickEvent(element.dataKey)
+                }
             }
         } else {
             btnCarouselSeeAll.gone()
@@ -134,6 +136,12 @@ class CarouselViewHolder(
     }
 
     interface Listener : BaseViewHolderListener {
-        fun getCarouselData()
+        fun getCarouselData() {}
+
+        fun sendCarouselImpressionEvent(dataKey: String, carouselItems: List<CarouselItemUiModel>, position: Int) {}
+
+        fun sendCarouselClickTracking(dataKey: String, carouselItems: List<CarouselItemUiModel>, position: Int) {}
+
+        fun sendCarouselCtaClickEvent(dataKey: String) {}
     }
 }
