@@ -630,19 +630,17 @@ open class HomeViewModel @Inject constructor(
         launchCatchError(coroutineContext, block = {
             homeFlowData.collect { homeDataModel ->
                 if (homeDataModel?.isCache == false) {
-                    if(homeDataModel?.list.isEmpty() == true) {
-                        _isRequestNetworkLiveData.postValue(Event(false))
-                        updateWidget(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel))
-                        getHeaderData()
-                        getReviewData()
-                        getPlayBanner()
-                        getPopularKeyword()
-                        getRechargeRecommendation()
-                        _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>()
-                                ?: listOf()))
-                    }
+                    _isRequestNetworkLiveData.postValue(Event(false))
+                    updateWidget(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel))
+                    getHeaderData()
+                    getReviewData()
+                    getPlayBanner()
+                    getPopularKeyword()
+                    getRechargeRecommendation()
+                    _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>() ?: listOf()))
                 } else {
                     updateWidget(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel))
+                    refreshHomeData()
                 }
             }
         }) {

@@ -1875,4 +1875,9 @@ open class HomeFragment : BaseDaggerFragment(),
     override fun onDeclineClickListener(requestParams: Map<String, String>) {
         viewModel.get().declineRechargeRecommendationItem(requestParams)
     }
+
+    override fun onDetach() {
+        viewModel.get().onCleared()
+        super.onDetach()
+    }
 }
