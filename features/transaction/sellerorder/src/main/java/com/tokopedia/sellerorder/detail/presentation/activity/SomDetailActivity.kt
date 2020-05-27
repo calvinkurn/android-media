@@ -24,12 +24,6 @@ import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailFragment
 class SomDetailActivity: BaseSimpleActivity(), HasComponent<SomDetailComponent> {
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setWhiteStatusBarBackground()
-    }
-
     override fun getNewFragment(): Fragment? {
         var bundle = Bundle()
         if (intent.extras != null) {
@@ -64,6 +58,10 @@ class SomDetailActivity: BaseSimpleActivity(), HasComponent<SomDetailComponent> 
         DaggerSomDetailComponent.builder()
                 .somComponent(SomComponentInstance.getSomComponent(application))
                 .build()
+
+    override fun setupLayout(savedInstanceState: Bundle?) {
+        setWhiteStatusBarBackground()
+    }
 
     private fun setWhiteStatusBarBackground() {
         if (GlobalConfig.isSellerApp() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
