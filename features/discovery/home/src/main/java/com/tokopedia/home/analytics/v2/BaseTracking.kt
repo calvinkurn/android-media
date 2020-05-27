@@ -121,8 +121,8 @@ abstract class BaseTracking {
         private const val KEY_DIMENSION_96 = "dimension96"
 
         fun getEcommercePromoView(promotions: List<Promotion>): Map<String, Any> {
-            return mapOf(
-                    PROMO_VIEW to getPromotionsMap(promotions))
+            return DataLayer.mapOf(
+                    PROMO_VIEW, getPromotionsMap(promotions))
         }
 
         fun getEcommercePromoClick(promotions: List<Promotion>): Map<String, Any> {
@@ -131,7 +131,7 @@ abstract class BaseTracking {
         }
 
         private fun getPromotionsMap(promotions: List<Promotion>): Map<String, Any> {
-            return mapOf(PROMOTIONS to getPromotions(promotions))
+            return DataLayer.mapOf(PROMOTIONS, getPromotions(promotions))
         }
 
         fun getEcommerceProductClick(products: List<Product>, list: String): Map<String, Any> {
@@ -246,11 +246,11 @@ abstract class BaseTracking {
         userId: String = ""
     ): Map<String, Any>{
         val dataLayer = DataLayer.mapOf(
-                Event.KEY to event,
-                Category.KEY to eventCategory,
-                Action.KEY to eventAction,
-                Label.KEY to eventLabel,
-                Ecommerce.KEY to Ecommerce.getEcommercePromoView(promotions)
+                Event.KEY, event,
+                Category.KEY, eventCategory,
+                Action.KEY, eventAction,
+                Label.KEY, eventLabel,
+                Ecommerce.KEY, Ecommerce.getEcommercePromoView(promotions)
         )
         if(userId.isNotBlank()) dataLayer[UserId.KEY] = userId
         return dataLayer
