@@ -256,8 +256,12 @@ object DFInstaller {
                     }
                 }
             }
-            DFDownloader.startSchedule(context.applicationContext, filteredModuleNameList, true)
-            startDeferredInstall(context, restrictedInBgModuleNameList, message)
+            if (filteredModuleNameList.size > 0) {
+                DFDownloader.startSchedule(context.applicationContext, filteredModuleNameList, true)
+            }
+            if (restrictedInBgModuleNameList.size > 0) {
+                startDeferredInstall(context, restrictedInBgModuleNameList, message)
+            }
         } else {
             startDeferredInstall(context, filteredModuleNameList, message)
         }
