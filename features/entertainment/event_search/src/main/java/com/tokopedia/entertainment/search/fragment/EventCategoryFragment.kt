@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.entertainment.search.R
 import com.tokopedia.entertainment.search.activity.EventCategoryActivity
 import com.tokopedia.entertainment.search.adapter.viewholder.CategoryTextBubbleAdapter
@@ -38,6 +39,7 @@ class EventCategoryFragment : BaseDaggerFragment() {
 
     lateinit var categoryTextAdapter: CategoryTextBubbleAdapter
     lateinit var eventGridAdapter : EventGridAdapter
+    lateinit var performanceMonitoring: PerformanceMonitoring
     private var QUERY_TEXT : String = ""
     private var CITY_ID : String = ""
     private var CATEGORY_ID: String = ""
@@ -51,6 +53,7 @@ class EventCategoryFragment : BaseDaggerFragment() {
     companion object{
         fun newInstance() = EventCategoryFragment()
         val TAG = EventCategoryFragment::class.java.simpleName
+        const val ENT_CATEGORY_PERFORMANCE = "et_event_category"
     }
 
 
@@ -71,6 +74,7 @@ class EventCategoryFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initializePerformance()
         activity?.run {
             viewModel = ViewModelProviders.of(this,factory).get(EventDetailViewModel::class.java)
             viewModel.resources = resources
@@ -91,6 +95,7 @@ class EventCategoryFragment : BaseDaggerFragment() {
         setupGridAdapter()
         setupRefreshLayout()
         setupResetFilterButton()
+        performanceMonitoring.stopTrace()
     }
 
     private fun setupGridAdapter(){
@@ -110,6 +115,11 @@ class EventCategoryFragment : BaseDaggerFragment() {
             setPadding(context.resources.getDimensionPixelSize(R.dimen.dimen_recycler_view_category), context.resources.getDimensionPixelSize(R.dimen.dimen_0dp)
                     , context.resources.getDimensionPixelSize(R.dimen.dimen_recycler_view_category), context.resources.getDimensionPixelSize(R.dimen.dimen_0dp))
         }
+    }
+
+
+    private fun initializePerformance(){
+        performanceMonitoring = PerformanceMonitoring.start(ENT_CATEGORY_PERFORMANCE)
     }
 
     private fun setupRefreshLayout(){
@@ -223,5 +233,10 @@ class EventCategoryFragment : BaseDaggerFragment() {
 
     private fun getEventData(){
         viewModel.getData()
+    }
+
+    override fun onDestroyView() {
+        performanceMonitoring.stopTrace()
+        super.onDestroyView()
     }
 }
