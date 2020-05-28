@@ -24,7 +24,7 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class MultiBannerViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class MultiBannerViewModel(val application: Application, var components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val bannerData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val pushBannerStatus: MutableLiveData<Int> = MutableLiveData()
     private val pushBannerSubscription: MutableLiveData<Int> = MutableLiveData()
@@ -40,11 +40,18 @@ class MultiBannerViewModel(val application: Application, components: ComponentsI
         get() = Dispatchers.Main + SupervisorJob()
 
     init {
-        bannerData.value = components
         pushBannerStatus.value = Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS
         pushBannerSubscription.value = Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS
         initDaggerInject()
+        filterBannerData()
     }
+
+    // Removing the banner items from list which have empty value for imageUrlDynamicMobile
+    private fun filterBannerData() {
+        components.data = components.data?.filter { !it.imageUrlDynamicMobile.isNullOrEmpty() }
+        bannerData.value = components
+    }
+
 
     override fun initDaggerInject() {
         DaggerDiscoveryComponent.builder()
