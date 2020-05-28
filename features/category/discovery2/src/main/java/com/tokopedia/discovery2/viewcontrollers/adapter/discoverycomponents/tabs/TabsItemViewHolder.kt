@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
@@ -25,7 +26,14 @@ class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : Abstr
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         tabsItemViewModel = discoveryBaseViewModel as TabsItemViewModel
-        tabsItemViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer {
+    }
+
+    override fun onViewAttachedToWindow() {
+        setUpDataObserver(fragment.viewLifecycleOwner)
+    }
+
+    private fun setUpDataObserver(viewLifecycleOwner: LifecycleOwner) {
+        tabsItemViewModel.getComponentLiveData().observe(viewLifecycleOwner, Observer {
             val itemData = it.data?.get(0)
             positionForParentAdapter = itemData?.positionForParentItem ?: -1
             itemData?.let { item ->
@@ -49,6 +57,10 @@ class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : Abstr
 
             }
         })
+        tabsItemViewModel.getCompositeComponentLiveData().observe(viewLifecycleOwner, Observer {
+            (parentAbstractViewHolder as? TabsViewHolder)?.getCompositeComponentsList(it)
+        })
+
     }
 
     private fun setTabText(name: String) {
@@ -71,6 +83,7 @@ class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : Abstr
                     data.isSelected = !data.isSelected
                     showSelectedView(data.isSelected)
                 }
+                tabsItemViewModel.populateTabCompositeComponents(data)
                 changeDataInTabsViewModel()
             }
         }

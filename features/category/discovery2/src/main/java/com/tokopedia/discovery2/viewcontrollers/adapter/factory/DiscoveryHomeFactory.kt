@@ -116,6 +116,7 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.PrductCardSprintSaleCarousel, ::ProductCardSaleSprintCarouselViewHolder, ::ProductCardSprintSaleCarouselViewModel)
             initializeComponent(ComponentsList.ProductCardRevamp, ::ProductCardRevampViewHolder, ::ProductCardRevampViewModel)
             initializeComponent(ComponentsList.ProductCardItem, ::ProductCardItemViewHolder, ::ProductCardItemViewModel)
+            initializeComponent(ComponentsList.ProductCardHorizontalItem, ::ProductCardItemViewHolder, ::ProductCardItemViewModel)
             initializeComponent(ComponentsList.ShimmerProductCard, ::ShimmerProductCardViewHolder, ::ShimmerViewModel)
             initializeComponent(ComponentsList.Shimmer, ::ShimmerViewHolder, ::ShimmerViewModel)
         }
