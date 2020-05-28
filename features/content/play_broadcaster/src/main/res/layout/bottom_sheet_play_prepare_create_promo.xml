@@ -219,7 +219,7 @@
                         android:id="@+id/btnPlayPrepareBroadcasatInputButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/label_save"
+                        android:text="@string/play_prepare_broadcast_label_save"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent"

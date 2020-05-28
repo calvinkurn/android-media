@@ -41,6 +41,21 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        if (!isEditPage) {
+            dialog?.window?.setWindowAnimations(
+                    if (isBack) R.style.DialogAnimationEnterLeft
+                    else R.style.DialogAnimationEnterRight)
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity?.let {
+            val displayMetrics = DisplayMetrics()
+            it.windowManager.defaultDisplay.getMetrics(displayMetrics)
+            screenWidth = displayMetrics.widthPixels
+            screenHeight = displayMetrics.heightPixels
+        }
 
         savedInstanceState?.let {
             currentState = it.getInt(EXTRA_CURRENT_STATE)
@@ -57,20 +72,6 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
                     promoQuota in MIN_PERCENT_QUOTA_VALUE..MAX_QUOTA_VALUE) {
                 isEditPage = true
             }
-        }
-
-        dialog?.window?.setWindowAnimations(
-                if (isBack) R.style.DialogAnimationEnterLeft
-                else R.style.DialogAnimationEnterRight)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        activity?.let {
-            val displayMetrics = DisplayMetrics()
-            it.windowManager.defaultDisplay.getMetrics(displayMetrics)
-            screenWidth = displayMetrics.widthPixels
-            screenHeight = displayMetrics.heightPixels
         }
 
         initBottomSheet()
@@ -126,6 +127,9 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
                 bottomSheetClose.setImageDrawable(it.resources.getDrawable(
                         com.tokopedia.resources.common.R.drawable.ic_system_action_back_grayscale_24))
             }
+            btnPlayPrepareBroadcastNext.text = getString(R.string.play_prepare_broadcast_label_next)
+        } else {
+            btnPlayPrepareBroadcastNext.text = getString(R.string.play_prepare_broadcast_label_save)
         }
 
         svPlayPrepareBroadcastPromo.layoutParams.height = screenHeight - containerPlayPrepareBroadcastBottom.height
@@ -190,22 +194,26 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
                 showPercetageView()
             }
             else -> {
-                dialog?.window?.let {
-                    it.decorView.animate()
-                            .setDuration(ANIMATION_DURATION)
-                            .translationX(screenWidth.toFloat())
-                            .setListener(object : Animator.AnimatorListener {
-                                override fun onAnimationRepeat(p0: Animator?) {}
+                if (!isEditPage) {
+                    dialog?.window?.let {
+                        it.decorView.animate()
+                                .setDuration(ANIMATION_DURATION)
+                                .translationX(screenWidth.toFloat())
+                                .setListener(object : Animator.AnimatorListener {
+                                    override fun onAnimationRepeat(p0: Animator?) {}
 
-                                override fun onAnimationEnd(p0: Animator?) {
-                                    dismiss()
-                                }
+                                    override fun onAnimationEnd(p0: Animator?) {
+                                        dismiss()
+                                    }
 
-                                override fun onAnimationCancel(p0: Animator?) {}
+                                    override fun onAnimationCancel(p0: Animator?) {}
 
-                                override fun onAnimationStart(p0: Animator?) {}
+                                    override fun onAnimationStart(p0: Animator?) {}
 
-                            })
+                                })
+                    }
+                } else {
+                    dismiss()
                 }
             }
         }

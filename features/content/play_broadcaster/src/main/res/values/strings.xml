@@ -34,4 +34,5 @@
     <string name="play_prepare_broadcast_promo_detail_description"><![CDATA[<b>Diskon %1$d\%%</b> (%2$d Kuota)]]></string>
 
     <string name="play_prepare_broadcast_label_next">Lanjutkan</string>
+    <string name="play_prepare_broadcast_label_save">Simpan</string>
 </resources>
