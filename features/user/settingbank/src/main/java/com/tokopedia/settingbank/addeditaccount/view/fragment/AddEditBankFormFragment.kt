@@ -18,6 +18,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.settingbank.R
+import com.tokopedia.settingbank.addeditaccount.di.AddEditAccountModule
 import com.tokopedia.settingbank.addeditaccount.di.DaggerAddEditAccountComponent
 import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivity
 import com.tokopedia.settingbank.addeditaccount.view.listener.AddEditBankContract
@@ -66,13 +67,16 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     }
 
     override fun initInjector() {
-        if (activity != null && (activity as Activity).application != null) {
-            val addEditBankComponent = DaggerAddEditAccountComponent.builder().baseAppComponent(
-                    ((activity as Activity).application as BaseMainApplication).baseAppComponent)
-                    .build()
+        activity?.let { activity ->
+            if ((activity as Activity).application != null) {
+                val addEditBankComponent = DaggerAddEditAccountComponent.builder()
+                        .baseAppComponent(((activity as Activity).application as BaseMainApplication).baseAppComponent)
+                        .addEditAccountModule(AddEditAccountModule(activity))
+                        .build()
 
-            addEditBankComponent.inject(this)
-            presenter.attachView(this)
+                addEditBankComponent.inject(this)
+                presenter.attachView(this)
+            }
         }
     }
 

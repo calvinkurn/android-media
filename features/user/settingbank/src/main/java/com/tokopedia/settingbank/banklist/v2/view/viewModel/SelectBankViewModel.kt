@@ -20,7 +20,7 @@ import javax.inject.Inject
 const val PARAM_CURRENT_PAGE = "page"
 const val PARAM_ITEM_PER_PAGE = "perPage"
 
-class SelectBankViewModel @Inject constructor(@ApplicationContext private val context: Context,
+class SelectBankViewModel @Inject constructor(private val context: Context,
                                               private val graphqlRepository: GraphqlRepository,
                                               private val rawQueries: Map<String, String>,
                                               dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {

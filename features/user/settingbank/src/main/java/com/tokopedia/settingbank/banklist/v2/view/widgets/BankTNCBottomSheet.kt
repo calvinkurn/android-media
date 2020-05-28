@@ -1,19 +1,21 @@
 package com.tokopedia.settingbank.banklist.v2.view.widgets
 
-import android.content.Context
+import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.webkit.WebView
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.banklist.v2.domain.TemplateData
 
-class BankTNCBottomSheet(val context: Context) : CloseableBottomSheetDialog.CloseClickedListener {
+class BankTNCBottomSheet(val context: Activity) : CloseableBottomSheetDialog.CloseClickedListener {
 
     lateinit var templateData: TemplateData
     lateinit var tncDialog: CloseableBottomSheetDialog
 
     fun show(data: TemplateData) {
+        SplitCompat.installActivity(context)
         this.templateData = data
         val view = createBottomSheetView()
         if (!::tncDialog.isInitialized)
