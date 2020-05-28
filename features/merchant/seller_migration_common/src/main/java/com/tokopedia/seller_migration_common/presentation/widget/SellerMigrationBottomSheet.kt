@@ -4,7 +4,6 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.Spannable
 import android.view.View
 import android.widget.LinearLayout
 import com.tokopedia.applink.ApplinkConst
@@ -14,8 +13,8 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.seller_migration_common.R
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.APPLINK_PLAYSTORE
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.PACKAGE_SELLER_APP
-import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.SELLER_MIGRATION_INFORMATION_LINK
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_PLAYSTORE
+import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.toPx
@@ -47,9 +46,9 @@ abstract class SellerMigrationBottomSheet(private val titles: List<String> = emp
             goToSellerApp()
         }
         sellerMigrationBottomSheetLink.text = context?.let { HtmlLinkHelper(it, getString(R.string.seller_migration_bottom_sheet_footer)).spannedString }
-        sellerMigrationBottomSheetLink.setOnClickListener {
-            goToInformationWebview()
-        }
+        sellerMigrationBottomSheetLink.setOnTouchListener(SellerMigrationTouchListener {
+            goToInformationWebview(it)
+        })
     }
 
     private fun setupText() {
@@ -115,7 +114,7 @@ abstract class SellerMigrationBottomSheet(private val titles: List<String> = emp
         }
     }
 
-    private fun goToInformationWebview() {
-        RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${SELLER_MIGRATION_INFORMATION_LINK}")
+    private fun goToInformationWebview(link: String) : Boolean {
+        return RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${link}")
     }
 }

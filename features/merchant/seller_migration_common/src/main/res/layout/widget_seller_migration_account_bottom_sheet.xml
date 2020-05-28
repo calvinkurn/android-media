@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@android:color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     
     <ScrollView
@@ -37,15 +38,13 @@
                 android:id="@+id/sellerMigrationAccountBottomSheetImage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/seller_migration_account_warning"
-                android:scaleType="centerCrop"
-                android:visibility="gone"/>
+                android:layout_marginTop="@dimen/layout_lvl3"
+                app:layout_constraintTop_toBottomOf="@id/seller_migration_account_warning" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/seller_migration_account_content"
+                android:id="@+id/sellerMigrationBottomSheetContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/seller_migration_account_home_bottom_sheet_content"
                 android:layout_marginStart="@dimen/layout_lvl2"
                 android:layout_marginEnd="@dimen/layout_lvl2"
                 android:layout_marginTop="@dimen/layout_lvl2"
@@ -63,7 +62,7 @@
                 android:layout_marginTop="@dimen/layout_lvl3"
                 app:typographyWeight="bold"
                 app:typographyType="heading_4"
-                app:layout_constraintTop_toBottomOf="@id/seller_migration_account_content"/>
+                app:layout_constraintTop_toBottomOf="@id/sellerMigrationBottomSheetContent"/>
 
             <include layout="@layout/partial_seller_migration_multi_icon_information"
                 android:id="@+id/seller_migration_multi_icon_information"
@@ -72,11 +71,14 @@
                 app:layout_constraintTop_toBottomOf="@id/seller_migration_account_subtitle" />
 
             <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/sellerMigrationAccountBottomSheetLink"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/layout_lvl2"
                 android:layout_marginLeft="@dimen/layout_lvl2"
                 android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/layout_lvl5"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/seller_migration_multi_icon_information"
                 app:layout_constraintStart_toStartOf="parent" />
 
@@ -84,19 +86,25 @@
 
     </ScrollView>
 
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_above="@id/seller_migration_account_button_layout"/>
+
     <LinearLayout
         android:id="@+id/seller_migration_account_button_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:paddingStart="@dimen/layout_lvl2"
+        android:paddingEnd="@dimen/layout_lvl2"
+        android:paddingBottom="@dimen/layout_lvl1"
+        android:paddingTop="@dimen/layout_lvl1">
 
         <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/sellerMigrationAccountBottomSheetButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="@dimen/layout_lvl2"
-            android:paddingEnd="@dimen/layout_lvl2"
-            android:paddingBottom="@dimen/layout_lvl1"
-            android:paddingTop="@dimen/layout_lvl1"
             android:text="@string/seller_migration_bottom_sheet_button"
             app:unifyButtonSize="medium"/>
 
