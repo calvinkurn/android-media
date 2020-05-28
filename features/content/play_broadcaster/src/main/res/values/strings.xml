@@ -26,7 +26,7 @@
     <string name="play_prepare_broadcast_promo_without_promo_description">Jika tokomu punya kupon yang sedang aktif, kupon tersebut akan ditampilkan saat live streaming</string>
     <string name="play_prepare_broadcast_promo_percentage_label">Diskon Produk (%)</string>
     <string name="play_prepare_broadcast_promo_percentage_min_error_label">Min. diskon 1%</string>
-    <string name="play_prepare_broadcast_promo_percentage_max_error_label">Maks. diskon 100%</string>
+    <string name="play_prepare_broadcast_promo_percentage_max_error_label">Maks. diskon 99%</string>
     <string name="play_prepare_broadcast_promo_quota_label">Kuota Diskon Produk</string>
     <string name="play_prepare_broadcast_promo_quota_min_error_label">Min. kuota 1</string>
     <string name="play_prepare_broadcast_promo_quota_max_error_label">Maks. kuota 999</string>

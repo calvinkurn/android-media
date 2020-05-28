@@ -62,10 +62,6 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
             if (promoPercentage in MIN_PERCENT_QUOTA_VALUE..MAX_PERCENT_VALUE &&
                     promoQuota in MIN_PERCENT_QUOTA_VALUE..MAX_QUOTA_VALUE) {
                 isEditPage = true
-            } else {
-                dialog?.window?.setWindowAnimations(
-                        if (isBack) R.style.DialogAnimationEnterLeft
-                        else R.style.DialogAnimationEnterRight)
             }
         }
 
@@ -90,6 +86,10 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
     }
 
     private fun initBottomSheet() {
+        dialog?.window?.setWindowAnimations(
+                if (isBack) R.style.DialogAnimationEnterLeft
+                else R.style.DialogAnimationEnterRight)
+
         showKnob = false
         isDragable = false
         isHideable = false
@@ -491,7 +491,7 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
 
         private const val DEFAULT_PERCENT_QUOTA_VALUE = 0
         private const val MIN_PERCENT_QUOTA_VALUE = 1
-        private const val MAX_PERCENT_VALUE = 100
+        private const val MAX_PERCENT_VALUE = 99
         private const val MAX_QUOTA_VALUE = 999
 
         fun getInstance(promoPercentage: Int = DEFAULT_PERCENT_QUOTA_VALUE, promoQuota: Int = DEFAULT_PERCENT_QUOTA_VALUE, isBack: Boolean = false) =
