@@ -35,4 +35,7 @@ object ApplinkConstInternalCategory {
     fun getDiscoveryDeeplink(deeplink: String): String {
         return deeplink.replace(ApplinkConst.DISCOVERY, ApplinkConstInternalGlobal.DISCOVERY)
     }
+
+    @JvmField
+    val INTERNAL_CATEGORY_DETAIL = "$INTERNAL_CATEGORY/{DEPARTMENT_ID}"
 }

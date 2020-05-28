@@ -75,8 +75,16 @@ class ComparatorKtTest {
 
     @Test
     fun `regex match given d regex when compared to int json val should return true`() {
+        // this test should rarely happen as gson parses int to double
         val tesVal = "{{\\d*}}"
         val objVal = 55643
+        assertTrue(regexEquals(tesVal, objVal))
+    }
+
+    @Test
+    fun `regex match given d regex when compared to double json val should return true`() {
+        val tesVal = "{{\\d*\\.\\d*}}"
+        val objVal = 749000.5
         assertTrue(regexEquals(tesVal, objVal))
     }
 

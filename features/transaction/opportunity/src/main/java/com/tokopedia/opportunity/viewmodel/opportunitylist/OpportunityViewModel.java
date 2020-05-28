@@ -1,6 +1,7 @@
 package com.tokopedia.opportunity.viewmodel.opportunitylist;
 
-import com.tokopedia.core.database.model.PagingHandler;
+
+import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 
 import java.util.ArrayList;
 
