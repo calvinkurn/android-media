@@ -36,7 +36,6 @@ class AddTemplateBottomSheet(private val mActivity: FragmentActivity?,
         super.onViewCreated(view, savedInstanceState)
         submitAddTemplate()
         showCloseIcon = true
-        isDragable = true
         isFullpage = true
     }
 
