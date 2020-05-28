@@ -19,12 +19,12 @@ private const val broadMatchResponseCode1NotEmptySearch = "searchproduct/broadma
 private const val broadMatchResponseCode4 = "searchproduct/broadmatch/response-code-4.json"
 private const val broadMatchResponseCode4ButNoBroadmatch = "searchproduct/broadmatch/response-code-4-but-no-broadmatch.json"
 private const val broadMatchResponseCode4NoSuggestion = "searchproduct/broadmatch/response-code-4-no-suggestion.json"
-private const val broadMatchResponseCode5 = "searchproduct/broadmatch/response-code-5.json"
-private const val broadMatchResponseCode5Page1 = "searchproduct/broadmatch/response-code-5-page-1.json"
-private const val broadMatchResponseCode5Page2 = "searchproduct/broadmatch/response-code-5-page-2.json"
-private const val broadMatchResponseCode5Page1WithTopads = "searchproduct/broadmatch/response-code-5-page-1-with-topads.json"
-private const val broadMatchResponseCode5Page2WithTopads = "searchproduct/broadmatch/response-code-5-page-2-with-topads.json"
-private const val broadMatchResponseCode5Page3WithTopads = "searchproduct/broadmatch/response-code-5-page-3-with-topads.json"
+private const val broadMatchResponseCode5With5Products = "searchproduct/broadmatch/response-code-5-with-5-products.json"
+private const val broadMatchResponseCode5With8Products = "searchproduct/broadmatch/response-code-5-with-8-products.json"
+private const val broadMatchResponseCode5Page1With12Products = "searchproduct/broadmatch/response-code-5-page-1-with-12-products.json"
+private const val broadMatchResponseCode5Page2With12Products = "searchproduct/broadmatch/response-code-5-page-2-with-12-products.json"
+private const val broadMatchResponseCode5Page1With16Products = "searchproduct/broadmatch/response-code-5-page-1-with-16-products.json"
+private const val broadMatchResponseCode5Page2With16Products = "searchproduct/broadmatch/response-code-5-page-2-with-16-products.json"
 
 internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
 
@@ -198,8 +198,13 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
     }
 
     @Test
-    fun `Show broad match under product list in page 1`() {
-        val searchProductModel = broadMatchResponseCode5.jsonToObject<SearchProductModel>()
+    fun `Show broad match under product list in page 1 with response product size lower than requested size`() {
+        val searchProductModel = broadMatchResponseCode5With5Products.jsonToObject<SearchProductModel>()
+
+        `Test Broad Match shown from page 1`(searchProductModel)
+    }
+
+    private fun `Test Broad Match shown from page 1`(searchProductModel: SearchProductModel) {
         `Given Search Product API will return SearchProductModel`(searchProductModel)
 
         `When Load Data`()
@@ -225,10 +230,22 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
     }
 
     @Test
-    fun `Show broad match under product list on page 2 and above`() {
+    fun `Show broad match under product list in page 1 with response product size equal to requested size`() {
+        val searchProductModel = broadMatchResponseCode5With8Products.jsonToObject<SearchProductModel>()
+
+        `Test Broad Match shown from page 1`(searchProductModel)
+    }
+
+    @Test
+    fun `Show broad match under product list in page 2 or above with response product size lower than requested size`() {
+        val searchProductModelPage1 = broadMatchResponseCode5Page1With12Products.jsonToObject<SearchProductModel>()
+        val searchProductModelPage2 = broadMatchResponseCode5Page2With12Products.jsonToObject<SearchProductModel>()
+
+        `Test Broad Match shown from page 2 or above`(searchProductModelPage1, searchProductModelPage2)
+    }
+
+    private fun `Test Broad Match shown from page 2 or above`(searchProductModelPage1: SearchProductModel, searchProductModelPage2: SearchProductModel) {
         val visitableList = mutableListOf<Visitable<*>>()
-        val searchProductModelPage1 = broadMatchResponseCode5Page1.jsonToObject<SearchProductModel>()
-        val searchProductModelPage2 = broadMatchResponseCode5Page2.jsonToObject<SearchProductModel>()
 
         `Given Search Product API will return SearchProductModel`(searchProductModelPage1)
         `Given Search Product Load More API will return SearchProductModel`(searchProductModelPage2)
@@ -275,48 +292,10 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
     }
 
     @Test
-    fun `Show broad match under product list on page 2 and above with topads`() {
-        val visitableList = mutableListOf<Visitable<*>>()
-        val searchProductModelPage1 = broadMatchResponseCode5Page1WithTopads.jsonToObject<SearchProductModel>()
-        val searchProductModelPage2 = broadMatchResponseCode5Page2WithTopads.jsonToObject<SearchProductModel>()
-        val searchProductModelPage3 = broadMatchResponseCode5Page3WithTopads.jsonToObject<SearchProductModel>()
+    fun `Show broad match under product list in page 2 or above with response product size equal to requested size`() {
+        val searchProductModelPage1 = broadMatchResponseCode5Page1With16Products.jsonToObject<SearchProductModel>()
+        val searchProductModelPage2 = broadMatchResponseCode5Page2With16Products.jsonToObject<SearchProductModel>()
 
-        `Given Search Product API will return SearchProductModel`(searchProductModelPage1)
-        `Given Search Product Load More API will return SearchProductModel page 2 and 3`(searchProductModelPage2, searchProductModelPage3)
-        `Given Product List Presenter already load data`(visitableList)
-        `Given visitable list captured when add product list`()
-
-        `When Load More Data twice`(visitableList)
-
-        `Then assert suggestion view model is positioned after product list`(visitableList)
-        val expectedBroadMatchStartingPosition = visitableList.indexOfLast { it is SuggestionViewModel } + 1
-        `Then assert visitable list contains BroadMatchViewModel`(
-                expectedBroadMatchStartingPosition, visitableList, searchProductModelPage1
-        )
-        `Then assert tracking event impression broad match`(visitableList)
-    }
-
-    private fun `Given Search Product Load More API will return SearchProductModel page 2 and 3`(
-            searchProductModelPage2: SearchProductModel, searchProductModelPage3: SearchProductModel
-    ) {
-        every { searchProductLoadMoreUseCase.execute(any(), any()) }.answers {
-            secondArg<Subscriber<SearchProductModel>>().complete(searchProductModelPage2)
-        }.andThen {
-            secondArg<Subscriber<SearchProductModel>>().complete(searchProductModelPage3)
-        }
-    }
-
-    private fun `Given visitable list captured when add product list`() {
-        every {
-            productListView.addProductList(capture(visitableListSlot))
-        } just runs
-    }
-
-    private fun `When Load More Data twice`(visitableList: MutableList<Visitable<*>>) {
-        every { productListView.addProductList(capture(visitableListSlot)) }.answers {
-            visitableList.addAll(visitableListSlot.captured)
-        }
-        productListPresenter.loadMoreData(mapOf())
-        productListPresenter.loadMoreData(mapOf())
+        `Test Broad Match shown from page 2 or above`(searchProductModelPage1, searchProductModelPage2)
     }
 }

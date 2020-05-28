@@ -480,7 +480,8 @@ final class ProductListPresenter
 
         processInspirationCarouselPosition(searchParameter, list);
 
-        if (isResponseProductSizeLowerThanRequested(searchProductModel.getSearchProduct()) && isShowBroadMatch()) {
+        boolean isLastPage = isLastPage(searchProductModel.getSearchProduct());
+        if (isLastPage && isShowBroadMatch()) {
             processSuggestionAndBroadMatch(list);
         }
 
@@ -931,7 +932,7 @@ final class ProductListPresenter
         inspirationCarouselViewModel = productViewModel.getInspirationCarouselViewModel();
         processInspirationCarouselPosition(searchParameter, list);
 
-        if (isResponseProductSizeLowerThanRequested(searchProduct) && isShowBroadMatch()) {
+        if (isLastPage(searchProduct) && isShowBroadMatch()) {
             processSuggestionAndBroadMatch(list);
         }
 
@@ -949,11 +950,13 @@ final class ProductListPresenter
         getView().stopTracePerformanceMonitoring();
     }
 
-    private boolean isResponseProductSizeLowerThanRequested(@NotNull SearchProductModel.SearchProduct searchProduct) {
+    private boolean isLastPage(@NotNull SearchProductModel.SearchProduct searchProduct) {
+        boolean hasNextPage = startFrom < searchProduct.getCount();
+
         int organicProductListSize = searchProduct.getProducts().size();
         int requestedProductSize = StringExtKt.toIntOrZero(getSearchRows());
 
-        return organicProductListSize < requestedProductSize;
+        return !hasNextPage || organicProductListSize < requestedProductSize;
     }
 
     private boolean shouldShowCpmShop(ProductViewModel productViewModel) {
