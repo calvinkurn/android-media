@@ -11,11 +11,13 @@ import android.widget.LinearLayout
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller_migration_common.R
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.APPLINK_PLAYSTORE
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.PACKAGE_SELLER_APP
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_PLAYSTORE
+import com.tokopedia.seller_migration_common.getSellerMigrationDate
 import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -43,6 +45,13 @@ class SellerMigrationAccountBottomSheet : BottomSheetUnify() {
         })
         sellerMigrationAccountBottomSheetButton.setOnClickListener {
             goToSellerApp()
+        }
+        setupWarningCard()
+    }
+
+    private fun setupWarningCard() {
+        if(getSellerMigrationDate(context).isNotBlank()) {
+            sellerMigrationAccountWarning.show()
         }
     }
 

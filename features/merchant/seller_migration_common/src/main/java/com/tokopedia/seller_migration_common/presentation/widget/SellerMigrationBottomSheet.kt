@@ -10,10 +10,12 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller_migration_common.R
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.APPLINK_PLAYSTORE
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.PACKAGE_SELLER_APP
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_PLAYSTORE
+import com.tokopedia.seller_migration_common.getSellerMigrationDate
 import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -30,6 +32,7 @@ abstract class SellerMigrationBottomSheet(private val titles: List<String> = emp
         setUpButtons()
         setupText()
         setupImages()
+        setupWarningCard()
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -69,7 +72,12 @@ abstract class SellerMigrationBottomSheet(private val titles: List<String> = emp
             return
         }
         setupCarousel()
+    }
 
+    private fun setupWarningCard() {
+        if(getSellerMigrationDate(context).isNotBlank()) {
+            sellerMigrationWarningCard.show()
+        }
     }
 
     private fun setupImageView() {

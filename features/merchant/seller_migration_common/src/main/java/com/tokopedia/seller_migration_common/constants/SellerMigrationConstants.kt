@@ -13,4 +13,5 @@ object SellerMigrationConstants {
     const val APPLINK_PLAYSTORE = "market://details?id="
     const val URL_PLAYSTORE = "https://play.google.com/store/apps/details?id="
     const val APP_ENABLE_SELLER_MIGRATION = "android_mainapp_enable_seller_migration"
+    const val APP_DATE_SELLER_MIGRATION = "android_mainapp_seller_migration_date"
 }

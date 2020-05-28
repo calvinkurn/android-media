@@ -13,3 +13,11 @@ fun isSellerMigrationEnabled(context: Context?): Boolean {
         (!GlobalConfig.isSellerApp() && FirebaseRemoteConfigImpl(context).getBoolean(SellerMigrationConstants.APP_ENABLE_SELLER_MIGRATION, true))
     }
 }
+
+fun getSellerMigrationDate(context: Context?): String {
+    return if(context == null) {
+        ""
+    } else {
+        FirebaseRemoteConfigImpl(context).getString(SellerMigrationConstants.APP_DATE_SELLER_MIGRATION, "")
+    }
+}
