@@ -35,9 +35,9 @@ class PlayEtalasePickerViewModel @Inject constructor(
         get() = _observableSelectedEtalase
     private val _observableSelectedEtalase = MutableLiveData<PlayEtalaseUiModel>()
 
-    val observableSelectedProductIds: LiveData<List<Long>>
-        get() = _observableSelectedProductIds
-    private val _observableSelectedProductIds = MutableLiveData<List<Long>>()
+    val observableSelectedProducts: LiveData<List<ProductUiModel>>
+        get() = _observableSelectedProducts
+    private val _observableSelectedProducts = MutableLiveData<List<ProductUiModel>>()
 
     private val etalaseMap = mutableMapOf<Long, PlayEtalaseUiModel>()
     private val productsMap = mutableMapOf<Long, ProductUiModel>()
@@ -46,7 +46,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
     val maxProduct = PlayBroadcastMocker.getMaxSelectedProduct()
 
     init {
-        _observableSelectedProductIds.value = emptyList()
+        _observableSelectedProducts.value = emptyList()
         fetchEtalaseList()
     }
 
@@ -70,7 +70,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
         if (isSelected) selectedProductIdList.add(productId)
         else selectedProductIdList.remove(productId)
 
-        _observableSelectedProductIds.value = selectedProductIdList
+        updateSelectedProducts()
     }
 
     fun loadEtalaseProductPreview(etalaseId: Long) {
@@ -80,6 +80,9 @@ class PlayEtalasePickerViewModel @Inject constructor(
                 val newProducts = getEtalaseProductsById(etalaseId, 1)
                 val etalase = etalaseMap[etalaseId]
                 if (etalase != null) etalase.productList += newProducts
+
+                launch { updateProductMap(newProducts) }
+
                 broadcastNewEtalaseList(etalaseMap)
             }
             updateCurrentSelectedEtalase(etalaseId)
@@ -108,11 +111,18 @@ class PlayEtalasePickerViewModel @Inject constructor(
             _observableSelectedEtalase.value = etalaseMap[etalaseId]
     }
 
+    private fun updateSelectedProducts() {
+        _observableSelectedProducts.value = selectedProductIdList.flatMap {
+            val product = productsMap[it]
+            if (product != null) listOf(product) else emptyList()
+        }
+    }
+
     private suspend fun broadcastNewEtalaseList(etalaseMap: Map<Long, PlayEtalaseUiModel>) {
         _observableEtalase.value = withContext(computationDispatcher) {
             etalaseMap.values.map { etalase ->
                 etalase.copy(
-                        productList = etalase.productList.take(4).map { product ->
+                        productList = etalase.productList.take(MAX_PRODUCT_IMAGE_COUNT).map { product ->
                             product.copy(
                                     isSelectedHandler = ::isProductSelected,
                                     isSelectable = ::isSelectable
@@ -141,6 +151,10 @@ class PlayEtalasePickerViewModel @Inject constructor(
         newEtalase
     }
 
+    private suspend fun updateProductMap(newProductList: List<ProductUiModel>) = withContext(computationDispatcher) {
+        newProductList.associateByTo(productsMap) { it.id }
+    }
+
     private suspend fun getEtalaseProductsById(etalaseId: Long, page: Int) = withContext(ioDispatcher) {
         return@withContext PlayBroadcastMocker.getMockProductList(((etalaseId - 1).toInt() % 4) + 1).map {
             it.copy(isSelectedHandler = ::isProductSelected, isSelectable = ::isSelectable)
@@ -153,5 +167,10 @@ class PlayEtalasePickerViewModel @Inject constructor(
                 product.copy(isSelectedHandler = ::isProductSelected, isSelectable = ::isSelectable)
             })
         }
+    }
+
+    companion object {
+
+        private const val MAX_PRODUCT_IMAGE_COUNT = 4
     }
 }

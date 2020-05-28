@@ -202,7 +202,7 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
      * Observe
      */
     private fun observeSelectedProducts() {
-        viewModel.observableSelectedProductIds.observe(viewLifecycleOwner, Observer {
+        viewModel.observableSelectedProducts.observe(viewLifecycleOwner, Observer {
             if (it.isEmpty()) {
                 ivInventory.setImageResource(R.drawable.ic_play_inventory_disabled)
                 ivInventory.isClickable = false
