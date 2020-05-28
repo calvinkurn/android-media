@@ -59,10 +59,6 @@ interface TopChatContract {
 
         fun redirectToBrowser(url: String)
 
-        fun isUseNewCard(): Boolean
-
-        fun isUseCarousel(): Boolean?
-
         fun renderOrderProgress(chatOrder: ChatOrderProgress)
 
         fun getChatMenuView(): ChatMenuView?

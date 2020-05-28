@@ -41,8 +41,7 @@ open class TopChatTypeFactoryImpl(
         private val imageDualAnnouncementListener: DualAnnouncementListener,
         private val voucherListener: TopChatVoucherListener,
         private val invoiceThumbnailListener: InvoiceThumbnailListener,
-        private val quotationListener: QuotationViewHolder.QuotationListener,
-        private val useNewProductCard: Boolean
+        private val quotationListener: QuotationViewHolder.QuotationListener
 ) : BaseChatTypeFactoryImpl(
         imageAnnouncementListener,
         chatLinkHandlerListener,
@@ -110,11 +109,7 @@ open class TopChatTypeFactoryImpl(
     }
 
     override fun type(productAttachmentViewModel: ProductAttachmentViewModel): Int {
-        return if (useNewProductCard) {
-            TopchatProductAttachmentViewHolder.LAYOUT
-        } else {
-            super.type(productAttachmentViewModel)
-        }
+        return TopchatProductAttachmentViewHolder.LAYOUT
     }
 
     // Check if chat bubble first, if not return default ViewHolder

@@ -227,8 +227,6 @@ class TopChatRoomPresenter @Inject constructor(
             getChatUseCase.execute(
                     GetChatUseCase.generateParam(messageId, paramBeforeReplyTime),
                     GetChatSubscriber(
-                            view?.isUseCarousel() ?: false,
-                            view?.isUseNewCard() ?: true,
                             onError,
                             onSuccessGetExistingMessage
                     )
@@ -256,8 +254,6 @@ class TopChatRoomPresenter @Inject constructor(
             getChatUseCase.execute(
                     GetChatUseCase.generateParam(messageId, paramBeforeReplyTime),
                     GetChatSubscriber(
-                            view?.isUseCarousel() ?: false,
-                            view?.isUseNewCard() ?: true,
                             onError,
                             onSuccessGetPreviousChat
                     )

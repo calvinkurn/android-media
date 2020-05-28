@@ -471,32 +471,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
                 this,
                 this,
                 this,
-                this,
-                isUseNewCard()
+                this
         )
-    }
-
-    override fun isUseNewCard(): Boolean {
-        val defaultUseNewCard = true
-        return try {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewThumbnailKey) == variantNewThumbnail
-        } catch (e: Exception) {
-            e.printStackTrace()
-            logUnknownError(e)
-            defaultUseNewCard
-        }
-    }
-
-    private fun logUnknownError(exception: Exception) {
-        try {
-            if (!BuildConfig.DEBUG) Crashlytics.logException(exception)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    override fun isUseCarousel(): Boolean? {
-        return remoteConfig?.getBoolean(RemoteConfigKey.CHAT_PRODUCT_CAROUSEL, true)
     }
 
     override fun renderOrderProgress(chatOrder: ChatOrderProgress) {
@@ -1107,9 +1083,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     companion object {
-        private const val abNewThumbnailKey = "Topchat Product Thumbnail"
-        private const val variantNewThumbnail = "New Thumbnail"
-
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {
                 arguments = bundle
