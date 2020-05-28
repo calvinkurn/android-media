@@ -11,6 +11,7 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
+import com.tokopedia.play.broadcaster.view.uimodel.ProductUiModel
 
 /**
  * Created by jegul on 28/05/20
@@ -19,6 +20,9 @@ class SelectedProductPagePartialView(
         container: ViewGroup,
         listener: Listener
 ) {
+
+    val isShown: Boolean
+        get() = bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED
 
     private val clSelectedProduct: ConstraintLayout = container.findViewById(R.id.cl_selected_product)
     private val vDragIndicator: View = container.findViewById(R.id.v_drag_indicator)
@@ -53,6 +57,20 @@ class SelectedProductPagePartialView(
 
     fun hide() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+    }
+
+    fun setSelectedProductList(productList: List<ProductUiModel>) {
+        updateTitle(productList.size)
+        selectableProductAdapter.setItems(productList)
+        selectableProductAdapter.notifyDataSetChanged()
+    }
+
+    fun onSelectedProductsUpdated(productList: List<ProductUiModel>) {
+        updateTitle(productList.size)
+    }
+
+    private fun updateTitle(productCount: Int) {
+        tvSelectedProductTitle.text = context.getString(R.string.play_selected_products, productCount)
     }
 
     interface Listener {

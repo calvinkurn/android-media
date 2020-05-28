@@ -45,13 +45,16 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
     val maxProduct = PlayBroadcastMocker.getMaxSelectedProduct()
 
+    val selectedProductList: List<ProductUiModel>
+        get() = observableSelectedProducts.value.orEmpty()
+
     init {
         _observableSelectedProducts.value = emptyList()
         fetchEtalaseList()
     }
 
     fun setSelectedEtalase(etalaseId: Long) {
-        val selectedEtalase = _observableEtalase.value?.firstOrNull { it.id == etalaseId }
+        val selectedEtalase = etalaseMap[etalaseId]
         if (selectedEtalase != null) _observableSelectedEtalase.value = selectedEtalase
     }
 
@@ -156,7 +159,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
     }
 
     private suspend fun getEtalaseProductsById(etalaseId: Long, page: Int) = withContext(ioDispatcher) {
-        return@withContext PlayBroadcastMocker.getMockProductList(((etalaseId - 1).toInt() % 4) + 1).map {
+        return@withContext PlayBroadcastMocker.getMockProductList(((etalaseId - 1).toInt() % 4)*20 + 1).map {
             it.copy(isSelectedHandler = ::isProductSelected, isSelectable = ::isSelectable)
         }
     }

@@ -54,6 +54,10 @@ class PlayEtalaseDetailFragment @Inject constructor(
         return false
     }
 
+    override fun refresh() {
+        selectableProductAdapter.notifyDataSetChanged()
+    }
+
     override fun getScreenName(): String = "Etalase Detail"
 
     override fun onCreate(savedInstanceState: Bundle?) {

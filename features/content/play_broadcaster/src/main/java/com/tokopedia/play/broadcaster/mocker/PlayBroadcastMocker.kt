@@ -51,7 +51,7 @@ object PlayBroadcastMocker {
         )
     }
 
-    fun getMaxSelectedProduct() = 1
+    fun getMaxSelectedProduct() = 8
 
     fun getMockConfiguration() = Configuration(
             isUserWhitelisted = true,

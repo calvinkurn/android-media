@@ -1,6 +1,8 @@
 package com.tokopedia.play.broadcaster.ui.viewholder
 
 import android.view.View
+import android.widget.CheckBox
+import android.widget.CompoundButton
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -29,6 +31,8 @@ class ProductSelectableViewHolder(
     private val tvProductAmount: TextView = itemView.findViewById(R.id.tv_product_amount)
     private val lblEmptyStock: Label = itemView.findViewById(R.id.lbl_empty_stock)
 
+    private var onCheckedChangeListener: (CompoundButton, Boolean) -> Unit = { _ , _ -> }
+
     init {
         lblEmptyStock.unlockFeature = true
         lblEmptyStock.setLabelType(
@@ -37,7 +41,7 @@ class ProductSelectableViewHolder(
     }
 
     fun bind(item: ProductUiModel) {
-        cbSelected.isChecked = item.isSelectedHandler(item.id)
+        cbSelected.forceSetCheckbox(item.isSelectedHandler(item.id))
         ivImage.loadImage(item.imageUrl)
 
         tvProductName.text = item.name
@@ -61,13 +65,20 @@ class ProductSelectableViewHolder(
             }
         }
 
-        cbSelected.setOnCheckedChangeListener { _, isChecked ->
+        onCheckedChangeListener = { _, isChecked ->
             listener.onProductSelectStateChanged(item.id, isChecked)
         }
+        cbSelected.setOnCheckedChangeListener(onCheckedChangeListener)
     }
 
     private fun triggerCheckbox() {
         cbSelected.isChecked = !cbSelected.isChecked
+    }
+
+    private fun CheckBox.forceSetCheckbox(isChecked: Boolean) {
+        setOnCheckedChangeListener(null)
+        cbSelected.isChecked = isChecked
+        setOnCheckedChangeListener(onCheckedChangeListener)
     }
 
     companion object {

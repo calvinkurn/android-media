@@ -58,6 +58,9 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
 
     private val fragmentBreadcrumbs = Stack<BreadcrumbsModel>()
 
+    private val currentFragment: Fragment?
+        get() = childFragmentManager.findFragmentById(R.id.fl_fragment)
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : BottomSheetDialog(requireContext(), theme) {
             override fun onBackPressed() {
@@ -89,6 +92,8 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         selectedProductPage = SelectedProductPagePartialView(view as ViewGroup, object : SelectedProductPagePartialView.Listener {
             override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
                 viewModel.selectProduct(productId, isSelected)
+                val activeFragment = currentFragment
+                if (activeFragment is PlayBaseSetupFragment) activeFragment.refresh()
             }
         })
     }
@@ -164,9 +169,7 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         flOverlay.setOnClickListener { dialog?.onBackPressed() }
         ivBack.setOnClickListener { dialog?.onBackPressed() }
 
-        ivInventory.setOnClickListener {
-            selectedProductPage.show()
-        }
+        ivInventory.setOnClickListener { showSelectedProductPage() }
 
         navigateToFragment(PlayEtalasePickerFragment::class.java)
     }
@@ -189,12 +192,18 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
     }
 
     private fun addBreadcrumb() {
-        val currentFragment = childFragmentManager.findFragmentById(R.id.fl_fragment)
         currentFragment?.let { fragment ->
             fragmentBreadcrumbs.add(
                     BreadcrumbsModel(fragment.javaClass, fragment.arguments ?: Bundle.EMPTY)
             )
         }
+    }
+
+    private fun showSelectedProductPage() {
+        if (selectedProductPage.isShown) return
+
+        selectedProductPage.setSelectedProductList(viewModel.selectedProductList)
+        selectedProductPage.show()
     }
 
     //region observe
@@ -215,6 +224,8 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
                 tvBadgeCount.visible()
                 tvBadgeCount.text = it.size.toString()
             }
+
+            selectedProductPage.onSelectedProductsUpdated(it)
         })
     }
     //endregion

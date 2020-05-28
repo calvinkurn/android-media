@@ -50,6 +50,10 @@ class PlayEtalasePickerFragment @Inject constructor(
 
     override fun isRootFragment(): Boolean = true
 
+    override fun refresh() {
+        etalaseAdapter.notifyDataSetChanged()
+    }
+
     override fun getScreenName(): String = "Play Etalase Picker"
 
     override fun onCreate(savedInstanceState: Bundle?) {
