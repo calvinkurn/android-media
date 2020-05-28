@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
-import com.tokopedia.transaction.common.R;
+import com.tokopedia.buyerorder.R;
 
 /**
  * Created by kris on 11/29/17. Tokopedia
