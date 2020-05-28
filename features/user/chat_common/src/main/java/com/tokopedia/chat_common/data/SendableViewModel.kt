@@ -30,7 +30,6 @@ open class SendableViewModel
         attachmentType, replyTime, message) {
 
 
-
     var startTime: String protected set
     var isShowRole = true
 
@@ -41,19 +40,20 @@ open class SendableViewModel
 
     private fun checkRole(fromRole: String): String {
         val v = fromRole.toIntOrNull()
-        return when(v) {
+        return when (v) {
             null -> fromRole
-            else ->{
-               return when (v > listRole.size){
-                   true -> fromRole
-                   else -> listRole[v-1]
-               }
+            else -> {
+                return when (v > listRole.size) {
+                    true -> fromRole
+                    else -> listRole[v - 1]
+                }
             }
         }
     }
 
     companion object {
-
+        @JvmStatic
+        val PAYLOAD_EVENT_READ = "event_read"
         val START_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
 
         const val SENDING_TEXT = "Sedang mengirim ..."

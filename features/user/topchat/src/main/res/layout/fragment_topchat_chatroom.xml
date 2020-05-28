@@ -117,8 +117,8 @@
                 android:paddingTop="@dimen/dp_topchat_12"
                 android:paddingEnd="@dimen/spacing_lvl4"
                 android:visibility="gone"
-                tools:layout_marginBottom="@dimen/spacing_lvl3"
                 tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:layout_marginBottom="@dimen/spacing_lvl3"
                 tools:listitem="@layout/item_template_chat_layout"
                 tools:orientation="horizontal"
                 tools:scrollbars="horizontal"
@@ -160,8 +160,8 @@
                     android:hint="@string/chat_edit_text"
                     android:inputType="textMultiLine"
                     android:maxLines="5"
-                    android:paddingStart="@dimen/dp_topchat_12"
-                    android:paddingLeft="@dimen/dp_topchat_12"
+                    android:paddingStart="@dimen/spacing_lvl7"
+                    android:paddingLeft="@dimen/spacing_lvl7"
                     android:paddingTop="@dimen/dp_topchat_10"
                     android:paddingEnd="@dimen/spacing_lvl8"
                     android:paddingRight="@dimen/spacing_lvl8"
@@ -169,50 +169,36 @@
                     android:textSize="@dimen/fontSize_lvl4"
                     tools:text="@tools:sample/lorem/random" />
 
-                <FrameLayout
+                <ImageView
+                    android:id="@+id/iv_chat_sticker"
+                    android:layout_width="@dimen/spacing_lvl7"
+                    android:layout_height="@dimen/spacing_lvl7"
+                    android:layout_alignStart="@+id/new_comment"
+                    android:layout_alignLeft="@+id/new_comment"
+                    android:layout_alignBottom="@+id/new_comment"
+                    android:padding="@dimen/spacing_lvl3"
+                    app:srcCompat="@drawable/ic_topchat_sticker" />
+
+                <ImageView
+                    android:id="@+id/iv_chat_menu"
                     android:layout_width="@dimen/spacing_lvl7"
                     android:layout_height="@dimen/spacing_lvl7"
                     android:layout_alignEnd="@+id/new_comment"
                     android:layout_alignRight="@+id/new_comment"
                     android:layout_alignBottom="@+id/new_comment"
-                    android:layout_marginEnd="@dimen/spacing_lvl3"
-                    android:layout_marginRight="@dimen/spacing_lvl3"
-                    android:background="@drawable/bg_oval_transparent">
-
-                    <ImageView
-                        android:id="@+id/iv_chat_menu"
-                        android:layout_width="@dimen/spacing_lvl7"
-                        android:layout_height="@dimen/spacing_lvl7"
-                        android:padding="@dimen/spacing_lvl3"
-                        app:srcCompat="@drawable/ic_add_grey_chat_common" />
-                </FrameLayout>
+                    android:layout_marginEnd="@dimen/spacing_lvl1"
+                    android:layout_marginRight="@dimen/spacing_lvl1"
+                    android:padding="@dimen/spacing_lvl3"
+                    app:srcCompat="@drawable/ic_add_grey_chat_common" />
 
             </RelativeLayout>
 
-            <FrameLayout
-                android:id="@+id/rv_attachment_menu_container"
+            <com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
+                android:id="@+id/fl_chat_menu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                tools:visibility="visible">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/spacing_lvl3"
-                    android:layout_gravity="top"
-                    android:background="@drawable/bg_shadow_attachment_menu_chat_common" />
-
-                <com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
-                    android:id="@+id/rv_attachment_menu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:overScrollMode="never"
-                    android:paddingTop="@dimen/spacing_lvl5"
-                    android:paddingBottom="@dimen/spacing_lvl5"
-                    tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    tools:spanCount="2" />
-
-            </FrameLayout>
+                tools:visibility="visible" />
 
         </LinearLayout>
 

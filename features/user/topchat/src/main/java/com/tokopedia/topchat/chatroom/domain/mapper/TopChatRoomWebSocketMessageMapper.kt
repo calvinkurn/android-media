@@ -4,12 +4,15 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUOTATION
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
 import com.tokopedia.chat_common.domain.mapper.WebsocketMessageMapper
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.merchantvoucher.common.gql.data.*
 import com.tokopedia.topchat.chatroom.domain.pojo.QuotationAttributes
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatVoucherPojo
+import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerAttributesResponse
+import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 import javax.inject.Inject
@@ -23,8 +26,29 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor() : WebsocketMessage
         return when (pojo.attachment!!.type) {
             TYPE_VOUCHER -> convertToVoucher(pojo, jsonAttributes)
             TYPE_QUOTATION -> convertToQuotation(pojo, jsonAttributes)
+            TYPE_STICKER.toString() -> convertToSticker(pojo, jsonAttributes)
             else -> super.mapAttachmentMessage(pojo, jsonAttributes)
         }
+    }
+
+    private fun convertToSticker(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
+        val stickerAttributes = GsonBuilder().create().fromJson<StickerAttributesResponse>(jsonAttributes,
+                StickerAttributesResponse::class.java)
+        return StickerUiModel(
+                messageId = pojo.msgId.toString(),
+                fromUid = pojo.fromUid,
+                from = pojo.from,
+                fromRole = pojo.fromRole,
+                attachmentId = pojo.attachment?.id.toString(),
+                attachmentType = pojo.attachment?.type.toString(),
+                replyTime = pojo.message.timeStampUnixNano,
+                startTime = pojo.startTime,
+                message = pojo.message.censoredReply,
+                isRead = false,
+                isDummy = false,
+                isSender = !pojo.isOpposite,
+                sticker = stickerAttributes.stickerProfile
+        )
     }
 
     private fun convertToVoucher(item: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
