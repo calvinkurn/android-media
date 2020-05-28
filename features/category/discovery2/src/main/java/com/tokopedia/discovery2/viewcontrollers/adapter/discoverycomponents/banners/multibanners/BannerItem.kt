@@ -22,6 +22,7 @@ class BannerItem(val bannerItemData: DataItem, private val constraintLayout: Con
     private fun addImageConstrains() {
         if (!bannerItemData.imageUrlDynamicMobile.isNullOrEmpty()) {
             bannerImageView = ImageUnify(context)
+            (bannerImageView as ImageUnify).cornerRadius = 0
         }
         bannerImageView.id = VIEW_ID_CONSTANT + index
         constraintLayout.addView(bannerImageView)
