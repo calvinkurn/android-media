@@ -46,11 +46,15 @@ class ReviewSellerAdapter(
         if (visitables.contains(loadingModel)) {
             val itemPosition = visitables.indexOf(loadingModel)
             visitables.remove(loadingModel)
-            notifyItemRemoved(itemPosition)
+            if(itemPosition != -1) {
+                notifyItemRemoved(itemPosition)
+            }
         } else if (visitables.contains(loadingMoreModel)) {
             val itemPosition = visitables.indexOf(loadingMoreModel)
             visitables.remove(loadingMoreModel)
-            notifyItemRemoved(itemPosition)
+            if(itemPosition != -1) {
+                notifyItemRemoved(itemPosition)
+            }
         }
     }
 }
