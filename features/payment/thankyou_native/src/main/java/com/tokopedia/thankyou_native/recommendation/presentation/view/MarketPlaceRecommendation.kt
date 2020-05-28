@@ -42,18 +42,18 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
     private lateinit var fragment: BaseDaggerFragment
 
     @Inject
-    lateinit var analytics: RecommendationAnalytics
+    lateinit var analytics: dagger.Lazy<RecommendationAnalytics>
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
     @Inject
-    lateinit var userSessionInterface: UserSessionInterface
+    lateinit var userSessionInterface: dagger.Lazy<UserSessionInterface>
 
     var isObserverAttached = false
 
     private val viewModel: MarketPlaceRecommendationViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        val viewModelProvider = ViewModelProviders.of(fragment, viewModelFactory)
+        val viewModelProvider = ViewModelProviders.of(fragment, viewModelFactory.get())
         viewModelProvider[MarketPlaceRecommendationViewModel::class.java]
     }
 
@@ -185,7 +185,7 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
 
             override fun onRecommendationItemDisplayed(recommendationItem: RecommendationItem,
                                                        position: Int) {
-                analytics.sendRecommendationItemDisplayed(recommendationItem, position)
+                analytics.get().sendRecommendationItemDisplayed(recommendationItem, position)
             }
 
             override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean,
@@ -226,7 +226,7 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
 
     private fun onItemWishListClick(item: RecommendationItem, isAddWishlist: Boolean,
                                     callback: (Boolean, Throwable?) -> Unit) {
-        if (userSessionInterface.isLoggedIn) {
+        if (userSessionInterface.get().isLoggedIn) {
             if (!isAddWishlist) {
                 viewModel.addToWishList(item, callback)
             } else {
@@ -238,7 +238,7 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
     }
 
     private fun onRecomProductClick(item: RecommendationItem, position: Int) {
-        analytics.sendRecommendationItemClick(item, position = position + 1)
+        analytics.get().sendRecommendationItemClick(item, position = position + 1)
         val intent = RouteManager.getIntent(context,
                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString())
 
@@ -246,9 +246,6 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
         fragment.startActivityForResult(intent, WishList.REQUEST_FROM_PDP)
     }
 
-    fun onActivityResult(position: Int, wishListStatusFromPdp: Boolean) {
-
-    }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()

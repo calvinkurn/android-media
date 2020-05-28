@@ -44,17 +44,17 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     private lateinit var dialogHelper: DialogHelper
 
     @Inject
-    lateinit var thankYouPageAnalytics: ThankYouPageAnalytics
+    lateinit var thankYouPageAnalytics: dagger.Lazy<ThankYouPageAnalytics>
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
-    var iRecommendationView: IRecommendationView? = null
+    private var iRecommendationView: IRecommendationView? = null
 
-    val marketRecommendationPlaceLayout = R.layout.thank_layout_market_place_recom
+    private val marketRecommendationPlaceLayout = R.layout.thank_layout_market_place_recom
 
     private val thanksPageDataViewModel: ThanksPageDataViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
         viewModelProvider.get(ThanksPageDataViewModel::class.java)
     }
 
@@ -130,7 +130,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     fun openHowTOPay(thanksPageData: ThanksPageData) {
         RouteManager.route(context, thanksPageData.howToPay)
-        thankYouPageAnalytics.sendOnHowtoPayClickEvent()
+        thankYouPageAnalytics.get().sendOnHowtoPayClickEvent()
     }
 
     fun showPaymentStatusDialog(isTimerFinished: Boolean,
@@ -167,13 +167,13 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             invoiceBottomSheets.showNow(it.supportFragmentManager, "")
         }
 
-        thankYouPageAnalytics.sendLihatDetailClickEvent(PaymentPageMapper
+        thankYouPageAnalytics.get().sendLihatDetailClickEvent(PaymentPageMapper
                 .getPaymentPageType(thanksPageData.pageType))
     }
 
     override fun gotoHomePage() {
         RouteManager.route(context, ApplinkConst.HOME, "")
-        thankYouPageAnalytics.sendBelanjaLagiClickEvent()
+        thankYouPageAnalytics.get().sendBelanjaLagiClickEvent()
         activity?.finish()
     }
 
@@ -191,7 +191,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     override fun gotoOrderList() {
         try {
-            thankYouPageAnalytics.sendCheckTransactionListEvent()
+            thankYouPageAnalytics.get().sendCheckTransactionListEvent()
             val homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME, "")
             val orderListListIntent = getOrderListPageIntent()
             orderListListIntent?.let {

@@ -28,7 +28,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     private lateinit var dialogUnify: DialogUnify
 
     private val checkWhiteListViewModel: CheckWhiteListViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
         viewModelProvider.get(CheckWhiteListViewModel::class.java)
     }
 

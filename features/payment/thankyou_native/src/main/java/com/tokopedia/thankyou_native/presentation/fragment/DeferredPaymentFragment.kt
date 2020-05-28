@@ -131,7 +131,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
                 showToastCopySuccessFully(context)
             }
         }
-        thankYouPageAnalytics.sendSalinButtonClickEvent(thanksPageData.gatewayName)
+        thankYouPageAnalytics.get().sendSalinButtonClickEvent(thanksPageData.gatewayName)
     }
 
     private fun showToastCopySuccessFully(context: Context) {

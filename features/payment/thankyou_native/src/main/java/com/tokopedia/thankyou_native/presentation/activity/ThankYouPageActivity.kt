@@ -23,7 +23,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         ThankYouPageDataLoadCallback {
 
     @Inject
-    lateinit var thankYouPageAnalytics: ThankYouPageAnalytics
+    lateinit var thankYouPageAnalytics: dagger.Lazy<ThankYouPageAnalytics>
 
     private lateinit var thankYouPageComponent: ThankYouPageComponent
 
@@ -133,7 +133,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
      * status if payment type is deferred/Processing
      * */
     override fun onBackPressed() {
-        thankYouPageAnalytics.sendBackPressedEvent()
+        thankYouPageAnalytics.get().sendBackPressedEvent()
         if (!isOnBackPressOverride()) {
             gotoHomePage()
             finish()

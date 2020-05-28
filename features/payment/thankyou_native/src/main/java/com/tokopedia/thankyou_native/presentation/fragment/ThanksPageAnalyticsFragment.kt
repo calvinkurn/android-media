@@ -18,7 +18,7 @@ import javax.inject.Inject
 class ThanksPageAnalyticsFragment : BaseDaggerFragment() {
 
     @Inject
-    lateinit var thankYouPageAnalytics: ThankYouPageAnalytics
+    lateinit var thankYouPageAnalytics: dagger.Lazy<ThankYouPageAnalytics>
 
 
     lateinit var thanksPageData: ThanksPageData
@@ -37,9 +37,9 @@ class ThanksPageAnalyticsFragment : BaseDaggerFragment() {
 
     private fun postThanksPageLoadEvent(thanksPageData: ThanksPageData) {
         this.thanksPageData = thanksPageData
-        thankYouPageAnalytics.sendThankYouPageDataLoadEvent(thanksPageData)
-        thankYouPageAnalytics.appsFlyerPurchaseEvent(thanksPageData)
-        thankYouPageAnalytics.sendBranchIOEvent(thanksPageData)
+        thankYouPageAnalytics.get().sendThankYouPageDataLoadEvent(thanksPageData)
+        thankYouPageAnalytics.get().appsFlyerPurchaseEvent(thanksPageData)
+        thankYouPageAnalytics.get().sendBranchIOEvent(thanksPageData)
     }
 
     companion object {
