@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -15,6 +16,7 @@ import com.tokopedia.product.detail.data.util.productThousandFormatted
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.share.ekstensions.layoutInflater
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.item_dynamic_general_info.view.*
 import kotlinx.android.synthetic.main.item_hierarchycal_social_proof.view.*
 import kotlinx.android.synthetic.main.item_social_proof_with_divider.view.*
 
@@ -28,22 +30,24 @@ class ProductMiniSocialProofViewHolder(private val view: View, private val liste
     }
 
     override fun bind(element: ProductMiniSocialProofDataModel) {
-        val availableData = element.getLastThreeHirarchyData()
+        val availableData = element.getLastThreeHirarchyData
 
         if (!element.shouldRenderSocialProof) {
             showLoading()
         } else {
+            measureView(availableData.isEmpty())
             hideLoading()
+
             view.pdp_shimmering_social_proof?.hide()
             val rootView = view.findViewById<ViewGroup>(R.id.root_socproof)
             rootView.removeAllViews()
 
             val inflater: LayoutInflater = view.context.layoutInflater
-            val key = availableData.first().first
 
-            if (availableData.size == 1 && (key == ProductMiniSocialProofDataModel.TALK || key == ProductMiniSocialProofDataModel.PAYMENT_VERIFIED || key == ProductMiniSocialProofDataModel.VIEW_COUNT)) {
+            if (element.shouldShowSingleViewSocialProof()) {
                 val socProofView: View = inflater.inflate(R.layout.item_social_proof_with_divider, null)
-                generateSingleTextSocialProof(availableData.first(), socProofView, element)
+                generateSingleTextSocialProof(availableData.firstOrNull()
+                        ?: Pair("", 0), socProofView)
                 rootView.addView(socProofView, 0)
             } else {
                 availableData.forEachIndexed { index, i ->
@@ -65,7 +69,15 @@ class ProductMiniSocialProofViewHolder(private val view: View, private val liste
         pdp_shimmering_social_proof.hide()
     }
 
-    private fun generateSingleTextSocialProof(element: Pair<String, Int>, view: View, data: ProductMiniSocialProofDataModel) {
+    private fun measureView(isDataEmpty: Boolean) = with(view) {
+        if (isDataEmpty) {
+            layoutParams.height = 0
+        } else {
+            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        }
+    }
+
+    private fun generateSingleTextSocialProof(element: Pair<String, Int>, view: View) {
         val textSocialProofValue = view.txt_soc_proof_value
         val socProofDivider = view.social_proof_horizontal_separator
         val socProofTitle = view.txt_soc_proof_title

@@ -35,13 +35,43 @@ data class ProductMiniSocialProofDataModel(
         return typeFactory.type(this)
     }
 
-    fun getLastThreeHirarchyData(): List<Pair<String, Int>> {
-        return listOf(RATING to ratingCount,
+    val getLastThreeHirarchyData: List<Pair<String, Int>>
+        get() = listOf(RATING to ratingCount,
                 TALK to talkCount,
                 PAYMENT_VERIFIED to paymentVerifiedCount,
                 WISHLIST to wishlistCount,
                 VIEW_COUNT to viewCount)
                 .filter { it.second > 0 }
                 .take(3)
+
+    private fun shouldShowSingleQna(): Boolean {
+        val data = getLastThreeHirarchyData
+        return if (data.size == 2) {
+            data.size == data.count {
+                it.first == TALK || it.first == VIEW_COUNT
+            }
+        } else {
+            false
+        }
+    }
+
+    private fun shouldShowSinglePaymentVerified(): Boolean {
+        val data = getLastThreeHirarchyData
+        return if (data.size == 2) {
+            data.size == data.count {
+                it.first == PAYMENT_VERIFIED || it.first == VIEW_COUNT
+            }
+        } else {
+            false
+        }
+    }
+
+    private fun shouldShowSingleViewCount(): Boolean {
+        val data = getLastThreeHirarchyData
+        return data.size == 1 && data.firstOrNull()?.first == VIEW_COUNT
+    }
+
+    fun shouldShowSingleViewSocialProof(): Boolean {
+        return shouldShowSingleQna() || shouldShowSinglePaymentVerified() || shouldShowSingleViewCount()
     }
 }
