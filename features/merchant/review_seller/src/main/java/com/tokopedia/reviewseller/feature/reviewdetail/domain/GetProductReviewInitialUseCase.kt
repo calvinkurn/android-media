@@ -2,13 +2,11 @@ package com.tokopedia.reviewseller.feature.reviewdetail.domain
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.reviewseller.common.util.GQL_GET_PRODUCT_FEEDBACK_FILTER
-import com.tokopedia.reviewseller.common.util.GQL_GET_PRODUCT_FEEDBACK_LIST_DETAIL
-import com.tokopedia.reviewseller.common.util.GQL_GET_PRODUCT_REVIEW_DETAIL_OVERALL
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductFeedbackDetailResponse
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductFeedbackFilterResponse
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductReviewDetailOverallResponse
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductReviewInitialDataResponse
+import com.tokopedia.reviewseller.feature.reviewdetail.util.GqlQueryDetail
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -17,7 +15,6 @@ import javax.inject.Inject
  * Created by Yehezkiel on 28/04/20
  */
 class GetProductReviewInitialUseCase @Inject constructor(
-        val rawQuery: Map<String, String>,
         private val graphQlRepository: GraphqlRepository
 ) : UseCase<ProductReviewInitialDataResponse>() {
 
@@ -51,7 +48,7 @@ class GetProductReviewInitialUseCase @Inject constructor(
         val timeFilter = requestParams.getString(TIME_FILTER, "")
 
         val overAllRatingParams = mapOf(PRODUCT_ID to productId, FILTER_BY to filterBy)
-        val overAllRatingRequest = GraphqlRequest(rawQuery[GQL_GET_PRODUCT_REVIEW_DETAIL_OVERALL], ProductReviewDetailOverallResponse::class.java,
+        val overAllRatingRequest = GraphqlRequest(GqlQueryDetail.GET_PRODUCT_REVIEW_DETAIL_OVERALL, ProductReviewDetailOverallResponse::class.java,
                 overAllRatingParams)
 
         val feedbackDetailListParams = mapOf(PRODUCT_ID to productId,
@@ -59,7 +56,7 @@ class GetProductReviewInitialUseCase @Inject constructor(
                 FILTER_BY to filterBy,
                 LIMIT to 10,
                 PAGE to page)
-        val feedbackDetailListRequest = GraphqlRequest(rawQuery[GQL_GET_PRODUCT_FEEDBACK_LIST_DETAIL], ProductFeedbackDetailResponse::class.java,
+        val feedbackDetailListRequest = GraphqlRequest(GqlQueryDetail.GET_PRODUCT_FEEDBACK_LIST_DETAIL, ProductFeedbackDetailResponse::class.java,
                 feedbackDetailListParams)
 
         val feedbackFilterParams = mapOf(PRODUCT_ID to productId,
@@ -67,7 +64,7 @@ class GetProductReviewInitialUseCase @Inject constructor(
                 FILTER_BY to timeFilter,
                 LIMIT to 10,
                 PAGE to 0)
-        val feedbackDetailFilterRequest = GraphqlRequest(rawQuery[GQL_GET_PRODUCT_FEEDBACK_FILTER], ProductFeedbackFilterResponse::class.java,
+        val feedbackDetailFilterRequest = GraphqlRequest(GqlQueryDetail.GQL_GET_PRODUCT_FEEDBACK_FILTER, ProductFeedbackFilterResponse::class.java,
                 feedbackFilterParams)
 
         val requests = mutableListOf(overAllRatingRequest, feedbackDetailListRequest, feedbackDetailFilterRequest)

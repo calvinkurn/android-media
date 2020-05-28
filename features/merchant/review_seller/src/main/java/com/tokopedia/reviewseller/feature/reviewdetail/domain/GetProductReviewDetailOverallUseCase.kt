@@ -4,14 +4,12 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.reviewseller.common.util.GQL_GET_PRODUCT_REVIEW_DETAIL_OVERALL
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductReviewDetailOverallResponse
+import com.tokopedia.reviewseller.feature.reviewdetail.util.GqlQueryDetail
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
-import javax.inject.Named
 
 class GetProductReviewDetailOverallUseCase @Inject constructor(
-        val rawQuery: Map<String,String>,
         private val graphQlRepository: GraphqlRepository
 ): UseCase<ProductReviewDetailOverallResponse.ProductGetReviewAggregateByProduct>() {
 
@@ -26,7 +24,7 @@ class GetProductReviewDetailOverallUseCase @Inject constructor(
     var params = mapOf<String, Any>()
 
     override suspend fun executeOnBackground(): ProductReviewDetailOverallResponse.ProductGetReviewAggregateByProduct {
-        val gqlRequest = GraphqlRequest(rawQuery[GQL_GET_PRODUCT_REVIEW_DETAIL_OVERALL], ProductReviewDetailOverallResponse::class.java, params)
+        val gqlRequest = GraphqlRequest(GqlQueryDetail.GET_PRODUCT_REVIEW_DETAIL_OVERALL, ProductReviewDetailOverallResponse::class.java, params)
         val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))
         val error = gqlResponse.getError(GraphqlError::class.java)
         if (error == null || error.isEmpty()) {

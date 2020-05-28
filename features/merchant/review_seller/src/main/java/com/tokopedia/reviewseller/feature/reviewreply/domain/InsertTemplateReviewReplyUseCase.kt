@@ -4,15 +4,11 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.reviewseller.common.util.GQL_INSERT_TEMPLATE_REVIEW
 import com.tokopedia.reviewseller.feature.reviewreply.data.ReviewReplyInsertTemplateResponse
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
-import javax.inject.Named
 
 class InsertTemplateReviewReplyUseCase @Inject constructor(
-        @Named(GQL_INSERT_TEMPLATE_REVIEW)
-        val gqlQuery: String,
         private val graphQlRepository: GraphqlRepository
 ): UseCase<ReviewReplyInsertTemplateResponse.InsertResponseTemplate>() {
 
@@ -20,6 +16,22 @@ class InsertTemplateReviewReplyUseCase @Inject constructor(
         private const val SHOP_ID = "shopID"
         private const val TITLE = "title"
         private const val MESSAGE = "message"
+
+        private val gqlQuery = """
+            mutation insert_template_review(${'$'}shopID: Int!, ${'$'}title: String!, ${'$'}message: String!) {
+              insertResponseTemplate(shopID: ${'$'}shopID, title: ${'$'}title, message: ${'$'}message) {
+                    success
+                    data {
+                       templateId
+                       title
+                       message
+                       status
+                     }
+                     defaultTemplateID
+                     error
+                  }
+            }
+        """.trimIndent()
 
         @JvmStatic
         fun createParams(shopID: Int, title: String, message: String): Map<String, Any> =

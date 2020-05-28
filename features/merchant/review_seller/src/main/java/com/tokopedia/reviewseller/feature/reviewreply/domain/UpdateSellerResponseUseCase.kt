@@ -4,21 +4,31 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.reviewseller.common.util.GQL_UPDATE_SELLER_RESPONSE
 import com.tokopedia.reviewseller.feature.reviewreply.data.ReviewReplyUpdateResponse
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
-import javax.inject.Named
 
 class UpdateSellerResponseUseCase @Inject constructor(
-        @Named(GQL_UPDATE_SELLER_RESPONSE)
-        val gqlQuery: String,
         private val graphQlRepository: GraphqlRepository
 ): UseCase<ReviewReplyUpdateResponse.ProductrevUpdateSellerResponse>() {
 
     companion object {
         private const val FEEDBACK_ID = "feedbackID"
         private const val RESPONSE_MESSAGE = "responseMessage"
+
+        private val gqlQuery = """
+            mutation update_review_reply(${'$'}feedbackID: Int!, ${'$'}responseMessage: String!) {
+                productrevUpdateSellerResponse(feedbackID: ${'$'}feedbackID, responseMessage: ${'$'}responseMessage) {
+                    success
+                    data {
+                      shopID
+                      feedbackID
+                      responseBy
+                      responseMessage
+                    }
+                  }
+            }
+        """.trimIndent()
 
         @JvmStatic
         fun createParams(productId: Int, responseMessage: String): Map<String, Any> =

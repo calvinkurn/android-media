@@ -1,8 +1,0 @@
-query get_product_review_detail_overall($productID: Int!, $filterBy: String!) {
-     productrevGetReviewAggregateByProduct(productID: $productID, filterBy: $filterBy) {
-       productName
-       ratingAverage
-       ratingCount
-       period
-    }
-}

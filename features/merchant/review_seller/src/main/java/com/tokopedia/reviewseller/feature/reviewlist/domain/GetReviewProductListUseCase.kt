@@ -4,15 +4,11 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.reviewseller.common.util.GQL_GET_PRODUCT_REVIEW_LIST
 import com.tokopedia.reviewseller.feature.reviewlist.data.ProductReviewListResponse
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
-import javax.inject.Named
 
 class GetReviewProductListUseCase @Inject constructor(
-    @Named(GQL_GET_PRODUCT_REVIEW_LIST)
-    val gqlQuery: String,
     private val graphQlRepository: GraphqlRepository
 ): UseCase<ProductReviewListResponse.ProductShopRatingAggregate>() {
 
@@ -21,6 +17,23 @@ class GetReviewProductListUseCase @Inject constructor(
         private const val FILTER_BY = "filterBy"
         private const val LIMIT = "limit"
         private const val PAGE = "page"
+
+        private val gqlQuery = """
+            query get_product_review_list(${'$'}sortBy: String!, ${'$'}filterBy: String, ${'$'}limit: Int!, ${'$'}page: Int!) {
+            	productrevShopRatingAggregate(sortBy: ${'$'}sortBy, filterBy: ${'$'}filterBy, limit: ${'$'}limit, page: ${'$'}page) {
+                data {
+                    product {
+                        productID
+                        productName
+                        productImageURL
+                    }
+                    rating
+                    reviewCount
+                }
+                hasNext
+            	}
+            }
+        """.trimIndent()
 
         @JvmStatic
         fun createParams(sortBy: String, filterBy: String, limit: Int, page: Int): Map<String, Any> {
