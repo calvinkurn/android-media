@@ -114,13 +114,13 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
     private fun showAnswer(answer: String, questionId: String) {
         if(answer.isNotEmpty()) {
             itemView.readingMessage.apply {
+                isEnabled = true
                 text = HtmlLinkHelper(context, answer).spannedString
                 setOnTouchListener(object : View.OnTouchListener {
                     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                         val widget = v as TextView
                         val text: Any = widget.text
                         if (text is Spanned) {
-                            val buffer: Spanned = text as Spanned
                             val action = event!!.action
                             if (action == MotionEvent.ACTION_UP
                                     || action == MotionEvent.ACTION_DOWN) {
@@ -133,7 +133,7 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
                                 val layout: Layout = widget.layout
                                 val line: Int = layout.getLineForVertical(y)
                                 val off: Int = layout.getOffsetForHorizontal(line, x.toFloat())
-                                val link = buffer.getSpans(off, off, URLSpan::class.java)
+                                val link = text.getSpans(off, off, URLSpan::class.java)
                                 if (link.isNotEmpty() && action == MotionEvent.ACTION_UP) {
                                     return threadListener.onLinkClicked(link.first().url.toString())
                                 }
