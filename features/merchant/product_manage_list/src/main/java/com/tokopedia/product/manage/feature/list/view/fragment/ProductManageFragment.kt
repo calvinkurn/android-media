@@ -43,6 +43,7 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RES
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.product.manage.BuildConfig
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.PARAM_SET_CASHBACK_PRODUCT_PRICE
@@ -95,7 +96,7 @@ import com.tokopedia.product.manage.feature.list.constant.ProductManageListConst
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_STOCK_REMINDER
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.SET_CASHBACK_REQUEST_CODE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.URL_TIPS_TRICK
-import com.tokopedia.product.manage.feature.list.service.UpdateShopActiveService
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
@@ -161,7 +162,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
         initView()
         loadInitialData()
-        context?.let { UpdateShopActiveService.startService(it, "desktop") }
     }
 
     private fun initView() {
@@ -200,6 +200,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         getGoldMerchantStatus()
 
         setupDialogFeaturedProduct()
+
+        context?.let { UpdateShopActiveService.startService(it, "android-${BuildConfig.VERSION_NAME}") }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

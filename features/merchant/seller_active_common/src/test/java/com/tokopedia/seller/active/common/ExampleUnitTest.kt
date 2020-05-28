@@ -1,4 +1,4 @@
-package com.example.seller.active.common
+package com.tokopedia.seller.active.common
 
 import org.junit.Test
 

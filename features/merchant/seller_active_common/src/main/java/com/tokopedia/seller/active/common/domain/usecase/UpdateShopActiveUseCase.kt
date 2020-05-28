@@ -1,7 +1,7 @@
-package com.example.seller.active.common.domain.usecase
+package com.tokopedia.seller.active.common.domain.usecase
 
-import com.example.seller.active.common.data.model.UpdateShopActiveResponse
-import com.example.seller.active.common.data.param.UpdateShopActiveParam
+import com.tokopedia.seller.active.common.data.model.UpdateShopActiveResponse
+import com.tokopedia.seller.active.common.data.param.UpdateShopActiveParam
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import javax.inject.Inject

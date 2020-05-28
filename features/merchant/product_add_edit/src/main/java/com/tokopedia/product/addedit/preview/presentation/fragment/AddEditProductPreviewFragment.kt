@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.reflect.TypeToken
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
@@ -34,6 +35,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.product.addedit.BuildConfig
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
@@ -90,7 +92,6 @@ import com.tokopedia.product.addedit.preview.presentation.model.ProductInputMode
 import com.tokopedia.product.addedit.preview.presentation.model.SetCashbackResult
 import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductAddService
 import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductEditService
-import com.tokopedia.product.addedit.preview.presentation.service.UpdateShopActiveService
 import com.tokopedia.product.addedit.preview.presentation.viewmodel.AddEditProductPreviewViewModel
 import com.tokopedia.product.addedit.shipment.presentation.activity.AddEditProductShipmentActivity
 import com.tokopedia.product.addedit.tooltip.model.ImageTooltipModel
@@ -430,10 +431,9 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             setCashback()
         }
 
-        if(viewModel.isAdding) {
-            context?.let { UpdateShopActiveService.startService(it, "desktop") }
+        if(viewModel.isAdding && viewModel.getDraftId() == 0L) {
+            context?.let { UpdateShopActiveService.startService(it, "android-${BuildConfig.VERSION_NAME}") }
         }
-
         //If you add another observe, don't forget to remove observers at removeObservers()
         observeIsEditingStatus()
         observeProductData()
