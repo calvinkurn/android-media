@@ -258,6 +258,9 @@ public class InboxReputationDetailItemViewHolder extends
             if (element.getReviewResponseViewModel() != null
                     && !TextUtils.isEmpty(element.getReviewResponseViewModel().getResponseMessage())) {
                 setSellerReply(element);
+                if(GlobalConfig.isSellerApp()) {
+                    sellerReplyLayout.setVisibility(View.GONE);
+                }
             } else {
                 seeReplyText.setVisibility(View.GONE);
                 replyArrow.setVisibility(View.GONE);
