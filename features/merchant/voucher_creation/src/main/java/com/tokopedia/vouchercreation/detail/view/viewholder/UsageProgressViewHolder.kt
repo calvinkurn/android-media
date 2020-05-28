@@ -3,9 +3,9 @@ package com.tokopedia.vouchercreation.detail.view.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
-import com.tokopedia.kotlin.extensions.view.pxToDp
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.detail.model.UsageProgressUiModel
 import kotlinx.android.synthetic.main.item_mvc_usage_progress.view.*
 
@@ -25,25 +25,37 @@ class UsageProgressViewHolder(
 
     override fun bind(element: UsageProgressUiModel) {
         with(itemView) {
-            progressMvcUsage.setValue(element.voucherUsed, true)
-            progressMvcUsage.progressBarHeight = context.pxToDp(6).toInt()
+            val progressBarValue = (element.bookedQuota / element.quota) * 100
+            progressMvcUsage?.setValue(progressBarValue, true)
+            progressMvcUsage?.progressBarHeight = context.pxToDp(6).toInt()
+
+            tvMvcUsedQuota?.text = element.bookedQuota.toString()
+            tvMvcTotalQuota?.text = element.quota.toString()
 
             mvcImgInfo.setOnClickListener {
                 setOnTooltipClick()
             }
 
-            val dummyVoucherUsage = 12
-            tvMvcTickerUsage?.text =
-                    String.format(context.getString(R.string.mvc_detail_promo_usage_used), dummyVoucherUsage.toString()).parseAsHtml()
+            when(element.targetType) {
+                VoucherTargetType.PUBLIC -> {
+                    tvMvcTickerUsage?.text =
+                            String.format(context.getString(R.string.mvc_detail_promo_usage_used), element.bookedQuota.toString()).parseAsHtml()
+                    tvMvcTickerUsage?.visible()
+                }
+                VoucherTargetType.PRIVATE -> {
+                    tvMvcTickerUsage?.gone()
+                }
+                else -> {
+                    tvMvcTickerUsage?.gone()
+                }
+            }
+
         }
     }
 
     private fun setOnTooltipClick() {
         val title = itemView.context.getString(R.string.mvc_create_promo_type_bottomsheet_title_promo_expenses)
-        val dummyContent = """
-                            Biaya promosi akan terhitung setelah pembeli menggunakan voucher toko dalam bembelian.<br><br>
-                            Pengeluaran akan otomatis dipotong dari hasil penjualanmu.
-                        """.trimIndent()
-        tooltipListener(title, dummyContent)
+        val content = itemView.context?.getString(R.string.mvc_detail_expenses_info).toBlankOrString()
+        tooltipListener(title, content)
     }
 }

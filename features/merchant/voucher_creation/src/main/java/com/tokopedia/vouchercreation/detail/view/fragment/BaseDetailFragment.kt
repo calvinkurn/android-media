@@ -88,10 +88,8 @@ abstract class BaseDetailFragment : BaseListFragment<VoucherDetailUiModel, Vouch
         (activity as? AppCompatActivity)?.let { activity ->
             activity.setSupportActionBar(toolbarMvcVoucherDetail)
             activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            activity.supportActionBar?.title = "Voucher Hura Test Doang"
         }
     }
-
 
     private val rawDateFormatter by lazy {
         SimpleDateFormat(RAW_DATE_FORMAT, LocaleUtils.getIDLocale())

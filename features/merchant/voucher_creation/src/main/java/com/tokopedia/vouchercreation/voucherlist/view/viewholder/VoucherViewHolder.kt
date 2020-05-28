@@ -163,8 +163,13 @@ class VoucherViewHolder(
                     colorRes = R.color.Red_R500
                     statusIndicatorBg = R.drawable.mvc_view_voucher_status_red
                 }
+                VoucherStatusConst.DELETED -> {
+                    statusStr = context.getString(R.string.mvc_deleted)
+                    colorRes = R.color.Red_R500
+                    statusIndicatorBg = R.drawable.mvc_view_voucher_status_red
+                }
                 else -> {
-                    statusStr = context.getString(R.string.mvc_already_ended)
+                    statusStr = context.getString(R.string.mvc_ended)
                     colorRes = R.color.Neutral_N700_68
                     statusIndicatorBg = R.drawable.mvc_view_voucher_status_grey
                 }

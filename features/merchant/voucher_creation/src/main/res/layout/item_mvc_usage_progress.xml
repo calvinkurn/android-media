@@ -34,26 +34,26 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_lvl2"
         android:layout_marginRight="@dimen/spacing_lvl2"
-        android:text="30"
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintBottom_toBottomOf="@+id/progressMvcUsage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/tvMvcTotalQuota"
         app:layout_constraintTop_toTopOf="@+id/progressMvcUsage"
         app:layout_constraintVertical_bias="0.6"
-        app:typographyType="heading_3" />
+        app:typographyType="heading_3"
+        tools:text="30" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMvcTotalQuota"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="/120"
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintBottom_toBottomOf="@+id/tvMvcUsedQuota"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvMvcUsedQuota"
         app:layout_constraintVertical_bias="0.8"
-        app:typographyType="body_3" />
+        app:typographyType="body_3"
+        tools:text="/120" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMvcTickerUsage"
@@ -102,11 +102,11 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl2"
-        android:text="Rp2.000.000"
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tvMvcSpendingInfo"
         app:layout_constraintTop_toBottomOf="@+id/tvMvcSpendingInfo"
-        app:typographyType="heading_4" />
+        app:typographyType="heading_4"
+        tools:text="Rp2.000.000" />
 </androidx.constraintlayout.widget.ConstraintLayout>

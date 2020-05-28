@@ -39,6 +39,8 @@ class VoucherListViewModel @Inject constructor(
 
     fun getActiveVoucherList() {
         launchCatchError(block = {
+//            getVoucherListUseCase.isActive = true
+
             getVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(activeVoucherRequestParam)
             _voucherList.value = Success(withContext(Dispatchers.IO) {
                 getVoucherListUseCase.executeOnBackground()
@@ -59,7 +61,7 @@ class VoucherListViewModel @Inject constructor(
                             target = target,
                             sort = sort)
             )
-            getVoucherListUseCase.isActive = false
+//            getVoucherListUseCase.isActive = false
             _voucherList.value = Success(withContext(Dispatchers.IO) {
                 getVoucherListUseCase.executeOnBackground()
             })

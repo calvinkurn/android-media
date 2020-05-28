@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.detail.model
 
+import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.detail.view.adapter.factory.VoucherDetailAdapterFactory
 
 /**
@@ -7,7 +8,10 @@ import com.tokopedia.vouchercreation.detail.view.adapter.factory.VoucherDetailAd
  */
 
 data class UsageProgressUiModel(
-        val voucherUsed: Int
+        @VoucherTargetType val targetType: Int,
+        val quota: Int,
+        val remaningQuota: Int,
+        val bookedQuota: Int
 ) : VoucherDetailUiModel {
 
     override fun type(typeFactory: VoucherDetailAdapterFactory): Int {

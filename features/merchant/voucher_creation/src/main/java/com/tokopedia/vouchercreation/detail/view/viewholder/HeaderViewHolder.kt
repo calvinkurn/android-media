@@ -31,17 +31,17 @@ class HeaderViewHolder(
         val RES_LAYOUT = R.layout.item_mvc_voucher_header
 
         private const val DATE_FORMAT = "dd MMM yyyy"
-        private const val HOUR_FORMAT = "HH:mm 'Z'"
+        private const val HOUR_FORMAT = "HH:mm"
     }
 
     override fun bind(element: VoucherHeaderUiModel) {
         with(itemView) {
-            var containerColor = Color.TRANSPARENT
+            var containerColor: Int? = null
 
             val startDate = DateTimeUtils.reformatUnsafeDateTime(element.startTime, DATE_FORMAT)
             val endDate = DateTimeUtils.reformatUnsafeDateTime(element.finishTime, DATE_FORMAT)
-            val startHour = DateTimeUtils.reformatUnsafeDateTime(element.startTime, HOUR_FORMAT)
-            val endHour = DateTimeUtils.reformatUnsafeDateTime(element.finishTime, HOUR_FORMAT)
+            val startHour = String.format(context?.getString(R.string.mvc_hour_wib).toBlankOrString(), DateTimeUtils.reformatUnsafeDateTime(element.startTime, HOUR_FORMAT))
+            val endHour = String.format(context?.getString(R.string.mvc_hour_wib).toBlankOrString(), DateTimeUtils.reformatUnsafeDateTime(element.finishTime, HOUR_FORMAT))
 
             val statusResId: Int
             val textColorResId: Int
@@ -75,8 +75,13 @@ class HeaderViewHolder(
                         }
                     }
                 }
+                VoucherStatusConst.DELETED -> {
+                    statusResId = R.string.mvc_deleted
+                    textColorResId = R.color.Red_R500
+                    startEndVoucher?.gone()
+                }
                 else -> {
-                    statusResId = R.string.mvc_is_ongoing
+                    statusResId = R.string.mvc_ongoing
                     textColorResId = R.color.Neutral_N700_68
                 }
             }
@@ -91,7 +96,9 @@ class HeaderViewHolder(
                 setTextColor(resources?.run { ResourcesCompat.getColor(this, textColorResId, null) } ?: Color.BLACK)
                 text = context?.getString(statusResId).toBlankOrString()
             }
-            headerContainer?.setContainerColor(containerColor)
+            containerColor?.run {
+                headerContainer?.setContainerColor(this)
+            }
             btnMvcDownload.setOnClickListener {
                 onDownloadClick()
             }

@@ -222,8 +222,6 @@
     <string name="mvc_lbl_promo_code">Kode Promo:</string>
     <string name="mvc_asterisk">&#x2a;</string>
     <string name="mvc_detail_promo_usage_used">Voucher yang dipakai dalam transaksi yang menunggu pembayaran : &lt;b>%s Voucher&lt;/b></string>
-    <string name="mvc_detail_ticker_share">Bagikan voucher untuk menjangkau lebih banyak pembeli. Lihat Tips &amp; Trik</string>
-    <string name="mvc_detail_ticker_see_tips">Lihat Tips &amp; Trik</string>
     <string name="mvc_detail_ticker_stop_promo">Untuk menghentikan promosi, klik di sini</string>
     <string name="mvc_detail_ticker_cancel_promo">Untuk membatalkan promosi, klik di sini</string>
     <string name="mvc_detail_ticker_here">di sini</string>
@@ -235,14 +233,17 @@
     <string name="mvc_help">Bantuan</string>
     <string name="mvc_pick">Pilih</string>
     <string name="mvc_oke">Oke</string>
+    <string name="mvc_hour_wib">%s WIB</string>
 
     <!-- voucher list -->
+    <string name="mvc_ongoing">Berlangsung</string>
     <string name="mvc_is_ongoing">Sedang Berlangsung</string>
     <string name="mvc_not_started_yet">Belum Dimulai</string>
     <string name="mvc_already_ended">Sudah Berakhir</string>
     <string name="mvc_stopped">Dibatalkan</string>
     <string name="mvc_future">Mendatang</string>
     <string name="mvc_ended">Berakhir</string>
+    <string name="mvc_deleted">Dihapus</string>
     <string name="mvc_stopped_at">Dibatalkan pada %s</string>
     <string name="mvc_find_shop_voucher">Cari voucher toko</string>
     <string name="mvc_success_update_period">Periode tampil berhasil diubah.</string>
@@ -260,4 +261,9 @@
     <string name="mvc_detail_purchase_terms">"Min. pembelian Rp%s - &lt;br>Max. potongan Rp%s"</string>
     <string name="mvc_detail_tips">&lt;b>Voucher kamu akan tampil&lt;/b> di halaman detail produk dan halaman toko. Lihat Tampilan</string>
     <string name="mvc_detail_tips_clickable">Lihat Tampilan</string>
+    <string name="mvc_detail_ticker_private">&lt;b>Bagikan voucher&lt;b> untuk menjangkau lebih banyak pembeli. Lihat Tips &amp; Trik</string>
+    <string name="mvc_detail_ticker_private_clickable">Lihat Tips &amp; Trik</string>
+    <string name="mvc_detail_ticker_public">&lt;b>Voucher kamu sedang tampil&lt;b> di halaman detail produk dan halaman toko. Pelajari Selengkapnya</string>
+    <string name="mvc_detail_ticker_public_clickable">Pelajari Selengkapnya</string>
+    <string name="mvc_detail_expenses_info">Biaya promosi akan terhitung setelah pembeli menggunakan voucher toko dalam pembelian.&lt;br>&lt;br>Pengeluaran akan otomatis dipotong dari hasil penjualanmu.</string>
 </resources>

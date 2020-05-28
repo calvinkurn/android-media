@@ -92,6 +92,8 @@ class GetVoucherListUseCase @Inject constructor(
         } else {
             throw MessageErrorException(errors.joinToString(", ") { it.message })
         }
+
+        //Dummy fetch
 //        if (isActive) {
 //            val gqlResponse = Gson().fromJson(DummyVoucherList.DUMMY_ACTIVE_VOUCHER, GetMerchantVoucherListResponse::class.java)
 //            return mapper.mapRemoteModelToUiModel(gqlResponse.result.data.vouchers)

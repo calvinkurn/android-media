@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -19,11 +20,10 @@ import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.TipsTrickBottom
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
-import com.tokopedia.vouchercreation.common.model.MerchantVoucherModel
-import com.tokopedia.vouchercreation.common.model.VoucherMapper
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
-import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.DATE_FORMAT
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.DASH_DATE_FORMAT
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.HOUR_FORMAT
+import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.enums.BenefitType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.detail.model.*
@@ -42,9 +42,7 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
         fun newInstance(voucherId: Int): VoucherDetailFragment = VoucherDetailFragment(voucherId)
     }
 
-    private val dummyVoucher = VoucherMapper().mapRemoteModelToUiModel(listOf(MerchantVoucherModel(
-            voucherName = "Voucher Hura Test Doang", discountAmtFormatted = "Cashback 10%"
-    ))).first()
+    private var voucherUiModel: VoucherUiModel? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -101,16 +99,18 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
     }
 
     override fun onFooterCtaTextClickListener() {
-        StopVoucherDialog(context ?: return)
-                .setOnPrimaryClickListener {
+        voucherUiModel?.run {
+            StopVoucherDialog(context ?: return)
+                    .setOnPrimaryClickListener {
 
-                }
-                .show(dummyVoucher)
+                    }
+                    .show(this)
+        }
     }
 
     override fun showTipsAndTrickBottomSheet() {
         if (!isAdded) return
-        TipsTrickBottomSheet(context ?: return, true)
+        TipsTrickBottomSheet(context ?: return, !(voucherUiModel?.isPublic ?: true))
                 .setOnDownloadClickListener {
                     showDownloadBottomSheet()
                 }
@@ -135,6 +135,7 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
             when(result) {
                 is Success -> {
                     adapter.clearAllElements()
+                    voucherUiModel = result.data
                     //Todo: add information
                     renderVoucherDetailInformation(result.data)
                 }
@@ -167,15 +168,23 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
                 .show(childFragmentManager)
     }
 
+    private fun setToolbarTitle(toolbarTitle: String) {
+        (activity as? AppCompatActivity)?.let { activity ->
+            activity.supportActionBar?.title = toolbarTitle
+        }
+    }
+
     private fun renderVoucherDetailInformation(voucherUiModel: VoucherUiModel) {
         with(voucherUiModel) {
-            val startDate = DateTimeUtils.reformatUnsafeDateTime(startTime, DATE_FORMAT)
-            val endDate = DateTimeUtils.reformatUnsafeDateTime(finishTime, DATE_FORMAT)
+            setToolbarTitle(name)
+            val startDate = DateTimeUtils.reformatUnsafeDateTime(startTime, DASH_DATE_FORMAT)
+            val endDate = DateTimeUtils.reformatUnsafeDateTime(finishTime, DASH_DATE_FORMAT)
             val startHour = DateTimeUtils.reformatUnsafeDateTime(startTime, HOUR_FORMAT)
             val endHour = DateTimeUtils.reformatUnsafeDateTime(finishTime, HOUR_FORMAT)
+
             val fullDisplayedDate = getDisplayedDateString(startDate, startHour, endDate, endHour)
 
-            val voucherDetailInfoList = listOf(
+            val voucherDetailInfoList: MutableList<VoucherDetailUiModel> = mutableListOf(
                     VoucherHeaderUiModel(
                             status = status,
                             voucherImageUrl = imageSquare,
@@ -186,20 +195,62 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
                                 updatedTime
                             } else {
                                 null
-                            }),
-                    getVoucherInfoSection(type, name, code),
-                    DividerUiModel(DividerUiModel.THIN),
-                    getVoucherImageType(type, discountTypeFormatted, discountAmt, discountAmtMax)?.let { imageType ->
-                        getVoucherBenefitSection(imageType, minimumAmt, quota)
-                    },
-                    DividerUiModel(DividerUiModel.THIN),
-                    getPeriodSection(fullDisplayedDate),
-                    DividerUiModel(DividerUiModel.THICK),
-                    getButtonUiModel(status),
-                    getFooterUiModel(status))
+                            }))
+
+            if (status == VoucherStatusConst.ONGOING) {
+                voucherDetailInfoList.addAll(listOf(
+                        UsageProgressUiModel(type, quota, remainingQuota, bookedQuota),
+                        DividerUiModel(DividerUiModel.THICK),
+                        getOngoingTipsSection(isPublic)
+                ))
+            }
+
+            if (status == VoucherStatusConst.ENDED) {
+                voucherDetailInfoList.add(
+                        //Todo: Add calculation
+                        PromoPerformanceUiModel("Ngitungnya gimana ini?", bookedQuota, quota)
+                )
+            }
+
+            with(voucherDetailInfoList) {
+                addAll(listOf(
+                        DividerUiModel(DividerUiModel.THICK),
+                        getVoucherInfoSection(type, name, code),
+                        DividerUiModel(DividerUiModel.THIN)
+                ))
+                getVoucherImageType(type, discountTypeFormatted, discountAmt, discountAmtMax)?.let { imageType ->
+                    getVoucherBenefitSection(imageType, minimumAmt, quota).let { benefit ->
+                        add(benefit)
+                    }
+                }
+                addAll(listOf(
+                        DividerUiModel(DividerUiModel.THIN),
+                        getPeriodSection(fullDisplayedDate),
+                        DividerUiModel(DividerUiModel.THICK)
+                ))
+                getButtonUiModel(status)?.let { button ->
+                    add(button)
+                }
+                getFooterUiModel(status)?.let { footer ->
+                    add(footer)
+                }
+            }
 
             renderList(voucherDetailInfoList)
         }
+    }
+
+    private fun getOngoingTipsSection(isPublic: Boolean): TipsUiModel {
+        val tips: String
+        val clickableText: String
+        if (isPublic) {
+            tips = context?.getString(R.string.mvc_detail_ticker_public).toBlankOrString()
+            clickableText = context?.getString(R.string.mvc_detail_ticker_public_clickable).toBlankOrString()
+        } else {
+            tips = context?.getString(R.string.mvc_detail_ticker_private).toBlankOrString()
+            clickableText = context?.getString(R.string.mvc_detail_ticker_private_clickable).toBlankOrString()
+        }
+        return TipsUiModel(tips, clickableText)
     }
 
     private fun getVoucherImageType(@VoucherTypeConst voucherType: Int,
@@ -254,11 +305,11 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
         val dummy = listOf(
                 //PromoPerformanceUiModel("Rp3.000.000", 30, 120),
 //                VoucherHeaderUiModel(),
-                UsageProgressUiModel(30),
+//                UsageProgressUiModel(30),
                 DividerUiModel(8),
                 TipsUiModel(
-                        context?.getString(R.string.mvc_detail_ticker_share).toBlankOrString(),
-                        context?.getString(R.string.mvc_detail_ticker_see_tips).toBlankOrString()),
+                        context?.getString(R.string.mvc_detail_ticker_private).toBlankOrString(),
+                        context?.getString(R.string.mvc_detail_ticker_private_clickable).toBlankOrString()),
                 DividerUiModel(8),
                 InfoContainerUiModel(R.string.mvc_detail_voucher_info, listOf(
                         SubInfoItemUiModel(R.string.mvc_voucher_target, "Khusus"),
