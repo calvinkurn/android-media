@@ -229,6 +229,7 @@ object DFInstaller {
             getManager(context)?.cancelInstall(it)
         }
         sessionId = null
+        clearRef()
     }
 
     /**
