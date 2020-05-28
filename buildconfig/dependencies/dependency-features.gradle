@@ -224,8 +224,6 @@ ext {
             tkpdinbox                       : ":tkpdinbox",
             tkpdseller                      : ":tkpdseller",
             tkpdsession                     : ":tkpdsession",
-            // tkpdtransaction                 : ":tkpdtransaction",
-            // tkpdtransactioncommon           : ":tkpdtransaction-common",
             promotionsTarget                : ":features:promo:promotions_target",
             recharge_slice                  : ":features:recharge:recharge_slice"
     ]
