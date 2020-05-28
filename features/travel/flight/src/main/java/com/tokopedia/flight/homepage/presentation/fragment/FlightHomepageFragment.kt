@@ -194,6 +194,7 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
                 flightHomepageViewModel.onArrivalAirportChanged(selectedAirport)
             }
         }
+        flightAirportPickerBottomSheet.setShowListener { flightAirportPickerBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
         fragmentManager?.let {
             flightAirportPickerBottomSheet.show(it, FlightAirportPickerBottomSheet.TAG_FLIGHT_AIRPORT_PICKER)
         }
