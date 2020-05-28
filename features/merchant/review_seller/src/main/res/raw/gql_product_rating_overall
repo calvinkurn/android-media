@@ -1,8 +1,0 @@
-query get_product_rating_overall($filterBy: String!) {
-  productrevGetProductRatingOverallByShop(filterBy: $filterBy) {
-    rating
-    productCount
-    reviewCount
-    filterBy
-  }
-}
