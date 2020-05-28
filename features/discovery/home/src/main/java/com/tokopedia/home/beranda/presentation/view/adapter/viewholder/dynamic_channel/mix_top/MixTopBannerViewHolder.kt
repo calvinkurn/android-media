@@ -154,7 +154,7 @@ class MixTopBannerViewHolder(
         bannerDescription.setTextColor(textColor)
 
         bannerUnifyButton.setOnClickListener {
-            homeCategoryListener.sendEETracking(MixTopTracking.getMixTopButtonClick(channel.header.name, ctaData.text) as HashMap<String, Any>)
+            homeCategoryListener.sendEETracking(MixTopTracking.getMixTopButtonClick(channel.id, channel.header.name, ctaData.text) as HashMap<String, Any>)
             if (ctaData.couponCode.isEmpty()) {
                 homeCategoryListener.onSectionItemClicked(channel.banner.applink)
             } else {

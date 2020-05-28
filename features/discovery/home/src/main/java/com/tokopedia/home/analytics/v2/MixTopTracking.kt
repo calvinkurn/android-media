@@ -74,11 +74,11 @@ object MixTopTracking : BaseTracking() {
             BusinessUnit.KEY, BusinessUnit.DEFAULT
     )
 
-    fun getMixTopButtonClick(headerName: String, buttonName: String) = DataLayer.mapOf(
+    fun getMixTopButtonClick(channelId: String,headerName: String, buttonName: String) = DataLayer.mapOf(
             Event.KEY, Event.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
             Action.KEY, CustomAction.CLICK_BUTTON_CAROUSEL.format(buttonName),
-            Label.KEY, headerName
+            Label.KEY, StringBuilder().append(channelId).append(" - ").append(headerName)
     )
 
     fun mapGridToProductTracker(grid: DynamicHomeChannel.Grid, channelId: String, position: Int, persoType: String, categoryId: String) = Product(

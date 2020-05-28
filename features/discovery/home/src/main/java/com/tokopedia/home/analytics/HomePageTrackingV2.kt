@@ -432,7 +432,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 eventCategory = Category.HOMEPAGE,
                 eventAction = CLICK_MIX_LEFT_BANNER,
                 campaignCode = channel.campaignCode,
-                eventLabel = Label.NONE,
+                eventLabel = StringBuilder().append(channel.id).append(" - ").append(channel.header.name).toString(),
                 channelId = channel.id,
                 categoryId = channel.categoryPersona,
                 affinity = channel.persona,

@@ -78,7 +78,7 @@ class MixTopTrackerTest : Spek({
                         "event", "clickHomepage",
                         "eventCategory", "homepage",
                         "eventAction", "click view all on dynamic channel top carousel",
-                        "eventLabel", channel.header.name
+                        "eventLabel", StringBuilder().append(channel.id).append(" - ").append(channel.header.name)
                 )
             }
             Then("must true") {
@@ -95,11 +95,11 @@ class MixTopTrackerTest : Spek({
                         "event", "clickHomepage",
                         "eventCategory", "homepage",
                         "eventAction", "click Cek Sekarang on dynamic channel top carousel",
-                        "eventLabel", channel.header.name
+                        "eventLabel", StringBuilder().append(channel.id).append(" - ").append(channel.header.name)
                 )
             }
             Then("must true") {
-                val result = areEqualKeyValues(testTracker.getTracker(), MixTopTracking.getMixTopButtonClick(channel.header.name, channel.banner.cta.text))
+                val result = areEqualKeyValues(testTracker.getTracker(), MixTopTracking.getMixTopButtonClick(channel.id, channel.header.name, channel.banner.cta.text))
                 Assert.assertEquals(result, true)
             }
         }
