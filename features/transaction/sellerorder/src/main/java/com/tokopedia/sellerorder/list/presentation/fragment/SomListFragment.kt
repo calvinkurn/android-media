@@ -31,6 +31,8 @@ import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.sellerorder.BuildConfig
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
@@ -187,6 +189,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         observingFilter()
         observingStatusList()
         observingOrders()
+        context?.let { UpdateShopActiveService.startService(it, "android-${BuildConfig.VERSION_NAME}") }
     }
 
     private fun prepareLayout() {

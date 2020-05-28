@@ -19,6 +19,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.sellerhome.BuildConfig
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.NavigationTracking
@@ -139,6 +140,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         observeWidgetData(sellerHomeViewModel.carouselWidgetData, WidgetType.CAROUSEL)
         observeTickerLiveData()
         observeShopStatusLiveData()
+        context?.let { UpdateShopActiveService.startService(it, "android-${BuildConfig.VERSION_NAME}") }
     }
 
     override fun onResume() {

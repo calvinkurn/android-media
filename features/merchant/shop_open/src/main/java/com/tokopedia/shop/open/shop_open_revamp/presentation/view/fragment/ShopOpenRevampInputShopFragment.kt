@@ -27,6 +27,8 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.shop.open.BuildConfig
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.shop_open_revamp.analytic.ShopOpenRevampTracking
 import com.tokopedia.shop.open.shop_open_revamp.common.PageNameConstant
@@ -172,6 +174,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
         observeDomainNameValidationData()
         observeDomainShopNameSuggestions()
         observeCreateShopData()
+        context?.let { UpdateShopActiveService.startService(it, "android-${BuildConfig.VERSION_NAME}") }
     }
 
     override fun getComponent(): ShopOpenRevampComponent {

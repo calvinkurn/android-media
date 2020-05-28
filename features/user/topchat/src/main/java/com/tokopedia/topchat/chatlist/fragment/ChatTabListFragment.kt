@@ -23,6 +23,8 @@ import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.topchat.BuildConfig
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity.Companion.BUYER_ANALYTICS_LABEL
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity.Companion.SELLER_ANALYTICS_LABEL
@@ -84,6 +86,7 @@ class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
         initData()
         initOnBoarding()
         initChatCounterObserver()
+        context?.let { UpdateShopActiveService.startService(it, "android-${BuildConfig.VERSION_NAME}") }
     }
 
     override fun onStart() {

@@ -20,6 +20,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.talk.BuildConfig
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
 import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
@@ -131,6 +133,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
 
         setupView()
         initData()
+        context?.let { UpdateShopActiveService.startService(it, "android-${BuildConfig.VERSION_NAME}") }
     }
 
     private fun setupView() {

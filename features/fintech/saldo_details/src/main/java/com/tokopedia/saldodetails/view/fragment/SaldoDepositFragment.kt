@@ -37,6 +37,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_LOCK
+import com.tokopedia.saldodetails.BuildConfig
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
 import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
@@ -47,6 +48,7 @@ import com.tokopedia.saldodetails.utils.Success
 import com.tokopedia.saldodetails.view.activity.SaldoDepositActivity
 import com.tokopedia.saldodetails.view.activity.SaldoHoldInfoActivity
 import com.tokopedia.saldodetails.viewmodels.SaldoDetailViewModel
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.showcase.*
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
@@ -164,6 +166,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         initialVar()
         initListeners()
         startShowCase()
+        context?.let { UpdateShopActiveService.startService(it, "android-${BuildConfig.VERSION_NAME}") }
     }
 
     private fun initRemoteConfig() {

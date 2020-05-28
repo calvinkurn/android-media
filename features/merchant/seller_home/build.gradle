@@ -18,6 +18,7 @@ dependencies {
     //features
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.shopCommon)
+    implementation project(rootProject.ext.features.sellerActiveCommon)
 
     //libs
     implementation project(rootProject.ext.libraries.tkpddesign)
