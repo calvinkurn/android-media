@@ -55,7 +55,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase;
 import com.tokopedia.topads.sdk.domain.model.WishlistModel;
-import com.tokopedia.transaction.common.sharedata.buyagain.ResponseBuyAgain;
+import com.tokopedia.buyerorder.detail.data.buyagain.ResponseBuyAgain;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;

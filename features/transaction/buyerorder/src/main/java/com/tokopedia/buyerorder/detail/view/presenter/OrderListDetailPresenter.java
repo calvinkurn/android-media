@@ -31,6 +31,7 @@ import com.tokopedia.buyerorder.detail.data.PayMethod;
 import com.tokopedia.buyerorder.detail.data.Pricing;
 import com.tokopedia.buyerorder.detail.data.RequestCancelInfo;
 import com.tokopedia.buyerorder.detail.data.Title;
+import com.tokopedia.buyerorder.detail.data.buyagain.ResponseBuyAgain;
 import com.tokopedia.buyerorder.detail.data.recommendationMPPojo.RecommendationResponse;
 import com.tokopedia.buyerorder.detail.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.buyerorder.detail.domain.FinishOrderUseCase;
@@ -45,7 +46,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.kotlin.util.DownloadHelper;
-import com.tokopedia.transaction.common.sharedata.buyagain.ResponseBuyAgain;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 

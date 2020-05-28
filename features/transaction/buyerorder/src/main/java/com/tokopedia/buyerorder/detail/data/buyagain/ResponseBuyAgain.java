@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.common.sharedata.buyagain;
+package com.tokopedia.buyerorder.detail.data.buyagain;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
