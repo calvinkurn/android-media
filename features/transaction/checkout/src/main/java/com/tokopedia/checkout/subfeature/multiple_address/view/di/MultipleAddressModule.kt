@@ -5,12 +5,14 @@ import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
 import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.checkout.R
 import com.tokopedia.checkout.data.api.*
 import com.tokopedia.checkout.data.repository.CommonPurchaseRepository
 import com.tokopedia.checkout.data.repository.ICommonPurchaseRepository
-import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.subfeature.multiple_address.data.api.MultipleAddressApi
 import com.tokopedia.checkout.subfeature.multiple_address.data.repository.IMultipleAddressRepository
 import com.tokopedia.checkout.subfeature.multiple_address.data.repository.MultipleAddressRepository
@@ -28,6 +30,8 @@ import com.tokopedia.purchase_platform.common.di.PurchasePlatformAkamaiQualifier
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformQualifier
+import com.tokopedia.purchase_platform.common.schedulers.DefaultSchedulers
+import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -41,6 +45,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 
 /**
  * Created by Irfan Khoirul on 2019-08-29.
@@ -191,7 +196,18 @@ class MultipleAddressModule {
 
     @Provides
     @MultipleAddressScope
-    fun providePresenter(changeShippingAddressUseCase: ChangeShippingAddressUseCase,
+    fun provideExecutorSchedulers(): ExecutorSchedulers = DefaultSchedulers
+
+    @Provides
+    @MultipleAddressScope
+    @Named(ChangeShippingAddressGqlUseCase.CHANGE_SHIPPING_ADDRESS_MUTATION)
+    fun provideChangeShippingAddressMutation(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.change_shipping_address_mutation)
+    }
+
+    @Provides
+    @MultipleAddressScope
+    fun providePresenter(changeShippingAddressUseCase: ChangeShippingAddressGqlUseCase,
                          getCartMultipleAddressListUseCase: GetCartMultipleAddressListUseCase,
                          userSessionInterface: UserSessionInterface): IMultipleAddressPresenter {
         return MultipleAddressPresenter(
