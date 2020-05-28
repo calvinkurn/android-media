@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.mocker
 
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.model.Configuration
+import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.play.broadcaster.view.uimodel.*
 
 /**
@@ -45,11 +46,12 @@ object PlayBroadcastMocker {
                     else -> "https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5,q_80/udglgfg9ozu3erd3fubg/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
                 },
                 isSelectedHandler = { false },
-                stock = (it % 2) * 10
+                stock = (it % 2) * 10,
+                isSelectable = { Selectable }
         )
     }
 
-    fun getMaxSelectedProduct() = 15
+    fun getMaxSelectedProduct() = 1
 
     fun getMockConfiguration() = Configuration(
             isUserWhitelisted = true,

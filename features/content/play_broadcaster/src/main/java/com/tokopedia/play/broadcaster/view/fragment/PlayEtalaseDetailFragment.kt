@@ -15,6 +15,7 @@ import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.PlayEtalaseDetailAdapter
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
+import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 /**
@@ -32,6 +33,16 @@ class PlayEtalaseDetailFragment @Inject constructor(
     private val etalaseDetailAdapter = PlayEtalaseDetailAdapter(object : ProductSelectableViewHolder.Listener {
         override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
             viewModel.selectProduct(productId, isSelected)
+        }
+
+        override fun onProductSelectError(reason: Throwable) {
+            //TODO("Increase distance from bottom")
+            Toaster.make(
+                    view = requireView(),
+                    text = reason.localizedMessage,
+                    duration = Toaster.LENGTH_SHORT,
+                    actionText = getString(R.string.play_ok)
+            )
         }
     })
 

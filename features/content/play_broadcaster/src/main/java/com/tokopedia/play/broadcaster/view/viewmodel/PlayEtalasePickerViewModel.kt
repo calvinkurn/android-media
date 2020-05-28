@@ -4,7 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.play.broadcaster.dispatcher.PlayBroadcastDispatcher
+import com.tokopedia.play.broadcaster.error.SelectForbiddenException
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
+import com.tokopedia.play.broadcaster.view.state.NotSelectable
+import com.tokopedia.play.broadcaster.view.state.Selectable
+import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play.broadcaster.view.uimodel.PlayEtalaseUiModel
 import com.tokopedia.play.broadcaster.view.uimodel.ProductUiModel
 import kotlinx.coroutines.*
@@ -82,6 +86,11 @@ class PlayEtalasePickerViewModel @Inject constructor(
         return selectedProductIdList.contains(productId)
     }
 
+    private fun isSelectable(): SelectableState {
+        return if (selectedProductIdList.size < maxProduct) Selectable
+        else NotSelectable(SelectForbiddenException("Oops, kamu sudah memilih $maxProduct produk"))
+    }
+
     private suspend fun updateEtalaseMap(newEtalaseList: List<PlayEtalaseUiModel>) = withContext(computationDispatcher) {
         newEtalaseList.associateByTo(etalaseMap) { it.id }
     }
@@ -94,14 +103,14 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
     private suspend fun getEtalaseProductsById(etalaseId: Long, page: Int) = withContext(ioDispatcher) {
         return@withContext PlayBroadcastMocker.getMockProductList(10).map {
-            it.copy(isSelectedHandler = ::isProductSelected)
+            it.copy(isSelectedHandler = ::isProductSelected, isSelectable = ::isSelectable)
         }
     }
 
     private suspend fun getEtalaseList() = withContext(ioDispatcher) {
         return@withContext PlayBroadcastMocker.getMockEtalaseList().map { etalase ->
             etalase.copy(productList = etalase.productList.map { product ->
-                product.copy(isSelectedHandler = ::isProductSelected)
+                product.copy(isSelectedHandler = ::isProductSelected, isSelectable = ::isSelectable)
             })
         }
     }

@@ -9,6 +9,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.view.state.NotSelectable
+import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.play.broadcaster.view.uimodel.ProductUiModel
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
@@ -50,13 +52,22 @@ class ProductSelectableViewHolder(
         }
 
         itemView.setOnClickListener {
-            if (cbSelected.isEnabled)
-                cbSelected.isChecked = !cbSelected.isChecked
+            if (cbSelected.isEnabled) {
+                val isSelecting = !cbSelected.isChecked
+                if (isSelecting) when (val state = item.isSelectable()) {
+                    Selectable -> triggerCheckbox()
+                    is NotSelectable -> listener.onProductSelectError(state.reason)
+                } else triggerCheckbox()
+            }
         }
 
         cbSelected.setOnCheckedChangeListener { _, isChecked ->
             listener.onProductSelectStateChanged(item.id, isChecked)
         }
+    }
+
+    private fun triggerCheckbox() {
+        cbSelected.isChecked = !cbSelected.isChecked
     }
 
     companion object {
@@ -67,5 +78,6 @@ class ProductSelectableViewHolder(
     interface Listener {
 
         fun onProductSelectStateChanged(productId: Long, isSelected: Boolean)
+        fun onProductSelectError(reason: Throwable)
     }
 }
