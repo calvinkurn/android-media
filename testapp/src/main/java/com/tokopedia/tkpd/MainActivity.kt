@@ -214,6 +214,7 @@ class MainActivity : AppCompatActivity() {
 //        RouteManager.route(this, "tokopedia://discovery/pengguna-baru")
 //        RouteManager.route(this, "tokopedia://discovery/keuangan-test ")
 //        RouteManager.route(this, "tokopedia://discovery/produk-terlaris-new-user")
+//        RouteManager.route(this, "tokopedia://discovery/okedehpokoknya")
         }
 
 
