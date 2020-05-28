@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.common.fragment;
+package com.tokopedia.buyerorder.detail.view.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;

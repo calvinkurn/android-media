@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.common.data.order;
+package com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -13,8 +13,8 @@ import com.tokopedia.buyerorder.detail.di.DaggerOrderDetailsComponent;
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent;
 import com.tokopedia.buyerorder.list.common.OrderListContants;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.transaction.common.fragment.CancelSearchFragment;
-import com.tokopedia.transaction.common.fragment.RejectOrderBuyerRequest;
+import com.tokopedia.buyerorder.detail.view.fragment.CancelSearchFragment;
+import com.tokopedia.buyerorder.detail.view.fragment.RejectOrderBuyerRequest;
 
 import java.util.Map;
 
@@ -78,7 +78,7 @@ public class RequestCancelActivity extends BaseSimpleActivity implements HasComp
     protected Fragment getSimpleFragment() {
         if (getIntent() != null) {
             if (getIntent().getIntExtra(CANCEL_ORDER_FRAGMENT, 1) == 1) {
-                return RejectOrderBuyerRequest.createFragment(getIntent().getStringExtra(KEY_ORDER_ID),RejectOrderBuyerRequest.NEW_CANCELLATION_FLOW);
+                return RejectOrderBuyerRequest.createFragment(getIntent().getStringExtra(KEY_ORDER_ID), RejectOrderBuyerRequest.NEW_CANCELLATION_FLOW);
             } else {
                 return CancelSearchFragment.createFragment(getIntent().getStringExtra(KEY_ORDER_ID));
             }

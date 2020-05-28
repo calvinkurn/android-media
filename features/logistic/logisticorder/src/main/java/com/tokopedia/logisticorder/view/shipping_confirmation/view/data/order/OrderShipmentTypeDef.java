@@ -1,11 +1,11 @@
-package com.tokopedia.transaction.common.data.order;
+package com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order;
 
 import androidx.annotation.IntDef;
 
-import static com.tokopedia.transaction.common.data.order.OrderShipmentTypeDef.ACCEPT_FULL;
-import static com.tokopedia.transaction.common.data.order.OrderShipmentTypeDef.ACCEPT_PARTIAL;
-import static com.tokopedia.transaction.common.data.order.OrderShipmentTypeDef.ORDER_DELIVERED;
-import static com.tokopedia.transaction.common.data.order.OrderShipmentTypeDef.ORDER_WAITING;
+import static com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.OrderShipmentTypeDef.ACCEPT_FULL;
+import static com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.OrderShipmentTypeDef.ACCEPT_PARTIAL;
+import static com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.OrderShipmentTypeDef.ORDER_DELIVERED;
+import static com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.OrderShipmentTypeDef.ORDER_WAITING;
 
 /**
  * Created by kris on 2/2/18. Tokopedia

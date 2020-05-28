@@ -29,7 +29,7 @@ import java.util.Map;
  * Created by kris on 1/11/18. Tokopedia
  */
 
-public class RejectOrderBuyerRequestFragment extends Fragment implements RejectOrderReasonAdapter.ActionListener{
+public class RejectOrderBuyerRequest extends Fragment implements RejectOrderReasonAdapter.ActionListener{
 
     private static final String ORDER_ID_ARGUMENT = "ORDER_ID_ARGUMENT";
     private static final String NEW_CANCELLATION_FLOW_ARGUMENT = "NEW_CANCELLATION_FLOW_ARGUMENT";
@@ -47,16 +47,16 @@ public class RejectOrderBuyerRequestFragment extends Fragment implements RejectO
     private String reasonCode;
 
 
-    public static RejectOrderBuyerRequestFragment createFragment(String orderId) {
-        RejectOrderBuyerRequestFragment fragment = new RejectOrderBuyerRequestFragment();
+    public static RejectOrderBuyerRequest createFragment(String orderId) {
+        RejectOrderBuyerRequest fragment = new RejectOrderBuyerRequest();
         Bundle bundle = new Bundle();
         bundle.putString(ORDER_ID_ARGUMENT, orderId);
         fragment.setArguments(bundle);
         return fragment;
     }
 
-    public static RejectOrderBuyerRequestFragment createFragment(String orderId, int newCancellationFlow) {
-        RejectOrderBuyerRequestFragment fragment = new RejectOrderBuyerRequestFragment();
+    public static RejectOrderBuyerRequest createFragment(String orderId, int newCancellationFlow) {
+        RejectOrderBuyerRequest fragment = new RejectOrderBuyerRequest();
         Bundle bundle = new Bundle();
         bundle.putString(ORDER_ID_ARGUMENT, orderId);
         bundle.putInt(NEW_CANCELLATION_FLOW_ARGUMENT, newCancellationFlow);

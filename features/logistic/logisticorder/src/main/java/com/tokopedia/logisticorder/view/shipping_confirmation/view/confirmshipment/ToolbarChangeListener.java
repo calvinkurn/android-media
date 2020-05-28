@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.common.listener;
+package com.tokopedia.logisticorder.view.shipping_confirmation.view.confirmshipment;
 
 /**
  * Created by kris on 1/31/18. Tokopedia

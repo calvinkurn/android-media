@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.common.adapters
+package com.tokopedia.buyerorder.detail.view.adapter
 
 import android.os.Build
 import androidx.recyclerview.widget.RecyclerView

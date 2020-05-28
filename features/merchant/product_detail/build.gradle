@@ -79,7 +79,7 @@ dependencies {
     implementation project(rootProject.ext.features.atc_common)
     implementation project(rootProject.ext.libraries.videoplayer)
     implementation project(rootProject.ext.features.carouselProductCard)
-    implementation project(rootProject.ext.features.tkpdtransactioncommon)
+    // implementation project(rootProject.ext.features.tkpdtransactioncommon)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.variantCommon)
