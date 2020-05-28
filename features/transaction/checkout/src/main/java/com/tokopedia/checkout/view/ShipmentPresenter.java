@@ -1331,9 +1331,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         List<ShipmentCartItemModel> shipmentCartItemModels = new ArrayList<>();
         shipmentCartItemModels.add(shipmentCartItemModel);
 
-        Map<String, String> param = new HashMap<>();
-        JsonArray saveShipmentDataArray = getShipmentItemSaveStateData(shipmentCartItemModels);
-        param.put(SaveShipmentStateGqlUseCase.PARAM_CARTS, saveShipmentDataArray.toString());
+        Map<String, Object> param = new HashMap<>();
+        List<ShipmentStateRequestData> saveShipmentDataArray = getShipmentItemSaveStateData(shipmentCartItemModels);
+        param.put(SaveShipmentStateGqlUseCase.PARAM_CARTS, saveShipmentDataArray);
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(SaveShipmentStateGqlUseCase.PARAM_CART_DATA_OBJECT, param);
@@ -1344,9 +1344,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void processSaveShipmentState() {
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        JsonArray saveShipmentDataArray = getShipmentItemSaveStateData(shipmentCartItemModelList);
-        param.put(SaveShipmentStateGqlUseCase.PARAM_CARTS, saveShipmentDataArray.toString());
+        Map<String, Object> param = new HashMap<>();
+        List<ShipmentStateRequestData> saveShipmentDataArray = getShipmentItemSaveStateData(shipmentCartItemModelList);
+        param.put(SaveShipmentStateGqlUseCase.PARAM_CARTS, saveShipmentDataArray);
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(SaveShipmentStateGqlUseCase.PARAM_CART_DATA_OBJECT, param);
@@ -1356,15 +1356,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 .subscribe(new SaveShipmentStateSubscriber()));
     }
 
-    private JsonArray getShipmentItemSaveStateData(List<ShipmentCartItemModel> shipmentCartItemModels) {
+    private List<ShipmentStateRequestData> getShipmentItemSaveStateData(List<ShipmentCartItemModel> shipmentCartItemModels) {
         SaveShipmentStateRequest saveShipmentStateRequest;
         if (recipientAddressModel != null) {
             saveShipmentStateRequest = generateSaveShipmentStateRequestSingleAddress(shipmentCartItemModels);
         } else {
             saveShipmentStateRequest = generateSaveShipmentStateRequestMultipleAddress(shipmentCartItemModels);
         }
-        String saveShipmentDataString = new Gson().toJson(saveShipmentStateRequest.getRequestDataList());
-        return new JsonParser().parse(saveShipmentDataString).getAsJsonArray();
+
+        return saveShipmentStateRequest.getRequestDataList();
     }
 
     private SaveShipmentStateRequest generateSaveShipmentStateRequestSingleAddress(List<ShipmentCartItemModel> shipmentCartItemModels) {

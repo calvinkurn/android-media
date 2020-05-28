@@ -26,7 +26,7 @@ class SaveShipmentStateGqlUseCase @Inject constructor(@Named(SAVE_SHIPMENT_STATE
     }
 
     override fun createObservable(requestParam: RequestParams): Observable<SaveShipmentStateData> {
-        val params = mapOf("params" to requestParam.parameters)
+        val params = requestParam.parameters[PARAM_CART_DATA_OBJECT] as HashMap<String, Any>
         val graphqlRequest = GraphqlRequest(queryString, SaveShipmentStateGqlResponse::class.java, params)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
