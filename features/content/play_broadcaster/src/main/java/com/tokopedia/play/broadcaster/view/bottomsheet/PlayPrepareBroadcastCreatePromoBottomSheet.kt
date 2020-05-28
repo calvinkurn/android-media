@@ -39,14 +39,8 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
     private lateinit var percentageTextWatcher: TextWatcher
     private lateinit var quotaTextWatcher: TextWatcher
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        activity?.let {
-            val displayMetrics = DisplayMetrics()
-            it.windowManager.defaultDisplay.getMetrics(displayMetrics)
-            screenWidth = displayMetrics.widthPixels
-            screenHeight = displayMetrics.heightPixels
-        }
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
         savedInstanceState?.let {
             currentState = it.getInt(EXTRA_CURRENT_STATE)
@@ -63,6 +57,20 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
                     promoQuota in MIN_PERCENT_QUOTA_VALUE..MAX_QUOTA_VALUE) {
                 isEditPage = true
             }
+        }
+
+        dialog?.window?.setWindowAnimations(
+                if (isBack) R.style.DialogAnimationEnterLeft
+                else R.style.DialogAnimationEnterRight)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity?.let {
+            val displayMetrics = DisplayMetrics()
+            it.windowManager.defaultDisplay.getMetrics(displayMetrics)
+            screenWidth = displayMetrics.widthPixels
+            screenHeight = displayMetrics.heightPixels
         }
 
         initBottomSheet()
@@ -86,10 +94,6 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
     }
 
     private fun initBottomSheet() {
-        dialog?.window?.setWindowAnimations(
-                if (isBack) R.style.DialogAnimationEnterLeft
-                else R.style.DialogAnimationEnterRight)
-
         showKnob = false
         isDragable = false
         isHideable = false
