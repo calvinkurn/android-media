@@ -21,12 +21,12 @@ fun Number.numberFormatted(): String {
 fun Number.thousandFormatted(): String {
     if (toDouble() < 1000) return numberFormatted()
 
-    val exp = (Math.log(this.toDouble())/Math.log(1000.00)).toInt()
-    val number = this.toDouble()/Math.pow(1000.00, exp.toDouble())
-    return "${number.numberFormatted()}${listOf("rb", "jt", "M", "T")[exp-1]}"
+    val exp = (Math.log(this.toDouble()) / Math.log(1000.00)).toInt()
+    val number = this.toDouble() / Math.pow(1000.00, exp.toDouble())
+    return "${number.numberFormatted()}${listOf("rb", "jt", "M", "T")[exp - 1]}"
 }
 
 fun Number.getNumberFormatted(): String {
-    val format =  DecimalFormat("###,###").format(this)
-    return format.replace(",",".")
+    val format = DecimalFormat("###,###").format(this)
+    return format.replace(",", ".")
 }

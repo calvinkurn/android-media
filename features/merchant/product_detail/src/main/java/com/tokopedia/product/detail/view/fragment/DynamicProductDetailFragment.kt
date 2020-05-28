@@ -555,6 +555,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     /**
+     * ProductMiniShopInfoViewHolder
+     */
+    override fun onMiniShopInfoClicked() {
+        scrollToPosition(dynamicAdapter.getShopInfoPosition(pdpHashMapUtil?.shopInfoMap))
+    }
+
+    /**
      * ImpressionComponent
      */
     override fun onImpressComponent(componentTrackDataModel: ComponentTrackDataModel) {

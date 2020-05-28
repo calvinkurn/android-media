@@ -7,7 +7,6 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.data.model.ProductInfoP2General
-import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.*
@@ -19,7 +18,6 @@ import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.variant_common.model.VariantCategory
-import kotlin.collections.ArrayList
 import kotlin.math.roundToLong
 
 /**
@@ -30,6 +28,9 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
     val socialProofMap: ProductSocialProofDataModel?
         get() = mapOfData[ProductDetailConstant.SOCIAL_PROOF] as? ProductSocialProofDataModel
+
+    val miniSocialProofMap: ProductMiniSocialProofDataModel?
+        get() = mapOfData[ProductDetailConstant.MINI_SOCIAL_PROOF] as? ProductMiniSocialProofDataModel
 
     val snapShotMap: ProductSnapshotDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_SNAPSHOT] as? ProductSnapshotDataModel
@@ -82,11 +83,11 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     val productNewVariantDataModel: VariantDataModel?
         get() = mapOfData[ProductDetailConstant.VARIANT_OPTIONS] as? VariantDataModel
 
-    val productSocialProofPvDataModel: ProductSocialProofDataModel?
-        get() = mapOfData[ProductDetailConstant.SOCIAL_PROOF_PV] as? ProductSocialProofDataModel
-
     val notifyMeMap: ProductNotifyMeDataModel?
         get() = mapOfData[ProductDetailConstant.UPCOMING_DEALS] as? ProductNotifyMeDataModel
+
+    val miniShopInfo: ProductMiniShopInfoDataModel?
+        get() = mapOfData[ProductDetailConstant.MINI_SHOP_INFO] as? ProductMiniShopInfoDataModel
 
     val mediaMap: ProductMediaDataModel?
         get() = mapOfData[ProductDetailConstant.MEDIA] as? ProductMediaDataModel
@@ -123,6 +124,11 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 notifyMe = it.data.notifyMe
             }
 
+            miniShopInfo?.run {
+                isOS = it.data.isOS
+                isGoldMerchant = it.data.isPowerMerchant
+            }
+
             valuePropositionDataModel?.run {
                 isOfficialStore = it.data.isOS
             }
@@ -132,16 +138,17 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 talkCount = it.basic.stats.countTalk
             }
 
+            miniSocialProofMap?.run {
+                rating = it.basic.stats.rating
+                ratingCount = it.basic.stats.countReview
+                viewCount = it.basic.stats.countView
+                talkCount = it.basic.stats.countTalk
+                paymentVerifiedCount = it.basic.txStats.itemSoldPaymentVerified.toInt()
+            }
+
             socialProofMap?.run {
                 txStats = it.basic.txStats
                 stats = it.basic.stats
-                rating = it.basic.stats.rating
-            }
-
-            productSocialProofPvDataModel?.run {
-                txStats = it.basic.txStats
-                stats = it.basic.stats
-                rating = it.basic.stats.rating
             }
 
             productInfoMap?.run {
@@ -196,6 +203,10 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             val multiOriginNearestWarehouse = it.variantMultiOrigin
             shopInfoMap?.run {
                 shopInfo = it.shopInfo
+            }
+
+            miniShopInfo?.run {
+                shopName = it.shopInfo?.shopCore?.name ?: ""
             }
 
             basicContentMap?.run {
@@ -266,11 +277,12 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             }
 
             socialProofMap?.run {
-                wishListCount = it.wishlistCount.count
+                wishlistCount = it.wishlistCount.count
             }
 
-            productSocialProofPvDataModel?.run {
-                wishListCount = it.wishlistCount.count
+            miniSocialProofMap?.run {
+                wishlistCount = it.wishlistCount.count
+                shouldRenderSocialProof = true
             }
 
             productDiscussionMap?.run {

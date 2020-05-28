@@ -124,6 +124,14 @@ class DynamicProductDetailAdapter(
         }
     }
 
+    fun getShopInfoPosition(data: ProductShopInfoDataModel?): Int {
+        return if (data != null) {
+            list.indexOf(data)
+        } else {
+            0
+        }
+    }
+
     fun getVariantPosition(data: VariantDataModel?): Int = if (data != null) list.indexOf(data) else 0
 
     fun notifyVariantSection(data: VariantDataModel?, payload: Int?) {

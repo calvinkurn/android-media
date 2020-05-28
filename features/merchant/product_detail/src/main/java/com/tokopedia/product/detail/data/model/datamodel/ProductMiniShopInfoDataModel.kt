@@ -1,17 +1,17 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.product.detail.common.data.model.product.Stats
-import com.tokopedia.product.detail.common.data.model.product.TxStatsDynamicPdp
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
-data class ProductSocialProofDataModel(
+/**
+ * Created by Yehezkiel on 20/05/20
+ */
+data class ProductMiniShopInfoDataModel(
         val type: String = "",
         val name: String = "",
-        var stats: Stats? = null,
-        var txStats: TxStatsDynamicPdp? = null,
-        var isSocialProofPv: Boolean = false,
-        var wishlistCount: Int = 0
+        var shopName: String = "",
+        var isOS: Boolean = false,
+        var isGoldMerchant: Boolean = false
 ) : DynamicPdpDataModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()

@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.item_dynamic_pdp_social_proof.view.*
 import kotlinx.android.synthetic.main.partial_product_detail_visibility.view.*
 import kotlinx.android.synthetic.main.partial_product_rating_talk_courier.view.*
 
+
 class ProductSocialProofViewHolder(val view: View, private val listener: DynamicProductDetailListener)
     : AbstractViewHolder<ProductSocialProofDataModel>(view) {
 
@@ -29,6 +30,7 @@ class ProductSocialProofViewHolder(val view: View, private val listener: Dynamic
     override fun bind(element: ProductSocialProofDataModel) {
         val stats = element.stats ?: Stats()
         val txStats = element.txStats ?: TxStatsDynamicPdp()
+
         if (productStatsView == null) {
             productStatsView = PartialProductStatisticView.build(view.base_rating_talk_courier)
         }
@@ -41,10 +43,10 @@ class ProductSocialProofViewHolder(val view: View, private val listener: Dynamic
             listener.onImpressComponent(getComponentTrackData(element))
         }
 
-        element.rating?.run {
+        element.stats?.rating?.run {
             productStatsView?.renderRatingNew(this.toString())
         }
-        attributeInfoView?.renderWishlistCount(element.wishListCount)
+        attributeInfoView?.renderWishlistCount(element.wishlistCount)
 
         productStatsView?.renderData(stats.countReview, stats.countTalk, listener::onReviewClick, listener::onDiscussionClicked, getComponentTrackData(element))
         attributeInfoView?.renderDataDynamicPdp(stats.countView, txStats, element.isSocialProofPv)
@@ -53,6 +55,7 @@ class ProductSocialProofViewHolder(val view: View, private val listener: Dynamic
             listener.onShipmentSocialProofClicked(getComponentTrackData(element))
         }
     }
+
 
     private fun getComponentTrackData(element: ProductSocialProofDataModel) = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
 
