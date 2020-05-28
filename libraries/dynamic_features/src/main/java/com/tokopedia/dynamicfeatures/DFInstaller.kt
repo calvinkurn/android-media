@@ -246,13 +246,14 @@ object DFInstaller {
         }
         val dfConfig = DFRemoteConfig.getConfig(context.applicationContext)
         if (dfConfig.downloadInBackground && !dfConfig.downloadInBackgroundExcludedSdkVersion.contains(Build.VERSION.SDK_INT)) {
-            // this is to filter which module that download in background, or defered-background, based on remote config
+            // this is to filter which module that download in background based on remote config
             val eligibleInBgModuleNameList: List<String>
             if (dfConfig.moduleRestrictInBackground?.isNotEmpty() == true) {
                 eligibleInBgModuleNameList = filteredModuleNameList.filter { it !in dfConfig.moduleRestrictInBackground }
             } else {
                 eligibleInBgModuleNameList = filteredModuleNameList
             }
+            // start downloading the modules using service
             if (eligibleInBgModuleNameList.isNotEmpty()) {
                 DFDownloader.startSchedule(context.applicationContext, eligibleInBgModuleNameList, true)
             }
