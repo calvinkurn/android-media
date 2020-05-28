@@ -62,6 +62,7 @@ import com.tokopedia.buyerorder.list.view.presenter.OrderListContract;
 import com.tokopedia.buyerorder.list.view.presenter.OrderListPresenterImpl;
 import com.tokopedia.datepicker.DatePickerUnify;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
+import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.design.quickfilter.custom.CustomViewRounderCornerFilterView;
@@ -954,7 +955,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 orderListAnalytics.sendActionButtonClickEventList("click track", "");
                 break;
             case ACTION_DONE:
-                presenter.finishOrder(selectedOrderId, actionButtonUri);
+                showPopUpSelesai();
                 break;
             default:
                 if (actionButton.uri().contains(ACTION_SIMILAR_PRODUCT)) {
@@ -972,6 +973,29 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 break;
         }
 
+    }
+
+    private void showPopUpSelesai() {
+        orderListAnalytics.sendActionButtonClickEvent("selesai");
+        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE) {
+            @Override
+            public int layoutResId() {
+                return R.layout.dialog_seller_finish;
+            }
+        };
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.finishOrder(selectedOrderId, actionButtonUri);
+            }
+        });
+        dialog.setOnCancelClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     private void handleDefaultCase(ActionButton actionButton) {
