@@ -3,7 +3,7 @@ package com.tokopedia.topupbills.telco.data
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class TelcoCatalogProduct(
+data class TelcoCatalogProduct(
         @SerializedName("name")
         @Expose
         val name: String = "",
@@ -21,7 +21,7 @@ class TelcoCatalogProduct(
         val dataCollections: List<TelcoCatalogDataCollection> = listOf())
 
 
-class TelcoCatalogProductValidation(
+data class TelcoCatalogProductValidation(
         @SerializedName("rule")
         @Expose
         val name: String = ""

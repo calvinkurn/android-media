@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by nabillasabbaha on 10/05/19.
  */
-class TelcoCatalogProductInput(
+data class TelcoCatalogProductInput(
         @SerializedName("label")
         @Expose
         val label: String = "",
@@ -23,7 +23,7 @@ class TelcoCatalogProductInput(
         @Expose
         val product: TelcoCatalogProduct = TelcoCatalogProduct())
 
-class TelcoCatalogEnquiryFields(
+data class TelcoCatalogEnquiryFields(
         @SerializedName("id")
         @Expose
         val id: Int = 0,

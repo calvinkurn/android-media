@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by nabillasabbaha on 10/05/19.
  */
-class TelcoAttributesProduct(
+data class TelcoAttributesProduct(
         @SerializedName("product_labels")
         @Expose
         var productLabels: List<String> = listOf(),
@@ -97,6 +97,4 @@ class TelcoAttributesProduct(
             return arrayOfNulls(size)
         }
     }
-
-
 }

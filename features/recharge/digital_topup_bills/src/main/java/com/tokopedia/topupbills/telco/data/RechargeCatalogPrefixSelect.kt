@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by nabillasabbaha on 10/05/19.
  */
-class RechargeCatalogPrefixSelect(
+data class RechargeCatalogPrefixSelect(
         @SerializedName("componentID")
         @Expose
         val componentId: Int = 0,
@@ -33,7 +33,7 @@ class RechargeCatalogPrefixSelect(
         val prefixes: List<RechargePrefix> = listOf()
 )
 
-class RechargePrefix(
+data class RechargePrefix(
         @SerializedName("key")
         @Expose
         val key: String,
@@ -45,7 +45,7 @@ class RechargePrefix(
         val operator: TelcoOperator
 )
 
-class RechargeValidation(
+data class RechargeValidation(
         @SerializedName("id")
         @Expose
         val id: Int,

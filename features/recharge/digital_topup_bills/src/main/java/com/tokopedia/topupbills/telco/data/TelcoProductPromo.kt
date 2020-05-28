@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by nabillasabbaha on 16/05/19.
  */
-class TelcoProductPromo(
+data class TelcoProductPromo(
         @SerializedName("id")
         @Expose
         val id: Int = 0,
