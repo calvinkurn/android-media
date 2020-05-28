@@ -38,6 +38,7 @@ abstract class BaseTopicsBottomSheet(private val mActivity: FragmentActivity?,
         isDragable = true
         isFullpage = true
         isHideable = true
+        showKnob = true
         setTitle(BOTTOM_SHEET_TITLE)
         setChild(contentView)
     }

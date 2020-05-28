@@ -4,9 +4,11 @@ import android.content.Context
 import androidx.core.content.ContextCompat
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.feature.reviewreply.data.ReviewReplyInsertResponse
+import com.tokopedia.reviewseller.feature.reviewreply.data.ReviewReplyInsertTemplateResponse
 import com.tokopedia.reviewseller.feature.reviewreply.data.ReviewReplyTemplateListResponse
 import com.tokopedia.reviewseller.feature.reviewreply.data.ReviewReplyUpdateResponse
 import com.tokopedia.reviewseller.feature.reviewreply.view.model.InsertReplyResponseUiModel
+import com.tokopedia.reviewseller.feature.reviewreply.view.model.InsertTemplateReplyUiModel
 import com.tokopedia.reviewseller.feature.reviewreply.view.model.ReplyTemplateUiModel
 import com.tokopedia.reviewseller.feature.reviewreply.view.model.UpdateReplyResponseUiModel
 import com.tokopedia.unifycomponents.list.ListItemUnify
@@ -40,6 +42,18 @@ object SellerReviewReplyMapper {
             ))
         }
         return data
+    }
+
+    fun mapToInsertTemplateReplyUiModel(reviewReplyInsertTemplateResponse: ReviewReplyInsertTemplateResponse.InsertResponseTemplate): InsertTemplateReplyUiModel {
+        return InsertTemplateReplyUiModel(
+                isSuccess = reviewReplyInsertTemplateResponse.success,
+                templateId = reviewReplyInsertTemplateResponse.data[0].templateId,
+                title = reviewReplyInsertTemplateResponse.data[0].title,
+                message = reviewReplyInsertTemplateResponse.data[0].message,
+                status = reviewReplyInsertTemplateResponse.data[0].status,
+                defaultTemplateID = reviewReplyInsertTemplateResponse.defaultTemplateID,
+                error = reviewReplyInsertTemplateResponse.error
+        )
     }
 
     fun mapToItemUnifyMenuReport(context: Context): ArrayList<ListItemUnify> {

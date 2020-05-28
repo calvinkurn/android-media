@@ -7,9 +7,11 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.reviewseller.common.util.CoroutineDispatcherProvider
 import com.tokopedia.reviewseller.feature.reviewreply.domain.GetReviewTemplateListUseCase
 import com.tokopedia.reviewseller.feature.reviewreply.domain.InsertSellerResponseUseCase
+import com.tokopedia.reviewseller.feature.reviewreply.domain.InsertTemplateReviewReplyUseCase
 import com.tokopedia.reviewseller.feature.reviewreply.domain.UpdateSellerResponseUseCase
 import com.tokopedia.reviewseller.feature.reviewreply.util.mapper.SellerReviewReplyMapper
 import com.tokopedia.reviewseller.feature.reviewreply.view.model.InsertReplyResponseUiModel
+import com.tokopedia.reviewseller.feature.reviewreply.view.model.InsertTemplateReplyUiModel
 import com.tokopedia.reviewseller.feature.reviewreply.view.model.ReplyTemplateUiModel
 import com.tokopedia.reviewseller.feature.reviewreply.view.model.UpdateReplyResponseUiModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -24,7 +26,8 @@ class SellerReviewReplyViewModel @Inject constructor(
         private val dispatcherProvider: CoroutineDispatcherProvider,
         private val getReviewTemplateListUseCase: GetReviewTemplateListUseCase,
         private val insertSellerResponseUseCase: InsertSellerResponseUseCase,
-        private val updateSellerResponseUseCase: UpdateSellerResponseUseCase)
+        private val updateSellerResponseUseCase: UpdateSellerResponseUseCase,
+        private val insertTemplateReviewReplyUseCase: InsertTemplateReviewReplyUseCase)
     : BaseViewModel(dispatcherProvider.main()) {
 
     private val DATE_REVIEW_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
@@ -43,14 +46,18 @@ class SellerReviewReplyViewModel @Inject constructor(
     val reviewTemplate: LiveData<Result<List<ReplyTemplateUiModel>>>
         get() = _reviewTemplate
 
+    private val _insertTemplateReply = MutableLiveData<Result<InsertTemplateReplyUiModel>>()
+    val insertTemplateReply: LiveData<Result<InsertTemplateReplyUiModel>>
+        get() = _insertTemplateReply
+
     fun getTemplateListReply(shopId: Int) {
         launchCatchError(block = {
             val reviewTemplateList = withContext(dispatcherProvider.io()) {
                 getTemplateList(shopId)
             }
-            _reviewTemplate.postValue(Success(reviewTemplateList))
+            _reviewTemplate.value = Success(reviewTemplateList)
         }, onError = {
-            _reviewTemplate.postValue(Fail(it))
+            _reviewTemplate.value = Fail(it)
         })
     }
 
@@ -64,9 +71,24 @@ class SellerReviewReplyViewModel @Inject constructor(
                         responseMessage)
                 SellerReviewReplyMapper.mapToInsertReplyUiModel(insertSellerResponseUseCase.executeOnBackground())
             }
-            _insertReviewReply.postValue(Success(responseInsertReply))
+            _insertReviewReply.value = Success(responseInsertReply)
         }, onError = {
-            _insertReviewReply.postValue(Fail(it))
+            _insertReviewReply.value = Fail(it)
+        })
+    }
+
+    fun insertTemplateReviewReply(shopID: Int, title: String, message: String) {
+        launchCatchError(block = {
+            val responseInsertTemplate = withContext(dispatcherProvider.io()) {
+                insertTemplateReviewReplyUseCase.params = InsertTemplateReviewReplyUseCase.createParams(
+                        shopID,
+                        title,
+                        message)
+                SellerReviewReplyMapper.mapToInsertTemplateReplyUiModel(insertTemplateReviewReplyUseCase.executeOnBackground())
+            }
+            _insertTemplateReply.value = Success(responseInsertTemplate)
+        }, onError = {
+            _insertTemplateReply.value = Fail(it)
         })
     }
 
@@ -78,9 +100,9 @@ class SellerReviewReplyViewModel @Inject constructor(
                         responseMessage)
                 SellerReviewReplyMapper.mapToUpdateReplyUiModel(updateSellerResponseUseCase.executeOnBackground())
             }
-            _updateReviewReply.postValue(Success(responseUpdateReply))
+            _updateReviewReply.value = Success(responseUpdateReply)
         }, onError = {
-            _updateReviewReply.postValue(Fail(it))
+            _updateReviewReply.value = Fail(it)
         })
     }
 

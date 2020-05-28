@@ -24,6 +24,9 @@
             android:id="@+id/btnAddTemplate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:focusable="true"
+            android:clickable="true"
             app:srcCompat="@drawable/ic_add_reply_seller"/>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -32,8 +35,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:clipToPadding="false"
-            android:paddingStart="@dimen/spacing_lvl4"
-            android:paddingEnd="@dimen/spacing_lvl4"
+            android:paddingStart="@dimen/spacing_lvl3"
+            android:paddingEnd="@dimen/spacing_lvl3"
             tools:listitem="@layout/item_chat_template"
             tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:orientation="horizontal"/>

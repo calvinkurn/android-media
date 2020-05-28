@@ -290,7 +290,7 @@ public class InboxReputationDetailItemViewHolder extends
         });
 
         if(GlobalConfig.isSellerApp()) {
-            sellerReplyLayout.setVisibility(View.GONE);
+            sellerAddReplyLayout.setVisibility(View.GONE);
         }
     }
 
