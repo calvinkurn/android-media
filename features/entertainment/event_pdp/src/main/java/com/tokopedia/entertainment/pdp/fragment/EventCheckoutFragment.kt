@@ -2,7 +2,6 @@ package com.tokopedia.entertainment.pdp.fragment
 
 import android.app.Activity
 import android.app.ProgressDialog
-import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -23,10 +22,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
-import com.tokopedia.applink.internal.ApplinkConstInternalPayment
-import com.tokopedia.applink.internal.ApplinkConstInternalPromo
-import com.tokopedia.applink.internal.ApplinkConstInternalSalam
-import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.entertainment.pdp.R
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_META_DATA
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_PACKAGE_ID
@@ -42,24 +37,14 @@ import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventMetaDataMapper.
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventMetaDataMapper.getPassengerMetaData
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPackageMapper.getItemMap
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPackageMapper.getPackage
-import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPaymentMapper.getJsonMapper
 import com.tokopedia.entertainment.pdp.data.pdp.MetaDataResponse
 import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.viewmodel.EventCheckoutViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oms.scrooge.ScroogePGUtil
-import com.tokopedia.oms.view.utils.Utils
-import com.tokopedia.promocheckout.common.data.EXTRA_IS_USE
-import com.tokopedia.promocheckout.common.data.EXTRA_KUPON_CODE
-import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyBody
-import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
-import com.tokopedia.promocheckout.common.view.model.PromoData
-import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
-import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -175,23 +160,6 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                     val paymentData = data.checkout.data.data.queryString
                     val paymentURL: String = data.checkout.data.data.redirectUrl
                     ScroogePGUtil.openScroogePage(activity, paymentURL, true, paymentData, it.resources.getString(R.string.pembayaran))
-
-//                    val taskStackBuilder = TaskStackBuilder.create(it)
-//                    val intentHomeUmrah = RouteManager.getIntent(it, ApplinkConstInternalSalam.SALAM_UMRAH_HOME_PAGE)
-//                    taskStackBuilder.addNextIntent(intentHomeUmrah)
-//
-//                    val checkoutResultData = PaymentPassData()
-//                    checkoutResultData.queryString = data.checkout.data.data.queryString
-//                    checkoutResultData.redirectUrl = data.checkout.data.data.redirectUrl
-//
-//                    val paymentCheckoutString = ApplinkConstInternalPayment.PAYMENT_CHECKOUT
-//                    val intent = RouteManager.getIntent(context, paymentCheckoutString)
-//                    progressDialog.dismiss()
-//                    intent?.run {
-//                        putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, checkoutResultData)
-//                        taskStackBuilder.addNextIntent(this)
-//                        taskStackBuilder.startActivities()
-//                    }
                 }
             }
         })
@@ -223,7 +191,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
         renderDesc(eventProductDetailEntity.eventProductDetail.productDetailData)
         renderPassenger()
         renderSummary(eventProductDetailEntity.eventProductDetail.productDetailData)
-        renderFooter(eventProductDetailEntity.eventProductDetail.productDetailData)
+        renderFooter()
 
     }
 
@@ -267,8 +235,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
 //        eventPDPTracking.onViewCheckoutPage(getPackage(scheduleID, groupID, packetID, pdp), pdp, amount)
     }
 
-    private fun renderFooter(productDetailData: ProductDetailData) {
-        renderPromo(productDetailData)
+    private fun renderFooter() {
         cb_event_checkout.setOnCheckedChangeListener { _, isChecked ->
             btn_event_checkout.isEnabled = isChecked
         }
@@ -292,41 +259,6 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                                 getCheckoutParam(metadata))
                     }
                 }
-            }
-        }
-    }
-
-    private fun renderPromo(productDetailData: ProductDetailData) {
-
-        ticker_event_checkout_promo.state = TickerPromoStackingCheckoutView.State.EMPTY
-        ticker_event_checkout_promo.actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
-            override fun onClickDetailPromo() {
-                val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_EVENT)
-                intent.putExtra(EXTRA_IS_USE, true)
-                intent.putExtra(EXTRA_KUPON_CODE, promoCode)
-                intent.putExtra(EXTRA_EVENT_VERIFY, getVerifyMapped(productDetailData))
-
-                startActivityForResult(intent, PROMO_EXTRA_LIST_ACTIVITY_RESULT)
-            }
-
-            override fun onClickUsePromo() {
-                val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_EVENT)
-                intent.putExtra(EXTRA_COUPON_ACTIVE, true)
-                intent.putExtra(PAGE_TRACKING, 1)
-                intent.putExtra(EXTRA_EVENT_CATEGORY_ID, productDetailData.catalog.digitalCategoryId.toInt())
-                intent.putExtra(EXTRA_EVENT_VERIFY, getVerifyMapped(productDetailData))
-                startActivityForResult(intent, PROMO_EXTRA_LIST_ACTIVITY_RESULT)
-            }
-
-            override fun onDisablePromoDiscount() {
-
-            }
-
-            override fun onResetPromoDiscount() {
-                promoCode = ""
-                setupPromoTicker(TickerCheckoutView.State.EMPTY,
-                        "",
-                        "")
             }
         }
     }
@@ -378,45 +310,6 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                     forms = data.getSerializableExtra(EXTRA_DATA_PESSANGER) as List<Form>
                     setPassengerData(forms)
                 }
-            } else if (requestCode == PROMO_EXTRA_LIST_ACTIVITY_RESULT) {
-                data?.let {
-                    if (it.hasExtra(EXTRA_PROMO_DATA)) {
-                        val itemPromoData = it.getParcelableExtra<PromoData>(EXTRA_PROMO_DATA)
-                        promoCode = itemPromoData.promoCode
-
-                        when (itemPromoData.state) {
-                            TickerCheckoutView.State.EMPTY -> {
-                                promoCode = ""
-                                setupPromoTicker(TickerCheckoutView.State.EMPTY,
-                                        "",
-                                        "")
-                            }
-                            TickerCheckoutView.State.FAILED -> {
-                                promoCode = ""
-                                setupPromoTicker(TickerCheckoutView.State.FAILED,
-                                        itemPromoData?.title.toEmptyStringIfNull(),
-                                        itemPromoData?.description.toEmptyStringIfNull())
-
-                            }
-                            TickerCheckoutView.State.ACTIVE -> {
-                                setupPromoTicker(TickerCheckoutView.State.ACTIVE,
-                                        itemPromoData?.title.toEmptyStringIfNull(),
-                                        itemPromoData?.description.toEmptyStringIfNull())
-                            }
-                            TickerCheckoutView.State.INACTIVE -> {
-                                setupPromoTicker(TickerCheckoutView.State.INACTIVE,
-                                        itemPromoData?.title.toEmptyStringIfNull(),
-                                        itemPromoData?.description.toEmptyStringIfNull())
-                            }
-                            else -> {
-                                promoCode = ""
-                                setupPromoTicker(TickerCheckoutView.State.EMPTY,
-                                        "",
-                                        "")
-                            }
-                        }
-                    }
-                }
             }
         }
 
@@ -443,36 +336,6 @@ class EventCheckoutFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setupPromoTicker(state: TickerCheckoutView.State,
-                                 title: String,
-                                 description: String) {
-        if (state == TickerCheckoutView.State.EMPTY) {
-            ticker_event_checkout_promo.title = title
-            ticker_event_checkout_promo.state = TickerPromoStackingCheckoutView.State.EMPTY
-        } else if (state == TickerCheckoutView.State.ACTIVE) {
-            ticker_event_checkout_promo.title = title
-            ticker_event_checkout_promo.desc = description
-            ticker_event_checkout_promo.state = TickerPromoStackingCheckoutView.State.ACTIVE
-        } else if (state == TickerCheckoutView.State.INACTIVE) {
-            ticker_event_checkout_promo.title = title
-            ticker_event_checkout_promo.desc = description
-            ticker_event_checkout_promo.state = TickerPromoStackingCheckoutView.State.INACTIVE
-        }
-    }
-
-
-    fun getVerifyMapped(productDetailData: ProductDetailData): EventVerifyBody {
-//        if (name.isEmpty()) name = userSessionInterface.name
-//        if (email.isEmpty()) email = userSessionInterface.email
-//
-//        return getVerifyBody(name, email, groupID.toInt(), packetID.toInt(), scheduleID.toInt(), productDetailData.id.toInt(),
-//                productDetailData.categoryId.toInt(), productDetailData.providerId.toInt(),
-//                amount, getPackage(scheduleID, groupID, packetID, productDetailData).salesPrice.toInt(),
-//                getPackage(scheduleID, groupID, packetID, productDetailData).salesPrice.toInt() * amount,
-//                productDetailData.catalog.digitalProductId.toInt(),
-//                getEntityPessangerVerify(forms), promoCode)
-        return EventVerifyBody()
-    }
 
     override fun onDestroyView() {
         performanceMonitoring.stopTrace()
@@ -482,19 +345,13 @@ class EventCheckoutFragment : BaseDaggerFragment() {
     companion object {
         const val DATE_FORMAT = "EEE, d MMM yyyy"
         const val REQUEST_CODE_FORM = 100
-        const val PROMO_EXTRA_LIST_ACTIVITY_RESULT = 123
 
         const val EXTRA_DATA_PESSANGER = "EXTRA_DATA_PESSANGER"
-        const val EXTRA_COUPON_ACTIVE = "EXTRA_COUPON_ACTIVE"
-        const val PAGE_TRACKING = "PAGE_TRACKING"
-        const val EXTRA_EVENT_CATEGORY_ID = "EXTRA_EVENT_CATEGORY_ID"
-        const val EXTRA_EVENT_VERIFY = "EXTRA_EVENT_VERIFY"
 
         const val PASSENGER_NAME = "fullname"
         const val PASSENGER_EMAIL = "email"
 
         const val ENT_CHECKOUT_PERFORMANCE = "et_event_checkout"
-        const val EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA"
 
         fun newInstance(urlPDP: String, metadata: MetaDataResponse, packageID: String) = EventCheckoutFragment().also {
             it.arguments = Bundle().apply {
