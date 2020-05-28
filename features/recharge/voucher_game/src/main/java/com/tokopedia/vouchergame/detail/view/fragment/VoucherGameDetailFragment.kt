@@ -234,7 +234,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         super.processMenuDetail(data)
         if (data.catalog.label.isNotEmpty()) {
             voucherGameAnalytics.categoryName = data.catalog.label
-            (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
+            (activity as? BaseSimpleActivity)?.updateTitle(data.catalog.label)
         }
     }
 
