@@ -16,4 +16,8 @@ class PlayUnknownFollowerViewHolder(itemView: View) : BaseViewHolder(itemView) {
     fun bind(item: FollowerUiModel.Unknown) {
         cpvFollower.setColor(item.colorRes)
     }
+
+    companion object {
+        val LAYOUT = R.layout.item_unknown_follower
+    }
 }

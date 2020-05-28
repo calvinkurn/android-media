@@ -4,6 +4,20 @@
     <string name="play_begin_setup">Mulai Persiapannya</string>
     <string name="play_your_followers">Followers \nAnda</string>
 
+    <string name="play_etalase_picker_info">Buat konten menarik dari produk di tokomu untuk menarik banyak calon pembeli &amp; tingkatkan penjualan!</string>
+    <string name="play_etalase_search_hint">Cari etalase</string>
+    <string name="play_etalase_product_amount">%d Produk</string>
+
+    <string name="play_product_stock_amount">Stok: %d</string>
+    <string name="play_product_select_max_info">Pilih maks. %d produk</string>
+
+
+    <string name="play_default_title">Buat Live Streaming</string>
+    <string name="play_allow_title">Aktifkan kamera &amp; mikrofon</string>
+    <string name="play_allow_description">Untuk memulai live streaming, berikan akses kamera &amp; mikrofon di HP kamu.</string>
+    <string name="play_allow_camera">Aktifkan Akses Kamera</string>
+    <string name="play_allow_mic">Aktifkan Akses Mikrofon</string>
+
     <string name="play_summary_title">Laporan Live Streaming</string>
     <string name="play_summary_button_finish">Selesai</string>
 </resources>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginStart="@dimen/play_dp_12"
+    android:layout_marginEnd="@dimen/play_dp_12"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_info"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:text="@string/play_etalase_picker_info"
+        app:typographyType="body_3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <com.tokopedia.play.broadcaster.view.custom.PlaySearchBar
+        android:id="@+id/psb_search"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/play_dp_20"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_info"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_etalase"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/psb_search"
+        app:spanCount="2"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_suggestions"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/psb_search"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,20 +4,25 @@ import com.tokopedia.play.broadcaster.view.PlayPrepareBroadcastActivity
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayPrepareBroadcastFragment
+import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
+import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment
+import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastInteractionFragment
 import dagger.Component
 
 /**
  * Created by jegul on 20/05/20
  */
-@Component(modules = [PlayBroadcasterViewModelModule::class, PlayBroadcasterModule::class])
+@Component(modules = [PlayBroadcasterViewModelModule::class, PlayBroadcasterModule::class, PlayBroadcasterFragmentModule::class])
 @PlayBroadcasterScope
 interface PlayBroadcasterComponent {
 
-    fun inject(prepareBroadcastActivity: PlayPrepareBroadcastActivity)
+    fun inject(broadcastActivity: PlayBroadcastActivity)
 
-    fun inject(prepareBroadcastFragment: PlayPrepareBroadcastFragment)
+    fun inject(broadcastFragment: PlayBroadcastFragment)
 
     fun inject(broadcastSetupFragment: PlayBroadcastSetupFragment)
 
     fun inject(broadcastSummaryFragment: PlayBroadcastSummaryFragment)
+
+    fun inject(broadcastInteractionFragment: PlayBroadcastInteractionFragment)
 }

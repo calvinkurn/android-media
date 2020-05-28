@@ -11,7 +11,7 @@ import com.tokopedia.play.broadcaster.view.uimodel.FollowerUiModel
  * Created by jegul on 20/05/20
  */
 class PlayUnknownFollowerAdapterDelegate :
-        TypedAdapterDelegate<FollowerUiModel.Unknown, FollowerUiModel, PlayUnknownFollowerViewHolder>(R.layout.item_unknown_follower) {
+        TypedAdapterDelegate<FollowerUiModel.Unknown, FollowerUiModel, PlayUnknownFollowerViewHolder>(PlayUnknownFollowerViewHolder.LAYOUT) {
 
     override fun onBindViewHolder(item: FollowerUiModel.Unknown, holder: PlayUnknownFollowerViewHolder) {
         holder.bind(item)

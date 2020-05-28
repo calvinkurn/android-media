@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="play_dp_1">1dp</dimen>
     <dimen name="play_dp_6">6dp</dimen>
     <dimen name="play_dp_12">12dp</dimen>
     <dimen name="play_dp_18">18dp</dimen>
+    <dimen name="play_dp_20">20dp</dimen>
+
+    <dimen name="play_search_bar_radius">8dp</dimen>
+    <dimen name="play_product_preview_radius">8dp</dimen>
+    <dimen name="play_etalase_list_border_width">1dp</dimen>
+
+    <dimen name="play_etalase_box_size">152dp</dimen>
 
     <dimen name="play_summary_cover_width">100dp</dimen>
     <dimen name="play_summary_cover_height">180dp</dimen>
