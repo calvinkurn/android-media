@@ -89,7 +89,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         private const val CONFIRMATION_REQUEST_CODE = 1
         private const val SETTING_REQUEST_CODE = 2
         const val DOWNLOAD_MODE_PAGE = "Page"
-        const val TIMEOUT_ERROR_MESSAGE = "timeout" // 60s
+        const val TIMEOUT_ERROR_MESSAGE = "timeout"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -155,7 +155,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
             onSuccessfulLoad(moduleName, launch = true)
             return
         }
-        
+
         if (allowRunningServiceFromActivity) {
             DFInstaller.installOnBackground(this, listOf(moduleName), this::class.java.simpleName.toString())
             DFInstaller.attachView(this)
