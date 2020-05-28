@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentActivity
+import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.reviewseller.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
@@ -46,6 +47,19 @@ class AddTemplateBottomSheet(private val mActivity: FragmentActivity?,
     }
 
     private fun submitAddTemplate() {
+
+        tvTitleTemplate?.textFieldInput?.afterTextChanged {
+            if (it.isEmpty()) {
+                tvTitleTemplate?.setMessage(getString(R.string.empty_title_add_template_label))
+            }
+        }
+
+        tvDescTemplate?.textFieldInput?.afterTextChanged {
+            if(it.isEmpty()) {
+                tvDescTemplate?.setMessage(getString(R.string.empty_desc_add_template_label))
+            }
+        }
+
         btnSubmitTemplate?.setOnClickListener {
             val title = tvTitleTemplate?.textFieldInput?.text.toString()
             val desc = tvDescTemplate?.textFieldInput?.text.toString()
