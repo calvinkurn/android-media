@@ -134,7 +134,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private var orderProgress: TransactionOrderProgressLayout? = null
     private var chatMenu: ChatMenuView? = null
 
-    override fun rvAttachmentMenuId() = R.id.rv_attachment_menu
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getAnalytic(): TopChatAnalytics = analytics
 
