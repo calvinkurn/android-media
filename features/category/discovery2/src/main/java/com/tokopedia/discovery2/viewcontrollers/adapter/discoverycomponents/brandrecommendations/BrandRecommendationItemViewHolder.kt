@@ -11,6 +11,7 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 
 class BrandRecommendationItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
 
@@ -21,8 +22,10 @@ class BrandRecommendationItemViewHolder(itemView: View, private val fragment: Fr
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         brandRecommendationItemViewModel = discoveryBaseViewModel as BrandRecommendationItemViewModel
         brandRecommendationItemViewModel.getComponentDataLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
-            ImageHandler.LoadImage(imageView, item.data?.get(0)?.imageUrlMobile)
-            setClick(item.data?.get(0))
+            item.data?.get(0)?.let {
+                it.imageUrlMobile?.let { it1 -> imageView.loadImageWithoutPlaceholder(it1) }
+                setClick(item.data?.get(0))
+            }
         })
 
     }
@@ -30,7 +33,7 @@ class BrandRecommendationItemViewHolder(itemView: View, private val fragment: Fr
     private fun setClick(data: DataItem?) {
         data?.let {
             if (!it.applinks.isNullOrEmpty()) {
-                itemView.setOnClickListener {itemView ->
+                itemView.setOnClickListener { itemView ->
                     sendClickBrandRecommendationClickEvent(it)
                     RouteManager.route(itemView.context, it.applinks)
                 }

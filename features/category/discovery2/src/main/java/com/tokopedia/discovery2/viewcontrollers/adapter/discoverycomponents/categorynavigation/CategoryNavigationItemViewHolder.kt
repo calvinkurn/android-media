@@ -4,14 +4,13 @@ import android.view.View
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.unifyprinciples.Typography
 
 
@@ -26,21 +25,21 @@ class CategoryNavigationItemViewHolder(itemView: View, private val fragment: Fra
         categoryNavigationItemViewModel = discoveryBaseViewModel as CategoryNavigationItemViewModel
         categoryNavigationItemViewModel.getComponentData().observe(fragment.viewLifecycleOwner, Observer { item ->
 
-            val data = item.data?.getOrElse(0) { DataItem() }
+            item.data?.get(0)?.let {
+                imageView.loadImageWithoutPlaceholder(it.imageUrlMobile ?: "")
+                setClick(it)
 
-            imageView.loadImage(data?.imageUrlMobile ?: "")
-            setClick(data?.applinks, data)
-
-            title.text = data?.name
+                title.text = it.name
+            }
         })
 
     }
 
-    private fun setClick(applinks: String?, data: DataItem?) {
-        if (!applinks.isNullOrEmpty()) {
+    private fun setClick(data: DataItem) {
+        if (!data.applinks.isNullOrEmpty()) {
             itemView.setOnClickListener {
                 (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackCategoryNavigationClick(data, adapterPosition)
-                RouteManager.route(itemView.context, applinks)
+                RouteManager.route(itemView.context, data.applinks)
             }
         }
     }
