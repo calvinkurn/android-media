@@ -20,6 +20,7 @@ class TopicViewHolder(val view: View, private val fragmentListener: SellerReview
     companion object {
         @JvmStatic
         val LAYOUT = R.layout.item_topic_review_detail
+        private const val ITEM_SORT_FILTER_EMPTY = 0
     }
 
     private val sortFilterTopics: SortFilter = view.findViewById(R.id.topicSortFilterTopic)
@@ -77,7 +78,7 @@ class TopicViewHolder(val view: View, private val fragmentListener: SellerReview
             isSelected -> {
                 ChipsUnify.TYPE_SELECTED
             }
-            count == 0 -> {
+            count == ITEM_SORT_FILTER_EMPTY -> {
                 ChipsUnify.TYPE_DISABLE
             }
             else -> {
