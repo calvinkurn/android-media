@@ -122,17 +122,17 @@ class SearchProductFirstPageGqlUseCase extends UseCase<SearchProductModel> {
             "                keyword\n" +
             "                url\n" +
             "                applink\n" +
-//            "                product {\n" +
-//            "                    id\n" +
-//            "                    name\n" +
-//            "                    price\n" +
-//            "                    image_url\n" +
-//            "                    rating\n" +
-//            "                    count_review\n" +
-//            "                    url\n" +
-//            "                    applink\n" +
-//            "                    price_str\n" +
-//            "                }\n" +
+            "                product {\n" +
+            "                    id\n" +
+            "                    name\n" +
+            "                    price\n" +
+            "                    image_url\n" +
+            "                    rating\n" +
+            "                    count_review\n" +
+            "                    url\n" +
+            "                    applink\n" +
+            "                    price_str\n" +
+            "                }\n" +
             "            }\n" +
             "        }\n" +
             "        products {\n" +
