@@ -8,5 +8,5 @@ data class FreeOngkir(
         var freeOngkirImageUrl : String = "",
 
         @SerializedName("is_active")
-        val isActive: Boolean? = false
+        val isActive: Boolean = false
 )

@@ -55,7 +55,7 @@ class ProductCardItemViewModel(val application: Application, private val compone
     }
 
     fun getFreeOngkirImage(): LiveData<String> {
-        if (dataItem.value?.freeOngkir?.isActive!!) {
+        if (dataItem.value?.freeOngkir?.isActive == true) {
             freeOngkirImage.value = dataItem.value?.freeOngkir?.freeOngkirImageUrl
         } else {
             freeOngkirImage.value = ""
