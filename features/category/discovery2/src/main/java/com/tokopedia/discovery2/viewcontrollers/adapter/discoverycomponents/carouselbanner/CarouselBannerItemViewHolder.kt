@@ -4,7 +4,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
@@ -24,7 +24,7 @@ class CarouselBannerItemViewHolder(itemView: View, private val fragment: Fragmen
         carouselBannerItemViewModel = discoveryBaseViewModel as CarouselBannerItemViewModel
         carouselBannerItemViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
             val itemData = item.data?.get(0)
-            ImageHandler.LoadImage(promoImage, itemData?.imageUrlMobile)
+            promoImage.loadImageWithoutPlaceholder(itemData?.imageUrlMobile ?: "")
             setClick(itemData)
             promoText.setTextAndCheckShow(itemData?.description)
         })
@@ -40,7 +40,6 @@ class CarouselBannerItemViewHolder(itemView: View, private val fragment: Fragmen
                 }
             }
         }
-
     }
 
 }

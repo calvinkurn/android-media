@@ -205,7 +205,7 @@ class MainActivity : AppCompatActivity() {
         if (!applinkEditText.text.toString().isEmpty()) {
             RouteManager.route(this, applinkEditText.text.toString())
         } else {
-          RouteManager.route(this, "tokopedia://discovery/test-disco")
+//          RouteManager.route(this, "tokopedia://discovery/test-disco")
 //        RouteManager.route(this, "tokopedia://discovery/kopi-kenangan")
 //        RouteManager.route(this, "tokopedia://discovery/kawan-lama")
 //        RouteManager.route(this, "tokopedia://discovery/bebas-ongkir-6")
@@ -215,6 +215,8 @@ class MainActivity : AppCompatActivity() {
 //        RouteManager.route(this, "tokopedia://discovery/keuangan-test ")
 //        RouteManager.route(this, "tokopedia://discovery/produk-terlaris-new-user")
 //        RouteManager.route(this, "tokopedia://discovery/okedehpokoknya")
+        RouteManager.route(this, "tokopedia://discovery/produk-terlaris-new-user")
+//        RouteManager.route(this, "tokopedia://discovery/makanan-minuman")
         }
 
 

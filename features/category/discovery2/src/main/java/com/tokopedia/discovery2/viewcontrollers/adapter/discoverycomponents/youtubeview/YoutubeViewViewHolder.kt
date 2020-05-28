@@ -10,6 +10,8 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
 
 
@@ -17,6 +19,7 @@ class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) : Ab
 
     private var youTubePlayerSupportFragment: YouTubePlayerSupportFragment =
             fragment.activity?.supportFragmentManager?.findFragmentById(R.id.youtube_player_fragment) as YouTubePlayerSupportFragment
+    private val shimmerView: ImageUnify = itemView.findViewById(R.id.shimmer_view)
     private lateinit var youTubeViewViewModel: YouTubeViewViewModel
     private lateinit var youTubePlayer: YouTubePlayer
     private lateinit var videoId: String
@@ -45,6 +48,7 @@ class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) : Ab
                 youTubePlayer = player
             }
             if (::videoId.isInitialized) {
+                shimmerView.hide()
                 youTubePlayer.cueVideo(videoId)
             }
             youTubePlayer.setShowFullscreenButton(false)

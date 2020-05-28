@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.ClaimCouponConstant.Companion.DOUBLE_COLUMNS
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -25,12 +26,23 @@ class ClaimCouponViewHolder(itemView: View, private val fragment: Fragment) : Ab
         recyclerView.adapter = discoveryRecycleAdapter
     }
 
+    private fun addShimmer(isDouble: Boolean) {
+        val height = if(isDouble)
+            200 else 290
+        val list : ArrayList<ComponentsItem> = ArrayList()
+        list.add(ComponentsItem(name = "shimmer", shimmerHeight = height))
+        list.add(ComponentsItem(name = "shimmer", shimmerHeight = height))
+        discoveryRecycleAdapter.setDataList(list)
+    }
+
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
 
         claimCouponViewModel = discoveryBaseViewModel as ClaimCouponViewModel
         if (claimCouponViewModel.components.properties?.columns == DOUBLE_COLUMNS) {
             spanCount = 2
-        }
+            addShimmer(true)
+        } else
+            addShimmer(false)
         recyclerView.layoutManager = GridLayoutManager(itemView.context, spanCount, GridLayoutManager.VERTICAL, false)
         claimCouponViewModel.getClickCouponData((fragment as DiscoveryFragment).pageEndPoint)
         claimCouponViewModel.getComponentList().observe(fragment.viewLifecycleOwner, Observer { item ->

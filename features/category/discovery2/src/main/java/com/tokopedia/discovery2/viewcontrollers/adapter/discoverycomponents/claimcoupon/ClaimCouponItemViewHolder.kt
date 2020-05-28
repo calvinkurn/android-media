@@ -5,7 +5,6 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -17,6 +16,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
@@ -40,11 +40,11 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
         if (isDouble) {
             claimCouponImageDouble.show()
             claimCouponImage.hide()
-            ImageHandler.LoadImage(claimCouponImageDouble, dataItem?.smallImageUrlMobile)
+            claimCouponImageDouble.loadImage(dataItem?.smallImageUrlMobile ?: "")
         } else {
             claimCouponImageDouble.hide()
             claimCouponImage.show()
-            ImageHandler.LoadImage(claimCouponImage, dataItem?.imageUrlMobile)
+            claimCouponImage.loadImage(dataItem?.imageUrlMobile ?: "")
         }
 
         setBtn(dataItem?.status)

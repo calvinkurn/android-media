@@ -22,7 +22,7 @@
         android:paddingBottom="@dimen/dp_8"
         tools:layout_height="match_parent">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imageProduct"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

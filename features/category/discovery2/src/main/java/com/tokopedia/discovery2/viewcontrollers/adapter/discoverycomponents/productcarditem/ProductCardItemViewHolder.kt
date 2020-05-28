@@ -17,17 +17,15 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel.Companion.GOLD_MERCHANT
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel.Companion.OFFICIAL_STORE
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 
 
 class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
 
-    private var productImage: ImageView
+    private var productImage: ImageUnify
     private var topadsImage: ImageView
     private var productName: TextView
     private var labelDiscount: TextView
@@ -147,7 +145,7 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
 
     private fun setProductImage(imageUrlMobile: String?) {
         Log.d("setProductImage", this.toString() + imageUrlMobile)
-        ImageHandler.LoadImage(productImage, imageUrlMobile)
+        productImage.loadImage(imageUrlMobile ?: "")
     }
 
     private fun setStockProgress(stockPercent: String?) {

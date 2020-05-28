@@ -72,7 +72,7 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
         })
 
         constraintLayout.setOnClickListener {
-            bannerTimerViewModel.onBannerClicked()
+            bannerTimerViewModel.onBannerClicked(it.context)
         }
     }
 

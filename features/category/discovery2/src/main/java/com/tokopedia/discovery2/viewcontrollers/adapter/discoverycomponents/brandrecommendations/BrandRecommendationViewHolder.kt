@@ -6,6 +6,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
@@ -39,8 +40,11 @@ class BrandRecommendationViewHolder(itemView: View, private val fragment: Fragme
         })
 
         brandRecommendationViewModel.getListDataLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
-            discoveryRecycleAdapter.setDataList(item)
-            sendBrandRecommendationImpressionGtm(item?.get(0)?.data ?: ArrayList())
+            val itemList: ArrayList<ComponentsItem>? = item.filter { !it.data?.get(0)?.imageUrlMobile.isNullOrEmpty() } as ArrayList<ComponentsItem>
+            itemList?.let {
+                discoveryRecycleAdapter.setDataList(it)
+                sendBrandRecommendationImpressionGtm(it[0].data ?: ArrayList())
+            }
         })
     }
 
