@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.ban
 
 import android.content.Context
 import android.view.View
+import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
@@ -15,6 +16,7 @@ import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.unifycomponents.ImageUnify
 
 class MultiBannerViewHolder(customItemView: View, val fragment: Fragment) : AbstractViewHolder(customItemView) {
     private var constraintLayout: ConstraintLayout = customItemView.findViewById(R.id.banner_container_layout)
@@ -41,13 +43,13 @@ class MultiBannerViewHolder(customItemView: View, val fragment: Fragment) : Abst
 
         multiBannerViewModel.getPushBannerStatusData().observe(fragment.viewLifecycleOwner, Observer {
             if (bannersItemList.isNotEmpty() && it != Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS) {
-                ImageHandler.LoadImage(bannersItemList[it].bannerImageView, bannersItemList[it].bannerItemData.registeredImageApp)
+                ImageHandler.LoadImage(bannersItemList[it].bannerImageView as ImageUnify, bannersItemList[it].bannerItemData.registeredImageApp)
             }
         })
 
         multiBannerViewModel.getPushBannerSubscriptionData().observe(fragment.viewLifecycleOwner, Observer {
             if (bannersItemList.isNotEmpty() && it != Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS) {
-                ImageHandler.LoadImage(bannersItemList[it].bannerImageView, bannersItemList[it].bannerItemData.registeredImageApp)
+                ImageHandler.LoadImage(bannersItemList[it].bannerImageView as ImageUnify, bannersItemList[it].bannerItemData.registeredImageApp)
             }
         })
 
