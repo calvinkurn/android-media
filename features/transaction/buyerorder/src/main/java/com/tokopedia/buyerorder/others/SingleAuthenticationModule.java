@@ -1,7 +1,6 @@
 package com.tokopedia.buyerorder.others;
 
 import com.tokopedia.core.network.apiservices.transaction.CreditCardAuthService;
-import com.tokopedia.core.network.apiservices.transaction.CreditCardVaultService;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
 import com.tokopedia.buyerorder.others.creditcardauthentication.UserInfoRepository;
 
@@ -23,21 +22,14 @@ public class SingleAuthenticationModule {
 
     @Provides
     @SingleAuthenticationScope
-    CreditCardVaultService provideVaultService() {
-        return new CreditCardVaultService();
-    }
-
-    @Provides
-    @SingleAuthenticationScope
     CreditCardAuthService authService() {
         return new CreditCardAuthService();
     }
 
     @Provides
     @SingleAuthenticationScope
-    CreditCardListRepository provideCreditCardListRepository(CreditCardVaultService vaultService,
-                                                             CreditCardAuthService authService) {
-        return new CreditCardListRepository(vaultService, authService);
+    CreditCardListRepository provideCreditCardListRepository(CreditCardAuthService authService) {
+        return new CreditCardListRepository(authService);
     }
 
     @Provides

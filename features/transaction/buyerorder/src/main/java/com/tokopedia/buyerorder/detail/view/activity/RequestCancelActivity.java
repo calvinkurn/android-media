@@ -70,7 +70,7 @@ public class RequestCancelActivity extends BaseSimpleActivity implements HasComp
         }
 
         getFragmentManager().beginTransaction()
-                .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
+                .setCustomAnimations(R.animator.transaction_enter_bottom, R.animator.transaction_enter_bottom)
                 .replace(com.tokopedia.abstraction.R.id.parent_view, newFragment, REJECT_ORDER_FRAGMENT_TAG)
                 .commit();
     }

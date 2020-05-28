@@ -1,11 +1,9 @@
 package com.tokopedia.autocomplete.suggestion
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -126,6 +124,10 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, Sugges
     fun search(searchParameter: SearchParameter) {
         performanceMonitoring = PerformanceMonitoring.start(MP_SEARCH_AUTOCOMPLETE)
         presenter.search(searchParameter)
+    }
+
+    fun setIsTyping(isTyping: Boolean) {
+        presenter.setIsTyping(isTyping)
     }
 
     override fun onItemClicked(item: BaseSuggestionViewModel) {

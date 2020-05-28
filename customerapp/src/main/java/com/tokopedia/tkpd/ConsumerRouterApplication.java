@@ -63,7 +63,6 @@ import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -87,7 +86,6 @@ import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
 import com.tokopedia.inbox.common.ResolutionRouter;
 import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
-import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.kyc.KYCRouter;
@@ -125,7 +123,6 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.TkpdSeller;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
@@ -153,7 +150,6 @@ import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
@@ -190,9 +186,7 @@ import static com.tokopedia.tkpd.thankyou.view.ReactNativeThankYouPageActivity.C
 public abstract class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter,
         SellerModuleRouter,
-        TransactionRouter,
         ReactApplication,
-        TkpdInboxRouter,
         ReputationRouter,
         AbstractionRouter,
         LogisticRouter,
@@ -312,24 +306,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void onNewIntent(Context context, Intent intent) {
         NFCSubscriber.onNewIntent(context, intent);
-    }
-
-    @Override
-    public Class getSellingActivityClass() {
-        return TkpdSeller.getSellingActivityClass();
-    }
-
-
-    public Intent getActivitySellingTransactionShippingStatus(Context context) {
-        return TkpdSeller.getActivitySellingTransactionShippingStatus(context);
-    }
-
-    public Intent getActivitySellingTransactionList(Context context) {
-        return TkpdSeller.getActivitySellingTransactionList(context);
-    }
-
-    public Intent getActivitySellingTransactionOpportunity(Context context, String query) {
-        return TkpdSeller.getActivitySellingTransactionOpportunity(context, query);
     }
 
     /**
@@ -482,11 +458,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent goToOrderDetail(Context context, String orderId) {
-        return RouteManager.getIntent(context, ApplinkConst.SELLER_ORDER_DETAIL, orderId);
-    }
-
-    @Override
     public void sendLoginEmitter(String userId) {
         reactUtils.sendLoginEmitter(userId);
     }
@@ -506,37 +477,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public ReactNativeHost getReactNativeHost() {
         if (reactNativeHost == null) initDaggerInjector();
         return reactNativeHost;
-    }
-
-    @Override
-    public Intent getAskBuyerIntent(Context context, String toUserId, String customerName,
-                                    String customSubject, String customMessage, String source,
-                                    String avatar) {
-        return RouteManager.getIntent(context
-                , ApplinkConst.TOPCHAT_ASKBUYER
-                , toUserId
-                , customMessage
-                , source
-                , customerName
-                , avatar);
-    }
-
-    @Override
-    public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
-                                     String customSubject, String customMessage, String source, String avatar) {
-        return RouteManager.getIntent(context
-                , ApplinkConst.TOPCHAT_ASKSELLER
-                , toShopId
-                , customMessage
-                , source
-                , shopName
-                , avatar);
-
-    }
-
-    @Override
-    public Intent getDetailResChatIntentBuyer(Context context, String resoId, String shopName) {
-        return DetailResChatActivity.newBuyerInstance(context, resoId, shopName);
     }
 
     @Override
@@ -628,11 +568,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getPhoneVerificationActivationIntent(Context context) {
         return PhoneVerificationActivationActivity.getCallingIntent(context);
-    }
-
-    @Override
-    public boolean isToggleBuyAgainOn() {
-        return remoteConfig.getBoolean(RemoteConfigKey.MAIN_APP_ENABLE_BUY_AGAIN, true);
     }
 
     @Override
@@ -1023,21 +958,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getInboxTalkCallingIntent(Context mContext){
-        return null;
-    }
-
-    @Override
-    public Intent getActivitySellingTransactionNewOrder(Context context) {
-        return null;
-    }
-
-    @Override
-    public Intent getActivitySellingTransactionConfirmShipping(Context context) {
-        return null;
-    }
-
-    @Override
-    public Intent getResolutionCenterIntentSeller(Context context) {
         return null;
     }
 

@@ -3,7 +3,6 @@ package com.tokopedia.buyerorder.others;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.tokopedia.core.network.apiservices.transaction.CreditCardAuthService;
-import com.tokopedia.core.network.apiservices.transaction.CreditCardVaultService;
 import com.tokopedia.transaction.common.exception.ResponseRuntimeException;
 import com.tokopedia.buyerorder.others.creditcard.authenticator.AuthenticatorUpdateWhiteListResponse;
 
@@ -19,7 +18,6 @@ public class CreditCardListRepository implements ICreditCardRepository {
     private CreditCardAuthService authService;
 
     public CreditCardListRepository(
-            CreditCardVaultService service,
             CreditCardAuthService authService) {
         this.authService = authService;
     }

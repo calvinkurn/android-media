@@ -29,7 +29,6 @@ import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.createpost.view.applink.CreatePostModule;
@@ -114,7 +113,6 @@ import timber.log.Timber;
 
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
-        CoreDeeplinkModule.class,
         InboxDeeplinkModule.class,
         SellerApplinkModule.class,
         TransactionApplinkModule.class,

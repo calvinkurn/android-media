@@ -9,12 +9,9 @@ import java.util.List;
 
 public class LocalCacheManager {
 
-    private static String TAG = LocalCacheManager.class.getSimpleName();
-
     public static class AttachmentEditResCenter {
 
         private String resolutionId;
-        private String imageLocalPath;
         private String imageUrl;
         private ResCenterAttachmentRepository resCenterRepository;
 
@@ -28,15 +25,6 @@ public class LocalCacheManager {
             return foo;
         }
 
-        public String getImageLocalPath() {
-            return imageLocalPath;
-        }
-
-        public AttachmentEditResCenter setImageLocalPath(String imageLocalPath) {
-            this.imageLocalPath = imageLocalPath;
-            return this;
-        }
-
         public String getImageUrl() {
             return imageUrl;
         }
@@ -44,16 +32,6 @@ public class LocalCacheManager {
         public AttachmentEditResCenter setImageUrl(String imageUrl) {
             this.imageUrl = imageUrl;
             return this;
-        }
-
-        public void save() {
-            ResCenterAttachment db = new ResCenterAttachment();
-            db.setResolutionId(resolutionId);
-            db.setImagePath(getImageLocalPath());
-            db.setImageUrl(getImageUrl());
-            db.setModuleName(ResCenterAttachment.MODULE_EDIT_RESCENTER);
-
-            resCenterRepository.insertAttachment(db);
         }
 
         public List<ResCenterAttachment> getCache() {
@@ -127,10 +105,6 @@ public class LocalCacheManager {
 
         public List<ResCenterAttachment> getCache() {
             return resCenterRepository.getAttachmentListByResIdModuleName(resolutionId, ResCenterAttachment.MODULE_SHIPPING_RESCENTER);
-        }
-
-        public void clearAll() {
-            resCenterRepository.deleteAttachments(getCache());
         }
 
         public void remove(ResCenterAttachment attachmentReplyResCenterDB) {

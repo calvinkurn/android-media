@@ -16,7 +16,6 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import androidx.annotation.VisibleForTesting
 import androidx.core.app.ActivityCompat
@@ -64,7 +63,6 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBann
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.LegoBanner.getLegoBannerFourImageImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.MixLeft.getMixLeftIrisProductView
-import com.tokopedia.home.analytics.HomePageTrackingV2.MixLeft.getMixLeftProductView
 import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.getPopularKeywordImpressionItem
 import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.sendPopularKeywordClickItem
 import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.sendPopularKeywordClickReload
@@ -866,7 +864,6 @@ open class HomeFragment : BaseDaggerFragment(),
         layoutManager = LinearLayoutManager(context)
         homeRecyclerView?.layoutManager = layoutManager
         val adapterFactory = HomeAdapterFactory(
-                childsFragmentManager,
                 this,
                 this,
                 this,
