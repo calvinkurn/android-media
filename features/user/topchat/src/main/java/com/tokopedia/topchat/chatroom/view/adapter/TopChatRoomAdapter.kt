@@ -8,7 +8,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.data.BaseChatViewModel
+import com.tokopedia.chat_common.data.DeferredAttachment
 import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 
@@ -84,6 +86,21 @@ class TopChatRoomAdapter(
                 latestHeaderDate = HeaderDateUiModel(chatTime)
                 visitables.add(0, latestHeaderDate)
                 notifyItemInserted(0)
+            }
+        }
+    }
+
+    fun updateAttachmentView(firstVisible: Int, lastVisible: Int, attachments: ArrayMap<String, Attachment>) {
+        if (firstVisible > lastVisible) return
+        if (firstVisible < 0 || lastVisible >= visitables.size) return
+        for (itemPosition in firstVisible..lastVisible) {
+            val item = visitables[itemPosition]
+            if (item is DeferredAttachment && attachments.containsKey(item.id)) {
+                val attachment = attachments[item.id] ?: continue
+                if (item.isLoading) {
+                    item.updateData(attachment.attributes)
+                    notifyItemChanged(itemPosition)
+                }
             }
         }
     }

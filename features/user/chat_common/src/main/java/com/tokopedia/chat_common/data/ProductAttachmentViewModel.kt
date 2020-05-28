@@ -3,13 +3,20 @@ package com.tokopedia.chat_common.data
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.domain.pojo.productattachment.FreeShipping
 import com.tokopedia.chat_common.domain.pojo.productattachment.PlayStoreData
+import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
+import com.tokopedia.common.network.util.CommonUtil
 import java.util.*
 
 /**
  * @author by nisie on 5/14/18.
  */
-open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> {
+open class ProductAttachmentViewModel : SendableViewModel,
+        Visitable<BaseChatTypeFactory>,
+        DeferredAttachment {
+
+    override var isLoading: Boolean = true
+    override val id: String get() = attachmentId
 
     var productId: Int = 0
         private set
@@ -235,6 +242,13 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
 
     override fun type(typeFactory: BaseChatTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    override fun updateData(attributes: String) {
+        val attachment = CommonUtil.fromJson<ProductAttachmentAttributes>(attributes, ProductAttachmentAttributes::class.java)
+        this.productName = "ahoy mate"
+        this.productPrice = "Rp 500"
+        this.isLoading = false
     }
 
     fun hasFreeShipping(): Boolean {

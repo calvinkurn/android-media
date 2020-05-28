@@ -27,6 +27,9 @@ data class ChatReplies(
         @SerializedName("hasNext")
         val hasNext: Boolean = false,
         @Expose
+        @SerializedName("attachmentIDs")
+        val attachmentIds: String = "",
+        @Expose
         @SerializedName("textareaReply")
         val textAreaReply: Int = 0,
         @Expose
@@ -147,13 +150,13 @@ data class Reply(
         @SerializedName("blastId")
         val blastId: Int = 0
 ) {
-        fun isMultipleProductAttachment(nextItem: Reply?): Boolean {
-                return isProductAttachment() && nextItem != null && nextItem.isProductAttachment()
-        }
+    fun isMultipleProductAttachment(nextItem: Reply?): Boolean {
+        return isProductAttachment() && nextItem != null && nextItem.isProductAttachment()
+    }
 
-        fun isProductAttachment(): Boolean {
-                return attachment?.type.toString() == AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT
-        }
+    fun isProductAttachment(): Boolean {
+        return attachment?.type.toString() == AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT
+    }
 }
 
 data class Attachment(
