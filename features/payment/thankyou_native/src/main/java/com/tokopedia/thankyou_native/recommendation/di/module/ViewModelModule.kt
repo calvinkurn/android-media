@@ -11,17 +11,14 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-@RecommendationScope
 abstract class ViewModelModule {
 
-    @RecommendationScope
     @Binds
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
 
     @Binds
     @IntoMap
-    @RecommendationScope
     @ViewModelKey(MarketPlaceRecommendationViewModel::class)
     internal abstract fun provideRecommendationViewModel(viewModelMarketPlace: MarketPlaceRecommendationViewModel): ViewModel
 }

@@ -18,47 +18,39 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 
-@ThankYouPageScope
 @Module
 class ThankYouPageModule {
 
-    @ThankYouPageScope
     @Provides
     fun provideGraphqlUseCase(): GraphqlUseCase = GraphqlUseCase()
 
 
-    @ThankYouPageScope
     @Provides
     @CoroutineMainDispatcher
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
-    @ThankYouPageScope
     @Provides
     @CoroutineBackgroundDispatcher
     fun provideBackgroundDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
-    @ThankYouPageScope
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
 
-    @ThankYouPageScope
     @Provides
     fun provideGraphqlRepositoryModule(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
 
 
-    @ThankYouPageScope
     @Provides
     fun provideInvoiceTypeFactory(): InvoiceTypeFactory {
         return InvoiceTypeFactory()
     }
 
 
-    @ThankYouPageScope
     @Provides
     fun provideDetailInvoiceAdapter(invoiceTypeFactory: InvoiceTypeFactory): DetailedInvoiceAdapter {
         return DetailedInvoiceAdapter(arrayListOf(), invoiceTypeFactory)

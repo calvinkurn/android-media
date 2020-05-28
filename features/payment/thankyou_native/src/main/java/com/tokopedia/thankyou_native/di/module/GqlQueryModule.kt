@@ -12,24 +12,20 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 
-@ThankYouPageScope
 @Module
 class GqlQueryModule {
 
-    @ThankYouPageScope
     @Provides
     @Named(GQL_THANK_YOU_PAGE_DATA)
     fun provideRawThankYouPageData(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_thanks_page_data)
 
-    @ThankYouPageScope
     @Provides
     @Named(GQL_CHECK_WHITE_LIST)
     fun provideRawCheckWhitelist(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.mutation_thanks_white_list_rba)
 
 
-    @ThankYouPageScope
     @Provides
     @Named(GQL_THANKS_MONTHLY_NEW_BUYER)
     fun provideMonthlyNewBuyerQuery(@ApplicationContext context: Context): String =
