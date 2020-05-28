@@ -30,6 +30,8 @@
     <string name="play_prepare_broadcast_promo_quota_label">Kuota Diskon Produk</string>
     <string name="play_prepare_broadcast_promo_quota_min_error_label">Min. kuota 1</string>
     <string name="play_prepare_broadcast_promo_quota_max_error_label">Maks. kuota 999</string>
+    <string name="play_prepare_broadcast_promo_detail_title">Diskon Produk &amp; Kuotanya</string>
+    <string name="play_prepare_broadcast_promo_detail_description"><![CDATA[<b>Diskon %1$d\%%</b> (%2$d Kuota)]]></string>
 
     <string name="play_prepare_broadcast_label_next">Lanjutkan</string>
 </resources>

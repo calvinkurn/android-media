@@ -34,7 +34,7 @@ import javax.inject.Inject
 class PlayBroadcastSetupBottomSheet @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
         private val fragmentFactory: FragmentFactory
-): BottomSheetDialogFragment(), PlayBroadcastCoordinator {
+) : BottomSheetDialogFragment(), PlayBroadcastCoordinator {
 
     private lateinit var viewModel: PlayEtalasePickerViewModel
 
@@ -140,6 +140,7 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         ivBack.setOnClickListener { dialog?.onBackPressed() }
 
         navigateToFragment(PlayEtalasePickerFragment::class.java)
+        navigateToVoucherCreationBottomSheet()
     }
 
     private fun maxHeight(): Int = (getScreenHeight() * MAX_HEIGHT_MULTIPLIER).toInt()
@@ -165,6 +166,19 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
             fragmentBreadcrumbs.add(
                     BreadcrumbsModel(fragment.javaClass, fragment.arguments ?: Bundle.EMPTY)
             )
+        }
+    }
+
+    private fun navigateToVoucherCreationBottomSheet() {
+        val voucherCreationBottomSheet = PlayPrepareBroadcastCreatePromoBottomSheet.getInstance()
+        voucherCreationBottomSheet.listener = object : PlayPrepareBroadcastCreatePromoBottomSheet.Listener {
+            override fun onVoucherSaved(isWithPromo: Boolean, promoPercentage: Int, promoQuota: Int) {
+                // set promo detail to parent model
+                // navigate to next page
+            }
+        }
+        fragmentManager?.let {
+            voucherCreationBottomSheet.show(it, PlayPrepareBroadcastCreatePromoBottomSheet.TAG_CREATE_PROMO_BOTTOM_SHEETS)
         }
     }
 

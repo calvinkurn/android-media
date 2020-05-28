@@ -6,33 +6,69 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.DisplayMetrics
 import android.view.View
+import androidx.core.text.HtmlCompat
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.bottom_sheet_play_prepare_create_promo.*
 
 /**
  * @author by furqan on 26/05/2020
+ *
+ * exit animation is set with animation, because there are two options of exit animation
+ * that can be different in every kind of enter animation
+ *
+ * because we cannot set windows animation twice (on back button pressed), so I animate the exit
+ * animation manually
  */
 class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
+
+    lateinit var listener: Listener
 
     private var screenWidth: Int = 0
     private var screenHeight: Int = 0
 
     private var currentState: Int = MAIN_STATE
-    private var promoPercentage: Int = 1
-    private var promoQuota: Int = 1
+    private var promoPercentage: Int = DEFAULT_PERCENT_QUOTA_VALUE
+    private var promoQuota: Int = DEFAULT_PERCENT_QUOTA_VALUE
+    private var isBack: Boolean = false
+
+    private lateinit var percentageTextWatcher: TextWatcher
+    private lateinit var quotaTextWatcher: TextWatcher
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        arguments?.let {
+            isBack = it.getBoolean(EXTRA_IS_BACK)
+        }
+
+        dialog?.window?.setWindowAnimations(
+                if (isBack) R.style.DialogAnimationEnterLeft
+                else R.style.DialogAnimationEnterRight)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initBottomSheet()
-
         activity?.let {
             val displayMetrics = DisplayMetrics()
             it.windowManager.defaultDisplay.getMetrics(displayMetrics)
             screenWidth = displayMetrics.widthPixels
             screenHeight = displayMetrics.heightPixels
         }
+
+        savedInstanceState?.let {
+            currentState = it.getInt(EXTRA_CURRENT_STATE)
+            promoQuota = it.getInt(EXTRA_PROMO_QUOTA)
+            promoPercentage = it.getInt(EXTRA_PROMO_PERCENTAGE)
+        } ?: arguments?.let {
+            currentState = MAIN_STATE
+            promoQuota = it.getInt(EXTRA_PROMO_QUOTA)
+            promoPercentage = it.getInt(EXTRA_PROMO_PERCENTAGE)
+        }
+
+        initBottomSheet()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -57,6 +93,12 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
         isDragable = false
         isHideable = false
         isFullpage = true
+        if (promoPercentage in MIN_PERCENT_QUOTA_VALUE..MAX_PERCENT_VALUE &&
+                promoQuota in MIN_PERCENT_QUOTA_VALUE..MAX_QUOTA_VALUE) {
+            setTitle(getString(R.string.play_prepare_broadcast_edit_promo_title))
+        } else {
+            setTitle(getString(R.string.play_prepare_broadcast_create_promo_title))
+        }
 
         setChild(View.inflate(requireContext(), R.layout.bottom_sheet_play_prepare_create_promo, null))
 
@@ -66,21 +108,6 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
     }
 
     private fun initView() {
-        context?.let {
-            bottomSheetClose.setImageDrawable(it.resources.getDrawable(
-                    com.tokopedia.resources.common.R.drawable.ic_system_action_back_grayscale_24))
-        }
-
-        svPlayPrepareBroadcastPromo.layoutParams.height = screenHeight - containerPlayPrepareBroadcastBottom.height
-        radioPlayPrepareBroadcastWithPromo.setOnCheckedChangeListener { button, isChecked ->
-            if (isChecked) toggleRadioButton(true)
-        }
-        radioPlayPrepareBroadcastWithoutPromo.setOnCheckedChangeListener { button, isChecked ->
-            if (isChecked) toggleRadioButton(false)
-        }
-        radioPlayPrepareBroadcastWithPromo.setOnClickListener { onLiveWithPromoChecked() }
-        radioPlayPrepareBroadcastWithoutPromo.setOnClickListener { onLiveWithoutPromoChecked() }
-
         bottomSheetHeader.setPadding(
                 resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2),
                 bottomSheetHeader.top,
@@ -90,6 +117,52 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
                 bottomSheetWrapper.paddingTop,
                 0,
                 bottomSheetWrapper.paddingBottom)
+        context?.let {
+            bottomSheetClose.setImageDrawable(it.resources.getDrawable(
+                    com.tokopedia.resources.common.R.drawable.ic_system_action_back_grayscale_24))
+        }
+
+        svPlayPrepareBroadcastPromo.layoutParams.height = screenHeight - containerPlayPrepareBroadcastBottom.height
+        radioPlayPrepareBroadcastWithPromo.setOnCheckedChangeListener { button, isChecked ->
+            if (isChecked) {
+                toggleRadioButton(true)
+                if (promoPercentage == DEFAULT_PERCENT_QUOTA_VALUE && promoQuota == DEFAULT_PERCENT_QUOTA_VALUE) {
+                    onLiveWithPromoChecked()
+                }
+            }
+        }
+        radioPlayPrepareBroadcastWithoutPromo.setOnCheckedChangeListener { button, isChecked ->
+            if (isChecked) {
+                toggleRadioButton(false)
+                onLiveWithoutPromoChecked()
+            }
+        }
+        ivPlayPrepareBroadcastWithPromoEdit.setOnClickListener { onLiveWithPromoChecked() }
+        btnPlayPrepareBroadcastNext.setOnClickListener {
+            dialog?.window?.let {
+                it.decorView.animate()
+                        .setDuration(500)
+                        .translationX((screenWidth * -1).toFloat())
+                        .setListener(object : Animator.AnimatorListener {
+                            override fun onAnimationRepeat(p0: Animator?) {}
+
+                            override fun onAnimationEnd(p0: Animator?) {
+                                listener?.onVoucherSaved(radioPlayPrepareBroadcastWithPromo.isChecked, promoPercentage, promoQuota)
+                                dismiss()
+                            }
+
+                            override fun onAnimationCancel(p0: Animator?) {}
+
+                            override fun onAnimationStart(p0: Animator?) {}
+
+                        })
+            }
+        }
+
+        percentageTextWatcher = createPercentageTextWatcher()
+        quotaTextWatcher = createQuotaTextWatcher()
+
+        showMainStateView()
     }
 
     private fun toggleRadioButton(isWithPromo: Boolean) {
@@ -107,10 +180,27 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
                 showMainStateView()
             }
             QUOTA_STATE -> {
+                tvPlayPrepareBroadcastInputField.textFieldInput.removeTextChangedListener(quotaTextWatcher)
                 showPercetageView()
             }
             else -> {
-                dismiss()
+                dialog?.window?.let {
+                    it.decorView.animate()
+                            .setDuration(500)
+                            .translationX(screenWidth.toFloat())
+                            .setListener(object : Animator.AnimatorListener {
+                                override fun onAnimationRepeat(p0: Animator?) {}
+
+                                override fun onAnimationEnd(p0: Animator?) {
+                                    dismiss()
+                                }
+
+                                override fun onAnimationCancel(p0: Animator?) {}
+
+                                override fun onAnimationStart(p0: Animator?) {}
+
+                            })
+                }
             }
         }
     }
@@ -121,7 +211,7 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
     }
 
     private fun onLiveWithoutPromoChecked() {
-
+        btnPlayPrepareBroadcastNext.isEnabled = true
     }
 
     private fun showMainStateView() {
@@ -140,6 +230,36 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
                     .translationX(0f)
             containerPlayPrepareBroadcastBottom.animate()
                     .translationX(0f)
+        }
+
+        if (promoPercentage in MIN_PERCENT_QUOTA_VALUE..MAX_PERCENT_VALUE &&
+                promoQuota in MIN_PERCENT_QUOTA_VALUE..MAX_QUOTA_VALUE) {
+            ivPlayPrepareBroadcastWithPromoEdit.visibility = View.VISIBLE
+
+            tvPlayPrepareBroadcastWithPromoTitle.setType(Typography.BODY_3)
+            tvPlayPrepareBroadcastWithPromoTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+            tvPlayPrepareBroadcastWithPromoTitle.text = getString(R.string.play_prepare_broadcast_promo_detail_title)
+
+            tvPlayPrepareBroadcastWithPromoDescription.setType(Typography.BODY_1)
+            tvPlayPrepareBroadcastWithPromoDescription.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
+            tvPlayPrepareBroadcastWithPromoDescription.text = HtmlCompat.fromHtml(getString(R.string.play_prepare_broadcast_promo_detail_description,
+                    promoPercentage, promoQuota), HtmlCompat.FROM_HTML_MODE_LEGACY)
+
+            containerConstraintPlayWithPromo.requestLayout()
+            btnPlayPrepareBroadcastNext.isEnabled = true
+        } else {
+            ivPlayPrepareBroadcastWithPromoEdit.visibility = View.GONE
+
+            tvPlayPrepareBroadcastWithPromoTitle.setType(Typography.HEADING_6)
+            tvPlayPrepareBroadcastWithPromoTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
+            tvPlayPrepareBroadcastWithPromoTitle.text = getString(R.string.play_prepare_broadcast_promo_with_promo_title)
+
+            tvPlayPrepareBroadcastWithPromoDescription.setType(Typography.SMALL)
+            tvPlayPrepareBroadcastWithPromoDescription.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+            tvPlayPrepareBroadcastWithPromoDescription.text = getString(R.string.play_prepare_broadcast_promo_with_promo_description)
+
+            containerConstraintPlayWithPromo.requestLayout()
+            btnPlayPrepareBroadcastNext.isEnabled = false
         }
     }
 
@@ -208,11 +328,16 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
         }
 
         tvPlayPrepareBroadcastInputField.textFiedlLabelText.text = getString(R.string.play_prepare_broadcast_promo_percentage_label)
-        btnPlayPrepareBroadcasatInputButton.isEnabled = false
-        tvPlayPrepareBroadcastInputField.textFieldInput.setText("")
-        tvPlayPrepareBroadcastInputField.textFieldInput.addTextChangedListener(promoPercentageTextWatcher())
+        if (promoPercentage in MIN_PERCENT_QUOTA_VALUE..MAX_PERCENT_VALUE) {
+            tvPlayPrepareBroadcastInputField.textFieldInput.setText(promoPercentage.toString())
+            btnPlayPrepareBroadcasatInputButton.isEnabled = true
+        } else {
+            tvPlayPrepareBroadcastInputField.textFieldInput.setText("")
+            btnPlayPrepareBroadcasatInputButton.isEnabled = false
+        }
+        tvPlayPrepareBroadcastInputField.textFieldInput.addTextChangedListener(percentageTextWatcher)
         btnPlayPrepareBroadcasatInputButton.setOnClickListener {
-            tvPlayPrepareBroadcastInputField.textFieldInput.removeTextChangedListener(promoPercentageTextWatcher())
+            tvPlayPrepareBroadcastInputField.textFieldInput.removeTextChangedListener(percentageTextWatcher)
             try {
                 promoPercentage = tvPlayPrepareBroadcastInputField.textFieldInput.text.toString().toInt()
                 showQuotaView()
@@ -223,8 +348,11 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
     }
 
     private fun hidePercetagePromoView() {
+        activity?.let {
+            KeyboardHandler.hideSoftKeyboard(it)
+        }
         if (containerPlayPrepareBroadcastPercetageAndDiscount.visibility == View.VISIBLE) {
-            tvPlayPrepareBroadcastInputField.textFieldInput.removeTextChangedListener(promoPercentageTextWatcher())
+            tvPlayPrepareBroadcastInputField.textFieldInput.removeTextChangedListener(percentageTextWatcher)
             containerPlayPrepareBroadcastPercetageAndDiscount.animate()
                     .translationX(screenWidth.toFloat())
                     .setListener(object : Animator.AnimatorListener {
@@ -246,11 +374,16 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
     private fun showQuotaView() {
         currentState = QUOTA_STATE
         tvPlayPrepareBroadcastInputField.textFiedlLabelText.text = getString(R.string.play_prepare_broadcast_promo_quota_label)
-        btnPlayPrepareBroadcasatInputButton.isEnabled = false
-        tvPlayPrepareBroadcastInputField.textFieldInput.setText("")
-        tvPlayPrepareBroadcastInputField.textFieldInput.addTextChangedListener(promoQuotaTextWatcher())
+        if (promoQuota in MIN_PERCENT_QUOTA_VALUE..MAX_QUOTA_VALUE) {
+            tvPlayPrepareBroadcastInputField.textFieldInput.setText(promoQuota.toString())
+            btnPlayPrepareBroadcasatInputButton.isEnabled = true
+        } else {
+            tvPlayPrepareBroadcastInputField.textFieldInput.setText("")
+            btnPlayPrepareBroadcasatInputButton.isEnabled = false
+        }
+        tvPlayPrepareBroadcastInputField.textFieldInput.addTextChangedListener(quotaTextWatcher)
         btnPlayPrepareBroadcasatInputButton.setOnClickListener {
-            tvPlayPrepareBroadcastInputField.textFieldInput.removeTextChangedListener(promoQuotaTextWatcher())
+            tvPlayPrepareBroadcastInputField.textFieldInput.removeTextChangedListener(quotaTextWatcher)
             try {
                 promoQuota = tvPlayPrepareBroadcastInputField.textFieldInput.text.toString().toInt()
                 hidePercetagePromoView()
@@ -261,7 +394,7 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun promoPercentageTextWatcher(): TextWatcher = object : TextWatcher {
+    private fun createPercentageTextWatcher(): TextWatcher = object : TextWatcher {
         override fun afterTextChanged(p0: Editable?) {}
 
         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -270,12 +403,12 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
             try {
                 val percent = text.toString().toInt()
                 when {
-                    percent <= 0 -> {
+                    percent < MIN_PERCENT_QUOTA_VALUE -> {
                         tvPlayPrepareBroadcastInputField.setError(true)
                         tvPlayPrepareBroadcastInputField.textFieldWrapper.error = getString(R.string.play_prepare_broadcast_promo_percentage_min_error_label)
                         btnPlayPrepareBroadcasatInputButton.isEnabled = false
                     }
-                    percent > 100 -> {
+                    percent > MAX_PERCENT_VALUE -> {
                         tvPlayPrepareBroadcastInputField.setError(true)
                         tvPlayPrepareBroadcastInputField.textFieldWrapper.error = getString(R.string.play_prepare_broadcast_promo_percentage_max_error_label)
                         btnPlayPrepareBroadcasatInputButton.isEnabled = false
@@ -288,15 +421,14 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
                 }
             } catch (t: Throwable) {
                 tvPlayPrepareBroadcastInputField.setError(false)
-                tvPlayPrepareBroadcastInputField.textFieldWrapper.error = ""
+                tvPlayPrepareBroadcastInputField.textFieldWrapper.error = null
                 btnPlayPrepareBroadcasatInputButton.isEnabled = false
                 t.printStackTrace()
             }
         }
-
     }
 
-    private fun promoQuotaTextWatcher(): TextWatcher = object : TextWatcher {
+    private fun createQuotaTextWatcher(): TextWatcher = object : TextWatcher {
         override fun afterTextChanged(p0: Editable?) {}
 
         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -305,12 +437,12 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
             try {
                 val quota = text.toString().toInt()
                 when {
-                    quota <= 0 -> {
+                    quota < MIN_PERCENT_QUOTA_VALUE -> {
                         tvPlayPrepareBroadcastInputField.setError(true)
                         tvPlayPrepareBroadcastInputField.textFieldWrapper.error = getString(R.string.play_prepare_broadcast_promo_quota_min_error_label)
                         btnPlayPrepareBroadcasatInputButton.isEnabled = false
                     }
-                    quota > 999 -> {
+                    quota > MAX_QUOTA_VALUE -> {
                         tvPlayPrepareBroadcastInputField.setError(true)
                         tvPlayPrepareBroadcastInputField.textFieldWrapper.error = getString(R.string.play_prepare_broadcast_promo_quota_max_error_label)
                         btnPlayPrepareBroadcasatInputButton.isEnabled = false
@@ -323,12 +455,15 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
                 }
             } catch (t: Throwable) {
                 tvPlayPrepareBroadcastInputField.setError(false)
-                tvPlayPrepareBroadcastInputField.textFieldWrapper.error = ""
+                tvPlayPrepareBroadcastInputField.textFieldWrapper.error = null
                 btnPlayPrepareBroadcasatInputButton.isEnabled = false
                 t.printStackTrace()
             }
         }
+    }
 
+    interface Listener {
+        fun onVoucherSaved(isWithPromo: Boolean, promoPercentage: Int, promoQuota: Int)
     }
 
     companion object {
@@ -337,16 +472,23 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
         private const val EXTRA_PROMO_PERCENTAGE = "EXTRA_PROMO_PERCENTAGE"
         private const val EXTRA_PROMO_QUOTA = "EXTRA_PROMO_QUOTA"
         private const val EXTRA_CURRENT_STATE = "EXTRA_CURRENT_STATE"
+        private const val EXTRA_IS_BACK = "EXTRA_IS_BACK"
 
         private const val MAIN_STATE = 1
         private const val PERCENTAGE_STATE = 2
         private const val QUOTA_STATE = 3
 
-        fun getInstance(promoPercentage: Int = 0, promoQuota: Int = 0) =
+        private const val DEFAULT_PERCENT_QUOTA_VALUE = 0
+        private const val MIN_PERCENT_QUOTA_VALUE = 1
+        private const val MAX_PERCENT_VALUE = 100
+        private const val MAX_QUOTA_VALUE = 999
+
+        fun getInstance(promoPercentage: Int = DEFAULT_PERCENT_QUOTA_VALUE, promoQuota: Int = DEFAULT_PERCENT_QUOTA_VALUE, isBack: Boolean = false) =
                 PlayPrepareBroadcastCreatePromoBottomSheet().also {
                     it.arguments = Bundle().apply {
                         putInt(EXTRA_PROMO_PERCENTAGE, promoPercentage)
                         putInt(EXTRA_PROMO_QUOTA, promoQuota)
+                        putBoolean(EXTRA_IS_BACK, isBack)
                     }
                 }
     }
