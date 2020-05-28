@@ -1,7 +1,7 @@
 package com.tokopedia.checkout.data.repository
 
 import com.tokopedia.checkout.data.api.CheckoutApi
-import com.tokopedia.checkout.data.model.response.SaveShipmentStateResponse
+import com.tokopedia.checkout.data.model.response.saveshipmentstate.SaveShipmentStateResponse
 import rx.Observable
 import javax.inject.Inject
 

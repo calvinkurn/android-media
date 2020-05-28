@@ -3,7 +3,7 @@ package com.tokopedia.checkout.domain.usecase;
 import com.tokopedia.checkout.data.repository.ICheckoutRepository;
 import com.tokopedia.checkout.domain.model.saveshipmentstate.SaveShipmentStateData;
 import com.tokopedia.network.utils.TKPDMapParam;
-import com.tokopedia.checkout.data.model.response.SaveShipmentStateResponse;
+import com.tokopedia.checkout.data.model.response.saveshipmentstate.SaveShipmentStateResponse;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

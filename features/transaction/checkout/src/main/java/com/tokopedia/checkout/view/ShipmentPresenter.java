@@ -34,7 +34,7 @@ import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.CodCheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormGqlUseCase;
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase;
-import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase;
 import com.tokopedia.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter;
@@ -142,7 +142,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final GetShipmentAddressFormGqlUseCase getShipmentAddressFormGqlUseCase;
     private final EditAddressUseCase editAddressUseCase;
     private final ChangeShippingAddressUseCase changeShippingAddressUseCase;
-    private final SaveShipmentStateUseCase saveShipmentStateUseCase;
+    private final SaveShipmentStateGqlUseCase saveShipmentStateGqlUseCase;
     private final GetRatesUseCase ratesUseCase;
     private final GetRatesApiUseCase ratesApiUseCase;
     private final ShippingCourierConverter shippingCourierConverter;
@@ -194,7 +194,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              GetShipmentAddressFormGqlUseCase getShipmentAddressFormGqlUseCase,
                              EditAddressUseCase editAddressUseCase,
                              ChangeShippingAddressUseCase changeShippingAddressUseCase,
-                             SaveShipmentStateUseCase saveShipmentStateUseCase,
+                             SaveShipmentStateGqlUseCase saveShipmentStateGqlUseCase,
                              GetRatesUseCase ratesUseCase,
                              GetRatesApiUseCase ratesApiUseCase,
                              CodCheckoutUseCase codCheckoutUseCase,
@@ -216,7 +216,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.getShipmentAddressFormGqlUseCase = getShipmentAddressFormGqlUseCase;
         this.editAddressUseCase = editAddressUseCase;
         this.changeShippingAddressUseCase = changeShippingAddressUseCase;
-        this.saveShipmentStateUseCase = saveShipmentStateUseCase;
+        this.saveShipmentStateGqlUseCase = saveShipmentStateGqlUseCase;
         this.ratesUseCase = ratesUseCase;
         this.ratesApiUseCase = ratesApiUseCase;
         this.clearCacheAutoApplyStackUseCase = clearCacheAutoApplyStackUseCase;
@@ -1331,35 +1331,29 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         List<ShipmentCartItemModel> shipmentCartItemModels = new ArrayList<>();
         shipmentCartItemModels.add(shipmentCartItemModel);
 
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        Map<String, String> param = new HashMap<>();
         JsonArray saveShipmentDataArray = getShipmentItemSaveStateData(shipmentCartItemModels);
-        param.put(SaveShipmentStateUseCase.PARAM_CARTS, saveShipmentDataArray.toString());
+        param.put(SaveShipmentStateGqlUseCase.PARAM_CARTS, saveShipmentDataArray.toString());
 
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(SaveShipmentStateUseCase.PARAM_CART_DATA_OBJECT, param);
+        requestParams.putObject(SaveShipmentStateGqlUseCase.PARAM_CART_DATA_OBJECT, param);
 
-        compositeSubscription.add(saveShipmentStateUseCase.createObservable(requestParams)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(new SaveShipmentStateSubscriber(getView())));
+        compositeSubscription.add(saveShipmentStateGqlUseCase.createObservable(requestParams)
+                .subscribe(new SaveShipmentStateSubscriber()));
     }
 
     @Override
     public void processSaveShipmentState() {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         JsonArray saveShipmentDataArray = getShipmentItemSaveStateData(shipmentCartItemModelList);
-        param.put(SaveShipmentStateUseCase.PARAM_CARTS, saveShipmentDataArray.toString());
+        param.put(SaveShipmentStateGqlUseCase.PARAM_CARTS, saveShipmentDataArray.toString());
 
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(SaveShipmentStateUseCase.PARAM_CART_DATA_OBJECT, param);
+        requestParams.putObject(SaveShipmentStateGqlUseCase.PARAM_CART_DATA_OBJECT, param);
 
         getView().showLoading();
-        compositeSubscription.add(saveShipmentStateUseCase.createObservable(requestParams)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(new SaveShipmentStateSubscriber(getView())));
+        compositeSubscription.add(saveShipmentStateGqlUseCase.createObservable(requestParams)
+                .subscribe(new SaveShipmentStateSubscriber()));
     }
 
     private JsonArray getShipmentItemSaveStateData(List<ShipmentCartItemModel> shipmentCartItemModels) {

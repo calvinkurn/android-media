@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.data.repository
 
-import com.tokopedia.checkout.data.model.response.SaveShipmentStateResponse
-import com.tokopedia.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse
+import com.tokopedia.checkout.data.model.response.saveshipmentstate.SaveShipmentStateResponse
 import rx.Observable
 
 /**

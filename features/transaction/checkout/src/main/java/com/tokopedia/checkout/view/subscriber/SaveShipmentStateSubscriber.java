@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.view.subscriber;
 
 import com.tokopedia.checkout.domain.model.saveshipmentstate.SaveShipmentStateData;
-import com.tokopedia.checkout.view.ShipmentContract;
 
 import rx.Subscriber;
 
@@ -11,10 +10,7 @@ import rx.Subscriber;
 
 public class SaveShipmentStateSubscriber extends Subscriber<SaveShipmentStateData> {
 
-    private final ShipmentContract.View view;
-
-    public SaveShipmentStateSubscriber(ShipmentContract.View view) {
-        this.view = view;
+    public SaveShipmentStateSubscriber() {
     }
 
     @Override
