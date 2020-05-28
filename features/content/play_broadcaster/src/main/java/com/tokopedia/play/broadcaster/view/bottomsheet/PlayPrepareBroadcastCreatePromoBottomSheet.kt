@@ -141,7 +141,7 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
         btnPlayPrepareBroadcastNext.setOnClickListener {
             dialog?.window?.let {
                 it.decorView.animate()
-                        .setDuration(500)
+                        .setDuration(ANIMATION_DURATION)
                         .translationX((screenWidth * -1).toFloat())
                         .setListener(object : Animator.AnimatorListener {
                             override fun onAnimationRepeat(p0: Animator?) {}
@@ -186,7 +186,7 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
             else -> {
                 dialog?.window?.let {
                     it.decorView.animate()
-                            .setDuration(500)
+                            .setDuration(ANIMATION_DURATION)
                             .translationX(screenWidth.toFloat())
                             .setListener(object : Animator.AnimatorListener {
                                 override fun onAnimationRepeat(p0: Animator?) {}
@@ -225,10 +225,13 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
             containerPlayPrepareBroadcastBottom.visibility = View.VISIBLE
 
             containerPlayPrepareBroadcastWithPromo.animate()
+                    .setDuration(ANIMATION_DURATION)
                     .translationX(0f)
             containerPlayPrepareBroadcastWithoutPromo.animate()
+                    .setDuration(ANIMATION_DURATION)
                     .translationX(0f)
             containerPlayPrepareBroadcastBottom.animate()
+                    .setDuration(ANIMATION_DURATION)
                     .translationX(0f)
         }
 
@@ -269,6 +272,7 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
                 && containerPlayPrepareBroadcastBottom.visibility == View.VISIBLE) {
 
             containerPlayPrepareBroadcastWithPromo.animate()
+                    .setDuration(ANIMATION_DURATION)
                     .translationX((screenWidth * -1).toFloat())
                     .setListener(object : Animator.AnimatorListener {
                         override fun onAnimationRepeat(animator: Animator) {}
@@ -285,6 +289,7 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
                     })
 
             containerPlayPrepareBroadcastWithoutPromo.animate()
+                    .setDuration(ANIMATION_DURATION)
                     .translationX((screenWidth * -1).toFloat())
                     .setListener(object : Animator.AnimatorListener {
                         override fun onAnimationRepeat(animator: Animator) {}
@@ -301,6 +306,7 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
                     })
 
             containerPlayPrepareBroadcastBottom.animate()
+                    .setDuration(ANIMATION_DURATION)
                     .translationX((screenWidth * -1).toFloat())
                     .setListener(object : Animator.AnimatorListener {
                         override fun onAnimationRepeat(animator: Animator) {}
@@ -324,6 +330,7 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
             containerPlayPrepareBroadcastPercetageAndDiscount.x = screenWidth.toFloat()
             containerPlayPrepareBroadcastPercetageAndDiscount.visibility = View.VISIBLE
             containerPlayPrepareBroadcastPercetageAndDiscount.animate()
+                    .setDuration(ANIMATION_DURATION)
                     .translationX(0f)
         }
 
@@ -354,6 +361,7 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
         if (containerPlayPrepareBroadcastPercetageAndDiscount.visibility == View.VISIBLE) {
             tvPlayPrepareBroadcastInputField.textFieldInput.removeTextChangedListener(percentageTextWatcher)
             containerPlayPrepareBroadcastPercetageAndDiscount.animate()
+                    .setDuration(ANIMATION_DURATION)
                     .translationX(screenWidth.toFloat())
                     .setListener(object : Animator.AnimatorListener {
                         override fun onAnimationRepeat(animator: Animator) {}
@@ -474,6 +482,7 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
         private const val EXTRA_CURRENT_STATE = "EXTRA_CURRENT_STATE"
         private const val EXTRA_IS_BACK = "EXTRA_IS_BACK"
 
+        private const val ANIMATION_DURATION: Long = 300
         private const val MAIN_STATE = 1
         private const val PERCENTAGE_STATE = 2
         private const val QUOTA_STATE = 3
