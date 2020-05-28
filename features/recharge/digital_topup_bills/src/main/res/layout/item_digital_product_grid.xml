@@ -32,7 +32,7 @@
             android:layout_marginTop="@dimen/layout_lvl1"
             android:lines="1"
             android:textColor="@color/Neutral_N700_44"
-            app:typographyType="heading_6"
+            app:typographyType="body_3"
             tools:text="Pulsa 40.000" />
 
         <com.tokopedia.unifycomponents.Label

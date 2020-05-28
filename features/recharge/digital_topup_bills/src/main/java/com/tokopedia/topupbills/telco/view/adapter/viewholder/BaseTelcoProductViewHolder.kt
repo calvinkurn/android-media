@@ -48,7 +48,7 @@ abstract class BaseTelcoProductViewHolder(itemView: View, val listener: DigitalP
     }
 
     protected fun onClickProductItem() {
-        if (isProductOutOfStock()) {
+        if (!isProductOutOfStock()) {
             for (i in productList.indices) {
                 if (productList[i].attributes.selected) {
                     productList[i].attributes.selected = false
@@ -62,24 +62,21 @@ abstract class BaseTelcoProductViewHolder(itemView: View, val listener: DigitalP
     }
 
     protected fun renderOutOfStockProduct(viewGrup: ViewGroup, productLabel: Label) {
-        var drawableResources = com.tokopedia.common.topupbills.R.drawable.common_topup_bg_transparent_round
-
         if (isProductOutOfStock()) {
             productLabel.text = itemView.context.getString(R.string.telco_label_out_of_stock)
             productLabel.visibility = View.VISIBLE
             productLabel.setLabelType(Label.GENERAL_DARK_GREY)
-            drawableResources = R.drawable.digital_bg_grey_rounded
+            viewGrup.setBackgroundResource(R.drawable.digital_bg_grey_rounded)
         }
-        viewGrup.setBackgroundResource(drawableResources)
     }
 
     protected fun setItemSelected(viewGrup: ViewGroup) {
-        var drawableResource = com.tokopedia.common.topupbills.R.drawable.common_topup_bg_transparent_round
+        var drawableResources = com.tokopedia.common.topupbills.R.drawable.common_topup_bg_transparent_round
         if (productItem.attributes.selected) {
             listener.onClickItemProduct(productItem, adapterPosition)
-            drawableResource = com.tokopedia.common.topupbills.R.drawable.common_topup_bg_green_light_rounded
+            drawableResources = com.tokopedia.common.topupbills.R.drawable.common_topup_bg_green_light_rounded
         }
-        viewGrup.setBackgroundResource(drawableResource)
+        viewGrup.setBackgroundResource(drawableResources)
     }
 
     companion object {
