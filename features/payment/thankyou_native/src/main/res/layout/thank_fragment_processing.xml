@@ -20,7 +20,7 @@
                 android:layout_width="@dimen/dp_200"
                 android:layout_height="@dimen/dp_148"
                 android:layout_marginTop="@dimen/dp_16"
-                android:src="@drawable/thank_payment_processing"
+                app:srcCompat="@drawable/thank_payment_processing"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -94,7 +94,6 @@
                 android:paddingTop="@dimen/dp_12"
                 android:paddingBottom="@dimen/dp_12"
                 android:scaleType="centerInside"
-                android:src="@drawable/thank_instant_payment_banner"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/view_divider_1" />
 

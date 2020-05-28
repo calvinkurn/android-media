@@ -23,7 +23,7 @@
                 android:layout_width="@dimen/thank_dp_192"
                 android:layout_height="@dimen/thank_dp_144"
                 android:layout_marginTop="@dimen/dp_24"
-                android:src="@drawable/thank_instant_payment_banner"
+                app:srcCompat="@drawable/thank_instant_payment_banner"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
