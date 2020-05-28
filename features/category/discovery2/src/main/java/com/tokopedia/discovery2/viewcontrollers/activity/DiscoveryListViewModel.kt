@@ -29,6 +29,12 @@ class DiscoveryListViewModel(private val applicationContext: Application) : Andr
         viewHolderViewModelList.clear()
     }
 
+    fun removeViewHolderModel(index: Int) {
+        if(!viewHolderViewModelList.isNullOrEmpty()){
+            viewHolderViewModelList.removeAt(index)
+        }
+    }
+
 
     override fun onCleared() {
         super.onCleared()

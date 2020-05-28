@@ -3,8 +3,10 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.mergeAdapter
 import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 
 class MergeAdapters : RecyclerView.Adapter<AbstractViewHolder>() {
@@ -24,25 +26,13 @@ class MergeAdapters : RecyclerView.Adapter<AbstractViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder, position: Int) {
-//        Log.d("onBindViewHolder ", position.toString())
-//        currentActiveAdapter?.onBindViewHolder(holder, position - lastListCount)
-        Log.d("onBindViewHolder", position.toString())
         val pair = getActiveAdapter(position)
+        setViewSpanType(holder)
         pair.first.onBindViewHolder(holder, position - pair.second)
     }
 
     override fun getItemViewType(position: Int): Int {
         val pair = getActiveAdapter(position)
-//        Log.d("getItemViewType ", position.toString())
-//        val x = lastListCount + currentActiveAdapter?.itemCount!!
-//
-//        if (position >= x) {
-//            currentActiveAdapter = adapterList[++index]
-//            lastListCount = lastListCount + currentActiveAdapter?.itemCount!!
-//        } else if (position < lastListCount) {
-//            lastListCount = lastListCount - currentActiveAdapter?.itemCount!!
-//            currentActiveAdapter = adapterList[--index]
-//        }
         val id = pair.first.getItemViewType(position - pair.second)
         return id ?: 0
     }
@@ -58,16 +48,6 @@ class MergeAdapters : RecyclerView.Adapter<AbstractViewHolder>() {
                 xCount += it.itemCount
             }
         }
-//        adapterList.forEach {
-//
-//            if (xCount + it.itemCount > position) {
-//                xAdapter = it
-//
-//            } else {
-//                xCount += it.itemCount
-//            }
-//        }
-        Log.d("getActiveAdapter", xAdapter.toString() + " postion " + position.toString() + "xCount" + xCount)
         return Pair(xAdapter, xCount)
     }
 
@@ -87,5 +67,13 @@ class MergeAdapters : RecyclerView.Adapter<AbstractViewHolder>() {
 
     fun setDataList(dataList: ArrayList<ComponentsItem>?) {
         currentActiveAdapter?.setDataList(dataList)
+    }
+
+    private fun setViewSpanType(holder: AbstractViewHolder) {
+        val layoutParams = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
+        when (holder) {
+            is ProductCardItemViewHolder -> layoutParams.isFullSpan = false
+            else -> layoutParams.isFullSpan = true
+        }
     }
 }

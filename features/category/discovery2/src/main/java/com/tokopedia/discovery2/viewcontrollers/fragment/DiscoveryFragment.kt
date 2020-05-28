@@ -107,9 +107,10 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         discoveryViewModel = (activity as DiscoveryActivity).getViewModel()
+//        mDiscoveryViewModel = ViewModelProviders.of(requireActivity()).get((activity as BaseViewModelActivity<DiscoveryViewModel>).getViewModelType())
 
         discoveryRecycleAdapter = DiscoveryRecycleAdapter(this)
-        recyclerView.layoutManager = StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
+        recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         mergeAdapters = MergeAdapters()
         mergeAdapters.addAdapter(discoveryRecycleAdapter)
         recyclerView.adapter = mergeAdapters

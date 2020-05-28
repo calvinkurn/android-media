@@ -6,12 +6,23 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
 abstract class AbstractViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+    protected var parentAbstractViewHolder : AbstractViewHolder? = null
+
+    // TODO Remove this implementation
     abstract fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel)
 
-    open fun getInnerRecycleView() : RecyclerView? {
+    fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel, parentViewHolder: AbstractViewHolder?) {
+        this.parentAbstractViewHolder = parentViewHolder
+        this.bindView(discoveryBaseViewModel)
+    }
+
+    open fun getInnerRecycleView(): RecyclerView? {
         return null
     }
+
     open fun onViewAttachedToWindow() {}
 
     open fun onViewDetachedToWindow() {}
+
+    open fun onViewRemoving() {}
 }

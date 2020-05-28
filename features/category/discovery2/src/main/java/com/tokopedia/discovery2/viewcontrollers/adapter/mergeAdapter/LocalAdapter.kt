@@ -6,5 +6,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 class LocalAdapter<T : RecyclerView.Adapter<AbstractViewHolder>>(adapter: T) {
     var mAdapter: T = adapter
     var mLocalPosition = 0
+    var dataPosition = 0
     var mViewTypesMap: HashMap<Int, Int> = HashMap()
 }
