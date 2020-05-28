@@ -12,7 +12,7 @@ import java.util.List;
 public interface TopAdsDetailNewGroupPresenter<T extends TopAdsDetailNewGroupView> extends TopAdsDetailEditGroupPresenter<T> {
     void saveAdNew(String groupName,
                    TopAdsDetailGroupViewModel topAdsDetailProductViewModel,
-                   List<TopAdsProductViewModel> topAdsProductViewModelList, String source);
+                   List<TopAdsProductViewModel> topAdsProductViewModelList, String source, String shopId);
 
     void saveAdExisting(String groupId,
                         List<TopAdsProductViewModel> topAdsProductViewModelList, String source);

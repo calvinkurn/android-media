@@ -123,9 +123,8 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         errorTextVisibility(true)
         if (t.localizedMessage == resources.getString(R.string.duplicate_group_name_error_wrong))
             error_text.text = resources.getString(R.string.duplicate_group_name_error)
-        NetworkErrorHelper.createSnackbarRedWithAction(activity, t.localizedMessage) {
-            validateGroup(group_name_input.text.toString())
-        }
+        else
+            error_text.text = t.message
     }
 
     private fun onSuccess(data: TopAdsGroupValidateName.Data) {

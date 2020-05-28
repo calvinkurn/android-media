@@ -1,7 +1,7 @@
 package com.tokopedia.product.manage.feature.list.analytics
 
-import com.tokopedia.product.manage.feature.list.constant.ProductManageDataLayer
 import com.tokopedia.product.manage.feature.list.constant.CLICK
+import com.tokopedia.product.manage.feature.list.constant.ProductManageDataLayer
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.track.TrackApp
 
@@ -242,4 +242,7 @@ object ProductManageTracking {
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ON_EDIT_STOCK_VARIANT_SAVE, "")
     }
 
+    fun sendScreen(screenName: String) {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
+    }
 }

@@ -13,17 +13,21 @@ import android.webkit.URLUtil;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import com.bugsnag.android.BeforeNotify;
 import com.bugsnag.android.Bugsnag;
+import com.bugsnag.android.Error;
+import com.github.moduth.blockcanary.BlockCanary;
+import com.github.moduth.blockcanary.BlockCanaryContext;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
 import com.moengage.pushbase.push.MoEPushCallBacks;
+import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
-import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
@@ -43,8 +47,8 @@ import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
-import com.github.moduth.blockcanary.BlockCanary;
-import com.github.moduth.blockcanary.BlockCanaryContext;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -117,7 +121,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     @Override
     public void onCreate() {
-        Bugsnag.init(this);
+        initBugsnag();
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION;
         GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
         setVersionCode();
@@ -167,6 +171,31 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
         initAppNotificationReceiver();
         initBlockCanary();
+    }
+
+    private void initBugsnag() {
+        Bugsnag.init(this);
+        Bugsnag.beforeNotify(new BeforeNotify() {
+            @Override
+            public boolean run(Error error) {
+                UserSessionInterface userSession = new UserSession(SellerMainApplication.this);
+                error.setUser(userSession.getUserId(), userSession.getEmail(), userSession.getName());
+                error.addToTab("squad", "package", getPackageName(error));
+                return true;
+            }
+
+            private String getPackageName(Error error) {
+                String packageName = "";
+                String errorText = error.getException().getMessage();
+                String startText = "/com.tokopedia.";
+                int startIndex = errorText.indexOf(startText);
+                if (startIndex > 0) {
+                    int endIndex = errorText.indexOf(".", startIndex + startText.length());
+                    packageName = errorText.substring(startIndex + 1, endIndex);
+                }
+                return packageName;
+            }
+        });
     }
 
     public void initBlockCanary(){

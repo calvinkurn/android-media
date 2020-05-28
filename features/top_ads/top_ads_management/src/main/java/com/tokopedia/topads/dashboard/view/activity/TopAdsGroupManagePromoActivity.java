@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import androidx.fragment.app.Fragment;
 
-import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.topads.common.view.activity.TopAdsBaseActivity;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsGroupManagePromoFragment;
 
@@ -12,7 +12,7 @@ import com.tokopedia.topads.dashboard.view.fragment.TopAdsGroupManagePromoFragme
  * Created by zulfikarrahman on 2/27/17.
  */
 
-public class TopAdsGroupManagePromoActivity extends BaseSimpleActivity {
+public class TopAdsGroupManagePromoActivity extends TopAdsBaseActivity {
 
     public static Intent createIntent(Context context, String adId, int choosenOption,
                                       String groupName, String groupId){
@@ -43,8 +43,4 @@ public class TopAdsGroupManagePromoActivity extends BaseSimpleActivity {
         return TopAdsGroupManagePromoFragment.class.getSimpleName();
     }
 
-    @Override
-    protected boolean isToolbarWhite() {
-        return true;
-    }
 }
