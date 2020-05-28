@@ -140,7 +140,6 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         ivBack.setOnClickListener { dialog?.onBackPressed() }
 
         navigateToFragment(PlayEtalasePickerFragment::class.java)
-        navigateToVoucherCreationBottomSheet()
     }
 
     private fun maxHeight(): Int = (getScreenHeight() * MAX_HEIGHT_MULTIPLIER).toInt()
@@ -169,8 +168,14 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         }
     }
 
-    private fun navigateToVoucherCreationBottomSheet() {
-        val voucherCreationBottomSheet = PlayPrepareBroadcastCreatePromoBottomSheet.getInstance()
+    /**
+     * Want to test "Ubah Promo"? you only need to send percentage and quota params when `getInstance()`
+     * Want to test "Enter from Left"? you only need to send isBack param as true when `getInstance()`
+     * (animation that used when user back to create promo bottomsheets after
+     * navigate to choose live cover bottomsheets)
+     */
+    private fun navigateToVoucherCreationBottomSheet(isBack: Boolean = false) {
+        val voucherCreationBottomSheet = PlayPrepareBroadcastCreatePromoBottomSheet.getInstance(isBack = isBack)
         voucherCreationBottomSheet.listener = object : PlayPrepareBroadcastCreatePromoBottomSheet.Listener {
             override fun onVoucherSaved(isWithPromo: Boolean, promoPercentage: Int, promoQuota: Int) {
                 // set promo detail to parent model
