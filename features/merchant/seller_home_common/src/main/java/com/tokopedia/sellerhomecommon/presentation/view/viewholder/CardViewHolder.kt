@@ -29,6 +29,7 @@ class CardViewHolder(
         observeState(element)
         listener.getCardData()
 
+        itemView.containerCard.setBackgroundColor(itemView.context.getResColor(R.color.Neutral_N0))
         itemView.tvCardTitle.text = element.title
     }
 
