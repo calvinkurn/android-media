@@ -422,13 +422,13 @@ class HomeFragment : BaseDaggerFragment(),
             refreshLayout.setCanChildScrollUp(true)
         }
         if (recyclerView.canScrollVertically(1)) {
-            if (homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
+            if (::homeMainToolbar.isInitialized && homeMainToolbar.getViewHomeMainToolBar() != null) {
                 homeMainToolbar.showShadow()
             }
             showFeedSectionViewHolderShadow(false)
             homeRecyclerView.setNestedCanScroll(false)
         } else { //home feed now can scroll up, so hide maintoolbar shadow
-            if (homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
+            if (::homeMainToolbar.isInitialized && homeMainToolbar.getViewHomeMainToolBar() != null) {
                 homeMainToolbar.hideShadow()
             }
             showFeedSectionViewHolderShadow(true)
@@ -530,7 +530,7 @@ class HomeFragment : BaseDaggerFragment(),
             viewModel.refreshHomeData()
             /*
              * set notification gimmick
-             */if (homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
+             */if (::homeMainToolbar.isInitialized && homeMainToolbar.getViewHomeMainToolBar() != null) {
             homeMainToolbar.setNotificationNumber(0)
         }
         }
@@ -615,7 +615,7 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun observeSearchHint() {
-        if (view != null && !viewModel.searchHint.hasObservers() && homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
+        if (view != null && !viewModel.searchHint.hasObservers() && ::homeMainToolbar.isInitialized && homeMainToolbar.getViewHomeMainToolBar() != null) {
             viewModel.searchHint.observe(viewLifecycleOwner, Observer { data: SearchPlaceholder -> setHint(data) })
         }
     }
@@ -736,7 +736,7 @@ class HomeFragment : BaseDaggerFragment(),
         if (offsetAlpha < 0) {
             offsetAlpha = 0f
         }
-        if (homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
+        if (::homeMainToolbar.isInitialized && homeMainToolbar.getViewHomeMainToolBar() != null) {
             if (offsetAlpha >= 150) {
                 homeMainToolbar.switchToDarkToolbar()
                 if (isLightThemeStatusBar) requestStatusBarDark()
@@ -748,7 +748,7 @@ class HomeFragment : BaseDaggerFragment(),
         if (offsetAlpha >= 255) {
             offsetAlpha = 255f
         }
-        if (homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
+        if (::homeMainToolbar.isInitialized && homeMainToolbar.getViewHomeMainToolBar() != null) {
             if (offsetAlpha >= 0 && offsetAlpha <= 255) {
                 homeMainToolbar.setBackgroundAlpha(offsetAlpha)
                 setStatusBarAlpha(offsetAlpha)
@@ -1502,7 +1502,7 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onNotificationChanged(notificationCount: Int, inboxCount: Int) {
-        if (homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
+        if (::homeMainToolbar.isInitialized && homeMainToolbar.getViewHomeMainToolBar() != null) {
             homeMainToolbar.setNotificationNumber(notificationCount)
             homeMainToolbar.setInboxNumber(inboxCount)
         }
@@ -1512,7 +1512,7 @@ class HomeFragment : BaseDaggerFragment(),
     override val homeMainToolbarHeight: Int
         get() {
             var height = 0
-            if (homeMainToolbar != null) {
+            if (::homeMainToolbar.isInitialized) {
                 height = homeMainToolbar.height
                 if (!homeMainToolbar.isShadowApplied()) {
                     height += resources.getDimensionPixelSize(R.dimen.dp_8)
