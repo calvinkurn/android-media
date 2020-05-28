@@ -1,26 +1,29 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners
 
 import android.content.Context
-import com.tokopedia.unifycomponents.ImageUnify
+import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.unifycomponents.ImageUnify
 
 class BannerItem(val bannerItemData: DataItem, private val constraintLayout: ConstraintLayout,
-                 private val constraintSet: ConstraintSet, private val viewWidth: Int? = Utils.DEFAULT_BANNER_WIDTH, private val viewHeight: Int? = Utils.DEFAULT_BANNER_HEIGHT, index: Int,
+                 private val constraintSet: ConstraintSet, private val viewWidth: Int? = Utils.DEFAULT_BANNER_WIDTH, private val viewHeight: Int? = Utils.DEFAULT_BANNER_HEIGHT, private val index: Int,
                  private val previousBannerItem: BannerItem?, val context: Context, private val islastItem: Boolean) {
 
-    val bannerImageView = ImageUnify(context)
+    var bannerImageView = View(context)
     private val VIEW_ID_CONSTANT = 100
 
     init {
-        bannerImageView.id = VIEW_ID_CONSTANT + index;
         addImageConstrains()
     }
 
     private fun addImageConstrains() {
+        if (!bannerItemData.imageUrlDynamicMobile.isNullOrEmpty()) {
+            bannerImageView = ImageUnify(context)
+        }
+        bannerImageView.id = VIEW_ID_CONSTANT + index
         constraintLayout.addView(bannerImageView)
         constraintSet.clear(bannerImageView.id)
         constraintSet.constrainWidth(bannerImageView.id, ConstraintSet.MATCH_CONSTRAINT)
@@ -43,7 +46,9 @@ class BannerItem(val bannerItemData: DataItem, private val constraintLayout: Con
                     bannerItemData.rightMargin)
         }
         constraintSet.connect(bannerImageView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
-        bannerImageView.setImageUrl(bannerItemData.imageUrlDynamicMobile ?: "")
+        if (!bannerItemData.imageUrlDynamicMobile.isNullOrEmpty()) {
+            (bannerImageView as ImageUnify).setImageUrl(bannerItemData.imageUrlDynamicMobile ?: "")
+        }
         constraintSet.applyTo(constraintLayout)
     }
 }
