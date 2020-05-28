@@ -34,6 +34,9 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     val snapShotMap: ProductSnapshotDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_SNAPSHOT] as? ProductSnapshotDataModel
 
+    val basicContentMap: ProductContentDataModel?
+        get() = mapOfData[ProductDetailConstant.BASIC_CONTENT] as? ProductContentDataModel
+
     val shopInfoMap: ProductShopInfoDataModel?
         get() = mapOfData[ProductDetailConstant.SHOP_INFO] as? ProductShopInfoDataModel
 
@@ -88,9 +91,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     val mediaMap: ProductMediaDataModel?
         get() = mapOfData[ProductDetailConstant.MEDIA] as? ProductMediaDataModel
 
-    val basicContentMap: ProductContentDataModel?
-        get() = mapOfData[ProductDetailConstant.BASIC_CONTENT] as? ProductContentDataModel
-
     val listProductRecomMap: List<ProductRecommendationDataModel>? = mapOfData.filterKeys {
         it == ProductDetailConstant.PDP_1 || it == ProductDetailConstant.PDP_2
                 || it == ProductDetailConstant.PDP_3 || it == ProductDetailConstant.PDP_4
@@ -105,6 +105,9 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         dataP1?.let {
             basicContentMap?.run {
                 data = it
+            }
+            snapShotMap?.run {
+               data = it
             }
             mediaMap?.run {
                 listOfMedia = DynamicProductDetailMapper.convertMediaToDataModel(it.data.media.toMutableList())
@@ -165,6 +168,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     fun updateDataTradein(context: Context?, tradeinResponse: ValidateTradeInResponse) {
         productTradeinMap?.run {
             basicContentMap?.shouldShowTradein = true
+            snapShotMap?.shouldShowTradein = true
 
             data.first().subtitle = if (tradeinResponse.usedPrice > 0) {
                 context?.getString(R.string.text_price_holder, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice, true))
@@ -199,6 +203,11 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                         multiOriginNearestWarehouse.price, multiOriginNearestWarehouse.stockWording)
             }
 
+            snapShotMap?.run {
+                nearestWarehouseDataModel = ProductSnapshotDataModel.NearestWarehouseDataModel(multiOriginNearestWarehouse.warehouseInfo.id,
+                        multiOriginNearestWarehouse.price, multiOriginNearestWarehouse.stockWording)
+            }
+
             mediaMap?.run {
                 statusTitle = it.shopInfo?.statusInfo?.statusTitle ?: ""
                 statusMessage = it.shopInfo?.statusInfo?.statusMessage ?: ""
@@ -213,9 +222,11 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
     fun updateWishlistData(isWishlisted: Boolean) {
         basicContentMap?.isWishlisted = isWishlisted
+        snapShotMap?.isWishlisted = isWishlisted
     }
 
     fun updateBasicContentCodData(isCod: Boolean) {
+        snapShotMap?.shouldShowCod = isCod
         basicContentMap?.shouldShowCod = isCod
     }
 
@@ -316,6 +327,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
     fun updateNearestWarehouseData(data: ProductSnapshotDataModel.NearestWarehouseDataModel) {
         basicContentMap?.nearestWarehouseDataModel = data
+        snapShotMap?.nearestWarehouseDataModel = data
     }
 
     private fun mapToCardModel(data: RecommendationWidget): List<ProductCardModel> {

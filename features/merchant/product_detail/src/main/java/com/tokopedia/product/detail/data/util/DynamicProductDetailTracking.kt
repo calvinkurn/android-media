@@ -581,7 +581,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Category.PRODUCT_DETAIL_PAGE_SELLER,
                     ProductTrackingConstant.Tracking.KEY_ACTION, ProductTrackingConstant.Action.CLICK_EDIT_PRODUCT,
                     ProductTrackingConstant.Tracking.KEY_LABEL, "",
-                    ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, product.dynamicProductInfoP1?.parentProductId,
+                    ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, product.data?.parentProductId,
                     ProductTrackingConstant.Tracking.KEY_LAYOUT, "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};",
                     ProductTrackingConstant.Tracking.KEY_COMPONENT, "comp:${componentTrackDataModel.componentType};temp:${componentTrackDataModel.componentName};elem:${topAdsAction};cpos:${componentTrackDataModel.adapterPosition};"
             )

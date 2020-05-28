@@ -23,36 +23,22 @@ class ProductSnapshotViewHolder(private val view: View,
 
     init {
         header = PartialSnapshotView(view, listener)
-        measureScreenHeight()
     }
 
     override fun bind(element: ProductSnapshotDataModel) {
         with(view) {
-            view_picture_search_bar.shouldRenderViewPager = element.shouldRefreshViewPager
             initializeClickListener(element)
-            element.dynamicProductInfoP1?.let {
-                view.addOnImpressionListener(element.impressHolder) {
+            element.data?.let {
+                addOnImpressionListener(element.impressHolder) {
                     listener.onImpressComponent(getComponentTrackData(element))
                 }
                 header?.renderData(it, element.nearestWarehouseDataModel?.nearestWarehouseStockWording
                         ?: "")
                 header?.showOfficialStore(it.data.isPowerMerchant, it.data.isOS)
-                view_picture_search_bar.renderShopStatusDynamicPdp(element.shopStatus, element.statusTitle, element.statusMessage,
-                        it.basic.status)
             }
             header?.updateWishlist(element.isWishlisted)
             header?.renderTradein(element.showTradeIn())
             header?.renderCod(element.showCod())
-
-            element.media?.let {
-                view_picture_search_bar.renderData(it, listener::onImageClicked, listener::onSwipePicture, listener.getProductFragmentManager(),
-                        getComponentTrackData(element), listener::onImageClickedTrack, listener.getLifecycleFragment())
-                if (element.shouldRenderImageVariant) {
-                    view.view_picture_search_bar.updateImage(element.media)
-                }
-                element.shouldRefreshViewPager = false
-                element.shouldRenderImageVariant = false
-            }
         }
     }
 
@@ -65,7 +51,6 @@ class ProductSnapshotViewHolder(private val view: View,
         when (payloads[0] as Int) {
             ProductDetailConstant.PAYLOAD_WISHLIST -> header?.updateWishlist(element.isWishlisted)
             ProductDetailConstant.PAYLOAD_P3 -> header?.renderCod(element.showCod())
-            ProductDetailConstant.PAYLOAD_UPDATE_IMAGE -> view.view_picture_search_bar.updateImage(element.media)
         }
     }
 
@@ -76,11 +61,6 @@ class ProductSnapshotViewHolder(private val view: View,
         fab_detail_pdp.setOnClickListener {
             listener.onFabWishlistClicked(it.isActivated, getComponentTrackData(element))
         }
-    }
-
-    private fun measureScreenHeight() = with(view) {
-        val screenWidth = view.resources.displayMetrics.widthPixels
-        view_picture_search_bar.layoutParams.height = screenWidth
     }
 
     private fun getComponentTrackData(element: ProductSnapshotDataModel?) = ComponentTrackDataModel(element?.type

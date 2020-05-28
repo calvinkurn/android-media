@@ -2,32 +2,22 @@ package com.tokopedia.product.detail.data.model.datamodel
 
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
-import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
 data class ProductSnapshotDataModel(
         var type: String = "",
         val name: String = "",
-        var dataLayout: List<ComponentData>? = null,
+
+        var data: DynamicProductInfoP1? = null,
 
         var isAllowManage: Int = 0,
         var isWishlisted: Boolean = false,
-
-        var media: List<MediaDataModel>? = null,
-        var dynamicProductInfoP1: DynamicProductInfoP1? = null,
         var shouldShowCod: Boolean = false,
         var shouldShowTradein: Boolean = false,
 
         //MultiOrigin
-        var nearestWarehouseDataModel: NearestWarehouseDataModel? = null,
-
-        var shouldRefreshViewPager: Boolean = true,
-        var shouldRenderImageVariant: Boolean = true,
-        var statusTitle: String = "",
-        var statusMessage: String = "",
-        var shopStatus: Int = SHOP_STATUS_ACTIVE
+        var nearestWarehouseDataModel: NearestWarehouseDataModel? = null
 ) : DynamicPdpDataModel {
 
     data class NearestWarehouseDataModel(
@@ -49,16 +39,10 @@ data class ProductSnapshotDataModel(
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int = typeFactory.type(this)
 
     fun showTradeIn(): Boolean {
-        return shouldShowTradein && dynamicProductInfoP1?.data?.campaign?.activeAndHasId == false
+        return shouldShowTradein && data?.data?.campaign?.activeAndHasId == false
     }
 
     fun showCod(): Boolean {
-        return shouldShowCod && !shouldShowTradein && dynamicProductInfoP1?.data?.campaign?.activeAndHasId == false
+        return shouldShowCod && !shouldShowTradein && data?.data?.campaign?.activeAndHasId == false
     }
-
-    fun getCampaignModular(): CampaignModular = dynamicProductInfoP1?.data?.campaign
-            ?: CampaignModular()
-
-    fun getNearestWarehouse(): NearestWarehouseDataModel = nearestWarehouseDataModel
-            ?: NearestWarehouseDataModel()
 }

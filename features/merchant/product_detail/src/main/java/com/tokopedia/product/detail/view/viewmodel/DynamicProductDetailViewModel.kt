@@ -485,8 +485,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 it
             } else if (it.name() == ProductDetailConstant.UPCOMING_DEALS && !isTeaser && !isVariant) {
                 it
-            } else if (it.name() == ProductDetailConstant.PRODUCT_SNAPSHOT) {
-                it
             } else if (GlobalConfig.isSellerApp() && it.type() == ProductDetailConstant.PRODUCT_LIST) {
                 it
             } else {
