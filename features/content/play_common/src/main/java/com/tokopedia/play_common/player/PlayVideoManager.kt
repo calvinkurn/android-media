@@ -44,9 +44,9 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         private const val MAX_CACHE_BYTES: Long = 10 * 1024 * 1024
         private const val CACHE_FOLDER_NAME = "play_video"
 
-        private const val RETRY_COUNT_LIVE = 1
-        private const val RETRY_COUNT_DEFAULT = 2
-        private const val RETRY_DELAY = 2000L
+        const val RETRY_COUNT_LIVE = 1
+        const val RETRY_COUNT_DEFAULT = 2
+        const val RETRY_DELAY = 2000L
 
         private const val VIDEO_MAX_SOUND = 1f
         private const val VIDEO_MIN_SOUND = 0f

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
@@ -44,14 +45,17 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
     }
 
     fun setItem(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
+        val list = PlayBannerMapper.mapToDataModel(playBannerCarouselDataModel)
         if(adapter == null){
+            recycler_view?.setMedia(list)
             adapter = PlayBannerCarouselAdapter(adapterTypeFactory)
             recycler_view?.layoutManager = linearLayoutManager
             recycler_view?.adapter = adapter
             recycler_view?.addOnScrollListener(configureParallax())
         }
         configureHeader(playBannerCarouselDataModel)
-        adapter?.setItems(PlayBannerMapper.mapToDataModel(playBannerCarouselDataModel))
+        configureBackground(playBannerCarouselDataModel)
+        adapter?.setItems(list)
     }
 
     private fun configureHeader(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
@@ -123,6 +127,7 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
             }
         }
     }
+
     companion object{
         private val LAYOUT = R.layout.layout_play_banner_carousel
     }

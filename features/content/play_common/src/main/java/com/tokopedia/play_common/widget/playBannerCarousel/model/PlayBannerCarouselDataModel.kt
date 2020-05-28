@@ -11,6 +11,7 @@ data class PlayBannerCarouselDataModel (
         val seeMoreApplink: String = "",
         val backgroundUrl: String = "",
         val gradientColors: List<String> = listOf("#ffffff"),
+        val playBannerCarouselAddStoryDataModel: PlayBannerCarouselAddStoryDataModel? = null,
         val channelList: List<PlayBannerCarouselItemDataModel> = listOf()
 )
 

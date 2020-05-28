@@ -5,5 +5,6 @@ import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarou
 interface PlayBannerCarouselViewEventListener{
     fun onItemClick(dataModel: PlayBannerCarouselItemDataModel, position: Int)
     fun onItemImpress(dataModel: PlayBannerCarouselItemDataModel, position: Int)
+    fun onPromoBadgeClick(dataModel: PlayBannerCarouselItemDataModel, position: Int)
     fun onSeeMoreClick(applink: String)
 }

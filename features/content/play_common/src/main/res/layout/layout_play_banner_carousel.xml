@@ -75,7 +75,7 @@
             android:background="@color/transparent"
             android:alpha="0"/>
 
-        <androidx.recyclerview.widget.RecyclerView
+        <com.tokopedia.play_common.widget.playBannerCarousel.widget.PlayBannerRecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

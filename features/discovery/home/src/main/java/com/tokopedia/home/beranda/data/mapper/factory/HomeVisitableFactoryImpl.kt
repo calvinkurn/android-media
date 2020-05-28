@@ -4,21 +4,19 @@ import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.home.analytics.HomePageTracking
-import com.tokopedia.home.analytics.HomePageTrackingV2
-import com.tokopedia.home.analytics.v2.MixTopTracking
-import com.tokopedia.home.analytics.v2.ProductHighlightTracking
 import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
 import com.tokopedia.home.util.ServerTimeOffsetUtil
+import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselAddStoryDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -252,6 +250,12 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
                 playBannerCarouselDataModel = PlayBannerCarouselDataModel(
                         title = "Yuk, tonton sekarang!",
                         seeMoreApplink = "https://cobacoba.com",
+                        playBannerCarouselAddStoryDataModel = PlayBannerCarouselAddStoryDataModel(
+                                backgroundUrl = "https://ecs7-p.tokopedia.net/img/cache/200-square/attachment/2020/5/13/69874981/69874981_e7a02ba2-18b2-4855-87e9-972759108174.jpg",
+                                applink = "tokopedia://rekomendasi/479185711/d/?ref=pdp_2&product_ids=479185711",
+                                content = "Bikin story tokomu",
+                                profileUrl = "https://ecs7-p.tokopedia.net/img/cache/200-square/attachment/2020/4/29/158813229258260/158813229258260_fa806d93-30b2-4d32-a9d1-defea45f6327.png"
+                        ),
                         channelList = listOf(
                             PlayBannerCarouselItemDataModel(
                                 channelTitle = "Google Assistant review with me",
@@ -261,7 +265,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
                                 isLive = true,
                                 isShowTotalView = true,
                                 promoUrl = "",
-                                videoUrl = ""
+                                videoUrl = "https://vod2.tokopedia.net/2c9d97786944476ca6f851b43657a714/71e3acc038da4fd4887005125c6af51d-42ab79fb4dc46a6c087229f0737690a6-fd.m3u8"
                             ),
                             PlayBannerCarouselItemDataModel(
                                 channelTitle = "Google Assistant review with me",
@@ -271,7 +275,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
                                 isLive = true,
                                 isShowTotalView = true,
                                 promoUrl = "",
-                                videoUrl = ""
+                                videoUrl = "https://vod2.tokopedia.net/2c9d97786944476ca6f851b43657a714/71e3acc038da4fd4887005125c6af51d-42ab79fb4dc46a6c087229f0737690a6-fd.m3u8"
                             ),
                             PlayBannerCarouselItemDataModel(
                                 channelTitle = "Google Assistant review with me",
@@ -281,7 +285,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
                                 isLive = true,
                                 isShowTotalView = true,
                                 promoUrl = "",
-                                videoUrl = ""
+                                videoUrl = "https://vod2.tokopedia.net/2c9d97786944476ca6f851b43657a714/71e3acc038da4fd4887005125c6af51d-42ab79fb4dc46a6c087229f0737690a6-fd.m3u8"
                             ),
                             PlayBannerCarouselItemDataModel(
                                 channelTitle = "Google Assistant review with me",
@@ -291,7 +295,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
                                 isLive = true,
                                 isShowTotalView = true,
                                 promoUrl = "",
-                                videoUrl = ""
+                                videoUrl = "https://vod2.tokopedia.net/2c9d97786944476ca6f851b43657a714/71e3acc038da4fd4887005125c6af51d-42ab79fb4dc46a6c087229f0737690a6-fd.m3u8"
                             )
                         )
                 )
