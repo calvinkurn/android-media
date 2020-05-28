@@ -147,9 +147,7 @@ class FlightAirportPickerBottomSheet : BottomSheetUnify(),
 
     private fun initBottomSheet() {
         showCloseIcon = true
-        showKnob = false
-        isDragable = true
-        isHideable = true
+        isFullpage = true
         setTitle(getString(R.string.flight_search_airport_arrival_title))
 
         mChildView = View.inflate(requireContext(), R.layout.bottom_sheet_flight_airport_picker, null)
