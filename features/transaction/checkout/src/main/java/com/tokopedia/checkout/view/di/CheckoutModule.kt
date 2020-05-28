@@ -18,6 +18,7 @@ import com.tokopedia.checkout.domain.mapper.ICheckoutMapper
 import com.tokopedia.checkout.domain.mapper.IShipmentMapper
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.usecase.*
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase.Companion.CHANGE_SHIPPING_ADDRESS_MUTATION
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormGqlUseCase.Companion.SHIPMENT_ADDRESS_FORM_QUERY
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase.Companion.SAVE_SHIPMENT_STATE_MUTATION
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
@@ -256,7 +257,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  checkoutUseCase: CheckoutUseCase,
                                  getShipmentAddressFormGqlUseCase: GetShipmentAddressFormGqlUseCase,
                                  editAddressUseCase: EditAddressUseCase,
-                                 changeShippingAddressUseCase: ChangeShippingAddressUseCase,
+                                 changeShippingAddressGqlUseCase: ChangeShippingAddressGqlUseCase,
                                  saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase,
                                  codCheckoutUseCase: CodCheckoutUseCase,
                                  ratesUseCase: GetRatesUseCase,
@@ -275,7 +276,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase): ShipmentContract.Presenter {
         return ShipmentPresenter(compositeSubscription,
                 checkoutUseCase, getShipmentAddressFormGqlUseCase,
-                editAddressUseCase, changeShippingAddressUseCase,
+                editAddressUseCase, changeShippingAddressGqlUseCase,
                 saveShipmentStateGqlUseCase,
                 ratesUseCase, ratesApiUseCase,
                 codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
@@ -314,6 +315,13 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
     @Named(SAVE_SHIPMENT_STATE_MUTATION)
     fun provideSaveShipmentStateMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.save_shipment_state_mutation)
+    }
+
+    @Provides
+    @CheckoutScope
+    @Named(CHANGE_SHIPPING_ADDRESS_MUTATION)
+    fun provideChangeShippingAddressMutation(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.change_shipping_address_mutation)
     }
 
 }

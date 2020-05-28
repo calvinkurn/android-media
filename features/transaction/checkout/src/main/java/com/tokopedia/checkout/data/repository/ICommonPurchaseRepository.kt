@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.data.repository
 
-import com.tokopedia.checkout.data.model.response.ShippingAddressDataResponse
+import com.tokopedia.checkout.data.model.response.changeshippingaddress.ChangeShippingAddressDataResponse
 import com.tokopedia.checkout.data.model.response.checkout.CheckoutResponse
 import rx.Observable
 
@@ -12,7 +12,7 @@ interface ICommonPurchaseRepository {
 
     fun checkout(param: Map<String, String>): Observable<CheckoutResponse>
 
-    fun setShippingAddress(param: Map<String, String>): Observable<ShippingAddressDataResponse>
+    fun setShippingAddress(param: Map<String, String>): Observable<ChangeShippingAddressDataResponse>
 
 
 }

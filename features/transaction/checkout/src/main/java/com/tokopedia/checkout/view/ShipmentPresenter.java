@@ -6,8 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.authentication.AuthHelper;
@@ -29,7 +27,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
-import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.CodCheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormGqlUseCase;
@@ -141,7 +139,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final CompositeSubscription compositeSubscription;
     private final GetShipmentAddressFormGqlUseCase getShipmentAddressFormGqlUseCase;
     private final EditAddressUseCase editAddressUseCase;
-    private final ChangeShippingAddressUseCase changeShippingAddressUseCase;
+    private final ChangeShippingAddressGqlUseCase changeShippingAddressGqlUseCase;
     private final SaveShipmentStateGqlUseCase saveShipmentStateGqlUseCase;
     private final GetRatesUseCase ratesUseCase;
     private final GetRatesApiUseCase ratesApiUseCase;
@@ -193,7 +191,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              CheckoutUseCase checkoutUseCase,
                              GetShipmentAddressFormGqlUseCase getShipmentAddressFormGqlUseCase,
                              EditAddressUseCase editAddressUseCase,
-                             ChangeShippingAddressUseCase changeShippingAddressUseCase,
+                             ChangeShippingAddressGqlUseCase changeShippingAddressGqlUseCase,
                              SaveShipmentStateGqlUseCase saveShipmentStateGqlUseCase,
                              GetRatesUseCase ratesUseCase,
                              GetRatesApiUseCase ratesApiUseCase,
@@ -215,7 +213,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.checkoutUseCase = checkoutUseCase;
         this.getShipmentAddressFormGqlUseCase = getShipmentAddressFormGqlUseCase;
         this.editAddressUseCase = editAddressUseCase;
-        this.changeShippingAddressUseCase = changeShippingAddressUseCase;
+        this.changeShippingAddressGqlUseCase = changeShippingAddressGqlUseCase;
         this.saveShipmentStateGqlUseCase = saveShipmentStateGqlUseCase;
         this.ratesUseCase = ratesUseCase;
         this.ratesApiUseCase = ratesApiUseCase;
@@ -1691,21 +1689,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             }
         }
 
-        String changeAddressRequestJsonString = new Gson().toJson(dataChangeAddressRequests);
+        Map<String, Object> params = new HashMap<>();
+        params.put(ChangeShippingAddressGqlUseCase.PARAM_CARTS, dataChangeAddressRequests);
+        params.put(ChangeShippingAddressGqlUseCase.PARAM_ONE_CLICK_SHIPMENT, isOneClickShipment);
 
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put("carts", changeAddressRequestJsonString);
         RequestParams requestParam = RequestParams.create();
-
-        Map<String, String> authParam = AuthHelper.generateParamsNetwork(
-                userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), param);
-
-        requestParam.putAllString(authParam);
-        requestParam.putBoolean(ChangeShippingAddressUseCase.PARAM_ONE_CLICK_SHIPMENT,
-                isOneClickShipment);
+        requestParam.putObject(ChangeShippingAddressGqlUseCase.CHANGE_SHIPPING_ADDRESS_PARAMS, params);
 
         compositeSubscription.add(
-                changeShippingAddressUseCase.createObservable(requestParam)
+                changeShippingAddressGqlUseCase.createObservable(requestParam)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.io())

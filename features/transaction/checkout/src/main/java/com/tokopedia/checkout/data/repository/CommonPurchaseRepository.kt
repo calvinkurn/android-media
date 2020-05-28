@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.data.repository
 
-import com.tokopedia.checkout.data.model.response.ShippingAddressDataResponse
+import com.tokopedia.checkout.data.model.response.changeshippingaddress.ChangeShippingAddressDataResponse
 import com.tokopedia.checkout.data.model.response.checkout.CheckoutResponse
 import com.tokopedia.checkout.data.api.CommonPurchaseAkamaiApi
 import com.tokopedia.checkout.data.api.CommonPurchaseApi
@@ -19,9 +19,9 @@ class CommonPurchaseRepository @Inject constructor(val commonPurchaseApi: Common
         }
     }
 
-    override fun setShippingAddress(param: Map<String, String>): Observable<ShippingAddressDataResponse> {
+    override fun setShippingAddress(param: Map<String, String>): Observable<ChangeShippingAddressDataResponse> {
         return commonPurchaseApi.postSetShippingAddress(param).map { cartResponseResponse ->
-            cartResponseResponse.body()?.convertDataObj(ShippingAddressDataResponse::class.java)
+            cartResponseResponse.body()?.convertDataObj(ChangeShippingAddressDataResponse::class.java)
         }
     }
 

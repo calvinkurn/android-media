@@ -1,7 +1,7 @@
 package com.tokopedia.checkout.domain.usecase;
 
 import com.tokopedia.checkout.data.repository.ICommonPurchaseRepository;
-import com.tokopedia.checkout.data.model.response.ShippingAddressDataResponse;
+import com.tokopedia.checkout.data.model.response.changeshippingaddress.ChangeShippingAddressDataResponse;
 import com.tokopedia.checkout.domain.model.cartmultipleshipment.SetShippingAddressData;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -35,12 +35,12 @@ public class ChangeShippingAddressUseCase extends UseCase<SetShippingAddressData
         params.put(PARAM_ONE_CLICK_SHIPMENT, String.valueOf(requestParams.getBoolean(PARAM_ONE_CLICK_SHIPMENT, false)));
 
         return repository.setShippingAddress(params)
-                .map(new Func1<ShippingAddressDataResponse, SetShippingAddressData>() {
+                .map(new Func1<ChangeShippingAddressDataResponse, SetShippingAddressData>() {
                     @Override
-                    public SetShippingAddressData call(ShippingAddressDataResponse shippingAddressDataResponse) {
+                    public SetShippingAddressData call(ChangeShippingAddressDataResponse changeShippingAddressDataResponse) {
                         return new SetShippingAddressData.Builder()
-                                .success(shippingAddressDataResponse.getSuccess() == 1)
-                                .messages(shippingAddressDataResponse.getMessages())
+                                .success(changeShippingAddressDataResponse.getSuccess() == 1)
+                                .messages(changeShippingAddressDataResponse.getMessages())
                                 .build();
                     }
                 });
