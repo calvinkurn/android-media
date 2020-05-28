@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,11 +17,12 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.di.DaggerPlayBroadcasterComponent
-import com.tokopedia.play.broadcaster.view.adapter.delegate.PlaySummaryInfosAdapter
+import com.tokopedia.play.broadcaster.view.adapter.PlaySummaryInfosAdapter
 import com.tokopedia.play.broadcaster.view.uimodel.SummaryUiModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import kotlinx.android.synthetic.main.fragment_play_broadcaster_summary.*
 import javax.inject.Inject
+
 
 /**
  * @author by jessica on 26/05/20
@@ -47,7 +49,6 @@ class PlayBroadcastSummaryFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        renderView(SummaryUiModel())
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -62,6 +63,7 @@ class PlayBroadcastSummaryFragment : BaseDaggerFragment() {
     }
 
     private fun renderView(summaryUiModel: SummaryUiModel) {
+
         tv_play_summary_live_title.text = summaryUiModel.liveTitle
 
         if (summaryUiModel.tickerContent.showTicker) {
@@ -81,6 +83,22 @@ class PlayBroadcastSummaryFragment : BaseDaggerFragment() {
         btn_play_summary_finish.setOnClickListener {
             //put action here
             RouteManager.route(requireContext(), summaryUiModel.finishRedirectUrl)
+        }
+
+        entranceAnimation(view)
+    }
+
+    private fun entranceAnimation(v: View?) {
+        v?.let {
+            it.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    it.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    layout_live_summary_info.translationY = 100f
+                    layout_live_summary_meta.translationY = -100f
+                    layout_live_summary_info.animate().translationYBy(-100f).setDuration(300)
+                    layout_live_summary_meta.animate().translationYBy(100f).setDuration(300)
+                }
+            })
         }
     }
 

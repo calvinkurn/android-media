@@ -3,8 +3,11 @@ package com.tokopedia.play.broadcaster.view
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.AttributeSet
+import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastSummaryFragment
 

@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.view.adapter.delegate
+package com.tokopedia.play.broadcaster.view.adapter
 
 import android.view.LayoutInflater
 import android.view.View
