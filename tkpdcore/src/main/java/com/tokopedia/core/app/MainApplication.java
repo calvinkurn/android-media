@@ -130,7 +130,7 @@ public abstract class MainApplication extends MainRouterApplication{
 
     @NotNull
     private Boolean executeInBackground(){
-        locationUtils = new LocationUtils(this);
+        locationUtils = new LocationUtils(MainApplication.this);
         locationUtils.initLocationBackground();
         TooLargeTool.startLogging(MainApplication.this);
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {

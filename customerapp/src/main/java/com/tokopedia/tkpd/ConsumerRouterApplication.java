@@ -252,13 +252,17 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             @NotNull
             @Override
             public Object execute() {
-                initCMPushNotification();
-                initIris();
-                initTetraDebugger();
-                return null;
+                return initLibraries();
             }
         };
         Weaver.Companion.executeWeaveCoRoutineNow(initWeave);
+    }
+
+    private boolean initLibraries(){
+        initCMPushNotification();
+        initIris();
+        initTetraDebugger();
+        return true;
     }
 
     private void initResourceDownloadManager() {

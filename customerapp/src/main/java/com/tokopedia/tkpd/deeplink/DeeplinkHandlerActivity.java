@@ -246,11 +246,15 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
             @NotNull
             @Override
             public Object execute() {
-                getApplinkDelegateInstance();
-                return null;
+                return getAppLinkDelegate();
             }
         };
         Weaver.Companion.executeWeaveCoRoutineNow(appLinkDelegateWeave);
+    }
+
+    private static boolean getAppLinkDelegate(){
+        getApplinkDelegateInstance();
+        return true;
     }
 
     @Override

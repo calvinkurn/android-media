@@ -58,7 +58,7 @@ public class ConsumerSplashScreen extends SplashScreen {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        createAndCallChkApk();
+        executeInBackground();
     }
 
     private void checkInstallReferrerInitialised() {
@@ -70,7 +70,7 @@ public class ConsumerSplashScreen extends SplashScreen {
         }
     }
 
-    private void createAndCallChkApk(){
+    private void executeInBackground(){
         WeaveInterface chkTmprApkWeave = new WeaveInterface() {
             @NotNull
             @Override
