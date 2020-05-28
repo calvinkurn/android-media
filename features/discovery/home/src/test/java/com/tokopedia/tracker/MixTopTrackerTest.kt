@@ -82,7 +82,7 @@ class MixTopTrackerTest : Spek({
                 )
             }
             Then("must true") {
-                val result = areEqualKeyValues(testTracker.getTracker(), MixTopTracking.getMixTopSeeAllClick(channel.header.name))
+                val result = areEqualKeyValues(testTracker.getTracker(), MixTopTracking.getMixTopSeeAllClick(channel.id, channel.header.name))
                 Assert.assertEquals(result, true)
             }
         }

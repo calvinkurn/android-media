@@ -14,7 +14,7 @@ import org.spekframework.spek2.style.gherkin.Feature
 
 class MixLeftTrackerTest : Spek({
     InstantTaskExecutorRuleSpek(this)
-
+    val userId = "1234"
     val testTracker = mockk<TestTracker>(relaxed = true)
     val positionOnWidgetHome = 5
     val channel = DynamicHomeChannel.Channels(
@@ -78,11 +78,32 @@ class MixLeftTrackerTest : Spek({
                         "event", "clickHomepage",
                         "eventCategory", "homepage",
                         "eventAction", "click view all on dynamic channel left carousel",
-                        "eventLabel", channel.header.name
+                        "eventLabel", StringBuilder().append(channel.id).append(" - ").append(channel.header.name)
                 )
             }
             Then("must true") {
                 val result = areEqualKeyValues(testTracker.getTracker(), HomePageTrackingV2.MixLeft.getMixLeftClickLoadMore(channel))
+                Assert.assertEquals(result, true)
+            }
+        }
+    }
+
+    Feature("Click see more card tracker"){
+        Scenario("Click on see more"){
+            Given("the real data"){
+                every { testTracker.getTracker() } returns DataLayer.mapOf(
+                        "event", "clickHomepage",
+                        "eventCategory", "homepage",
+                        "eventAction", "click view all card on dynamic channel left carousel",
+                        "eventLabel", StringBuilder().append(channel.id).append(" - ").append(channel.header.name),
+                        "currentSite", "tokopediamarketplace",
+                        "screenName", "/",
+                        "userId", StringBuilder().append(userId),
+                        "businessUnit", "home & browse"
+                )
+            }
+            Then("must true") {
+                val result = areEqualKeyValues(testTracker.getTracker(), HomePageTrackingV2.MixLeft.getMixLeftClickLoadMoreCard(channel, userId))
                 Assert.assertEquals(result, true)
             }
         }

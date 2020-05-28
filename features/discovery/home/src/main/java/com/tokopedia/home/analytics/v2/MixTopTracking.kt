@@ -55,18 +55,23 @@ object MixTopTracking : BaseTracking() {
             products
     )
 
-    fun getMixTopSeeAllClick(headerName: String) = DataLayer.mapOf(
+    fun getMixTopSeeAllClick(channelId: String, headerName: String) = DataLayer.mapOf(
             Event.KEY, Event.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
             Action.KEY, CustomAction.CLICK_VIEW_ALL_CAROUSEL,
-            Label.KEY, headerName
+            Label.KEY, StringBuilder().append(channelId).append(" - ").append(headerName)
     )
 
-    fun getMixTopSeeAllCardClick(headerName: String) = DataLayer.mapOf(
+    fun getMixTopSeeAllCardClick(channelId: String, headerName: String, userId: String) = DataLayer.mapOf(
             Event.KEY, Event.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
             Action.KEY, CustomAction.CLICK_VIEW_ALL_CAROUSEL_CARD,
-            Label.KEY, headerName
+            Label.KEY, StringBuilder().append(channelId).append(" - ").append(headerName),
+            Screen.KEY, Screen.DEFAULT,
+            CurrentSite.KEY, CurrentSite.DEFAULT,
+            Screen.KEY, Screen.DEFAULT,
+            UserId.KEY, userId,
+            BusinessUnit.KEY, BusinessUnit.DEFAULT
     )
 
     fun getMixTopButtonClick(headerName: String, buttonName: String) = DataLayer.mapOf(
@@ -102,6 +107,7 @@ object MixTopTracking : BaseTracking() {
             Label.KEY, StringBuilder().append(channels.id).append(" - ").append(channels.header.name),
             Screen.KEY, Screen.DEFAULT,
             CurrentSite.KEY, CurrentSite.DEFAULT,
+            Screen.KEY, Screen.DEFAULT,
             UserId.KEY, userId,
             BusinessUnit.KEY, BusinessUnit.DEFAULT
     )
