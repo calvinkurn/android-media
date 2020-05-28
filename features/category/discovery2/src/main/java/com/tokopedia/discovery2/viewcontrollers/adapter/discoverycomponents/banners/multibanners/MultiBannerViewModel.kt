@@ -40,16 +40,10 @@ class MultiBannerViewModel(val application: Application, var components: Compone
         get() = Dispatchers.Main + SupervisorJob()
 
     init {
+        bannerData.value = components
         pushBannerStatus.value = Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS
         pushBannerSubscription.value = Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS
         initDaggerInject()
-        filterBannerData()
-    }
-
-    // Removing the banner items from list which have empty value for imageUrlDynamicMobile
-    private fun filterBannerData() {
-        components.data = components.data?.filter { !it.imageUrlDynamicMobile.isNullOrEmpty() }
-        bannerData.value = components
     }
 
 
