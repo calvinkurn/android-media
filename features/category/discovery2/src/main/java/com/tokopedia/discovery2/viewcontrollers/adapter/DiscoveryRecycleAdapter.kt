@@ -10,25 +10,26 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryListViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.DiscoveryHomeFactory
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 
-class DiscoveryRecycleAdapter(private val fragment: Fragment)
+class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parentComponent : AbstractViewHolder? = null)
     : RecyclerView.Adapter<AbstractViewHolder>() {
 
     companion object {
         private var noOfObject = 0
     }
 
+    private val viewPool = RecyclerView.RecycledViewPool()
+    private val componentList: ArrayList<ComponentsItem> = ArrayList()
     private var viewHolderListModel = ViewModelProviders.of(fragment).get((DiscoveryListViewModel::class.java.canonicalName
             ?: "") + noOfObject++, DiscoveryListViewModel::class.java)
 
-    private val componentList: ArrayList<ComponentsItem> = ArrayList()
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder {
-        return DiscoveryHomeFactory.createViewHolder(parent, viewType,fragment) as AbstractViewHolder
+        return DiscoveryHomeFactory.createViewHolder(parent, viewType, fragment) as AbstractViewHolder
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder, position: Int) {
         holder.bindView(viewHolderListModel.getViewHolderModel(
-                DiscoveryHomeFactory.createViewModel(getItemViewType(position)), componentList[position], position))
+                DiscoveryHomeFactory.createViewModel(getItemViewType(position)), componentList[position], position), parentComponent)
+        holder.getInnerRecycleView()?.setRecycledViewPool(viewPool)
     }
 
     override fun getItemCount(): Int {
@@ -44,16 +45,49 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment)
         return id ?: 0
     }
 
+
     fun setDataList(dataList: ArrayList<ComponentsItem>?) {
         if (dataList != null) {
             componentList.clear()
+            viewHolderListModel.clearList()
             componentList.addAll(dataList)
         }
         notifyDataSetChanged()
+    }
+
+
+
+    override fun onViewAttachedToWindow(holder: AbstractViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        holder.onViewAttachedToWindow()
+    }
+
+    override fun onViewDetachedFromWindow(holder: AbstractViewHolder) {
+        holder.onViewDetachedToWindow()
+        super.onViewDetachedFromWindow(holder)
     }
 
     fun getChildHolderViewModel(position: Int): DiscoveryBaseViewModel? {
         return viewHolderListModel.getInnerComponentViewModel(position)
     }
 
+//    fun setDataRetainingOldData(dataList: ArrayList<ComponentsItem>?) {
+//        if (dataList != null) {
+//            componentList.addAll(dataList)
+//        }
+//        // TODO : Remove notify for horizontal adapter
+//        notifyDataSetChanged()
+//    }
+
+//    fun removeExistingTabsComponent(tabListComponents: List<ComponentsItem>) {
+//        val position: Int = componentList.size - tabListComponents.size
+//        if (!componentList.isNullOrEmpty()) {
+//            for (index in componentList.size - 1 downTo position) {
+//                componentList.removeAt(index)
+//                viewHolderListModel.removeViewHolderModel(index)
+//            }
+//        }
+//        componentList.addAll(tabListComponents)
+//        notifyDataSetChanged()
+//    }
 }

@@ -30,6 +30,10 @@ fun ImageView.loadImageWithoutPlaceholder(url: String) {
     ImageUtils.loadImageWithoutPlaceholderAndError( this, url)
 }
 
+fun ImageView.loadImageWithCallback(url: String, callbackListener: ImageUtils.ImageLoaderStateListener) {
+    ImageUtils.loadImageWithCallback( this, url, callbackListener)
+}
+
 fun ImageView.loadImageDrawable(@DrawableRes drawableId: Int) {
     this.setImageDrawable(DrawableUtils.getDrawable(context, drawableId))
 }

@@ -21,7 +21,7 @@
         android:orientation="vertical"
         android:padding="@dimen/dp_2">
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_sub_category"
             android:layout_width="@dimen/dp_50"
             android:layout_height="@dimen/dp_50"

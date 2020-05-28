@@ -5,13 +5,13 @@ import android.content.Intent;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction;
+import com.tokopedia.sellerorder.list.presentation.activity.SomListActivity;
 
 
 public class TkpdSeller {
 
     public static Class getSellingActivityClass() {
-        return ActivitySellingTransaction.class;
+        return SomListActivity.class;
     }
 
     public static Intent getActivitySellingTransactionNewOrder(Context context) {

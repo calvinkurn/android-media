@@ -1,18 +1,20 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation
 
 import android.view.View
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
-import com.tokopedia.unifyprinciples.Typography
-import android.widget.ImageView
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
 
 
@@ -44,15 +46,20 @@ class CategoryNavigationViewHolder(itemView: View, private val fragment: Fragmen
         categoryNavigationViewModel.getImageUrl().observe(fragment.viewLifecycleOwner, Observer { item ->
             when (item) {
                 is Success -> {
-                   ImageHandler.LoadImage(imageView, item.data)
+                    if (item.data.isEmpty()) {
+                        imageView.invisible()
+                    } else {
+                        imageView.loadImageWithoutPlaceholder(item.data)
+                    }
                 }
             }
         })
 
         categoryNavigationViewModel.getCategoryNavigationData()
-        categoryNavigationViewModel.getListData().observe(fragment.viewLifecycleOwner, Observer {item->
+        categoryNavigationViewModel.getListData().observe(fragment.viewLifecycleOwner, Observer { item ->
             when (item) {
                 is Success -> {
+                    (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackCategoryNavigationImpression(item.data)
                     discoveryRecycleAdapter.setDataList(item.data)
                 }
             }

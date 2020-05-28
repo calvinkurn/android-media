@@ -29,7 +29,7 @@ class MultiBannerViewModelTest {
     private val multiBannerDataUseCase: CheckPushStatusUseCase = mockk(relaxed = true)
 
     private val viewModel: MultiBannerViewModel by lazy {
-        spyk(MultiBannerViewModel(application, componentsItem))
+        spyk(MultiBannerViewModel(application, componentsItem, 0))
     }
 
 
@@ -44,7 +44,7 @@ class MultiBannerViewModelTest {
     @Test
     fun `banner action is APPLINK`() {
         coEvery { componentsItem.data?.get(0)?.action } returns "APPLINK"
-        viewModel.onBannerClicked(0)
+//        viewModel.onBannerClicked(0, itemView.context)
 
         coVerify { RouteManager.route(application, componentsItem.data?.get(0)?.applinks) }
     }
@@ -63,9 +63,9 @@ class MultiBannerViewModelTest {
         coEvery { componentsItem.data?.get(0)?.action } returns "PUSH_NOTIFIER"
         coEvery { viewModel.isUserLoggedIn() } returns false
 
-        viewModel.onBannerClicked(0)
+//        viewModel.onBannerClicked(0, itemView.context)
 
-        assertTrue(viewModel.getshowLoginData().value ?: false)
+        assertTrue(viewModel.getShowLoginData().value ?: false)
 
     }
 
@@ -76,7 +76,7 @@ class MultiBannerViewModelTest {
 
         //coEvery { pushSubscriptionResponse.notifierSetReminder?.isSuccess } returns 1
 
-        viewModel.onBannerClicked(0)
+//        viewModel.onBannerClicked(0, itemView.context)
 
         //  assertEquals(viewModel.getPushBannerStatusData(), 0)
         coVerify {

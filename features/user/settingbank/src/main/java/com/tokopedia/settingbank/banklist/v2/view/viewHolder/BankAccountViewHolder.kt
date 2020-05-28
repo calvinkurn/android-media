@@ -129,6 +129,7 @@ class BankAccountViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         hideShowIsiDataButton(showIsiDataButton)
         hideShowDeleteButton(showDeleteButton)
         hideShowPendingAccountTag(showPendingAccountButton)
+        hideShowDeleteButton(true)
     }
 
     private fun hideShowDeleteButton(isShow: Boolean) {

@@ -1,31 +1,31 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem
 
 import android.graphics.Paint
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel.Companion.GOLD_MERCHANT
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel.Companion.OFFICAIL_STORE
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel.Companion.OFFICIAL_STORE
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 
 
 class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
 
-    private var productImage: ImageView
+    private var productImage: ImageUnify
     private var topadsImage: ImageView
     private var productName: TextView
     private var labelDiscount: TextView
@@ -42,6 +42,7 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
     private var stockPercentageProgress: ProgressBarUnify
     private var linearLayoutImageRating: LinearLayout
     private lateinit var productCardItemViewModel: ProductCardItemViewModel
+    var lifecycleOwner: LifecycleOwner
 
 
     init {
@@ -61,6 +62,7 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
         imageFreeOngkirPromo = itemView.findViewById(R.id.imageFreeOngkirPromo)
         stockPercentageProgress = itemView.findViewById(R.id.stockPercentageProgress)
         productCardView = itemView.findViewById(R.id.cardViewProductCard)
+        lifecycleOwner = fragment.viewLifecycleOwner
     }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
@@ -70,16 +72,26 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
 
     fun init() {
         productCardItemViewModel.setContext(productCardView.context)
+    }
+
+    override fun onViewAttachedToWindow() {
+        super.onViewAttachedToWindow()
         setUpObserver()
     }
 
+    override fun onViewDetachedToWindow() {
+        if (productCardItemViewModel.getDataItemValue().hasObservers()) {
+            productCardItemViewModel.getDataItemValue().removeObservers(lifecycleOwner)
+        }
+    }
+
     private fun setUpObserver() {
-        val lifecycleOwner = fragment.viewLifecycleOwner
         productCardItemViewModel.getDataItemValue().observe(lifecycleOwner, Observer {
             populateData(it)
         })
+
         productCardItemViewModel.getShopBadge().observe(lifecycleOwner, Observer {
-            if (it == OFFICAIL_STORE)
+            if (it == OFFICIAL_STORE)
                 shopBadge.setImageResource(R.drawable.discovery_official_store_icon)
             else if (it == GOLD_MERCHANT)
                 shopBadge.setImageResource(R.drawable.discovery_gold_merchant_icon)
@@ -90,9 +102,10 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
             showFreeOngKir(it)
         })
         productCardView.setOnClickListener {
-            productCardItemViewModel.handleUIClick(it)
+            productCardItemViewModel.handleUIClick()
         }
     }
+
 
     private fun showFreeOngKir(freeOngkirActive: String) {
         if (freeOngkirActive.isNotEmpty()) {
@@ -104,6 +117,7 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
     }
 
     private fun populateData(dataItem: DataItem) {
+        Log.d("populateData", this.toString() + dataItem)
         productName.setTextAndCheckShow(dataItem.name)
         textViewShopName.setTextAndCheckShow(dataItem.shopName)
         textViewPrice.setTextAndCheckShow(dataItem.price)
@@ -130,11 +144,12 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
     }
 
     private fun setProductImage(imageUrlMobile: String?) {
-        ImageHandler.LoadImage(productImage, imageUrlMobile)
+        Log.d("setProductImage", this.toString() + imageUrlMobile)
+        productImage.loadImage(imageUrlMobile ?: "")
     }
 
     private fun setStockProgress(stockPercent: String?) {
-        if (!stockPercent.isNullOrEmpty()){
+        if (!stockPercent.isNullOrEmpty()) {
             stockPercentageProgress.setValue(stockPercent.toIntOrZero())
             stockPercentageProgress.show()
         }

@@ -5,43 +5,55 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.analytics.DiscoveryAnalytics
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.PageInfo
-import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.END_POINT
+import com.tokopedia.discovery2.viewcontrollers.adapter.AddChildAdapterCallback
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
-import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.mergeAdapter.MergeAdapters
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
+import javax.inject.Inject
 
-class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListener {
-    private lateinit var mDiscoveryViewModel: DiscoveryViewModel
+class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback {
+
+    private lateinit var discoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryFab: CustomTopChatView
-    private lateinit var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
-    private lateinit var mPageComponentRecyclerView: RecyclerView
+    private lateinit var recyclerView: RecyclerView
     private lateinit var typographyHeader: Typography
     private lateinit var ivShare: ImageView
     private lateinit var ivSearch: ImageView
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
+    private lateinit var globalError: GlobalError
     var pageEndPoint = ""
-    var last = false
+    private lateinit var mergeAdapters: MergeAdapters
+    private lateinit var discoveryRecycleAdapter: DiscoveryRecycleAdapter
 
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
 
     companion object {
         fun getInstance(endPoint: String?): Fragment {
@@ -59,6 +71,17 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
         return inflater.inflate(R.layout.fragment_discovery, container, false)
     }
 
+    override fun getScreenName(): String {
+        return ""
+    }
+
+    override fun initInjector() {
+        DaggerDiscoveryComponent.builder()
+                .baseAppComponent((context?.applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
@@ -70,46 +93,46 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
         typographyHeader = view.findViewById(R.id.typography_header)
         ivShare = view.findViewById(R.id.iv_share)
         ivSearch = view.findViewById(R.id.iv_search)
+        view.findViewById<ImageView>(R.id.iv_back).setOnClickListener {
+            getDiscoveryAnalytics().trackBackClick()
+            activity?.onBackPressed()
+        }
+        globalError = view.findViewById(R.id.global_error)
         view.findViewById<ImageView>(R.id.iv_back).setOnClickListener { activity?.onBackPressed() }
-        mPageComponentRecyclerView = view.findViewById(R.id.discovery_recyclerView)
-        mPageComponentRecyclerView.layoutManager = LinearLayoutManager(activity)
-        mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(this)
-        mPageComponentRecyclerView.adapter = mDiscoveryRecycleAdapter
-        mPageComponentRecyclerView.addOnChildAttachStateChangeListener(this)
+        recyclerView = view.findViewById(R.id.discovery_recyclerView)
+
+
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        mDiscoveryViewModel = (activity as DiscoveryActivity).getViewModel()
+        discoveryViewModel = (activity as DiscoveryActivity).getViewModel()
 //        mDiscoveryViewModel = ViewModelProviders.of(requireActivity()).get((activity as BaseViewModelActivity<DiscoveryViewModel>).getViewModelType())
-        mDiscoveryViewModel.pageIdentifier = arguments?.getString(END_POINT, "") ?: ""
-        pageEndPoint = mDiscoveryViewModel.pageIdentifier
-        mDiscoveryViewModel.getDiscoveryData()
+
+        discoveryRecycleAdapter = DiscoveryRecycleAdapter(this)
+        recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        mergeAdapters = MergeAdapters()
+        mergeAdapters.addAdapter(discoveryRecycleAdapter)
+        recyclerView.adapter = mergeAdapters
+
+        discoveryViewModel.pageIdentifier = arguments?.getString(END_POINT, "") ?: ""
+        pageEndPoint = discoveryViewModel.pageIdentifier
+        discoveryViewModel.getDiscoveryData()
 
         setUpObserver()
-        mPageComponentRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-
-                if (!recyclerView.canScrollVertically(1)) {
-                    // Toast.makeText(context, "Last", Toast.LENGTH_LONG).show()
-                    last = true
-
-                }
-            }
-        })
     }
 
     private fun setUpObserver() {
-        mDiscoveryViewModel.getDiscoveryResponseList().observe(viewLifecycleOwner, Observer {
+        discoveryViewModel.getDiscoveryResponseList().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    mDiscoveryRecycleAdapter.setDataList(it.data)
+                    discoveryRecycleAdapter.setDataList(it.data)
+                    mergeAdapters.notifyDataSetChanged()
                 }
             }
         })
 
-        mDiscoveryViewModel.getDiscoveryFabLiveData().observe(viewLifecycleOwner, Observer {
+        discoveryViewModel.getDiscoveryFabLiveData().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     it.data.data?.get(0)?.let { data ->
@@ -124,7 +147,7 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
             }
         })
 
-        mDiscoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner, Observer {
+        discoveryViewModel.getDiscoveryPageInfo().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     ivSearch.show()
@@ -135,6 +158,18 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
                     typographyHeader.text = getString(R.string.discovery)
                     ivSearch.hide()
                     ivShare.hide()
+
+                    if (it.throwable is UnknownHostException
+                            || it.throwable is SocketTimeoutException) {
+                        globalError.setType(GlobalError.NO_CONNECTION)
+                    } else {
+                        globalError.setType(GlobalError.SERVER_ERROR)
+                    }
+                    globalError.show()
+                    globalError.setOnClickListener {
+                        globalError.hide()
+                        discoveryViewModel.getDiscoveryData()
+                    }
                 }
             }
         })
@@ -142,18 +177,19 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
 
     private fun setPageInfo(data: PageInfo?) {
         typographyHeader.text = data?.name
+        ivSearch.setOnClickListener {
+            if (data?.searchApplink?.isNotEmpty() == true) {
+                RouteManager.route(context, data.searchApplink)
+            } else {
+                RouteManager.route(context, Utils.SEARCH_DEEPLINK)
+            }
+        }
         if (data?.share?.enabled == true) {
             ivShare.show()
             ivShare.setOnClickListener {
+                getDiscoveryAnalytics().trackShareClick()
                 permissionHelper {
-                    Utils.shareData(activity, data.share.description, data.share.url, mDiscoveryViewModel.getBitmapFromURL(data.share.image))
-                }
-            }
-            ivSearch.setOnClickListener {
-                if (data.searchApplink?.isNotEmpty() == true) {
-                    RouteManager.route(context, data.searchApplink)
-                } else {
-                    RouteManager.route(context, Utils.SEARCH_DEEPLINK)
+                    Utils.shareData(activity, data.share.description, data.share.url, discoveryViewModel.getBitmapFromURL(data.share.image))
                 }
             }
         } else {
@@ -163,15 +199,7 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
     }
 
     private fun setAnimationOnScroll() {
-        mPageComponentRecyclerView.addOnScrollListener(mDiscoveryFab.getScrollListener())
-    }
-
-    override fun onChildViewDetachedFromWindow(view: View) {
-        (mPageComponentRecyclerView.getChildViewHolder(view) as? AbstractViewHolder)?.onViewDetachedToWindow()
-    }
-
-    override fun onChildViewAttachedToWindow(view: View) {
-        (mPageComponentRecyclerView.getChildViewHolder(view) as? AbstractViewHolder)?.onViewAttachedToWindow()
+        recyclerView.addOnScrollListener(mDiscoveryFab.getScrollListener())
     }
 
     private fun setFloatingActionButton(data: DataItem) {
@@ -186,8 +214,9 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
 
     private fun setClick(appLinks: String, shopId: Int) {
         mDiscoveryFab.getFabButton().setOnClickListener {
+            getDiscoveryAnalytics().trackClickCustomTopChat()
             if (appLinks.isNotEmpty() && shopId != 0) {
-                activity?.let { it1 -> mDiscoveryViewModel.openCustomTopChat(it1, appLinks, shopId) }
+                activity?.let { it1 -> discoveryViewModel.openCustomTopChat(it1, appLinks, shopId) }
             }
         }
     }
@@ -223,10 +252,20 @@ class DiscoveryFragment : Fragment(), RecyclerView.OnChildAttachStateChangeListe
         }
     }
 
-    override fun onDetach() {
-        mPageComponentRecyclerView.removeOnChildAttachStateChangeListener(this)
-        super.onDetach()
+    override fun addChildAdapter(discoveryRecycleAdapter: DiscoveryRecycleAdapter) {
+        mergeAdapters.addAdapter(discoveryRecycleAdapter)
     }
 
-    fun getDiscoveryRecyclerViewAdapter() = mDiscoveryRecycleAdapter
+    override fun notifyMergeAdapter() {
+        if (!recyclerView.isComputingLayout) {
+            mergeAdapters.notifyDataSetChanged()
+        }
+    }
+
+    fun getDiscoveryRecyclerViewAdapter() = discoveryRecycleAdapter
+
+    fun getDiscoveryAnalytics(): DiscoveryAnalytics {
+        val discoveryAnalytics: DiscoveryAnalytics by lazy { DiscoveryAnalytics(trackingQueue = trackingQueue, pagePath = discoveryViewModel.pagePath, pageType = discoveryViewModel.pageType) }
+        return discoveryAnalytics
+    }
 }

@@ -2,9 +2,9 @@ package com.tokopedia.discovery2.discoverymapper
 
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.categorynavigationresponse.ChildItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
+import com.tokopedia.discovery2.data.categorynavigationresponse.ChildItem
 import com.tokopedia.discovery2.data.cpmtopads.BadgesItem
 import com.tokopedia.discovery2.data.cpmtopads.Headline
 import com.tokopedia.discovery2.data.cpmtopads.ImageProduct
@@ -14,11 +14,15 @@ class DiscoveryDataMapper {
 
     companion object {
 
-        fun mapListToComponentList(itemList: List<DataItem>, subComponentName: String = ""): ArrayList<ComponentsItem> {
+        val discoveryDataMapper: DiscoveryDataMapper by lazy { DiscoveryDataMapper() }
+
+        fun mapListToComponentList(itemList: List<DataItem>, subComponentName: String = "", parentComponentName: String?, position: Int): ArrayList<ComponentsItem> {
             val list = ArrayList<ComponentsItem>()
             itemList.forEach {
                 val componentsItem = ComponentsItem()
                 componentsItem.name = subComponentName
+                it.parentComponentName = parentComponentName
+                it.positionForParentItem = position
                 val dataItem = mutableListOf<DataItem>()
                 dataItem.add(it)
                 componentsItem.data = dataItem
@@ -27,26 +31,42 @@ class DiscoveryDataMapper {
             return list
         }
 
-        // temporary code
-        fun mapTabsListToComponentList(itemList: List<DataItem>, subComponentName: String = ""): ArrayList<ComponentsItem> {
+        fun mapTabsListToComponentList(itemList: List<DataItem>, subComponentName: String = "", position: Int): ArrayList<ComponentsItem> {
             val list = ArrayList<ComponentsItem>()
             var isSelectedFound = false
             itemList.forEach {
-                if(it.isSelected){
+                if (it.isSelected) {
                     isSelectedFound = true
                 }
                 val componentsItem = ComponentsItem()
                 componentsItem.name = subComponentName
+                it.positionForParentItem = position
                 val dataItem = mutableListOf<DataItem>()
                 dataItem.add(it)
                 componentsItem.data = dataItem
                 list.add(componentsItem)
             }
-            if(!isSelectedFound){
+            if (!isSelectedFound) {
                 list[0].data?.get(0)?.isSelected = true
             }
             return list
         }
+    }
+
+    fun mapDynamicCategoryListToComponentList(itemList: List<DataItem>, subComponentName: String = "", categoryHeaderName: String,
+                                              categoryHeaderPosition: Int): ArrayList<ComponentsItem> {
+        val list = ArrayList<ComponentsItem>()
+        itemList.forEach {
+            val componentsItem = ComponentsItem()
+            componentsItem.name = subComponentName
+            val dataItem = mutableListOf<DataItem>()
+            it.title = categoryHeaderName
+            it.positionForParentItem = categoryHeaderPosition
+            dataItem.add(it)
+            componentsItem.data = dataItem
+            list.add(componentsItem)
+        }
+        return list
     }
 
     fun mapToCpmTopAdsData(headline: Headline, listComponentsItem: ArrayList<ComponentsItem>): CpmTopAdsData {
@@ -118,6 +138,7 @@ class DiscoveryDataMapper {
             val dataItem = DataItem()
             dataItem.imageUrlMobile = it?.thumbnailImage
             dataItem.name = it?.name
+            dataItem.id = it?.id
             dataItem.applinks = it?.applinks
             dataItemlist.add(dataItem)
             componentsItem.data = dataItemlist

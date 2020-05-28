@@ -8,19 +8,18 @@ import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.R
-import com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger
-import com.tokopedia.flight.bookingV2.data.cloud.entity.Amenity
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingAmenityMetaViewModel
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingPassengerViewModel
 import com.tokopedia.flight.bookingV3.data.*
 import com.tokopedia.flight.bookingV3.data.mapper.FlightBookingMapper
 import com.tokopedia.flight.common.constant.FlightErrorConstant
 import com.tokopedia.flight.common.data.model.FlightError
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.common.util.FlightRequestUtil
-import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
-import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
+import com.tokopedia.flight.detail.view.model.FlightDetailModel
+import com.tokopedia.flight.passenger.constant.FlightBookingPassenger
+import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityMetaModel
+import com.tokopedia.flight.passenger.view.model.FlightBookingPassengerModel
+import com.tokopedia.flight.search.presentation.model.FlightPriceModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -67,8 +66,8 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     val profileResult: LiveData<Result<ProfileInfo>>
         get() = _profileResult
 
-    private val _flightPassengersData = MutableLiveData<List<FlightBookingPassengerViewModel>>() //passengerData
-    val flightPassengersData: LiveData<List<FlightBookingPassengerViewModel>>
+    private val _flightPassengersData = MutableLiveData<List<FlightBookingPassengerModel>>() //passengerData
+    val flightPassengersData: LiveData<List<FlightBookingPassengerModel>>
         get() = _flightPassengersData
 
     private val _errorToastMessageData = MutableLiveData<Int>()
@@ -89,7 +88,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         get() = _flightAmenityPriceData
 
     //route for flightDetail
-    var flightDetailViewModels: List<FlightDetailViewModel> = listOf()
+    var flightDetailModels: List<FlightDetailModel> = listOf()
 
     private var flightBookingParam = FlightBookingModel()
 
@@ -123,7 +122,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                     flightBookingParam.departureDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, data.cartData.flight.journeys[0].departureTime))
                     flightBookingParam.isDomestic = data.cartData.flight.isDomestic
                     flightBookingParam.isMandatoryDob = data.cartData.flight.mandatoryDob
-                    flightDetailViewModels = FlightBookingMapper.mapToFlightDetail(data.cartData.flight, data.included, flightBookingParam.flightPriceViewModel)
+                    flightDetailModels = FlightBookingMapper.mapToFlightDetail(data.cartData.flight, data.included, flightBookingParam.flightPriceModel)
                     if (flightPassengersData.value?.isEmpty() != false && !isRefreshCart) {
                         _flightPromoResult.value = FlightBookingMapper.mapToFlightPromoViewEntity(data.cartData.voucher)
                         _flightPassengersData.value = FlightBookingMapper.mapToFlightPassengerEntity(data.cartData.flight.adult,
@@ -296,9 +295,9 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         return isValid
     }
 
-    private fun isAllPassengerFilled(passengerViewModels: List<FlightBookingPassengerViewModel>): Boolean {
+    private fun isAllPassengerFilled(passengerModels: List<FlightBookingPassengerModel>): Boolean {
         var isvalid = true
-        for (flightBookingPassengerViewModel in passengerViewModels) {
+        for (flightBookingPassengerViewModel in passengerModels) {
             if (flightBookingPassengerViewModel.passengerFirstName == null) {
                 isvalid = false
                 break
@@ -368,7 +367,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                         amenity.journeyId = mealMeta.journeyId
                         amenity.departureAirportId = mealMeta.departureId
                         amenity.arrivalAirportId = mealMeta.arrivalId
-                        amenity.type = Amenity.MEAL
+                        amenity.type = FlightBookingMapper.AMENITY_MEAL
                         amenity.key = mealMeta.key
                         amenity.itemId = meal.id
                         flightVerifyPassenger.amenities.add(amenity)
@@ -380,7 +379,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                         amenity.journeyId = luggageMeta.journeyId
                         amenity.departureAirportId = luggageMeta.departureId
                         amenity.arrivalAirportId = luggageMeta.arrivalId
-                        amenity.type = Amenity.LUGGAGE
+                        amenity.type = FlightBookingMapper.AMENITY_LUGGAGE
                         amenity.key = luggageMeta.key
                         amenity.itemId = luggage.id
                         flightVerifyPassenger.amenities.add(amenity)
@@ -401,8 +400,8 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         return flightVerifyParam
     }
 
-    fun setPassengerModels(passengerViewModels: List<FlightBookingPassengerViewModel>) {
-        _flightPassengersData.value = passengerViewModels
+    fun setPassengerModels(passengerModels: List<FlightBookingPassengerModel>) {
+        _flightPassengersData.value = passengerModels
     }
 
     fun setPriceData(priceData: List<FlightCart.PriceDetail>) {
@@ -417,19 +416,19 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         _flightAmenityPriceData.value = priceData
     }
 
-    fun onPassengerResultReceived(passengerViewModel: FlightBookingPassengerViewModel) {
+    fun onPassengerResultReceived(passengerModel: FlightBookingPassengerModel) {
         val passengerViewModels = flightPassengersData.value?.toMutableList()
-        val indexPassenger = passengerViewModels?.indexOf(passengerViewModel) ?: -1
+        val indexPassenger = passengerViewModels?.indexOf(passengerModel) ?: -1
         if (indexPassenger != -1) {
-            passengerViewModels?.set(indexPassenger, passengerViewModel)
+            passengerViewModels?.set(indexPassenger, passengerModel)
             _flightPassengersData.value = passengerViewModels
         }
         addPassengerAmenitiesPrices()
     }
 
-    fun onTravellerAsPassenger(userName: String): FlightBookingPassengerViewModel {
+    fun onTravellerAsPassenger(userName: String): FlightBookingPassengerModel {
         val userProfile = if (profileResult.value is Success) (profileResult.value as Success).data else ProfileInfo()
-        val passenger = FlightBookingPassengerViewModel()
+        val passenger = FlightBookingPassengerModel()
         passenger.passengerLocalId = 1
         passenger.type = FlightBookingPassenger.ADULT
         passenger.flightBookingLuggageMetaViewModels = arrayListOf()
@@ -443,7 +442,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     fun resetFirstPassenger() {
         val passengers = (flightPassengersData.value ?: listOf()).toMutableList()
         if (passengers.isNotEmpty()) {
-            val passenger = FlightBookingPassengerViewModel()
+            val passenger = FlightBookingPassengerModel()
             passenger.passengerLocalId = 1
             passenger.type = FlightBookingPassenger.ADULT
             passenger.flightBookingLuggageMetaViewModels = arrayListOf()
@@ -528,7 +527,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 
     fun updateFlightDetailPriceData(newPrices: List<FlightCart.NewPrice>) {
         for (newPrice in newPrices) {
-            for (item in flightDetailViewModels) {
+            for (item in flightDetailModels) {
                 if (newPrice.id.equals(item.id)) {
                     item.adultNumericPrice = newPrice.fare.adultNumeric
                     item.infantNumericPrice = newPrice.fare.infantNumeric
@@ -620,14 +619,14 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 
     fun setSearchParam(depatureId: String, arrivalId: String,
                        departureTerm: String, arrivalTerm: String,
-                       searchParam: FlightSearchPassDataViewModel,
-                       flightPriceViewModel: FlightPriceViewModel) {
+                       searchParam: FlightSearchPassDataModel,
+                       flightPriceModel: FlightPriceModel) {
         flightBookingParam.departureId = depatureId
         flightBookingParam.returnId = arrivalId
         flightBookingParam.departureTerm = departureTerm
         flightBookingParam.returnTerm = arrivalTerm
         flightBookingParam.searchParam = searchParam
-        flightBookingParam.flightPriceViewModel = flightPriceViewModel
+        flightBookingParam.flightPriceModel = flightPriceModel
     }
 
     fun addToCart(query: String, getCartQuery: String = "", idempotencyKey: String) {
@@ -661,7 +660,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         addToCartParam.requestId = flightBookingParam.searchParam.searchRequestId
         addToCartParam.ipAddress = FlightRequestUtil.getLocalIpAddress()
         addToCartParam.userAgent = FlightRequestUtil.getUserAgentForApiCall()
-        addToCartParam.flight.combo = flightBookingParam.flightPriceViewModel.comboKey ?: ""
+        addToCartParam.flight.combo = flightBookingParam.flightPriceModel.comboKey ?: ""
         addToCartParam.flight.destination.add(FlightAddToCartParam.FlightDestination(flightBookingParam.departureId, flightBookingParam.departureTerm))
         if (flightBookingParam.returnId.isNotEmpty()) addToCartParam.flight.destination.add(FlightAddToCartParam.FlightDestination(flightBookingParam.returnId, flightBookingParam.returnTerm))
 
@@ -730,16 +729,16 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         return gson.fromJson<List<FlightError>>(message, itemType)[0]
     }
 
-    fun getSearchParam(): FlightSearchPassDataViewModel = flightBookingParam.searchParam
-    fun getFlightPriceModel(): FlightPriceViewModel = flightBookingParam.flightPriceViewModel
+    fun getSearchParam(): FlightSearchPassDataModel = flightBookingParam.searchParam
+    fun getFlightPriceModel(): FlightPriceModel = flightBookingParam.flightPriceModel
     fun getMandatoryDOB(): Boolean = flightBookingParam.isMandatoryDob
     fun getDepartureId(): String = flightBookingParam.departureId
     fun getReturnId(): String = flightBookingParam.returnId
     fun getDepartureTerm(): String = flightBookingParam.departureTerm
     fun getReturnTerm(): String = flightBookingParam.returnTerm
     fun getDepartureDate(): String = flightBookingParam.departureDate
-    fun getDepartureJourney(): FlightDetailViewModel = flightDetailViewModels[0]
-    fun getReturnJourney(): FlightDetailViewModel? = if (flightDetailViewModels.size > 1) flightDetailViewModels[1] else null
+    fun getDepartureJourney(): FlightDetailModel = flightDetailModels[0]
+    fun getReturnJourney(): FlightDetailModel? = if (flightDetailModels.size > 1) flightDetailModels[1] else null
     fun flightIsDomestic(): Boolean = flightBookingParam.isDomestic
     fun getCartId(): String = flightBookingParam.cartId
     fun setCartId(cartId: String) {
@@ -751,16 +750,16 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         this.flightBookingParam = flightBookingParam
     }
 
-    fun getLuggageViewModels(): List<FlightBookingAmenityMetaViewModel> {
+    fun getLuggageViewModels(): List<FlightBookingAmenityMetaModel> {
         return if (flightCartResult.value is Success) (flightCartResult.value as Success<FlightCartViewEntity>).data.luggageModels
         else arrayListOf()
     }
 
-    fun getPassengerModels(): List<FlightBookingPassengerViewModel> {
+    fun getPassengerModels(): List<FlightBookingPassengerModel> {
         return flightPassengersData.value ?: listOf()
     }
 
-    fun getMealViewModels(): List<FlightBookingAmenityMetaViewModel> {
+    fun getMealViewModels(): List<FlightBookingAmenityMetaModel> {
         return if (flightCartResult.value is Success) (flightCartResult.value as Success<FlightCartViewEntity>).data.mealModels
         else arrayListOf()
     }

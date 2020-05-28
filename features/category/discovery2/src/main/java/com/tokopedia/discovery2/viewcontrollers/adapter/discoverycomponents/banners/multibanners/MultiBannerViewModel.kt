@@ -4,10 +4,11 @@ import android.app.Application
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.view.View
 import android.widget.Toast
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.data.BannerAction
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
@@ -16,6 +17,7 @@ import com.tokopedia.discovery2.usecase.SubScribeToUseCase
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,13 +25,15 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class MultiBannerViewModel(val application: Application, components: ComponentsItem) : DiscoveryBaseViewModel(), CoroutineScope {
+class MultiBannerViewModel(val application: Application, var components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val bannerData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val pushBannerStatus: MutableLiveData<Int> = MutableLiveData()
     private val pushBannerSubscription: MutableLiveData<Int> = MutableLiveData()
     private val showLogin: MutableLiveData<Boolean> = MutableLiveData()
+
     @Inject
     lateinit var checkPushStatusUseCase: CheckPushStatusUseCase
+
     @Inject
     lateinit var subScribeToUseCase: SubScribeToUseCase
 
@@ -43,6 +47,7 @@ class MultiBannerViewModel(val application: Application, components: ComponentsI
         initDaggerInject()
     }
 
+
     override fun initDaggerInject() {
         DaggerDiscoveryComponent.builder()
                 .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
@@ -50,32 +55,37 @@ class MultiBannerViewModel(val application: Application, components: ComponentsI
                 .inject(this)
     }
 
-    fun getComponentData() = bannerData
-    fun getPushBannerStatusData() = pushBannerStatus
-    fun getshowLoginData() = showLogin
-    fun getPushBannerSubscriptionData() = pushBannerSubscription
+    fun getComponentData(): LiveData<ComponentsItem> = bannerData
+    fun getPushBannerStatusData(): LiveData<Int> = pushBannerStatus
+    fun getShowLoginData(): LiveData<Boolean> = showLogin
+    fun getPushBannerSubscriptionData(): LiveData<Int> = pushBannerSubscription
     fun getBannerUrlHeight() = Utils.extractDimension(bannerData.value?.data?.get(0)?.imageUrlDynamicMobile)
     fun getBannerUrlWidth() = Utils.extractDimension(bannerData.value?.data?.get(0)?.imageUrlDynamicMobile, "width")
 
-    fun onBannerClicked(position: Int) {
+    fun onBannerClicked(position: Int, view: View) {
         when (bannerData.value?.data?.get(position)?.action) {
-            BannerAction.APPLINK.name -> navigation(position)
-            BannerAction.CODE.name -> copyCodeToClipboard(position)
+            BannerAction.APPLINK.name -> navigation(position, view.context)
+            BannerAction.CODE.name -> copyCodeToClipboard(position, view)
             BannerAction.PUSH_NOTIFIER.name -> subscribeUserForPushNotification(position)
-            else -> navigation(position)
+            else -> navigation(position, view.context)
         }
     }
 
-    private fun copyCodeToClipboard(position: Int) {
+    private fun copyCodeToClipboard(position: Int, view: View) {
         (application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?)
-                ?.primaryClip = ClipData.newPlainText("Promo Code", bannerData.value?.data?.get(position)?.applinks)
-        //TODO Use unfiy Toasted instead of Toast
-        Toast.makeText(application, "Code copied", Toast.LENGTH_SHORT).show()
+                ?.primaryClip = ClipData.newPlainText("Promo Code", bannerData.value?.data?.get(position)?.code)
+        if (bannerData.value?.data?.get(position)?.applinks?.isNotEmpty() == true) {
+            Toaster.make(view, "Kode kupon berhasil disalin. Gunakan saat transaksi.", Toast.LENGTH_SHORT, Toaster.TYPE_NORMAL, "S & K", View.OnClickListener {
+                navigate(view.context, bannerData.value?.data?.get(position)?.applinks)
+            })
+        } else {
+            Toaster.make(view, "Kode kupon berhasil disalin. Gunakan saat transaksi.", Toast.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+        }
     }
 
-    private fun navigation(position: Int) {
+    private fun navigation(position: Int, context: Context) {
         if (!bannerData.value?.data?.get(position)?.applinks.isNullOrEmpty()) {
-            RouteManager.route(application, bannerData.value?.data?.get(position)?.applinks)
+            navigate(context, bannerData.value?.data?.get(position)?.applinks)
         }
     }
 

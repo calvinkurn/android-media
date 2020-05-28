@@ -4,15 +4,20 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.usecase.tabsusecase.TabsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
-class TabsItemViewModel(val application: Application, components: ComponentsItem) : DiscoveryBaseViewModel(), CoroutineScope {
+class TabsItemViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+
+    var tabsUseCase: TabsUseCase = TabsUseCase()
 
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
+    private val compositeComponentList: MutableLiveData<List<ComponentsItem>> = MutableLiveData()
 
     init {
         componentData.value = components
@@ -29,4 +34,11 @@ class TabsItemViewModel(val application: Application, components: ComponentsItem
 
     }
 
+    fun getCompositeComponentLiveData(): LiveData<List<ComponentsItem>> {
+        return compositeComponentList
+    }
+
+    fun populateTabCompositeComponents(selectedTabData: DataItem) {
+        compositeComponentList.value = tabsUseCase.getComponentsWithID(selectedTabData)
+    }
 }

@@ -1,6 +1,8 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints
 
 import android.app.Application
+import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -11,9 +13,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
-class TokopointsItemViewModel(val application: Application, components: ComponentsItem) : DiscoveryBaseViewModel(), CoroutineScope {
-    val dataItem: MutableLiveData<DataItem> = MutableLiveData()
-    private val TOKOPOINTS_DETAIL_APPLINK = "tokopedia://tokopoints/tukar-detail/"
+private const val TOKOPOINTS_DETAIL_APPLINK = "tokopedia://tokopoints/tukar-detail/"
+
+class TokopointsItemViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+    private val dataItem: MutableLiveData<DataItem> = MutableLiveData()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
@@ -21,14 +24,14 @@ class TokopointsItemViewModel(val application: Application, components: Componen
         dataItem.value = components.data?.get(0)
     }
 
-    fun getDataItemValue() = dataItem
+    fun getDataItemValue(): LiveData<DataItem> = dataItem
 
     override fun initDaggerInject() {
 
     }
 
-    fun onTokopointsItemClicked() {
+    fun onTokopointsItemClicked(context: Context) {
         if (dataItem.value?.slug != null && dataItem.value?.slug!!.isNotEmpty())
-            RouteManager.route(application, "${TOKOPOINTS_DETAIL_APPLINK}${dataItem.value?.slug}")
+            navigate(context, "${TOKOPOINTS_DETAIL_APPLINK}${dataItem.value?.slug}")
     }
 }

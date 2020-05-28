@@ -25,21 +25,4 @@ abstract class DiscoveryViewModelModule {
     @ViewModelKey(DiscoveryViewModel::class)
     internal abstract fun discoveryViewModel(viewModel: DiscoveryViewModel): ViewModel
 
-//    @Binds
-//    @IntoMap
-//    @DiscoveryScope
-//    @ViewModelKey(DiscoveryListViewModel::class)
-//    internal abstract fun discoveryListViewModel(viewModel: DiscoveryListViewModel): ViewModel
-//
-//    @Binds
-//    @IntoMap
-//    @DiscoveryScope
-//    @ViewModelKey(CatalogNavViewModel::class)
-//    internal abstract fun catalogNavViewModel(viewModel: CatalogNavViewModel): ViewModel
-//
-//    @Binds
-//    @IntoMap
-//    @DiscoveryScope
-//    @ViewModelKey(CategoryNavViewModel::class)
-//    internal abstract fun categoryNavViewModel(viewModel: CategoryNavViewModel): ViewModel
 }

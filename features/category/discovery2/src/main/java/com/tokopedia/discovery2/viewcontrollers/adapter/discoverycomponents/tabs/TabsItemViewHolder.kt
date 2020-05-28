@@ -5,15 +5,17 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImageWithCallback
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.utils.image.ImageUtils
 
 class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
     private val tabImageView: ImageView = itemView.findViewById(R.id.tab_image)
@@ -24,24 +26,41 @@ class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : Abstr
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         tabsItemViewModel = discoveryBaseViewModel as TabsItemViewModel
-        tabsItemViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer {
+    }
+
+    override fun onViewAttachedToWindow() {
+        setUpDataObserver(fragment.viewLifecycleOwner)
+    }
+
+    private fun setUpDataObserver(viewLifecycleOwner: LifecycleOwner) {
+        tabsItemViewModel.getComponentLiveData().observe(viewLifecycleOwner, Observer {
             val itemData = it.data?.get(0)
             positionForParentAdapter = itemData?.positionForParentItem ?: -1
             itemData?.let { item ->
-                ImageHandler.LoadImage(tabImageView, item.backgroundImage)
-                item.name?.let { name ->
-                    setTabText(name)
-                }
-                item.fontColor?.let { fontColor ->
-                    setFontColor(fontColor)
-                }
-//                if (adapterPosition == 0) {
-//                    item.isSelected = true
-//                }
-                showSelectedView(item.isSelected)
-                setClick(item)
+                tabImageView.loadImageWithCallback(item.backgroundImage
+                        ?: "", object : ImageUtils.ImageLoaderStateListener {
+                    override fun successLoad() {
+                        item.name?.let { name ->
+                            setTabText(name)
+                        }
+                        item.fontColor?.let { fontColor ->
+                            setFontColor(fontColor)
+                        }
+                        showSelectedView(item.isSelected)
+                        setClick(item)
+                    }
+
+                    override fun failedLoad() {
+
+                    }
+                })
+
             }
         })
+        tabsItemViewModel.getCompositeComponentLiveData().observe(viewLifecycleOwner, Observer {
+            (parentAbstractViewHolder as? TabsViewHolder)?.getCompositeComponentsList(it)
+        })
+
     }
 
     private fun setTabText(name: String) {
@@ -57,11 +76,14 @@ class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : Abstr
 
     private fun setClick(data: DataItem) {
         tabImageView.setOnClickListener {
-            if(!data.isSelected) {
+            if (!data.isSelected) {
+                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackTabsClick(data.name
+                        ?: "")
                 (it as ImageView).apply {
                     data.isSelected = !data.isSelected
                     showSelectedView(data.isSelected)
                 }
+                tabsItemViewModel.populateTabCompositeComponents(data)
                 changeDataInTabsViewModel()
             }
         }

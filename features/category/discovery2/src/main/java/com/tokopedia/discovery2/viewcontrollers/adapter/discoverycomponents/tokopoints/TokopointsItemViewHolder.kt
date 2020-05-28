@@ -10,6 +10,8 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 class TokopointsItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView), View.OnClickListener {
@@ -29,7 +31,7 @@ class TokopointsItemViewHolder(itemView: View, private val fragment: Fragment) :
         tokopointsItemViewModel.getDataItemValue().observe(fragment.viewLifecycleOwner, Observer { item ->
             initView()
             couponTitleTv.text = item.title
-            ImageHandler.LoadImage(bannerImageView, item.thumbnailUrlMobile)
+            bannerImageView.loadImageWithoutPlaceholder(item.thumbnailUrlMobile ?: "")
             if (item.pointsSlash.toIntOrZero() > 0 && (item.pointsSlashStr?:"").isNotEmpty()) {
                 slashedPriceTv.text = item.pointsSlashStr
                 pointsValueTv.text = item.pointsStr
@@ -62,6 +64,6 @@ class TokopointsItemViewHolder(itemView: View, private val fragment: Fragment) :
     }
 
     override fun onClick(v: View?) {
-        tokopointsItemViewModel.onTokopointsItemClicked()
+        v?.context?.let { tokopointsItemViewModel.onTokopointsItemClicked(it) }
     }
 }

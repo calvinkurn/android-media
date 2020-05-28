@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -36,6 +37,15 @@ class TokopointsViewHolder(itemView: View, private val fragment: Fragment) : Abs
     private fun init() {
         setUpDataObserver()
         fetchTokopointsData()
+        addShimmer()
+    }
+
+    private fun addShimmer() {
+        val height = 290
+        val list : ArrayList<ComponentsItem> = ArrayList()
+        list.add(ComponentsItem(name = "shimmer", shimmerHeight = height))
+        list.add(ComponentsItem(name = "shimmer", shimmerHeight = height))
+        mDiscoveryRecycleAdapter.setDataList(list)
     }
 
     private fun fetchTokopointsData() {

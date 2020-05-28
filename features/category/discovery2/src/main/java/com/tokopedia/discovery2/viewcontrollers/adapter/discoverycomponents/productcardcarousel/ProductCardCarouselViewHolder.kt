@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -17,27 +18,49 @@ class ProductCardCarouselViewHolder(itemView: View, private val fragment: Fragme
     private var mProductCarouselRecyclerView: RecyclerView
     private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
     private lateinit var mProductCarouselComponentViewModel: ProductCardCarouselViewModel
+    private var linearLayoutManager: LinearLayoutManager
+
 
     init {
         mProductCarouselRecyclerView = itemView.findViewById(R.id.tokopoints_rv)
-        mProductCarouselRecyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        linearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        linearLayoutManager.initialPrefetchItemCount = 4
+        mProductCarouselRecyclerView.layoutManager = linearLayoutManager
         mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
         mProductCarouselRecyclerView.adapter = mDiscoveryRecycleAdapter
     }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         mProductCarouselComponentViewModel = discoveryBaseViewModel as ProductCardCarouselViewModel
-        init()
     }
 
-    private fun init() {
+    override fun onViewAttachedToWindow() {
+        addShimmer()
         setUpDataObserver(fragment.viewLifecycleOwner)
         mProductCarouselComponentViewModel.fetchProductCarouselData((fragment as DiscoveryFragment).pageEndPoint)
+    }
+
+    override fun onViewDetachedToWindow() {
+        val lifecycleOwner = fragment.viewLifecycleOwner
+        if (mProductCarouselComponentViewModel.getProductCarouselItemsListData().hasObservers()) {
+            mProductCarouselComponentViewModel.getProductCarouselItemsListData().removeObservers(lifecycleOwner)
+        }
+    }
+
+    private fun addShimmer() {
+        val list : ArrayList<ComponentsItem> = ArrayList()
+        list.add(ComponentsItem(name = "shimmer_product_card"))
+        list.add(ComponentsItem(name = "shimmer_product_card"))
+        mDiscoveryRecycleAdapter.setDataList(list)
     }
 
     private fun setUpDataObserver(lifecycleOwner: LifecycleOwner) {
         mProductCarouselComponentViewModel.getProductCarouselItemsListData().observe(lifecycleOwner, Observer { item ->
             mDiscoveryRecycleAdapter.setDataList(item)
         })
+    }
+
+    override fun getInnerRecycleView(): RecyclerView? {
+        return mProductCarouselRecyclerView
     }
 }

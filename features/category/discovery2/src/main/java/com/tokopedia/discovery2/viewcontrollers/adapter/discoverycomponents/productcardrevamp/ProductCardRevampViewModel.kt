@@ -1,7 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -17,14 +16,16 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class ProductCardRevampViewModel(val application: Application, components: ComponentsItem) : DiscoveryBaseViewModel(), CoroutineScope {
+private const val RPC_PAGE_NUMBER_KEY = "rpc_page_number"
+private const val RPC_PAGE_SIZE = "rpc_page_size"
+
+class ProductCardRevampViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val productCarouselComponentData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val productCarouselList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
+
     @Inject
     lateinit var productCardCarouselUseCase: ProductCardCarouselUseCase
 
-    private val RPC_PAGE_NUMBER_KEY = "rpc_page_number"
-    private val RPC_PAGE_SIZE = "rpc_page_size"
     private var pageNumber = 1
     private var productPerPage = 20
     private var productPerPageSize = 20
@@ -46,23 +47,24 @@ class ProductCardRevampViewModel(val application: Application, components: Compo
     }
 
 
-    fun getProductCarouselItemsListData(last: Boolean): LiveData<ArrayList<ComponentsItem>> {
+    fun getProductCarouselItemsListData(): LiveData<ArrayList<ComponentsItem>> {
 
         return productCarouselList
     }
 
     fun fetchProductCarouselData(pageEndPoint: String, queryMap: MutableMap<String, Any> = getQueryParameterMap()) {
-        launchCatchError(block = {
-            val list = productCardCarouselUseCase.getProductCardCarouselUseCase(
-                    productCarouselComponentData.value?.id.toIntOrZero(),
-                    queryMap,
-                    pageEndPoint)
-            Log.d("page no", pageNumber.toString())
-            productPerPageSize = list.size
-            productCarouselList.value = list
-        }, onError = {
-            it.printStackTrace()
-        })
+        if(productCarouselList.value.isNullOrEmpty()) {
+            launchCatchError(block = {
+                val list = productCardCarouselUseCase.getProductCardCarouselUseCase(
+                        productCarouselComponentData.value?.id.toIntOrZero(),
+                        queryMap,
+                        pageEndPoint)
+                productPerPageSize = list.size
+                productCarouselList.value = list
+            }, onError = {
+                it.printStackTrace()
+            })
+        }
     }
 
     private fun getQueryParameterMap(pageNum: Int = pageNumber): MutableMap<String, Any> {
@@ -74,8 +76,7 @@ class ProductCardRevampViewModel(val application: Application, components: Compo
 
     fun fetchProductCarouselDataSecond(pageEndPoint: String) {
         pageNumber++
-        Log.d("page no", pageNumber.toString())
-        if (!(productPerPageSize < 20)) {
+        if (productPerPageSize >= 20) {
             fetchProductCarouselData(pageEndPoint, getQueryParameterMap(pageNumber))
         }
 

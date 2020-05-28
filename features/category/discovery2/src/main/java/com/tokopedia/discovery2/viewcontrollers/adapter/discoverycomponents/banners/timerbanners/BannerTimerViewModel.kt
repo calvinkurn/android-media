@@ -1,17 +1,18 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.timerbanners
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.multibannerresponse.timmerwithbanner.TimerDataModel
-import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
-class BannerTimerViewModel(val application: Application, components: ComponentsItem) : DiscoveryBaseViewModel() {
+class BannerTimerViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
     private val bannerTimeData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private var timerWithBannerCounter: SaleCountDownTimer? = null
     private val elapsedTime: Long = 1000
@@ -46,11 +47,11 @@ class BannerTimerViewModel(val application: Application, components: ComponentsI
     }
 
     fun getTimerData(): LiveData<TimerDataModel> {
-        return timerWithBannerCounter?.mutableTimeDiffModel ?: MutableLiveData<TimerDataModel>()
+        return timerWithBannerCounter?.mutableTimeDiffModel ?: MutableLiveData()
     }
 
-    fun onBannerClicked() {
-        RouteManager.route(application, bannerTimeData.value?.data?.get(0)?.applinks)
+    fun onBannerClicked(context: Context) {
+        navigate(context, bannerTimeData.value?.data?.get(0)?.applinks)
     }
 
     override fun initDaggerInject() {

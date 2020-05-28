@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsprintsalecarousel.ProductCardSaleSprintCarouselViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsprintsalecarousel.ProductCardSprintSaleCarouselViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.MultiBannerViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationItemViewModel
@@ -55,6 +55,9 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.prod
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerProductCardViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.spacing.SpacingViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.spacing.SpacingViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemViewHolder
@@ -107,12 +110,15 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.ChipsFilterItem, ::ChipsFilterItemViewHolder, ::ChipsFilterItemViewModel)
             initializeComponent(ComponentsList.DynamicCategory, ::DynamicCategoryViewHolder, ::DynamicCategoryViewModel)
             initializeComponent(ComponentsList.DynamicCategoryItem, ::DynamicCategoryItemViewHolder, ::DynamicCategoryItemViewModel)
-//            initializeComponent(ComponentsList.ProductCardRevamp, ::ProductCardRevampViewHolder, ::ProductCardRevampViewModel)
-            initializeComponent(ComponentsList.ProductCardCarousel, ::ProductCardCarouselViewHolder, ::ProductCardCarouselViewModel)
-            initializeComponent(ComponentsList.ProductCardItem, ::ProductCardItemViewHolder, ::ProductCardItemViewModel)
-            initializeComponent(ComponentsList.PrductCardSprintSaleCarousel, ::ProductCardSaleSprintCarouselViewHolder, ::ProductCardSprintSaleCarouselViewModel)
             initializeComponent(ComponentsList.LihatFlashSaleTimer, ::LihatFlashSaleTimerViewHolder, ::LihatFlashSaleTimerViewModel)
             initializeComponent(ComponentsList.TimerSprintSale, ::TimerSprintSaleItemViewHolder, ::TimerSprintSaleItemViewModel)
+            initializeComponent(ComponentsList.ProductCardCarousel, ::ProductCardCarouselViewHolder, ::ProductCardCarouselViewModel)
+            initializeComponent(ComponentsList.PrductCardSprintSaleCarousel, ::ProductCardSaleSprintCarouselViewHolder, ::ProductCardSprintSaleCarouselViewModel)
+            initializeComponent(ComponentsList.ProductCardRevamp, ::ProductCardRevampViewHolder, ::ProductCardRevampViewModel)
+            initializeComponent(ComponentsList.ProductCardItem, ::ProductCardItemViewHolder, ::ProductCardItemViewModel)
+            initializeComponent(ComponentsList.ProductCardHorizontalItem, ::ProductCardItemViewHolder, ::ProductCardItemViewModel)
+            initializeComponent(ComponentsList.ShimmerProductCard, ::ShimmerProductCardViewHolder, ::ShimmerViewModel)
+            initializeComponent(ComponentsList.Shimmer, ::ShimmerViewHolder, ::ShimmerViewModel)
         }
 
         private fun <E : AbstractViewHolder, T : DiscoveryBaseViewModel> initializeComponent(component: ComponentsList, componentViewHolder: KFunction<E>, componentViewModel: KFunction<T>) {

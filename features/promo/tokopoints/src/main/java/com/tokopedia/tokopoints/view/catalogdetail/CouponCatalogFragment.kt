@@ -21,7 +21,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
@@ -31,6 +32,11 @@ import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.cataloglisting.ValidateMessageDialog
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
 import com.tokopedia.tokopoints.view.customview.ServerErrorView
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CatalogDetailPlt.Companion.CATALOGDETAIL_TOKOPOINT_PLT
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CatalogDetailPlt.Companion.CATALOGDETAIL_TOKOPOINT_PLT_NETWORK_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CatalogDetailPlt.Companion.CATALOGDETAIL_TOKOPOINT_PLT_PREPARE_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CatalogDetailPlt.Companion.CATALOGDETAIL_TOKOPOINT_PLT_RENDER_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
 import com.tokopedia.tokopoints.view.sendgift.SendGiftFragment
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
@@ -47,7 +53,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, View.OnClickListener {
+class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, View.OnClickListener, TokopointPerformanceMonitoringListener {
     private var mContainerMain: ViewFlipper? = null
     private var serverErrorView: ServerErrorView? = null
     private val mSubscriptionCouponTimer: Subscription? = null
@@ -55,7 +61,6 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     private val mRefreshRepeatCount = 0
     private var mCouponName: String? = null
     var mTimer: CountDownTimer? = null
-    private var fpmDetailTokopoint: PerformanceMonitoring? = null
     var mUserSession: UserSession? = null
     private var catalogsValueEntity: CatalogsValueEntity? = null
     private var pointValueText: TextView? = null
@@ -67,11 +72,12 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     @Inject
     lateinit var factory: ViewModelFactory
 
-     private val mViewModel: CouponCatalogViewModel by lazy { ViewModelProviders.of(this,factory)[CouponCatalogViewModel::class.java] }
+    private val mViewModel: CouponCatalogViewModel by lazy { ViewModelProviders.of(this, factory)[CouponCatalogViewModel::class.java] }
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        startPerformanceMonitoring()
         mUserSession = UserSession(appContext)
-        fpmDetailTokopoint = PerformanceMonitoring.start(FPM_DETAIL_TOKOPOINT)
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }
@@ -111,6 +117,8 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             return
         }
         code = arguments!!.getString(CommonConstant.EXTRA_CATALOG_CODE)
+        stopPreparePagePerformanceMonitoring()
+        startNetworkRequestPerformanceMonitoring()
         mViewModel.getCatalogDetail(code ?: "")
         initObserver()
     }
@@ -126,21 +134,21 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     }
 
     private fun addPointQueryObserver() = mViewModel.pointQueryLiveData.observe(this, androidx.lifecycle.Observer {
-        when(it){
+        when (it) {
             is Success -> onSuccessPoints(it.data)
             is ErrorMessage -> onErrorPoint(null)
         }
     })
 
     private fun addRedeemCouponObserver() = mViewModel.onRedeemCouponLiveData.observe(this, androidx.lifecycle.Observer {
-        it?.let { RouteManager.route(context,it) }
+        it?.let { RouteManager.route(context, it) }
     })
 
     private fun addStartSaveCouponObserver() = mViewModel.startSaveCouponLiveData.observe(this, androidx.lifecycle.Observer {
-        when(it) {
-            is Success -> showConfirmRedeemDialog(it.data.cta,it.data.code,it.data.title)
-            is ValidationError<*,*> -> {
-                if (it.data is ValidateMessageDialog){
+        when (it) {
+            is Success -> showConfirmRedeemDialog(it.data.cta, it.data.code, it.data.title)
+            is ValidationError<*, *> -> {
+                if (it.data is ValidateMessageDialog) {
                     showValidationMessageDialog(it.data.item, it.data.title, it.data.desc, it.data.messageCode)
                 }
             }
@@ -148,7 +156,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     })
 
     private fun addLatestStatusObserver() = mViewModel.latestStatusLiveData.observe(this, androidx.lifecycle.Observer {
-        it?.let { refreshCatalog(it)}
+        it?.let { refreshCatalog(it) }
     })
 
     private fun addValidationDialogObserver() = mViewModel.startValidateCouponLiveData.observe(this, androidx.lifecycle.Observer {
@@ -158,27 +166,29 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     })
 
     private fun addSendGiftDialogObserver() = mViewModel.sendGiftPageLiveData.observe(this, androidx.lifecycle.Observer {
-        when(it) {
-            is Success -> gotoSendGiftPage(it.data.id,it.data.title,it.data.pointStr,it.data.banner)
+        when (it) {
+            is Success -> gotoSendGiftPage(it.data.id, it.data.title, it.data.pointStr, it.data.banner)
             is ValidationError<*, *> -> {
                 if (it.data is PreValidateError)
-                onPreValidateError(it.data.title, it.data.message)
+                    onPreValidateError(it.data.title, it.data.message)
             }
         }
     })
 
     private fun addCatalogDetailObserver() = mViewModel.catalogDetailLiveData.observe(this, androidx.lifecycle.Observer {
-        when(it) {
+        when (it) {
             is Loading -> showLoader()
             is ErrorMessage -> {
                 hideLoader()
                 showError(NetworkDetector.isConnectedToInternet(context))
-                onFinishRendering()
             }
             is Success -> {
+                stopNetworkRequestPerformanceMonitoring()
+                startRenderPerformanceMonitoring()
                 hideLoader()
                 populateDetail(it.data)
-                onFinishRendering()
+                stopRenderPerformanceMonitoring()
+                stopPerformanceMonitoring()
             }
         }
     })
@@ -234,7 +244,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
 
     override fun initInjector() {
         getComponent(TokopointBundleComponent::class.java)
-            .inject(this)
+                .inject(this)
     }
 
     override fun onClick(source: View) {
@@ -252,7 +262,9 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (view == null) {
             return
         }
-        serverErrorView!!.setErrorButtonClickListener { view: View? -> mViewModel.getCatalogDetail(code ?: "") }
+        serverErrorView!!.setErrorButtonClickListener { view: View? ->
+            mViewModel.getCatalogDetail(code ?: "")
+        }
     }
 
     override fun openWebView(url: String) {
@@ -676,11 +688,6 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         sendGiftFragment.show(childFragmentManager, CommonConstant.FRAGMENT_DETAIL_TOKOPOINT)
     }
 
-    override fun onFinishRendering() {
-        if (fpmDetailTokopoint != null) fpmDetailTokopoint!!.stopTrace()
-    }
-
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
@@ -692,7 +699,6 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     }
 
     companion object {
-        private const val FPM_DETAIL_TOKOPOINT = "ft_tokopoint_detail"
         private const val CONTAINER_LOADER = 0
         private const val CONTAINER_DATA = 1
         private const val CONTAINER_ERROR = 2
@@ -703,5 +709,46 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             fragment.arguments = extras
             return fragment
         }
+    }
+
+    override fun startPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
+                CATALOGDETAIL_TOKOPOINT_PLT_PREPARE_METRICS,
+                CATALOGDETAIL_TOKOPOINT_PLT_NETWORK_METRICS,
+                CATALOGDETAIL_TOKOPOINT_PLT_RENDER_METRICS,
+                0,
+                0,
+                0,
+                0,
+                null
+        )
+
+        pageLoadTimePerformanceMonitoring?.startMonitoring(CATALOGDETAIL_TOKOPOINT_PLT)
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
+    }
+
+    override fun stopPreparePagePerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun stopPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopMonitoring()
+        pageLoadTimePerformanceMonitoring = null
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
+    }
+
+    override fun stopRenderPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
     }
 }

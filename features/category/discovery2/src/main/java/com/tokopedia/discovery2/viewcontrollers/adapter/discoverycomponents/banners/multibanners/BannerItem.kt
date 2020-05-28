@@ -1,31 +1,34 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners
 
 import android.content.Context
-import android.widget.ImageView
+import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.unifycomponents.ImageUnify
 
-class BannerItem(val bannerItemData: DataItem, val constraintLayout: ConstraintLayout,
-                 val constraintSet: ConstraintSet, val viewWidth: Int? = Utils.DEFAULT_BANNER_WIDTH, val viewHeight: Int? = Utils.DEFAULT_BANNER_HEIGHT, val index: Int,
-                 val previousBannerItem: BannerItem?, val context: Context, val islastItem: Boolean) {
+class BannerItem(val bannerItemData: DataItem, private val constraintLayout: ConstraintLayout,
+                 private val constraintSet: ConstraintSet, private val viewWidth: Int? = Utils.DEFAULT_BANNER_WIDTH, private val viewHeight: Int? = Utils.DEFAULT_BANNER_HEIGHT, private val index: Int,
+                 private val previousBannerItem: BannerItem?, val context: Context, private val islastItem: Boolean) {
 
-    val bannerImageView = ImageView(context)
+    var bannerImageView = View(context)
     private val VIEW_ID_CONSTANT = 100
 
     init {
-        bannerImageView.id = VIEW_ID_CONSTANT + index;
         addImageConstrains()
     }
 
     private fun addImageConstrains() {
-
+        if (!bannerItemData.imageUrlDynamicMobile.isNullOrEmpty()) {
+            bannerImageView = ImageUnify(context)
+            (bannerImageView as ImageUnify).cornerRadius = 0
+        }
+        bannerImageView.id = VIEW_ID_CONSTANT + index
         constraintLayout.addView(bannerImageView)
         constraintSet.clear(bannerImageView.id)
-        constraintSet.constrainWidth(bannerImageView.getId(), ConstraintSet.MATCH_CONSTRAINT)
-        constraintSet.constrainHeight(bannerImageView.getId(), ConstraintSet.MATCH_CONSTRAINT)
+        constraintSet.constrainWidth(bannerImageView.id, ConstraintSet.MATCH_CONSTRAINT)
+        constraintSet.constrainHeight(bannerImageView.id, ConstraintSet.MATCH_CONSTRAINT)
         constraintSet.setDimensionRatio(bannerImageView.id, "H, $viewWidth : $viewHeight")
         constraintSet.setHorizontalWeight(bannerImageView.id, 1.0F)
 
@@ -44,7 +47,9 @@ class BannerItem(val bannerItemData: DataItem, val constraintLayout: ConstraintL
                     bannerItemData.rightMargin)
         }
         constraintSet.connect(bannerImageView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
-        ImageHandler.LoadImage(bannerImageView, bannerItemData.imageUrlDynamicMobile)
+        if (!bannerItemData.imageUrlDynamicMobile.isNullOrEmpty()) {
+            (bannerImageView as ImageUnify).setImageUrl(bannerItemData.imageUrlDynamicMobile ?: "")
+        }
         constraintSet.applyTo(constraintLayout)
     }
 }

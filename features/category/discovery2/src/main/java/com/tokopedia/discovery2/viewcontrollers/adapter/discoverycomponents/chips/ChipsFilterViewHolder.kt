@@ -23,7 +23,6 @@ class ChipsFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         chipsFilterViewModel = discoveryBaseViewModel as ChipsFilterViewModel
-        chipsFilterViewModel.setAdapterPositionToChildItems(adapterPosition)
         setUpObservers()
     }
 

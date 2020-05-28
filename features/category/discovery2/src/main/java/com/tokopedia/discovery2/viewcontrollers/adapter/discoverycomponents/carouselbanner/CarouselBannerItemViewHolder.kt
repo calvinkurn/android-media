@@ -4,11 +4,13 @@ import android.view.View
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.unifyprinciples.Typography
 
@@ -22,17 +24,20 @@ class CarouselBannerItemViewHolder(itemView: View, private val fragment: Fragmen
         carouselBannerItemViewModel = discoveryBaseViewModel as CarouselBannerItemViewModel
         carouselBannerItemViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
             val itemData = item.data?.get(0)
-            ImageHandler.LoadImage(promoImage, itemData?.imageUrlMobile)
-            setClick(itemData?.applinks)
+            promoImage.loadImageWithoutPlaceholder(itemData?.imageUrlMobile ?: "")
+            setClick(itemData)
             promoText.setTextAndCheckShow(itemData?.description)
         })
 
     }
 
-    private fun setClick(appLinks: String?) {
-        if (!appLinks.isNullOrEmpty()) {
-            itemView.setOnClickListener {
-                RouteManager.route(itemView.context, appLinks)
+    private fun setClick(dataItem: DataItem?) {
+        dataItem?.let {
+            if (!it.applinks.isNullOrEmpty()) {
+                itemView.setOnClickListener { itemView ->
+                    (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerClick(it, adapterPosition)
+                    RouteManager.route(itemView.context, it.applinks)
+                }
             }
         }
     }

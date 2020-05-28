@@ -3,7 +3,6 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cpm
 import android.view.View
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
@@ -11,6 +10,7 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.unifyprinciples.Typography
 
@@ -30,19 +30,30 @@ class CpmTopadsProductItemViewHolder(itemView: View, private val fragment: Fragm
             ImageHandler.LoadImage(productImage, data?.imageUrlMobile)
             productName.text = data?.name
             productPrice.text = data?.priceFormat
-            setClick(data?.applinks, data?.imageClickUrl)
+            setClick(data)
         })
 
     }
 
-    private fun setClick(applinks: String?, imageClickUrl: String?) {
-        if (!applinks.isNullOrEmpty()) {
-            itemView.setOnClickListener {
-                RouteManager.route(itemView.context, applinks)
-                ImpresionTask().execute(imageClickUrl)
+    private fun setClick(data: DataItem?) {
+        data?.let {
+            if (!it.applinks.isNullOrEmpty()) {
+                itemView.setOnClickListener { itemView ->
+                    sendTopAdsShopClick(it)
+                    sendUrlTrack(it.imageUrlMobile)
+                    RouteManager.route(itemView.context, it.applinks)
+                }
             }
         }
     }
 
+    private fun sendTopAdsShopClick(data: DataItem) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickTopAdsProducts(data)
+    }
 
+    private fun sendUrlTrack(url: String?) {
+        fragment.activity?.let {
+            ImpresionTask(it::class.qualifiedName).execute(url)
+        }
+    }
 }

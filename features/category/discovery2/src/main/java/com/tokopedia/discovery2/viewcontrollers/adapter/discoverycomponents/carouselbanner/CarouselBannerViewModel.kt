@@ -12,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
-class CarouselBannerViewModel(val application: Application, components: ComponentsItem) : DiscoveryBaseViewModel(), CoroutineScope {
+class CarouselBannerViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val listData: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
@@ -25,7 +25,7 @@ class CarouselBannerViewModel(val application: Application, components: Componen
         componentData.value = components
         components.data?.let {
             if (it.isNotEmpty()) {
-                listData.value = DiscoveryDataMapper.mapListToComponentList(it, ComponentNames.CarouselBannerItemView.componentName)
+                listData.value = DiscoveryDataMapper.mapListToComponentList(it, ComponentNames.CarouselBannerItemView.componentName, components.name, position)
                 seeAllButton.value = it[0].buttonApplink
             }
         }

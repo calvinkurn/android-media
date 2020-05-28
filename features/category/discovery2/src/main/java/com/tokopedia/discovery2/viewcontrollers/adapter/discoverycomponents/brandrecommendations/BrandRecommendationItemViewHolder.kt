@@ -7,8 +7,11 @@ import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 
 class BrandRecommendationItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
 
@@ -18,20 +21,29 @@ class BrandRecommendationItemViewHolder(itemView: View, private val fragment: Fr
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         brandRecommendationItemViewModel = discoveryBaseViewModel as BrandRecommendationItemViewModel
-        brandRecommendationItemViewModel.ComponentData.observe(fragment.viewLifecycleOwner, Observer { item ->
-
-            ImageHandler.LoadImage(imageView, item.data?.get(0)?.imageUrlMobile)
-            setClick(item.data?.get(0)?.applinks)
+        brandRecommendationItemViewModel.getComponentDataLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
+            item.data?.get(0)?.let {
+                it.imageUrlMobile?.let { it1 -> imageView.loadImageWithoutPlaceholder(it1) }
+                setClick(item.data?.get(0))
+            }
         })
 
     }
 
-    private fun setClick(applinks: String?) {
-        if (!applinks.isNullOrEmpty()) {
-            itemView.setOnClickListener {
-                RouteManager.route(itemView.context, applinks)
+    private fun setClick(data: DataItem?) {
+        data?.let {
+            if (!it.applinks.isNullOrEmpty()) {
+                itemView.setOnClickListener { itemView ->
+                    sendClickBrandRecommendationClickEvent(it)
+                    RouteManager.route(itemView.context, it.applinks)
+                }
             }
         }
+
+    }
+
+    private fun sendClickBrandRecommendationClickEvent(it: DataItem) {
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerClick(it, adapterPosition)
     }
 
 

@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.list.adapter.SpaceItemDecoration
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.AddChildAdapterCallback
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -15,10 +17,15 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
     private val tabsRecyclerView: RecyclerView = itemView.findViewById(R.id.bannerRecyclerView)
     private lateinit var tabsViewModel: TabsViewModel
-    private val tabsRecyclerViewAdapter: DiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
+    private val tabsRecyclerViewAdapter: DiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment, this)
+
+    private var compositeAdapter: DiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
+    private var addChildAdapterCallback: AddChildAdapterCallback
 
     init {
         attachRecyclerView()
+        addChildAdapterCallback = (fragment as AddChildAdapterCallback)
+        addChildAdapterCallback.addChildAdapter(compositeAdapter)
     }
 
     private fun attachRecyclerView() {
@@ -35,9 +42,9 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         tabsViewModel = discoveryBaseViewModel as TabsViewModel
-        tabsViewModel.setAdapterPositionToChildItems(adapterPosition)
         setUpObservers()
     }
+
 
     private fun setUpObservers() {
         tabsViewModel.getListDataLiveData().observe(fragment.viewLifecycleOwner, Observer {
@@ -45,4 +52,8 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
         })
     }
 
+    fun getCompositeComponentsList(compositeList: List<ComponentsItem>) {
+        compositeAdapter.setDataList(compositeList as ArrayList<ComponentsItem>)
+        addChildAdapterCallback.notifyMergeAdapter()
+    }
 }

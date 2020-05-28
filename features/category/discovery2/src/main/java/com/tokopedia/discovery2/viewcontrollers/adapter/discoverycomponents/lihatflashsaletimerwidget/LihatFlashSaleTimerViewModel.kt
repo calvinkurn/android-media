@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatflashsaletimerwidget
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.applink.RouteManager
@@ -12,7 +13,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bann
 import java.text.SimpleDateFormat
 import java.util.*
 
-class LihatFlashSaleTimerViewModel(val application: Application, componentData: ComponentsItem) : DiscoveryBaseViewModel() {
+class LihatFlashSaleTimerViewModel(val application: Application, componentData: ComponentsItem, val position:Int) : DiscoveryBaseViewModel() {
 
     private val saleWidgetData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private var timeCounter: SaleCountDownTimer? = null
@@ -63,7 +64,7 @@ class LihatFlashSaleTimerViewModel(val application: Application, componentData: 
 
     }
 
-    fun onLihatSemuaClicked() {
-        RouteManager.route(application, saleWidgetData.value?.data?.get(0)?.btnApplink)
+    fun onLihatSemuaClicked(context: Context) {
+        navigate(context, saleWidgetData.value?.data?.get(0)?.btnApplink)
     }
 }

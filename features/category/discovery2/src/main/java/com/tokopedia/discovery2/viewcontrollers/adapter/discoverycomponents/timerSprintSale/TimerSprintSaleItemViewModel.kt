@@ -11,7 +11,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bann
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TimerSprintSaleItemViewModel(val application: Application, components: ComponentsItem) : DiscoveryBaseViewModel() {
+class TimerSprintSaleItemViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private var timerWithBannerCounter: SaleCountDownTimer? = null
     private val elapsedTime: Long = 1000
