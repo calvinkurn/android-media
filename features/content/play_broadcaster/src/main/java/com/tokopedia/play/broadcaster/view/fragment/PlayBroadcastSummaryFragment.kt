@@ -93,10 +93,14 @@ class PlayBroadcastSummaryFragment : BaseDaggerFragment() {
             it.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     it.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    layout_live_summary_info.translationY = 100f
-                    layout_live_summary_meta.translationY = -100f
-                    layout_live_summary_info.animate().translationYBy(-100f).setDuration(300)
-                    layout_live_summary_meta.animate().translationYBy(100f).setDuration(300)
+
+                    val animationOffset = resources.getInteger(R.integer.play_summary_layout_animation_offset).toFloat()
+                    val animationDuration = resources.getInteger(R.integer.play_summary_layout_animation_duration_ms).toLong()
+
+                    layout_live_summary_info.translationY = animationOffset
+                    layout_live_summary_meta.translationY = -animationOffset
+                    layout_live_summary_info.animate().translationYBy(-animationOffset).setDuration(animationDuration)
+                    layout_live_summary_meta.animate().translationYBy(animationOffset).setDuration(animationDuration)
                 }
             })
         }
