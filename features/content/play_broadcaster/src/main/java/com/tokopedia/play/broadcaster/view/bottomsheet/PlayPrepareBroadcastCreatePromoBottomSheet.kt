@@ -34,20 +34,10 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
     private var promoPercentage: Int = DEFAULT_PERCENT_QUOTA_VALUE
     private var promoQuota: Int = DEFAULT_PERCENT_QUOTA_VALUE
     private var isBack: Boolean = false
+    private var isEditPage: Boolean = false
 
     private lateinit var percentageTextWatcher: TextWatcher
     private lateinit var quotaTextWatcher: TextWatcher
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        arguments?.let {
-            isBack = it.getBoolean(EXTRA_IS_BACK)
-        }
-
-        dialog?.window?.setWindowAnimations(
-                if (isBack) R.style.DialogAnimationEnterLeft
-                else R.style.DialogAnimationEnterRight)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,10 +52,21 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
             currentState = it.getInt(EXTRA_CURRENT_STATE)
             promoQuota = it.getInt(EXTRA_PROMO_QUOTA)
             promoPercentage = it.getInt(EXTRA_PROMO_PERCENTAGE)
+            isBack = it.getBoolean(EXTRA_IS_BACK)
         } ?: arguments?.let {
             currentState = MAIN_STATE
             promoQuota = it.getInt(EXTRA_PROMO_QUOTA)
             promoPercentage = it.getInt(EXTRA_PROMO_PERCENTAGE)
+            isBack = it.getBoolean(EXTRA_IS_BACK)
+
+            if (promoPercentage in MIN_PERCENT_QUOTA_VALUE..MAX_PERCENT_VALUE &&
+                    promoQuota in MIN_PERCENT_QUOTA_VALUE..MAX_QUOTA_VALUE) {
+                isEditPage = true
+            } else {
+                dialog?.window?.setWindowAnimations(
+                        if (isBack) R.style.DialogAnimationEnterLeft
+                        else R.style.DialogAnimationEnterRight)
+            }
         }
 
         initBottomSheet()
@@ -93,8 +94,7 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
         isDragable = false
         isHideable = false
         isFullpage = true
-        if (promoPercentage in MIN_PERCENT_QUOTA_VALUE..MAX_PERCENT_VALUE &&
-                promoQuota in MIN_PERCENT_QUOTA_VALUE..MAX_QUOTA_VALUE) {
+        if (isEditPage) {
             setTitle(getString(R.string.play_prepare_broadcast_edit_promo_title))
         } else {
             setTitle(getString(R.string.play_prepare_broadcast_create_promo_title))
@@ -117,9 +117,11 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
                 bottomSheetWrapper.paddingTop,
                 0,
                 bottomSheetWrapper.paddingBottom)
-        context?.let {
-            bottomSheetClose.setImageDrawable(it.resources.getDrawable(
-                    com.tokopedia.resources.common.R.drawable.ic_system_action_back_grayscale_24))
+        if (!isEditPage) {
+            context?.let {
+                bottomSheetClose.setImageDrawable(it.resources.getDrawable(
+                        com.tokopedia.resources.common.R.drawable.ic_system_action_back_grayscale_24))
+            }
         }
 
         svPlayPrepareBroadcastPromo.layoutParams.height = screenHeight - containerPlayPrepareBroadcastBottom.height
