@@ -662,7 +662,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 } else {
                     ProductAddMainTracking.trackDragPhoto(shopId)
                 }
-                countTouchPhoto = 0
             }
         }
     }
