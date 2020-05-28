@@ -78,7 +78,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/ivRatingReview"
                 app:layout_constraintTop_toBottomOf="@id/tgFiveReview"
-                app:typographyType="body_1"
+                app:typographyType="body_2"
                 app:typographyWeight="bold"
                 tools:text="1.234" />
 
@@ -95,7 +95,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/tgCountReview"
                 app:layout_constraintTop_toBottomOf="@id/tgFiveReview"
-                app:typographyType="body_1"
+                app:typographyType="body_2"
                 app:typographyWeight="reguler" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -110,7 +110,7 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/tgPeriodReview"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="body_1"
+                app:typographyType="body_2"
                 app:typographyWeight="reguler" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -119,12 +119,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginBottom="@dimen/dp_18"
+                android:layout_marginBottom="@dimen/spacing_lvl4"
                 android:textColor="@color/clr_f531353b"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline1"
-                app:typographyType="body_1"
+                app:typographyType="body_2"
                 app:typographyWeight="reguler"
                 tools:text="1 Des 2019 - Hari Ini" />
 
