@@ -176,19 +176,19 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback {
 
     private fun setPageInfo(data: PageInfo?) {
         typographyHeader.text = data?.name
+        ivSearch.setOnClickListener {
+            if (data?.searchApplink?.isNotEmpty() == true) {
+                RouteManager.route(context, data.searchApplink)
+            } else {
+                RouteManager.route(context, Utils.SEARCH_DEEPLINK)
+            }
+        }
         if (data?.share?.enabled == true) {
             ivShare.show()
             ivShare.setOnClickListener {
                 getDiscoveryAnalytics().trackShareClick()
                 permissionHelper {
                     Utils.shareData(activity, data.share.description, data.share.url, discoveryViewModel.getBitmapFromURL(data.share.image))
-                }
-            }
-            ivSearch.setOnClickListener {
-                if (data.searchApplink?.isNotEmpty() == true) {
-                    RouteManager.route(context, data.searchApplink)
-                } else {
-                    RouteManager.route(context, Utils.SEARCH_DEEPLINK)
                 }
             }
         } else {
