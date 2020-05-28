@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
 import com.tokopedia.play.broadcaster.pusher.type.PlayPusherQualityMode
-import com.tokopedia.play.broadcaster.pusher.util.DeviceInfoUtil
+import com.tokopedia.play.broadcaster.util.DeviceInfoUtil
 
 
 /**
