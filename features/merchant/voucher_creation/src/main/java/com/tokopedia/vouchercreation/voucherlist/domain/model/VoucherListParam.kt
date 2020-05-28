@@ -21,7 +21,7 @@ data class VoucherListParam (
             return VoucherListParam(
                     voucher_type = type,
                     voucher_status = status,
-                    is_public = targetList?.joinToString(),
+                    is_public = targetList?.joinToString(separator = ","),
                     page = page,
                     sort_by = sort
             )

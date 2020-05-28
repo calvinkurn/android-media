@@ -45,7 +45,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/tvMvcTickerTitle"
         app:layout_constraintTop_toTopOf="@+id/tvMvcTickerTitle"
-        app:srcCompat="@drawable/ic_information"
+        app:srcCompat="@drawable/ic_mvc_info"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography

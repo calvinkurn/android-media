@@ -30,7 +30,7 @@ class UsageProgressViewHolder(
             progressMvcUsage?.progressBarHeight = context.pxToDp(6).toInt()
 
             tvMvcUsedQuota?.text = element.bookedQuota.toString()
-            tvMvcTotalQuota?.text = element.quota.toString()
+            tvMvcTotalQuota?.text = String.format(context?.getString(R.string.mvc_detail_total_quota).toBlankOrString(), element.quota.toString())
 
             mvcImgInfo.setOnClickListener {
                 setOnTooltipClick()

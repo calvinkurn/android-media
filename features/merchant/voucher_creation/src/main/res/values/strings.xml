@@ -250,6 +250,7 @@
     <string name="mvc_chip_multiple_filter">%s Jenis</string>
 
     <!-- voucher detail -->
+    <string name="mvc_detail_total_quota">/%s</string>
     <string name="mvc_detail_voucher_info">Info voucher</string>
     <string name="mvc_detail_voucher_name">Nama Voucher</string>
     <string name="mvc_detail_promo_code">Kode Promo</string>

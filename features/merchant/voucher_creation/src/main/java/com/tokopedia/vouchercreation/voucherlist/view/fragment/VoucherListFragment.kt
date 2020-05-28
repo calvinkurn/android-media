@@ -434,7 +434,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                             FilterBy.SPECIAL -> VoucherTargetType.PRIVATE
                             else -> VoucherTargetType.PUBLIC
                         }
-                    }.sorted()
+                    }
                 } else {
                     null
                 }
