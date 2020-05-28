@@ -1,6 +1,8 @@
 package com.tokopedia.entertainment.pdp.fragment
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,6 +18,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
@@ -55,6 +58,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mapviewer.activity.MapViewerActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_about.view.*
 import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_facilities.view.*
 import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_how_to_go_there.view.*
@@ -80,12 +84,16 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
     var listHoliday: List<Legend> = arrayListOf()
     var productDetailData: ProductDetailData = ProductDetailData()
+    var selectedDate = ""
 
     @Inject
     lateinit var eventPDPViewModel: EventPDPViewModel
 
     @Inject
     lateinit var eventPDPTracking: EventPDPTracking
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     override fun getScreenName(): String = ""
 
@@ -226,9 +234,13 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
                     calendarPickerView?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
                         override fun onDateSelected(date: Date) {
-                            val selectedDate = (date.time / 1000).toString()
+                            selectedDate = (date.time / 1000).toString()
                             eventPDPTracking.onClickPickDate()
-                            goToTicketPage(productDetailData, selectedDate)
+                            if (userSession.isLoggedIn) { goToTicketPage(productDetailData, selectedDate) }
+                            else {
+                                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                                        REQUEST_CODE_LOGIN_WITH_DATE)
+                            }
                             bottomSheets.dismiss()
                         }
 
@@ -241,7 +253,11 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                     bottomSheets.show(it, "")
                 }
             } else {
-                goToTicketPageWithoutDate()
+                if (userSession.isLoggedIn) { goToTicketPageWithoutDate() }
+                else {
+                    startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                            REQUEST_CODE_LOGIN_WITHOUT_DATE)
+                }
             }
         }
     }
@@ -438,10 +454,28 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         super.onDestroyView()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                REQUEST_CODE_LOGIN_WITH_DATE -> context?.let {
+                    goToTicketPage(productDetailData, selectedDate)
+                }
+
+                REQUEST_CODE_LOGIN_WITHOUT_DATE -> context?.let {
+                    goToTicketPageWithoutDate()
+                }
+            }
+        }
+    }
+
     companion object {
 
         const val DEFAULT_PIN = "DEFAULT_PIN"
         const val ENT_PDP_PERFORMANCE = "et_event_pdp"
+
+        const val REQUEST_CODE_LOGIN_WITH_DATE = 100
+        const val REQUEST_CODE_LOGIN_WITHOUT_DATE = 101
 
         fun newInstance(urlPDP: String) = EventPDPFragment().also {
             it.arguments = Bundle().apply {
