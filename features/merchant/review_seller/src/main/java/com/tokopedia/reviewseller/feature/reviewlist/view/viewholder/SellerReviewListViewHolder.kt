@@ -20,6 +20,7 @@ class SellerReviewListViewHolder(val view: View,
     companion object {
         @LayoutRes
         val LAYOUT_RES = R.layout.item_rating_produk
+        private const val RATING_STAR_YELLOW_VALUE = 3.5
     }
 
     private val ivItemProduct: ImageUnify = view.findViewById(R.id.ivItemProduct)
@@ -39,7 +40,7 @@ class SellerReviewListViewHolder(val view: View,
 
         element.rating?.roundDecimal()?.toFloatOrNull().let {
             if (it != null) {
-                if(it >= 3.5) {
+                if(it >= RATING_STAR_YELLOW_VALUE) {
                     ivRating.setImageDrawable(ContextCompat.getDrawable(view.context, R.drawable.ic_rating_star_yellow))
                 } else {
                     ivRating.setImageDrawable(ContextCompat.getDrawable(view.context, R.drawable.ic_rating_star_red))

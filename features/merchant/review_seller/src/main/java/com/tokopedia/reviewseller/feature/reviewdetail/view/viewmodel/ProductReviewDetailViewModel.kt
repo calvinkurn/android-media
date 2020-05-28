@@ -36,7 +36,7 @@ class ProductReviewDetailViewModel @Inject constructor(
     private var prefixTime = "time="
     private var prefixTopic = "topic="
     private var prefixRating = "rating="
-    
+
     private var chipsFilterText = "30 Hari Terakhir"
     private var productId = 0
     private var filterByList: MutableList<String> = mutableListOf(chipsFilterText)
