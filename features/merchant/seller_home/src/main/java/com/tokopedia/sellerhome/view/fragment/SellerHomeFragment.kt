@@ -73,7 +73,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         private const val ERROR_WIDGET = "Error get widget data."
         private const val ERROR_TICKER = "Error get ticker data."
         private const val TOAST_DURATION = 5000L
-
+        private const val DELAY_FETCH_VISIBLE_WIDGET_DATA = 500L
     }
 
     @Inject
@@ -614,7 +614,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         }
         view?.postDelayed({
             getVisibleWidgetData()
-        }, 500)
+        }, DELAY_FETCH_VISIBLE_WIDGET_DATA)
     }
 
     private inline fun <reified D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> Throwable.setOnErrorWidgetState(widgetType: String) {
@@ -630,7 +630,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         showErrorToaster()
         view?.postDelayed({
             getVisibleWidgetData()
-        }, 200)
+        }, DELAY_FETCH_VISIBLE_WIDGET_DATA)
     }
 
     private fun notifyWidgetChanged(widget: BaseWidgetUiModel<*>) {
