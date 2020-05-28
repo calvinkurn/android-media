@@ -18,9 +18,9 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourier
 import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest
 import com.tokopedia.purchase_platform.common.feature.editaddress.domain.usecase.EditAddressUseCase
 import com.tokopedia.purchase_platform.common.feature.helpticket.data.request.SubmitHelpTicketRequest
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
+import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
@@ -43,7 +43,7 @@ object ShipmentPresenterHelpTicketTest : Spek({
     val checkoutUseCase: CheckoutUseCase = mockk()
     val getShipmentAddressFormGqlUseCase: GetShipmentAddressFormGqlUseCase = mockk()
     val editAddressUseCase: EditAddressUseCase = mockk()
-    val changeShippingAddressUseCase: ChangeShippingAddressUseCase = mockk()
+    val changeShippingAddressGqlUseCase: ChangeShippingAddressGqlUseCase = mockk()
     val saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase = mockk()
     val codCheckoutUseCase: CodCheckoutUseCase = mockk()
     val getRatesUseCase: GetRatesUseCase = mockk()
@@ -74,7 +74,7 @@ object ShipmentPresenterHelpTicketTest : Spek({
         val presenter by memoized {
             ShipmentPresenter(compositeSubscription,
                     checkoutUseCase, getShipmentAddressFormGqlUseCase,
-                    editAddressUseCase, changeShippingAddressUseCase,
+                    editAddressUseCase, changeShippingAddressGqlUseCase,
                     saveShipmentStateGqlUseCase, getRatesUseCase, getRatesApiUseCase,
                     codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
                     ratesStatesConverter, shippingCourierConverter, shipmentAnalyticsActionListener,
