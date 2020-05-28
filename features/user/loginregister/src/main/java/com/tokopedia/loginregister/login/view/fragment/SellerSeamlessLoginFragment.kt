@@ -26,6 +26,8 @@ import com.tokopedia.loginregister.RemoteApi
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.login.di.DaggerLoginComponent
+import com.tokopedia.loginregister.login.router.LoginRouter
+import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.login.view.constant.SeamlessSellerConstant
 import com.tokopedia.loginregister.login.view.viewmodel.SellerSeamlessViewModel
 import com.tokopedia.network.utils.ErrorHandler
@@ -150,6 +152,9 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         arguments?.run {
             autoLogin = getBoolean(KEY_AUTO_LOGIN, false)
         }
+        if (context?.applicationContext is LoginRouter) {
+            (context?.applicationContext as LoginRouter).setOnboardingStatus(true)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -180,7 +185,10 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
 
     private fun onNegativeBtnClick(){
         analytics.eventClickLoginWithOtherAcc()
-        RouteManager.route(activity, ApplinkConst.LOGIN)
+        context?.run {
+            val i =LoginActivity.DeepLinkIntents.getCallingIntent(this)
+            startActivity(i)
+        }
     }
 
     private fun onPositiveBtnClick(){
@@ -266,7 +274,10 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         analytics.eventClickBack()
         if(seamlessViewModel.hasLogin())
             moveToNormalLogin()
-        else RouteManager.route(activity, ApplinkConstInternalSellerapp.WELCOME)
+        else {
+            RouteManager.route(activity, ApplinkConstInternalSellerapp.WELCOME)
+            activity?.finish()
+        }
     }
 
     internal inner class RemoteServiceConnection : ServiceConnection {
