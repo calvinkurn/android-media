@@ -33,6 +33,10 @@ class ProductReviewDetailViewModel @Inject constructor(
     var filterPeriod: String = ""
     var sortBy: String = ""
 
+    private var prefixTime = "time="
+    private var prefixTopic = "topic="
+    private var prefixRating = "rating="
+    
     private var chipsFilterText = "30 Hari Terakhir"
     private var productId = 0
     private var filterByList: MutableList<String> = mutableListOf(chipsFilterText)
@@ -67,17 +71,17 @@ class ProductReviewDetailViewModel @Inject constructor(
     fun setChipFilterDateText(chipFilterText: String) {
         chipsFilterText = chipFilterText
         filterPeriod = ReviewSellerConstant.mapFilterReviewDetail().getKeyByValue(chipFilterText)
-        removeFilterElement("time=")
+        removeFilterElement(prefixTime)
         filterByList.add(ReviewSellerUtil.setFilterJoinValueFormat(filterPeriod))
     }
 
     private fun setupFeedBackDetail() {
         _productFeedbackDetail.addSource(topicFilterData) { data ->
             val topicFilterText = data.filter { it.isSelected }
-            val topicFilterTextGenerated = if (topicFilterText.isEmpty()) "" else topicFilterText.joinToString(prefix = "topic=", separator = ",") {
+            val topicFilterTextGenerated = if (topicFilterText.isEmpty()) "" else topicFilterText.joinToString(prefix = prefixTopic, separator = ",") {
                 it.titleUnformated
             }
-            removeFilterElement("topic=")
+            removeFilterElement(prefixTopic)
 
             if (topicFilterTextGenerated.isNotBlank()) {
                 filterByList.add(topicFilterTextGenerated)
@@ -87,11 +91,11 @@ class ProductReviewDetailViewModel @Inject constructor(
 
         _productFeedbackDetail.addSource(ratingFilterData) { data ->
             val ratingFilterText = data?.filter { it.ratingIsChecked }.orEmpty()
-            val ratingFilterGenerated = if (ratingFilterText.isEmpty()) "" else ratingFilterText.joinToString(prefix = "rating=", separator = ",") {
+            val ratingFilterGenerated = if (ratingFilterText.isEmpty()) "" else ratingFilterText.joinToString(prefix = prefixRating, separator = ",") {
                 it.ratingLabel.toString()
             }
 
-            removeFilterElement("rating=")
+            removeFilterElement(prefixRating)
 
             if (ratingFilterGenerated.isNotBlank()) {
                 filterByList.add(ratingFilterGenerated)
@@ -102,10 +106,10 @@ class ProductReviewDetailViewModel @Inject constructor(
 
         _productFeedbackDetail.addSource(topicAndSortFilterData) { data ->
             val topicFilterText = data.first.filter { it.isSelected }
-            val topicFilterTextGenerated = if (topicFilterText.isEmpty()) "" else topicFilterText.joinToString(prefix = "topic=", separator = ",") {
+            val topicFilterTextGenerated = if (topicFilterText.isEmpty()) "" else topicFilterText.joinToString(prefix = prefixTopic, separator = ",") {
                 it.titleUnformated
             }
-            removeFilterElement("topic=")
+            removeFilterElement(prefixTopic)
 
             updateSortAndFilterTopicData(data)
 
@@ -218,7 +222,7 @@ class ProductReviewDetailViewModel @Inject constructor(
         }
     }
 
-    private fun getGeneratedTimeFilterByText(): String = filterByList.find { it.contains("time=") }
+    private fun getGeneratedTimeFilterByText(): String = filterByList.find { it.contains(prefixTime) }
             ?: ""
 
     fun getFeedbackDetailListNext(productID: Int, sortBy: String, page: Int) {
