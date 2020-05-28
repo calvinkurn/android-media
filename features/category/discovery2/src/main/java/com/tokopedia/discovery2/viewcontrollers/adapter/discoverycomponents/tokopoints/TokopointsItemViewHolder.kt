@@ -64,6 +64,6 @@ class TokopointsItemViewHolder(itemView: View, private val fragment: Fragment) :
     }
 
     override fun onClick(v: View?) {
-        tokopointsItemViewModel.onTokopointsItemClicked()
+        v?.context?.let { tokopointsItemViewModel.onTokopointsItemClicked(it) }
     }
 }

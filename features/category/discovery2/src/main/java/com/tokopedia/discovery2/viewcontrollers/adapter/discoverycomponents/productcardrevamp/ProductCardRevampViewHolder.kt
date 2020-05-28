@@ -4,6 +4,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.AddChildAdapterCallback
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
@@ -19,6 +20,15 @@ class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment
 
     init {
         addChildAdapterCallback.addChildAdapter(mDiscoveryRecycleAdapter)
+        addShimmer()
+    }
+
+    private fun addShimmer() {
+        val list: ArrayList<ComponentsItem> = ArrayList()
+        for (i in 1..10) {
+            list.add(ComponentsItem(name = "shimmer_product_card"))
+        }
+        mDiscoveryRecycleAdapter.setDataList(list)
     }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {

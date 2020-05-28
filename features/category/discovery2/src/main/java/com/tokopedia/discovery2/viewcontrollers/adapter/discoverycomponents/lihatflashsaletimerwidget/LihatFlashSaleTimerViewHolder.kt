@@ -102,7 +102,7 @@ class LihatFlashSaleTimerViewHolder(itemView: View, private val fragment: Fragme
     }
 
     override fun onClick(v: View?) {
-        lihatFlashSaleTimerViewModel.onLihatSemuaClicked()
+        v?.context?.let { lihatFlashSaleTimerViewModel.onLihatSemuaClicked(it) }
     }
 
     @SuppressLint("ResourceType")
