@@ -26,6 +26,7 @@ import javax.inject.Inject
 /**
  * Created by nabillasabbaha on 06/05/19.
  */
+@Deprecated("remove this")
 class DigitalTelcoFragment : BaseDaggerFragment() {
 
     private var posCurrentTabExtraParam = DigitalSubMenuWidget.HEADER_LEFT

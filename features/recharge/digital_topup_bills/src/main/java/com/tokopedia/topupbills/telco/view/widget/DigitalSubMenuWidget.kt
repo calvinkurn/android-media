@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull
 /**
  * Created by nabillasabbaha on 24/04/19.
  */
+@Deprecated("remove this")
 class DigitalSubMenuWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
                                                      defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
