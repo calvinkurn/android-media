@@ -10,6 +10,8 @@ import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatContract
+import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
+import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -57,6 +59,8 @@ interface TopChatContract {
         fun isUseNewCard(): Boolean
 
         fun isUseCarousel(): Boolean?
+
+        fun renderOrderProgress(chatOrder: ChatOrderProgress)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -147,5 +151,7 @@ interface TopChatContract {
         )
 
         fun updateMinReplyTime(chatRoom: ChatroomViewModel)
+
+        fun getOrderProgress(messageId: String)
     }
 }

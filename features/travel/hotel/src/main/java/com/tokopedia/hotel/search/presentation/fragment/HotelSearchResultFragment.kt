@@ -2,12 +2,10 @@ package com.tokopedia.hotel.search.presentation.fragment
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -20,21 +18,24 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.design.list.adapter.SpaceItemDecoration
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_SEARCH
+import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.*
 import com.tokopedia.hotel.search.data.model.params.ParamFilter
 import com.tokopedia.hotel.search.data.util.CommonParam
 import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchFilterActivity
+import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity.Companion.CHANGE_SEARCH_REQ_CODE
+import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity.Companion.SEARCH_SCREEN_NAME
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter.Companion.MODE_CHECKED
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultAdapter
 import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactory
+import com.tokopedia.hotel.search.presentation.adapter.viewholder.SpaceItemDecoration
 import com.tokopedia.hotel.search.presentation.viewmodel.HotelSearchResultViewModel
 import com.tokopedia.hotel.search.presentation.widget.HotelClosedSortBottomSheets
 import com.tokopedia.iris.util.IrisSession
@@ -51,7 +52,6 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var searchResultviewModel: HotelSearchResultViewModel
     lateinit var sortMenu: HotelClosedSortBottomSheets
-    private var onFilterClick: View.OnClickListener? = null
 
     @Inject
     lateinit var trackingHotelUtil: TrackingHotelUtil
@@ -71,7 +71,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             val hotelSearchModel = it.getParcelable(ARG_HOTEL_SEARCH_MODEL) ?: HotelSearchModel()
             searchResultviewModel.initSearchParam(hotelSearchModel)
             searchDestinationName = hotelSearchModel.name
-            searchDestinationType = if (hotelSearchModel.searchType.isNotEmpty()) hotelSearchModel.searchType else hotelSearchModel.type
+            searchDestinationType = hotelSearchModel.type
         }
     }
 
@@ -101,12 +101,15 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         val recyclerView = getRecyclerView(view)
         recyclerView.removeItemDecorationAt(0)
         context?.let {
-            recyclerView.addItemDecoration(SpaceItemDecoration(it.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_12),
+            recyclerView.addItemDecoration(SpaceItemDecoration(it.resources.getDimensionPixelSize(R.dimen.hotel_12dp),
                     LinearLayoutManager.VERTICAL))
         }
-        bottom_action_view.setButton1OnClickListener {
-            if (::sortMenu.isInitialized)
+        bottom_action_view.sortItem.title = getString(R.string.hotel_search_sort_label)
+        bottom_action_view.sortItem.listener = {
+            if (::sortMenu.isInitialized) {
+                sortMenu.setTitle(getString(R.string.hotel_bottomsheet_sort_title))
                 sortMenu.show(childFragmentManager, javaClass.simpleName)
+            }
         }
     }
 
@@ -127,7 +130,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 val paramFilter = cacheManager.get(CommonParam.ARG_SELECTED_FILTER, ParamFilter::class.java)
                         ?: ParamFilter()
 
-                trackingHotelUtil.hotelUserClickFilter(paramFilter, searchResultviewModel.filter)
+                trackingHotelUtil.hotelUserClickFilter(context, SEARCH_SCREEN_NAME)
                 searchResultviewModel.addFilter(paramFilter)
                 loadInitialData()
             }
@@ -144,12 +147,12 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
     private fun onSuccessGetResult(data: PropertySearch) {
         val searchParam = searchResultviewModel.searchParam
-        trackingHotelUtil.hotelViewHotelListImpression(
+        trackingHotelUtil.hotelViewHotelListImpression(context,
                 searchDestinationName,
                 searchDestinationType,
                 searchParam,
                 data.properties,
-                adapter.dataSize)
+                adapter.dataSize, SEARCH_SCREEN_NAME)
 
         val searchProperties = data.properties
 
@@ -161,7 +164,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     }
 
     private fun initializeFilterClick(filter: Filter) {
-        onFilterClick = View.OnClickListener {
+        bottom_action_view.filterItem.listener = {
             searchResultviewModel.filter = filter
             context?.let {
                 val cacheManager = SaveInstanceCacheManager(it, true).apply {
@@ -171,24 +174,18 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 startActivityForResult(HotelSearchFilterActivity.createIntent(it, cacheManager.id), REQUEST_FILTER)
             }
         }
-        bottom_action_view.setButton2OnClickListener(onFilterClick)
-
-        val filterTextView1: TextView = bottom_action_view.findViewById(com.tokopedia.design.R.id.text_view_label_1)
-        val filterTextView2: TextView = bottom_action_view.findViewById(com.tokopedia.design.R.id.text_view_label_2)
-        filterTextView1.typeface = Typeface.DEFAULT
-        filterTextView2.typeface = Typeface.DEFAULT
     }
 
     private fun generateSortMenu(sort: List<Sort>) {
         sortMenu = HotelClosedSortBottomSheets()
-                .setTitle(getString(R.string.hotel_bottomsheet_sort_title))
+                .setSheetTitle(getString(R.string.hotel_bottomsheet_sort_title))
                 .setMode(MODE_CHECKED)
                 .setMenu(sort)
-                .setSelecetedItem(searchResultviewModel.selectedSort)
+                .setSelectedItem(searchResultviewModel.selectedSort)
 
         sortMenu.onMenuSelect = object : HotelOptionMenuAdapter.OnSortMenuSelected {
             override fun onSelect(sort: Sort) {
-                trackingHotelUtil.hotelUserClickSort(sort.displayName)
+                trackingHotelUtil.hotelUserClickSort(context, sort.displayName, SEARCH_SCREEN_NAME)
 
                 searchResultviewModel.addSort(sort)
                 if (sortMenu.isAdded) {
@@ -208,11 +205,13 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     override fun onItemClicked(property: Property, position: Int) {
         with(searchResultviewModel.searchParam) {
             trackingHotelUtil.chooseHotel(
+                    context,
                     searchDestinationName,
                     searchDestinationType,
                     this,
                     property,
-                    position)
+                    position,
+            SEARCH_SCREEN_NAME)
 
             context?.run {
                 startActivityForResult(HotelDetailActivity.getCallingIntent(this,
@@ -246,7 +245,10 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
     fun onClickChangeSearch(hotelSearchModel: HotelSearchModel, screenName: String) {
         context?.let {
-            trackingHotelUtil.hotelClickChangeSearch(hotelSearchModel, screenName, IrisSession(it).getSessionId(), UserSession(it).userId)
+            val type = hotelSearchModel.type
+            trackingHotelUtil.hotelClickChangeSearch(context, type,
+                    hotelSearchModel.name, hotelSearchModel.room, hotelSearchModel.adult,
+                    hotelSearchModel.checkIn, hotelSearchModel.checkOut, screenName)
         }
     }
 

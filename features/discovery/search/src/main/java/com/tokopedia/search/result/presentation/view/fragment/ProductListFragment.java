@@ -68,6 +68,7 @@ import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
+import com.tokopedia.search.result.presentation.model.TickerViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration;
 import com.tokopedia.search.result.presentation.view.listener.BannedProductsRedirectToBrowserListener;
@@ -98,7 +99,6 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
@@ -111,7 +111,6 @@ import javax.inject.Inject;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
-import timber.log.Timber;
 
 import static com.tokopedia.discovery.common.constants.SearchApiConst.PREVIOUS_KEYWORD;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.BIG_GRID;
@@ -767,7 +766,7 @@ public class ProductListFragment
 
     @Override
     public void sendTopAdsTrackingUrl(String topAdsTrackingUrl) {
-        new ImpresionTask().execute(topAdsTrackingUrl);
+        new ImpresionTask(getActivity().getClass().getName()).execute(topAdsTrackingUrl);
     }
 
     @Override
@@ -950,9 +949,9 @@ public class ProductListFragment
     }
 
     @Override
-    public void onTickerClicked(String queryParams) {
-        SearchTracking.trackEventClickSortPriceMinTicker(getQueryKey());
-        applyParamsFromTicker(UrlParamUtils.getParamMap(queryParams));
+    public void onTickerClicked(TickerViewModel tickerViewModel) {
+        SearchTracking.trackEventClickTicker(getQueryKey(), tickerViewModel.getTypeId());
+        applyParamsFromTicker(UrlParamUtils.getParamMap(tickerViewModel.getQuery()));
     }
 
     private void applyParamsFromTicker(HashMap<String, String> tickerParams) {
@@ -1262,8 +1261,8 @@ public class ProductListFragment
     }
 
     @Override
-    public void trackEventImpressionSortPriceMinTicker() {
-        SearchTracking.trackEventImpressionSortPriceMinTicker(getQueryKey());
+    public void trackEventImpressionTicker(int typeId) {
+        SearchTracking.trackEventImpressionTicker(getQueryKey(), typeId);
     }
 
     @Override

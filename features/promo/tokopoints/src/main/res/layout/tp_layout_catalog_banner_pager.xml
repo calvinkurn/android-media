@@ -14,7 +14,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <com.tokopedia.design.viewpagerindicator.CirclePageIndicator
+    <com.tokopedia.unifycomponents.PageControl
         android:id="@+id/page_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -22,6 +22,8 @@
         android:padding="@dimen/tp_padding_small"
         app:layout_constraintBottom_toBottomOf="@+id/view_pager_banner"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:indicator_color="@color/tp_ticker_indicator_default_color"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

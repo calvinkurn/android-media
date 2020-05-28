@@ -48,7 +48,7 @@ public class ShippingCourierAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ((ShippingCourierViewHolder) holder).bindData(shippingCourierUiModels.get(position),
-                shippingCourierAdapterListener);
+                shippingCourierAdapterListener, position == getItemCount() - 1);
     }
 
     @Override

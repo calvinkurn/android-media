@@ -11,7 +11,6 @@ import com.google.gson.annotations.SerializedName;
  */
 @Deprecated
 public class ProductPreOrder implements Parcelable {
-    private static final String TAG = ProductPreOrder.class.getSimpleName();
 
     @SerializedName("preorder_status")
     @Expose
@@ -44,32 +43,16 @@ public class ProductPreOrder implements Parcelable {
         return preorderStatus;
     }
 
-    public void setPreorderStatus(String preorderStatus) {
-        this.preorderStatus = preorderStatus;
-    }
-
     public String getPreorderProcessTimeType() {
         return preorderProcessTimeType;
-    }
-
-    public void setPreorderProcessTimeType(String preorderProcessTimeType) {
-        this.preorderProcessTimeType = preorderProcessTimeType;
     }
 
     public String getPreorderProcessTimeTypeString() {
         return preorderProcessTimeTypeString;
     }
 
-    public void setPreorderProcessTimeTypeString(String preorderProcessTimeTypeString) {
-        this.preorderProcessTimeTypeString = preorderProcessTimeTypeString;
-    }
-
     public String getPreorderProcessTime() {
         return preorderProcessTime;
-    }
-
-    public void setPreorderProcessTime(String preorderProcessTime) {
-        this.preorderProcessTime = preorderProcessTime;
     }
 
     protected ProductPreOrder(Parcel in) {

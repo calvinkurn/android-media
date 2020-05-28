@@ -1,5 +1,6 @@
 package com.tokopedia.find_native.view.activity
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.tkpd.library.utils.legacy.MethodChecker
@@ -234,4 +235,14 @@ class FindNavActivity : BaseActivity(), CategoryNavigationListener,
         hideBottomNavigation()
         imageDisplayButton.invisible()
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        handleDefaultActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun handleDefaultActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        bottomSheetFilterView?.onActivityResult(requestCode, resultCode, data)
+    }
+
 }

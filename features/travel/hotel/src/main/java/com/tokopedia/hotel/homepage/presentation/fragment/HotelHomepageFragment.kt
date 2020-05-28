@@ -17,6 +17,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.DeeplinkMapper.getRegisteredNavigation
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.banner.BannerView
 import com.tokopedia.banner.Indicator
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
@@ -29,6 +30,7 @@ import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_HOMEPAGE
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.homepage.di.HotelHomepageComponent
+import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity.Companion.HOMEPAGE_SCREEN_NAME
 import com.tokopedia.hotel.homepage.presentation.adapter.HotelLastSearchAdapter
 import com.tokopedia.hotel.homepage.presentation.adapter.viewholder.HotelLastSearchViewHolder
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
@@ -198,7 +200,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     override fun getScreenName(): String = ""
 
     override fun onSaveGuest(room: Int, adult: Int) {
-        trackingHotelUtil.hotelSelectRoomGuest(room, adult)
+        trackingHotelUtil.hotelSelectRoomGuest(context, room, adult, HOMEPAGE_SCREEN_NAME)
 
         hotelHomepageModel.roomCount = room
         hotelHomepageModel.adultCount = adult
@@ -213,24 +215,21 @@ class HotelHomepageFragment : HotelBaseFragment(),
                 if (data.hasExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LANG)) {
                     onDestinationNearBy(data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LANG, 0.0),
                             data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LAT, 0.0))
-                } else if (data.hasExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID)) {
-                    onDestinationChanged(data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_NAME)
-                            ?: "",
-                            searchId = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID)
-                                    ?: "",
-                            searchType = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_TYPE)
-                                    ?: "")
+                } else if (data.hasExtra(HotelDestinationActivity.HOTEL_DESTINATION_ID)) {
+                    onDestinationChanged(data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_NAME) ?: "",
+                            id = data.getLongExtra(HotelDestinationActivity.HOTEL_DESTINATION_ID, 0),
+                            type = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_TYPE) ?: "")
                 }
             }
         }
     }
 
     override fun onItemBind(item: TravelRecentSearchModel.Item, position: Int) {
-        trackingHotelUtil.hotelLastSearchImpression(item, position)
+        trackingHotelUtil.hotelLastSearchImpression(context, item, position, HOMEPAGE_SCREEN_NAME)
     }
 
     override fun onItemClick(item: TravelRecentSearchModel.Item, position: Int) {
-        trackingHotelUtil.hotelLastSearchClick(item, position)
+        trackingHotelUtil.hotelLastSearchClick(context, item, position, HOMEPAGE_SCREEN_NAME)
     }
 
     private fun initView() {
@@ -264,7 +263,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun onDestinationChangeClicked() {
-        trackingHotelUtil.hotelClickChangeDestination()
+        trackingHotelUtil.hotelClickChangeDestination(context, HOMEPAGE_SCREEN_NAME)
         context?.run {
             startActivityForResult(HotelDestinationActivity.createInstance(this), REQUEST_CODE_DESTINATION)
         }
@@ -323,7 +322,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     private fun trackRoomDates() {
         val dateRange = HotelUtils.countDayDifference(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
-        trackingHotelUtil.hotelSelectStayDate(hotelHomepageModel.checkInDate, dateRange.toInt())
+        trackingHotelUtil.hotelSelectStayDate(context, hotelHomepageModel.checkInDate, dateRange.toInt(), HOMEPAGE_SCREEN_NAME)
     }
 
     private fun onDestinationNearBy(longitude: Double, latitude: Double) {
@@ -338,7 +337,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun onDestinationChanged(name: String, id: Long = 0, type: String = "", searchType: String = "", searchId: String = "") {
-        trackingHotelUtil.hotelSelectDestination(searchType, name)
+        val tempType = if (searchType.isNotEmpty()) searchType else type
+        trackingHotelUtil.hotelSelectDestination(context, tempType, name, HOMEPAGE_SCREEN_NAME)
 
         hotelHomepageModel.locName = name
         hotelHomepageModel.locId = id
@@ -353,13 +353,14 @@ class HotelHomepageFragment : HotelBaseFragment(),
     private fun onSearchButtonClicked() {
         val type = if (hotelHomepageModel.searchType.isNotEmpty()) hotelHomepageModel.searchType
         else hotelHomepageModel.locType
-        trackingHotelUtil.searchHotel(
+        trackingHotelUtil.searchHotel(context,
                 type,
                 hotelHomepageModel.locName,
                 hotelHomepageModel.roomCount,
                 hotelHomepageModel.adultCount,
                 hotelHomepageModel.checkInDate,
-                hotelHomepageModel.nightCounter.toInt()
+                hotelHomepageModel.nightCounter.toInt(),
+                HOMEPAGE_SCREEN_NAME
         )
 
         context?.run {
@@ -397,9 +398,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
                             checkIn = hotelHomepageModel.checkInDate,
                             checkOut = hotelHomepageModel.checkOutDate,
                             room = hotelHomepageModel.roomCount,
-                            adult = hotelHomepageModel.adultCount,
-                            searchType = hotelHomepageModel.searchType,
-                            searchId = hotelHomepageModel.searchId)
+                            adult = hotelHomepageModel.adultCount)
                     startActivityForResult(HotelSearchResultActivity.createIntent(this, hotelSearchModel), REQUEST_CODE_SEARCH)
                 }
             }
@@ -419,12 +418,10 @@ class HotelHomepageFragment : HotelBaseFragment(),
     private fun renderHotelPromo(promoDataList: List<TravelCollectiveBannerModel.Banner>) {
         showPromoContainer()
 
-        banner_hotel_homepage_promo.setBannerIndicator(Indicator.GREEN)
-        banner_hotel_homepage_promo.setOnPromoScrolledListener { position ->
-            trackingHotelUtil.hotelBannerImpression(promoDataList.getOrNull(position)
-                    ?: TravelCollectiveBannerModel.Banner(), position)
+        for ((index, promo) in promoDataList.withIndex()) {
+            trackingHotelUtil.hotelBannerImpression(context, promo, index, HOMEPAGE_SCREEN_NAME)
         }
-        if (promoDataList.isNotEmpty()) trackingHotelUtil.hotelBannerImpression(promoDataList.first(), 0)
+        banner_hotel_homepage_promo.setBannerIndicator(Indicator.GREEN)
 
         banner_hotel_homepage_promo.setOnPromoClickListener { position ->
             onPromoClicked(promoDataList.getOrNull(position)
@@ -513,7 +510,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun onPromoClicked(promo: TravelCollectiveBannerModel.Banner, position: Int) {
-        trackingHotelUtil.hotelClickBanner(promo, position)
+        trackingHotelUtil.hotelClickBanner(context, promo, position, HOMEPAGE_SCREEN_NAME)
     }
 
     private fun showHotelLastSearchContainer() {

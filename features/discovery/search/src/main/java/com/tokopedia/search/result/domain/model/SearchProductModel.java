@@ -455,6 +455,9 @@ public class SearchProductModel {
         @SerializedName("query")
         @Expose
         private String query;
+        @SerializedName("type_id")
+        @Expose
+        private int typeId;
 
         public String getText() {
             return text;
@@ -463,6 +466,8 @@ public class SearchProductModel {
         public String getQuery() {
             return query;
         }
+
+        public int getTypeId() { return typeId; }
     }
 
     public static class Suggestion {

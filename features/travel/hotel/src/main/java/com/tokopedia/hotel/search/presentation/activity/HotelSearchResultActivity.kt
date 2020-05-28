@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -44,8 +45,6 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
         if (uri != null) {
             //for newer applink
             if (!uri.getQueryParameter(PARAM_ID).isNullOrEmpty()) {
-                hotelSearchModel.searchId = uri.getQueryParameter(PARAM_ID) ?: ""
-                hotelSearchModel.searchType = uri.getQueryParameter(PARAM_TYPE) ?: ""
                 hotelSearchModel.name = uri.getQueryParameter(PARAM_NAME) ?: ""
             } else {
                 // for older applink
@@ -104,6 +103,7 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
         val param = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         textView.layoutParams = param
         textView.text = resources.getString(R.string.hotel_search_result_change)
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
         textView.setTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Green_G500))
 
         wrapper.addView(textView)
@@ -144,8 +144,6 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
                 hotelSearchModel.checkOut,
                 hotelSearchModel.adult,
                 hotelSearchModel.room,
-                hotelSearchModel.searchId,
-                hotelSearchModel.searchType,
                 getString(R.string.hotel_search_result_change_toolbar_title)),
                 CHANGE_SEARCH_REQ_CODE)
     }
@@ -180,15 +178,12 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
                             checkIn = it.getStringExtra(HotelChangeSearchActivity.CHECK_IN_DATE),
                             checkOut = it.getStringExtra(HotelChangeSearchActivity.CHECK_OUT_DATE),
                             room = it.getIntExtra(HotelChangeSearchActivity.NUM_OF_ROOMS, 1),
-                            adult = it.getIntExtra(HotelChangeSearchActivity.NUM_OF_GUESTS, 0),
-                            searchType = it.getStringExtra(HotelChangeSearchActivity.SEARCH_TYPE),
-                            searchId = it.getStringExtra(HotelChangeSearchActivity.SEARCH_ID)
-                    )
+                            adult = it.getIntExtra(HotelChangeSearchActivity.NUM_OF_GUESTS, 0))
 
                     (fragment as HotelSearchResultFragment).let { searchFragment ->
                         searchFragment.searchResultviewModel.initSearchParam(hotelSearchModel)
                         searchFragment.searchDestinationName = hotelSearchModel.name
-                        searchFragment.searchDestinationType = if (hotelSearchModel.searchType.isNotEmpty()) hotelSearchModel.searchType else hotelSearchModel.type
+                        searchFragment.searchDestinationType = hotelSearchModel.type
 
                         setUpTitleAndSubtitle()
                         searchFragment.changeSearchParam()

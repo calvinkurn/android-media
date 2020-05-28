@@ -37,6 +37,7 @@ import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
@@ -57,12 +58,14 @@ import com.tokopedia.topchat.BuildConfig
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
+import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.QuotationViewHolder
+import com.tokopedia.topchat.chatroom.view.custom.TransactionOrderProgressLayout
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.*
@@ -90,7 +93,7 @@ import javax.inject.Inject
 class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         , TypingListener, SendButtonListener, ImagePickerListener, ChatTemplateListener,
         HeaderMenuListener, DualAnnouncementListener, TopChatVoucherListener,
-        InvoiceThumbnailListener, QuotationViewHolder.QuotationListener {
+        InvoiceThumbnailListener, QuotationViewHolder.QuotationListener, TransactionOrderProgressLayout.Listener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -122,9 +125,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private var seenAttachedProduct = HashSet<Int>()
     private var seenAttachedBannedProduct = HashSet<Int>()
     private var composeArea: EditText? = null
+    private var orderProgress: TransactionOrderProgressLayout? = null
 
     override fun rvAttachmentMenuId() = R.id.rv_attachment_menu
     override fun getRecyclerViewResourceId() = R.id.recycler_view
+    override fun getAnalytic(): TopChatAnalytics = analytics
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_topchat_chatroom, container, false).also {
@@ -134,6 +139,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private fun bindView(view: View?) {
         composeArea = view?.findViewById(R.id.new_comment)
+        orderProgress = view?.findViewById(R.id.ll_transaction_progress)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -184,6 +190,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     ::onSuccessGetExistingChatFirstTime
             )
             presenter.connectWebSocket(messageId)
+            presenter.getOrderProgress(messageId)
         } else {
             presenter.getMessageId(
                     toUserId,
@@ -196,8 +203,14 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     private fun initFireBase() {
-        fpm = PerformanceMonitoring.start(TopChatAnalytics.FPM_DETAIL_CHAT)
+        fpm = PerformanceMonitoring.start(getFpmKey())
         remoteConfig = FirebaseRemoteConfigImpl(activity)
+    }
+
+    private fun getFpmKey() = if (GlobalConfig.isSellerApp()) {
+        TopChatAnalytics.FPM_DETAIL_CHAT_SELLERAPP
+    } else {
+        TopChatAnalytics.FPM_DETAIL_CHAT
     }
 
     private fun setupPresenter(savedInstanceState: Bundle?) {
@@ -255,6 +268,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                 onSuccessGetShopFollowingStatus())
         adapter.setFirstHeaderDate(chatRoom.latestHeaderDate)
         renderList(chatRoom.listChat, chatRoom.canLoadMore)
+        orderProgress?.renderIfExist()
         getViewState().onSuccessLoadFirstTime(chatRoom, onToolbarClicked(), this, alertDialog, onUnblockChatClicked())
         getViewState().onSetCustomMessage(customMessage)
         presenter.getTemplate(getUserSession().shopId == shopId.toString())
@@ -459,6 +473,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun isUseCarousel(): Boolean? {
         return remoteConfig?.getBoolean(RemoteConfigKey.CHAT_PRODUCT_CAROUSEL, true)
+    }
+
+    override fun renderOrderProgress(chatOrder: ChatOrderProgress) {
+        orderProgress?.render(this, chatOrder)
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
@@ -974,6 +992,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                 success()
                 showSuccessToastWishListCta(R.string.title_topchat_success_atw)
             }
+
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
                 if (errorMessage == null) return
                 view?.let {

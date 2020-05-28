@@ -201,13 +201,9 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                     break;
                 case SettingConstant.SETTING_ACCOUNT_PASS_ID:
                     accountAnalytics.eventClickAccountSetting(PASSWORD);
-                    if (userSession.hasPassword()) {
-                        intent = RouteManager.getIntent(getActivity(), ApplinkConst
-                                .CHANGE_PASSWORD);
-                        getActivity().startActivityForResult(intent, REQUEST_CHANGE_PASSWORD);
-                    } else {
-                        intentToAddPassword();
-                    }
+                    accountAnalytics.eventClickAccountPassword();
+                    intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.HAS_PASSWORD);
+                    startActivity(intent);
                     break;
                 case SettingConstant.SETTING_PIN:
                     accountAnalytics.eventClickPinSetting();

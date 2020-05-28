@@ -80,6 +80,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PIN_ONBOARD
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_GENDER
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_NAME
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PIN
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.SHIPPING_CONFIRMATION
 import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICATION_BUYER
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational.INTERNAL_INBOX_LIST
@@ -187,6 +188,7 @@ object DeeplinkDFMapper {
             }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.TOP_ADS_DASHBOARD }))
             add(DFP({ it.startsWith(OPPORTUNITY) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.OPPORTUNITY }))
             add(DFP({ it.startsWith(SELLER_TRANSACTION) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.SELLER_ORDER }))
+            add(DFP({ it.startsWith(MERCHANT_SHOP_SHOWCASE_LIST) }, DF_MERCHANT_SELLER, R.string.merchant_seller))
 
             // Operational
             add(DFP({
@@ -242,6 +244,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(USER_IDENTIFICATION_FORM) }, DF_BASE, R.string.user_identification_common_title))
             add(DFP({ it.startsWith(ATTACH_INVOICE) }, DF_BASE, R.string.title_module_attachinvoice))
             add(DFP({ it.startsWith(ATTACH_VOUCHER) }, DF_BASE, R.string.title_module_attachvoucher))
+            add(DFP({ it.startsWith(ORDER_HISTORY) }, DF_BASE, R.string.title_module_attachvoucher))
             add(DFP({
                 it.startsWith(TOPCHAT_IDLESS) || it.startsWith(ApplinkConstInternalGlobal.TOPCHAT)
             }, DF_BASE, R.string.title_topchat))
@@ -271,6 +274,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(USER_IDENTIFICATION_FORM) }, DF_BASE, R.string.user_identification_common_title))
             add(DFP({ it.startsWith(TOPADS_DASHBOARD_SELLER) ||
                 it.startsWith(TOPADS_DASHBOARD_INTERNAL) }, DF_BASE, R.string.applink_topads_dashboard_title))
+            add(DFP({ it.startsWith(MERCHANT_SHOP_SHOWCASE_LIST) }, DF_BASE, R.string.merchant_seller))
         }
     }
 
