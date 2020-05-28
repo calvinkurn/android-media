@@ -15,13 +15,13 @@ data class VoucherListParam (
         @JvmStatic
         fun createParam(@VoucherTypeConst type: Int? = null,
                         @VoucherStatus status: String,
-                        @VoucherTarget target: String? = null,
+                        targetList: List<Int>? = null,
                         @VoucherSort sort: String? = null,
                         page: Int? = null) : VoucherListParam {
             return VoucherListParam(
                     voucher_type = type,
                     voucher_status = status,
-                    is_public = target,
+                    is_public = targetList?.joinToString(),
                     page = page,
                     sort_by = sort
             )

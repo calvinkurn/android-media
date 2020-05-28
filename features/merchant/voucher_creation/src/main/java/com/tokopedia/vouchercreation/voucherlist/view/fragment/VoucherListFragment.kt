@@ -23,8 +23,11 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.VoucherPeriodBottomSheet
+import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.detail.view.activity.VoucherDetailActivity
+import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherSort
 import com.tokopedia.vouchercreation.voucherlist.model.ui.*
 import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel.HeaderChip
 import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel.ResetChip
@@ -36,9 +39,11 @@ import com.tokopedia.vouchercreation.voucherlist.view.widget.CancelVoucherDialog
 import com.tokopedia.vouchercreation.voucherlist.view.widget.EditQuotaBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.MoreMenuBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.FilterBottomSheet
+import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.FilterBy
 import com.tokopedia.vouchercreation.voucherlist.view.widget.headerchips.ChipType
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sortbottomsheet.SortBottomSheet
+import kotlinx.android.synthetic.main.fragment_mvc_voucher_list.*
 import kotlinx.android.synthetic.main.fragment_mvc_voucher_list.view.*
 import javax.inject.Inject
 
@@ -94,7 +99,14 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     }
 
     private val isActiveVoucher by lazy { getBooleanArgs(KEY_IS_ACTIVE_VOUCHER, true) }
+
     private var isToolbarAlreadyLoaded = false
+
+    @VoucherTypeConst
+    private var voucherType: Int? = null
+    private var voucherTarget: List<Int>? = null
+    @VoucherSort
+    private var voucherSort: String? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_mvc_voucher_list, container, false)
@@ -157,7 +169,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         if (isActiveVoucher) {
             mViewModel.getActiveVoucherList()
         } else {
-            mViewModel.getVoucherListHistory(null, null, null, page)
+            mViewModel.getVoucherListHistory(voucherType, voucherTarget, voucherSort, page)
         }
     }
 
@@ -355,14 +367,19 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         sortItems.addAll(SortBottomSheet.getMvcSortItems(requireContext()))
         filterItems.clear()
         filterItems.addAll(FilterBottomSheet.getMvcFilterItems(requireContext()))
-        view?.headerChipMvc?.hideResetButton()
+
+        voucherTarget = null
+        voucherSort = null
+        voucherType = null
+
+        view?.headerChipMvc?.resetFilter()
     }
 
     private fun showSortBottomSheet() {
         if (!isAdded) return
         sortBottomSheet
                 ?.setOnApplySortListener {
-                    showResetChip()
+                    applyFilter()
                 }
                 ?.setOnCancelApply { previousSortItems ->
                     sortItems.clear()
@@ -375,7 +392,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         if (!isAdded) return
         filterBottomSheet
                 ?.setOnApplyClickListener {
-                    showResetChip()
+                    applyFilter()
                 }
                 ?.setCancelApplyFilter { previousFilterItems ->
                     filterItems.clear()
@@ -384,11 +401,45 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                 ?.show(childFragmentManager, filterItems)
     }
 
-    private fun showResetChip() {
-        val canResetFilter = filterItems.filterIsInstance<HeaderChip>().any { it.isActive }
+    private fun applyFilter() {
+        clearAllData()
+
+        val activeFilterList = filterItems.filterIsInstance<BaseFilterUiModel.FilterItem>().filter { it.isSelected }
+        val canResetFilter = activeFilterList.isNotEmpty()
         if (canResetFilter) {
             view?.headerChipMvc?.showResetButton()
         }
+        headerChipMvc?.setActiveFilter(activeFilterList)
+
+        val voucherTypeFilter = activeFilterList.filter { it.key == FilterBy.CASHBACK || it.key == FilterBy.FREE_SHIPPING }
+        if (voucherTypeFilter.size == 1) {
+            voucherTypeFilter.first { it.key == FilterBy.CASHBACK || it.key == FilterBy.FREE_SHIPPING }.key.let { type ->
+                voucherType =
+                        when(type) {
+                            FilterBy.FREE_SHIPPING -> VoucherTypeConst.FREE_ONGKIR
+                            FilterBy.CASHBACK -> VoucherTypeConst.CASHBACK
+                            else -> VoucherTypeConst.DISCOUNT
+                        }
+            }
+        } else {
+            voucherType = null
+        }
+
+        val voucherTargetFilter = activeFilterList.filter { it.key == FilterBy.PUBLIC || it.key == FilterBy.SPECIAL }
+        voucherTarget =
+                if (voucherTargetFilter.size in 1..2) {
+                    voucherTargetFilter.map {
+                        when(it.key) {
+                            FilterBy.PUBLIC -> VoucherTargetType.PUBLIC
+                            FilterBy.SPECIAL -> VoucherTargetType.PRIVATE
+                            else -> VoucherTargetType.PUBLIC
+                        }
+                    }.sorted()
+                } else {
+                    null
+                }
+
+        loadData(1)
     }
 
     private inline fun <reified T : BottomSheetUnify> dismissBottomSheet(tag: String) {

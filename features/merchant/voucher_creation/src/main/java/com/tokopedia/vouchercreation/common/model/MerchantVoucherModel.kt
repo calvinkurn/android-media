@@ -98,6 +98,6 @@ data class MerchantVoucherModel(
         @SerializedName("voucher_type")
         val voucherType: Int = 0,
         @Expose
-        @SerializedName("Voucher_type_formatted")
+        @SerializedName("voucher_type_formatted")
         val voucherTypeFormatted: String = ""
 )

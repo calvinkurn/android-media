@@ -247,6 +247,7 @@
     <string name="mvc_stopped_at">Dibatalkan pada %s</string>
     <string name="mvc_find_shop_voucher">Cari voucher toko</string>
     <string name="mvc_success_update_period">Periode tampil berhasil diubah.</string>
+    <string name="mvc_chip_multiple_filter">%s Jenis</string>
 
     <!-- voucher detail -->
     <string name="mvc_detail_voucher_info">Info voucher</string>

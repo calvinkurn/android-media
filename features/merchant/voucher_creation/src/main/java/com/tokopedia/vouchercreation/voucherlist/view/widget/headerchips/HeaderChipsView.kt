@@ -6,7 +6,9 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseFilterUiModel
 import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel
 import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel.HeaderChip
 import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel.ResetChip
@@ -84,9 +86,25 @@ class HeaderChipsView : RecyclerView {
         notifyItem(resetChip)
     }
 
-    fun hideResetButton() {
+    fun resetFilter() {
         resetChip.isVisible = false
-        notifyItem(resetChip)
+        filterChip.isActive = false
+        filterChip.text = context.getString(R.string.mvc_voucher_type)
+        sortChip.isActive = false
+        chipAdapter.notifyDataSetChanged()
+    }
+
+    fun setActiveFilter(activeFilterList: List<BaseFilterUiModel.FilterItem>) {
+        filterChip.run {
+            val filterSize = activeFilterList.size
+            isActive = filterSize > 0
+            text = when(filterSize) {
+                0 -> return@run
+                1 -> activeFilterList.first().label
+                else -> String.format(context?.getString(R.string.mvc_chip_multiple_filter).toBlankOrString(), filterSize.toString())
+            }
+        }
+        notifyItem(filterChip)
     }
 
     fun setOnItemClickListener(onClick: (element: BaseHeaderChipUiModel) -> Unit) {
