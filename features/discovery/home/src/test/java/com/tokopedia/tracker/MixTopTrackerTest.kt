@@ -109,6 +109,27 @@ class MixTopTrackerTest : Spek({
         }
     }
 
+    Feature("Click banner background tracker"){
+        Scenario("Click on banner background"){
+            Given("the real data"){
+                every { testTracker.getTracker() } returns DataLayer.mapOf(
+                        "event", "clickHomepage",
+                        "eventCategory", "homepage",
+                        "eventAction", "click on background dynamic channel top carousel",
+                        "eventLabel", channel.id + " - " + channel.header.name,
+                        "currentSite", "tokopediamarketplace",
+                        "screenName", "/",
+                        "userId", userId,
+                        "businessUnit", "home & browse"
+                )
+            }
+            Then("must true") {
+                val result = areEqualKeyValues(testTracker.getTracker(), MixTopTracking.getBackgroundClick(channel, userId))
+                Assert.assertEquals(result, true)
+            }
+        }
+    }
+
     Feature("Click button tracker"){
         Scenario("Click on button"){
             Given("the real data"){

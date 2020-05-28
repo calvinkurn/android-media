@@ -104,7 +104,7 @@ object MixTopTracking : BaseTracking() {
             Event.KEY, Event.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
             Action.KEY, CustomAction.CLICK_BACKGROUND,
-            Label.KEY, StringBuilder().append(channels.id).append(" - ").append(channels.header.name),
+            Label.KEY, channels.id + " - " + channels.header.name,
             Screen.KEY, Screen.DEFAULT,
             CurrentSite.KEY, CurrentSite.DEFAULT,
             Screen.KEY, Screen.DEFAULT,
