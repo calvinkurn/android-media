@@ -51,7 +51,7 @@ data class DFConfig(
     @Expose
     val moduleRestrictInBackground: List<String>? = emptyList(),
 
-    @SerializedName("timeout")
+    @SerializedName("dl_in_bg_show_fallback_time")
     @Expose
     val timeout: Long = 60
 

@@ -247,20 +247,14 @@ object DFInstaller {
         val dfConfig = DFRemoteConfig.getConfig(context.applicationContext)
         if (dfConfig.downloadInBackground && !dfConfig.downloadInBackgroundExcludedSdkVersion.contains(Build.VERSION.SDK_INT)) {
             // this is to filter which module that download in background, or defered-background, based on remote config
-            var restrictedInBgModuleNameList: List<String>? = null
             val eligibleInBgModuleNameList: List<String>
             if (dfConfig.moduleRestrictInBackground?.isNotEmpty() == true) {
-                val pair = filteredModuleNameList.partition { it in dfConfig.moduleRestrictInBackground }
-                restrictedInBgModuleNameList = pair.first
-                eligibleInBgModuleNameList = pair.second
+                eligibleInBgModuleNameList = filteredModuleNameList.filter { it !in dfConfig.moduleRestrictInBackground }
             } else {
                 eligibleInBgModuleNameList = filteredModuleNameList
             }
             if (eligibleInBgModuleNameList.isNotEmpty()) {
                 DFDownloader.startSchedule(context.applicationContext, eligibleInBgModuleNameList, true)
-            }
-            if (restrictedInBgModuleNameList?.isNotEmpty() == true) {
-                startDeferredInstall(context, restrictedInBgModuleNameList, message)
             }
         } else {
             startDeferredInstall(context, filteredModuleNameList, message)
