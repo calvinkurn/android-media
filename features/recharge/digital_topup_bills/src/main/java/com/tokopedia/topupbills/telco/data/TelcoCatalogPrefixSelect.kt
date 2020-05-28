@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by nabillasabbaha on 10/05/19.
  */
-class TelcoCatalogPrefixSelect(
+data class TelcoCatalogPrefixSelect(
         @SerializedName("rechargeCatalogPrefixSelect")
         @Expose
         val rechargeCatalogPrefixSelect: RechargeCatalogPrefixSelect

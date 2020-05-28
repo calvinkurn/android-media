@@ -7,7 +7,7 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 /**
  * Created by nabillasabbaha on 10/05/19.
  */
-class TelcoCatalogProductInput(
+data class TelcoCatalogProductInput(
         @SerializedName("label")
         @Expose
         val label: String = "",
@@ -25,7 +25,7 @@ class TelcoCatalogProductInput(
         val products: TelcoCatalogProduct = TelcoCatalogProduct(),
         var productType: Int = TelcoProductType.PRODUCT_GRID)
 
-class TelcoCatalogEnquiryFields(
+data class TelcoCatalogEnquiryFields(
         @SerializedName("id")
         @Expose
         val id: Int = 0,

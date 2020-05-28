@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by nabillasabbaha on 10/05/19.
  */
-class TelcoOperator(
+data class TelcoOperator(
         @SerializedName("id")
         @Expose
         val id: String,

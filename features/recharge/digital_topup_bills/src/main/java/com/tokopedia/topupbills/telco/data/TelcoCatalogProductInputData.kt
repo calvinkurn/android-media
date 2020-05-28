@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by nabillasabbaha on 10/05/19.
  */
-class TelcoCatalogProductInputData(
+data class TelcoCatalogProductInputData(
         @SerializedName("productInputs")
         @Expose
         val productInputList: List<TelcoCatalogProductInput> = listOf())
