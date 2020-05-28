@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.productcard.ProductCardFlashSaleView
+<com.tokopedia.productcard.ProductCardGridView
     android:id="@+id/productCardView"
     android:layout_width="@dimen/product_card_flashsale_width"
     android:layout_height="match_parent"
