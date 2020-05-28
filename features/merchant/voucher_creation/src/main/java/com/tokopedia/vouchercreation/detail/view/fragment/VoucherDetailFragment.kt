@@ -213,9 +213,15 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
             }
 
             with(voucherDetailInfoList) {
+                val voucherTargetType =
+                        if (isPublic) {
+                            VoucherTargetType.PUBLIC
+                        } else {
+                            VoucherTargetType.PRIVATE
+                        }
                 addAll(listOf(
                         DividerUiModel(DividerUiModel.THICK),
-                        getVoucherInfoSection(type, name, code),
+                        getVoucherInfoSection(voucherTargetType, name, code),
                         DividerUiModel(DividerUiModel.THIN)
                 ))
                 getVoucherImageType(type, discountTypeFormatted, discountAmt, discountAmtMax)?.let { imageType ->
