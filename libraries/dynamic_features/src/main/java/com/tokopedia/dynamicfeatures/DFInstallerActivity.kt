@@ -150,6 +150,12 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
     }
 
     private fun loadAndLaunchModule(moduleName: String) {
+        // Skip loading if the module already is installed. Perform success action directly.
+        if (DFInstaller.isInstalled(this@DFInstallerActivity, moduleName)) {
+            onSuccessfulLoad(moduleName, launch = true)
+            return
+        }
+        
         if (allowRunningServiceFromActivity) {
             DFInstaller.installOnBackground(this, listOf(moduleName), this::class.java.simpleName.toString())
             DFInstaller.attachView(this)
@@ -158,12 +164,6 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         } else {
             launch {
                 resetDFInfo()
-
-                // Skip loading if the module already is installed. Perform success action directly.
-                if (DFInstaller.isInstalled(this@DFInstallerActivity, moduleName)) {
-                    onSuccessfulLoad(moduleName, launch = true)
-                    return@launch
-                }
 
                 // Create request to install a feature module by name.
                 val request = SplitInstallRequest.newBuilder()
