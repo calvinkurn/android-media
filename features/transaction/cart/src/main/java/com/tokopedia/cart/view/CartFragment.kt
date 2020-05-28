@@ -542,7 +542,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         enableSwipeRefresh()
                     }
                     if (!isButtonAnimating && TRANSLATION_LENGTH < 5000 && dy > 0) {
-                        TRANSLATION_LENGTH += (dy * 10f)
+                        TRANSLATION_LENGTH += (dy * 25f)
                     }
                     hidePromoButton()
                 }
