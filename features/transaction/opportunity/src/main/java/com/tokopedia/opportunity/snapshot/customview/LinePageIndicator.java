@@ -32,7 +32,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 
 import com.tkpd.library.viewpagerindicator.PageIndicator;
-import com.tokopedia.core2.R;
+import com.tokopedia.opportunity.R;
 
 /**
  * Draws a line for each page. The current page line is colored differently
@@ -61,7 +61,7 @@ public class LinePageIndicator extends View implements PageIndicator {
     }
 
     public LinePageIndicator(Context context, AttributeSet attrs) {
-        this(context, attrs, R.attr.vpiLinePageIndicatorStyle);
+        this(context, attrs, com.tokopedia.design.R.attr.vpiLinePageIndicatorStyle);
     }
 
     public LinePageIndicator(Context context, AttributeSet attrs, int defStyle) {
@@ -71,12 +71,12 @@ public class LinePageIndicator extends View implements PageIndicator {
         final Resources res = getResources();
 
         //Load defaults from resources
-        final int defaultSelectedColor = res.getColor(R.color.default_line_indicator_selected_color);
-        final int defaultUnselectedColor = res.getColor(R.color.default_line_indicator_unselected_color);
-        final float defaultLineWidth = res.getDimension(R.dimen.default_line_indicator_line_width);
-        final float defaultGapWidth = res.getDimension(R.dimen.default_line_indicator_gap_width);
-        final float defaultStrokeWidth = res.getDimension(R.dimen.default_line_indicator_stroke_width);
-        final boolean defaultCentered = res.getBoolean(R.bool.default_line_indicator_centered);
+        final int defaultSelectedColor = res.getColor(com.tokopedia.design.R.color.default_line_indicator_selected_color);
+        final int defaultUnselectedColor = res.getColor(com.tokopedia.design.R.color.default_line_indicator_unselected_color);
+        final float defaultLineWidth = res.getDimension(com.tokopedia.design.R.dimen.default_line_indicator_line_width);
+        final float defaultGapWidth = res.getDimension(com.tokopedia.design.R.dimen.default_line_indicator_gap_width);
+        final float defaultStrokeWidth = res.getDimension(com.tokopedia.design.R.dimen.default_line_indicator_stroke_width);
+        final boolean defaultCentered = res.getBoolean(com.tokopedia.design.R.bool.default_line_indicator_centered);
 
         //Retrieve styles attributes
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.LinePageIndicator, defStyle, 0);

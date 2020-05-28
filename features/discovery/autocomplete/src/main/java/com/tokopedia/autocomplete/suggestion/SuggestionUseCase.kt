@@ -30,8 +30,9 @@ class SuggestionUseCase(
         private const val DEFAULT_SOURCE = "searchbar"
         private const val DEFAULT_COUNT = "5"
         private const val DEVICE_ID = "device_id"
+        private const val IS_TYPING = "is_typing"
 
-        fun getParams(searchParameter: Map<String, Any>, registrationId: String, userId: String): RequestParams {
+        fun getParams(searchParameter: Map<String, Any>, registrationId: String, userId: String, isTyping: Boolean): RequestParams {
             val params = RequestParams.create()
 
             params.putAll(searchParameter)
@@ -46,6 +47,7 @@ class SuggestionUseCase(
             }
             params.putString(KEY_UNIQUE_ID, uniqueId)
             params.putString(DEVICE_ID, registrationId)
+            params.putBoolean(IS_TYPING, isTyping)
 
             return params
         }
