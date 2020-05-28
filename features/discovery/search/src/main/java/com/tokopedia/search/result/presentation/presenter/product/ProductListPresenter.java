@@ -11,6 +11,7 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel;
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel.WishlistResult;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
+import com.tokopedia.kotlin.extensions.view.StringExtKt;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -451,7 +452,7 @@ final class ProductListPresenter
             if (productViewModel.getProductList().isEmpty()) {
                 getViewToRemoveLoading();
             } else {
-                getViewToShowMoreData(searchParameter, productViewModel);
+                getViewToShowMoreData(searchParameter, searchProductModel, productViewModel);
             }
 
             setTotalData(productViewModel.getTotalData());
@@ -473,13 +474,13 @@ final class ProductListPresenter
         getView().removeLoading();
     }
 
-    private void getViewToShowMoreData(Map<String, Object> searchParameter, ProductViewModel productViewModel) {
+    private void getViewToShowMoreData(Map<String, Object> searchParameter, SearchProductModel searchProductModel, ProductViewModel productViewModel) {
         List<Visitable> list = new ArrayList<>(convertToListOfVisitable(productViewModel));
         productList.addAll(list);
 
         processInspirationCarouselPosition(searchParameter, list);
 
-        if (productViewModel.getTotalData() <= productList.size() && isShowBroadMatch()) {
+        if (isResponseProductSizeLowerThanRequested(searchProductModel.getSearchProduct()) && isShowBroadMatch()) {
             processSuggestionAndBroadMatch(list);
         }
 
@@ -797,11 +798,15 @@ final class ProductListPresenter
     private void processSuggestionAndBroadMatch(List<Visitable> visitableList) {
         if (suggestionViewModel != null && !textIsEmpty(suggestionViewModel.getSuggestionText())) {
             visitableList.add(suggestionViewModel);
+
+            suggestionViewModel = null;
         }
 
         if (relatedViewModel != null) {
             visitableList.addAll(relatedViewModel.getBroadMatchViewModelList());
             trackBroadMatchImpression();
+
+            relatedViewModel = null;
         }
     }
 
@@ -926,7 +931,7 @@ final class ProductListPresenter
         inspirationCarouselViewModel = productViewModel.getInspirationCarouselViewModel();
         processInspirationCarouselPosition(searchParameter, list);
 
-        if (productViewModel.getTotalData() <= productList.size() && isShowBroadMatch()) {
+        if (isResponseProductSizeLowerThanRequested(searchProduct) && isShowBroadMatch()) {
             processSuggestionAndBroadMatch(list);
         }
 
@@ -942,6 +947,13 @@ final class ProductListPresenter
 
         getView().setTotalSearchResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
         getView().stopTracePerformanceMonitoring();
+    }
+
+    private boolean isResponseProductSizeLowerThanRequested(@NotNull SearchProductModel.SearchProduct searchProduct) {
+        int organicProductListSize = searchProduct.getProducts().size();
+        int requestedProductSize = StringExtKt.toIntOrZero(getSearchRows());
+
+        return organicProductListSize < requestedProductSize;
     }
 
     private boolean shouldShowCpmShop(ProductViewModel productViewModel) {

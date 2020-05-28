@@ -22,6 +22,9 @@ private const val broadMatchResponseCode4NoSuggestion = "searchproduct/broadmatc
 private const val broadMatchResponseCode5 = "searchproduct/broadmatch/response-code-5.json"
 private const val broadMatchResponseCode5Page1 = "searchproduct/broadmatch/response-code-5-page-1.json"
 private const val broadMatchResponseCode5Page2 = "searchproduct/broadmatch/response-code-5-page-2.json"
+private const val broadMatchResponseCode5Page1WithTopads = "searchproduct/broadmatch/response-code-5-page-1-with-topads.json"
+private const val broadMatchResponseCode5Page2WithTopads = "searchproduct/broadmatch/response-code-5-page-2-with-topads.json"
+private const val broadMatchResponseCode5Page3WithTopads = "searchproduct/broadmatch/response-code-5-page-3-with-topads.json"
 
 internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
 
@@ -216,8 +219,9 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
     private fun `Then assert suggestion view model is positioned after product list`(visitableList: List<Visitable<*>>) {
         val lastProductItemIndex = visitableList.indexOfLast { it is ProductItemViewModel }
         val expectedSuggestionViewModelIndex = lastProductItemIndex + 1
+        val actualSuggestionViewModelIndex = visitableList.indexOfFirst { it is SuggestionViewModel }
 
-        visitableList.indexOfFirst { it is SuggestionViewModel } shouldBe expectedSuggestionViewModelIndex
+        actualSuggestionViewModelIndex shouldBe expectedSuggestionViewModelIndex
     }
 
     @Test
@@ -233,7 +237,11 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         `When Load More Data`()
 
         `Then assert view will add product list`(visitableList)
-        `Then assert SuggestionViewModel is after the last product item view model`(visitableList)
+        `Then assert suggestion view model is positioned after product list`(visitableList)
+        val expectedBroadMatchStartingPosition = visitableList.indexOfLast { it is SuggestionViewModel } + 1
+        `Then assert visitable list contains BroadMatchViewModel`(
+                expectedBroadMatchStartingPosition, visitableList, searchProductModelPage1
+        )
         `Then assert tracking event impression broad match`(visitableList)
     }
 
@@ -266,10 +274,49 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         visitableList.addAll(visitableListSlot.captured)
     }
 
-    private fun `Then assert SuggestionViewModel is after the last product item view model`(visitableList: List<Visitable<*>>) {
-        val expectedSuggestionViewModelIndex = visitableList.indexOfLast { it is ProductItemViewModel } + 1
-        val actualSuggestionViewModelIndex = visitableList.indexOfFirst { it is SuggestionViewModel }
+    @Test
+    fun `Show broad match under product list on page 2 and above with topads`() {
+        val visitableList = mutableListOf<Visitable<*>>()
+        val searchProductModelPage1 = broadMatchResponseCode5Page1WithTopads.jsonToObject<SearchProductModel>()
+        val searchProductModelPage2 = broadMatchResponseCode5Page2WithTopads.jsonToObject<SearchProductModel>()
+        val searchProductModelPage3 = broadMatchResponseCode5Page3WithTopads.jsonToObject<SearchProductModel>()
 
-        actualSuggestionViewModelIndex shouldBe expectedSuggestionViewModelIndex
+        `Given Search Product API will return SearchProductModel`(searchProductModelPage1)
+        `Given Search Product Load More API will return SearchProductModel page 2 and 3`(searchProductModelPage2, searchProductModelPage3)
+        `Given Product List Presenter already load data`(visitableList)
+        `Given visitable list captured when add product list`()
+
+        `When Load More Data twice`(visitableList)
+
+        `Then assert suggestion view model is positioned after product list`(visitableList)
+        val expectedBroadMatchStartingPosition = visitableList.indexOfLast { it is SuggestionViewModel } + 1
+        `Then assert visitable list contains BroadMatchViewModel`(
+                expectedBroadMatchStartingPosition, visitableList, searchProductModelPage1
+        )
+        `Then assert tracking event impression broad match`(visitableList)
+    }
+
+    private fun `Given Search Product Load More API will return SearchProductModel page 2 and 3`(
+            searchProductModelPage2: SearchProductModel, searchProductModelPage3: SearchProductModel
+    ) {
+        every { searchProductLoadMoreUseCase.execute(any(), any()) }.answers {
+            secondArg<Subscriber<SearchProductModel>>().complete(searchProductModelPage2)
+        }.andThen {
+            secondArg<Subscriber<SearchProductModel>>().complete(searchProductModelPage3)
+        }
+    }
+
+    private fun `Given visitable list captured when add product list`() {
+        every {
+            productListView.addProductList(capture(visitableListSlot))
+        } just runs
+    }
+
+    private fun `When Load More Data twice`(visitableList: MutableList<Visitable<*>>) {
+        every { productListView.addProductList(capture(visitableListSlot)) }.answers {
+            visitableList.addAll(visitableListSlot.captured)
+        }
+        productListPresenter.loadMoreData(mapOf())
+        productListPresenter.loadMoreData(mapOf())
     }
 }
