@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.TextView
-import com.tokopedia.transaction.common.R
+import com.tokopedia.buyerorder.R
 
 class RejectOrderReasonAdapter(var reasons: List<String>?) : RecyclerView.Adapter<RejectOrderReasonAdapter.ViewHolder>() {
     private var actionListener: ActionListener? = null
