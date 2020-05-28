@@ -13,6 +13,7 @@ import android.os.Handler
 import android.provider.Settings
 import android.text.TextUtils
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -1383,7 +1384,11 @@ open class HomeFragment : BaseDaggerFragment(),
         if (!TextUtils.isEmpty(url) && context != null) {
             val intent = RouteManager.getIntent(context, ApplinkConst.PROMO)
             intent.putExtra(EXTRA_URL, url)
-            startActivity(intent)
+            try {
+                startActivity(intent)
+            } catch (exception: ActivityNotFoundException) {
+                exception.printStackTrace()
+            }
         }
     }
 

@@ -69,6 +69,7 @@ class PlayBannerUITest{
     private val declineRechargeRecommendationUseCase = mockk<DeclineRechargeRecommendationUseCase>(relaxed = true)
     private val closeChannelUseCase = mockk<CloseChannelUseCase>(relaxed = true)
     private val homeDataMapper = HomeDataMapper(InstrumentationRegistry.getInstrumentation().context, HomeVisitableFactoryImpl(userSessionInterface), mockk(relaxed = true))
+    private val injectCouponTimeBasedUseCase = mockk<InjectCouponTimeBasedUseCase>(relaxed = true)
 
     private val context = InstrumentationRegistry.getInstrumentation().context
     private lateinit var viewModel: HomeViewModel
@@ -360,6 +361,7 @@ class PlayBannerUITest{
             getAtcUseCase = getAtcUseCase,
             closeChannelUseCase = closeChannelUseCase,
             getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
-            declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase
+            declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase,
+            injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase
     )
 }

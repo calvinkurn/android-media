@@ -14,6 +14,9 @@ import com.google.firebase.FirebaseApp;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
+import com.tokopedia.applink.ApplinkDelegate;
+import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.TkpdCoreRouter;
@@ -41,7 +44,7 @@ import java.util.UUID;
 
 import okhttp3.Response;
 
-public class InstrumentationTestApp extends BaseMainApplication implements TkpdCoreRouter, NetworkRouter {
+public class InstrumentationTestApp extends BaseMainApplication implements TkpdCoreRouter, NetworkRouter, ApplinkRouter {
     public static final String MOCK_ADS_ID = "2df9e57a-849d-4259-99ea-673107469eef";
     public static final String MOCK_FINGERPRINT_HASH = "eyJjYXJyaWVyIjoiQW5kcm9pZCIsImN1cnJlbnRfb3MiOiI4LjAuMCIsImRldmljZV9tYW51ZmFjdHVyZXIiOiJHb29nbGUiLCJkZXZpY2VfbW9kZWwiOiJBbmRyb2lkIFNESyBidWlsdCBmb3IgeDg2IiwiZGV2aWNlX25hbWUiOiJBbmRyb2lkIFNESyBidWlsdCBmb3IgeDg2IiwiZGV2aWNlX3N5c3RlbSI6ImFuZHJvaWQiLCJpc19lbXVsYXRvciI6dHJ1ZSwiaXNfamFpbGJyb2tlbl9yb290ZWQiOmZhbHNlLCJpc190YWJsZXQiOmZhbHNlLCJsYW5ndWFnZSI6ImVuX1VTIiwibG9jYXRpb25fbGF0aXR1ZGUiOiItNi4xNzU3OTQiLCJsb2NhdGlvbl9sb25naXR1ZGUiOiIxMDYuODI2NDU3Iiwic2NyZWVuX3Jlc29sdXRpb24iOiIxMDgwLDE3OTQiLCJzc2lkIjoiXCJBbmRyb2lkV2lmaVwiIiwidGltZXpvbmUiOiJHTVQrNyIsInVzZXJfYWdlbnQiOiJEYWx2aWsvMi4xLjAgKExpbnV4OyBVOyBBbmRyb2lkIDguMC4wOyBBbmRyb2lkIFNESyBidWlsdCBmb3IgeDg2IEJ1aWxkL09TUjEuMTcwOTAxLjA0MykifQ==";
     public static final String MOCK_DEVICE_ID="cx68b1CtPII:APA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR";
@@ -62,6 +65,36 @@ public class InstrumentationTestApp extends BaseMainApplication implements TkpdC
         GraphqlClient.init(this);
         com.tokopedia.config.GlobalConfig.DEBUG = true;
         super.onCreate();
+    }
+
+    @Override
+    public void goToApplinkActivity(Context context, String applink) {
+
+    }
+
+    @Override
+    public void goToApplinkActivity(Activity activity, String applink, Bundle bundle) {
+
+    }
+
+    @Override
+    public Intent getApplinkIntent(Context context, String applink) {
+        return null;
+    }
+
+    @Override
+    public boolean isSupportApplink(String appLink) {
+        return false;
+    }
+
+    @Override
+    public ApplinkUnsupported getApplinkUnsupported(Activity activity) {
+        return null;
+    }
+
+    @Override
+    public ApplinkDelegate applinkDelegate() {
+        return null;
     }
 
     public static class DummyAppsFlyerAnalytics extends ContextAnalytics {

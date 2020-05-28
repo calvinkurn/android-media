@@ -6,6 +6,7 @@ import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.database.*
 import com.tokopedia.analyticsdebugger.debugger.domain.model.TopAdsVerificationData
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
 import rx.Observable
@@ -14,7 +15,7 @@ import javax.inject.Inject
 import kotlin.collections.HashMap
 
 class TopAdsVerificationNetworkSource @Inject
-internal constructor(val context: Context, val graphqlUseCase: GraphqlUseCase) {
+constructor(val context: Context, val graphqlUseCase: GraphqlUseCase) {
 
     var PENDING_DURATION_MS = 5 * 60 * 1000 // 5 minutes
 
@@ -51,23 +52,25 @@ internal constructor(val context: Context, val graphqlUseCase: GraphqlUseCase) {
         graphqlRequest.setVariables(variables)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
-        val response = graphqlUseCase.getData(RequestParams.EMPTY)
+        val response: TopAdsVerificationData? = graphqlUseCase.getData(RequestParams.EMPTY)
                 .getData<TopAdsVerificationData>(TopAdsVerificationData::class.java)
-        val resultList = response.topadsVerifyClicksViews.data
-        for (result in resultList) {
-            val item = urlCheckMap[result.url.trim()]
-            item?.let {
-                if (result.status) {
-                    if (result.type == it.eventType) {
-                        it.eventStatus = STATUS_MATCH
-                        updateItem(it)
+        val resultList = response?.topadsVerifyClicksViews?.data
+        resultList?.let {
+            for (result in resultList) {
+                val item = urlCheckMap[result.url.trim()]
+                item?.let {
+                    if (result.status) {
+                        if (result.type == it.eventType) {
+                            it.eventStatus = STATUS_MATCH
+                            updateItem(it)
+                        } else {
+                            it.eventStatus = STATUS_NOT_MATCH
+                            updateItem(it)
+                        }
                     } else {
-                        it.eventStatus = STATUS_NOT_MATCH
+                        it.eventStatus = STATUS_DATA_NOT_FOUND
                         updateItem(it)
                     }
-                } else {
-                    it.eventStatus = STATUS_DATA_NOT_FOUND
-                    updateItem(it)
                 }
             }
         }
