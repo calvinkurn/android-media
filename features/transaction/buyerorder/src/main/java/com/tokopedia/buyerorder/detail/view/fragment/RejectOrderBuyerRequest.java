@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.common.fragment;
+package com.tokopedia.buyerorder.detail.view.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -6,7 +6,7 @@ import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import com.google.android.material.textfield.TextInputLayout;
-import androidx.core.content.ContextCompat;
+
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,9 +18,7 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.transaction.common.R;
-import com.tokopedia.transaction.common.adapters.RejectOrderReasonAdapter;
-
-import org.jetbrains.annotations.NotNull;
+import com.tokopedia.buyerorder.detail.view.adapter.RejectOrderReasonAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,7 +29,7 @@ import java.util.Map;
  * Created by kris on 1/11/18. Tokopedia
  */
 
-public class RejectOrderBuyerRequest extends Fragment implements RejectOrderReasonAdapter.ActionListener{
+public class RejectOrderBuyerRequestFragment extends Fragment implements RejectOrderReasonAdapter.ActionListener{
 
     private static final String ORDER_ID_ARGUMENT = "ORDER_ID_ARGUMENT";
     private static final String NEW_CANCELLATION_FLOW_ARGUMENT = "NEW_CANCELLATION_FLOW_ARGUMENT";
@@ -49,16 +47,16 @@ public class RejectOrderBuyerRequest extends Fragment implements RejectOrderReas
     private String reasonCode;
 
 
-    public static RejectOrderBuyerRequest createFragment(String orderId) {
-        RejectOrderBuyerRequest fragment = new RejectOrderBuyerRequest();
+    public static RejectOrderBuyerRequestFragment createFragment(String orderId) {
+        RejectOrderBuyerRequestFragment fragment = new RejectOrderBuyerRequestFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ORDER_ID_ARGUMENT, orderId);
         fragment.setArguments(bundle);
         return fragment;
     }
 
-    public static RejectOrderBuyerRequest createFragment(String orderId, int newCancellationFlow) {
-        RejectOrderBuyerRequest fragment = new RejectOrderBuyerRequest();
+    public static RejectOrderBuyerRequestFragment createFragment(String orderId, int newCancellationFlow) {
+        RejectOrderBuyerRequestFragment fragment = new RejectOrderBuyerRequestFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ORDER_ID_ARGUMENT, orderId);
         bundle.putInt(NEW_CANCELLATION_FLOW_ARGUMENT, newCancellationFlow);
