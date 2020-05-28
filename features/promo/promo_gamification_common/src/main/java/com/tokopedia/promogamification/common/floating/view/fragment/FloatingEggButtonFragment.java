@@ -55,6 +55,8 @@ import com.tokopedia.track.TrackApp;
 
 import javax.inject.Inject;
 
+import dagger.Lazy;
+
 import static android.content.Context.MODE_PRIVATE;
 
 /**
@@ -87,7 +89,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     private Runnable visibilityRunnableToShow;
 
     @Inject
-    public FloatingEggPresenter floatingEggPresenter;
+    public Lazy<FloatingEggPresenter> floatingEggPresenter;
     private boolean isHideAnimating;
     private boolean needHideFloatingToken = true;
     private OnDragListener onDragListener;
@@ -358,17 +360,11 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        loadEggData();
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
         stopCountdownTimer();
         if (floatingEggPresenter != null) {
-            floatingEggPresenter.detachView();
+            floatingEggPresenter.get().detachView();
         }
         removeShowAnimationCallback();
     }
@@ -382,8 +378,8 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
     public void loadEggData() {
         removeShowAnimationCallback();
-        floatingEggPresenter.attachView(this);
-        floatingEggPresenter.getGetTokenTokopoints();
+        floatingEggPresenter.get().attachView(this);
+        floatingEggPresenter.get().getGetTokenTokopoints();
     }
 
     @Override

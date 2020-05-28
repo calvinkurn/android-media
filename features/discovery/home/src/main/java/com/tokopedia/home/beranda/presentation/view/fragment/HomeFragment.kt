@@ -755,7 +755,7 @@ open class HomeFragment : BaseDaggerFragment(),
             if (needToPerformanceMonitoring() && getPageLoadTimeCallback() != null) {
                 setOnRecyclerViewLayoutReady(isCache);
                 adapter?.submitList(data);
-                adapter?.notifyDataSetChanged();
+//                adapter?.notifyDataSetChanged();
             } else {
                 adapter?.submitList(data);
             }
@@ -1115,6 +1115,7 @@ open class HomeFragment : BaseDaggerFragment(),
             homePerformanceMonitoringListener?.stopHomePerformanceMonitoring(isCache);
             homePerformanceMonitoringListener = null;
             fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
+            loadEggData()
             viewModel.get().refresh(isFirstInstall())
         }
     }
