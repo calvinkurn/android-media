@@ -185,7 +185,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
             addOnScrollListener(object: RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        getVisibleWidgetData()
+                        requestVisibleWidgetsData()
                     }
                     super.onScrollStateChanged(recyclerView, newState)
                 }
@@ -206,7 +206,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         }
     }
 
-    private fun getVisibleWidgetData() {
+    private fun requestVisibleWidgetsData() {
         val layoutManager = recyclerView.layoutManager as GridLayoutManager
         val firstVisible = layoutManager.findFirstVisibleItemPosition()
         val lastVisible = layoutManager.findLastVisibleItemPosition()
@@ -439,11 +439,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
         if (isFirstLoad) {
             recyclerView.post {
-                getVisibleWidgetData()
+                requestVisibleWidgetsData()
             }
             isFirstLoad = false
         } else {
-            getVisibleWidgetData()
+            requestVisibleWidgetsData()
         }
 
         setProgressBarVisibility(false)
@@ -613,7 +613,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
             }
         }
         view?.postDelayed({
-            getVisibleWidgetData()
+            requestVisibleWidgetsData()
         }, DELAY_FETCH_VISIBLE_WIDGET_DATA)
     }
 
@@ -629,7 +629,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         }
         showErrorToaster()
         view?.postDelayed({
-            getVisibleWidgetData()
+            requestVisibleWidgetsData()
         }, DELAY_FETCH_VISIBLE_WIDGET_DATA)
     }
 
