@@ -45,8 +45,7 @@ class CMPushNotificationManager : CoroutineScope {
         get() = (applicationContext as CMRouter).getBooleanRemoteConfig("app_cm_push_enable", false) || BuildConfig.DEBUG
 
     private val isInAppEnable: Boolean
-        get() = (applicationContext as CMRouter).getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_INAPP_ENABLE,
-                false) || BuildConfig.DEBUG
+        get() = true
 
     val cmPushEndTimeInterval: Long
         get() = (applicationContext as CMRouter).getLongRemoteConfig(CMConstant.RemoteKeys.KEY_CM_PUSH_END_TIME_INTERVAL,
