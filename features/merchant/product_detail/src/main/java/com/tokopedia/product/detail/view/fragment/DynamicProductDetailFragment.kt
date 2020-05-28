@@ -11,7 +11,6 @@ import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.util.SparseIntArray
 import android.view.*
 import android.view.animation.AlphaAnimation
@@ -679,10 +678,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    override fun onEditProductClick(product: ProductSnapshotDataModel, productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
-        DynamicProductDetailTracking.Click.eventEditProductClick(product, viewModel.isUserSessionActive, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-    }
-
     override fun getParentRecyclerViewPool(): RecyclerView.RecycledViewPool? {
         return getRecyclerView(view).recycledViewPool
     }
@@ -879,7 +874,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             val productP3value = viewModel.productInfoP3RateEstimate.value
             if (shopInfo != null && shopInfo.isAllowManage == 1) {
                 if (productInfo?.basic?.status != ProductStatusTypeDef.PENDING) {
-                    DynamicProductDetailTracking.Click.onEditProductClicked(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
+                    DynamicProductDetailTracking.Click.eventEditProductClick(viewModel.isUserSessionActive, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
                     gotoEditProduct()
                 } else {
                     activity?.run {
