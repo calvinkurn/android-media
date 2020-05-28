@@ -65,6 +65,11 @@ abstract class BaseTracking {
         const val DEFAULT = "tokopediamarketplace"
     }
 
+    protected object BusinessUnit{
+        const val KEY = "businessUnit"
+        const val DEFAULT = "home & browse"
+    }
+
     protected object ChannelId{
         const val KEY = "channelId"
     }

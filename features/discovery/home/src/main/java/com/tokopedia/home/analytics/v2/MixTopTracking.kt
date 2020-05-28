@@ -14,6 +14,7 @@ object MixTopTracking : BaseTracking() {
             const val CLICK_VIEW_ALL_CAROUSEL = "click view all on dynamic channel top carousel"
             const val CLICK_VIEW_ALL_CAROUSEL_CARD = "click view all card on dynamic channel top carousel"
             const val CLICK_BUTTON_CAROUSEL = "click %s on dynamic channel top carousel"
+            const val CLICK_BACKGROUND = "click on background dynamic channel top carousel"
         }
     }
 
@@ -93,5 +94,16 @@ object MixTopTracking : BaseTracking() {
     fun mapChannelToProductTracker(channels: DynamicHomeChannel.Channels) = channels.grids.withIndex().map {
         mapGridToProductTracker(it.value, channels.id, it.index, channels.persoType, channels.categoryID)
     }
+
+    fun getBackgroundClick(channels: DynamicHomeChannel.Channels, userId: String = "") = DataLayer.mapOf(
+            Event.KEY, Event.CLICK_HOMEPAGE,
+            Category.KEY, Category.HOMEPAGE,
+            Action.KEY, CustomAction.CLICK_BACKGROUND,
+            Label.KEY, StringBuilder().append(channels.id).append(" - ").append(channels.header.name),
+            Screen.KEY, Screen.DEFAULT,
+            CurrentSite.KEY, CurrentSite.DEFAULT,
+            UserId.KEY, userId,
+            BusinessUnit.KEY, BusinessUnit.DEFAULT
+    )
 
 }

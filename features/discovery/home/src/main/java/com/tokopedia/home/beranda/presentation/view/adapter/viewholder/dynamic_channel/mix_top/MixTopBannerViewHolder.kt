@@ -165,6 +165,11 @@ class MixTopBannerViewHolder(
         itemView.setOnClickListener {
             homeCategoryListener.onSectionItemClicked(channel.banner.applink)
         }
+
+        background.setOnClickListener {
+            homeCategoryListener.onDynamicChannelClicked(bannerItem.applink)
+            homeCategoryListener.sendEETracking(MixTopTracking.getBackgroundClick(channel, homeCategoryListener.userId) as HashMap<String, Any>)
+        }
     }
 
     private fun mappingItem(channel: DynamicHomeChannel.Channels, visitables: MutableList<Visitable<*>>) {
