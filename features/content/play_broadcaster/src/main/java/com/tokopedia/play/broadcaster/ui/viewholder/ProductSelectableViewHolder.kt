@@ -16,7 +16,10 @@ import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 /**
  * Created by jegul on 27/05/20
  */
-class ProductSelectableViewHolder(itemView: View) : BaseViewHolder(itemView) {
+class ProductSelectableViewHolder(
+        itemView: View,
+        private val listener: Listener
+) : BaseViewHolder(itemView) {
 
     private val ivImage: ImageView = itemView.findViewById(R.id.iv_image)
     private val cbSelected: CheckboxUnify = itemView.findViewById(R.id.cb_selected)
@@ -32,7 +35,7 @@ class ProductSelectableViewHolder(itemView: View) : BaseViewHolder(itemView) {
     }
 
     fun bind(item: ProductUiModel) {
-        cbSelected.isChecked = item.isSelected
+        cbSelected.isChecked = item.isSelectedHandler(item.id)
         ivImage.loadImage(item.imageUrl)
 
         tvProductName.text = item.name
@@ -50,10 +53,19 @@ class ProductSelectableViewHolder(itemView: View) : BaseViewHolder(itemView) {
             if (cbSelected.isEnabled)
                 cbSelected.isChecked = !cbSelected.isChecked
         }
+
+        cbSelected.setOnCheckedChangeListener { _, isChecked ->
+            listener.onProductSelectStateChanged(item.id, isChecked)
+        }
     }
 
     companion object {
 
         val LAYOUT = R.layout.item_product_selectable
+    }
+
+    interface Listener {
+
+        fun onProductSelectStateChanged(productId: Long, isSelected: Boolean)
     }
 }

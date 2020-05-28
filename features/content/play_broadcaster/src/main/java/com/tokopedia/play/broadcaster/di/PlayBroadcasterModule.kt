@@ -20,28 +20,23 @@ import javax.inject.Named
 class PlayBroadcasterModule {
 
     @Provides
-    @PlayBroadcasterScope
     @Named(PlayBroadcastDispatcher.MAIN)
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
     @Provides
-    @PlayBroadcasterScope
     @Named(PlayBroadcastDispatcher.IO)
     fun provideIODispatcher(): CoroutineDispatcher = Dispatchers.IO
 
     @Provides
-    @PlayBroadcasterScope
     @Named(PlayBroadcastDispatcher.COMPUTATION)
     fun provideComputationDispatcher(): CoroutineDispatcher = Dispatchers.Default
 
     @Provides
-    @PlayBroadcasterScope
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
     @Provides
-    @PlayBroadcasterScope
     fun provideLocalCacheHandler(@ApplicationContext context: Context): LocalCacheHandler {
         return LocalCacheHandler(context, KEY_GROUPCHAT_PREFERENCES)
     }

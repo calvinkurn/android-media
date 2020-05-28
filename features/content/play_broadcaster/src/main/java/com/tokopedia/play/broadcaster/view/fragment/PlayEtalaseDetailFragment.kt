@@ -10,8 +10,8 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.di.DaggerPlayBroadcasterComponent
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
+import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.PlayEtalaseDetailAdapter
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
@@ -29,7 +29,11 @@ class PlayEtalaseDetailFragment @Inject constructor(
     private lateinit var tvInfo: TextView
     private lateinit var rvProduct: RecyclerView
 
-    private val etalaseDetailAdapter = PlayEtalaseDetailAdapter()
+    private val etalaseDetailAdapter = PlayEtalaseDetailAdapter(object : ProductSelectableViewHolder.Listener {
+        override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
+            viewModel.selectProduct(productId, isSelected)
+        }
+    })
 
     override fun getTitle(): String {
         return ""

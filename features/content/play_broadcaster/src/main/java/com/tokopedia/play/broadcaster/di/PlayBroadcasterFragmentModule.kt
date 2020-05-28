@@ -19,29 +19,24 @@ import dagger.multibindings.IntoMap
 abstract class PlayBroadcasterFragmentModule {
 
     @Binds
-    @PlayBroadcasterScope
     abstract fun bindFragmentFactory(fragmentFactory: PlayBroadcastFragmentFactory): FragmentFactory
 
     @Binds
-    @PlayBroadcasterScope
     @IntoMap
     @FragmentKey(PlayBroadcastSetupBottomSheet::class)
     abstract fun getBroadcastSetupBottomSheet(fragment: PlayBroadcastSetupBottomSheet): Fragment
 
     @Binds
-    @PlayBroadcasterScope
     @IntoMap
     @FragmentKey(PlayEtalasePickerFragment::class)
     abstract fun getPlayEtalasePickerFragment(fragment: PlayEtalasePickerFragment): Fragment
 
     @Binds
-    @PlayBroadcasterScope
     @IntoMap
     @FragmentKey(PlayEtalaseDetailFragment::class)
     abstract fun getPlayEtalaseDetailFragment(fragment: PlayEtalaseDetailFragment): Fragment
 
     @Binds
-    @PlayBroadcasterScope
     @IntoMap
     @FragmentKey(PlayPrepareBroadcastFragment::class)
     abstract fun getPlayPrepareBroadcastFragment(fragment: PlayPrepareBroadcastFragment): Fragment

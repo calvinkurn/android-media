@@ -13,18 +13,22 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.util.BreadcrumbsModel
 import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
+import com.tokopedia.unifycomponents.UnifyButton
 import java.util.*
 import javax.inject.Inject
 
@@ -43,6 +47,9 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
     private lateinit var tvTitle: TextView
     private lateinit var clContent: ConstraintLayout
     private lateinit var flOverlay: FrameLayout
+    private lateinit var ivInventory: ImageView
+    private lateinit var btnAction: UnifyButton
+    private lateinit var tvBadgeCount: TextView
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
@@ -75,6 +82,12 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView(view)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        observeSelectedProducts()
     }
 
     override fun navigateToFragment(fragmentClass: Class<out Fragment>, extras: Bundle, recordBreadcrumbs: Boolean) {
@@ -132,6 +145,9 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
             tvTitle = findViewById(R.id.tv_title)
             clContent = findViewById(R.id.cl_content)
             flOverlay = findViewById(R.id.fl_overlay)
+            ivInventory = findViewById(R.id.iv_inventory)
+            btnAction = findViewById(R.id.btn_action)
+            tvBadgeCount = findViewById(R.id.tv_badge_count)
         }
     }
 
@@ -167,6 +183,26 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
             )
         }
     }
+
+    //region observe
+    /**
+     * Observe
+     */
+    private fun observeSelectedProducts() {
+        viewModel.observableSelectedProductIds.observe(viewLifecycleOwner, Observer {
+            if (it.isEmpty()) {
+                ivInventory.setImageResource(R.drawable.ic_play_inventory_disabled)
+                btnAction.isEnabled = false
+                tvBadgeCount.gone()
+            } else {
+                ivInventory.setImageResource(R.drawable.ic_play_inventory)
+                btnAction.isEnabled = true
+                tvBadgeCount.visible()
+                tvBadgeCount.text = it.size.toString()
+            }
+        })
+    }
+    //endregion
 
     companion object {
         private const val TAG = "PlayBroadcastSetupBottomSheet"

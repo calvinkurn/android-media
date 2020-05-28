@@ -18,4 +18,5 @@
     <string name="play_allow_camera">Aktifkan Akses Kamera</string>
     <string name="play_allow_mic">Aktifkan Akses Mikrofon</string>
 
+    <string name="play_next">Lanjutkan</string>
 </resources>

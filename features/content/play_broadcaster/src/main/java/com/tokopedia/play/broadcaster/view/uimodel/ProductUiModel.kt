@@ -8,7 +8,7 @@ data class ProductUiModel(
         val name: String,
         val imageUrl: String,
         val stock: Int,
-        val isSelected: Boolean
+        val isSelectedHandler: (Long) -> Boolean
 ) {
 
     val hasStock: Boolean

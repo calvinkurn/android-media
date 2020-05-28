@@ -3,7 +3,6 @@ package com.tokopedia.play.broadcaster.ui.viewholder
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -16,8 +15,7 @@ import com.tokopedia.play.broadcaster.view.uimodel.ProductUiModel
  */
 class ProductPreviewViewHolder(
         itemView: View,
-        gridLayoutManager: GridLayoutManager,
-        listener: Listener
+        gridLayoutManager: GridLayoutManager
 ) : BaseViewHolder(itemView) {
 
     private val ivImage: ImageView = itemView.findViewById(R.id.iv_image)
@@ -26,10 +24,6 @@ class ProductPreviewViewHolder(
 
     private val spanSizeLookup = gridLayoutManager.spanSizeLookup
     private val spanCount = gridLayoutManager.spanCount
-
-    init {
-        itemView.setOnClickListener { listener.onProductImagesClicked() }
-    }
 
     fun bind(item: ProductUiModel, itemCount: Int) {
         if (itemView.height != 0) {
@@ -72,10 +66,5 @@ class ProductPreviewViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_product_preview
-    }
-
-    interface Listener {
-
-        fun onProductImagesClicked()
     }
 }

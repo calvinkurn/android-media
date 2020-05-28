@@ -8,7 +8,6 @@ import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.view.uimodel.PlayEtalaseUiModel
 import com.tokopedia.play.broadcaster.view.uimodel.ProductUiModel
 import kotlinx.coroutines.*
-import org.jetbrains.annotations.TestOnly
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -32,7 +31,12 @@ class PlayEtalasePickerViewModel @Inject constructor(
         get() = _observableSelectedEtalase
     private val _observableSelectedEtalase = MutableLiveData<PlayEtalaseUiModel>()
 
+    val observableSelectedProductIds: LiveData<List<Long>>
+        get() = _observableSelectedProductIds
+    private val _observableSelectedProductIds = MutableLiveData<List<Long>>()
+
     private val etalaseMap = mutableMapOf<Long, PlayEtalaseUiModel>()
+    private val selectedProductIdList = mutableListOf<Long>()
 
     val maxProduct = PlayBroadcastMocker.getMaxSelectedProduct()
 
@@ -56,6 +60,13 @@ class PlayEtalasePickerViewModel @Inject constructor(
         }
     }
 
+    fun selectProduct(productId: Long, isSelected: Boolean) {
+        if (isSelected) selectedProductIdList.add(productId)
+        else selectedProductIdList.remove(productId)
+
+        _observableSelectedProductIds.value = selectedProductIdList
+    }
+
     private fun fetchEtalaseList() {
         scope.launch {
             val etalaseList = getEtalaseList()
@@ -65,6 +76,10 @@ class PlayEtalasePickerViewModel @Inject constructor(
                 it.copy(productList = it.productList.take(4))
             }
         }
+    }
+
+    private fun isProductSelected(productId: Long): Boolean {
+        return selectedProductIdList.contains(productId)
     }
 
     private suspend fun updateEtalaseMap(newEtalaseList: List<PlayEtalaseUiModel>) = withContext(computationDispatcher) {
@@ -78,10 +93,16 @@ class PlayEtalasePickerViewModel @Inject constructor(
     }
 
     private suspend fun getEtalaseProductsById(etalaseId: Long, page: Int) = withContext(ioDispatcher) {
-        return@withContext PlayBroadcastMocker.getMockProductList(10)
+        return@withContext PlayBroadcastMocker.getMockProductList(10).map {
+            it.copy(isSelectedHandler = ::isProductSelected)
+        }
     }
 
     private suspend fun getEtalaseList() = withContext(ioDispatcher) {
-        return@withContext PlayBroadcastMocker.getMockEtalaseList()
+        return@withContext PlayBroadcastMocker.getMockEtalaseList().map { etalase ->
+            etalase.copy(productList = etalase.productList.map { product ->
+                product.copy(isSelectedHandler = ::isProductSelected)
+            })
+        }
     }
 }
