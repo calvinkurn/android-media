@@ -9,14 +9,13 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.di.DaggerPlayBroadcasterComponent
 import com.tokopedia.play.broadcaster.view.adapter.PlaySummaryInfosAdapter
 import com.tokopedia.play.broadcaster.view.uimodel.SummaryUiModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
@@ -28,10 +27,8 @@ import javax.inject.Inject
  * @author by jessica on 26/05/20
  */
 
-class PlayBroadcastSummaryFragment : BaseDaggerFragment() {
+class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFactory: ViewModelFactory) : TkpdBaseV4Fragment() {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
     private lateinit var viewModel: PlayBroadcastSummaryViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,12 +41,6 @@ class PlayBroadcastSummaryFragment : BaseDaggerFragment() {
     }
 
     override fun getScreenName(): String = ""
-
-    override fun initInjector() = DaggerPlayBroadcasterComponent.create().inject(this)
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -110,9 +101,5 @@ class PlayBroadcastSummaryFragment : BaseDaggerFragment() {
         while (itemDecorationCount > 0) {
             removeItemDecorationAt(0)
         }
-    }
-
-    companion object {
-        fun newInstance(): PlayBroadcastSummaryFragment = PlayBroadcastSummaryFragment()
     }
 }
