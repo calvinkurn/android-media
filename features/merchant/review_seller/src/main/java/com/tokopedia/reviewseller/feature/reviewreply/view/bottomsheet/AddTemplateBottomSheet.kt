@@ -25,9 +25,6 @@ class AddTemplateBottomSheet(private val mActivity: FragmentActivity?,
         tvTitleTemplate = contentView?.findViewById(R.id.tfuTitleTemplate)
         tvDescTemplate = contentView?.findViewById(R.id.tfuDescTemplate)
         btnSubmitTemplate = contentView?.findViewById(R.id.btnSubmitTemplate)
-        showCloseIcon = true
-        isDragable = true
-        isFullpage = true
         setTitle(titleBottomSheet)
         setCloseClickListener {
             dismiss()
@@ -38,6 +35,9 @@ class AddTemplateBottomSheet(private val mActivity: FragmentActivity?,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         submitAddTemplate()
+        showCloseIcon = true
+        isDragable = true
+        isFullpage = true
     }
 
     fun showDialog() {
