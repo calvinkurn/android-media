@@ -117,8 +117,6 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
             context.finish()
             val newIntent = RouteManager.getIntent(context, ApplinkConsInternalDigital.INTERNAL_SMARTCARD_EMONEY,
                     DigitalExtraParam.EXTRA_NFC)
-            newIntent.replaceExtras(intent)
-            newIntent.setAction(intent.getAction())
             startActivity(newIntent)
         }
     }

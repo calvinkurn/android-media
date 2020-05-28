@@ -142,8 +142,6 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             context.finish()
             val newIntent = RouteManager.getIntent(context, ApplinkConsInternalDigital.INTERNAL_SMARTCARD_BRIZZI,
                     DigitalExtraParam.EXTRA_NFC)
-            newIntent.replaceExtras(intent)
-            newIntent.setAction(intent.getAction())
             startActivity(newIntent)
         }
     }
