@@ -13,4 +13,7 @@
 
     <dimen name="play_placeholder_variant_option_size">58dp</dimen>
     <dimen name="play_placeholder_variant_divider_height">1dp</dimen>
+
+    <dimen name="play_view_stats_info_badge_radius">4dp</dimen>
+    <dimen name="play_view_stats_info_view_padding">4dp</dimen>
 </resources>

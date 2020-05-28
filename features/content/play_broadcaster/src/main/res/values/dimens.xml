@@ -16,4 +16,7 @@
     <dimen name="play_space_icon_audio">7dp</dimen>
     <dimen name="play_space_icon_close">14dp</dimen>
     <dimen name="play_width_icon">20dp</dimen>
+
+    <dimen name="play_stats_info_height">20dp</dimen>
+    <dimen name="play_counter_height">26dp</dimen>
 </resources>

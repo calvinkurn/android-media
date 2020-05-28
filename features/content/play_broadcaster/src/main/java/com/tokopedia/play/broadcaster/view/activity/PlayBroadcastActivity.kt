@@ -60,7 +60,12 @@ class PlayBroadcastActivity: BaseActivity() {
     }
 
     private fun setupContent() {
-        openFragment(getParentFragment(), PARENT_FRAGMENT_TAG)
+        val currentFragment = supportFragmentManager.findFragmentByTag(PARENT_FRAGMENT_TAG)
+        if (currentFragment == null) {
+            supportFragmentManager.beginTransaction()
+                    .add(R.id.fl_broadcast, getParentFragment(), PARENT_FRAGMENT_TAG)
+                    .commit()
+        }
     }
 
     private fun getPrepareFragment() = fragmentFactory.instantiate(classLoader, PlayPrepareBroadcastFragment::class.java.name)
@@ -95,7 +100,7 @@ class PlayBroadcastActivity: BaseActivity() {
         val currentFragment = supportFragmentManager.findFragmentByTag(tag)
         if (currentFragment == null) {
             supportFragmentManager.beginTransaction()
-                    .add(R.id.fl_broadcast, fragment, tag)
+                    .replace(R.id.fl_setup, fragment, tag)
                     .commit()
         }
     }

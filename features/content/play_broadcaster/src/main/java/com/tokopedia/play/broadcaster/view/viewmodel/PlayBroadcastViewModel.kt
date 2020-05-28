@@ -27,12 +27,17 @@ class PlayBroadcastViewModel  @Inject constructor(
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + dispatcher)
 
+
     val observablePage: LiveData<Boolean>
         get() = _observablePage
     private val _observablePage = MutableLiveData<Boolean>()
 
     init {
         playPusher.create()
+    }
+
+    fun navigateTo() {
+
     }
 
     fun getConfiguration() {
