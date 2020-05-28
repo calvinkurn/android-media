@@ -10,6 +10,7 @@ import com.tokopedia.topupbills.telco.view.adapter.DigitalProductAdapter
 class TelcoProductListViewHolder(itemView: View, listener: DigitalProductAdapter.ActionListener)
     : BaseTelcoProductViewHolder(itemView, listener) {
 
+    private val titleProduct: TextView = itemView.findViewById(R.id.title_product)
     private val descProduct: TextView = itemView.findViewById(R.id.desc_product)
     private val productPromoPrice: TextView = itemView.findViewById(R.id.product_promo_price)
     private val productPrice: TextView = itemView.findViewById(R.id.product_price)
@@ -24,7 +25,9 @@ class TelcoProductListViewHolder(itemView: View, listener: DigitalProductAdapter
 
     override fun bindView(products: List<TelcoProduct>, item: TelcoProduct) {
         super.bindView(products, item)
-        bindViewItem(descProduct, productPromoPrice, productPrice)
+        titleProduct.text = item.attributes.desc
+        descProduct.text = item.attributes.detail
+        renderPrice(productPromoPrice, productPrice)
         setItemSelected(layoutProduct)
 
         seeMoreBtn.setOnClickListener {

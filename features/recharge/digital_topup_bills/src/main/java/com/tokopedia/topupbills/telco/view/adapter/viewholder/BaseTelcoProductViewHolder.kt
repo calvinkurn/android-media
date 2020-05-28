@@ -4,15 +4,15 @@ import android.graphics.Paint
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.data.TelcoProduct
 import com.tokopedia.topupbills.telco.view.adapter.DigitalProductAdapter
+import com.tokopedia.unifycomponents.Label
 
-abstract class BaseTelcoProductViewHolder(itemView: View, val listener: DigitalProductAdapter.ActionListener) : RecyclerView.ViewHolder(itemView) {
+abstract class BaseTelcoProductViewHolder(itemView: View, val listener: DigitalProductAdapter.ActionListener)
+    : RecyclerView.ViewHolder(itemView) {
 
-    protected val titleProduct: TextView = itemView.findViewById(R.id.title_product)
     private lateinit var productItem: TelcoProduct
     private lateinit var productList: List<TelcoProduct>
 
@@ -21,11 +21,21 @@ abstract class BaseTelcoProductViewHolder(itemView: View, val listener: DigitalP
         productList = products
     }
 
-    fun bindViewItem(descProduct: TextView, productPromoPrice: TextView, productPrice: TextView) {
-        titleProduct.text = productItem.attributes.desc
-        descProduct.text = productItem.attributes.detail
-        productPrice.text = productItem.attributes.price
+    protected fun renderLabel(productLabel: TextView) {
+        if (productItem.attributes.productLabels.isEmpty()) {
+            productLabel.visibility = View.GONE
+        } else {
+            productLabel.text = productItem.attributes.productLabels[0]
+            productLabel.visibility = View.VISIBLE
+        }
+    }
 
+    protected fun isProductOutOfStock(): Boolean {
+        return productItem.attributes.status == PRODUCT_STATUS_OUT_OF_STOCK
+    }
+
+    protected fun renderPrice(productPromoPrice: TextView, productPrice: TextView) {
+        productPrice.text = productItem.attributes.price
         productPromoPrice.visibility = View.INVISIBLE
         productItem.attributes.productPromo?.run {
             if (this.newPrice.isNotEmpty()) {
@@ -37,25 +47,42 @@ abstract class BaseTelcoProductViewHolder(itemView: View, val listener: DigitalP
         }
     }
 
-    open fun onClickProductItem() {
-        for (i in productList.indices) {
-            if (productList[i].attributes.selected) {
-                productList[i].attributes.selected = false
-                listener.notifyItemChanged(i)
-                break
+    protected fun onClickProductItem() {
+        if (isProductOutOfStock()) {
+            for (i in productList.indices) {
+                if (productList[i].attributes.selected) {
+                    productList[i].attributes.selected = false
+                    listener.notifyItemChanged(i)
+                    break
+                }
             }
+            productItem.attributes.selected = true
+            listener.notifyItemChanged(adapterPosition)
         }
-
-        productItem.attributes.selected = true
-        listener.notifyItemChanged(adapterPosition)
     }
 
-    open fun setItemSelected(viewGrup: ViewGroup) {
-        var drawable = AppCompatResources.getDrawable(itemView.context, com.tokopedia.common.topupbills.R.drawable.common_topup_bg_transparent_round)
+    protected fun renderOutOfStockProduct(viewGrup: ViewGroup, productLabel: Label) {
+        var drawableResources = com.tokopedia.common.topupbills.R.drawable.common_topup_bg_transparent_round
+
+        if (isProductOutOfStock()) {
+            productLabel.text = itemView.context.getString(R.string.telco_label_out_of_stock)
+            productLabel.visibility = View.VISIBLE
+            productLabel.setLabelType(Label.GENERAL_DARK_GREY)
+            drawableResources = R.drawable.digital_bg_grey_rounded
+        }
+        viewGrup.setBackgroundResource(drawableResources)
+    }
+
+    protected fun setItemSelected(viewGrup: ViewGroup) {
+        var drawableResource = com.tokopedia.common.topupbills.R.drawable.common_topup_bg_transparent_round
         if (productItem.attributes.selected) {
             listener.onClickItemProduct(productItem, adapterPosition)
-            drawable = AppCompatResources.getDrawable(itemView.context, com.tokopedia.common.topupbills.R.drawable.common_topup_bg_green_light_rounded)
+            drawableResource = com.tokopedia.common.topupbills.R.drawable.common_topup_bg_green_light_rounded
         }
-        viewGrup.background = drawable
+        viewGrup.setBackgroundResource(drawableResource)
+    }
+
+    companion object {
+        const val PRODUCT_STATUS_OUT_OF_STOCK = 3
     }
 }

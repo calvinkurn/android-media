@@ -21,6 +21,7 @@ query getProductQuery($menuID: Int!, $operatorID: String!) {
           products {
             id
             attributes {
+              product_labels
               desc
               detail
               detail_url

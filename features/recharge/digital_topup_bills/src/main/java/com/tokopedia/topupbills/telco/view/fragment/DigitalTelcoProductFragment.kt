@@ -1,5 +1,6 @@
 package com.tokopedia.topupbills.telco.view.fragment
 
+import android.content.ComponentName
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -164,12 +165,12 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
     private fun wrapDataCollections(productInput: TelcoCatalogProductInput): List<TelcoProduct> {
         val dataCollections = mutableListOf<TelcoProduct>()
-        productInput.products.dataCollections.map {
-            if (productInput.products.dataCollections.size > 1 && productInput.label != "Pulsa") {
+        productInput.product.dataCollections.map {
+            if (productInput.product.dataCollections.size > 1 && productInput.label != TelcoComponentName.PRODUCT_PULSA) {
                 if (it.name.isNotEmpty()) {
                     dataCollections.add(TelcoProduct(titleSection = it.name, isTitle = true))
                 } else {
-                    dataCollections.add(TelcoProduct(titleSection = "Rekomendasi Lainnya", isTitle = true))
+                    dataCollections.add(TelcoProduct(titleSection = getString(R.string.telco_other_recommendation), isTitle = true))
                 }
             }
             dataCollections.addAll(it.products)

@@ -9,6 +9,9 @@ import com.google.gson.annotations.SerializedName
  * Created by nabillasabbaha on 10/05/19.
  */
 class TelcoAttributesProduct(
+        @SerializedName("product_labels")
+        @Expose
+        var productLabels: List<String> = listOf(),
         @SerializedName("desc")
         @Expose
         val desc: String = "",
@@ -32,7 +35,7 @@ class TelcoAttributesProduct(
         val pricePlain: Int = 0,
         @SerializedName("status")
         @Expose
-        val status: Int = 0,
+        var status: Int = 0,
         @SerializedName("detail_compact")
         @Expose
         val detailCompact: String = "",
@@ -48,6 +51,7 @@ class TelcoAttributesProduct(
         var selected: Boolean = false)
     : Parcelable {
     constructor(parcel: Parcel) : this(
+            parcel.createStringArrayList(),
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
@@ -60,9 +64,11 @@ class TelcoAttributesProduct(
             parcel.readParcelable(TelcoProductPromo::class.java.classLoader),
             parcel.readInt(),
             parcel.readInt(),
-            parcel.readByte() != 0.toByte())
+            parcel.readByte() != 0.toByte()) {
+    }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeStringList(productLabels)
         parcel.writeString(desc)
         parcel.writeString(detail)
         parcel.writeString(detailUrl)
@@ -91,5 +97,6 @@ class TelcoAttributesProduct(
             return arrayOfNulls(size)
         }
     }
+
 
 }

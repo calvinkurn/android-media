@@ -2,7 +2,6 @@ package com.tokopedia.topupbills.telco.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 
 /**
  * Created by nabillasabbaha on 10/05/19.
@@ -22,8 +21,7 @@ class TelcoCatalogProductInput(
         val enquiryFields: List<TelcoCatalogEnquiryFields> = listOf(),
         @SerializedName("product")
         @Expose
-        val products: TelcoCatalogProduct = TelcoCatalogProduct(),
-        var productType: Int = TelcoProductType.PRODUCT_GRID)
+        val product: TelcoCatalogProduct = TelcoCatalogProduct())
 
 class TelcoCatalogEnquiryFields(
         @SerializedName("id")
