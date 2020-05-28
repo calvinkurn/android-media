@@ -4,10 +4,12 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.PostUiModel
 import kotlinx.android.synthetic.main.shc_item_post.view.*
+import timber.log.Timber
 
 /**
  * Created By @ilhamsuaib on 20/05/20
@@ -20,10 +22,16 @@ class PostViewHolder(view: View?) : AbstractViewHolder<PostUiModel>(view) {
     }
 
     override fun bind(element: PostUiModel) {
-        with(element) {
-            itemView.tvPostTitle.text = title.parseAsHtml()
-            itemView.tvPostDescription.text = subtitle.parseAsHtml()
-            loadImage(featuredMediaURL)
+        with(itemView) {
+            try {
+                parentViewShcItemPost.background = context.getResDrawable(R.drawable.shc_bg_ripple_radius_4dp)
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
+
+            tvPostTitle.text = element.title.parseAsHtml()
+            tvPostDescription.text = element.subtitle.parseAsHtml()
+            loadImage(element.featuredMediaURL)
         }
     }
 
