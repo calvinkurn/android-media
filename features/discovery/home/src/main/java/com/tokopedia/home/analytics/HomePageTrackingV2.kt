@@ -309,7 +309,7 @@ object HomePageTrackingV2 : BaseTracking() {
                     Event.KEY, CustomEvent.CLICK_HOMEPAGE,
                     Category.KEY, Category.HOMEPAGE,
                     Action.KEY, CLICK_MIX_LEFT_LOADMORE,
-                    Label.KEY, StringBuilder().append(channel.id).append(" - ").append(channel.header.name)
+                    Label.KEY, channel.id + " - " + channel.header.name
             ) as HashMap<String, Any>
         }
 
@@ -318,7 +318,7 @@ object HomePageTrackingV2 : BaseTracking() {
                     Event.KEY, CustomEvent.CLICK_HOMEPAGE,
                     Category.KEY, Category.HOMEPAGE,
                     Action.KEY, CLICK_MIX_LEFT_LOADMORE_CARD,
-                    Label.KEY, StringBuilder().append(channel.id).append(" - ").append(channel.header.name),
+                    Label.KEY, channel.id + " - " + channel.header.name,
                     CurrentSite.KEY, CurrentSite.DEFAULT,
                     Screen.KEY, Screen.DEFAULT,
                     UserId.KEY, userId,
@@ -432,7 +432,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 eventCategory = Category.HOMEPAGE,
                 eventAction = CLICK_MIX_LEFT_BANNER,
                 campaignCode = channel.campaignCode,
-                eventLabel = StringBuilder().append(channel.id).append(" - ").append(channel.header.name).toString(),
+                eventLabel = channel.id + " - " + channel.header.name,
                 channelId = channel.id,
                 categoryId = channel.categoryPersona,
                 affinity = channel.persona,

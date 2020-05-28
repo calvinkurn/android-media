@@ -59,14 +59,14 @@ object MixTopTracking : BaseTracking() {
             Event.KEY, Event.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
             Action.KEY, CustomAction.CLICK_VIEW_ALL_CAROUSEL,
-            Label.KEY, StringBuilder().append(channelId).append(" - ").append(headerName)
+            Label.KEY, channelId + " - " + headerName
     )
 
     fun getMixTopSeeAllCardClick(channelId: String, headerName: String, userId: String) = DataLayer.mapOf(
             Event.KEY, Event.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
             Action.KEY, CustomAction.CLICK_VIEW_ALL_CAROUSEL_CARD,
-            Label.KEY, StringBuilder().append(channelId).append(" - ").append(headerName),
+            Label.KEY, channelId + " - " + headerName,
             Screen.KEY, Screen.DEFAULT,
             CurrentSite.KEY, CurrentSite.DEFAULT,
             Screen.KEY, Screen.DEFAULT,
@@ -78,7 +78,7 @@ object MixTopTracking : BaseTracking() {
             Event.KEY, Event.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
             Action.KEY, CustomAction.CLICK_BUTTON_CAROUSEL.format(buttonName),
-            Label.KEY, StringBuilder().append(channelId).append(" - ").append(headerName)
+            Label.KEY, channelId + " - " + headerName
     )
 
     fun mapGridToProductTracker(grid: DynamicHomeChannel.Grid, channelId: String, position: Int, persoType: String, categoryId: String) = Product(

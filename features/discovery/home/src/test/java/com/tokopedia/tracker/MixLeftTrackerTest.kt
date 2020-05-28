@@ -78,7 +78,7 @@ class MixLeftTrackerTest : Spek({
                         "event", "clickHomepage",
                         "eventCategory", "homepage",
                         "eventAction", "click view all on dynamic channel left carousel",
-                        "eventLabel", StringBuilder().append(channel.id).append(" - ").append(channel.header.name)
+                        "eventLabel", channel.id + " - " + channel.header.name
                 )
             }
             Then("must true") {
@@ -95,10 +95,10 @@ class MixLeftTrackerTest : Spek({
                         "event", "clickHomepage",
                         "eventCategory", "homepage",
                         "eventAction", "click view all card on dynamic channel left carousel",
-                        "eventLabel", StringBuilder().append(channel.id).append(" - ").append(channel.header.name),
+                        "eventLabel", channel.id + " - " + channel.header.name,
                         "currentSite", "tokopediamarketplace",
                         "screenName", "/",
-                        "userId", StringBuilder().append(userId),
+                        "userId", userId,
                         "businessUnit", "home & browse"
                 )
             }
@@ -175,32 +175,6 @@ class MixLeftTrackerTest : Spek({
                                         "dimension84", "21370",
                                         "list", "/ - p1 - dynamic channel left carousel - Testing Left - topads",
                                         "dimension40", "/ - p1 - dynamic channel left carousel - Testing Left - topads"
-                                ),
-                                DataLayer.mapOf(
-                                        "name", "Monster Mass Iron Labs 90 Capsules IronLabs MonsterMass 90Caps 90 Caps",
-                                        "id","183822484",
-                                        "price", "200000",
-                                        "brand", "none / other",
-                                        "variant","none / other",
-                                        "category", "none / other",
-                                        "position", "2",
-                                        "dimension83", "bebas ongkir",
-                                        "dimension84", "21370",
-                                        "list", "/ - p1 - dynamic channel left carousel - Testing Left",
-                                        "dimension40", "/ - p1 - dynamic channel left carousel - Testing Left"
-                                ),
-                                DataLayer.mapOf(
-                                        "name", "Samsung Galaxy A30S [4GB/64GB] - Garansi Resmi Indonesia",
-                                        "id", "558833181",
-                                        "price", "2715000",
-                                        "brand", "none / other",
-                                        "variant","none / other",
-                                        "category", "none / other",
-                                        "position", "3",
-                                        "dimension83", "bebas ongkir",
-                                        "dimension84", "21370",
-                                        "list", "/ - p1 - dynamic channel left carousel - Testing Left",
-                                        "dimension40", "/ - p1 - dynamic channel left carousel - Testing Left"
                                 )
                             )
                     )
