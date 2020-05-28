@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.google.gson.JsonSyntaxException;
 import com.tokopedia.graphql.GraphqlConstant;
+import com.tokopedia.loyalty.view.util.CommonConstant;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
@@ -64,7 +65,7 @@ public class PromoDetailPresenter extends IBasePresenter<IPromoDetailView>
             @Override
             public void onError(Throwable e) {
                 if (e instanceof JsonSyntaxException) {
-                    Timber.w(GraphqlConstant.TIMBER_JSON_PARSE_TAG, Log.getStackTraceString(e), PromoCodePresenter.class.getCanonicalName());
+                    Timber.w(CommonConstant.LOYALTY_JSON_PARSE_TAG, Log.getStackTraceString(e), PromoCodePresenter.class.getCanonicalName());
                 }
 
                 if (isViewAttached()) {
