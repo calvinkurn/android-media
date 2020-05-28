@@ -25,6 +25,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GENERAL_SETTING
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
+import com.tokopedia.talk.common.analytics.TalkTrackingConstants
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_PRODUCT_ID
 import com.tokopedia.talk.common.constants.TalkConstants.QUESTION_ID
@@ -111,7 +112,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     override fun getScreenName(): String {
-        return ""
+        return TalkTrackingConstants.TALK_SEND_SCREEN_SCREEN_NAME
     }
 
     override fun initInjector() {
@@ -259,6 +260,13 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     override fun loadInitialData() {
         isLoadingInitialData = true
         getDiscussionData(isRefresh = true)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        activity?.run {
+            TalkReadingTracking.sendScreen(screenName)
+        }
     }
 
     private fun showPageEmpty() {

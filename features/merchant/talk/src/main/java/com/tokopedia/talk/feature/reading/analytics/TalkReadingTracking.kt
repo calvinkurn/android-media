@@ -23,4 +23,8 @@ object TalkReadingTracking {
             eventTalkReading(EVENT_ACTION_CLICK_FILTER_OPTION, String.format(EVENT_LABEL_CLICK_FILTER_OPTION, filterOption), userId, productId)
         }
     }
+
+    fun sendScreen(screenName: String) {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
+    }
 }

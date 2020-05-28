@@ -17,4 +17,8 @@ object TalkReplyTracking {
             eventTalkReply(EVENT_ACTION_CLICK_SEND, String.format(EVENT_LABEL_CLICK_SEND, talkId), userId, productId)
         }
     }
+
+    fun sendScreen(screenName: String) {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
+    }
 }

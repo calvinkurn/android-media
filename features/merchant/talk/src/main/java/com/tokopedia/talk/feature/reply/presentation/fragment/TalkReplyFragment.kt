@@ -25,6 +25,7 @@ import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
+import com.tokopedia.talk.common.analytics.TalkTrackingConstants
 import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.constants.TalkConstants.IS_FROM_INBOX
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
@@ -97,7 +98,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
 
     override fun getScreenName(): String {
-        return ""
+        return TalkTrackingConstants.TALK_SEND_SCREEN_SCREEN_NAME
     }
 
     override fun initInjector() {
@@ -251,6 +252,13 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     override fun onProductClicked() {
         goToPdp(productId)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        activity?.run {
+            TalkReplyTracking.sendScreen(screenName)
+        }
     }
 
     private fun goToReportActivity(commentId: String) {
