@@ -323,19 +323,4 @@
         tools:text="Stok tinggal 20, beli sekarang!"
         tools:visibility="visible" />
 
-    <View
-        android:id="@+id/divider"
-        android:layout_width="0dp"
-        android:layout_height="0.5dp"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_8"
-        android:background="@color/grey_300"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_stock_available"
-        tools:visibility="visible" />
-
 </merge>

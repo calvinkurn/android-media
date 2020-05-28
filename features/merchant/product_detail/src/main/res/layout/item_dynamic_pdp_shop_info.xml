@@ -130,7 +130,6 @@
             android:ellipsize="end"
             android:lines="1"
             android:maxLines="1"
-            android:textColor="@color/charcoal_grey_88"
             app:layout_constraintEnd_toStartOf="@+id/shop_feature"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintHorizontal_chainStyle="packed"

@@ -27,7 +27,6 @@
         android:text="@string/title_buyer_review"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:textColor="@color/charcoal_grey_88"
         app:typographyType="heading_4"
         app:typographyWeight="bold"
         />

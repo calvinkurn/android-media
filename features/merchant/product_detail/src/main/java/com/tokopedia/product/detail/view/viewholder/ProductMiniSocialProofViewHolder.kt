@@ -45,16 +45,17 @@ class ProductMiniSocialProofViewHolder(private val view: View, private val liste
 
                 val rootView = findViewById<ViewGroup>(R.id.root_socproof)
                 val inflater: LayoutInflater = context.layoutInflater
-                val socProofView: View = inflater.inflate(R.layout.item_social_proof_with_divider, null)
 
                 rootView.removeAllViews()
 
                 if (element.shouldShowSingleViewSocialProof()) {
+                    val socProofView: View = inflater.inflate(R.layout.item_social_proof_with_divider, null)
                     generateSingleTextSocialProof(availableData.firstOrNull()
                             ?: Pair("", 0), socProofView)
                     rootView.addView(socProofView, 0)
                 } else {
                     availableData.forEachIndexed { index, i ->
+                        val socProofView: View = inflater.inflate(R.layout.item_social_proof_with_divider, null)
                         renderSocialProofData(i, element.rating ?: 0F, element, socProofView, index)
                         rootView.addView(socProofView, index)
                     }
