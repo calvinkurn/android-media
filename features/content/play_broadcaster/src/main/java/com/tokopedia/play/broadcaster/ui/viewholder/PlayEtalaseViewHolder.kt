@@ -50,6 +50,7 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
     }
 
     fun bind(item: PlayEtalaseUiModel) {
+        listener.onEtalaseBound(item.id)
         vClickArea.setOnClickListener {
             listener.onEtalaseClicked(item.id)
         }
@@ -63,6 +64,8 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
     }
 
     interface Listener {
+
+        fun onEtalaseBound(etalaseId: Long)
         fun onEtalaseClicked(etalaseId: Long)
     }
 }

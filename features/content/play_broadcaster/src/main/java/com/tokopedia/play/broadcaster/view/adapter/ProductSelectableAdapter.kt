@@ -8,7 +8,7 @@ import com.tokopedia.play.broadcaster.view.uimodel.ProductUiModel
 /**
  * Created by jegul on 27/05/20
  */
-class PlayEtalaseDetailAdapter(
+class ProductSelectableAdapter(
         listener: ProductSelectableViewHolder.Listener
 ) : BaseDiffUtilAdapter<ProductUiModel>() {
 

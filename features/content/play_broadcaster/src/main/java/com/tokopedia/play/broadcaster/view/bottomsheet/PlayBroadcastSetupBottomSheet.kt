@@ -27,6 +27,7 @@ import com.tokopedia.play.broadcaster.util.BreadcrumbsModel
 import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
+import com.tokopedia.play.broadcaster.view.partial.SelectedProductPagePartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import com.tokopedia.unifycomponents.UnifyButton
 import java.util.*
@@ -50,6 +51,8 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
     private lateinit var ivInventory: ImageView
     private lateinit var btnAction: UnifyButton
     private lateinit var tvBadgeCount: TextView
+
+    private lateinit var selectedProductPage: SelectedProductPagePartialView
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
@@ -82,6 +85,12 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView(view)
+
+        selectedProductPage = SelectedProductPagePartialView(view as ViewGroup, object : SelectedProductPagePartialView.Listener {
+            override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
+                viewModel.selectProduct(productId, isSelected)
+            }
+        })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -155,6 +164,10 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         flOverlay.setOnClickListener { dialog?.onBackPressed() }
         ivBack.setOnClickListener { dialog?.onBackPressed() }
 
+        ivInventory.setOnClickListener {
+            selectedProductPage.show()
+        }
+
         navigateToFragment(PlayEtalasePickerFragment::class.java)
     }
 
@@ -192,10 +205,12 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         viewModel.observableSelectedProductIds.observe(viewLifecycleOwner, Observer {
             if (it.isEmpty()) {
                 ivInventory.setImageResource(R.drawable.ic_play_inventory_disabled)
+                ivInventory.isClickable = false
                 btnAction.isEnabled = false
                 tvBadgeCount.gone()
             } else {
                 ivInventory.setImageResource(R.drawable.ic_play_inventory)
+                ivInventory.isClickable = true
                 btnAction.isEnabled = true
                 tvBadgeCount.visible()
                 tvBadgeCount.text = it.size.toString()

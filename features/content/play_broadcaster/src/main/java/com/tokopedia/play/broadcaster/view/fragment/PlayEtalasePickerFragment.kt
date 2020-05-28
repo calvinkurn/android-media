@@ -40,6 +40,10 @@ class PlayEtalasePickerFragment @Inject constructor(
                     }
             )
         }
+
+        override fun onEtalaseBound(etalaseId: Long) {
+            viewModel.loadEtalaseProductPreview(etalaseId)
+        }
     })
 
     override fun getTitle(): String = "Select Products or Collection"

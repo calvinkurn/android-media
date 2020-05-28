@@ -60,6 +60,19 @@
                 app:layout_constraintTop_toBottomOf="@id/bottom_sheet_header"
                 />
 
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="@dimen/layout_lvl0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/fl_fragment"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/bottom_sheet_header"
+                >
+
+                <include layout="@layout/layout_bottom_sheet_selected_product"/>
+
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
             <include
                 android:id="@+id/bottom_sheet_action"
                 layout="@layout/layout_bottom_sheet_action"
