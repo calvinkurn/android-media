@@ -94,6 +94,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     }
 
     private val isActiveVoucher by lazy { getBooleanArgs(KEY_IS_ACTIVE_VOUCHER, true) }
+    private var isToolbarAlreadyLoaded = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_mvc_voucher_list, container, false)
@@ -146,15 +147,17 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     }
 
     override fun loadData(page: Int) {
-        view?.run {
-            searchBarMvc.isVisible = false
-            headerChipMvc.isVisible = false
+        if (!isToolbarAlreadyLoaded) {
+            view?.run {
+                searchBarMvc.isVisible = false
+                headerChipMvc.isVisible = false
+            }
+            renderList(listOf(LoadingStateUiModel(isActiveVoucher)))
         }
-        renderList(listOf(LoadingStateUiModel(isActiveVoucher)))
         if (isActiveVoucher) {
             mViewModel.getActiveVoucherList()
         } else {
-            mViewModel.getVoucherListHistory(null, null, null)
+            mViewModel.getVoucherListHistory(null, null, null, page)
         }
     }
 
@@ -396,15 +399,20 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     }
 
     private fun setOnSuccessGetVoucherList(vouchers: List<VoucherUiModel>) {
-        clearAllData()
-        if (vouchers.isEmpty()) {
-            renderList(listOf(getEmptyStateUiModel()))
+        if (isToolbarAlreadyLoaded) {
+            renderList(vouchers, vouchers.isNotEmpty())
         } else {
-            view?.run {
-                searchBarMvc.isVisible = !isActiveVoucher
-                headerChipMvc.isVisible = !isActiveVoucher
+            clearAllData()
+            if (vouchers.isEmpty()) {
+                renderList(listOf(getEmptyStateUiModel()))
+            } else {
+                view?.run {
+                    searchBarMvc.isVisible = !isActiveVoucher
+                    headerChipMvc.isVisible = !isActiveVoucher
+                    isToolbarAlreadyLoaded = true
+                }
+                renderList(vouchers, vouchers.isNotEmpty())
             }
-            renderList(vouchers)
         }
     }
 

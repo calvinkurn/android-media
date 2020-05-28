@@ -52,14 +52,16 @@ class VoucherListViewModel @Inject constructor(
 
     fun getVoucherListHistory(@VoucherTypeConst type: Int?,
                               @VoucherTarget target: String?,
-                              @VoucherSort sort: String?) {
+                              @VoucherSort sort: String?,
+                              page: Int) {
         launchCatchError(block = {
             getVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(
                     VoucherListParam.createParam(
                             status = VoucherStatus.HISTORY,
                             type = type,
                             target = target,
-                            sort = sort)
+                            sort = sort,
+                            page = page)
             )
 //            getVoucherListUseCase.isActive = false
             _voucherList.value = Success(withContext(Dispatchers.IO) {
