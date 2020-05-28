@@ -48,7 +48,7 @@ class ProductCardCarouselViewModel(val application: Application, components: Com
     fun fetchProductCarouselData(pageEndPoint: String) {
         if(productCarouselList.value.isNullOrEmpty()) {
             launchCatchError(block = {
-                productCarouselList.value = productCardCarouselUseCase.getProductCardCarouselUseCase(productCarouselComponentData.value?.id.toIntOrZero(), getQueryParameterMap(), pageEndPoint)
+                productCarouselList.value = productCardCarouselUseCase.getProductCardCarouselUseCase(productCarouselComponentData.value?.id.toIntOrZero(), getQueryParameterMap(), pageEndPoint, isHorizontal = true)
             }, onError = {
                 it.printStackTrace()
             })
