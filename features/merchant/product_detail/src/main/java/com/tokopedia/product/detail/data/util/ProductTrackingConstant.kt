@@ -9,6 +9,7 @@ object ProductTrackingConstant {
         const val PDP_AFTER_ATC = "product detail page after atc"
         const val TOP_NAV_SEARCH_PDP = "top nav - search - product detail page"
         const val TOP_NAV_SHARE_PDP = "top nav - product detail page"
+        const val PRODUCT_DETAIL_PAGE_SELLER = "product detail page - seller side"
     }
 
     object Tracking {
@@ -79,12 +80,14 @@ object ProductTrackingConstant {
 
     object Action {
         const val CLICK = "click"
+        const val ADD = "add"
         const val IMPRESSION = "impression"
         const val CLICK_CART_BUTTON_VARIANT = "click - cart button on sticky header"
         const val PRODUCT_CLICK = "productClick"
         const val PRODUCT_VIEW = "productView"
         const val RECOMMENDATION_CLICK = "clickRecommendation"
         const val TOPADS_CLICK = "click - product recommendation"
+        const val TOPADS_ATC_CLICK = "click add to cart on product card after atc"
         const val TOPADS_IMPRESSION = "impression - product recommendation"
         const val CLICK_BY_ME = "click - by.me"
         const val CLICK_VARIANT = "click - variant"
@@ -102,11 +105,11 @@ object ProductTrackingConstant {
         const val CLICK_SEE_MORE_WIDGET = "click - see more on widget %s"
         const val CLICK_SHARE_PDP = "click - share button"
         const val CLICK_READ_MORE = "click - baca selengkapnya"
-        const val CLICK_CATEGORY = "click - category"
+        const val CLICK_CATEGORY = "click - category on informasi produk"
         const val CLICK_ETALASE = "click - etalase on informasi produk"
         const val CLICK_TAB_DESCRIPTION_ON_PRODUCT_DESCRIPTION = "click - tab deskripsi on description area"
         const val CLICK_TAB_SPECIFICATION_ON_PRODUCT_DESCRIPTION = "click - tab spesifikasi on description area"
-        const val CLICK_LIHAT_SEMUA_ON_SIMULASI_CICILAN = "click - lihat semua metode on simulasi cicilan widget"
+        const val CLICK_LIHAT_SEMUA_ON_SIMULASI_CICILAN = "click - info cicilan"
         const val CLICK_PAGE_CHAT = "click - page chat"
         const val CLICK_BELI = "click - beli"
         const val CLICK_ADD_TO_CART = "click - tambah ke keranjang"
@@ -126,11 +129,12 @@ object ProductTrackingConstant {
         const val CLICK_TRADEIN = "click trade in widget"
         const val CLICK_UNFOLLOW = "click - unfollow shop"
         const val CLICK_FOLLOW = "click - follow shop"
+        const val CLICK_EDIT_PRODUCT = "click - edit product button"
         const val CLICK_CHOOSE_PRODUCT_VARIANT = "click - choose product variant"
         const val CLICK_VARIANT_GUIDELINE = "click - lihat panduan on size chart"
         const val IMPRESSION_CHOOSE_VARIANT_NOTIFICATION = "impression - choose variant notification"
-        const val CLICK_EDIT_PRODUCT = "click - edit product button"
         const val CLICK_ATC_NON_LOGIN = "click - tambah ke keranjang on pdp - non login"
+        const val CLICK_WHOLESALE = "click - info harga grosir"
 
         const val CLICK_REQUEST_PERMISSION_IMEI = "click - beli then show popup"
         const val CLICK_ACCEPT_PERMISSION = "click -  berikan akses on bottomsheet"

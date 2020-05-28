@@ -97,7 +97,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
     private var hasSentViewOspEe = false
 
-    fun getOccCart(isFullRefresh: Boolean = true) {
+    fun getOccCart(isFullRefresh: Boolean, source: String) {
         globalEvent.value = OccGlobalEvent.Normal
         getOccCartUseCase.execute({ orderData: OrderData ->
             orderProduct = orderData.cart.product
@@ -105,9 +105,9 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             kero = orderData.cart.kero
             val preference = orderData.preference
             _orderPreference = if (isFullRefresh || _orderPreference == null) {
-                OrderPreference(orderData.profileIndex, preference)
+                OrderPreference(onboarding = orderData.onboarding, profileRecommendation = orderData.profileRecommendation, profileIndex = orderData.profileIndex, preference = preference)
             } else {
-                _orderPreference?.copy(profileIndex = orderData.profileIndex, preference = preference)
+                _orderPreference?.copy(onboarding = orderData.onboarding, profileRecommendation = orderData.profileRecommendation, profileIndex = orderData.profileIndex, preference = preference)
             }
             orderPreference.value = OccState.FirstLoad(_orderPreference!!)
             validateUsePromoRevampUiModel = null
@@ -122,7 +122,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         }, { throwable: Throwable ->
             _orderPreference = null
             orderPreference.value = OccState.Fail(false, throwable, "")
-        })
+        }, getOccCartUseCase.createRequestParams(source))
     }
 
     fun updateProduct(product: OrderProduct, shouldReloadRates: Boolean = true) {
@@ -929,23 +929,29 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     }
 
     fun finalUpdate(onSuccessCheckout: (Data) -> Unit, skipCheckIneligiblePromo: Boolean = false) {
-        val product = orderProduct
-        val shop = orderShop
-        val pref = _orderPreference
-        if (orderTotal.value?.buttonState == ButtonBayarState.NORMAL && pref != null && pref.shipping?.getRealShipperProductId() ?: 0 > 0) {
-            val param = generateUpdateCartParam()
-            if (param != null) {
-                globalEvent.value = OccGlobalEvent.Loading
-                updateCartOccUseCase.execute(param, {
-                    finalValidateUse(product, shop, pref, onSuccessCheckout, skipCheckIneligiblePromo)
-                }, { throwable: Throwable ->
-                    if (throwable is MessageErrorException && throwable.message != null) {
-                        globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = throwable.message
-                                ?: DEFAULT_ERROR_MESSAGE)
-                    } else {
-                        globalEvent.value = OccGlobalEvent.TriggerRefresh(throwable = throwable)
-                    }
-                })
+        if (orderTotal.value?.buttonState == ButtonBayarState.NORMAL) {
+            globalEvent.value = OccGlobalEvent.Loading
+            val product = orderProduct
+            val shop = orderShop
+            val pref = _orderPreference
+            if (pref != null && pref.shipping?.getRealShipperProductId() ?: 0 > 0) {
+                val param = generateUpdateCartParam()
+                if (param != null) {
+                    updateCartOccUseCase.execute(param, {
+                        finalValidateUse(product, shop, pref, onSuccessCheckout, skipCheckIneligiblePromo)
+                    }, { throwable: Throwable ->
+                        if (throwable is MessageErrorException && throwable.message != null) {
+                            globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = throwable.message
+                                    ?: DEFAULT_ERROR_MESSAGE)
+                        } else {
+                            globalEvent.value = OccGlobalEvent.TriggerRefresh(throwable = throwable)
+                        }
+                    })
+                } else {
+                    globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
+                }
+            } else {
+                globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
             }
         }
     }
@@ -1024,7 +1030,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         checkoutOccUseCase.execute(param, { checkoutOccGqlResponse: CheckoutOccGqlResponse ->
             if (checkoutOccGqlResponse.response.status.equals(STATUS_OK, true)) {
                 if (checkoutOccGqlResponse.response.data.success == 1 || checkoutOccGqlResponse.response.data.paymentParameter.redirectParam.url.isNotEmpty()) {
-                    globalEvent.value = OccGlobalEvent.Normal
                     onSuccessCheckout(checkoutOccGqlResponse.response.data)
                     orderSummaryAnalytics.eventClickBayarSuccess(orderTotal.value?.isButtonChoosePayment
                             ?: false, getTransactionId(checkoutOccGqlResponse.response.data.paymentParameter.redirectParam.form), generateOspEe(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION, allPromoCodes))
@@ -1478,10 +1483,18 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         return ""
     }
 
+    fun consumeForceShowOnboarding() {
+        val onboarding = _orderPreference?.onboarding
+        if (onboarding?.isForceShowCoachMark == true) {
+            _orderPreference = _orderPreference?.copy(onboarding = onboarding.copy(isForceShowCoachMark = false))
+            orderPreference.value = OccState.Success(_orderPreference!!)
+        }
+    }
+
     companion object {
         const val NO_COURIER_SUPPORTED_ERROR_MESSAGE = "Tidak ada kurir yang mendukung pengiriman ini ke lokasi Anda."
         const val NO_EXACT_DURATION_MESSAGE = "Durasi tergantung kurir"
-        const val NO_DURATION_AVAILABLE = "Durasi tidak tersedia"
+        const val NO_DURATION_AVAILABLE = "Durasi pengiriman tidak tersedia"
         const val NEED_PINPOINT_ERROR_MESSAGE = "Butuh pinpoint lokasi"
 
         const val FAIL_APPLY_BBO_ERROR_MESSAGE = "Gagal mengaplikasikan bebas ongkir"

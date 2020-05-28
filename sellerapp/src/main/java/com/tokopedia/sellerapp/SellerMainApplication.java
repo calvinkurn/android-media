@@ -13,16 +13,19 @@ import android.webkit.URLUtil;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import com.bugsnag.android.Bugsnag;
+import com.github.moduth.blockcanary.BlockCanary;
+import com.github.moduth.blockcanary.BlockCanaryContext;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
 import com.moengage.pushbase.push.MoEPushCallBacks;
+import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
-import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
@@ -30,23 +33,22 @@ import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.logger.LogManager;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
 import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
+import com.tokopedia.sellerapp.utils.SessionActivityLifecycleCallbacks;
+import com.tokopedia.sellerapp.utils.timber.LoggerActivityLifecycleCallbacks;
 import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
-import com.tokopedia.tokofix.TokoFix;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
-import com.github.moduth.blockcanary.BlockCanary;
-import com.github.moduth.blockcanary.BlockCanaryContext;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+
 import timber.log.Timber;
 
 /**
@@ -115,6 +117,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     @Override
     public void onCreate() {
+        Bugsnag.init(this);
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION;
         GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
         setVersionCode();
@@ -148,13 +151,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
         PersistentCacheManager.init(this);
 
-        LogManager.init(this);
-        if (LogManager.instance != null) {
-            LogManager.instance.setLogEntriesToken(TimberWrapper.LOGENTRIES_TOKEN);
-        }
         TimberWrapper.init(this);
         super.onCreate();
-        TokoFix.init(this, BuildConfig.VERSION_NAME);
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
         initCacheApi();
@@ -163,11 +161,17 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         initializeAbTestVariant();
 
         initAppNotificationReceiver();
+        registerActivityLifecycleCallbacks();
         initBlockCanary();
     }
 
     public void initBlockCanary(){
         BlockCanary.install(context, new BlockCanaryContext()).start();
+    }
+
+    private void registerActivityLifecycleCallbacks() {
+        registerActivityLifecycleCallbacks(new LoggerActivityLifecycleCallbacks());
+        registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
     }
 
     @Override
@@ -227,9 +231,4 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         return DeepLinkActivity.class;
     }
 
-
-    @Override
-    public Intent getCreateResCenterActivityIntent(Context context, String orderId) {
-        return null;
-    }
 }

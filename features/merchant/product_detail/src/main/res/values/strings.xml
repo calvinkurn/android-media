@@ -26,11 +26,13 @@
     <string name="template_campaign_off">%1$s%% OFF </string>
     <string name="template_review">%1$d Ulasan</string>
     <string name="template_success_rate">%1$s%% (%2$s)</string>
-    <string name="template_talk">%1$d Diskusi</string>
+    <string name="template_talk">%1$d Q&amp;A</string>
     <string name="template_preorder_time">%1$d %2$s</string>
     <string name="template_min_order">%1$d Buah</string>
     <string name="buy_now">Beli Sekarang</string>
     <string name="add_product_to_cart">Tambah ke Keranjang</string>
+    <string name="ticker_atc_done_some_store">Barang dikirim dari toko yang sama</string>
+    <string name="ticker_atc_done_different_store">Barang dikirim dari toko yang berbeda</string>
     <string name="plus_product_to_cart">+ Keranjang</string>
     <string name="apply_credit">Ajukan Kredit</string>
     <string name="buy">Beli</string>
@@ -142,7 +144,8 @@
     <string name="value_proposition_title_original">Pasti ori</string>
     <string name="value_proposition_desc_original">Semua barang di Official Store Tokopedia dijamin asli. Kalau terbukti palsu, uangmu akan dikembalikan 2x lipat.</string>
     <string name="recom_go_to_wishlist">Lihat Wishlist</string>
-    <string name="atc_done_add_product_success">Produk berhasil ditambahkan</string>
+    <string name="atc_done_add_product_success">Barang berhasil ditambahkan</string>
+    <string name="atc_done_add_product_success_button">Berhasil ditambahkan</string>
     <string name="atc_done_see_cart">Lihat Keranjang</string>
     <string name="pdp_etalase_empty_default_value">Semua  Etalase</string>
     <string name="atc_free_ongkir_title">Produk berhasil ditambah ke keranjang. Dapatkan <b>gratis ongkir</b> untuk pembelian produk ini.</string>
@@ -214,7 +217,7 @@
 
     <!-- OVO -->
     <string name="product_detail_price__goods">Harga Barang</string>
-    <string name="product_detail_estimation_price_min">Estimasi Ongkir Minimum</string>
+    <string name="product_detail_estimation_price_min">Estimasi Ongkir termurah</string>
     <string name="product_detail_ovo_cash_points">OVO Cash + OVO Points</string>
     <string name="product_detail_total_pay">OVO Kamu Kurang</string>
 

@@ -23,14 +23,14 @@
             app:subtitleTextAppearance="?subtitleTextAppearance"
             app:titleTextAppearance="?titleTextAppearance" />
 
-        <com.tokopedia.design.component.Tabs
+        <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs_sort_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/white"
             android:visibility="gone"
             app:tabIndicatorColor="@color/tkpd_main_green"
             app:tabMode="scrollable"
-            android:background="@color/white"
             app:tabSelectedTextColor="@color/tp_tab_indicator_text_color_"
             app:tabTextAppearance="@style/TokoPointsTabs"
             app:tabTextColor="@color/discount_color" />
@@ -58,7 +58,7 @@
         <com.tokopedia.tokopoints.view.customview.ServerErrorView
             android:id="@+id/server_error_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
         <include layout="@layout/layout_tp_empty_catalog" />
     </ViewFlipper>

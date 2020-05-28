@@ -62,7 +62,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_16"
         app:coundDownBackgroud="@drawable/home_background_countdown_white"
         app:countDownTxtColor="@color/grey_560"
         app:countDownSparatorColor="@color/white"
@@ -96,7 +96,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <ImageView
+            <com.tokopedia.circular_view_pager.presentation.widgets.shimmeringImageView.ShimmeringImageView
                 android:id="@+id/deals_product_image"
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginStart="@dimen/dp_8"
@@ -208,6 +208,24 @@
                 app:typographyWeight="bold"
                 android:textStyle="bold"
                 tools:text="Rp 9999999999999999999999999999999999999999"
+                tools:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/imageFreeOngkirPromo"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/product_card_free_ongkir_badge_height"
+                android:layout_marginTop="@dimen/product_card_free_ongkir_badge_margin_top"
+                android:adjustViewBounds="true"
+                android:gravity="center"
+                android:scaleType="fitStart"
+                android:visibility="gone"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
+                app:layout_constraintStart_toEndOf="@id/deals_product_image"
+                app:layout_constraintTop_toBottomOf="@id/deals_product_price"
+                tools:layout_width="67dp"
                 tools:visibility="visible" />
 
             <ProgressBar

@@ -55,7 +55,7 @@ class OfficialProductRecommendationViewHolder(
             setImageProductViewHintListener(element.productItem, object: ViewHintListener {
                 override fun onViewHint() {
                     if (element.productItem.isTopAds) {
-                        ImpresionTask().execute(element.productItem.trackerImageUrl)
+                        ImpresionTask(className).execute(element.productItem.trackerImageUrl)
                     }
                     element.listener.onProductImpression(element.productItem)
                 }
@@ -63,7 +63,7 @@ class OfficialProductRecommendationViewHolder(
 
             setOnClickListener {
                 element.listener.onProductClick(element.productItem, element.productItem.type, adapterPosition)
-                if (element.productItem.isTopAds) ImpresionTask().execute(element.productItem.clickUrl)
+                if (element.productItem.isTopAds) ImpresionTask(className).execute(element.productItem.clickUrl)
             }
 
             setThreeDotsOnClickListener {
@@ -82,6 +82,7 @@ class OfficialProductRecommendationViewHolder(
 
     companion object {
         val LAYOUT = R.layout.viewmodel_product_recommendation_item
+        private const val className: String = "com.tokopedia.officialstore.official.presentation.adapter.viewholder.OfficialProductRecommendationViewHolder"
     }
 
 }

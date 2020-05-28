@@ -1,7 +1,6 @@
 package com.tokopedia.core.app;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
@@ -17,11 +16,8 @@ import com.tokopedia.core.analytics.fingerprint.LocationUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
-import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.toolargetool.TooLargeTool;
 import com.tokopedia.core2.BuildConfig;
 import com.tokopedia.linker.LinkerConstants;
@@ -43,12 +39,8 @@ import io.fabric.sdk.android.Fabric;
 public abstract class MainApplication extends MainRouterApplication{
 
     public static final int DATABASE_VERSION = 7;
-    private static final String TAG = "MainApplication";
     public static String PACKAGE_NAME;
     public static MainApplication instance;
-    private static Boolean isResetNotification = false;
-    private static Boolean isResetCart = false;
-    private static Boolean isResetTickerState = true;
     private LocationUtils locationUtils;
     private DaggerAppComponent.Builder daggerBuilder;
     private AppComponent appComponent;
@@ -77,11 +69,6 @@ public abstract class MainApplication extends MainRouterApplication{
         MultiDex.install(MainApplication.this);
     }
 
-    public static Boolean resetCartStatus(Boolean status) {
-        isResetCart = status;
-        return isResetCart;
-    }
-
     public static int getCurrentVersion(Context context) {
         PackageInfo pInfo = null;
         try {
@@ -104,7 +91,6 @@ public abstract class MainApplication extends MainRouterApplication{
         userSession = new UserSession(this);
         initCrashlytics();
         PACKAGE_NAME = getPackageName();
-        isResetTickerState = true;
 
         daggerBuilder = DaggerAppComponent.builder()
                 .appModule(new AppModule(this));
@@ -114,7 +100,9 @@ public abstract class MainApplication extends MainRouterApplication{
         locationUtils.initLocationBackground();
         initBranch();
         NotificationUtils.setNotificationChannel(this);
-
+        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+            upgradeSecurityProvider();
+        }
         createAndCallBgWork();
     }
 
@@ -133,8 +121,10 @@ public abstract class MainApplication extends MainRouterApplication{
     @NotNull
     private Boolean executeInBackground(){
         TooLargeTool.startLogging(MainApplication.this);
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            upgradeSecurityProvider();
+        }
         init();
-        upgradeSecurityProvider();
         return true;
     }
 
@@ -201,16 +191,6 @@ public abstract class MainApplication extends MainRouterApplication{
     }
 
     @Override
-    public Intent getSellerHomeActivityReal(Context context) {
-        return SellerAppRouter.getSellerHomeActivity(context);
-    }
-
-    @Override
-    public IAppNotificationReceiver getAppNotificationReceiver() {
-        return SellerAppRouter.getAppNotificationReceiver();
-    }
-
-    @Override
     public Class<?> getInboxMessageActivityClass() {
         return InboxRouter.getInboxMessageActivityClass();
     }
@@ -218,25 +198,5 @@ public abstract class MainApplication extends MainRouterApplication{
     @Override
     public Class<?> getInboxResCenterActivityClassReal() {
         return InboxRouter.getInboxResCenterActivityClass();
-    }
-
-    @Override
-    public Intent getActivitySellingTransactionShippingStatusReal(Context mContext) {
-        return SellerRouter.getActivitySellingTransactionShippingStatus(mContext);
-    }
-
-    @Override
-    public Class getSellingActivityClassReal() {
-        return SellerRouter.getSellingActivityClass();
-    }
-
-    @Override
-    public Intent getActivitySellingTransactionListReal(Context mContext) {
-        return SellerRouter.getActivitySellingTransactionList(mContext);
-    }
-
-    @Override
-    public Intent getInboxTalkCallingIntent(Context mContext){
-        return null;
     }
 }

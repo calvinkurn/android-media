@@ -16,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -23,13 +24,8 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
-import com.tokopedia.core.router.CustomerRouter;
-import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.ErrorNetworkReceiver;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.core.util.AppWidgetUtil;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core2.R;
 import com.tokopedia.track.TrackApp;
@@ -49,7 +45,7 @@ import rx.schedulers.Schedulers;
  * Extends one of BaseActivity from tkpd abstraction eg:BaseSimpleActivity, BaseStepperActivity, BaseTabActivity, etc
  */
 @Deprecated
-public class BaseActivity extends AppCompatActivity implements SessionHandler.onLogoutListener,
+public class BaseActivity extends AppCompatActivity implements
         ErrorNetworkReceiver.ReceiveListener, ScreenTracking.IOpenScreenAnalytics {
 
 
@@ -149,22 +145,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                 .subscribe(ignored -> {}, throwable -> {});
     }
 
-    @Override
-    public void onLogout(Boolean success) {
-        if (success) {
-            finish();
-            Intent intent;
-            if (GlobalConfig.isSellerApp()) {
-                intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getHomeIntent(this);
-            } else {
-                intent = HomeRouter.getHomeActivity(this);
-            }
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            AppWidgetUtil.sendBroadcastToAppWidget(this);
-        }
-    }
-
     private void registerForceLogoutReceiver() {
         logoutNetworkReceiver.setReceiver(this);
         IntentFilter filter = new IntentFilter();
@@ -224,27 +204,15 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                 new DialogForceLogout.ActionListener() {
                     @Override
                     public void onDialogClicked() {
-                        sessionHandler.forceLogout();
                         try {
                             ((TkpdCoreRouter) getApplication()).onLogout(getApplicationComponent());
                         } catch (Exception ex) {
                         }
-                        if (GlobalConfig.isSellerApp()) {
-                            Intent intent = SellerRouter.getActivitySplashScreenActivity(getBaseContext());
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                        } else {
-                            invalidateCategoryCache();
-                            Intent intent = CustomerRouter.getSplashScreenIntent(getBaseContext());
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                        }
+                        Intent intent = ((TkpdCoreRouter) getApplicationContext()).getSplashScreenIntent(getBaseContext());
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
                     }
                 });
-    }
-
-    private void invalidateCategoryCache() {
-
     }
 
     public void checkIfForceLogoutMustShow() {

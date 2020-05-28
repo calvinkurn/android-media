@@ -4,13 +4,14 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
-import androidx.recyclerview.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.csat_rating.ProvideRatingContract
@@ -20,9 +21,9 @@ import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 import com.tokopedia.csat_rating.di.CsatComponent
 import com.tokopedia.csat_rating.di.CsatModule
 import com.tokopedia.csat_rating.di.DaggerCsatComponent
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
+import com.tokopedia.unifycomponents.Toaster
 import java.util.*
 
 
@@ -131,7 +132,10 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
     }
 
     override fun showErrorMessage(errorMessage: String) {
-        ToasterError.make(view, errorMessage).show()
+        view?.let {
+            Toaster.make(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
+
     }
 
 
@@ -161,6 +165,7 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
             if (selectedOption.contains(typeFilter)) {
                 selectedOption.remove(typeFilter)
             } else {
+                sendEventClickReason(filterList[typeFilter.toIntOrNull() ?: 0].message)
                 selectedOption.add(typeFilter)
             }
 
@@ -171,6 +176,8 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
             }
         }
     }
+
+    open fun sendEventClickReason(message: String?) {}
 
     override fun getSelectedItem(): String {
         var filters = ""

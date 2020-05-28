@@ -14,7 +14,6 @@ data class DynamicHomeChannel(
     var channels: List<Channels> = listOf()
 ) {
 
-
     data class Channels(
             @Expose
             @SerializedName("id")
@@ -103,7 +102,6 @@ data class DynamicHomeChannel(
             return list
         }
 
-
         fun getEnhanceClickSprintSaleLegoHomePage(position: Int): Map<String, Any> {
             return DataLayer.mapOf(
                     "event", "productClick",
@@ -166,7 +164,6 @@ data class DynamicHomeChannel(
                                 "id", grid.id,
                                 "name", "/ - p2 - sprint sale banner",
                                 "creative", grid.name,
-                                "creative_url", grid.imageUrl,
                                 "position", (i + 1).toString())
                 )
             }
@@ -183,7 +180,6 @@ data class DynamicHomeChannel(
                                 "id", id + "_" + grid.id+ "_" + persoType+ "_" + categoryID,
                                 "name", promoName,
                                 "creative", grid.attribution,
-                                "creative_url", grid.imageUrl,
                                 "position", (i + 1).toString())
                 )
             }
@@ -198,7 +194,6 @@ data class DynamicHomeChannel(
                         "id", hero[0].id,
                         "name", promoName,
                         "creative", promoName,
-                        "creative_url", hero[0].imageUrl,
                         "position", 1.toString()))
             }
 
@@ -463,7 +458,6 @@ data class DynamicHomeChannel(
                             "id", id + "_" + banner.id + "_" + persoType + "_" + categoryID,
                             "name", "/ - p1 - dynamic channel mix - banner - " + header.name,
                             "creative", banner.attribution,
-                            "creative_url", banner.imageUrl,
                             "position", position.toString(),
                             "promo_code", banner.cta.couponCode
                     )
@@ -486,7 +480,6 @@ data class DynamicHomeChannel(
                                 "id", id + "_" + banner.id + "_" + persoType + "_" + categoryID,
                                 "name", promoName,
                                 "creative", banner.attribution,
-                                "creative_url", banner.imageUrl,
                                 "position", 1.toString())
                 )
                 )

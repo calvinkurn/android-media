@@ -14,11 +14,7 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.Window;
-import android.view.WindowManager;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
@@ -56,9 +52,9 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.grapqhl.beta.notif.BetaInterceptor;
-import com.tokopedia.logger.LogManager;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
+import com.tokopedia.notifications.data.AmplificationDataSource;
+import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -70,18 +66,16 @@ import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.timber.TimberWrapper;
-import com.tokopedia.tkpd.timber.UserIdChangeCallback;
-import com.tokopedia.tkpd.timber.UserIdSubscriber;
+import com.tokopedia.tkpd.timber.LoggerActivityLifecycleCallbacks;
+import com.tokopedia.tkpd.utils.BetaSignActivityLifecycleCallbacks;
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tkpd.utils.CustomPushListener;
+import com.tokopedia.tkpd.utils.SessionActivityLifecycleCallbacks;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
-import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -93,7 +87,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import timber.log.Timber;
@@ -150,70 +143,23 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         createAndCallPostSeq();
         createAndCallFontLoad();
 
-        ShakeSubscriber shakeSubscriber = new ShakeSubscriber(getApplicationContext(), new ShakeDetectManager.Callback() {
+        registerActivityLifecycleCallbacks();
+
+        initBlockCanary();
+    }
+
+    private void registerActivityLifecycleCallbacks() {
+        registerActivityLifecycleCallbacks(new ShakeSubscriber(getApplicationContext(), new ShakeDetectManager.Callback() {
             @Override
             public void onShakeDetected(boolean isLongShake) {
                 openShakeDetectCampaignPage(isLongShake);
             }
-        });
-        registerActivityLifecycleCallbacks(shakeSubscriber);
-        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
-            @Override
-            public void onActivityCreated(Activity activity, Bundle bundle) {
-
-            }
-
-            @Override
-            public void onActivityStarted(Activity activity) {
-
-            }
-
-            @Override
-            public void onActivityResumed(Activity activity) {
-                if(activity != null && Build.VERSION.SDK_INT >= 21 && BetaInterceptor.Companion.isBeta(activity))
-                {
-                    Window window = activity.getWindow();
-                    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                    window.setStatusBarColor(getResources().getColor(android.R.color.holo_red_dark));
-                }
-            }
-
-            @Override
-            public void onActivityPaused(Activity activity) {
-
-            }
-
-            @Override
-            public void onActivityStopped(Activity activity) {
-
-            }
-
-            @Override
-            public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
-
-            }
-
-            @Override
-            public void onActivityDestroyed(Activity activity) {
-
-            }
-        });
-
-        UserIdSubscriber userIdSubscriber = new UserIdSubscriber(getApplicationContext(), new UserIdChangeCallback() {
-            @Override
-            public void onUserIdChanged() {
-                TimberWrapper.init(ConsumerMainApplication.this);
-            }
-        });
-        registerActivityLifecycleCallbacks(userIdSubscriber);
-
-        NFCSubscriber nfcSubscriber = new NFCSubscriber();
-        registerActivityLifecycleCallbacks(nfcSubscriber);
-
+        }));
+        registerActivityLifecycleCallbacks(new BetaSignActivityLifecycleCallbacks());
+        registerActivityLifecycleCallbacks(new LoggerActivityLifecycleCallbacks());
+        registerActivityLifecycleCallbacks(new NFCSubscriber());
         registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
-
-        initBlockCanary();
+        registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
     }
 
     private void createAndCallPreSeq(){
@@ -315,15 +261,32 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             }).start();
         }
 
-        LogManager.init(ConsumerMainApplication.this);
-        if (LogManager.instance != null) {
-            LogManager.instance.setLogEntriesToken(TimberWrapper.LOGENTRIES_TOKEN);
-        }
         TimberWrapper.init(ConsumerMainApplication.this);
         initializeAbTestVariant();
         gratificationSubscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(gratificationSubscriber);
+        getAmplificationPushData();
         return true;
+    }
+
+    private void getAmplificationPushData() {
+        /*
+         * Amplification of push notification.
+         * fetch all of cm_push_notification's
+         * push notification data that aren't rendered yet.
+         * then, put all of push_data into local storage.
+         * */
+        if (getAmplificationRemoteConfig()) {
+            try {
+                AmplificationDataSource.invoke(ConsumerMainApplication.this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private Boolean getAmplificationRemoteConfig() {
+        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_AMPLIFICATION, true);
     }
 
     private void openShakeDetectCampaignPage(boolean isLongShake) {
@@ -331,8 +294,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getApplicationContext().startActivity(intent);
     }
-
-
 
     private boolean isMainProcess() {
         ActivityManager manager = ContextCompat.getSystemService(this, ActivityManager.class);
