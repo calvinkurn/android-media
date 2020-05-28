@@ -6,15 +6,15 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.loadImageWithCallback
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.utils.image.ImageUtils
 
 class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
     private val tabImageView: ImageView = itemView.findViewById(R.id.tab_image)
@@ -29,15 +29,24 @@ class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : Abstr
             val itemData = it.data?.get(0)
             positionForParentAdapter = itemData?.positionForParentItem ?: -1
             itemData?.let { item ->
-                tabImageView.loadImage(item.backgroundImage ?: "")
-                item.name?.let { name ->
-                    setTabText(name)
-                }
-                item.fontColor?.let { fontColor ->
-                    setFontColor(fontColor)
-                }
-                showSelectedView(item.isSelected)
-                setClick(item)
+                tabImageView.loadImageWithCallback(item.backgroundImage
+                        ?: "", object : ImageUtils.ImageLoaderStateListener {
+                    override fun successLoad() {
+                        item.name?.let { name ->
+                            setTabText(name)
+                        }
+                        item.fontColor?.let { fontColor ->
+                            setFontColor(fontColor)
+                        }
+                        showSelectedView(item.isSelected)
+                        setClick(item)
+                    }
+
+                    override fun failedLoad() {
+
+                    }
+                })
+
             }
         })
     }

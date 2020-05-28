@@ -11,6 +11,7 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.unifyprinciples.Typography
 
@@ -27,8 +28,7 @@ class DynamicCategoryItemViewHolder(itemView: View, private val fragment: Fragme
     private fun setUpObservers() {
         dynamicCategoryItemViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer {
             it.data?.firstOrNull()?.let { itemData ->
-                ImageHandler.loadImageWithoutPlaceholder(dynamicCategorySingleItemIcon, itemData.thumbnailUrlMobile,
-                        R.drawable.status_no_result)
+                dynamicCategorySingleItemIcon.loadImageWithoutPlaceholder(itemData.thumbnailUrlMobile ?: "")
                 setClick(itemData)
                 dynamicCategorySingleItemTitle.setTextAndCheckShow(itemData.name)
             }

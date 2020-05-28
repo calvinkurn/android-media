@@ -8,7 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.R
-import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -34,8 +34,18 @@ class CpmTopAdsViewHolder(itemView: View, private val fragment: Fragment) : Abst
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         cpmTopAdsViewModel = discoveryBaseViewModel as CpmTopAdsViewModel
+        addShimmer()
         cpmTopAdsViewModel.fetchCpmTopAdsData()
         setUpObserver()
+    }
+
+    private fun addShimmer() {
+        val list: ArrayList<ComponentsItem> = ArrayList()
+        val width = fragment.context?.resources?.getDimensionPixelSize(R.dimen.dp_250) ?: 0
+        val height = fragment.context?.resources?.getDimensionPixelSize(R.dimen.shop_card_height) ?: 0
+        list.add(ComponentsItem(name = "shimmer", shimmerWidth = width, shimmerHeight = height))
+        list.add(ComponentsItem(name = "shimmer", shimmerWidth = width, shimmerHeight = height))
+        discoveryRecycleAdapter.setDataList(list)
     }
 
     private fun setUpObserver() {
@@ -72,6 +82,4 @@ class CpmTopAdsViewHolder(itemView: View, private val fragment: Fragment) : Abst
 
         })
     }
-
-
 }
