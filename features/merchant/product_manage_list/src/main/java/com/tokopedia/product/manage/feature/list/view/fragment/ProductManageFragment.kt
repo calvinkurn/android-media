@@ -933,7 +933,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             viewModel.editVariantsPrice(result)
         }
         editVariantBottomSheet.show(childFragmentManager, QuickEditVariantPriceBottomSheet.TAG)
-        ProductManageTracking.eventEditVariants(product.id)
+        ProductManageTracking.eventClickEditPriceVariant()
     }
 
     override fun onClickEditVariantStockButton(product: ProductViewModel) {
@@ -941,7 +941,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             viewModel.editVariantsStock(result)
         }
         editVariantStockBottomSheet.show(childFragmentManager, QuickEditVariantStockBottomSheet.TAG)
-        ProductManageTracking.eventEditVariants(product.id)
+        ProductManageTracking.eventClickEditStockVariant()
     }
 
     override fun onClickContactCsButton(product: ProductViewModel) {
