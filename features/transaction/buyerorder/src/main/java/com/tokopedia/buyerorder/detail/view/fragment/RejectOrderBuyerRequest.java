@@ -17,7 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.transaction.common.R;
+import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.detail.view.adapter.RejectOrderReasonAdapter;
 
 import java.util.ArrayList;

@@ -400,8 +400,16 @@ Anda di sini.</string>
     <string name="btn_redeem_ticket">Tutup</string>
     <string name="redeem_deals_btn">Redeem</string>
     <string name="tkpdtransaction_cancellation_with_time">Pembatalan tidak bisa dilakukan saat ini. Kamu bisa batalkan pesanan pada %s</string>
-
     <string name="tkpdtransaction_90_days_found_nothing">Tidak ada transaksi dalam 90 hari terakhir</string>
+
+    <string name="ajukan">Ajukan</string>
+    <string name="please_chose_one">Mohon Pilih Salah Satu</string>
+    <string name="tkpdtransaction_common_cancellation_heading">Pilih satu alasan pengajuan pembatalan:</string>
+    <string name="tkpdtransaction_title_replacement_reason_1">Produk tidak sesuai atau kosong</string>
+    <string name="tkpdtransaction_title_replacement_reason_2">Ingin merubah pesanan</string>
+    <string name="tkpdtransaction_title_replacement_reason_3">Kendala pengiriman</string>
+    <string name="tkpdtransaction_title_replacement_reason_4">Penjual tidak merespon</string>
+
     <string name="month_1">Jan</string>
     <string name="month_2">Feb</string>
     <string name="month_3">Mar</string>
