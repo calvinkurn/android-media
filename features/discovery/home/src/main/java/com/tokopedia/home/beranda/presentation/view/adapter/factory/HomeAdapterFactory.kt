@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.factory
 
 import android.view.View
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -33,8 +32,7 @@ import java.util.*
  * @author by errysuprayogi on 11/28/17.
  */
 
-class HomeAdapterFactory(private val fragmentManager: FragmentManager, private val listener: HomeCategoryListener,
-                         private val inspirationListener: HomeInspirationListener,
+class HomeAdapterFactory(private val listener: HomeCategoryListener, private val inspirationListener: HomeInspirationListener,
                          private val homeFeedsListener: HomeFeedsListener,
                          private val countDownListener: CountDownView.CountDownListener,
                          private val homeReviewListener: HomeReviewListener,

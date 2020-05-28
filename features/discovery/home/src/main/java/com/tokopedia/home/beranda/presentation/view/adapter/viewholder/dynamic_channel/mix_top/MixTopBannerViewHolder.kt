@@ -26,8 +26,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.typeFactory.FlashSaleCardViewTypeFactoryImpl
 import com.tokopedia.home.util.setGradientBackground
-import com.tokopedia.productcard.ProductCardFlashSaleModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -91,10 +91,11 @@ class MixTopBannerViewHolder(
         homeCategoryListener.sendEETracking(MixTopTracking.getMixTopSeeAllCardClick(channel.header.name) as HashMap<String, Any>)
     }
 
-    override fun onFlashSaleCardImpressed(position: Int, channel: DynamicHomeChannel.Channels) {
-        homeCategoryListener.trackingQueue?.putEETracking(
+    override fun onFlashSaleCardImpressed(position: Int, channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid) {
+        val grid = MixTopTracking.mapGridToProductTracker(grid, channel.id, position, channel.persoType, channel.categoryID)
+        homeCategoryListener.getTrackingQueueObj()?.putEETracking(
                 MixTopTracking.getMixTopView(
-                        MixTopTracking.mapChannelToProductTracker(channel),
+                        listOf(grid),
                         channel.header.name,
                         position.toString()
                 ) as HashMap<String, Any>)
@@ -242,7 +243,7 @@ class MixTopBannerViewHolder(
         val list :MutableList<FlashSaleDataModel> = mutableListOf()
         for (element in channel.grids) {
             list.add(FlashSaleDataModel(
-                    ProductCardFlashSaleModel(
+                    ProductCardModel(
                             slashedPrice = element.slashedPrice,
                             productName = element.name,
                             formattedPrice = element.price,
@@ -253,12 +254,16 @@ class MixTopBannerViewHolder(
                             isTopAds = element.isTopads,
                             stockBarPercentage = element.soldPercentage,
                             labelGroupList = element.labelGroup.map {
-                                ProductCardFlashSaleModel.LabelGroup(
+                                ProductCardModel.LabelGroup(
                                         position = it.position,
                                         title = it.title,
                                         type = it.type
                                 )
                             },
+                            freeOngkir = ProductCardModel.FreeOngkir(
+                                    element.freeOngkir.isActive,
+                                    element.freeOngkir.imageUrl
+                            ),
                             isOutOfStock = element.isOutOfStock
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
@@ -271,7 +276,7 @@ class MixTopBannerViewHolder(
     }
 
     private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
-            productCardModelList: List<ProductCardFlashSaleModel>) {
+            productCardModelList: List<ProductCardModel>) {
         val productCardHeight = getProductCardMaxHeight(productCardModelList)
 
         val carouselLayoutParams = this.layoutParams
@@ -279,7 +284,7 @@ class MixTopBannerViewHolder(
         this.layoutParams = carouselLayoutParams
     }
 
-    private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardFlashSaleModel>): Int {
+    private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
         val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.product_card_flashsale_width)
         return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
     }

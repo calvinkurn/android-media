@@ -42,6 +42,7 @@ object MixTopTracking : BaseTracking() {
             channelId
     )
 
+
     fun getMixTopClick(products: List<Product>, headerName: String, channelId: String, positionOnWidgetHome: String, campaignCode: String) = getBasicProductChannelClick(
             Event.PRODUCT_CLICK,
             Category.HOMEPAGE,

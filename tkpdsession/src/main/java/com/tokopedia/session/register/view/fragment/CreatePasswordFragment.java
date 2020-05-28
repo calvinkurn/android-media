@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -18,19 +16,21 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.tkpd.library.ui.utilities.DatePickerUtil;
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.tokopedia.session.register.view.util.DatePickerUtil;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.RegisterAnalytics;
-import com.tokopedia.core.TermPrivacy;
+import com.tokopedia.session.register.view.activity.TermPrivacy;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.customView.PasswordView;
+import com.tokopedia.session.register.view.widget.PasswordView;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.session.R;
@@ -61,10 +61,6 @@ public class CreatePasswordFragment extends BaseDaggerFragment
     View vError;
     TextView termAndCond;
     TextView privacy;
-
-    TkpdProgressDialog mProgressDialog;
-    DatePickerDialog datePicker;
-    DatePicker dp;
 
     @Inject
     CreatePasswordPresenter presenter;
