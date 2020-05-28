@@ -1,56 +1,47 @@
 package com.tokopedia.topupbills.telco.view.bottomsheet
 
-import android.app.Dialog
 import android.os.Bundle
-import android.util.DisplayMetrics
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
-import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.topupbills.R
+import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class DigitalProductBottomSheet : BottomSheets() {
+class DigitalProductBottomSheet : BottomSheetUnify() {
 
     private lateinit var details: TextView
     private lateinit var productPrice: TextView
 
-    override fun getLayoutResourceId(): Int {
-        return R.layout.bottom_sheet_product_see_more
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        initChildLayout()
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    override fun title(): String {
-        arguments?.let {
-            return it.getString(TITLE)
-        }
-        return ""
+    private fun initChildLayout() {
+        val view = View.inflate(context, R.layout.bottom_sheet_product_see_more, null)
+        setChild(view)
+        initView(view)
     }
 
-    override fun initView(view: View?) {
+    private fun initView(view: View?) {
         view?.run {
             details = view.findViewById(R.id.details)
             productPrice = view.findViewById(R.id.product_price)
 
             arguments?.let {
-                details.setText(it.getString(DETAILS))
-                productPrice.setText(it.getString(PRICE))
+                setTitle(it.getString(TITLE))
+                details.text = it.getString(DETAILS)
+                productPrice.text = it.getString(PRICE)
             }
-        }
-    }
-
-    override fun setupDialog(dialog: Dialog, style: Int) {
-        super.setupDialog(dialog, style)
-        val metrics = DisplayMetrics()
-        activity!!.windowManager.defaultDisplay.getMetrics(metrics)
-        if (metrics.heightPixels > 0) {
-            if (bottomSheetBehavior != null)
-                bottomSheetBehavior.peekHeight = metrics.heightPixels / 3
         }
     }
 
     companion object {
 
-        private val TITLE = "title"
-        private val DETAILS = "details"
-        private val PRICE = "price"
+        private const val TITLE = "title"
+        private const val DETAILS = "details"
+        private const val PRICE = "price"
 
         fun newInstance(title: String, details: String, price: String): DigitalProductBottomSheet {
             val fragment = DigitalProductBottomSheet()

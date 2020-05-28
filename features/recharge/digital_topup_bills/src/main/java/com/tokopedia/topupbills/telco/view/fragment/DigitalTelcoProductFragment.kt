@@ -25,6 +25,7 @@ import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
 import com.tokopedia.topupbills.telco.view.model.DigitalTrackProductTelco
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalTelcoProductWidget
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
 
 /**
@@ -128,13 +129,14 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
                 activity?.let {
                     val seeMoreBottomSheet = DigitalProductBottomSheet.newInstance(
-                            itemProduct.attributes.info,
+                            itemProduct.attributes.desc,
                             MethodChecker.fromHtml(itemProduct.attributes.detail).toString(),
                             itemProduct.attributes.price)
-                    seeMoreBottomSheet.setDismissListener {
+                    seeMoreBottomSheet.setOnDismissListener {
                         topupAnalytics.eventCloseDetailProduct(itemProduct.attributes.categoryId)
                     }
                     seeMoreBottomSheet.show(it.supportFragmentManager, "")
+
                 }
             }
 
