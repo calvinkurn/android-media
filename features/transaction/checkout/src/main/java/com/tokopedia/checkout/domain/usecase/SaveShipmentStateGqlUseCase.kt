@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.domain.usecase
 
 import com.tokopedia.checkout.data.model.response.saveshipmentstate.SaveShipmentStateGqlResponse
-import com.tokopedia.checkout.domain.mapper.IShipmentMapper
 import com.tokopedia.checkout.domain.model.saveshipmentstate.SaveShipmentStateData
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -15,7 +14,6 @@ import javax.inject.Named
 
 class SaveShipmentStateGqlUseCase @Inject constructor(@Named(SAVE_SHIPMENT_STATE_MUTATION) private val queryString: String,
                                                      private val graphqlUseCase: GraphqlUseCase,
-                                                     private val shipmentMapper: IShipmentMapper,
                                                      private val schedulers: ExecutorSchedulers) : UseCase<SaveShipmentStateData>() {
 
     companion object {

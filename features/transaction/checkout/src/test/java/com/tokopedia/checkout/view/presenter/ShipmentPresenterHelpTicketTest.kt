@@ -2,8 +2,6 @@ package com.tokopedia.checkout.view.presenter
 
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.data.api.CommonPurchaseApiUrl
-import com.tokopedia.checkout.data.repository.ICheckoutRepository
-import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
 import com.tokopedia.checkout.domain.model.checkout.ErrorReporter
 import com.tokopedia.checkout.domain.usecase.*
@@ -46,7 +44,7 @@ object ShipmentPresenterHelpTicketTest : Spek({
     val getShipmentAddressFormGqlUseCase: GetShipmentAddressFormGqlUseCase = mockk()
     val editAddressUseCase: EditAddressUseCase = mockk()
     val changeShippingAddressUseCase: ChangeShippingAddressUseCase = mockk()
-    val saveShipmentStateUseCase: SaveShipmentStateUseCase = mockk()
+    val saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase = mockk()
     val codCheckoutUseCase: CodCheckoutUseCase = mockk()
     val getRatesUseCase: GetRatesUseCase = mockk()
     val getRatesApiUseCase: GetRatesApiUseCase = mockk()
@@ -77,7 +75,7 @@ object ShipmentPresenterHelpTicketTest : Spek({
             ShipmentPresenter(compositeSubscription,
                     checkoutUseCase, getShipmentAddressFormGqlUseCase,
                     editAddressUseCase, changeShippingAddressUseCase,
-                    saveShipmentStateUseCase, getRatesUseCase, getRatesApiUseCase,
+                    saveShipmentStateGqlUseCase, getRatesUseCase, getRatesApiUseCase,
                     codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
                     ratesStatesConverter, shippingCourierConverter, shipmentAnalyticsActionListener,
                     userSessionInterface, analyticsPurchaseProtection, codAnalytics,

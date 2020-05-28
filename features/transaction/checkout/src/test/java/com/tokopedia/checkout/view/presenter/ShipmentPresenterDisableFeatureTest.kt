@@ -12,7 +12,6 @@ import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse
 import com.tokopedia.checkout.data.model.response.shipment_address_form.ShipmentAddressFormGqlResponse
 import com.tokopedia.checkout.data.model.response.shipment_address_form.ShipmentAddressFormResponse
-import com.tokopedia.checkout.data.repository.ICheckoutRepository
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.domain.usecase.saf.*
@@ -41,7 +40,6 @@ import rx.android.plugins.RxAndroidPlugins
 import rx.android.plugins.RxAndroidSchedulersHook
 import rx.plugins.RxJavaHooks
 import rx.schedulers.Schedulers
-import rx.schedulers.TestScheduler
 import rx.subscriptions.CompositeSubscription
 import java.lang.reflect.Type
 import java.util.HashMap
@@ -55,7 +53,7 @@ object ShipmentPresenterDisableFeatureTest : Spek({
     val getShipmentAddressFormGqlUseCase = GetShipmentAddressFormGqlUseCase("", graphqlUseCase, ShipmentMapper(), TestSchedulers)
     val editAddressUseCase: EditAddressUseCase = mockk()
     val changeShippingAddressUseCase: ChangeShippingAddressUseCase = mockk()
-    val saveShipmentStateUseCase: SaveShipmentStateUseCase = mockk()
+    val saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase = mockk()
     val codCheckoutUseCase: CodCheckoutUseCase = mockk()
     val getRatesUseCase: GetRatesUseCase = mockk()
     val getRatesApiUseCase: GetRatesApiUseCase = mockk()
@@ -90,7 +88,7 @@ object ShipmentPresenterDisableFeatureTest : Spek({
             ShipmentPresenter(compositeSubscription,
                     checkoutUseCase, getShipmentAddressFormGqlUseCase,
                     editAddressUseCase, changeShippingAddressUseCase,
-                    saveShipmentStateUseCase,
+                    saveShipmentStateGqlUseCase,
                     getRatesUseCase, getRatesApiUseCase,
                     codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
                     ratesStatesConverter, shippingCourierConverter, shipmentAnalyticsActionListener, userSessionInterface,
