@@ -58,9 +58,9 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String SHOP_TYPE = "shopType";
     public static final String OPEN_SCREEN = "openScreen";
     public static final String CAMPAIGN_TRACK = "campaignTrack";
+    public static final String KEY_GCLID = "gclid";
     public static final String CLIENT_ID = "clientId";
     public static final String SESSION_IRIS = "sessionIris";
-    public static final String KEY_GCLID = "gclid";
     private final Iris iris;
     private TetraDebugger tetraDebugger;
     private final RemoteConfig remoteConfig;
