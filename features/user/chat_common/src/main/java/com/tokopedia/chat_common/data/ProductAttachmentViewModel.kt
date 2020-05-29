@@ -244,11 +244,12 @@ open class ProductAttachmentViewModel : SendableViewModel,
         return typeFactory.type(this)
     }
 
-    override fun updateData(attributes: String) {
-        val attachment = CommonUtil.fromJson<ProductAttachmentAttributes>(attributes, ProductAttachmentAttributes::class.java)
-        this.productName = "ahoy mate"
-        this.productPrice = "Rp 500"
-        this.isLoading = false
+    override fun updateData(attribute: Any?) {
+        if (attribute is ProductAttachmentAttributes) {
+            this.productName = "ahoy mate"
+            this.productPrice = "Rp 500"
+            this.isLoading = false
+        }
     }
 
     fun hasFreeShipping(): Boolean {

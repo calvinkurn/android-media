@@ -83,7 +83,7 @@ open class TopchatProductAttachmentViewHolder(
         if (!product.isLoading) return
         val chatAttachments = deferredAttachment.getLoadedChatAttachments()
         val attachment = chatAttachments[product.attachmentId] ?: return
-        product.updateData(attachment.attributes)
+        product.updateData(attachment.parsedAttributes)
     }
 
     private fun bindIsLoading(product: ProductAttachmentViewModel) {

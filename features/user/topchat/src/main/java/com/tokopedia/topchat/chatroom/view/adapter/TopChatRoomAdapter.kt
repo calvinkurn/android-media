@@ -98,7 +98,7 @@ class TopChatRoomAdapter(
             if (item is DeferredAttachment && attachments.containsKey(item.id)) {
                 val attachment = attachments[item.id] ?: continue
                 if (item.isLoading) {
-                    item.updateData(attachment.attributes)
+                    item.updateData(attachment.parsedAttributes)
                     notifyItemChanged(itemPosition, DeferredAttachment.PAYLOAD_DEFERRED)
                 }
             }

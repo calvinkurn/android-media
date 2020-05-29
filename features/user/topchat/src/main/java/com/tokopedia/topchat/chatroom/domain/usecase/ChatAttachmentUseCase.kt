@@ -1,6 +1,9 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
 import androidx.collection.ArrayMap
+import com.tokopedia.chat_common.data.AttachmentType
+import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
+import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
@@ -62,9 +65,21 @@ class ChatAttachmentUseCase @Inject constructor(
     private fun map(response: ChatAttachmentResponse): ArrayMap<String, Attachment> {
         val map = ArrayMap<String, Attachment>()
         for (attachment in response.chatAttachments.list) {
+            parseAttribute(attachment)
             map[attachment.id] = attachment
         }
         return map
+    }
+
+    private fun parseAttribute(attachment: Attachment) {
+        attachment.parsedAttributes = when (attachment.type) {
+            AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT.toInt() -> convertToProductAttachment(attachment)
+            else -> null
+        }
+    }
+
+    private fun convertToProductAttachment(attachment: Attachment): ProductAttachmentAttributes {
+        return CommonUtil.fromJson<ProductAttachmentAttributes>(attachment.attributes, ProductAttachmentAttributes::class.java)
     }
 
     val query = """
@@ -83,4 +98,8 @@ class ChatAttachmentUseCase @Inject constructor(
           }
         }
     """.trimIndent()
+
+    companion object {
+
+    }
 }

@@ -14,4 +14,8 @@ data class Attachment(
         val isActual: Boolean = false,
         @SerializedName("type")
         val type: Int = 0
-)
+) {
+
+    var parsedAttributes: Any? = null
+
+}
