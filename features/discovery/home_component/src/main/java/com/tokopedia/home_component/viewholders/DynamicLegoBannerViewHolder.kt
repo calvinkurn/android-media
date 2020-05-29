@@ -57,7 +57,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
         recyclerView.adapter = LegoItemAdapter(
                 legoListener,
                 element.channelModel,
-                adapterPosition)
+                adapterPosition+1)
     }
 
     private fun setViewportImpression(element: DynamicLegoBannerDataModel) {

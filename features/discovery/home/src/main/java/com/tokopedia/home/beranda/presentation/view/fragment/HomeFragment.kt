@@ -71,6 +71,7 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getAdd
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getCloseClickOnDynamicListCarousel
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getRecommendationListImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.SprintSale.getSprintSaleImpression
+import com.tokopedia.home.analytics.v2.LegoBannerTracking
 import com.tokopedia.home.analytics.v2.MixTopTracking.getMixTopViewIris
 import com.tokopedia.home.analytics.v2.MixTopTracking.mapChannelToProductTracker
 import com.tokopedia.home.analytics.v2.ProductHighlightTracking.getProductHighlightImpression
@@ -1307,7 +1308,9 @@ open class HomeFragment : BaseDaggerFragment(),
                 if (visitable is HomeVisitable) {
                     val homeVisitable = visitable
                     if (homeVisitable.isTrackingCombined && homeVisitable.trackingDataForCombination != null) {
-                        HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(getTrackingQueueObj(), homeVisitable.getTrackingDataForCombination());
+                        getTrackingQueueObj()?.putEETracking(
+                                LegoBannerTracking.getHomeBannerImpression(homeVisitable.trackingDataForCombination) as HashMap<String, Any>
+                        )
                     } else if (!homeVisitable.isTrackingCombined && homeVisitable.trackingData != null) {
                         HomePageTracking.eventEnhancedImpressionWidgetHomePage(getTrackingQueueObj(), homeVisitable.trackingData)
                     }

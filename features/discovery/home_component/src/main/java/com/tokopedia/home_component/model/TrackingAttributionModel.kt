@@ -9,7 +9,6 @@ data class TrackingAttributionModel(
         val persoType: String = "",
         val campaignCode: String = "",
         val homeAttribution: String = "",
-        val campaignId: String = ""
-) {
-    val promoName: String = ""
-}
+        val campaignId: String = "",
+        val promoName: String = ""
+)

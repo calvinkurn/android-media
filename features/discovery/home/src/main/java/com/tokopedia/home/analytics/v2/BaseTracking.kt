@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.home.analytics.v2.BaseTracking.Value.FORMAT_2_ITEMS_UNDERSCORE
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
@@ -123,6 +125,15 @@ abstract class BaseTracking {
         fun getEcommercePromoView(promotions: List<Promotion>): Map<String, Any> {
             return DataLayer.mapOf(
                     PROMO_VIEW, getPromotionsMap(promotions))
+        }
+
+        fun getEcommerceObjectPromoView(promotions: List<Any>?): Map<String, Any>? {
+            return DataLayer.mapOf(
+                    PROMO_VIEW,
+                    DataLayer.mapOf(PROMOTIONS, DataLayer.listOf(
+                            promotions
+                    ))
+            )
         }
 
         fun getEcommercePromoClick(promotions: List<Promotion>): Map<String, Any> {
@@ -259,7 +270,8 @@ abstract class BaseTracking {
             eventCategory: String,
             eventAction: String,
             eventLabel: String,
-            promotions: List<Promotion>,
+            promotions: List<Promotion> = listOf(),
+            promotionObject: List<Any>? = null,
             channelId: String,
             userId: String = ""
     ): Map<String, Any>{
@@ -269,7 +281,7 @@ abstract class BaseTracking {
                 Action.KEY, eventAction,
                 Label.KEY, eventLabel,
                 UserId.KEY, userId,
-                Ecommerce.KEY, Ecommerce.getEcommercePromoView(promotions),
+                Ecommerce.KEY, Ecommerce.getEcommerceObjectPromoView(promotionObject)?: Ecommerce.getEcommercePromoView(promotions),
                 ChannelId.KEY, channelId
         )
     }
@@ -386,6 +398,13 @@ abstract class BaseTracking {
                 ChannelId.KEY, channelId
         )
     }
+
+    fun ChannelGrid.convertToHomePromotionModel(channelModel: ChannelModel, position: String) = Promotion(
+            id = channelModel.id + "_" + id + "_" + channelModel.trackingAttributionModel.persoType+ "_" + channelModel.trackingAttributionModel.categoryId,
+            name = channelModel.trackingAttributionModel.promoName,
+            creative = attribution,
+            position = position
+    )
 
     protected fun convertRupiahToInt(rupiah: String): Int {
         try {

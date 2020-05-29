@@ -55,7 +55,8 @@ object DynamicChannelComponentMapper {
                         categoryId = channel.categoryID,
                         persoType = channel.persoType,
                         campaignCode = channel.campaignCode,
-                        homeAttribution = channel.homeAttribution
+                        homeAttribution = channel.homeAttribution,
+                        promoName = channel.promoName
                 ),
                 channelGrids = channel.grids.map {
                     ChannelGrid(
