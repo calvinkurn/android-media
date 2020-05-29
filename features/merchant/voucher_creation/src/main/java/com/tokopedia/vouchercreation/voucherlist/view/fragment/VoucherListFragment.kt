@@ -238,9 +238,9 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         activity?.let {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER).apply {
                 putExtra(CreateMerchantVoucherStepsActivity.DUPLICATE_VOUCHER, voucher)
+                putExtra(CreateMerchantVoucherStepsActivity.IS_DUPLICATE, true)
             }
             startActivity(intent)
-//            startActivity(VoucherDetailActivity.createDuplicateIntent(it, VoucherDetailActivity.DUPLICATE_PAGE))
         }
     }
 

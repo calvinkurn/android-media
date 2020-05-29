@@ -60,6 +60,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         const val POST_IMAGE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/ig_post.jpg"
 
         const val DUPLICATE_VOUCHER = "duplicate_voucher"
+        const val IS_DUPLICATE = "is_duplicate"
     }
 
     @Inject

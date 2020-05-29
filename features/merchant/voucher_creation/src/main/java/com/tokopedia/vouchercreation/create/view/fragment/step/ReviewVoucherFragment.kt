@@ -38,6 +38,7 @@ import com.tokopedia.vouchercreation.detail.model.FooterUiModel
 import com.tokopedia.vouchercreation.detail.model.TipsUiModel
 import com.tokopedia.vouchercreation.detail.view.adapter.factory.VoucherDetailAdapterFactoryImpl
 import com.tokopedia.vouchercreation.detail.view.fragment.BaseDetailFragment
+import kotlinx.android.synthetic.main.fragment_base_list.*
 import javax.inject.Inject
 
 class ReviewVoucherFragment : BaseDetailFragment() {
@@ -244,6 +245,11 @@ class ReviewVoucherFragment : BaseDetailFragment() {
             }
             adapter.data.clear()
             renderList(reviewInfoList)
+            activity?.intent?.getBooleanExtra(CreateMerchantVoucherStepsActivity.IS_DUPLICATE, false)?.let { isDuplicate ->
+                if (isDuplicate) {
+                    recycler_view?.scrollToPosition(adapter.dataSize - 1)
+                }
+            }
         }
     }
 
