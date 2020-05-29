@@ -1,43 +1,76 @@
 package com.tokopedia.discovery2.viewcontrollers.activity
 
+import android.annotation.SuppressLint
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.tokopedia.discovery2.data.ComponentsItem
 import kotlin.reflect.KFunction
 
-class DiscoveryListViewModel(private val applicationContext: Application) : AndroidViewModel(applicationContext) {
-    private val viewHolderViewModelList = ArrayList<DiscoveryBaseViewModel>()
 
+/** Please don't remove any commented code from this file. Zishan will work later on this **/
+class DiscoveryListViewModel(private val applicationContext: Application) : AndroidViewModel(applicationContext) {
+//    private val viewHolderViewModelList = ArrayList<DiscoveryBaseViewModel>()
+
+    private var mapOfViewModels = mutableMapOf<Int, DiscoveryBaseViewModel>()
+
+    @SuppressLint("LogNotTimber")
     fun getViewHolderModel(viewModel: KFunction<DiscoveryBaseViewModel>, componentItem: ComponentsItem, position: Int): DiscoveryBaseViewModel {
-        if (viewHolderViewModelList.size - 1 >= position) {
-            return viewHolderViewModelList[position]
+
+        if (mapOfViewModels[position] == null) {
+            val viewModelObject = viewModel.call(applicationContext, componentItem, position)
+            mapOfViewModels[position] = viewModelObject
         }
-        val viewModelObject = viewModel.call(applicationContext, componentItem, position)
-        viewHolderViewModelList.add(viewModelObject)
-        return viewModelObject
+
+        return mapOfViewModels[position]!!
+
+//        if (viewHolderViewModelList.size - 1 >= position) {
+//            Log.d("getViewHolderModel", position.toString() + " " + viewHolderViewModelList[position])
+//            return viewHolderViewModelList[position]
+//        }
+//        val viewModelObject = viewModel.call(applicationContext, componentItem, position)
+//        viewHolderViewModelList.add(viewModelObject)
+//        Log.d("getViewHolderModelafter", position.toString() + " " + viewModelObject + (viewHolderViewModelList.size - 1))
+//        return viewModelObject
+
+//        if (viewHolderViewModelList.size > position && viewHolderViewModelList[position] != null) {
+//            return viewHolderViewModelList[position]
+//        }
+//        val viewModelObject = viewModel.call(applicationContext, componentItem, position)
+//        if(viewHolderViewModelList.size < position){
+//            for(i in viewHolderViewModelList.size until position){
+//                viewHolderViewModelList.add(null)
+//            }
+//        }
+//        viewHolderViewModelList.add(position, viewModelObject)
+//        return viewModelObject
     }
+
+
+//    //temp code
+//    fun getInnerComponentViewModel(position: Int): DiscoveryBaseViewModel? {
+//        if (viewHolderViewModelList.size - 1 >= position) {
+//            return viewHolderViewModelList[position]
+//        }
+//        return null
+//    }
+
 
     //temp code
     fun getInnerComponentViewModel(position: Int): DiscoveryBaseViewModel? {
-        if (viewHolderViewModelList.size - 1 >= position) {
-            return viewHolderViewModelList[position]
-        }
-        return null
+        return mapOfViewModels[position]
     }
 
-    fun clearList(){
-        viewHolderViewModelList.clear()
-    }
-
-    fun removeViewHolderModel(index: Int) {
-        if(!viewHolderViewModelList.isNullOrEmpty()){
-            viewHolderViewModelList.removeAt(index)
-        }
+    fun clearList() {
+        mapOfViewModels.clear()
+//        viewHolderViewModelList.clear()
     }
 
 
     override fun onCleared() {
         super.onCleared()
-        viewHolderViewModelList.forEach { it.onCleared() }
+        for ((k, v) in mapOfViewModels) {
+            v.onCleared()
+        }
+//        viewHolderViewModelList.forEach { it.onCleared() }
     }
 }

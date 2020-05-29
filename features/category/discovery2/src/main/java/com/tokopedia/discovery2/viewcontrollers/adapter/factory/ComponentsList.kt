@@ -5,7 +5,7 @@ import com.tokopedia.discovery2.R
 
 
 enum class ComponentsList(val id: Int, val componentName: String) {
-    Default(R.layout.coming_soon_view, ComponentNames.Default.componentName),
+    Default(R.layout.coming_soon_view, ComponentNames.Default.componentName),   // ***** Don't move this line ******
     SingleBanner(R.layout.multi_banner_layout, ComponentNames.SingleBanner.componentName),
     DoubleBanner(R.layout.multi_banner_layout, ComponentNames.DoubleBanner.componentName),
     TripleBanner(R.layout.multi_banner_layout, ComponentNames.TripleBanner.componentName),
@@ -32,7 +32,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     TextComponent(R.layout.coming_soon_view, ComponentNames.TextComponent.componentName),
     ClaimCoupon(R.layout.component_claim_coupon_layout, ComponentNames.ClaimCoupon.componentName),
     ClaimCouponItem(R.layout.component_claim_coupon_item, ComponentNames.ClaimCouponItem.componentName),
-    CustomTopChat(R.layout.coming_soon_view, ComponentNames.CustomTopchat.componentName),
+//    CustomTopChat(R.layout.coming_soon_view, ComponentNames.CustomTopchat.componentName),
     Spacing(R.layout.spacing_layout, ComponentNames.Margin.componentName),
     ChipsFilter(R.layout.widget_recycler_view, ComponentNames.ChipsFilter.componentName),
     ChipsFilterItem(R.layout.chips_filter_item_layout, ComponentNames.ChipsFilterItem.componentName),

@@ -97,8 +97,8 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     private fun checkLoginAndUpdateList(components: List<ComponentsItem>?) {
         if (!userSession.isLoggedIn) {
-            val list = components?.filter { it.name != "topads" }
-            discoveryResponseList.postValue(Success(list as ArrayList<ComponentsItem>))
+            val components = components?.filter { it.name != "topads" }
+            discoveryResponseList.postValue(Success(components as ArrayList<ComponentsItem>))
 
         } else {
             discoveryResponseList.postValue(Success(components as ArrayList<ComponentsItem>))

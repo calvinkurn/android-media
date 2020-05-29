@@ -10,7 +10,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryListViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.DiscoveryHomeFactory
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 
-class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parentComponent : AbstractViewHolder? = null)
+class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parentComponent: AbstractViewHolder? = null)
     : RecyclerView.Adapter<AbstractViewHolder>() {
 
     companion object {
@@ -56,7 +56,6 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
     }
 
 
-
     override fun onViewAttachedToWindow(holder: AbstractViewHolder) {
         super.onViewAttachedToWindow(holder)
         holder.onViewAttachedToWindow()
@@ -70,24 +69,4 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
     fun getChildHolderViewModel(position: Int): DiscoveryBaseViewModel? {
         return viewHolderListModel.getInnerComponentViewModel(position)
     }
-
-//    fun setDataRetainingOldData(dataList: ArrayList<ComponentsItem>?) {
-//        if (dataList != null) {
-//            componentList.addAll(dataList)
-//        }
-//        // TODO : Remove notify for horizontal adapter
-//        notifyDataSetChanged()
-//    }
-
-//    fun removeExistingTabsComponent(tabListComponents: List<ComponentsItem>) {
-//        val position: Int = componentList.size - tabListComponents.size
-//        if (!componentList.isNullOrEmpty()) {
-//            for (index in componentList.size - 1 downTo position) {
-//                componentList.removeAt(index)
-//                viewHolderListModel.removeViewHolderModel(index)
-//            }
-//        }
-//        componentList.addAll(tabListComponents)
-//        notifyDataSetChanged()
-//    }
 }
