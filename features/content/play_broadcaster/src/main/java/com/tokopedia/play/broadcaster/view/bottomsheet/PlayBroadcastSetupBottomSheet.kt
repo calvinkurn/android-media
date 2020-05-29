@@ -20,16 +20,14 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.util.BreadcrumbsModel
 import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
+import com.tokopedia.play.broadcaster.view.partial.BottomActionPartialView
 import com.tokopedia.play.broadcaster.view.partial.SelectedProductPagePartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
-import com.tokopedia.unifycomponents.UnifyButton
 import java.util.*
 import javax.inject.Inject
 
@@ -48,11 +46,9 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
     private lateinit var tvTitle: TextView
     private lateinit var clContent: ConstraintLayout
     private lateinit var flOverlay: FrameLayout
-    private lateinit var ivInventory: ImageView
-    private lateinit var btnAction: UnifyButton
-    private lateinit var tvBadgeCount: TextView
 
     private lateinit var selectedProductPage: SelectedProductPagePartialView
+    private lateinit var bottomActionView: BottomActionPartialView
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
@@ -96,6 +92,12 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
                 if (activeFragment is PlayBaseSetupFragment) activeFragment.refresh()
             }
         })
+
+        bottomActionView = BottomActionPartialView(view as ViewGroup, object : BottomActionPartialView.Listener {
+            override fun onInventoryIconClicked() {
+                showSelectedProductPage()
+            }
+        })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -122,6 +124,10 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
 
     override fun setupTitle(title: String) {
         tvTitle.text = title
+    }
+
+    override fun showBottomAction(shouldShow: Boolean) {
+        if (shouldShow) bottomActionView.show() else bottomActionView.hide()
     }
 
     fun show(fragmentManager: FragmentManager) {
@@ -159,17 +165,12 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
             tvTitle = findViewById(R.id.tv_title)
             clContent = findViewById(R.id.cl_content)
             flOverlay = findViewById(R.id.fl_overlay)
-            ivInventory = findViewById(R.id.iv_inventory)
-            btnAction = findViewById(R.id.btn_action)
-            tvBadgeCount = findViewById(R.id.tv_badge_count)
         }
     }
 
     private fun setupView(view: View) {
         flOverlay.setOnClickListener { dialog?.onBackPressed() }
         ivBack.setOnClickListener { dialog?.onBackPressed() }
-
-        ivInventory.setOnClickListener { showSelectedProductPage() }
 
         navigateToFragment(PlayEtalasePickerFragment::class.java)
     }
@@ -212,19 +213,7 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
      */
     private fun observeSelectedProducts() {
         viewModel.observableSelectedProducts.observe(viewLifecycleOwner, Observer {
-            if (it.isEmpty()) {
-                ivInventory.setImageResource(R.drawable.ic_play_inventory_disabled)
-                ivInventory.isClickable = false
-                btnAction.isEnabled = false
-                tvBadgeCount.gone()
-            } else {
-                ivInventory.setImageResource(R.drawable.ic_play_inventory)
-                ivInventory.isClickable = true
-                btnAction.isEnabled = true
-                tvBadgeCount.visible()
-                tvBadgeCount.text = it.size.toString()
-            }
-
+            bottomActionView.setupBottomActionWithProducts(it)
             selectedProductPage.onSelectedProductsUpdated(it)
         })
     }

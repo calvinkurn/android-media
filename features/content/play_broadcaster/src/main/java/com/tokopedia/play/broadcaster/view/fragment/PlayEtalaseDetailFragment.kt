@@ -67,6 +67,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        broadcastCoordinator.showBottomAction(true)
         return inflater.inflate(R.layout.fragment_play_etalase_detail, container, false)
     }
 

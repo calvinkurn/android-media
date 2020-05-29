@@ -28,6 +28,12 @@ class PlaySearchBar : ConstraintLayout {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
+    var text: String
+        get() = etSearch.text.toString()
+        set(value) {
+            etSearch.setText(value)
+        }
+
     private val ivSearch: ImageView
     private val etSearch: EditText
     private val ivClear: ImageView
@@ -54,8 +60,8 @@ class PlaySearchBar : ConstraintLayout {
         mListener = listener
     }
 
-    fun setText(text: String) {
-        etSearch.setText(text)
+    fun forceSearch() {
+        etSearch.onEditorAction(EditorInfo.IME_ACTION_SEARCH)
     }
 
     private fun setupView(view: View) {
@@ -84,8 +90,7 @@ class PlaySearchBar : ConstraintLayout {
         })
         etSearch.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                mListener?.onSearchButtonClicked(this@PlaySearchBar, etSearch.text.toString())
-                hideKeyboard()
+                doSearch()
                 true
             } else false
         }
@@ -108,6 +113,11 @@ class PlaySearchBar : ConstraintLayout {
     private fun hideKeyboard() {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         imm?.hideSoftInputFromWindow(etSearch.windowToken, 0)
+    }
+
+    private fun doSearch() {
+        mListener?.onSearchButtonClicked(this@PlaySearchBar, etSearch.text.toString())
+        etSearch.clearFocus()
     }
 
     interface Listener {

@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
@@ -63,8 +64,8 @@ class PlayEtalasePickerFragment @Inject constructor(
 
     private val searchSuggestionsAdapter = SearchSuggestionsAdapter(object : SearchSuggestionViewHolder.Listener {
         override fun onSuggestionClicked(suggestionText: String) {
-            shouldSearchProductWithKeyword(suggestionText)
-            psbSearch.clearFocus()
+            psbSearch.text = suggestionText
+            psbSearch.forceSearch()
         }
     })
 
@@ -84,6 +85,7 @@ class PlayEtalasePickerFragment @Inject constructor(
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        broadcastCoordinator.showBottomAction(false)
         return inflater.inflate(R.layout.fragment_play_etalase_picker, container, false)
     }
 
@@ -120,7 +122,6 @@ class PlayEtalasePickerFragment @Inject constructor(
 
             override fun onCanceled(view: PlaySearchBar) {
                 exitSearchMode()
-                viewModel.loadSuggestionsFromKeyword("")
                 viewModel.loadEtalaseList()
             }
 
@@ -144,6 +145,8 @@ class PlayEtalasePickerFragment @Inject constructor(
         rvEtalase.gone()
 
         rvSuggestions.visible()
+
+        broadcastCoordinator.showBottomAction(false)
     }
 
     private fun exitSearchMode() {
@@ -151,6 +154,8 @@ class PlayEtalasePickerFragment @Inject constructor(
         rvEtalase.visible()
 
         rvSuggestions.gone()
+
+        broadcastCoordinator.showBottomAction(psbSearch.text.isNotEmpty())
     }
 
     private fun shouldSearchProductWithKeyword(keyword: String) {
