@@ -17,7 +17,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.textfield.TextInputEditText
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -46,8 +45,8 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
     var tokoPointComponent: TokopointBundleComponent? = null
 
     @Inject
-    lateinit var factory : ViewModelFactory
-    private val mViewModel: SendGiftViewModel by lazy { ViewModelProviders.of(this,factory)[SendGiftViewModel::class.java] }
+    lateinit var factory: ViewModelFactory
+    private val mViewModel: SendGiftViewModel by lazy { ViewModelProviders.of(this, factory)[SendGiftViewModel::class.java] }
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
