@@ -1,6 +1,5 @@
 package com.tokopedia.discovery2.viewcontrollers.activity
 
-import android.annotation.SuppressLint
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -9,11 +8,9 @@ import kotlin.reflect.KFunction
 
 /** Please don't remove any commented code from this file. Zishan will work later on this **/
 class DiscoveryListViewModel(private val applicationContext: Application) : AndroidViewModel(applicationContext) {
-//    private val viewHolderViewModelList = ArrayList<DiscoveryBaseViewModel>()
-
+    //    private val viewHolderViewModelList = ArrayList<DiscoveryBaseViewModel>()
     private var mapOfViewModels = mutableMapOf<Int, DiscoveryBaseViewModel>()
 
-    @SuppressLint("LogNotTimber")
     fun getViewHolderModel(viewModel: KFunction<DiscoveryBaseViewModel>, componentItem: ComponentsItem, position: Int): DiscoveryBaseViewModel {
 
         if (mapOfViewModels[position] == null) {
@@ -53,7 +50,6 @@ class DiscoveryListViewModel(private val applicationContext: Application) : Andr
 //        }
 //        return null
 //    }
-
 
     //temp code
     fun getInnerComponentViewModel(position: Int): DiscoveryBaseViewModel? {
