@@ -81,6 +81,7 @@
 /features/top_ads/top_ads_detail_sheet/                 @tokopedia/minion-skywalker
 
 /features/merchant/shop_settings/                       @tokopedia/minion-stuart
+/features/merchant/talk/                            	@tokopedia/minion-stuart
 /features/merchant/variant_common/                      @tokopedia/minion-stuart
 
 /features/merchant/seller_home/                         @tokopedia/minion-stuart
@@ -159,7 +160,6 @@
 /features/user/loginphone/                      		@tokopedia/minion-kevin
 /features/user/notifcenter/                     		@tokopedia/minion-kevin
 /features/user/attachproduct/                   		@tokopedia/minion-kevin
-/features/user/talk/                            		@tokopedia/minion-kevin
 /features/user/changephonenumber                		@tokopedia/minion-kevin
 /features/user/onboarding                       		@tokopedia/minion-kevin
 /features/user/phoneverification                		@tokopedia/minion-kevin
