@@ -6,6 +6,7 @@ import com.tokopedia.play.broadcaster.di.key.FragmentKey
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalaseDetailFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
+import com.tokopedia.play.broadcaster.view.fragment.PlayLiveBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayPrepareBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.factory.PlayBroadcastFragmentFactory
 import dagger.Binds
@@ -45,4 +46,10 @@ abstract class PlayBroadcasterFragmentModule {
     @IntoMap
     @FragmentKey(PlayPrepareBroadcastFragment::class)
     abstract fun getPlayPrepareBroadcastFragment(fragment: PlayPrepareBroadcastFragment): Fragment
+
+    @Binds
+    @PlayBroadcasterScope
+    @IntoMap
+    @FragmentKey(PlayLiveBroadcastFragment::class)
+    abstract fun getPlayLiveBroadcastFragment(fragment: PlayLiveBroadcastFragment): Fragment
 }

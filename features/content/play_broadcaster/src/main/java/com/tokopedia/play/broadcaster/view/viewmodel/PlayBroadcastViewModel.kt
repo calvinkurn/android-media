@@ -1,17 +1,16 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.play.broadcaster.dispatcher.PlayBroadcastDispatcher
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
-import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
+import com.tokopedia.play.broadcaster.util.event.Event
+import com.tokopedia.play.broadcaster.view.event.ScreenStateEvent
+import com.tokopedia.play.broadcaster.view.uimodel.ChannelInfoUiModel
+import com.tokopedia.play.broadcaster.view.uimodel.PlayChannelStatus
+import kotlinx.coroutines.*
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -21,37 +20,75 @@ import javax.inject.Named
  */
 class PlayBroadcastViewModel  @Inject constructor(
         private val playPusher: PlayPusher,
-        @Named(PlayBroadcastDispatcher.MAIN) dispatcher: CoroutineDispatcher
+        @Named(PlayBroadcastDispatcher.MAIN) private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + dispatcher)
 
+    val channelInfo: LiveData<ChannelInfoUiModel>
+        get() = _observableChannelInfo
+    private val _observableChannelInfo = MutableLiveData<ChannelInfoUiModel>()
 
-    val observablePage: LiveData<Boolean>
-        get() = _observablePage
-    private val _observablePage = MutableLiveData<Boolean>()
+    val observableScreenStateEvent: LiveData<Event<ScreenStateEvent>>
+        get() = _observableScreenStateEvent
+    private val _observableScreenStateEvent = MutableLiveData<Event<ScreenStateEvent>>()
 
     init {
         playPusher.create()
     }
 
-    fun navigateTo() {
-
-    }
-
     fun getConfiguration() {
-        val configuration = PlayBroadcastMocker.getMockConfiguration()
-        if (configuration.isHaveOnGoingLive) {
-            getChannel(configuration.channelId)
-        } else {
-            // TODO("temporary")
-            _observablePage.value = true
+        _observableScreenStateEvent.value = Event(ScreenStateEvent.ShowLoading)
+        scope.launch {
+            val configuration = PlayBroadcastMocker.getMockConfiguration()
+            if (configuration.isUserWhitelisted) {
+                if (configuration.isHaveOnGoingLive) {
+                    _observableScreenStateEvent.value = Event(ScreenStateEvent.ShowLivePage(configuration.channelId))
+                } else {
+                    _observableScreenStateEvent.value = Event(ScreenStateEvent.ShowPreparePage)
+                }
+            } else {
+                // TODO("ask PO for this case")
+                _observableScreenStateEvent.value = Event(ScreenStateEvent.ShowDialogError("Warning!", "Not a whitelisted user"))
+            }
         }
     }
 
-    fun getChannel(channelId: String) {
+    fun getChannel(channelId: String): ChannelInfoUiModel {
+        val channelInfo = PlayBroadcastMocker.getMockActiveChannel()
+        _observableChannelInfo.value = channelInfo
+        startWebSocket(
+                channelInfo
+        )
+        return channelInfo
+    }
 
+    private fun updateChannelStatus(status: PlayChannelStatus) {
+        // TODO("update channel status")
+    }
+
+    fun startPushBroadcast(ingestUrl: String) {
+        scope.launch {
+            if (ingestUrl.isNotEmpty()) {
+                playPusher.startPush(ingestUrl)
+                updateChannelStatus(PlayChannelStatus.Active)
+            }
+        }
+    }
+
+    fun stopPushBroadcast() {
+        scope.launch {
+            playPusher.stopPush()
+            playPusher.stopPreview()
+            updateChannelStatus(PlayChannelStatus.InActive)
+        }
+    }
+
+    private fun startWebSocket(channelInfo: ChannelInfoUiModel) {
+        scope.launch {
+            // TODO("connect socket")
+        }
     }
 
     fun getPlayPusher(): PlayPusher {

@@ -182,6 +182,8 @@ class PlayBroadcastFragment: BaseDaggerFragment() {
 
     companion object {
 
+        const val PARENT_FRAGMENT_TAG = "parent_fragment"
+
         const val PERMISSION_CODE = 9276
 
         fun newInstance(): PlayBroadcastFragment {

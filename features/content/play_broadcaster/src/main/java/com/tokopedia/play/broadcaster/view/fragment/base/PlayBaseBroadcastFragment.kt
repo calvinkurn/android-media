@@ -5,10 +5,10 @@ import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
 
 
 /**
- * Created by mzennis on 28/05/20.
+ * Created by mzennis on 29/05/20.
  */
 abstract class PlayBaseBroadcastFragment: TkpdBaseV4Fragment() {
 
     protected open val broadcastCoordinator: PlayBroadcastCoordinator
-        get() = requireParentFragment() as PlayBroadcastCoordinator
+        get() = activity as PlayBroadcastCoordinator
 }

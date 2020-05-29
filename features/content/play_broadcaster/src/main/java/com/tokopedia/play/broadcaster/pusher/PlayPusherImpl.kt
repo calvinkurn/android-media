@@ -99,8 +99,10 @@ class PlayPusherImpl(private val builder: PlayPusher.Builder) : PlayPusher {
             return
         }
         try {
-            mAliVcLivePusher?.startPushAysnc(this.mIngestUrl)
-            mCountDownTimer?.start()
+            if (mAliVcLivePusher?.isPushing == false) {
+                mAliVcLivePusher?.startPushAysnc(this.mIngestUrl)
+                mCountDownTimer?.start()
+            }
         } catch (e: Exception) {
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
