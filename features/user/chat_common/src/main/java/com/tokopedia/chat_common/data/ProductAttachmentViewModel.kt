@@ -93,6 +93,9 @@ open class ProductAttachmentViewModel : SendableViewModel,
             status = attribute.productProfile.status
             wishList = attribute.productProfile.wishList
             images = attribute.productProfile.images
+            if (variants.isNotEmpty()) {
+                setupVariantsField()
+            }
             this.isLoading = false
         }
     }
