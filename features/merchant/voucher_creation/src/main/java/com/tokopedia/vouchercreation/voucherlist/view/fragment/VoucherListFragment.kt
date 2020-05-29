@@ -4,6 +4,7 @@ import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.view.*
+import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -339,6 +340,25 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         showAppBarElevation(false)
     }
 
+    private fun setupSearchBar() {
+        searchBarMvc?.run {
+            searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    clearAllData()
+                    val keyword = searchBarTextField.text.toString()
+                    if (keyword.isNotEmpty()) {
+                        mViewModel.setSearchKeyword(keyword)
+                    } else {
+                        loadData(1)
+                    }
+
+                    return@setOnEditorActionListener true
+                }
+                false
+            }
+        }
+    }
+
     private fun getMvcItemDecoration() = object : RecyclerView.ItemDecoration() {
 
         override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
@@ -461,6 +481,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                     searchBarMvc.isVisible = !isActiveVoucher
                     headerChipMvc.isVisible = !isActiveVoucher
                     isToolbarAlreadyLoaded = true
+                    setupSearchBar()
                 }
                 renderList(vouchers, vouchers.isNotEmpty())
             }

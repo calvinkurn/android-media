@@ -1,6 +1,7 @@
 package com.tokopedia.vouchercreation.voucherlist.view.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -28,12 +29,19 @@ class VoucherListViewModel @Inject constructor(
         @Named("Main") dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
-    private val _voucherList: MutableLiveData<Result<List<VoucherUiModel>>> = MutableLiveData()
     val voucherList: LiveData<Result<List<VoucherUiModel>>>
         get() = _voucherList
 
+    private val _keywordLiveData = MutableLiveData<String>()
+
     private val activeVoucherRequestParam by lazy {
         VoucherListParam.createParam(status = VoucherStatus.ACTIVE)
+    }
+
+    private val _voucherList = MediatorLiveData<Result<List<VoucherUiModel>>>().apply {
+        addSource(_keywordLiveData) { keyword ->
+            searchVoucherByKeyword(keyword)
+        }
     }
 
     fun getActiveVoucherList() {
@@ -66,6 +74,20 @@ class VoucherListViewModel @Inject constructor(
             _voucherList.value = Success(withContext(Dispatchers.IO) {
                 getVoucherListUseCase.executeOnBackground()
             })
+        }, onError = {
+            _voucherList.value = Fail(it)
+        })
+    }
+
+    fun setSearchKeyword(keyword: String) {
+        _keywordLiveData.value = keyword
+    }
+
+    private fun searchVoucherByKeyword(keyword: String) {
+        launchCatchError(block = {
+            _voucherList.value = Success(
+                    (_voucherList.value as? Success)?.data?.filter {
+                        it.name.contains(keyword, true) } ?: listOf())
         }, onError = {
             _voucherList.value = Fail(it)
         })

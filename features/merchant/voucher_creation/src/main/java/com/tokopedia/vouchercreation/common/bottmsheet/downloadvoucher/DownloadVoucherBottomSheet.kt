@@ -86,13 +86,6 @@ class DownloadVoucherBottomSheet(
                 ),
                 DownloadVoucherUiModel(
                         isSelected = true,
-                        ratioStr = parent.context.getString(R.string.mvc_ratio_16_9),
-                        description = parent.context.getString(R.string.mvc_for_post_instagram_story),
-                        downloadVoucherType = DownloadVoucherType.InstaStory("https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/ig_story.jpg"),
-                        onImageOpened = ::onImageExpanded
-                ),
-                DownloadVoucherUiModel(
-                        isSelected = true,
                         ratioStr = parent.context.getString(R.string.mvc_shop_cover),
                         description = parent.context.getString(R.string.mvc_for_cover_of_your_shop),
                         downloadVoucherType = DownloadVoucherType.Banner(bannerUrl),
