@@ -4,10 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/dp_12"
-    android:paddingTop="@dimen/dp_12"
-    android:paddingRight="@dimen/dp_12"
-    android:paddingBottom="@dimen/dp_10">
+    android:layout_margin="@dimen/layout_lvl1">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/label_input_number"
@@ -46,7 +43,7 @@
         android:layout_height="@dimen/dp_25"
         android:layout_marginEnd="@dimen/dp_5"
         android:layout_marginRight="@dimen/dp_5"
-        android:contentDescription="@string/app_name"
+        tools:ignore="contentDescription"
         android:paddingBottom="@dimen/dp_5"
         app:layout_constraintBottom_toBottomOf="@+id/ac_input_number"
         app:layout_constraintEnd_toStartOf="@+id/btn_clear_input_number"

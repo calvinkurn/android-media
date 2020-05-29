@@ -21,11 +21,12 @@ abstract class BaseTelcoProductViewHolder(itemView: View, val listener: DigitalP
         productList = products
     }
 
-    protected fun renderLabel(productLabel: TextView) {
+    protected fun renderLabel(productLabel: Label) {
         if (productItem.attributes.productLabels.isEmpty()) {
             productLabel.visibility = View.GONE
         } else {
             productLabel.text = productItem.attributes.productLabels[0]
+            productLabel.setLabelType(Label.GENERAL_DARK_ORANGE)
             productLabel.visibility = View.VISIBLE
         }
     }

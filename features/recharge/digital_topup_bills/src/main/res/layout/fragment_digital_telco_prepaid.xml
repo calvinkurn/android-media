@@ -29,25 +29,26 @@
                 app:tckv_content_text_size="@dimen/dp_11"
                 app:tckv_indicator_off_color="@color/grey_550"
                 app:tckv_indicator_on_color="@color/tkpd_main_green"
-                tools:visibility="gone"/>
+                tools:visibility="gone" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/input_number_area"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/ticker_view"
-                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginLeft="@dimen/layout_lvl2"
                 android:layout_marginTop="@dimen/dp_10"
-                android:layout_marginRight="@dimen/dp_20"
-                app:cardCornerRadius="@dimen/spacing_lvl3">
+                android:layout_marginRight="@dimen/layout_lvl2"
+                app:cardCornerRadius="@dimen/layout_lvl1">
 
                 <com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
                     android:id="@+id/telco_input_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/spacing_lvl2"
-                    android:layout_marginTop="@dimen/spacing_lvl2"
-                    android:layout_marginRight="@dimen/spacing_lvl2" />
+                    android:layout_marginLeft="@dimen/layout_lvl1"
+                    android:layout_marginTop="@dimen/layout_lvl1"
+                    android:layout_marginRight="@dimen/layout_lvl1"
+                    android:layout_marginBottom="@dimen/layout_lvl1"/>
 
             </androidx.cardview.widget.CardView>
 
@@ -73,7 +74,6 @@
                 android:layout_height="@dimen/layout_lvl5"
                 android:layout_below="@+id/input_number_area"
                 android:layout_marginTop="@dimen/spacing_lvl4"
-                android:background="@color/white"
                 android:theme="@style/ThemeOverlay.AppCompat.Light"
                 android:visibility="gone"
                 app:tabGravity="fill"
@@ -101,13 +101,6 @@
                 android:layout_marginRight="@dimen/spacing_lvl4"
                 android:visibility="visible"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-            <ProgressBar
-                android:id="@+id/layout_progress_bar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:visibility="gone" />
 
         </RelativeLayout>
 

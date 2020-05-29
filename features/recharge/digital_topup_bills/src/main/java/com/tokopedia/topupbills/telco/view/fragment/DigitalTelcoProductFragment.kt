@@ -1,14 +1,12 @@
 package com.tokopedia.topupbills.telco.view.fragment
 
-import android.content.ComponentName
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -25,7 +23,6 @@ import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
 import com.tokopedia.topupbills.telco.view.model.DigitalTrackProductTelco
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalTelcoProductWidget
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
 
 /**
@@ -34,10 +31,9 @@ import javax.inject.Inject
 class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
     private lateinit var telcoTelcoProductView: DigitalTelcoProductWidget
-    private lateinit var emptyStateProductView: RelativeLayout
+    private lateinit var emptyStateProductView: ConstraintLayout
     private lateinit var titleEmptyState: TextView
     private lateinit var descEmptyState: TextView
-    private lateinit var progressBar: ProgressBar
     private lateinit var sharedModel: SharedProductTelcoViewModel
     private lateinit var selectedOperatorName: String
     private lateinit var shimmeringGridLayout: LinearLayout
@@ -82,7 +78,6 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         emptyStateProductView = view.findViewById(R.id.telco_empty_state_layout)
         titleEmptyState = view.findViewById(R.id.title_empty_product)
         descEmptyState = view.findViewById(R.id.desc_empty_product)
-        progressBar = view.findViewById(R.id.progress_bar)
         shimmeringGridLayout = view.findViewById(R.id.shimmering_product_grid)
         shimmeringListLayout = view.findViewById(R.id.shimmering_product_list)
         return view

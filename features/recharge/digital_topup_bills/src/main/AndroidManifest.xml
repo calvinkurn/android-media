@@ -1,6 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.topupbills"
-    xmlns:tools="http://schemas.android.com/tools">
+    package="com.tokopedia.topupbills">
 
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
 
