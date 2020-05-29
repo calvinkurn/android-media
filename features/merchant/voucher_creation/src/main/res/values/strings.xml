@@ -268,4 +268,5 @@
     <string name="mvc_detail_ticker_public">&lt;b>Voucher kamu sedang tampil&lt;b> di halaman detail produk dan halaman toko. Pelajari Selengkapnya</string>
     <string name="mvc_detail_ticker_public_clickable">Pelajari Selengkapnya</string>
     <string name="mvc_detail_expenses_info">Biaya promosi akan terhitung setelah pembeli menggunakan voucher toko dalam pembelian.&lt;br>&lt;br>Pengeluaran akan otomatis dipotong dari hasil penjualanmu.</string>
+    <string name="mvc_detail_remaining_time">%s hari : %sj : %sm : %sd</string>
 </resources>

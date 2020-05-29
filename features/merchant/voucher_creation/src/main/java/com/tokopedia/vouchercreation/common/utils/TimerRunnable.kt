@@ -1,9 +1,12 @@
 package com.tokopedia.vouchercreation.common.utils
 
+import android.content.Context
 import android.os.CountDownTimer
+import com.tokopedia.vouchercreation.R
 
 class TimerRunnable(remainingTime: Long,
-                    val onRemainingTimeTick: (String) -> Unit) : CountDownTimer(remainingTime, 1000) {
+                    val onRemainingTimeTick: (String) -> Unit,
+                    val context: Context) : CountDownTimer(remainingTime, 1000) {
 
     companion object {
         private const val SECOND = 1000
@@ -26,6 +29,6 @@ class TimerRunnable(remainingTime: Long,
         val minutes = (remainingTime % HOUR) / MINUTE
         val seconds = (remainingTime % MINUTE) / SECOND
 
-        return "${days.toInt()} hari : ${hours.toInt()}j : ${minutes.toInt()}m : ${seconds.toInt()}d"
+        return String.format(context.getString(R.string.mvc_detail_remaining_time), days.toInt().toString(), hours.toInt().toString(), minutes.toInt().toString(), seconds.toInt().toString())
     }
 }
