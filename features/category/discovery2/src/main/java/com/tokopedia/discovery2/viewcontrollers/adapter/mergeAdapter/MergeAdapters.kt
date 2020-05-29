@@ -1,54 +1,68 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.mergeAdapter
 
-import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 
-class MergeAdapters : RecyclerView.Adapter<AbstractViewHolder>() {
-    private val adapterList: ArrayList<DiscoveryRecycleAdapter> = ArrayList()
-    private var currentActiveAdapter: DiscoveryRecycleAdapter? = null
-    var index = 0
-    var lastListCount = 0
-    fun addAdapter(discoveryRecycleAdapter: DiscoveryRecycleAdapter) {
+class MergeAdapters<T : RecyclerView.Adapter<AbstractViewHolder>> : RecyclerView.Adapter<AbstractViewHolder>() {
+
+    private val adapterList: ArrayList<T> = ArrayList()
+    private var initialChildAdapter: T? = null
+
+    fun addAdapter(childAdapter: T) {
         if (adapterList.isEmpty()) {
-            currentActiveAdapter = discoveryRecycleAdapter
+            initialChildAdapter = childAdapter
         }
-        adapterList.add(discoveryRecycleAdapter)
+        adapterList.add(childAdapter)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder {
-        return currentActiveAdapter?.onCreateViewHolder(parent, viewType)!!
+        return initialChildAdapter?.onCreateViewHolder(parent, viewType)!!
     }
+
 
     override fun onBindViewHolder(holder: AbstractViewHolder, position: Int) {
-        val pair = getActiveAdapter(position)
+        val adapterPositionPair = getActiveAdapter(position)
         setViewSpanType(holder)
-        pair.first.onBindViewHolder(holder, position - pair.second)
+        adapterPositionPair.first.onBindViewHolder(holder, position - adapterPositionPair.second)
     }
+
+    private fun setViewSpanType(holder: AbstractViewHolder) {
+        val layoutParams = holder.itemView.getLayoutParams() as StaggeredGridLayoutManager.LayoutParams
+        when (holder) {
+            is ProductCardItemViewHolder -> layoutParams.isFullSpan = false
+            else -> layoutParams.isFullSpan = true
+        }
+    }
+
 
     override fun getItemViewType(position: Int): Int {
-        val pair = getActiveAdapter(position)
-        val id = pair.first.getItemViewType(position - pair.second)
-        return id ?: 0
+        val adapterPositionPair = getActiveAdapter(position)
+        return (if (position >= adapterPositionPair.second) {
+            adapterPositionPair.first.getItemViewType(position - adapterPositionPair.second)
+        } else {
+            0
+        })
     }
 
-    fun getActiveAdapter(position: Int): Pair<DiscoveryRecycleAdapter, Int> {
-        var xCount = 0
-        var xAdapter = adapterList[0]
+    override fun getItemCount(): Int {
+        return adapterList.sumBy { it.itemCount }
+    }
+
+    private fun getActiveAdapter(position: Int): Pair<T, Int> {
+        var listDataCount = 0
+        var currentChildAdapter = adapterList[0]
         for (it in adapterList) {
-            if (xCount + it.itemCount > position) {
-                xAdapter = it
+            if (listDataCount + it.itemCount > position) {
+                currentChildAdapter = it
                 break
             } else {
-                xCount += it.itemCount
+                listDataCount += it.itemCount
             }
         }
-        return Pair(xAdapter, xCount)
+        return Pair(currentChildAdapter, listDataCount)
     }
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder) {
@@ -59,21 +73,5 @@ class MergeAdapters : RecyclerView.Adapter<AbstractViewHolder>() {
     override fun onViewDetachedFromWindow(holder: AbstractViewHolder) {
         holder.onViewDetachedToWindow()
         super.onViewDetachedFromWindow(holder)
-    }
-
-    override fun getItemCount(): Int {
-        return adapterList.sumBy { it.itemCount }
-    }
-
-    fun setDataList(dataList: ArrayList<ComponentsItem>?) {
-        currentActiveAdapter?.setDataList(dataList)
-    }
-
-    private fun setViewSpanType(holder: AbstractViewHolder) {
-        val layoutParams = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
-        when (holder) {
-            is ProductCardItemViewHolder -> layoutParams.isFullSpan = false
-            else -> layoutParams.isFullSpan = true
-        }
     }
 }
