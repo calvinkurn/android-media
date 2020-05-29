@@ -79,7 +79,7 @@ interface PlayPusher {
     /**
      * Get Network State when Live Streaming
      */
-    fun getObservablePlayPusherNetworkState(): LiveData<PlayPusherNetworkState>?
+    fun getObservablePlayPusherNetworkState(): LiveData<PlayPusherNetworkState>
 
     open class Builder(@ApplicationContext var context: Context) {
 
@@ -164,7 +164,7 @@ interface PlayPusher {
         fun build() = if (DeviceInfoUtil.isDeviceSupported()) {
             PlayPusherImpl(this)
         } else {
-            PlayPusherImplNoop()
+            PlayPusherImplNoop(this)
         }
     }
 }

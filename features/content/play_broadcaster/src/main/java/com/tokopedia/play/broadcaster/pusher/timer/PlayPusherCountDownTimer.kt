@@ -1,8 +1,9 @@
 package com.tokopedia.play.broadcaster.pusher.timer
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.CountDownTimer
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import android.preference.PreferenceManager
 
 
 /**
@@ -16,16 +17,16 @@ class PlayPusherCountDownTimer(val context: Context,
     private var lastMillis: Long = maxLiveStreamDuration
 
     private var callback: PlayPusherCountDownTimerListener? = null
-    private var sharedPreferences =
-            context.getSharedPreferences(PLAY_TIMER_PREFERENCES, Context.MODE_PRIVATE)
-
+    private var sharedPreferences: SharedPreferences? = PreferenceManager.getDefaultSharedPreferences(context)
 
     fun addCallback(callback: PlayPusherCountDownTimerListener) {
         this.callback = callback
     }
 
     fun start() {
-        val lastSavedMillis = sharedPreferences.getLong(PLAY_TIMER_LAST_STATE, maxLiveStreamDuration)
+        val lastSavedMillis = sharedPreferences?.getLong(
+                PLAY_TIMER_LAST_STATE, maxLiveStreamDuration)
+                ?:maxLiveStreamDuration
         countDownTimer = getCountDownTimer(lastSavedMillis)
         countDownTimer?.start()
     }
@@ -44,15 +45,15 @@ class PlayPusherCountDownTimer(val context: Context,
     }
 
     private fun saveLastState() {
-        val editor = sharedPreferences.edit()
-        editor.putLong(PLAY_TIMER_LAST_STATE, lastMillis)
-        editor.apply()
+        val editor = sharedPreferences?.edit()
+        editor?.putLong(PLAY_TIMER_LAST_STATE, lastMillis)
+        editor?.apply()
     }
 
     private fun clear() {
-        val editor = sharedPreferences.edit()
-        editor.remove(PLAY_TIMER_LAST_STATE)
-        editor.apply()
+        val editor = sharedPreferences?.edit()
+        editor?.remove(PLAY_TIMER_LAST_STATE)
+        editor?.apply()
     }
 
     private fun getCountDownTimer(maxLiveStreamDuration: Long): CountDownTimer {

@@ -197,7 +197,7 @@ class PlayPusherImpl(private val builder: PlayPusher.Builder) : PlayPusher {
         return _observableInfoState
     }
 
-    override fun getObservablePlayPusherNetworkState(): LiveData<PlayPusherNetworkState>? {
+    override fun getObservablePlayPusherNetworkState(): LiveData<PlayPusherNetworkState> {
         return _observableNetworkState
     }
 

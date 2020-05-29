@@ -1,15 +1,20 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.play.broadcaster.dispatcher.PlayBroadcastDispatcher
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
+import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
+import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
 import com.tokopedia.play.broadcaster.util.event.Event
 import com.tokopedia.play.broadcaster.view.event.ScreenStateEvent
 import com.tokopedia.play.broadcaster.view.uimodel.ChannelInfoUiModel
 import com.tokopedia.play.broadcaster.view.uimodel.PlayChannelStatus
+import com.tokopedia.play.broadcaster.view.uimodel.TotalLikeUiModel
+import com.tokopedia.play.broadcaster.view.uimodel.TotalViewUiModel
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -28,11 +33,31 @@ class PlayBroadcastViewModel  @Inject constructor(
 
     val channelInfo: LiveData<ChannelInfoUiModel>
         get() = _observableChannelInfo
-    private val _observableChannelInfo = MutableLiveData<ChannelInfoUiModel>()
-
+    val totalView: LiveData<TotalViewUiModel>
+        get() = _observableTotalView
+    val totalLike: LiveData<TotalLikeUiModel>
+        get() = _observableTotalLike
     val observableScreenStateEvent: LiveData<Event<ScreenStateEvent>>
         get() = _observableScreenStateEvent
+    val observableLiveInfoState: LiveData<Event<PlayPusherInfoState>>
+        get() = _observableLiveInfoState
+    val observableLiveNetworkState: LiveData<Event<PlayPusherNetworkState>>
+        get() = _observableLiveNetworkState
+
+    private val _observableChannelInfo = MutableLiveData<ChannelInfoUiModel>()
+    private val _observableTotalView = MutableLiveData<TotalViewUiModel>()
+    private val _observableTotalLike = MutableLiveData<TotalLikeUiModel>()
     private val _observableScreenStateEvent = MutableLiveData<Event<ScreenStateEvent>>()
+    private val _observableLiveNetworkState = MediatorLiveData<Event<PlayPusherNetworkState>>().apply {
+        addSource(playPusher.getObservablePlayPusherNetworkState()) {
+            value = Event(it)
+        }
+    }
+    private val _observableLiveInfoState = MediatorLiveData<Event<PlayPusherInfoState>>().apply {
+        addSource(playPusher.getObservablePlayPusherInfoState()) {
+            value = Event(it)
+        }
+    }
 
     init {
         playPusher.create()
@@ -43,6 +68,7 @@ class PlayBroadcastViewModel  @Inject constructor(
         scope.launch {
             val configuration = PlayBroadcastMocker.getMockConfiguration()
             if (configuration.isUserWhitelisted) {
+                playPusher.addMaxStreamDuration(configuration.maxLiveStreamDuration)
                 if (configuration.isHaveOnGoingLive) {
                     _observableScreenStateEvent.value = Event(ScreenStateEvent.ShowLivePage(configuration.channelId))
                 } else {
@@ -58,6 +84,8 @@ class PlayBroadcastViewModel  @Inject constructor(
     fun getChannel(channelId: String): ChannelInfoUiModel {
         val channelInfo = PlayBroadcastMocker.getMockActiveChannel()
         _observableChannelInfo.value = channelInfo
+        _observableTotalView.value = PlayBroadcastMocker.getMockTotalView()
+        _observableTotalLike.value = PlayBroadcastMocker.getMockTotalLike()
         startWebSocket(
                 channelInfo
         )
