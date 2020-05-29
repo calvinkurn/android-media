@@ -31,15 +31,15 @@ class CategoryTextBubbleAdapter(val onClicked: ((String) -> Unit)? ): RecyclerVi
         // 18dp = 47
         // 8dp = 21
         if (viewType == FIRST_ITEM) {
-            view.view.setMargin(parent.context.resources.getDimensionPixelSize(R.dimen.dimen_first_last_category),
-                    parent.context.resources.getDimensionPixelSize(R.dimen.dimen_0dp),
-                    parent.context.resources.getDimensionPixelSize(R.dimen.dimen_category_item),
-                    parent.context.resources.getDimensionPixelSize(R.dimen.dimen_0dp))
+            view.view.setMargin(parent.context.resources.getDimensionPixelSize(R.dimen.dimen_dp_18),
+                    parent.context.resources.getDimensionPixelSize(R.dimen.layout_lvl0),
+                    parent.context.resources.getDimensionPixelSize(R.dimen.layout_lvl1),
+                    parent.context.resources.getDimensionPixelSize(R.dimen.layout_lvl0))
         } else if (viewType == LAST_ITEM) {
-            view.view.setMargin(parent.context.resources.getDimensionPixelSize(R.dimen.dimen_0dp),
-                    parent.context.resources.getDimensionPixelSize(R.dimen.dimen_0dp),
-                    parent.context.resources.getDimensionPixelSize(R.dimen.dimen_first_last_category),
-                    parent.context.resources.getDimensionPixelSize(R.dimen.dimen_0dp))
+            view.view.setMargin(parent.context.resources.getDimensionPixelSize(R.dimen.layout_lvl0),
+                    parent.context.resources.getDimensionPixelSize(R.dimen.layout_lvl0),
+                    parent.context.resources.getDimensionPixelSize(R.dimen.dimen_dp_18),
+                    parent.context.resources.getDimensionPixelSize(R.dimen.layout_lvl0))
         }
         return view
     }

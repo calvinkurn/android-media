@@ -112,8 +112,8 @@ class EventCategoryFragment : BaseDaggerFragment() {
             layoutManager = gridLayoutManager
             addOnScrollListener(endlessScroll)
             adapter = eventGridAdapter
-            setPadding(context.resources.getDimensionPixelSize(R.dimen.dimen_recycler_view_category), context.resources.getDimensionPixelSize(R.dimen.dimen_0dp)
-                    , context.resources.getDimensionPixelSize(R.dimen.dimen_recycler_view_category), context.resources.getDimensionPixelSize(R.dimen.dimen_0dp))
+            setPadding(context.resources.getDimensionPixelSize(R.dimen.layout_lvl2), context.resources.getDimensionPixelSize(R.dimen.layout_lvl0)
+                    , context.resources.getDimensionPixelSize(R.dimen.layout_lvl2), context.resources.getDimensionPixelSize(R.dimen.layout_lvl0))
         }
     }
 
