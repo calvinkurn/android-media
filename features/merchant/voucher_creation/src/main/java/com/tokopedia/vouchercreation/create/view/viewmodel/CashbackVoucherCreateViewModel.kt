@@ -278,21 +278,6 @@ class CashbackVoucherCreateViewModel @Inject constructor(
         refreshTextFieldValue(cashbackType)
     }
 
-    fun checkRupiahMinimumPurchase(currentValue: Int, errorMessage: String) : Pair<Boolean, String> {
-        mRupiahMaximumDiscountLiveData.value?.let { threshold ->
-            return Pair(currentValue >= threshold, errorMessage)
-        }
-        return Pair(true, "")
-    }
-
-    fun checkPercentageMaximumDiscount(currentValue: Int, errorMessage: String) : Pair<Boolean, String> {
-        mTresholdValueLiveData.value?.let { thresholdValue ->
-            val fullErrorMessage = "$errorMessage${CurrencyFormatHelper.convertToRupiah(thresholdValue.toString())}"
-            return Pair(currentValue > thresholdValue, fullErrorMessage)
-        }
-        return Pair(true, "")
-    }
-
     fun validateCashbackRupiahValues() {
         mRupiahMaximumDiscountLiveData.value?.let { benefitMax ->
             mRupiahMinimumPurchaseLiveData.value?.let { minPurchase ->

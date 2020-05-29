@@ -18,7 +18,6 @@ object PromotionTypeUiListStaticDataSource {
                     minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
                     maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
                     currentValue = InitialValue.MINIMUM_PURCHASE,
-                    extraValidationRes = R.string.mvc_create_promo_type_textfield_alert_no_under_discount,
                     promotionType = promotionType,
                     onValueChanged = onValueChanged,
                     onSetErrorMessage = onSetErrorMessage)
@@ -63,7 +62,6 @@ object PromotionTypeUiListStaticDataSource {
                     minAlertRes = R.string.mvc_create_promo_type_textfield_alert_minimum,
                     maxAlertRes = R.string.mvc_create_promo_type_textfield_alert_maximum,
                     currentValue = InitialValue.MAXIMUM_DISCOUNT,
-                    extraValidationRes = R.string.mvc_create_promo_type_textfield_alert_discount_above,
                     promotionType = promotionType,
                     onValueChanged = onValueChanged,
                     onSetErrorMessage = onSetErrorMessage)

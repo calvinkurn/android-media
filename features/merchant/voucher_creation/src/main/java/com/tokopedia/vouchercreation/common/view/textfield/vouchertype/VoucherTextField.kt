@@ -5,5 +5,4 @@ interface VoucherTextField {
     val minValue: Int
     val minAlertRes: Int?
     val maxAlertRes: Int?
-    val extraValidationRes: Int?
 }

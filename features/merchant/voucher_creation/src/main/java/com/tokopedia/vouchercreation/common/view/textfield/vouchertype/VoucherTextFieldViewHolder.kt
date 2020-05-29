@@ -23,7 +23,6 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
 
     private var minAlertErrorMessage: String = ""
     private var maxAlertErrorMessage: String = ""
-    private var extraValidationErrorMessage: String = ""
 
     override fun bind(element: VoucherTextFieldUiModel) {
         itemView.textField?.run {
@@ -32,10 +31,6 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
 
             element.labelRes?.let { labelRes ->
                 textFiedlLabelText.text = context?.resources?.getString(labelRes).toBlankOrString()
-            }
-
-            element.extraValidationRes?.let { errorRes ->
-                extraValidationErrorMessage = context?.resources?.getString(errorRes).toBlankOrString()
             }
 
             element.currentErrorPair?.let { errorPair ->
@@ -98,8 +93,7 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
                                 maxValue = element.maxValue,
                                 promotionType = element.promotionType,
                                 onValueChanged = element.onValueChanged,
-                                onSetErrorMessage = element.onSetErrorMessage,
-                                extraValidation = element.extraValidation)
+                                onSetErrorMessage = element.onSetErrorMessage)
                     }
                 })
             }
@@ -112,8 +106,7 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
                                              maxValue: Int,
                                              promotionType: PromotionType,
                                              onValueChanged: (Int?, PromotionType) -> Unit,
-                                             onSetErrorMessage: (Boolean, String?, PromotionType) -> Unit,
-                                             extraValidation: (Int, String) -> Pair<Boolean, String>) {
+                                             onSetErrorMessage: (Boolean, String?, PromotionType) -> Unit) {
         onValueChanged(currentValue, promotionType)
         when {
             currentValue < minValue -> {
@@ -127,21 +120,13 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
                 onSetErrorMessage(true, maxAlertErrorMessage, promotionType)
             }
             else -> {
-                val pairResult = extraValidation(currentValue, extraValidationErrorMessage)
-                if (pairResult.first) {
-                    setError(false)
-                    if (textFieldType == VoucherTextFieldType.QUANTITY) {
-                        setMessage(maxAlertErrorMessage)
-                        onSetErrorMessage(false, maxAlertErrorMessage, promotionType)
-                    } else {
-                        setMessage("")
-                        onSetErrorMessage(false, "", promotionType)
-                    }
+                setError(false)
+                if (textFieldType == VoucherTextFieldType.QUANTITY) {
+                    setMessage(maxAlertErrorMessage)
+                    onSetErrorMessage(false, maxAlertErrorMessage, promotionType)
                 } else {
-                    val errorMessage = pairResult.second
-                    setError(true)
-                    setMessage(errorMessage)
-                    onSetErrorMessage(true, errorMessage, promotionType)
+                    setMessage("")
+                    onSetErrorMessage(false, "", promotionType)
                 }
             }
         }

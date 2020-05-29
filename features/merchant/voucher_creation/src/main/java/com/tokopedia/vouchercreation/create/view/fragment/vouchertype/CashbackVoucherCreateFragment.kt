@@ -212,8 +212,6 @@ class CashbackVoucherCreateFragment(private val onNextStep: (VoucherImageType, I
     }
 
     private fun setupView() {
-        rupiahMinimumPurchaseTextFieldModel.extraValidation = viewModel::checkRupiahMinimumPurchase
-        percentageMaximumDiscountTextFieldModel.extraValidation = viewModel::checkPercentageMaximumDiscount
         renderList(getCashbackTypeUiList())
     }
 
