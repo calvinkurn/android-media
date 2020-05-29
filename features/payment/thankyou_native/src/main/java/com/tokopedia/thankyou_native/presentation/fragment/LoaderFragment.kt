@@ -30,8 +30,6 @@ import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewMo
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_fragment_loader.*
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 import java.util.zip.ZipInputStream
 import javax.inject.Inject
 
@@ -113,28 +111,16 @@ class LoaderFragment : BaseDaggerFragment() {
                 if (throwable.message?.startsWith(RPC_ERROR_STR) == true) {
                     callback?.onInvalidThankYouPage()
                 } else {
-                    showServerError(::loadThankPageData)
+                    showGlobalError(GlobalError.SERVER_ERROR, ::loadThankPageData)
                 }
             }
-            is UnknownHostException -> showNoConnectionError(::loadThankPageData)
-            is SocketTimeoutException -> showNoConnectionError(::loadThankPageData)
-            else -> showServerError(::loadThankPageData)
+            else -> showGlobalError(GlobalError.NO_CONNECTION, ::loadThankPageData)
         }
     }
 
-    private fun showNoConnectionError(retryAction: () -> Unit) {
+    private fun showGlobalError(errorType: Int, retryAction: () -> Unit) {
         globalError.visible()
-        globalError.setType(GlobalError.NO_CONNECTION)
-        globalError.errorAction.visible()
-        globalError.errorAction.setOnClickListener {
-            showLoaderView()
-            retryAction.invoke()
-        }
-    }
-
-    private fun showServerError(retryAction: () -> Unit) {
-        globalError.visible()
-        globalError.setType(GlobalError.SERVER_ERROR)
+        globalError.setType(errorType)
         globalError.errorAction.visible()
         globalError.errorAction.setOnClickListener {
             showLoaderView()

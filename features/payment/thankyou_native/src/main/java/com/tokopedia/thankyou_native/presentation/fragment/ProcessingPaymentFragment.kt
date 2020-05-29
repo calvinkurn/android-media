@@ -11,7 +11,6 @@ import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.data.mapper.PaymentType
 import com.tokopedia.thankyou_native.data.mapper.PaymentTypeMapper
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
-import com.tokopedia.thankyou_native.recommendation.presentation.view.MarketPlaceRecommendation
 import kotlinx.android.synthetic.main.thank_fragment_processing.*
 
 class ProcessingPaymentFragment : ThankYouBaseFragment() {
@@ -41,7 +40,7 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
         initCheckPaymentWidgetData()
     }
 
-    override fun getLoadingView(): View? = loading_layout
+    override fun getLoadingView(): View? = loadingLayout
 
     private fun inflateWaitingUI() {
         tvPaymentProcessingTimeInfo.text = getString(R.string.thank_payment_in_progress_time, thanksPageData.gatewayName)
@@ -63,7 +62,7 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
     }
 
     override fun onThankYouPageDataReLoaded(data: ThanksPageData) {
-        loading_layout.gone()
+        loadingLayout.gone()
         thanksPageData = data
         showPaymentStatusDialog(false, thanksPageData)
     }

@@ -20,10 +20,10 @@
                 android:layout_width="@dimen/dp_200"
                 android:layout_height="@dimen/dp_148"
                 android:layout_marginTop="@dimen/dp_16"
-                app:srcCompat="@drawable/thank_payment_processing"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/thank_payment_processing" />
 
 
             <com.tokopedia.unifyprinciples.Typography
@@ -268,23 +268,12 @@
     </androidx.core.widget.NestedScrollView>
 
 
-    <RelativeLayout
-        android:id="@+id/loading_layout"
+    <ProgressBar
+        android:id="@+id/loadingLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:padding="@dimen/dp_10"
-            android:visibility="visible" />
-
-    </RelativeLayout>
-
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="@dimen/dp_10"
+        android:visibility="gone" />
 
 </FrameLayout>
