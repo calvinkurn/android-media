@@ -790,7 +790,7 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     private fun onErrorGetAttachments(throwable: Throwable) {
-
+        println(throwable.message)
     }
 
     private fun onLoadingStickerGroup(response: ChatListGroupStickerResponse) {

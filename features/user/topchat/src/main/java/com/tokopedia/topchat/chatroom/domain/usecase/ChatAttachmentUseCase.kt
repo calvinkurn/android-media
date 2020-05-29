@@ -8,6 +8,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentR
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -36,10 +37,14 @@ class ChatAttachmentUseCase @Inject constructor(
                         setGraphqlQuery(query)
                     }.executeOnBackground()
                     val mapAttachment = map(response)
-                    onSuccess(mapAttachment)
+                    withContext(dispatchers.Main) {
+                        onSuccess(mapAttachment)
+                    }
                 },
                 {
-                    onError(it)
+                    withContext(dispatchers.Main) {
+                        onError(it)
+                    }
                 }
         )
     }

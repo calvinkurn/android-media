@@ -6,4 +6,8 @@ interface DeferredAttachment {
     val id: String
 
     fun updateData(attributes: String)
+
+    companion object {
+        const val PAYLOAD_DEFERRED = "payload_deferred"
+    }
 }

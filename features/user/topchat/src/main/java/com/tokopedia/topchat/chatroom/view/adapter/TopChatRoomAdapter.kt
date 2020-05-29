@@ -99,7 +99,7 @@ class TopChatRoomAdapter(
                 val attachment = attachments[item.id] ?: continue
                 if (item.isLoading) {
                     item.updateData(attachment.attributes)
-                    notifyItemChanged(itemPosition)
+                    notifyItemChanged(itemPosition, DeferredAttachment.PAYLOAD_DEFERRED)
                 }
             }
         }

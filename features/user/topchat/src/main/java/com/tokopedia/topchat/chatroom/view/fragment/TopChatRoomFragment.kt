@@ -17,7 +17,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.crashlytics.android.Crashlytics
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -48,7 +47,6 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectio
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
@@ -56,9 +54,7 @@ import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.topchat.BuildConfig
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
@@ -284,7 +280,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private fun onSuccessGetExistingChatFirstTime(chatRoom: ChatroomViewModel) {
         updateViewData(chatRoom)
         checkCanAttachVoucher(chatRoom)
-        presenter.loadAttachmentData(messageId.toIntOrZero(), chatRoom)
         presenter.updateMinReplyTime(chatRoom)
         presenter.connectWebSocket(messageId)
         presenter.getShopFollowingStatus(shopId, onErrorGetShopFollowingStatus(),
@@ -297,6 +292,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         presenter.getTemplate(getUserSession().shopId == shopId.toString())
         loadChatRoomSettings(chatRoom)
         presenter.getStickerGroupList(chatRoom)
+        presenter.loadAttachmentData(messageId.toInt(), chatRoom)
 
         fpm.stopTrace()
     }
