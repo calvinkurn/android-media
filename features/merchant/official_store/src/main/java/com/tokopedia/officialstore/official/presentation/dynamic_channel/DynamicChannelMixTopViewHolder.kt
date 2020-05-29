@@ -175,7 +175,7 @@ class DynamicChannelMixTopViewHolder(
         recyclerViewProductList.resetLayout()
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerViewProductList.layoutManager = layoutManager
-        val typeFactoryImpl = OfficialStoreFlashSaleCardViewTypeFactoryImpl(dcEventHandler, channel)
+        val typeFactoryImpl = OfficialStoreFlashSaleCardViewTypeFactoryImpl(dcEventHandler, null, channel)
         val productDataList = convertDataToProductData(channel)
         adapter = MixWidgetAdapter(typeFactoryImpl)
         adapter?.addElement(productDataList)

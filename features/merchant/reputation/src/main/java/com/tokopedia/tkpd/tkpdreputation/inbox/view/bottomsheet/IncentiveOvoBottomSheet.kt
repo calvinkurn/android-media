@@ -15,7 +15,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.incentive_ovo_bottom_sheet_dialog.view.*
 import kotlinx.android.synthetic.main.item_incentive_ovo.view.*
 
-class IncentiveOvoBottomSheet(private val productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain): BottomSheetUnify() {
+class IncentiveOvoBottomSheet(private val productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain, private val category: String): BottomSheetUnify() {
 
     companion object {
         val TAG = IncentiveOvoBottomSheet::class.qualifiedName
@@ -47,7 +47,7 @@ class IncentiveOvoBottomSheet(private val productRevIncentiveOvoDomain: ProductR
         val reputationTracking = ReputationTracking()
         view.btnContinueReview.setOnClickListener {
             dismiss()
-            reputationTracking.onClickContinueIncentiveOvoBottomSheetTracker()
+            reputationTracking.onClickContinueIncentiveOvoBottomSheetTracker(category)
         }
     }
 

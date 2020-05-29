@@ -34,17 +34,6 @@
                 android:textStyle="bold"
                 android:text="@string/batik_solo"
                 android:textColor="@color/primary_text_color" />
-
-            <TextView
-                android:id="@+id/tv_total_product"
-                style="@style/TextView.Title.BlackDisabled"
-                android:layout_width="match_parent"
-                android:layout_marginTop="@dimen/dp_2"
-                android:layout_marginEnd="@dimen/dp_32"
-                android:layout_marginRight="@dimen/dp_32"
-                android:lineSpacingExtra="6sp"
-                android:text="@string/dummy_total_product"
-                android:textColor="@color/secondary_subtitle_text_color" />
         </LinearLayout>
 
         <ImageView

@@ -8,7 +8,6 @@ import android.os.Bundle;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderdetails.di.DaggerOrderDetailsComponent;
@@ -71,7 +70,7 @@ public class RequestCancelActivity extends BaseSimpleActivity implements HasComp
         }
 
         getFragmentManager().beginTransaction()
-                .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
+                .setCustomAnimations(R.animator.transaction_enter_bottom, R.animator.transaction_enter_bottom)
                 .replace(com.tokopedia.abstraction.R.id.parent_view, newFragment, REJECT_ORDER_FRAGMENT_TAG)
                 .commit();
     }

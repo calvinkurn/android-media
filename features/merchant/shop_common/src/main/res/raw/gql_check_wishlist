@@ -1,6 +1,0 @@
-query CheckWishList($productID:String!){
-  checkWishlist(productID:$productID){
-    product_id
-    is_wishlist
-  }
-}

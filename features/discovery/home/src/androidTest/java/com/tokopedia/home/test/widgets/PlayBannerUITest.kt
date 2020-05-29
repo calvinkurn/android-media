@@ -1,8 +1,6 @@
 package com.tokopedia.home.test.widgets
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -11,26 +9,17 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.home.R
-import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
-import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.model.Config
 import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.data.model.PlayData
 import com.tokopedia.home.beranda.data.model.VideoStream
-import com.tokopedia.home.beranda.data.usecase.HomeUseCase
-import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.test.activity.HomeActivityTest
 import com.tokopedia.home.test.fragment.HomeFragmentTest
-import com.tokopedia.home.test.rules.TestDispatcherProvider
-import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
-import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
-import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
@@ -39,7 +28,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class PlayBannerUITest{
+class PlayBannerUITest : BaseWidgetUiTest(){
     @Rule
     @JvmField
     val activityRule = ActivityTestRule(HomeActivityTest::class.java, true, true)
@@ -70,7 +59,6 @@ class PlayBannerUITest{
     private val closeChannelUseCase = mockk<CloseChannelUseCase>(relaxed = true)
     val injectCouponTimeBasedUseCase = mockk<InjectCouponTimeBasedUseCase>(relaxed = true)
     private val homeDataMapper = HomeDataMapper(InstrumentationRegistry.getInstrumentation().context, HomeVisitableFactoryImpl(userSessionInterface), mockk(relaxed = true))
-
     private val context = InstrumentationRegistry.getInstrumentation().context
     private lateinit var viewModel: HomeViewModel
 
@@ -80,11 +68,6 @@ class PlayBannerUITest{
         private val TITLE_CONTENT = R.id.title_play
 
     }
-
-//    @Before
-//    fun setup(){
-//        every { userSessionInterface.isLoggedIn } returns false
-//    }
 
     @Test
     fun test_when_no_data_skeleton_from_home_api_and_expect_the_widget_not_show(){
@@ -327,7 +310,7 @@ class PlayBannerUITest{
         onView(withId(TITLE)).check(matches(withText("Play Widget")))
         onView(withId(TITLE_CONTENT)).check(matches(withText("Channel 2")))
     }
-
+  
     private fun <T : ViewModel> createViewModelFactory(viewModel: T): ViewModelProvider.Factory {
         return object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(viewModelClass: Class<T>): T {

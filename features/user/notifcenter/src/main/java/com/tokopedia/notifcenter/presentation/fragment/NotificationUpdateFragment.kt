@@ -269,16 +269,11 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
         }
     }
 
-    override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {
+    override fun addProductToCart(
+            product: ProductData,
+            onSuccessAddToCart: (DataModel) -> Unit
+    ) {
         presenter.addProductToCart(product, onSuccessAddToCart)
-    }
-
-    override fun onTrackerAddToCart(product: ProductData, atc: DataModel) {
-        analytics.trackAtcOnClick(product, atc)
-    }
-
-    override fun showMessageAtcSuccess(message: String) {
-        onSuccessAddToCart(message)
     }
 
     override fun trackOnClickCtaButton(templateKey: String) {
