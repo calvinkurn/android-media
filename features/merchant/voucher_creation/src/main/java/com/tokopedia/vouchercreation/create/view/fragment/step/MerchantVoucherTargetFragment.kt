@@ -29,9 +29,7 @@ import com.tokopedia.vouchercreation.create.view.viewmodel.MerchantVoucherTarget
 import kotlinx.android.synthetic.main.fragment_merchant_voucher_target.*
 import javax.inject.Inject
 
-class MerchantVoucherTargetFragment(private val onNext: (Int, String, String) -> Unit = { _,_,_ -> },
-                                    private val getPromoCodePrefix: () -> String)
-    : BaseCreateMerchantVoucherFragment<VoucherTargetTypeFactory, VoucherTargetAdapterTypeFactory>() {
+class MerchantVoucherTargetFragment : BaseCreateMerchantVoucherFragment<VoucherTargetTypeFactory, VoucherTargetAdapterTypeFactory>() {
 
     companion object {
 
@@ -39,8 +37,22 @@ class MerchantVoucherTargetFragment(private val onNext: (Int, String, String) ->
 
         @JvmStatic
         fun createInstance(onNext: (Int, String, String) -> Unit,
-                           getPromoCodePrefix: () -> String) = MerchantVoucherTargetFragment(onNext, getPromoCodePrefix)
+                           getPromoCodePrefix: () -> String) = MerchantVoucherTargetFragment().apply {
+            setOnNextClick(onNext)
+            setGetPromoCodePrefix(getPromoCodePrefix)
+        }
     }
+
+    fun setOnNextClick(onNext: (Int, String, String) -> Unit) {
+        this.onNext = onNext
+    }
+
+    fun setGetPromoCodePrefix(getPromoCodePrefix: () -> String) {
+        this.getPromoCodePrefix = getPromoCodePrefix
+    }
+
+    private var onNext: (Int, String, String) -> Unit = { _,_,_ -> }
+    private var getPromoCodePrefix: () -> String = {""}
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory

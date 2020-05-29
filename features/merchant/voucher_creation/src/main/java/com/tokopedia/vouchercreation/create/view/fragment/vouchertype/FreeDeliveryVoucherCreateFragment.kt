@@ -31,18 +31,23 @@ import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.Promot
 import com.tokopedia.vouchercreation.create.view.viewmodel.FreeDeliveryVoucherCreateViewModel
 import javax.inject.Inject
 
-class FreeDeliveryVoucherCreateFragment(private val onNextStep: (VoucherImageType, Int, Int) -> Unit,
-                                        private val onShouldChangeBannerValue: (VoucherImageType) -> Unit,
-                                        private val viewContext: Context): BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>() {
+class FreeDeliveryVoucherCreateFragment: BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>() {
 
     companion object {
         @JvmStatic
         fun createInstance(onNextStep: (VoucherImageType, Int, Int) -> Unit,
                            onShouldChangeBannerValue: (VoucherImageType) -> Unit = {},
-                           context: Context) = FreeDeliveryVoucherCreateFragment(onNextStep, onShouldChangeBannerValue, context)
+                           context: Context) = FreeDeliveryVoucherCreateFragment().apply {
+            this.onNextStep = onNextStep
+            this.onShouldChangeBannerValue = onShouldChangeBannerValue
+            viewContext = context
+        }
 
         private const val TICKER_INDEX_POSITION = 0
     }
+    private var onNextStep: (VoucherImageType, Int, Int) -> Unit = { _,_,_ -> }
+    private var onShouldChangeBannerValue: (VoucherImageType) -> Unit = {}
+    private var viewContext = context
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -61,7 +66,7 @@ class FreeDeliveryVoucherCreateFragment(private val onNextStep: (VoucherImageTyp
 
     private val freeDeliveryExpenseInfoBottomSheetField by lazy {
         GeneralExpensesInfoBottomSheetFragment.createInstance(context).apply {
-            setTitle(viewContext.resources?.getString(R.string.mvc_create_promo_type_bottomsheet_title_promo_expenses).toBlankOrString())
+            setTitle(viewContext?.getString(R.string.mvc_create_promo_type_bottomsheet_title_promo_expenses).toBlankOrString())
         }
     }
 

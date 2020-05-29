@@ -19,6 +19,7 @@ import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationCo
 import com.tokopedia.vouchercreation.create.domain.model.CreateVoucherParam
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.domain.usecase.CreateVoucherUseCase
+import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.create.view.dialog.FailedCreateVoucherDialog
 import com.tokopedia.vouchercreation.create.view.dialog.LoadingDialog
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
@@ -39,22 +40,35 @@ import com.tokopedia.vouchercreation.detail.view.adapter.factory.VoucherDetailAd
 import com.tokopedia.vouchercreation.detail.view.fragment.BaseDetailFragment
 import javax.inject.Inject
 
-class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherReviewUiModel,
-                            private val getToken: () -> String,
-                            private val getPostBaseUiModel: () -> PostBaseUiModel,
-                            private val onReturnToStep: (Int) -> Unit) : BaseDetailFragment() {
+class ReviewVoucherFragment : BaseDetailFragment() {
 
     companion object {
         @JvmStatic
         fun createInstance(getVoucherReviewUiModel: () -> VoucherReviewUiModel,
                            getToken: () -> String,
                            getPostBaseUiModel: () -> PostBaseUiModel,
-                           onReturnToStep: (Int) -> Unit): ReviewVoucherFragment = ReviewVoucherFragment(getVoucherReviewUiModel, getToken, getPostBaseUiModel, onReturnToStep)
+                           onReturnToStep: (Int) -> Unit): ReviewVoucherFragment = ReviewVoucherFragment().apply {
+            this.getVoucherReviewUiModel = getVoucherReviewUiModel
+            this.getToken = getToken
+            this.getPostBaseUiModel = getPostBaseUiModel
+            this.onReturnToStep = onReturnToStep
+        }
 
         private const val VOUCHER_TIPS_INDEX = 1
 
         private const val NO_PROMO_CODE_DISPLAY = "-"
     }
+
+    private var getVoucherReviewUiModel: () -> VoucherReviewUiModel = { VoucherReviewUiModel() }
+    private var getToken: () -> String = { "" }
+    private var getPostBaseUiModel: () -> PostBaseUiModel = {
+        PostBaseUiModel(
+                CreateMerchantVoucherStepsActivity.POST_IMAGE_URL,
+                CreateMerchantVoucherStepsActivity.FREE_DELIVERY_URL,
+                CreateMerchantVoucherStepsActivity.CASHBACK_URL,
+                CreateMerchantVoucherStepsActivity.CASHBACK_UNTIL_URL
+        )}
+    private var onReturnToStep: (Int) -> Unit = { _ -> }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory

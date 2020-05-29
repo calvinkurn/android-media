@@ -35,6 +35,8 @@ import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMinEndDate
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMinStartDate
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getToday
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
+import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
+import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.painter.VoucherPreviewPainter
 import com.tokopedia.vouchercreation.create.view.uimodel.initiation.BannerBaseUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVoucherUiModel
@@ -43,15 +45,17 @@ import kotlinx.android.synthetic.main.mvc_set_voucher_period_fragment.*
 import java.util.*
 import javax.inject.Inject
 
-class SetVoucherPeriodFragment(private val onNext: (String, String, String, String) -> Unit,
-                               private val getVoucherBanner: () -> BannerVoucherUiModel,
-                               private val getBannerBaseUiModel: () -> BannerBaseUiModel) : Fragment() {
+class SetVoucherPeriodFragment : Fragment() {
 
     companion object {
         @JvmStatic
         fun createInstance(onNext: (String, String, String, String) -> Unit,
                            getVoucherBanner: () -> BannerVoucherUiModel,
-                           getBannerBaseUiModel: () -> BannerBaseUiModel) = SetVoucherPeriodFragment(onNext, getVoucherBanner, getBannerBaseUiModel)
+                           getBannerBaseUiModel: () -> BannerBaseUiModel) = SetVoucherPeriodFragment().apply {
+            this.onNext = onNext
+            this.getVoucherBanner = getVoucherBanner
+            this.getBannerBaseUiModel = getBannerBaseUiModel
+        }
 
         private const val BANNER_BASE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/banner.jpg"
 
@@ -65,6 +69,22 @@ class SetVoucherPeriodFragment(private val onNext: (String, String, String, Stri
         private const val FULL_DAY_FORMAT = "EEE, dd MMM yyyy, HH:mm z"
         private const val DATE_OF_WEEK_FORMAT = "EEE, dd MMM yyyy"
     }
+
+    private var onNext: (String, String, String, String) -> Unit = { _,_,_,_ -> }
+    private var getVoucherBanner: () -> BannerVoucherUiModel = {
+        BannerVoucherUiModel(
+                VoucherImageType.FreeDelivery(0),
+                "",
+                "",
+                "")
+    }
+    private var getBannerBaseUiModel: () -> BannerBaseUiModel = {
+        BannerBaseUiModel(
+                CreateMerchantVoucherStepsActivity.BANNER_BASE_URL,
+                CreateMerchantVoucherStepsActivity.FREE_DELIVERY_URL,
+                CreateMerchantVoucherStepsActivity.CASHBACK_URL,
+                CreateMerchantVoucherStepsActivity.CASHBACK_UNTIL_URL
+        )}
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory

@@ -20,6 +20,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
+import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.create.view.enums.CreateVoucherBottomSheetType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.fragment.BaseCreateMerchantVoucherFragment
@@ -35,12 +36,7 @@ import com.tokopedia.vouchercreation.create.view.viewmodel.PromotionBudgetAndTyp
 import kotlinx.android.synthetic.main.mvc_banner_voucher_fragment.*
 import javax.inject.Inject
 
-class PromotionBudgetAndTypeFragment(private val onNextStep: (VoucherImageType, Int, Int) -> Unit = { _,_,_ ->  },
-                                     private val getVoucherUiModel: () -> BannerVoucherUiModel,
-                                     private val setVoucherBitmap: (Bitmap) -> Unit,
-                                     private val getBannerBaseUiModel: () -> BannerBaseUiModel,
-                                     private val onSetShopInfo: (String, String) -> Unit)
-    : BaseCreateMerchantVoucherFragment<PromotionTypeBudgetTypeFactory, PromotionTypeBudgetAdapterTypeFactory>() {
+class PromotionBudgetAndTypeFragment : BaseCreateMerchantVoucherFragment<PromotionTypeBudgetTypeFactory, PromotionTypeBudgetAdapterTypeFactory>() {
 
     companion object {
         @JvmStatic
@@ -48,8 +44,32 @@ class PromotionBudgetAndTypeFragment(private val onNextStep: (VoucherImageType, 
                            getVoucherUiModel: () -> BannerVoucherUiModel,
                            setVoucherBitmap: (Bitmap) -> Unit,
                            getBannerBaseUiModel: () -> BannerBaseUiModel,
-                           onSetShopInfo: (String, String) -> Unit) = PromotionBudgetAndTypeFragment(onNext, getVoucherUiModel, setVoucherBitmap, getBannerBaseUiModel, onSetShopInfo)
+                           onSetShopInfo: (String, String) -> Unit) = PromotionBudgetAndTypeFragment().apply {
+            this.onNextStep = onNext
+            this.getVoucherUiModel = getVoucherUiModel
+            this.setVoucherBitmap = setVoucherBitmap
+            this.getBannerBaseUiModel = getBannerBaseUiModel
+            this.onSetShopInfo = onSetShopInfo
+        }
     }
+
+    private var onNextStep: (VoucherImageType, Int, Int) -> Unit = { _,_,_ ->  }
+    private var getVoucherUiModel: () -> BannerVoucherUiModel = {
+        BannerVoucherUiModel(
+                VoucherImageType.FreeDelivery(0),
+                "",
+                "",
+                "")
+    }
+    private var setVoucherBitmap: (Bitmap) -> Unit = { _ -> }
+    private var getBannerBaseUiModel: () -> BannerBaseUiModel = {
+        BannerBaseUiModel(
+                CreateMerchantVoucherStepsActivity.BANNER_BASE_URL,
+                CreateMerchantVoucherStepsActivity.FREE_DELIVERY_URL,
+                CreateMerchantVoucherStepsActivity.CASHBACK_URL,
+                CreateMerchantVoucherStepsActivity.CASHBACK_UNTIL_URL
+        )}
+    private var onSetShopInfo: (String, String) -> Unit = { _,_ -> }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory

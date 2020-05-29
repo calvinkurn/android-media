@@ -35,20 +35,26 @@ import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.Promot
 import com.tokopedia.vouchercreation.create.view.viewmodel.CashbackVoucherCreateViewModel
 import javax.inject.Inject
 
-class CashbackVoucherCreateFragment(private val onNextStep: (VoucherImageType, Int, Int) -> Unit,
-                                    private val onShouldChangeBannerValue: (VoucherImageType) -> Unit,
-                                    private val viewContext: Context) : BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>() {
+class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTypeItemAdapterFactory>() {
 
     companion object {
         @JvmStatic
         fun createInstance(onNextStep: (VoucherImageType, Int, Int) -> Unit,
                            onShouldChangeBannerValue: (VoucherImageType) -> Unit,
-                           context: Context) = CashbackVoucherCreateFragment(onNextStep, onShouldChangeBannerValue, context)
+                           context: Context) = CashbackVoucherCreateFragment().apply {
+            this.onNextStep = onNextStep
+            this.onShouldChangeBannerValue = onShouldChangeBannerValue
+            viewContext = context
+        }
 
         private const val INPUT_FIELD_ADAPTER_SIZE = 1
 
         private const val TICKER_INDEX_POSITION = 0
     }
+
+    private var onNextStep: (VoucherImageType, Int, Int) -> Unit = { _,_,_ -> }
+    private var onShouldChangeBannerValue: (VoucherImageType) -> Unit = { _ -> }
+    private var viewContext = context
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -76,13 +82,14 @@ class CashbackVoucherCreateFragment(private val onNextStep: (VoucherImageType, I
     }
     
     private val percentageExpenseBottomSheet by lazy {
-        CashbackExpenseInfoBottomSheetFragment.createInstance(viewContext, ::getCashbackInfo).apply {
+        viewContext?.let {
+            CashbackExpenseInfoBottomSheetFragment.createInstance(it, ::getCashbackInfo).apply {
             setOnDismissListener {
                 adapter.run {
                     notifyItemChanged(dataSize - 1)
                 }
             }
-        }
+        }}
     }
 
     private val rupiahMaximumDiscountTextFieldModel =
@@ -349,7 +356,7 @@ class CashbackVoucherCreateFragment(private val onNextStep: (VoucherImageType, I
             if (checkIfValuesAreCorrect(cashbackPercentageInfoUiModel.minimumDiscount, cashbackPercentageInfoUiModel.maximumDiscount)) {
                 validatePercentageValues()
             } else {
-                percentageExpenseBottomSheet.show(childFragmentManager, CashbackExpenseInfoBottomSheetFragment::class.java.name)
+                percentageExpenseBottomSheet?.show(childFragmentManager, CashbackExpenseInfoBottomSheetFragment::class.java.name)
             }
         } else {
             validateRupiahValues()
