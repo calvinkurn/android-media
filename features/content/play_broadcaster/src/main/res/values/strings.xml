@@ -35,4 +35,7 @@
 
     <string name="play_prepare_broadcast_label_next">Lanjutkan</string>
     <string name="play_prepare_broadcast_label_save">Simpan</string>
+
+    <string name="play_summary_title">Laporan Live Streaming</string>
+    <string name="play_summary_button_finish">Selesai</string>
 </resources>

@@ -12,5 +12,8 @@
 
     <dimen name="play_etalase_box_size">152dp</dimen>
 
+    <dimen name="play_summary_cover_width">100dp</dimen>
+    <dimen name="play_summary_cover_height">180dp</dimen>
+
     <dimen name="play_prepare_broadcast_promo_image_width">240dp</dimen>
 </resources>
