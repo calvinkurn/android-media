@@ -60,8 +60,8 @@ class AddTemplateBottomSheet(private val mActivity: FragmentActivity?,
         }
 
         btnSubmitTemplate?.setOnClickListener {
-            val title = tvTitleTemplate?.textFieldInput?.text.toString()
-            val desc = tvDescTemplate?.textFieldInput?.text.toString()
+            val title = tvTitleTemplate?.textFieldInput?.text?.trim().toString()
+            val desc = tvDescTemplate?.textFieldInput?.text?.trim().toString()
 
             if (title.isNotEmpty() && desc.isNotEmpty()) {
                 btnSubmitTemplate?.isLoading = true
