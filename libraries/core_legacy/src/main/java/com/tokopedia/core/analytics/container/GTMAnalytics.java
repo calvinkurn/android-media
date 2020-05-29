@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.config.GlobalConfig;
@@ -18,8 +19,10 @@ import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.util.PriceUtil;
+import com.tokopedia.device.info.DeviceConnectionInfo;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
+import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.track.interfaces.ContextAnalytics;
@@ -55,11 +58,18 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String SHOP_TYPE = "shopType";
     public static final String OPEN_SCREEN = "openScreen";
     public static final String CAMPAIGN_TRACK = "campaignTrack";
+    public static final String CLIENT_ID = "clientId";
+    public static final String SESSION_IRIS = "sessionIris";
     public static final String KEY_GCLID = "gclid";
     private final Iris iris;
     private TetraDebugger tetraDebugger;
     private final RemoteConfig remoteConfig;
     private String clientIdString = "";
+    private UserSessionInterface userSession;
+    private String connectionTypeString = "";
+    private Long lastGetConnectionTimeStamp = 0L;
+    private final Long DELAY_GET_CONN = 120000L; //2 minutes
+
     private String mGclid = "";
     // have status that describe pending.
 
@@ -70,6 +80,7 @@ public class GTMAnalytics extends ContextAnalytics {
         }
         iris = IrisAnalytics.Companion.getInstance(context);
         remoteConfig = new FirebaseRemoteConfigImpl(context);
+        userSession = new UserSession(context);
     }
 
     @Override
@@ -116,6 +127,19 @@ public class GTMAnalytics extends ContextAnalytics {
         }
     }
 
+    public Bundle addWrapperValue(Bundle bundle) {
+        bundle.putString(CLIENT_ID, getClientIDString());
+        bundle.putString(USER_ID, userSession.getUserId());
+        if (!CommonUtils.checkStringNotNull(bundle.getString(SESSION_IRIS)))
+            bundle.putString(SESSION_IRIS, new IrisSession(context).getSessionId());
+        return bundle;
+    }
+
+    @Override
+    public void sendEnhanceEcommerceEvent(String eventName, Bundle value) {
+        pushEventV5(eventName, addWrapperValue(value), context);
+    }
+
     @SuppressWarnings("unchecked")
     private String keyEvent(Map<String, Object> value) {
         String event = bruteForceCastToString(value.get("event"));
@@ -147,14 +171,11 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public static class PurchaseKey {
-        private static final String KEY_NAME = "name";
         private static final String KEY_ID = "id";
         private static final String KEY_AFFILIATION = "affiliation";
         private static final String KEY_REVENUE = "revenue";
         private static final String KEY_TAX = "tax";
         public static final String KEY_SHIPPING = "shipping";
-        private static final String KEY_VARIANT = "variant";
-        private static final String KEY_QTY = "quantity";
         public static final String KEY_COUPON = "coupon";
     }
 
@@ -758,13 +779,14 @@ public class GTMAnalytics extends ContextAnalytics {
         }else{
             bundle.putString("userId", "");
         }
-        bundle.putString("clientId", getClientIDString());
+        bundle.putString(CLIENT_ID, getClientIDString());
         bundle.putBoolean("isLoggedInStatus", userSession.isLoggedIn());
         if(!TextUtils.isEmpty(userSession.getShopId())) {
             bundle.putString("shopId", userSession.getShopId());
         }else{
             bundle.putString("shopId", "");
         }
+        putNetworkSpeed(bundle);
 
         if (customDimension != null) {
             for (String key : customDimension.keySet()) {
@@ -775,6 +797,15 @@ public class GTMAnalytics extends ContextAnalytics {
         }
 
         pushEventV5("openScreen", bundle, context);
+    }
+
+    public void putNetworkSpeed(Bundle bundle) {
+        if (TextUtils.isEmpty(connectionTypeString) ||
+                (System.currentTimeMillis() - lastGetConnectionTimeStamp > DELAY_GET_CONN)){
+            connectionTypeString = DeviceConnectionInfo.getConnectionType(context);
+            lastGetConnectionTimeStamp = System.currentTimeMillis();
+        }
+        bundle.putString("networkSpeed", connectionTypeString);
     }
 
     public void pushEvent(String eventName, Map<String, Object> values) {
@@ -964,7 +995,7 @@ public class GTMAnalytics extends ContextAnalytics {
 
         bundle.putString("appsflyerId", afUniqueId);
         bundle.putString("userId", sessionHandler.getLoginID());
-        bundle.putString("clientId", getClientIDString());
+        bundle.putString(CLIENT_ID, getClientIDString());
         bundle.putString(KEY_EVENT, CAMPAIGN_TRACK);
         bundle.putString("screenName", (String) param.get("screenName"));
 

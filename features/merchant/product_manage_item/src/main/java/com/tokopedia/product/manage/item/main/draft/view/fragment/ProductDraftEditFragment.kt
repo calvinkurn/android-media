@@ -1,12 +1,13 @@
 package com.tokopedia.product.manage.item.main.draft.view.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.tkpd.library.ui.utilities.TkpdProgressDialog
-import com.tkpd.library.utils.CommonUtils
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent
@@ -45,7 +46,7 @@ open class ProductDraftEditFragment : BaseProductAddEditFragment<ProductDraftPre
 
     override fun onErrorLoadProduct(throwable: Throwable?) {
         hideLoading()
-        CommonUtils.UniversalToast(activity, getString(R.string.product_draft_error_cannot_load_draft))
+        Toast.makeText(activity, MethodChecker.fromHtml(getString(R.string.product_draft_error_cannot_load_draft)), Toast.LENGTH_LONG).show()
         activity?.finish()
     }
 

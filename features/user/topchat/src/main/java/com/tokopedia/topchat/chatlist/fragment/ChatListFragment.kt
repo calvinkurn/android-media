@@ -93,6 +93,7 @@ class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseAdapte
     private var chatTabListContract: ChatListContract.TabFragment? = null
     private var mUserSeen = false
     private var mViewCreated = false
+
     private var sightTag = ""
     private var itemPositionLongClicked: Int = -1
     private var filterChecked = 0

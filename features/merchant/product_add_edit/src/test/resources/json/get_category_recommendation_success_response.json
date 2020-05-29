@@ -1,0 +1,28 @@
+{
+  "data": {
+    "getJarvisRecommendation": {
+      "categories": [
+        {
+          "id": 1808,
+          "name": "Fashion Pria / Atasan Pria / Kaos Pria"
+        },
+        {
+          "id": 1771,
+          "name": "Fashion Wanita / Atasan Wanita / Blouse Wanita"
+        },
+        {
+          "id": 3579,
+          "name": "Fashion Pria / Atasan Pria / Kemeja Pria"
+        },
+        {
+          "id": 1809,
+          "name": "Fashion Pria / Atasan Pria / Kaos Polo Pria"
+        },
+        {
+          "id": 1769,
+          "name": "Fashion Wanita / Atasan Wanita / Kaos Wanita"
+        }
+      ]
+    }
+  }
+}

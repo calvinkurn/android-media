@@ -19,6 +19,7 @@ import junit.framework.TestCase.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.lang.reflect.Type
 
 class VoucherGameDetailViewModelTest {
 
@@ -36,9 +37,14 @@ class VoucherGameDetailViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
 
-        gqlResponseFail = GraphqlResponse(
-                mapOf(),
-                mapOf(MessageErrorException::class.java to listOf(GraphqlError())), false)
+        val result = HashMap<Type, Any?>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = MessageErrorException::class.java
+
+        result[objectType] = null
+        errors[objectType] = listOf(GraphqlError())
+
+        gqlResponseFail = GraphqlResponse(result, errors, false)
 
         voucherGameDetailViewModel =
                 VoucherGameDetailViewModel(graphqlRepository, VoucherGameTestDispatchersProvider())
@@ -56,9 +62,11 @@ class VoucherGameDetailViewModelTest {
                         validations = listOf(CatalogProductInput.Validation(1)))),
                 product = VoucherGameProductData("data", dataCollections = dataCollection)
         ))
-        val gqlResponseSuccess = GraphqlResponse(
-                mapOf(VoucherGameDetailData.Response::class.java to voucherGameDetailData),
-                mapOf(), false)
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = VoucherGameDetailData.Response::class.java
+        result[objectType] = voucherGameDetailData
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
 

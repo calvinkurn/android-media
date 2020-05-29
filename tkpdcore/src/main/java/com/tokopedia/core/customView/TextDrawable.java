@@ -217,24 +217,6 @@ public class TextDrawable extends Drawable {
     }
 
     /**
-     * Return the horizontal stretch factor of the text
-     */
-    public float getTextScaleX() {
-        return mTextPaint.getTextScaleX();
-    }
-
-    /**
-     * Set the horizontal stretch factor of the text
-     * @param size Text scale factor
-     */
-    public void setTextScaleX(float size) {
-        if (size != mTextPaint.getTextScaleX()) {
-            mTextPaint.setTextScaleX(size);
-            measureContent();
-        }
-    }
-
-    /**
      * Return the current text alignment setting
      */
     public Layout.Alignment getTextAlign() {
