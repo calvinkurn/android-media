@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 
@@ -933,13 +934,17 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void showSimpleAppRatingDialog(Activity activity) {
         //this code needs to be improved in the future
-        boolean hasShownInAppReviewBefore = getInAppReviewHasShownBefore();
-        boolean enableInAppReview = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE, false);
+        try {
+            boolean hasShownInAppReviewBefore = getInAppReviewHasShownBefore();
+            boolean enableInAppReview = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE, false);
 
-        if (enableInAppReview && !hasShownInAppReviewBefore) {
-            launchInAppReview(activity);
-        } else {
-            SimpleAppRatingDialog.show(activity);
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M && enableInAppReview && !hasShownInAppReviewBefore) {
+                launchInAppReview(activity);
+            } else {
+                SimpleAppRatingDialog.show(activity);
+            }
+        } catch (Exception e) {
+
         }
     }
 

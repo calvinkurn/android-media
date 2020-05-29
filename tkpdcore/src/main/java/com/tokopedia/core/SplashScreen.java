@@ -111,11 +111,12 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     @Override
     protected void onResume() {
         super.onResume();
+        boolean status = GCMHandler.isPlayServicesAvailable(SplashScreen.this);
         WeaveInterface moveToHomeFlowWeave = new WeaveInterface() {
             @NotNull
             @Override
             public Object execute() {
-                return executeMoveToHomeFlow();
+                return executeMoveToHomeFlow(status);
             }
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(moveToHomeFlowWeave, RemoteConfigKey.ENABLE_ASYNC_MOVETOHOME, SplashScreen.this);
@@ -123,8 +124,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     }
 
     @NotNull
-    private boolean executeMoveToHomeFlow(){
-        boolean status = GCMHandler.isPlayServicesAvailable(SplashScreen.this);
+    private boolean executeMoveToHomeFlow(boolean status){
         if(!status){
             Timber.w("P2#PLAY_SERVICE_ERROR#Problem with PlayStore | " + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
                     + Build.BRAND + " | "+Build.DEVICE+" | "+Build.PRODUCT+ " | "+Build.MODEL

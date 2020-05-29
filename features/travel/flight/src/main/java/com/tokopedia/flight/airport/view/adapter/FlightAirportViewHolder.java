@@ -1,6 +1,7 @@
 package com.tokopedia.flight.airport.view.adapter;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -65,27 +66,30 @@ public class FlightAirportViewHolder extends AbstractViewHolder<FlightAirportMod
     }
 
     private CharSequence getSpandableBoldText(String strToPut, String stringToBold) {
-        int indexStartBold = -1;
-        int indexEndBold = -1;
+        int indexStartBold = 0;
+        int indexEndBold = strToPut.length();
         if (TextUtils.isEmpty(stringToBold)) {
             return strToPut;
         }
         String strToPutLowerCase = strToPut.toLowerCase();
         String strToBoldLowerCase = stringToBold.toLowerCase();
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(strToPut);
-        indexStartBold = strToPutLowerCase.indexOf(strToBoldLowerCase) + strToBoldLowerCase.length();
-        if (indexStartBold != -1) {
-            indexEndBold = strToPut.length() - 1;
-        }
-        if (indexStartBold == -1) {
+        try {
+            if (strToPutLowerCase.contains(strToBoldLowerCase)) {
+                indexStartBold = strToPutLowerCase.indexOf(strToBoldLowerCase) + stringToBold.length();
+            }
+            if (indexStartBold < strToPut.length()) {
+                spannableStringBuilder.setSpan(new android.text.style.StyleSpan(Typeface.BOLD),
+                        indexStartBold, indexEndBold, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spannableStringBuilder.setSpan(boldColor, indexStartBold, indexEndBold,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                return spannableStringBuilder;
+            } else {
+                return spannableStringBuilder;
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
             return spannableStringBuilder;
-        } else {
-            spannableStringBuilder.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                    indexStartBold, indexEndBold, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            spannableStringBuilder.setSpan(boldColor, indexStartBold, indexEndBold,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            return spannableStringBuilder;
         }
-
     }
 }

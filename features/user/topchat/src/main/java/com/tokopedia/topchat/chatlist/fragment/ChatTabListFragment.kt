@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -17,7 +18,7 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.coachmark.CoachMark
+import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.config.GlobalConfig
@@ -442,11 +443,14 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
 
     private fun initOnBoarding() {
         if (!userSession.hasShop()) return
-        tabLayout?.viewTreeObserver?.addOnGlobalLayoutListener {
-            if (!isOnBoardingAlreadyShown()) {
-                showOnBoarding()
+        tabLayout?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                tabLayout?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                if (!isOnBoardingAlreadyShown()) {
+                    showOnBoarding()
+                }
             }
-        }
+        })
     }
 
     private fun isOnBoardingAlreadyShown(): Boolean {
@@ -473,7 +477,7 @@ class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract
                         getString(R.string.coach_tab_description_buyer)
                 )
         )
-        CoachMark().show(activity, TAG_ONBOARDING, tutorials)
+        CoachMarkBuilder().build().show(activity, TAG_ONBOARDING, tutorials)
         context?.let { CoachMarkPreference.setShown(it, TAG_ONBOARDING, true) }
     }
 
