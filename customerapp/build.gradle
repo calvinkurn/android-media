@@ -304,7 +304,6 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.homecredit)
-    implementation project(rootProject.ext.features.instantDebitBca)
     implementation project(rootProject.ext.features.topAdsManagementSourceTagging)
     implementation project(rootProject.ext.features.atc_common)
     implementation project(rootProject.ext.features.fcm_common)
@@ -463,8 +462,6 @@ dependencies {
     implementation project(rootProject.ext.features.recharge_slice)
     implementation project(rootProject.ext.features.install_referral)
 
-
-    implementation rootProject.ext.miscDependencies.bcaxcoWidget
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.playServicesDependencies.analytics
