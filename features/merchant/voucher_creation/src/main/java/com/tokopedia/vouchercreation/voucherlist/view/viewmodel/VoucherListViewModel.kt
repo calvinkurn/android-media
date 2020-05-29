@@ -29,26 +29,26 @@ class VoucherListViewModel @Inject constructor(
         @Named("Main") dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
-    val voucherList: LiveData<Result<List<VoucherUiModel>>>
-        get() = _voucherList
-
-    private val _keywordLiveData = MutableLiveData<String>()
-
     private val activeVoucherRequestParam by lazy {
         VoucherListParam.createParam(status = VoucherStatus.ACTIVE)
     }
 
-    private val _voucherList = MediatorLiveData<Result<List<VoucherUiModel>>>().apply {
+    private val _keywordLiveData = MutableLiveData<String>()
+
+    private val _voucherList = MutableLiveData<Result<List<VoucherUiModel>>>()
+    val voucherList: LiveData<Result<List<VoucherUiModel>>>
+        get() = _voucherList
+
+    private val _localVoucherListLiveData = MediatorLiveData<Result<List<VoucherUiModel>>>().apply {
         addSource(_keywordLiveData) { keyword ->
             searchVoucherByKeyword(keyword)
         }
     }
+    val localVoucherListLiveData: LiveData<Result<List<VoucherUiModel>>>
+        get() = _localVoucherListLiveData
 
     fun getActiveVoucherList() {
-        launchCatchError(block = {
-//            getVoucherListUseCase.isActive = true
-
-            getVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(activeVoucherRequestParam)
+        launchCatchError(block = {getVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(activeVoucherRequestParam)
             _voucherList.value = Success(withContext(Dispatchers.IO) {
                 getVoucherListUseCase.executeOnBackground()
             })
@@ -70,7 +70,6 @@ class VoucherListViewModel @Inject constructor(
                             sort = sort,
                             page = page)
             )
-//            getVoucherListUseCase.isActive = false
             _voucherList.value = Success(withContext(Dispatchers.IO) {
                 getVoucherListUseCase.executeOnBackground()
             })
@@ -85,11 +84,11 @@ class VoucherListViewModel @Inject constructor(
 
     private fun searchVoucherByKeyword(keyword: String) {
         launchCatchError(block = {
-            _voucherList.value = Success(
+            _localVoucherListLiveData.value = Success(
                     (_voucherList.value as? Success)?.data?.filter {
                         it.name.contains(keyword, true) } ?: listOf())
         }, onError = {
-            _voucherList.value = Fail(it)
+            _localVoucherListLiveData.value = Fail(it)
         })
     }
 }
