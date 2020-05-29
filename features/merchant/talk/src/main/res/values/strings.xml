@@ -37,7 +37,7 @@
     <string name="talk_report_option_others">Lainnya</string>
     <string name="talk_hint_input_reason">Isi alasan disini</string>
     <string name="success_report_talk">Berhasil melaporkan diskusi.</string>
-    <string name="reply_talk">Balas Diskusi</string>
+    <string name="reply_talk">Balas</string>
     <string name="menu_delete_talk">Hapus diskusi</string>
     <string name="menu_unfollow_talk">Berhenti ikuti diskusi</string>
     <string name="menu_follow_talk">Ikuti diskusi</string>
