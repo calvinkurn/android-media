@@ -81,7 +81,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
             productImage = attribute.productProfile.imageUrl
             priceInt = attribute.productProfile.priceInt
             category = attribute.productProfile.category
-            variants = attribute.productProfile.variant
+            variants = attribute.productProfile.variant ?: emptyList()
             dropPercentage = attribute.productProfile.dropPercentage
             priceBefore = attribute.productProfile.priceBefore
             shopId = attribute.productProfile.shopId

@@ -78,11 +78,7 @@ open class WebsocketMessageMapper @Inject constructor() {
         val pojoAttribute = GsonBuilder().create().fromJson<ProductAttachmentAttributes>(jsonAttribute,
                 ProductAttachmentAttributes::class.java)
 
-        val variant: List<AttachmentVariant> = if (pojoAttribute.productProfile.variant == null) {
-            emptyList()
-        } else {
-            pojoAttribute.productProfile.variant
-        }
+        val variant: List<AttachmentVariant> = pojoAttribute.productProfile.variant ?: emptyList()
 
         return ProductAttachmentViewModel(
                 pojo.msgId.toString(),
