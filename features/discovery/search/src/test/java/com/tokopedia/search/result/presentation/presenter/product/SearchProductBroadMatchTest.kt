@@ -25,6 +25,8 @@ private const val broadMatchResponseCode5Page1With12Products = "searchproduct/br
 private const val broadMatchResponseCode5Page2With12Products = "searchproduct/broadmatch/response-code-5-page-2-with-12-products.json"
 private const val broadMatchResponseCode5Page1With16Products = "searchproduct/broadmatch/response-code-5-page-1-with-16-products.json"
 private const val broadMatchResponseCode5Page2With16Products = "searchproduct/broadmatch/response-code-5-page-2-with-16-products.json"
+private const val broadMatchResponseCode5Page1WithResponseLowerThanCount = "searchproduct/broadmatch/response-code-5-page-1-with-response-lower-than-count.json"
+private const val broadMatchResponseCode5Page2WithResponseLowerThanCount = "searchproduct/broadmatch/response-code-5-page-2-with-response-lower-than-count.json"
 
 internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
 
@@ -295,6 +297,14 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
     fun `Show broad match under product list in page 2 or above with response product size equal to requested size`() {
         val searchProductModelPage1 = broadMatchResponseCode5Page1With16Products.jsonToObject<SearchProductModel>()
         val searchProductModelPage2 = broadMatchResponseCode5Page2With16Products.jsonToObject<SearchProductModel>()
+
+        `Test Broad Match shown from page 2 or above`(searchProductModelPage1, searchProductModelPage2)
+    }
+
+    @Test
+    fun `Show broad match under product list in page 2 or above with response product size lower than count (anomaly from backend)`() {
+        val searchProductModelPage1 = broadMatchResponseCode5Page1WithResponseLowerThanCount.jsonToObject<SearchProductModel>()
+        val searchProductModelPage2 = broadMatchResponseCode5Page2WithResponseLowerThanCount.jsonToObject<SearchProductModel>()
 
         `Test Broad Match shown from page 2 or above`(searchProductModelPage1, searchProductModelPage2)
     }

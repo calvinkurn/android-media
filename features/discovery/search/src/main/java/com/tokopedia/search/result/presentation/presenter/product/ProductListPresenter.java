@@ -11,7 +11,6 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel;
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel.WishlistResult;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
-import com.tokopedia.kotlin.extensions.view.StringExtKt;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -450,7 +449,7 @@ final class ProductListPresenter
             saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 
             if (productViewModel.getProductList().isEmpty()) {
-                getViewToRemoveLoading();
+                getViewToProcessEmptyResultDuringLoadMore();
             } else {
                 getViewToShowMoreData(searchParameter, searchProductModel, productViewModel);
             }
@@ -470,8 +469,12 @@ final class ProductListPresenter
         return list != null && !list.isEmpty();
     }
 
-    private void getViewToRemoveLoading() {
+    private void getViewToProcessEmptyResultDuringLoadMore() {
+        List<Visitable> list = new ArrayList<>();
+        processSuggestionAndBroadMatch(list);
+
         getView().removeLoading();
+        getView().addProductList(list);
     }
 
     private void getViewToShowMoreData(Map<String, Object> searchParameter, SearchProductModel searchProductModel, ProductViewModel productViewModel) {
@@ -953,10 +956,7 @@ final class ProductListPresenter
     private boolean isLastPage(@NotNull SearchProductModel.SearchProduct searchProduct) {
         boolean hasNextPage = startFrom < searchProduct.getCount();
 
-        int organicProductListSize = searchProduct.getProducts().size();
-        int requestedProductSize = StringExtKt.toIntOrZero(getSearchRows());
-
-        return !hasNextPage || organicProductListSize < requestedProductSize;
+        return !hasNextPage;
     }
 
     private boolean shouldShowCpmShop(ProductViewModel productViewModel) {
