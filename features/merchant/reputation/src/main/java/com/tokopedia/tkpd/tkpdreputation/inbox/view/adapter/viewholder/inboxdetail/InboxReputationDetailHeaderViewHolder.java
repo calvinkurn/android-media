@@ -33,6 +33,7 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback;
 import org.jetbrains.annotations.NotNull;
 
 import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
 
 /**
@@ -327,14 +328,12 @@ public class InboxReputationDetailHeaderViewHolder extends
                 @Override
                 public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
                     BottomSheetUnify bottomSheet = new IncentiveOvoBottomSheet(productRevIncentiveOvoDomain, ReputationTrackingConstant.INVOICE);
-                    bottomSheet.setFullpage(true);
                     if(fragmentManager != null) {
                         bottomSheet.show(fragmentManager,IncentiveOvoBottomSheet.Companion.getTAG());
-                        bottomSheet.setCloseClickListener(new Function1<View, Unit>() {
+                        bottomSheet.setOnDismissListener(new Function0<Unit>() {
                             @Override
-                            public Unit invoke(View view) {
+                            public Unit invoke() {
                                 reputationTracking.onClickDismissIncentiveOvoBottomSheetTracker(ReputationTrackingConstant.INVOICE);
-                                bottomSheet.dismiss();
                                 return Unit.INSTANCE;
                             }
                         });
