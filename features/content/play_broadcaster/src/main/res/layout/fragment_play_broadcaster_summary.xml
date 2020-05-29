@@ -36,7 +36,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp">
+            android:layout_height="@dimen/layout_lvl0">
 
             <LinearLayout
                 android:id="@+id/layout_live_summary_meta"
@@ -98,7 +98,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="@dimen/layout_lvl0"
                 android:background="@color/Neutral_N700_68"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/layout_live_summary_info" />
