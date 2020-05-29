@@ -383,6 +383,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
                             intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, shopId)
                             intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, feedbackUiModel?.feedbackID.toString())
                             startActivity(intent)
+                            bottomSheetReplyReview?.dismiss()
                         }
                     }
                 }
@@ -427,7 +428,8 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
                 productReplyUiModel?.productID.orZero().toString(),
                 feedbackUiModel?.feedbackID?.orZero().toString(),
                 message.orEmpty())
-        showTextReplyEditText(message.orEmpty())
+        val replyText = StringBuilder().append(replyEditText?.text.toString()).append(message.orEmpty()).toString()
+        showTextReplyEditText(replyText)
     }
 
 }

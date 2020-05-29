@@ -21,6 +21,9 @@ object ReviewSellerConstant {
     const val HIGHEST_RATING_KEY = "rating_avg desc"
     const val LOWEST_RATING_KEY = "rating_avg asc"
 
+    const val HIGHEST_RATING_DETAIL_KEY = "rating desc"
+    const val LOWEST_RATING_DETAIL_KEY = "rating asc"
+
     const val LATEST_REVIEW_KEY = "create_time desc"
 
     const val LATEST_REVIEW_VALUE = "Ulasan Terbaru"
@@ -40,8 +43,8 @@ object ReviewSellerConstant {
     fun mapSortReviewDetail(): MutableMap<String, String> {
         val map = mutableMapOf<String, String>()
         map[LATEST_REVIEW_KEY] = LATEST_REVIEW_VALUE
-        map[HIGHEST_RATING_KEY] = HIGHEST_RATING_VALUE
-        map[LOWEST_RATING_KEY] = LOWEST_RATING_VALUE
+        map[HIGHEST_RATING_DETAIL_KEY] = HIGHEST_RATING_VALUE
+        map[LOWEST_RATING_DETAIL_KEY] = LOWEST_RATING_VALUE
         return map
     }
 
@@ -67,15 +70,5 @@ object ReviewSellerConstant {
     const val HAS_FILTER_AND_SORT = "hasFilterAndSort"
     const val HAS_OVERALL_RATING_PRODUCT = "hasOverallRatingProduct"
 }
-
-const val GQL_GET_PRODUCT_REVIEW_LIST = "GQL_GET_PRODUCT_REVIEW_LIST"
-const val GQL_GET_PRODUCT_RATING_OVERALL = "GQL_GET_PRODUCT_RATING_OVERALL"
-const val GQL_GET_PRODUCT_REVIEW_DETAIL_OVERALL = "GQL_GET_PRODUCT_REVIEW_DETAIL_OVERALL"
-const val GQL_GET_PRODUCT_FEEDBACK_LIST_DETAIL = "GQL_GET_PRODUCT_FEEDBACK_LIST_DETAIL"
-const val GQL_GET_PRODUCT_FEEDBACK_FILTER = "GQL_GET_PRODUCT_FEEDBACK_FILTER"
-const val GQL_GET_TEMPLATE_LIST = "GQL_GET_RESPONSE_TEMPLATE_LIST"
-const val GQL_INSERT_SELLER_RESPONSE = "GQL_INSERT_SELLER_RESPONSE"
-const val GQL_UPDATE_SELLER_RESPONSE = "GQL_UPDATE_SELLER_RESPONSE"
-const val GQL_INSERT_TEMPLATE_REVIEW = "GQL_INSERT_TEMPLATE_REVIEW"
 
 
