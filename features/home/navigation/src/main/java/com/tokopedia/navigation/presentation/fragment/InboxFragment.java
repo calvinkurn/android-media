@@ -450,7 +450,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     private void onImpressionTopAds(RecommendationItem item) {
-        new ImpresionTask(getActivity().getClass().getName()).execute(item.getClickUrl());
+        new ImpresionTask(getActivity().getClass().getName()).execute(item.getTrackerImageUrl());
         InboxGtmTracker.getInstance().addInboxProductViewImpressions(item, item.getPosition(), item.isTopAds());
     }
 
@@ -459,7 +459,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     private void onClickTopAds(RecommendationItem item) {
-        new ImpresionTask(getActivity().getClass().getName()).execute(item.getTrackerImageUrl());
+        new ImpresionTask(getActivity().getClass().getName()).execute(item.getClickUrl());
         InboxGtmTracker.getInstance().eventInboxProductClick(getContext(), item, item.getPosition(), item.isTopAds());
     }
 
