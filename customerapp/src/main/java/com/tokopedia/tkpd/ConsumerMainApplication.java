@@ -136,7 +136,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         createAndCallPreSeq();
         super.onCreate();
 
-//        initGqlNWClient();//already called in super
         createAndCallPostSeq();
         createAndCallFontLoad();
 

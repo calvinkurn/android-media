@@ -258,7 +258,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 return executeHanselInit();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineNow(hanselWeave);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(hanselWeave, RemoteConfigKey.ENABLE_ASYNC_HANSEL_INIT, getApplicationContext());
     }
 
     private boolean executeHanselInit(){
