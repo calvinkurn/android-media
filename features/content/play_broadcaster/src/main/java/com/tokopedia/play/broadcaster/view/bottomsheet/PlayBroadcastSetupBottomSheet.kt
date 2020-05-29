@@ -24,7 +24,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.util.BreadcrumbsModel
-import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
+import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.partial.SelectedProductPagePartialView
@@ -39,7 +39,7 @@ import javax.inject.Inject
 class PlayBroadcastSetupBottomSheet @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
         private val fragmentFactory: FragmentFactory
-) : BottomSheetDialogFragment(), PlayBroadcastCoordinator {
+) : BottomSheetDialogFragment(), PlayBottomSheetCoordinator {
 
     private lateinit var viewModel: PlayEtalasePickerViewModel
 

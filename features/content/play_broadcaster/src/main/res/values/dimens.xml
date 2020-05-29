@@ -18,6 +18,14 @@
 
     <dimen name="play_etalase_box_size">152dp</dimen>
 
+    <dimen name="play_space_icon_camera">9dp</dimen>
+    <dimen name="play_space_icon_audio">7dp</dimen>
+    <dimen name="play_space_icon_close">14dp</dimen>
+    <dimen name="play_width_icon">20dp</dimen>
+
+    <dimen name="play_stats_info_height">20dp</dimen>
+    <dimen name="play_counter_height">26dp</dimen>
+
     <dimen name="play_summary_cover_width">100dp</dimen>
     <dimen name="play_summary_cover_height">180dp</dimen>
 

@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastSocket.Companion.KEY_GROUPCHAT_PREFERENCES
 import com.tokopedia.play.broadcaster.dispatcher.PlayBroadcastDispatcher
+import com.tokopedia.play.broadcaster.pusher.PlayPusher
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -17,7 +18,7 @@ import javax.inject.Named
  * Created by jegul on 20/05/20
  */
 @Module
-class PlayBroadcasterModule {
+class PlayBroadcasterModule(val context: Context) {
 
     @Provides
     @Named(PlayBroadcastDispatcher.MAIN)
@@ -32,12 +33,17 @@ class PlayBroadcasterModule {
     fun provideComputationDispatcher(): CoroutineDispatcher = Dispatchers.Default
 
     @Provides
-    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
+    fun provideUserSessionInterface(): UserSessionInterface {
         return UserSession(context)
     }
 
     @Provides
-    fun provideLocalCacheHandler(@ApplicationContext context: Context): LocalCacheHandler {
+    fun provideLocalCacheHandler(): LocalCacheHandler {
         return LocalCacheHandler(context, KEY_GROUPCHAT_PREFERENCES)
+    }
+
+    @Provides
+    fun providePlayPusher(): PlayPusher {
+        return PlayPusher.Builder(context).build()
     }
 }

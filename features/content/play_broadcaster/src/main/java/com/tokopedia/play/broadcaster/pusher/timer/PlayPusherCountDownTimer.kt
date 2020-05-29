@@ -1,8 +1,9 @@
-package com.tokopedia.play.broadcaster.pusher
+package com.tokopedia.play.broadcaster.pusher.timer
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.CountDownTimer
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import android.preference.PreferenceManager
 
 
 /**
@@ -12,21 +13,20 @@ class PlayPusherCountDownTimer(val context: Context,
                                private val maxLiveStreamDuration: Long = DEFAULT_MAX_LIVE_STREAM_DURATION) {
 
     private var countDownTimer: CountDownTimer? = null
+
     private var lastMillis: Long = maxLiveStreamDuration
-    private var callback: PlayPusherCountDownTimerCallback? = null
-    private var localCacheHandler: LocalCacheHandler? = null
 
-    init {
-        localCacheHandler = LocalCacheHandler(context, PLAY_TIMER_PREFERENCES)
-    }
+    private var callback: PlayPusherCountDownTimerListener? = null
+    private var sharedPreferences: SharedPreferences? = PreferenceManager.getDefaultSharedPreferences(context)
 
-    fun addCallback(callback: PlayPusherCountDownTimerCallback) {
+    fun addCallback(callback: PlayPusherCountDownTimerListener) {
         this.callback = callback
     }
 
     fun start() {
-        val lastSavedMillis = localCacheHandler?.getLong(PLAY_TIMER_LAST_STATE,
-                maxLiveStreamDuration)?: maxLiveStreamDuration
+        val lastSavedMillis = sharedPreferences?.getLong(
+                PLAY_TIMER_LAST_STATE, maxLiveStreamDuration)
+                ?:maxLiveStreamDuration
         countDownTimer = getCountDownTimer(lastSavedMillis)
         countDownTimer?.start()
     }
@@ -40,18 +40,27 @@ class PlayPusherCountDownTimer(val context: Context,
     private fun destroy() {
         countDownTimer = null
         callback = null
-        localCacheHandler = null
+        sharedPreferences = null
         lastMillis = 0L
     }
 
     private fun saveLastState() {
-        localCacheHandler?.putLong(PLAY_TIMER_LAST_STATE, lastMillis)
+        val editor = sharedPreferences?.edit()
+        editor?.putLong(PLAY_TIMER_LAST_STATE, lastMillis)
+        editor?.apply()
+    }
+
+    private fun clear() {
+        val editor = sharedPreferences?.edit()
+        editor?.remove(PLAY_TIMER_LAST_STATE)
+        editor?.apply()
     }
 
     private fun getCountDownTimer(maxLiveStreamDuration: Long): CountDownTimer {
         return object : CountDownTimer(maxLiveStreamDuration, DEFAULT_COUNT_DOWN_INTERVAL) {
             override fun onFinish() {
                 callback?.onCountDownFinish()
+                clear()
             }
 
             override fun onTick(millisUntilFinished: Long) {

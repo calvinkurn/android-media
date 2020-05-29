@@ -4,11 +4,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.play.broadcaster.di.key.FragmentKey
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
-import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastSummaryFragment
-import com.tokopedia.play.broadcaster.view.fragment.PlayEtalaseDetailFragment
-import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
-import com.tokopedia.play.broadcaster.view.fragment.PlayPrepareBroadcastFragment
+import com.tokopedia.play.broadcaster.view.fragment.*
 import com.tokopedia.play.broadcaster.view.fragment.factory.PlayBroadcastFragmentFactory
+import com.tokopedia.play.broadcaster.view.fragment.PlayLiveBroadcastFragment
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -46,4 +44,9 @@ abstract class PlayBroadcasterFragmentModule {
     @IntoMap
     @FragmentKey(PlayBroadcastSummaryFragment::class)
     abstract fun getPlayBroadcastSummaryFragment(fragment: PlayBroadcastSummaryFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(PlayLiveBroadcastFragment::class)
+    abstract fun getPlayLiveBroadcastFragment(fragment: PlayLiveBroadcastFragment): Fragment
 }
