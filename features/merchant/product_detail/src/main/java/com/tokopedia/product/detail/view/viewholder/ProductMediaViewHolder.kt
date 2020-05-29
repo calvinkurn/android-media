@@ -2,12 +2,12 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.isVisibleOnTheScreen
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import kotlinx.android.synthetic.main.item_dynamic_pdp_snapshot.view.*
 import kotlinx.android.synthetic.main.item_dynamic_product_media.view.*
 
 /**
@@ -32,6 +32,10 @@ class ProductMediaViewHolder(private val view: View,
             viewMediaPager.renderShopStatusDynamicPdp(element.shopStatus, element.statusTitle, element.statusMessage,
                     element.basicStatus)
             element.shouldRefreshViewPagger = false
+
+            viewMediaPager?.isVisibleOnTheScreen({},{
+                viewMediaPager?.stopVideo()
+            })
         }
     }
 
