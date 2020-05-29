@@ -6,4 +6,6 @@ package com.tokopedia.play.broadcaster.view.contract
 interface PlayBottomSheetCoordinator : PlayBroadcastCoordinator {
 
     fun setupTitle(title: String)
+
+    fun showBottomAction(shouldShow: Boolean)
 }

@@ -1,5 +1,9 @@
 package com.tokopedia.play.broadcaster.mocker
 
+import android.graphics.Typeface
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.StyleSpan
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.model.Configuration
 import com.tokopedia.play.broadcaster.view.state.Selectable
@@ -52,6 +56,18 @@ object PlayBroadcastMocker {
     }
 
     fun getMaxSelectedProduct() = 8
+
+    fun getMockSearchSuggestions(keyword: String) = List(keyword.length) {
+        val suggestionText = " ${keyword.substring(0, it + 1)}"
+        val fullText = "$keyword$suggestionText"
+        SearchSuggestionUiModel(
+                queriedText = keyword,
+                suggestionText = suggestionText,
+                spannedSuggestion = SpannableStringBuilder(fullText).apply {
+                    setSpan(StyleSpan(Typeface.BOLD), fullText.indexOf(suggestionText), fullText.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+                }
+        )
+    }
 
     fun getMockConfiguration() = Configuration(
             isUserWhitelisted = true,
