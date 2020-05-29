@@ -330,9 +330,9 @@ public class InboxReputationDetailHeaderViewHolder extends
                     BottomSheetUnify bottomSheet = new IncentiveOvoBottomSheet(productRevIncentiveOvoDomain, ReputationTrackingConstant.INVOICE);
                     if(fragmentManager != null) {
                         bottomSheet.show(fragmentManager,IncentiveOvoBottomSheet.Companion.getTAG());
-                        bottomSheet.setOnDismissListener(new Function0<Unit>() {
+                        bottomSheet.setCloseClickListener(new Function1<View, Unit>() {
                             @Override
-                            public Unit invoke() {
+                            public Unit invoke(View view) {
                                 reputationTracking.onClickDismissIncentiveOvoBottomSheetTracker(ReputationTrackingConstant.INVOICE);
                                 return Unit.INSTANCE;
                             }

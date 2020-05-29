@@ -280,10 +280,10 @@ public class InboxReputationFragment extends BaseDaggerFragment
                 BottomSheetUnify bottomSheet = new IncentiveOvoBottomSheet(productRevIncentiveOvoDomain, ReputationTrackingConstant.WAITING_REVIEWED);
                 if(getFragmentManager() != null) {
                     bottomSheet.show(getFragmentManager(),IncentiveOvoBottomSheet.Companion.getTAG());
-                    bottomSheet.setOnDismissListener(new Function0<Unit>() {
+                    bottomSheet.setCloseClickListener(new Function1<View, Unit>() {
                         @Override
-                        public Unit invoke() {
-                            reputationTracking.onClickDismissIncentiveOvoBottomSheetTracker(ReputationTrackingConstant.INVOICE);
+                        public Unit invoke(View view) {
+                            reputationTracking.onClickDismissIncentiveOvoBottomSheetTracker(ReputationTrackingConstant.WAITING_REVIEWED);
                             return Unit.INSTANCE;
                         }
                     });
