@@ -13,9 +13,14 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import kotlinx.android.synthetic.main.bottomsheet_mvc_edit_quota.*
 import kotlinx.android.synthetic.main.bottomsheet_mvc_edit_quota.view.*
+import kotlinx.android.synthetic.main.bottomsheet_mvc_edit_quota.view.tvMvcVoucherDescription
+import kotlinx.android.synthetic.main.bottomsheet_mvc_edit_quota.view.tvMvcVoucherName
+import kotlinx.android.synthetic.main.item_mvc_voucher_list.view.*
+import timber.log.Timber
 
 /**
  * Created By @ilhamsuaib on 27/04/20
@@ -42,11 +47,11 @@ class EditQuotaBottomSheet(
 
     private fun setupView(view: View) = with(view) {
         setupBottomSheetChildNoMargin()
-        imgMvcVoucher.loadImageDrawable(R.drawable.img_mvc_cashback_khusus)
+        setImageVoucher(voucher.isPublic, voucher.type)
+
         KeyboardHandler.showSoftKeyboard(activity)
 
-        val dummyVoucherQuota = 100
-        val dummyEstimationAmount = dummyVoucherQuota * voucher.minimumAmt
+        val estimationAmount = voucher.quota * voucher.minimumAmt
 
         editMvcQuota?.textFieldInput?.run {
             addTextChangedListener(object : NumberTextWatcher(this@run){
@@ -55,7 +60,7 @@ class EditQuotaBottomSheet(
                     changeTickerValue(number.toInt() * voucher.minimumAmt)
                 }
             })
-            setText(CurrencyFormatHelper.removeCurrencyPrefix(dummyVoucherQuota.toString()))
+            setText(CurrencyFormatHelper.removeCurrencyPrefix(voucher.quota.toString()))
             selectAll()
             requestFocus()
         }
@@ -63,13 +68,30 @@ class EditQuotaBottomSheet(
         tvMvcVoucherName.text = voucher.name
         tvMvcVoucherDescription.text = String.format(context?.getString(R.string.mvc_cashback_formatted).toBlankOrString(), voucher.discountAmtFormatted)
         mvcTicker.run {
-            title = "Estimasi Maks. Pengeluaran"
-            description = "Dipotong dari transaksi selesai"
-            nominal = CurrencyFormatHelper.convertToRupiah(dummyEstimationAmount.toString()).toBlankOrString()
+            title = context?.getString(R.string.mvc_estimation_title).toBlankOrString()
+            description = context?.getString(R.string.mvc_estimation_description).toBlankOrString()
+            nominal = CurrencyFormatHelper.convertToRupiah(estimationAmount.toString()).toBlankOrString()
         }
 
         setAction(context.getString(R.string.mvc_retry)) {
 
+        }
+    }
+
+    private fun setImageVoucher(isPublic: Boolean, @VoucherTypeConst voucherType: Int) {
+        try {
+            with(view?.imgMvcVoucherType) {
+                val drawableRes = when {
+                    isPublic && (voucherType == VoucherTypeConst.CASHBACK || voucherType == VoucherTypeConst.DISCOUNT) -> R.drawable.ic_mvc_cashback_publik
+                    !isPublic && (voucherType == VoucherTypeConst.CASHBACK || voucherType == VoucherTypeConst.DISCOUNT) -> R.drawable.ic_mvc_cashback_khusus
+                    isPublic && (voucherType == VoucherTypeConst.FREE_ONGKIR) -> R.drawable.ic_mvc_ongkir_publik
+                    !isPublic && (voucherType == VoucherTypeConst.FREE_ONGKIR) -> R.drawable.ic_mvc_ongkir_khusus
+                    else -> R.drawable.ic_mvc_cashback_publik
+                }
+                this?.loadImageDrawable(drawableRes)
+            }
+        } catch (e: Exception) {
+            Timber.e(e)
         }
     }
 

@@ -114,10 +114,6 @@ class VoucherViewHolder(
     private fun setImageVoucher(isPublic: Boolean, @VoucherTypeConst voucherType: Int) {
         try {
             with(itemView.imgMvcVoucherType) {
-                /**
-                 * this logic not fix, need to confirm to Product/UI.
-                 * Coz voucher have 3 types but only two examples provided on Figma
-                 * */
                 val drawableRes = when {
                     isPublic && (voucherType == VoucherTypeConst.CASHBACK || voucherType == VoucherTypeConst.DISCOUNT) -> R.drawable.ic_mvc_cashback_publik
                     !isPublic && (voucherType == VoucherTypeConst.CASHBACK || voucherType == VoucherTypeConst.DISCOUNT) -> R.drawable.ic_mvc_cashback_khusus
