@@ -33,7 +33,6 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback;
 import org.jetbrains.annotations.NotNull;
 
 import kotlin.Unit;
-import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
 
 /**
