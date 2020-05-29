@@ -14,7 +14,9 @@ import com.tokopedia.play.broadcaster.view.uimodel.ProductUiModel
 import com.tokopedia.play.broadcaster.view.uimodel.SearchSuggestionUiModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.debounce
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -156,7 +158,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
     }
 
     private suspend fun initSearchChannel() = withContext(mainDispatcher) {
-        searchChannel.consumeAsFlow().debounce(1500).collect {
+        searchChannel.consumeAsFlow().debounce(500).collect {
             val searchSuggestions = getSearchSuggestions(it)
             _observableSuggestionList.value = searchSuggestions
         }

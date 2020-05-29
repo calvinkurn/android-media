@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
@@ -146,6 +147,10 @@ class PlayEtalasePickerFragment @Inject constructor(
 
         rvSuggestions.visible()
 
+        etalaseAdapter.clearAllItems()
+        etalaseAdapter.notifyDataSetChanged()
+        viewModel.loadSuggestionsFromKeyword(psbSearch.text)
+
         broadcastCoordinator.showBottomAction(false)
     }
 
@@ -153,7 +158,7 @@ class PlayEtalasePickerFragment @Inject constructor(
         tvInfo.visible()
         rvEtalase.visible()
 
-        rvSuggestions.gone()
+        rvSuggestions.invisible()
 
         broadcastCoordinator.showBottomAction(psbSearch.text.isNotEmpty())
     }
