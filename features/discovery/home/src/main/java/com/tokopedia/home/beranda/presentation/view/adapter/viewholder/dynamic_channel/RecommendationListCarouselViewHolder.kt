@@ -20,8 +20,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.utils.getMaxHeightForListView
-import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.productcard.utils.getMaxHeightForListViewCarousel
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -202,7 +201,7 @@ class RecommendationListCarouselViewHolder(
     }
 
     suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
-        return productCardModelList.getMaxHeightForListView(itemView.context, Dispatchers.Default)
+        return productCardModelList.getMaxHeightForListViewCarousel(itemView.context, Dispatchers.Default)
     }
 
     class HomeRecommendationSeeMoreViewHolder(

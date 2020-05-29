@@ -28,7 +28,7 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridView(context: Context?, c
     }
 }
 
-suspend fun List<ProductCardModel>?.getMaxHeightForListView(context: Context?, coroutineDispatcher: CoroutineDispatcher): Int {
+suspend fun List<ProductCardModel>?.getMaxHeightForListViewCarousel(context: Context?, coroutineDispatcher: CoroutineDispatcher): Int {
    return getMaxHeightForListView(context, coroutineDispatcher, context?.resources?.getDimensionPixelSize(R.dimen.product_card_carousel_list_image_size))
 }
 
@@ -37,7 +37,7 @@ suspend fun List<ProductCardModel>?.getMaxHeightForListView(context: Context?, c
 
     return withContext(coroutineDispatcher) {
         val productCardHeightList = mutableListOf<Int>()
-        var imageSize = if (imageWidth != null && imageWidth!= 0) imageWidth else context.resources.getDimensionPixelSize(R.dimen.product_card_carousel_list_image_size)
+        var imageSize = if (imageWidth != null && imageWidth!= 0) imageWidth else context.resources.getDimensionPixelSize(R.dimen.product_card_list_image_size)
         forEach { productCardModel ->
             val cardPaddingTop = context.resources.getDimensionPixelSize(R.dimen.product_card_padding_top)
             val cardPaddingBottom = context.resources.getDimensionPixelSize(R.dimen.product_card_padding_bottom)
