@@ -74,8 +74,25 @@ open class ProductAttachmentViewModel : SendableViewModel,
 
     override fun updateData(attribute: Any?) {
         if (attribute is ProductAttachmentAttributes) {
-            this.productName = "ahoy mate"
-            this.productPrice = "Rp 500"
+            productId = attribute.productId
+            productName = attribute.productProfile.name
+            productPrice = attribute.productProfile.price
+            productUrl = attribute.productProfile.url
+            productImage = attribute.productProfile.imageUrl
+            priceInt = attribute.productProfile.priceInt
+            category = attribute.productProfile.category
+            variants = attribute.productProfile.variant
+            dropPercentage = attribute.productProfile.dropPercentage
+            priceBefore = attribute.productProfile.priceBefore
+            shopId = attribute.productProfile.shopId
+            freeShipping = attribute.productProfile.freeShipping
+            categoryId = attribute.productProfile.categoryId
+            playStoreData = attribute.productProfile.playStoreData
+            minOrder = attribute.productProfile.minOrder
+            remainingStock = attribute.productProfile.remainingStock
+            status = attribute.productProfile.status
+            wishList = attribute.productProfile.wishList
+            images = attribute.productProfile.images
             this.isLoading = false
         }
     }

@@ -184,11 +184,7 @@ open class GetExistingChatMapper @Inject constructor() {
         val pojoAttribute = GsonBuilder().create().fromJson<ProductAttachmentAttributes>(chatItemPojoByDateByTime.attachment?.attributes,
                 ProductAttachmentAttributes::class.java)
 
-        val variant: List<AttachmentVariant> = if (pojoAttribute.productProfile.variant == null) {
-            emptyList()
-        } else {
-            pojoAttribute.productProfile.variant
-        }
+        val variant: List<AttachmentVariant> = pojoAttribute.productProfile.variant
 
         if (pojoAttribute.isBannedProduct()) {
             return BannedProductAttachmentViewModel(
