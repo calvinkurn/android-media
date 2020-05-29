@@ -23,7 +23,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
-import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.adapter.CreateMerchantVoucherStepsAdapter
 import com.tokopedia.vouchercreation.create.view.dialog.CreateVoucherCancelDialog
@@ -303,6 +302,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
             viewModel.initiateDuplicateVoucher()
             setDuplicateVoucherData(voucherUiModel)
             isDuplicateVoucher = true
+            createMerchantVoucherHeader?.setTitle(R.string.mvc_duplicate_voucher)
             return true
         }
         return false
@@ -322,12 +322,6 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
             imageType?.let { type ->
                 setVoucherBenefit(type, minimumAmt, quota)
             }
-
-            val startDate = DateTimeUtils.reformatUnsafeDateTime(startTime, DateTimeUtils.DASH_DATE_FORMAT)
-            val endDate = DateTimeUtils.reformatUnsafeDateTime(finishTime, DateTimeUtils.DASH_DATE_FORMAT)
-            val startHour = DateTimeUtils.reformatUnsafeDateTime(startTime, DateTimeUtils.HOUR_FORMAT)
-            val endHour = DateTimeUtils.reformatUnsafeDateTime(finishTime, DateTimeUtils.HOUR_FORMAT)
-            setVoucherPeriod(startDate, endDate, startHour, endHour)
         }
     }
 

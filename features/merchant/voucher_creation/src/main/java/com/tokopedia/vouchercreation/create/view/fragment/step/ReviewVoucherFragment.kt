@@ -162,6 +162,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
             VOUCHER_INFO_DATA_KEY -> VoucherCreationStep.TARGET
             VOUCHER_BENEFIT_DATA_KEY -> VoucherCreationStep.BENEFIT
             PERIOD_DATA_KEY -> VoucherCreationStep.PERIOD
+            DATA_KEY_VOUCHER_PERIOD -> VoucherCreationStep.PERIOD
             else -> VoucherCreationStep.REVIEW
         }
         onReturnToStep(step)
@@ -206,7 +207,11 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     private fun renderReviewInformation(voucherReviewUiModel: VoucherReviewUiModel) {
         voucherReviewUiModel.run {
             val postDisplayedDate = getDisplayedDateString(startDate, endDate)
-            val fullDisplayedDate = getDisplayedDateString(startDate, startHour, endDate, endHour)
+            val fullDisplayedDate: String? = if (startDate.isNullOrEmpty()) {
+                null
+            } else {
+                getDisplayedDateString(startDate, startHour, endDate, endHour)
+            }
 
             val reviewInfoList = mutableListOf(
                     with(voucherReviewUiModel) {

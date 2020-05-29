@@ -13,10 +13,7 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.bottmsheet.description.DescriptionBottomSheet
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
-import com.tokopedia.vouchercreation.detail.model.InfoContainerUiModel
-import com.tokopedia.vouchercreation.detail.model.SubInfoItemUiModel
-import com.tokopedia.vouchercreation.detail.model.VoucherDetailUiModel
-import com.tokopedia.vouchercreation.detail.model.VoucherTickerUiModel
+import com.tokopedia.vouchercreation.detail.model.*
 import com.tokopedia.vouchercreation.detail.view.VoucherDetailListener
 import com.tokopedia.vouchercreation.detail.view.adapter.factory.VoucherDetailAdapterFactoryImpl
 import kotlinx.android.synthetic.main.fragment_mvc_voucher_detail.view.*
@@ -33,9 +30,11 @@ abstract class BaseDetailFragment : BaseListFragment<VoucherDetailUiModel, Vouch
         const val VOUCHER_INFO_DATA_KEY = "voucher_info"
         const val VOUCHER_BENEFIT_DATA_KEY = "voucher_benefit"
         const val PERIOD_DATA_KEY = "period"
+        const val DATA_KEY_VOUCHER_PERIOD = "periodeVoucher"
 
         private const val DISPLAYED_DATE_FORMAT = "dd MMM yyyy"
         private const val RAW_DATE_FORMAT = "yyyy-MM-dd"
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -172,17 +171,20 @@ abstract class BaseDetailFragment : BaseListFragment<VoucherDetailUiModel, Vouch
         )
     }
 
-    protected fun getPeriodSection(dateString: String, hasCta: Boolean = false) : InfoContainerUiModel {
-        val subInfoList = listOf(
-                SubInfoItemUiModel(R.string.mvc_period, dateString)
-        )
+    protected fun getPeriodSection(dateString: String?, hasCta: Boolean = false) : VoucherDetailUiModel {
+        dateString?.run {
+            val subInfoList = listOf(
+                    SubInfoItemUiModel(R.string.mvc_period, this)
+            )
 
-        return InfoContainerUiModel(
-                titleRes = R.string.mvc_detail_voucher_period,
-                informationList = subInfoList,
-                dataKey = PERIOD_DATA_KEY,
-                hasCta = hasCta
-        )
+            return InfoContainerUiModel(
+                    titleRes = R.string.mvc_detail_voucher_period,
+                    informationList = subInfoList,
+                    dataKey = PERIOD_DATA_KEY,
+                    hasCta = hasCta
+            )
+        }
+        return WarningPeriodUiModel(DATA_KEY_VOUCHER_PERIOD)
     }
 
     protected fun getDisplayedDateString(startDate: String,

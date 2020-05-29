@@ -31,7 +31,7 @@
         android:textColor="@color/Red_R500"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvMvcWaningTitle"
-        app:typographyType="body_3" />
+        app:typographyType="body_2" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMvcWarningValue"
@@ -45,7 +45,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvMvcWarningKey"
         app:layout_constraintTop_toTopOf="@+id/tvMvcWarningKey"
-        app:typographyType="body_3"
+        app:typographyType="body_2"
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifycomponents.ticker.Ticker
