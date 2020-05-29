@@ -78,11 +78,11 @@ class CategoryTextBubbleAdapter(val onClicked: ((String) -> Unit)? ): RecyclerVi
     private fun setClicked(view: View, context: Context, clicked: Boolean): Boolean {
         if (clicked) {
             view.name_category.background = ContextCompat.getDrawable(context, R.drawable.bg_text_category)
-            view.name_category.setTextColor(ContextCompat.getColor(context, R.color.color_gray))
+            view.name_category.setTextColor(ContextCompat.getColor(context, R.color.ent_pdp_form_graytext))
             return false
         } else {
             view.name_category.background = ContextCompat.getDrawable(context, R.drawable.bg_text_category_green)
-            view.name_category.setTextColor(ContextCompat.getColor(context, R.color.green_tkpd_text))
+            view.name_category.setTextColor(ContextCompat.getColor(context, R.color.Green_G500))
             return true
         }
     }

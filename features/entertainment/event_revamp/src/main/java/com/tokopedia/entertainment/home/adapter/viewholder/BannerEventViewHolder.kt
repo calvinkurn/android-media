@@ -37,7 +37,7 @@ BannerView.OnPromoDragListener, BannerView.OnPromoLoadedListener {
         itemView.banner_home_ent?.customWidth = getDisplayMetric(context).widthPixels -
                         context.resources.getDimensionPixelSize(R.dimen.spacing_lvl4)
         itemView.banner_home_ent?.customHeight = context.resources.getDimensionPixelSize(R.dimen.dimen_dp_110)
-        itemView.banner_home_ent?.setBannerSeeAllTextColor(ContextCompat.getColor(context, R.color.ent_green))
+        itemView.banner_home_ent?.setBannerSeeAllTextColor(ContextCompat.getColor(context, R.color.Green_G500))
         itemView.banner_home_ent?.setBannerIndicator(Indicator.GREEN)
     }
 
