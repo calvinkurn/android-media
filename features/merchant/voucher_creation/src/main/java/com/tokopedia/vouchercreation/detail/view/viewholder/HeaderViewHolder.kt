@@ -13,6 +13,7 @@ import com.tokopedia.unifycomponents.ContainerUnify
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
+import com.tokopedia.vouchercreation.common.utils.TimerRunnable
 import com.tokopedia.vouchercreation.detail.model.VoucherHeaderUiModel
 import com.tokopedia.vouchercreation.detail.view.component.StartEndVoucher
 import kotlinx.android.synthetic.main.item_mvc_voucher_header.view.*
@@ -53,7 +54,14 @@ class HeaderViewHolder(
                 }
                 VoucherStatusConst.ONGOING -> {
                     lblMvcRemainingTime?.visible()
-                    //Todo: add countdown on label
+
+                    val endDateTime = DateTimeUtils.convertUnsafeDateTime(element.finishTime)
+
+                    val diffMillis = System.currentTimeMillis() - endDateTime.time
+
+                    val timer = TimerRunnable(diffMillis, ::onCountdownTick)
+                    timer.start()
+
                     statusResId = R.string.mvc_is_ongoing
                     containerColor = ContainerUnify.GREEN
                     textColorResId = R.color.Green_G500
@@ -103,5 +111,9 @@ class HeaderViewHolder(
                 onDownloadClick()
             }
         }
+    }
+
+    private fun onCountdownTick(time: String) {
+        itemView.lblMvcRemainingTime?.text = time
     }
 }

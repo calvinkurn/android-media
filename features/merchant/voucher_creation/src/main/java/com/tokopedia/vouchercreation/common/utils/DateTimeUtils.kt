@@ -51,6 +51,23 @@ object DateTimeUtils {
         return dateTime
     }
 
+    fun convertUnsafeDateTime(dateTime: String) : Date {
+        val locale = Locale.getDefault()
+        val firstFormatter = SimpleDateFormat(TIME_STAMP_FORMAT, locale)
+        val secondFormatter = SimpleDateFormat(TIME_STAMP_MILLISECONDS_FORMAT, locale)
+
+        return try {
+            firstFormatter.parse(dateTime)
+        } catch (ex: ParseException) {
+            try {
+                secondFormatter.parse(dateTime)
+            } catch (ex: ParseException) {
+                ex.printStackTrace()
+                throw RuntimeException(ex.message)
+            }
+        }
+    }
+
     fun String.convertFullDateToDateParam(newFormat: String): String {
         return try {
             reformatDateTime(this, TIME_STAMP_FORMAT, newFormat)
