@@ -10,21 +10,6 @@ import com.tokopedia.config.GlobalConfig;
 @Deprecated
 public class GeneralUtils {
 
-    public static boolean checkNullForZeroJson(String input) {
-        if (input == null || input.equals("0") || input.equals(""))
-            return false;
-
-        return true;
-    }
-
-    public static <T> boolean checkStringNotNull(T reference) {
-        if (checkNotNull(reference) && (!reference.equals("")) && (!reference.equals("0"))) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     public static <T> boolean checkNotNull(T reference) {
         if (reference == null) {
             return false;

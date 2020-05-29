@@ -174,7 +174,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
         override fun bind(homeRecommendationListData: HomeRecommendationListCarousel) {
             if(homeRecommendationListData is HomeRecommendationListSeeMoreData) {
                 container.setOnClickListener {
-                    HomePageTrackingV2.RecommendationList.sendRecommendationListSeeAllClick(homeRecommendationListData.channel)
+                    HomePageTrackingV2.RecommendationList.sendRecommendationListSeeAllCardClick(homeRecommendationListData.channel)
                     homeRecommendationListData.listener.onDynamicChannelClicked(applink = homeRecommendationListData.channel.header.applink)
                 }
             }

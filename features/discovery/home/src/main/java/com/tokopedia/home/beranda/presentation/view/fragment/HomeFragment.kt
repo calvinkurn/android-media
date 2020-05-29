@@ -16,7 +16,6 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import androidx.annotation.VisibleForTesting
 import androidx.core.app.ActivityCompat
@@ -64,7 +63,6 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBann
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.LegoBanner.getLegoBannerFourImageImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.MixLeft.getMixLeftIrisProductView
-import com.tokopedia.home.analytics.HomePageTrackingV2.MixLeft.getMixLeftProductView
 import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.getPopularKeywordImpressionItem
 import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.sendPopularKeywordClickItem
 import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.sendPopularKeywordClickReload
@@ -72,6 +70,7 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getAdd
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getCloseClickOnDynamicListCarousel
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getRecommendationListImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.SprintSale.getSprintSaleImpression
+import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
 import com.tokopedia.home.analytics.v2.MixTopTracking.getMixTopViewIris
 import com.tokopedia.home.analytics.v2.MixTopTracking.mapChannelToProductTracker
 import com.tokopedia.home.analytics.v2.ProductHighlightTracking.getProductHighlightImpression
@@ -81,9 +80,11 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
+import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.helper.ViewHelper
+import com.tokopedia.home.beranda.helper.benchmark.TRACE_INFLATE_HOME_FRAGMENT
 import com.tokopedia.home.beranda.listener.*
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
@@ -128,6 +129,7 @@ import com.tokopedia.stickylogin.data.StickyLoginTickerPojo.TickerDetail
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
@@ -183,6 +185,7 @@ open class HomeFragment : BaseDaggerFragment(),
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
         private const val SEND_SCREEN_MIN_INTERVAL_MILLIS: Long = 1000
         private const val DEFAULT_UTM_SOURCE = "home_notif"
+        private const val SEE_ALL_CARD = "android_mainapp_home_see_all_card_config"
         private const val REQUEST_CODE_PLAY_ROOM = 256
         private const val PERFORMANCE_PAGE_NAME_HOME = "home"
         var HIDE_TICKER = false
@@ -248,6 +251,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private var homePerformanceMonitoringListener: HomePerformanceMonitoringListener? = null
     private var showRecomendation = false
     private var mShowTokopointNative = false
+    private var showSeeAllCard = true
     private var isShowFirstInstallSearch = false
     private var scrollToRecommendList = false
     private var isFeedLoaded = false
@@ -282,6 +286,20 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        activity?.let {
+            userSession = UserSession(it)
+            irisAnalytics = getInstance(it)
+            irisSession = IrisSession(it)
+            remoteConfig = FirebaseRemoteConfigImpl(it)
+            trackingQueue = TrackingQueue(it)
+        }
+        searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_searchbar_transition_range)
+        startToTransitionOffset = resources.getDimensionPixelSize(R.dimen.banner_background_height) / 2
+        initViewModel()
+        setGeolocationPermission()
+        needToShowGeolocationComponent()
+        injectCouponTimeBased()
+        stickyContent
         searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_searchbar_transition_range)
         startToTransitionOffset = resources.getDimensionPixelSize(R.dimen.banner_background_height) / 2
         initViewModel()
@@ -363,6 +381,7 @@ open class HomeFragment : BaseDaggerFragment(),
             showRecomendation = it.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_RECOMENDATION_BUTTON, false)
             mShowTokopointNative = it.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_TOKOPOINT_NATIVE, true)
             isShowFirstInstallSearch = it.getBoolean(ConstantKey.RemoteConfigKey.REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH, false)
+            showSeeAllCard = it.getBoolean(SEE_ALL_CARD, true)
         }
     }
 
@@ -373,7 +392,9 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        BenchmarkHelper.beginSystraceSection(TRACE_INFLATE_HOME_FRAGMENT)
         val view = inflater.inflate(R.layout.fragment_home, container, false)
+        BenchmarkHelper.endSystraceSection()
         fragmentFramePerformanceIndexMonitoring.init(
                 "home", this, object : OnFrameListener {
             override fun onFrameRendered(fpiPerformanceData: FpiPerformanceData) {}
@@ -592,8 +613,8 @@ open class HomeFragment : BaseDaggerFragment(),
         observeStickyLogin()
         observeTrackingData()
         observeRequestImagePlayBanner()
-        observeHomeRequestNetwork();
         observeViewModelInitialized();
+        observeHomeRequestNetwork();
     }
 
     private fun observeHomeRequestNetwork() {
@@ -811,6 +832,10 @@ open class HomeFragment : BaseDaggerFragment(),
         floatingEggButtonFragment?.hideOnScrolling()
     }
 
+    override fun isShowSeeAllCard(): Boolean {
+        return showSeeAllCard
+    }
+
     private fun initEggTokenScrollListener() {
         onEggScrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -840,7 +865,6 @@ open class HomeFragment : BaseDaggerFragment(),
         layoutManager = LinearLayoutManager(context)
         homeRecyclerView?.layoutManager = layoutManager
         val adapterFactory = HomeAdapterFactory(
-                childsFragmentManager,
                 this,
                 this,
                 this,
@@ -972,7 +996,9 @@ open class HomeFragment : BaseDaggerFragment(),
         } else {
             openWebViewURL(slidesModel.redirectUrl, activity)
         }
-        viewModel.onBannerClicked(slidesModel)
+        if (slidesModel.redirectUrl.isNotEmpty()) {
+            TopAdsUrlHitter(HomeFragment::class.qualifiedName).hitClickUrl(getContext(), slidesModel.redirectUrl)
+        }
     }
 
     override fun onPromoAllClick() {
@@ -1089,6 +1115,10 @@ open class HomeFragment : BaseDaggerFragment(),
         if (isShowSticky && !getUserSession().isLoggedIn) viewModel.getStickyContent()
         return true
     }
+
+    private fun injectCouponTimeBased() {
+         if(userSession.isLoggedIn()) viewModel.injectCouponTimeBased();
+     }
 
     private fun hideLoading() {
         refreshLayout.isRefreshing = false
@@ -1384,8 +1414,8 @@ open class HomeFragment : BaseDaggerFragment(),
         if (bannerSlidesModel.type == BannerSlidesModel.TYPE_BANNER_PERSO && !bannerSlidesModel.isInvoke) {
             putEEToTrackingQueue(getOverlayBannerImpression(bannerSlidesModel) as HashMap<String, Any>)
         } else if (!bannerSlidesModel.isInvoke) {
-            if (!bannerSlidesModel.topadsViewUrl.isEmpty()) {
-                viewModel.sendTopAds(bannerSlidesModel.topadsViewUrl)
+            if (bannerSlidesModel.topadsViewUrl.isNotEmpty()) {
+                TopAdsUrlHitter(HomeFragment::class.qualifiedName).hitImpressionUrl(context, bannerSlidesModel.topadsViewUrl)
             }
             val dataLayer = getBannerImpression(bannerSlidesModel) as HashMap<String, Any>
             dataLayer[KEY_SESSION_IRIS] = getIrisSession().getSessionId()
@@ -1824,6 +1854,12 @@ open class HomeFragment : BaseDaggerFragment(),
             DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST -> putEEToIris(getRecommendationListImpression(channel, true, viewModel.getUserId()) as HashMap<String, Any>)
             DynamicChannelViewHolder.TYPE_PRODUCT_HIGHLIGHT -> putEEToIris(getProductHighlightImpression(
                     channel, true
+            ) as HashMap<String, Any>)
+            DynamicChannelViewHolder.TYPE_CATEGORY_WIDGET -> putEEToIris(CategoryWidgetTracking.getCategoryWidgetBanneImpression(
+                    channel.grids.toList(),
+                    viewModel.getUserId(),
+                    true,
+                    channel
             ) as HashMap<String, Any>)
         }
     }
