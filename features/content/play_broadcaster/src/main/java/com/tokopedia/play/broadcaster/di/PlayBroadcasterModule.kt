@@ -18,38 +18,32 @@ import javax.inject.Named
  * Created by jegul on 20/05/20
  */
 @Module
-class PlayBroadcasterModule {
+class PlayBroadcasterModule(val context: Context) {
 
     @Provides
-    @PlayBroadcasterScope
     @Named(PlayBroadcastDispatcher.MAIN)
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
     @Provides
-    @PlayBroadcasterScope
     @Named(PlayBroadcastDispatcher.IO)
     fun provideIODispatcher(): CoroutineDispatcher = Dispatchers.IO
 
     @Provides
-    @PlayBroadcasterScope
     @Named(PlayBroadcastDispatcher.COMPUTATION)
     fun provideComputationDispatcher(): CoroutineDispatcher = Dispatchers.Default
 
     @Provides
-    @PlayBroadcasterScope
-    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
+    fun provideUserSessionInterface(): UserSessionInterface {
         return UserSession(context)
     }
 
     @Provides
-    @PlayBroadcasterScope
-    fun provideLocalCacheHandler(@ApplicationContext context: Context): LocalCacheHandler {
+    fun provideLocalCacheHandler(): LocalCacheHandler {
         return LocalCacheHandler(context, KEY_GROUPCHAT_PREFERENCES)
     }
 
     @Provides
-    @PlayBroadcasterScope
-    fun providePlayPusher(@ApplicationContext context: Context): PlayPusher {
+    fun providePlayPusher(): PlayPusher {
         return PlayPusher.Builder(context).build()
     }
 }

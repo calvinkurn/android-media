@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.mocker
 
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.model.Configuration
+import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.play.broadcaster.view.uimodel.*
 
 /**
@@ -27,9 +28,9 @@ object PlayBroadcastMocker {
      */
     fun getMockEtalaseList() = List(6) {
         PlayEtalaseUiModel(
-                id = 987L + it,
+                id = it + 1L,
                 name = "Etalase ${it + 1}",
-                productList = getMockProductList((it % 4) + 1),
+                productList = emptyList(),
                 totalProduct = (it + 1) * 100
         )
     }
@@ -44,12 +45,13 @@ object PlayBroadcastMocker {
                     3 -> "https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5,q_80/rofxpoxehp6wznvzb1jk/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
                     else -> "https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5,q_80/udglgfg9ozu3erd3fubg/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
                 },
-                isSelected = false,
-                stock = (it + 1) * 10
+                isSelectedHandler = { false },
+                stock = (it % 2) * 10,
+                isSelectable = { Selectable }
         )
     }
 
-    fun getMaxSelectedProduct() = 15
+    fun getMaxSelectedProduct() = 8
 
     fun getMockConfiguration() = Configuration(
             isUserWhitelisted = true,
@@ -67,4 +69,13 @@ object PlayBroadcastMocker {
             shareUrl = "tokopedia://play/2214",
             status = PlayChannelStatus.Active
     )
+
+    fun getSummary(): SummaryUiModel {
+        val infos = List(7) { SummaryUiModel.LiveInfo("", "Description $it", (it * 30).toString()) }
+        val tickerContent = SummaryUiModel.TickerContent("Live Streaming Berakhir", "Waktu live streaming kamu sudah 30 menit", true)
+        return SummaryUiModel(coverImage = "",
+                tickerContent = tickerContent ,
+                liveTitle = "Sneakers Hypebeast with Cashback 10%",
+                liveDuration = "28:42", liveInfos = infos, finishRedirectUrl = "")
+    }
 }

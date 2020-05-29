@@ -49,10 +49,7 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
 
     private fun inject() {
         DaggerPlayBroadcasterComponent.builder()
-                .baseAppComponent(
-                        (applicationContext as BaseMainApplication).baseAppComponent
-                )
-                .playBroadcasterModule(PlayBroadcasterModule())
+                .playBroadcasterModule(PlayBroadcasterModule(this))
                 .build()
                 .inject(this)
     }

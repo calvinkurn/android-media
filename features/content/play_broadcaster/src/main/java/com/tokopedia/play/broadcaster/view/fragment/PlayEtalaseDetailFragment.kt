@@ -10,11 +10,12 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.di.DaggerPlayBroadcasterComponent
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
-import com.tokopedia.play.broadcaster.view.adapter.PlayEtalaseDetailAdapter
+import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
+import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
+import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 /**
@@ -29,7 +30,21 @@ class PlayEtalaseDetailFragment @Inject constructor(
     private lateinit var tvInfo: TextView
     private lateinit var rvProduct: RecyclerView
 
-    private val etalaseDetailAdapter = PlayEtalaseDetailAdapter()
+    private val selectableProductAdapter = ProductSelectableAdapter(object : ProductSelectableViewHolder.Listener {
+        override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
+            viewModel.selectProduct(productId, isSelected)
+        }
+
+        override fun onProductSelectError(reason: Throwable) {
+            //TODO("Increase distance from bottom")
+            Toaster.make(
+                    view = requireView(),
+                    text = reason.localizedMessage,
+                    duration = Toaster.LENGTH_SHORT,
+                    actionText = getString(R.string.play_ok)
+            )
+        }
+    })
 
     override fun getTitle(): String {
         return ""
@@ -37,6 +52,10 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
     override fun isRootFragment(): Boolean {
         return false
+    }
+
+    override fun refresh() {
+        selectableProductAdapter.notifyDataSetChanged()
     }
 
     override fun getScreenName(): String = "Etalase Detail"
@@ -71,13 +90,13 @@ class PlayEtalaseDetailFragment @Inject constructor(
     }
 
     private fun setupView(view: View) {
-        rvProduct.adapter = etalaseDetailAdapter
+        rvProduct.adapter = selectableProductAdapter
         rvProduct.addItemDecoration(PlayGridTwoItemDecoration(requireContext()))
     }
 
     private fun observeProductsInSelectedEtalase() {
         viewModel.observableSelectedEtalase.observe(viewLifecycleOwner, Observer {
-            etalaseDetailAdapter.setItemsAndAnimateChanges(it.productList)
+            selectableProductAdapter.setItemsAndAnimateChanges(it.productList)
             broadcastCoordinator.setupTitle(it.name)
             tvInfo.text = getString(R.string.play_product_select_max_info, viewModel.maxProduct)
         })

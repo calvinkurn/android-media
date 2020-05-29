@@ -9,13 +9,15 @@ import com.tokopedia.play.broadcaster.view.uimodel.ProductUiModel
 /**
  * Created by jegul on 27/05/20
  */
-class ProductSelectableAdapterDelegate : TypedAdapterDelegate<ProductUiModel, ProductUiModel, ProductSelectableViewHolder>(ProductSelectableViewHolder.LAYOUT) {
+class ProductSelectableAdapterDelegate(
+        private val listener: ProductSelectableViewHolder.Listener
+) : TypedAdapterDelegate<ProductUiModel, ProductUiModel, ProductSelectableViewHolder>(ProductSelectableViewHolder.LAYOUT) {
 
     override fun onBindViewHolder(item: ProductUiModel, holder: ProductSelectableViewHolder) {
         holder.bind(item)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): ProductSelectableViewHolder {
-        return ProductSelectableViewHolder(basicView)
+        return ProductSelectableViewHolder(basicView, listener)
     }
 }

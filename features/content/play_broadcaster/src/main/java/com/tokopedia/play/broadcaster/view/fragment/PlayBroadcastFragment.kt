@@ -41,10 +41,7 @@ class PlayBroadcastFragment: BaseDaggerFragment() {
 
     override fun initInjector() {
         DaggerPlayBroadcasterComponent.builder()
-                .baseAppComponent(
-                        (requireContext().applicationContext as BaseMainApplication).baseAppComponent
-                )
-                .playBroadcasterModule(PlayBroadcasterModule())
+                .playBroadcasterModule(PlayBroadcasterModule(requireContext()))
                 .build()
                 .inject(this)
     }
