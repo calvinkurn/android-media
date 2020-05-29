@@ -4,9 +4,9 @@ import android.content.Context;
 
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.network.utils.TKPDMapParam;
-import com.tokopedia.transaction.common.data.order.ListCourierViewModel;
-import com.tokopedia.transaction.common.data.order.OrderDetailData;
-import com.tokopedia.transaction.common.data.order.OrderDetailShipmentModel;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierViewModel;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.OrderDetailData;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.OrderDetailShipmentModel;
 import com.tokopedia.user.session.UserSession;
 
 import rx.Subscriber;

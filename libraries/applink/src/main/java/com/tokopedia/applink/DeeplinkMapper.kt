@@ -92,6 +92,8 @@ object DeeplinkMapper {
                         getRegisteredFind(deeplink)
                     deeplink.startsWithPattern(ApplinkConst.Digital.DIGITAL_BROWSE) ->
                         getRegisteredNavigationExploreCategory(deeplink)
+                    deeplink.startsWithPattern(ApplinkConst.CATEGORY) ->
+                        getRegisteredCategoryNavigation(deeplink)
                     deeplink.startsWithPattern(ApplinkConst.PROFILE) ->
                         getRegisteredNavigationContent(deeplink)
                     deeplink.startsWithPattern(ApplinkConst.PLAY_DETAIL) ->
@@ -157,7 +159,7 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.ORDER_HISTORY, true) -> getRegisteredNavigationOrderHistory(uri)
                     else -> {
                         if (specialNavigationMapper(deeplink, ApplinkConst.HOST_CATEGORY_P)) {
-                            getRegisteredCategoryNavigation(getSegments(deeplink), deeplink)
+                            getRegisteredCategoryNavigation(deeplink)
                         } else if (query?.isNotEmpty() == true) {
                             val tempDL = if (deeplink.contains('?')) {
                                 deeplink.substring(0, deeplink.indexOf('?'))
@@ -225,7 +227,7 @@ object DeeplinkMapper {
         val path = uri.lastPathSegment ?: ""
         var deepLinkInternal = ApplinkConstInternalGlobal.INBOX_TALK
         if (path.isNotEmpty()) {
-            deepLinkInternal = "${ApplinkConstInternalGlobal.DETAIL_TALK_BASE}$path/"
+            deepLinkInternal = "${ApplinkConstInternalGlobal.TALK_REPLY_BASE}$path/"
         }
         if (query.isNotEmpty()) {
             deepLinkInternal += "?$query"

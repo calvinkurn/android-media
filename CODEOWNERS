@@ -81,6 +81,7 @@
 /features/top_ads/top_ads_detail_sheet/                 @tokopedia/minion-skywalker
 
 /features/merchant/shop_settings/                       @tokopedia/minion-stuart
+/features/merchant/talk/                            	@tokopedia/minion-stuart
 /features/merchant/variant_common/                      @tokopedia/minion-stuart
 
 /features/merchant/seller_home/                         @tokopedia/minion-stuart
@@ -131,6 +132,7 @@
 /features/transaction/atc_common/               		@tokopedia/minion-bob
 /features/transaction/opportunity/               		@tokopedia/minion-bob
 /features/transaction/sellerorder/                      @tokopedia/minion-bob
+/features/transaction/buyerorder/                       @tokopedia/minion-bob
 /features/transaction/purchase_platform/        		@tokopedia/minion-bob
 /features/transaction/purchase_platform_common/ 		@tokopedia/minion-bob
 /features/logistic/logisticdata/                		@tokopedia/minion-bob
@@ -158,7 +160,6 @@
 /features/user/loginphone/                      		@tokopedia/minion-kevin
 /features/user/notifcenter/                     		@tokopedia/minion-kevin
 /features/user/attachproduct/                   		@tokopedia/minion-kevin
-/features/user/talk/                            		@tokopedia/minion-kevin
 /features/user/changephonenumber                		@tokopedia/minion-kevin
 /features/user/onboarding                       		@tokopedia/minion-kevin
 /features/user/phoneverification                		@tokopedia/minion-kevin
@@ -272,8 +273,6 @@
 /tkpdsession/                                       	@tokopedia/core-team
 /tkpddigital/                                       	@tokopedia/core-team
 /tkpdinbox/                                         	@tokopedia/core-team
-/tkpdtransaction/                                   	@tokopedia/core-team
-/tkpdtransaction-common/                                @tokopedia/core-team
 /tkpdseller/                                        	@tokopedia/core-team
 
 /tkpddesign/                                        	@tokopedia/android-gatekeeper-legacy-code

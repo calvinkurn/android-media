@@ -28,6 +28,9 @@ abstract class SellerMigrationBottomSheet(private val titles: List<String> = emp
                                           private val contents: List<String> = emptyList(),
                                           private val images: ArrayList<String> = arrayListOf()) : BottomSheetUnify() {
 
+    companion object {
+        const val KEY_AUTO_LOGIN = "is_auto_login"
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupPadding()
         setUpButtons()
@@ -116,6 +119,7 @@ abstract class SellerMigrationBottomSheet(private val titles: List<String> = emp
         try {
             val intent = context?.packageManager?.getLaunchIntentForPackage(PACKAGE_SELLER_APP)
             if(intent != null) {
+                intent.putExtra(KEY_AUTO_LOGIN, true)
                 this.activity?.startActivity(intent)
             } else {
                 this.activity?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(APPLINK_PLAYSTORE + PACKAGE_SELLER_APP)))

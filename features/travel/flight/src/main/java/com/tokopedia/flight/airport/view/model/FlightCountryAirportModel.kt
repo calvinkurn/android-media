@@ -1,7 +1,7 @@
 package com.tokopedia.flight.airport.view.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.flight.airport.view.adapter.FlightAirportAdapterTypeFactory
+import com.tokopedia.flight.airportv2.presentation.adapter.FlightAirportAdapterTypeFactory
 
 class FlightCountryAirportModel(
         val countryId: String,

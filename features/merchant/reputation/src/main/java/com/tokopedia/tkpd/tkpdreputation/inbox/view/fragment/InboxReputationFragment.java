@@ -30,6 +30,7 @@ import com.tokopedia.seller_migration_common.presentation.widget.SellerMigration
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.analytic.AppScreen;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTrackingConstant;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ProductRevIncentiveOvoDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
@@ -305,30 +306,30 @@ public class InboxReputationFragment extends BaseDaggerFragment
         ovoTicker.setDescriptionClickEvent(new TickerCallback() {
             @Override
             public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
-                BottomSheetUnify bottomSheet = new IncentiveOvoBottomSheet(productRevIncentiveOvoDomain);
+                BottomSheetUnify bottomSheet = new IncentiveOvoBottomSheet(productRevIncentiveOvoDomain, ReputationTrackingConstant.WAITING_REVIEWED);
                 bottomSheet.setFullpage(true);
                 if(getFragmentManager() != null) {
                     bottomSheet.show(getFragmentManager(),IncentiveOvoBottomSheet.Companion.getTAG());
                     bottomSheet.setCloseClickListener(new Function1<View, Unit>() {
                         @Override
                         public Unit invoke(View view) {
-                            reputationTracking.onClickDismissIncentiveOvoBottomSheetTracker();
+                            reputationTracking.onClickDismissIncentiveOvoBottomSheetTracker(ReputationTrackingConstant.WAITING_REVIEWED);
                             bottomSheet.dismiss();
                             return Unit.INSTANCE;
                         }
                     });
                 }
-                reputationTracking.onClickReadSkIncentiveOvoTracker(title);
+                reputationTracking.onClickReadSkIncentiveOvoTracker(title, ReputationTrackingConstant.WAITING_REVIEWED);
             }
 
             @Override
             public void onDismiss() {
-                reputationTracking.onClickDismissIncentiveOvoTracker(title);
+                reputationTracking.onClickDismissIncentiveOvoTracker(title, ReputationTrackingConstant.WAITING_REVIEWED);
             }
         });
         // hit tracking while first time success get gql incentive ovo
         if(getTab() == FIRST_TAB_INBOX_REPUTATION) {
-            reputationTracking.onSuccessGetIncentiveOvoTracker(title);
+            reputationTracking.onSuccessGetIncentiveOvoTracker(title, ReputationTrackingConstant.WAITING_REVIEWED);
         }
         InboxReputationActivity.tickerTitle = title;
     }
