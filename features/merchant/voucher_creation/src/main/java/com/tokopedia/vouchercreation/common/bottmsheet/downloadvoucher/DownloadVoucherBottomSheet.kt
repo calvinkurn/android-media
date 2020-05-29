@@ -18,7 +18,9 @@ import kotlinx.android.synthetic.main.bottomsheet_mvc_download_voucher.view.*
  */
 
 class DownloadVoucherBottomSheet(
-        private val parent: ViewGroup
+        private val parent: ViewGroup,
+        private val bannerUrl: String,
+        private val squareUrl: String
 ) : BottomSheetUnify() {
 
     private val mAdapter by lazy { DownloadVoucherAdapter() }
@@ -79,7 +81,7 @@ class DownloadVoucherBottomSheet(
                         isSelected = true,
                         ratioStr = parent.context.getString(R.string.mvc_ratio_1_1),
                         description = parent.context.getString(R.string.mvc_for_instagram_facebook_post),
-                        downloadVoucherType = DownloadVoucherType.Square("https://ecs7.tokopedia.net/img/attachment/2020/4/8/8967394/8967394_227e871b-f414-4d7d-b1be-2db25d516f19"),
+                        downloadVoucherType = DownloadVoucherType.Square(squareUrl),
                         onImageOpened = ::onImageExpanded
                 ),
                 DownloadVoucherUiModel(
@@ -93,7 +95,7 @@ class DownloadVoucherBottomSheet(
                         isSelected = true,
                         ratioStr = parent.context.getString(R.string.mvc_shop_cover),
                         description = parent.context.getString(R.string.mvc_for_cover_of_your_shop),
-                        downloadVoucherType = DownloadVoucherType.Banner("https://ecs7.tokopedia.net/img/attachment/2020/4/8/8967394/8967394_4bbe15b6-1e27-4903-8b3d-f633397f9e33"),
+                        downloadVoucherType = DownloadVoucherType.Banner(bannerUrl),
                         onImageOpened = ::onImageExpanded
                 )
         )

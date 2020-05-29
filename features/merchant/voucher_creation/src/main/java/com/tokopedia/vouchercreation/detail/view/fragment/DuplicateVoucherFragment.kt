@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.VoucherPeriodBottomSheet
 import com.tokopedia.vouchercreation.common.model.MerchantVoucherModel
 import com.tokopedia.vouchercreation.common.model.VoucherMapper
@@ -73,11 +72,11 @@ class DuplicateVoucherFragment : BaseDetailFragment() {
     override fun showDownloadBottomSheet() {
         if (!isAdded) return
         val parent = view as? ViewGroup ?: return
-        DownloadVoucherBottomSheet(parent)
-                .setOnDownloadClickListener {
-
-                }
-                .show(childFragmentManager)
+//        DownloadVoucherBottomSheet(parent)
+//                .setOnDownloadClickListener {
+//
+//                }
+//                .show(childFragmentManager)
     }
 
     private fun setupView() {

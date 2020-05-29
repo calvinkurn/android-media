@@ -123,7 +123,10 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
     override fun showDownloadBottomSheet() {
         if (!isAdded) return
         val parent = view as? ViewGroup ?: return
-        DownloadVoucherBottomSheet(parent)
+        DownloadVoucherBottomSheet(
+                parent,
+                voucherUiModel?.image.toBlankOrString(),
+                voucherUiModel?.image.toBlankOrString())
                 .setOnDownloadClickListener {
 
                 }

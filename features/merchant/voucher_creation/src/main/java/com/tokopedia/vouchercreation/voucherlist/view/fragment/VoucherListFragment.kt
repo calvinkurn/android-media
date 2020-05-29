@@ -269,7 +269,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     private fun showDownloadBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
         val parent = view as? ViewGroup ?: return
-        DownloadVoucherBottomSheet(parent)
+        DownloadVoucherBottomSheet(parent, voucher.image, voucher.imageSquare)
                 .setOnDownloadClickListener {
 
                 }
