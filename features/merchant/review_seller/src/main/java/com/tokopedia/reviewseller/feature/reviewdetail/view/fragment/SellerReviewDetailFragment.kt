@@ -524,6 +524,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                             intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, userSession.shopId.toInt())
                             intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, data.feedbackID.toString())
                             startActivity(intent)
+                            bottomSheetOptionFeedback?.dismiss()
                         }
                     }
                 }
