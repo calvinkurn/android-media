@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayPrepareBroadcastViewModel
@@ -35,4 +36,9 @@ abstract class PlayBroadcasterViewModelModule {
     @IntoMap
     @ViewModelKey(PlayBroadcastViewModel::class)
     abstract fun getPlayBroadcastViewModel(viewModel: PlayBroadcastViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(PlayBroadcastSummaryViewModel::class)
+    abstract fun getPlaySummaryViewModel(viewModel: PlayBroadcastSummaryViewModel): ViewModel
 }
