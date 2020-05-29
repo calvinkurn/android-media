@@ -4,6 +4,7 @@ import androidx.annotation.DimenRes
 import androidx.annotation.StringDef
 import androidx.annotation.StringRes
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 
 sealed class VoucherImageType(val value: Int,
                               @BenefitType val benefitType: String,
@@ -46,5 +47,28 @@ annotation class CouponType {
         const val SHIPPING = "shipping"
         const val DISCOUNT = "discount"
         const val CASHBACK = "cashback"
+    }
+}
+
+fun getVoucherImageType(@VoucherTypeConst voucherType: Int,
+                        @BenefitType benefitType: String,
+                        amount: Int,
+                        amountMax: Int): VoucherImageType? {
+    when (voucherType) {
+        VoucherTypeConst.FREE_ONGKIR -> {
+            return VoucherImageType.FreeDelivery(amount)
+        }
+        VoucherTypeConst.CASHBACK -> {
+            return when(benefitType) {
+                BenefitType.IDR -> {
+                    VoucherImageType.Rupiah(amount)
+                }
+                BenefitType.PERCENT -> {
+                    VoucherImageType.Percentage(amountMax, amount)
+                }
+                else -> null
+            }
+        }
+        else -> return null
     }
 }

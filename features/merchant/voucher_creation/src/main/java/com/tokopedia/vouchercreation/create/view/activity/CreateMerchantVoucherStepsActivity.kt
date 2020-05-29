@@ -23,12 +23,14 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.adapter.CreateMerchantVoucherStepsAdapter
 import com.tokopedia.vouchercreation.create.view.dialog.CreateVoucherCancelDialog
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStepInfo
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
+import com.tokopedia.vouchercreation.create.view.enums.getVoucherImageType
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.ChangeDetailPromptBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.TipsAndTrickBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.fragment.step.MerchantVoucherTargetFragment
@@ -40,6 +42,7 @@ import com.tokopedia.vouchercreation.create.view.uimodel.initiation.PostBaseUiMo
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVoucherUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel
 import com.tokopedia.vouchercreation.create.view.viewmodel.CreateMerchantVoucherStepsViewModel
+import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import kotlinx.android.synthetic.main.activity_create_merchant_voucher_steps.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -56,6 +59,8 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         private const val CASHBACK_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_cashback.png"
         private const val CASHBACK_UNTIL_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_cashback_hingga.png"
         private const val POST_IMAGE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/ig_post.jpg"
+
+        const val DUPLICATE_VOUCHER = "duplicate_voucher"
     }
 
     @Inject
@@ -75,9 +80,9 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
     private val fragmentStepsHashMap by lazy {
         LinkedHashMap<VoucherCreationStepInfo, Fragment>().apply {
-            put(VoucherCreationStepInfo.STEP_ONE, MerchantVoucherTargetFragment.createInstance(::onSetVoucherName, ::getPromoCodePrefix))
-            put(VoucherCreationStepInfo.STEP_TWO, PromotionBudgetAndTypeFragment.createInstance(::onNextStep, ::getBannerVoucherUiModel, viewModel::setVoucherPreviewBitmap, ::getBannerBaseUiModel, ::onSetShopInfo))
-            put(VoucherCreationStepInfo.STEP_THREE, SetVoucherPeriodFragment.createInstance(::onNextStep, ::getBannerVoucherUiModel, ::getBannerBaseUiModel))
+            put(VoucherCreationStepInfo.STEP_ONE, MerchantVoucherTargetFragment.createInstance(::setVoucherName, ::getPromoCodePrefix))
+            put(VoucherCreationStepInfo.STEP_TWO, PromotionBudgetAndTypeFragment.createInstance(::setVoucherBenefit, ::getBannerVoucherUiModel, viewModel::setVoucherPreviewBitmap, ::getBannerBaseUiModel, ::onSetShopInfo))
+            put(VoucherCreationStepInfo.STEP_THREE, SetVoucherPeriodFragment.createInstance(::setVoucherPeriod, ::getBannerVoucherUiModel, ::getBannerBaseUiModel))
             put(VoucherCreationStepInfo.STEP_FOUR, ReviewVoucherFragment.createInstance(::getVoucherReviewUiModel, ::getToken, ::getPostBaseUiModel, ::onReturnToStep))
         }
     }
@@ -129,6 +134,8 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     private var voucherBitmap: Bitmap? = null
 
     private var promoCodePrefix = ""
+
+    private var isDuplicateVoucher = false
 
     private var bannerBaseUiModel =
             BannerBaseUiModel(
@@ -223,7 +230,9 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     }
 
     private fun initiateVoucherPage() {
-        viewModel.initiateVoucherPage()
+        if (!checkIfDuplicate()) {
+            viewModel.initiateVoucherPage()
+        }
     }
 
     private fun setupViewPager() {
@@ -273,12 +282,53 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                         promoCodePrefix = voucherCodePrefix
                     }
                     setupViewPager()
+                    if (isDuplicateVoucher) {
+                        createMerchantVoucherViewPager?.currentItem = VoucherCreationStep.REVIEW
+                    }
                 }
                 is Fail -> {
                     finish()
                 }
             }
         })
+        viewModel.basicShopInfoLiveData.observe(this, Observer { result ->
+            if (result is Success) {
+                onSetShopInfo(result.data.shopName, result.data.shopAvatar)
+            }
+        })
+    }
+
+    private fun checkIfDuplicate(): Boolean {
+        intent?.getParcelableExtra<VoucherUiModel>(DUPLICATE_VOUCHER)?.let { voucherUiModel ->
+            viewModel.initiateDuplicateVoucher()
+            setDuplicateVoucherData(voucherUiModel)
+            isDuplicateVoucher = true
+            return true
+        }
+        return false
+    }
+
+    private fun setDuplicateVoucherData(voucherUiModel: VoucherUiModel) {
+        with(voucherUiModel) {
+            val targetType =
+                    if (isPublic) {
+                        VoucherTargetType.PUBLIC
+                    } else {
+                        VoucherTargetType.PRIVATE
+                    }
+            setVoucherName(targetType, name, code)
+
+            val imageType = getVoucherImageType(type, discountTypeFormatted, discountAmt, discountAmtMax)
+            imageType?.let { type ->
+                setVoucherBenefit(type, minimumAmt, quota)
+            }
+
+            val startDate = DateTimeUtils.reformatUnsafeDateTime(startTime, DateTimeUtils.DASH_DATE_FORMAT)
+            val endDate = DateTimeUtils.reformatUnsafeDateTime(finishTime, DateTimeUtils.DASH_DATE_FORMAT)
+            val startHour = DateTimeUtils.reformatUnsafeDateTime(startTime, DateTimeUtils.HOUR_FORMAT)
+            val endHour = DateTimeUtils.reformatUnsafeDateTime(finishTime, DateTimeUtils.HOUR_FORMAT)
+            setVoucherPeriod(startDate, endDate, startHour, endHour)
+        }
     }
 
     private fun changeStepsInformation(stepInfo: VoucherCreationStepInfo) {
@@ -304,7 +354,17 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         viewModel.setNextStep()
     }
 
-    private fun onNextStep(imageType: VoucherImageType, minPurchase: Int, quota: Int) {
+    private fun setVoucherName(@VoucherTargetType targetType: Int, voucherName: String, promoCode: String) {
+        bannerVoucherUiModel.promoName = voucherName
+        voucherReviewUiModel.run {
+            this.targetType = targetType
+            this.voucherName = voucherName
+            this.promoCode = promoCode
+        }
+        viewModel.setNextStep()
+    }
+
+    private fun setVoucherBenefit(imageType: VoucherImageType, minPurchase: Int, quota: Int) {
         bannerVoucherUiModel.imageType = imageType
         voucherReviewUiModel.run {
             voucherType = imageType
@@ -314,10 +374,10 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         onNextStep()
     }
 
-    private fun onNextStep(dateStart: String,
-                           dateEnd: String,
-                           hourStart: String,
-                           hourEnd: String) {
+    private fun setVoucherPeriod(dateStart: String,
+                                 dateEnd: String,
+                                 hourStart: String,
+                                 hourEnd: String) {
         voucherReviewUiModel.run {
             startDate = dateStart
             endDate = dateEnd
@@ -325,16 +385,6 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
             endHour = hourEnd
         }
         onNextStep()
-    }
-
-    private fun onSetVoucherName(@VoucherTargetType targetType: Int, voucherName: String, promoCode: String) {
-        bannerVoucherUiModel.promoName = voucherName
-        voucherReviewUiModel.run {
-            this.targetType = targetType
-            this.voucherName = voucherName
-            this.promoCode = promoCode
-        }
-        viewModel.setNextStep()
     }
 
     private fun onSetShopInfo(shopName: String, shopAvatarUrl: String) {

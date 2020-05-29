@@ -9,18 +9,24 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.vouchercreation.create.domain.model.ShopInfo
+import com.tokopedia.vouchercreation.create.domain.usecase.BasicShopInfoUseCase
 import com.tokopedia.vouchercreation.create.domain.usecase.InitiateVoucherUseCase
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.create.view.uimodel.initiation.InitiateVoucherUiModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
 
 class CreateMerchantVoucherStepsViewModel @Inject constructor(
         @Named("Main") dispatcher: CoroutineDispatcher,
-        private val initiateVoucherUseCase: InitiateVoucherUseCase
+        private val initiateVoucherUseCase: InitiateVoucherUseCase,
+        private val basicShopInfoUseCase: BasicShopInfoUseCase,
+        private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcher) {
 
     private var maxPosition: Int? = null
@@ -38,6 +44,10 @@ class CreateMerchantVoucherStepsViewModel @Inject constructor(
     private val mInitiateVoucherLiveData = MutableLiveData<Result<InitiateVoucherUiModel>>()
     val initiateVoucherLiveData: LiveData<Result<InitiateVoucherUiModel>>
         get() = mInitiateVoucherLiveData
+
+    private val mBasicShopInfoLiveData = MutableLiveData<Result<ShopInfo>>()
+    val basicShopInfoLiveData : LiveData<Result<ShopInfo>>
+        get() = mBasicShopInfoLiveData
 
     fun setStepPosition(@VoucherCreationStep stepPosition: Int) {
         val max = maxPosition
@@ -83,7 +93,7 @@ class CreateMerchantVoucherStepsViewModel @Inject constructor(
         launchCatchError(
                 block = {
                     mInitiateVoucherLiveData.value = Success(withContext(Dispatchers.IO) {
-                        initiateVoucherUseCase.executeOnBackground()
+                        getInitiateVoucher()
                     })
                 },
                 onError = {
@@ -91,5 +101,33 @@ class CreateMerchantVoucherStepsViewModel @Inject constructor(
                 }
         )
     }
+
+    fun initiateDuplicateVoucher() {
+        launchCatchError(
+                block = {
+                    withContext(Dispatchers.IO) {
+                        val shopInfo = async { getBasicInfo() }
+                        val initiateVoucher = async { getInitiateVoucher() }
+                        shopInfo.await().let { shopInfoModel ->
+                            initiateVoucher.await().let { initiateVoucherUiModel ->
+                                mBasicShopInfoLiveData.postValue(Success(shopInfoModel))
+                                mInitiateVoucherLiveData.postValue(Success(initiateVoucherUiModel))
+                            }
+                        }
+                    }
+                },
+                onError = {
+                    mInitiateVoucherLiveData.value = Fail(it)
+                }
+        )
+    }
+
+    private suspend fun getBasicInfo(): ShopInfo {
+        val userId = userSession.userId.toInt()
+        basicShopInfoUseCase.params = BasicShopInfoUseCase.createRequestParams(userId)
+        return basicShopInfoUseCase.executeOnBackground()
+    }
+
+    private suspend fun getInitiateVoucher(): InitiateVoucherUiModel = initiateVoucherUseCase.executeOnBackground()
 
 }

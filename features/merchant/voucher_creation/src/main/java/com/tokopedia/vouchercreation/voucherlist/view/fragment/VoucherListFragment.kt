@@ -27,6 +27,7 @@ import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
+import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.detail.view.activity.VoucherDetailActivity
 import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherSort
 import com.tokopedia.vouchercreation.voucherlist.model.ui.*
@@ -235,7 +236,11 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     private fun duplicateVoucher(voucher: VoucherUiModel) {
         activity?.let {
-            startActivity(VoucherDetailActivity.createDuplicateIntent(it, VoucherDetailActivity.DUPLICATE_PAGE))
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER).apply {
+                putExtra(CreateMerchantVoucherStepsActivity.DUPLICATE_VOUCHER, voucher)
+            }
+            startActivity(intent)
+//            startActivity(VoucherDetailActivity.createDuplicateIntent(it, VoucherDetailActivity.DUPLICATE_PAGE))
         }
     }
 

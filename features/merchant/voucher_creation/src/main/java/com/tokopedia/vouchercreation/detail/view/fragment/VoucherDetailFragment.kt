@@ -18,14 +18,12 @@ import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.TipsTrickBottomSheet
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
-import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.DASH_DATE_FORMAT
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.HOUR_FORMAT
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
-import com.tokopedia.vouchercreation.create.view.enums.BenefitType
-import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
+import com.tokopedia.vouchercreation.create.view.enums.getVoucherImageType
 import com.tokopedia.vouchercreation.detail.model.*
 import com.tokopedia.vouchercreation.detail.view.viewmodel.VoucherDetailViewModel
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
@@ -260,29 +258,6 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
             clickableText = context?.getString(R.string.mvc_detail_ticker_private_clickable).toBlankOrString()
         }
         return TipsUiModel(tips, clickableText)
-    }
-
-    private fun getVoucherImageType(@VoucherTypeConst voucherType: Int,
-                                    @BenefitType benefitType: String,
-                                    amount: Int,
-                                    amountMax: Int): VoucherImageType? {
-        when (voucherType) {
-            VoucherTypeConst.FREE_ONGKIR -> {
-                return VoucherImageType.FreeDelivery(amount)
-            }
-            VoucherTypeConst.CASHBACK -> {
-                return when(benefitType) {
-                    BenefitType.IDR -> {
-                        VoucherImageType.Rupiah(amount)
-                    }
-                    BenefitType.PERCENT -> {
-                        VoucherImageType.Percentage(amountMax, amount)
-                    }
-                    else -> null
-                }
-            }
-            else -> return null
-        }
     }
 
     private fun getButtonUiModel(@VoucherStatusConst status: Int): FooterButtonUiModel? {
