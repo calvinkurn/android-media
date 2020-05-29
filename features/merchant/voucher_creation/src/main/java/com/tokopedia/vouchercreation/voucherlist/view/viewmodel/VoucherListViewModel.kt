@@ -47,6 +47,8 @@ class VoucherListViewModel @Inject constructor(
     val localVoucherListLiveData: LiveData<Result<List<VoucherUiModel>>>
         get() = _localVoucherListLiveData
 
+    private val _fullVoucherListLiveData = MutableLiveData<MutableList<VoucherUiModel>>().apply { value = mutableListOf() }
+
     fun getActiveVoucherList() {
         launchCatchError(block = {getVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(activeVoucherRequestParam)
             _voucherList.value = Success(withContext(Dispatchers.IO) {
@@ -70,9 +72,14 @@ class VoucherListViewModel @Inject constructor(
                             sort = sort,
                             page = page)
             )
-            _voucherList.value = Success(withContext(Dispatchers.IO) {
-                getVoucherListUseCase.executeOnBackground()
-            })
+            withContext(Dispatchers.IO) {
+                val voucherList = getVoucherListUseCase.executeOnBackground()
+                if (page == 1) {
+                    _fullVoucherListLiveData.value?.clear()
+                }
+                _fullVoucherListLiveData.value?.addAll(voucherList)
+                _voucherList.postValue(Success(voucherList))
+            }
         }, onError = {
             _voucherList.value = Fail(it)
         })
@@ -85,7 +92,7 @@ class VoucherListViewModel @Inject constructor(
     private fun searchVoucherByKeyword(keyword: String) {
         launchCatchError(block = {
             _localVoucherListLiveData.value = Success(
-                    (_voucherList.value as? Success)?.data?.filter {
+                    _fullVoucherListLiveData.value?.filter {
                         it.name.contains(keyword, true) } ?: listOf())
         }, onError = {
             _localVoucherListLiveData.value = Fail(it)
