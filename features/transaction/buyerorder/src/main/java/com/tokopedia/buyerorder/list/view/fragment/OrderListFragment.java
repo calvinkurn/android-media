@@ -989,6 +989,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dialog.dismiss();
                 presenter.finishOrder(selectedOrderId, actionButtonUri);
             }
         });
