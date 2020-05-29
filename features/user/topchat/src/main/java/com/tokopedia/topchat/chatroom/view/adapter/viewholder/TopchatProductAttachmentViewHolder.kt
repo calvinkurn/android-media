@@ -80,6 +80,7 @@ open class TopchatProductAttachmentViewHolder(
     }
 
     private fun bindSyncProduct(product: ProductAttachmentViewModel) {
+        if (!product.isLoading) return
         val chatAttachments = deferredAttachment.getLoadedChatAttachments()
         val attachment = chatAttachments[product.attachmentId] ?: return
         product.updateData(attachment.attributes)
