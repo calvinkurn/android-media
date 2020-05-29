@@ -786,12 +786,12 @@ class TopChatRoomPresenter @Inject constructor(
 
     private fun onSuccessGetAttachments(attachments: ArrayMap<String, Attachment>) {
         this.attachments.putAll(attachments.toMap())
-        view?.updateAttachmentsView(attachments)
+        view?.updateAttachmentsView(this.attachments)
     }
 
     private fun onErrorGetAttachments(throwable: Throwable, errorAttachment: ArrayMap<String, Attachment>) {
         this.attachments.putAll(errorAttachment.toMap())
-        view?.updateAttachmentsView(errorAttachment)
+        view?.updateAttachmentsView(this.attachments)
         println(throwable.message)
     }
 
