@@ -82,7 +82,7 @@ open class HomeViewModel @Inject constructor(
         private val popularKeywordUseCase: Lazy<GetPopularKeywordUseCase>,
         private val sendGeolocationInfoUseCase: Lazy<SendGeolocationInfoUseCase>,
         private val stickyLoginUseCase: Lazy<StickyLoginUseCase>,
-        private val injectCouponTimeBasedUseCase: InjectCouponTimeBasedUseCase,
+        private val injectCouponTimeBasedUseCase: Lazy<InjectCouponTimeBasedUseCase>,
         private val getRechargeRecommendationUseCase: Lazy<GetRechargeRecommendationUseCase>,
         private val declineRechargeRecommendationUseCase: Lazy<DeclineRechargeRecommendationUseCase>,
         private val homeDispatcher: Lazy<HomeDispatcherProvider>
@@ -967,19 +967,17 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getUserId() = userSession.get().userId ?: ""
-
     fun injectCouponTimeBased() {
         if(injectCouponTimeBasedJob?.isActive == true) return
         injectCouponTimeBasedJob = launchCatchError(coroutineContext, {
-            _injectCouponTimeBasedResult.value = Result.success(injectCouponTimeBasedUseCase.executeOnBackground().data)
+            _injectCouponTimeBasedResult.value = Result.success(injectCouponTimeBasedUseCase.get().executeOnBackground().data)
         }){
             it.printStackTrace()
             _injectCouponTimeBasedResult.postValue(Result.error(it))
         }
     }
 
-    fun getUserId() = userSession.userId ?: ""
+    fun getUserId() = userSession.get().userId ?: ""
 
 // ============================================================================================
 // ================================ Live Data Controller ======================================

@@ -294,12 +294,12 @@ open class HomeFragment : BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         fragmentCreatedForFirstTime = true
-        injectCouponTimeBased()
         searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_searchbar_transition_range)
         startToTransitionOffset = resources.getDimensionPixelSize(R.dimen.banner_background_height) / 2
     }
 
-    fun callGeoLoactionAndStickyContent() {
+    fun callSubordinateTasks() {
+        injectCouponTimeBased()
         setGeolocationPermission()
         needToShowGeolocationComponent()
         stickyContent
@@ -637,7 +637,7 @@ open class HomeFragment : BaseDaggerFragment(),
         viewModel.get().isViewModelInitalized.observe(viewLifecycleOwner, Observer { data: Event<Boolean> ->
             val isViewModelInitialized = data.peekContent()
             if (isViewModelInitialized) {
-                callGeoLoactionAndStickyContent();
+                callSubordinateTasks();
                 if(getPageLoadTimeCallback() != null) {
                     getPageLoadTimeCallback()?.stopPreparePagePerformanceMonitoring()
                 }
@@ -1123,7 +1123,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun injectCouponTimeBased() {
-         if(userSession.isLoggedIn()) viewModel.injectCouponTimeBased();
+         if(userSession.isLoggedIn()) viewModel.get().injectCouponTimeBased();
      }
 
     private fun hideLoading() {
@@ -1868,7 +1868,7 @@ open class HomeFragment : BaseDaggerFragment(),
             ) as HashMap<String, Any>)
             DynamicChannelViewHolder.TYPE_CATEGORY_WIDGET -> putEEToIris(CategoryWidgetTracking.getCategoryWidgetBanneImpression(
                     channel.grids.toList(),
-                    viewModel.getUserId(),
+                    viewModel.get().getUserId(),
                     true,
                     channel
             ) as HashMap<String, Any>)
