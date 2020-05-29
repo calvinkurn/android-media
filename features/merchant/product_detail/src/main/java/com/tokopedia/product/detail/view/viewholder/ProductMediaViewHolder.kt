@@ -33,6 +33,8 @@ class ProductMediaViewHolder(private val view: View,
                     element.basicStatus)
             element.shouldRefreshViewPagger = false
 
+            viewMediaPager?.showImageReview(element.shouldShowImageReview, listener::onSeeAllReviewClick)
+
             viewMediaPager?.isVisibleOnTheScreen({},{
                 viewMediaPager?.stopVideo()
             })

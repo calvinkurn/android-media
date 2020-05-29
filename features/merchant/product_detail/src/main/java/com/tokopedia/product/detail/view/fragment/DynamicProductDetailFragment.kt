@@ -817,9 +817,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     /**
      * ProductSnapshotViewHolder
      */
+
     override fun onSwipePicture(swipeDirection: String, position: Int, componentTrackDataModel: ComponentTrackDataModel?) {
         DynamicProductDetailTracking.Click.eventProductImageOnSwipe(viewModel.getDynamicProductInfoP1, swipeDirection, position, componentTrackDataModel
                 ?: ComponentTrackDataModel())
+    }
+
+    override fun shouldShowWishlist(): Boolean {
+        return !viewModel.isShopOwner()
     }
 
     override fun onImageClickedTrack(componentTrackDataModel: ComponentTrackDataModel?) {
@@ -1081,6 +1086,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun observeInitialVariantData() {
         viewLifecycleOwner.observe(viewModel.initialVariantData) {
+            if (pdpUiUpdater?.productNewVariantDataModel == null) {
+                return@observe
+            }
+
             if (it == null) {
                 dynamicAdapter.clearElement(pdpUiUpdater?.productNewVariantDataModel)
                 return@observe

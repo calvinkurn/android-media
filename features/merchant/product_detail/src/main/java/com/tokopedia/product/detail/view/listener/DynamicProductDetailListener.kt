@@ -30,6 +30,7 @@ interface DynamicProductDetailListener {
     fun showAlertCampaignEnded()
     fun txtTradeinClicked(componentTrackDataModel: ComponentTrackDataModel)
     fun onSwipePicture(swipeDirection: String, position: Int, componentTrackDataModel: ComponentTrackDataModel?)
+    fun shouldShowWishlist(): Boolean
 
     /**
      * ProductInfoViewHolder

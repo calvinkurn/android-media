@@ -11,12 +11,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
+import com.tokopedia.product.detail.data.util.OnSeeAllReviewClick
 import com.tokopedia.product.detail.view.adapter.VideoPicturePagerAdapter
 import com.tokopedia.product.detail.view.fragment.VideoPictureFragment
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -44,14 +46,12 @@ class PictureScrollingView @JvmOverloads constructor(
     fun renderData(media: List<MediaDataModel>?, onPictureClickListener: ((Int) -> Unit)?, onSwipePictureListener: ((String, Int, ComponentTrackDataModel?) -> Unit), fragmentManager: FragmentManager,
                    componentTrackData: ComponentTrackDataModel? = null, onPictureClickTrackListener: ((ComponentTrackDataModel?) -> Unit)? = null,
                    lifecycle: Lifecycle) {
-        val mediaList = processMedia(media)
-
         if (!::pagerAdapter.isInitialized) {
             pdp_view_pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 var lastPosition = 0
                 override fun onPageSelected(position: Int) {
-                    pdp_page_control.setCurrentIndicator(position)
                     val swipeDirection = if (lastPosition > position) SWIPE_LEFT_DIRECTION else SWIPE_RIGHT_DIRECTION
+                    imageSliderCounter?.setCurrentCounter(position + 1)
                     onSwipePictureListener.invoke(swipeDirection, position, componentTrackData)
                     (pagerAdapter.getRegisteredFragment(lastPosition) as? VideoPictureFragment)?.imInvisible()
                     (pagerAdapter.getRegisteredFragment(position) as? VideoPictureFragment)?.imVisible()
@@ -64,13 +64,23 @@ class PictureScrollingView @JvmOverloads constructor(
         }
 
         if (!::pagerAdapter.isInitialized || shouldRenderViewPager) {
-            pdp_page_control.setIndicator(mediaList.size)
+            val mediaList = processMedia(media)
+            imageSliderCounter?.setView(1, mediaList.size)
             pagerAdapter = VideoPicturePagerAdapter(mediaList, onPictureClickListener, fragmentManager, componentTrackData
                     ?: ComponentTrackDataModel(), onPictureClickTrackListener, lifecycle)
             pdp_view_pager.adapter = pagerAdapter
             pdp_view_pager.setPageTransformer { page, position ->
                 //NO OP DONT DELETE THIS, DISABLE ITEM ANIMATOR
             }
+        }
+    }
+
+    fun showImageReview(shouldShow:Boolean, onOnSeeAllReviewClick: OnSeeAllReviewClick? = null) {
+        imageFromUser?.shouldShowWithAction(shouldShow) {
+            imageFromUser?.setOnClickListener {
+                onOnSeeAllReviewClick?.invoke(null)
+            }
+            imageFromUser?.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable(context, R.drawable.ic_chevron_right_black_24dp), null)
         }
     }
 
@@ -113,8 +123,7 @@ class PictureScrollingView @JvmOverloads constructor(
     }
 
     private fun resetViewPagerToFirstPosition(countIndicator: Int) {
-        pdp_page_control.setIndicator(countIndicator)
-        pdp_page_control.setCurrentIndicator(0)
+        imageSliderCounter?.setView(1, countIndicator)
         pdp_view_pager.setCurrentItem(0, false)
     }
 

@@ -237,4 +237,5 @@
     <string name="label_desc_os">Pasti Ori • Pasti Ready • Garansi 7 Hari</string>
     <string name="label_dijual">Dijual oleh</string>
 
+    <string name="slider_counter_builder">%1$d/%2$d</string>
 </resources>

@@ -12,7 +12,8 @@ data class ProductMediaDataModel(
         var statusTitle: String = "",
         var statusMessage: String = "",
         var basicStatus: String = "",
-        var shopStatus: Int = ProductSnapshotDataModel.SHOP_STATUS_ACTIVE
+        var shopStatus: Int = ProductSnapshotDataModel.SHOP_STATUS_ACTIVE,
+        var shouldShowImageReview: Boolean = false
 ) : DynamicPdpDataModel {
     override val impressHolder: ImpressHolder = ImpressHolder()
 

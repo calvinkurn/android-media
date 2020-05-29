@@ -9,7 +9,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataMode
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.fragment.partialview.PartialSnapshotView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import kotlinx.android.synthetic.main.item_dynamic_pdp_snapshot.view.*
 import kotlinx.android.synthetic.main.partial_product_detail_header.view.*
 
 class ProductSnapshotViewHolder(private val view: View,
@@ -36,7 +35,7 @@ class ProductSnapshotViewHolder(private val view: View,
                         ?: "")
                 header?.showOfficialStore(it.data.isPowerMerchant, it.data.isOS)
             }
-            header?.updateWishlist(element.isWishlisted)
+            header?.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
             header?.renderTradein(element.showTradeIn())
             header?.renderCod(element.showCod())
         }
@@ -49,7 +48,7 @@ class ProductSnapshotViewHolder(private val view: View,
         }
 
         when (payloads[0] as Int) {
-            ProductDetailConstant.PAYLOAD_WISHLIST -> header?.updateWishlist(element.isWishlisted)
+            ProductDetailConstant.PAYLOAD_WISHLIST -> header?.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
             ProductDetailConstant.PAYLOAD_P3 -> header?.renderCod(element.showCod())
         }
     }

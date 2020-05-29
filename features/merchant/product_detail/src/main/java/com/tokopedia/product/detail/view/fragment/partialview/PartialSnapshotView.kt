@@ -54,17 +54,21 @@ class PartialSnapshotView(private val view: View,
         divider.show()
     }
 
-    fun updateWishlist(wishlisted: Boolean) = with(view) {
-        if (wishlisted) {
+    fun updateWishlist(wishlisted: Boolean, shouldShowWishlist: Boolean) = with(view) {
+        if (!shouldShowWishlist) {
             fab_detail_pdp.hide()
-            fab_detail_pdp.isActivated = true
-            fab_detail_pdp.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_wishlist_selected_pdp))
-            fab_detail_pdp.show()
         } else {
-            fab_detail_pdp.hide()
-            fab_detail_pdp.isActivated = false
-            fab_detail_pdp.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_wishlist_unselected_pdp))
-            fab_detail_pdp.show()
+            if (wishlisted) {
+                fab_detail_pdp.hide()
+                fab_detail_pdp.isActivated = true
+                fab_detail_pdp.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_wishlist_selected_pdp))
+                fab_detail_pdp.show()
+            } else {
+                fab_detail_pdp.hide()
+                fab_detail_pdp.isActivated = false
+                fab_detail_pdp.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_wishlist_unselected_pdp))
+                fab_detail_pdp.show()
+            }
         }
     }
 

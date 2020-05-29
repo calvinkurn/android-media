@@ -37,7 +37,7 @@ class ProductContentViewHolder(private val view: View,
             header?.renderData(it, element.nearestWarehouseDataModel?.nearestWarehouseStockWording ?: "")
         }
 
-        header?.updateWishlist(element.isWishlisted)
+        header?.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
         header?.renderTradein(element.showTradeIn())
         header?.renderCod(element.showCod())
     }
@@ -49,7 +49,7 @@ class ProductContentViewHolder(private val view: View,
         }
 
         when (payloads[0] as Int) {
-            ProductDetailConstant.PAYLOAD_WISHLIST -> header?.updateWishlist(element.isWishlisted)
+            ProductDetailConstant.PAYLOAD_WISHLIST -> header?.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())
             ProductDetailConstant.PAYLOAD_P3 -> header?.renderCod(element.showCod())
         }
     }
