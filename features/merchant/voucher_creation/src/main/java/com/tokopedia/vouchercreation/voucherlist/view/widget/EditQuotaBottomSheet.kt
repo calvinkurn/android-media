@@ -80,7 +80,7 @@ class EditQuotaBottomSheet(
 
     private fun setImageVoucher(isPublic: Boolean, @VoucherTypeConst voucherType: Int) {
         try {
-            with(view?.imgMvcVoucherType) {
+            view?.imgMvcVoucherType?.run {
                 val drawableRes = when {
                     isPublic && (voucherType == VoucherTypeConst.CASHBACK || voucherType == VoucherTypeConst.DISCOUNT) -> R.drawable.ic_mvc_cashback_publik
                     !isPublic && (voucherType == VoucherTypeConst.CASHBACK || voucherType == VoucherTypeConst.DISCOUNT) -> R.drawable.ic_mvc_cashback_khusus
@@ -88,7 +88,7 @@ class EditQuotaBottomSheet(
                     !isPublic && (voucherType == VoucherTypeConst.FREE_ONGKIR) -> R.drawable.ic_mvc_ongkir_khusus
                     else -> R.drawable.ic_mvc_cashback_publik
                 }
-                this?.loadImageDrawable(drawableRes)
+                loadImageDrawable(drawableRes)
             }
         } catch (e: Exception) {
             Timber.e(e)
