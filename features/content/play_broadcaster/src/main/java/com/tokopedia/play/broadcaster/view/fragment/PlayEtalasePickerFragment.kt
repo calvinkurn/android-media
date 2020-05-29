@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
@@ -19,7 +18,6 @@ import com.tokopedia.play.broadcaster.ui.viewholder.PlayEtalaseViewHolder
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 import com.tokopedia.play.broadcaster.ui.viewholder.SearchSuggestionViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.PlayEtalaseAdapter
-import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
 import com.tokopedia.play.broadcaster.view.adapter.SearchSuggestionsAdapter
 import com.tokopedia.play.broadcaster.view.custom.PlaySearchBar
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
@@ -43,7 +41,7 @@ class PlayEtalasePickerFragment @Inject constructor(
 
     private val etalaseAdapter = PlayEtalaseAdapter(object : PlayEtalaseViewHolder.Listener {
         override fun onEtalaseClicked(etalaseId: Long) {
-            broadcastCoordinator.navigateToFragment(
+            bottomSheetCoordinator.navigateToFragment(
                     PlayEtalaseDetailFragment::class.java,
                     Bundle().apply {
                         putLong(PlayEtalaseDetailFragment.EXTRA_ETALASE_ID, etalaseId)
@@ -86,7 +84,7 @@ class PlayEtalasePickerFragment @Inject constructor(
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        broadcastCoordinator.showBottomAction(false)
+        bottomSheetCoordinator.showBottomAction(false)
         return inflater.inflate(R.layout.fragment_play_etalase_picker, container, false)
     }
 
@@ -151,7 +149,7 @@ class PlayEtalasePickerFragment @Inject constructor(
         etalaseAdapter.notifyDataSetChanged()
         viewModel.loadSuggestionsFromKeyword(psbSearch.text)
 
-        broadcastCoordinator.showBottomAction(false)
+        bottomSheetCoordinator.showBottomAction(false)
     }
 
     private fun exitSearchMode() {
@@ -160,7 +158,7 @@ class PlayEtalasePickerFragment @Inject constructor(
 
         rvSuggestions.invisible()
 
-        broadcastCoordinator.showBottomAction(psbSearch.text.isNotEmpty())
+        bottomSheetCoordinator.showBottomAction(psbSearch.text.isNotEmpty())
     }
 
     private fun shouldSearchProductWithKeyword(keyword: String) {

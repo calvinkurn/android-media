@@ -4,13 +4,19 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.di.DaggerPlayBroadcasterComponent
+import com.tokopedia.play.broadcaster.di.PlayBroadcasterModule
+import com.tokopedia.play.broadcaster.util.event.EventObserver
+import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
+import com.tokopedia.play.broadcaster.view.event.ScreenStateEvent
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment
+import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment.Companion.PARENT_FRAGMENT_TAG
+import com.tokopedia.play.broadcaster.view.fragment.PlayLiveBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayPrepareBroadcastFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import javax.inject.Inject
@@ -18,7 +24,7 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 19/05/20.
  */
-class PlayBroadcastActivity: BaseActivity() {
+class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -36,11 +42,15 @@ class PlayBroadcastActivity: BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_broadcast)
         setupContent()
-        setupPage()
+        getConfiguration()
+
+        observeScreenStateEvent()
     }
 
     private fun inject() {
-        DaggerPlayBroadcasterComponent.create()
+        DaggerPlayBroadcasterComponent.builder()
+                .playBroadcasterModule(PlayBroadcasterModule(this))
+                .build()
                 .inject(this)
     }
 
@@ -53,18 +63,17 @@ class PlayBroadcastActivity: BaseActivity() {
     }
 
     private fun setupContent() {
-        openFragment(getParentFragment(), PARENT_FRAGMENT_TAG)
+        val currentFragment = supportFragmentManager.findFragmentByTag(PARENT_FRAGMENT_TAG)
+        if (currentFragment == null) {
+            supportFragmentManager.beginTransaction()
+                    .add(R.id.fl_broadcast, getParentFragment(), PARENT_FRAGMENT_TAG)
+                    .commit()
+        }
     }
 
-    private fun getPrepareFragment() = fragmentFactory.instantiate(classLoader, PlayPrepareBroadcastFragment::class.java.name)
-
-    private fun setupPage() {
+    private fun getConfiguration() {
         viewModel.getConfiguration()
-
-        observeConfiguration()
     }
-
-    private fun getParentFragment() = PlayBroadcastFragment.newInstance()
 
     override fun onResume() {
         super.onResume()
@@ -76,26 +85,41 @@ class PlayBroadcastActivity: BaseActivity() {
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
-    private fun observeConfiguration() {
-        viewModel.observablePage.observe(this, Observer {
-            if (it) {
-                openFragment(getPrepareFragment(), PREPARE_FRAGMENT_TAG)
+    override fun navigateToFragment(fragmentClass: Class<out Fragment>, extras: Bundle, recordBreadcrumbs: Boolean) {
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        val destFragment = getFragmentByClassName(fragmentClass)
+        destFragment.arguments = extras
+        fragmentTransaction
+                .replace(R.id.fl_setup, destFragment, fragmentClass.name)
+                .commit()
+    }
+
+    private fun getParentFragment() = PlayBroadcastFragment.newInstance()
+
+    private fun getFragmentByClassName(fragmentClass: Class<out Fragment>): Fragment {
+        return fragmentFactory.instantiate(fragmentClass.classLoader!!, fragmentClass.name)
+    }
+
+    //region observe
+    /**
+     * Observe
+     */
+
+    private fun observeScreenStateEvent() {
+        viewModel.observableScreenStateEvent.observe(this, EventObserver{
+            when(it) {
+                is ScreenStateEvent.ShowPreparePage -> {
+                    navigateToFragment(PlayPrepareBroadcastFragment::class.java)
+                }
+                is ScreenStateEvent.ShowLivePage -> {
+                    navigateToFragment(PlayLiveBroadcastFragment::class.java,
+                            Bundle().apply {
+                                putString(PlayLiveBroadcastFragment.KEY_CHANNEL_ID, it.channelId)
+                                putString(PlayLiveBroadcastFragment.KEY_INGEST_URL, it.ingestUrl)
+                            })
+                }
             }
         })
     }
-
-    private fun openFragment(fragment: Fragment, tag: String) {
-        val currentFragment = supportFragmentManager.findFragmentByTag(tag)
-        if (currentFragment == null) {
-            supportFragmentManager.beginTransaction()
-                    .add(R.id.fl_broadcast, fragment, tag)
-                    .commit()
-        }
-    }
-
-    companion object {
-        private const val PARENT_FRAGMENT_TAG = "parent_fragment"
-        private const val PREPARE_FRAGMENT_TAG = "prepare_fragment"
-        private const val SETUP_FRAGMENT_TAG = "setup_fragment"
-    }
+    //endregion
 }

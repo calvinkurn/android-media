@@ -9,14 +9,18 @@ import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayFollowerItemDecoration
 import com.tokopedia.play.broadcaster.view.adapter.PlayFollowersAdapter
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
+import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
+import com.tokopedia.play.broadcaster.view.uimodel.ChannelInfoUiModel
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayPrepareBroadcastViewModel
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
@@ -25,9 +29,10 @@ import javax.inject.Inject
 class PlayPrepareBroadcastFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
         private val fragmentFactory: FragmentFactory
-) : TkpdBaseV4Fragment() {
+) : PlayBaseBroadcastFragment() {
 
-    private lateinit var parentViewModel: PlayPrepareBroadcastViewModel
+    private lateinit var viewModel: PlayPrepareBroadcastViewModel
+    private lateinit var parentViewModel: PlayBroadcastViewModel
 
     private lateinit var btnSetup: UnifyButton
     private lateinit var rvFollowers: RecyclerView
@@ -38,12 +43,14 @@ class PlayPrepareBroadcastFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayPrepareBroadcastViewModel::class.java)
+        viewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayPrepareBroadcastViewModel::class.java)
+        parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_play_prepare_broadcast, container, false)
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -55,6 +62,7 @@ class PlayPrepareBroadcastFragment @Inject constructor(
         super.onActivityCreated(savedInstanceState)
 
         observeFollowers()
+        observeCreateChannel()
     }
 
     private fun initView(view: View) {
@@ -66,7 +74,9 @@ class PlayPrepareBroadcastFragment @Inject constructor(
 
     private fun setupView(view: View) {
         btnSetup.setOnClickListener {
-            openBroadcastSetupPage()
+            // openBroadcastSetupPage()
+            // TODO("for testing live")
+            doCreateChannel()
         }
 
         rvFollowers.adapter = followersAdapter
@@ -79,10 +89,27 @@ class PlayPrepareBroadcastFragment @Inject constructor(
         })
     }
 
+    private fun doCreateChannel() {
+        viewModel.createChannel(
+                shopId = 0,
+                productIds = emptyArray(),
+                coverUrl = "",
+                title = ""
+        )
+    }
+
     private fun openBroadcastSetupPage() {
         val setupClass = PlayBroadcastSetupBottomSheet::class.java
         val setupFragment = fragmentFactory.instantiate(setupClass.classLoader!!, setupClass.name) as PlayBroadcastSetupBottomSheet
         setupFragment.show(childFragmentManager)
+    }
+
+    private fun openBroadcastLivePage(channelInfo: ChannelInfoUiModel) {
+        broadcastCoordinator.navigateToFragment(PlayLiveBroadcastFragment::class.java,
+                Bundle().apply {
+                    putString(PlayLiveBroadcastFragment.KEY_CHANNEL_ID, channelInfo.channelId)
+                    putString(PlayLiveBroadcastFragment.KEY_INGEST_URL, channelInfo.ingestUrl)
+                })
     }
 
     //region observe
@@ -91,8 +118,22 @@ class PlayPrepareBroadcastFragment @Inject constructor(
      */
 
     private fun observeFollowers() {
-        parentViewModel.observableFollowers.observe(viewLifecycleOwner, Observer {
+        viewModel.observableFollowers.observe(viewLifecycleOwner, Observer {
             followersAdapter.setItemsAndAnimateChanges(it)
+        })
+    }
+
+    private fun observeCreateChannel() {
+        viewModel.observableCreateChannel.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Success -> {
+                    // TODO("handle: count down")
+                    openBroadcastLivePage(it.data)
+                }
+                is Fail -> {
+                    // TODO(handle: show toaster error)
+                }
+            }
         })
     }
     //endregion

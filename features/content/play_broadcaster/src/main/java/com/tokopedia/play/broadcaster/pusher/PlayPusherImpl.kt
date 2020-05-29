@@ -1,26 +1,33 @@
 package com.tokopedia.play.broadcaster.pusher
 
-import android.content.Context
-import android.os.Build
 import android.view.SurfaceView
-import androidx.annotation.RequiresApi
-import com.alivc.live.pusher.*
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.alivc.live.pusher.AlivcLivePushConfig
+import com.alivc.live.pusher.AlivcLivePushNetworkListener
+import com.alivc.live.pusher.AlivcLivePusher
+import com.alivc.live.pusher.AlivcQualityModeEnum
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
+import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
+import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherCountDownTimer
+import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherCountDownTimerListener
+import com.tokopedia.play.broadcaster.pusher.type.PlayPusherQualityMode
 
 
 /**
  * Created by mzennis on 24/05/20.
  */
-class PlayPusherImpl(private val builder: Builder) : PlayPusher {
-
-    // TODO("handle reconnect async")
+class PlayPusherImpl(private val builder: PlayPusher.Builder) : PlayPusher {
 
     private var mCountDownTimer: PlayPusherCountDownTimer? = null
     private var mIngestUrl: String = ""
 
     private var mAliVcLivePusher: AlivcLivePusher? = null
     private var mAliVcLivePushConfig: AlivcLivePushConfig? = null
+
+    private val _observableInfoState = MutableLiveData<PlayPusherInfoState>()
+    private val _observableNetworkState = MutableLiveData<PlayPusherNetworkState>()
 
     init {
         mAliVcLivePushConfig = AlivcLivePushConfig()
@@ -39,11 +46,11 @@ class PlayPusherImpl(private val builder: Builder) : PlayPusher {
         mAliVcLivePushConfig?.audioBitRate = builder.audioBitrate
     }
 
-    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     override fun create() {
         try {
             mAliVcLivePusher = AlivcLivePusher()
             mAliVcLivePusher?.init(builder.context, mAliVcLivePushConfig)
+            mAliVcLivePusher?.setLivePushNetworkListener(mAliVcLivePushNetworkListener)
         } catch (e: IllegalArgumentException) {
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
@@ -53,10 +60,6 @@ class PlayPusherImpl(private val builder: Builder) : PlayPusher {
                 e.printStackTrace()
             }
         }
-    }
-
-    override fun addCountDownTimer(countDownTimer: PlayPusherCountDownTimer) {
-        this.mCountDownTimer = countDownTimer
     }
 
     override fun startPreview(surfaceView: SurfaceView) {
@@ -96,7 +99,20 @@ class PlayPusherImpl(private val builder: Builder) : PlayPusher {
             return
         }
         try {
-            mAliVcLivePusher?.startPushAysnc(this.mIngestUrl)
+            if (mAliVcLivePusher?.isPushing == false) {
+                mAliVcLivePusher?.startPushAysnc(this.mIngestUrl)
+                mCountDownTimer?.start()
+            }
+        } catch (e: Exception) {
+            if (GlobalConfig.DEBUG) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    override fun restartPush() {
+        try {
+            mAliVcLivePusher?.restartPushAync()
             mCountDownTimer?.start()
         } catch (e: Exception) {
             if (GlobalConfig.DEBUG) {
@@ -172,6 +188,19 @@ class PlayPusherImpl(private val builder: Builder) : PlayPusher {
         mAliVcLivePushConfig = null
     }
 
+    override fun addMaxStreamDuration(millis: Long) {
+        this.mCountDownTimer = PlayPusherCountDownTimer(builder.context, millis)
+        this.mCountDownTimer?.addCallback(mCountDownTimerListener)
+    }
+
+    override fun getObservablePlayPusherInfoState(): LiveData<PlayPusherInfoState> {
+        return _observableInfoState
+    }
+
+    override fun getObservablePlayPusherNetworkState(): LiveData<PlayPusherNetworkState> {
+        return _observableNetworkState
+    }
+
     private fun setQualityMode() {
         builder.qualityMode.let {
             when(it) {
@@ -185,98 +214,59 @@ class PlayPusherImpl(private val builder: Builder) : PlayPusher {
                     mAliVcLivePushConfig?.setMinVideoBitrate(it.min)
                     mAliVcLivePushConfig?.setInitialVideoBitrate(it.init)
                 }
-
             }
         }
     }
 
-    open class Builder(@ApplicationContext var context: Context) {
+    private val mCountDownTimerListener = object: PlayPusherCountDownTimerListener {
 
-        var cameraType: AlivcLivePushCameraTypeEnum = AlivcLivePushCameraTypeEnum.CAMERA_TYPE_FRONT
-            private set
-        var orientation = AlivcPreviewOrientationEnum.ORIENTATION_PORTRAIT
-            private set
-        var previewDisplayMode = AlivcPreviewDisplayMode.ALIVC_LIVE_PUSHER_PREVIEW_ASPECT_FILL
-            private set
-        var resolution = AlivcResolutionEnum.RESOLUTION_720P
-            private set
-        var isEnableAutoResolution = true
-            private set
-        var fps = AlivcFpsEnum.FPS_20
-            private set
-        var qualityMode: PlayPusherQualityMode = PlayPusherQualityMode.FluencyFirst
-            private set
-        var isEnableBitrateControl = false
-            private set
-        var audioChannel = AlivcAudioChannelEnum.AUDIO_CHANNEL_ONE
-            private set
-        var audioProfile = AlivcAudioAACProfileEnum.AAC_LC
-            private set
-        var audioEncode = AlivcEncodeModeEnum.Encode_MODE_HARD
-            private set
-        var audioSampleRate = AlivcAudioSampleRateEnum.AUDIO_SAMPLE_RATE_44100
-            private set
-        var audioBitrate = AUDIO_BITRATE_128Kbps
-            private set
-
-        fun cameraType(cameraType: AlivcLivePushCameraTypeEnum) = apply {
-            this.cameraType = cameraType
+        override fun onCountDownActive(millisUntilFinished: Long) {
+            _observableInfoState.value  = PlayPusherInfoState.Active(millisUntilFinished)
         }
 
-        fun orientation(orientationEnum: AlivcPreviewOrientationEnum) = apply {
-            this.orientation = orientationEnum
+        override fun onCountDownFinish() {
+            stopPush()
+            _observableInfoState.value = PlayPusherInfoState.Finish
         }
 
-        fun previewDisplayMode(previewDisplayMode: AlivcPreviewDisplayMode) = apply {
-            this.previewDisplayMode = previewDisplayMode
+    }
+
+    private val mAliVcLivePushNetworkListener = object: AlivcLivePushNetworkListener {
+        override fun onNetworkRecovery(pusher: AlivcLivePusher?) {
+            _observableNetworkState.value = PlayPusherNetworkState.Recover
         }
 
-        fun resolution(resolutionEnum: AlivcResolutionEnum) = apply {
-            this.resolution = resolutionEnum
+        override fun onSendMessage(pusher: AlivcLivePusher?) {
         }
 
-        fun enableAutoResolution(enable: Boolean) = apply {
-            this.isEnableAutoResolution = enable
+        override fun onReconnectFail(pusher: AlivcLivePusher?) {
         }
 
-        fun fps(fpsEnum: AlivcFpsEnum) = apply {
-            this.fps = fpsEnum
+        override fun onSendDataTimeout(pusher: AlivcLivePusher?) {
         }
 
-        fun enableBitrateControl(enable: Boolean) = apply {
-            this.isEnableBitrateControl = enable
+        override fun onConnectFail(pusher: AlivcLivePusher?) {
+            _observableNetworkState.value = PlayPusherNetworkState.Loss
         }
 
-        fun qualityMode(qualityMode: PlayPusherQualityMode) = apply {
-            this.qualityMode = qualityMode
+        override fun onReconnectStart(pusher: AlivcLivePusher?) {
         }
 
-        fun audioChannel(audioChannelEnum: AlivcAudioChannelEnum) = apply {
-            this.audioChannel = audioChannelEnum
+        override fun onReconnectSucceed(pusher: AlivcLivePusher?) {
+            _observableNetworkState.value = PlayPusherNetworkState.Recover
         }
 
-        fun audioProfile(audioAACProfileEnum: AlivcAudioAACProfileEnum) = apply {
-            this.audioProfile = audioAACProfileEnum
+        override fun onPushURLAuthenticationOverdue(pusher: AlivcLivePusher?): String {
+            return ""
         }
 
-        fun audioEncode(encodeModeEnum: AlivcEncodeModeEnum) = apply {
-            this.audioEncode = encodeModeEnum
+        override fun onNetworkPoor(pusher: AlivcLivePusher?) {
+            _observableNetworkState.value = PlayPusherNetworkState.Poor
         }
 
-        fun audioSampleRate(sampleRateEnum: AlivcAudioSampleRateEnum) = apply {
-            this.audioSampleRate = sampleRateEnum
-        }
-
-        fun audioBitrate(bitrate: Int) = apply {
-            this.audioBitrate = bitrate
-        }
-
-        @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-        fun build() = PlayPusherImpl(this)
     }
 
     companion object {
-
         const val AUDIO_BITRATE_128Kbps = 128000
     }
 }

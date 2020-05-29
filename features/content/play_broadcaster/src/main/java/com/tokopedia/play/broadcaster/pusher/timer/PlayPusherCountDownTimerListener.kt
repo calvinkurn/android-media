@@ -1,10 +1,10 @@
-package com.tokopedia.play.broadcaster.pusher
+package com.tokopedia.play.broadcaster.pusher.timer
 
 
 /**
  * Created by mzennis on 26/05/20.
  */
-interface PlayPusherCountDownTimerCallback {
+interface PlayPusherCountDownTimerListener {
     fun onCountDownActive(millisUntilFinished: Long)
     fun onCountDownFinish()
 }

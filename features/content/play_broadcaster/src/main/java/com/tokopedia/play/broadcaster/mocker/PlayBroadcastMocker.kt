@@ -80,9 +80,18 @@ object PlayBroadcastMocker {
     )
 
     fun getMockActiveChannel() = ChannelInfoUiModel(
-            ingestUrl = "rtmp://192.168.0.105/live/ByNDo1ds8",
+            channelId = "1234",
+            ingestUrl = "rtmp://test",
             shareUrl = "tokopedia://play/2214",
             status = PlayChannelStatus.Active
+    )
+
+    fun getMockTotalView() = TotalViewUiModel(
+            totalView = "1234"
+    )
+
+    fun getMockTotalLike() = TotalLikeUiModel(
+            totalLike = "1234"
     )
 
     fun getSummary(): SummaryUiModel {
