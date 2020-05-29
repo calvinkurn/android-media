@@ -5,7 +5,6 @@ import com.tokopedia.chat_common.domain.pojo.productattachment.FreeShipping
 import com.tokopedia.chat_common.domain.pojo.productattachment.PlayStoreData
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
-import com.tokopedia.common.network.util.CommonUtil
 import java.util.*
 
 /**
@@ -16,6 +15,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
         DeferredAttachment {
 
     override var isLoading: Boolean = true
+    override var isError: Boolean = false
     override val id: String get() = attachmentId
 
     var productId: Int = 0
@@ -71,6 +71,19 @@ open class ProductAttachmentViewModel : SendableViewModel,
         }
 
     val stringBlastId: String get() = blastId.toString()
+
+    override fun updateData(attribute: Any?) {
+        if (attribute is ProductAttachmentAttributes) {
+            this.productName = "ahoy mate"
+            this.productPrice = "Rp 500"
+            this.isLoading = false
+        }
+    }
+
+    override fun syncError() {
+        this.isLoading = false
+        this.isError = true
+    }
 
     constructor(messageId: String, fromUid: String, from: String,
                 fromRole: String, attachmentId: String, attachmentType: String,
@@ -242,14 +255,6 @@ open class ProductAttachmentViewModel : SendableViewModel,
 
     override fun type(typeFactory: BaseChatTypeFactory): Int {
         return typeFactory.type(this)
-    }
-
-    override fun updateData(attribute: Any?) {
-        if (attribute is ProductAttachmentAttributes) {
-            this.productName = "ahoy mate"
-            this.productPrice = "Rp 500"
-            this.isLoading = false
-        }
     }
 
     fun hasFreeShipping(): Boolean {

@@ -3,7 +3,7 @@ package com.tokopedia.topchat.chatroom.domain.pojo.chatattachment
 
 import com.google.gson.annotations.SerializedName
 
-data class Attachment(
+open class Attachment(
         @SerializedName("attributes")
         val attributes: String = "",
         @SerializedName("fallback")

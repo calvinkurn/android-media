@@ -789,7 +789,9 @@ class TopChatRoomPresenter @Inject constructor(
         view?.updateAttachmentsView(attachments)
     }
 
-    private fun onErrorGetAttachments(throwable: Throwable) {
+    private fun onErrorGetAttachments(throwable: Throwable, errorAttachment: ArrayMap<String, Attachment>) {
+        this.attachments.putAll(errorAttachment.toMap())
+        view?.updateAttachmentsView(errorAttachment)
         println(throwable.message)
     }
 

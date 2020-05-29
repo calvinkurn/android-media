@@ -60,7 +60,7 @@ open class TopchatProductAttachmentViewHolder(
         super.bind(product)
         bindSyncProduct(product)
         bindLayoutGravity(product)
-        if (product.isLoading) {
+        if (product.isLoading && !product.isError) {
             bindIsLoading(product)
         } else {
             bindIsLoading(product)

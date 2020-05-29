@@ -2,10 +2,12 @@ package com.tokopedia.chat_common.data
 
 interface DeferredAttachment {
 
-    open var isLoading: Boolean
+    var isLoading: Boolean
+    var isError: Boolean
     val id: String
 
     fun updateData(attribute: Any?)
+    fun syncError()
 
     companion object {
         const val PAYLOAD_DEFERRED = "payload_deferred"

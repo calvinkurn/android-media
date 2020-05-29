@@ -11,6 +11,7 @@ import com.tokopedia.chat_common.data.BaseChatViewModel
 import com.tokopedia.chat_common.data.DeferredAttachment
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 
@@ -98,7 +99,11 @@ class TopChatRoomAdapter(
             if (item is DeferredAttachment && attachments.containsKey(item.id)) {
                 val attachment = attachments[item.id] ?: continue
                 if (item.isLoading) {
-                    item.updateData(attachment.parsedAttributes)
+                    if (attachment is ErrorAttachment) {
+                        item.syncError()
+                    } else {
+                        item.updateData(attachment.parsedAttributes)
+                    }
                     notifyItemChanged(itemPosition, DeferredAttachment.PAYLOAD_DEFERRED)
                 }
             }

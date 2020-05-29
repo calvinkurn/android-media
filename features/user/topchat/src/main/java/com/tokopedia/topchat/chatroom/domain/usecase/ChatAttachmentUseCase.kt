@@ -8,6 +8,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -29,7 +30,7 @@ class ChatAttachmentUseCase @Inject constructor(
             msgId: Int,
             attachmentId: String,
             onSuccess: (ArrayMap<String, Attachment>) -> Unit,
-            onError: (Throwable) -> Unit
+            onError: (Throwable, ArrayMap<String, Attachment>) -> Unit
     ) {
         launchCatchError(dispatchers.IO,
                 {
@@ -46,7 +47,8 @@ class ChatAttachmentUseCase @Inject constructor(
                 },
                 {
                     withContext(dispatchers.Main) {
-                        onError(it)
+                        val mapErrorAttachment = mapError(attachmentId)
+                        onError(it, mapErrorAttachment)
                     }
                 }
         )
@@ -67,6 +69,15 @@ class ChatAttachmentUseCase @Inject constructor(
         for (attachment in response.chatAttachments.list) {
             parseAttribute(attachment)
             map[attachment.id] = attachment
+        }
+        return map
+    }
+
+    private fun mapError(attachmentId: String): ArrayMap<String, Attachment> {
+        val map = ArrayMap<String, Attachment>()
+        val attachments = attachmentId.split(",")
+        attachments.forEach {
+            map[it.trim()] = ErrorAttachment()
         }
         return map
     }
