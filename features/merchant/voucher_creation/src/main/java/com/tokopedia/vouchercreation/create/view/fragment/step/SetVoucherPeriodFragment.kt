@@ -58,6 +58,7 @@ class SetVoucherPeriodFragment(private val onNext: (String, String, String, Stri
         private const val START_DATE_TIME_PICKER_TAG = "startDateTimePicker"
         private const val END_DATE_TIME_PICKER_TAG = "endDateTimePicker"
 
+        private const val EXTRA_HOUR = 1
         private const val EXTRA_WEEK = 7
         private const val MINUTE_INTERVAL = 30
 
@@ -231,9 +232,11 @@ class SetVoucherPeriodFragment(private val onNext: (String, String, String, Stri
     private fun setInitialDate() {
         context?.run {
             endCalendar = context?.run { getToday().apply {
+                roundingDate()
                 add(Calendar.DATE, EXTRA_WEEK)}}
 
             getMinStartDate().let { calendar ->
+                calendar.roundingDate()
                 val initialTime = calendar.time.toFormattedString(DATE_OF_WEEK_FORMAT, locale)
                 startDateString = initialTime
                 viewModel.setStartDateCalendar(calendar)
@@ -336,5 +339,14 @@ class SetVoucherPeriodFragment(private val onNext: (String, String, String, Stri
         setMessage("")
     }
 
+    private fun GregorianCalendar.roundingDate() {
+        val minute = get(Calendar.MINUTE)
+        if (minute <= MINUTE_INTERVAL) {
+            set(Calendar.MINUTE, MINUTE_INTERVAL)
+        } else {
+            set(Calendar.MINUTE, 0)
+            add(Calendar.HOUR, EXTRA_HOUR)
+        }
+    }
 
 }
