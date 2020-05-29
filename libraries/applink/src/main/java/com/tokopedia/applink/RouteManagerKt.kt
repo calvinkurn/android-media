@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrderDetail
 
@@ -48,7 +49,7 @@ object RouteManagerKt{
             }
             DeepLinkChecker.CATEGORY -> {
                 val departmentId = getLinkSegment(url)[1]
-                RouteManager.route(activity, ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, departmentId)
+                RouteManager.route(activity, ApplinkConstInternalCategory.INTERNAL_CATEGORY_DETAIL, departmentId)
                 return true
             }
             DeepLinkChecker.BROWSE -> {

@@ -53,6 +53,7 @@ import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
+import com.tokopedia.notifications.data.AmplificationDataSource;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
@@ -264,8 +265,29 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         initializeAbTestVariant();
         gratificationSubscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(gratificationSubscriber);
+        getAmplificationPushData();
         initBlockCanary();
         return true;
+    }
+
+    private void getAmplificationPushData() {
+        /*
+         * Amplification of push notification.
+         * fetch all of cm_push_notification's
+         * push notification data that aren't rendered yet.
+         * then, put all of push_data into local storage.
+         * */
+        if (getAmplificationRemoteConfig()) {
+            try {
+                AmplificationDataSource.invoke(ConsumerMainApplication.this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private Boolean getAmplificationRemoteConfig() {
+        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_AMPLIFICATION, true);
     }
 
     private void openShakeDetectCampaignPage(boolean isLongShake) {
@@ -273,8 +295,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getApplicationContext().startActivity(intent);
     }
-
-
 
     private boolean isMainProcess() {
         ActivityManager manager = ContextCompat.getSystemService(this, ActivityManager.class);

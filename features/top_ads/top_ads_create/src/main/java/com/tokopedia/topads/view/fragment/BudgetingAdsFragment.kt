@@ -45,6 +45,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     private var maxSuggestKeyword = 0
     private var suggestBidPerClick = 0
     private var bidMap = mutableMapOf<String, Int>()
+    private var isEnable = false
 
     companion object {
         private const val MAX_BID = "max"
@@ -60,13 +61,14 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(BudgetingAdsViewModel::class.java)
-        bidInfoAdapter = BidInfoAdapter(BidInfoAdapterTypeFactoryImpl(stepperModel!!.selectedKeywords, stepperModel!!.selectedSuggestBid, this::onClickCloseButton, this::onEdit, this::actionEnable))
+        val initialSuggestionBid = stepperModel?.selectedSuggestBid!!.toMutableList()
+        bidInfoAdapter = BidInfoAdapter(BidInfoAdapterTypeFactoryImpl(stepperModel!!.selectedKeywords, stepperModel!!.selectedSuggestBid, initialSuggestionBid, this::onClickCloseButton, this::onEdit, this::actionEnable))
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
     }
 
-    private fun actionEnable(flag: Boolean) {
-        btn_next.isEnabled = flag
+    private fun actionEnable() {
+        btn_next.isEnabled = !bidInfoAdapter.isError() && isEnable
     }
 
     private fun onEdit(): MutableMap<String, Int> {
@@ -145,7 +147,8 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
         if (budget.textFieldInput.text.toString().replace(",", "").toInt() in (minBid + 1) until maxBid) {
             setMessageErrorField(getString(R.string.recommendated_bid_message), suggestBidPerClick, false)
-            actionEnable(true)
+            isEnable = true
+            actionEnable()
         }
     }
 
@@ -197,17 +200,18 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
                 when {
                     result < minBid -> {
                         setMessageErrorField(getString(R.string.min_bid_error), minBid, true)
-                        actionEnable(false)
+                        isEnable = false
                     }
                     result > maxBid -> {
-                        actionEnable(false)
+                        isEnable = false
                         setMessageErrorField(getString(R.string.max_bid_error), maxBid, true)
                     }
                     else -> {
-                        actionEnable(true)
+                        isEnable = true
                         setMessageErrorField(getString(R.string.recommendated_bid_message), suggestBidPerClick, false)
                     }
                 }
+                actionEnable()
             }
         })
         bid_list.adapter = bidInfoAdapter

@@ -175,8 +175,6 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_OFFICIAL_STORE_OS = "android_enable_officialstore_native";
 
-    public static final String AKAMAI_CART_ENABLE = "android_akamai_cart_enable";
-
     public static final String ENABLE_NEW_WISHLIST_PAGE = "android_flag_enable_new_wishlist_page";
 
     public static final String ENABLE_TRACEROUTE_MIN_VERSION = "android_main_app_enabled_traceroute_min_version";
@@ -227,4 +225,6 @@ public class RemoteConfigKey {
     public static final String CHAT_PRODUCT_CAROUSEL = "android_chat_product_carousel";
 
     public static final String ENABLE_ONE_CLICK_CHECKOUT = "android_mainapp_enable_one_click_checkout";
+
+    public static final String ENABLE_AMPLIFICATION = "app_push_amplification_enabled";
 }
