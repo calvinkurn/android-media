@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -44,6 +45,7 @@ class TipsTrickBottomSheet(
 
         setTitle(getBottomSheetTitle())
         setChild(child)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
 
         child.run {
             tvMvcCarouselInfo.text = getCarouselInfo().parseAsHtml()

@@ -3,6 +3,7 @@ package com.tokopedia.vouchercreation.common.bottmsheet.description
 import android.content.Context
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -20,6 +21,7 @@ class DescriptionBottomSheet(private val mContext: Context) : BottomSheetUnify()
         val child = inflater.inflate(R.layout.bottomsheet_mvc_description, LinearLayout(mContext), false)
         setChild(child)
         setTitle(title)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
         child.tvMvcDescription.text = content.parseAsHtml()
         show(fm, this::class.java.simpleName)
     }
