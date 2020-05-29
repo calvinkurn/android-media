@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.Html
 import android.view.View
 import android.widget.LinearLayout
 import com.tokopedia.applink.ApplinkConst
@@ -14,9 +13,6 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller_migration_common.R
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
-import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.APPLINK_PLAYSTORE
-import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.PACKAGE_SELLER_APP
-import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_PLAYSTORE
 import com.tokopedia.seller_migration_common.getSellerMigrationDate
 import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -67,15 +63,18 @@ class SellerMigrationAccountBottomSheet : BottomSheetUnify() {
     }
 
     private fun goToSellerApp() {
-        try {
-            val intent = context?.packageManager?.getLaunchIntentForPackage(PACKAGE_SELLER_APP)
-            if(intent != null) {
-                this.activity?.startActivity(intent)
-            } else {
-                this.activity?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(APPLINK_PLAYSTORE + PACKAGE_SELLER_APP)))
+        with(SellerMigrationConstants) {
+            try {
+                val intent = context?.packageManager?.getLaunchIntentForPackage(PACKAGE_SELLER_APP)
+                if(intent != null) {
+                    intent.putExtra(SELLER_MIGRATION_KEY_AUTO_LOGIN, true)
+                    activity?.startActivity(intent)
+                } else {
+                    activity?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(APPLINK_PLAYSTORE + PACKAGE_SELLER_APP)))
+                }
+            } catch (anfe: ActivityNotFoundException) {
+                activity?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(URL_PLAYSTORE + PACKAGE_SELLER_APP)))
             }
-        } catch (anfe: ActivityNotFoundException) {
-            this.activity?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(URL_PLAYSTORE + PACKAGE_SELLER_APP)))
         }
     }
 

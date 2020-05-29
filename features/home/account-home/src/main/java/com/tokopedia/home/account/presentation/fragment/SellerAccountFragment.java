@@ -3,12 +3,14 @@ package com.tokopedia.home.account.presentation.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -35,6 +37,7 @@ import com.tokopedia.seller_migration_common.presentation.widget.SellerMigration
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationGenericBottomSheet;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.unifycomponents.BottomSheetUnify;
+import com.tokopedia.unifycomponents.HtmlLinkHelper;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
 import com.tokopedia.unifycomponents.Toaster;
@@ -46,6 +49,7 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function2;
 
 import static com.tokopedia.seller_migration_common.SellerMigrationRemoteConfigKt.getSellerMigrationDate;
@@ -277,18 +281,19 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
             if(remoteConfigDate.isEmpty()) {
                 remoteConfigDate = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_default_migration_date);
             }
-            migrationTicker.setHtmlDescription(String.format(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_content), remoteConfigDate));
-            migrationTicker.setDescriptionClickEvent(new TickerCallback() {
-                @Override
-                public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
-                    openSellerMigrationBottomSheet();
-                }
-
-                @Override
-                public void onDismiss() {
-
-                }
-            });
+            Function0<Unit> openSellerMigrationBottomSheet = () -> {
+                openSellerMigrationBottomSheet();
+                return null;
+            };
+            HtmlLinkHelper htmlString = new HtmlLinkHelper(getContext(), getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_content, remoteConfigDate));
+            if(htmlString.getUrlList() != null) {
+                htmlString.getUrlList().get(0).setOnClickListener(openSellerMigrationBottomSheet);
+            }
+            AppCompatTextView tickerTextView = getView().findViewById(R.id.ticker_description);
+            if(tickerTextView != null) {
+                tickerTextView.setMovementMethod(LinkMovementMethod.getInstance());
+            }
+            migrationTicker.setTextDescription(htmlString.getSpannedString());
         } else {
             migrationTicker.setVisibility(View.GONE);
         }
