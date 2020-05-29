@@ -43,7 +43,6 @@ abstract class PlayBroadcasterFragmentModule {
     abstract fun getPlayPrepareBroadcastFragment(fragment: PlayPrepareBroadcastFragment): Fragment
 
     @Binds
-    @PlayBroadcasterScope
     @IntoMap
     @FragmentKey(PlayBroadcastSummaryFragment::class)
     abstract fun getPlayBroadcastSummaryFragment(fragment: PlayBroadcastSummaryFragment): Fragment
