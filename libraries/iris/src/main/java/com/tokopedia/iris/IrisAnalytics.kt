@@ -39,7 +39,8 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
 
     override val coroutineContext: CoroutineContext = Dispatchers.IO +
         CoroutineExceptionHandler { _, ex ->
-            Timber.e("P1#IRIS#CoroutineExceptionIrisAnalytics %s", ex.toString()) }
+            Timber.e("P1#IRIS#CoroutineExceptionIrisAnalytics %s", ex.toString())
+        }
 
     private var remoteConfigListener: RemoteConfig.Listener = object : RemoteConfig.Listener {
 
@@ -103,13 +104,14 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
                     val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
                     trackingRepository.saveEvent(resultEvent.toString(), session, eventName, eventCategory, eventAction)
                     setAlarm(true, force = false)
-                } catch (e:Exception) {
+                } catch (e: Exception) {
                     Timber.e("P1#IRIS#saveEvent %s", e.toString())
                 }
             }
         }
     }
 
+    @Deprecated(message = "function should not be called directly", replaceWith = ReplaceWith(expression = "saveEvent(input)"))
     override fun sendEvent(map: Map<String, Any>) {
         if (cache.isEnabled()) {
             launch(coroutineContext) {

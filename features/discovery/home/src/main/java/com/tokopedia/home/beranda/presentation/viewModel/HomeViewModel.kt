@@ -18,6 +18,7 @@ import com.tokopedia.home.beranda.data.model.UpdateLiveDataModel
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
@@ -38,6 +39,8 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
+import com.tokopedia.topads.sdk.listener.ImpressionListener
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
@@ -79,7 +82,7 @@ open class HomeViewModel @Inject constructor(
         private val popularKeywordUseCase: Lazy<GetPopularKeywordUseCase>,
         private val sendGeolocationInfoUseCase: Lazy<SendGeolocationInfoUseCase>,
         private val stickyLoginUseCase: Lazy<StickyLoginUseCase>,
-        private val sendTopAdsUseCase: Lazy<SendTopAdsUseCase>,
+        private val injectCouponTimeBasedUseCase: InjectCouponTimeBasedUseCase,
         private val getRechargeRecommendationUseCase: Lazy<GetRechargeRecommendationUseCase>,
         private val declineRechargeRecommendationUseCase: Lazy<DeclineRechargeRecommendationUseCase>,
         private val homeDispatcher: Lazy<HomeDispatcherProvider>
@@ -118,6 +121,10 @@ open class HomeViewModel @Inject constructor(
     val stickyLogin: LiveData<Result<StickyLoginTickerPojo.TickerDetail>>
         get() = _stickyLogin
     private val _stickyLogin: MutableLiveData<Result<StickyLoginTickerPojo.TickerDetail>> = MutableLiveData()
+
+    val injectCouponTimeBasedResult : LiveData<Result<InjectCouponTimeBased>>
+        get() = _injectCouponTimeBasedResult
+    private val _injectCouponTimeBasedResult : MutableLiveData<Result<InjectCouponTimeBased>> = MutableLiveData()
 
 // ============================================================================================
 // ==================================== Helper Live Data ======================================
@@ -176,6 +183,7 @@ open class HomeViewModel @Inject constructor(
     private var buWidgetJob: Job? = null
     private var getRechargeRecommendationJob: Job? = null
     private var declineRechargeRecommendationJob: Job? = null
+    private var injectCouponTimeBasedJob: Job? = null
     private var jobChannel: Job? = null
     private var channel : Channel<UpdateLiveDataModel>? = null
 
@@ -378,12 +386,6 @@ open class HomeViewModel @Inject constructor(
         val playIndex = _homeLiveData.value?.list.copy().indexOfFirst { visitable -> visitable is PlayCardDataModel }
         if(playIndex != -1) {
             launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_DELETE, null, playIndex )) }
-        }
-    }
-
-    fun onBannerClicked(slidesModel: BannerSlidesModel) {
-        if (slidesModel.redirectUrl.isNotEmpty()) {
-            sendTopAdsUseCase.get().executeOnBackground(slidesModel.redirectUrl)
         }
     }
 
@@ -639,6 +641,9 @@ open class HomeViewModel @Inject constructor(
                     getRechargeRecommendation()
                     _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>() ?: listOf()))
                 } else {
+                    if (homeDataModel?.list?.size?:0 > 1) {
+                        _isRequestNetworkLiveData.postValue(Event(false))
+                    }
                     updateWidget(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel))
                     refreshHomeData()
                 }
@@ -871,10 +876,6 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    fun sendTopAds(url: String){
-        sendTopAdsUseCase.get().executeOnBackground(url)
-    }
-
     fun getOneClickCheckout(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int){
         val requestParams = RequestParams()
         val quantity = if(grid.minOrder < 1) "1" else grid.minOrder.toString()
@@ -967,6 +968,18 @@ open class HomeViewModel @Inject constructor(
     }
 
     fun getUserId() = userSession.get().userId ?: ""
+
+    fun injectCouponTimeBased() {
+        if(injectCouponTimeBasedJob?.isActive == true) return
+        injectCouponTimeBasedJob = launchCatchError(coroutineContext, {
+            _injectCouponTimeBasedResult.value = Result.success(injectCouponTimeBasedUseCase.executeOnBackground().data)
+        }){
+            it.printStackTrace()
+            _injectCouponTimeBasedResult.postValue(Result.error(it))
+        }
+    }
+
+    fun getUserId() = userSession.userId ?: ""
 
 // ============================================================================================
 // ================================ Live Data Controller ======================================

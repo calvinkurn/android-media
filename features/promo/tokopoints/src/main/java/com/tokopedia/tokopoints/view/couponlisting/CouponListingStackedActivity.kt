@@ -9,6 +9,7 @@ import androidx.viewpager.widget.ViewPager
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.tabs.TabLayout
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -19,7 +20,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
-import com.tokopedia.design.component.Tabs
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.BundleModule
 import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
@@ -38,7 +38,7 @@ import kotlinx.android.synthetic.main.tp_activity_stacked_coupon_list.*
 
 class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivityContract.View, HasComponent<TokopointBundleComponent> {
     private val tokoPointComponent: TokopointBundleComponent by lazy { initInjector() }
-    private var mTabsFilter: Tabs? = null
+    private var mTabsFilter: TabLayout? = null
     private var mAdapter: StackedCouponFilterPagerAdapter? = null
     private var bundle : Bundle? = null
 

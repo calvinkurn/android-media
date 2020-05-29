@@ -7,7 +7,8 @@
       }
     },
     "balance": {
-      "seller_usable_fmt": "Rp123.456"
+      "seller_usable": 100000,
+      "buyer_usable": 100000
     }
   }
 }
