@@ -12,9 +12,7 @@ import com.tokopedia.play.broadcaster.view.uimodel.ProductUiModel
 /**
  * Created by jegul on 26/05/20
  */
-class PlayProductPreviewAdapterDelegate(
-        private val listener: ProductPreviewViewHolder.Listener
-) : TypedAdapterDelegate<ProductUiModel, ProductUiModel, ProductPreviewViewHolder>(ProductPreviewViewHolder.LAYOUT) {
+class PlayProductPreviewAdapterDelegate : TypedAdapterDelegate<ProductUiModel, ProductUiModel, ProductPreviewViewHolder>(ProductPreviewViewHolder.LAYOUT) {
 
     override fun onBindViewHolder(item: ProductUiModel, holder: ProductPreviewViewHolder) {
     }
@@ -22,7 +20,7 @@ class PlayProductPreviewAdapterDelegate(
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): ProductPreviewViewHolder {
         val recyclerView = parent as RecyclerView
         val gridLayoutManager = recyclerView.layoutManager as GridLayoutManager
-        return ProductPreviewViewHolder(basicView, gridLayoutManager, listener)
+        return ProductPreviewViewHolder(basicView, gridLayoutManager)
     }
 
     override fun onBindViewHolder(itemList: List<ProductUiModel>, position: Int, holder: RecyclerView.ViewHolder) {

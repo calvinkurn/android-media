@@ -20,12 +20,9 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
     private val tvEtalaseTitle: TextView = itemView.findViewById(R.id.tv_etalase_title)
     private val tvEtalaseAmount: TextView = itemView.findViewById(R.id.tv_etalase_amount)
     private val rvProductPreview: RecyclerView = itemView.findViewById(R.id.rv_product_preview)
+    private val vClickArea: View = itemView.findViewById(R.id.v_click_area)
 
-    private val productPreviewAdapter = PlayProductPreviewAdapter(object : ProductPreviewViewHolder.Listener {
-        override fun onProductImagesClicked() {
-            itemView.performClick()
-        }
-    })
+    private val productPreviewAdapter = PlayProductPreviewAdapter()
 
     private val context: Context = itemView.context
 
@@ -53,13 +50,13 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
     }
 
     fun bind(item: PlayEtalaseUiModel) {
+        listener.onEtalaseBound(item.id)
+        vClickArea.setOnClickListener {
+            listener.onEtalaseClicked(item.id)
+        }
         tvEtalaseTitle.text = item.name
         tvEtalaseAmount.text = getString(R.string.play_etalase_product_amount, item.totalProduct)
         productPreviewAdapter.setItemsAndAnimateChanges(item.productList)
-
-        itemView.setOnClickListener {
-            listener.onEtalaseClicked(item.id)
-        }
     }
 
     companion object {
@@ -67,6 +64,8 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
     }
 
     interface Listener {
+
+        fun onEtalaseBound(etalaseId: Long)
         fun onEtalaseClicked(etalaseId: Long)
     }
 }

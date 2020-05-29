@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.di.DaggerPlayBroadcasterComponent
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayEtalaseViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.PlayEtalaseAdapter
@@ -24,7 +23,7 @@ import javax.inject.Inject
  */
 class PlayEtalasePickerFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory
-) : PlayBaseSetupFragment(), PlayEtalaseViewHolder.Listener {
+) : PlayBaseSetupFragment() {
 
     private lateinit var viewModel: PlayEtalasePickerViewModel
 
@@ -32,11 +31,28 @@ class PlayEtalasePickerFragment @Inject constructor(
     private lateinit var psbSearch: PlaySearchBar
     private lateinit var rvEtalase: RecyclerView
 
-    private val etalaseAdapter = PlayEtalaseAdapter(this)
+    private val etalaseAdapter = PlayEtalaseAdapter(object : PlayEtalaseViewHolder.Listener {
+        override fun onEtalaseClicked(etalaseId: Long) {
+            broadcastCoordinator.navigateToFragment(
+                    PlayEtalaseDetailFragment::class.java,
+                    Bundle().apply {
+                        putLong(PlayEtalaseDetailFragment.EXTRA_ETALASE_ID, etalaseId)
+                    }
+            )
+        }
+
+        override fun onEtalaseBound(etalaseId: Long) {
+            viewModel.loadEtalaseProductPreview(etalaseId)
+        }
+    })
 
     override fun getTitle(): String = "Select Products or Collection"
 
     override fun isRootFragment(): Boolean = true
+
+    override fun refresh() {
+        etalaseAdapter.notifyDataSetChanged()
+    }
 
     override fun getScreenName(): String = "Play Etalase Picker"
 
@@ -59,15 +75,6 @@ class PlayEtalasePickerFragment @Inject constructor(
         super.onActivityCreated(savedInstanceState)
 
         observeEtalase()
-    }
-
-    override fun onEtalaseClicked(etalaseId: Long) {
-        broadcastCoordinator.navigateToFragment(
-                PlayEtalaseDetailFragment::class.java,
-                Bundle().apply {
-                    putLong(PlayEtalaseDetailFragment.EXTRA_ETALASE_ID, etalaseId)
-                }
-        )
     }
 
     private fun initView(view: View) {
