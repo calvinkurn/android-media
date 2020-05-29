@@ -56,6 +56,7 @@ import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.Produ
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelViewModel
+import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreHomeComponentCallback
 import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreLegoBannerComponentCallback
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
@@ -352,6 +353,7 @@ class OfficialHomeFragment :
                         || it is ProductRecommendationViewModel
                         || it is ProductRecommendationTitleViewModel
                         || it is LoadingMoreModel
+                        || it is DynamicLegoBannerDataModel
             }
             counterTitleShouldBeRendered = 0
             adapter?.notifyDataSetChanged()
