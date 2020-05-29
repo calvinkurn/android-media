@@ -8,7 +8,7 @@
     tools:text = "Taman Bermain"
     android:background="@drawable/bg_text_category"
     app:typographyType="body_2"
-    android:textColor="@color/ent_pdp_form_graytext"
+    android:textColor="@color/Neutral_N100"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 

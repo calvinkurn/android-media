@@ -24,7 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing_lvl1"
                 android:alpha="0.12"
-                android:background="@color/ent_pdp_ticket_colorBlack"
+                android:background="@color/Neutral_N700"
                 android:visibility="gone"
                 android:layout_gravity="top"/>
 
@@ -42,7 +42,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing_lvl1"
                 android:alpha="0.12"
-                android:background="@color/ent_pdp_ticket_colorBlack"
+                android:background="@color/Neutral_N700"
                 android:visibility="gone" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -69,7 +69,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_lvl1"
                     android:text="@string/ent_default_totalPrice"
-                    android:textColor="@color/ent_pdp_ticket_colorPrice"
+                    android:textColor="@color/Yellow_Y500"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/total_Harga"
                     app:typographyType="body_1"
