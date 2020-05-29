@@ -9,26 +9,6 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
 import com.tokopedia.authentication.AuthHelper.Companion.getUserAgent
 import com.tokopedia.checkout.R
-import com.tokopedia.logisticcart.domain.executor.MainScheduler
-import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
-import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
-import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
-import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
-import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.logisticdata.data.analytics.CodAnalytics
-import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
-import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
-import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeFinalUseCase
-import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
-import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
-import com.tokopedia.purchase_platform.common.feature.editaddress.di.*
-import com.tokopedia.purchase_platform.common.schedulers.DefaultSchedulers
-import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
-import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceItemActionListener
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.data.api.*
 import com.tokopedia.checkout.data.repository.CheckoutRepository
@@ -47,16 +27,35 @@ import com.tokopedia.checkout.view.ShipmentFragment
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.logisticcart.domain.executor.MainScheduler
+import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
+import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
+import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
+import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
+import com.tokopedia.logisticdata.data.analytics.CodAnalytics
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
-import com.tokopedia.purchase_platform.common.di.*
+import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
+import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
+import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
+import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
+import com.tokopedia.purchase_platform.common.di.PurchasePlatformAkamaiQualifier
+import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
+import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
+import com.tokopedia.purchase_platform.common.di.PurchasePlatformQualifier
+import com.tokopedia.purchase_platform.common.feature.editaddress.di.PeopleAddressNetworkModule
 import com.tokopedia.purchase_platform.common.feature.editaddress.domain.usecase.EditAddressUseCase
+import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
+import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceItemActionListener
+import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey.AKAMAI_CART_ENABLE
+import com.tokopedia.purchase_platform.common.schedulers.DefaultSchedulers
+import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -118,21 +117,13 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
     @Provides
     @PurchasePlatformAkamaiQualifier
     @CheckoutScope
-    fun provideAkamaiRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
-        return FirebaseRemoteConfigImpl(context)
-    }
-
-    @Provides
-    @PurchasePlatformAkamaiQualifier
-    @CheckoutScope
     fun provideCartAkamaiApiOkHttpClient(
             @ApplicationContext context: Context,
             @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
             cartApiInterceptor: CartApiInterceptor,
             okHttpRetryPolicy: OkHttpRetryPolicy,
             fingerprintInterceptor: FingerprintInterceptor,
-            chuckInterceptor: ChuckerInterceptor,
-            @PurchasePlatformAkamaiQualifier remoteConfig: RemoteConfig): OkHttpClient {
+            chuckInterceptor: ChuckerInterceptor): OkHttpClient {
 
         val builder = OkHttpClient.Builder()
                 .readTimeout(okHttpRetryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
@@ -145,9 +136,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                     chain.proceed(newRequest.build())
                 }
                 .addInterceptor(cartApiInterceptor)
-        if (remoteConfig.getBoolean(AKAMAI_CART_ENABLE, true)) {
-            builder.addInterceptor(AkamaiBotInterceptor(context))
-        }
+        builder.addInterceptor(AkamaiBotInterceptor(context))
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(httpLoggingInterceptor)
                     .addInterceptor(chuckInterceptor)

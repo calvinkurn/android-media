@@ -126,8 +126,10 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.utils.time.TimeHelper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -622,7 +624,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void showToastNormal(String message) {
         if (getView() != null && getActivity() != null) {
-            Toaster.INSTANCE.make(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getActivity().getString(R.string.label_action_snackbar_close), view -> { });
+            Toaster.make(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getActivity().getString(R.string.label_action_snackbar_close), view -> { });
         }
     }
 
@@ -636,7 +638,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (shipmentAdapter == null || shipmentAdapter.getItemCount() == 0) {
                 renderErrorPage(message);
             } else {
-                Toaster.INSTANCE.make(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getActivity().getString(R.string.label_action_snackbar_close), view -> { });
+                Toaster.make(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getActivity().getString(R.string.label_action_snackbar_close), view -> { });
             }
         }
     }
