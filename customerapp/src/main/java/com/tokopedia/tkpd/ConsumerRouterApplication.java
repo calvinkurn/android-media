@@ -582,6 +582,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return SellerReputationFragment.createInstance();
     }
 
+    @Override
+    public Fragment getReviewSellerFragment() {
+        return null;
+    }
+
     /**
      * Use {@link com.tokopedia.applink.RouteManager} or {@link ApplinkRouter#goToApplinkActivity(Activity, String, Bundle)}
      */
