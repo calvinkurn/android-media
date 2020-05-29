@@ -389,9 +389,6 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
                         val bottomSheet: BottomSheetUnify = IncentiveOvoBottomSheet(IncentiveOvoMapper.mapIncentiveOvoReviewtoIncentiveOvoInbox(data), "")
                         fragmentManager?.let { bottomSheet.show(it, bottomSheet.tag)}
-                        bottomSheet.setCloseClickListener {
-                            reviewTracker.onClickDismissIncentiveOvoBottomSheetTracker("")
-                        }
                         reviewTracker.onClickReadSkIncentiveOvoTracker(tickerTitle, "")
                     }
 
