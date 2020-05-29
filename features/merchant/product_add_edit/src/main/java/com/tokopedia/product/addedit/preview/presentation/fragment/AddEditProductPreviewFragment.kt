@@ -572,16 +572,25 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
         photoItemTouchHelper?.startDrag(viewHolder)
+        //countTouchPhoto is used for count how many times images hit
+        //we use this because startDrag(viewHolder) can hit tracker two times
         countTouchPhoto += 1
-        // photoItemTouchHelper?.startDrag(viewHolder) can hit tracker one time
-        // to avoid double hit tracker when dragging or touching image product, we need count how many onStartDrag func run
-        if(countTouchPhoto == 2) {
-            if (viewModel.isEditing.value == true && !viewModel.isAdding) {
-                ProductEditMainTracking.trackDragPhoto(shopId)
-            } else {
-                ProductAddMainTracking.trackDragPhoto(shopId)
+        //countTouchPhoto can increment 1 every time we come or back to this page
+        //if we back from ActivityOnResult countTouchPhoto still increment
+        //to avoid that we have to make sure the value of countTouchPhoto must be 1
+        if(countTouchPhoto > 2) {
+            countTouchPhoto = 1
+        }
+        // tracker only hit when there are two images of product
+        if(productPhotoAdapter?.itemCount ?: 0 > 1) {
+            // to avoid double hit tracker when dragging or touching image product, we have to put if here
+            if(countTouchPhoto == 2) {
+                if (viewModel.isEditing.value == true && !viewModel.isAdding) {
+                    ProductEditMainTracking.trackDragPhoto(shopId)
+                } else {
+                    ProductAddMainTracking.trackDragPhoto(shopId)
+                }
             }
-            countTouchPhoto = 0
         }
     }
 
