@@ -11,12 +11,30 @@
     <string name="play_product_stock_amount">Stok: %d</string>
     <string name="play_product_select_max_info">Pilih maks. %d produk</string>
 
-
     <string name="play_default_title">Buat Live Streaming</string>
     <string name="play_allow_title">Aktifkan kamera &amp; mikrofon</string>
     <string name="play_allow_description">Untuk memulai live streaming, berikan akses kamera &amp; mikrofon di HP kamu.</string>
     <string name="play_allow_camera">Aktifkan Akses Kamera</string>
     <string name="play_allow_mic">Aktifkan Akses Mikrofon</string>
+
+    <string name="play_prepare_broadcast_create_promo_title">Buat Promo</string>
+    <string name="play_prepare_broadcast_edit_promo_title">Ubah Promo</string>
+    <string name="play_prepare_broadcast_promo_header_description">Kamu bisa buat promo menarik di live streaming, dan dapatkan lebih banyak pembeli!</string>
+    <string name="play_prepare_broadcast_promo_with_promo_title">Buat promo untuk produk yang dipilih</string>
+    <string name="play_prepare_broadcast_promo_with_promo_description">Kupon akan ditampilkan saat live streaming bersamaan dengan kupon tokomu yang sedang aktif</string>
+    <string name="play_prepare_broadcast_promo_without_promo_title">Belum mau buat promo, nanti saja</string>
+    <string name="play_prepare_broadcast_promo_without_promo_description">Jika tokomu punya kupon yang sedang aktif, kupon tersebut akan ditampilkan saat live streaming</string>
+    <string name="play_prepare_broadcast_promo_percentage_label">Diskon Produk (%)</string>
+    <string name="play_prepare_broadcast_promo_percentage_min_error_label">Min. diskon 1%</string>
+    <string name="play_prepare_broadcast_promo_percentage_max_error_label">Maks. diskon 99%</string>
+    <string name="play_prepare_broadcast_promo_quota_label">Kuota Diskon Produk</string>
+    <string name="play_prepare_broadcast_promo_quota_min_error_label">Min. kuota 1</string>
+    <string name="play_prepare_broadcast_promo_quota_max_error_label">Maks. kuota 999</string>
+    <string name="play_prepare_broadcast_promo_detail_title">Diskon Produk &amp; Kuotanya</string>
+    <string name="play_prepare_broadcast_promo_detail_description"><![CDATA[<b>Diskon %1$d\%%</b> (%2$d Kuota)]]></string>
+
+    <string name="play_prepare_broadcast_label_next">Lanjutkan</string>
+    <string name="play_prepare_broadcast_label_save">Simpan</string>
 
     <string name="play_summary_title">Laporan Live Streaming</string>
     <string name="play_summary_button_finish">Selesai</string>
