@@ -50,6 +50,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
         const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
         const val IS_EMPTY_REPLY_REVIEW = "IS_EMPTY_REPLY_REVIEW"
         const val DATE_REVIEW_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+        const val TEMPLATE_MAX = 5
     }
 
     @Inject
@@ -414,6 +415,9 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
     }
 
     private fun setTemplateList(data: List<ReplyTemplateUiModel>) {
+        if(data.size >= TEMPLATE_MAX) {
+            btnAddTemplate?.hide()
+        }
         if (data.isEmpty()) {
             list_template?.hide()
         } else {
