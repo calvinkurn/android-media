@@ -57,7 +57,7 @@ class HeaderViewHolder(
 
                     val endDateTime = DateTimeUtils.convertUnsafeDateTime(element.finishTime)
 
-                    val diffMillis = System.currentTimeMillis() - endDateTime.time
+                    val diffMillis = endDateTime.time - System.currentTimeMillis()
 
                     val timer = TimerRunnable(diffMillis, ::onCountdownTick)
                     timer.start()

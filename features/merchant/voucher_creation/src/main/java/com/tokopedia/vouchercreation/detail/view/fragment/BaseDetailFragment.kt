@@ -99,8 +99,9 @@ abstract class BaseDetailFragment : BaseListFragment<VoucherDetailUiModel, Vouch
     }
 
     protected fun getVoucherInfoSection(@VoucherTargetType targetType: Int,
-                                      voucherName: String,
-                                      promoCode: String) : InfoContainerUiModel {
+                                        voucherName: String,
+                                        promoCode: String,
+                                        hasCta: Boolean = false) : InfoContainerUiModel {
         val targetTypeStringRes = when(targetType) {
             VoucherTargetType.PUBLIC -> R.string.mvc_create_target_public
             VoucherTargetType.PRIVATE -> R.string.mvc_create_target_private
@@ -121,12 +122,13 @@ abstract class BaseDetailFragment : BaseListFragment<VoucherDetailUiModel, Vouch
                 titleRes = R.string.mvc_detail_voucher_info,
                 informationList = subInfoList,
                 dataKey = VOUCHER_INFO_DATA_KEY,
-                hasCta = true)
+                hasCta = hasCta)
     }
 
     protected fun getVoucherBenefitSection(voucherType: VoucherImageType,
-                                         minPurchase: Int,
-                                         voucherQuota: Int) : InfoContainerUiModel {
+                                           minPurchase: Int,
+                                           voucherQuota: Int,
+                                           hasCta: Boolean = false) : InfoContainerUiModel {
         val voucherTypeRes =
                 when(voucherType) {
                     is VoucherImageType.FreeDelivery -> R.string.mvc_free_shipping
@@ -155,12 +157,12 @@ abstract class BaseDetailFragment : BaseListFragment<VoucherDetailUiModel, Vouch
                 titleRes = R.string.mvc_detail_voucher_benefit,
                 informationList = subInfoList,
                 dataKey = VOUCHER_BENEFIT_DATA_KEY,
-                hasCta = true
+                hasCta = hasCta
         )
     }
 
     protected fun getExpenseEstimationSection(benefitMax: Int,
-                                            voucherQuota: Int) : VoucherTickerUiModel {
+                                              voucherQuota: Int) : VoucherTickerUiModel {
         val expenseEstimation = benefitMax * voucherQuota
         val formattedExpenseEstimation = CurrencyFormatHelper.convertToRupiah(expenseEstimation.toString())
         val expenseEstimationString = String.format(context?.getString(R.string.mvc_rp_value).toBlankOrString(), formattedExpenseEstimation)
@@ -170,7 +172,7 @@ abstract class BaseDetailFragment : BaseListFragment<VoucherDetailUiModel, Vouch
         )
     }
 
-    protected fun getPeriodSection(dateString: String) : InfoContainerUiModel {
+    protected fun getPeriodSection(dateString: String, hasCta: Boolean = false) : InfoContainerUiModel {
         val subInfoList = listOf(
                 SubInfoItemUiModel(R.string.mvc_period, dateString)
         )
@@ -179,7 +181,7 @@ abstract class BaseDetailFragment : BaseListFragment<VoucherDetailUiModel, Vouch
                 titleRes = R.string.mvc_detail_voucher_period,
                 informationList = subInfoList,
                 dataKey = PERIOD_DATA_KEY,
-                hasCta = true
+                hasCta = hasCta
         )
     }
 

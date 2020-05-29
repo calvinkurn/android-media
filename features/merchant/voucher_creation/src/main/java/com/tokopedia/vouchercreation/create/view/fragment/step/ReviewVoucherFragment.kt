@@ -198,12 +198,12 @@ class ReviewVoucherFragment(private val getVoucherReviewUiModel: () -> VoucherRe
                     with(voucherReviewUiModel) {
                         getVoucherPreviewSection(voucherType, voucherName, shopAvatarUrl, shopName, promoCode, postDisplayedDate)
                     },
-                    getVoucherInfoSection(targetType, voucherName, promoCode),
+                    getVoucherInfoSection(targetType, voucherName, promoCode, true),
                     DividerUiModel(DividerUiModel.THIN),
-                    getVoucherBenefitSection(voucherType, minPurchase, voucherQuota),
+                    getVoucherBenefitSection(voucherType, minPurchase, voucherQuota, true),
                     getExpenseEstimationSection(voucherType.value, voucherQuota),
                     DividerUiModel(DividerUiModel.THIN),
-                    getPeriodSection(fullDisplayedDate),
+                    getPeriodSection(fullDisplayedDate, true),
                     DividerUiModel(DividerUiModel.THICK),
                     buttonUiModel,
                     FooterUiModel(
