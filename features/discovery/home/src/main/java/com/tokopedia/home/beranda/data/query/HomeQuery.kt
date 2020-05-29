@@ -79,6 +79,7 @@ object HomeQuery{
               }
               grids {
                 id
+                back_color
                 name
                 url
                 applink
