@@ -23,6 +23,7 @@ class ShippingCompletionTickerViewHolder(val view: View, val actionListener: Shi
     }
 
     fun bindViewHolder(tickerModel: ShippingCompletionTickerModel) {
+        actionListener.onShowTickerShippingCompletion()
         ticker.setTextDescription(tickerModel.tickerMessage)
         labelButtonCheckShippingCompletion.setOnClickListener { actionListener.onCheckShippingCompletionClicked() }
     }
