@@ -11,7 +11,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/account_seller_warning_icon"
+            android:id="@+id/seller_migration_warning_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/layout_lvl1"
@@ -22,7 +22,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/account_seller_warning_title"
+            android:id="@+id/seller_migration_warning_title"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:text="@string/seller_migration_warning_title"
@@ -30,18 +30,18 @@
             android:layout_marginLeft="@dimen/layout_lvl1"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
-            app:layout_constraintStart_toEndOf="@id/account_seller_warning_icon"
-            app:layout_constraintTop_toTopOf="@id/account_seller_warning_icon" />
+            app:layout_constraintStart_toEndOf="@id/seller_migration_warning_icon"
+            app:layout_constraintTop_toTopOf="@id/seller_migration_warning_icon" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/sellerMigrationWarningDate"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
-            android:text="@string/seller_migration_warning_content"
             android:layout_marginBottom="@dimen/layout_lvl1"
             app:typographyType="heading_5"
             app:typographyWeight="bold"
-            app:layout_constraintStart_toStartOf="@id/account_seller_warning_title"
-            app:layout_constraintTop_toBottomOf="@id/account_seller_warning_title"
+            app:layout_constraintStart_toStartOf="@id/seller_migration_warning_title"
+            app:layout_constraintTop_toBottomOf="@id/seller_migration_warning_title"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

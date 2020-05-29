@@ -21,6 +21,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.partial_seller_migration_footer.*
+import kotlinx.android.synthetic.main.partial_seller_migration_warning.*
 import kotlinx.android.synthetic.main.widget_seller_migration_bottom_sheet.*
 
 abstract class SellerMigrationBottomSheet(private val titles: List<String> = emptyList(),
@@ -75,8 +76,10 @@ abstract class SellerMigrationBottomSheet(private val titles: List<String> = emp
     }
 
     private fun setupWarningCard() {
-        if(getSellerMigrationDate(context).isNotBlank()) {
+        val remoteConfigDate = getSellerMigrationDate(context)
+        if(remoteConfigDate.isNotBlank()) {
             sellerMigrationWarningCard.show()
+            sellerMigrationWarningDate.text = remoteConfigDate
         }
     }
 

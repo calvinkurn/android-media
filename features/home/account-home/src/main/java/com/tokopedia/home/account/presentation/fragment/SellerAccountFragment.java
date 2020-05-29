@@ -48,6 +48,7 @@ import javax.inject.Inject;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
 
+import static com.tokopedia.seller_migration_common.SellerMigrationRemoteConfigKt.getSellerMigrationDate;
 import static com.tokopedia.seller_migration_common.SellerMigrationRemoteConfigKt.isSellerMigrationEnabled;
 
 /**
@@ -272,7 +273,11 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     private void setupSellerMigrationTicker() {
         if(isSellerMigrationEnabled(this.getContext())) {
             migrationTicker.setTickerTitle(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_title));
-            migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_content));
+            String remoteConfigDate = getSellerMigrationDate(this.getContext());
+            if(remoteConfigDate.isEmpty()) {
+                remoteConfigDate = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_default_migration_date);
+            }
+            migrationTicker.setHtmlDescription(String.format(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_content), remoteConfigDate));
             migrationTicker.setDescriptionClickEvent(new TickerCallback() {
                 @Override
                 public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
