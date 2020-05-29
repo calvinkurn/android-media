@@ -65,10 +65,15 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
     }
 
     private fun showMaskedAnswer(maskedContent: String, questionId: String) {
-        itemView.readingMessage.apply {
-            text = maskedContent
-            isEnabled = false
-            show()
+        itemView.apply {
+            readingMessage.apply {
+                text = maskedContent
+                isEnabled = false
+                show()
+            }
+            attachedProductIcon.hide()
+            attachedProductCount.hide()
+            seeOtherAnswers.hide()
         }
     }
 
