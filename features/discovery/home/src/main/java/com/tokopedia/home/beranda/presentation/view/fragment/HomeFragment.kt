@@ -17,7 +17,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import androidx.annotation.VisibleForTesting
 import androidx.core.app.ActivityCompat
@@ -65,7 +64,6 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBann
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.LegoBanner.getLegoBannerFourImageImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.MixLeft.getMixLeftIrisProductView
-import com.tokopedia.home.analytics.HomePageTrackingV2.MixLeft.getMixLeftProductView
 import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.getPopularKeywordImpressionItem
 import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.sendPopularKeywordClickItem
 import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.sendPopularKeywordClickReload
@@ -73,6 +71,7 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getAdd
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getCloseClickOnDynamicListCarousel
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getRecommendationListImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.SprintSale.getSprintSaleImpression
+import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
 import com.tokopedia.home.analytics.v2.MixTopTracking.getMixTopViewIris
 import com.tokopedia.home.analytics.v2.MixTopTracking.mapChannelToProductTracker
 import com.tokopedia.home.analytics.v2.ProductHighlightTracking.getProductHighlightImpression
@@ -867,7 +866,6 @@ open class HomeFragment : BaseDaggerFragment(),
         layoutManager = LinearLayoutManager(context)
         homeRecyclerView?.layoutManager = layoutManager
         val adapterFactory = HomeAdapterFactory(
-                childsFragmentManager,
                 this,
                 this,
                 this,
@@ -1861,6 +1859,12 @@ open class HomeFragment : BaseDaggerFragment(),
             DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST -> putEEToIris(getRecommendationListImpression(channel, true, viewModel.getUserId()) as HashMap<String, Any>)
             DynamicChannelViewHolder.TYPE_PRODUCT_HIGHLIGHT -> putEEToIris(getProductHighlightImpression(
                     channel, true
+            ) as HashMap<String, Any>)
+            DynamicChannelViewHolder.TYPE_CATEGORY_WIDGET -> putEEToIris(CategoryWidgetTracking.getCategoryWidgetBanneImpression(
+                    channel.grids.toList(),
+                    viewModel.getUserId(),
+                    true,
+                    channel
             ) as HashMap<String, Any>)
         }
     }

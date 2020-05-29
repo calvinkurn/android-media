@@ -8,7 +8,6 @@ import android.text.TextUtils
 import android.view.*
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
@@ -23,9 +22,6 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.design.utils.StringUtils
-import com.tokopedia.design.viewpagerindicator.CirclePageIndicator
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
@@ -44,6 +40,7 @@ import com.tokopedia.tokopoints.view.model.CatalogFilterPointRange
 import com.tokopedia.tokopoints.view.model.CatalogSubCategory
 import com.tokopedia.tokopoints.view.pointhistory.PointHistoryActivity
 import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.unifycomponents.PageControl
 import java.util.*
 import javax.inject.Inject
 
@@ -213,17 +210,16 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         val pager: ViewPager = view!!.findViewById(R.id.view_pager_banner)
         pager.adapter = CatalogBannerPagerAdapter(context, banners, this)
         //adding bottom dots(Page Indicator)
-        val pageIndicator: CirclePageIndicator = view!!.findViewById(R.id.page_indicator)
-        pageIndicator.fillColor = ContextCompat.getColor(context!!, com.tokopedia.design.R.color.tkpd_main_green)
-        pageIndicator.pageColor = ContextCompat.getColor(context!!, com.tokopedia.design.R.color.white_two)
-        pageIndicator.setViewPager(pager, 0)
+        val pageIndicator: PageControl? = view?.findViewById(R.id.page_indicator)
+        pageIndicator?.setCurrentIndicator(0)
+        pageIndicator?.setIndicator(banners.size)
         view!!.findViewById<View>(R.id.container_pager).visibility = View.VISIBLE
         mAppBarHeader!!.addOnOffsetChangedListener(offsetChangedListenerAppBarElevation)
     }
 
     override fun onSuccessPoints(rewardStr: String, rewardValue: Int, membership: String, eggUrl: String) {
         if (!rewardStr.isEmpty()) mTextPoints!!.text = rewardStr
-        mTextPointsBottom!!.text = CurrencyFormatUtil.convertPriceValue(rewardValue.toDouble(), false)
+        mTextPointsBottom!!.text = CurrencyHelper.convertPriceValue(rewardValue.toDouble(), false)
         isPointsAvailable = true
         mAppBarHeader!!.addOnOffsetChangedListener(offsetChangedListenerAppBarElevation)
     }
@@ -474,10 +470,8 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     }
 
     private val isSeeAllPage: Boolean
-        private get() = if (arguments == null
-                || StringUtils.isBlank(arguments!!.getString(CommonConstant.ARGS_SLUG_CATEGORY))) {
-            true
-        } else false
+        get() = (arguments == null
+                || (arguments!!.getString(CommonConstant.ARGS_SLUG_CATEGORY)).isNullOrEmpty())
 
     private fun getSelectedCategoryIndex(data: List<CatalogSubCategory>): Int {
         var counter = 0
@@ -490,7 +484,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         return counter
     }
 
-    override fun onSaveFilter(filter: CatalogFilterPointRange, selectedPosition: Int) {
+    override fun onSaveFilter(filter: CatalogFilterPointRange?, selectedPosition: Int) {
         if (filter != null) {
             if (menuItemFilter != null) {
                 if (selectedPosition == 0) {
