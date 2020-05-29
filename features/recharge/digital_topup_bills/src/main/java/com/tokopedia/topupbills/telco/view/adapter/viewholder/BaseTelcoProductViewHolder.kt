@@ -67,6 +67,7 @@ abstract class BaseTelcoProductViewHolder(itemView: View, val listener: DigitalP
             productLabel.text = itemView.context.getString(R.string.telco_label_out_of_stock)
             productLabel.visibility = View.VISIBLE
             productLabel.setLabelType(Label.GENERAL_DARK_GREY)
+            viewGrup.setBackgroundResource(0)
             viewGrup.setBackgroundResource(R.drawable.digital_bg_grey_rounded)
         }
     }
@@ -77,6 +78,7 @@ abstract class BaseTelcoProductViewHolder(itemView: View, val listener: DigitalP
             listener.onClickItemProduct(productItem, adapterPosition)
             drawableResources = com.tokopedia.common.topupbills.R.drawable.common_topup_bg_green_light_rounded
         }
+        viewGrup.setBackgroundResource(0)
         viewGrup.setBackgroundResource(drawableResources)
     }
 

@@ -6,22 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/container_background"
+    <ImageView
+        android:id="@+id/img_banner_background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/img_banner_background"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scaleType="centerCrop"
-            tools:ignore="contentDescription"
-            app:srcCompat="@drawable/digital_common_ic_bg_header" />
-    </FrameLayout>
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/digital_common_ic_bg_header"
+        tools:ignore="contentDescription" />
 
     <com.tokopedia.header.HeaderUnify
         android:id="@+id/toolbar_telco"

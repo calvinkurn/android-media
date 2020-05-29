@@ -6,7 +6,6 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
 import android.widget.AutoCompleteTextView
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -23,9 +22,9 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 
     protected val hintInputNumber: TextView
     protected val imgOperator: ImageView
-    protected val btnClear: Button
+    protected val btnClear: ImageView
     protected val autoCompleteInputNumber: AutoCompleteTextView
-    protected val btnContactPicker: Button
+    protected val btnContactPicker: ImageView
     protected val errorInputNumber: TextView
     protected val view: View
     private lateinit var listener: ActionListener
