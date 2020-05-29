@@ -17,7 +17,8 @@ class CarouselWidgetUiModel(
         override val dataKey: String,
         override val ctaText: String,
         override var data: CarouselDataUiModel?,
-        override val impressHolder: ImpressHolder = ImpressHolder()
+        override val impressHolder: ImpressHolder = ImpressHolder(),
+        override var isLoaded: Boolean
 ) : BaseWidgetUiModel<CarouselDataUiModel> {
 
     override fun type(typeFactory: SellerHomeAdapterTypeFactory): Int {
