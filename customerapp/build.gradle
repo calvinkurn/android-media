@@ -280,6 +280,7 @@ dependencies {
     implementation project(rootProject.ext.features.commonWallet)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.tkpdinbox)
+    implementation project(rootProject.ext.features.commonElectronicMoney)
     implementation project(rootProject.ext.features.tkpdsession)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.flightOrderList)
