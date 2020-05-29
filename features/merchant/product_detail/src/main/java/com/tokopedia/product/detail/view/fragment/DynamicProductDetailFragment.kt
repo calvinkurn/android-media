@@ -114,6 +114,7 @@ import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.constant.Constant
 import com.tokopedia.purchase_platform.common.sharedata.ShipmentFormRequest
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -243,6 +244,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        (context as? ProductDetailActivity)?.startMonitoringPltNetworkRequest()
         super.onViewCreated(view, savedInstanceState)
         if (::remoteConfig.isInitialized) {
             viewModel.enableCaching = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_MAIN_APP_ENABLED_CACHE_PDP, true)
@@ -675,10 +677,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    override fun onEditProductClick(product: ProductSnapshotDataModel, productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
-        DynamicProductDetailTracking.Click.eventEditProductClick(product, viewModel.isUserSessionActive, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-    }
-
     override fun getParentRecyclerViewPool(): RecyclerView.RecycledViewPool? {
         return getRecyclerView(view).recycledViewPool
     }
@@ -875,7 +873,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             val productP3value = viewModel.productInfoP3RateEstimate.value
             if (shopInfo != null && shopInfo.isAllowManage == 1) {
                 if (productInfo?.basic?.status != ProductStatusTypeDef.PENDING) {
-                    DynamicProductDetailTracking.Click.onEditProductClicked(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
+                    DynamicProductDetailTracking.Click.eventEditProductClick(viewModel.isUserSessionActive, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
                     gotoEditProduct()
                 } else {
                     activity?.run {
@@ -1040,6 +1038,15 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         pdpHashMapUtil?.updateDataP1(updatedDynamicProductInfo)
         updateButtonAfterClickVariant(indexOfSelectedVariant)
 
+        if (pdpHashMapUtil?.productNewVariantDataModel?.isPartialySelected() == false && shouldFireVariantTracker) {
+            shouldFireVariantTracker = false
+            DynamicProductDetailTracking.Click.onVariantLevel1Clicked(
+                    viewModel.getDynamicProductInfoP1,
+                    pdpHashMapUtil?.productNewVariantDataModel,
+                    viewModel.variantData,
+                    dynamicAdapter.getVariantPosition(pdpHashMapUtil?.productNewVariantDataModel))
+        }
+
         renderFullfillment()
         dynamicAdapter.notifyGeneralInfo(pdpHashMapUtil?.productFullfilmentMap)
         dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap)
@@ -1103,6 +1110,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun observeP1() {
         viewLifecycleOwner.observe(viewModel.productLayout) { data ->
+            (activity as? ProductDetailActivity)?.startMonitoringPltRenderPage()
             data.doSuccessOrFail({
                 context?.let { context ->
                     pdpHashMapUtil = DynamicProductDetailHashMap(context, DynamicProductDetailMapper.hashMapLayout(it.data))
@@ -1113,6 +1121,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 renderPageError(it)
             })
             (activity as? ProductDetailActivity)?.stopMonitoringP1()
+            (activity as? ProductDetailActivity)?.stopMonitoringPltRenderPage()
         }
     }
 
@@ -1243,7 +1252,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun goToOneClickCheckout() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT).apply {
+            putExtra(Constant.EXTRA_OCC_SOURCE_PDP, true)
+        }
         startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_CHECKOUT)
     }
 
@@ -1560,15 +1571,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
         val isPartialySelected = pdpHashMapUtil?.productNewVariantDataModel?.isPartialySelected()
                 ?: false
-
-        if (!isPartialySelected && shouldFireVariantTracker) {
-            shouldFireVariantTracker = false
-            DynamicProductDetailTracking.Click.onVariantLevel1Clicked(
-                    viewModel.getDynamicProductInfoP1,
-                    pdpHashMapUtil?.productNewVariantDataModel,
-                    viewModel.variantData,
-                    dynamicAdapter.getVariantPosition(pdpHashMapUtil?.productNewVariantDataModel))
-        }
 
         viewModel.onVariantClicked(viewModel.variantData, pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant, isPartialySelected, variantOptions.level,
                 variantOptions.imageOriginal)

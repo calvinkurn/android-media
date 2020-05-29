@@ -10,9 +10,9 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.buyerorder.common.view.DoubleTextView
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.model.ProductCatalogResponse.ProductCatalogQuery.Data.Catalog.Specification
-import com.tokopedia.transaction.orders.common.view.DoubleTextView
 import kotlinx.android.synthetic.main.fragment_catalog_specs_and_detail_fragment.*
 
 class CatalogSpecsAndDetailFragment : Fragment() {

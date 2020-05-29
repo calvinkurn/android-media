@@ -126,11 +126,12 @@
 /features/recharge/recharge_slice                       @tokopedia/minion-mark
 
 /features/payment/payment/                      		@tokopedia/minion-bob
-/features/payment/payment_setting/              		@tokopedia/minion-bob
+/features/payment/payment_setting/              		@tokopedia/minion-yoda
 /features/payment/pms/                          		@tokopedia/minion-bob
 /features/transaction/atc_common/               		@tokopedia/minion-bob
 /features/transaction/opportunity/               		@tokopedia/minion-bob
 /features/transaction/sellerorder/                      @tokopedia/minion-bob
+/features/transaction/buyerorder/                       @tokopedia/minion-bob
 /features/transaction/purchase_platform/        		@tokopedia/minion-bob
 /features/transaction/purchase_platform_common/ 		@tokopedia/minion-bob
 /features/logistic/logisticdata/                		@tokopedia/minion-bob
@@ -272,8 +273,6 @@
 /tkpdsession/                                       	@tokopedia/core-team
 /tkpddigital/                                       	@tokopedia/core-team
 /tkpdinbox/                                         	@tokopedia/core-team
-/tkpdtransaction/                                   	@tokopedia/core-team
-/tkpdtransaction-common/                                @tokopedia/core-team
 /tkpdseller/                                        	@tokopedia/core-team
 
 /tkpddesign/                                        	@tokopedia/android-gatekeeper-legacy-code
