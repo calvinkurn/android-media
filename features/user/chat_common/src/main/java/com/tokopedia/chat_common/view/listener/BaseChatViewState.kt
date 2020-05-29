@@ -37,6 +37,10 @@ interface BaseChatViewState {
 
     fun onKeyboardClosed()
 
+    fun hideChatMenu()
+
+    fun showChatMenu()
+
     fun showErrorWebSocket(isWebSocketError: Boolean)
 
 }

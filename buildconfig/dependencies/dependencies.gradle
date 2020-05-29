@@ -39,7 +39,7 @@ ext {
     stfalconVersion = '1.0.0'
 
     playServiceFirebaseConfig = '16.1.3'
-    playServiceBaseVersion = '16.0.1'
+    playServiceBaseVersion = '17.0.0'
     playServiceFirebaseIidVersion = '17.0.4'
 
     playCoreVersion = '1.6.3'
@@ -91,8 +91,8 @@ ext {
 
     unifyIconVersion = '0.0.4'
     unifyPrinciplesVersion = '1.1.7'
-    unifyComponentsVersion = '1.1.36'
-    unifyCoachMarkVersion = '1.2.3'
+    unifyComponentsVersion = '1.1.37'
+    unifyCoachMarkVersion = '1.2.5'
     unifyCalendarVersion = '1.0.2'
     unifyBannerVersion = '1.0.4'
     unifyDialogVersion = '1.0.0'
@@ -255,7 +255,7 @@ ext {
             archCoreRuntime       : "androidx.arch.core:core-runtime:$lifeCycleVersion",
             archCoreCommon        : "androidx.arch.core:core-common:$lifeCycleVersion",
             twitter               : "org.twitter4j:twitter4j-core:$twitter4JVersion",
-            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.3.9",
+            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.4.0",
             androidjunit5         : "de.mannodermaus.gradle.plugins:android-junit5:1.5.1.0",
             rootbeer              : "com.scottyab:rootbeer-lib:0.0.7",
             viewPager2            : "androidx.viewpager2:viewpager2:$viewPager2",

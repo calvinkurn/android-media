@@ -13,6 +13,7 @@ ext {
             commonTradein                   : ":features:category:common_tradein",
             commonCategory                  : ":features:category:common_category",
             kategori                        : ":features:category:kategori",
+            categoryLevels                  : ":features:category:category_levels",
             hotlist                         : ":features:discovery2:hotlist",
             agerestriction                  : ":features:category:age_restriction",
             findNative                      : ":features:category:find_native",
@@ -182,6 +183,7 @@ ext {
             loyalty                         : ":features:promo:loyalty",
             loyaltyCommon                   : ":features:promo:loyalty_common",
             sellerorder                     : ":features:transaction:sellerorder",
+            buyerorder                      : ":features:transaction:buyerorder",
             opportunity                     : ":features:transaction:opportunity",
 
             attachproduct                   : ":features:user:attachproduct",
@@ -222,8 +224,6 @@ ext {
             tkpdinbox                       : ":tkpdinbox",
             tkpdseller                      : ":tkpdseller",
             tkpdsession                     : ":tkpdsession",
-            tkpdtransaction                 : ":tkpdtransaction",
-            tkpdtransactioncommon           : ":tkpdtransaction-common",
             promotionsTarget                : ":features:promo:promotions_target",
             recharge_slice                  : ":features:recharge:recharge_slice"
     ]

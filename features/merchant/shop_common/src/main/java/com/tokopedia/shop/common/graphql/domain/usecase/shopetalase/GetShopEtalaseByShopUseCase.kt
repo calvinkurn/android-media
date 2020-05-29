@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.gql.ShopEtalaseByShopQuery
 import com.tokopedia.shop.common.graphql.domain.mapper.GraphQLResultMapper
@@ -21,10 +20,33 @@ constructor(@ApplicationContext context: Context) : UseCase<ArrayList<ShopEtalas
     private val graphQLUseCase: SingleGraphQLUseCase<ShopEtalaseByShopQuery>
     var isFromCacheFirst: Boolean = true
 
+    fun getQueryString():String{
+        return """
+        query shopShowcasesByShopID(${'$'}shopId:String!,${'$'}hideNoCount:Boolean,${'$'}hideShowcaseGroup:Boolean,${'$'}isOwner:Boolean) {
+          shopShowcasesByShopID(shopId:${'$'}shopId, hideNoCount:${'$'}hideNoCount, hideShowcaseGroup:${'$'}hideShowcaseGroup, isOwner:${'$'}isOwner) {
+            result {
+              id
+              name
+              count
+              type
+              highlighted
+              alias
+              useAce
+              badge
+            }
+            error {
+              message
+            }
+          }
+        }
+        """.trimIndent()
+    }
     init {
         graphQLUseCase = object : SingleGraphQLUseCase<ShopEtalaseByShopQuery>(context, ShopEtalaseByShopQuery::class.java) {
-            override val graphQLRawResId: Int
-                get() = R.raw.gql_query_shop_etalase_by_shop
+
+            override fun getRawString(): String {
+                return getQueryString()
+            }
 
             var cacheType: CacheType = CacheType.CACHE_FIRST
 

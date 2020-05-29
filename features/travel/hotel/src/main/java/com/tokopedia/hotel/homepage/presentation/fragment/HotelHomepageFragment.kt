@@ -68,7 +68,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
     private var isTraceStop = false
 
     private var hotelHomepageModel: HotelHomepageModel = HotelHomepageModel()
-    var promoScrolledListener: BannerView.OnPromoScrolledListener? = null
 
     private lateinit var remoteConfig: RemoteConfig
 
@@ -141,7 +140,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
         // last search need to reload every time user back to homepage
         hideHotelLastSearchContainer()
         loadRecentSearchData()
-        banner_hotel_homepage_promo.onPromoScrolledListener = promoScrolledListener
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -217,13 +215,10 @@ class HotelHomepageFragment : HotelBaseFragment(),
                 if (data.hasExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LANG)) {
                     onDestinationNearBy(data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LANG, 0.0),
                             data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LAT, 0.0))
-                } else if (data.hasExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID)) {
-                    onDestinationChanged(data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_NAME)
-                            ?: "",
-                            searchId = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID)
-                                    ?: "",
-                            searchType = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_TYPE)
-                                    ?: "")
+                } else if (data.hasExtra(HotelDestinationActivity.HOTEL_DESTINATION_ID)) {
+                    onDestinationChanged(data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_NAME) ?: "",
+                            id = data.getLongExtra(HotelDestinationActivity.HOTEL_DESTINATION_ID, 0),
+                            type = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_TYPE) ?: "")
                 }
             }
         }
@@ -403,9 +398,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
                             checkIn = hotelHomepageModel.checkInDate,
                             checkOut = hotelHomepageModel.checkOutDate,
                             room = hotelHomepageModel.roomCount,
-                            adult = hotelHomepageModel.adultCount,
-                            searchType = hotelHomepageModel.searchType,
-                            searchId = hotelHomepageModel.searchId)
+                            adult = hotelHomepageModel.adultCount)
                     startActivityForResult(HotelSearchResultActivity.createIntent(this, hotelSearchModel), REQUEST_CODE_SEARCH)
                 }
             }
@@ -425,12 +418,10 @@ class HotelHomepageFragment : HotelBaseFragment(),
     private fun renderHotelPromo(promoDataList: List<TravelCollectiveBannerModel.Banner>) {
         showPromoContainer()
 
-        banner_hotel_homepage_promo.setBannerIndicator(Indicator.GREEN)
-        promoScrolledListener = BannerView.OnPromoScrolledListener { position ->
-            trackingHotelUtil.hotelBannerImpression(context, promoDataList.getOrNull(position)
-                    ?: TravelCollectiveBannerModel.Banner(), position, HOMEPAGE_SCREEN_NAME)
+        for ((index, promo) in promoDataList.withIndex()) {
+            trackingHotelUtil.hotelBannerImpression(context, promo, index, HOMEPAGE_SCREEN_NAME)
         }
-        banner_hotel_homepage_promo.onPromoScrolledListener = promoScrolledListener
+        banner_hotel_homepage_promo.setBannerIndicator(Indicator.GREEN)
 
         banner_hotel_homepage_promo.setOnPromoClickListener { position ->
             onPromoClicked(promoDataList.getOrNull(position)
