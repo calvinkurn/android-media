@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -29,7 +30,8 @@ import kotlinx.android.synthetic.main.item_topchat_product_card.view.*
 
 open class TopchatProductAttachmentViewHolder(
         itemView: View?,
-        private val listener: ProductAttachmentListener
+        private val listener: ProductAttachmentListener,
+        private val deferredAttachment: DeferredViewHolderAttachment
 ) : BaseChatViewHolder<ProductAttachmentViewModel>(itemView) {
 
     private var wishListBtn: UnifyButton? = itemView?.findViewById(R.id.tv_wishlist)
@@ -56,6 +58,7 @@ open class TopchatProductAttachmentViewHolder(
 
     override fun bind(product: ProductAttachmentViewModel) {
         super.bind(product)
+        bindSyncProduct(product)
         bindLayoutGravity(product)
         if (product.isLoading) {
             bindIsLoading(product)
@@ -74,6 +77,12 @@ open class TopchatProductAttachmentViewHolder(
             bindChatReadStatus(product)
             listener.trackSeenProduct(product)
         }
+    }
+
+    private fun bindSyncProduct(product: ProductAttachmentViewModel) {
+        val chatAttachments = deferredAttachment.getLoadedChatAttachments()
+        val attachment = chatAttachments[product.attachmentId] ?: return
+        product.updateData(attachment.attributes)
     }
 
     private fun bindIsLoading(product: ProductAttachmentViewModel) {

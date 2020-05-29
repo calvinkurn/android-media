@@ -68,6 +68,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.QuotationViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.StickerViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
 import com.tokopedia.topchat.chatroom.view.custom.TransactionOrderProgressLayout
@@ -100,7 +101,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         HeaderMenuListener, DualAnnouncementListener, TopChatVoucherListener,
         InvoiceThumbnailListener, QuotationViewHolder.QuotationListener,
         TransactionOrderProgressLayout.Listener, ChatMenuStickerView.StickerMenuListener,
-        StickerViewHolder.Listener {
+        StickerViewHolder.Listener, DeferredViewHolderAttachment {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -173,15 +174,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun onCreateViewState(view: View): BaseChatViewState {
         return TopChatViewStateImpl(
-                view,
-                this,
-                this,
-                this,
-                this,
-                this,
-                this,
-                (activity as BaseChatToolbarActivity).getToolbar(),
-                analytics
+                view, this, this, this,
+                this, this, this,
+                (activity as BaseChatToolbarActivity).getToolbar(), analytics
         )
     }
 
@@ -460,13 +455,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
         return TopChatTypeFactoryImpl(
-                this,
-                this,
-                this,
-                this,
-                this,
-                this,
-                this,
+                this, this, this, this,
+                this, this, this, this,
                 this
         )
     }
@@ -1096,5 +1086,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun getFragmentActivity(): FragmentActivity? {
         return activity
+    }
+
+    override fun getLoadedChatAttachments(): ArrayMap<String, Attachment> {
+        return presenter.attachments
     }
 }
