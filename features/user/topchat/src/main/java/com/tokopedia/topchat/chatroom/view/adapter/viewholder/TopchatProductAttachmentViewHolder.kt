@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.unifycomponents.Label
@@ -83,7 +84,11 @@ open class TopchatProductAttachmentViewHolder(
         if (!product.isLoading) return
         val chatAttachments = deferredAttachment.getLoadedChatAttachments()
         val attachment = chatAttachments[product.attachmentId] ?: return
-        product.updateData(attachment.parsedAttributes)
+        if (attachment is ErrorAttachment) {
+            product.syncError()
+        } else {
+            product.updateData(attachment.parsedAttributes)
+        }
     }
 
     private fun bindIsLoading(product: ProductAttachmentViewModel) {
