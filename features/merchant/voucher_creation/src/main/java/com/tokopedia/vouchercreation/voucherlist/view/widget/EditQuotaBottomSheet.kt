@@ -57,7 +57,7 @@ class EditQuotaBottomSheet(
             addTextChangedListener(object : NumberTextWatcher(this@run){
                 override fun onNumberChanged(number: Double) {
                     super.onNumberChanged(number)
-                    changeTickerValue(number.toInt() * voucher.minimumAmt)
+                    changeTickerValue(number.toInt() * voucher.discountAmtMax)
                 }
             })
             setText(CurrencyFormatHelper.removeCurrencyPrefix(voucher.quota.toString()))
