@@ -10,4 +10,5 @@ object TalkConstants {
     const val PARAM_PRODUCT_ID = "product_id"
     const val PARAM_SOURCE = "source"
     const val READING_SOURCE = "reading"
+    const val APP_DISABLE_NEW_TALK_REMOTE_CONFIG_KEY = "android_mainapp_disable_new_talk"
 }
