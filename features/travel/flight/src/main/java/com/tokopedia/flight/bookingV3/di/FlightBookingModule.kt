@@ -1,4 +1,4 @@
-package com.tokopedia.flight.passenger.di
+package com.tokopedia.flight.bookingV3.di
 
 import dagger.Module
 import dagger.Provides
@@ -6,13 +6,11 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 /**
- * @author by furqan on 12/03/18.
+ * Created by alvarisi on 11/8/17.
  */
-
 @Module
-class FlightPassengerModule {
+class FlightBookingModule {
 
-    @FlightPassengerScope
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 

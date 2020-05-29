@@ -1,10 +1,11 @@
-package com.tokopedia.flight.airport.domain
+package com.tokopedia.flight.airportv2.domain
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.flight.airport.data.source.entity.FlightAirportSuggestionEntity
-import com.tokopedia.flight.airport.data.source.entity.FlightPopularCityEntity
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.airport.view.model.FlightCountryAirportModel
+import com.tokopedia.flight.airportv2.data.source.entity.FlightAirportSuggestionEntity
+import com.tokopedia.flight.airportv2.data.source.entity.FlightPopularCityEntity
+import com.tokopedia.flight.airportv2.presentation.model.FlightAirport
 import java.util.*
 import javax.inject.Inject
 

@@ -1,4 +1,4 @@
-package com.tokopedia.flight.airport.data.source.entity
+package com.tokopedia.flight.airportv2.data.source.entity
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

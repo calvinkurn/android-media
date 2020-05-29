@@ -1,4 +1,4 @@
-package com.tokopedia.flight.homepage.presentation.viewmodel
+package com.tokopedia.flight.dummy
 
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
