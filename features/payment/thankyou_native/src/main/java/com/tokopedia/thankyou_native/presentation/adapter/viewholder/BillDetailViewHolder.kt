@@ -10,11 +10,11 @@ import kotlinx.android.synthetic.main.thank_widget_bill_detail.view.*
 
 class BillDetailViewHolder(val view: View) : AbstractViewHolder<BillDetail>(view) {
 
-    val tvInvoiceTotalBillValue = itemView.tvInvoiceTotalBillValue
-    val tvInvoiceServiceTaxValue = itemView.tvInvoiceServiceTaxValue
-    val tvInvoiceServiceTax = itemView.tvInvoiceServiceTax
-    val tvInvoiceUsedTokopoints = itemView.tvInvoiceUsedTokopoints
-    val tvInvoiceUsedTokopointsValue = itemView.tvInvoiceUsedTokopointsValue
+    private val tvInvoiceTotalBillValue = itemView.tvInvoiceTotalBillValue
+    private val tvInvoiceServiceTaxValue = itemView.tvInvoiceServiceTaxValue
+    private val tvInvoiceServiceTax = itemView.tvInvoiceServiceTax
+    private val tvInvoiceUsedTokopoints = itemView.tvInvoiceUsedTokopoints
+    private val tvInvoiceUsedTokopointsValue = itemView.tvInvoiceUsedTokopointsValue
 
     override fun bind(element: BillDetail?) {
         element?.let {
