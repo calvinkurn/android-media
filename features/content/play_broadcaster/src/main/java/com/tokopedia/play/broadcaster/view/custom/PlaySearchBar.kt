@@ -5,11 +5,17 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
+import android.view.KeyEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 
 /**
@@ -25,6 +31,7 @@ class PlaySearchBar : ConstraintLayout {
     private val ivSearch: ImageView
     private val etSearch: EditText
     private val ivClear: ImageView
+    private val tvCancel: TextView
 
     private var mListener: Listener? = null
 
@@ -33,13 +40,14 @@ class PlaySearchBar : ConstraintLayout {
         ivSearch = view.findViewById(R.id.iv_search)
         etSearch = view.findViewById(R.id.et_search)
         ivClear = view.findViewById(R.id.iv_clear)
+        tvCancel = view.findViewById(R.id.tv_cancel)
 
         setupView(view)
     }
 
-    override fun setEnabled(isEnabled: Boolean) {
-        etSearch.isEnabled = isEnabled
-        etSearch.isCursorVisible = isEnabled
+    override fun clearFocus() {
+        super.clearFocus()
+        etSearch.clearFocus()
     }
 
     fun setListener(listener: Listener) {
@@ -51,12 +59,21 @@ class PlaySearchBar : ConstraintLayout {
     }
 
     private fun setupView(view: View) {
-        etSearch.setOnFocusChangeListener { v, hasFocus ->
+        etSearch.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                tvCancel.visible()
+            }
+            else {
+                if (etSearch.text.isEmpty()) tvCancel.gone()
+                hideKeyboard()
+            }
+
             mListener?.onEditStateChanged(this@PlaySearchBar, hasFocus)
         }
         etSearch.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 ivClear.visibility = if (s?.isNotEmpty() == true) View.VISIBLE else View.GONE
+                mListener?.onNewKeyword(this@PlaySearchBar, etSearch.text.toString())
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -65,13 +82,39 @@ class PlaySearchBar : ConstraintLayout {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
         })
+        etSearch.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                mListener?.onSearchButtonClicked(this@PlaySearchBar, etSearch.text.toString())
+                hideKeyboard()
+                true
+            } else false
+        }
 
         ivClear.setOnClickListener {
-            etSearch.setText("")
+            clearText()
+            etSearch.requestFocus()
+        }
+
+        tvCancel.setOnClickListener {
+            clearText()
+            tvCancel.gone()
+            etSearch.clearFocus()
+            mListener?.onCanceled(this@PlaySearchBar)
         }
     }
 
+    private fun clearText() = etSearch.setText("")
+
+    private fun hideKeyboard() {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.hideSoftInputFromWindow(etSearch.windowToken, 0)
+    }
+
     interface Listener {
+
         fun onEditStateChanged(view: PlaySearchBar, isEditing: Boolean) {}
+        fun onCanceled(view: PlaySearchBar) {}
+        fun onNewKeyword(view: PlaySearchBar, keyword: String)
+        fun onSearchButtonClicked(view: PlaySearchBar, keyword: String)
     }
 }
