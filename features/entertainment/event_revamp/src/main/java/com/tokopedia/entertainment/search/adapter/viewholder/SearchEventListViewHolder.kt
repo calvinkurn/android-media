@@ -91,7 +91,7 @@ class SearchEventListViewHolder(val view: View) : SearchEventViewHolder<SearchEv
             } else{
                 holder.view.txtTanggalSearch.visibility = View.VISIBLE
                 holder.view.txtTanggalSearch.text = DateFormatUtils.getFormattedDate(element.tanggal_kegiatan, "dd MMM")
-                holder.view.txtLokasiSearch.text = String.format(resources.getString(R.string.black_circle, element.lokasi_kegiatan))
+                holder.view.txtLokasiSearch.text = String.format(resources.getString(R.string.ent_search_black_circle, element.lokasi_kegiatan))
             }
         }
     }

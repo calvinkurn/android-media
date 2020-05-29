@@ -158,7 +158,7 @@ class EventCategoryFragment : BaseDaggerFragment() {
 
     private fun observeErrorReport(){
         viewModel.errorReport.observe(this, Observer {
-            NetworkErrorHelper.createSnackbarRedWithAction(activity, resources.getString(R.string.search_error_message)) {
+            NetworkErrorHelper.createSnackbarRedWithAction(activity, resources.getString(R.string.ent_search_error_message)) {
                 recycler_viewParent.addOnScrollListener(endlessScroll)
                 viewModel.page = "1"
                 viewModel.getData(CacheType.ALWAYS_CLOUD)

@@ -106,7 +106,7 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope {
 
         viewModel.isItRefreshing.observe(this, Observer { swipe_refresh_layout.isRefreshing = it })
 
-        viewModel.errorReport.observe(this, Observer { NetworkErrorHelper.createSnackbarRedWithAction(activity, resources.getString(R.string.search_error_message)){ getData() }.showRetrySnackbar()})
+        viewModel.errorReport.observe(this, Observer { NetworkErrorHelper.createSnackbarRedWithAction(activity, resources.getString(R.string.ent_search_error_message)){ getData() }.showRetrySnackbar()})
     }
 
     private fun getData(cacheType: CacheType = CacheType.CACHE_FIRST){

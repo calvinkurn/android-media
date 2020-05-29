@@ -3,10 +3,9 @@
 
     <application
         android:allowBackup="true"
-        android:label="@string/app_name"
         android:supportsRtl="true">
         <activity android:name=".home.activity.HomeEventActivity"
-            android:label="@string/entertainment_event_hiburan"
+            android:label="@string/ent_home_page_event_hiburan"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" >
 
@@ -24,7 +23,7 @@
         </activity>
 
         <activity android:name=".search.activity.EventSearchActivity"
-            android:label="@string/entertainment_event_search"
+            android:label="@string/ent_search_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">
@@ -41,7 +40,7 @@
         </activity>
 
         <activity android:name=".search.activity.EventCategoryActivity"
-            android:label="@string/entertainment_event_search"
+            android:label="@string/ent_search_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">
@@ -58,7 +57,7 @@
         </activity>
 
         <activity android:name=".search.activity.EventLocationActivity"
-            android:label="@string/entertainment_event_location"
+            android:label="@string/ent_search_event_location"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">

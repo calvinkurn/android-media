@@ -95,7 +95,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txt_title"
             app:typographyType="small"
-            android:text="@string/mulai_dari" />
+            android:text="@string/ent_home_page_mulai_dari" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_price"

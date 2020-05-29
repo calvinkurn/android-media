@@ -64,7 +64,7 @@ class EventLocationFragment : BaseDaggerFragment() {
 
     private fun observeSearchList(){
         viewModel.errorReport.observe(this, Observer {
-            NetworkErrorHelper.createSnackbarRedWithAction(activity, resources.getString(R.string.search_error_message)){
+            NetworkErrorHelper.createSnackbarRedWithAction(activity, resources.getString(R.string.ent_search_error_message)){
                 getLocationData()
             }.showRetrySnackbar()
         })

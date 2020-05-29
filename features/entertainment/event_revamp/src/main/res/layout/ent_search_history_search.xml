@@ -11,7 +11,7 @@
         android:id="@+id/txtTerakhirDicari"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/entertainment_event_search_last_item"
+        android:text="@string/ent_search_search_last_item"
         app:typographyWeight="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

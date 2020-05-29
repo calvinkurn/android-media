@@ -30,7 +30,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="16dp"
-            app:search_bar_placeholder="@string/cari_kegiatan_atau_lokasi"
+            app:search_bar_placeholder="@string/ent_home_page_cari_kegiatan_atau_lokasi"
             app:search_bar_show_icon="false" />
 
 

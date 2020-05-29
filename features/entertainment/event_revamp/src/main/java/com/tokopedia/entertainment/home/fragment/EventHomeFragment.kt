@@ -168,7 +168,7 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
         val coachMark = CoachMarkBuilder().build()
         if (!coachMark.hasShown(activity, COACH_MARK_TAG)) {
             var coachItems = ArrayList<CoachMarkItem>()
-            coachItems.add(CoachMarkItem(view?.rootView?.findViewById(R.id.txt_search), getString(R.string.coach_mark_title_1), getString(R.string.coach_mark_desc_1)))
+            coachItems.add(CoachMarkItem(view?.rootView?.findViewById(R.id.txt_search), getString(R.string.ent_home_page_coach_mark_title_1), getString(R.string.ent_home_page_coach_mark_desc_1)))
             coachMark.show(activity, COACH_MARK_TAG, coachItems)
         }
     }
