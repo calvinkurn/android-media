@@ -144,6 +144,7 @@ include "features:ovop2p"
 
 include "features:payment:common_payment"
 include "features:payment:payment"
+include "features:payment:thankyou_native"
 include "features:payment:pms"
 include "features:payment:withdraw"
 include "features:payment:payment_setting"
