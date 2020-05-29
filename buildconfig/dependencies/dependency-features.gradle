@@ -183,6 +183,7 @@ ext {
             loyalty                         : ":features:promo:loyalty",
             loyaltyCommon                   : ":features:promo:loyalty_common",
             sellerorder                     : ":features:transaction:sellerorder",
+            buyerorder                      : ":features:transaction:buyerorder",
             opportunity                     : ":features:transaction:opportunity",
 
             attachproduct                   : ":features:user:attachproduct",
@@ -223,8 +224,6 @@ ext {
             tkpdinbox                       : ":tkpdinbox",
             tkpdseller                      : ":tkpdseller",
             tkpdsession                     : ":tkpdsession",
-            tkpdtransaction                 : ":tkpdtransaction",
-            tkpdtransactioncommon           : ":tkpdtransaction-common",
             promotionsTarget                : ":features:promo:promotions_target",
             recharge_slice                  : ":features:recharge:recharge_slice"
     ]
