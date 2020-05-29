@@ -68,7 +68,10 @@ class SearchEventListViewHolder(val view: View) : SearchEventViewHolder<SearchEv
         override fun onBindViewHolder(holder: KegiatanHolder, position: Int) {
             val element = listKegiatan.get(position)
 
-            holder.view.imgEvent.loadImageRounded(element.image_url)
+            Glide.with(holder.view)
+                    .load(element.image_url)
+                    .centerCrop()
+                    .into(holder.view.imgEvent)
             holder.view.txtJudulEvent.text = element.nama_kegiatan
 
             holder.view.addOnImpressionListener(element, {

@@ -52,7 +52,10 @@ class HistoryBackgroundItemViewHolder(val view: View) : SearchEventViewHolder<Hi
         override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
             var element: EventModel = list.get(position)
 
-            holder.view.imgEvent.loadImageRounded(element.image_url)
+            Glide.with(holder.view)
+                    .load(element.image_url)
+                    .centerCrop()
+                    .into(holder.view.imgEvent)
             holder.view.txtTanggalSearch.text = element.tanggal_event
             holder.view.txtJudulEvent.text = element.nama_event
             holder.view.txtLokasiSearch.text = element.lokasi_event

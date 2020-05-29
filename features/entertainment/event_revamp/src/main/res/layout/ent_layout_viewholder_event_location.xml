@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_location_event_ent_gradient"
+    android:background="@drawable/bg_location_event_gradient"
     android:paddingTop="14dp"
     android:paddingBottom="14dp">
 
