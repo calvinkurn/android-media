@@ -218,7 +218,7 @@ open class HomeFragment : BaseDaggerFragment(),
         }
 
     @Inject
-    lateinit var permissionCheckerHelper: PermissionCheckerHelper
+    lateinit var permissionCheckerHelper: Lazy<PermissionCheckerHelper>
 
     protected var trackingQueue: TrackingQueue? = null
 
@@ -261,10 +261,17 @@ open class HomeFragment : BaseDaggerFragment(),
     private val fragmentFramePerformanceIndexMonitoring = FragmentFramePerformanceIndexMonitoring()
     private var pageLoadTimeCallback: PageLoadTimePerformanceInterface? = null
     private var isOnRecylerViewLayoutAdded = false
+    private var fragmentCreatedForFirstTime = false
 
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        val homeInitWeave = object:WeaveInterface{
+            override fun execute(): Any {
+                return initHomePageFlows()
+            }
+        }
+        Weaver.executeWeaveCoRoutineNow(homeInitWeave)
         mainParentStatusBarListener = context as MainParentStatusBarListener
         homePerformanceMonitoringListener = castContextToHomePerformanceMonitoring(context)
         requestStatusBarDark()
@@ -282,6 +289,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        fragmentCreatedForFirstTime = true
         searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_searchbar_transition_range)
         startToTransitionOffset = resources.getDimensionPixelSize(R.dimen.banner_background_height) / 2
     }
@@ -292,15 +300,6 @@ open class HomeFragment : BaseDaggerFragment(),
         stickyContent
     }
 
-    override fun onAttach(activity: Activity) {
-        super.onAttach(activity)
-        val homeInitWeave = object:WeaveInterface{
-            override fun execute(): Any {
-                return initHomePageFlows()
-            }
-        }
-        Weaver.executeWeaveCoRoutineNow(homeInitWeave)
-    }
 
     fun initHomePageFlows():Boolean{
         initInjectorHome()
@@ -540,10 +539,17 @@ open class HomeFragment : BaseDaggerFragment(),
         super.onResume()
         createAndCallSendScreen()
         adapter?.onResume()
+        conditionalViewModelRefresh()
         if (activityStateListener != null) {
             activityStateListener!!.onResume()
         }
         adjustStatusBarColor()
+    }
+
+    private fun conditionalViewModelRefresh(){
+        if(!fragmentCreatedForFirstTime) {
+            viewModel.get().refresh(isFirstInstall())
+        }
     }
 
     private fun adjustStatusBarColor() {
@@ -755,7 +761,6 @@ open class HomeFragment : BaseDaggerFragment(),
             if (needToPerformanceMonitoring() && getPageLoadTimeCallback() != null) {
                 setOnRecyclerViewLayoutReady(isCache);
                 adapter?.submitList(data);
-//                adapter?.notifyDataSetChanged();
             } else {
                 adapter?.submitList(data);
             }
@@ -1115,8 +1120,10 @@ open class HomeFragment : BaseDaggerFragment(),
             homePerformanceMonitoringListener?.stopHomePerformanceMonitoring(isCache);
             homePerformanceMonitoringListener = null;
             fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
-            loadEggData()
-            viewModel.get().refresh(isFirstInstall())
+            if(fragmentCreatedForFirstTime){
+                fragmentCreatedForFirstTime = false
+                conditionalViewModelRefresh()
+            }
         }
     }
 
@@ -1152,13 +1159,13 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun setGeolocationPermission() {
         if (activity == null) viewModel.get().setGeolocationPermission(false)
-        else viewModel.get().setGeolocationPermission(permissionCheckerHelper.hasPermission(
+        else viewModel.get().setGeolocationPermission(permissionCheckerHelper.get().hasPermission(
                 activity!!,
                 arrayOf(PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION)))
     }
 
     private fun promptGeolocationPermission() {
-        permissionCheckerHelper.checkPermission(this,
+        permissionCheckerHelper.get().checkPermission(this,
                 PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
                 object : PermissionCheckListener {
                     override fun onPermissionDenied(permissionText: String) {
@@ -1181,7 +1188,7 @@ open class HomeFragment : BaseDaggerFragment(),
         activity?.let {
             Observable.just(true).map { aBoolean: Boolean? ->
                 val locationDetectorHelper = LocationDetectorHelper(
-                        permissionCheckerHelper,
+                        permissionCheckerHelper.get(),
                         LocationServices.getFusedLocationProviderClient(it.getApplicationContext()),
                         it.applicationContext)
                 locationDetectorHelper.getLocation(onGetLocation(), it,
@@ -1250,7 +1257,7 @@ open class HomeFragment : BaseDaggerFragment(),
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         activity?.let {
-            permissionCheckerHelper.onRequestPermissionsResult(it, requestCode, permissions, grantResults)
+            permissionCheckerHelper.get().onRequestPermissionsResult(it, requestCode, permissions, grantResults)
         }
     }
 

@@ -360,6 +360,12 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        loadEggData();
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
         stopCountdownTimer();
