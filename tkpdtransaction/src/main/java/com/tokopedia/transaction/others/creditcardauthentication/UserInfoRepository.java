@@ -3,7 +3,6 @@ package com.tokopedia.transaction.others.creditcardauthentication;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.people.model.PeopleInfoData;
 
 import retrofit2.Response;
 import rx.Observable;

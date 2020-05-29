@@ -10,7 +10,7 @@ open class NotificationAnalytics {
             notificationId: String,
             productId: String? = "0"
     ): String {
-        return if (productId != null || productId != "0") {
+        return if (productId != "0") {
             "$location - $templateKey - $notificationId - $productId"
         } else {
             "$location - $templateKey - $notificationId"

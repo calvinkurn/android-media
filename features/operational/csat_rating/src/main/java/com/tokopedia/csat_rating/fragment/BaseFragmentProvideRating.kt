@@ -162,6 +162,7 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
             if (selectedOption.contains(typeFilter)) {
                 selectedOption.remove(typeFilter)
             } else {
+                sendEventClickReason(filterList[typeFilter.toIntOrNull() ?: 0].message)
                 selectedOption.add(typeFilter)
             }
 
@@ -172,6 +173,8 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
             }
         }
     }
+
+    open fun sendEventClickReason(message: String?) {}
 
     override fun getSelectedItem(): String {
         var filters = ""

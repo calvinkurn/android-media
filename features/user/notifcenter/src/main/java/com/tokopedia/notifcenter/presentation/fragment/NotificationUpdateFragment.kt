@@ -276,14 +276,6 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
         presenter.addProductToCart(product, onSuccessAddToCart)
     }
 
-    override fun onTrackerAddToCart(product: ProductData, atc: DataModel) {
-        analytics.trackAtcOnClick(product, atc)
-    }
-
-    override fun showMessageAtcSuccess(message: String) {
-        onSuccessAddToCart(message)
-    }
-
     override fun trackOnClickCtaButton(templateKey: String) {
         analytics.trackOnClickLongerContentBtn(templateKey)
     }
