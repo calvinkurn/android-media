@@ -40,8 +40,6 @@ public class PurchaseTracking extends TrackingUtils {
     public static final String EVENT_ACTION_COD = "view thank you cod";
     public static final String SHOP_ID = "shop_id";
     public static final String EVENT_LABEL = "";
-    public static final String EVENT_LABEL_REGULAR_CHECKOUT = "regular checkout";
-    public static final String EVENT_LABEL_OCC = "occ";
 
     public static final String USER_ID = "userId";
 
