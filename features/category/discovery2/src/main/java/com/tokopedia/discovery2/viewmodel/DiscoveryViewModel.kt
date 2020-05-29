@@ -51,7 +51,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                     data.let {
                         withContext(Dispatchers.Default) {
                             findAndRemoveSecondYoutubeComponent(it.components)
-                            checkLoginAndUpdateList(it.components)
+                            setDiscoveryComponentList(it.components)
                             findCustomTopChatComponentsIfAny(it.components)
                         }
                         setPageInfo(it.pageInfo)
@@ -69,7 +69,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         val videoComponentToRemove = components?.filter { it.name == ComponentNames.Video.componentName }
         videoComponentToRemove?.let {
             var index = 0
-            while (++index < it.size){
+            while (++index < it.size) {
                 components.remove(it[index])
             }
         }
@@ -95,15 +95,15 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     }
 
-    private fun checkLoginAndUpdateList(components: List<ComponentsItem>?) {
-        if (!userSession.isLoggedIn) {
-            val components = components?.filter { it.name != "topads" }
-            discoveryResponseList.postValue(Success(components as ArrayList<ComponentsItem>))
-
-        } else {
+    private fun setDiscoveryComponentList(components: List<ComponentsItem>?) {
+        components.let {
             discoveryResponseList.postValue(Success(components as ArrayList<ComponentsItem>))
         }
-
+//        if (!userSession.isLoggedIn) {
+//            val components = components?.filter { it.name != "topads" }
+//        } else {
+//            discoveryResponseList.postValue(Success(components as ArrayList<ComponentsItem>))
+//        }
     }
 
     fun getBitmapFromURL(src: String?): Bitmap? = runBlocking {
