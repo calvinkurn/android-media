@@ -1,7 +1,6 @@
 package com.tokopedia.home.analytics.v2
 
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.analytics.v2.BaseTracking.Event.PROMO_VIEW
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
@@ -28,15 +27,15 @@ object LegoBannerTracking : BaseTracking() {
     )
 
     fun sendLegoBannerSixClick(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
-        getTracker().sendGeneralEvent(getLegoBannerSixClick(channelModel, channelGrid, position))
+        getTracker().sendEnhanceEcommerceEvent(getLegoBannerSixClick(channelModel, channelGrid, position))
     }
 
     fun sendLegoBannerFourClick(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
-        getTracker().sendGeneralEvent(getLegoBannerFourClick(channelModel, channelGrid, position))
+        getTracker().sendEnhanceEcommerceEvent(getLegoBannerFourClick(channelModel, channelGrid, position))
     }
 
     fun sendLegoBannerThreeClick(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
-        getTracker().sendGeneralEvent(getLegoBannerThreeClick(channelModel, channelGrid, position))
+        getTracker().sendEnhanceEcommerceEvent(getLegoBannerThreeClick(channelModel, channelGrid, position))
     }
 
     fun sendLegoBannerSixClickViewAll(headerName: String, channelId: String) {
@@ -62,7 +61,7 @@ object LegoBannerTracking : BaseTracking() {
     private fun getLegoBannerFourViewAllClick(headerName: String, channelId: String) =  DataLayer.mapOf(
             Event.KEY, Event.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
-            Action.KEY, CLICK_VIEW_ALL_ON_LEGO_6,
+            Action.KEY, CLICK_VIEW_ALL_ON_LEGO_4,
             Label.KEY, headerName,
             ChannelId.KEY, channelId
     ) as HashMap<String, Any>
@@ -70,7 +69,7 @@ object LegoBannerTracking : BaseTracking() {
     private fun getLegoBannerThreeViewAllClick(headerName: String, channelId: String) =  DataLayer.mapOf(
             Event.KEY, Event.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
-            Action.KEY, CLICK_VIEW_ALL_ON_LEGO_6,
+            Action.KEY, CLICK_VIEW_ALL_ON_LEGO_3,
             Label.KEY, headerName,
             ChannelId.KEY, channelId
     ) as HashMap<String, Any>
