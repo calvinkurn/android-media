@@ -28,13 +28,13 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         getDataFromAppLink()
         if(FirebaseRemoteConfigImpl(applicationContext).getBoolean(TalkConstants.APP_DISABLE_NEW_TALK_REMOTE_CONFIG_KEY, false)) {
             val intent = TalkDetailsActivity.getCallingIntent(questionId, shopId, applicationContext, "")
             startActivity(intent)
             finish()
         }
+        super.onCreate(savedInstanceState)
         startPerformanceMonitoring()
         setUpToolBar()
     }

@@ -29,7 +29,6 @@ class TalkReadingActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, T
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         getDataFromAppLink()
         if(FirebaseRemoteConfigImpl(applicationContext).getBoolean(TalkConstants.APP_DISABLE_NEW_TALK_REMOTE_CONFIG_KEY, false)) {
             val intent = Intent(applicationContext, TalkProductActivity::class.java)
@@ -38,6 +37,7 @@ class TalkReadingActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, T
             startActivity(intent)
             finish()
         }
+        super.onCreate(savedInstanceState)
         startPerformanceMonitoring()
         setUpToolBar()
     }
