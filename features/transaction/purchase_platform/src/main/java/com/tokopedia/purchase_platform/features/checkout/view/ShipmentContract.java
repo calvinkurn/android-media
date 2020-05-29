@@ -158,6 +158,8 @@ public interface ShipmentContract {
         boolean isTradeInByDropOff();
 
         void updateButtonPromoCheckout(PromoUiModel promoUiModel);
+
+        void resetCourier(ShipmentCartItemModel shipmentCartItemModel);
     }
 
     interface AnalyticsActionListener {

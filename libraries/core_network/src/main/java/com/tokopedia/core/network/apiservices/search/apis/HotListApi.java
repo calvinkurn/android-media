@@ -20,7 +20,4 @@ public interface HotListApi {
 
     @GET(TkpdBaseURL.Search.PATH_GET_HOTLIST)
     Observable<Response<TkpdResponse>> getHotList(@QueryMap Map<String, String> params);
-
-    @GET(TkpdBaseURL.Search.PATH_GET_HOTLIST_BANNER)
-    Observable<Response<TkpdResponse>> getHotListBanner(@QueryMap TKPDMapParam<String, Object> params);
 }

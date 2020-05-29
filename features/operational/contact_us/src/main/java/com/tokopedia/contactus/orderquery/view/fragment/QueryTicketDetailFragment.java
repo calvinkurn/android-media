@@ -16,7 +16,7 @@ import com.tokopedia.contactus.orderquery.di.OrderQueryComponent;
 import com.tokopedia.contactus.orderquery.view.SubmitTicketActivity;
 import com.tokopedia.contactus.orderquery.view.presenter.QueryTicketDetailContract;
 import com.tokopedia.contactus.orderquery.view.presenter.QueryTicketDetailPresenter;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.contactus.orderquery.di.DaggerOrderQueryComponent;
 
 import javax.inject.Inject;
