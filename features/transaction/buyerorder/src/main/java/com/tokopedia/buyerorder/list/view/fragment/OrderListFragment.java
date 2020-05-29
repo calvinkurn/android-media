@@ -983,12 +983,16 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 return R.layout.dialog_seller_finish;
             }
         };
+        dialog.setTitle(getString(R.string.popup_selesai_title));
+        dialog.setDesc(getString(R.string.popup_selesai_desc));
+        dialog.setBtnOk(getString(R.string.popup_selesai_ok_btn));
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 presenter.finishOrder(selectedOrderId, actionButtonUri);
             }
         });
+        dialog.setBtnCancel(getString(R.string.popup_selesai_cancel_btn));
         dialog.setOnCancelClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
