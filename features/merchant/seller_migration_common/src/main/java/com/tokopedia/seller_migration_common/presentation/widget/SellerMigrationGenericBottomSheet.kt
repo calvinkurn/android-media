@@ -3,9 +3,11 @@ package com.tokopedia.seller_migration_common.presentation.widget
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.widget.LinearLayout
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.seller_migration_common.R
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.ACCOUNT_SELLER_MIGRATION_IMAGE_LINK
+import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.widget_seller_migration_generic_bottom_sheet.*
 
 class SellerMigrationGenericBottomSheet : SellerMigrationBottomSheet() {
@@ -20,12 +22,21 @@ class SellerMigrationGenericBottomSheet : SellerMigrationBottomSheet() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        initView()
         super.onViewCreated(view, savedInstanceState)
+        setupPadding()
+        initView()
     }
 
     private fun initView() {
         accountSellerMigrationBottomsheetImage.loadImage(ACCOUNT_SELLER_MIGRATION_IMAGE_LINK)
+    }
+
+    private fun setupPadding() {
+        setShowListener {
+            val headerMargin = 16.toPx()
+            bottomSheetWrapper.setPadding(0,0,0,0)
+            (bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(headerMargin,headerMargin,headerMargin,headerMargin)
+        }
     }
 
 }
