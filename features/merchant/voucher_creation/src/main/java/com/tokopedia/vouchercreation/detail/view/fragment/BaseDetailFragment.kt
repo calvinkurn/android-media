@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.detail.view.fragment
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -74,6 +75,10 @@ abstract class BaseDetailFragment : BaseListFragment<VoucherDetailUiModel, Vouch
     }
 
     override fun onTickerClicked() {
+
+    }
+
+    override fun onSuccessDrawPostVoucher(postVoucherBitmap: Bitmap) {
 
     }
 

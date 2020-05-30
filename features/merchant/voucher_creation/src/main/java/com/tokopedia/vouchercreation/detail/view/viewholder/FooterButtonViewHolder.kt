@@ -28,7 +28,9 @@ class FooterButtonViewHolder(
                 text = element.ctaText
                 btnMvcFooterCta.setOnClickListener {
                     onCtaClick()
-                    isLoading = true
+                    if (element.canLoad) {
+                        isLoading = true
+                    }
                 }
             }
         }

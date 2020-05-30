@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.create.view.fragment.step
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -48,11 +49,13 @@ class ReviewVoucherFragment : BaseDetailFragment() {
         fun createInstance(getVoucherReviewUiModel: () -> VoucherReviewUiModel,
                            getToken: () -> String,
                            getPostBaseUiModel: () -> PostBaseUiModel,
-                           onReturnToStep: (Int) -> Unit): ReviewVoucherFragment = ReviewVoucherFragment().apply {
+                           onReturnToStep: (Int) -> Unit,
+                           getBannerBitmap: () -> Bitmap? ): ReviewVoucherFragment = ReviewVoucherFragment().apply {
             this.getVoucherReviewUiModel = getVoucherReviewUiModel
             this.getToken = getToken
             this.getPostBaseUiModel = getPostBaseUiModel
             this.onReturnToStep = onReturnToStep
+            this.getBannerBitmap = getBannerBitmap
         }
 
         private const val VOUCHER_TIPS_INDEX = 1
@@ -70,6 +73,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                 CreateMerchantVoucherStepsActivity.CASHBACK_UNTIL_URL
         )}
     private var onReturnToStep: (Int) -> Unit = { _ -> }
+    private var getBannerBitmap: () -> Bitmap? = { null }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -113,10 +117,12 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     }
 
     private val buttonUiModel by lazy {
-        FooterButtonUiModel(context?.getString(R.string.mvc_add_voucher).toBlankOrString(), "")
+        FooterButtonUiModel(context?.getString(R.string.mvc_add_voucher).toBlankOrString(), "", true)
     }
 
     private var isWaitingForResult = false
+
+    private var squareVoucherBitmap: Bitmap? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_base_list, container, false)
@@ -181,6 +187,10 @@ class ReviewVoucherFragment : BaseDetailFragment() {
         createVoucher()
     }
 
+    override fun onSuccessDrawPostVoucher(postVoucherBitmap: Bitmap) {
+        squareVoucherBitmap = postVoucherBitmap
+    }
+
     private fun observeLiveData() {
         viewLifecycleOwner.observe(viewModel.createVoucherResponseLiveData) { result ->
             if (isWaitingForResult) {
@@ -208,7 +218,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     private fun renderReviewInformation(voucherReviewUiModel: VoucherReviewUiModel) {
         voucherReviewUiModel.run {
             val postDisplayedDate = getDisplayedDateString(startDate, endDate)
-            val fullDisplayedDate: String? = if (startDate.isNullOrEmpty()) {
+            val fullDisplayedDate: String? = if (startDate.isEmpty()) {
                 null
             } else {
                 getDisplayedDateString(startDate, startHour, endDate, endHour)
@@ -277,21 +287,32 @@ class ReviewVoucherFragment : BaseDetailFragment() {
 
     private fun createVoucher() {
         isWaitingForResult = true
-        viewModel.createVoucher(
-                CreateVoucherParam.mapToParam(
-                        getVoucherReviewUiModel(), getToken()
-                ))
+        getBannerBitmap()?.let { bannerBitmap ->
+            squareVoucherBitmap?.let { squareBitmap ->
+                viewModel.createVoucher(
+                        bannerBitmap,
+                        squareBitmap,
+                        CreateVoucherParam.mapToParam(
+                                getVoucherReviewUiModel(), getToken()
+                        ))
+            }
+        }
     }
 
     private fun onDialogTryAgain() {
         failedCreateVoucherDialog?.dismiss()
         loadingDialog?.show()
         isWaitingForResult = true
-        viewModel.createVoucher(
-                CreateVoucherParam.mapToParam(
-                        getVoucherReviewUiModel(), getToken()
-                )
-        )
+        getBannerBitmap()?.let { bannerBitmap ->
+            squareVoucherBitmap?.let { squareBitmap ->
+                viewModel.createVoucher(
+                        bannerBitmap,
+                        squareBitmap,
+                        CreateVoucherParam.mapToParam(
+                                getVoucherReviewUiModel(), getToken()
+                        ))
+            }
+        }
     }
 
     private fun onDialogRequestHelp() {

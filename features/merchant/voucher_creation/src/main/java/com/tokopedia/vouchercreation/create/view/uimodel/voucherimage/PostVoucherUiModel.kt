@@ -12,8 +12,7 @@ class PostVoucherUiModel(
         override val shopName: String,
         val promoCode: String,
         val promoPeriod: String,
-        var postBaseUiModel: PostBaseUiModel
-) : VoucherDetailUiModel, VoucherImage {
+        var postBaseUiModel: PostBaseUiModel) : VoucherDetailUiModel, VoucherImage {
 
     override fun type(typeFactory: VoucherDetailAdapterFactory): Int =
             typeFactory.type(this)

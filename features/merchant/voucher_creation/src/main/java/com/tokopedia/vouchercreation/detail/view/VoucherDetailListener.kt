@@ -1,5 +1,7 @@
 package com.tokopedia.vouchercreation.detail.view
 
+import android.graphics.Bitmap
+
 /**
  * Created By @ilhamsuaib on 06/05/20
  */
@@ -19,4 +21,6 @@ interface VoucherDetailListener {
     fun showDownloadBottomSheet()
 
     fun onTickerClicked()
+
+    fun onSuccessDrawPostVoucher(postVoucherBitmap: Bitmap)
 }

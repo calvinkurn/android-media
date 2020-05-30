@@ -77,7 +77,9 @@ class VoucherDetailAdapterFactoryImpl(
             WarningPeriodViewHolder.RES_LAYOUT -> WarningPeriodViewHolder(parent) {
                 voucherDetailListener.onInfoContainerCtaClick(it)
             }
-            PostVoucherViewHolder.RES_LAYOUT -> PostVoucherViewHolder(parent, activity)
+            PostVoucherViewHolder.RES_LAYOUT -> PostVoucherViewHolder(parent, activity) {
+                voucherDetailListener.onSuccessDrawPostVoucher(it)
+            }
             DetailLoadingStateViewHolder.RES_LAYOUT -> DetailLoadingStateViewHolder(parent)
 
             else -> super.createViewHolder(parent, type)

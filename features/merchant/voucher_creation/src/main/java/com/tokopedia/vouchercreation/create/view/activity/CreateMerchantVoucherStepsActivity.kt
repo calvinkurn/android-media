@@ -82,8 +82,8 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         LinkedHashMap<VoucherCreationStepInfo, Fragment>().apply {
             put(VoucherCreationStepInfo.STEP_ONE, MerchantVoucherTargetFragment.createInstance(::setVoucherName, ::getPromoCodePrefix))
             put(VoucherCreationStepInfo.STEP_TWO, PromotionBudgetAndTypeFragment.createInstance(::setVoucherBenefit, ::getBannerVoucherUiModel, viewModel::setVoucherPreviewBitmap, ::getBannerBaseUiModel, ::onSetShopInfo))
-            put(VoucherCreationStepInfo.STEP_THREE, SetVoucherPeriodFragment.createInstance(::setVoucherPeriod, ::getBannerVoucherUiModel, ::getBannerBaseUiModel))
-            put(VoucherCreationStepInfo.STEP_FOUR, ReviewVoucherFragment.createInstance(::getVoucherReviewUiModel, ::getToken, ::getPostBaseUiModel, ::onReturnToStep))
+            put(VoucherCreationStepInfo.STEP_THREE, SetVoucherPeriodFragment.createInstance(::setVoucherPeriod, ::getBannerVoucherUiModel, ::getBannerBaseUiModel, ::onSuccessGetSquareBitmap))
+            put(VoucherCreationStepInfo.STEP_FOUR, ReviewVoucherFragment.createInstance(::getVoucherReviewUiModel, ::getToken, ::getPostBaseUiModel, ::onReturnToStep, ::getBannerBitmap))
         }
     }
 
@@ -163,6 +163,8 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                     "")
 
     private var voucherReviewUiModel = VoucherReviewUiModel()
+
+    private var bannerBitmap: Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -389,6 +391,10 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         voucherReviewUiModel.shopAvatarUrl = shopAvatarUrl
     }
 
+    private fun onSuccessGetSquareBitmap(bitmap: Bitmap) {
+        bannerBitmap = bitmap
+    }
+
     private fun getBannerVoucherUiModel() = bannerVoucherUiModel
 
     private fun getVoucherReviewUiModel() = voucherReviewUiModel
@@ -400,6 +406,8 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     private fun getToken() = token
 
     private fun getPostBaseUiModel() = postBaseUiModel
+
+    private fun getBannerBitmap() = bannerBitmap
 
     private fun onCancelVoucher() {
         cancelDialog.show()

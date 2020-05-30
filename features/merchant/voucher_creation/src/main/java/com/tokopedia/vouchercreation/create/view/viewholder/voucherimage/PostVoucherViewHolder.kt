@@ -19,7 +19,8 @@ import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.PostVouche
 import kotlinx.android.synthetic.main.mvc_post_image.view.*
 
 class PostVoucherViewHolder(itemView: View?,
-                            private val activity: Activity?) : AbstractViewHolder<PostVoucherUiModel>(itemView) {
+                            private val activity: Activity?,
+                            private val onSuccessGetPostBitmap: (Bitmap) -> Unit) : AbstractViewHolder<PostVoucherUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -54,6 +55,7 @@ class PostVoucherViewHolder(itemView: View?,
     private fun onSuccessGetBitmap(bitmap: Bitmap) {
         activity?.runOnUiThread {
             itemView.postVoucherImage?.setImageBitmap(bitmap)
+            onSuccessGetPostBitmap(bitmap)
         }
     }
 }

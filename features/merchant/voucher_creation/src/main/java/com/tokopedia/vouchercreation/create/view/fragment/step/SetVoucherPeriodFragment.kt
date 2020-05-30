@@ -51,10 +51,12 @@ class SetVoucherPeriodFragment : Fragment() {
         @JvmStatic
         fun createInstance(onNext: (String, String, String, String) -> Unit,
                            getVoucherBanner: () -> BannerVoucherUiModel,
-                           getBannerBaseUiModel: () -> BannerBaseUiModel) = SetVoucherPeriodFragment().apply {
+                           getBannerBaseUiModel: () -> BannerBaseUiModel,
+                           onSuccessGetBannerBitmap: (Bitmap) -> Unit) = SetVoucherPeriodFragment().apply {
             this.onNext = onNext
             this.getVoucherBanner = getVoucherBanner
             this.getBannerBaseUiModel = getBannerBaseUiModel
+            this.onSuccessGetBannerBitmap = onSuccessGetBannerBitmap
         }
 
         private const val BANNER_BASE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/banner.jpg"
@@ -85,6 +87,7 @@ class SetVoucherPeriodFragment : Fragment() {
                 CreateMerchantVoucherStepsActivity.CASHBACK_URL,
                 CreateMerchantVoucherStepsActivity.CASHBACK_UNTIL_URL
         )}
+    private var onSuccessGetBannerBitmap: (Bitmap) -> Unit = { _ -> }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -174,6 +177,7 @@ class SetVoucherPeriodFragment : Fragment() {
     private fun onSuccessGetBitmap(bitmap: Bitmap) {
         activity?.runOnUiThread {
             periodBannerImage?.setImageBitmap(bitmap)
+            onSuccessGetBannerBitmap(bitmap)
         }
     }
 
