@@ -19,6 +19,7 @@ class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment
     private var addChildAdapterCallback: AddChildAdapterCallback = (fragment as AddChildAdapterCallback)
 
     init {
+        mDiscoveryRecycleAdapter.setHasStableIds(true)
         addChildAdapterCallback.addChildAdapter(mDiscoveryRecycleAdapter)
         addShimmer()
     }

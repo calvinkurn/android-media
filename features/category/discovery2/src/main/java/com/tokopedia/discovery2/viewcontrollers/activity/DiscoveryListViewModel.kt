@@ -6,7 +6,7 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import kotlin.reflect.KFunction
 
 
-/** Please don't remove any commented code from this file. Zishan will work later on this **/
+/** Future Improvement : Please don't remove any commented code from this file. Need to work on this **/
 class DiscoveryListViewModel(private val applicationContext: Application) : AndroidViewModel(applicationContext) {
     //    private val viewHolderViewModelList = ArrayList<DiscoveryBaseViewModel>()
     private var mapOfViewModels = mutableMapOf<Int, DiscoveryBaseViewModel>()

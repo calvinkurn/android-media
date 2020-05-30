@@ -45,6 +45,13 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
         return id ?: 0
     }
 
+    override fun getItemId(position: Int): Long {
+        if (!componentList.isNullOrEmpty() && !componentList[position].data.isNullOrEmpty()) {
+            return componentList[position].data?.get(0)?.productId?.toLong()!!
+        }
+        return super.getItemId(position)
+    }
+
 
     fun setDataList(dataList: ArrayList<ComponentsItem>?) {
         if (dataList != null) {
@@ -54,7 +61,6 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
         }
         notifyDataSetChanged()
     }
-
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder) {
         super.onViewAttachedToWindow(holder)
