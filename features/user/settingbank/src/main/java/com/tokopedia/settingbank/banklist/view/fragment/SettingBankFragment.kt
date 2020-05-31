@@ -3,12 +3,11 @@ package com.tokopedia.settingbank.banklist.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RestrictTo
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -20,6 +19,8 @@ import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivity
 import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel
 import com.tokopedia.settingbank.banklist.analytics.SettingBankAnalytics
+import com.tokopedia.settingbank.banklist.di.DaggerSettingBankComponent
+import com.tokopedia.settingbank.banklist.di.SettingBankModule
 import com.tokopedia.settingbank.banklist.view.adapter.BankAccountAdapter
 import com.tokopedia.settingbank.banklist.view.adapter.BankAccountTypeFactoryImpl
 import com.tokopedia.settingbank.banklist.view.listener.BankAccountPopupListener
@@ -28,9 +29,7 @@ import com.tokopedia.settingbank.banklist.view.listener.SettingBankContract
 import com.tokopedia.settingbank.banklist.view.presenter.SettingBankPresenter
 import com.tokopedia.settingbank.banklist.view.viewmodel.BankAccountListViewModel
 import com.tokopedia.settingbank.banklist.view.viewmodel.BankAccountViewModel
-import com.tokopedia.settingbank.banklist.di.DaggerSettingBankComponent
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.settingbank.banklist.di.SettingBankComponent
 import kotlinx.android.synthetic.main.fragment_setting_bank.*
 import javax.inject.Inject
 
@@ -83,13 +82,16 @@ open class SettingBankFragment : SettingBankContract.View, BankAccountPopupListe
     }
 
     override fun initInjector() {
-        if (activity != null && (activity as Activity).application != null) {
-            val addSettingBankComponent = DaggerSettingBankComponent.builder().baseAppComponent(
-                    ((activity as Activity).application as BaseMainApplication).baseAppComponent)
-                    .build()
+        activity?.let { activity ->
+            if ((activity as Activity).application != null) {
+                val addSettingBankComponent = DaggerSettingBankComponent.builder()
+                        .baseAppComponent(((activity as Activity).application as BaseMainApplication).baseAppComponent)
+                        .settingBankModule(SettingBankModule(activity))
+                        .build()
 
-            addSettingBankComponent.inject(this)
-            presenter.attachView(this)
+                addSettingBankComponent.inject(this)
+                presenter.attachView(this)
+            }
         }
     }
 

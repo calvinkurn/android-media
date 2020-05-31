@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.settingbank.banklist.v2.di.DaggerSettingBankComponent
 import com.tokopedia.settingbank.banklist.v2.di.SettingBankComponent
+import com.tokopedia.settingbank.banklist.v2.di.SettingBankModule
 import com.tokopedia.settingbank.banklist.v2.domain.Bank
 import com.tokopedia.settingbank.banklist.v2.view.fragment.AddBankFragment
 import com.tokopedia.settingbank.banklist.v2.view.fragment.OnBankSelectedListener
@@ -17,8 +18,9 @@ class AddBankActivity : BaseSimpleActivity(), HasComponent<SettingBankComponent>
         OnBankSelectedListener {
 
     override fun getComponent(): SettingBankComponent = DaggerSettingBankComponent.builder()
-            .baseAppComponent((applicationContext as BaseMainApplication)
-                    .baseAppComponent).build()
+            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+            .settingBankModule(SettingBankModule(this))
+            .build()
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()

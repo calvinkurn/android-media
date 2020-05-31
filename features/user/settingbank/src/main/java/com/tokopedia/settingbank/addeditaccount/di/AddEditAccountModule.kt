@@ -1,5 +1,6 @@
 package com.tokopedia.settingbank.addeditaccount.di
 
+import android.app.Activity
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -29,7 +30,10 @@ import retrofit2.Retrofit
 
 @AddEditAccountScope
 @Module
-class AddEditAccountModule{
+class AddEditAccountModule(val activity: Activity) {
+
+    @Provides
+    fun getContext(): Context = activity
 
     @AddEditAccountScope
     @Provides
@@ -46,19 +50,19 @@ class AddEditAccountModule{
 
     @AddEditAccountScope
     @Provides
-    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
+    fun provideUserSession(context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
     @AddEditAccountScope
     @Provides
-    fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
+    fun provideNetworkRouter(context: Context): NetworkRouter {
         return (context as NetworkRouter)
     }
 
     @AddEditAccountScope
     @Provides
-    fun provideTkpdAuthInterceptor(@ApplicationContext context: Context,
+    fun provideTkpdAuthInterceptor(context: Context,
                                    networkRouter: NetworkRouter,
                                    userSession: UserSessionInterface)
             : TkpdAuthInterceptor = TkpdAuthInterceptor(context, networkRouter, userSession)
@@ -71,7 +75,7 @@ class AddEditAccountModule{
 
     @AddEditAccountScope
     @Provides
-    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor
+    fun provideChuckerInterceptor(context: Context): ChuckerInterceptor
             = ChuckerInterceptor(context)
 
     @AddEditAccountScope
