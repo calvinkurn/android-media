@@ -301,7 +301,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     private fun showEditQuotaBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
         val parent = view as? ViewGroup ?: return
-        EditQuotaBottomSheet(parent, voucher).show(childFragmentManager)
+        EditQuotaBottomSheet.createInstance(parent, voucher).show(childFragmentManager)
     }
 
     private fun setupView() = view?.run {

@@ -6,30 +6,44 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
+import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
+import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.EditQuotaViewModel
 import kotlinx.android.synthetic.main.bottomsheet_mvc_edit_quota.*
 import kotlinx.android.synthetic.main.bottomsheet_mvc_edit_quota.view.*
 import kotlinx.android.synthetic.main.bottomsheet_mvc_edit_quota.view.tvMvcVoucherDescription
 import kotlinx.android.synthetic.main.bottomsheet_mvc_edit_quota.view.tvMvcVoucherName
 import kotlinx.android.synthetic.main.item_mvc_voucher_list.view.*
 import timber.log.Timber
+import javax.inject.Inject
 
 /**
  * Created By @ilhamsuaib on 27/04/20
  */
 
-class EditQuotaBottomSheet(
-        parent: ViewGroup,
-        private val voucher: VoucherUiModel
-) : BottomSheetUnify() {
+class EditQuotaBottomSheet(parent: ViewGroup) : BottomSheetUnify() {
+
+    companion object {
+        @JvmStatic
+        fun createInstance(parent: ViewGroup,
+                           voucher: VoucherUiModel) = EditQuotaBottomSheet(parent).apply {
+            this.voucher = voucher
+        }
+    }
 
     init {
         val child = LayoutInflater.from(parent.context)
@@ -40,41 +54,82 @@ class EditQuotaBottomSheet(
         setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
     }
 
+    private var voucher: VoucherUiModel? = null
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModelProvider by lazy {
+        ViewModelProvider(this, viewModelFactory)
+    }
+
+    private val viewModel by lazy {
+        viewModelProvider.get(EditQuotaViewModel::class.java)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initInjector()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        observeLiveData()
         super.onViewCreated(view, savedInstanceState)
         setupView(view)
     }
 
+    private fun initInjector() {
+        DaggerVoucherCreationComponent.builder()
+                .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
+                .build()
+                .inject(this)
+    }
+
+    private fun observeLiveData() {
+        viewLifecycleOwner.observe(viewModel.editQuotaSuccessLiveData) { result ->
+            when(result) {
+                is Success -> {
+                    dismiss()
+                }
+                is Fail -> {
+
+                }
+            }
+        }
+    }
+
     private fun setupView(view: View) = with(view) {
         setupBottomSheetChildNoMargin()
-        setImageVoucher(voucher.isPublic, voucher.type)
+        voucher?.run {
+            setImageVoucher(isPublic, type)
 
-        KeyboardHandler.showSoftKeyboard(activity)
+            KeyboardHandler.showSoftKeyboard(activity)
 
-        val estimationAmount = voucher.quota * voucher.minimumAmt
+            val estimationAmount = quota * minimumAmt
 
-        editMvcQuota?.textFieldInput?.run {
-            addTextChangedListener(object : NumberTextWatcher(this@run){
-                override fun onNumberChanged(number: Double) {
-                    super.onNumberChanged(number)
-                    changeTickerValue(number.toInt() * voucher.discountAmtMax)
-                }
-            })
-            setText(CurrencyFormatHelper.removeCurrencyPrefix(voucher.quota.toString()))
-            selectAll()
-            requestFocus()
-        }
+            editMvcQuota?.textFieldInput?.run {
+                addTextChangedListener(object : NumberTextWatcher(this@run){
+                    override fun onNumberChanged(number: Double) {
+                        super.onNumberChanged(number)
+                        changeTickerValue(number.toInt() * discountAmtMax)
+                    }
+                })
+                setText(CurrencyFormatHelper.removeCurrencyPrefix(quota.toString()))
+                selectAll()
+                requestFocus()
+            }
 
-        tvMvcVoucherName.text = voucher.name
-        tvMvcVoucherDescription.text = String.format(context?.getString(R.string.mvc_cashback_formatted).toBlankOrString(), voucher.discountAmtFormatted)
-        mvcTicker.run {
-            title = context?.getString(R.string.mvc_estimation_title).toBlankOrString()
-            description = context?.getString(R.string.mvc_estimation_description).toBlankOrString()
-            nominal = CurrencyFormatHelper.convertToRupiah(estimationAmount.toString()).toBlankOrString()
-        }
+            tvMvcVoucherName.text = name
+            tvMvcVoucherDescription.text = String.format(context?.getString(R.string.mvc_cashback_formatted).toBlankOrString(), discountAmtFormatted)
+            mvcTicker.run {
+                title = context?.getString(R.string.mvc_estimation_title).toBlankOrString()
+                description = context?.getString(R.string.mvc_estimation_description).toBlankOrString()
+                nominal = CurrencyFormatHelper.convertToRupiah(estimationAmount.toString()).toBlankOrString()
+            }
 
-        setAction(context.getString(R.string.mvc_retry)) {
+            setAction(context.getString(R.string.mvc_retry)) {
 
+            }
         }
     }
 

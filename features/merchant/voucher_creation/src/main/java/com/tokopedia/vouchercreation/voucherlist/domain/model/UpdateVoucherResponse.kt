@@ -24,5 +24,12 @@ data class UpdateVoucherSuccessData(
         @SerializedName("voucher_id")
         val voucherId: Int = 0,
         @SerializedName("status")
-        val status: String = ""
-)
+        val status: String = "") {
+
+        val isSuccess = status == UpdateResponse.STATUS_SUCCESS
+}
+
+object UpdateResponse {
+
+        internal const val STATUS_SUCCESS = "Success"
+}

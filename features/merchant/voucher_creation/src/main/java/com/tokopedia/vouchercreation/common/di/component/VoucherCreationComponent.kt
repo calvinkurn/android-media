@@ -15,6 +15,7 @@ import com.tokopedia.vouchercreation.create.view.fragment.vouchertype.CashbackVo
 import com.tokopedia.vouchercreation.create.view.fragment.vouchertype.FreeDeliveryVoucherCreateFragment
 import com.tokopedia.vouchercreation.detail.view.fragment.VoucherDetailFragment
 import com.tokopedia.vouchercreation.voucherlist.view.fragment.VoucherListFragment
+import com.tokopedia.vouchercreation.voucherlist.view.widget.EditQuotaBottomSheet
 import dagger.Component
 
 @VoucherCreationScope
@@ -37,4 +38,5 @@ interface VoucherCreationComponent {
     fun inject(reviewVoucherFragment: ReviewVoucherFragment)
     fun inject(voucherPeriodBottomSheet: VoucherPeriodBottomSheet)
     fun inject(voucherDetailFragment: VoucherDetailFragment)
+    fun inject(editQuotaBottomSheet: EditQuotaBottomSheet)
 }
