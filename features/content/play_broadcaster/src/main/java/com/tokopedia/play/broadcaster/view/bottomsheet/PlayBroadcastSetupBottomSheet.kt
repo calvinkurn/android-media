@@ -73,9 +73,9 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        childFragmentManager.fragmentFactory = fragmentFactory
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
-        childFragmentManager.fragmentFactory = fragmentFactory
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -137,18 +137,11 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
             }
             bottomSheet?.setBackgroundColor(Color.TRANSPARENT)
             bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
-
-            bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                override fun onSlide(p0: View, p1: Float) {
-
-                }
-
-                override fun onStateChanged(p0: View, p1: Int) {
-                    bottomSheetBehavior.peekHeight = bottomSheet?.height ?: maxHeight()
-                }
-            })
             bottomSheetBehavior.isHideable = false
+            bottomSheetBehavior.peekHeight = maxHeight()
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+
+            isCancelable = false
         }
     }
 
@@ -174,7 +167,7 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         navigateToFragment(PlayEtalasePickerFragment::class.java)
     }
 
-    private fun maxHeight(): Int = (getScreenHeight() * MAX_HEIGHT_MULTIPLIER).toInt()
+    private fun maxHeight(): Int = (getScreenHeight()).toInt()
 
     private fun openFragment(fragmentClass: Class<out Fragment>, extras: Bundle): Fragment {
         val fragmentTransaction = childFragmentManager.beginTransaction()
