@@ -1,13 +1,11 @@
 package com.tokopedia.analytic.processor
 
-import com.tokopedia.analytic.processor.AnnotatedModelClass
-import com.tokopedia.analytic.processor.utils.*
 import com.squareup.javapoet.TypeName
 import com.squareup.kotlinpoet.asTypeName
 import com.sun.tools.javac.code.Symbol
 import com.sun.tools.javac.code.Type
+import com.tokopedia.analytic.annotation.Key
 import com.tokopedia.analytic.processor.utils.*
-import com.tokopedia.annotation.Key
 import com.tokopedia.annotation.defaultvalues.*
 import org.jetbrains.annotations.NotNull
 import javax.lang.model.element.ElementKind

@@ -1,10 +1,10 @@
 package com.tokopedia.analytic.processor
 
-import com.tokopedia.analytic.processor.AnnotatedModelClass
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.JavaFile
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.TypeName
+import com.tokopedia.analytic.annotation.CustomChecker
 import javax.lang.model.element.Modifier
 
 // This class is used to generate the model bundler classes
@@ -46,6 +46,10 @@ class ModelClassGenerator(clazz: AnnotatedModelClass) : ClassGenerator(clazz) {
         clazz.fields.forEach {
             getBundleFuncBuilder.addCode(createPutStatement(it.value))
             getBundleFromMap.addCode(createPutStatementFromMap(it.value))
+            if (it.value.element.getAnnotation(CustomChecker::class.java) != null) {
+//                getBundleFuncBuilder.addCode(addChecker(it.value))
+//                getBundleFromMap.addCode(addChecker(it.value))
+            }
         }
 
         getBundleFromMap

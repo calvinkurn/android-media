@@ -1,21 +1,20 @@
 package com.tokopedia.analytic.processor
 
-import com.tokopedia.analyticparam.AnalyticParameter
-import com.tokopedia.annotation.AnalyticEvent
-import com.tokopedia.annotation.AnalyticRules
-import com.tokopedia.annotation.BundleThis
-import com.tokopedia.annotation.Key
-import com.tokopedia.annotation.defaultvalues.*
-import com.tokopedia.analytic.processor.*
-import com.tokopedia.analytic.processor.utils.isList
-import com.tokopedia.analytic.processor.utils.isMap
-import com.tokopedia.analytic.processor.utils.isRawType
-import com.tokopedia.analytic.processor.utils.isSet
 import com.google.auto.service.AutoService
 import com.squareup.javapoet.JavaFile
 import com.squareup.javapoet.TypeName
 import com.sun.tools.javac.code.Symbol
 import com.sun.tools.javac.code.Type
+import com.tokopedia.analytic.annotation.Key
+import com.tokopedia.analytic.processor.utils.isList
+import com.tokopedia.analytic.processor.utils.isMap
+import com.tokopedia.analytic.processor.utils.isRawType
+import com.tokopedia.analytic.processor.utils.isSet
+import com.tokopedia.analyticparam.AnalyticParameter
+import com.tokopedia.annotation.AnalyticEvent
+import com.tokopedia.annotation.AnalyticRules
+import com.tokopedia.annotation.BundleThis
+import com.tokopedia.annotation.defaultvalues.*
 import net.ltgt.gradle.incap.IncrementalAnnotationProcessor
 import net.ltgt.gradle.incap.IncrementalAnnotationProcessorType
 import javax.annotation.processing.*
@@ -57,15 +56,11 @@ class AnnotationProcessor : AbstractProcessor() {
                 processAnnotatedModelClass()
             }
             if (analyticEventElements.isNotEmpty()) {
-                processRulesCheckingClass()
                 processAnnotatedEventClass()
             }
 
             if (roundEnv.errorRaised()) return false
             generateFiles()
-            if (analyticEventElements.isNotEmpty()) {
-                PutHelperGenerator().generate()
-            }
         }
 
         return true
@@ -174,9 +169,14 @@ class AnnotationProcessor : AbstractProcessor() {
     }
 
     private fun generateFiles() {
+        val checkerFiles = mutableListOf<JavaFile>()
         val modelFiles = mutableListOf<JavaFile>()
         AnnotatedModelClass.annotatedClasses.forEach {
-            modelFiles.add(ModelClassGenerator(it).generate())
+            val modelClassGenerator = ModelClassGenerator(it)
+            modelFiles.add(modelClassGenerator.generate())
+            if (modelClassGenerator.hasCustomChecker()) {
+                checkerFiles.add(modelClassGenerator.generateCheckerInterface())
+            }
         }
         try {
             modelFiles.forEach {
@@ -187,7 +187,11 @@ class AnnotationProcessor : AbstractProcessor() {
 
         val eventFiles = mutableListOf<JavaFile>()
         AnnotatedEventClass.annotatedEventClass.forEach {
-            eventFiles.add(EventClassGenerator(it).generate())
+            val eventClassGenerator = EventClassGenerator(it)
+            eventFiles.add(eventClassGenerator.generate())
+            if (eventClassGenerator.hasCustomChecker()) {
+                checkerFiles.add(eventClassGenerator.generateCheckerInterface())
+            }
         }
         try {
             eventFiles.forEach {
@@ -195,13 +199,11 @@ class AnnotationProcessor : AbstractProcessor() {
             }
         } catch (ignored: FilerException) {
         }
-    }
-
-    private fun processRulesCheckingClass() {
-        val file = RulesCheckerGenerator.generate()
 
         try {
-            file.writeTo(processingEnv.filer)
+            checkerFiles.forEach {
+                it.writeTo(processingEnv.filer)
+            }
         } catch (ignored: FilerException) {
         }
     }

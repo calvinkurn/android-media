@@ -1,6 +1,7 @@
 package com.tokopedia.analytic.processor
 
 import com.squareup.javapoet.*
+import com.tokopedia.analytic.annotation.CustomChecker
 import javax.lang.model.element.Modifier
 
 // This class is used to generate the event bundler classes
@@ -19,11 +20,12 @@ class EventClassGenerator(clazz: AnnotatedEventClass) : ClassGenerator(clazz) {
         .methodBuilder("getBundle")
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
         .addParameter(
-                ParameterGenerator.createParameterizedParameter(
-                        "data",
-                        ClassName.get(Map::class.java),
-                        TypeName.get(String::class.java),
-                        ClassName.get("java.lang", "Object")
+                ParameterGenerator
+                        .createParameterizedParameter(
+                                "data",
+                                ClassName.get(Map::class.java),
+                                TypeName.get(String::class.java),
+                                ClassName.get("java.lang", "Object")
                 )
         )
         .addStatement(
@@ -45,6 +47,10 @@ class EventClassGenerator(clazz: AnnotatedEventClass) : ClassGenerator(clazz) {
             )
             getBundleFuncBuilder.addCode(createPutStatement(it.value))
             getBundleFromMap.addCode(createPutStatementFromMap(it.value))
+            if (it.value.element.getAnnotation(CustomChecker::class.java) != null) {
+//                getBundleFuncBuilder.addCode(addChecker(it.value))
+//                getBundleFromMap.addCode(addChecker(it.value))
+            }
         }
 
         getBundleFromMap
@@ -83,8 +89,8 @@ class EventClassGenerator(clazz: AnnotatedEventClass) : ClassGenerator(clazz) {
         getBundleFromMap
             .beginControlFlow("try ")
             .addStatement(
-                "\$T.checkRequired(\$T.Companion.getRules(), \$N)",
-                ClassName.get("com.analytic.paramchecker", "AnalyticRequirementChecker"),
+                    "\$T.INSTANCE.checkRequired(\$T.Companion.getRules(), \$N)",
+                    ClassName.get("com.tokopedia.analytic.gtmutil", "AnalyticRequirementChecker"),
                 (clazz as AnnotatedEventClass).rulesClass,
                 BUNDLE_NAME
             )
