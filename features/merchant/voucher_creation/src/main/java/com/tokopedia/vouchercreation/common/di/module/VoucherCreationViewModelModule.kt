@@ -8,6 +8,7 @@ import com.tokopedia.vouchercreation.common.di.scope.VoucherCreationScope
 import com.tokopedia.vouchercreation.create.view.viewmodel.*
 import com.tokopedia.vouchercreation.detail.view.viewmodel.VoucherDetailViewModel
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.ChangeVoucherPeriodViewModel
+import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.EditQuotaViewModel
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.VoucherListViewModel
 import dagger.Binds
 import dagger.Module
@@ -75,4 +76,9 @@ abstract class VoucherCreationViewModelModule {
     @IntoMap
     @ViewModelKey(VoucherDetailViewModel::class)
     abstract fun provideVoucherDetailViewModel(voucherDetailViewModel: VoucherDetailViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(EditQuotaViewModel::class)
+    abstract fun provideEditQuotaViewModel(editQuotaViewModel: EditQuotaViewModel): ViewModel
 }

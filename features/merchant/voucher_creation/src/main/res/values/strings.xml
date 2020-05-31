@@ -248,6 +248,9 @@
     <string name="mvc_find_shop_voucher">Cari voucher toko</string>
     <string name="mvc_success_update_period">Periode tampil berhasil diubah.</string>
     <string name="mvc_chip_multiple_filter">%s Jenis</string>
+    <string name="mvc_quota_min">Min. %s voucher</string>
+    <string name="mvc_quota_max">Maks. %s voucher</string>
+    <string name="mvc_quota_success">Kuota voucher berhasil ditambahkan</string>
 
     <!-- voucher detail -->
     <string name="mvc_detail_total_quota">/%s</string>

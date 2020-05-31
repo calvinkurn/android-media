@@ -1,6 +1,7 @@
 package com.tokopedia.vouchercreation.voucherlist.view.widget
 
 import android.os.Bundle
+import android.text.InputFilter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,24 +11,24 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.EditQuotaViewModel
 import kotlinx.android.synthetic.main.bottomsheet_mvc_edit_quota.*
 import kotlinx.android.synthetic.main.bottomsheet_mvc_edit_quota.view.*
-import kotlinx.android.synthetic.main.bottomsheet_mvc_edit_quota.view.tvMvcVoucherDescription
-import kotlinx.android.synthetic.main.bottomsheet_mvc_edit_quota.view.tvMvcVoucherName
-import kotlinx.android.synthetic.main.item_mvc_voucher_list.view.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -43,6 +44,11 @@ class EditQuotaBottomSheet(parent: ViewGroup) : BottomSheetUnify() {
                            voucher: VoucherUiModel) = EditQuotaBottomSheet(parent).apply {
             this.voucher = voucher
         }
+
+        private const val MIN_QUOTA = 1
+        private const val MAX_QUOTA = 999
+
+        private const val MAX_TEXTFIELD_LENGTH = 3
     }
 
     init {
@@ -67,6 +73,12 @@ class EditQuotaBottomSheet(parent: ViewGroup) : BottomSheetUnify() {
         viewModelProvider.get(EditQuotaViewModel::class.java)
     }
 
+    private var minQuota = MIN_QUOTA
+
+    private val minQuotaErrorMessage
+        get() = String.format(context?.getString(R.string.mvc_quota_min).toBlankOrString(), minQuota)
+    private val maxQuotaErrorMessage = String.format(context?.getString(R.string.mvc_quota_max).toBlankOrString(), MAX_QUOTA)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
@@ -89,34 +101,68 @@ class EditQuotaBottomSheet(parent: ViewGroup) : BottomSheetUnify() {
         viewLifecycleOwner.observe(viewModel.editQuotaSuccessLiveData) { result ->
             when(result) {
                 is Success -> {
+                    view?.run {
+                        Toaster.make(this,
+                                context?.getString(R.string.mvc_quota_success).toBlankOrString(),
+                                Toaster.LENGTH_SHORT,
+                                Toaster.TYPE_NORMAL,
+                                context?.getString(R.string.mvc_oke).toBlankOrString())
+                    }
                     dismiss()
                 }
                 is Fail -> {
-
+                    view?.run {
+                        Toaster.make(this,
+                                result.throwable.message.toBlankOrString(),
+                                Toaster.LENGTH_SHORT,
+                                Toaster.TYPE_ERROR)
+                    }
                 }
+            }
+            btnMvcSaveQuota?.run {
+                isLoading = false
+                isClickable = true
             }
         }
     }
 
     private fun setupView(view: View) = with(view) {
         setupBottomSheetChildNoMargin()
-        voucher?.run {
+        voucher?.run voucher@ {
             setImageVoucher(isPublic, type)
 
             KeyboardHandler.showSoftKeyboard(activity)
 
             val estimationAmount = quota * minimumAmt
 
-            editMvcQuota?.textFieldInput?.run {
-                addTextChangedListener(object : NumberTextWatcher(this@run){
+            if (status == VoucherStatusConst.ONGOING) {
+                minQuota = quota
+            }
+
+            if (status == VoucherStatusConst.NOT_STARTED) {
+                removeTicker()
+            }
+
+            editMvcQuota?.textFieldInput?.run et@ {
+                addTextChangedListener(object : NumberTextWatcher(this@et){
                     override fun onNumberChanged(number: Double) {
                         super.onNumberChanged(number)
                         changeTickerValue(number.toInt() * discountAmtMax)
+                        onChangeQuotaFieldValue(number.toInt())
                     }
                 })
                 setText(CurrencyFormatHelper.removeCurrencyPrefix(quota.toString()))
                 selectAll()
                 requestFocus()
+                filters = arrayOf(InputFilter.LengthFilter(MAX_TEXTFIELD_LENGTH))
+            }
+
+            btnMvcSaveQuota?.run {
+                setOnClickListener {
+                    viewModel.changeQuotaValue(this@voucher.id, this@with.editMvcQuota?.textFieldInput?.text?.toString()?.toInt() ?: quota)
+                    isLoading = true
+                    isClickable = false
+                }
             }
 
             tvMvcVoucherName.text = name
@@ -128,14 +174,14 @@ class EditQuotaBottomSheet(parent: ViewGroup) : BottomSheetUnify() {
             }
 
             setAction(context.getString(R.string.mvc_retry)) {
-
+                editMvcQuota?.textFieldInput?.setText(CurrencyFormatHelper.removeCurrencyPrefix(quota.toString()))
             }
         }
     }
 
     private fun setImageVoucher(isPublic: Boolean, @VoucherTypeConst voucherType: Int) {
         try {
-            view?.imgMvcVoucherType?.run {
+            view?.imgMvcVoucher?.run {
                 val drawableRes = when {
                     isPublic && (voucherType == VoucherTypeConst.CASHBACK || voucherType == VoucherTypeConst.DISCOUNT) -> R.drawable.ic_mvc_cashback_publik
                     !isPublic && (voucherType == VoucherTypeConst.CASHBACK || voucherType == VoucherTypeConst.DISCOUNT) -> R.drawable.ic_mvc_cashback_khusus
@@ -155,6 +201,34 @@ class EditQuotaBottomSheet(parent: ViewGroup) : BottomSheetUnify() {
             mvcTicker?.nominal = String.format(
                     getString(R.string.mvc_rp_value),
                     CurrencyFormatHelper.convertToRupiah(quotaNumber.toString()).toBlankOrString()).toBlankOrString()
+        }
+    }
+
+    private fun onChangeQuotaFieldValue(quota: Int) {
+        when {
+            quota < minQuota -> {
+                editMvcQuota?.setError(true)
+                editMvcQuota?.setMessage(minQuotaErrorMessage)
+                btnMvcSaveQuota?.isEnabled = false
+            }
+            quota > MAX_QUOTA -> {
+                editMvcQuota?.setError(true)
+                editMvcQuota?.setMessage(maxQuotaErrorMessage)
+                btnMvcSaveQuota?.isEnabled = false
+            }
+            else -> {
+                editMvcQuota?.setError(false)
+                editMvcQuota?.setMessage("")
+                btnMvcSaveQuota?.isEnabled = true
+            }
+        }
+    }
+
+    private fun removeTicker() {
+        view?.run {
+            icMvcTips?.gone()
+            tvMvcTips?.gone()
+            vMvcVerLine1?.gone()
         }
     }
 
