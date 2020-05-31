@@ -55,6 +55,9 @@ data class RechargeBills(
         @SerializedName("checkoutFields")
         @Expose
         val checkoutFields: List<RechargeField> = listOf(),
+        @SerializedName("billName")
+        @Expose
+        val billName: String = "",
         var selected: Boolean = false,
         var errorMessage: String = ""
 ): Visitable<SmartBillsAdapterFactory> {

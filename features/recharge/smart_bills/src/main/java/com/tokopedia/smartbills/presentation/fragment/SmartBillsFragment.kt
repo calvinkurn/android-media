@@ -125,7 +125,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
             view_smart_bills_shimmering.hide()
             when (it) {
                 is Success -> {
-                    if (it.data.bills.isNotEmpty()) {
+                    val bills = it.data.bills
+                    if (bills.isNotEmpty()) {
                         view_smart_bills_select_all_checkbox_container.show()
                         renderList(it.data.bills)
                         smartBillsAnalytics.impressionAllProducts(it.data.bills)
@@ -139,6 +140,9 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                             maximumPrice += bill.amount.toInt()
                         }
                     } else {
+                        // Show empty state
+                        tv_smart_bills_title.hide()
+                        smart_bills_checkout_view.setVisibilityLayout(false)
                         adapter.renderEmptyState(
                                 getString(R.string.smart_bills_empty_state_title),
                                 getString(R.string.smart_bills_empty_state_description))
@@ -261,7 +265,6 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                 })
 
                 smart_bills_checkout_view.listener = this
-                smart_bills_checkout_view.setVisibilityLayout(true)
                 smart_bills_checkout_view.setBuyButtonLabel(getString(R.string.smart_bills_checkout_view_button_label))
                 setTotalPrice()
 
@@ -284,8 +287,11 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
     }
 
     override fun loadData(page: Int) {
+        // Reset view states
+        tv_smart_bills_title.show()
         view_smart_bills_select_all_checkbox_container.hide()
         view_smart_bills_shimmering.show()
+        smart_bills_checkout_view.setVisibilityLayout(true)
 
         viewModel.getStatementMonths(
                 GraphqlHelper.loadRawString(resources, R.raw.query_recharge_statement_months),

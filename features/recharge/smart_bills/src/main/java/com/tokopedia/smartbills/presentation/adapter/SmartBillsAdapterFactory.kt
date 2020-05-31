@@ -4,8 +4,10 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseListCheckableTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.smartbills.data.RechargeBills
+import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsEmptyStateViewHolder
 import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsViewHolder
 
 /**
@@ -19,8 +21,13 @@ class SmartBillsAdapterFactory(private val checkableListener: BaseCheckableViewH
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             SmartBillsViewHolder.LAYOUT -> SmartBillsViewHolder(parent, checkableListener, detailListener)
+            SmartBillsEmptyStateViewHolder.LAYOUT -> SmartBillsEmptyStateViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
+    }
+
+    override fun type(viewModel: EmptyModel): Int {
+        return SmartBillsEmptyStateViewHolder.LAYOUT
     }
 
     override fun type(item: RechargeBills): Int {

@@ -10,7 +10,9 @@
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/smart_bills_swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_above="@id/smart_bills_checkout_view_container"
+        android:fillViewport="true">
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"

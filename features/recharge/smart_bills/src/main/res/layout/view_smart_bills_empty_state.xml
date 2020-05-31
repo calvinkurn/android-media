@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.EmptyState
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/view_smart_bills_empty_state"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:unifyEmptyStateCTAFullWidth="true"
+    app:unifyEmptyStateDescription="@string/smart_bills_empty_state_description"
+    app:unifyEmptyStateImageDrawable="@drawable/ic_smartbills_emptystate"
+    app:unifyEmptyStateOrientation="vertical"
+    app:unifyEmptyStatePrimaryCTAText="@string/smart_bills_empty_state_button_label"
+    app:unifyEmptyStateTitle="@string/smart_bills_empty_state_title"
+    app:unifyEmptyStateType="page" />

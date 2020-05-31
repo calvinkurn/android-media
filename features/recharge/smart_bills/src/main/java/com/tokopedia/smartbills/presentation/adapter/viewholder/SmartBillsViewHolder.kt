@@ -11,7 +11,6 @@ import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.data.RechargeBills
 import com.tokopedia.smartbills.data.SmartBillsItemDetail
 import com.tokopedia.smartbills.presentation.widget.SmartBillsItemDetailBottomSheet
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.view_smart_bills_item.view.*
 
 /**
@@ -48,11 +47,20 @@ class SmartBillsViewHolder(val view: View,
             cb_smart_bills_item.isEnabled = !element.disabled
 
             tv_smart_bills_item_detail.setOnClickListener {
-                val details = listOf(
-                        SmartBillsItemDetail("Nomor Pelanggan", element.clientNumber),
-                        SmartBillsItemDetail("Nama Lengkap", "Nama"),
-                        SmartBillsItemDetail("Total Tagihan", element.amountText)
-                )
+                val details = mutableListOf<SmartBillsItemDetail>()
+                if (element.clientNumber.isNotEmpty()) {
+                    details.add(SmartBillsItemDetail(getString(R.string.smart_bills_item_detail_label_1),
+                            element.clientNumber))
+                }
+                if (element.billName.isNotEmpty()) {
+                    details.add(SmartBillsItemDetail(getString(R.string.smart_bills_item_detail_label_2),
+                            element.billName))
+                }
+                if (element.amountText.isNotEmpty()) {
+                    details.add(SmartBillsItemDetail(getString(R.string.smart_bills_item_detail_label_3),
+                            element.amountText))
+                }
+
                 val billDetailBottomSheet =
                         SmartBillsItemDetailBottomSheet.newInstance(context, element.categoryName, details)
                 detailListener.onShowBillDetail(element, billDetailBottomSheet)
