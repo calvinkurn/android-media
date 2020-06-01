@@ -10,12 +10,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.analytics.ChatbotAnalytics.Companion.chatbotAnalytics
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 import com.tokopedia.csat_rating.fragment.BaseFragmentProvideRating
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.bot_reason_layout.*
 import kotlinx.android.synthetic.main.chatbot_fragment_rating_provide.*
+
+private const val ACTION_KIRIM_CSAT_SMILEY_BUTTON_CLICKED = "click kirim csat smiley button"
+private const val ACTION_CSAT_SMILEY_REASON_BUTTON_CLICKED = "click csat smiley reason button"
 
 class ChatBotProvideRatingFragment: BaseFragmentProvideRating() {
 
@@ -102,9 +106,14 @@ class ChatBotProvideRatingFragment: BaseFragmentProvideRating() {
     override fun getFilterReviewId():Int = R.id.filter_review
 
     override fun onSuccessSubmit(intent: Intent) {
+        chatbotAnalytics.eventClick(ACTION_KIRIM_CSAT_SMILEY_BUTTON_CLICKED)
         intent.putExtra(BOT_OTHER_REASON, et_state.text.toString())
         intent.putExtra(TIME_STAMP, arguments?.getString(TIME_STAMP) ?: "")
         super.onSuccessSubmit(intent)
+    }
+
+    override fun sendEventClickReason(message: String?) {
+        chatbotAnalytics.eventClick(ACTION_CSAT_SMILEY_REASON_BUTTON_CLICKED, message ?: "")
     }
 
 }

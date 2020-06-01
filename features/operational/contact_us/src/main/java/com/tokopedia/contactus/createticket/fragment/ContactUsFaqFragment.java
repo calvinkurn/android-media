@@ -15,8 +15,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -296,8 +296,7 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
                     return true;
                 } else if (url.getQueryParameter("action") != null &&
                         url.getQueryParameter("action").equals("return")) {
-                    CommonUtils.UniversalToast(getActivity(), getString(R.string
-                            .finish_contact_us));
+                    Toast.makeText(getActivity(), MethodChecker.fromHtml(getString(R.string.finish_contact_us)), Toast.LENGTH_LONG).show();
                     getActivity().finish();
                     return true;
                 } else if (url.toString().contains(CHATBOT_SCHEME)) {

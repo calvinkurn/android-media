@@ -1,10 +1,7 @@
 apply plugin: 'com.android.application'
-if (project.hasProperty("apply-patch")) {
-    apply plugin: 'auto-patch-plugin'
-}
-apply plugin: 'robust'
 apply plugin: 'io.fabric'
 apply plugin: 'io.hansel.preprocessor'
+apply plugin: 'com.bugsnag.android.gradle'
 
 apply from: '../tools/dynamic_feature_inclusion.gradle'
 apply from: '../tools/set_debug_tools.gradle'
@@ -49,8 +46,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 165000123;
-        defaultVersionName = "1.65.123";
+        defaultVersionCode = 200000123;
+        defaultVersionName = "2.00.123";
     }
 
     packagingOptions {
@@ -97,11 +94,13 @@ android {
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles 'proguard-rules.txt'
             ext.enableHansel = project.hasProperty('hanselEnableDebug')
+            ext.enableBugsnag = false
         }
         release {
             if (devMode()) {
                 signingConfig signingConfigs.debug
             }
+            debuggable = isDebugable(project).toBoolean()
             ext.enableHansel = !project.hasProperty('hanselDisableRelease')
             minifyEnabled true
             zipAlignEnabled true
@@ -193,10 +192,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.datePickerRange)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.baseListSeller)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.coreNetwork)
-    implementation project(rootProject.ext.libraries.tokofix)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.irisSession)
@@ -210,6 +209,7 @@ dependencies {
     implementation project(rootProject.ext.features.shopPage)
     implementation project(rootProject.ext.features.sellerorder)
     implementation project(rootProject.ext.features.sellerHome)
+    implementation project(rootProject.ext.features.sellerOnboarding)
     implementation project(rootProject.ext.features.merchantLendingWidget)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.powerMerchantSubscribe)
@@ -227,8 +227,6 @@ dependencies {
     implementation project(rootProject.ext.features.tkpdinbox)
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.reputationCommon)
-    implementation project(rootProject.ext.features.tkpdtransaction)
-    implementation project(rootProject.ext.features.tkpdtransactioncommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.commonPayment)
@@ -254,6 +252,7 @@ dependencies {
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.talk)
     implementation project(rootProject.ext.features.productDetail)
+    implementation project(rootProject.ext.features.productAddEdit)
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.productManageList)
     implementation project(rootProject.ext.features.broadcastMessage)
@@ -273,6 +272,7 @@ dependencies {
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.shopOpen)
+//    implementation project(rootProject.ext.features.shopShowcase)
     implementation project(rootProject.ext.features.withdraw)
 
     implementation project(rootProject.ext.features.changePhoneNumber)
@@ -298,11 +298,12 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
 
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
     implementation rootProject.ext.debugToolsDependencies.chuck
@@ -318,7 +319,11 @@ dependencies {
         implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
     }
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
+    } else {
+        implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
+    }
     implementation(rootProject.ext.analyticsDependencies.moengage)
 
     implementation rootProject.ext.playServicesDependencies.analytics
@@ -375,6 +380,7 @@ dependencies {
     implementation('de.hdodenhof:circleimageview:2.1.0') {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
+    implementation rootProject.ext.monitoringDependencies.bugSnag
 
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(project.ext.debugToolsDependencies.blockCanary)
@@ -391,8 +397,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testImplementation rootProject.ext.testDependencies.junit
-
-    implementation rootProject.ext.miscDependencies.robust
 
     implementation rootProject.ext.playServicesDependencies.tagManager
     implementation rootProject.ext.playServicesDependencies.tagManagerImpl

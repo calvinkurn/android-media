@@ -9,7 +9,8 @@ import com.tokopedia.contactus.orderquery.data.ImageUploadResult
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils
 import com.tokopedia.core.util.ImageUploadHandler
-import com.tokopedia.core.util.SessionHandler
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -34,12 +35,14 @@ class UploadImageUseCaseTest {
     private val context: Context = mockk()
 
     private var uploadImageUseCase = spyk(UploadImageUseCase(context))
+    private lateinit var userSession:UserSessionInterface
     private val list = ArrayList<ImageUpload>()
 
     @Before
     @Throws(Exception::class)
     fun setUp() {
         MockKAnnotations.init(this)
+        userSession = UserSession(context)
         Dispatchers.setMain(TestCoroutineDispatcher())
     }
 
@@ -52,7 +55,7 @@ class UploadImageUseCaseTest {
     @Test
     fun `check invocation of uploadFile with parameter list as null`() {
         runBlockingTest {
-            val list = uploadImageUseCase.uploadFile(null, mockk(), mockk())
+            val list = uploadImageUseCase.uploadFile(null, mockk(), mockk(), true)
             assertEquals(list.size, 0)
         }
     }
@@ -71,14 +74,14 @@ class UploadImageUseCaseTest {
 
             every { listfile[any()] } returns mockk()
 
-            coEvery { uploadImageUseCase.getImageUploadresult(any(), any()) } returns imageUploadResult
+            coEvery { uploadImageUseCase.getImageUploadresult(any(), any(), any()) } returns imageUploadResult
 
             every { imageUploadResult.data } returns data
 
             every { data.picSrc } returns "picSrc"
             every { data.picObj } returns "picObj"
 
-            uploadImageUseCase.uploadFile(list, listnetcal, listfile)
+            uploadImageUseCase.uploadFile(list, listnetcal, listfile, true)
 
             assertEquals(list[0].picSrc, "picSrc")
             assertEquals(list[0].picObj, "picObj")
@@ -104,14 +107,14 @@ class UploadImageUseCaseTest {
             } returns mockk()
 
             coEvery {
-                uploadImageUseCase.getImageUploadresult(any(), any())
+                uploadImageUseCase.getImageUploadresult(any(), any(), any())
             } returns imageUploadResult
 
             coEvery {
                 imageUploadResult.data
             } returns mockk(relaxed = true)
 
-            uploadImageUseCase.uploadFile(list, listnetcal, listfile)
+            uploadImageUseCase.uploadFile(list, listnetcal, listfile, true)
 
             assertNotNull(list[0].picObj)
         }
@@ -138,7 +141,7 @@ class UploadImageUseCaseTest {
             } returns mockk()
 
             coEvery {
-                uploadImageUseCase.getImageUploadresult(any(), any())
+                uploadImageUseCase.getImageUploadresult(any(), any(), any())
             } returns imageUploadResult
 
             coEvery {
@@ -149,7 +152,7 @@ class UploadImageUseCaseTest {
                 imageUploadResult.messageError
             } returns ""
 
-            uploadImageUseCase.uploadFile(list, listnetcal, listfile)
+            uploadImageUseCase.uploadFile(list, listnetcal, listfile, true)
 
         }
 
@@ -221,12 +224,6 @@ class UploadImageUseCaseTest {
                 netcal.header
             } returns HashMap()
 
-
-            mockkStatic(SessionHandler::class)
-            coEvery {
-                SessionHandler.isV4Login(any())
-            } returns true
-
             mockkStatic(RetrofitUtils::class)
             coEvery {
                 RetrofitUtils.createRetrofit(IMAGE_UPLOAD_URL)
@@ -247,7 +244,7 @@ class UploadImageUseCaseTest {
             } returns mockk()
 
 
-            uploadImageUseCase.getImageUploadresult(netcal, file)
+            uploadImageUseCase.getImageUploadresult(netcal, file, true)
 
             coVerify {
                 RetrofitUtils.createRetrofit(IMAGE_UPLOAD_URL)
@@ -288,12 +285,6 @@ class UploadImageUseCaseTest {
                 netcal.header
             } returns HashMap()
 
-
-            mockkStatic(SessionHandler::class)
-            coEvery {
-                SessionHandler.isV4Login(any())
-            } returns false
-
             mockkStatic(RetrofitUtils::class)
             coEvery {
                 RetrofitUtils.createRetrofit(IMAGE_UPLOAD_URL)
@@ -314,7 +305,7 @@ class UploadImageUseCaseTest {
             } returns mockk()
 
 
-            uploadImageUseCase.getImageUploadresult(netcal, file)
+            uploadImageUseCase.getImageUploadresult(netcal, file, false)
 
             coVerify {
                 RetrofitUtils.createRetrofit(IMAGE_UPLOAD_URL)

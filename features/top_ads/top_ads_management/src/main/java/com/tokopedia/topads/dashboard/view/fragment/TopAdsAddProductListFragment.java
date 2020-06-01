@@ -18,14 +18,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.base.list.seller.common.util.ItemType;
 import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
 import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.common.utils.DefaultErrorSubscriber;
 import com.tokopedia.seller.common.utils.MenuTintUtils;
@@ -273,7 +272,6 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                 }
             }
         };
-        topAdsProductListAdapter.setImageHandler(new ImageHandler(getActivity()));
         topAdsProductListAdapter.setListener(this);
         if (isFirstTime) {
             layoutManager = new LinearLayoutManager(getActivity());

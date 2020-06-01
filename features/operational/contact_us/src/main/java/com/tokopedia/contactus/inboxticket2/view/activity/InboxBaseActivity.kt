@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.common.network.util.NetworkClient
 import com.tokopedia.contactus.R
@@ -16,10 +17,9 @@ import com.tokopedia.contactus.inboxticket2.di.InboxComponent
 import com.tokopedia.contactus.inboxticket2.di.InboxModule
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBasePresenter
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBaseView
-import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
+
 
 abstract class InboxBaseActivity : BaseSimpleActivity(), InboxBaseView {
     abstract fun getPresenter(): InboxBasePresenter
@@ -40,8 +40,7 @@ abstract class InboxBaseActivity : BaseSimpleActivity(), InboxBaseView {
     }
 
     override fun showMessage(message: String) {
-        val snackbar = ToasterNormal.make(getRootView(), message, BaseToaster.LENGTH_SHORT)
-        snackbar.show()
+        Toaster.make(getRootView(), message, Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", View.OnClickListener { })
     }
 
     override fun getActivity(): Activity {
@@ -108,7 +107,7 @@ abstract class InboxBaseActivity : BaseSimpleActivity(), InboxBaseView {
     }
 
     override fun hideBottomFragment() {
-        if (bottomFragment != null) bottomFragment?.dismiss()
+        bottomFragment?.dismiss()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -129,11 +128,10 @@ abstract class InboxBaseActivity : BaseSimpleActivity(), InboxBaseView {
     }
 
     override fun setSnackBarErrorMessage(message: String, clickable: Boolean) {
-        val snackbar = ToasterError.make(getRootView(), message, BaseToaster.LENGTH_SHORT)
         if (clickable) {
-            snackbar.duration = BaseToaster.LENGTH_INDEFINITE
-            snackbar.setAction(R.string.ok) { v: View? -> snackbar.dismiss() }
+            Toaster.make(getRootView(), message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.ok), View.OnClickListener { })
+        } else {
+            Toaster.make(getRootView(), message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, "", View.OnClickListener {})
         }
-        snackbar.show()
     }
 }

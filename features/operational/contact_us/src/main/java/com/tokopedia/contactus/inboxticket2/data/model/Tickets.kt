@@ -15,12 +15,10 @@ class Tickets {
     var id: String? = null
     @SerializedName("total_comments")
     private val totalComments = 0
-    @JvmField
 	@SerializedName("comments")
     var comments: MutableList<CommentsItem>? = null
     @SerializedName("createTime")
     val createTime: String? = null
-    @JvmField
 	@SerializedName("subject")
     val subject: String? = null
     @SerializedName("is_gandalf")
@@ -35,7 +33,6 @@ class Tickets {
     val solutionId = 0
     @SerializedName("show_bad_CSAT_reason")
     val isShowBadCSATReason = false
-    @JvmField
 	@SerializedName("number")
     val number: String? = null
     @SerializedName("attachment")
@@ -46,7 +43,6 @@ class Tickets {
     var isNeedAttachment = false
     @SerializedName("invoice")
     var invoice: String? = null
-    @JvmField
 	@SerializedName("status")
     var status: String? = null
     @SerializedName("allowClose")

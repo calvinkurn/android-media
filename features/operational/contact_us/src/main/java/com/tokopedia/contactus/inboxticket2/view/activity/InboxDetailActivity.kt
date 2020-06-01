@@ -38,13 +38,13 @@ import com.tokopedia.contactus.inboxticket2.view.fragment.ImageViewerFragment.Co
 import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet
 import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet.CloseServicePrioritiesBottomSheet
 import com.tokopedia.contactus.inboxticket2.view.utils.CLOSED
+import com.tokopedia.contactus.inboxticket2.view.utils.NEW
 import com.tokopedia.contactus.inboxticket2.view.utils.OPEN
 import com.tokopedia.contactus.inboxticket2.view.utils.SOLVED
 import com.tokopedia.contactus.orderquery.data.ImageUpload
 import com.tokopedia.contactus.orderquery.view.adapter.ImageUploadAdapter
 import com.tokopedia.contactus.orderquery.view.adapter.ImageUploadAdapter.OnSelectImageClick
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
@@ -52,8 +52,7 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.unifycomponents.Toaster.showErrorWithAction
-import com.tokopedia.unifycomponents.Toaster.showNormalWithAction
+import com.tokopedia.unifycomponents.Toaster
 import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
@@ -122,9 +121,10 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
         viewHelpRate.hide()
         textToolbar.show()
         val textSizeLabel = 11
+        tvTicketTitle.text = ticketDetail.subject
         if (ticketDetail.status.equals(SOLVED, ignoreCase = true)
-                || ticketDetail.status.equals(OPEN, ignoreCase = true)) {
-            tvTicketTitle.text = utils?.getStatusTitle(ticketDetail.subject + ".   " + getString(R.string.on_going),
+                || ticketDetail.status.equals(OPEN, ignoreCase = true) || ticketDetail.status.equals(NEW, ignoreCase = true)) {
+            tvTicketTitle.text = utils.getStatusTitle(ticketDetail.subject + ".   " + getString(R.string.on_going),
                     ContextCompat.getColor(this, com.tokopedia.design.R.color.y_200),
                     ContextCompat.getColor(this, com.tokopedia.design.R.color.orange_500), textSizeLabel, this)
             rvMessageList.setPadding(0, 0, 0,
@@ -139,12 +139,12 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
             }
         } else if (ticketDetail.status.equals(CLOSED, ignoreCase = true)
                 && !ticketDetail.isShowRating) {
-            tvTicketTitle.text = utils?.getStatusTitle(ticketDetail.subject + ".   " + getString(R.string.closed),
+            tvTicketTitle.text = utils.getStatusTitle(ticketDetail.subject + ".   " + getString(R.string.closed),
                     ContextCompat.getColor(this, com.tokopedia.design.R.color.grey_200),
                     ContextCompat.getColor(this, com.tokopedia.design.R.color.black_38), textSizeLabel, this)
             showIssueClosed()
         } else if (ticketDetail.isShowRating) {
-            tvTicketTitle.text = utils?.getStatusTitle(ticketDetail.subject + ".   " + getString(R.string.need_rating),
+            tvTicketTitle.text = utils.getStatusTitle(ticketDetail.subject + ".   " + getString(R.string.need_rating),
                     ContextCompat.getColor(this, com.tokopedia.design.R.color.r_100),
                     ContextCompat.getColor(this, com.tokopedia.design.R.color.r_400), textSizeLabel, this)
             toggleTextToolbar(View.GONE)
@@ -350,7 +350,8 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
     }
 
     override fun showErrorMessage(error: String?) {
-        ToasterError.make(getRootView(), error).show()
+        Toaster.make(getRootView(), error
+                ?: "", Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, "", View.OnClickListener { })
     }
 
     private fun sendMessage() {
@@ -498,7 +499,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
     override fun updateClosedStatus(subject: String?) {
         val textSizeLabel = 11
         val utils = (mPresenter as InboxDetailPresenter).getUtils()
-        tvTicketTitle.text = utils?.getStatusTitle(subject + ".   " + getString(R.string.closed),
+        tvTicketTitle.text = utils.getStatusTitle(subject + ".   " + getString(R.string.closed),
                 ContextCompat.getColor(this, com.tokopedia.design.R.color.grey_200),
                 ContextCompat.getColor(this, com.tokopedia.design.R.color.black_38), textSizeLabel, this)
     }
@@ -665,7 +666,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
 
     override fun showMessage(message: String) {
         super.showMessage(message)
-        showNormalWithAction(rootView, message, Snackbar.LENGTH_LONG, SNACKBAR_OK, View.OnClickListener { v1: View? -> })
+        Toaster.make(rootView, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, SNACKBAR_OK, View.OnClickListener {})
     }
 
     override fun onClickClose() {
@@ -676,7 +677,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
         if (isSendButtonEnabled) {
             sendMessage()
         } else {
-            showErrorWithAction(getRootView(), this.getString(R.string.contact_us_minimum_length_error_text), Snackbar.LENGTH_LONG, SNACKBAR_OK, View.OnClickListener { v1: View? -> })
+            Toaster.make(getRootView(), this.getString(R.string.contact_us_minimum_length_error_text), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, SNACKBAR_OK, View.OnClickListener { })
         }
     }
 

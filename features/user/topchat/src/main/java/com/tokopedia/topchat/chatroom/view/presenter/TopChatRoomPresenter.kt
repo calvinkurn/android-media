@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.attachcommon.data.VoucherPreview
@@ -41,10 +42,15 @@ import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
+import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
+import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.domain.subscriber.*
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
+import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
@@ -89,7 +95,9 @@ class TopChatRoomPresenter @Inject constructor(
         private var getChatRoomSettingUseCase: GetChatRoomSettingUseCase,
         private var addWishListUseCase: AddWishListUseCase,
         private var removeWishListUseCase: RemoveWishListUseCase,
-        private var uploadImageUseCase: TopchatUploadImageUseCase
+        private var uploadImageUseCase: TopchatUploadImageUseCase,
+        private var orderProgressUseCase: OrderProgressUseCase,
+        private val groupStickerUseCase: ChatListGroupStickerUseCase
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
         TopChatContract.Presenter {
 
@@ -453,6 +461,47 @@ class TopChatRoomPresenter @Inject constructor(
         }
     }
 
+    override fun sendAttachmentsAndSticker(
+            messageId: String,
+            sticker: Sticker,
+            startTime: String,
+            opponentId: String,
+            onSendingMessage: () -> Unit
+    ) {
+        sendAttachments(messageId, opponentId, sticker.intention)
+        sendSticker(messageId, sticker, startTime, opponentId, onSendingMessage)
+        view?.clearAttachmentPreviews()
+    }
+
+    private fun sendSticker(
+            messageId: String,
+            sticker: Sticker,
+            startTime: String,
+            opponentId: String,
+            onSendingMessage: () -> Unit
+    ) {
+        onSendingMessage()
+        processDummyMessage(mapToDummySticker(messageId, sticker, startTime))
+        sendStickerWithWebSocket(messageId, sticker, opponentId, startTime)
+    }
+
+    private fun mapToDummySticker(messageId: String, sticker: Sticker, startTime: String): Visitable<*> {
+        return StickerUiModel(
+                messageId, userSession.userId, userSession.name, startTime, sticker.generateStickerProfile()
+        )
+    }
+
+    private fun sendStickerWithWebSocket(
+            messageId: String,
+            sticker: Sticker,
+            opponentId: String,
+            startTime: String
+    ) {
+        val stickerContract = sticker.generateWebSocketPayload(messageId, opponentId, startTime)
+        val stringContract = CommonUtil.toJson(stickerContract)
+        RxWebSocket.send(stringContract, listInterceptor)
+    }
+
     private fun sendAttachments(messageId: String, opponentId: String, message: String) {
         if (attachmentsPreview.isEmpty()) return
         attachmentsPreview.forEach { attachment ->
@@ -498,6 +547,7 @@ class TopChatRoomPresenter @Inject constructor(
             addToCardSubscriber.unsubscribe()
         }
         compressImageSubscription.unsubscribe()
+        groupStickerUseCase.safeCancel()
         super.detachView()
     }
 
@@ -550,14 +600,21 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun initInvoicePreview(savedInstanceState: Bundle?) {
         val id = view?.getStringArgument(ApplinkConst.Chat.INVOICE_ID, savedInstanceState) ?: ""
-        val invoiceCode = view?.getStringArgument(ApplinkConst.Chat.INVOICE_CODE, savedInstanceState) ?: ""
-        val productName = view?.getStringArgument(ApplinkConst.Chat.INVOICE_TITLE, savedInstanceState) ?: ""
+        val invoiceCode = view?.getStringArgument(ApplinkConst.Chat.INVOICE_CODE, savedInstanceState)
+                ?: ""
+        val productName = view?.getStringArgument(ApplinkConst.Chat.INVOICE_TITLE, savedInstanceState)
+                ?: ""
         val date = view?.getStringArgument(ApplinkConst.Chat.INVOICE_DATE, savedInstanceState) ?: ""
-        val imageUrl = view?.getStringArgument(ApplinkConst.Chat.INVOICE_IMAGE_URL, savedInstanceState) ?: ""
-        val invoiceUrl = view?.getStringArgument(ApplinkConst.Chat.INVOICE_URL, savedInstanceState) ?: ""
-        val statusId = view?.getStringArgument(ApplinkConst.Chat.INVOICE_STATUS_ID, savedInstanceState) ?: ""
-        val status = view?.getStringArgument(ApplinkConst.Chat.INVOICE_STATUS, savedInstanceState) ?: ""
-        val totalPriceAmount = view?.getStringArgument(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, savedInstanceState) ?: ""
+        val imageUrl = view?.getStringArgument(ApplinkConst.Chat.INVOICE_IMAGE_URL, savedInstanceState)
+                ?: ""
+        val invoiceUrl = view?.getStringArgument(ApplinkConst.Chat.INVOICE_URL, savedInstanceState)
+                ?: ""
+        val statusId = view?.getStringArgument(ApplinkConst.Chat.INVOICE_STATUS_ID, savedInstanceState)
+                ?: ""
+        val status = view?.getStringArgument(ApplinkConst.Chat.INVOICE_STATUS, savedInstanceState)
+                ?: ""
+        val totalPriceAmount = view?.getStringArgument(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, savedInstanceState)
+                ?: ""
 
         val invoiceViewModel = InvoicePreviewUiModel(
                 id.toIntOrNull() ?: InvoicePreviewUiModel.INVALID_ID,
@@ -605,6 +662,7 @@ class TopChatRoomPresenter @Inject constructor(
             putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, element.categoryId.toString())
             putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, element.getAtcEventLabel())
             putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, element.getAtcEventAction())
+            putExtra(ApplinkConst.Transaction.EXTRA_ATC_EXTERNAL_SOURCE, AddToCartRequestParams.ATC_FROM_TOPCHAT)
         }
     }
 
@@ -629,6 +687,7 @@ class TopChatRoomPresenter @Inject constructor(
             putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, element.priceInt.toFloat())
             putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, element.getAtcEventLabel())
             putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, element.getBuyEventAction())
+            putExtra(ApplinkConst.Transaction.EXTRA_ATC_EXTERNAL_SOURCE, AddToCartRequestParams.ATC_FROM_TOPCHAT)
         }
     }
 
@@ -636,10 +695,11 @@ class TopChatRoomPresenter @Inject constructor(
         if (resultProducts.isNotEmpty()) clearAttachmentPreview()
         for (resultProduct in resultProducts) {
             val productPreview = ProductPreview(
-                    resultProduct.productId.toString(),
-                    resultProduct.productImageThumbnail,
-                    resultProduct.name,
-                    resultProduct.price
+                    id = resultProduct.productId.toString(),
+                    imageUrl = resultProduct.productImageThumbnail,
+                    name = resultProduct.name,
+                    price = resultProduct.price,
+                    url = resultProduct.productUrl
             )
             if (productPreview.notEnoughRequiredData()) continue
             val sendAbleProductPreview = SendableProductPreview(productPreview)
@@ -699,5 +759,43 @@ class TopChatRoomPresenter @Inject constructor(
         paramBeforeReplyTime = chatRoom.minReplyTime
     }
 
-    override fun clearText() { }
+    override fun clearText() {}
+
+    override fun getOrderProgress(messageId: String) {
+        orderProgressUseCase.getOrderProgress(
+                messageId,
+                ::onSuccessGetOrderProgress,
+                ::onErrorGetOrderProgress
+        )
+    }
+
+    override fun getStickerGroupList(chatRoom: ChatroomViewModel) {
+        groupStickerUseCase.getStickerGroup(
+                chatRoom.isSeller(), ::onLoadingStickerGroup, ::onSuccessGetStickerGroup,
+                ::onErrorGetStickerGroup
+        )
+    }
+
+    private fun onLoadingStickerGroup(response: ChatListGroupStickerResponse) {
+        view?.getChatMenuView()?.stickerMenu
+                ?.updateStickers(response.chatListGroupSticker.list)
+    }
+
+    private fun onSuccessGetStickerGroup(
+            response: ChatListGroupStickerResponse,
+            needToUpdate: List<StickerGroup>
+    ) {
+        view?.getChatMenuView()?.stickerMenu
+                ?.updateStickers(response.chatListGroupSticker.list, needToUpdate)
+    }
+
+    private fun onErrorGetStickerGroup(throwable: Throwable) {
+
+    }
+
+    private fun onSuccessGetOrderProgress(orderProgressResponse: OrderProgressResponse) {
+        view?.renderOrderProgress(orderProgressResponse.chatOrderProgress)
+    }
+
+    private fun onErrorGetOrderProgress(throwable: Throwable) {}
 }

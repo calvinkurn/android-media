@@ -1,10 +1,8 @@
 package com.tokopedia.contactus.inboxticket2.domain.usecase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.google.gson.reflect.TypeToken
 import com.tokopedia.contactus.inboxticket2.data.ContactUsRepository
-import com.tokopedia.contactus.inboxticket2.domain.InboxDataResponse
-import com.tokopedia.contactus.orderquery.data.CreateTicketResult
+import com.tokopedia.contactus.inboxticket2.data.model.TicketReplyResponse
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -14,10 +12,10 @@ import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyString
 
 @ExperimentalCoroutinesApi
 class PostMessageUseCaseTest {
@@ -26,7 +24,7 @@ class PostMessageUseCaseTest {
 
     private val contactUsRepository: ContactUsRepository = mockk(relaxed = true)
 
-    private var postMessageUseCase = spyk(PostMessageUseCase(contactUsRepository))
+    private var postMessageUseCase = spyk(PostMessageUseCase(anyString(), contactUsRepository))
 
     @Before
     @Throws(Exception::class)
@@ -42,44 +40,28 @@ class PostMessageUseCaseTest {
         Dispatchers.resetMain()
     }
 
-    /****************************************** setQueryMap() ***************************************/
-
+    /****************************************** createRequestParam() ***************************************/
     @Test
-    fun `check invocation of setQueryMap with parameter image`() {
+    fun `check value of createRequestParam`() {
 
         val id = "ticket_id"
         val message = "test message"
         val photo = 1
         val photoAll = "image in string form"
+        val agentReply = "lastReply"
+        val userId = "1234"
 
-        val map = postMessageUseCase.setQueryMap(id, message, photo, photoAll)
+        val requestParam = postMessageUseCase.createRequestParams(id, message, photo, photoAll, agentReply, userId)
 
-        assertEquals(map[TICKET_ID], id)
-        assertEquals(map[MESSAGE], message)
-        assertEquals(map[IS_IMAGE], photo)
-        assertEquals(map[IMAGE_AS_STRING], photoAll)
-
-    }
-
-    @Test
-    fun `check invocation of setQueryMap without parameter image`() {
-
-        val id = "ticket_id"
-        val message = "test message"
-        val photo = 0
-        val photoAll = ""
-
-        val map = postMessageUseCase.setQueryMap(id, message, photo, photoAll)
-
-        assertEquals(map[TICKET_ID], id)
-        assertEquals(map[MESSAGE], message)
-        assertNull(map[IS_IMAGE])
-        assertNull(map[IMAGE_AS_STRING])
+        assertEquals(requestParam.parameters[TICKET_ID], id)
+        assertEquals(requestParam.parameters[MESSAGE], message)
+        assertEquals(requestParam.parameters[IS_IMAGE], photo)
+        assertEquals(requestParam.parameters[IMAGE_AS_STRING], photoAll)
+        assertEquals(requestParam.parameters[AGENT_REPLY], agentReply)
+        assertEquals(requestParam.parameters[USER_ID], userId)
 
     }
-
-    /****************************************** setQueryMap() ***************************************/
-
+    /****************************************** createRequestParam() ***************************************/
 
 
     /************************************* getCreateTicketResult() **********************************/
@@ -87,19 +69,17 @@ class PostMessageUseCaseTest {
     fun `check function invocation getCreateTicketResult`() {
         runBlockingTest {
             coEvery {
-                contactUsRepository.postRestData(any(),
-                        object : TypeToken<InboxDataResponse<CreateTicketResult>>() {}.type,
-                        any(),
-                        any()) as InboxDataResponse<CreateTicketResult>
+                contactUsRepository.getGQLData("",
+                        TicketReplyResponse::class.java,
+                        any())
             } returns mockk()
 
-            postMessageUseCase.getCreateTicketResult(mockk())
+            postMessageUseCase.getCreateTicketResult(mockk(relaxed = true))
 
             coVerify(exactly = 1) {
-                contactUsRepository.postRestData(any(),
-                        object : TypeToken<InboxDataResponse<CreateTicketResult>>() {}.type,
-                        any(),
-                        any()) as InboxDataResponse<CreateTicketResult>
+                contactUsRepository.getGQLData("",
+                        TicketReplyResponse::class.java,
+                        any())
             }
         }
     }

@@ -3,6 +3,7 @@ package com.tokopedia.contactus.inboxticket2.view.adapter
 import android.content.Context
 import android.graphics.Typeface
 import android.text.SpannableString
+import android.text.method.LinkMovementMethod
 import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
@@ -38,7 +39,7 @@ class InboxDetailAdapter(private val mContext: Context,
     private val indexExpanded: Int = -1
     private var searchMode = false
     private var searchText: String? = null
-    private val utils: Utils = Utils()
+    private val utils: Utils by lazy { Utils() }
     private val hintAttachmentString: SpannableString
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailViewHolder {
         val inflater = LayoutInflater.from(
@@ -144,9 +145,11 @@ class InboxDetailAdapter(private val mContext: Context,
                 }
                 if (searchMode) {
                     tvComment?.text = utils.getHighlightText(searchText ?: "",
-                            item.messagePlaintext ?: "")
+                            MethodChecker.fromHtml(item.message).toString())
+                    tvComment?.movementMethod = LinkMovementMethod.getInstance()
                 } else {
                     tvComment?.text = HtmlUtil.fromHtml(item.message ?: "")
+                    tvComment?.movementMethod = LinkMovementMethod.getInstance()
                 }
                 tvComment?.show()
                 if (position == commentList.size - 1 && needAttachment) {
@@ -155,8 +158,7 @@ class InboxDetailAdapter(private val mContext: Context,
                 } else {
                     tvAttachmentHint?.hide()
                 }
-                if (commentList[position].attachment != null
-                        && commentList[position].attachment?.size ?: 0 > 0) {
+                if (commentList[position].attachment?.size ?: 0 > 0) {
                     rvAttachedImage?.show()
                 }
             } else {
@@ -169,7 +171,7 @@ class InboxDetailAdapter(private val mContext: Context,
                 tvComment?.hide()
                 rvAttachedImage?.hide()
             }
-            ratingThumbsUp.setOnClickListener { 
+            ratingThumbsUp.setOnClickListener {
                 if (item.rating != null && !(item.rating == KEY_LIKED || item.rating == KEY_DIS_LIKED)) {
                     ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.g_500))
                     ratingThumbsDown.hide()
@@ -177,7 +179,7 @@ class InboxDetailAdapter(private val mContext: Context,
                     sendGTMEvent(InboxTicketTracking.Label.EventHelpful)
                 }
             }
-            ratingThumbsDown.setOnClickListener { 
+            ratingThumbsDown.setOnClickListener {
                 if (item.rating != null && !(item.rating == KEY_LIKED || item.rating == KEY_DIS_LIKED)) {
                     ratingThumbsDown.setColorFilter(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.red_600))
                     ratingThumbsUp.hide()
@@ -217,7 +219,9 @@ class InboxDetailAdapter(private val mContext: Context,
         }
 
         override fun onClick(view: View) {
-            toggleCollapse()
+            if (view.id != R.id.tv_comment) {
+                toggleCollapse()
+            }
         }
 
         init {

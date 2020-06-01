@@ -52,6 +52,7 @@ public class RemoteConfigKey {
     public static final String IMAGE_HOST = "image_host";
 
     public static final String ENABLE_BOTTOM_SHEET_FILTER = "mainapp_enable_bottom_sheet_filter";
+    public static final String ENABLE_TRACKING_VIEW_PORT = "android_customer_enable_search_tracking_view_port";
 
     public static final String FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY = "app_enable_oms_native";
     public static final String SHOW_INSTANT_LOAN = "app_enable_instant_loan";
@@ -174,8 +175,6 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_OFFICIAL_STORE_OS = "android_enable_officialstore_native";
 
-    public static final String AKAMAI_CART_ENABLE = "android_akamai_cart_enable";
-
     public static final String ENABLE_NEW_WISHLIST_PAGE = "android_flag_enable_new_wishlist_page";
 
     public static final String ENABLE_TRACEROUTE_MIN_VERSION = "android_main_app_enabled_traceroute_min_version";
@@ -206,16 +205,17 @@ public class RemoteConfigKey {
     public static final String ENABLE_ASYNC_OPENHOME_EVENT = "android_async_openhome_event";
     public static final String ENABLE_ASYNC_FIRSTTIME_EVENT = "android_async_firsttime_event";
     public static final String ENABLE_ASYNC_CREATE_APPSFLYER = "android_async_create_appsflyer";
-    public static final String ENABLE_ASYNC_GTMREFRESH = "android_async_gtmrefresh";
     public static final String ENABLE_ASYNC_INSTALLTRACK = "android_async_installtrack";
     public static final String ENABLE_ASYNC_HOME_SNDSCR = "android_enable_home_sndscr";
     public static final String ENABLE_ASYNC_ADDSHORTCUTS = "android_async_addshortcuts";
     public static final String ENABLE_ASYNC_CHECKAPPSIGNATURE = "android_async_checkappsignature";
+    public static final String ENABLE_ASYNC_HANSEL_INIT = "android_async_hansel_init";
 
     public static final String WHITELIST_USER_LOG_NOTIFICATION = "key_whitelist_user_log_notification";
     public static final String ENABLE_BRANCH_UTM_SUPPORT = "app_enable_branch_utm_support";
 
     public static final String ENABLE_REVAMP_EVENT = "android_mainapp_enable_event_revamp";
+    public static final String ENABLE_REVAMP_PDP_EVENT = "android_mainapp_enable_pdp_event";
 
     public static final String ENABLE_SLICE_ACTION_RECHARGE = "android_mainapp_enable_slice_recharge";
     public static final String APP_ENABLE_BRANCH_INIT_DEEPLINKHANDLER = "app_enable_branch_init_deplinkhandler";
@@ -225,4 +225,6 @@ public class RemoteConfigKey {
     public static final String CHAT_PRODUCT_CAROUSEL = "android_chat_product_carousel";
 
     public static final String ENABLE_ONE_CLICK_CHECKOUT = "android_mainapp_enable_one_click_checkout";
+
+    public static final String ENABLE_AMPLIFICATION = "app_push_amplification_enabled";
 }

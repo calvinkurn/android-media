@@ -30,7 +30,11 @@ import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
+import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationGenericBottomSheet.Companion.createNewInstance
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
@@ -38,9 +42,9 @@ import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickOrder
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventSubmitSearch
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ID
+import com.tokopedia.sellerorder.common.util.SomConsts.FROM_WIDGET_TAG
 import com.tokopedia.sellerorder.common.util.SomConsts.LIST_ORDER_SCREEN_NAME
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
@@ -64,18 +68,18 @@ import com.tokopedia.sellerorder.list.data.model.SomListOrder
 import com.tokopedia.sellerorder.list.data.model.SomListOrderParam
 import com.tokopedia.sellerorder.list.data.model.SomListTicker
 import com.tokopedia.sellerorder.list.di.DaggerSomListComponent
-import com.tokopedia.sellerorder.list.di.SomListComponent
 import com.tokopedia.sellerorder.list.presentation.activity.SomFilterActivity
-import com.tokopedia.sellerorder.list.presentation.activity.SomListActivity
 import com.tokopedia.sellerorder.list.presentation.adapter.SomListItemAdapter
 import com.tokopedia.sellerorder.list.presentation.viewmodel.SomListViewModel
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.empty_list.*
 import kotlinx.android.synthetic.main.fragment_som_list.*
+import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -129,6 +133,8 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var onLoadMore = false
     private var isFilterButtonAnimating = false
     private var _animator: Animator? = null
+    private var isFromWidget: Boolean? = false
+    private var textChangedJob: Job? = null
 
     private val somListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomListViewModel::class.java]
@@ -145,6 +151,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     putString(TAB_ACTIVE, bundle.getString(TAB_ACTIVE))
                     putString(TAB_STATUS, bundle.getString(TAB_STATUS))
                     putInt(FILTER_STATUS_ID, bundle.getInt(FILTER_STATUS_ID))
+                    putBoolean(FROM_WIDGET_TAG, bundle.getBoolean(FROM_WIDGET_TAG))
                 }
             }
         }
@@ -167,10 +174,14 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             tabActive = arguments?.getString(TAB_ACTIVE).toString()
             tabStatus = arguments?.getString(TAB_STATUS).toString()
             filterStatusId = arguments?.getInt(FILTER_STATUS_ID, 0) ?: 0
+            isFromWidget = arguments?.getBoolean(FROM_WIDGET_TAG)
         }
         loadTicker()
         loadFilterList()
         activity?.let { SomAnalytics.sendScreenName(it, LIST_ORDER_SCREEN_NAME) }
+        isFromWidget?.let {
+            if (it) SomAnalytics.eventClickWidgetNewOrder()
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -179,7 +190,6 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         prepareLayout()
         setListeners()
         setInitialValue()
@@ -187,6 +197,31 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         observingFilter()
         observingStatusList()
         observingOrders()
+    }
+
+    private fun showSellerMigrationTicker() {
+        if(isSellerMigrationEnabled(context)) {
+            somListSellerMigrationTicker.apply {
+                tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_title)
+                setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_content))
+                setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(charSequence: CharSequence) {
+                        openSellerMigrationBottomSheet()
+                    }
+                    override fun onDismiss() {
+                        // No Op
+                    }
+                })
+                show()
+            }
+        }
+    }
+
+    private fun openSellerMigrationBottomSheet() {
+        context?.let {
+            val sellerMigrationBottomSheet: BottomSheetUnify = createNewInstance(it)
+            sellerMigrationBottomSheet.show(childFragmentManager, "")
+        }
     }
 
     private fun prepareLayout() {
@@ -340,7 +375,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     filterList = it.data
                     renderFilter()
                     if (filterStatusId != 0) {
-                        loadFilterStatusList()
+                        loadStatusOrderList()
                     } else {
                         nextOrderId = 0
                         loadOrderList(nextOrderId)
@@ -370,8 +405,8 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
     })
 
-    private fun loadFilterStatusList() {
-        somListViewModel.loadStatusList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_status_list))
+    private fun loadStatusOrderList() {
+        somListViewModel.loadStatusOrderList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_status_list))
     }
 
     private fun loadOrderList(nextOrderId: Int) {
@@ -385,6 +420,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun renderInfoTicker(tickerList: List<SomListTicker.Data.OrderTickers.Tickers>) {
         if (tickerList.isNotEmpty()) {
+            somListSellerMigrationTicker.hide()
             (ticker_info?.getChildAt(0) as CardView).useCompatPadding = false
             ticker_info?.visibility = View.VISIBLE
             if (tickerList.size > 1) {
@@ -436,6 +472,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             }
         } else {
             ticker_info?.visibility = View.GONE
+            showSellerMigrationTicker()
         }
     }
 
@@ -612,9 +649,13 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     override fun onSearchTextChanged(text: String?) {
-        text?.let {
-            paramOrder.search = text
-            refreshHandler?.startRefresh()
+        textChangedJob?.cancel()
+        textChangedJob = GlobalScope.launch(Dispatchers.Main) {
+            delay(500L)
+            text?.let {
+                paramOrder.search = text
+                refreshHandler?.startRefresh()
+            }
         }
     }
 

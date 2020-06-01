@@ -7,7 +7,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.MenuItem
 import android.view.View
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.contactus.R
@@ -27,17 +26,20 @@ import com.tokopedia.contactus.inboxticket2.view.utils.CLOSED
 import com.tokopedia.contactus.inboxticket2.view.utils.OPEN
 import com.tokopedia.contactus.inboxticket2.view.utils.SOLVED
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils
-import com.tokopedia.contactus.orderquery.data.CreateTicketResult
 import com.tokopedia.contactus.orderquery.data.ImageUpload
 import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentPresenter.Companion.EMOJI_STATE
 import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentPresenter.Companion.SELECTED_ITEM
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import rx.Subscriber
 import java.lang.reflect.Type
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.coroutines.CoroutineContext
+
+private const val AGENT = "agent"
+private const val REPLY_TICKET_RESPONSE_STATUS = "OK"
 
 class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCase,
                                private val postMessageUseCase2: PostMessageUseCase2,
@@ -46,6 +48,7 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
                                private val submitRatingUseCase: SubmitRatingUseCase,
                                private val closeTicketByUserUseCase: CloseTicketByUserUseCase,
                                private val uploadImageUseCase: UploadImageUseCase,
+                               private val userSession: UserSessionInterface,
                                private val defaultDispatcher: CoroutineDispatcher) : InboxDetailPresenter, CustomEditText.Listener, CoroutineScope {
     private var mView: InboxDetailView? = null
     var mTicketDetail: Tickets? = null
@@ -117,9 +120,9 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
 
     override fun onDestroy() {}
 
-    override fun getBottomFragment(resID: Int): BottomSheetDialogFragment {
+    override fun getBottomFragment(resID: Int): InboxBottomSheetFragment? {
         val bottomFragment = InboxBottomSheetFragment.getBottomSheetFragment(resID)
-        bottomFragment.setPresenter(this)
+        bottomFragment?.setPresenter(this)
         return bottomFragment
     }
 
@@ -310,14 +313,14 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
         launchCatchError(
                 block = {
                     mView?.hideSendProgress()
-                    val queryMap = postMessageUseCase.setQueryMap(mTicketDetail?.id
-                            ?: "", mView?.userMessage ?: "", 0, "")
-                    val ticketListResponse = postMessageUseCase.getCreateTicketResult(queryMap)
-                    val response = ticketListResponse?.data as CreateTicketResult
-                    if (response.isSuccess > 0) {
+                    val requestParam = postMessageUseCase.createRequestParams(mTicketDetail?.id
+                            ?: "", mView?.userMessage
+                            ?: "", 0, "", getLastReplyFromAgent(), userSession.userId)
+                    val replyTicketResponse = postMessageUseCase.getCreateTicketResult(requestParam)
+                    if (replyTicketResponse.ticketReply?.ticketReplyData?.status.equals(REPLY_TICKET_RESPONSE_STATUS)) {
                         addNewLocalComment()
                     } else {
-                        mView?.setSnackBarErrorMessage(ticketListResponse.errorMessage?.get(0)
+                        mView?.setSnackBarErrorMessage(mView?.getActivity()?.getString(R.string.contact_us_something_went_wrong)
                                 ?: "", true)
                     }
 
@@ -327,6 +330,19 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
                     it.printStackTrace()
                 }
         )
+    }
+
+    private fun getLastReplyFromAgent(): String {
+        var reply = ""
+        run loop@{
+            mTicketDetail?.comments?.reversed()?.forEach  { comment ->
+                if (comment.createdBy?.role == AGENT) {
+                    reply = comment.message ?: ""
+                    return@loop
+                }
+            }
+        }
+        return reply
     }
 
     private fun sendMessageWithImages() {
@@ -339,30 +355,32 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
                     val list = uploadImageUseCase.uploadFile(
                             mView?.imageList,
                             networkCalculatorList,
-                            files)
-                    val queryMap = postMessageUseCase.setQueryMap(
+                            files,
+                    userSession.isLoggedIn)
+                    val requestParam = postMessageUseCase.createRequestParams(
                             mTicketDetail?.id ?: "",
                             mView?.userMessage ?: "",
                             1,
-                            getUtils().getAttachmentAsString(list))
+                            getUtils().getAttachmentAsString(list),
+                            getLastReplyFromAgent(),
+                            userSession.userId)
 
-                    val createTicketListResponse = postMessageUseCase.getCreateTicketResult(queryMap)
-                    val createTicket = createTicketListResponse?.data as CreateTicketResult
-
-                    if (createTicket.isSuccess > 0) {
-                        if (createTicket.postKey.isNotEmpty()) {
+                    val createTicketResponse = postMessageUseCase.getCreateTicketResult(requestParam)
+                    val ticketReplyData = createTicketResponse.ticketReply?.ticketReplyData
+                    if (ticketReplyData?.status.equals(REPLY_TICKET_RESPONSE_STATUS)) {
+                        if (ticketReplyData?.postKey?.isNotEmpty() == true) {
                             val queryMap2 = postMessageUseCase2.setQueryMap(
                                     getUtils().getFileUploaded(list),
-                                    createTicket.postKey)
+                                    ticketReplyData.postKey)
                             sendImages(queryMap2)
                         } else {
                             mView?.hideSendProgress()
-                            mView?.setSnackBarErrorMessage(createTicketListResponse.errorMessage?.get(0)
+                            mView?.setSnackBarErrorMessage(mView?.getActivity()?.getString(R.string.contact_us_something_went_wrong)
                                     ?: "", true)
                         }
                     } else {
                         mView?.hideSendProgress()
-                        mView?.setSnackBarErrorMessage(createTicketListResponse.errorMessage?.get(0)
+                        mView?.setSnackBarErrorMessage(mView?.getActivity()?.getString(R.string.contact_us_something_went_wrong)
                                 ?: "", true)
                     }
 

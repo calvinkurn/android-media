@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.tkpd.library.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.inboxticket2.domain.AttachmentItem
 import com.tokopedia.contactus.inboxticket2.view.adapter.AttachmentAdapter.AttachmentViewHolder
@@ -42,11 +42,10 @@ class AttachmentAdapter constructor(data: List<AttachmentItem>,
 
     inner class AttachmentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private var ivAttachment: ImageView = itemView.findViewById(R.id.iv_attachment)
-        private val imageHandler = ImageHandler(itemView.context)
         fun bindView(index: Int) {
             val thumbnail = attachmentList[index].thumbnail
             if (isUrl(thumbnail)) {
-                imageHandler.loadImage(ivAttachment, thumbnail ?: "")
+                ImageHandler.LoadImage(ivAttachment, thumbnail ?: "")
             } else {
                 ivAttachment.setImageURI(Uri.fromFile(File(thumbnail)))
             }

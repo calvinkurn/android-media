@@ -6,22 +6,21 @@ import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
 import com.tokopedia.contactus.inboxticket2.data.model.ChipGetInboxDetail
 import com.tokopedia.contactus.inboxticket2.data.model.Data
+import com.tokopedia.contactus.inboxticket2.data.model.TicketReplyResponse
 import com.tokopedia.contactus.inboxticket2.data.model.Tickets
 import com.tokopedia.contactus.inboxticket2.domain.AttachmentItem
 import com.tokopedia.contactus.inboxticket2.domain.CommentsItem
-import com.tokopedia.contactus.inboxticket2.domain.InboxDataResponse
 import com.tokopedia.contactus.inboxticket2.domain.StepTwoResponse
 import com.tokopedia.contactus.inboxticket2.domain.usecase.*
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract
 import com.tokopedia.contactus.inboxticket2.view.presenter.InboxDetailPresenterImpl.Companion.KEY_LIKED
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils
-import com.tokopedia.contactus.orderquery.data.CreateTicketResult
 import com.tokopedia.contactus.orderquery.data.ImageUpload
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
@@ -46,6 +45,7 @@ class InboxDetailPresenterImplTest {
     private lateinit var closeTicketByUserUseCase: CloseTicketByUserUseCase
     private lateinit var uploadImageUseCase: UploadImageUseCase
     private lateinit var dispatcher: TestCoroutineDispatcher
+    private lateinit var userSession: UserSessionInterface
 
     private lateinit var presenter: InboxDetailPresenterImpl
 
@@ -65,6 +65,7 @@ class InboxDetailPresenterImplTest {
         submitRatingUseCase = mockk(relaxed = true)
         closeTicketByUserUseCase = mockk(relaxed = true)
         uploadImageUseCase = mockk(relaxed = true)
+        userSession = mockk(relaxed = true)
 
         presenter = spyk(InboxDetailPresenterImpl(postMessageUseCase,
                 postMessageUseCase2,
@@ -72,7 +73,7 @@ class InboxDetailPresenterImplTest {
                 inboxOptionUseCase,
                 submitRatingUseCase,
                 closeTicketByUserUseCase,
-                uploadImageUseCase, dispatcher))
+                uploadImageUseCase, userSession, dispatcher))
 
         view = mockk(relaxed = true)
         presenter.attachView(view)
@@ -252,25 +253,25 @@ class InboxDetailPresenterImplTest {
     @Test
     fun `check invocation of initializeIndicesList on invocation onSearchSubmitted`() {
 
-            val ticketDetail = Tickets()
-            val commentsItem = CommentsItem()
-            commentsItem.messagePlaintext = "a string with dummy text"
-            ticketDetail.comments = mutableListOf(commentsItem)
+        val ticketDetail = Tickets()
+        val commentsItem = CommentsItem()
+        commentsItem.messagePlaintext = "a string with dummy text"
+        ticketDetail.comments = mutableListOf(commentsItem)
 
-            val utils = mockk<Utils>(relaxed = true)
+        val utils = mockk<Utils>(relaxed = true)
 
-            mockkStatic(ContactUsTracking::class)
-            every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
+        mockkStatic(ContactUsTracking::class)
+        every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any()) } just runs
 
-            every { presenter.mTicketDetail } returns ticketDetail
+        every { presenter.mTicketDetail } returns ticketDetail
 
-            every { presenter.getUtils() } returns utils
+        every { presenter.getUtils() } returns utils
 
-            every { utils.containsIgnoreCase(any(), any()) } returns true
+        every { utils.containsIgnoreCase(any(), any()) } returns true
 
-            presenter.onSearchSubmitted("dummy")
+        presenter.onSearchSubmitted("dummy")
 
-            assertEquals(presenter.searchIndices.size,1)
+        assertEquals(presenter.searchIndices.size, 1)
 
     }
 
@@ -673,18 +674,13 @@ class InboxDetailPresenterImplTest {
     @Test
     fun `check invocation of hideSendProgress and setSnackBarErrorMessage on invocation of sendMessage when isUploadImageValid equals to 0`() {
 
-        val response = mockk<InboxDataResponse<*>>(relaxed = true)
-        val createTicketResult = mockk<CreateTicketResult>(relaxed = true)
+        val response = mockk<TicketReplyResponse>(relaxed = true)
 
         every { presenter.isUploadImageValid } returns 0
 
         coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns response
 
-        every { response.data } returns createTicketResult
-
-        every { createTicketResult.isSuccess } returns 0
-
-        every { response.errorMessage } returns listOf("error")
+        every { response.ticketReply?.ticketReplyData?.status } returns ""
 
         presenter.sendMessage()
 
@@ -697,8 +693,7 @@ class InboxDetailPresenterImplTest {
     @Test
     fun `check updation of comment in Ticket on invocation of sendMessage when isUploadImageValid equals to 0`() {
 
-        val response = mockk<InboxDataResponse<*>>(relaxed = true)
-        val createTicketResult = mockk<CreateTicketResult>(relaxed = true)
+        val response = mockk<TicketReplyResponse>(relaxed = true)
         val tickets = Tickets()
         tickets.comments = mutableListOf()
 
@@ -706,9 +701,7 @@ class InboxDetailPresenterImplTest {
 
         coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns response
 
-        every { response.data } returns createTicketResult
-
-        every { createTicketResult.isSuccess } returns 1
+        every { response.ticketReply?.ticketReplyData?.status } returns "OK"
 
         every { presenter.mTicketDetail } returns tickets
 
@@ -751,9 +744,9 @@ class InboxDetailPresenterImplTest {
     }
 
     @Test
-    fun `check invocation of sendMessageWithImages on invocation of sendMessage when isUploadImageValid returns 1 or more than 1 and response return success value 0`() {
+    fun `check invocation of sendMessageWithImages on invocation of sendMessage when isUploadImageValid returns 1 or more than 1 and response return status OK`() {
 
-        val response = mockk<CreateTicketResult>(relaxed = true)
+        val response = mockk<TicketReplyResponse>(relaxed = true)
 
         every { presenter.isUploadImageValid } returns 2
 
@@ -761,17 +754,15 @@ class InboxDetailPresenterImplTest {
 
         every { uploadImageUseCase.getFile(any()) } returns mockk()
 
-        coEvery { uploadImageUseCase.uploadFile(any(), any(), any()) } returns mockk()
+        coEvery { uploadImageUseCase.uploadFile(any(), any(), any(), userSession.isLoggedIn) } returns mockk()
 
         every { presenter.getUtils().getAttachmentAsString(any()) } returns ""
 
-        every { postMessageUseCase.setQueryMap(any(), any(), any(), any()) } returns mockk()
+        every { postMessageUseCase.createRequestParams(any(), any(), any(), any(), any(), any()) } returns mockk()
 
-        coEvery { postMessageUseCase.getCreateTicketResult(any())?.data } returns response
+        coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns mockk(relaxed = true)
 
-        coEvery { postMessageUseCase.getCreateTicketResult(any())?.errorMessage?.get(0) } returns "error"
-
-        every { response.isSuccess } returns 0
+        every { response.ticketReply?.ticketReplyData?.status } returns "OK"
 
         presenter.sendMessage()
 
@@ -782,9 +773,9 @@ class InboxDetailPresenterImplTest {
     }
 
     @Test
-    fun `check invocation of sendMessageWithImages on invocation of sendMessage when isUploadImageValid returns 1 or more than 1 and response return success value more than 0 and postKey empty`() {
+    fun `check invocation of sendMessageWithImages on invocation of sendMessage when isUploadImageValid returns 1 or more than 1 and response return status OK and postKey empty`() {
 
-        val response = mockk<CreateTicketResult>(relaxed = true)
+        val response = mockk<TicketReplyResponse>(relaxed = true)
 
         every { presenter.isUploadImageValid } returns 2
 
@@ -792,19 +783,17 @@ class InboxDetailPresenterImplTest {
 
         every { uploadImageUseCase.getFile(any()) } returns mockk()
 
-        coEvery { uploadImageUseCase.uploadFile(any(), any(), any()) } returns mockk()
+        coEvery { uploadImageUseCase.uploadFile(any(), any(), any(), userSession.isLoggedIn) } returns mockk()
 
         every { presenter.getUtils().getAttachmentAsString(any()) } returns ""
 
-        every { postMessageUseCase.setQueryMap(any(), any(), any(), any()) } returns mockk()
+        every { postMessageUseCase.createRequestParams(any(), any(), any(), any(), any(), any()) } returns mockk()
 
-        coEvery { postMessageUseCase.getCreateTicketResult(any())?.data } returns response
+        coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns response
 
-        coEvery { postMessageUseCase.getCreateTicketResult(any())?.errorMessage?.get(0) } returns "error"
+        every { response.ticketReply?.ticketReplyData?.status } returns "OK"
 
-        every { response.isSuccess } returns 1
-
-        every { response.postKey } returns ""
+        every { response.ticketReply?.ticketReplyData?.postKey } returns ""
 
         presenter.sendMessage()
 
@@ -817,13 +806,13 @@ class InboxDetailPresenterImplTest {
     /*
         check invocation of sendMessageWithImages on invocation of
         sendMessage when isUploadImageValid
-        returns 1 or more than 1 and response return success value more than 0 and
+        returns 1 or more than 1 and response return status OK and
         postKey notEmpty and responsetwo return success value 0
     */
     @Test
     fun `invocation of sendImages`() {
 
-        val response = mockk<CreateTicketResult>(relaxed = true)
+        val response = mockk<TicketReplyResponse>(relaxed = true)
         val responseTwo = mockk<StepTwoResponse>(relaxed = true)
 
         every { presenter.isUploadImageValid } returns 2
@@ -832,17 +821,17 @@ class InboxDetailPresenterImplTest {
 
         every { uploadImageUseCase.getFile(any()) } returns mockk()
 
-        coEvery { uploadImageUseCase.uploadFile(any(), any(), any()) } returns mockk()
+        coEvery { uploadImageUseCase.uploadFile(any(), any(), any(), userSession.isLoggedIn) } returns mockk()
 
         every { presenter.getUtils().getAttachmentAsString(any()) } returns ""
 
-        every { postMessageUseCase.setQueryMap(any(), any(), any(), any()) } returns mockk()
+        every { postMessageUseCase.createRequestParams(any(), any(), any(), any(),any(),any()) } returns mockk()
 
-        coEvery { postMessageUseCase.getCreateTicketResult(any())?.data } returns response
+        coEvery { postMessageUseCase.getCreateTicketResult(any()) } returns response
 
-        every { response.isSuccess } returns 1
+        every { response.ticketReply?.ticketReplyData?.status } returns "OK"
 
-        every { response.postKey } returns "random key"
+        every { response.ticketReply?.ticketReplyData?.postKey } returns "random key"
 
         every { presenter.getUtils().getFileUploaded(any()) } returns ""
 
@@ -863,14 +852,14 @@ class InboxDetailPresenterImplTest {
     /*
        check invocation of sendMessageWithImages on invocation of
        sendMessage when isUploadImageValid
-       returns 1 or more than 1 and response return success value more than 0 and
+       returns 1 or more than 1 and response return status OK and
        postKey notEmpty and responsetwo throws Exception
        */
 
     @Test
     fun `invocation of sendImages with exception`() {
 
-        val response = mockk<CreateTicketResult>(relaxed = true)
+        val response = mockk<TicketReplyResponse>(relaxed = true)
 
         every { presenter.isUploadImageValid } returns 2
 
@@ -878,17 +867,17 @@ class InboxDetailPresenterImplTest {
 
         every { uploadImageUseCase.getFile(any()) } returns mockk()
 
-        coEvery { uploadImageUseCase.uploadFile(any(), any(), any()) } returns mockk()
+        coEvery { uploadImageUseCase.uploadFile(any(), any(), any(), userSession.isLoggedIn) } returns mockk()
 
         every { presenter.getUtils().getAttachmentAsString(any()) } returns ""
 
-        every { postMessageUseCase.setQueryMap(any(), any(), any(), any()) } returns mockk()
+        every { postMessageUseCase.createRequestParams(any(), any(), any(), any(),any(),any()) } returns mockk()
 
-        coEvery { postMessageUseCase.getCreateTicketResult(any())?.data } returns response
+        coEvery { postMessageUseCase.getCreateTicketResult(any())} returns response
 
-        every { response.isSuccess } returns 1
+        every { response.ticketReply?.ticketReplyData?.status } returns "OK"
 
-        every { response.postKey } returns "random key"
+        every { response.ticketReply?.ticketReplyData?.postKey } returns "random key"
 
         every { presenter.getUtils().getFileUploaded(any()) } returns ""
 
@@ -905,14 +894,14 @@ class InboxDetailPresenterImplTest {
     /*
       check invocation of sendMessageWithImages on invocation of
       sendMessage when isUploadImageValid
-      returns 1 or more than 1 and response return success value more than 0 and
+      returns 1 or more than 1 and response return status OK and
       postKey notEmpty and responsetwo return success value more than 0
      */
 
     @Test
     fun `invocation of addNewLocalComment`() {
 
-        val response = mockk<CreateTicketResult>(relaxed = true)
+        val response = mockk<TicketReplyResponse>(relaxed = true)
         val responseTwo = mockk<StepTwoResponse>(relaxed = true)
 
         every { presenter.isUploadImageValid } returns 2
@@ -921,17 +910,17 @@ class InboxDetailPresenterImplTest {
 
         every { uploadImageUseCase.getFile(any()) } returns mockk()
 
-        coEvery { uploadImageUseCase.uploadFile(any(), any(), any()) } returns mockk()
+        coEvery { uploadImageUseCase.uploadFile(any(), any(), any(), userSession.isLoggedIn) } returns mockk()
 
         every { presenter.getUtils().getAttachmentAsString(any()) } returns ""
 
-        every { postMessageUseCase.setQueryMap(any(), any(), any(), any()) } returns mockk()
+        every { postMessageUseCase.createRequestParams(any(), any(), any(), any(),any(),any()) } returns mockk()
 
-        coEvery { postMessageUseCase.getCreateTicketResult(any())?.data } returns response
+        coEvery { postMessageUseCase.getCreateTicketResult(any())} returns response
 
-        every { response.isSuccess } returns 1
+        coEvery { response.ticketReply?.ticketReplyData?.status } returns "OK"
 
-        every { response.postKey } returns "random key"
+        every { response.ticketReply?.ticketReplyData?.postKey } returns "random key"
 
         every { presenter.getUtils().getFileUploaded(any()) } returns ""
 
@@ -973,13 +962,13 @@ class InboxDetailPresenterImplTest {
 
         every { uploadImageUseCase.getFile(any()) } returns mockk()
 
-        coEvery { uploadImageUseCase.uploadFile(any(), any(), any()) } returns mockk()
+        coEvery { uploadImageUseCase.uploadFile(any(), any(), any(), userSession.isLoggedIn) } returns mockk()
 
         every { presenter.getUtils().getAttachmentAsString(any()) } returns ""
 
-        every { postMessageUseCase.setQueryMap(any(), any(), any(), any()) } returns mockk()
+        every { postMessageUseCase.createRequestParams(any(), any(), any(), any(),any(),any()) } returns mockk()
 
-        coEvery { postMessageUseCase.getCreateTicketResult(any())?.data } throws Exception("my exception")
+        coEvery { postMessageUseCase.getCreateTicketResult(any())} throws Exception("my exception")
 
         presenter.sendMessage()
 

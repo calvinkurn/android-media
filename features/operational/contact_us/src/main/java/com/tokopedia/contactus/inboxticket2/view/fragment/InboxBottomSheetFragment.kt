@@ -58,12 +58,17 @@ abstract class InboxBottomSheetFragment : BottomSheetDialogFragment() {
 
     companion object {
         private const val RESID = "RES_ID"
-        fun getBottomSheetFragment(resID: Int): InboxBottomSheetFragment {
-            lateinit var fragment: InboxBottomSheetFragment
-            if (resID == R.layout.layout_bottom_sheet_fragment) {
-                fragment = BottomSheetListFragment()
-            } else if (resID == R.layout.layout_bad_csat) {
-                fragment = BottomSheetButtonsFragment()
+        fun getBottomSheetFragment(resID: Int): InboxBottomSheetFragment? {
+            val fragment: InboxBottomSheetFragment = when (resID) {
+                R.layout.layout_bottom_sheet_fragment -> {
+                    BottomSheetListFragment()
+                }
+                R.layout.layout_bad_csat -> {
+                    BottomSheetButtonsFragment()
+                }
+                else -> {
+                    return null
+                }
             }
             val bundle = Bundle()
             bundle.putInt(RESID, resID)

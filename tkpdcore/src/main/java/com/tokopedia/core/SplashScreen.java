@@ -12,7 +12,6 @@ import android.webkit.URLUtil;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -21,21 +20,17 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.interfaces.DefferedDeeplinkCallback;
 import com.tokopedia.linker.model.LinkerDeeplinkData;
 import com.tokopedia.linker.model.LinkerDeeplinkResult;
 import com.tokopedia.linker.model.LinkerError;
-import com.tokopedia.linker.model.UserData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
@@ -52,10 +47,8 @@ import timber.log.Timber;
  * <p>
  * fetch some data from server in order to worked around.
  */
-public class SplashScreen extends AppCompatActivity implements DownloadResultReceiver.Receiver{
+public class SplashScreen extends AppCompatActivity {
 
-    public static final int DAYS_IN_SECONDS = 86400;
-    public static final int STATUS_FINISHED = 1;
     public static final String SHIPPING_CITY_DURATION_STORAGE = "shipping_city_storage";
 
     private PasswordGenerator Pgenerator;
@@ -115,11 +108,12 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     @Override
     protected void onResume() {
         super.onResume();
+        boolean status = GCMHandler.isPlayServicesAvailable(SplashScreen.this);
         WeaveInterface moveToHomeFlowWeave = new WeaveInterface() {
             @NotNull
             @Override
             public Object execute() {
-                return executeMoveToHomeFlow();
+                return executeMoveToHomeFlow(status);
             }
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(moveToHomeFlowWeave, RemoteConfigKey.ENABLE_ASYNC_MOVETOHOME, SplashScreen.this);
@@ -127,8 +121,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     }
 
     @NotNull
-    private boolean executeMoveToHomeFlow(){
-        boolean status = GCMHandler.isPlayServicesAvailable(SplashScreen.this);
+    private boolean executeMoveToHomeFlow(boolean status){
         if(!status){
             Timber.w("P2#PLAY_SERVICE_ERROR#Problem with PlayStore | " + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
                     + Build.BRAND + " | "+Build.DEVICE+" | "+Build.PRODUCT+ " | "+Build.MODEL
@@ -163,15 +156,9 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     }
 
     public void finishSplashScreen() {
-        Intent intent = HomeRouter.getHomeActivity(this);
+        Intent intent = ((com.tokopedia.core.TkpdCoreRouter) getApplicationContext()).getHomeIntent(this);
         startActivity(intent);
         finish();
-    }
-
-    @Override
-    public void onReceiveResult(int resultCode, Bundle resultData) {
-        Timber.d(resultData.toString());
-        if (resultCode == STATUS_FINISHED) finishSplashScreen();
     }
 
     private void resetAllDatabaseFlag() {

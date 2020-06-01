@@ -237,9 +237,20 @@ public class SearchProductModel {
 
     public static class OtherRelated {
         @SerializedName("keyword")
+        @Expose
         private String keyword;
+
         @SerializedName("url")
+        @Expose
         private String url;
+
+        @SerializedName("applink")
+        @Expose
+        private String applink;
+
+        @SerializedName("product")
+        @Expose
+        private List<OtherRelatedProduct> otherRelatedProductList;
 
         public String getKeyword() {
             return keyword;
@@ -255,6 +266,89 @@ public class SearchProductModel {
 
         public void setUrl(String url) {
             this.url = url;
+        }
+
+        public String getApplink() {
+            return applink;
+        }
+
+        public List<OtherRelatedProduct> getOtherRelatedProductList() {
+            return otherRelatedProductList;
+        }
+    }
+
+    public static class OtherRelatedProduct {
+
+        @SerializedName("id")
+        @Expose
+        private String id = "";
+
+        @SerializedName("name")
+        @Expose
+        private String name = "";
+
+        @SerializedName("price")
+        @Expose
+        private int price = 0;
+
+        @SerializedName("image_url")
+        @Expose
+        private String imageUrl = "";
+
+        @SerializedName("rating")
+        @Expose
+        private int rating;
+
+        @SerializedName("count_review")
+        @Expose
+        private int countReview;
+
+        @SerializedName("url")
+        @Expose
+        private String url;
+
+        @SerializedName("applink")
+        @Expose
+        private String applink;
+
+        @SerializedName("price_str")
+        @Expose
+        private String priceString;
+
+        public String getId() {
+            return id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getPrice() {
+            return price;
+        }
+
+        public String getImageUrl() {
+            return imageUrl;
+        }
+
+        public int getRating() {
+            return rating;
+        }
+
+        public int getCountReview() {
+            return countReview;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public String getApplink() {
+            return applink;
+        }
+
+        public String getPriceString() {
+            return priceString;
         }
     }
 
@@ -361,6 +455,9 @@ public class SearchProductModel {
         @SerializedName("query")
         @Expose
         private String query;
+        @SerializedName("type_id")
+        @Expose
+        private int typeId;
 
         public String getText() {
             return text;
@@ -369,6 +466,8 @@ public class SearchProductModel {
         public String getQuery() {
             return query;
         }
+
+        public int getTypeId() { return typeId; }
     }
 
     public static class Suggestion {
