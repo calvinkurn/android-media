@@ -32,7 +32,6 @@ import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.ChangeVoucherPeriodViewModel
 import kotlinx.android.synthetic.main.bottomsheet_mvc_voucher_edit_period.*
 import kotlinx.android.synthetic.main.bottomsheet_mvc_voucher_edit_period.view.*
-import kotlinx.android.synthetic.main.mvc_set_voucher_period_fragment.*
 import java.util.*
 import javax.inject.Inject
 
@@ -166,8 +165,7 @@ class VoucherPeriodBottomSheet(
         btnMvcSavePeriod?.run {
             setOnClickListener {
                 isLoading = true
-                val dummyToken = ""
-                viewModel.validateVoucherPeriod(voucher, dummyToken)
+                viewModel.validateVoucherPeriod(voucher)
             }
         }
     }
@@ -185,12 +183,12 @@ class VoucherPeriodBottomSheet(
         viewLifecycleOwner.run {
             observe(viewModel.startDateCalendarLiveData) { startDate ->
                 (startDate as? GregorianCalendar)?.run {
-                    startDateTextField?.setDateText(this)
+                    edtMvcStartDate?.setDateText(this)
                 }
             }
             observe(viewModel.endDateCalendarLiveData) { endDate ->
                 (endDate as? GregorianCalendar)?.run {
-                    endDateTextField?.setDateText(this)
+                    edtMvcEndDate?.setDateText(this)
                 }
             }
             observe(viewModel.updateVoucherSuccessLiveData) { result ->
