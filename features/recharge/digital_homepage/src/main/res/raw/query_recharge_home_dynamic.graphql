@@ -1,0 +1,25 @@
+query rechargeGetDynamicPage($enablePersonalize: Boolean) {
+  rechargeGetDynamicPage(platformID:31, enablePersonalize: $enablePersonalize){
+    sections {
+      title
+      sub_title
+      template
+      items {
+        title
+        sub_title
+        content
+        app_link
+        web_link
+        text_link
+        media_url
+        //template
+        //button_type
+        //label_1
+        //label_2
+        //label_3
+        //server_date
+        //due_date
+      }
+    }
+  }
+}

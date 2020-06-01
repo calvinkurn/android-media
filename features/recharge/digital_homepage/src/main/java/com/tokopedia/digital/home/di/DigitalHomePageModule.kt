@@ -26,7 +26,9 @@ class DigitalHomePageModule {
 
     @DigitalHomePageScope
     @Provides
-    fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
+    fun provideGraphqlRepository(): GraphqlRepository {
+        return GraphqlInteractor.getInstance().graphqlRepository
+    }
 
     @DigitalHomePageScope
     @Provides

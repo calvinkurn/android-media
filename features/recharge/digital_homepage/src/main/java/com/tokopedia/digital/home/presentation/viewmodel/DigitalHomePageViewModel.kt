@@ -14,14 +14,24 @@ import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.SPOTLI
 import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.SUBSCRIPTION_ORDER
 import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.TRUST_MARK_ORDER
 import com.tokopedia.digital.home.model.DigitalHomePageItemModel
+import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.Util.DigitalHomePageDispatchersProvider
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class DigitalHomePageViewModel @Inject constructor(
         private val digitalHomePageUseCase: DigitalHomePageUseCase,
+        private val graphqlRepository: GraphqlRepository,
         private val dispatcher: DigitalHomePageDispatchersProvider)
     : BaseViewModel(dispatcher.Main) {
 
@@ -31,6 +41,9 @@ class DigitalHomePageViewModel @Inject constructor(
     private val mutableIsAllError = MutableLiveData<Boolean>()
     val isAllError: LiveData<Boolean>
         get() = mutableIsAllError
+    private val mutableRechargeHomepageSections = MutableLiveData<Result<RechargeHomepageSections>>()
+    val rechargeHomepageSections: LiveData<Result<RechargeHomepageSections>>
+        get() = mutableRechargeHomepageSections
 
     fun initialize(queryList: Map<String, String>) {
         val list: List<DigitalHomePageItemModel> = digitalHomePageUseCase.getEmptyList()
@@ -54,6 +67,20 @@ class DigitalHomePageViewModel @Inject constructor(
 
     private fun checkError(data: List<DigitalHomePageItemModel>): Boolean {
         return data.all { !it.isSuccess }
+    }
+
+    fun getRechargeHomepageSections(rawQuery: String, mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
+        launchCatchError(block = {
+            val graphqlRequest = GraphqlRequest(rawQuery, RechargeHomepageSections.Response::class.java, mapParams)
+            val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST).build()
+            val data = withContext(dispatcher.IO) {
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
+            }.getSuccessData<RechargeHomepageSections.Response>()
+
+            mutableRechargeHomepageSections.postValue(Success(data.response))
+        }) {
+            mutableRechargeHomepageSections.postValue(Fail(it))
+        }
     }
 
     companion object {

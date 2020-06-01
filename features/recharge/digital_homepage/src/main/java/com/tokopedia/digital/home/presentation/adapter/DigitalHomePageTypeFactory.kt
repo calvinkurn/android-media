@@ -48,6 +48,10 @@ class DigitalHomePageTypeFactory(val onItemBindListener: OnItemBindListener,
         return DigitalHomePageRecommendationViewHolder.LAYOUT
     }
 
+    fun type(section: RechargeHomepageSections.Section): Int {
+        return section.layout
+    }
+
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         when (type) {
             DigitalHomePageBannerViewHolder.LAYOUT -> return DigitalHomePageBannerViewHolder(parent, onItemBindListener)
