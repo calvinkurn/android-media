@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
@@ -27,6 +28,7 @@ import com.tokopedia.vouchercreation.create.view.enums.getVoucherImageType
 import com.tokopedia.vouchercreation.detail.model.*
 import com.tokopedia.vouchercreation.detail.view.viewmodel.VoucherDetailViewModel
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
+import com.tokopedia.vouchercreation.voucherlist.view.widget.CancelVoucherDialog
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
 import javax.inject.Inject
 
@@ -98,11 +100,22 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
 
     override fun onFooterCtaTextClickListener() {
         voucherUiModel?.run {
-            StopVoucherDialog(context ?: return)
-                    .setOnPrimaryClickListener {
-
-                    }
-                    .show(this)
+            when(status) {
+                VoucherStatusConst.NOT_STARTED -> {
+                    CancelVoucherDialog(context ?: return)
+                            .setOnPrimaryClickListener {
+                                viewModel.cancelVoucher(id)
+                            }
+                            .show(this)
+                }
+                VoucherStatusConst.ONGOING -> {
+                    StopVoucherDialog(context ?: return)
+                            .setOnPrimaryClickListener {
+                                viewModel.cancelVoucher(id)
+                            }
+                            .show(this)
+                }
+            }
         }
     }
 
@@ -132,16 +145,37 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
     }
 
     private fun observeLiveData() {
-        viewLifecycleOwner.observe(viewModel.merchantVoucherModelLiveData) { result ->
-            when(result) {
-                is Success -> {
-                    adapter.clearAllElements()
-                    voucherUiModel = result.data
-                    //Todo: add information
-                    renderVoucherDetailInformation(result.data)
+        viewLifecycleOwner.run {
+            observe(viewModel.merchantVoucherModelLiveData) { result ->
+                when(result) {
+                    is Success -> {
+                        adapter.clearAllElements()
+                        voucherUiModel = result.data
+                        renderVoucherDetailInformation(result.data)
+                    }
+                    is Fail -> {
+                        //Todo: show error state
+                    }
                 }
-                is Fail -> {
-                    //Todo: show error state
+            }
+            observe(viewModel.cancelVoucherResultLiveData) { result ->
+                when(result) {
+                    is Success -> {
+                        voucherUiModel?.run {
+                            when(status) {
+                                VoucherStatusConst.ONGOING -> showCancellationSuccessToaster(false)
+                                VoucherStatusConst.NOT_STARTED -> showCancellationSuccessToaster(true)
+                            }
+                        }
+                    }
+                    is Fail -> {
+                        voucherUiModel?.run {
+                            when(status) {
+                                VoucherStatusConst.ONGOING -> showCancellationFailToaster(false)
+                                VoucherStatusConst.NOT_STARTED -> showCancellationFailToaster(true)
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -209,7 +243,7 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
             if (status == VoucherStatusConst.ENDED) {
                 voucherDetailInfoList.add(
                         //Todo: Add calculation
-                        PromoPerformanceUiModel("Ngitungnya gimana ini?", bookedQuota, quota)
+                        PromoPerformanceUiModel("Rp.123.456.789", bookedQuota, quota)
                 )
             }
 
@@ -226,9 +260,7 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
                         DividerUiModel(DividerUiModel.THIN)
                 ))
                 getVoucherImageType(type, discountTypeFormatted, discountAmt, discountAmtMax)?.let { imageType ->
-                    getVoucherBenefitSection(imageType, minimumAmt, quota).let { benefit ->
-                        add(benefit)
-                    }
+                    add(getVoucherBenefitSection(imageType, minimumAmt, quota))
                 }
                 addAll(listOf(
                         DividerUiModel(DividerUiModel.THIN),
@@ -282,6 +314,40 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
                         context?.getString(R.string.mvc_detail_ticker_here).toBlankOrString())
             }
             else -> null
+        }
+    }
+
+    private fun showCancellationSuccessToaster(isCancel: Boolean) {
+        val successMessageRes =
+                if (isCancel) {
+                    R.string.mvc_cancel_success
+                } else {
+                    R.string.mvc_stop_success
+                }
+        val successMessage = context?.getString(successMessageRes).toBlankOrString()
+
+        view?.run {
+            Toaster.make(this,
+                    successMessage,
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL)
+        }
+    }
+
+    private fun showCancellationFailToaster(isCancel: Boolean) {
+        val errorMessageRes =
+                if (isCancel) {
+                    R.string.mvc_cancel_fail
+                } else {
+                    R.string.mvc_stop_fail
+                }
+        val errorMessage = context?.getString(errorMessageRes).toBlankOrString()
+
+        view?.run {
+            Toaster.make(this,
+                    errorMessage,
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR)
         }
     }
 
