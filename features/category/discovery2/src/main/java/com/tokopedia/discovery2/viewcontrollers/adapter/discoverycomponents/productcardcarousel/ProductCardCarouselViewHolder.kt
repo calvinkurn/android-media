@@ -15,14 +15,15 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
 class ProductCardCarouselViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
 
-    private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
-    private lateinit var mProductCarouselComponentViewModel: ProductCardCarouselViewModel
     private var mProductCarouselRecyclerView: RecyclerView = itemView.findViewById(R.id.tokopoints_rv)
     private var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+    private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
+    private lateinit var mProductCarouselComponentViewModel: ProductCardCarouselViewModel
 
     init {
         linearLayoutManager.initialPrefetchItemCount = 4
         mProductCarouselRecyclerView.layoutManager = linearLayoutManager
+        linearLayoutManager.recycleChildrenOnDetach = true
         mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
         mDiscoveryRecycleAdapter.setHasStableIds(true)
         mProductCarouselRecyclerView.adapter = mDiscoveryRecycleAdapter

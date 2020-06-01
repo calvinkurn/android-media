@@ -6,12 +6,13 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import timber.log.Timber
+import java.util.concurrent.atomic.AtomicInteger
 
 class MergeAdapters<T : RecyclerView.Adapter<AbstractViewHolder>>() : RecyclerView.Adapter<AbstractViewHolder>() {
     private val childAdapterList: ArrayList<LocalAdapter<T>> = ArrayList()
     private lateinit var mContext: Context
     private var mViewTypeIndex = 0
-
 
     constructor(context: Context) : this() {
         this.mContext = context;
@@ -23,6 +24,7 @@ class MergeAdapters<T : RecyclerView.Adapter<AbstractViewHolder>>() : RecyclerVi
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder {
+
 //         New Implementation
         var viewHolder: AbstractViewHolder = childAdapterList[0].mAdapter.onCreateViewHolder(parent, 0)
         for (adapter in childAdapterList) {

@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel
 
 import android.app.Application
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -19,9 +20,11 @@ private const val RPC_ROWS = "rpc_Rows"
 private const val RPC_START = "rpc_Start"
 private const val PRODUCT_PER_PAGE = 20
 private const val START_POINT = 0
-class ProductCardCarouselViewModel(val application: Application, components: ComponentsItem, val position:Int) : DiscoveryBaseViewModel(), CoroutineScope {
+
+class ProductCardCarouselViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val productCarouselComponentData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val productCarouselList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
+
     @Inject
     lateinit var productCardCarouselUseCase: ProductCardCarouselUseCase
 
@@ -43,10 +46,10 @@ class ProductCardCarouselViewModel(val application: Application, components: Com
     }
 
 
-    fun getProductCarouselItemsListData() = productCarouselList
+    fun getProductCarouselItemsListData(): LiveData<ArrayList<ComponentsItem>> = productCarouselList
 
     fun fetchProductCarouselData(pageEndPoint: String) {
-        if(productCarouselList.value.isNullOrEmpty()) {
+        if (productCarouselList.value.isNullOrEmpty()) {
             launchCatchError(block = {
                 productCarouselList.value = productCardCarouselUseCase.getProductCardCarouselUseCase(productCarouselComponentData.value?.id.toIntOrZero(), getQueryParameterMap(), pageEndPoint, isHorizontal = true)
             }, onError = {
