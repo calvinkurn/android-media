@@ -212,4 +212,8 @@
     <string name="label_variant_photo">Foto Varian</string>
     <string name="label_variant_sizechart">Paduan Ukuran</string>
     <string name="label_variant_sizechart_description">Tambah panduan ukuran produk dalam format JPG atau PNG.</string>
+    <string name="action_clear_sizechart">Hapus Foto</string>
+    <string name="action_replace_sizechart">Ubah Foto</string>
+    <string name="action_edit_sizechart">Edit Foto</string>
+
 </resources>
