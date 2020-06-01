@@ -188,5 +188,7 @@ class VoucherViewHolder(
         fun onEditQuotaClickListener(voucher: VoucherUiModel)
 
         fun onDuplicateClickListener(voucher: VoucherUiModel)
+
+        fun onErrorTryAgain()
     }
 }

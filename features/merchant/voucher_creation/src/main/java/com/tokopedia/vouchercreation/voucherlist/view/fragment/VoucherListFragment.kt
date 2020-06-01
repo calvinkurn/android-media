@@ -235,6 +235,10 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         duplicateVoucher(voucher)
     }
 
+    override fun onErrorTryAgain() {
+        loadData(1)
+    }
+
     private fun duplicateVoucher(voucher: VoucherUiModel) {
         activity?.let {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER).apply {

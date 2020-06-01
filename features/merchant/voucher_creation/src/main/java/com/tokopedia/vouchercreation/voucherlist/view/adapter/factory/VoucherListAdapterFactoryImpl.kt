@@ -30,7 +30,7 @@ class VoucherListAdapterFactoryImpl(
             VoucherViewHolder.RES_LAYOUT -> VoucherViewHolder(parent, voucherListener)
             LoadingStateVoucherViewHolder.RES_LAYOUT -> LoadingStateVoucherViewHolder(parent)
             NoResultStateViewHolder.RES_LAYOUT -> NoResultStateViewHolder(parent)
-            ErrorStateViewHolder.RES_LAYOUT -> ErrorStateViewHolder(parent)
+            ErrorStateViewHolder.RES_LAYOUT -> ErrorStateViewHolder(parent, voucherListener::onErrorTryAgain)
             EmptyStateViewHolder.RES_LAYOUT -> EmptyStateViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
