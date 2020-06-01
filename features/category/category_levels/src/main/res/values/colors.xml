@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="empty_state_button_green">#ebffef</color>
+    <color name="category_levels_empty_state_button_green">#ebffef</color>
 </resources>
