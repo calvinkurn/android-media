@@ -6,8 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.PerformException
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
@@ -27,9 +26,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
 import com.tokopedia.home.topads.TopAdsVerificationTestReportUtil.deleteTopAdsVerificatorReportData
+import com.tokopedia.home.topads.TopAdsVerificationTestReportUtil.writeTopAdsVerificatorLog
 import com.tokopedia.home.topads.TopAdsVerificationTestReportUtil.writeTopAdsVerificatorReportData
-import com.tokopedia.productcard.ProductCardFlashSaleView
-import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.usecase.RequestParams
 import org.hamcrest.BaseMatcher
@@ -73,11 +72,31 @@ class HomeTopAdsVerificationTest {
             scrollHomeRecyclerViewToPosition(homeRecyclerView, i)
             checkProductOnDynamicChannel(homeRecyclerView, i)
         }
+        logTestMessage("Done UI Test")
+        logTestMessage("Asserting data...")
+
+        val listTopAdsDbFirst = readDataFromDatabase()
+        val impressedCount = listTopAdsDbFirst.filter { it.eventType == "impression" }.size
+        val clickCount = listTopAdsDbFirst.filter { it.eventType == "click" }.size
+        val allCount = listTopAdsDbFirst.size
+
+        logTestMessage("Product recorded on database : "+allCount)
+        logTestMessage("Impressed count : "+impressedCount)
+        logTestMessage("Click count : "+clickCount)
+        Assert.assertTrue(impressedCount >= clickCount)
+        logTestMessage("Impressed count and click count match!")
+
+        val topAdsVerificatorInterface = activityRule.activity.application as TopAdsVerificatorInterface
+        val minimumTopAdsProductFromResponse = topAdsVerificatorInterface.minimumTopAdsProductFromResponse
+        logTestMessage("Check if topads product in database reach at least minimum from response")
+
+        Assert.assertTrue(minimumTopAdsProductFromResponse <= allCount)
+
+        logTestMessage("Waiting for topads backend verificator ready... (>5mins)")
 
         waitForVerificatorReady()
 
         val listTopAdsDb = readDataFromDatabase()
-        logTestMessage("Product recorded on database : "+listTopAdsDb.size)
 
         listTopAdsDb.forEach {
             logTestMessage(it.sourceName+" - "+it.eventType+" - "+it.eventStatus)
@@ -85,11 +104,12 @@ class HomeTopAdsVerificationTest {
             writeTopAdsVerificatorReportData(activityRule.activity, it)
         }
 
-        logTestMessage("Done: "+numOfProduct+" products checked")
+        logTestMessage("Verified from topads backend that all data is MATCH")
         logTestMessage("Done: "+listTopAdsDb.size+" topads products checked")
     }
 
     private fun logTestMessage(message: String) {
+        writeTopAdsVerificatorLog(activityRule.activity, message)
         Log.d("TopAdsVerificatorLog", message)
     }
 
@@ -114,25 +134,11 @@ class HomeTopAdsVerificationTest {
 
     private fun clickOnEachItemInRecommendationProduct(viewholder: HomeRecommendationFeedViewHolder, numberOfTestProduct: Int) {
         val homeFeedsViewPager: ViewPager = viewholder.itemView.findViewById(R.id.view_pager_home_feeds)
-        val childRecyclerView = homeFeedsViewPager.getChildAt(0) as RecyclerView
         val childItemCount = numberOfTestProduct
         for (j in 0 until childItemCount - 1) {
             try {
                 Espresso.onView(firstView(withId(R.id.home_feed_fragment_recycler_view)))
-                        .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(j, object: ViewAction{
-                            override fun getDescription(): String {
-                                return "Click on each item of recommendation feed"
-                            }
-
-                            override fun getConstraints(): Matcher<View>? {
-                                return null
-                            }
-
-                            override fun perform(uiController: UiController?, view: View?) {
-                                checkProductCardGridCounter(view)
-                                view?.performClick()
-                            }
-                        }))
+                        .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(j, click()))
             } catch (e: PerformException) {
                 e.printStackTrace()
                 logTestMessage("Click failed: "+j)
@@ -149,22 +155,7 @@ class HomeTopAdsVerificationTest {
         for (j in 0 until childItemCount - 1) {
             try {
                 Espresso.onView(firstView(withId(recyclerViewId)))
-                        .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(j,
-                        object: ViewAction{
-                            override fun getDescription(): String {
-                                return "Click on each item of dynamic channel"
-                            }
-
-                            override fun getConstraints(): Matcher<View>? {
-                                return null
-                            }
-
-                            override fun perform(uiController: UiController?, view: View?) {
-                                checkProductCardFlashsaleCounter(view)
-                                view?.performClick()
-                            }
-
-                        }))
+                        .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(j, click()))
             } catch (e: PerformException) {
                 e.printStackTrace()
                 logTestMessage("Click failed: "+j)
@@ -187,22 +178,6 @@ class HomeTopAdsVerificationTest {
                 description.appendText("should return first matching item")
             }
         }
-    }
-
-    private fun checkProductCardFlashsaleCounter(view: View?) {
-        val productCardView: ProductCardFlashSaleView? = view?.findViewById(R.id.productCardView)
-        productCardView?.let {
-            numOfProduct++
-        }
-        logTestMessage("Product added, current: "+numOfProduct)
-    }
-
-    private fun checkProductCardGridCounter(view: View?) {
-        val productCardView: ProductCardGridView? = view?.findViewById(R.id.productCardView)
-        productCardView?.let {
-            numOfProduct++
-        }
-        logTestMessage("Product added, current: "+numOfProduct)
     }
 
     private fun waitForVerificatorReady() {

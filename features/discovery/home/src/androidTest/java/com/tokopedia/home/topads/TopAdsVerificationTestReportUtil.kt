@@ -9,7 +9,7 @@ object TopAdsVerificationTestReportUtil {
         val path = activity.getExternalFilesDir(null)
         val topadsVerificatorData = File(path, "topads_verificator_data")
         if (!topadsVerificatorData.exists()) {
-            makeInitialPerfDir(topadsVerificatorData)
+            makeInitialReportDir(topadsVerificatorData)
         }
         val perfReportTopads = File(topadsVerificatorData, "report-topads-verificator-home.csv")
         perfReportTopads.appendText(
@@ -20,13 +20,26 @@ object TopAdsVerificationTestReportUtil {
                         "${topAdsLogDB.url}\n")
     }
 
+    fun writeTopAdsVerificatorLog(activity: Activity, message: String) {
+        val path = activity.getExternalFilesDir(null)
+        val topadsVerificatorData = File(path, "topads_verificator_data")
+        makeInitialLogDir(topadsVerificatorData)
+        val logTopAdsFile = File(topadsVerificatorData, "report-topads-verificator-home-log.log")
+        logTopAdsFile.appendText( "${message}\n")
+    }
+
     fun deleteTopAdsVerificatorReportData(activity: Activity) {
         val path = activity.getExternalFilesDir(null)
         val topadsVerificatorData = File(path, "topads_verificator_data")
         topadsVerificatorData.delete()
     }
 
-    private fun makeInitialPerfDir(topadsDataDir: File) {
+    private fun makeInitialLogDir(topadsDataDir: File) {
+        val perfReportPlt = File(topadsDataDir, "report-topads-verificator-home-log.log")
+        perfReportPlt.appendText("")
+    }
+
+    private fun makeInitialReportDir(topadsDataDir: File) {
         val timestamp = "Timestamp"
         val sourceName = "Source Name"
         val eventType = "Type"
