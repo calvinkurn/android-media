@@ -1,10 +1,10 @@
-package com.tokopedia.contactus.inboxticket2.handlingListTags
+package com.tokopedia.utils.htmltags
 
 import android.text.Editable
 import android.text.Html
-import com.tokopedia.contactus.inboxticket2.handlingListTags.HtmlUtil.LI_TAG
-import com.tokopedia.contactus.inboxticket2.handlingListTags.HtmlUtil.OL_TAG
-import com.tokopedia.contactus.inboxticket2.handlingListTags.HtmlUtil.UL_TAG
+import com.tokopedia.utils.htmltags.HtmlUtil.LI_TAG
+import com.tokopedia.utils.htmltags.HtmlUtil.OL_TAG
+import com.tokopedia.utils.htmltags.HtmlUtil.UL_TAG
 import org.xml.sax.XMLReader
 import java.util.*
 

@@ -1,4 +1,4 @@
-package com.tokopedia.contactus.inboxticket2.handlingListTags
+package com.tokopedia.utils.htmltags
 
 import android.text.Spanned
 import androidx.core.text.HtmlCompat

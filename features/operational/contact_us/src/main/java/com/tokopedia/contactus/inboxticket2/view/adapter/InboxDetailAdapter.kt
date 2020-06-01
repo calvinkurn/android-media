@@ -19,7 +19,6 @@ import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
 import com.tokopedia.contactus.inboxticket2.domain.CommentsItem
-import com.tokopedia.contactus.inboxticket2.handlingListTags.HtmlUtil
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity
 import com.tokopedia.contactus.inboxticket2.view.adapter.InboxDetailAdapter.DetailViewHolder
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract.InboxDetailPresenter
@@ -27,6 +26,7 @@ import com.tokopedia.contactus.inboxticket2.view.utils.CLOSED
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.utils.htmltags.HtmlUtil
 
 private const val ROLE_TYPE_AGENT = "agent"
 
