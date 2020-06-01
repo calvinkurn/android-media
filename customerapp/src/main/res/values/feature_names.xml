@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--Travel & Hotel-->
+    <string name="df_title_travel">Travel</string>
     <string name="title_hotel_travel">Hotel</string>
     <string name="hotel_app_name">Hotel</string>
     <string name="hotel_order_detail_title">Detail Pesanan</string>

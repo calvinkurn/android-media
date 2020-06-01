@@ -123,6 +123,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_MERCHANT_SELLER = "df_merchant_seller"
     const val DF_OPERATIONAL_CONTACT_US = "df_operational_contact_us"
     const val DF_SALAM_UMRAH = "df_salam_umrah"
+    const val DF_TRAVEL = "df_travel"
     private const val DF_USER_LIVENESS = "df_user_liveness"
     const val DF_USER_SETTINGS = "df_user_settings"
     const val DF_PROMO_GAMIFICATION = "df_promo_gamification"
@@ -233,8 +234,7 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Travel
             add(DFP({ it.startsWith(TRAVEL_SUBHOMEPAGE) }, DF_BASE, R.string.title_travel_homepage))
-            add(DFP({ it.startsWith(FLIGHT) }, DF_BASE, R.string.title_flight))
-            add(DFP({ it.startsWith(INTERNAL_FLIGHT) }, DF_BASE, R.string.title_flight))
+            add(DFP({ it.startsWith(FLIGHT) || it.startsWith(INTERNAL_FLIGHT)}, DF_TRAVEL, R.string.title_flight, { DFWebviewFallbackUrl.TRAVEL_FLIGHT }))
             add(DFP({ it.startsWith(HOTEL) }, DF_BASE, R.string.title_hotel))
 
             // User

@@ -298,6 +298,7 @@ public class MainParentActivity extends BaseActivity implements
         if (userSession.hasShop()) {
             moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_SELLER);
         }
+        moduleNameList.add(DeeplinkDFMapper.DF_TRAVEL);
         moduleNameList.add(DeeplinkDFMapper.DF_SALAM_UMRAH);
         DFInstaller.installOnBackground(this.getApplication(), moduleNameList, "Home");
     }
