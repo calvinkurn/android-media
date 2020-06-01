@@ -119,7 +119,7 @@ abstract class BaseDetailFragment : BaseListFragment<VoucherDetailUiModel, Vouch
         )
         if (targetType == VoucherTargetType.PRIVATE) {
             subInfoList.add(
-                    SubInfoItemUiModel(R.string.mvc_detail_promo_code, promoCode)
+                    SubInfoItemUiModel(R.string.mvc_detail_promo_code, promoCode, true)
             )
         }
         return InfoContainerUiModel(
