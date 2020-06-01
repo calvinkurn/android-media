@@ -109,13 +109,14 @@ class DiscoveryDataMapper {
         return list
     }
 
-    fun mapListToComponentList(itemList: List<DataItem>?, subComponentName: String = "", properties: Properties?): ArrayList<ComponentsItem> {
+    fun mapListToComponentList(itemList: List<DataItem>?, subComponentName: String = "", properties: Properties?, typeProductCard: String = ""): ArrayList<ComponentsItem> {
         val list = ArrayList<ComponentsItem>()
         itemList?.forEach {
             val componentsItem = ComponentsItem()
             componentsItem.name = subComponentName
             componentsItem.properties = properties
             val dataItem = mutableListOf<DataItem>()
+            it.typeProductCard = typeProductCard
             dataItem.add(it)
             componentsItem.data = dataItem
             list.add(componentsItem)

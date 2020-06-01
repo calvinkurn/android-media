@@ -17,6 +17,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel.Companion.GOLD_MERCHANT
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel.Companion.OFFICIAL_STORE
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
@@ -117,6 +118,7 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
     }
 
     private fun populateData(dataItem: DataItem) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().addProductCardImpressions(dataItem, productCardItemViewModel.isUserLoggedIn(), adapterPosition)
         Log.d("populateData", this.toString() + dataItem)
         productName.setTextAndCheckShow(dataItem.name)
         textViewShopName.setTextAndCheckShow(dataItem.shopName)

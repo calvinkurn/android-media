@@ -12,6 +12,9 @@ class DiscoveryAnalytics(val pageType: String = "",
                          val trackingQueue: TrackingQueue) {
 
     private var eventDiscoveryCategory: String = "$VALUE_DISCOVERY_PAGE - $pageType - $pagePath"
+    private val pcDataLayerList = ArrayList<Map<String, Any>>()
+    private var productCardImpressionLabel : String = ""
+    private var productCardItemList : String = ""
 
     private fun getTracker(): Analytics {
         return TrackApp.getInstance().gtm
@@ -244,6 +247,38 @@ class DiscoveryAnalytics(val pageType: String = "",
         getTracker().sendGeneralEvent(map)
     }
 
+    fun addProductCardImpressions(dataItem: DataItem?, isLogin: Boolean, position: Int){
+        val login = if (isLogin) "login" else "nonlogin"
+        productCardImpressionLabel = "$login ${dataItem?.typeProductCard}"
+        val map = HashMap<String, Any>()
+        dataItem?.let {
+            productCardItemList = "/$pagePath - $pageType - ${it.positionForParentItem.plus(1)} - $login - ${it.typeProductCard}"
+            map[KEY_ID] = it.productId.toString()
+            map[KEY_VARIANT] = NONE_OTHER
+            map[KEY_BRAND] = NONE_OTHER
+            map[KEY_POSITION] = position + 1
+            map[KEY_NAME] = it.name.toString()
+            map[KEY_ITEM_CATEGORY] = NONE_OTHER
+            map[DIMENSION40] = "bebas ongkir"
+            map[DIMENSION83] = productCardItemList
+        }
+        pcDataLayerList.add(map)
+    }
+
+    //51
+    fun trackEventImpressionProductCard() {
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+                EVENT_PROMO_VIEW to mapOf(
+                        KEY_PROMOTIONS to pcDataLayerList))
+        val map = createGeneralImpressionEvent(eventAction = PRODUCT_LIST_IMPRESSION, eventLabel = productCardImpressionLabel)
+        map[KEY_E_COMMERCE] = eCommerce
+        map[ITEM_LIST] = productCardItemList
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
+        pcDataLayerList.clear()
+        productCardImpressionLabel = ""
+        productCardItemList = ""
+    }
+
     //55
     fun trackEventImpressionCoupon(componentsItems: ArrayList<ComponentsItem>) {
         if (!componentsItems.isNullOrEmpty()) {
@@ -289,7 +324,7 @@ class DiscoveryAnalytics(val pageType: String = "",
                     KEY_ID to it.id.toString(),
                     KEY_CREATIVE_URL to if (isDouble) it.smallImageUrlMobile
                             ?: NONE_OTHER else it.imageUrlMobile ?: NONE_OTHER,
-                    KEY_POSITION to position.toString(),
+                    KEY_POSITION to (position + 1).toString(),
                     KEY_PROMO_ID to it.promoId.toString(),
                     KEY_PROMO_CODE to it.slug.toString()
             ))
