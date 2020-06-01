@@ -1,6 +1,5 @@
-package com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder
+package com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder
 
-import android.content.Context
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatTextView
@@ -9,19 +8,17 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.brandlist.R
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.adapter.BrandlistAlphabetHeaderAdapter
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.AllBrandGroupHeaderViewModel
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchAllBrandGroupHeaderViewModel
 import java.text.NumberFormat
 import java.util.*
 
-
-class AllBrandGroupHeaderViewHolder(itemView: View) : AbstractViewHolder<AllBrandGroupHeaderViewModel>(itemView) {
+class BrandlistSearchGroupHeaderViewHolder(itemView: View) : AbstractViewHolder<BrandlistSearchAllBrandGroupHeaderViewModel>(itemView) {
 
     private lateinit var recyclerViewBrandHeader: RecyclerView
     private var tvTotalBrand: AppCompatTextView? = null
     private var layoutManager: LinearLayoutManager? = null
-    private var adapter: BrandlistAlphabetHeaderAdapter? = null
-    private lateinit var allBrandGroupHeaderViewModel: AllBrandGroupHeaderViewModel
+    private var adapter: BrandlistSearchAlphabetHeaderAdapter? = null
+    private lateinit var allBrandGroupHeaderViewModel: BrandlistSearchAllBrandGroupHeaderViewModel
 
     init {
         initLayout(itemView)
@@ -47,7 +44,7 @@ class AllBrandGroupHeaderViewHolder(itemView: View) : AbstractViewHolder<AllBran
         })
     }
 
-    override fun bind(element: AllBrandGroupHeaderViewModel) {
+    override fun bind(element: BrandlistSearchAllBrandGroupHeaderViewModel) {
         val totalBrand: Int = element.totalBrands
         val headerList: MutableList<String> = getAlphabeticalShopFilter(totalBrand)
 
@@ -56,12 +53,10 @@ class AllBrandGroupHeaderViewHolder(itemView: View) : AbstractViewHolder<AllBran
             recyclerViewBrandHeader.layoutManager?.onRestoreInstanceState(it)
         }
 
-        adapter = BrandlistAlphabetHeaderAdapter(element.listener)
-        adapter?.let {
-            it.headerList = headerList
-            it.selectedPosition = element.selectedChip
-            it.notifyDataSetChanged()
-        }
+        adapter = BrandlistSearchAlphabetHeaderAdapter(element.listener)
+        adapter?.headerList = headerList
+        adapter?.selectedPosition = element.selectedChip
+        adapter?.notifyDataSetChanged()
         recyclerViewBrandHeader.adapter = adapter
     }
 
