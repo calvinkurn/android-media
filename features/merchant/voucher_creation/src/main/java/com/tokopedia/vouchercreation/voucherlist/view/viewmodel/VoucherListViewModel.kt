@@ -9,6 +9,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
+import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherListParam
 import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherSort
 import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherStatus
@@ -26,6 +27,7 @@ import javax.inject.Named
 
 class VoucherListViewModel @Inject constructor(
         private val getVoucherListUseCase: GetVoucherListUseCase,
+        private val cancelVoucherUseCase: CancelVoucherUseCase,
         @Named("Main") dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
@@ -34,6 +36,8 @@ class VoucherListViewModel @Inject constructor(
     }
 
     private val _keywordLiveData = MutableLiveData<String>()
+
+    private val _cancelledVoucherLiveData = MutableLiveData<Int>()
 
     private val _voucherList = MutableLiveData<Result<List<VoucherUiModel>>>()
     val voucherList: LiveData<Result<List<VoucherUiModel>>>
@@ -48,6 +52,24 @@ class VoucherListViewModel @Inject constructor(
         get() = _localVoucherListLiveData
 
     private val _fullVoucherListLiveData = MutableLiveData<MutableList<VoucherUiModel>>().apply { value = mutableListOf() }
+
+    private val _cancelVoucherResponseLiveData = MediatorLiveData<Result<Boolean>>().apply {
+        addSource(_cancelledVoucherLiveData) { id ->
+            launchCatchError(
+                    block = {
+                        cancelVoucherUseCase.params = CancelVoucherUseCase.createRequestParam(id)
+                        value = Success(withContext(Dispatchers.IO) {
+                            cancelVoucherUseCase.executeOnBackground()
+                        })
+                    },
+                    onError = {
+                        value = Fail(it)
+                    }
+            )
+        }
+    }
+    val cancelVoucherResponseLiveData: LiveData<Result<Boolean>>
+        get() = _cancelVoucherResponseLiveData
 
     fun getActiveVoucherList() {
         launchCatchError(block = {getVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(activeVoucherRequestParam)
@@ -87,6 +109,10 @@ class VoucherListViewModel @Inject constructor(
 
     fun setSearchKeyword(keyword: String) {
         _keywordLiveData.value = keyword
+    }
+
+    fun cancelVoucher(voucherId: Int) {
+        _cancelledVoucherLiveData.value = voucherId
     }
 
     private fun searchVoucherByKeyword(keyword: String) {
