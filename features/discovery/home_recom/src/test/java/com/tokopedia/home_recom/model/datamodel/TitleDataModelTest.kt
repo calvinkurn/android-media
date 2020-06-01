@@ -13,7 +13,7 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class TitleDataModelTest{
     private val visitor = HomeRecommendationTypeFactoryImpl()
-    private fun titleDataModelFactory(title: String) = TitleDataModel(title)
+    private fun titleDataModelFactory(title: String) = TitleDataModel(title, "", "", mockk())
 
     @Test
     fun test(){

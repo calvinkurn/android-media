@@ -97,6 +97,8 @@ interface HomeCategoryListener {
 
     fun refreshHomeData()
 
+    fun isShowSeeAllCard(): Boolean
+
     fun getTabBusinessWidget(position: Int)
 
     fun getBusinessUnit(tabId: Int, position: Int)

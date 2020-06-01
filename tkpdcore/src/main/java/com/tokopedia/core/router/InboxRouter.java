@@ -21,15 +21,12 @@ import com.tokopedia.core.util.RouterUtils;
 @Deprecated
 public class InboxRouter {
 
-    private static final String INBOX_CONTACT_US_ACTIVITY = "com.tokopedia.contactus.createticket.activity.ContactUsActivity";
     private static final String CREATE_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity";
     private static final String INBOX_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity";
 
     public static final String EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION";
     public static final String EXTRA_ORDER_ID = "EXTRA_ORDER_ID";
     public static final String EXTRA_STATE_FLAG_RECEIVED = "EXTRA_STATE_FLAG_RECEIVED";
-
-    private static final String INBOX_TICKET_ACTIVITY = "com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity";
 
     private static final String INBOX_MESSAGE_ACTIVITY = "com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity";
     public static final java.lang.String PARAM_SHOP_ID = "to_shop_id";
