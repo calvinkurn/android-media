@@ -36,10 +36,27 @@
             app:cardElevation="@dimen/layout_lvl0">
 
             <ImageView
+                android:id="@+id/ivSizechart"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ImageView
+                android:id="@+id/ivSizechartAddSign"
                 android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_plus_gray" />
+
+            <ImageView
+                android:id="@+id/ivSizechartEditSign"
+                android:layout_gravity="bottom"
                 android:layout_width="@dimen/layout_lvl2"
                 android:layout_height="@dimen/layout_lvl2"
-                app:srcCompat="@drawable/ic_plus_gray" />
+                android:padding="@dimen/spacing_lvl1"
+                android:background="@drawable/oval_transparent_grey"
+                android:tint="@color/white_95"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_edit_price" />
 
         </androidx.cardview.widget.CardView>
 
@@ -51,8 +68,7 @@
         android:layout_height="0dp"
         android:text="@string/label_variant_sizechart_description"
         android:textColor="@color/Neutral_N700_68"
-        android:gravity="center_vertical"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl3"
         android:layout_marginStart="@dimen/spacing_lvl3"
         app:layout_constraintBottom_toBottomOf="@+id/cardSizechart"

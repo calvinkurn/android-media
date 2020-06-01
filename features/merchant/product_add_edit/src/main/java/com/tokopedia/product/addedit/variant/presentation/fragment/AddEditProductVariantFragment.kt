@@ -24,6 +24,8 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
@@ -38,6 +40,7 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.dialog.AddEditProductVariantSizechartDialogFragment
 import com.tokopedia.product.addedit.variant.presentation.viewmodel.AddEditProductVariantViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.add_edit_product_variant_photo_layout.*
@@ -99,6 +102,7 @@ class AddEditProductVariantFragment : BaseDaggerFragment(), VariantTypeAdapter.O
         setRecyclerViewToFlex(recyclerViewVariantValueLevel2)
         setRecyclerViewToHorizontal(recyclerViewVariantPhoto)
 
+        observeSizechartUrl()
         observeProductData()
         viewModel.getCategoryVariantCombination("916")
 
@@ -127,7 +131,7 @@ class AddEditProductVariantFragment : BaseDaggerFragment(), VariantTypeAdapter.O
                 REQUEST_CODE_SIZECHART_IMAGE -> {
                     val imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS)
                     imageUrlOrPathList.forEach {
-                        Log.e("--", it)
+                        viewModel.variantSizechartUrl.value = it
                     }
                 }
             }
@@ -135,41 +139,26 @@ class AddEditProductVariantFragment : BaseDaggerFragment(), VariantTypeAdapter.O
     }
 
     private fun onSizechartClicked() {
-        val fm = activity!!.supportFragmentManager
-        val dialogFragment = AddEditProductVariantSizechartDialogFragment.newInstance()
-        dialogFragment.show(fm, AddEditProductVariantSizechartDialogFragment.FRAGMENT_TAG)
-        dialogFragment.setOnImageEditListener(object:
-                AddEditProductVariantSizechartDialogFragment.OnImageEditListener {
-            override fun clickImageEditor() {
-                showEditorSizechartPicker()
-            }
+        if (viewModel.variantSizechartUrl.value.isNullOrEmpty()) {
+            showReplaceSizechartPicker()
+        } else {
+            val fm = activity!!.supportFragmentManager
+            val dialogFragment = AddEditProductVariantSizechartDialogFragment.newInstance()
+            dialogFragment.show(fm, AddEditProductVariantSizechartDialogFragment.FRAGMENT_TAG)
+            dialogFragment.setOnImageEditListener(object:
+                    AddEditProductVariantSizechartDialogFragment.OnImageEditListener {
+                override fun clickImageEditor() {
+                    showEditorSizechartPicker()
+                }
 
-            override fun clickRemoveImage() {
-                removeSizechart()
-            }
+                override fun clickRemoveImage() {
+                    removeSizechart()
+                }
 
-            override fun clickChangeImagePath() {
-                showReplaceSizechartPicker()
-            }
-        })
-    }
-
-    private fun removeSizechart() {
-        FileUtils.deleteFileInTokopediaFolder("")
-    }
-
-    private fun showReplaceSizechartPicker(){
-        context?.apply {
-            val builder =  createSizeChartImagePickerBuilder(this)
-            val intent = ImagePickerActivity.getIntent(this, builder)
-            startActivityForResult(intent, REQUEST_CODE_SIZECHART_IMAGE)
-        }
-    }
-
-    private fun showEditorSizechartPicker() {
-        context?.apply {
-            val editorIntent = createEditorIntent(this, "")
-            startActivityForResult(editorIntent, REQUEST_CODE_SIZECHART_IMAGE)
+                override fun clickChangeImagePath() {
+                    showReplaceSizechartPicker()
+                }
+            })
         }
     }
 
@@ -190,6 +179,45 @@ class AddEditProductVariantFragment : BaseDaggerFragment(), VariantTypeAdapter.O
                 }
             }
         })
+    }
+
+    private fun observeSizechartUrl() {
+        viewModel.variantSizechartUrl.observe(this, Observer {
+            if (it.isEmpty()){
+                ivSizechartAddSign.visible()
+                ivSizechartEditSign.gone()
+                ivSizechart.gone()
+                typographySizechartDescription.text = getString(R.string.label_variant_sizechart_description)
+            } else {
+                ivSizechartAddSign.gone()
+                ivSizechartEditSign.visible()
+                ivSizechart.visible()
+                typographySizechartDescription.text = getString(R.string.label_variant_sizechart_edit_description)
+            }
+            ivSizechart.setImage(it, 0F)
+        })
+    }
+
+    private fun removeSizechart() {
+        val url = viewModel.variantSizechartUrl.value.orEmpty()
+        viewModel.variantSizechartUrl.value = ""
+        FileUtils.deleteFileInTokopediaFolder(url)
+    }
+
+    private fun showReplaceSizechartPicker(){
+        context?.apply {
+            val builder =  createSizechartImagePickerBuilder(this)
+            val intent = ImagePickerActivity.getIntent(this, builder)
+            startActivityForResult(intent, REQUEST_CODE_SIZECHART_IMAGE)
+        }
+    }
+
+    private fun showEditorSizechartPicker() {
+        val url = viewModel.variantSizechartUrl.value.orEmpty()
+        context?.apply {
+            val editorIntent = createEditorIntent(this, url)
+            startActivityForResult(editorIntent, REQUEST_CODE_SIZECHART_IMAGE)
+        }
     }
 
     private fun showGetCategoryVariantCombinationErrorToast(errorMessage: String) {
@@ -220,7 +248,7 @@ class AddEditProductVariantFragment : BaseDaggerFragment(), VariantTypeAdapter.O
         }
     }
 
-    fun createSizeChartImagePickerBuilder(context: Context): ImagePickerBuilder {
+    fun createSizechartImagePickerBuilder(context: Context): ImagePickerBuilder {
         return ImagePickerBuilder(context.getString(R.string.choose_image),
                 intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY,
                         ImagePickerTabTypeDef.TYPE_CAMERA,
