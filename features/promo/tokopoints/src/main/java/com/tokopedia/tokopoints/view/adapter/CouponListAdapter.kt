@@ -66,19 +66,18 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val itemView: View
-        if (viewType == VIEW_HEADER) {
+        /*  if (viewType == VIEW_HEADER) {
             itemView = LayoutInflater.from(parent.context)
                     .inflate(R.layout.tp_item_my_coupon_section_header, parent, false)
             return HeaderViewHolder(itemView)
-        }
-        itemView = LayoutInflater.from(parent.context)
+        }*/
+        val itemView: View = LayoutInflater.from(parent.context)
                 .inflate(R.layout.tp_item_my_coupon_section, parent, false)
         return ViewHolder(itemView)
     }
 
     override fun onBindViewHolder(pHolder: RecyclerView.ViewHolder, position: Int) {
-        val item = mItems!![position]
+        val item = mItems[position]
         if (pHolder is ViewHolder) {
             val holder = pHolder
             ImageHandler.loadImageFitCenter(holder.imgBanner.context, holder.imgBanner,
@@ -153,7 +152,6 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
                 holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.design.R.color.black_70))
             }
             enableOrDisableImages(holder, item)
-        } else if (pHolder is HeaderViewHolder) {
         }
     }
 
@@ -181,16 +179,7 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
     }
 
     override fun getItemCount(): Int {
-        return mItems!!.size
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        if (mItems == null) {
-            return super.getItemViewType(position)
-        }
-        return if (position == 0) { // This is where we'll add footer.
-            VIEW_HEADER
-        } else VIEW_DATA
+        return mItems.size
     }
 
     override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
@@ -219,9 +208,5 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
     companion object {
         private const val VIEW_HEADER = 0
         private const val VIEW_DATA = 1
-    }
-
-    init {
-        mItems.add(0, CouponValueEntity())
     }
 }

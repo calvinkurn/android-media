@@ -9,6 +9,7 @@ import com.tokopedia.tokopoints.view.model.LobDetails;
 import com.tokopedia.tokopoints.view.model.LuckyEggEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointSumCoupon;
+import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection;
 import com.tokopedia.tokopoints.view.model.section.SectionContent;
 
 import java.util.List;
@@ -49,7 +50,7 @@ public interface TokoPointsHomeContract {
 
         void renderCategory(SectionContent content);
 
-        void renderToolbarWithHeader(TokoPointEntity data);
+        void renderToolbarWithHeader(TokopediaRewardTopSection data);
 
         void renderSections(List<SectionContent> sections);
 
@@ -57,7 +58,7 @@ public interface TokoPointsHomeContract {
 
         void renderExploreSectionTab(List<SectionContent> sections);
 
-        void onSuccessResponse(TokoPointEntity data, List<SectionContent> sections);
+        void onSuccessResponse(TokopediaRewardTopSection data, List<SectionContent> sections);
 
         void showTokopoint2020(PopupNotification data);
     }

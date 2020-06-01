@@ -35,22 +35,23 @@ class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokopointBu
         val loginStatusBundle = Bundle()
         val isLogin = mUserSession!!.isLoggedIn
         val tokoPointsHomeFragmentNew = TokoPointsHomeFragmentNew.newInstance()
-        return if (isLogin) {
+        if (isLogin) {
+            loginStatusBundle.putBoolean(CommonConstant.BUNDLE_ARGS_USER_IS_LOGGED_IN, isLogin)
+            tokoPointsHomeFragmentNew.arguments = loginStatusBundle
+        }/* else {
             loginStatusBundle.putBoolean(CommonConstant.BUNDLE_ARGS_USER_IS_LOGGED_IN, isLogin)
             tokoPointsHomeFragmentNew.arguments = loginStatusBundle
             tokoPointsHomeFragmentNew
-        } else {
-            loginStatusBundle.putBoolean(CommonConstant.BUNDLE_ARGS_USER_IS_LOGGED_IN, isLogin)
-            tokoPointsHomeFragmentNew.arguments = loginStatusBundle
-            tokoPointsHomeFragmentNew
-        }
+        }*/
+
+        return tokoPointsHomeFragmentNew
     }
 
     override fun getComponent(): TokopointBundleComponent {
         return tokoPointComponent
     }
 
-    private fun initInjector() : TokopointBundleComponent {
+    private fun initInjector(): TokopointBundleComponent {
         return DaggerTokopointBundleComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .tokopointsQueryModule(TokopointsQueryModule(this))

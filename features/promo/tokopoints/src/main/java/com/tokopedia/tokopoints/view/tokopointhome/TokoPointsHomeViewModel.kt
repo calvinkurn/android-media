@@ -6,6 +6,8 @@ import com.tokopedia.tokopoints.di.TokoPointScope
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager
 import com.tokopedia.tokopoints.view.cataloglisting.CatalogPurchaseRedeemptionViewModel
 import com.tokopedia.tokopoints.view.model.*
+import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
+import com.tokopedia.tokopoints.view.model.rewardtopsection.TopSectionResponse
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.model.section.TokopointsSectionOuter
 import com.tokopedia.tokopoints.view.util.*
@@ -24,10 +26,10 @@ class TokoPointsHomeViewModel @Inject constructor(private val repository: Tokopo
         launchCatchError(block = {
          tokopointDetailLiveData.value = Loading()
             val graphqlResponse = repository.getTokoPointDetailData()
-            val data = graphqlResponse.getData<TokoPointDetailEntity>(TokoPointDetailEntity::class.java)
+            val data = graphqlResponse.getData<TopSectionResponse>(TopSectionResponse::class.java)
             val dataSection = graphqlResponse.getData<TokopointsSectionOuter>(TokopointsSectionOuter::class.java)
             if (data != null && dataSection != null && dataSection.sectionContent != null) {
-                tokopointDetailLiveData.value = Success(TokopointSuccess(data.tokoPoints,dataSection.sectionContent.sectionContent))
+                tokopointDetailLiveData.value = Success(TokopointSuccess(data.tokopediaRewardTopSection!!,dataSection.sectionContent.sectionContent))
             }
             //handling for lucky egg data
             val tokenDetail = graphqlResponse.getData<TokenDetailOuter>(TokenDetailOuter::class.java)
@@ -56,4 +58,4 @@ class TokoPointsHomeViewModel @Inject constructor(private val repository: Tokopo
         }
 }
 
-data class TokopointSuccess(val tokoPointEntity: TokoPointEntity,val sectionList: MutableList<SectionContent>)
+data class TokopointSuccess(val tokoPointEntity: TokopediaRewardTopSection, val sectionList: MutableList<SectionContent>)

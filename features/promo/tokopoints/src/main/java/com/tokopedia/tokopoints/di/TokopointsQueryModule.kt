@@ -171,9 +171,9 @@ class TokopointsQueryModule(val activity: Activity) {
 
     @Provides
     @TokoPointScope
-    @Named(CommonConstant.GQLQuery.TP_GQL_TOKOPOINT_DETAIL_NEW)
+    @Named(CommonConstant.GQLQuery.TP_GQL_TOKOPOINT_TOP_SECTION_NEW)
     fun getGQLTOkopointNewDetail(context: Context) : String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_tokopoint_detail_new)
+        return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_topsection_new)
     }
 
     @Provides

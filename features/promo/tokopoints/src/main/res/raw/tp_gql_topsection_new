@@ -1,0 +1,26 @@
+{
+  tokopediaRewardTopSection{
+    resultStatus {
+      code
+      status
+    }
+    title
+    profilePicture
+    introductionText
+    tier {
+      nameDesc
+      backgroundImgURLMobile
+    }
+    targetText
+    dynamicActionList {
+      id
+      cta {
+        icon
+        text
+        url
+        appLink
+      }
+      metadata
+    }
+  }
+}

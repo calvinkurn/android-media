@@ -143,7 +143,7 @@ public interface CommonConstant {
         String TP_GQL_TOKOPOINT_DETAIL = "tp_gql_tokopoint_detail";
         String TP_GQL_CATALOG_FILTER = "tp_gql_catalog_filter";
         String TP_GQL_LUCKY_EGG_DETAILS = "tp_gql_lucky_egg_detail";
-        String TP_GQL_TOKOPOINT_DETAIL_NEW = "tp_gql_tokopoint_detail_new";
+        String TP_GQL_TOKOPOINT_TOP_SECTION_NEW = "tp_gql_topsection_new";
         String TP_GQL_HOME_PAGE_SECTION = "tp_gql_home_page_section";
         String TP_GQL_SUM_COUPON = "tp_gql_sum_coupon";
         String TP_GQL_ADD_POINT_REWARD  = "tp_gql_add_point_reward";

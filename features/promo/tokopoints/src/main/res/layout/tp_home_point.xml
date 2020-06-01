@@ -1,148 +1,157 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:id="@+id/layout_homepoint"
-    android:layout_height="@dimen/dp_48"
-    android:background="@color/white">
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_80"
+    android:padding="@dimen/dp_8">
 
     <com.tokopedia.unifyprinciples.Typography
-        app:typographyType="heading_4"
         android:id="@+id/tvNonLoginCta"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.603"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:typographyType="heading_4" />
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/img_points_stack"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:layout_marginStart="@dimen/dp_13"
-        android:layout_marginLeft="@dimen/dp_13"
-        android:layout_marginTop="@dimen/dp_6"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_tp_point_stack_new" />
 
-    <TextView
-        android:id="@+id/text_my_points_label"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/tp_margin_small"
-        android:layout_marginLeft="@dimen/tp_margin_small"
-        android:layout_marginTop="@dimen/dp_10"
-        android:ellipsize="end"
-        android:lines="1"
-        android:text="@string/tp_label_see_point"
-        android:textColor="@color/tp_loyalty_color"
-        android:textSize="@dimen/tp_text_size_xxsmall"
-        app:layout_constraintLeft_toRightOf="@+id/img_points_stack"
-        app:layout_constraintStart_toEndOf="@+id/img_points_stack"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Points" />
-
-    <TextView
-        android:id="@+id/text_my_points_value"
+    <LinearLayout
+        android:id="@+id/ll_tokomember"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/tp_margin_small"
-        android:layout_marginLeft="@dimen/tp_margin_small"
-        android:layout_marginBottom="@dimen/dp_10"
-        android:textColor="@color/medium_green"
-        android:textSize="@dimen/tp_text_size_small"
-        android:textStyle="bold"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dp_4"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/img_points_stack"
-        app:layout_constraintStart_toEndOf="@+id/img_points_stack"
-        app:layout_constraintTop_toBottomOf="@+id/text_my_points_label"
-        tools:text="100.087" />
+        app:layout_constraintEnd_toStartOf="@+id/ll_challenge"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <ImageView
+            android:id="@+id/img_tokomember"
+            android:layout_width="30dp"
+            android:layout_height="@dimen/dp_30"
+            android:layout_gravity="center"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_tokomember"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            tools:text="Tokomember"
+            android:textColor="#AD31353B" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_challenge"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dp_4"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/ll_mycoupon"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/ll_tokomember"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.375">
+
+        <ImageView
+            android:id="@+id/img_challenge"
+            android:layout_width="@dimen/dp_30"
+            android:layout_height="@dimen/dp_30"
+            android:layout_gravity="center" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_challenge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            tools:text="Challenge"
+            android:textColor="#AD31353B" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_mycoupon"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/ll_challenge"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <ImageView
+            android:id="@+id/img_mycoupon"
+            android:layout_width="30dp"
+            android:layout_height="@dimen/dp_30"
+            android:layout_gravity="center" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_mycoupon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            tools:text="My Coupon"
+            android:textColor="#AD31353B" />
+    </LinearLayout>
 
     <View
         android:id="@+id/line_separator_points_vertical"
         android:layout_width="1dp"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/dp_16"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:background="@color/white_two"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/img_loyalty_stack"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:layout_marginStart="@dimen/dp_13"
-        android:layout_marginLeft="@dimen/dp_13"
-        android:layout_marginTop="@dimen/dp_6"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/line_separator_points_vertical"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_tp_loyalty_stack_new" />
-
-    <TextView
-        android:id="@+id/text_loyalty_label"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/tp_margin_small"
-        android:layout_marginLeft="@dimen/tp_margin_small"
-        android:layout_marginTop="@dimen/dp_10"
-        android:layout_marginEnd="@dimen/dp_4"
-        android:layout_marginRight="@dimen/dp_4"
-        android:layout_marginBottom="@dimen/dp_1"
-        android:ellipsize="end"
-        android:lines="1"
-        android:text="@string/tp_label_see_loyalty"
-        android:textColor="@color/tp_loyalty_color"
-        android:textSize="@dimen/tp_text_size_xxsmall"
-        app:layout_constraintStart_toEndOf="@+id/img_loyalty_stack"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/text_loyalty_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/tp_margin_small"
-        android:layout_marginLeft="@dimen/tp_margin_small"
-        android:layout_marginBottom="@dimen/dp_10"
-        android:textColor="@color/medium_green"
-        android:textSize="@dimen/tp_text_size_regular"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/img_loyalty_stack"
-        app:layout_constraintTop_toBottomOf="@+id/text_loyalty_label"
-        tools:text="20.099" />
-
-    <View
-        android:id="@+id/view_point"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/line_separator_points_vertical"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="@+id/line_separator_points_vertical"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/ll_challenge"
+        app:layout_constraintStart_toEndOf="@id/ll_tokomember"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
-        android:id="@+id/view_loyalty"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:id="@+id/line_separator_points_vertical1"
+        android:layout_width="1dp"
+        android:layout_height="@dimen/dp_16"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/white_two"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/line_separator_points_vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toLeftOf="@+id/line_separator_points_vertical"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/ll_mycoupon"
+        app:layout_constraintStart_toEndOf="@id/ll_challenge"
         app:layout_constraintTop_toTopOf="parent" />
+
+
+    <!--
+          <View
+            android:id="@+id/view_point"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/line_separator_points_vertical"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="@+id/line_separator_points_vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/view_loyalty"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/line_separator_points_vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toLeftOf="@+id/line_separator_points_vertical"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" /> -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

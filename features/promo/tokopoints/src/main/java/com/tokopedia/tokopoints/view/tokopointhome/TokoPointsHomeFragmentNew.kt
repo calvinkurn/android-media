@@ -7,17 +7,17 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.text.Html
 import android.view.*
 import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
@@ -40,8 +40,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.bottomsheet.BottomSheetView
 import com.tokopedia.design.bottomsheet.BottomSheetView.BottomSheetField.BottomSheetFieldBuilder
 import com.tokopedia.design.component.ButtonCompat
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
@@ -49,13 +49,13 @@ import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager
 import com.tokopedia.tokopoints.notification.model.PopupNotification
 import com.tokopedia.tokopoints.view.adapter.SectionCategoryAdapter
 import com.tokopedia.tokopoints.view.adapter.SectionTickerPagerAdapter
+import com.tokopedia.tokopoints.view.addPoint.AddPointsFragment
 import com.tokopedia.tokopoints.view.cataloglisting.ValidateMessageDialog
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
 import com.tokopedia.tokopoints.view.customview.CustomViewPager
 import com.tokopedia.tokopoints.view.customview.ServerErrorView
 import com.tokopedia.tokopoints.view.customview.TokoPointToolbar
 import com.tokopedia.tokopoints.view.customview.TokoPointToolbar.OnTokoPointToolbarClickListener
-import com.tokopedia.tokopoints.view.addPoint.AddPointsFragment
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.TokopointhomePlt.Companion.HOME_TOKOPOINT_PLT
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.TokopointhomePlt.Companion.HOME_TOKOPOINT_PLT_NETWORK_METRICS
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.TokopointhomePlt.Companion.HOME_TOKOPOINT_PLT_PREPARE_METRICS
@@ -63,14 +63,23 @@ import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConst
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
 import com.tokopedia.tokopoints.view.fragment.StartPurchaseBottomSheet
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener
-import com.tokopedia.tokopoints.view.model.*
+import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
+import com.tokopedia.tokopoints.view.model.LobDetails
+import com.tokopedia.tokopoints.view.model.LuckyEggEntity
+import com.tokopedia.tokopoints.view.model.TokoPointSumCoupon
+import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem
+import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
 import com.tokopedia.tokopoints.view.model.section.SectionContent
-import com.tokopedia.tokopoints.view.pointhistory.PointHistoryActivity
 import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.image.ImageUtils
+import kotlinx.android.synthetic.main.tp_fragment_homepage_new.*
+import kotlinx.android.synthetic.main.tp_home_point.*
 import kotlinx.android.synthetic.main.tp_layout_section_category_parent.*
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.abs
 
 /*
  * Dynamic layout params are applied via
@@ -79,6 +88,7 @@ import javax.inject.Inject
 class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.View, View.OnClickListener, OnTokoPointToolbarClickListener, TokopointPerformanceMonitoringListener {
     private var mContainerMain: ViewFlipper? = null
     private var mTextMembershipValue: TextView? = null
+    private var mTargetText: TextView? = null
     private var mTextMembershipValueBottom: TextView? = null
     private var mTextPoints: TextView? = null
     private var mTextPointsBottom: TextView? = null
@@ -112,7 +122,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     private var userLoggedInStatus: Boolean? = null
     private var ivUserCoupon: AppCompatImageView? = null
     private var userCouponCount: TextView? = null
-    private var rewardsPointLayout: CardView? = null
+    private var rewardsPointLayout: CardUnify? = null
     private var ivPointStack: AppCompatImageView? = null
     private var tvPointLabel: TextView? = null
     private var midSeparator: View? = null
@@ -142,8 +152,17 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         collapsingToolbarLayout?.setExpandedTitleColor(resources.getColor(android.R.color.transparent))
         collapsingToolbarLayout?.setTitle(" ")
         appBarHeader!!.addOnOffsetChangedListener(OnOffsetChangedListener { appBarLayout: AppBarLayout?, verticalOffset: Int -> handleAppBarOffsetChange(verticalOffset) })
+        appBarHeader?.addOnOffsetChangedListener(OnOffsetChangedListener { appBarLayout: AppBarLayout?, verticalOffset: Int -> handleAppBarIconChange(appBarLayout, verticalOffset) })
         setLayoutParams()
         return view
+    }
+
+    private fun handleAppBarIconChange(appBarLayout: AppBarLayout?, verticalOffset: Int) {
+        val verticalOffset1 = Math.abs(verticalOffset)
+        if (verticalOffset1 >= appBarLayout?.totalScrollRange!! - tickerContainer!!.height - dynamicLinksContainer!!.height-(card_point.height)/2) {
+            tokoPointToolbar?.showToolbarIcon()
+        } else
+            tokoPointToolbar?.hideToolbarIcon()
     }
 
     private fun setLayoutParams() {
@@ -157,14 +176,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         val imageBigLp = mImgBackground!!.layoutParams as RelativeLayout.LayoutParams
         imageBigLp.height = (statusBarHeight + activity!!.resources.getDimension(R.dimen.tp_home_top_bg_height)).toInt()
         mImgBackground!!.layoutParams = imageBigLp
-        if (!userLoggedInStatus!!) {
-            val rewardsPointLayoutLP = rewardsPointLayout!!.layoutParams as RelativeLayout.LayoutParams
-            rewardsPointLayoutLP.topMargin = (statusBarHeight + activity!!.resources.getDimension(R.dimen.tp_cta_container_nonlogin)).toInt()
-            rewardsPointLayout!!.layoutParams = rewardsPointLayoutLP
-            val tvEmptyLP = emptyTitle!!.layoutParams as RelativeLayout.LayoutParams
-            tvEmptyLP.topMargin = (statusBarHeight + activity!!.resources.getDimension(com.tokopedia.design.R.dimen.dp_56)).toInt()
-            emptyTitle!!.layoutParams = tvEmptyLP
-        }
     }
 
     private fun hideStatusBar() {
@@ -239,6 +250,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             bottomViewMembership!!.startAnimation(bottomUp)
             bottomViewMembership!!.visibility = View.VISIBLE
         }
+
+        //  tokoPointToolbar?.showToolbarIcon()
     }
 
     private fun slideDown() {
@@ -250,6 +263,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             bottomViewMembership!!.startAnimation(slideDown)
             bottomViewMembership!!.visibility = View.GONE
         }
+
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -389,47 +404,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                     AnalyticsTrackerUtil.ActionKeys.CLICK_MEM_BOTTOM,
                     "")
-        } else if (source.id == R.id.view_point_bottom
-                || source.id == R.id.view_point) {
-            if (userLoggedInStatus!!) {
-                startActivity(Intent(activityContext, PointHistoryActivity::class.java))
-            } else {
-                activity!!.startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
-            }
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_POINT_SAYA,
-                    "")
-        } else if (source.id == R.id.view_loyalty) {
-            if (userLoggedInStatus!!) {
-                startActivity(Intent(activityContext, PointHistoryActivity::class.java))
-            } else {
-                activity!!.startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
-            }
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_LOYALTY_SAYA,
-                    "")
-        } else if (source.id == R.id.text_failed_action) {
+        }  else if (source.id == R.id.text_failed_action) {
             mPresenter!!.getTokoPointDetail()
-        } else if (source.id == R.id.container_fab_egg_token) {
-            if (mSumToken <= 0) {
-                if (mStartPurchaseBottomSheet != null) {
-                    val addPointsFragment = AddPointsFragment()
-                    addPointsFragment.show(childFragmentManager, "")
-                }
-            } else {
-                if (activity != null) {
-                    RouteManager.route(activity, ApplinkConst.Gamification.CRACK)
-                }
-            }
-            AnalyticsTrackerUtil.sendEvent(activity,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_FLOATING_LUCKY,
-                    "")
         }
     }
 
@@ -437,9 +413,10 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         coordinatorLayout = view.findViewById(R.id.container)
         mContainerMain = view.findViewById(R.id.container_main)
         mTextMembershipValue = view.findViewById(R.id.text_membership_value)
-        if (userLoggedInStatus!!) {
-            mTextMembershipValue?.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable(activity, com.tokopedia.design.R.drawable.ic_arrow_right_grey), null)
-        }
+        mTargetText = view.findViewById(R.id.tv_targetText)
+        /* if (userLoggedInStatus!!) {
+             mTextMembershipValue?.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable(activity, com.tokopedia.design.R.drawable.ic_arrow_right_grey), null)
+         }*/
         mTextMembershipLabel = view.findViewById(R.id.text_membership_label)
         mTextPoints = view.findViewById(R.id.text_my_points_value)
         mTextLoyalty = view.findViewById(R.id.text_loyalty_value)
@@ -461,7 +438,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         tokoPointToolbar = view.findViewById(R.id.toolbar_tokopoint)
         serverErrorView = view.findViewById(R.id.server_error_view)
         ivUserCoupon = view.findViewById(R.id.iv_tpToolbar_coupon)
-        userCouponCount = view.findViewById(R.id.tv_tpToolbar_couponCount)
+        //   userCouponCount = view.findViewById(R.id.tv_tpToolbar_couponCount)
         rewardsPointLayout = view.findViewById(R.id.card_point)
         ivPointStack = view.findViewById(R.id.img_points_stack)
         tvPointLabel = view.findViewById(R.id.text_my_points_label)
@@ -470,8 +447,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         pointLayout = view.findViewById(R.id.layout_homepoint)
         tvLoyaltyLabel = view.findViewById(R.id.text_loyalty_label)
         tvNonLoginCta = view.findViewById(R.id.tvNonLoginCta)
-        emptyTitle = view.findViewById(R.id.emptyTitle)
-        emptySubtitle = view.findViewById(R.id.emptySubtitle)
         setStatusBarViewHeight()
     }
 
@@ -488,8 +463,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         view!!.findViewById<View>(R.id.img_egg).setOnClickListener(this)
         view!!.findViewById<View>(R.id.text_membership_value).setOnClickListener(this)
         view!!.findViewById<View>(R.id.text_failed_action).setOnClickListener(this)
-        view!!.findViewById<View>(R.id.view_point).setOnClickListener(this)
-        view!!.findViewById<View>(R.id.view_loyalty).setOnClickListener(this)
+        /* view!!.findViewById<View>(R.id.view_point).setOnClickListener(this)
+         view!!.findViewById<View>(R.id.view_loyalty).setOnClickListener(this)*/
         view!!.findViewById<View>(R.id.container_fab_egg_token).setOnClickListener(this)
     }
 
@@ -718,7 +693,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         if (data == null || tokoPointToolbar == null) {
             return
         }
-        tokoPointToolbar!!.setCouponCount(data.sumCoupon, data.sumCouponStr)
+        //TODO count show
+        //   tokoPointToolbar!!.setCouponCount(data.sumCoupon, data.sumCouponStr)
     }
 
     override fun renderTicker(content: SectionContent) {
@@ -753,61 +729,67 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     }
 
     override fun renderCategory(content: SectionContent) {
-        if (content == null || content.layoutCategoryAttr == null || content.layoutCategoryAttr.categoryTokopointsList == null || content.layoutCategoryAttr.categoryTokopointsList.isEmpty()) {
+        if (content.layoutCategoryAttr == null || content.layoutCategoryAttr.categoryTokopointsList == null || content.layoutCategoryAttr.categoryTokopointsList.isEmpty()) {
             return
         }
-        dynamicLinksContainer!!.visibility = View.VISIBLE
-        val manager = GridLayoutManager(context, 5, GridLayoutManager.VERTICAL, false)
-        mRvDynamicLinks!!.layoutManager = manager
-        mRvDynamicLinks!!.adapter = SectionCategoryAdapter(activityContext, content.layoutCategoryAttr.categoryTokopointsList)
+        dynamicLinksContainer?.visibility = View.VISIBLE
+        val manager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        mRvDynamicLinks?.layoutManager = manager
+        mRvDynamicLinks?.adapter = SectionCategoryAdapter(activityContext, content.layoutCategoryAttr.categoryTokopointsList)
     }
 
-    override fun renderToolbarWithHeader(data: TokoPointEntity) {
-        if (data == null) {
-            return  //TODO any error page? Ask from gulfikar
-        }
-        //init header
-        if (data.status != null) {
-            if (!userLoggedInStatus!!) {
-                mImgEgg!!.visibility = View.GONE
-                emptyTitle!!.visibility = View.VISIBLE
-                emptySubtitle!!.visibility = View.VISIBLE
-                emptyTitle!!.text = data.status.emptyMessage.title
-                emptySubtitle!!.text = data.status.emptyMessage.subTitle
-                ivUserCoupon!!.visibility = View.GONE
-                userCouponCount!!.visibility = View.GONE
-                ivLoyaltyStack!!.visibility = View.GONE
-                ivPointStack!!.visibility = View.GONE
-                midSeparator!!.visibility = View.GONE
-                tvPointLabel!!.visibility = View.GONE
-                tvLoyaltyLabel!!.visibility = View.GONE
-                mTextPoints!!.visibility = View.GONE
-                mTextLoyalty!!.visibility = View.GONE
-                pointLayout!!.background = resources.getDrawable(R.drawable.bg_tp_nonlogin_rewards_container)
-                tvNonLoginCta!!.visibility = View.VISIBLE
-                tvNonLoginCta!!.text = data.status.cta.text
-                ImageHandler.loadImageFitCenter(mImgBackground!!.context, mImgBackground, data.status.tier.backgroundImgURLMobile)
-                ImageHandler.loadImageCircle2(activityContext, mImgEggBottom, data.status.tier.eggImageHomepageURL)
+    override fun renderToolbarWithHeader(data: TokopediaRewardTopSection) {
+        mTextMembershipLabel?.text = data.introductionText
+
+        data.targetText?.let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                mTargetText?.setText(Html.fromHtml(it, Html.FROM_HTML_MODE_LEGACY))
             } else {
-                mTextMembershipLabel!!.text = data.status.userName
-                if (data.status.tier != null) {
-                    mValueMembershipDescription = data.status.tier.nameDesc
-                    mTextMembershipValue!!.text = mValueMembershipDescription
-                    mTextMembershipValueBottom!!.text = mValueMembershipDescription
-                    ImageHandler.loadImageFitCenter(mImgBackground!!.context, mImgBackground, data.status.tier.backgroundImgURLMobile)
-                    ImageHandler.loadImageCircle2(activityContext, mImgEgg, data.status.tier.eggImageHomepageURL)
-                    ImageHandler.loadImageCircle2(activityContext, mImgEggBottom, data.status.tier.eggImageHomepageURL)
-                }
-                if (data.status.points != null) {
-                    mTextPoints!!.text = CurrencyFormatUtil.convertPriceValue(data.status.points.reward.toDouble(), false)
-                    mTextPointsBottom!!.text = CurrencyFormatUtil.convertPriceValue(data.status.points.reward.toDouble(), false)
-                    mTextLoyalty!!.text = CurrencyFormatUtil.convertPriceValue(data.status.points.loyalty.toDouble(), false)
-                }
+                mTargetText?.setText(Html.fromHtml(it))
             }
         }
-        //init bottom sheet
-        renderPurchaseBottomsheet(data.lobs)
+
+        ImageHandler.loadImageCircle2(activityContext, mImgEgg, data.profilePicture)
+        mTextMembershipValueBottom?.text = mValueMembershipDescription
+        collapsingToolbarLayout?.title = data.title
+
+        if (data.tier != null) {
+            mTextMembershipValue?.text = data.tier.nameDesc
+            ImageHandler.loadImageFitCenter(mImgBackground?.context, mImgBackground, data.tier.backgroundImgURLMobile)
+        }
+
+        renderDynamicActionList(data.dynamicActionList)
     }
+
+    fun renderDynamicActionList(dynamicActionList: List<DynamicActionListItem?>?) {
+
+        val firstActionItem = dynamicActionList?.get(0)
+        val secondActionItem = dynamicActionList?.get(1)
+        val thirdActionItem = dynamicActionList?.get(2)
+
+
+        tv_tokomember.text = firstActionItem?.cta?.text
+        val img_toko = view?.findViewById<ImageView>(R.id.img_tokomember)
+        img_toko?.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        img_toko?.loadImage(firstActionItem?.cta?.url!!)
+        ll_tokomember.setOnClickListener {
+            RouteManager.route(context, firstActionItem?.cta?.appLink)
+        }
+
+        tv_challenge.text = secondActionItem?.cta?.text
+        ImageUtils.loadImage(img_challenge, secondActionItem?.cta?.icon!!, com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
+        ll_challenge.setOnClickListener {
+            RouteManager.route(context, secondActionItem?.cta?.appLink)
+        }
+
+        tv_mycoupon.text = thirdActionItem?.cta?.text
+        ImageHandler.loadImageFitCenter(context, img_mycoupon, thirdActionItem?.cta?.icon)
+        ll_mycoupon.setOnClickListener {
+            RouteManager.route(context, thirdActionItem?.cta?.appLink)
+        }
+
+    }
+
 
     override fun renderPurchaseBottomsheet(data: LobDetails) {
         if (data == null || view == null) {
@@ -872,7 +854,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         })
     }
 
-    override fun onSuccessResponse(data: TokoPointEntity, sections: List<SectionContent>) {
+    override fun onSuccessResponse(data: TokopediaRewardTopSection, sections: List<SectionContent>) {
         mContainerMain!!.displayedChild = CONTAINER_DATA
         renderToolbarWithHeader(data)
         renderSections(sections)
