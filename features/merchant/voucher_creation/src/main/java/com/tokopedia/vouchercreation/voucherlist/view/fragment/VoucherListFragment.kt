@@ -481,7 +481,11 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     private fun setOnSuccessGetVoucherList(vouchers: List<VoucherUiModel>) {
         if (isToolbarAlreadyLoaded) {
-            renderList(vouchers, vouchers.isNotEmpty())
+            if (vouchers.isNotEmpty()) {
+                renderList(vouchers, vouchers.isNotEmpty())
+            } else {
+                renderList(listOf(NoResultStateUiModel))
+            }
         } else {
             clearAllData()
             if (vouchers.isEmpty()) {
