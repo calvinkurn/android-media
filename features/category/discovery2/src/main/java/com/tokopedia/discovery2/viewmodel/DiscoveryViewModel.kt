@@ -50,7 +50,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                     val data = discoveryDataUseCase.getDiscoveryPageDataUseCase(pageIdentifier)
                     data.let {
                         withContext(Dispatchers.Default) {
-                            findAndRemoveSecondYoutubeComponent(it.components)
+//                            findAndRemoveSecondYoutubeComponent(it.components)
                             checkLoginAndUpdateList(it.components)
                             findCustomTopChatComponentsIfAny(it.components)
                         }

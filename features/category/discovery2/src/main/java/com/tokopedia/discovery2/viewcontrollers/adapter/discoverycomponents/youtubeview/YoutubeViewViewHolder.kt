@@ -31,11 +31,12 @@ class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) : Ab
     private fun setUpObserver() {
         youTubeViewViewModel.getVideoId().observe(fragment.viewLifecycleOwner, Observer {
             videoId = it.videoId ?: ""
-            showVideoInWebView()
-            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackClickVideo(it.videoId
-                    ?: "", it.name ?: "", "")
+            if (shimmerView.visibility == View.VISIBLE) {
+                showVideoInWebView()
+                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackClickVideo(it.videoId
+                        ?: "", it.name ?: "", "")
+            }
         })
-
     }
 
     private fun showVideoInWebView() {
@@ -56,5 +57,11 @@ class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) : Ab
 
     private fun getHTML(): String {
         return "<html><body><iframe width=100% height=100% src=\"https://www.youtube.com/embed/$videoId\" frameborder=\"0\"></iframe></body></html>"
+    }
+
+    override fun onViewDetachedToWindow() {
+        super.onViewDetachedToWindow()
+
+
     }
 }
