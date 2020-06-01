@@ -56,10 +56,10 @@ object SharingUtil {
         }
     }
 
-    fun otherShare(context: Context, urlString: String) {
+    fun otherShare(context: Context, messageShare: String) {
         val intent = Intent(Intent.ACTION_SEND).apply {
             type = SHARE_TYPE_TEXT
-            putExtra(Intent.EXTRA_TEXT, urlString)
+            putExtra(Intent.EXTRA_TEXT, messageShare)
         }
         context.startActivity(intent)
     }

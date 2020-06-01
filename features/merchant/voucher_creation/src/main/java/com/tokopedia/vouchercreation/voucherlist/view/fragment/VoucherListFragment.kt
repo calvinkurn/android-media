@@ -18,6 +18,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
@@ -281,28 +282,45 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         ShareVoucherBottomSheet(parent)
                 .setOnItemClickListener { socmedType ->
                     context?.run {
-                        when(socmedType) {
-                            SocmedType.COPY_LINK -> {
-                                SharingUtil.copyTextToClipboard(this, COPY_PROMO_CODE_LABEL, voucher.code)
-                            }
-                            SocmedType.INSTAGRAM -> {
-                                SharingUtil.shareToSocialMedia(SocmedPackage.INSTAGRAM, this, voucher.imageSquare)
-                            }
-                            SocmedType.FACEBOOK_MESSENGER -> {
-                                SharingUtil.shareToSocialMedia(SocmedPackage.MESSENGER, this, voucher.imageSquare)
-                            }
-                            SocmedType.WHATSAPP -> {
-                                SharingUtil.shareToSocialMedia(SocmedPackage.WHATSAPP, this, voucher.imageSquare)
-                            }
-                            SocmedType.LINE -> {
-                                SharingUtil.shareToSocialMedia(SocmedPackage.LINE, this, voucher.imageSquare)
-                            }
-                            SocmedType.LAINNYA -> {
-                                SharingUtil.otherShare(this, "")
+                        shopBasicData?.let { shopData ->
+                            val shareUrl = "${TokopediaUrl.getInstance().WEB}${shopData.shopDomain}"
+                            val shareMessage =
+                                    if (voucher.isPublic) {
+                                        String.format(
+                                                getString(R.string.mvc_share_message_public).toBlankOrString(),
+                                                voucher.typeFormatted,
+                                                shopData.shopName,
+                                                shareUrl)
+                                    } else {
+                                        String.format(
+                                                getString(R.string.mvc_share_message_private).toBlankOrString(),
+                                                voucher.typeFormatted,
+                                                voucher.code,
+                                                shopData.shopName,
+                                                shareUrl)
+                                    }
+                            when(socmedType) {
+                                SocmedType.COPY_LINK -> {
+                                    SharingUtil.copyTextToClipboard(this, COPY_PROMO_CODE_LABEL, shareMessage)
+                                }
+                                SocmedType.INSTAGRAM -> {
+                                    SharingUtil.shareToSocialMedia(SocmedPackage.INSTAGRAM, this, voucher.imageSquare)
+                                }
+                                SocmedType.FACEBOOK_MESSENGER -> {
+                                    SharingUtil.shareToSocialMedia(SocmedPackage.MESSENGER, this, voucher.imageSquare, shareMessage)
+                                }
+                                SocmedType.WHATSAPP -> {
+                                    SharingUtil.shareToSocialMedia(SocmedPackage.WHATSAPP, this, voucher.imageSquare, shareMessage)
+                                }
+                                SocmedType.LINE -> {
+                                    SharingUtil.shareToSocialMedia(SocmedPackage.LINE, this, voucher.imageSquare, shareMessage)
+                                }
+                                SocmedType.LAINNYA -> {
+                                    SharingUtil.otherShare(this, shareMessage)
+                                }
                             }
                         }
                     }
-
                 }
                 .show(childFragmentManager)
     }
