@@ -1,5 +1,6 @@
 {
-  "subset": [
+  "mode": "subset",
+  "query": [
     {
       "screenName": "/user/address/create"
     },
@@ -13,5 +14,6 @@
       "eventAction": "click button pilih lokasi ini",
       "eventLabel": "success - logistic"
     }
-  ]
+  ],
+  "readme": "Tracker to calculate CVR Logistic Add Address. STR: Create New Address"
 }

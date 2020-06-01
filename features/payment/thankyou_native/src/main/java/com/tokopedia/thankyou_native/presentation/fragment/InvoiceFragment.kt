@@ -25,13 +25,13 @@ class InvoiceFragment : BaseDaggerFragment() {
     private lateinit var thanksPageData: ThanksPageData
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
     @Inject
-    lateinit var invoiceAdapter: DetailedInvoiceAdapter
+    lateinit var invoiceAdapter: dagger.Lazy<DetailedInvoiceAdapter>
 
     private val detailInvoiceViewModel: DetailInvoiceViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
         viewModelProvider.get(DetailInvoiceViewModel::class.java)
     }
 
@@ -66,7 +66,7 @@ class InvoiceFragment : BaseDaggerFragment() {
     private fun initRecyclerView() {
         val recycleListView = recyclerView
         recycleListView.layoutManager = LinearLayoutManager(context)
-        recycleListView.adapter = invoiceAdapter
+        recycleListView.adapter = invoiceAdapter.get()
     }
 
     private fun observeViewModel() {
@@ -78,8 +78,8 @@ class InvoiceFragment : BaseDaggerFragment() {
     }
 
     private fun addDataToAdapter(list: ArrayList<Visitable<*>>) {
-        invoiceAdapter.addItems(list)
-        invoiceAdapter.notifyDataSetChanged()
+        invoiceAdapter.get().addItems(list)
+        invoiceAdapter.get().notifyDataSetChanged()
     }
 
     companion object {

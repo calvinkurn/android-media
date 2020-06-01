@@ -12,11 +12,9 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
-@ThankYouPageScope
 @Module
 abstract class ViewModelModule {
 
-    @ThankYouPageScope
     @Binds
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 

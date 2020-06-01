@@ -7,6 +7,9 @@ import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.LinkerCommerceData
+import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.AF_KEY_CATEGORY_NAME
+import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_ID
+import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_QTY
 import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
@@ -79,7 +82,7 @@ class ThankYouPageAnalytics @Inject constructor(
 
     private fun getActionFieldNode(orderedItem: ShopOrder): Map<String, Any?> {
         return mapOf(
-                ActionFieldNodeTrackingKey.KEY_ID to orderedItem.orderId,
+                KEY_ID to orderedItem.orderId,
                 ActionFieldNodeTrackingKey.KEY_AFFILIATION to orderedItem.storeName,
                 ActionFieldNodeTrackingKey.KEY_REVENUE to thanksPageData.additionalInfo.revenue.toString(),
                 ActionFieldNodeTrackingKey.KEY_TAX to if (orderedItem.tax > 0) orderedItem.tax else null,
@@ -93,12 +96,12 @@ class ThankYouPageAnalytics @Inject constructor(
         purchaseItemList.forEach { item ->
             val productNodeMap = HashMap<String, Any?>()
             productNodeMap[ProductNodeTrackingKey.KEY_NAME] = item.productName
-            productNodeMap[ProductNodeTrackingKey.KEY_ID] = item.productId
+            productNodeMap[KEY_ID] = item.productId
             productNodeMap[ProductNodeTrackingKey.KEY_PRICE] = item.price.toString()
             productNodeMap[ProductNodeTrackingKey.KEY_BRAND] = item.productBrand
-            productNodeMap[ProductNodeTrackingKey.KEY_CATEGORY] = item.category
+            productNodeMap[AF_KEY_CATEGORY_NAME] = item.category
             productNodeMap[ProductNodeTrackingKey.KEY_VARIANT] = item.variant
-            productNodeMap[ProductNodeTrackingKey.KEY_QUANTITY] = item.quantity
+            productNodeMap[KEY_QTY] = item.quantity
             productNodeMap[ProductNodeTrackingKey.KEY_DIMENSION83] = item.bebasOngkirDimension
             productNodeList.add(productNodeMap)
         }
@@ -301,7 +304,6 @@ object ParentTrackingKey {
     const val AF_PURCHASE_SITE = "af_purchase_site"
     const val AF_VALUE_PRODUCTTYPE = "product"
     const val AF_VALUE_PRODUCT_TYPE = "productType"
-    const val AF_VALUE_PRODUCTGROUPTYPE = "product_group"
     const val VALUE_IDR = "IDR"
     const val AF_KEY_CATEGORY_NAME = "category"
     const val AF_KEY_CRITEO = "criteo_track_transaction"
@@ -320,7 +322,6 @@ object PurchaseNodeTrackingKey {
 }
 
 object ActionFieldNodeTrackingKey {
-    val KEY_ID = "id"
     val KEY_AFFILIATION = "affiliation"
     val KEY_REVENUE = "revenue"
     val KEY_TAX = "tax"
@@ -330,11 +331,8 @@ object ActionFieldNodeTrackingKey {
 
 object ProductNodeTrackingKey {
     val KEY_NAME = "name"
-    val KEY_ID = "id"
     val KEY_PRICE = "price"
     val KEY_BRAND = "brand"
-    val KEY_CATEGORY = "category"
     val KEY_VARIANT = "variant"
-    val KEY_QUANTITY = "quantity"
     val KEY_DIMENSION83 = "dimension83"
 }

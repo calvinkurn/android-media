@@ -30,18 +30,17 @@ import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewMo
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_fragment_loader.*
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 import java.util.zip.ZipInputStream
 import javax.inject.Inject
 
 class LoaderFragment : BaseDaggerFragment() {
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+    var lottieTask: LottieTask<LottieComposition>? = null
 
-    private val thanksPageDataViewModel: ThanksPageDataViewModel by lazy(LazyThreadSafetyMode.NONE)  {
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+    private val thanksPageDataViewModel: ThanksPageDataViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
         viewModelProvider.get(ThanksPageDataViewModel::class.java)
     }
 
@@ -112,28 +111,16 @@ class LoaderFragment : BaseDaggerFragment() {
                 if (throwable.message?.startsWith(RPC_ERROR_STR) == true) {
                     callback?.onInvalidThankYouPage()
                 } else {
-                    showServerError(::loadThankPageData)
+                    showGlobalError(GlobalError.SERVER_ERROR, ::loadThankPageData)
                 }
             }
-            is UnknownHostException -> showNoConnectionError(::loadThankPageData)
-            is SocketTimeoutException -> showNoConnectionError(::loadThankPageData)
-            else -> showServerError(::loadThankPageData)
+            else -> showGlobalError(GlobalError.NO_CONNECTION, ::loadThankPageData)
         }
     }
 
-    private fun showNoConnectionError(retryAction: () -> Unit) {
+    private fun showGlobalError(errorType: Int, retryAction: () -> Unit) {
         globalError.visible()
-        globalError.setType(GlobalError.NO_CONNECTION)
-        globalError.errorAction.visible()
-        globalError.errorAction.setOnClickListener {
-            showLoaderView()
-            retryAction.invoke()
-        }
-    }
-
-    private fun showServerError(retryAction: () -> Unit) {
-        globalError.visible()
-        globalError.setType(GlobalError.SERVER_ERROR)
+        globalError.setType(errorType)
         globalError.errorAction.visible()
         globalError.errorAction.setOnClickListener {
             showLoaderView()
@@ -155,7 +142,9 @@ class LoaderFragment : BaseDaggerFragment() {
         tvWaitForMinute.visible()
         tvProcessingPayment.visible()
         lottieAnimationView.visible()
-        loadLoaderInputStream()
+        if (lottieTask == null)
+            lottieTask = prepareLoaderLottieTask()
+        addLottieAnimationToView()
     }
 
     private fun hideLoaderView() {
@@ -164,18 +153,19 @@ class LoaderFragment : BaseDaggerFragment() {
         tvProcessingPayment.hide()
     }
 
-    private fun loadLoaderInputStream() {
+    private fun prepareLoaderLottieTask(): LottieTask<LottieComposition>? {
         val lottieFileZipStream = ZipInputStream(context!!.assets.open(LOADER_JSON_ZIP_FILE))
-        val task = LottieCompositionFactory.fromZipStream(lottieFileZipStream, null)
-        addLottieAnimationToView(task)
+        return LottieCompositionFactory.fromZipStream(lottieFileZipStream, null)
     }
 
-    private fun addLottieAnimationToView(task: LottieTask<LottieComposition>) {
-        task.addListener { result: LottieComposition? ->
-            lottieAnimationView?.setComposition(result!!)
-            lottieAnimationView.repeatCount = LottieDrawable.INFINITE
-            lottieAnimationView?.repeatMode = LottieDrawable.RESTART
-            lottieAnimationView.playAnimation()
+    private fun addLottieAnimationToView() {
+        lottieTask?.addListener { result: LottieComposition? ->
+            result?.let {
+                lottieAnimationView?.setComposition(result)
+                lottieAnimationView.repeatCount = LottieDrawable.INFINITE
+                lottieAnimationView?.repeatMode = LottieDrawable.RESTART
+                lottieAnimationView.playAnimation()
+            }
         }
     }
 

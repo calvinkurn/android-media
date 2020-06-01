@@ -111,7 +111,7 @@
                     android:text="@string/title_otp" />
 
 
-                <com.tkpd.library.ui.widget.PinEntryEditText
+                <com.tokopedia.design.widget.PinEditText
                     android:id="@+id/input_otp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -127,7 +127,7 @@
                     android:paddingBottom="@dimen/dp_10"
                     android:textIsSelectable="false"
                     android:textSize="28sp"
-                    app:pinLineColors="@color/pin_line_colors" />
+                    app:LineColors="@color/pin_line_colors" />
             </LinearLayout>
         </LinearLayout>
 

@@ -13,12 +13,10 @@ import javax.inject.Named
 @Module
 class DispatcherModule {
 
-    @RecommendationScope
     @Provides
     @CoroutineMainDispatcher
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
-    @RecommendationScope
     @Provides
     @CoroutineBackgroundDispatcher
     fun provideBackgroundDispatcher(): CoroutineDispatcher = Dispatchers.IO

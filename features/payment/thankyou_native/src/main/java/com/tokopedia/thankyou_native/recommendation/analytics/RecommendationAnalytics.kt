@@ -12,8 +12,8 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class RecommendationAnalytics @Inject constructor(
-        @CoroutineMainDispatcher val mainDispatcher: CoroutineDispatcher,
-        @CoroutineBackgroundDispatcher val backgroundDispatcher: CoroutineDispatcher) {
+        @CoroutineMainDispatcher val mainDispatcher: dagger.Lazy<CoroutineDispatcher>,
+        @CoroutineBackgroundDispatcher val backgroundDispatcher: dagger.Lazy<CoroutineDispatcher>) {
 
     private val analyticTracker: ContextAnalytics
         get() = TrackApp.getInstance().gtm
@@ -21,9 +21,9 @@ class RecommendationAnalytics @Inject constructor(
 
     fun sendRecommendationItemDisplayed(recommendationItem: RecommendationItem,
                                         position: Int) {
-        CoroutineScope(mainDispatcher).launchCatchError(
+        CoroutineScope(mainDispatcher.get()).launchCatchError(
                 block = {
-                    withContext(backgroundDispatcher) {
+                    withContext(backgroundDispatcher.get()) {
                         val data: MutableMap<String, Any> = mutableMapOf(
                                 KEY_EVENT to EVENT_PRODUCT_VIEW,
                                 KEY_EVENT_CATEGORY to EVENT_CATEGORY_ORDER_COMPLETE,
@@ -42,9 +42,9 @@ class RecommendationAnalytics @Inject constructor(
     fun sendRecommendationItemClick(recommendationItem: RecommendationItem,
                                     position: Int) {
 
-        CoroutineScope(mainDispatcher).launchCatchError(
+        CoroutineScope(mainDispatcher.get()).launchCatchError(
                 block = {
-                    withContext(backgroundDispatcher) {
+                    withContext(backgroundDispatcher.get()) {
                         val data: MutableMap<String, Any> = mutableMapOf(
                                 KEY_EVENT to EVENT_PRODUCT_CLICK,
                                 KEY_EVENT_CATEGORY to EVENT_CATEGORY_ORDER_COMPLETE,
@@ -96,7 +96,7 @@ class RecommendationAnalytics @Inject constructor(
         const val KEY_EVENT_CATEGORY = "eventCategory"
         const val KEY_EVENT_ACTION = "eventAction"
         const val KEY_EVENT_LABEL = "eventLabel"
-        const val KEY_E_COMMERCE = "eventLabel"
+        const val KEY_E_COMMERCE = "ecommerce"
 
         const val KEY_CLICK = "click"
         const val KEY_LIST = "list"

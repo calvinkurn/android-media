@@ -18,7 +18,6 @@ import javax.inject.Named
 @Module(includes = [TopAdsWishlistModule::class])
 class RecommendationModule {
 
-    @RecommendationScope
     @Provides
     fun provideGetRecommendationUseCase(@Named(GQL_RECOMMENDATION_DATA) query: String,
                                         graphqlUseCase: GraphqlUseCase,
@@ -27,20 +26,17 @@ class RecommendationModule {
     }
 
 
-    @RecommendationScope
     @Provides
     fun provideAddWishListUseCase(@ApplicationContext context: Context): AddWishListUseCase {
         return AddWishListUseCase(context)
     }
 
 
-    @RecommendationScope
     @Provides
     fun provideRemoveWishListUseCase(@ApplicationContext context: Context): RemoveWishListUseCase {
         return RemoveWishListUseCase(context)
     }
 
-    @RecommendationScope
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)

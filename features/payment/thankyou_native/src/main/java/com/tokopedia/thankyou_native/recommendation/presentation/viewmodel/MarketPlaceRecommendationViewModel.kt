@@ -29,15 +29,15 @@ import java.io.IOException
 import javax.inject.Inject
 
 class MarketPlaceRecommendationViewModel @Inject constructor(
-        @CoroutineMainDispatcher val mainDispatcher: CoroutineDispatcher,
-        @CoroutineBackgroundDispatcher val backgroundDispatcher: CoroutineDispatcher,
-        private val getRecommendationUseCase: GetRecommendationUseCase,
-        private val addWishListUseCase: AddWishListUseCase,
-        private val removeWishListUseCase: RemoveWishListUseCase,
-        private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
-        val userSession: UserSessionInterface) : BaseViewModel(mainDispatcher) {
+        @CoroutineMainDispatcher val mainDispatcher: dagger.Lazy<CoroutineDispatcher>,
+        @CoroutineBackgroundDispatcher val backgroundDispatcher: dagger.Lazy<CoroutineDispatcher>,
+        private val getRecommendationUseCase: dagger.Lazy<GetRecommendationUseCase>,
+        private val addWishListUseCase: dagger.Lazy<AddWishListUseCase>,
+        private val removeWishListUseCase: dagger.Lazy<RemoveWishListUseCase>,
+        private val topAdsWishlishedUseCase: dagger.Lazy<TopAdsWishlishedUseCase>,
+        val userSession: dagger.Lazy<UserSessionInterface>) : BaseViewModel(mainDispatcher.get()) {
 
-    var currentPage = 0
+    private var currentPage = 0
 
     val recommendationMutableData = MutableLiveData<Result<MarketPlaceRecommendationResult>>()
 
@@ -66,7 +66,7 @@ class MarketPlaceRecommendationViewModel @Inject constructor(
     }
 
     private suspend fun getProductCardModel(recommendationItemList: List<RecommendationItem>)
-            : List<MarketPlaceRecommendationModel> = withContext(backgroundDispatcher) {
+            : List<MarketPlaceRecommendationModel> = withContext(backgroundDispatcher.get()) {
         recommendationItemList.map { recommendationItem ->
             MarketPlaceRecommendationModel(recommendationItem,
                     ProductCardModel(
@@ -94,7 +94,7 @@ class MarketPlaceRecommendationViewModel @Inject constructor(
 
     private suspend fun getBlankSpaceConfig(
             marketPlaceRecommendationModelList: List<MarketPlaceRecommendationModel>)
-            : BlankSpaceConfig = withContext(backgroundDispatcher) {
+            : BlankSpaceConfig = withContext(backgroundDispatcher.get()) {
         val blankSpaceConfig = BlankSpaceConfig(twoLinesProductName = true)
         marketPlaceRecommendationModelList.forEach {
             val productCardModel = it.productCardModel
@@ -117,10 +117,10 @@ class MarketPlaceRecommendationViewModel @Inject constructor(
     }
 
     private suspend fun loadRecommendationDataFromApi(): List<RecommendationWidget>? =
-            withContext(backgroundDispatcher) {
+            withContext(backgroundDispatcher.get()) {
                 try {
-                    val data = getRecommendationUseCase
-                            .createObservable(getRecommendationUseCase.getRecomParams(
+                    val data = getRecommendationUseCase.get()
+                            .createObservable(getRecommendationUseCase.get().getRecomParams(
                                     pageNumber = currentPage,
                                     xSource = X_SOURCE,
                                     pageName = PAGE_NAME,
@@ -140,7 +140,7 @@ class MarketPlaceRecommendationViewModel @Inject constructor(
         if (model.isTopAds) {
             val params = RequestParams.create()
             params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, model.wishlistUrl)
-            topAdsWishlishedUseCase.execute(params, object : Subscriber<WishlistModel>() {
+            topAdsWishlishedUseCase.get().execute(params, object : Subscriber<WishlistModel>() {
                 override fun onCompleted() {
                 }
 
@@ -155,28 +155,31 @@ class MarketPlaceRecommendationViewModel @Inject constructor(
                 }
             })
         } else {
-            addWishListUseCase.createObservable(model.productId.toString(), userSession.userId, object : WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                    callback.invoke(false, Throwable(errorMessage))
-                }
+            addWishListUseCase.get()
+                    .createObservable(model.productId.toString(), userSession.get().userId,
+                            object : WishListActionListener {
+                                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                                    callback.invoke(false, Throwable(errorMessage))
+                                }
 
-                override fun onSuccessAddWishlist(productId: String?) {
-                    callback.invoke(true, null)
-                }
+                                override fun onSuccessAddWishlist(productId: String?) {
+                                    callback.invoke(true, null)
+                                }
 
-                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                    // do nothing
-                }
+                                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                                    // do nothing
+                                }
 
-                override fun onSuccessRemoveWishlist(productId: String?) {
-                    // do nothing
-                }
-            })
+                                override fun onSuccessRemoveWishlist(productId: String?) {
+                                    // do nothing
+                                }
+                            })
         }
     }
 
     fun removeFromWishList(model: RecommendationItem, wishListCallback: (((Boolean, Throwable?) -> Unit))) {
-        removeWishListUseCase.createObservable(model.productId.toString(), userSession.userId, object : WishListActionListener {
+        removeWishListUseCase.get().createObservable(model.productId.toString(),
+                userSession.get().userId, object : WishListActionListener {
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
                 // do nothing
             }
@@ -203,9 +206,9 @@ class MarketPlaceRecommendationViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        topAdsWishlishedUseCase.unsubscribe()
-        removeWishListUseCase.unsubscribe()
-        addWishListUseCase.unsubscribe()
+        topAdsWishlishedUseCase.get().unsubscribe()
+        removeWishListUseCase.get().unsubscribe()
+        addWishListUseCase.get().unsubscribe()
     }
 
 }

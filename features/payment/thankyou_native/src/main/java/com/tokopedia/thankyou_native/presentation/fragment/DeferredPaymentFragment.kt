@@ -1,8 +1,5 @@
 package com.tokopedia.thankyou_native.presentation.fragment
 
-import android.app.Activity
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
 import android.text.Spannable
@@ -12,12 +9,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
+import com.tokopedia.thankyou_native.helper.ThanksPageHelper.copyTOClipBoard
 import com.tokopedia.thankyou_native.presentation.views.ThankYouPageTimerView
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.thank_fragment_deferred.*
@@ -56,18 +55,20 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
         initCheckPaymentWidgetData()
     }
 
-    override fun getLoadingView(): View? = loading_layout
+    override fun getLoadingView(): View? = loadingLayout
 
     private fun highlightLastThreeDigits(amountStr: String) {
-        tvTotalAmount.setTextColor(resources.getColor(com.tokopedia.design.R.color.grey_796))
-        val spannable = SpannableString(getString(R.string.thankyou_rp_without_space, amountStr))
-        if (amountStr.length > HIGHLIGHT_DIGIT_COUNT) {
-            val startIndex = spannable.length - HIGHLIGHT_DIGIT_COUNT
-            spannable.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.design.R.color.orange_500)),
-                    startIndex, spannable.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        context?.let {
+            tvTotalAmount.setTextColor(ContextCompat.getColor(it, com.tokopedia.design.R.color.grey_796))
+            val spannable = SpannableString(getString(R.string.thankyou_rp_without_space, amountStr))
+            if (amountStr.length > HIGHLIGHT_DIGIT_COUNT) {
+                val startIndex = spannable.length - HIGHLIGHT_DIGIT_COUNT
+                spannable.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.design.R.color.orange_500)),
+                        startIndex, spannable.length,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+            tvTotalAmount.text = spannable
         }
-        tvTotalAmount.text = spannable
     }
 
     private fun inflateWaitingUI(numberTypeTitle: String?, isCopyVisible: Boolean, highlightAmountDigits: Boolean) {
@@ -120,18 +121,13 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
     }
 
     private fun copyAccountNumberToClipboard(accountNumberStr: String?) {
-        val extraSpaceRegexStr = "\\s+".toRegex()
         accountNumberStr?.let { str ->
             context?.let { context ->
-                val clipboard = context.getSystemService(Activity.CLIPBOARD_SERVICE)
-                        as ClipboardManager
-                val clip = ClipData.newPlainText(COPY_BOARD_LABEL,
-                        str.replace(extraSpaceRegexStr, ""))
-                clipboard.primaryClip = clip
+                copyTOClipBoard(context, str)
                 showToastCopySuccessFully(context)
             }
         }
-        thankYouPageAnalytics.sendSalinButtonClickEvent(thanksPageData.gatewayName)
+        thankYouPageAnalytics.get().sendSalinButtonClickEvent(thanksPageData.gatewayName)
     }
 
     private fun showToastCopySuccessFully(context: Context) {
@@ -165,7 +161,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
     }
 
     override fun onThankYouPageDataReLoaded(data: ThanksPageData) {
-        loading_layout.gone()
+        loadingLayout.gone()
         thanksPageData = data
         showPaymentStatusDialog(isTimerExpired(data), thanksPageData)
     }
@@ -193,7 +189,6 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
     companion object {
         const val HIGHLIGHT_DIGIT_COUNT = 3
         const val ONE_SECOND_TO_MILLIS = 1000L
-        private val COPY_BOARD_LABEL = "Tokopedia"
         const val SCREEN_NAME = "Selesaikan Pembayaran"
 
         const val GATEWAY_KLIK_BCA = "KlikBCA"
