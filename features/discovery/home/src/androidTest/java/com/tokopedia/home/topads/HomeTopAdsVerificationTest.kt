@@ -80,21 +80,9 @@ class HomeTopAdsVerificationTest {
         val clickCount = listTopAdsDbFirst.filter { it.eventType == "click" }.size
         val allCount = listTopAdsDbFirst.size
 
-        logTestMessage("Check if impression is more than click...")
-        logTestMessage("Topads product recorded on database : "+allCount)
-        logTestMessage("Impressed count : "+impressedCount)
-        logTestMessage("Click count : "+clickCount)
-        Assert.assertTrue(impressedCount >= clickCount)
-        logTestMessage("Impressed count more than click! -> PASSED")
-
-        logTestMessage("Check if topads product in database reach at least minimum from response...")
-        val topAdsVerificatorInterface = activityRule.activity.application as TopAdsVerificatorInterface
-        val minimumTopAdsProductFromResponse = topAdsVerificatorInterface.minimumTopAdsProductFromResponse
-        logTestMessage("Topads from response (minimum) : "+minimumTopAdsProductFromResponse)
-        logTestMessage("Topads product recorded on database : "+allCount)
-        logTestMessage("Topads product recorded on database is more than minimum! -> PASSED")
-
-        Assert.assertTrue(minimumTopAdsProductFromResponse <= allCount)
+        verifyImpressionMoreThanClick(allCount, impressedCount, clickCount)
+        verifyImpressionMoreThanResponse(impressedCount)
+        verifyClickMoreThanResponse(clickCount)
 
         logTestMessage("Waiting for topads backend verificator ready... (>5mins)")
 
@@ -110,6 +98,35 @@ class HomeTopAdsVerificationTest {
 
         logTestMessage("Verified from topads backend that all data is MATCH! -> PASSED")
         logTestMessage("Done: "+listTopAdsDb.size+" topads products checked")
+    }
+
+    private fun verifyImpressionMoreThanClick(allCount: Int, impressedCount: Int, clickCount: Int) {
+        logTestMessage("Check if impression is more than click...")
+        logTestMessage("Topads product recorded on database : " + allCount)
+        logTestMessage("Impressed count : " + impressedCount)
+        logTestMessage("Click count : " + clickCount)
+        Assert.assertTrue(impressedCount >= clickCount)
+        logTestMessage("Impressed count more than click! -> PASSED")
+    }
+
+    private fun verifyClickMoreThanResponse(clickCount: Int) {
+        logTestMessage("Check if topads click product in database reach at least minimum from response...")
+        val topAdsVerificatorInterface = activityRule.activity.application as TopAdsVerificatorInterface
+        val minimumTopAdsProductFromResponse = topAdsVerificatorInterface.minimumTopAdsProductFromResponse
+        logTestMessage("Topads from response (minimum) : " + minimumTopAdsProductFromResponse)
+        logTestMessage("Topads click product recorded on database : " + clickCount)
+        Assert.assertTrue(minimumTopAdsProductFromResponse <= clickCount)
+        logTestMessage("Topads click product recorded on database is more than minimum! -> PASSED")
+    }
+
+    private fun verifyImpressionMoreThanResponse(impressedCount: Int) {
+        logTestMessage("Check if topads impression product in database reach at least minimum from response...")
+        val topAdsVerificatorInterface = activityRule.activity.application as TopAdsVerificatorInterface
+        val minimumTopAdsProductFromResponse = topAdsVerificatorInterface.minimumTopAdsProductFromResponse
+        logTestMessage("Topads from response (minimum) : " + minimumTopAdsProductFromResponse)
+        logTestMessage("Topads impression product recorded on database : " + impressedCount)
+        Assert.assertTrue(minimumTopAdsProductFromResponse <= impressedCount)
+        logTestMessage("Topads impression product recorded on database is more than minimum! -> PASSED")
     }
 
     private fun logTestMessage(message: String) {

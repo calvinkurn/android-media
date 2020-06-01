@@ -35,6 +35,10 @@ object TopAdsVerificationTestReportUtil {
     }
 
     private fun makeInitialLogDir(topadsDataDir: File) {
+        if (!topadsDataDir.exists()) {
+            topadsDataDir.mkdirs()
+        }
+
         val perfReportPlt = File(topadsDataDir, "report-topads-verificator-home-log.log")
         perfReportPlt.appendText("")
     }
