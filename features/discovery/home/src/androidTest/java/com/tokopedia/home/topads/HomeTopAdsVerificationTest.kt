@@ -82,7 +82,6 @@ class HomeTopAdsVerificationTest {
 
         verifyImpressionMoreThanClick(allCount, impressedCount, clickCount)
         verifyImpressionMoreThanResponse(impressedCount)
-        verifyClickMoreThanResponse(clickCount)
 
         logTestMessage("Waiting for topads backend verificator ready... (>5mins)")
 
@@ -107,16 +106,6 @@ class HomeTopAdsVerificationTest {
         logTestMessage("Click count : " + clickCount)
         Assert.assertTrue(impressedCount >= clickCount)
         logTestMessage("Impressed count more than click! -> PASSED")
-    }
-
-    private fun verifyClickMoreThanResponse(clickCount: Int) {
-        logTestMessage("Check if topads click product in database reach at least minimum from response...")
-        val topAdsVerificatorInterface = activityRule.activity.application as TopAdsVerificatorInterface
-        val minimumTopAdsProductFromResponse = topAdsVerificatorInterface.minimumTopAdsProductFromResponse
-        logTestMessage("Topads from response (minimum) : " + minimumTopAdsProductFromResponse)
-        logTestMessage("Topads click product recorded on database : " + clickCount)
-        Assert.assertTrue(minimumTopAdsProductFromResponse <= clickCount)
-        logTestMessage("Topads click product recorded on database is more than minimum! -> PASSED")
     }
 
     private fun verifyImpressionMoreThanResponse(impressedCount: Int) {
@@ -148,7 +137,7 @@ class HomeTopAdsVerificationTest {
             }
             is HomeRecommendationFeedViewHolder -> {
                 waitForData()
-                clickOnEachItemInRecommendationProduct(viewholder, 20)
+                clickOnEachItemInRecommendationProduct(viewholder, 40)
             }
         }
     }
