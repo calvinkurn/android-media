@@ -20,6 +20,7 @@ class IncentiveOvoBottomSheet(private val productRevIncentiveOvoDomain: ProductR
     companion object {
         val TAG = IncentiveOvoBottomSheet::class.qualifiedName
         val layout = R.layout.incentive_ovo_bottom_sheet_dialog
+        var checkBtnContinue = false
         const val url = "https://ecs7.tokopedia.net/android/others/ovo_incentive_bottom_sheet_image.png"
     }
 
@@ -44,10 +45,22 @@ class IncentiveOvoBottomSheet(private val productRevIncentiveOvoDomain: ProductR
             adapter = adapterIncentiveOvo
         }
 
-        val reputationTracking = ReputationTracking()
+        setOnDismissListener {
+            hitContinueOrDismissTracker(checkBtnContinue)
+            checkBtnContinue = false
+        }
         view.btnContinueReview.setOnClickListener {
+            checkBtnContinue = true
             dismiss()
+        }
+    }
+
+    private fun hitContinueOrDismissTracker(checkBtnContinue: Boolean) {
+        val reputationTracking = ReputationTracking()
+        if(checkBtnContinue) {
             reputationTracking.onClickContinueIncentiveOvoBottomSheetTracker(category)
+        } else {
+            reputationTracking.onClickDismissIncentiveOvoBottomSheetTracker(category)
         }
     }
 
