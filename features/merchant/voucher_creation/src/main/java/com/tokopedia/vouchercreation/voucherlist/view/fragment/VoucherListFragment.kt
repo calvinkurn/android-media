@@ -27,6 +27,8 @@ import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.exception.VoucherCancellationException
+import com.tokopedia.vouchercreation.common.utils.SharingUtil
+import com.tokopedia.vouchercreation.common.utils.SocmedPackage
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.detail.view.activity.VoucherDetailActivity
@@ -45,6 +47,7 @@ import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.F
 import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.FilterBy
 import com.tokopedia.vouchercreation.voucherlist.view.widget.headerchips.ChipType
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
+import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.SocmedType
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sortbottomsheet.SortBottomSheet
 import kotlinx.android.synthetic.main.fragment_mvc_voucher_list.*
 import kotlinx.android.synthetic.main.fragment_mvc_voucher_list.view.*
@@ -61,6 +64,8 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         private const val KEY_IS_ACTIVE_VOUCHER = "is_active_voucher"
         private val MENU_VOUCHER_ACTIVE_ID = R.id.menuMvcShowVoucherActive
         private val MENU_VOUCHER_HISTORY_ID = R.id.menuMvcShowVoucherHistory
+
+        private const val COPY_PROMO_CODE_LABEL = "list_promo_code"
 
         fun newInstance(isActiveVoucher: Boolean): VoucherListFragment {
             return VoucherListFragment().apply {
@@ -104,6 +109,8 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     private val isActiveVoucher by lazy { getBooleanArgs(KEY_IS_ACTIVE_VOUCHER, true) }
 
     private var isToolbarAlreadyLoaded = false
+
+    private var shopDomain: String? = null
 
     @VoucherTypeConst
     private var voucherType: Int? = null
@@ -271,7 +278,29 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         if (!isAdded) return
         val parent = view as? ViewGroup ?: return
         ShareVoucherBottomSheet(parent)
-                .setOnItemClickListener {
+                .setOnItemClickListener { socmedType ->
+                    context?.run {
+                        when(socmedType) {
+                            SocmedType.COPY_LINK -> {
+                                SharingUtil.copyTextToClipboard(this, COPY_PROMO_CODE_LABEL, voucher.code)
+                            }
+                            SocmedType.INSTAGRAM -> {
+                                SharingUtil.shareToSocialMedia(SocmedPackage.INSTAGRAM, this, voucher.imageSquare)
+                            }
+                            SocmedType.FACEBOOK_MESSENGER -> {
+                                SharingUtil.shareToSocialMedia(SocmedPackage.MESSENGER, this, voucher.imageSquare)
+                            }
+                            SocmedType.WHATSAPP -> {
+                                SharingUtil.shareToSocialMedia(SocmedPackage.WHATSAPP, this, voucher.imageSquare)
+                            }
+                            SocmedType.LINE -> {
+                                SharingUtil.shareToSocialMedia(SocmedPackage.LINE, this, voucher.imageSquare)
+                            }
+                            SocmedType.LAINNYA -> {
+                                SharingUtil.otherShare(this, "")
+                            }
+                        }
+                    }
 
                 }
                 .show(childFragmentManager)

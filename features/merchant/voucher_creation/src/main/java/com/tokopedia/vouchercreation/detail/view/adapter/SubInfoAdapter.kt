@@ -1,8 +1,5 @@
 package com.tokopedia.vouchercreation.detail.view.adapter
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.utils.SharingUtil
 import com.tokopedia.vouchercreation.detail.model.SubInfoItemUiModel
 import kotlinx.android.synthetic.main.item_mvc_sub_info.view.*
 
@@ -53,7 +51,9 @@ class SubInfoAdapter : RecyclerView.Adapter<SubInfoAdapter.SubInfoViewHolder>() 
             tvMvcInfoValue.text = model.infoValue.parseAsHtml()
             imgMvcVoucherCopy.isVisible = model.canCopy
             imgMvcVoucherCopy.setOnClickListener {
-                copyText(model.infoValue)
+                context?.run {
+                    SharingUtil.copyTextToClipboard(this, PROMO_CODE_LABEL, model.infoValue)
+                }
                 Toaster.make(this,
                         context.getString(R.string.mvc_voucher_code_copied),
                         Snackbar.LENGTH_LONG,
@@ -61,11 +61,5 @@ class SubInfoAdapter : RecyclerView.Adapter<SubInfoAdapter.SubInfoViewHolder>() 
             }
         }
 
-        private fun copyText(text: String) {
-            val clipboard: ClipboardManager? = itemView.context?.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
-            clipboard?.run {
-                primaryClip = ClipData.newPlainText(PROMO_CODE_LABEL, text)
-            }
-        }
     }
 }

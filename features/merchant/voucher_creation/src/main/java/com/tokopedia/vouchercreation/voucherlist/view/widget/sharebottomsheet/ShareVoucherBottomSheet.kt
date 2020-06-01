@@ -20,11 +20,11 @@ class ShareVoucherBottomSheet(
         private val parent: ViewGroup
 ) : BottomSheetUnify() {
 
-    private var onItemClickListener: (ShareVoucherUiModel) -> Unit = {}
+    private var onItemClickListener: (Int) -> Unit = {}
 
     private val mAdapter by lazy {
         ShareVoucherAdapter {
-            onItemClickListener(it)
+            onItemClickListener(it.type)
             dismiss()
         }
     }
@@ -46,7 +46,7 @@ class ShareVoucherBottomSheet(
         }
     }
 
-    fun setOnItemClickListener(action: (ShareVoucherUiModel) -> Unit): ShareVoucherBottomSheet {
+    fun setOnItemClickListener(action: (Int) -> Unit): ShareVoucherBottomSheet {
         this.onItemClickListener = action
         return this
     }
