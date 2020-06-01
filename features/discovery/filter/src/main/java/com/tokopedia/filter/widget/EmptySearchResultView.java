@@ -1,16 +1,16 @@
-package com.tokopedia.design.search;
+package com.tokopedia.filter.widget;
 
 import android.content.Context;
+import android.util.AttributeSet;
+import android.view.View;
+import android.widget.TextView;
+
 import androidx.annotation.AttrRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.util.AttributeSet;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.filter.R;
 
 /**
  * Created by henrypriyono on 8/25/17.
@@ -39,8 +39,8 @@ public class EmptySearchResultView extends BaseCustomView {
 
     private void init(Context context) {
         rootView = inflate(context, R.layout.empty_search_result, this);
-        titleView = (TextView) rootView.findViewById(R.id.empty_search_result_title);
-        contentView = (TextView) rootView.findViewById(R.id.empty_search_result_content);
+        titleView = rootView.findViewById(R.id.empty_search_result_title);
+        contentView = rootView.findViewById(R.id.empty_search_result_content);
     }
 
     public void setSearchCategory(String searchCategory) {
