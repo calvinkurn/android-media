@@ -3,7 +3,7 @@
     <application>
         <!-- Branch init -->
         <meta-data
-            android:name="io.branch.sdk.BranchKey.test"
+            android:name="io.branch.sdk.BranchKey"
             android:value="@string/BRANCH_SDK_KEY" />
     </application>
 
