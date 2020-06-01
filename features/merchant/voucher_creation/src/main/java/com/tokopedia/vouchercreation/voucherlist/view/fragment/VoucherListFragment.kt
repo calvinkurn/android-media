@@ -32,6 +32,7 @@ import com.tokopedia.vouchercreation.common.utils.SocmedPackage
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.detail.view.activity.VoucherDetailActivity
+import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherSort
 import com.tokopedia.vouchercreation.voucherlist.model.ui.*
 import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel.HeaderChip
@@ -110,7 +111,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     private var isToolbarAlreadyLoaded = false
 
-    private var shopDomain: String? = null
+    private var shopBasicData: ShopBasicDataResult? = null
 
     @VoucherTypeConst
     private var voucherType: Int? = null
@@ -177,7 +178,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
             renderList(listOf(LoadingStateUiModel(isActiveVoucher)))
         }
         if (isActiveVoucher) {
-            mViewModel.getActiveVoucherList()
+            mViewModel.getActiveVoucherList(shopBasicData == null)
         } else {
             mViewModel.getVoucherListHistory(voucherType, voucherTarget, voucherSort, page)
         }
@@ -585,6 +586,11 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                             showCancellationFailToaster(false, (result.throwable as? VoucherCancellationException)?.voucherId.toZeroIfNull())
                         }
                     }
+                }
+            }
+            observe(mViewModel.shopBasicLiveData) { result ->
+                if (result is Success) {
+                    shopBasicData = result.data
                 }
             }
         }
