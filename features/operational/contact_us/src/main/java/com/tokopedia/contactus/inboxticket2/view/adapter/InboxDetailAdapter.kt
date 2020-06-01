@@ -145,7 +145,7 @@ class InboxDetailAdapter(private val mContext: Context,
                 }
                 if (searchMode) {
                     tvComment?.text = utils.getHighlightText(searchText ?: "",
-                            MethodChecker.fromHtml(item.message).toString())
+                            HtmlUtil.fromHtml(item.message ?: "").toString())
                     tvComment?.movementMethod = LinkMovementMethod.getInstance()
                 } else {
                     tvComment?.text = HtmlUtil.fromHtml(item.message ?: "")
