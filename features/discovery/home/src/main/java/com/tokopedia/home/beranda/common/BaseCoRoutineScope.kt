@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.base.view.viewmodel
+package com.tokopedia.home.beranda.common
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
