@@ -2,15 +2,15 @@ package com.tokopedia.vouchercreation.common.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.vouchercreation.common.base.BaseGqlUseCase
 import com.tokopedia.vouchercreation.common.base.VoucherSource
 import com.tokopedia.vouchercreation.common.domain.model.CancelVoucherResponse
+import com.tokopedia.vouchercreation.common.exception.VoucherCancellationException
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetTokenUseCase
 import javax.inject.Inject
 
 class CancelVoucherUseCase @Inject constructor(private val gqlRepository: GraphqlRepository,
-                                               private val getTokenUseCase: GetTokenUseCase): BaseGqlUseCase<Boolean>() {
+                                               private val getTokenUseCase: GetTokenUseCase): BaseGqlUseCase<Int>() {
 
     companion object {
 
@@ -43,9 +43,11 @@ class CancelVoucherUseCase @Inject constructor(private val gqlRepository: Graphq
 
     }
 
-    override suspend fun executeOnBackground(): Boolean {
+    override suspend fun executeOnBackground(): Int {
         val token = getTokenUseCase.executeOnBackground()
         params.putString(TOKEN_KEY, token)
+
+        val voucherId = params.getInt(VOUCHER_ID_KEY, 0)
 
         val request = GraphqlRequest(MUTATION, CancelVoucherResponse::class.java, params.parameters)
         val response = gqlRepository.getReseponse(listOf(request))
@@ -56,13 +58,13 @@ class CancelVoucherUseCase @Inject constructor(private val gqlRepository: Graphq
             val cancelVoucherData = data.cancelVoucher
             with(cancelVoucherData) {
                 if (updateVoucherSuccessData.isSuccess) {
-                    return true
+                    return updateVoucherSuccessData.voucherId
                 } else {
-                    throw MessageErrorException(message)
+                    throw VoucherCancellationException(voucherId, message)
                 }
             }
         } else {
-            throw MessageErrorException(errors.joinToString { it.message })
+            throw VoucherCancellationException(voucherId, errors.joinToString { it.message })
         }
 
     }

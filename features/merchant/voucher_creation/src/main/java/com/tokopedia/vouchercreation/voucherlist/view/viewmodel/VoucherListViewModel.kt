@@ -38,6 +38,7 @@ class VoucherListViewModel @Inject constructor(
     private val _keywordLiveData = MutableLiveData<String>()
 
     private val _cancelledVoucherLiveData = MutableLiveData<Int>()
+    private val _stoppedVoucherLiveData = MutableLiveData<Int>()
 
     private val _voucherList = MutableLiveData<Result<List<VoucherUiModel>>>()
     val voucherList: LiveData<Result<List<VoucherUiModel>>>
@@ -53,7 +54,7 @@ class VoucherListViewModel @Inject constructor(
 
     private val _fullVoucherListLiveData = MutableLiveData<MutableList<VoucherUiModel>>().apply { value = mutableListOf() }
 
-    private val _cancelVoucherResponseLiveData = MediatorLiveData<Result<Boolean>>().apply {
+    private val _cancelVoucherResponseLiveData = MediatorLiveData<Result<Int>>().apply {
         addSource(_cancelledVoucherLiveData) { id ->
             launchCatchError(
                     block = {
@@ -68,8 +69,26 @@ class VoucherListViewModel @Inject constructor(
             )
         }
     }
-    val cancelVoucherResponseLiveData: LiveData<Result<Boolean>>
+    val cancelVoucherResponseLiveData: LiveData<Result<Int>>
         get() = _cancelVoucherResponseLiveData
+
+    private val _stopVoucherResponseLiveData = MediatorLiveData<Result<Int>>().apply {
+        addSource(_stoppedVoucherLiveData) { id ->
+            launchCatchError(
+                    block = {
+                        cancelVoucherUseCase.params = CancelVoucherUseCase.createRequestParam(id)
+                        value = Success(withContext(Dispatchers.IO) {
+                            cancelVoucherUseCase.executeOnBackground()
+                        })
+                    },
+                    onError = {
+                        value = Fail(it)
+                    }
+            )
+        }
+    }
+    val stopVoucherResponseLiveData: LiveData<Result<Int>>
+        get() = _stopVoucherResponseLiveData
 
     fun getActiveVoucherList() {
         launchCatchError(block = {getVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(activeVoucherRequestParam)
@@ -111,8 +130,13 @@ class VoucherListViewModel @Inject constructor(
         _keywordLiveData.value = keyword
     }
 
-    fun cancelVoucher(voucherId: Int) {
-        _cancelledVoucherLiveData.value = voucherId
+    fun cancelVoucher(voucherId: Int,
+                      isCancel: Boolean) {
+        if (isCancel) {
+            _cancelledVoucherLiveData.value = voucherId
+        } else {
+            _stoppedVoucherLiveData.value = voucherId
+        }
     }
 
     private fun searchVoucherByKeyword(keyword: String) {

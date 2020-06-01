@@ -26,6 +26,7 @@ import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadV
 import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.VoucherPeriodBottomSheet
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.exception.VoucherCancellationException
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.detail.view.activity.VoucherDetailActivity
@@ -285,7 +286,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     private fun showStopVoucherDialog(voucher: VoucherUiModel) {
         StopVoucherDialog(context ?: return)
                 .setOnPrimaryClickListener {
-
+                    mViewModel.cancelVoucher(voucher.id, false)
                 }
                 .show(voucher)
     }
@@ -293,7 +294,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     private fun showCancelVoucherDialog(voucher: VoucherUiModel) {
         CancelVoucherDialog(context ?: return)
                 .setOnPrimaryClickListener {
-
+                    mViewModel.cancelVoucher(voucher.id, true)
                 }
                 .show(voucher)
     }
@@ -510,16 +511,44 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     }
 
     private fun observeVoucherList() {
-        viewLifecycleOwner.observe(mViewModel.voucherList) {
-            when (it) {
-                is Success -> setOnSuccessGetVoucherList(it.data)
-                is Fail -> setOnErrorGetVoucherList(it.throwable)
+        viewLifecycleOwner.run {
+            observe(mViewModel.voucherList) {
+                when (it) {
+                    is Success -> setOnSuccessGetVoucherList(it.data)
+                    is Fail -> setOnErrorGetVoucherList(it.throwable)
+                }
             }
-        }
-        viewLifecycleOwner.observe(mViewModel.localVoucherListLiveData) { result ->
-            when(result) {
-                is Success -> setOnSuccessGetVoucherList(result.data)
-                is Fail -> setOnErrorGetVoucherList(result.throwable)
+            observe(mViewModel.localVoucherListLiveData) { result ->
+                when(result) {
+                    is Success -> setOnSuccessGetVoucherList(result.data)
+                    is Fail -> setOnErrorGetVoucherList(result.throwable)
+                }
+            }
+            observe(mViewModel.cancelVoucherResponseLiveData) { result ->
+                when(result) {
+                    is Success -> {
+                        val voucherId = result.data
+                        showCancellationSuccessToaster(true, voucherId)
+                    }
+                    is Fail -> {
+                        if (result.throwable is VoucherCancellationException) {
+                            showCancellationFailToaster(true, (result.throwable as? VoucherCancellationException)?.voucherId.toZeroIfNull())
+                        }
+                    }
+                }
+            }
+            observe(mViewModel.stopVoucherResponseLiveData) { result ->
+                when(result) {
+                    is Success -> {
+                        val voucherId = result.data
+                        showCancellationFailToaster(false, voucherId)
+                    }
+                    is Fail -> {
+                        if (result.throwable is VoucherCancellationException) {
+                            showCancellationFailToaster(false, (result.throwable as? VoucherCancellationException)?.voucherId.toZeroIfNull())
+                        }
+                    }
+                }
             }
         }
     }
@@ -529,6 +558,52 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     }
 
     private fun getEmptyStateUiModel() = EmptyStateUiModel(isActiveVoucher, ::onSeeHistoryClicked)
+
+    private fun showCancellationSuccessToaster(isCancel: Boolean,
+                                               voucherId: Int) {
+        val successMessageRes =
+                if (isCancel) {
+                    R.string.mvc_cancel_success
+                } else {
+                    R.string.mvc_stop_success
+                }
+        val successMessage = context?.getString(successMessageRes).toBlankOrString()
+        val actionText = context?.getString(R.string.mvc_lihat).toBlankOrString()
+
+        view?.run {
+            Toaster.make(this,
+                    successMessage,
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    actionText,
+                    View.OnClickListener {
+                        viewVoucherDetail(voucherId)
+                    })
+        }
+    }
+
+    private fun showCancellationFailToaster(isCancel: Boolean,
+                                            voucherId: Int) {
+        val errorMessageRes =
+                if (isCancel) {
+                    R.string.mvc_cancel_fail
+                } else {
+                    R.string.mvc_stop_fail
+                }
+        val errorMessage = context?.getString(errorMessageRes).toBlankOrString()
+        val actionText = context?.getString(R.string.mvc_retry).toBlankOrString()
+
+        view?.run {
+            Toaster.make(this,
+                    errorMessage,
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    actionText,
+                    View.OnClickListener {
+                        mViewModel.cancelVoucher(voucherId, isCancel)
+                    })
+        }
+    }
 
     fun setFragmentListener(listener: Listener) {
         this.fragmentListener = listener
