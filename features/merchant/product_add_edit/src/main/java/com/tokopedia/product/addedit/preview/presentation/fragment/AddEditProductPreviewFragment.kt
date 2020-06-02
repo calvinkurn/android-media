@@ -429,9 +429,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             setCashback()
         }
 
-        if(viewModel.isAdding && viewModel.getDraftId() == 0L) {
-            context?.let { UpdateShopActiveService.startService(it) }
-        }
+        context?.let { UpdateShopActiveService.startService(it) }
         //If you add another observe, don't forget to remove observers at removeObservers()
         observeIsEditingStatus()
         observeProductData()
