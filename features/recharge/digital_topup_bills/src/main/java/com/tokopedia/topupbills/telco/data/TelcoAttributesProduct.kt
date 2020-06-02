@@ -1,13 +1,14 @@
 package com.tokopedia.topupbills.telco.data
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Created by nabillasabbaha on 10/05/19.
  */
+@Parcelize
 data class TelcoAttributesProduct(
         @SerializedName("product_labels")
         @Expose
@@ -49,52 +50,4 @@ data class TelcoAttributesProduct(
         @Expose
         val operatorId: Int = 0,
         var selected: Boolean = false)
-    : Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.createStringArrayList(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readInt(),
-            parcel.readInt(),
-            parcel.readString(),
-            parcel.readParcelable(TelcoProductPromo::class.java.classLoader),
-            parcel.readInt(),
-            parcel.readInt(),
-            parcel.readByte() != 0.toByte()) {
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeStringList(productLabels)
-        parcel.writeString(desc)
-        parcel.writeString(detail)
-        parcel.writeString(detailUrl)
-        parcel.writeString(detailUrlText)
-        parcel.writeString(info)
-        parcel.writeString(price)
-        parcel.writeInt(pricePlain)
-        parcel.writeInt(status)
-        parcel.writeString(detailCompact)
-        parcel.writeParcelable(productPromo, flags)
-        parcel.writeInt(categoryId)
-        parcel.writeInt(operatorId)
-        parcel.writeByte(if (selected) 1 else 0)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<TelcoAttributesProduct> {
-        override fun createFromParcel(parcel: Parcel): TelcoAttributesProduct {
-            return TelcoAttributesProduct(parcel)
-        }
-
-        override fun newArray(size: Int): Array<TelcoAttributesProduct?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+    : Parcelable

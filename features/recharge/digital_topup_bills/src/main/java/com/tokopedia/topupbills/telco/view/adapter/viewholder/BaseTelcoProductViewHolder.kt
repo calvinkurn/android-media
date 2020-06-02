@@ -62,24 +62,24 @@ abstract class BaseTelcoProductViewHolder(itemView: View, val listener: DigitalP
         }
     }
 
-    protected fun renderOutOfStockProduct(viewGrup: ViewGroup, productLabel: Label) {
+    protected fun renderOutOfStockProduct(viewGroup: ViewGroup, productLabel: Label) {
         if (isProductOutOfStock()) {
             productLabel.text = itemView.context.getString(R.string.telco_label_out_of_stock)
             productLabel.visibility = View.VISIBLE
             productLabel.setLabelType(Label.GENERAL_DARK_GREY)
-            viewGrup.setBackgroundResource(0)
-            viewGrup.setBackgroundResource(R.drawable.digital_bg_grey_rounded)
+            viewGroup.setBackgroundResource(0)
+            viewGroup.setBackgroundResource(R.drawable.digital_bg_grey_rounded)
         }
     }
 
-    protected fun setItemSelected(viewGrup: ViewGroup) {
+    protected fun setItemSelected(viewGroup: ViewGroup) {
         var drawableResources = com.tokopedia.common.topupbills.R.drawable.common_topup_bg_transparent_round
         if (productItem.attributes.selected) {
             listener.onClickItemProduct(productItem, adapterPosition)
             drawableResources = com.tokopedia.common.topupbills.R.drawable.common_topup_bg_green_light_rounded
         }
-        viewGrup.setBackgroundResource(0)
-        viewGrup.setBackgroundResource(drawableResources)
+        viewGroup.setBackgroundResource(0)
+        viewGroup.setBackgroundResource(drawableResources)
     }
 
     companion object {
