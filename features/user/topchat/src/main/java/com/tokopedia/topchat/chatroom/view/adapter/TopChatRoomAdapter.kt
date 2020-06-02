@@ -14,6 +14,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 
 /**
  * @author : Steven 02/01/19
@@ -106,6 +107,9 @@ class TopChatRoomAdapter(
                     }
                     notifyItemChanged(itemPosition, DeferredAttachment.PAYLOAD_DEFERRED)
                 }
+            }
+            if (item is ProductCarouselUiModel) {
+                notifyItemChanged(itemPosition, DeferredAttachment.PAYLOAD_DEFERRED)
             }
         }
     }
