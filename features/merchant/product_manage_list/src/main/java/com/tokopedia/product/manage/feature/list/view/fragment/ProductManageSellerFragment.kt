@@ -15,11 +15,11 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.feature.list.di.ProductManageListInstance
 import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
-import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService
 import com.tokopedia.product.manage.feature.list.constant.DRAFT_PRODUCT
+import com.tokopedia.product.manage.feature.list.di.ProductManageListInstance
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductDraftListCountViewModel
+import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterMapper
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.usecase.coroutines.Fail
@@ -47,6 +47,8 @@ class ProductManageSellerFragment : ProductManageFragment() {
 
     @Inject
     lateinit var productDraftListCountViewModel: ProductDraftListCountViewModel
+
+    override fun getScreenName(): String = "ProductListActivity"
 
     override fun getLayoutRes(): Int = R.layout.fragment_product_manage_seller
 
@@ -82,6 +84,9 @@ class ProductManageSellerFragment : ProductManageFragment() {
         } else {
             productDraftListCountViewModel.fetchAllDraftCountWithUpdateUploading()
         }
+        if (userVisibleHint) {
+            ProductManageTracking.sendScreen(screenName)
+        }
     }
 
     override fun onPause() {
@@ -90,6 +95,13 @@ class ProductManageSellerFragment : ProductManageFragment() {
     }
 
     override fun callInitialLoadAutomatically() = false
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser) {
+            ProductManageTracking.sendScreen(screenName)
+        }
+    }
 
     private fun onDraftCountLoaded(rowCount: Long) {
         if (rowCount == 0L) {

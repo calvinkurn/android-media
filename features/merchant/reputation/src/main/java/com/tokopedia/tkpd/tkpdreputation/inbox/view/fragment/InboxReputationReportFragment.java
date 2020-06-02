@@ -3,8 +3,6 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -16,6 +14,9 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
@@ -23,12 +24,15 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.analytic.AppScreen;
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationReportActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationReport;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter.InboxReputationReportPresenter;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationReportActivity.ARGS_REVIEW_ID;
 
 /**
  * @author by nisie on 9/13/17.
@@ -40,17 +44,24 @@ public class InboxReputationReportFragment extends BaseDaggerFragment
     private Button sendButton;
     private RadioGroup reportRadioGroup;
     private RadioButton otherRadioButton;
+    private RadioButton spamRadioButton;
+    private RadioButton saraRadioButton;
     private EditText otherReason;
     private ProgressDialog progressDialog;
 
+    private String feedbackId;
+
     @Inject
     InboxReputationReportPresenter presenter;
+
+    @Inject
+    ReputationTracking tracking;
 
     public static Fragment createInstance(String reviewId, int shopId) {
         Fragment fragment = new InboxReputationReportFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(InboxReputationReportActivity.ARGS_SHOP_ID, shopId);
-        bundle.putString(InboxReputationReportActivity.ARGS_REVIEW_ID, reviewId);
+        bundle.putString(ARGS_REVIEW_ID, reviewId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -82,8 +93,13 @@ public class InboxReputationReportFragment extends BaseDaggerFragment
         reportRadioGroup = (RadioGroup) parentView.findViewById(R.id.radio_group);
         otherReason = (EditText) parentView.findViewById(R.id.reason);
         otherRadioButton = (RadioButton) parentView.findViewById(R.id.report_other);
+        spamRadioButton = parentView.findViewById(R.id.report_spam);
+        saraRadioButton = parentView.findViewById(R.id.report_sara);
         prepareView();
         presenter.attachView(this);
+        if (getArguments() != null) {
+            feedbackId = getArguments().getString(ARGS_REVIEW_ID);
+        }
         return parentView;
     }
 
@@ -109,21 +125,32 @@ public class InboxReputationReportFragment extends BaseDaggerFragment
 
         otherReason.setOnClickListener(view -> otherRadioButton.setChecked(true));
 
-        sendButton.setOnClickListener(view -> presenter.reportReview(
-                getArguments().getString(InboxReputationReportActivity.ARGS_REVIEW_ID, ""),
-                String.valueOf(getArguments().getInt(InboxReputationReportActivity.ARGS_SHOP_ID)),
-                reportRadioGroup.getCheckedRadioButtonId(),
-                otherReason.getText().toString()));
+        sendButton.setOnClickListener(v -> {
+            tracking.onSubmitReportAbuse(feedbackId);
+            presenter.reportReview(getArguments().getString(ARGS_REVIEW_ID, ""),
+                    String.valueOf(getArguments().getInt(InboxReputationReportActivity.ARGS_SHOP_ID)),
+                    reportRadioGroup.getCheckedRadioButtonId(),
+                    otherReason.getText().toString());
+        });
 
         initProgressDialog();
     }
 
     private void setSendButton() {
+
+        if(reportRadioGroup.getCheckedRadioButtonId() == R.id.report_spam) {
+            tracking.onClickRadioButtonReportAbuse(spamRadioButton.getText().toString());
+        } else if(reportRadioGroup.getCheckedRadioButtonId() == R.id.report_sara) {
+            tracking.onClickRadioButtonReportAbuse(saraRadioButton.getText().toString());
+        } else if(reportRadioGroup.getCheckedRadioButtonId() == R.id.report_other) {
+            tracking.onClickRadioButtonReportAbuse(otherRadioButton.getText().toString());
+        }
+
         if (reportRadioGroup.getCheckedRadioButtonId() == R.id.report_spam
                 || reportRadioGroup.getCheckedRadioButtonId() == R.id.report_sara
                 || (reportRadioGroup.getCheckedRadioButtonId() == R.id.report_other
                 && !TextUtils.isEmpty(otherReason.getText().toString().trim()))
-                ) {
+        ) {
             sendButton.setEnabled(true);
             sendButton.setTextColor(getResources().getColor(R.color.white));
             MethodChecker.setBackground(sendButton,
@@ -137,7 +164,7 @@ public class InboxReputationReportFragment extends BaseDaggerFragment
     }
 
     private void initProgressDialog() {
-        if(getContext() != null) {
+        if (getContext() != null) {
             progressDialog = new ProgressDialog(getContext());
             progressDialog.setTitle("");
             progressDialog.setMessage(getContext().getString(R.string.progress_dialog_loading));

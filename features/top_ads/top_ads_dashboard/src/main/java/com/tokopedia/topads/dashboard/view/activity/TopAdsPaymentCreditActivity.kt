@@ -13,7 +13,7 @@ class TopAdsPaymentCreditActivity : BaseSimpleActivity() {
 
     override fun getScreenName(): String? = null
 
-    override fun getNewFragment() = TopAdsPaymentCreditFragment.createInstance()
+    override fun getNewFragment() = TopAdsPaymentCreditFragment.createInstance(intent.extras)
 
     override fun getTagFragment(): String = TopAdsPaymentCreditFragment::class.java.simpleName
 }
