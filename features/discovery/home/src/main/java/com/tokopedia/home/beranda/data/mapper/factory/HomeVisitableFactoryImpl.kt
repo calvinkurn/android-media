@@ -4,6 +4,9 @@ import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.home.analytics.HomePageTracking
+import com.tokopedia.home.analytics.HomePageTrackingV2
+import com.tokopedia.home.analytics.v2.MixTopTracking
+import com.tokopedia.home.analytics.v2.ProductHighlightTracking
 import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
@@ -16,9 +19,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
 import com.tokopedia.home.util.ServerTimeOffsetUtil
-import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselAddStoryDataModel
-import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselDataModel
-import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.topads.sdk.base.adapter.Item
 import com.tokopedia.topads.sdk.domain.model.ProductImage
@@ -159,147 +159,89 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
     }
 
     override fun addDynamicChannelVisitable(): HomeVisitableFactory {
-        createPlayCarousel()
         homeData?.dynamicHomeChannel?.channels?.forEachIndexed { index, channel ->
             val position = index+1
             setDynamicChannelPromoName(position, channel)
 
-//            when (channel.layout) {
-//                DynamicHomeChannel.Channels.LAYOUT_TOPADS -> createDynamicTopAds(channel)
-//                DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT -> {
-//                    homeData?.spotlight?.let { spotlight ->  createSpotlight(spotlight, isCache)} }
-//                DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET -> createBusinessUnitWidget(position)
-//                DynamicHomeChannel.Channels.LAYOUT_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_HERO ->
-//                    createDynamicChannel(
-//                            channel = channel,
-//                            trackingDataForCombination = channel.convertPromoEnhanceDynamicChannelDataLayerForCombination(),
-//                            isCombined = true)
-//                DynamicHomeChannel.Channels.LAYOUT_6_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE -> {
-//                    createDynamicChannel(
-//                            channel = channel,
-//                            trackingDataForCombination = channel.convertPromoEnhanceLegoBannerDataLayerForCombination(),
-//                            isCombined = true)
-//                }
-//                DynamicHomeChannel.Channels.LAYOUT_SPRINT -> {
-//                    createDynamicChannel(channel)
-//                }
-//                DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL -> {
-//                    createDynamicChannel(
-//                            channel = channel,
-//                            trackingDataForCombination = channel.convertProductEnhanceSprintSaleCarouselDataLayerForCombination(),
-//                            isCombined = true)
-//                }
-//                DynamicHomeChannel.Channels.LAYOUT_ORGANIC -> {
-//                    createDynamicChannel(
-//                            channel = channel,
-//                            trackingData = channel.enhanceImpressionDynamicSprintLegoHomePage
-//                    )
-//                }
-//                DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO -> {
-//                    createDynamicChannel(
-//                            channel = channel,
-//                            trackingData = HomePageTrackingV2.SprintSale.getSprintSaleImpression(channel)
-//                    )
-//                }
-//                DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC, DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL -> {
-//                    createDynamicChannel(
-//                            channel = channel,
-//                            trackingData = channel.enhanceImpressionProductChannelMix
-//                    )
-//                    if(!isCache) trackingQueue?.putEETracking(channel.enhanceImpressionBannerChannelMix)
-//                }
-//                DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF -> {
-//                    createDynamicChannel(
-//                            channel = channel,
-//                            trackingData = channel.enhanceImpressionProductChannelMix
-//                    )
-//                    if(!isCache) trackingQueue?.putEETracking(HomePageTracking.getEventEnhanceImpressionBannerGif(channel))
-//                }
-//                DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL -> {
-//                    createDynamicChannel(
-//                            channel = channel,
-//                            trackingData = HomePageTrackingV2.RecommendationList.getRecommendationListImpression(channel,  userId = userSessionInterface?.userId ?: "")
-//                    )
-//                }
-//                DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {createDynamicChannel(
-//                        channel = channel,
-//                        trackingData = HomePageTrackingV2.MixLeft.getMixLeftProductView(channel)
-//                )}
-//                DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> {
-//                    createDynamicChannel(
-//                            channel = channel,
-//                            trackingData = ProductHighlightTracking.getProductHighlightImpression(channel)) }
-//                DynamicHomeChannel.Channels.LAYOUT_POPULAR_KEYWORD -> {createPopularKeywordChannel(channel = channel)}
-//                DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> { createDynamicChannel(channel = channel) }
-//                DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget(channel = channel) }
-//                DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> { createPlayWidget(channel) }
-//                DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> { createDynamicChannel(
-//                        channel,
-//                        trackingData = MixTopTracking.getMixTopView(MixTopTracking.mapChannelToProductTracker(channel), headerName = channel.header.name, positionOnWidgetHome = position.toString()),
-//                        isCombined = false
-//                ) }
-//                DynamicHomeChannel.Channels.LAYOUT_RECHARGE_RECOMMENDATION -> { createRechargeRecommendationWidget() }
-//            }
+            when (channel.layout) {
+                DynamicHomeChannel.Channels.LAYOUT_TOPADS -> createDynamicTopAds(channel)
+                DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT -> {
+                    homeData?.spotlight?.let { spotlight ->  createSpotlight(spotlight, isCache)} }
+                DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET -> createBusinessUnitWidget(position)
+                DynamicHomeChannel.Channels.LAYOUT_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_HERO ->
+                    createDynamicChannel(
+                            channel = channel,
+                            trackingDataForCombination = channel.convertPromoEnhanceDynamicChannelDataLayerForCombination(),
+                            isCombined = true)
+                DynamicHomeChannel.Channels.LAYOUT_6_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE -> {
+                    createDynamicChannel(
+                            channel = channel,
+                            trackingDataForCombination = channel.convertPromoEnhanceLegoBannerDataLayerForCombination(),
+                            isCombined = true)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_SPRINT -> {
+                    createDynamicChannel(channel)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL -> {
+                    createDynamicChannel(
+                            channel = channel,
+                            trackingDataForCombination = channel.convertProductEnhanceSprintSaleCarouselDataLayerForCombination(),
+                            isCombined = true)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_ORGANIC -> {
+                    createDynamicChannel(
+                            channel = channel,
+                            trackingData = channel.enhanceImpressionDynamicSprintLegoHomePage
+                    )
+                }
+                DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO -> {
+                    createDynamicChannel(
+                            channel = channel,
+                            trackingData = HomePageTrackingV2.SprintSale.getSprintSaleImpression(channel)
+                    )
+                }
+                DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC, DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL -> {
+                    createDynamicChannel(
+                            channel = channel,
+                            trackingData = channel.enhanceImpressionProductChannelMix
+                    )
+                    if(!isCache) trackingQueue?.putEETracking(channel.enhanceImpressionBannerChannelMix)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF -> {
+                    createDynamicChannel(
+                            channel = channel,
+                            trackingData = channel.enhanceImpressionProductChannelMix
+                    )
+                    if(!isCache) trackingQueue?.putEETracking(HomePageTracking.getEventEnhanceImpressionBannerGif(channel))
+                }
+                DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL -> {
+                    createDynamicChannel(
+                            channel = channel,
+                            trackingData = HomePageTrackingV2.RecommendationList.getRecommendationListImpression(channel,  userId = userSessionInterface?.userId ?: "")
+                    )
+                }
+                DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {createDynamicChannel(
+                        channel = channel,
+                        trackingData = HomePageTrackingV2.MixLeft.getMixLeftProductView(channel)
+                )}
+                DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> {
+                    createDynamicChannel(
+                            channel = channel,
+                            trackingData = ProductHighlightTracking.getProductHighlightImpression(channel)) }
+                DynamicHomeChannel.Channels.LAYOUT_POPULAR_KEYWORD -> {createPopularKeywordChannel(channel = channel)}
+                DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> { createDynamicChannel(channel = channel) }
+                DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget(channel = channel) }
+                DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> { createPlayWidget(channel) }
+                DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> { createDynamicChannel(
+                        channel,
+                        trackingData = MixTopTracking.getMixTopView(MixTopTracking.mapChannelToProductTracker(channel), headerName = channel.header.name, positionOnWidgetHome = position.toString()),
+                        isCombined = false
+                ) }
+                DynamicHomeChannel.Channels.LAYOUT_RECHARGE_RECOMMENDATION -> { createRechargeRecommendationWidget() }
+            }
         }
 
         return this
-    }
-
-    private fun createPlayCarousel(){
-        visitableList.add(PlayCarouselCardDataModel(
-                playBannerCarouselDataModel = PlayBannerCarouselDataModel(
-                        title = "Yuk, tonton sekarang!",
-                        seeMoreApplink = "https://cobacoba.com",
-                        playBannerCarouselAddStoryDataModel = PlayBannerCarouselAddStoryDataModel(
-                                backgroundUrl = "https://ecs7-p.tokopedia.net/img/cache/200-square/attachment/2020/5/13/69874981/69874981_e7a02ba2-18b2-4855-87e9-972759108174.jpg",
-                                applink = "tokopedia://rekomendasi/479185711/d/?ref=pdp_2&product_ids=479185711",
-                                content = "Bikin story tokomu",
-                                profileUrl = "https://ecs7-p.tokopedia.net/img/cache/200-square/attachment/2020/4/29/158813229258260/158813229258260_fa806d93-30b2-4d32-a9d1-defea45f6327.png"
-                        ),
-                        channelList = listOf(
-                            PlayBannerCarouselItemDataModel(
-                                channelTitle = "Google Assistant review with me",
-                                channelCreator = "Google",
-                                applink = "https://cobacoba.com",
-                                countView = "10rb",
-                                isLive = true,
-                                isShowTotalView = true,
-                                promoUrl = "",
-                                videoUrl = "https://vod2.tokopedia.net/2c9d97786944476ca6f851b43657a714/71e3acc038da4fd4887005125c6af51d-42ab79fb4dc46a6c087229f0737690a6-fd.m3u8"
-                            ),
-                            PlayBannerCarouselItemDataModel(
-                                channelTitle = "Google Assistant review with me",
-                                channelCreator = "Google",
-                                applink = "https://cobacoba.com",
-                                countView = "10rb",
-                                isLive = true,
-                                isShowTotalView = true,
-                                promoUrl = "",
-                                videoUrl = "https://vod2.tokopedia.net/2c9d97786944476ca6f851b43657a714/71e3acc038da4fd4887005125c6af51d-42ab79fb4dc46a6c087229f0737690a6-fd.m3u8"
-                            ),
-                            PlayBannerCarouselItemDataModel(
-                                channelTitle = "Google Assistant review with me",
-                                channelCreator = "Google",
-                                applink = "https://cobacoba.com",
-                                countView = "10rb",
-                                isLive = true,
-                                isShowTotalView = true,
-                                promoUrl = "",
-                                videoUrl = "https://vod2.tokopedia.net/2c9d97786944476ca6f851b43657a714/71e3acc038da4fd4887005125c6af51d-42ab79fb4dc46a6c087229f0737690a6-fd.m3u8"
-                            ),
-                            PlayBannerCarouselItemDataModel(
-                                channelTitle = "Google Assistant review with me",
-                                channelCreator = "Google",
-                                applink = "https://cobacoba.com",
-                                countView = "10rb",
-                                isLive = true,
-                                isShowTotalView = true,
-                                promoUrl = "",
-                                videoUrl = "https://vod2.tokopedia.net/2c9d97786944476ca6f851b43657a714/71e3acc038da4fd4887005125c6af51d-42ab79fb4dc46a6c087229f0737690a6-fd.m3u8"
-                            )
-                        )
-                )
-        ))
     }
 
     private fun createPlayWidget(channel: DynamicHomeChannel.Channels) {
