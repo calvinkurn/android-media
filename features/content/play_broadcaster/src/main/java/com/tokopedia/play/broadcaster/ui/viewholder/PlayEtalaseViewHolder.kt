@@ -56,7 +56,7 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
         }
         tvEtalaseTitle.text = item.name
         tvEtalaseAmount.text = getString(R.string.play_etalase_product_amount, item.totalProduct)
-        productPreviewAdapter.setItemsAndAnimateChanges(item.productList)
+        productPreviewAdapter.setItemsAndAnimateChanges(item.productMap.values.flatten())
     }
 
     companion object {

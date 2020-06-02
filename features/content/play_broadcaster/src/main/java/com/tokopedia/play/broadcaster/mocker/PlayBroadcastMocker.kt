@@ -34,7 +34,7 @@ object PlayBroadcastMocker {
         PlayEtalaseUiModel(
                 id = it + 1L,
                 name = "Etalase ${it + 1}",
-                productList = emptyList(),
+                productMap = mutableMapOf(),
                 totalProduct = (it + 1) * 100
         )
     }

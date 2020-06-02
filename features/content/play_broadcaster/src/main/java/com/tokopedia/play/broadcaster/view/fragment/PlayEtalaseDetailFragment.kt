@@ -97,7 +97,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
     private fun observeProductsInSelectedEtalase() {
         viewModel.observableSelectedEtalase.observe(viewLifecycleOwner, Observer {
-            selectableProductAdapter.setItemsAndAnimateChanges(it.productList)
+            selectableProductAdapter.setItemsAndAnimateChanges(it.productMap.values.flatten())
             bottomSheetCoordinator.setupTitle(it.name)
             tvInfo.text = getString(R.string.play_product_select_max_info, viewModel.maxProduct)
         })

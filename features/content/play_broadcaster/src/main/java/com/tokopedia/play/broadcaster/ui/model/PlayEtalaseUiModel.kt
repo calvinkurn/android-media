@@ -6,6 +6,6 @@ package com.tokopedia.play.broadcaster.ui.model
 data class PlayEtalaseUiModel(
         val id: Long,
         val name: String,
-        var productList: List<ProductUiModel>,
+        val productMap: MutableMap<Int, List<ProductUiModel>>,
         val totalProduct: Int
 )

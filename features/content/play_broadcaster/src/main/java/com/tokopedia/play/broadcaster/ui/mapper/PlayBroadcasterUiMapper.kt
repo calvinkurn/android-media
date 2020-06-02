@@ -15,7 +15,7 @@ object PlayBroadcasterUiMapper {
         PlayEtalaseUiModel(
                 id = it.id.toLong(),
                 name = it.name,
-                productList = emptyList(),
+                productMap = mutableMapOf(),
                 totalProduct = it.count
         )
     }
