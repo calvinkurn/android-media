@@ -121,6 +121,10 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator, Permissio
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        permissionUtil.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
     override fun navigateToFragment(fragmentClass: Class<out Fragment>, extras: Bundle, recordBreadcrumbs: Boolean) {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         val destFragment = getFragmentByClassName(fragmentClass)
