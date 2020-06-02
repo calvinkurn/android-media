@@ -15,13 +15,11 @@ object MockGetObjectResponse {
 
 val responseAtcSuccess = """
     {
-     "add_to_cart": {
-       "status": true",
+       "status": true,
        "data": {
-           "image": ",
+           "image": "",
            "text": "Verifikasi akunmu dulu yuk!",
            "applink": "tokopedia://setting/profile"
        }
-     }
    }
 """.trimIndent()

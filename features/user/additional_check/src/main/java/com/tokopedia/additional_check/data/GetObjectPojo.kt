@@ -11,13 +11,13 @@ data class GetObjectPojo(
         @SerializedName("status")
         val status: Boolean = false,
 
-        @SerializedName("object")
+        @SerializedName("data")
         val bottomSheetModel: BottomSheetModel? = null
 )
 
 data class BottomSheetModel(
         @SerializedName("image")
-        val status: String = "",
+        val image: String = "",
         @SerializedName("text")
         val text: String = "",
         @SerializedName("applink")
