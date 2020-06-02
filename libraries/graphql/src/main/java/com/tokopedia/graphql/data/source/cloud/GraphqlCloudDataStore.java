@@ -92,22 +92,20 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                 }).doOnNext(graphqlResponseInternal -> {
                     //Handling backend cache
                     Map<String, BackendCache> caches = CacheHelper.parseCacheHeaders(graphqlResponseInternal.getBeCache());
-                    if (caches == null || caches.isEmpty()) {
-                        return;
-                    }
+                    if (caches != null || !caches.isEmpty()) {
+                        int size = requests.size();
+                        for (int i = 0; i < size; i++) {
 
-                    int size = requests.size();
-                    for (int i = 0; i < size; i++) {
+                            if (requests.get(i) == null || requests.get(i).isNoCache() || caches.get(requests.get(i).getMd5()) == null) {
+                                continue;
+                            }
 
-                        if (requests.get(i) == null || requests.get(i).isNoCache() || caches.get(requests.get(i).getMd5()) == null) {
-                            continue;
-                        }
-
-                        //TODO need to save response of individual query
-                        BackendCache cache = caches.get(requests.get(i).getMd5());
-                        JsonElement object = graphqlResponseInternal.getOriginalResponse().get(i).getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA);
-                        if (object != null && cache != null) {
-                            mCacheManager.save(requests.get(i).cacheKey(), object.toString(), cache.getMaxAge() * 1000);
+                            //TODO need to save response of individual query
+                            BackendCache cache = caches.get(requests.get(i).getMd5());
+                            JsonElement object = graphqlResponseInternal.getOriginalResponse().get(i).getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA);
+                            if (object != null && cache != null) {
+                                mCacheManager.save(requests.get(i).cacheKey(), object.toString(), cache.getMaxAge() * 1000);
+                            }
                         }
                     }
 
