@@ -11,7 +11,7 @@ import com.tokopedia.play.broadcaster.ui.viewholder.PlayEtalaseViewHolder
  */
 class PlayEtalaseAdapterDelegate(
         private val listener: PlayEtalaseViewHolder.Listener
-) : TypedAdapterDelegate<PlayEtalaseUiModel, Any, PlayEtalaseViewHolder>(PlayEtalaseViewHolder.LAYOUT) {
+) : TypedAdapterDelegate<PlayEtalaseUiModel, PlayEtalaseUiModel, PlayEtalaseViewHolder>(PlayEtalaseViewHolder.LAYOUT) {
 
     override fun onBindViewHolder(item: PlayEtalaseUiModel, holder: PlayEtalaseViewHolder) {
         holder.bind(item)

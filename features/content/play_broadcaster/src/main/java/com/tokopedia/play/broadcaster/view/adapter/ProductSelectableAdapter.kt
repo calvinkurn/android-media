@@ -10,19 +10,18 @@ import com.tokopedia.play.broadcaster.view.adapter.delegate.ProductSelectableAda
  */
 class ProductSelectableAdapter(
         listener: ProductSelectableViewHolder.Listener
-) : BaseDiffUtilAdapter<Any>() {
+) : BaseDiffUtilAdapter<ProductUiModel>() {
 
     init {
         delegatesManager
                 .addDelegate(ProductSelectableAdapterDelegate(listener))
     }
 
-    override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
-        return if (oldItem is ProductUiModel && newItem is ProductUiModel) oldItem.id == newItem.id
-        else oldItem == newItem
+    override fun areItemsTheSame(oldItem: ProductUiModel, newItem: ProductUiModel): Boolean {
+        return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
+    override fun areContentsTheSame(oldItem: ProductUiModel, newItem: ProductUiModel): Boolean {
         return oldItem == newItem
     }
 }

@@ -39,9 +39,13 @@ class PlayEtalasePickerViewModel @Inject constructor(
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + mainDispatcher)
 
-    val observableEtalaseAndSearch: LiveData<List<Any>>
-        get() = _observableEtalaseAndSearch
-    private val _observableEtalaseAndSearch = MutableLiveData<List<Any>>()
+    val observableEtalase: LiveData<List<PlayEtalaseUiModel>>
+        get() = _observableEtalase
+    private val _observableEtalase = MutableLiveData<List<PlayEtalaseUiModel>>()
+
+    val observableSearchedProducts: LiveData<List<ProductUiModel>>
+        get() = _observableSearchedProducts
+    private val _observableSearchedProducts = MutableLiveData<List<ProductUiModel>>()
 
     val observableSelectedEtalase: LiveData<PlayEtalaseUiModel>
         get() = _observableSelectedEtalase
@@ -172,7 +176,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
     }
 
     private suspend fun broadcastNewEtalaseList(etalaseMap: Map<Long, PlayEtalaseUiModel>) {
-        _observableEtalaseAndSearch.value = withContext(computationDispatcher) {
+        _observableEtalase.value = withContext(computationDispatcher) {
             etalaseMap.values.map { etalase ->
                 etalase.copy(
                         productList = etalase.productList.take(MAX_PRODUCT_IMAGE_COUNT)
@@ -182,7 +186,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
     }
 
     private fun broadcastNewSearchedProducts(productList: List<ProductUiModel>) {
-        _observableEtalaseAndSearch.value = productList
+        _observableSearchedProducts.value = productList
     }
 
     private suspend fun updateEtalaseMap(newEtalaseList: List<PlayEtalaseUiModel>) = withContext(computationDispatcher) {

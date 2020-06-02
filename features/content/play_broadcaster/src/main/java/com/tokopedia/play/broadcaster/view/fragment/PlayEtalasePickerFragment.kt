@@ -18,10 +18,12 @@ import com.tokopedia.play.broadcaster.ui.viewholder.PlayEtalaseViewHolder
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 import com.tokopedia.play.broadcaster.ui.viewholder.SearchSuggestionViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.PlayEtalaseAdapter
+import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
 import com.tokopedia.play.broadcaster.view.adapter.SearchSuggestionsAdapter
 import com.tokopedia.play.broadcaster.view.custom.PlaySearchBar
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
+import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 /**
@@ -37,6 +39,7 @@ class PlayEtalasePickerFragment @Inject constructor(
     private lateinit var tvInfo: TextView
     private lateinit var psbSearch: PlaySearchBar
     private lateinit var rvEtalase: RecyclerView
+    private lateinit var rvSearchedProducts: RecyclerView
     private lateinit var rvSuggestions: RecyclerView
 
     private val etalaseAdapter = PlayEtalaseAdapter(object : PlayEtalaseViewHolder.Listener {
@@ -52,12 +55,20 @@ class PlayEtalasePickerFragment @Inject constructor(
         override fun onEtalaseBound(etalaseId: Long) {
             viewModel.loadEtalaseProductPreview(etalaseId)
         }
-    }, object : ProductSelectableViewHolder.Listener {
+    })
+
+    private val searchProductsAdapter = ProductSelectableAdapter(object : ProductSelectableViewHolder.Listener {
         override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
             viewModel.selectProduct(productId, isSelected)
         }
 
         override fun onProductSelectError(reason: Throwable) {
+            Toaster.make(
+                    view = requireView(),
+                    text = reason.localizedMessage,
+                    duration = Toaster.LENGTH_SHORT,
+                    actionText = getString(R.string.play_ok)
+            )
         }
     })
 
@@ -99,6 +110,7 @@ class PlayEtalasePickerFragment @Inject constructor(
         super.onActivityCreated(savedInstanceState)
 
         observeEtalase()
+        observeSearchProducts()
         observeSearchSuggestions()
     }
 
@@ -108,6 +120,7 @@ class PlayEtalasePickerFragment @Inject constructor(
             tvInfo = findViewById(R.id.tv_info)
             psbSearch = findViewById(R.id.psb_search)
             rvEtalase = findViewById(R.id.rv_etalase)
+            rvSearchedProducts = findViewById(R.id.rv_searched_products)
             rvSuggestions = findViewById(R.id.rv_suggestions)
         }
     }
@@ -137,6 +150,9 @@ class PlayEtalasePickerFragment @Inject constructor(
         rvEtalase.adapter = etalaseAdapter
         rvEtalase.addItemDecoration(PlayGridTwoItemDecoration(requireContext()))
 
+        rvSearchedProducts.adapter = searchProductsAdapter
+        rvSearchedProducts.addItemDecoration(PlayGridTwoItemDecoration(requireContext()))
+
         rvSuggestions.adapter = searchSuggestionsAdapter
     }
 
@@ -155,7 +171,14 @@ class PlayEtalasePickerFragment @Inject constructor(
 
     private fun exitSearchMode() {
         tvInfo.visible()
-        rvEtalase.visible()
+
+        if (psbSearch.text.isNotEmpty()) {
+            rvSearchedProducts.visible()
+            rvEtalase.gone()
+        } else {
+            rvSearchedProducts.gone()
+            rvEtalase.visible()
+        }
 
         rvSuggestions.invisible()
 
@@ -172,8 +195,14 @@ class PlayEtalasePickerFragment @Inject constructor(
      * Observe
      */
     private fun observeEtalase() {
-        viewModel.observableEtalaseAndSearch.observe(viewLifecycleOwner, Observer {
+        viewModel.observableEtalase.observe(viewLifecycleOwner, Observer {
             etalaseAdapter.setItemsAndAnimateChanges(it)
+        })
+    }
+
+    private fun observeSearchProducts() {
+        viewModel.observableSearchedProducts.observe(viewLifecycleOwner, Observer {
+            searchProductsAdapter.setItemsAndAnimateChanges(it)
         })
     }
 

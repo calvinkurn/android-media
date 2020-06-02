@@ -11,7 +11,7 @@ import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
  */
 class ProductSelectableAdapterDelegate(
         private val listener: ProductSelectableViewHolder.Listener
-) : TypedAdapterDelegate<ProductUiModel, Any, ProductSelectableViewHolder>(ProductSelectableViewHolder.LAYOUT) {
+) : TypedAdapterDelegate<ProductUiModel, ProductUiModel, ProductSelectableViewHolder>(ProductSelectableViewHolder.LAYOUT) {
 
     override fun onBindViewHolder(item: ProductUiModel, holder: ProductSelectableViewHolder) {
         holder.bind(item)
