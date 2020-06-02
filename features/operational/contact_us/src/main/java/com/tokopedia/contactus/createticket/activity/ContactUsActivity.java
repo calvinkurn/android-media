@@ -76,6 +76,11 @@ public class ContactUsActivity extends BaseSimpleActivity implements
     }
 
     @Override
+    protected int getToolbarResourceID() {
+        return R.id.toolbar;
+    }
+
+    @Override
     public String getScreenName() {
         return AppScreen.SCREEN_CONTACT_US;
     }

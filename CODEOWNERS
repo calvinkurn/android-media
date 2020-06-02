@@ -179,7 +179,7 @@
 /features/home/account-home/                        	@tokopedia/minion-kevin
 /features/user/loginfingerprint/                        @tokopedia/minion-kevin
 
-/features/operational/contact_us        				@tokopedia/minion-darth
+/features/operational/contact_us        				@tokopedia/minion-skywalker
 
 /features/fintech/common_wallet         				@tokopedia/minion-solo
 /features/fintech/instant_loan          				@tokopedia/minion-solo
