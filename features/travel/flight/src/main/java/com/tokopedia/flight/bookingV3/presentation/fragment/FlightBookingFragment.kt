@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -29,12 +30,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.R
-import com.tokopedia.flight.bookingV2.di.FlightBookingComponent
-import com.tokopedia.flight.bookingV2.presentation.activity.FlightInsuranceWebviewActivity
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingCartData
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingPassengerViewModel
 import com.tokopedia.flight.bookingV3.data.*
 import com.tokopedia.flight.bookingV3.data.mapper.FlightBookingErrorCodeMapper
+import com.tokopedia.flight.bookingV3.di.FlightBookingComponent
 import com.tokopedia.flight.bookingV3.presentation.activity.FlightBookingActivity
 import com.tokopedia.flight.bookingV3.presentation.adapter.FlightBookingPassengerAdapter
 import com.tokopedia.flight.bookingV3.presentation.adapter.FlightBookingPriceAdapter
@@ -45,16 +43,17 @@ import com.tokopedia.flight.common.constant.FlightErrorConstant
 import com.tokopedia.flight.common.constant.FlightFlowConstant
 import com.tokopedia.flight.common.data.model.FlightError
 import com.tokopedia.flight.common.util.*
-import com.tokopedia.flight.detail.view.activity.FlightDetailActivity
-import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
+import com.tokopedia.flight.detail.view.model.FlightDetailModel
+import com.tokopedia.flight.detail.view.widget.FlightDetailBottomSheet
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity
-import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
+import com.tokopedia.flight.passenger.view.model.FlightBookingPassengerModel
+import com.tokopedia.flight.search.presentation.model.FlightPriceModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
-import com.tokopedia.promocheckout.common.data.REQUST_CODE_PROMO_LIST
+import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_LIST
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
@@ -133,12 +132,12 @@ class FlightBookingFragment : BaseDaggerFragment() {
             val returnId = args.getString(EXTRA_FLIGHT_ARRIVAL_ID, "")
             val departureTerm = args.getString(EXTRA_FLIGHT_DEPARTURE_TERM, "")
             val returnTerm = args.getString(EXTRA_FLIGHT_ARRIVAL_TERM, "")
-            val searchParam: FlightSearchPassDataViewModel = args.getParcelable(EXTRA_SEARCH_PASS_DATA)
-                    ?: FlightSearchPassDataViewModel()
-            val flightPriceViewModel: FlightPriceViewModel = args.getParcelable(EXTRA_PRICE)
-                    ?: FlightPriceViewModel()
+            val searchParam: FlightSearchPassDataModel = args.getParcelable(EXTRA_SEARCH_PASS_DATA)
+                    ?: FlightSearchPassDataModel()
+            val flightPriceModel: FlightPriceModel = args.getParcelable(EXTRA_PRICE)
+                    ?: FlightPriceModel()
 
-            bookingViewModel.setSearchParam(departureId, returnId, departureTerm, returnTerm, searchParam, flightPriceViewModel)
+            bookingViewModel.setSearchParam(departureId, returnId, departureTerm, returnTerm, searchParam, flightPriceModel)
         }
     }
 
@@ -310,7 +309,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun sendAddToCartTracking() {
         flightAnalytics.eventAddToCart(bookingViewModel.getSearchParam().flightClass,
-                FlightBookingCartData(), 0,
                 bookingViewModel.getDepartureJourney(),
                 bookingViewModel.getReturnJourney(),
                 bookingViewModel.getFlightPriceModel().comboKey)
@@ -444,8 +442,12 @@ class FlightBookingFragment : BaseDaggerFragment() {
         renderInsuranceData(cart.insurances)
     }
 
-    fun navigateToDetailTrip(departureTrip: FlightDetailViewModel) {
-        startActivity(FlightDetailActivity.createIntent(activity, departureTrip, false))
+    fun navigateToDetailTrip(departureTrip: FlightDetailModel) {
+        val flightDetailBottomSheet = FlightDetailBottomSheet.getInstance()
+        flightDetailBottomSheet.setDetailModel(departureTrip)
+        flightDetailBottomSheet.setShowSubmitButton(false)
+        flightDetailBottomSheet.setShowListener { flightDetailBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
+        flightDetailBottomSheet.show(requireFragmentManager(), FlightDetailBottomSheet.TAG_FLIGHT_DETAIL_BOTTOM_SHEET)
     }
 
     private fun renderInsuranceData(insurances: List<FlightCart.Insurance>) {
@@ -457,7 +459,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             rv_insurance_list.adapter = flightInsuranceAdapter
             flightInsuranceAdapter.listener = object : FlightInsuranceAdapter.ViewHolder.ActionListener {
                 override fun onClickInsuranceTnc(tncUrl: String, tncTitle: String) {
-                    startActivity(FlightInsuranceWebviewActivity.getCallingIntent(activity, tncUrl, tncTitle))
+                    RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW_TITLE, tncTitle, tncUrl)
                 }
 
                 override fun onInsuranceChecked(insurance: FlightCart.Insurance, checked: Boolean) {
@@ -497,14 +499,14 @@ class FlightBookingFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun renderPassengerData(passengers: List<FlightBookingPassengerViewModel>) {
+    private fun renderPassengerData(passengers: List<FlightBookingPassengerModel>) {
         if (!::flightPassengerAdapter.isInitialized) {
             flightPassengerAdapter = FlightBookingPassengerAdapter()
             val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
             rv_passengers_info.layoutManager = layoutManager
             rv_passengers_info.adapter = flightPassengerAdapter
             flightPassengerAdapter.listener = object : FlightBookingPassengerAdapter.PassengerViewHolderListener {
-                override fun onClickEditPassengerListener(passenger: FlightBookingPassengerViewModel) {
+                override fun onClickEditPassengerListener(passenger: FlightBookingPassengerModel) {
                     passengerAsTraveller = switch_traveller_as_passenger.isChecked
                     navigateToPassengerInfoDetail(passenger, getRequestId())
                 }
@@ -523,7 +525,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun navigateToPassengerInfoDetail(viewModel: FlightBookingPassengerViewModel, requestId: String, autofillName: String = "") {
+    private fun navigateToPassengerInfoDetail(model: FlightBookingPassengerModel, requestId: String, autofillName: String = "") {
         val departureDate = if (bookingViewModel.getSearchParam().isOneWay) {
             bookingViewModel.getSearchParam().departureDate
         } else {
@@ -535,7 +537,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                         activity as Activity,
                         bookingViewModel.getDepartureId(),
                         bookingViewModel.getReturnId(),
-                        viewModel,
+                        model,
                         bookingViewModel.getLuggageViewModels(),
                         bookingViewModel.getMealViewModels(),
                         bookingViewModel.getMandatoryDOB(),
@@ -610,7 +612,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         renderProfileData(profileData)
 
         val passengerModels = args.getParcelableArrayList(EXTRA_PASSENGER_MODELS)
-                ?: listOf<FlightBookingPassengerViewModel>()
+                ?: listOf<FlightBookingPassengerModel>()
         bookingViewModel.setPassengerModels(passengerModels)
 
         val priceData = args.getParcelableArrayList(EXTRA_PRICE_DATA)
@@ -712,7 +714,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                         intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_FLIGHT)
                         intent.putExtra(COUPON_EXTRA_PROMO_CODE, promoCode)
                         intent.putExtra(COUPON_EXTRA_COUPON_ACTIVE, flightVoucher.isCouponActive)
-                        requestCode = REQUST_CODE_PROMO_LIST
+                        requestCode = REQUEST_CODE_PROMO_LIST
                     } else {
                         intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_FLIGHT)
                         intent.putExtra(COUPON_EXTRA_IS_USE, true)
@@ -988,7 +990,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 when (resultCode) {
                     Activity.RESULT_OK -> {
                         data?.let {
-                            val passengerViewModel = it.getParcelableExtra<FlightBookingPassengerViewModel>(FlightBookingPassengerActivity.EXTRA_PASSENGER)
+                            val passengerViewModel = it.getParcelableExtra<FlightBookingPassengerModel>(FlightBookingPassengerActivity.EXTRA_PASSENGER)
                             bookingViewModel.onPassengerResultReceived(passengerViewModel)
                         }
                     }
@@ -1086,18 +1088,18 @@ class FlightBookingFragment : BaseDaggerFragment() {
             return FlightBookingFragment()
         }
 
-        fun newInstance(searchPassDataViewModel: FlightSearchPassDataViewModel,
+        fun newInstance(searchPassDataModel: FlightSearchPassDataModel,
                         departureId: String, returnId: String,
                         departureTerm: String, returnTerm: String,
-                        priceViewModel: FlightPriceViewModel): FlightBookingFragment {
+                        priceModel: FlightPriceModel): FlightBookingFragment {
             val fragment = FlightBookingFragment()
             val bundle = Bundle()
-            bundle.putParcelable(EXTRA_SEARCH_PASS_DATA, searchPassDataViewModel)
+            bundle.putParcelable(EXTRA_SEARCH_PASS_DATA, searchPassDataModel)
             bundle.putString(EXTRA_FLIGHT_DEPARTURE_ID, departureId)
             bundle.putString(EXTRA_FLIGHT_ARRIVAL_ID, returnId)
             bundle.putString(EXTRA_FLIGHT_DEPARTURE_TERM, departureTerm)
             bundle.putString(EXTRA_FLIGHT_ARRIVAL_TERM, returnTerm)
-            bundle.putParcelable(EXTRA_PRICE, priceViewModel)
+            bundle.putParcelable(EXTRA_PRICE, priceModel)
             fragment.arguments = bundle
             return fragment
         }

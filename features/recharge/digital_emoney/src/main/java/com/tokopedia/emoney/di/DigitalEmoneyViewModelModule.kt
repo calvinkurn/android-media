@@ -4,8 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.emoney.viewmodel.BrizziViewModel
-import com.tokopedia.emoney.viewmodel.EmoneyInquiryBalanceViewModel
+import com.tokopedia.emoney.viewmodel.EmoneyBalanceViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -20,12 +19,6 @@ abstract class DigitalEmoneyViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(EmoneyInquiryBalanceViewModel::class)
-    internal abstract fun emoneyInquiryBalanceViewModel(customViewModel: EmoneyInquiryBalanceViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(BrizziViewModel::class)
-    internal abstract fun brizziTokenViewModel(customViewModel: BrizziViewModel): ViewModel
-
+    @ViewModelKey(EmoneyBalanceViewModel::class)
+    internal abstract fun emoneyBalanceViewModel(customViewModel: EmoneyBalanceViewModel): ViewModel
 }

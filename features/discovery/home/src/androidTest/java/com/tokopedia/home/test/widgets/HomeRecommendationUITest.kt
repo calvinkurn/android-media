@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.rule.ActivityTestRule
@@ -17,7 +16,6 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse
 import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
-import com.tokopedia.home.beranda.domain.interactor.SendTopAdsUseCase
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewModel
 import com.tokopedia.home.test.activity.HomeActivityTest
@@ -37,7 +35,7 @@ import org.junit.Test
 import java.util.concurrent.TimeoutException
 
 @ExperimentalCoroutinesApi
-class HomeRecommendationUITest {
+class HomeRecommendationUITest{
     @Rule
     @JvmField
     val activityRule = ActivityTestRule(HomeActivityTest::class.java, true, true)
@@ -47,7 +45,6 @@ class HomeRecommendationUITest {
     val taskExecutorRule = InstantTaskExecutorRule()
 
     private val getHomeRecommendationUseCase = mockk<GetHomeRecommendationUseCase>(relaxed = true)
-    private val sendTopAdsUseCase = mockk<SendTopAdsUseCase>(relaxed = true)
 
     private lateinit var viewModel: HomeRecommendationViewModel
 
@@ -60,7 +57,7 @@ class HomeRecommendationUITest {
         Log.d("testHomeRecom", mockData.toString())
         coEvery { getHomeRecommendationUseCase.executeOnBackground() } returns mockData
         Log.d("testHomeRecom", "success")
-        viewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, sendTopAdsUseCase, TestDispatcherProvider())
+        viewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, TestDispatcherProvider())
         val homeRecommendationTest = HomeRecommendationFragmentTest(createViewModelFactory(viewModel))
         activityRule.activity.setupFragment(homeRecommendationTest)
         Log.d("testHomeRecom", "Activity set fragment")
@@ -74,7 +71,7 @@ class HomeRecommendationUITest {
         Log.d("testHomeRecom", "start test")
         coEvery { getHomeRecommendationUseCase.executeOnBackground() } throws TimeoutException()
         Log.d("testHomeRecom", "success")
-        viewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, sendTopAdsUseCase, TestDispatcherProvider())
+        viewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, TestDispatcherProvider())
         val homeRecommendationTest = HomeRecommendationFragmentTest(createViewModelFactory(viewModel))
         activityRule.activity.setupFragment(homeRecommendationTest)
         Log.d("testHomeRecom", "Activity set fragment")
@@ -92,7 +89,7 @@ class HomeRecommendationUITest {
             HomeRecommendationDataModel()
         }
         Log.d("testHomeRecom", "success")
-        viewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, sendTopAdsUseCase, TestDispatcherProvider())
+        viewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, TestDispatcherProvider())
         val homeRecommendationTest = HomeRecommendationFragmentTest(createViewModelFactory(viewModel))
         activityRule.activity.setupFragment(homeRecommendationTest)
         Log.d("testHomeRecom", "Activity set fragment")
@@ -111,16 +108,11 @@ class HomeRecommendationUITest {
         val data = Gson().fromJson<HomeFeedContentGqlResponse>(json, HomeFeedContentGqlResponse::class.java)
         val mockData = HomeRecommendationMapper().mapToHomeRecommendationDataModel(data, "")
         var productsImpression = 0
-        every { sendTopAdsUseCase.executeOnBackground(capture(capturingUrl)) } answers {
-            impressionUrl = capturingUrl.captured
-            Log.d("testHomeRecom", "Capture url $impressionUrl")
-            println(impressionUrl)
-            productsImpression++
-        }
+
         Log.d("testHomeRecom", mockData.toString())
         coEvery { getHomeRecommendationUseCase.executeOnBackground() } returns mockData
         Log.d("testHomeRecom", "success")
-        viewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, sendTopAdsUseCase, TestDispatcherProvider())
+        viewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, TestDispatcherProvider())
         val homeRecommendationTest = HomeRecommendationFragmentTest(createViewModelFactory(viewModel))
         activityRule.activity.setupFragment(homeRecommendationTest)
         Log.d("testHomeRecom", "Activity set fragment")
@@ -140,15 +132,12 @@ class HomeRecommendationUITest {
         val mockData = HomeRecommendationMapper().mapToHomeRecommendationDataModel(data, "")
 
         var productsImpression = 0
-        every { sendTopAdsUseCase.executeOnBackground(capture(capturingUrl)) } answers {
-            clickUrl = capturingUrl.captured
-            productsImpression++
-        }
+
 
         Log.d("testHomeRecom", mockData.toString())
         coEvery { getHomeRecommendationUseCase.executeOnBackground() } returns mockData
         Log.d("testHomeRecom", "success")
-        viewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, sendTopAdsUseCase, TestDispatcherProvider())
+        viewModel = HomeRecommendationViewModel(getHomeRecommendationUseCase, TestDispatcherProvider())
         val homeRecommendationTest = HomeRecommendationFragmentTest(createViewModelFactory(viewModel))
         activityRule.activity.setupFragment(homeRecommendationTest)
         Log.d("testHomeRecom", "Activity set fragment")

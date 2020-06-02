@@ -16,13 +16,12 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
 import com.tokopedia.home.beranda.helper.glide.loadImageWithoutPlaceholder
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
-import com.tokopedia.home.beranda.presentation.view.customview.ThematicCardView
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.productcard.ProductCardFlashSaleModel
-import com.tokopedia.productcard.ProductCardFlashSaleView
+import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.unifyprinciples.Typography
 
@@ -76,7 +75,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
     override fun setupContent(channel: DynamicHomeChannel.Channels, payloads: MutableList<Any>) {
         if (payloads.isNotEmpty()) {
             payloads.forEach { payload->
-                if (payload == DynamicChannelViewModel.HOME_RV_SPRINT_BG_IMAGE_URL) {
+                if (payload == DynamicChannelDataModel.HOME_RV_SPRINT_BG_IMAGE_URL) {
                     channel?.let {
                         backgroundThematic.loadImageWithoutPlaceholder(channel.header.backImage)
                     }
@@ -177,8 +176,8 @@ class DynamicChannelSprintViewHolder(sprintView: View,
             notifyDataSetChanged()
         }
 
-        fun convertData(element: DynamicHomeChannel.Grid): ProductCardFlashSaleModel {
-            return ProductCardFlashSaleModel(
+        fun convertData(element: DynamicHomeChannel.Grid): ProductCardModel {
+            return ProductCardModel(
                     slashedPrice = element.slashedPrice,
                     productName = element.name,
                     formattedPrice = element.price,
@@ -188,19 +187,23 @@ class DynamicChannelSprintViewHolder(sprintView: View,
                     stockBarLabel = element.label,
                     stockBarPercentage = element.soldPercentage,
                     labelGroupList = element.labelGroup.map {
-                        ProductCardFlashSaleModel.LabelGroup(
+                        ProductCardModel.LabelGroup(
                                 position = it.position,
                                 title = it.title,
                                 type = it.type
                         )
                     },
+                    freeOngkir = ProductCardModel.FreeOngkir(
+                            element.freeOngkir.isActive,
+                            element.freeOngkir.imageUrl
+                    ),
                     isOutOfStock = element.isOutOfStock
             )
         }
     }
 
     class SprintViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val thematicCardView: ProductCardFlashSaleView = view.findViewById(R.id.thematic_card)
+        val thematicCardView: ProductCardGridView = view.findViewById(R.id.thematic_card)
         val context: Context
             get() = itemView.context
     }

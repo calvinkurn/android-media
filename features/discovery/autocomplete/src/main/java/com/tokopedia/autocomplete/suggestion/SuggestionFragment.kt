@@ -17,6 +17,7 @@ import com.tokopedia.autocomplete.analytics.AppScreen
 import com.tokopedia.autocomplete.analytics.AutocompleteTracking
 import com.tokopedia.autocomplete.suggestion.di.DaggerSuggestionComponent
 import com.tokopedia.autocomplete.suggestion.di.SuggestionComponent
+import com.tokopedia.autocomplete.suggestion.di.SuggestionContextModule
 import com.tokopedia.autocomplete.util.getModifiedApplink
 import com.tokopedia.discovery.common.model.SearchParameter
 import kotlinx.android.synthetic.main.fragment_suggestion.*
@@ -53,6 +54,7 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, Sugges
     override fun initInjector() {
         val component: SuggestionComponent = DaggerSuggestionComponent.builder()
                 .baseAppComponent(getBaseAppComponent())
+                .suggestionContextModule(activity?.let { SuggestionContextModule(it) })
                 .build()
         component.inject(this)
         component.inject(presenter)
@@ -61,7 +63,6 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, Sugges
     private fun getBaseAppComponent(): BaseAppComponent? {
         return if (activity == null || activity?.application == null) null else
             (activity?.application as BaseMainApplication).baseAppComponent
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -125,6 +126,10 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, Sugges
         presenter.search(searchParameter)
     }
 
+    fun setIsTyping(isTyping: Boolean) {
+        presenter.setIsTyping(isTyping)
+    }
+
     override fun onItemClicked(item: BaseSuggestionViewModel) {
         presenter.onSuggestionItemClicked(item)
     }
@@ -160,8 +165,8 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, Sugges
         AutocompleteTracking.eventClickKeyword(eventLabel)
     }
 
-    override fun trackEventClickCurated(eventLabel: String) {
-        AutocompleteTracking.eventClickCurated(eventLabel)
+    override fun trackEventClickCurated(eventLabel: String, campaignCode: String) {
+        AutocompleteTracking.eventClickCurated(eventLabel, campaignCode)
     }
 
     override fun trackEventClickShop(eventLabel: String) {

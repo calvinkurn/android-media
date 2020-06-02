@@ -181,14 +181,14 @@
 
             </LinearLayout>
 
-            <com.tokopedia.design.widget.ExpandableView.ExpandableRelativeLayout
+            <com.tokopedia.topads.widget.ExpandableView.ExpandableRelativeLayout
                 android:id="@+id/seeDetailToggleDesc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_marginTop="@dimen/dp_8"
-                app:ael_duration="400"
-                app:ael_expanded="true">
+                app:el_duration="400"
+                app:el_expanded="true">
 
                 <TextView
                     android:id="@+id/keywordTypeDesc"
@@ -196,7 +196,7 @@
                     android:lineSpacingExtra="@dimen/sp_5"
                     android:text="@string/top_ads_see_detail_info_keyword_phrase"/>
 
-            </com.tokopedia.design.widget.ExpandableView.ExpandableRelativeLayout>
+            </com.tokopedia.topads.widget.ExpandableView.ExpandableRelativeLayout>
 
         </LinearLayout>
 

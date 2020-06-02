@@ -14,7 +14,8 @@ class ChatroomViewModel(
         val canLoadMore: Boolean = false,
         val replyable: Boolean = false,
         var blockedStatus: BlockedStatus = BlockedStatus(),
-        val minReplyTime: String = "0"
+        val minReplyTime: String = "0",
+        val latestHeaderDate: String = ""
 ) {
 
     val badgeUrl get() = headerModel.badge
@@ -33,7 +34,7 @@ class ChatroomViewModel(
         return (headerModel.isGold || headerModel.isOfficial) && headerModel.badge.isNotEmpty()
     }
 
-    fun getHeaderName(): CharSequence {
+    fun getHeaderName(): String {
         return headerModel.name
     }
 

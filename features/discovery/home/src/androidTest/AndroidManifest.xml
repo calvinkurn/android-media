@@ -2,15 +2,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:versionCode="1"
     android:versionName="1.0.0"
-    package="com.tokopedia.home.test">
-
+    package="com.tokopedia.home">
     <application
         android:label="Home Test"
-        tools:replace="android:label">
+        tools:ignore="HardcodedDebugMode"
+        tools:replace="android:debuggable,android:label"
+        android:debuggable="false">
 
         <activity
-            android:name=".activity.HomeActivityTest"
+            android:name=".test.activity.HomeActivityTest"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
+        <activity
+            android:name=".environment.InstrumentationHomeTestActivity"/>
+
+        <activity android:name=".environment.BlankTestActivity"/>
 
     </application>
 </manifest>

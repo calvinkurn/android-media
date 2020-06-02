@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">shipping_rates_recommendation</string>
 
-    <string name="title_bottomsheet_shipment_duration">Pilih Durasi Pengiriman</string>
+    <string name="title_bottomsheet_shipment_duration">Pilih Pengiriman</string>
     <string name="title_bottomsheet_shipment">Pilih Pengiriman</string>
-    <string name="title_shipment_courier_bottomsheet">Pilih Kurir Pengiriman</string>
+    <string name="title_shipment_courier_bottomsheet">Pilih Kurir</string>
     <string name="label_title_showcase_shipping_duration">Pengiriman</string>
     <string name="label_body_showcase_shipping_duration">Durasi dihitung sejak barang diserahkan ke kurir.</string>
     <string name="label_shipping_show_case_finish">Mengerti</string>
@@ -18,5 +18,7 @@
     <string name="title_term_and_condition">Syarat dan Ketentuan</string>
     <string name="cod_brand_tag">Bayar di Tempat</string>
     <string name="duration_header_ticker">Perkiraan tiba dihitung sejak pesanan dikirim</string>
-
+    <string name="label_hardcoded_courier_ticker_logistic">Pembelian di atas 14:00 WIB berpotensi dikirim besok</string>
+    <string name="title_shipment_courier_bottomsheet_occ">Pilih Kurir</string>
+    <string name="label_shipping_information">Pembelian di atas 14:00 WIB berpotensi dikirim besok.</string>
 </resources>

@@ -25,6 +25,7 @@ import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.mode
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.DataChangeAddressRequest;
+import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataConverter;
@@ -62,6 +63,8 @@ public interface ShipmentContract {
         void showToastError(String message);
 
         void renderErrorPage(String message);
+
+        void onCacheExpired(String message);
 
         void renderCheckoutPage(boolean isInitialRender, boolean isReloadAfterPriceChangeHigher, boolean isFromPdp);
 
@@ -157,6 +160,8 @@ public interface ShipmentContract {
         boolean isTradeInByDropOff();
 
         void updateButtonPromoCheckout(PromoUiModel promoUiModel);
+
+        void resetCourier(ShipmentCartItemModel shipmentCartItemModel);
     }
 
     interface AnalyticsActionListener {
@@ -239,6 +244,8 @@ public interface ShipmentContract {
         void sendAnalyticsOnClickLogisticThatContainPromo(boolean isCourierPromo, int shippingProductId, boolean isCod);
 
         void sendAnalyticsViewInformationAndWarningTickerInCheckout(String tickerId);
+
+        void sendAnalyticsViewPromoAfterAdjustItem(String msg);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -335,6 +342,8 @@ public interface ShipmentContract {
 
         void proceedCodCheckout(boolean hasInsurance, boolean isOneClickShipment, boolean isTradeIn, String deviceId, String leasingId);
 
+        CampaignTimerUi getCampaignTimer();
+
         Token getKeroToken();
 
         boolean isShowOnboarding();
@@ -357,6 +366,8 @@ public interface ShipmentContract {
         void getInsuranceTechCartOnCheckout();
 
         ShipmentDataConverter getShipmentDataConverter();
+
+        void releaseBooking();
 
         void setLastApplyData(LastApplyUiModel lastApplyData);
 

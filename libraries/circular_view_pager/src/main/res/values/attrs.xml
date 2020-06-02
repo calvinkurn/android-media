@@ -9,6 +9,10 @@
         <attr name="offset" format="dimension"/>
     </declare-styleable>
 
+    <declare-styleable name="ShimmeringImageView">
+        <attr format="integer" name="corners"/>
+    </declare-styleable>
+
     <declare-styleable name="BaseIndicator">
         <attr name="circle_width" format="dimension"/>
         <attr name="circle_margin" format="dimension"/>

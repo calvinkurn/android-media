@@ -1,6 +1,5 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product;
 
-import android.content.Context;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
@@ -16,7 +15,7 @@ import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
 public class SuggestionViewHolder extends AbstractViewHolder<SuggestionViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.suggestion_layout;
+    public static final int LAYOUT = R.layout.search_result_product_suggestion_layout;
     private SuggestionListener suggestionListener;
     private TextView suggestionText;
 
@@ -37,7 +36,7 @@ public class SuggestionViewHolder extends AbstractViewHolder<SuggestionViewModel
             suggestionText.setText(Html.fromHtml(element.getSuggestionText()));
             suggestionText.setOnClickListener(v -> {
                 if (suggestionListener != null && !TextUtils.isEmpty(element.getSuggestedQuery())) {
-                    suggestionListener.onSuggestionClicked(element.getSuggestedQuery());
+                    suggestionListener.onSuggestionClicked(element);
                 }
             });
             itemView.setVisibility(View.VISIBLE);

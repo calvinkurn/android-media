@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/dp_4">
 
     <ViewStub
         android:id="@+id/channel_title"
@@ -18,9 +19,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/rv_popular_keyword"/>
+        app:layout_constraintTop_toTopOf="parent"/>
     <ViewStub
         android:id="@+id/iv_reload"
         android:inflatedId="@+id/iv_reload"
@@ -45,15 +44,34 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="@+id/channel_title" />
 
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_popular_keyword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_10"
+        android:layout_marginLeft="@dimen/dp_10"
+        tools:spanCount="2"
+        tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        tools:itemCount="4"
+        tools:listitem="@layout/layout_popular_keyword_item"
+        app:layout_constraintTop_toBottomOf="@+id/channel_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@+id/channel_title"
+        app:layout_constraintRight_toRightOf="@+id/tv_reload"/>
+
+    <ViewStub
+        android:id="@+id/loading_popular"
+        android:inflatedId="@+id/loading_popular"
+        android:layout="@layout/stub_popular_keyword_loading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_13"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         app:layout_constraintTop_toBottomOf="@+id/channel_title"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

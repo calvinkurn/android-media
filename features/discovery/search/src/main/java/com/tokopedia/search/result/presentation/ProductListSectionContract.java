@@ -10,14 +10,12 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.filter.common.data.Filter;
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
@@ -46,7 +44,7 @@ public interface ProductListSectionContract {
 
         void trackEventImpressionBannedProducts(boolean isEmptySearch);
 
-        void trackEventImpressionSortPriceMinTicker();
+        void trackEventImpressionTicker(int typeId);
 
         void backToTop();
 
@@ -147,6 +145,28 @@ public interface ProductListSectionContract {
         boolean isLandingPage();
 
         void logWarning(String message, @Nullable Throwable throwable);
+
+        void sendTopAdsTrackingUrl(String topAdsTrackingUrl);
+
+        void sendTopAdsGTMTrackingProductImpression(ProductItemViewModel item, int adapterPosition);
+
+        void sendTopAdsGTMTrackingProductClick(ProductItemViewModel item, int adapterPosition);
+
+        void sendGTMTrackingProductClick(ProductItemViewModel item, int adapterPosition, String userId);
+
+        void routeToProductDetail(ProductItemViewModel item, int adapterPosition);
+
+        void stopPreparePagePerformanceMonitoring();
+
+        void startNetworkRequestPerformanceMonitoring();
+
+        void stopNetworkRequestPerformanceMonitoring();
+
+        void startRenderPerformanceMonitoring();
+
+        void sendProductImpressionTrackingEvent(ProductItemViewModel item);
+
+        void trackBroadMatchImpression(String alternativeKeyword, List<Object> impressionObjectDataLayer);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -184,5 +204,11 @@ public interface ProductListSectionContract {
         void onViewVisibilityChanged(boolean isViewVisible, boolean isViewAdded);
 
         void handleWishlistAction(ProductCardOptionsModel productCardOptionsModel);
+
+        void onProductImpressed(ProductItemViewModel item, int adapterPosition);
+
+        void onProductClick(ProductItemViewModel item, int adapterPosition);
+
+        boolean isTrackingViewPortEnabled();
     }
 }

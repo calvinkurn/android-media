@@ -13,7 +13,6 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.numberFormatted
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -24,6 +23,10 @@ import java.util.concurrent.TimeUnit
 
 class PartialSnapshotView(private val view: View,
                           private val listener: DynamicProductDetailListener) {
+
+    companion object{
+        const val ONE_SECOND = 1000L
+    }
 
     fun renderData(product: DynamicProductInfoP1, nearestWarehouseStockWording: String) = with(view) {
         val data = product.data
@@ -41,12 +44,12 @@ class PartialSnapshotView(private val view: View,
         }
 
         if (campaign.isActive) {
-            renderCampaignActive(campaign, data.stock.getFinalStockWording(nearestWarehouseStockWording))
+            renderCampaignActive(campaign, nearestWarehouseStockWording)
         } else {
             renderCampaignInactive(data.price.value.getCurrencyFormatted())
         }
 
-        renderStockAvailable(campaign, data.variant.isVariant, data.stock.getFinalStockWording(nearestWarehouseStockWording), basic.isActive())
+        renderStockAvailable(campaign, data.variant.isVariant, nearestWarehouseStockWording, basic.isActive())
         label_prescription.showWithCondition(basic.needPrescription)
         divider.show()
     }
@@ -90,9 +93,8 @@ class PartialSnapshotView(private val view: View,
         if (campaign.activeAndHasId) {
             text_title_discount_timer.text = campaign.campaignTypeName
             sale_text_stock_available.text = MethodChecker.fromHtml(stockWording)
-            showCountDownTimer(campaign)
             setProgressStockBar(campaign)
-
+            showCountDownTimer(campaign)
             discount_timer_holder.show()
             sale_text_stock_available.show()
         } else {
@@ -109,19 +111,6 @@ class PartialSnapshotView(private val view: View,
         text_original_price.gone()
         sale_text_stock_available.gone()
         text_stock_available.show()
-    }
-
-    fun updateStockAndPriceWarehouse(nearestWarehouseData: ProductSnapshotDataModel.NearestWarehouseDataModel, campaign: CampaignModular, variant: Boolean) = with(view) {
-        if (campaign.activeAndHasId) {
-            tv_price_pdp.text = context.getString(R.string.template_price, "",
-                    nearestWarehouseData.nearestWarehousePrice.getCurrencyFormatted())
-            sale_text_stock_available.text = MethodChecker.fromHtml(nearestWarehouseData.nearestWarehouseStockWording)
-        } else {
-            text_stock_available.showWithCondition(!nearestWarehouseData.nearestWarehouseStockWording.isBlank() && !variant)
-            tv_price_pdp.text = context.getString(R.string.template_price, "",
-                    nearestWarehouseData.nearestWarehousePrice.getCurrencyFormatted())
-            text_stock_available.text = MethodChecker.fromHtml(nearestWarehouseData.nearestWarehouseStockWording)
-        }
     }
 
     fun renderCod(showCod: Boolean) = with(view) {
@@ -178,7 +167,7 @@ class PartialSnapshotView(private val view: View,
     private fun showCountDownTimer(campaign: CampaignModular) = with(view) {
         try {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-            val endDateTimeMs = campaign.getEndDataInt * PartialHeaderView.ONE_SECOND
+            val endDateTimeMs = campaign.getEndDataInt * ONE_SECOND
             val now = System.currentTimeMillis()
             val endDate = dateFormat.parse(campaign.endDate)
             val delta = endDate.time - endDateTimeMs

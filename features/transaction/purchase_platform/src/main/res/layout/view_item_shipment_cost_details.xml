@@ -5,7 +5,7 @@
     android:id="@+id/rl_shipment_cost"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/dp_12"
+    android:paddingBottom="@dimen/dp_4"
     android:background="@color/white">
 
     <View
@@ -126,10 +126,45 @@
         tools:text="-" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_shipping_discount_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_below="@+id/tv_shipping_fee_label"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_4"
+        android:textColor="@color/text_black"
+        android:visibility="gone"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:ignore="HardcodedText"
+        tools:text="Total Diskon Ongkos Kirim"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_shipping_discount_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_below="@id/tv_shipping_fee_label"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:gravity="end"
+        android:textColor="@color/text_black"
+        android:visibility="gone"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Rp100.000"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_insurance_fee_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_shipping_fee_label"
+        android:layout_below="@id/tv_shipping_discount_label"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_4"
@@ -142,7 +177,7 @@
         android:id="@+id/tv_insurance_fee"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_shipping_fee_label"
+        android:layout_below="@id/tv_shipping_discount_label"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_marginEnd="@dimen/dp_16"
@@ -262,7 +297,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_12"
+        android:layout_marginBottom="@dimen/dp_4"
         android:gravity="end"
         android:textColor="@color/text_black"
         app:typographyType="body_3"
@@ -308,7 +343,7 @@
         android:layout_below="@+id/tv_promo_or_coupon_label"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_12"
+        android:layout_marginBottom="@dimen/dp_4"
         android:text="@string/label_donation"
         android:textColor="@color/text_black"
         app:typographyType="body_3"
@@ -346,6 +381,7 @@
         android:textColor="@color/text_black"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
+        tools:visibility="gone"
         tools:ignore="HardcodedText" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -362,6 +398,7 @@
         android:gravity="end"
         android:textColor="@color/text_black"
         app:typographyType="body_3"
+        tools:visibility="gone"
         app:typographyWeight="reguler"
         tools:text="Rp100.000" />
 
@@ -378,6 +415,7 @@
         android:textColor="@color/text_black"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
+        tools:visibility="gone"
         tools:ignore="HardcodedText" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -395,6 +433,7 @@
         android:textColor="@color/text_black"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
+        tools:visibility="gone"
         tools:text="Rp100.000" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -412,7 +451,7 @@
         app:typographyWeight="reguler"
         tools:ignore="HardcodedText"
         tools:text="Total Diskon"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_discount_price"
@@ -431,10 +470,10 @@
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:text="Rp100.000"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_shipping_discount_label"
+        android:id="@+id/tv_product_discount_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignWithParentIfMissing="true"
@@ -447,11 +486,11 @@
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:ignore="HardcodedText"
-        tools:text="Total Diskon Ongkos Kirim"
-        tools:visibility="visible" />
+        tools:text="Diskon Barang"
+        tools:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_shipping_discount_price"
+        android:id="@+id/tv_product_discount_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignWithParentIfMissing="true"
@@ -467,42 +506,6 @@
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:text="Rp100.000"
-        tools:visibility="visible" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_product_discount_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignWithParentIfMissing="true"
-        android:layout_below="@+id/tv_shipping_discount_label"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_4"
-        android:textColor="@color/text_black"
-        android:visibility="gone"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler"
-        tools:ignore="HardcodedText"
-        tools:text="Diskon Barang"
-        tools:visibility="visible" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_product_discount_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignWithParentIfMissing="true"
-        android:layout_below="@id/tv_shipping_discount_price"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_4"
-        android:gravity="end"
-        android:textColor="@color/text_black"
-        android:visibility="gone"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler"
-        tools:text="Rp100.000"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
 </RelativeLayout>

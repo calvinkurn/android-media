@@ -6,8 +6,6 @@ import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.logisticcart.shipping.model.ShipProd;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.purchase_platform.common.data.model.response.TrackingDetail;
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoApplyStack;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.Message;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.VoucherOrdersItem;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
@@ -27,20 +25,21 @@ import com.tokopedia.purchase_platform.common.feature.ticker_announcement.Ticker
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.Ticker;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.egold.EgoldTieringData;
-import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.AdditionalInfo;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.Addresses;
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.CampaignTimer;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.CheckoutDisabledFeaturesKt;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse;
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.AdditionalInfo;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.CartEmptyInfo;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.Data;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.ErrorDetail;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.LastApply;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.MessageInfo;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.PromoSAFResponse;
-import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.SummariesItem;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.TrackingDetailsItem;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.UsageSummaries;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.AddressesData;
+import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.DataAddressData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.DisabledFeaturesDetailData;
@@ -67,7 +66,6 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.STATE_RED;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.TYPE_CASHBACK;
 
 /**
  * @author anggaprasetiyo on 21/02/18.
@@ -101,6 +99,8 @@ public class ShipmentMapper implements IShipmentMapper {
             dataResult.setErrorMessage(UtilsKt.convertToString(shipmentAddressFormDataResponse.getErrors()));
             dataResult.setShowOnboarding(shipmentAddressFormDataResponse.isShowOnboarding());
             dataResult.setIneligbilePromoDialogEnabled(shipmentAddressFormDataResponse.isIneligbilePromoDialogEnabled());
+            dataResult.setOpenPrerequisiteSite(shipmentAddressFormDataResponse.isOpenPrerequisiteSite());
+            dataResult.setEligibleNewShippingExperience(shipmentAddressFormDataResponse.isEligibleNewShippingExperience());
 
             if (shipmentAddressFormDataResponse.getDisabledFeatures() != null &&
                     shipmentAddressFormDataResponse.getDisabledFeatures().contains(CheckoutDisabledFeaturesKt.multiAddress) &&
@@ -291,6 +291,25 @@ public class ShipmentMapper implements IShipmentMapper {
                 dataResult.setCod(cod);
             }
 
+            if (shipmentAddressFormDataResponse.getCampaignTimer() != null) {
+                CampaignTimer timerResponse = shipmentAddressFormDataResponse.getCampaignTimer();
+                CampaignTimerUi timerUi = new CampaignTimerUi(
+                        timerResponse.getExpiredTimerMessage().getButton(),
+                        timerResponse.getExpiredTimerMessage().getDescription(),
+                        timerResponse.getExpiredTimerMessage().getTitle(),
+                        timerResponse.getShowTimer(),
+                        timerResponse.getTimerDetail().getDeductTime(),
+                        timerResponse.getDescription(),
+                        timerResponse.getTimerDetail().getExpiredTime(),
+                        timerResponse.getTimerDetail().getExpiredDuration(),
+                        timerResponse.getTimerDetail().getServerTime(),
+                        0,
+                        ""
+                );
+                dataResult.setCampaignTimerUi(timerUi);
+            }
+
+
             if (shipmentAddressFormDataResponse.getPromoSAFResponse() != null &&
                     shipmentAddressFormDataResponse.getPromoSAFResponse().getLastApply() != null &&
                     shipmentAddressFormDataResponse.getPromoSAFResponse().getLastApply().getData() != null) {
@@ -412,7 +431,8 @@ public class ShipmentMapper implements IShipmentMapper {
                 }
             }
 
-            if (shipmentAddressFormDataResponse.getPromoSAFResponse().getErrorDefault() != null) {
+            if (shipmentAddressFormDataResponse.getPromoSAFResponse() != null &&
+                    shipmentAddressFormDataResponse.getPromoSAFResponse().getErrorDefault() != null) {
                 PromoCheckoutErrorDefault promoCheckoutErrorDefault = new PromoCheckoutErrorDefault();
                 promoCheckoutErrorDefault.setTitle(shipmentAddressFormDataResponse.getPromoSAFResponse().getErrorDefault().getTitle());
                 promoCheckoutErrorDefault.setDesc(shipmentAddressFormDataResponse.getPromoSAFResponse().getErrorDefault().getDescription());
@@ -669,6 +689,11 @@ public class ShipmentMapper implements IShipmentMapper {
                                     productResult.setProductCatId(product.getProductCatId());
                                     productResult.setProductCatalogId(product.getProductCatalogId());
                                     productResult.setAnalyticsProductCheckoutData(analyticsProductCheckoutData);
+
+                                    if (product.getProductTicker() != null) {
+                                        productResult.setShowTicker(product.getProductTicker().isShowTicker());
+                                        productResult.setTickerMessage(product.getProductTicker().getMessage());
+                                    }
 
                                     if (product.getFreeShipping() != null && product.getFreeShipping().getEligible() &&
                                             !TextUtils.isEmpty(product.getFreeShipping().getBadgeUrl())) {

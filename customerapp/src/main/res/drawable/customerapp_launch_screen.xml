@@ -4,11 +4,6 @@
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@drawable/div_system_splash_logo_green" />
-    </item>
-    <item>
-        <bitmap
-            android:gravity="bottom"
             android:src="@drawable/div_system_splash_bg_main" />
     </item>
 </layer-list>

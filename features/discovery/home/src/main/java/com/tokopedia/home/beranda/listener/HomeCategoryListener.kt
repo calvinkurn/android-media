@@ -2,12 +2,11 @@ package com.tokopedia.home.beranda.listener
 
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.analytics.performance.util.JankyFrameMonitoringUtil
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 import java.util.HashMap
@@ -26,13 +25,15 @@ interface HomeCategoryListener {
 
     val eggListener: HomeEggListener
 
-    val trackingQueue: TrackingQueue
+    fun getTrackingQueueObj(): TrackingQueue?
 
-    val childFragmentManager: FragmentManager
+    val childsFragmentManager: FragmentManager
 
     val windowHeight: Int
 
     val homeMainToolbarHeight: Int
+
+    val userId: String
 
     fun onSectionItemClicked(actionLink: String)
 
@@ -43,6 +44,8 @@ interface HomeCategoryListener {
     fun openShop()
 
     fun onOpenPlayChannelList(appLink: String)
+
+    fun sendIrisTrackerHashMap(tracker: HashMap<String, Any>)
 
     fun onOpenPlayActivity(root: android.view.View, channelId: String?)
 
@@ -94,7 +97,7 @@ interface HomeCategoryListener {
 
     fun refreshHomeData()
 
-    fun getHomeJankyFramesUtil(): JankyFrameMonitoringUtil?
+    fun isShowSeeAllCard(): Boolean
 
     fun getTabBusinessWidget(position: Int)
 
@@ -102,5 +105,9 @@ interface HomeCategoryListener {
 
     fun getPlayChannel(position: Int)
 
-    fun updateExpiredChannel(dynamicChannelDataModel: DynamicChannelViewModel, position: Int)
+    fun updateExpiredChannel(dynamicChannelDataModel: DynamicChannelDataModel, position: Int)
+
+    fun onBuyAgainOneClickCheckOutClick(grid: DynamicHomeChannel.Grid, channel: DynamicHomeChannel.Channels, position: Int)
+
+    fun onBuyAgainCloseChannelClick(channel: DynamicHomeChannel.Channels, position: Int)
 }

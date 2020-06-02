@@ -130,6 +130,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  checkoutAnalytics: CheckoutAnalyticsCourierSelection,
                                  getInsuranceCartUseCase: GetInsuranceCartUseCase,
                                  shipmentDataConverter: ShipmentDataConverter,
+                                 releaseBookingUseCase: ReleaseBookingUseCase,
                                  validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase): ShipmentContract.Presenter {
         return ShipmentPresenter(compositeSubscription,
                 checkoutUseCase, getShipmentAddressFormUseCase,
@@ -139,9 +140,8 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                 ratesUseCase, ratesApiUseCase,
                 codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
                 stateConverter, shippingCourierConverter, shipmentFragment, userSessionInterface,
-                analyticsPurchaseProtection, codAnalytics, checkoutAnalytics,
-                getInsuranceCartUseCase, shipmentDataConverter,
-                validateUsePromoRevampUseCase)
+                analyticsPurchaseProtection, codAnalytics, checkoutAnalytics, getInsuranceCartUseCase,
+                shipmentDataConverter, releaseBookingUseCase, validateUsePromoRevampUseCase)
     }
 
     @Provides

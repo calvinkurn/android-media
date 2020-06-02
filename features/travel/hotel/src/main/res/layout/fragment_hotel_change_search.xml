@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Neutral_N0"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/layout_lvl2"
+        android:paddingLeft="@dimen/layout_lvl2"
+        android:paddingRight="@dimen/layout_lvl2"
+        android:paddingBottom="@dimen/layout_lvl1">
+
+        <ImageView
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:layout_gravity="center"
+            android:layout_marginEnd="@dimen/hotel_10dp"
+            android:layout_marginRight="@dimen/hotel_10dp"
+            app:srcCompat="@drawable/ic_hotel_location" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/hotel_3dp"
+                android:layout_marginLeft="@dimen/hotel_3dp"
+                android:text="@string/hotel_homepage_destination"
+                app:typographyType="body_3"
+                android:textColor="@color/Neutral_N700_44"/>
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/tv_hotel_homepage_destination"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="false"
+                android:hint="@string/hotel_homepage_destination_hint"
+                android:inputType="textNoSuggestions" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <include layout="@layout/fragment_hotel_global_search"/>
+
+</LinearLayout>

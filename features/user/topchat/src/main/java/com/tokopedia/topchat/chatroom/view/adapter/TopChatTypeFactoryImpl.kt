@@ -26,7 +26,9 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.LeftCha
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.RightChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
+import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
@@ -99,6 +101,14 @@ open class TopChatTypeFactoryImpl(
         return ProductCarouselListAttachmentViewHolder.LAYOUT
     }
 
+    override fun type(headerDateUiModel: HeaderDateUiModel): Int {
+        return HeaderDateViewHolder.LAYOUT
+    }
+
+    override fun type(stickerUiModel: StickerUiModel): Int {
+        return StickerMessageViewHolder.LAYOUT
+    }
+
     override fun type(productAttachmentViewModel: ProductAttachmentViewModel): Int {
         return if (useNewProductCard) {
             TopchatProductAttachmentViewHolder.LAYOUT
@@ -125,7 +135,7 @@ open class TopChatTypeFactoryImpl(
             type: Int,
             productCarouselListListener: ProductCarouselListAttachmentViewHolder.Listener
     ): AbstractViewHolder<*> {
-        return when(type) {
+        return when (type) {
             ProductCarouselListAttachmentViewHolder.LAYOUT -> ProductCarouselListAttachmentViewHolder(parent, productAttachmentListener, productCarouselListListener)
             else -> createViewHolder(parent, type)
         }
@@ -133,6 +143,8 @@ open class TopChatTypeFactoryImpl(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
+            StickerMessageViewHolder.LAYOUT -> StickerMessageViewHolder(parent)
+            HeaderDateViewHolder.LAYOUT -> HeaderDateViewHolder(parent)
             ProductAttachmentViewHolder.LAYOUT -> TopchatOldProductAttachmentViewHolder(parent, productAttachmentListener)
             TopchatProductAttachmentViewHolder.LAYOUT -> TopchatProductAttachmentViewHolder(parent, productAttachmentListener)
             TopchatEmptyViewHolder.LAYOUT -> TopchatEmptyViewHolder(parent)

@@ -4,7 +4,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase.Companion.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST
 import com.tokopedia.similarsearch.SimilarSearchViewModel
-import com.tokopedia.similarsearch.getsimilarproducts.GetSimilarProductsUseCase
+import com.tokopedia.similarsearch.getsimilarproducts.model.SimilarProductModel
 import com.tokopedia.similarsearch.testutils.InstantTaskExecutorRuleSpek
 import com.tokopedia.similarsearch.testutils.TestException
 import com.tokopedia.similarsearch.testutils.shouldBe
@@ -14,13 +14,14 @@ import com.tokopedia.similarsearch.viewmodel.testinstance.getAddToCartFailedMode
 import com.tokopedia.similarsearch.viewmodel.testinstance.getAddToCartSuccessModel
 import com.tokopedia.similarsearch.viewmodel.testinstance.getSimilarProductModelCommon
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.UseCase as RxUseCase
+import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.slot
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Subscriber
+import com.tokopedia.usecase.UseCase as RxUseCase
 
 internal class HandleViewClickAddToCart: Spek({
 
@@ -44,7 +45,7 @@ internal class HandleViewClickAddToCart: Spek({
             }
 
             Given("view already created and has similar search data") {
-                val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
+                val getSimilarProductsUseCase by memoized<UseCase<SimilarProductModel>>()
                 getSimilarProductsUseCase.stubExecute().returns(similarProductModelCommon)
                 similarSearchViewModel.onViewCreated()
             }
@@ -93,7 +94,7 @@ internal class HandleViewClickAddToCart: Spek({
             }
 
             Given("view already created and has similar search data") {
-                val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
+                val getSimilarProductsUseCase by memoized<UseCase<SimilarProductModel>>()
                 getSimilarProductsUseCase.stubExecute().returns(similarProductModelCommon)
                 similarSearchViewModel.onViewCreated()
             }
@@ -126,6 +127,9 @@ internal class HandleViewClickAddToCart: Spek({
                 addToCartRequestParams.productId shouldBe similarProductModelCommon.getOriginalProduct().id.toLong()
                 addToCartRequestParams.shopId shouldBe similarProductModelCommon.getOriginalProduct().shop.id
                 addToCartRequestParams.quantity shouldBe similarProductModelCommon.getOriginalProduct().minOrder
+                addToCartRequestParams.productName shouldBe similarProductModelCommon.getOriginalProduct().name
+                addToCartRequestParams.category shouldBe similarProductModelCommon.getOriginalProduct().categoryName
+                addToCartRequestParams.price shouldBe similarProductModelCommon.getOriginalProduct().price
             }
 
             Then("assert tracking click add to cart event should contain original product as object data layer") {
@@ -164,7 +168,7 @@ internal class HandleViewClickAddToCart: Spek({
             }
 
             Given("view already created and has similar search data") {
-                val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
+                val getSimilarProductsUseCase by memoized<UseCase<SimilarProductModel>>()
                 getSimilarProductsUseCase.stubExecute().returns(similarProductModelCommon)
                 similarSearchViewModel.onViewCreated()
             }
@@ -197,6 +201,9 @@ internal class HandleViewClickAddToCart: Spek({
                 addToCartRequestParams.productId shouldBe similarProductModelCommon.getOriginalProduct().id.toLong()
                 addToCartRequestParams.shopId shouldBe similarProductModelCommon.getOriginalProduct().shop.id
                 addToCartRequestParams.quantity shouldBe similarProductModelCommon.getOriginalProduct().minOrder
+                addToCartRequestParams.productName shouldBe similarProductModelCommon.getOriginalProduct().name
+                addToCartRequestParams.category shouldBe similarProductModelCommon.getOriginalProduct().categoryName
+                addToCartRequestParams.price shouldBe similarProductModelCommon.getOriginalProduct().price
             }
 
             Then("assert tracking click add to cart event should be null") {
@@ -238,7 +245,7 @@ internal class HandleViewClickAddToCart: Spek({
             }
 
             Given("view already created and has similar search data") {
-                val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
+                val getSimilarProductsUseCase by memoized<UseCase<SimilarProductModel>>()
                 getSimilarProductsUseCase.stubExecute().returns(similarProductModelCommon)
                 similarSearchViewModel.onViewCreated()
             }
@@ -270,6 +277,9 @@ internal class HandleViewClickAddToCart: Spek({
                 addToCartRequestParams.productId shouldBe similarProductModelCommon.getOriginalProduct().id.toLong()
                 addToCartRequestParams.shopId shouldBe similarProductModelCommon.getOriginalProduct().shop.id
                 addToCartRequestParams.quantity shouldBe similarProductModelCommon.getOriginalProduct().minOrder
+                addToCartRequestParams.productName shouldBe similarProductModelCommon.getOriginalProduct().name
+                addToCartRequestParams.category shouldBe similarProductModelCommon.getOriginalProduct().categoryName
+                addToCartRequestParams.price shouldBe similarProductModelCommon.getOriginalProduct().price
             }
 
             Then("assert tracking click add to cart event should be null") {

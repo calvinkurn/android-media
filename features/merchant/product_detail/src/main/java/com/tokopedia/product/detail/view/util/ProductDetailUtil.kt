@@ -1,15 +1,11 @@
 package com.tokopedia.product.detail.view.util
 
 import android.text.Spanned
-import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.kotlin.extensions.toFormattedString
 import java.util.*
 
 object ProductDetailUtil {

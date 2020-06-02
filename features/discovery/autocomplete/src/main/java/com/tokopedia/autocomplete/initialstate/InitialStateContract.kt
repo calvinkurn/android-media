@@ -3,7 +3,6 @@ package com.tokopedia.autocomplete.initialstate
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
-import com.tokopedia.discovery.common.model.SearchParameter
 
 interface InitialStateContract {
     interface View : CustomerView {
@@ -12,15 +11,23 @@ interface InitialStateContract {
         fun refreshPopularSearch(list: List<Visitable<*>>)
 
         fun deleteRecentSearch(list: List<Visitable<*>>)
+
+        fun onRecentViewImpressed(list: List<Any>)
+
+        fun onRecentSearchImpressed(list: List<Any>)
+
+        fun onPopularSearchImpressed(list: List<Any>)
     }
 
     interface Presenter : CustomerPresenter<View> {
-        fun getInitialStateData(searchParameter: SearchParameter)
+        fun getInitialStateData()
 
         fun deleteRecentSearchItem(keyword: String)
 
         fun deleteAllRecentSearch()
 
-        fun refreshPopularSearch(searchParameter: SearchParameter)
+        fun refreshPopularSearch()
+
+        fun getQueryKey(): String
     }
 }

@@ -12,7 +12,7 @@ class InitialStateRepositoryImpl(private val initialStateDataSource: InitialStat
         return initialStateDataSource.getInitialState(parameters)
     }
 
-    override fun deleteRecentSearch(parameters: HashMap<String, Any>): Observable<Response<Void>> {
+    override fun deleteRecentSearch(parameters: HashMap<String, Any>): Observable<Boolean> {
         return initialStateDataSource.deleteRecentSearch(parameters)
     }
 }

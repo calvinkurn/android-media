@@ -139,12 +139,6 @@ class PlayViewModel @Inject constructor(
             )
         }
 
-    val isAnyBottomSheetShown: Boolean
-        get() = _observableBottomInsetsState.value?.isAnyBottomSheetsShown == true
-
-    val isKeyboardShown: Boolean
-        get() = _observableBottomInsetsState.value?.isKeyboardShown == true
-
     private val isProductSheetInitialized: Boolean
         get() = _observableProductSheetContent.value != null
 
@@ -369,16 +363,15 @@ class PlayViewModel @Inject constructor(
     private fun initiateVideo(channel: Channel) {
         startVideoWithUrlString(
                 channel.videoStream.config.streamUrl,
-                channel.videoStream.isLive,
                 bufferControl = channel.videoStream.bufferControl?.let { mapBufferControl(it) }
                         ?: PlayBufferControl()
         )
         playVideoManager.setRepeatMode(false)
     }
 
-    private fun startVideoWithUrlString(urlString: String, isLive: Boolean, bufferControl: PlayBufferControl) {
+    private fun startVideoWithUrlString(urlString: String, bufferControl: PlayBufferControl) {
         try {
-            playVideoManager.safePlayVideoWithUri(Uri.parse(urlString), isLive, bufferControl)
+            playVideoManager.safePlayVideoWithUri(uri = Uri.parse(urlString), bufferControl = bufferControl)
         } catch (e: Exception) {}
     }
 
@@ -402,13 +395,6 @@ class PlayViewModel @Inject constructor(
                 return@withContext getChannelInfoUseCase.executeOnBackground()
             }
 
-            launch { getTotalLikes(channel.contentId, channel.contentType, channel.likeType) }
-            launch { getIsLike(channel.contentId, channel.contentType) }
-            launch { getBadgeCart(channel.isShowCart) }
-            launch { if (channel.isShowProductTagging) getProductTagItems(channel) }
-
-            startWebSocket(channelId, channel.gcToken, channel.settings)
-
             playVideoStream(channel)
 
             val completeInfoUiModel = PlayUiMapper.createCompleteInfoModel(
@@ -425,6 +411,14 @@ class PlayViewModel @Inject constructor(
             _observableVideoStream.value = completeInfoUiModel.videoStream
             _observableEvent.value = completeInfoUiModel.event
             _observablePartnerInfo.value = getPartnerInfo(completeInfoUiModel.channelInfo)
+
+            launch { getTotalLikes(channel.contentId, channel.contentType, channel.likeType) }
+            launch { getIsLike(channel.contentId, channel.contentType) }
+            launch { getBadgeCart(channel.isShowCart) }
+            launch { if (channel.isShowProductTagging) getProductTagItems(channel) }
+
+            startWebSocket(channelId, channel.gcToken, channel.settings)
+
         }) {
             if (retryCount++ < MAX_RETRY_CHANNEL_INFO) getChannelInfoResponse(channelId)
             else if (it !is CancellationException) _observableGetChannelInfo.value = Fail(it)
@@ -643,54 +637,4 @@ class PlayViewModel @Inject constructor(
 
         private const val MS_PER_SECOND = 1000
     }
-
-
-    //region mock
-    private fun startMockFreeze() {
-        launch(dispatchers.io) {
-            delay(10000)
-            withContext(dispatchers.main) {
-                _observableEvent.value = _observableEvent.value?.copy(
-                        isFreeze = true
-                )
-            }
-        }
-    }
-
-    private fun setMockProductSocket() {
-        launch(dispatchers.io) {
-            delay(10000)
-            withContext(dispatchers.main) {
-                _observableProductSheetContent.value = PlayUiMocker.getMockProductOnlySocket(_observableProductSheetContent.value)
-            }
-        }
-    }
-
-    private fun setMockVoucherSocket() {
-        launch(dispatchers.io) {
-            delay(15000)
-            withContext(dispatchers.main) {
-                _observableProductSheetContent.value = PlayUiMocker.getMockVoucherOnlySocket(_observableProductSheetContent.value)
-            }
-        }
-    }
-
-    private fun setMockProductSheetContent() {
-        launch(dispatchers.io) {
-            delay(3000)
-            withContext(dispatchers.main) {
-                _observableProductSheetContent.value = PlayUiMocker.getMockProductSheetContent()
-            }
-        }
-    }
-
-    private fun setMockProductPinned() {
-        launch(dispatchers.io) {
-            delay(3000)
-            withContext(dispatchers.main) {
-                _observablePinnedProduct.value = PlayUiMocker.getMockPinnedProduct()
-            }
-        }
-    }
-    //endregion
 }

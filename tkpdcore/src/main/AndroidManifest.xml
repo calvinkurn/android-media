@@ -47,7 +47,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_customerapp"
         android:label="@string/app_name"
         android:logo="@drawable/ic_new_logo"
         android:resizeableActivity="false"
@@ -92,10 +92,6 @@
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
         <activity
-            android:name="com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity"
-            android:label="@string/title_activity_manage_notification"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.tokopedia.core.PreviewProductImage"
             android:label="@string/title_activity_preview_product_image"
             android:screenOrientation="portrait"
@@ -105,59 +101,6 @@
         <activity
             android:name="com.tokopedia.core.MaintenancePage"
             android:label="@string/title_activity_maintenance_page"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.ManageGeneral"
-            android:label="@string/title_activity_manage_general"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.invoice.activity.InvoiceRendererActivity"
-            android:label="@string/title_activity_download_invoice" />
-        <activity
-            android:name="com.tokopedia.core.tracking.activity.TrackingActivity"
-            android:label="Tracking"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.TermPrivacy"
-            android:label="@string/title_activity_term_and_privacy"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <action android:name="android.intent.action.VIEW" />
-
-                <data android:scheme="launch.TermPrivacy" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.tokopedia.core.loyaltysystem.LoyaltyDetail"
-            android:label="@string/title_activity_loyalty_detail"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.home.TopPicksWebView"
-            android:label="@string/title_activity_top_picks"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.geolocation.activity.GeolocationActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/choose_location"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.share.ShareActivity"
-            android:label="@string/title_activity_share"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity"
-            android:label="@string/app_name"
-            android:theme="@style/Toolbar.White"
-            android:configChanges="uiMode"
-            android:screenOrientation="portrait" />
-
-        <!-- ======================================================= -->
-        <!-- RECEIVERS REGISTRY -->
-        <!-- ======================================================= -->
-        <activity
-            android:name="com.tokopedia.core.manage.general.ManageWebViewActivity"
             android:screenOrientation="portrait" />
 
         <!-- ======================================================= -->
@@ -175,8 +118,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-        <service android:name="com.tokopedia.core.drawer2.service.DrawerGetNotificationService"
-            android:permission="android.permission.BIND_JOB_SERVICE"/>
     </application>
 
 </manifest>

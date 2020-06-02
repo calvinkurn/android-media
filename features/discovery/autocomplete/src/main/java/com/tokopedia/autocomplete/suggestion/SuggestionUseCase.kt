@@ -2,19 +2,22 @@ package com.tokopedia.autocomplete.suggestion
 
 import android.text.TextUtils
 import com.tokopedia.authentication.AuthHelper
-import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.autocomplete.util.UrlParamHelper
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
+import rx.functions.Func1
 import java.util.HashMap
+import com.tokopedia.discovery.common.constants.SearchConstant.GQL
 
 class SuggestionUseCase(
-        private val suggestionRepository: SuggestionRepository
+        private val graphqlRequest: GraphqlRequest,
+        private val graphqlUseCase: GraphqlUseCase,
+        private val suggestionDataModelMapper: Func1<GraphqlResponse, SuggestionData>
 ) : UseCase<SuggestionData>() {
-
-    override fun createObservable(requestParams: RequestParams): Observable<SuggestionData> {
-        return suggestionRepository.getSuggestionResponse(requestParams.parameters)
-    }
 
     companion object {
 
@@ -27,14 +30,9 @@ class SuggestionUseCase(
         private const val DEFAULT_SOURCE = "searchbar"
         private const val DEFAULT_COUNT = "5"
         private const val DEVICE_ID = "device_id"
+        private const val IS_TYPING = "is_typing"
 
-        fun getParams(query: String, registrationId: String, userId: String): RequestParams {
-            val searchParameter = HashMap<String, Any>()
-            searchParameter[SearchApiConst.Q] = query
-            return getParams(searchParameter, registrationId, userId)
-        }
-
-        fun getParams(searchParameter: Map<String, Any>, registrationId: String, userId: String): RequestParams {
+        fun getParams(searchParameter: Map<String, Any>, registrationId: String, userId: String, isTyping: Boolean): RequestParams {
             val params = RequestParams.create()
 
             params.putAll(searchParameter)
@@ -49,8 +47,25 @@ class SuggestionUseCase(
             }
             params.putString(KEY_UNIQUE_ID, uniqueId)
             params.putString(DEVICE_ID, registrationId)
+            params.putBoolean(IS_TYPING, isTyping)
 
             return params
         }
+    }
+
+    override fun createObservable(requestParams: RequestParams): Observable<SuggestionData> {
+        val variables = createParametersForQuery(requestParams.parameters)
+        graphqlRequest.variables = variables
+        graphqlUseCase.clearRequest()
+        graphqlUseCase.addRequest(graphqlRequest)
+        return graphqlUseCase
+                .createObservable(RequestParams.EMPTY)
+                .map(suggestionDataModelMapper)
+    }
+
+    private fun createParametersForQuery(parameters: Map<String, Any>): Map<String, Any> {
+        val variables: MutableMap<String, Any> = HashMap()
+        variables[GQL.KEY_PARAMS] = UrlParamHelper.generateUrlParamString(parameters)
+        return variables
     }
 }

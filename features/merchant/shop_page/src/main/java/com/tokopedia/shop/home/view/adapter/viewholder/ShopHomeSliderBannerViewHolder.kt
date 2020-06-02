@@ -2,8 +2,10 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.os.Handler
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.extensions.view.hide
@@ -11,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.isVisibleOnTheScreen
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_IMAGE_SLIDER_BANNER_TRACE
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.ImageUnify
@@ -24,6 +27,7 @@ import java.util.ArrayList
 
 class ShopHomeSliderBannerViewHolder(
         view: View?,
+        private val previousViewHolder: AbstractViewHolder<*>?,
         private val listener: ShopHomeDisplayWidgetListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view), CarouselUnify.OnActiveIndexChangedListener {
 
@@ -56,7 +60,11 @@ class ShopHomeSliderBannerViewHolder(
         carouselShopPage?.post {
             img.initialWidth = carouselShopPage?.measuredWidth
         }
+        val performanceMonitoring = PerformanceMonitoring.start(SHOP_HOME_IMAGE_SLIDER_BANNER_TRACE)
         img.setImageUrl(carouselItem.imageUrl, heightRatio = bannerData?.let { getHeightRatio(it) })
+        img.onUrlLoaded = {
+            performanceMonitoring.stopTrace()
+        }
     }
 
     init {
@@ -66,7 +74,7 @@ class ShopHomeSliderBannerViewHolder(
             indicatorPosition = CarouselUnify.INDICATOR_BL
             infinite = true
             onActiveIndexChangedListener = this@ShopHomeSliderBannerViewHolder
-            indicatorWrapper.setMargin(0, 8.toPx(), 0, 0)
+            indicatorWrapper.setMargin(0, 4.toPx(), 0, 0)
         }
     }
 
@@ -108,6 +116,11 @@ class ShopHomeSliderBannerViewHolder(
         itemView.textViewTitle?.apply {
             if (shopHomeDisplayWidgetUiModel.header.title.isEmpty()) {
                 hide()
+                if (previousViewHolder is ShopHomeSliderSquareViewHolder || previousViewHolder is ShopHomeCarousellProductViewHolder) {
+                    (itemView.layoutParams as? ViewGroup.MarginLayoutParams)?.apply {
+                        setMargins(leftMargin, 16.toPx(), rightMargin, bottomMargin)
+                    }
+                }
             } else {
                 text = shopHomeDisplayWidgetUiModel.header.title
                 show()

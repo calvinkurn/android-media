@@ -5,6 +5,7 @@ import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherAmountTypeDe
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.home.WidgetName.PRODUCT
 import com.tokopedia.shop.home.WidgetType.DISPLAY
 import com.tokopedia.shop.home.WidgetType.VOUCHER
@@ -35,29 +36,41 @@ object ShopPageHomeMapper {
             shopProduct: ShopProduct,
             isMyOwnProduct: Boolean
     ): ShopHomeProductViewModel =
-            ShopHomeProductViewModel().apply {
-                id = shopProduct.productId
-                name = shopProduct.name
-                displayedPrice = shopProduct.price.textIdr
-                originalPrice = shopProduct.campaign.originalPriceFmt
-                discountPercentage = shopProduct.campaign.discountedPercentage
-                imageUrl = shopProduct.primaryImage.original
-                imageUrl300 = shopProduct.primaryImage.resize300
-                totalReview = shopProduct.stats.reviewCount.toString()
-                rating = (shopProduct.stats.rating.toDouble() / 20).roundToInt().toDouble()
-                if (shopProduct.cashback.cashbackPercent > 0) {
-                    cashback = shopProduct.cashback.cashbackPercent.toDouble()
+            with(shopProduct) {
+                ShopHomeProductViewModel().also {
+                    it.id = productId
+                    it.name = name
+                    it.displayedPrice = price.textIdr
+                    it.originalPrice = campaign.originalPriceFmt
+                    it.discountPercentage = campaign.discountedPercentage
+                    it.imageUrl = primaryImage.original
+                    it.imageUrl300 = primaryImage.resize300
+                    it.totalReview = stats.reviewCount.toString()
+                    it.rating = (stats.rating.toDouble() / 20).roundToInt().toDouble()
+                    if (cashback.cashbackPercent > 0) {
+                        it.cashback = cashback.cashbackPercent.toDouble()
+                    }
+                    it.isWholesale = flags.isWholesale
+                    it.isPo = flags.isPreorder
+                    it.isFreeReturn = flags.isFreereturn
+                    it.isWishList = flags.isWishlist
+                    it.productUrl = productUrl
+                    it.isSoldOut = flags.isSold
+                    it.isShowWishList = !isMyOwnProduct
+                    it.isShowFreeOngkir = freeOngkir.isActive
+                    it.freeOngkirPromoIcon = freeOngkir.imgUrl
+                    it.labelGroupList = labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
                 }
-                isWholesale = shopProduct.flags.isWholesale
-                isPo = shopProduct.flags.isPreorder
-                isFreeReturn = shopProduct.flags.isFreereturn
-                isWishList = shopProduct.flags.isWishlist
-                productUrl = shopProduct.productUrl
-                isSoldOut = shopProduct.flags.isSold
-                isShowWishList = !isMyOwnProduct
-                isShowFreeOngkir = shopProduct.freeOngkir.isActive
-                freeOngkirPromoIcon = shopProduct.freeOngkir.imgUrl
             }
+
+    private fun mapToLabelGroupViewModel(labelGroup: LabelGroup): LabelGroupViewModel {
+        return LabelGroupViewModel(
+                position = labelGroup.position,
+                title = labelGroup.title,
+                type = labelGroup.type
+        )
+    }
+
 
     fun mapToProductCardModel(isHasAddToCartButton: Boolean,shopHomeProductViewModel: ShopHomeProductViewModel): ProductCardModel {
         val totalReview = shopHomeProductViewModel.totalReview.toIntOrZero()

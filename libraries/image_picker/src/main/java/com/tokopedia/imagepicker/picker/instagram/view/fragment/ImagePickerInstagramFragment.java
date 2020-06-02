@@ -3,16 +3,17 @@ package com.tokopedia.imagepicker.picker.instagram.view.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
@@ -54,6 +55,7 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
     public static final String ARGS_GALLERY_TYPE = "args_gallery_type";
     public static final String ARGS_SUPPORT_MULTIPLE = "args_support_multiple";
     public static final String ARGS_MIN_RESOLUTION = "args_min_resolution";
+    public static final String ARGS_BELOW_MIN_RESOLUTION_ERROR_MESSAGE = "args_below_min_resolution_error_message";
     public static final int REQUEST_CODE_INSTAGRAM_LOGIN = 342;
 
     @Inject
@@ -67,19 +69,28 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
     int galleryType;
     private boolean supportMultipleSelection;
     private int minImageResolution;
+    private String belowMinImageResolutionErrorMessage = "";
 
     private ImageInstagramAdapter imageInstagramAdapter;
 
     public static ImagePickerInstagramFragment newInstance(@GalleryType int galleryType,
                                                            boolean supportMultipleSelection,
-                                                           int minImageResolution) {
+                                                           int minImageResolution,
+                                                           String belowMinImageResolutionErrorMessage) {
         ImagePickerInstagramFragment fragment = new ImagePickerInstagramFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(ARGS_GALLERY_TYPE, galleryType);
         bundle.putBoolean(ARGS_SUPPORT_MULTIPLE, supportMultipleSelection);
         bundle.putInt(ARGS_MIN_RESOLUTION, minImageResolution);
+        bundle.putString(ARGS_BELOW_MIN_RESOLUTION_ERROR_MESSAGE, belowMinImageResolutionErrorMessage);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    public static ImagePickerInstagramFragment newInstance(@GalleryType int galleryType,
+                                                           boolean supportMultipleSelection,
+                                                           int minImageResolution) {
+        return newInstance(galleryType, supportMultipleSelection, minImageResolution, "");
     }
 
 
@@ -91,6 +102,10 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
         minImageResolution = bundle.getInt(ARGS_MIN_RESOLUTION);
         if(savedInstanceState != null) {
             code = savedInstanceState.getString(InstagramConstant.EXTRA_CODE_LOGIN, "");
+        }
+        belowMinImageResolutionErrorMessage = bundle.getString(ARGS_BELOW_MIN_RESOLUTION_ERROR_MESSAGE, "");
+        if (belowMinImageResolutionErrorMessage == null || belowMinImageResolutionErrorMessage.isEmpty()) {
+            belowMinImageResolutionErrorMessage = getString(R.string.image_under_x_resolution, minImageResolution);
         }
 
         super.onCreate(savedInstanceState);
@@ -246,7 +261,7 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
     public boolean isImageValid(InstagramMediaModel instagramMediaModel) {
         //check image resolution
         if (instagramMediaModel.getMinResolution() < minImageResolution) {
-            NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.image_under_x_resolution, minImageResolution));
+            NetworkErrorHelper.showRedCloseSnackbar(getView(), belowMinImageResolutionErrorMessage);
             return false;
         }
         return true;

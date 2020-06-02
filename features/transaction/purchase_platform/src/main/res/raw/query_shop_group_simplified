@@ -4,6 +4,7 @@ query shop_group_simplified($lang: String, $selected_cart_id: String) {
       status
       error_message
       data {
+        errors
         is_coupon_active
         is_one_tab_promo
         max_quantity
@@ -320,6 +321,10 @@ query shop_group_simplified($lang: String, $selected_cart_id: String) {
               warehouse_id
               is_parent
               is_campaign_error
+              free_shipping {
+                eligible
+                badge_url
+              }
             }
           }
         }
@@ -401,6 +406,10 @@ query shop_group_simplified($lang: String, $selected_cart_id: String) {
               url
             }
             messages
+              nicotine_lite_message {
+              text
+              url
+            }
             product {
               product_tracker_data {
                 attribution
@@ -506,6 +515,10 @@ query shop_group_simplified($lang: String, $selected_cart_id: String) {
               warehouse_id
               is_parent
               is_campaign_error
+              free_shipping {
+                eligible
+                badge_url
+              }
             }
           }
         }

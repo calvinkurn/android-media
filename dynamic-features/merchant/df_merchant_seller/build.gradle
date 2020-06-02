@@ -47,7 +47,6 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(rootProject.ext.app.customerapp)
 
     implementation project(rootProject.ext.features.productManageList)
@@ -56,4 +55,5 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsDashboard)
     implementation project(rootProject.ext.features.opportunity)
     implementation project(rootProject.ext.features.sellerorder)
+    implementation project(rootProject.ext.features.shopShowcase)
 }

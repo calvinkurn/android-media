@@ -22,6 +22,8 @@ import javax.inject.Inject
  */
 open class GetExistingChatMapper @Inject constructor() {
 
+    protected var latestHeaderDate: String = ""
+
     open fun map(pojo: GetExistingChatPojo): ChatroomViewModel {
 
         val listChat = mappingListChat(pojo)
@@ -34,7 +36,8 @@ open class GetExistingChatMapper @Inject constructor() {
         return ChatroomViewModel(
                 listChat, headerModel,
                 canLoadMore, isReplyable,
-                blockedStatus, minReplyTime
+                blockedStatus, minReplyTime,
+                latestHeaderDate
         )
 
     }

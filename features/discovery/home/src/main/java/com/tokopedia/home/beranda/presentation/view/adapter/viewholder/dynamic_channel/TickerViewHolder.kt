@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
 import java.util.*
@@ -15,14 +15,14 @@ import java.util.*
 /**
  * @author by DevAra on 02/04/20.
  */
-class TickerViewHolder(itemView: View, private val listener: HomeCategoryListener) : AbstractViewHolder<TickerViewModel?>(itemView) {
+class TickerViewHolder(itemView: View, private val listener: HomeCategoryListener) : AbstractViewHolder<TickerDataModel?>(itemView) {
     private val emptyTitle: String = ""
     private val tickerComponent: Ticker = itemView.findViewById(R.id.tickerComponent)
     private val context: Context = itemView.context
     private val view: View = itemView
     private val tickerId = ""
 
-    override fun bind(element: TickerViewModel?) {
+    override fun bind(element: TickerDataModel?) {
         element?.let {element->
             element.tickers?.let {tickers->
                 val tickerDataList: MutableList<TickerData> = ArrayList()

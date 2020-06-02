@@ -37,8 +37,7 @@
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginLeft="@dimen/dp_12"
             android:layout_marginBottom="@dimen/dp_8"
-            android:layout_weight="3"
-            app:width_weight="0.8" />
+            android:layout_weight="3" />
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_30"
@@ -46,8 +45,7 @@
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginLeft="@dimen/dp_12"
             android:layout_marginBottom="@dimen/dp_8"
-            android:layout_weight="3"
-            app:width_weight="0.8" />
+            android:layout_weight="3" />
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_30"
@@ -55,8 +53,10 @@
             android:layout_marginLeft="@dimen/dp_12"
             android:layout_marginRight="@dimen/dp_12"
             android:layout_marginBottom="@dimen/dp_8"
-            android:layout_weight="3"
-            app:width_weight="0.8" />
+            android:layout_weight="3"/>
     </LinearLayout>
+    <include
+        android:id="@+id/grid_loading_layout"
+        layout="@layout/layout_template_loading_item_business_widget"/>
 
 </com.tokopedia.unifycomponents.ContainerUnify>

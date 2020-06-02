@@ -5,15 +5,20 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_DUAL_ANNOUNCEMENT
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUOTATION
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
+import com.tokopedia.chat_common.domain.pojo.ChatRepliesItem
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.merchantvoucher.common.gql.data.*
 import com.tokopedia.topchat.chatroom.domain.pojo.ImageDualAnnouncementPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.QuotationAttributes
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatVoucherPojo
+import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerAttributesResponse
+import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
@@ -30,7 +35,12 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor(
 
     override fun mappingListChat(pojo: GetExistingChatPojo): ArrayList<Visitable<*>> {
         val listChat: ArrayList<Visitable<*>> = ArrayList()
-        for (chatItemPojo in pojo.chatReplies.list) {
+        val replies = pojo.chatReplies.list
+        for ((index, chatItemPojo) in replies.withIndex()) {
+            listChat.add(createHeaderDate(chatItemPojo))
+            if (index == replies.lastIndex) {
+                latestHeaderDate = chatItemPojo.date
+            }
             for (chatItemPojoByDate in chatItemPojo.chats) {
                 var index = 0
                 while (index < chatItemPojoByDate.replies.size) {
@@ -54,6 +64,10 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor(
             }
         }
         return listChat
+    }
+
+    private fun createHeaderDate(chatItemPojo: ChatRepliesItem): Visitable<*> {
+        return HeaderDateUiModel(chatItemPojo.date)
     }
 
     private fun createCarouselProduct(chatDateTime: Reply, products: List<Visitable<*>>): ProductCarouselUiModel {
@@ -92,6 +106,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor(
             TYPE_IMAGE_DUAL_ANNOUNCEMENT -> convertToDualAnnouncement(chatItemPojoByDateByTime)
             TYPE_VOUCHER -> convertToVoucher(chatItemPojoByDateByTime)
             TYPE_QUOTATION -> convertToQuotation(chatItemPojoByDateByTime)
+            TYPE_STICKER.toString() -> convertToSticker(chatItemPojoByDateByTime)
             else -> super.mapAttachment(chatItemPojoByDateByTime)
         }
     }
@@ -176,6 +191,29 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor(
                 isSender = !message.isOpposite,
                 message = message.msg,
                 isRead = message.isRead
+        )
+    }
+
+    private fun convertToSticker(message: Reply): Visitable<*> {
+        val stickerAttributes = GsonBuilder()
+                .create()
+                .fromJson<StickerAttributesResponse>(
+                        message.attachment?.attributes,
+                        StickerAttributesResponse::class.java
+                )
+        return StickerUiModel(
+                messageId = message.msgId.toString(),
+                fromUid = message.senderId.toString(),
+                from = message.senderName,
+                fromRole = message.role,
+                attachmentId = message.attachment?.id ?: "",
+                attachmentType = message.attachment?.type.toString(),
+                replyTime = message.replyTime,
+                message = message.msg,
+                isRead = message.isRead,
+                isDummy = false,
+                isSender = !message.isOpposite,
+                sticker = stickerAttributes.stickerProfile
         )
     }
 }

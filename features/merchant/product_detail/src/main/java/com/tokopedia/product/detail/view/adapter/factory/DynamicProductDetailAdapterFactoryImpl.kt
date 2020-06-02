@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.view.adapter.factory
 
+import android.content.SharedPreferences
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
@@ -11,7 +12,8 @@ import com.tokopedia.product.detail.view.viewholder.*
 import com.tokopedia.variant_common.view.ProductVariantListener
 
 class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProductDetailListener,
-                                             private val variantListener: ProductVariantListener) : BaseAdapterTypeFactory(), DynamicProductDetailAdapterFactory {
+                                             private val variantListener: ProductVariantListener)
+    : BaseAdapterTypeFactory(), DynamicProductDetailAdapterFactory {
     override fun type(data: ProductLastSeenDataModel): Int {
         return ProductLastSeenViewHolder.LAYOUT
     }
@@ -38,6 +40,10 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
 
     override fun type(data: ProductDiscussionDataModel): Int {
         return ProductDiscussionViewHolder.LAYOUT
+    }
+
+    override fun type(data: ProductDiscussionMostHelpfulDataModel): Int {
+        return ProductDiscussionMostHelpfulViewHolder.LAYOUT
     }
 
     override fun type(data: ProductInfoDataModel): Int {
@@ -72,10 +78,6 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
         return ProductVariantViewHolder.LAYOUT
     }
 
-    override fun type(data: ProductSocialProofPvDataModel): Int {
-        return ProductSocialProofPvViewHolder.LAYOUT
-    }
-
     override fun type(data: ProductNotifyMeDataModel): Int {
         return ProductNotifyMeViewHolder.LAYOUT
     }
@@ -91,13 +93,13 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
             ProductSocialProofViewHolder.LAYOUT -> ProductSocialProofViewHolder(view, listener)
             ProductInfoViewHolder.LAYOUT -> ProductInfoViewHolder(view, listener)
             ProductDiscussionViewHolder.LAYOUT -> ProductDiscussionViewHolder(view, listener)
+            ProductDiscussionMostHelpfulViewHolder.LAYOUT -> ProductDiscussionMostHelpfulViewHolder(view, listener)
             ProductGeneralInfoViewHolder.LAYOUT -> ProductGeneralInfoViewHolder(view, listener)
             ProductReviewViewHolder.LAYOUT -> ProductReviewViewHolder(view, listener)
             ProductValuePropositionViewHolder.LAYOUT -> ProductValuePropositionViewHolder(view, listener)
             ProductShimmeringViewHolder.LAYOUT -> ProductShimmeringViewHolder(view)
             PageErrorViewHolder.LAYOUT -> PageErrorViewHolder(view, listener)
             ProductVariantViewHolder.LAYOUT -> ProductVariantViewHolder(view, variantListener)
-            ProductSocialProofPvViewHolder.LAYOUT -> ProductSocialProofPvViewHolder(view, listener)
             ProductNotifyMeViewHolder.LAYOUT -> ProductNotifyMeViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         }

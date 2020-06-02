@@ -3,6 +3,7 @@ package com.tokopedia.play.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -10,6 +11,8 @@ import com.tokopedia.play.domain.PostAddToCartUseCase
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.Event
 import com.tokopedia.play.view.type.BottomInsetsType
+import com.tokopedia.play.view.type.DiscountedPrice
+import com.tokopedia.play.view.type.OriginalPrice
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.CartFeedbackUiModel
 import com.tokopedia.play.view.uimodel.ProductLineUiModel
@@ -88,7 +91,13 @@ class PlayBottomSheetViewModel @Inject constructor(
                         product.id,
                         product.shopId,
                         product.minQty,
-                        notes
+                        notes,
+                        AddToCartRequestParams.ATC_FROM_PLAY,
+                        product.title,
+                        price = when (product.price) {
+                            is OriginalPrice -> product.price.priceNumber.toString()
+                            is DiscountedPrice -> product.price.discountedPriceNumber.toString()
+                        }
                 )
                 postAddToCartUseCase.executeOnBackground()
             }
@@ -125,24 +134,4 @@ class PlayBottomSheetViewModel @Inject constructor(
         super.onCleared()
         job.cancelChildren()
     }
-
-//    private fun setMockVariantSheetContent(action: ProductAction) {
-//        _observableProductVariant.value = PlayResult.Success(VariantSheetUiModel(
-//                product = ProductLineUiModel(
-//                        id = "123",
-//                        imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
-//                        title = "Product Value",
-//                        isVariantAvailable = true,
-//                        price = DiscountedPrice(
-//                                originalPrice = "Rp20.000",
-//                                discountPercent = 10,
-//                                discountedPrice = "Rp20.000"
-//                        ),
-//                        stock = OutOfStock,
-//                        minQty = 1,
-//                        applink = null
-//                ),
-//                action = action
-//        ))
-//    }
 }

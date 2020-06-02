@@ -5,40 +5,41 @@ import android.graphics.Paint
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.ProductHighlightTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home.beranda.domain.model.FreeOngkir
 import com.tokopedia.home.beranda.helper.DateHelper
 import com.tokopedia.home.beranda.helper.glide.FPM_DEALS_WIDGET_PRODUCT_IMAGE
-import com.tokopedia.home.beranda.helper.glide.loadImageRounded
+import com.tokopedia.home.beranda.helper.glide.loadImage
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.util.setGradientBackground
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import kotlinx.android.synthetic.main.home_dc_deals.view.*
+import kotlinx.android.synthetic.main.home_dc_deals.view.imageFreeOngkirPromo
 
 class ProductHighlightViewHolder(
         val view: View,
         val listener: HomeCategoryListener
-): AbstractViewHolder<DynamicChannelViewModel>(view) {
+): AbstractViewHolder<DynamicChannelDataModel>(view) {
 
     companion object {
         @LayoutRes val LAYOUT = R.layout.home_dc_deals
     }
 
-    override fun bind(element: DynamicChannelViewModel?) {
+    override fun bind(element: DynamicChannelDataModel?) {
         element?.let {
             setDealsChannelInfo(it)
             setDealsProductGrid(it)
         }
     }
 
-    override fun bind(element: DynamicChannelViewModel?, payloads: MutableList<Any>) {
+    override fun bind(element: DynamicChannelDataModel?, payloads: MutableList<Any>) {
         bind(element)
     }
 
-    private fun setDealsChannelInfo(channel: DynamicChannelViewModel) {
+    private fun setDealsChannelInfo(channel: DynamicChannelDataModel) {
         channel.channel?.header?.let {
             setDealsChannelTitle(it)
             setDealsCountDownTimer(it, channel)
@@ -49,7 +50,7 @@ class ProductHighlightViewHolder(
         }
     }
 
-    private fun setDealsCountDownTimer(it: DynamicHomeChannel.Header, channel: DynamicChannelViewModel) {
+    private fun setDealsCountDownTimer(it: DynamicHomeChannel.Header, channel: DynamicChannelDataModel) {
         itemView.deals_channel_subtitle.text = it.subtitle
         if (it.textColor.isNotEmpty()) {
             val textColor = Color.parseColor(it.textColor)
@@ -84,7 +85,7 @@ class ProductHighlightViewHolder(
         }
     }
 
-    private fun setDealsProductGrid(channel: DynamicChannelViewModel) {
+    private fun setDealsProductGrid(channel: DynamicChannelDataModel) {
         channel.channel?.let { channel ->
             val grid = channel.grids.firstOrNull()
             grid?.let {
@@ -95,8 +96,16 @@ class ProductHighlightViewHolder(
                 setDealsProductImage(it.imageUrl)
                 setDealsProductDiscountLabel(it.discount)
                 setDealsProductStockbar(it.soldPercentage, it.label)
+                setDealsProductFreeOngkir(it.freeOngkir)
                 setDealsProductViewCount(it.productViewCountFormatted)
             }
+        }
+    }
+
+    private fun setDealsProductFreeOngkir(freeOngkir: FreeOngkir) {
+        if (freeOngkir.isActive) {
+            itemView.imageFreeOngkirPromo?.visibility = View.VISIBLE
+            itemView.imageFreeOngkirPromo?.loadImage(freeOngkir.imageUrl)
         }
     }
 

@@ -15,23 +15,6 @@ import org.spekframework.spek2.style.gherkin.Feature
 class HomeBannerTrackerTest : Spek({
     InstantTaskExecutorRuleSpek(this)
 
-//    "id": "6794",
-//    "galaxy_attribution": "OTHERS",
-//    "persona": "",
-//    "brand_id": "",
-//    "category_persona": "",
-//    "title": "X_Others_HPB2_Donasi COVID19_New User_22 Mar 20",
-//    "image_url": "https://ecs7.tokopedia.net/img/banner/2020/3/22/85531617/85531617_f8dd3096-8eb6-4f82-b193-d7d0cee392e4.jpg",
-//    "redirect_url": "https://www.tokopedia.com/discovery/salam-donasicovid19",
-//    "applink": "tokopedia://discovery/salam-donasicovid19",
-//    "topads_view_url": "",
-//    "promo_code": "",
-//    "message": "X_Others_HPB2_Donasi COVID19_New User_22 Mar 20",
-//    "creative_name": "X_Others_HPB2_Donasi COVID19_New User_22 Mar 20",
-//    "start_time": "",
-//    "expire_time": "",
-//    "slide_index": 1,
-//    "type": "new_user_mp"
     val testTracker = mockk<TestTracker>(relaxed = true)
 
     val homeBanner = BannerSlidesModel(
@@ -46,12 +29,9 @@ class HomeBannerTrackerTest : Spek({
             applink = "tokopedia://discovery/salam-donasicovid19",
             topadsViewUrl = "",
             promoCode = "",
-            message = "X_Others_HPB2_Donasi COVID19_New User_22 Mar 20",
             creativeName = "X_Others_HPB2_Donasi COVID19_New User_22 Mar 20",
-            startTime = "",
-            expireTime = "",
-            slideIndex = 1,
-            type = "new_user_mp"
+            type = "new_user_mp",
+            campaignCode = "this_is_campaign_code"
     )
 
     Feature("Impression Banner Promotion"){
