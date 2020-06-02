@@ -3,9 +3,9 @@ package com.tokopedia.trackingoptimizer.repository
 import android.content.Context
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.trackingoptimizer.constant.Constant
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.ECOMMERCE
+import com.tokopedia.trackingoptimizer.constant.Constant.Companion.TRACKING_QUEUE_SIZE_LIMIT_VALUE_REMOTECONFIGKEY
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.impressionEventList
 import com.tokopedia.trackingoptimizer.datasource.TrackingEEDataSource
 import com.tokopedia.trackingoptimizer.datasource.TrackingEEFullDataSource
@@ -19,7 +19,7 @@ import com.tokopedia.trackingoptimizer.gson.HashMapJsonUtil
 import com.tokopedia.trackingoptimizer.model.EventModel
 import com.tokopedia.trackingoptimizer.model.ScreenCustomModel
 
-class TrackingRepository(val context: Context) : ITrackingRepository<TrackingRegularDbModel, TrackingEEDbModel,
+class TrackingRepository(val context: Context, val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(context)) : ITrackingRepository<TrackingRegularDbModel, TrackingEEDbModel,
         TrackingEEFullDbModel, TrackingScreenNameDbModel> {
 
     val trackingEEDataSource by lazy {
@@ -36,10 +36,6 @@ class TrackingRepository(val context: Context) : ITrackingRepository<TrackingReg
 
     val trackingScreenNameDataSource by lazy {
         TrackingScreenNameDataSource(context)
-    }
-
-    val remoteConfig by lazy {
-        FirebaseRemoteConfigImpl(context)
     }
 
     override fun putScreenName(screenName: String?) {
@@ -143,7 +139,7 @@ class TrackingRepository(val context: Context) : ITrackingRepository<TrackingReg
                 trackingEEDbModel.customDimension.length
 
         val enhanceEcommerceSizeLimit = remoteConfig.getLong(
-                RemoteConfigKey.TRACKING_QUEUE_SIZE_LIMIT_VALUE,
+                TRACKING_QUEUE_SIZE_LIMIT_VALUE_REMOTECONFIGKEY,
                 ENHANCE_ECOMMERCE_SIZE_LIMIT_DEFAULT).toInt()
 
         if (currentEESize >= enhanceEcommerceSizeLimit) {
