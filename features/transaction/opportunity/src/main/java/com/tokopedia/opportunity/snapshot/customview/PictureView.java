@@ -78,7 +78,7 @@ public class PictureView extends BaseView<ProductDetailData, SnapShotFragmentVie
         vpImage.setAdapter(imagePagerAdapter);
         List<ProductImage> productImageList = data.getProductImages();
         if (productImageList.isEmpty()) {
-            int resId = R.drawable.product_no_photo_default;
+            int resId = R.drawable.product_no_photo_default_opportunity;
             Resources res = getContext().getResources();
             Uri resUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
                     + "://" + res.getResourcePackageName(resId)
