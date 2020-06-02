@@ -6,13 +6,14 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import java.util.HashSet
 
 class DiscoveryAnalytics(val pageType: String = "",
                          val pagePath: String = "",
                          val trackingQueue: TrackingQueue) {
 
     private var eventDiscoveryCategory: String = "$VALUE_DISCOVERY_PAGE - $pageType - $pagePath"
-    private val pcDataLayerList = ArrayList<Map<String, Any>>()
+    private val pcDataLayerList = HashSet<Map<String, Any>>()
     private var productCardImpressionLabel : String = ""
     private var productCardItemList : String = ""
 
@@ -267,9 +268,11 @@ class DiscoveryAnalytics(val pageType: String = "",
 
     //51
     fun trackEventImpressionProductCard() {
+        val list = ArrayList<Map<String, Any>>()
+        list.addAll(pcDataLayerList)
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
                 EVENT_PROMO_VIEW to mapOf(
-                        KEY_PROMOTIONS to pcDataLayerList))
+                        KEY_PROMOTIONS to list))
         val map = createGeneralImpressionEvent(eventAction = PRODUCT_LIST_IMPRESSION, eventLabel = productCardImpressionLabel)
         map[KEY_E_COMMERCE] = eCommerce
         map[ITEM_LIST] = productCardItemList
