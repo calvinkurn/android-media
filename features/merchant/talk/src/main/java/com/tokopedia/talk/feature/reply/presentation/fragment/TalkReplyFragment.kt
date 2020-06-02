@@ -96,6 +96,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private var adapter: TalkReplyAdapter? = null
     private var attachedProductAdapter: TalkReplyAttachedProductAdapter? = null
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
+    private var toaster: Snackbar? = null
 
     override fun getScreenName(): String {
         return TalkTrackingConstants.TALK_SEND_SCREEN_SCREEN_NAME
@@ -242,7 +243,11 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         castContextToTalkPerformanceMonitoringListener(context)
     }
 
-    override fun onUserDetailsClicked(userId: String) {
+    override fun onUserDetailsClicked(userId: String, isSeller: Boolean, shopdId: String) {
+        if(isSeller) {
+            goToShopPageActivity(shopId)
+            return
+        }
         goToProfileActivity(userId)
     }
 
@@ -281,6 +286,11 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun goToPdp(productId: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+        startActivity(intent)
+    }
+
+    private fun goToShopPageActivity(shopId: String) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_PAGE, shopId)
         startActivity(intent)
     }
 
@@ -340,7 +350,13 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
             adjustToasterHeight()
         }
         view?.let {
-            Toaster.make(it, successMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.talk_ok))
+            toaster?.let { toaster ->
+                if(toaster.isShownOrQueued) {
+                    return
+                }
+                this.toaster = Toaster.build(it, successMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.talk_ok))
+                toaster.show()
+            }
         }
     }
 
@@ -349,7 +365,13 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
             adjustToasterHeight()
         }
         view?.let {
-            Toaster.make(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_ok))
+            toaster?.let { toaster ->
+                if(toaster.isShownOrQueued) {
+                    return
+                }
+                this.toaster = Toaster.build(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_ok))
+                toaster.show()
+            }
         }
     }
 
@@ -413,8 +435,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun onFailCreateComment() {
-        adjustToasterHeight()
-        view?.let { Toaster.make(it, getString(R.string.reply_toaster_network_error), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.talk_ok)) }
+        showErrorToaster(getString(R.string.reply_toaster_network_error), resources.getBoolean(R.bool.reply_adjust_toaster_height))
     }
 
     private fun adjustToasterHeight() {
