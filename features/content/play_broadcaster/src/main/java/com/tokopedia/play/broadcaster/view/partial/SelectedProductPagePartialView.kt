@@ -53,30 +53,25 @@ class SelectedProductPagePartialView(
         rvSelectedProduct.addItemDecoration(PlayGridTwoItemDecoration(context))
 
 
-        vDragArea.setOnTouchListener(object : View.OnTouchListener {
-
-            @RequiresApi(Build.VERSION_CODES.KITKAT)
-            override fun onTouch(v: View, event: MotionEvent): Boolean {
-                println("DragTouch: ${MotionEvent.actionToString(event.action)}")
-                when (event.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        parentCoordinator.parent.requestDisallowInterceptTouchEvent(true)
-                        return true
-                    }
-                    MotionEvent.ACTION_MOVE -> {
-                        val currentY = event.rawY.toInt()
-                        bottomSheetBehavior.peekHeight = container.height - currentY
-                    }
-                    MotionEvent.ACTION_UP -> {
-                        parentCoordinator.parent.requestDisallowInterceptTouchEvent(false)
-                        if (bottomSheetBehavior.peekHeight >= 0.6 * parentCoordinator.height) show()
-                        else hide()
-                    }
+        vDragArea.setOnTouchListener { _, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    parentCoordinator.parent.requestDisallowInterceptTouchEvent(true)
+                    return@setOnTouchListener true
                 }
-
-                return false
+                MotionEvent.ACTION_MOVE -> {
+                    val currentY = event.rawY.toInt()
+                    bottomSheetBehavior.peekHeight = container.height - currentY
+                }
+                MotionEvent.ACTION_UP -> {
+                    parentCoordinator.parent.requestDisallowInterceptTouchEvent(false)
+                    if (bottomSheetBehavior.peekHeight >= 0.6 * parentCoordinator.height) show()
+                    else hide()
+                }
             }
-        })
+
+            return@setOnTouchListener false
+        }
 
         hide()
     }
