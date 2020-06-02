@@ -21,5 +21,8 @@ data class BottomSheetModel(
         @SerializedName("text")
         val text: String = "",
         @SerializedName("applink")
-        val applink: String = ""
-)
+        val applink: String = "",
+        @SerializedName("title")
+        val title: String = "",
+        @SerializedName("btn_text")
+        val btnText: String = "")

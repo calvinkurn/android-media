@@ -18,8 +18,10 @@ val responseAtcSuccess = """
        "status": true,
        "data": {
            "image": "",
-           "text": "Verifikasi akunmu dulu yuk!",
-           "applink": "tokopedia://setting/profile"
+           "text": "Demi keamanan akunmu silahkan verifikasi dulu yuk!",
+           "title": "Verifikasi akun",
+           "applink": "tokopedia://setting/profile",
+           "btn_text": "Verifikasi"
        }
    }
 """.trimIndent()
