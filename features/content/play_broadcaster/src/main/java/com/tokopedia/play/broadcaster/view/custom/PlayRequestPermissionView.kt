@@ -12,6 +12,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.util.PermissionUtil
 
 
 /**
@@ -54,7 +55,7 @@ class PlayRequestPermissionView : ConstraintLayout {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
         val uri: Uri = Uri.fromParts("package", context.packageName, null)
         intent.data = uri
-        (context as? Activity)?.startActivity(intent)
+        (context as? Activity)?.startActivityForResult(intent, PermissionUtil.PLAY_REQUEST_PERMISSION_CODE)
     }
 
     fun setPermissionGranted(permissions: List<String>) {

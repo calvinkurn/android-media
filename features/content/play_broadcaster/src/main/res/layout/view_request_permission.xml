@@ -70,7 +70,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view_center">
 
-        <androidx.appcompat.widget.AppCompatImageButton
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_permit_camera"
             android:layout_width="@dimen/play_permit_icon_width"
             android:layout_height="wrap_content"
@@ -78,6 +78,7 @@
             android:background="@android:color/transparent"
             app:layout_constraintBottom_toTopOf="@+id/divider"
             app:layout_constraintStart_toStartOf="parent"
+            android:scaleType="centerInside"
             app:srcCompat="@drawable/ic_play_camera_white" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -118,6 +119,7 @@
             android:layout_width="@dimen/play_permit_icon_width"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/play_permit_spacing"
+            android:scaleType="centerInside"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/divider"
             app:srcCompat="@drawable/ic_play_audio_white" />

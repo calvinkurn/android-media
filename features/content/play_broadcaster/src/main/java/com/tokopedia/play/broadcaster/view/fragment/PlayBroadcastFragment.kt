@@ -2,7 +2,6 @@ package com.tokopedia.play.broadcaster.view.fragment
 
 import android.os.Bundle
 import android.view.*
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.ViewModelProviders
 import com.alivc.live.pusher.SurfaceStatus
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -24,7 +23,6 @@ class PlayBroadcastFragment: BaseDaggerFragment() {
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
     private lateinit var surfaceView: SurfaceView
-//    private lateinit var containerPermission: View
 
     private var surfaceStatus = SurfaceStatus.UNINITED
 
@@ -49,9 +47,6 @@ class PlayBroadcastFragment: BaseDaggerFragment() {
     }
 
     private fun initView(view: View) {
-//        containerPermission = view.findViewById(R.id.container_permission)
-//        setupViewPermission()
-
         surfaceView = view.findViewById(R.id.surface_view)
         surfaceView.holder.addCallback(object: SurfaceHolder.Callback{
             override fun surfaceChanged(surfaceHolder: SurfaceHolder?, p1: Int, p2: Int, p3: Int) {
@@ -73,48 +68,7 @@ class PlayBroadcastFragment: BaseDaggerFragment() {
                 }
             }
         })
-
-//        textSwitchCamera = view.findViewById(R.id.iv_switch)
-//
-//        textClose = view.findViewById(R.id.iv_close)
-//        textClose.setOnClickListener {
-//            // TODO("action close page")
-//        }
-
-//        if (!isAllPermissionGranted()) {
-//            requestPermission(arrayOf(
-//                    Manifest.permission.CAMERA,
-//                    Manifest.permission.RECORD_AUDIO))
-//        }
     }
-
-//    private fun setupViewPermission() {
-//        if (isAllPermissionGranted()) {
-//            containerPermission.gone()
-//            return
-//        }
-//
-//        containerPermission.visible()
-//
-//        val textAllowCamera = containerPermission.findViewById<TextView>(R.id.text_allow_camera)
-//        val textAllowMic = containerPermission.findViewById<TextView>(R.id.text_allow_mic)
-//
-//        setupActionViewPermission(Manifest.permission.CAMERA, textAllowCamera)
-//        setupActionViewPermission(Manifest.permission.RECORD_AUDIO, textAllowMic)
-//    }
-//
-//    private fun setupActionViewPermission(permission: String, textAction: TextView) {
-//        if (isPermissionGranted(permission)) {
-//            textAction.setTextColor(ContextCompat.getColor(requireContext(), R.color.play_granted_permission))
-//            textAction.isEnabled = false
-//        } else {
-//            textAction.setTextColor(ContextCompat.getColor(requireContext(), R.color.play_denied_permission))
-//            textAction.isEnabled = true
-//            textAction.setOnClickListener {
-//                requestPermission(arrayOf(permission))
-//            }
-//        }
-//    }
 
     private fun startPreview() {
         if (surfaceStatus != SurfaceStatus.UNINITED &&
@@ -138,38 +92,9 @@ class PlayBroadcastFragment: BaseDaggerFragment() {
         super.onDestroy()
     }
 
-//    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-//        if (requestCode == PERMISSION_CODE) {
-//            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                if (permissions[0] == Manifest.permission.CAMERA) {
-//                    startPreview()
-//                }
-//                setupViewPermission()
-//            }
-//        } else super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-//    }
-//
-//    private fun isPermissionGranted(permission: String): Boolean {
-//        return ContextCompat.checkSelfPermission(
-//                requireContext(),
-//                permission) == PackageManager.PERMISSION_GRANTED
-//    }
-//
-//    private fun isAllPermissionGranted(): Boolean {
-//        return isPermissionGranted(Manifest.permission.CAMERA) &&
-//                isPermissionGranted(Manifest.permission.RECORD_AUDIO)
-//    }
-//
-//    private fun requestPermission(arrayOfPermission: Array<String>) {
-//        requestPermissions(arrayOfPermission,
-//                PERMISSION_CODE)
-//    }
-
     companion object {
 
         const val PARENT_FRAGMENT_TAG = "parent_fragment"
-
-        const val PERMISSION_CODE = 9276
 
         fun newInstance(): PlayBroadcastFragment {
             return PlayBroadcastFragment()

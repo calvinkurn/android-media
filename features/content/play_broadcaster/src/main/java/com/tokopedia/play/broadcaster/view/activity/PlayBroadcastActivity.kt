@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.view.activity
 
 import android.Manifest
-import android.os.Build
+import android.content.Intent
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.appcompat.widget.AppCompatImageView
@@ -9,7 +9,6 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.config.GlobalConfig
@@ -29,7 +28,6 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayLiveBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayPrepareBroadcastFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.unifyprinciples.Typography
-import java.lang.IllegalStateException
 import javax.inject.Inject
 
 /**
@@ -92,9 +90,10 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator, Permissio
 
     private fun setupPermission() {
         viewRequestPermission = findViewById(R.id.view_request_permission)
+        permissionUtil.setListener(this)
         permissionUtil.checkPermission(arrayOf(
                 Manifest.permission.CAMERA,
-                Manifest.permission.RECORD_AUDIO), this)
+                Manifest.permission.RECORD_AUDIO))
     }
 
     private fun setupToolbar() {
@@ -123,6 +122,11 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator, Permissio
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         permissionUtil.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        permissionUtil.onActivityResult(requestCode, resultCode, data)
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun navigateToFragment(fragmentClass: Class<out Fragment>, extras: Bundle, recordBreadcrumbs: Boolean) {

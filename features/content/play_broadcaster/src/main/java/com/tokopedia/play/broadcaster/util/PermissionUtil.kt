@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.util
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
@@ -37,43 +38,85 @@ class PermissionUtil(private val mContext: Context) {
         fun onError(throwable: Throwable)
     }
 
-    private var sharedPreference: SharedPreferences? = PreferenceManager.getDefaultSharedPreferences(mContext)
+    private var mPreference: SharedPreferences? = PreferenceManager.getDefaultSharedPreferences(mContext)
     private var mPermission: MutableList<Permission> = mutableListOf()
+    private var mListener: Listener? = null
 
-    fun checkPermission(permissions: Array<String>, listener: Listener) {
+    fun setListener(listener: Listener) {
+        this.mListener = listener
+    }
+
+    fun checkPermission(permissions: Array<out String>) {
         if (shouldAskPermission()) {
             defineGrantedPermission(permissions)
 
             if (isAllPermissionGranted()) {
-                listener.onAllPermissionGranted()
+                mListener?.onAllPermissionGranted()
                 return
             }
 
             if (mContext is Activity) {
                 defineFirstTimePermission()
             } else {
-                listener.onError(Throwable("Context is not activity"))
+                mListener?.onError(Throwable("Context is not activity"))
             }
 
             if (isAnyPermissionDenied()) {
-                listener.onPermissionDisabled()
+                mListener?.onPermissionDisabled()
             } else {
-                askPermission(permissions)
                 saveState()
+                askPermission(permissions)
             }
 
             val permissionsGranted = listPermissionsGranted()
             if (permissionsGranted.isNotEmpty()) {
-                listener.onPermissionGranted(permissionsGranted)
+                mListener?.onPermissionGranted(permissionsGranted)
             }
 
         } else {
-            listener.onAllPermissionGranted()
+            mListener?.onAllPermissionGranted()
         }
     }
 
     fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        // TODO("handle request permission result")
+        if (requestCode == PLAY_REQUEST_PERMISSION_CODE) {
+            permissions.forEachIndexed { index, name ->
+                mPermission.find { name == it.name }?.isGranted = grantResults[index] == PackageManager.PERMISSION_GRANTED
+            }
+
+            if (isAllPermissionGranted()) {
+                mListener?.onAllPermissionGranted()
+                return
+            }
+
+            if (isAnyPermissionDenied()) {
+                mListener?.onPermissionDisabled()
+            }
+
+            val permissionsGranted = listPermissionsGranted()
+            if (permissionsGranted.isNotEmpty()) {
+                mListener?.onPermissionGranted(permissionsGranted)
+            }
+        }
+    }
+
+    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == PLAY_REQUEST_PERMISSION_CODE) {
+            mPermission.forEach { permission ->
+                val permissionResult = ActivityCompat.checkSelfPermission(mContext, permission.name)
+                mPermission.find { permission.name == it.name }?.isGranted = permissionResult == PackageManager.PERMISSION_GRANTED
+            }
+
+            if (isAllPermissionGranted()) {
+                mListener?.onAllPermissionGranted()
+                return
+            }
+
+            val permissionsGranted = listPermissionsGranted()
+            if (permissionsGranted.isNotEmpty()) {
+                mListener?.onPermissionGranted(permissionsGranted)
+            }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -85,7 +128,7 @@ class PermissionUtil(private val mContext: Context) {
         }
     }
 
-    private fun defineGrantedPermission(permissionList: Array<String>) {
+    private fun defineGrantedPermission(permissionList: Array<out String>) {
         permissionList.forEach {
             val permissionResult = ActivityCompat.checkSelfPermission(mContext, it)
             this.mPermission.add(Permission(
@@ -99,6 +142,9 @@ class PermissionUtil(private val mContext: Context) {
         mPermission.filter { !it.isGranted }.forEach {
             setFirstTimeAskingPermission(it.name)
         }
+        mPermission.forEach {
+            it.isFirstTime = isFirstTimeAskingPermission(it.name)
+        }
     }
 
     private fun isAllPermissionGranted() : Boolean= mPermission.none { !it.isGranted }
@@ -106,7 +152,7 @@ class PermissionUtil(private val mContext: Context) {
     private fun isAnyPermissionDenied(): Boolean = mPermission.any { !it.isFirstTime }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun askPermission(permissions: Array<String>) {
+    private fun askPermission(permissions: Array<out String>) {
         (mContext as Activity).requestPermissions(permissions, PLAY_REQUEST_PERMISSION_CODE)
     }
 
@@ -118,11 +164,11 @@ class PermissionUtil(private val mContext: Context) {
     }
 
     private fun setFirstTimeAskingPermission(permission: String) {
-        sharedPreference?.edit()?.putBoolean(permission, false)?.apply()
+        mPreference?.edit()?.putBoolean(permission, false)?.apply()
     }
 
     private fun isFirstTimeAskingPermission(permission: String): Boolean {
-        return sharedPreference?.getBoolean(permission, true) == true
+        return mPreference?.getBoolean(permission, true) == true
     }
 
     private fun listPermissionsGranted(): List<String> = mPermission.filter { it.isGranted }.map { it.name }
@@ -136,77 +182,4 @@ class PermissionUtil(private val mContext: Context) {
     companion object {
         const val PLAY_REQUEST_PERMISSION_CODE = 3432
     }
-//
-//    private fun shouldAskPermission(context: Context, permission: String): Boolean {
-//        if (shouldAskPermission()) {
-//            val permissionResult: Int = ActivityCompat.checkSelfPermission(context, permission)
-//            if (permissionResult != PackageManager.PERMISSION_GRANTED) {
-//                return true
-//            }
-//        }
-//        return false
-//    }
-//
-////    fun checkPermission(context: Context, permission: String, listener: PermissionAskListener) {
-////        /*
-////        * If permission is not granted
-////        * */
-////        if (shouldAskPermission(context, permission)) {
-////            /*
-////            * If permission denied previously
-////            * */
-////            if ((context as Activity).shouldShowRequestPermissionRationale(permission)) {
-////                listener.onPermissionPreviouslyDenied()
-////            } else { /*
-////                * Permission denied or first time requested
-////                * */
-////                if (isFirstTimeAskingPermission(context, permission)) {
-////                    firstTimeAskingPermission(context, permission, false)
-////                    listener.onPermissionAsk()
-////                } else { /*
-////                    * Handle the feature without permission or ask user to manually allow permission
-////                    * */
-////                    listener.onPermissionDisabled()
-////                }
-////            }
-////        } else {
-////            listener.onPermissionGranted()
-////        }
-////    }
-//
-//    /*
-//    * Callback on various cases on checking permission
-//    *
-//    * 1.  Below M, runtime permission not needed. In that case onPermissionGranted() would be called.
-//    *     If permission is already granted, onPermissionGranted() would be called.
-//    *
-//    * 2.  Above M, if the permission is being asked first time onPermissionAsk() would be called.
-//    *
-//    * 3.  Above M, if the permission is previously asked but not granted, onPermissionPreviouslyDenied()
-//    *     would be called.
-//    *
-//    * 4.  Above M, if the permission is disabled by device policy or the user checked "Never ask again"
-//    *     check box on previous request permission, onPermissionDisabled() would be called.
-//    * */
-//    interface PermissionAskListener {
-//        /*
-//        * Callback to ask permission
-//        * */
-//        fun onPermissionAsk()
-//
-//        /*
-//        * Callback on permission denied
-//        * */
-//        fun onPermissionPreviouslyDenied()
-//
-//        /*
-//        * Callback on permission "Never show again" checked and denied
-//        * */
-//        fun onPermissionDisabled()
-//
-//        /*
-//        * Callback on permission granted
-//        * */
-//        fun onPermissionGranted()
-//    }
 }
