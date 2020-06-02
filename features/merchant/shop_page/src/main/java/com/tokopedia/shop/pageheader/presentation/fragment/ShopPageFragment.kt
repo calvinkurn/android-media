@@ -127,7 +127,6 @@ class ShopPageFragment :
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var cartLocalCacheHandler: LocalCacheHandler
     var shopPageTracking: ShopPageTrackingBuyer? = null
-    var titles = listOf<String>()
     var shopId: String? = null
     var shopRef: String = ""
     var shopDomain: String? = null
