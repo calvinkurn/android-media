@@ -250,10 +250,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                         return;
                     }
                     break;
-                case DeepLinkChecker.PELUANG:
-                    screenName = AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_BERANDA;
-                    openPeluangPage(uriData.getPathSegments(), uriData, defaultBundle);
-                    break;
+//                case DeepLinkChecker.PELUANG:
+//                    screenName = AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_BERANDA;
+//                    openPeluangPage(uriData.getPathSegments(), uriData, defaultBundle);
+//                    break;
                 case DeepLinkChecker.GROUPCHAT:
                     openGroupChat(linkSegment, defaultBundle);
                     screenName = AppScreen.GROUP_CHAT;
@@ -376,16 +376,16 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
     }
 
-    private void openPeluangPage(List<String> linkSegment, Uri uriData, Bundle bundle) {
-        String query = uriData.getQueryParameter("q");
-        Intent intent = RouteManager.getIntent(context, ApplinkConst.SELLER_OPPORTUNITY);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
-        context.finish();
-    }
+//    private void openPeluangPage(List<String> linkSegment, Uri uriData, Bundle bundle) {
+//        String query = uriData.getQueryParameter("q");
+//        Intent intent = RouteManager.getIntent(context, ApplinkConst.SELLER_OPPORTUNITY);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        intent.putExtras(bundle);
+//        context.startActivity(intent);
+//        context.finish();
+//    }
 
     private void openHotel(Uri uri, Bundle bundle) {
         RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.DASHBOARD_HOTEL));

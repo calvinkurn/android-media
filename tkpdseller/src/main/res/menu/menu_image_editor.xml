@@ -7,10 +7,10 @@
         android:title="@string/crop_image_menu_rotate_right"
         app:showAsAction="ifRoom"/>
 
-    <item
-        android:id="@+id/main_action_crop"
-        android:icon="@drawable/ic_new_action_check"
-        android:title="@string/crop_image_menu_crop"
-        app:showAsAction="always"/>
+<!--    <item-->
+<!--        android:id="@+id/main_action_crop"-->
+<!--        android:icon="@drawable/ic_new_action_check"-->
+<!--        android:title="@string/crop_image_menu_crop"-->
+<!--        app:showAsAction="always"/>-->
 
 </menu>

@@ -176,7 +176,7 @@ include "features:transaction:buyerorder"
 include "features:transaction:purchase_platform"
 include "features:transaction:purchase_platform_common"
 include "features:transaction:sellerorder"
-include "features:transaction:opportunity"
+//include "features:transaction:opportunity"
 
 include "features:user:attachproduct"
 include "features:user:attachinvoice"

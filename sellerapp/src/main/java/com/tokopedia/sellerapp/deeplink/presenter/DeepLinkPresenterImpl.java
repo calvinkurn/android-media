@@ -41,7 +41,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String FORMAT_UTF_8 = "UTF-8";
     private static final int OTHER = 7;
     private static final int TOPADS = 12;
-    private static final int PELUANG = 13;
+//    private static final int PELUANG = 13;
     public static final int INVOICE = 14;
     public static final String PARAM_AD_ID = "ad_id";
     public static final String PARAM_ITEM_ID = "item_id";
@@ -70,10 +70,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 openTopAds(uriData);
                 screenName = AppScreen.SCREEN_TOPADS;
                 break;
-            case PELUANG:
-                screenName = AppScreen.SCREEN_TX_SHOP_TRANSACTION_SELLING_LIST;
-                openPeluangPage(uriData.getPathSegments(), uriData);
-                break;
+//            case PELUANG:
+//                screenName = AppScreen.SCREEN_TX_SHOP_TRANSACTION_SELLING_LIST;
+//                openPeluangPage(uriData.getPathSegments(), uriData);
+//                break;
             case INVOICE:
                 openInvoice(uriData.getPathSegments(), uriData);
                 screenName = AppScreen.SCREEN_DOWNLOAD_INVOICE;
@@ -110,8 +110,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         try {
             if (isTopAds(linkSegment))
                 return TOPADS;
-            else if (isPeluang(linkSegment))
-                return PELUANG;
+//            else if (isPeluang(linkSegment))
+//                return PELUANG;
             else if (isInvoice(linkSegment))
                 return INVOICE;
             else if (isExcludedHostUrl(uriData))
@@ -129,11 +129,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         return linkSegment.size() > 0 && linkSegment.get(0).equals("topads");
     }
 
-    private boolean isPeluang(List<String> linkSegment) {
-        return linkSegment.size() > 0 && (
-                linkSegment.get(0).equals("peluang") || linkSegment.get(0).equals("peluang.pl")
-        );
-    }
+//    private boolean isPeluang(List<String> linkSegment) {
+//        return linkSegment.size() > 0 && (
+//                linkSegment.get(0).equals("peluang") || linkSegment.get(0).equals("peluang.pl")
+//        );
+//    }
     private static boolean isInvoice(List<String> linkSegment) {
         return linkSegment.size() == 1 && linkSegment.get(0).startsWith("invoice.pl");
     }
@@ -202,15 +202,15 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         context.finish();
     }
 
-    private void openPeluangPage(List<String> linkSegment, Uri uriData) {
-        String query = uriData.getQueryParameter("q");
-        Intent intent = RouteManager.getIntent(context, ApplinkConst.SELLER_OPPORTUNITY);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
-        context.finish();
-    }
+//    private void openPeluangPage(List<String> linkSegment, Uri uriData) {
+//        String query = uriData.getQueryParameter("q");
+//        Intent intent = RouteManager.getIntent(context, ApplinkConst.SELLER_OPPORTUNITY);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        context.startActivity(intent);
+//        context.finish();
+//    }
 
 
 }
