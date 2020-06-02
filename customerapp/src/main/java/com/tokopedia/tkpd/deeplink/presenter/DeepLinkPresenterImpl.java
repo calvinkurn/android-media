@@ -64,6 +64,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.webview.download.BaseDownloadAppLinkActivity;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
 
+import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -201,7 +202,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 case DeepLinkChecker.PRODUCT:
                     keepActivityOn = true;
                     if (linkSegment.size() >= 2
-                            && (linkSegment.get(1).equals("info") || isEtalase(linkSegment) || isShopHome(linkSegment))) {
+                            && (linkSegment.get(1).equals("info") || isEtalase(linkSegment) || isShopHome(linkSegment) || isShopReview(linkSegment))) {
                         openShopInfo(linkSegment, uriData, defaultBundle);
                         screenName = AppScreen.SCREEN_SHOP_INFO;
                     } else {
@@ -603,6 +604,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                                     bundle,
                                     ApplinkConst.SHOP_HOME,
                                     shopId);
+                        } else if (isShopReview(linkSegment)) {
+                            RouteManager.route(context,
+                                    bundle,
+                                    ApplinkConst.SHOP_REVIEW,
+                                    shopId);
                         } else {
                             Intent intent = RouteManager.getIntent(context, ApplinkConst.SHOP, shopId);
                             intent.putExtras(bundle);
@@ -633,6 +639,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private boolean isShopHome(List<String> linkSegment) {
         String lastSegment = linkSegment.get(linkSegment.size() - 1);
         return lastSegment.equalsIgnoreCase("home");
+    }
+
+    private boolean isShopReview(List<String> linkSegment) {
+        String lastSegment = linkSegment.get(linkSegment.size() - 1);
+        return lastSegment.equalsIgnoreCase("review");
     }
 
     private void openHomeRecommendation(final List<String> linkSegment, final Uri uriData, Bundle bundle) {
@@ -868,5 +879,4 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             e.printStackTrace();
         }
     }
-
 }
