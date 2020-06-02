@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -12,16 +13,15 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.DigitalTopupAnalytics
-import com.tokopedia.topupbills.telco.data.TelcoProductComponentData
-import com.tokopedia.topupbills.telco.data.TelcoProductDataCollection
+import com.tokopedia.topupbills.telco.data.TelcoCatalogProductInput
+import com.tokopedia.topupbills.telco.data.TelcoProduct
+import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.view.bottomsheet.DigitalProductBottomSheet
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
 import com.tokopedia.topupbills.telco.view.model.DigitalTrackProductTelco
-import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoProductViewModel
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalTelcoProductWidget
 import javax.inject.Inject
@@ -37,8 +37,9 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     private lateinit var descEmptyState: TextView
     private lateinit var progressBar: ProgressBar
     private lateinit var sharedModel: SharedProductTelcoViewModel
-    private lateinit var productViewModel: DigitalTelcoProductViewModel
     private lateinit var selectedOperatorName: String
+    private lateinit var shimmeringGridLayout: LinearLayout
+    private lateinit var shimmeringListLayout: LinearLayout
 
     private var titleProduct: String = ""
     private var selectedProductId: Int = 0
@@ -52,16 +53,15 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
         activity?.let {
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
-            productViewModel = viewModelProvider.get(DigitalTelcoProductViewModel::class.java)
             sharedModel = viewModelProvider.get(SharedProductTelcoViewModel::class.java)
         }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        sharedModel.productItem.observe(this, Observer {
+        sharedModel.productCatalogItem.observe(this, Observer {
             it?.run {
-                telcoTelcoProductView.notifyProductItemChanges(it.key)
+                telcoTelcoProductView.notifyProductItemChanges(it.id)
             }
         })
     }
@@ -77,10 +77,12 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_digital_telco_product, container, false)
         telcoTelcoProductView = view.findViewById(R.id.telco_product_view)
-        emptyStateProductView = view.findViewById(com.tokopedia.common.topupbills.R.id.telco_empty_state_layout)
-        titleEmptyState = view.findViewById(com.tokopedia.common.topupbills.R.id.title_empty_product)
-        descEmptyState = view.findViewById(com.tokopedia.common.topupbills.R.id.desc_empty_product)
+        emptyStateProductView = view.findViewById(R.id.telco_empty_state_layout)
+        titleEmptyState = view.findViewById(R.id.title_empty_product)
+        descEmptyState = view.findViewById(R.id.desc_empty_product)
         progressBar = view.findViewById(R.id.progress_bar)
+        shimmeringGridLayout = view.findViewById(R.id.shimmering_product_grid)
+        shimmeringListLayout = view.findViewById(R.id.shimmering_product_list)
         return view
     }
 
@@ -88,39 +90,48 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         arguments?.let {
-            titleProduct = it.getString(COMPONENT_NAME)
+            titleProduct = it.getString(TITLE_PAGE)
             val productType = it.getInt(PRODUCT_TYPE)
-            val operatorId = it.getString(OPERATOR_ID)
-            val componentId = it.getInt(COMPONENT_TYPE)
             selectedProductId = it.getInt(SELECTED_PRODUCT_ID)
             selectedOperatorName = it.getString(OPERATOR_NAME)
 
-            var mapParam = HashMap<String, kotlin.Any>()
-            mapParam.put(KEY_COMPONENT_ID, componentId)
-            mapParam.put(KEY_OPERATOR_ID, operatorId)
-            productViewModel.getProductCollections(GraphqlHelper.loadRawString(resources, R.raw.query_product_digital_telco),
-                    mapParam, productType, this::onLoadingProductList, this::onSuccessProductList, this::onErrorProductList)
+            sharedModel.productList.observe(this, Observer { productList ->
+                productList.map { productInput ->
+                    if (productInput.label == titleProduct) {
+                        onSuccessProductList(productInput, productType)
+                    }
+                }
+            })
+
+            sharedModel.loadingProductList.observe(this, Observer { loadingShow ->
+                if (loadingShow) showShimmering()
+                else hideShimmering()
+            })
+
+            sharedModel.errorProductList.observe(this, Observer {
+                onErrorProductList()
+            })
         }
 
         telcoTelcoProductView.setListener(object : DigitalTelcoProductWidget.ActionListener {
-            override fun onClickProduct(itemProduct: TelcoProductDataCollection, position: Int) {
-                sharedModel.setProductSelected(itemProduct)
+            override fun onClickProduct(itemProduct: TelcoProduct, position: Int) {
+                sharedModel.setProductCatalogSelected(itemProduct)
                 sharedModel.setShowTotalPrice(true)
                 if (::selectedOperatorName.isInitialized) {
                     topupAnalytics.clickEnhanceCommerceProduct(itemProduct, position, selectedOperatorName)
                 }
             }
 
-            override fun onSeeMoreProduct(itemProduct: TelcoProductDataCollection) {
-                topupAnalytics.eventClickSeeMore(itemProduct.product.attributes.categoryId)
+            override fun onSeeMoreProduct(itemProduct: TelcoProduct) {
+                topupAnalytics.eventClickSeeMore(itemProduct.attributes.categoryId)
 
                 activity?.let {
                     val seeMoreBottomSheet = DigitalProductBottomSheet.newInstance(
-                            itemProduct.product.attributes.info,
-                            MethodChecker.fromHtml(itemProduct.product.attributes.detail).toString(),
-                            itemProduct.product.attributes.price)
+                            itemProduct.attributes.info,
+                            MethodChecker.fromHtml(itemProduct.attributes.detail).toString(),
+                            itemProduct.attributes.price)
                     seeMoreBottomSheet.setDismissListener {
-                        topupAnalytics.eventCloseDetailProduct(itemProduct.product.attributes.categoryId)
+                        topupAnalytics.eventCloseDetailProduct(itemProduct.attributes.categoryId)
                     }
                     seeMoreBottomSheet.show(it.supportFragmentManager, "")
                 }
@@ -132,61 +143,78 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         })
     }
 
-    fun onSuccessProductList(productData: TelcoProductComponentData) {
+    private fun onSuccessProductList(productInput: TelcoCatalogProductInput, productType: Int) {
         emptyStateProductView.visibility = View.GONE
         telcoTelcoProductView.visibility = View.VISIBLE
+
+        val dataCollections = wrapDataCollections(productInput)
+
+        //set true on selected product datacollection list
         var position = -1
         if (selectedProductId > 0) {
-            for (i in productData.rechargeProductData.productDataCollections.indices) {
-                if (productData.rechargeProductData.productDataCollections[i].product.id == selectedProductId.toString()) {
-                    productData.rechargeProductData.productDataCollections[i].product.attributes.selected = true
+            for (i in dataCollections.indices) {
+                if (dataCollections[i].id == selectedProductId.toString()) {
+                    dataCollections[i].attributes.selected = true
                     position = i
                 }
             }
         }
-        telcoTelcoProductView.renderProductList(productData.productType,
-                productData.rechargeProductData.productDataCollections, position)
+        telcoTelcoProductView.renderProductList(productType, dataCollections, position)
     }
 
-    fun onErrorProductList(throwable: Throwable) {
-        titleEmptyState.text = getString(R.string.title_telco_product_empty_state, titleProduct.toLowerCase())
-        descEmptyState.text = getString(R.string.desc_telco_product_empty_state,
-                titleProduct.toLowerCase(), titleProduct.toLowerCase())
+    private fun wrapDataCollections(productInput: TelcoCatalogProductInput): List<TelcoProduct> {
+        val dataCollections = mutableListOf<TelcoProduct>()
+        productInput.products.dataCollections.map {
+            if (productInput.products.dataCollections.size > 1 && productInput.label != "Pulsa") {
+                if (it.name.isNotEmpty()) {
+                    dataCollections.add(TelcoProduct(titleSection = it.name, isTitle = true))
+                } else {
+                    dataCollections.add(TelcoProduct(titleSection = "Rekomendasi Lainnya", isTitle = true))
+                }
+            }
+            dataCollections.addAll(it.products)
+        }
+        return dataCollections;
+    }
+
+    private fun onErrorProductList() {
+        titleEmptyState.text = getString(R.string.title_telco_product_empty_state, titleProduct)
+        descEmptyState.text = getString(R.string.desc_telco_product_empty_state, titleProduct)
         emptyStateProductView.visibility = View.VISIBLE
         telcoTelcoProductView.visibility = View.GONE
     }
 
-    fun onLoadingProductList(showLoading: Boolean) {
+    private fun showShimmering() {
         emptyStateProductView.visibility = View.GONE
         telcoTelcoProductView.visibility = View.GONE
-        if (showLoading) {
-            progressBar.visibility = View.VISIBLE
-        } else {
-            progressBar.visibility = View.GONE
+        arguments?.let {
+            titleProduct = it.getString(TITLE_PAGE)
+            if (titleProduct == TelcoComponentName.PRODUCT_PULSA) {
+                shimmeringGridLayout.visibility = View.VISIBLE
+            } else {
+                shimmeringListLayout.visibility = View.VISIBLE
+            }
         }
+    }
+
+    private fun hideShimmering() {
+        shimmeringGridLayout.visibility = View.GONE
+        shimmeringListLayout.visibility = View.GONE
     }
 
     companion object {
 
         val PRODUCT_TYPE = "product_type"
-        val COMPONENT_TYPE = "component_type"
-        val COMPONENT_NAME = "component_name"
-        val OPERATOR_ID = "operator_Id"
+        val TITLE_PAGE = "title_page"
         val SELECTED_PRODUCT_ID = "selected_product_id"
         val OPERATOR_NAME = "operator_name"
 
-        val KEY_COMPONENT_ID = "componentID"
-        val KEY_OPERATOR_ID = "operatorID"
-
-        fun newInstance(componentType: Int, componentName: String, operatorId: String,
-                        operatorName: String, productType: Int,
+        fun newInstance(titlePage: String, operatorName: String, productType: Int,
                         selectedProductId: Int): Fragment {
             val fragment = DigitalTelcoProductFragment()
             val bundle = Bundle()
+            bundle.putString(TITLE_PAGE, titlePage)
             bundle.putInt(PRODUCT_TYPE, productType)
-            bundle.putInt(COMPONENT_TYPE, componentType)
-            bundle.putString(OPERATOR_ID, operatorId)
-            bundle.putString(COMPONENT_NAME, componentName)
             bundle.putInt(SELECTED_PRODUCT_ID, selectedProductId)
             bundle.putString(OPERATOR_NAME, operatorName)
             fragment.arguments = bundle

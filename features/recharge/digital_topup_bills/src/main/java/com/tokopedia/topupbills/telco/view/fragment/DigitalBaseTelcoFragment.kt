@@ -28,7 +28,7 @@ import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.DigitalTopupAnalytics
 import com.tokopedia.topupbills.covertContactUriToContactData
-import com.tokopedia.topupbills.telco.data.TelcoCustomComponentData
+import com.tokopedia.topupbills.telco.data.TelcoCatalogPrefixSelect
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoCustomViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -68,7 +68,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         getComponent(DigitalTopupComponent::class.java).inject(this)
     }
 
-    protected abstract fun onSuccessCustomData(telcoData: TelcoCustomComponentData)
+    protected abstract fun onSuccessCustomData(telcoData: TelcoCatalogPrefixSelect)
 
     protected abstract fun onErrorCustomData(error: Throwable)
 

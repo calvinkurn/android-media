@@ -1,16 +1,14 @@
 package com.tokopedia.topupbills.telco.view.widget
 
 import android.content.Context
+import android.util.AttributeSet
+import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.util.AttributeSet
-import android.view.View
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.telco.data.TelcoProductDataCollection
-import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
-import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
+import com.tokopedia.topupbills.telco.data.TelcoProduct
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 import com.tokopedia.topupbills.telco.view.adapter.DigitalProductAdapter
 import com.tokopedia.topupbills.telco.view.adapter.DigitalProductGridDecorator
@@ -37,16 +35,20 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         this.listener = listener
     }
 
-    fun renderProductList(productType: Int, productList: List<TelcoProductDataCollection>,
+    fun renderProductList(productType: Int, productList: List<TelcoProduct>,
                           selectedProductPos: Int) {
         adapter = DigitalProductAdapter(productList, productType)
         adapter.setListener(object : DigitalProductAdapter.ActionListener {
-            override fun onClickItemProduct(itemProduct: TelcoProductDataCollection, position: Int) {
+            override fun onClickItemProduct(itemProduct: TelcoProduct, position: Int) {
                 listener.onClickProduct(itemProduct, position)
             }
 
-            override fun onClickSeeMoreProduct(itemProduct: TelcoProductDataCollection) {
+            override fun onClickSeeMoreProduct(itemProduct: TelcoProduct) {
                 listener.onSeeMoreProduct(itemProduct)
+            }
+
+            override fun notifyItemChanged(position: Int) {
+                adapter.notifyItemChanged(position)
             }
         })
         recyclerView.isNestedScrollingEnabled = false
@@ -74,7 +76,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         })
     }
 
-    fun getVisibleProductItemsToUsersTracking(productList: List<TelcoProductDataCollection>) {
+    fun getVisibleProductItemsToUsersTracking(productList: List<TelcoProduct>) {
         var firstPos = 0
         var lastPos = 0
         if (recyclerView.layoutManager is LinearLayoutManager) {
@@ -109,8 +111,8 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
     }
 
     interface ActionListener {
-        fun onClickProduct(itemProduct: TelcoProductDataCollection, position: Int)
-        fun onSeeMoreProduct(itemProduct: TelcoProductDataCollection)
+        fun onClickProduct(itemProduct: TelcoProduct, position: Int)
+        fun onSeeMoreProduct(itemProduct: TelcoProduct)
         fun onTrackImpressionProductsList(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>)
     }
 
