@@ -90,7 +90,7 @@ class EventClassGenerator(clazz: AnnotatedEventClass) : ClassGenerator(clazz) {
             .beginControlFlow("try ")
             .addStatement(
                     "\$T.INSTANCE.checkRequired(\$T.Companion.getRules(), \$N)",
-                    ClassName.get("com.tokopedia.analytic.gtmutil", "AnalyticRequirementChecker"),
+                    ClassName.get("com.tokopedia.gtmutil", "AnalyticRequirementChecker"),
                 (clazz as AnnotatedEventClass).rulesClass,
                 BUNDLE_NAME
             )

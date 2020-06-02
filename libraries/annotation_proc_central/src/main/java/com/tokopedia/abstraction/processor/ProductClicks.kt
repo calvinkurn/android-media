@@ -3,9 +3,9 @@ package com.tokopedia.abstraction.processor
 
 import com.tokopedia.analytic_constant.Event
 import com.tokopedia.analytic_constant.Param
-import com.tokopedia.annotation.AnalyticEvent
 import com.tokopedia.annotation.BundleThis
-import com.tokopedia.annotation.Key
+import com.tokopedia.analytic.annotation.Key
+import com.tokopedia.annotation.AnalyticEvent
 import com.tokopedia.annotation.defaultvalues.DefaultValueLong
 import com.tokopedia.annotation.defaultvalues.DefaultValueString
 import com.tokopedia.firebase.analytic.rules.ProductClicksRules

@@ -3,7 +3,7 @@ package com.tokopedia.product.util.processor
 
 import com.tokopedia.analytic_constant.Event
 import com.tokopedia.annotation.AnalyticEvent
-import com.tokopedia.annotation.Key
+import com.tokopedia.analytic.annotation.Key
 import com.tokopedia.annotation.defaultvalues.DefaultValueString
 import com.tokopedia.firebase.analytic.rules.ProductDetailViewsRules
 

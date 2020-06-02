@@ -11,4 +11,5 @@ dependencies {
     compileOnly rootProject.ext.miscDependencies.kotlinPoet
     compileOnly rootProject.ext.supportLibDependencies.kotlinReflection
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticGTMUtil
 }
