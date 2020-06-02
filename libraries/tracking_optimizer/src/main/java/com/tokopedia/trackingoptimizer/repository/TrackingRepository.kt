@@ -223,6 +223,6 @@ class TrackingRepository(val context: Context, val remoteConfig: RemoteConfig = 
     }
 
     companion object {
-        const val ENHANCE_ECOMMERCE_SIZE_LIMIT_DEFAULT = 6000L // bytes
+        const val ENHANCE_ECOMMERCE_SIZE_LIMIT_DEFAULT = 6700L // bytes
     }
 }
