@@ -65,7 +65,7 @@ class SelectedProductPagePartialView(
                 }
                 MotionEvent.ACTION_UP -> {
                     parentCoordinator.parent.requestDisallowInterceptTouchEvent(false)
-                    if (bottomSheetBehavior.peekHeight >= 0.6 * parentCoordinator.height) show()
+                    if (bottomSheetBehavior.peekHeight >= COLLAPSED_THRESHOLD * parentCoordinator.height) show()
                     else hide()
                 }
             }
@@ -97,6 +97,11 @@ class SelectedProductPagePartialView(
 
     private fun updateTitle(productCount: Int) {
         tvSelectedProductTitle.text = context.getString(R.string.play_selected_products, productCount)
+    }
+
+    companion object {
+
+        private const val COLLAPSED_THRESHOLD = 0.6
     }
 
     interface Listener {
