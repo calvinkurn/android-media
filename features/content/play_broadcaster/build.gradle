@@ -26,6 +26,7 @@ dependencies {
 
     implementation project(rootProject.ext.features.playCommon)
     implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.shopCommon)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
