@@ -12,10 +12,11 @@ import com.tokopedia.usecase.UseCase
 import rx.Observable
 import java.util.*
 
+@Deprecated("Use Graphql in library")
 abstract class SingleGraphQLUseCase<T>(private val context: Context, private val tClass: Class<T>) : UseCase<T>() {
     private val graphqlUseCase: GraphqlUseCase
 
-    protected abstract val graphQLRawResId: Int
+    protected abstract fun getRawString():String
 
     init {
         this.graphqlUseCase = GraphqlUseCase()
@@ -25,8 +26,7 @@ abstract class SingleGraphQLUseCase<T>(private val context: Context, private val
 
         val variables = createGraphQLVariable(requestParams)
 
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
-                graphQLRawResId), tClass, variables, false)
+        val graphqlRequest = GraphqlRequest(getRawString(), tClass, variables, false)
 
         graphqlUseCase.setCacheStrategy(createGraphQLCacheStrategy())
 

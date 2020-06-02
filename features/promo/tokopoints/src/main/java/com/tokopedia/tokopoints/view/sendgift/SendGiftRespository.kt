@@ -1,12 +1,8 @@
 package com.tokopedia.tokopoints.view.sendgift
 
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.RedeemCouponBaseEntity
 import com.tokopedia.tokopoints.view.model.ValidateCouponBaseEntity
 import com.tokopedia.tokopoints.view.util.CommonConstant
@@ -14,8 +10,7 @@ import com.tokopedia.tokopoints.view.util.CommonConstant.GQLQuery.TP_GQL_TOKOPOI
 import com.tokopedia.tokopoints.view.util.CommonConstant.GQLQuery.TP_GQL_TOKOPOINT_VALIDATE_REDEEM
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import rx.Subscriber
-import java.util.HashMap
+import java.util.*
 import javax.inject.Inject
 
 

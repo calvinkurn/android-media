@@ -37,12 +37,16 @@ class AnalyticsIrisSendDebuggerPresenter(private val getUseCase: GetIrisSendLogU
     }
 
     override fun search(text: String) {
-        setRequestParams(page = 0, keyword = text)
+        page = 0
+        keyword = text
+        setRequestParams(page, keyword)
         getUseCase.execute(requestParams, reloadSubscriber())
     }
 
     override fun reloadData() {
-        setRequestParams(page = 0, keyword = "")
+        page = 0
+        keyword = ""
+        setRequestParams(page, keyword)
         getUseCase.execute(requestParams, reloadSubscriber())
     }
 
