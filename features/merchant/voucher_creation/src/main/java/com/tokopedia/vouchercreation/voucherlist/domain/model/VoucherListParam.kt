@@ -35,13 +35,12 @@ data class VoucherListParam (
 
 @MustBeDocumented
 @Retention(AnnotationRetention.SOURCE)
-@StringDef(VoucherStatus.NOT_STARTED, VoucherStatus.ONGOING, VoucherStatus.ACTIVE, VoucherStatus.HISTORY)
+@StringDef(VoucherStatus.NOT_STARTED, VoucherStatus.ONGOING, VoucherStatus.HISTORY)
 annotation class VoucherStatus {
     companion object {
         const val NOT_STARTED = "1"
         const val ONGOING = "2"
-        const val ACTIVE = "0,1,2"
-        const val HISTORY = "-1,3,4"
+        const val HISTORY = "3,4"
     }
 }
 

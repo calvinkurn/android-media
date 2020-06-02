@@ -57,7 +57,7 @@ class CancelVoucherUseCase @Inject constructor(private val gqlRepository: Graphq
             val data = response.getData<CancelVoucherResponse>()
             val cancelVoucherData = data.cancelVoucher
             with(cancelVoucherData) {
-                if (updateVoucherSuccessData.isSuccess) {
+                if (updateVoucherSuccessData.getIsSuccess()) {
                     return updateVoucherSuccessData.voucherId
                 } else {
                     throw VoucherCancellationException(voucherId, message)

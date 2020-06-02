@@ -54,7 +54,7 @@ class UpdateQuotaUseCase @Inject constructor(private val gqlRepository: GraphqlR
         if (errors.isNullOrEmpty()) {
             val data = response.getData<UpdateQuotaResponse>().updateVoucher
             with(data.updateVoucherSuccessData) {
-                if (isSuccess) {
+                if (getIsSuccess()) {
                     return true
                 } else {
                     throw MessageErrorException(data.message)

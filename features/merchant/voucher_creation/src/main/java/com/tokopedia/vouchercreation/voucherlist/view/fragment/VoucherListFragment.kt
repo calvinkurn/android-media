@@ -269,9 +269,17 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     private fun showEditPeriodBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
         val parent = view as? ViewGroup ?: return
-        VoucherPeriodBottomSheet.createInstance(parent, voucher, ::onSuccessUpdateVoucherPeriod)
-                .setOnSaveClickListener {
-
+        VoucherPeriodBottomSheet.createInstance(parent, voucher)
+                .setOnSuccessClickListener {
+                    onSuccessUpdateVoucherPeriod()
+                }
+                .setOnFailClickListener { errorMessage ->
+                    view?.run {
+                        Toaster.make(this,
+                                errorMessage,
+                                Snackbar.LENGTH_SHORT,
+                                Toaster.TYPE_ERROR)
+                    }
                 }
                 .show(childFragmentManager)
     }
@@ -354,7 +362,26 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     private fun showEditQuotaBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
         val parent = view as? ViewGroup ?: return
-        EditQuotaBottomSheet.createInstance(parent, voucher).show(childFragmentManager)
+        EditQuotaBottomSheet.createInstance(parent, voucher)
+                .apply {
+                    setOnSuccessUpdateVoucher {
+                        view?.run {
+                            Toaster.make(this,
+                                    context?.getString(R.string.mvc_quota_success).toBlankOrString(),
+                                    Toaster.LENGTH_SHORT,
+                                    Toaster.TYPE_NORMAL,
+                                    context?.getString(R.string.mvc_oke).toBlankOrString())
+                        }
+                    }
+                    setOnFailUpdateVoucher { errorMessage ->
+                        view?.run {
+                            Toaster.make(this,
+                                    errorMessage,
+                                    Toaster.LENGTH_SHORT,
+                                    Toaster.TYPE_ERROR)
+                        }
+                    }
+                }.show(childFragmentManager)
     }
 
     private fun setupView() = view?.run {

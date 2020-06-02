@@ -26,7 +26,7 @@ data class UpdateVoucherSuccessData(
         @SerializedName("status")
         val status: String = "") {
 
-        val isSuccess = status == UpdateResponse.STATUS_SUCCESS
+        fun getIsSuccess() = status == UpdateResponse.STATUS_SUCCESS
 }
 
 object UpdateResponse {

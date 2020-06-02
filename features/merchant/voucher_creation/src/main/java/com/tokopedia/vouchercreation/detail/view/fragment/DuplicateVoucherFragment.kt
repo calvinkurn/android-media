@@ -98,8 +98,11 @@ class DuplicateVoucherFragment : BaseDetailFragment() {
     private fun setVoucherPeriod() {
         if (!isAdded) return
         val parent = view as? ViewGroup ?: return
-        VoucherPeriodBottomSheet.createInstance(parent, dummyVoucher, ::onSuccessUpdateVoucherPeriod)
-                .setOnSaveClickListener {
+        VoucherPeriodBottomSheet.createInstance(parent, dummyVoucher)
+                .setOnSuccessClickListener {
+                    onSuccessUpdateVoucherPeriod()
+                }
+                .setOnFailClickListener {
 
                 }
                 .show(childFragmentManager)

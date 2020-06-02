@@ -9,7 +9,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import com.tokopedia.vouchercreation.voucherlist.domain.model.UpdateVoucherSuccessData
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.ChangeVoucherPeriodUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetTokenUseCase
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
@@ -43,7 +42,7 @@ class ChangeVoucherPeriodViewModel @Inject constructor(@Named("Main") dispatcher
     val endDateCalendarLiveData: LiveData<Calendar>
         get() = mEndDateCalendarLiveData
 
-    private val mUpdateVoucherSuccessLiveData = MediatorLiveData<Result<UpdateVoucherSuccessData>>().apply {
+    private val mUpdateVoucherSuccessLiveData = MediatorLiveData<Result<Boolean>>().apply {
         addSource(mVoucherUiModel) { uiModel ->
             mDateStartLiveData.value?.let { dateStart ->
                 mDateEndLiveData.value?.let { dateEnd ->
@@ -74,7 +73,7 @@ class ChangeVoucherPeriodViewModel @Inject constructor(@Named("Main") dispatcher
             }
         }
     }
-    val updateVoucherSuccessLiveData: LiveData<Result<UpdateVoucherSuccessData>>
+    val updateVoucherSuccessLiveData: LiveData<Result<Boolean>>
         get() = mUpdateVoucherSuccessLiveData
 
     fun setStartDateCalendar(startDate: Calendar) {

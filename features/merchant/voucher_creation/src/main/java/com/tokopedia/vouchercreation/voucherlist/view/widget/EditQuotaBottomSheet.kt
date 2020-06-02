@@ -16,7 +16,6 @@ import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
@@ -79,6 +78,10 @@ class EditQuotaBottomSheet(parent: ViewGroup) : BottomSheetUnify() {
         get() = String.format(context?.getString(R.string.mvc_quota_min).toBlankOrString(), minQuota)
     private val maxQuotaErrorMessage = String.format(context?.getString(R.string.mvc_quota_max).toBlankOrString(), MAX_QUOTA)
 
+    private var onSuccessUpdateVoucher: () -> Unit = {}
+
+    private var onFailUpdateVoucher: (String) -> Unit = {}
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
@@ -101,28 +104,17 @@ class EditQuotaBottomSheet(parent: ViewGroup) : BottomSheetUnify() {
         viewLifecycleOwner.observe(viewModel.editQuotaSuccessLiveData) { result ->
             when(result) {
                 is Success -> {
-                    view?.run {
-                        Toaster.make(this,
-                                context?.getString(R.string.mvc_quota_success).toBlankOrString(),
-                                Toaster.LENGTH_SHORT,
-                                Toaster.TYPE_NORMAL,
-                                context?.getString(R.string.mvc_oke).toBlankOrString())
-                    }
-                    dismiss()
+                    onSuccessUpdateVoucher()
                 }
                 is Fail -> {
-                    view?.run {
-                        Toaster.make(this,
-                                result.throwable.message.toBlankOrString(),
-                                Toaster.LENGTH_SHORT,
-                                Toaster.TYPE_ERROR)
-                    }
+                    onFailUpdateVoucher(result.throwable.message.toBlankOrString())
                 }
             }
             btnMvcSaveQuota?.run {
                 isLoading = false
                 isClickable = true
             }
+            dismiss()
         }
     }
 
@@ -243,5 +235,13 @@ class EditQuotaBottomSheet(parent: ViewGroup) : BottomSheetUnify() {
 
     fun show(fm: FragmentManager) {
         show(fm, EditQuotaBottomSheet::class.java.simpleName)
+    }
+
+    fun setOnSuccessUpdateVoucher(action: () -> Unit) {
+        onSuccessUpdateVoucher = action
+    }
+
+    fun setOnFailUpdateVoucher(action: (String) -> Unit) {
+        onFailUpdateVoucher = action
     }
 }

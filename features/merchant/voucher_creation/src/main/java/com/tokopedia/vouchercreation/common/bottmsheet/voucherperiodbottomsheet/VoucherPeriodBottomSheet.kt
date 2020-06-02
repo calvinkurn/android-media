@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.datepicker.LocaleUtils
@@ -19,7 +18,6 @@ import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
@@ -41,16 +39,13 @@ import javax.inject.Inject
 
 class VoucherPeriodBottomSheet(
         parent: ViewGroup,
-        private val voucher: VoucherUiModel,
-        private val onSuccessCreateVoucher: () -> Unit
-) : BottomSheetUnify() {
+        private val voucher: VoucherUiModel) : BottomSheetUnify() {
 
     companion object {
         @JvmStatic
         fun createInstance(parent: ViewGroup,
-                           voucher: VoucherUiModel,
-                           onSuccessCreateVoucher: () -> Unit): VoucherPeriodBottomSheet =
-                VoucherPeriodBottomSheet(parent, voucher, onSuccessCreateVoucher)
+                           voucher: VoucherUiModel): VoucherPeriodBottomSheet =
+                VoucherPeriodBottomSheet(parent, voucher)
 
         private const val FULL_DAY_FORMAT = "EEE, dd MMM yyyy, HH:mm z"
         private const val DATE_OF_WEEK_FORMAT = "EEE, dd MMM yyyy"
@@ -76,7 +71,8 @@ class VoucherPeriodBottomSheet(
         LocaleUtils.getIDLocale()
     }
 
-    private var onSaveListener: () -> Unit = {}
+    private var onSuccessListener: () -> Unit = {}
+    private var onFailListener: (String) -> Unit = {}
 
     private var startDateString = ""
     private var endDateString = ""
@@ -194,18 +190,14 @@ class VoucherPeriodBottomSheet(
             observe(viewModel.updateVoucherSuccessLiveData) { result ->
                 when(result) {
                     is Success -> {
-                        onSuccessCreateVoucher()
+                        onSuccessListener()
                     }
                     is Fail -> {
-                        view?.run {
-                            Toaster.make(this,
-                                    result.throwable.localizedMessage,
-                                    Snackbar.LENGTH_SHORT,
-                                    Toaster.TYPE_ERROR)
-                        }
+                        onFailListener(result.throwable.message.toBlankOrString())
                     }
                 }
                 btnMvcSavePeriod?.isLoading = false
+                dismiss()
             }
         }
     }
@@ -275,8 +267,13 @@ class VoucherPeriodBottomSheet(
         textFieldInput.setText(formattedDate)
     }
 
-    fun setOnSaveClickListener(callback: () -> Unit): VoucherPeriodBottomSheet {
-        this.onSaveListener = callback
+    fun setOnSuccessClickListener(callback: () -> Unit): VoucherPeriodBottomSheet {
+        this.onSuccessListener = callback
+        return this
+    }
+
+    fun setOnFailClickListener(callback: (String) -> Unit): VoucherPeriodBottomSheet {
+        this.onFailListener = callback
         return this
     }
 
