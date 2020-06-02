@@ -167,6 +167,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import dagger.Lazy;
 import io.hansel.hanselsdk.Hansel;
 import okhttp3.Interceptor;
 import okhttp3.Response;
@@ -211,9 +212,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         KYCRouter {
 
     @Inject
-    ReactNativeHost reactNativeHost;
+    Lazy<ReactNativeHost> reactNativeHost;
     @Inject
-    ReactUtils reactUtils;
+    Lazy<ReactUtils> reactUtils;
 
     private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
     private EventComponent eventComponent;
@@ -231,7 +232,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void onCreate() {
         super.onCreate();
-        Hansel.init(this);
+        initialiseHansel();
         initFirebase();
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
@@ -240,6 +241,22 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initTetraDebugger();
         DeeplinkHandlerActivity.createApplinkDelegateInBackground();
         initResourceDownloadManager();
+    }
+
+    private void initialiseHansel(){
+        WeaveInterface hanselWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return executeHanselInit();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(hanselWeave, RemoteConfigKey.ENABLE_ASYNC_HANSEL_INIT, getApplicationContext());
+    }
+
+    private boolean executeHanselInit(){
+        Hansel.init(ConsumerRouterApplication.this);
+        return true;
     }
 
     private void initResourceDownloadManager() {
@@ -460,7 +477,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendLoginEmitter(String userId) {
-        reactUtils.sendLoginEmitter(userId);
+        reactUtils.get().sendLoginEmitter(userId);
     }
 
     private ReactNativeComponent getReactNativeComponent() {
@@ -477,7 +494,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public ReactNativeHost getReactNativeHost() {
         if (reactNativeHost == null) initDaggerInjector();
-        return reactNativeHost;
+        return reactNativeHost.get();
     }
 
     @Override

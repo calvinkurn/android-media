@@ -101,18 +101,18 @@ class RecommendationListCarouselViewHolder(
                     val productData = mapGridToProductData(it)
                     tempDataList.add(productData)
                     HomeRecommendationListData(
-                            it.imageUrl,
-                            it.name,
-                            it.discount,
-                            it.slashedPrice,
-                            it.price,
-                            it.applink,
-                            channel.grids.size > 1,
-                            it.isTopads,
-                            channel,
-                            it,
-                            listener,
-                            productData
+                            recommendationImageUrl = it.imageUrl,
+                            recommendationTitle =  it.name,
+                            recommendationDiscountLabel = it.discount,
+                            recommendationSlashedPrice = it.slashedPrice,
+                            recommendationPrice = it.price,
+                            recommendationApplink = it.applink,
+                            isCarousel = channel.grids.size > 1,
+                            isTopAds = it.isTopads,
+                            channel = channel,
+                            grid = it,
+                            listener = listener,
+                            productData = productData
                     )
                 }.toMutableList()
                 if(channel.grids.size > 1 && channel.header.applink.isNotEmpty()) newList.add(HomeRecommendationListSeeMoreData(channel, listener))
@@ -228,8 +228,8 @@ class RecommendationListCarouselViewHolder(
             val recommendationSlashedPrice: String,
             val recommendationPrice: String,
             val recommendationApplink: String,
-            val isTopAds: Boolean,
             val isCarousel: Boolean,
+            val isTopAds: Boolean,
             val channel: DynamicHomeChannel.Channels,
             val grid: DynamicHomeChannel.Grid,
             val listener: HomeCategoryListener,
