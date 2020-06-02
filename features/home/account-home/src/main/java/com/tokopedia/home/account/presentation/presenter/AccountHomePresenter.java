@@ -89,7 +89,7 @@ public class AccountHomePresenter extends BaseDaggerPresenter<AccountHome.View> 
 
             @Override
             public void onNext(GetObjectPojo getObjectPojo) {
-                getView().openBottomSheet(getObjectPojo);
+                view.openBottomSheet(getObjectPojo);
             }
         });
     }
