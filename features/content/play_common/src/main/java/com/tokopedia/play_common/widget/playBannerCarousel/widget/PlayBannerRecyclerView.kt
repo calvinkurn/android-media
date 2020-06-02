@@ -23,7 +23,6 @@ import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
 import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy
 import com.google.android.exoplayer2.upstream.Loader
 import com.google.android.exoplayer2.util.Util
-import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.widget.playBannerCarousel.helper.GravitySnapHelper
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.ViewPlayerModel
@@ -127,7 +126,7 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
                 var startPosition: Int = (Objects.requireNonNull(
                         layoutManager) as LinearLayoutManager).findFirstVisibleItemPosition()
                 var endPosition: Int = (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-//                Log.d(TAG, "playVideo: origin range: $startPosition - $endPosition")
+                Log.d(TAG, "playVideo: origin range: $startPosition - $endPosition")
 
                 // if first position is not play card (empty / another view holder), set startPosition + 1
                 if(mediaObjects[startPosition] !is PlayBannerCarouselItemDataModel){
@@ -145,14 +144,14 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
                 if (startPosition < 0 || endPosition < 0) {
                     return
                 }
-//                Log.d(TAG, "playVideo: range: $startPosition - $endPosition")
+                Log.d(TAG, "playVideo: range: $startPosition - $endPosition")
 
                 // if there is more than 2 list-item on the screen
                 // check percentage view visible < 49% will take the second item and third item
                 // else will take first item and second item
                 for(i in startPosition .. endPosition){
                     if(getVisibleVideoSurfaceWidth(i) > 0) targetPositions.add(i)
-//                    if(targetPositions.size == 2) break
+                    if(targetPositions.size == 2) break
                 }
 
 
@@ -174,10 +173,10 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
                 } else if(videoPlayer1.position == playPosition || videoPlayer2.position == playPosition){
                     /* do nothing skip video */
                 } else if(!targetPositions.contains(videoPlayer1.position)){
-//                    Log.d(TAG, "playVideo: VideoPlayer1 prepare at $playPosition")
+                    Log.d(TAG, "playVideo: VideoPlayer1 prepare at $playPosition")
                     playVideo(videoPlayer1, playPosition)
                 } else if(!targetPositions.contains(videoPlayer2.position)){
-//                    Log.d(TAG, "playVideo: VideoPlayer2 prepare at $playPosition")
+                    Log.d(TAG, "playVideo: VideoPlayer2 prepare at $playPosition")
                     playVideo(videoPlayer2, playPosition)
                 }
             }
@@ -284,16 +283,20 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
         return object : DefaultLoadErrorHandlingPolicy() {
             override fun getRetryDelayMsFor(dataType: Int, loadDurationMs: Long, exception: IOException?, errorCount: Int): Long {
                 return if (exception is ParserException || exception is FileNotFoundException || exception is Loader.UnexpectedLoaderException) C.TIME_UNSET
-                else (errorCount * PlayVideoManager.RETRY_DELAY) + PlayVideoManager.RETRY_DELAY
+                else (errorCount * RETRY_DELAY) + RETRY_DELAY
             }
 
             override fun getMinimumLoadableRetryCount(dataType: Int): Int {
-                return if (dataType == C.DATA_TYPE_MEDIA_PROGRESSIVE_LIVE) PlayVideoManager.RETRY_COUNT_LIVE else PlayVideoManager.RETRY_COUNT_DEFAULT
+                return if (dataType == C.DATA_TYPE_MEDIA_PROGRESSIVE_LIVE) RETRY_COUNT_LIVE else RETRY_COUNT_DEFAULT
             }
         }
     }
 
     companion object{
         private const val TAG = "ExoPlayerRecyclerView"
+        private const val RETRY_COUNT_LIVE = 1
+        private const val RETRY_COUNT_DEFAULT = 2
+        private const val RETRY_DELAY = 2000L
+
     }
 }
