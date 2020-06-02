@@ -67,6 +67,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        bottomSheetCoordinator.showBottomAction(true)
         return inflater.inflate(R.layout.fragment_play_etalase_detail, container, false)
     }
 
@@ -97,7 +98,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
     private fun observeProductsInSelectedEtalase() {
         viewModel.observableSelectedEtalase.observe(viewLifecycleOwner, Observer {
             selectableProductAdapter.setItemsAndAnimateChanges(it.productList)
-            broadcastCoordinator.setupTitle(it.name)
+            bottomSheetCoordinator.setupTitle(it.name)
             tvInfo.text = getString(R.string.play_product_select_max_info, viewModel.maxProduct)
         })
     }

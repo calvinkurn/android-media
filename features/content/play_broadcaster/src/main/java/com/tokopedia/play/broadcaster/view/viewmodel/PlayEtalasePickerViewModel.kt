@@ -11,7 +11,12 @@ import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play.broadcaster.view.uimodel.PlayEtalaseUiModel
 import com.tokopedia.play.broadcaster.view.uimodel.ProductUiModel
+import com.tokopedia.play.broadcaster.view.uimodel.SearchSuggestionUiModel
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.debounce
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -19,7 +24,7 @@ import javax.inject.Named
  * Created by jegul on 26/05/20
  */
 class PlayEtalasePickerViewModel @Inject constructor(
-        @Named(PlayBroadcastDispatcher.MAIN) mainDispatcher: CoroutineDispatcher,
+        @Named(PlayBroadcastDispatcher.MAIN) private val mainDispatcher: CoroutineDispatcher,
         @Named(PlayBroadcastDispatcher.IO) private val ioDispatcher: CoroutineDispatcher,
         @Named(PlayBroadcastDispatcher.COMPUTATION) private val computationDispatcher: CoroutineDispatcher
 ): ViewModel() {
@@ -27,9 +32,9 @@ class PlayEtalasePickerViewModel @Inject constructor(
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + mainDispatcher)
 
-    val observableEtalase: LiveData<List<PlayEtalaseUiModel>>
-        get() = _observableEtalase
-    private val _observableEtalase = MutableLiveData<List<PlayEtalaseUiModel>>()
+    val observableEtalaseAndSearch: LiveData<List<Any>>
+        get() = _observableEtalaseAndSearch
+    private val _observableEtalaseAndSearch = MutableLiveData<List<Any>>()
 
     val observableSelectedEtalase: LiveData<PlayEtalaseUiModel>
         get() = _observableSelectedEtalase
@@ -39,20 +44,36 @@ class PlayEtalasePickerViewModel @Inject constructor(
         get() = _observableSelectedProducts
     private val _observableSelectedProducts = MutableLiveData<List<ProductUiModel>>()
 
-    private val etalaseMap = mutableMapOf<Long, PlayEtalaseUiModel>()
-    private val productsMap = mutableMapOf<Long, ProductUiModel>()
-    private val selectedProductIdList = mutableListOf<Long>()
+    val observableSuggestionList: LiveData<List<SearchSuggestionUiModel>>
+        get() = _observableSuggestionList
+    private val _observableSuggestionList = MutableLiveData<List<SearchSuggestionUiModel>>()
 
     val maxProduct = PlayBroadcastMocker.getMaxSelectedProduct()
+
+    private val searchChannel: Channel<String> = Channel()
 
     val selectedProductList: List<ProductUiModel>
         get() = observableSelectedProducts.value.orEmpty()
 
+    private val etalaseMap = mutableMapOf<Long, PlayEtalaseUiModel>()
+    private val productsMap = mutableMapOf<Long, ProductUiModel>()
+    private val selectedProductIdList = mutableListOf<Long>()
+
     init {
         _observableSelectedProducts.value = emptyList()
-        fetchEtalaseList()
+        scope.launch { initSearchChannel() }
+        loadEtalaseList()
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        searchChannel.cancel()
+        job.cancelChildren()
+    }
+
+    /**
+     * Etalase
+     */
     fun setSelectedEtalase(etalaseId: Long) {
         val selectedEtalase = etalaseMap[etalaseId]
         if (selectedEtalase != null) _observableSelectedEtalase.value = selectedEtalase
@@ -92,7 +113,22 @@ class PlayEtalasePickerViewModel @Inject constructor(
         }
     }
 
-    private fun fetchEtalaseList() {
+    /**
+     * Search
+     */
+    fun loadSuggestionsFromKeyword(keyword: String) {
+        if (keyword.isEmpty()) _observableSuggestionList.value = emptyList()
+        else searchChannel.offer(keyword)
+    }
+
+    fun searchProductsByKeyword(keyword: String) {
+        scope.launch {
+            val searchedProducts = getProductsByKeyword(keyword)
+            broadcastNewSearchedProducts(searchedProducts)
+        }
+    }
+
+    fun loadEtalaseList() {
         scope.launch {
             val etalaseList = getEtalaseList()
             val newMap = updateEtalaseMap(etalaseList)
@@ -121,8 +157,15 @@ class PlayEtalasePickerViewModel @Inject constructor(
         }
     }
 
+    private suspend fun initSearchChannel() = withContext(mainDispatcher) {
+        searchChannel.consumeAsFlow().debounce(500).collect {
+            val searchSuggestions = getSearchSuggestions(it)
+            _observableSuggestionList.value = searchSuggestions
+        }
+    }
+
     private suspend fun broadcastNewEtalaseList(etalaseMap: Map<Long, PlayEtalaseUiModel>) {
-        _observableEtalase.value = withContext(computationDispatcher) {
+        _observableEtalaseAndSearch.value = withContext(computationDispatcher) {
             etalaseMap.values.map { etalase ->
                 etalase.copy(
                         productList = etalase.productList.take(MAX_PRODUCT_IMAGE_COUNT).map { product ->
@@ -136,16 +179,16 @@ class PlayEtalasePickerViewModel @Inject constructor(
         }
     }
 
+    private fun broadcastNewSearchedProducts(productList: List<ProductUiModel>) {
+        _observableEtalaseAndSearch.value = productList
+    }
+
     private suspend fun updateEtalaseMap(newEtalaseList: List<PlayEtalaseUiModel>) = withContext(computationDispatcher) {
         newEtalaseList.forEach {
             val etalase = etalaseMap[it.id]
             if (etalase == null) etalaseMap[it.id] = it
         }
         return@withContext etalaseMap
-    }
-
-    private suspend fun updateProductsMap(newProductList: List<ProductUiModel>) = withContext(computationDispatcher) {
-        newProductList.associateByTo(productsMap) { it.id }
     }
 
     private suspend fun updateEtalaseMap(currentEtalase: PlayEtalaseUiModel, productList: List<ProductUiModel>): PlayEtalaseUiModel = withContext(computationDispatcher) {
@@ -169,6 +212,16 @@ class PlayEtalasePickerViewModel @Inject constructor(
             etalase.copy(productList = etalase.productList.map { product ->
                 product.copy(isSelectedHandler = ::isProductSelected, isSelectable = ::isSelectable)
             })
+        }
+    }
+
+    private suspend fun getSearchSuggestions(keyword: String) = withContext(ioDispatcher) {
+        return@withContext if (keyword.isEmpty()) emptyList() else PlayBroadcastMocker.getMockSearchSuggestions(keyword)
+    }
+
+    private suspend fun getProductsByKeyword(keyword: String) = withContext(ioDispatcher) {
+        return@withContext PlayBroadcastMocker.getMockProductList(keyword.length).map {
+            it.copy(isSelectedHandler = ::isProductSelected, isSelectable = ::isSelectable)
         }
     }
 

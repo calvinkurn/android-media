@@ -14,6 +14,6 @@ abstract class PlayBaseSetupFragment : TkpdBaseV4Fragment() {
 
     abstract fun refresh()
 
-    protected open val broadcastCoordinator: PlayBottomSheetCoordinator
+    protected open val bottomSheetCoordinator: PlayBottomSheetCoordinator
         get() = requireParentFragment() as PlayBottomSheetCoordinator
 }

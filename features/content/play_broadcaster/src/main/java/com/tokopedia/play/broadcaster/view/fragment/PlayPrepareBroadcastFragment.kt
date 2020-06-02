@@ -75,9 +75,9 @@ class PlayPrepareBroadcastFragment @Inject constructor(
     private fun setupView(view: View) {
         broadcastCoordinator.setupTitle(getString(R.string.play_status_bar_prepare_title))
         btnSetup.setOnClickListener {
-            // openBroadcastSetupPage()
+             openBroadcastSetupPage()
             // TODO("for testing live")
-            doCreateChannel()
+//            doCreateChannel()
         }
 
         rvFollowers.adapter = followersAdapter

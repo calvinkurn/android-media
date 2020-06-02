@@ -23,6 +23,7 @@
 
     <string name="play_next">Lanjutkan</string>
     <string name="play_ok">Oke</string>
+    <string name="play_cancel">Cancel</string>
 
     <string name="play_selected_products">Produk Dipilih (%d)</string>
 

@@ -20,16 +20,14 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.util.BreadcrumbsModel
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
+import com.tokopedia.play.broadcaster.view.partial.BottomActionPartialView
 import com.tokopedia.play.broadcaster.view.partial.SelectedProductPagePartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
-import com.tokopedia.unifycomponents.UnifyButton
 import java.util.*
 import javax.inject.Inject
 
@@ -48,11 +46,9 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
     private lateinit var tvTitle: TextView
     private lateinit var clContent: ConstraintLayout
     private lateinit var flOverlay: FrameLayout
-    private lateinit var ivInventory: ImageView
-    private lateinit var btnAction: UnifyButton
-    private lateinit var tvBadgeCount: TextView
 
     private lateinit var selectedProductPage: SelectedProductPagePartialView
+    private lateinit var bottomActionView: BottomActionPartialView
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
@@ -73,9 +69,9 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        childFragmentManager.fragmentFactory = fragmentFactory
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
-        childFragmentManager.fragmentFactory = fragmentFactory
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -94,6 +90,12 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
                 viewModel.selectProduct(productId, isSelected)
                 val activeFragment = currentFragment
                 if (activeFragment is PlayBaseSetupFragment) activeFragment.refresh()
+            }
+        })
+
+        bottomActionView = BottomActionPartialView(view as ViewGroup, object : BottomActionPartialView.Listener {
+            override fun onInventoryIconClicked() {
+                showSelectedProductPage()
             }
         })
     }
@@ -124,6 +126,10 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         tvTitle.text = title
     }
 
+    override fun showBottomAction(shouldShow: Boolean) {
+        if (shouldShow) bottomActionView.show() else bottomActionView.hide()
+    }
+
     fun show(fragmentManager: FragmentManager) {
         show(fragmentManager, TAG)
     }
@@ -137,18 +143,11 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
             }
             bottomSheet?.setBackgroundColor(Color.TRANSPARENT)
             bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
-
-            bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                override fun onSlide(p0: View, p1: Float) {
-
-                }
-
-                override fun onStateChanged(p0: View, p1: Int) {
-                    bottomSheetBehavior.peekHeight = bottomSheet?.height ?: maxHeight()
-                }
-            })
             bottomSheetBehavior.isHideable = false
+            bottomSheetBehavior.peekHeight = maxHeight()
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+
+            isCancelable = false
         }
     }
 
@@ -159,9 +158,6 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
             tvTitle = findViewById(R.id.tv_title)
             clContent = findViewById(R.id.cl_content)
             flOverlay = findViewById(R.id.fl_overlay)
-            ivInventory = findViewById(R.id.iv_inventory)
-            btnAction = findViewById(R.id.btn_action)
-            tvBadgeCount = findViewById(R.id.tv_badge_count)
         }
     }
 
@@ -169,12 +165,10 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         flOverlay.setOnClickListener { dialog?.onBackPressed() }
         ivBack.setOnClickListener { dialog?.onBackPressed() }
 
-        ivInventory.setOnClickListener { showSelectedProductPage() }
-
         navigateToFragment(PlayEtalasePickerFragment::class.java)
     }
 
-    private fun maxHeight(): Int = (getScreenHeight() * MAX_HEIGHT_MULTIPLIER).toInt()
+    private fun maxHeight(): Int = (getScreenHeight()).toInt()
 
     private fun openFragment(fragmentClass: Class<out Fragment>, extras: Bundle): Fragment {
         val fragmentTransaction = childFragmentManager.beginTransaction()
@@ -212,19 +206,7 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
      */
     private fun observeSelectedProducts() {
         viewModel.observableSelectedProducts.observe(viewLifecycleOwner, Observer {
-            if (it.isEmpty()) {
-                ivInventory.setImageResource(R.drawable.ic_play_inventory_disabled)
-                ivInventory.isClickable = false
-                btnAction.isEnabled = false
-                tvBadgeCount.gone()
-            } else {
-                ivInventory.setImageResource(R.drawable.ic_play_inventory)
-                ivInventory.isClickable = true
-                btnAction.isEnabled = true
-                tvBadgeCount.visible()
-                tvBadgeCount.text = it.size.toString()
-            }
-
+            bottomActionView.setupBottomActionWithProducts(it)
             selectedProductPage.onSelectedProductsUpdated(it)
         })
     }
