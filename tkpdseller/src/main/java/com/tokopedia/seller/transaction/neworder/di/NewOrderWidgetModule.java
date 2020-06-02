@@ -5,13 +5,10 @@ import android.content.Context;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.drawer2.data.factory.NotificationSourceFactory;
-import com.tokopedia.core.drawer2.data.mapper.TopChatNotificationMapper;
 import com.tokopedia.core.drawer2.data.repository.NotificationRepositoryImpl;
-import com.tokopedia.core.drawer2.data.source.TopChatNotificationSource;
 import com.tokopedia.core.drawer2.domain.NotificationRepository;
-import com.tokopedia.core.drawer2.view.DrawerHelper;
-import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.transaction.neworder.data.NewOrderApi;
 import com.tokopedia.seller.transaction.neworder.data.repository.GetNewOrderRepositoryImpl;
 import com.tokopedia.seller.transaction.neworder.data.source.GetNewOrderDataSource;
@@ -47,41 +44,19 @@ public class NewOrderWidgetModule {
     @NewOrderWidgetScope
     @Provides
     NotificationRepository provideNotificationRepository(NotificationSourceFactory
-                                                                 notificationSourceFactory,
-                                                         TopChatNotificationSource topChatNotificationSource){
-        return new NotificationRepositoryImpl(notificationSourceFactory, topChatNotificationSource);
+                                                                 notificationSourceFactory){
+        return new NotificationRepositoryImpl(notificationSourceFactory);
     }
 
     @NewOrderWidgetScope
     @Provides
     LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context) {
-        return new LocalCacheHandler(context, DrawerHelper.DRAWER_CACHE);
+        return new LocalCacheHandler(context, SessionHandler.DRAWER_CACHE);
     }
 
     @NewOrderWidgetScope
     @Provides
     NewOrderApi provideNewOrderApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
         return retrofit.create(NewOrderApi.class);
-    }
-
-    @NewOrderWidgetScope
-    @Provides
-    ChatService provideChatService() {
-        return new ChatService();
-    }
-
-    @NewOrderWidgetScope
-    @Provides
-    TopChatNotificationMapper provideTopChatNotificationMapper() {
-        return new TopChatNotificationMapper();
-    }
-
-    @NewOrderWidgetScope
-    @Provides
-    TopChatNotificationSource provideTopChatNotificationSource(ChatService chatService,
-                                                               TopChatNotificationMapper
-                                                                       topChatNotificationMapper,
-                                                               LocalCacheHandler drawerCache) {
-        return new TopChatNotificationSource(chatService, topChatNotificationMapper, drawerCache);
     }
 }

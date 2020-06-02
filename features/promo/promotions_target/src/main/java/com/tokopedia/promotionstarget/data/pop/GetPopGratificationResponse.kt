@@ -31,7 +31,10 @@ data class PopGratification(
         val title: String? = null,
 
         @SerializedName("isShow")
-        val isShow: Boolean? = null
+        val isShow: Boolean? = null,
+
+        @SerializedName("isAutoClaim")
+        val isAutoClaim: Boolean? = null
 )
 
 
