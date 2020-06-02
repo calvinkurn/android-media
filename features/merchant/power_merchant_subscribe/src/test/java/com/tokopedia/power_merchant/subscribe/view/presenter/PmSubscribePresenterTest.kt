@@ -32,7 +32,7 @@ class PmSubscribePresenterTest : Spek( {
 
         val getShopScoreUseCase: GetShopScoreUseCase = mockk()
 
-        val pmSubscribeView: PmSubscribeContract.View = mockk()
+        val pmSubscribeView: PmSubscribeContract.View = mockk(relaxed = true)
 
         val getPowerMerchantStatusUseCase: GetPowerMerchantStatusUseCase = spyk(
                 GetPowerMerchantStatusUseCase(getShopStatusUseCase,
@@ -57,8 +57,9 @@ class PmSubscribePresenterTest : Spek( {
                     getPowerMerchantStatusUseCase.execute(any(), any())
                 }
             }
-            Then("Run onSuccessGetPmInfo on view") {
+            Then("Run showLoading and onSuccessGetPmInfo on view") {
                 verify {
+                    pmSubscribeView.showLoading()
                     pmSubscribeView.onSuccessGetPmInfo(any())
                 }
             }

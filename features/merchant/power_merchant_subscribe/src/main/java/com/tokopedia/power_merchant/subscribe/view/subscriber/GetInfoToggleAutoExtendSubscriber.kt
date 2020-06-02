@@ -8,6 +8,7 @@ class GetInfoToggleAutoExtendSubscriber(private val view: PmSubscribeContract.Vi
 
     override fun onNext(success: Boolean) {
         if (success) {
+            view.hideLoading()
             view.onSuccessCancelMembership()
         } else {
             onError(RuntimeException())
@@ -19,6 +20,7 @@ class GetInfoToggleAutoExtendSubscriber(private val view: PmSubscribeContract.Vi
 
     override fun onError(e: Throwable?) {
         Timber.d(e)
+        view.hideLoading()
         e?.let { view.onErrorCancelMembership(it) }
     }
 }
