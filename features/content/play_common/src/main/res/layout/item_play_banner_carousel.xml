@@ -17,7 +17,6 @@
     app:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/grey_300">
@@ -26,20 +25,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:use_controller="false"
-            app:keep_content_on_player_reset="true"
+            app:show_buffering="always"
             app:surface_type="texture_view"
             app:resize_mode="zoom"/>
-        <FrameLayout
-            android:id="@+id/media_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <ProgressBar
-                android:id="@+id/progress_bar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:visibility="gone"/>
-        </FrameLayout>
+
         <include
             android:id="@+id/live_badge"
             layout="@layout/layout_live_badge"

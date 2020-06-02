@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -42,6 +43,10 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
 
     fun setListener(listener: PlayBannerCarouselViewEventListener){
         this.listener = listener
+    }
+
+    fun onDestroy(){
+        recycler_view?.releasePlayer()
     }
 
     fun setItem(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
