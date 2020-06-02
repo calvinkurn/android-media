@@ -17,8 +17,6 @@ object GTMLoggerImpl : GTMLogger {
             Level.IGNORE -> {
                 Timber.w("P1#GTMLoggerImpl#ignored_log;current_thread='%s'", stacktrace.toString())
             }
-
         }
-
     }
 }
