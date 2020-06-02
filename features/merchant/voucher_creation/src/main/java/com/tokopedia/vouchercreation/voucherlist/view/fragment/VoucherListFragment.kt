@@ -531,7 +531,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         if (isToolbarAlreadyLoaded) {
             if (vouchers.isNotEmpty()) {
                 renderList(vouchers, vouchers.isNotEmpty())
-            } else {
+            } else if (adapter.data.isEmpty()){
                 renderList(listOf(NoResultStateUiModel))
             }
         } else {
@@ -597,7 +597,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                 when(result) {
                     is Success -> {
                         val voucherId = result.data
-                        showCancellationFailToaster(false, voucherId)
+                        showCancellationSuccessToaster(false, voucherId)
                     }
                     is Fail -> {
                         if (result.throwable is VoucherCancellationException) {
