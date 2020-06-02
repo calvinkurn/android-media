@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,7 +34,6 @@ class IncentiveOvoBottomSheet(private val productRevIncentiveOvoDomain: ProductR
 
     private fun initView(view: View) {
         ImageHandler.LoadImage(view.ivIncentiveOvo, url)
-
         view.tgIncentiveOvoTitle.text = productRevIncentiveOvoDomain.productrevIncentiveOvo.title
         view.tgIncentiveOvoSubtitle.text = productRevIncentiveOvoDomain.productrevIncentiveOvo.subtitle
         view.tgIncentiveOvoDescription.text = productRevIncentiveOvoDomain.productrevIncentiveOvo.description
@@ -44,7 +44,12 @@ class IncentiveOvoBottomSheet(private val productRevIncentiveOvoDomain: ProductR
             layoutManager = LinearLayoutManager(context)
             adapter = adapterIncentiveOvo
         }
-
+        setShowListener {
+            val dpSixteen = 16
+            val dpZero = 0
+            bottomSheetHeader.setPadding(dpSixteen, dpSixteen, dpSixteen, dpZero)
+            (bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(dpZero, dpZero, dpZero, dpZero)
+        }
         setOnDismissListener {
             hitContinueOrDismissTracker(checkBtnContinue)
             checkBtnContinue = false
