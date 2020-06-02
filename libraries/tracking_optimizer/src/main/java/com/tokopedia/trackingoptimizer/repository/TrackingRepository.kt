@@ -215,7 +215,7 @@ class TrackingRepository(val context: Context) : ITrackingRepository<TrackingReg
     }
 
     companion object {
-        const val ENHANCE_ECOMMERCE_SIZE_LIMIT = 7000 // bytes
+        const val ENHANCE_ECOMMERCE_SIZE_LIMIT = 6000 // bytes
     }
 
 }
