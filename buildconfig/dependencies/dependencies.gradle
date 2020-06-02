@@ -86,9 +86,9 @@ ext {
     ]
 
     unifyIconVersion = '0.0.4'
-    unifyPrinciplesVersion = '1.1.5'
-    unifyComponentsVersion = '1.1.33'
     unifyCoachMarkVersion = '1.2.3'
+    unifyPrinciplesVersion = '1.1.7'
+    unifyComponentsVersion = '1.1.36'
     unifyCalendarVersion = '1.0.2'
     unifyBannerVersion = '1.0.4'
     unifyDialogVersion = '1.0.0'
@@ -96,9 +96,9 @@ ext {
     unifyPinVersion = '1.0.1'
     unifyEmptyStateVersion = '1.0.5'
     unifyGlobalErrorVersion = '1.0.8'
-    unifyListVersion = "1.0.4"
     unifyHeaderVersion = '1.1.1'
     unifySortFilterVersion = '1.0.3'
+    unifyListVersion = "1.0.4"
     unifyIconNotificationVersion = '1.0.0'
     unifyCarouselVersion = '1.0.2'
 
@@ -222,7 +222,7 @@ ext {
             slidinguppanel        : "com.sothree.slidinguppanel:library:3.3.1",
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
             cardio                : "io.card:android-sdk:$cardioVersion",
-            loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:2.0.0",
+            loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.5.0",
             imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion@aar",
             codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.6.0@aar",
@@ -312,7 +312,6 @@ ext {
             oldChuckNoOp    : "com.github.okasurya.chuck:library-no-op:1.0.4-alpha2",
             toolargetool    : "com.gu.android:toolargetool:0.1.3@aar",
             timber          : "com.jakewharton.timber:timber:4.7.1",
-            //blockCanary : "com.github.moduth:blockcanary:1.4.3@aar",
             blockCanary     : ":libraries:blockcanary",
             blockCanaryNoOp : "com.github.markzhai:blockcanary-no-op:1.5.0",
             leakCanary      : "com.squareup.leakcanary:leakcanary-android:2.2"
@@ -340,7 +339,7 @@ ext {
             empty_state     : "com.tokopedia.unify.compositions:empty_state:${unifyEmptyStateVersion}@aar",
             pin             : "com.tokopedia.unify.compositions:pin:${unifyPinVersion}@aar",
             global_error    : "com.tokopedia.unify.compositions:global_error:${unifyGlobalErrorVersion}@aar",
-            list         : "com.tokopedia.unify.compositions:list:${unifyListVersion}@aar",
+            list            : "com.tokopedia.unify.compositions:list:${unifyListVersion}@aar",
             header          : "com.tokopedia.unify.compositions:header:${unifyHeaderVersion}@aar",
             iconNotification: "com.tokopedia.unify.compositions:icon_notification:${unifyIconNotificationVersion}@aar",
             sortFilter      : "com.tokopedia.unify.compositions:sort_filter:${unifySortFilterVersion}@aar",

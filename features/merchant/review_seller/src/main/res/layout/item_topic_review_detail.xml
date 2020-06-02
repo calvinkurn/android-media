@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/spacing_lvl4"
+    android:layout_marginLeft="@dimen/spacing_lvl4"
+    android:layout_marginTop="@dimen/spacing_lvl5"
+    android:layout_marginEnd="@dimen/spacing_lvl4"
+    android:layout_marginRight="@dimen/spacing_lvl4">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/topicReviewDetailLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/topic_review_detail_label"
+        android:textColor="@color/clr_f531353b"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_1"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.sortfilter.SortFilter
+        android:id="@+id/topicSortFilterTopic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topicReviewDetailLabel"
+        app:sort_filter_relationship="AND"
+        app:sort_filter_type="advanced" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrierTopicFilter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="topicSortFilterTopic, chipsSortFilter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topicReviewDetailLabel" />
+
+    <com.tokopedia.unifycomponents.ChipsUnify
+        android:id="@+id/chipsSortFilter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        app:centerText="true"
+        app:chipSize="medium"
+        app:chipType="normal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topicReviewDetailLabel"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/resultFeedbackLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:textColor="@color/clr_f531353b"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barrierTopicFilter"
+        app:typographyType="body_2"
+        tools:text="Menampilkan 0 ulasan dari pembeli" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

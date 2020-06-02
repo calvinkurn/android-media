@@ -81,6 +81,12 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     val groupSummaryLabelView: LabelView?
         get() = label_view_group_summary
 
+    val getKeywordLabelView: LabelView?
+        get() = label_view_keyword
+
+    val getItemLevelLabelView: LabelView?
+        get() = label_view_item_summary
+
     val autoAdsWidgetView: AutoAdsWidgetView?
         get() = autoads_widget
 
@@ -174,7 +180,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         initSummaryComponent()
         initStatisticComponent()
         initEmptyStateView()
-        button_topads_add_promo.button.setOnClickListener {
+        button_topads_add_promo?.button?.setOnClickListener {
             activity?.let {
                 if (GlobalConfig.isSellerApp()) {
                     when (adStatus) {
@@ -318,9 +324,9 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     private fun initTopAdsStatisticPagerAdapter() {}
 
     private fun initSummaryComponent() {
-        label_view_group_summary.setOnClickListener { onSummaryGroupClicked() }
-        label_view_item_summary.setOnClickListener { onSummaryProductClicked() }
-        label_view_keyword.setOnClickListener { onSummaryKeywordClicked() }
+        groupSummaryLabelView?.setOnClickListener { onSummaryGroupClicked() }
+        getItemLevelLabelView?.setOnClickListener { onSummaryProductClicked() }
+        getKeywordLabelView?.setOnClickListener { onSummaryKeywordClicked() }
     }
 
     private fun onSummaryKeywordClicked() {
@@ -627,9 +633,9 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         swipe_refresh_layout.isRefreshing = false
         totalProductAd = totalAd.totalProductAd
         totalGroupAd = totalAd.totalProductGroupAd
-        label_view_group_summary.setContent(totalAd.totalProductGroupAd.toString())
-        label_view_item_summary.setContent(totalAd.totalProductAd.toString())
-        label_view_keyword.setContent(totalAd.totalKeyword.toString())
+        groupSummaryLabelView?.setContent(totalAd.totalProductGroupAd.toString())
+        getItemLevelLabelView?.setContent(totalAd.totalProductAd.toString())
+        getKeywordLabelView?.setContent(totalAd.totalKeyword.toString())
     }
 
     override fun onErrorGetStatisticsInfo(throwable: Throwable) {
@@ -705,15 +711,15 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
 
     private fun onActiveAutoAds() {
         isAutoAds = true
-        label_view_group_summary.visibility = View.GONE
-        label_view_keyword.visibility = View.GONE
+        groupSummaryLabelView?.visibility = View.GONE
+        getKeywordLabelView?.visibility = View.GONE
     //    button_topads_add_promo.visibility = View.GONE
     }
 
     private fun onDeactiveAutoAds() {
         isAutoAds = false
-        label_view_group_summary.visibility = View.VISIBLE
-        label_view_keyword.visibility = View.VISIBLE
+        groupSummaryLabelView?.visibility = View.VISIBLE
+        getKeywordLabelView?.visibility = View.VISIBLE
         buttonAddPromo?.visibility = View.VISIBLE
     }
 

@@ -68,7 +68,9 @@ public class TrackingPagePresenter extends BaseDaggerPresenter implements ITrack
 
                     @Override
                     public void onError(Throwable e) {
-                        view.showSoftError(e);
+                        if (isViewAttached()) {
+                            view.showSoftError(e);
+                        }
                     }
 
                     @Override

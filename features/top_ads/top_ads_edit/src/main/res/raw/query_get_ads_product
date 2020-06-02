@@ -1,0 +1,16 @@
+query topadsGetListProductsOfGroup($shopID: Int!, $page: Int!, $perPage: Int!, $type: String!, $groupID: Int!) {
+  topadsGetListProductsOfGroup(shopID: $shopID, page: $page, perPage: $perPage, type: $type, groupID: $groupID) {
+    data {
+      adID
+      itemID
+      adPriceBidFmt
+      adDetailProduct {
+        productName
+        productURI
+        productImageURI
+      }
+      groupName
+      groupID
+    }
+  }
+}

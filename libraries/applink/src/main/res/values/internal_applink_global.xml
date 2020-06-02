@@ -66,4 +66,5 @@
     <string name="path_manage_general">/manage-general</string>
     <string name="path_manage_notification">/manage-notification</string>
 
+    <string name="path_seller_seamless_login" translatable="false">/login-seamless</string>
 </resources>
