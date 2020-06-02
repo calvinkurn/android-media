@@ -12,15 +12,24 @@ import javax.inject.Inject
 
 class ProductCardsRestRepository @Inject constructor() : BaseRepository(), ProductCardsRepository {
 
-    override suspend fun getProducts(componentId: Int, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String, isHorizontal : Boolean): ArrayList<ComponentsItem> {
+    override suspend fun getProducts(componentId: Int, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String, productComponentName: String?): ArrayList<ComponentsItem> {
         val response = getRestData<DataResponse<DiscoveryResponse>>(GenerateUrl.getComponentUrl(pageEndPoint, componentId),
                 object : TypeToken<DataResponse<DiscoveryResponse>>() {}.type,
                 RequestType.GET,
                 queryParamterMap)
 
-        return if(isHorizontal)
-            DiscoveryDataMapper().mapListToComponentList(response.data.component?.data , "product_card_horizontal_item", null)
-        else
-            DiscoveryDataMapper().mapListToComponentList(response.data.component?.data , "product_card_item", null)
+        return when (productComponentName) {
+            "product_card_revamp" -> DiscoveryDataMapper().mapListToComponentList(response.data.component?.data, "product_card_revamp_item", null)
+            "product_card_carousel" -> DiscoveryDataMapper().mapListToComponentList(response.data.component?.data, "product_card_carousel_item", null)
+            "product_card_sprint_sale" -> DiscoveryDataMapper().mapListToComponentList(response.data.component?.data, "product_card_sprint_sale_item", null)
+            "product_card_sprint_sale_carousel" -> DiscoveryDataMapper().mapListToComponentList(response.data.component?.data, "product_card_sprint_sale_carousel_item", null)
+            else -> DiscoveryDataMapper().mapListToComponentList(response.data.component?.data, "product_card_revamp_item", null)
+
+        }
+
+//        return if(isHorizontal)
+//            DiscoveryDataMapper().mapListToComponentList(response.data.component?.data , "product_card_horizontal_item", null)
+//        else
+//            DiscoveryDataMapper().mapListToComponentList(response.data.component?.data , "product_card_item", null)
     }
 }

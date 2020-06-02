@@ -35,7 +35,7 @@ class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         mProductRevampComponentViewModel = discoveryBaseViewModel as ProductCardRevampViewModel
         setUpDataObserver(fragment.viewLifecycleOwner)
-        mProductRevampComponentViewModel.fetchProductCarouselData((fragment as DiscoveryFragment).pageEndPoint)
+        mProductRevampComponentViewModel.fetchProductsData((fragment as DiscoveryFragment).pageEndPoint)
     }
 
     private fun setUpDataObserver(lifecycleOwner: LifecycleOwner) {

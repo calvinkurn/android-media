@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
-import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardCarouselUseCase
+import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -26,7 +26,7 @@ class ProductCardCarouselViewModel(val application: Application, components: Com
     private val productCarouselList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
 
     @Inject
-    lateinit var productCardCarouselUseCase: ProductCardCarouselUseCase
+    lateinit var productCardsUseCase: ProductCardsUseCase
 
 
     override val coroutineContext: CoroutineContext
@@ -51,7 +51,7 @@ class ProductCardCarouselViewModel(val application: Application, components: Com
     fun fetchProductCarouselData(pageEndPoint: String) {
         if (productCarouselList.value.isNullOrEmpty()) {
             launchCatchError(block = {
-                productCarouselList.value = productCardCarouselUseCase.getProductCardCarouselUseCase(productCarouselComponentData.value?.id.toIntOrZero(), getQueryParameterMap(), pageEndPoint, isHorizontal = true)
+                productCarouselList.value = productCardsUseCase.getProductCardsUseCase(productCarouselComponentData.value?.id.toIntOrZero(), getQueryParameterMap(), pageEndPoint, productCarouselComponentData.value?.name)
             }, onError = {
                 it.printStackTrace()
             })

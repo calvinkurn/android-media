@@ -1,7 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem
 
+import android.graphics.Color
 import android.graphics.Paint
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -12,6 +12,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.StockWording
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel.Companion.GOLD_MERCHANT
@@ -23,47 +24,33 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 
 
-class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
+class ProductCardItemViewHolder(itemView: View, fragment: Fragment) : AbstractViewHolder(itemView) {
 
-    private var productImage: ImageUnify
-    private var topadsImage: ImageView
-    private var productName: TextView
-    private var labelDiscount: TextView
-    private var textViewSlashedPrice: TextView
-    private var textViewPrice: TextView
-    private var textViewShopName: TextView
-    private var textViewReviewCount: TextView
-    private var textViewShopLocation: TextView
-    private var labelCashbackPromo: Label
-    private var shopImage: ImageView
-    private var shopBadge: ImageView
-    private var imageFreeOngkirPromo: ImageView
-    private var productCardView: CardView
-    private var stockPercentageProgress: ProgressBarUnify
-    private var linearLayoutImageRating: LinearLayout
+    private var productImage: ImageUnify = itemView.findViewById(R.id.imageProduct)
+    private var topadsImage: ImageView = itemView.findViewById(R.id.imageTopAds)
+    private var productName: TextView = itemView.findViewById(R.id.textViewProductName)
+    private var labelDiscount: TextView = itemView.findViewById(R.id.labelDiscount)
+    private var textViewSlashedPrice: TextView = itemView.findViewById(R.id.textViewSlashedPrice)
+    private var textViewPrice: TextView = itemView.findViewById(R.id.textViewPrice)
+    private var textViewShopName: TextView = itemView.findViewById(R.id.textViewShopName)
+    private var textViewReviewCount: TextView = itemView.findViewById(R.id.textViewReviewCount)
+    private var textViewShopLocation: TextView = itemView.findViewById(R.id.textViewShopLocation)
+    private var labelCashbackPromo: Label = itemView.findViewById(R.id.labelCashBack)
+    private var shopImage: ImageView = itemView.findViewById(R.id.imageShop)
+    private var shopBadge: ImageView = itemView.findViewById(R.id.imageViewShopBadge)
+    private var imageFreeOngkirPromo: ImageView = itemView.findViewById(R.id.imageFreeOngkirPromo)
+    private var productCardView: CardView = itemView.findViewById(R.id.cardViewProductCard)
+    private var stockPercentageProgress: ProgressBarUnify = itemView.findViewById(R.id.stockPercentageProgress)
+    private var linearLayoutImageRating: LinearLayout = itemView.findViewById(R.id.linearLayoutImageRating)
+
+    private var pdpViewImage: ImageView = itemView.findViewById(R.id.imageViewProductView)
+    private var pdpViewCount: TextView = itemView.findViewById(R.id.textViewProductViewCount)
+    private var stockTitle: TextView = itemView.findViewById(R.id.stockText)
+
     private lateinit var productCardItemViewModel: ProductCardItemViewModel
-    var lifecycleOwner: LifecycleOwner
+    private var lifecycleOwner: LifecycleOwner = fragment.viewLifecycleOwner
+    private var productCardName = ""
 
-
-    init {
-        productImage = itemView.findViewById(R.id.imageProduct)
-        topadsImage = itemView.findViewById(R.id.imageTopAds)
-        productName = itemView.findViewById(R.id.textViewProductName)
-        shopImage = itemView.findViewById(R.id.imageShop)
-        textViewShopName = itemView.findViewById(R.id.textViewShopName)
-        textViewPrice = itemView.findViewById(R.id.textViewPrice)
-        labelDiscount = itemView.findViewById(R.id.labelDiscount)
-        textViewSlashedPrice = itemView.findViewById(R.id.textViewSlashedPrice)
-        linearLayoutImageRating = itemView.findViewById(R.id.linearLayoutImageRating)
-        textViewReviewCount = itemView.findViewById(R.id.textViewReviewCount)
-        labelCashbackPromo = itemView.findViewById(R.id.labelCashBack)
-        shopBadge = itemView.findViewById(R.id.imageViewShopBadge)
-        textViewShopLocation = itemView.findViewById(R.id.textViewShopLocation)
-        imageFreeOngkirPromo = itemView.findViewById(R.id.imageFreeOngkirPromo)
-        stockPercentageProgress = itemView.findViewById(R.id.stockPercentageProgress)
-        productCardView = itemView.findViewById(R.id.cardViewProductCard)
-        lifecycleOwner = fragment.viewLifecycleOwner
-    }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         productCardItemViewModel = discoveryBaseViewModel as ProductCardItemViewModel
@@ -86,6 +73,9 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
     }
 
     private fun setUpObserver() {
+        productCardItemViewModel.getComponentName().observe(lifecycleOwner, Observer {
+            productCardName = it
+        })
         productCardItemViewModel.getDataItemValue().observe(lifecycleOwner, Observer {
             populateData(it)
         })
@@ -104,6 +94,15 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
         productCardView.setOnClickListener {
             productCardItemViewModel.handleUIClick()
         }
+
+        productCardItemViewModel.getPDPViewCount().observe(lifecycleOwner, Observer {
+            setPDPView(it)
+        })
+
+        productCardItemViewModel.getStockWord().observe(lifecycleOwner, Observer {
+            showStockProgressTitle(it)
+        })
+
     }
 
 
@@ -117,13 +116,18 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
     }
 
     private fun populateData(dataItem: DataItem) {
-        Log.d("populateData", this.toString() + dataItem)
-        productName.setTextAndCheckShow(dataItem.name)
-        textViewShopName.setTextAndCheckShow(dataItem.shopName)
-        textViewPrice.setTextAndCheckShow(dataItem.price)
-
+        if (productCardName == "product_card_revamp_item" || productCardName == "product_card_carousel_item") {
+            productName.setTextAndCheckShow(dataItem.name)
+            setSlashedPrice(dataItem.discountedPrice)
+            textViewPrice.setTextAndCheckShow(dataItem.price)
+        } else {
+            productName.setTextAndCheckShow(dataItem.title)
+            setSlashedPrice(dataItem.price)
+            textViewPrice.setTextAndCheckShow(dataItem.discountedPrice)
+            setStockProgress(dataItem.stockSoldPercentage)
+        }
         setLabelDiscount(dataItem.discountPercentage.toString())
-        setSlashedPrice(dataItem.discountedPrice)
+        textViewShopName.setTextAndCheckShow(dataItem.shopName)
         setRating(dataItem.rating.toIntOrZero())
         setTextViewReviewCount(dataItem.countReview.toIntOrZero())
         setCashbackLabel(dataItem.cashback)
@@ -131,8 +135,6 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
         setShopIcon(dataItem.shopLogo)
         setProductImage(dataItem.imageUrlMobile)
         setTopads(dataItem.isTopads)
-        setStockProgress(dataItem.stockSoldPercentage)
-
     }
 
     private fun setTopads(topads: Boolean?) {
@@ -144,16 +146,37 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
     }
 
     private fun setProductImage(imageUrlMobile: String?) {
-        Log.d("setProductImage", this.toString() + imageUrlMobile)
         productImage.loadImage(imageUrlMobile ?: "")
     }
 
     private fun setStockProgress(stockPercent: String?) {
         if (!stockPercent.isNullOrEmpty()) {
-            stockPercentageProgress.setValue(stockPercent.toIntOrZero())
             stockPercentageProgress.show()
+            stockPercentageProgress.setValue(stockPercent.toIntOrZero())
+        } else {
+            stockPercentageProgress.hide()
         }
+    }
 
+    private fun showStockProgressTitle(stockWording: StockWording) {
+        if (!stockWording.title.isNullOrEmpty() && productCardName != "product_card_revamp_item" && productCardName == "product_card_carousel_item") {
+            stockTitle.show()
+            stockTitle.setTextAndCheckShow(stockWording.title)
+            stockTitle.setTextColor(Color.parseColor(stockWording.color))
+        } else {
+            stockTitle.hide()
+        }
+    }
+
+    private fun setPDPView(it: String) {
+        if (it.isNotEmpty()) {
+            pdpViewImage.show()
+            pdpViewCount.show()
+            pdpViewCount.setTextAndCheckShow(it)
+        } else {
+            pdpViewImage.hide()
+            pdpViewCount.hide()
+        }
     }
 
     private fun setShopIcon(shopLogo: String?) {
@@ -165,9 +188,9 @@ class ProductCardItemViewHolder(itemView: View, private val fragment: Fragment) 
     private fun setCashbackLabel(cashback: String?) {
         if (!cashback.isNullOrEmpty()) {
             labelCashbackPromo.let {
+                it.show()
                 it.text = String.format("%s", "Cashback $cashback%")
                 it.setLabelType(Label.GENERAL_LIGHT_GREEN)
-                it.show()
             }
         } else {
             labelCashbackPromo.hide()

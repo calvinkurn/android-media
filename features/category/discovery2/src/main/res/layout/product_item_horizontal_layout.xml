@@ -22,7 +22,8 @@
         android:paddingBottom="@dimen/dp_8"
         tools:layout_height="match_parent">
 
-        <com.tokopedia.unifycomponents.ImageUnify
+
+    <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imageProduct"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -108,11 +109,12 @@
             android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="@id/imageProduct"
             app:layout_constraintTop_toBottomOf="@id/textViewShopName"
-            tools:src="@drawable/ic_product_view"
+            app:srcCompat="@drawable/ic_product_view"
+            tools:srcCompat="@drawable/ic_product_view"
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/textViewProductViewcount"
+            android:id="@+id/textViewProductViewCount"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_3"
@@ -340,17 +342,6 @@
             tools:visibility="visible"
             tools:text="(3000)" />
 
-        <com.tokopedia.unifycomponents.ProgressBarUnify
-            android:id="@+id/stockPercentageProgress"
-            android:layout_width="100dp"
-            android:layout_height="@dimen/dp_20"
-            android:visibility="gone"
-            app:unify_progress_bar_from_color="#fa591d"
-            app:unify_progress_bar_to_color="#d6001c"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayoutImageRating"
-            app:layout_constraintStart_toStartOf="@id/imageProduct"
-            />
-
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/labelCredibility"
             android:layout_width="wrap_content"
@@ -389,7 +380,7 @@
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/imageFreeOngkirPromo"
             app:layout_constraintLeft_toLeftOf="@id/imageProduct"
-            tools:visibility="visible"
+            tools:visibility="gone"
             tools:text="Offers Label" />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -404,6 +395,41 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/product_card_v2_ic_topads"
             tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.ProgressBarUnify
+            android:id="@+id/stockPercentageProgress"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_5"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:visibility="gone"
+            app:unify_progress_bar_from_color="#fa591d"
+            app:unify_progress_bar_to_color="#d6001c"
+            app:layout_constraintTop_toBottomOf="@+id/imageFreeOngkirPromo"
+            app:layout_constraintStart_toStartOf="@id/imageProduct"
+            app:layout_constraintEnd_toStartOf="@id/imageTopAds"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/stockText"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/clr_ae31353b"
+            android:gravity="center_vertical"
+            android:visibility="gone"
+            app:typographyWeight="bold"
+            app:layout_constraintTop_toBottomOf="@+id/stockPercentageProgress"
+            app:layout_constraintStart_toStartOf="@+id/stockPercentageProgress"
+            app:typographyType="small"
+            tools:visibility="visible"
+            tools:text="Tersisa 6" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewAddToCart"
@@ -424,7 +450,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageFreeOngkirPromo"
             app:typographyType="heading_6"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

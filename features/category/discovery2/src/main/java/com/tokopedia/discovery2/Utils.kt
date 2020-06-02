@@ -8,7 +8,7 @@ import android.provider.MediaStore
 
 
 class Utils {
-    
+
     companion object {
         const val TIME_ZONE = "Asia/Jakarta"
         const val TIMER_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm"
@@ -17,6 +17,10 @@ class Utils {
         const val DEFAULT_BANNER_HEIGHT = 150
         const val BANNER_SUBSCRIPTION_DEFAULT_STATUS = -1
         const val SEARCH_DEEPLINK = "tokopedia://search-autocomplete"
+        const val SERIBU = 1000
+        const val SEJUTA = 1000000
+        const val SEMILIAR = 1000000000
+        const val VIEW_LIMIT = 0.1
 
 
         fun extractDimension(url: String?, dimension: String = "height"): Int? {
@@ -33,8 +37,38 @@ class Utils {
                 val uri = Uri.parse(path)
                 share.putExtra(Intent.EXTRA_STREAM, uri)
             }
-            share.putExtra(Intent.EXTRA_TEXT, shareTxt+ "\n"+ productUri)
+            share.putExtra(Intent.EXTRA_TEXT, shareTxt + "\n" + productUri)
             context?.startActivity(Intent.createChooser(share, shareTxt))
+        }
+
+        fun getPDPCount(pdpCount: Double, notifyMeText: String = ""): String {
+            if (pdpCount >= SERIBU && pdpCount < SEJUTA) {
+                val rbCount = pdpCount / SERIBU
+                return if (checkForPrice(rbCount)) {
+                    "${rbCount.toInt()} rb orang $notifyMeText"
+                } else {
+                    "${"%.1f".format(rbCount).replace('.', ',')} rb orang $notifyMeText"
+                }
+            } else if (pdpCount >= SEJUTA && pdpCount < SEMILIAR) {
+                val jtCount = pdpCount / SEJUTA
+                return if (checkForPrice(jtCount)) {
+                    "${jtCount.toInt()} jt orang $notifyMeText"
+                } else {
+                    "${"%.1f".format(jtCount).replace('.', ',')} jt orang $notifyMeText"
+                }
+            } else if (pdpCount >= SEMILIAR) {
+                val MCount = pdpCount / SEMILIAR
+                return if (checkForPrice(MCount)) {
+                    "${MCount.toInt()} M orang $notifyMeText"
+                } else {
+                    "${"%.1f".format(MCount).replace('.', ',')} M orang $notifyMeText"
+                }
+            }
+            return ""
+        }
+
+        private fun checkForPrice(currentPDPCount: Double): Boolean {
+            return currentPDPCount % 1 < VIEW_LIMIT
         }
     }
 }
