@@ -8,7 +8,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_time_counter"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/play_counter_height"
+        android:layout_height="@dimen/play_stats_info_counter_height"
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:gravity="center"
         android:text="@string/play_live_broadcast_time_default"

@@ -2,6 +2,8 @@ package com.tokopedia.play.broadcaster.view.activity
 
 import android.os.Bundle
 import android.view.WindowManager
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProviders
@@ -19,6 +21,7 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment.Compan
 import com.tokopedia.play.broadcaster.view.fragment.PlayLiveBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayPrepareBroadcastFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 /**
@@ -34,6 +37,10 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
 
     private lateinit var viewModel: PlayBroadcastViewModel
 
+    private lateinit var ivSwitchCamera: AppCompatImageView
+    private lateinit var tvClose: AppCompatTextView
+    private lateinit var tvTitle: Typography
+
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         initViewModel()
@@ -43,6 +50,7 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
         setContentView(R.layout.activity_play_broadcast)
         setupContent()
         getConfiguration()
+        setupToolbar()
 
         observeScreenStateEvent()
     }
@@ -71,6 +79,16 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
         }
     }
 
+    private fun setupToolbar() {
+        tvTitle = findViewById(R.id.tv_title)
+        ivSwitchCamera = findViewById(R.id.iv_switch)
+        tvClose = findViewById(R.id.tv_close)
+
+        ivSwitchCamera.setOnClickListener {
+            viewModel.getPlayPusher().switchCamera()
+        }
+    }
+
     private fun getConfiguration() {
         viewModel.getConfiguration()
     }
@@ -92,6 +110,10 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
         fragmentTransaction
                 .replace(R.id.fl_setup, destFragment, fragmentClass.name)
                 .commit()
+    }
+
+    override fun setupTitle(title: String) {
+        tvTitle.text = title
     }
 
     private fun getParentFragment() = PlayBroadcastFragment.newInstance()
