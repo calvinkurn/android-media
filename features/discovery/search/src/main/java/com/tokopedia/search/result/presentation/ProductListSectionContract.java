@@ -165,6 +165,8 @@ public interface ProductListSectionContract {
         void startRenderPerformanceMonitoring();
 
         void sendProductImpressionTrackingEvent(ProductItemViewModel item);
+
+        void trackBroadMatchImpression(String alternativeKeyword, List<Object> impressionObjectDataLayer);
     }
 
     interface Presenter extends CustomerPresenter<View> {

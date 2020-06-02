@@ -431,6 +431,10 @@
         <value>true</value>
     </entry>
     <entry>
+        <key>android_async_hansel_init</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>excluded_amp</key>
         <value>stories</value>
     </entry>

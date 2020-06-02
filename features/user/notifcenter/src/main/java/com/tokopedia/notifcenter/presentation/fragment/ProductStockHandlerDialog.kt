@@ -1,9 +1,7 @@
 package com.tokopedia.notifcenter.presentation.fragment
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -19,16 +17,15 @@ import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.data.viewbean.ProductHighlightViewBean
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.listener.ProductStockListener
+import com.tokopedia.notifcenter.presentation.BaseBottomSheet
 import com.tokopedia.notifcenter.presentation.activity.NotificationActivity
 import com.tokopedia.notifcenter.presentation.adapter.ProductHighlightAdapter
 import com.tokopedia.notifcenter.presentation.viewmodel.ProductStockHandlerViewModel
 import com.tokopedia.notifcenter.util.dialogWindow
 import com.tokopedia.notifcenter.util.viewModelProvider
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
-import com.tokopedia.unifycomponents.Toaster.toasterLength
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.dialog_product_stock_handler.*
@@ -39,7 +36,7 @@ import javax.inject.Inject
 class ProductStockHandlerDialog(
         private val element: NotificationItemViewBean,
         private val listener: NotificationItemListener
-): BottomSheetUnify(), ProductStockListener {
+): BaseBottomSheet(), ProductStockListener {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var userSession: UserSessionInterface
@@ -62,24 +59,13 @@ class ProductStockHandlerDialog(
         viewModel = viewModelProvider(viewModelFactory)
     }
 
-    override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View? {
-        val contentView = View.inflate(
-                requireContext(),
-                R.layout.dialog_product_stock_handler,
-                null
-        )
-        setChild(contentView)
-        return super.onCreateView(inflater, container, savedInstanceState)
+    override fun contentView(): Int {
+        return R.layout.dialog_product_stock_handler
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         analytics.productCardImpression(element, userSession.userId)
-        renderView()
         initObservable()
     }
 
@@ -131,7 +117,7 @@ class ProductStockHandlerDialog(
         })
     }
 
-    private fun renderView() {
+    override fun renderView() {
         // delegate view before rendering a content view
         lstProduct?.adapter = adapter
 

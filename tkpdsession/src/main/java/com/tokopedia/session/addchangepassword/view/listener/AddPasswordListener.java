@@ -24,6 +24,8 @@ public interface AddPasswordListener {
         void showLoading();
 
         Context getContext();
+
+        void setErrorMessage(String message);
     }
 
     interface Presenter extends CustomerPresenter<AddPasswordListener.View> {

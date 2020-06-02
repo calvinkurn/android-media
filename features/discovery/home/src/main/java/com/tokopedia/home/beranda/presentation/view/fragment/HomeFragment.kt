@@ -72,6 +72,7 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getClo
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getRecommendationListImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.SprintSale.getSprintSaleImpression
 import com.tokopedia.home.analytics.v2.LegoBannerTracking
+import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
 import com.tokopedia.home.analytics.v2.MixTopTracking.getMixTopViewIris
 import com.tokopedia.home.analytics.v2.MixTopTracking.mapChannelToProductTracker
 import com.tokopedia.home.analytics.v2.ProductHighlightTracking.getProductHighlightImpression
@@ -1881,6 +1882,12 @@ open class HomeFragment : BaseDaggerFragment(),
             DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST -> putEEToIris(getRecommendationListImpression(channel, true, viewModel.getUserId()) as HashMap<String, Any>)
             DynamicChannelViewHolder.TYPE_PRODUCT_HIGHLIGHT -> putEEToIris(getProductHighlightImpression(
                     channel, true
+            ) as HashMap<String, Any>)
+            DynamicChannelViewHolder.TYPE_CATEGORY_WIDGET -> putEEToIris(CategoryWidgetTracking.getCategoryWidgetBanneImpression(
+                    channel.grids.toList(),
+                    viewModel.getUserId(),
+                    true,
+                    channel
             ) as HashMap<String, Any>)
         }
     }

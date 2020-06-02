@@ -53,11 +53,4 @@ public class NotificationModHandler {
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
     }
-
-    public void cancelNotif() {
-        NotificationManager notificationManager =
-                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(100);
-        LocalCacheHandler.clearCache(mContext, TkpdCache.GCM_NOTIFICATION);
-    }
 }
