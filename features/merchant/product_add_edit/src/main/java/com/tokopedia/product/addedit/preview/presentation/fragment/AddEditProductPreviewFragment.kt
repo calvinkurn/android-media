@@ -200,12 +200,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 ProductAddStepperTracking.trackScreen()
             }
         }
-
-        context?.run {
-            val cacheManager = SaveInstanceCacheManager(this, true)
-            val intent = Intent(this, AddEditProductVariantActivity::class.java).apply { putExtra(EXTRA_CACHE_MANAGER_ID, cacheManager.id) }
-            startActivityForResult(intent, REQUEST_CODE_DETAIL_EDIT)
-        }
     }
 
     fun onCtaYesPressed() {
@@ -725,6 +719,17 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             showEmptyVariantState(viewModel.productInputModel.value?.variantInputModel?.productSizeChart == null)
             if (viewModel.getDraftId() != 0L || it.productId != 0L || viewModel.getProductId().isNotBlank()) {
                 displayEditMode()
+            }
+            // TODO faisalramd remove this dummy start activity
+            context?.run {
+                val cacheManager = SaveInstanceCacheManager(this, true).apply {
+                    put(EXTRA_PRODUCT_INPUT_MODEL, it)
+                }
+                val intent = Intent(this,
+                        AddEditProductVariantActivity::class.java).apply {
+                    putExtra(EXTRA_CACHE_MANAGER_ID, cacheManager.id)
+                }
+                startActivityForResult(intent, REQUEST_CODE_DETAIL_EDIT)
             }
         })
     }

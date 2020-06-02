@@ -19,6 +19,8 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
+import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.data.model.VariantDetail
 import com.tokopedia.product.addedit.variant.di.AddEditProductVariantComponent
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantPhotoAdapter
@@ -38,7 +40,7 @@ import javax.inject.Inject
 class AddEditProductVariantFragment : BaseDaggerFragment(), VariantTypeAdapter.OnVariantTypeClickListener {
 
     companion object {
-        fun createInstance(cacheManagerId: String?): Fragment {
+        fun createInstance(cacheManagerId: String): Fragment {
             return AddEditProductVariantFragment().apply {
                 arguments = Bundle().apply {
                     putString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
@@ -61,10 +63,14 @@ class AddEditProductVariantFragment : BaseDaggerFragment(), VariantTypeAdapter.O
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID)
         val saveInstanceCacheManager = SaveInstanceCacheManager(requireContext(), cacheManagerId)
 
-        cacheManagerId?.run {}
+        cacheManagerId?.run {
+            viewModel.productInputModel.value = saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL,
+                    ProductInputModel::class.java) ?: ProductInputModel()
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -87,7 +93,8 @@ class AddEditProductVariantFragment : BaseDaggerFragment(), VariantTypeAdapter.O
         setRecyclerViewToFlex(recyclerViewVariantValueLevel2)
         setRecyclerViewToHorizontal(recyclerViewVariantPhoto)
 
-        observeProductData()
+        observeGetCategoryVariantCombinationResult()
+        observeProductInputModel()
         viewModel.getCategoryVariantCombination("916")
 
         Handler().postDelayed({
@@ -104,7 +111,7 @@ class AddEditProductVariantFragment : BaseDaggerFragment(), VariantTypeAdapter.O
         }
     }
 
-    private fun observeProductData() {
+    private fun observeGetCategoryVariantCombinationResult() {
         viewModel.getCategoryVariantCombinationResult.observe(this, Observer { result ->
             when (result) {
                 is Success -> {
@@ -120,6 +127,12 @@ class AddEditProductVariantFragment : BaseDaggerFragment(), VariantTypeAdapter.O
                     }
                 }
             }
+        })
+    }
+
+    private fun observeProductInputModel() {
+        viewModel.productInputModel.observe(this, Observer { productInputModel ->
+            Log.e("--", productInputModel.productId.toString())
         })
     }
 

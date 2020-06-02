@@ -19,11 +19,10 @@ class AddEditProductVariantActivity: BaseSimpleActivity(), HasComponent<AddEditP
         fun createInstance(context: Context?, cacheManagerId: String?): Intent =
                 Intent(context, AddEditProductVariantActivity::class.java)
                         .putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
-
     }
 
     override fun getNewFragment(): Fragment {
-        val cacheManagerId = intent?.getStringExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID)
+        val cacheManagerId = intent?.getStringExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID).orEmpty()
         return AddEditProductVariantFragment.createInstance(cacheManagerId)
     }
 
@@ -37,7 +36,7 @@ class AddEditProductVariantActivity: BaseSimpleActivity(), HasComponent<AddEditP
 
     override fun onBackPressed() {
         val f = fragment
-        if (f!= null && f is AddEditProductVariantFragment) {
+        if (f != null && f is AddEditProductVariantFragment) {
             f.onBackPressed()
         }
     }
