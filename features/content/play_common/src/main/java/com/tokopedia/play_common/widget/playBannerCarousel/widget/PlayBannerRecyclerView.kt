@@ -127,14 +127,13 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
                 var startPosition: Int = (Objects.requireNonNull(
                         layoutManager) as LinearLayoutManager).findFirstVisibleItemPosition()
                 var endPosition: Int = (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-                Log.d(TAG, "playVideo: origin range: $startPosition - $endPosition")
+//                Log.d(TAG, "playVideo: origin range: $startPosition - $endPosition")
 
                 // if first position is not play card (empty / another view holder), set startPosition + 1
                 if(mediaObjects[startPosition] !is PlayBannerCarouselItemDataModel){
-                    if(startPosition == endPosition){
-                        return
+                    if(startPosition != endPosition){
+                        startPosition++
                     }
-                    startPosition++
                 }
 
                 // if end position is see more card, set end position - 1
@@ -146,14 +145,14 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
                 if (startPosition < 0 || endPosition < 0) {
                     return
                 }
-                Log.d(TAG, "playVideo: range: $startPosition - $endPosition")
+//                Log.d(TAG, "playVideo: range: $startPosition - $endPosition")
 
                 // if there is more than 2 list-item on the screen
                 // check percentage view visible < 49% will take the second item and third item
                 // else will take first item and second item
                 for(i in startPosition .. endPosition){
                     if(getVisibleVideoSurfaceWidth(i) > 0) targetPositions.add(i)
-                    if(targetPositions.size == 2) break
+//                    if(targetPositions.size == 2) break
                 }
 
 
@@ -161,13 +160,24 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
 
             for (i in 0 until targetPositions.size){
                 val playPosition = targetPositions[i]
-                if(videoPlayer1.position == playPosition || videoPlayer2.position == playPosition){
+                val media = mediaObjects[playPosition]
+
+                if(media is PlayBannerCarouselItemDataModel && !media.isAutoPlay){
+                    Log.d(TAG, "stopVideo: cause isAutoPlay false at $i")
+                    if(!targetPositions.contains(videoPlayer1.position)){
+                        /* stop previous player if running */
+                        removeVideoView(videoPlayer1)
+                    } else if(!targetPositions.contains(videoPlayer2.position)){
+                        /* stop previous player if running */
+                        removeVideoView(videoPlayer2)
+                    }
+                } else if(videoPlayer1.position == playPosition || videoPlayer2.position == playPosition){
                     /* do nothing skip video */
                 } else if(!targetPositions.contains(videoPlayer1.position)){
-                    Log.d(TAG, "playVideo: VideoPlayer1 prepare at $playPosition")
+//                    Log.d(TAG, "playVideo: VideoPlayer1 prepare at $playPosition")
                     playVideo(videoPlayer1, playPosition)
                 } else if(!targetPositions.contains(videoPlayer2.position)){
-                    Log.d(TAG, "playVideo: VideoPlayer2 prepare at $playPosition")
+//                    Log.d(TAG, "playVideo: VideoPlayer2 prepare at $playPosition")
                     playVideo(videoPlayer2, playPosition)
                 }
             }
