@@ -10,6 +10,7 @@ object CategoryWidgetTracking : BaseTracking() {
             val IMPRESSION_ON_CATEGORY_WIDGET = Action.IMPRESSION_ON.format("category widget banner")
             val CLICK_ON_CATEGORY_WIDGET = Action.CLICK_ON.format("category widget banner")
             const val CLICK_VIEW_ALL_CATEGORY_WIDGET = "click view all on category widget banner"
+            const val FORMAT_4_VALUE_UNDERSCORE = "%s_%s_%s_%s";
         }
     }
 
@@ -27,7 +28,7 @@ object CategoryWidgetTracking : BaseTracking() {
             userId = userId,
             promotions = banner.mapIndexed { position, grid ->
                 Promotion(
-                        id = grid.id,
+                        id = CustomAction.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.persoType, channel.categoryID),
                         name = channel.promoName,
                         creative = grid.attribution,
                         position = (position+1).toString()
@@ -54,7 +55,7 @@ object CategoryWidgetTracking : BaseTracking() {
             campaignCode = channel.campaignCode,
             promotions = listOf(
                     Promotion(
-                            id = grid.id,
+                            id = CustomAction.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.persoType, channel.categoryID),
                             name = channel.promoName,
                             creative = grid.attribution,
                             position = position
