@@ -92,7 +92,7 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                 }).doOnNext(graphqlResponseInternal -> {
                     //Handling backend cache
                     Map<String, BackendCache> caches = CacheHelper.parseCacheHeaders(graphqlResponseInternal.getBeCache());
-                    if (caches != null || !caches.isEmpty()) {
+                    if (caches != null && !caches.isEmpty()) {
                         int size = requests.size();
                         for (int i = 0; i < size; i++) {
 
