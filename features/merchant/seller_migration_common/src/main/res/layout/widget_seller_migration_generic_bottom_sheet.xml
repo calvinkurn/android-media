@@ -36,11 +36,21 @@
         app:typographyType="heading_2"
         app:typographyWeight="bold"/>
 
+    <include layout="@layout/partial_seller_migration_warning"
+        android:id="@+id/sellerMigrationWarningCard"
+        android:layout_below="@id/account_seller_migration_bottomsheet_title"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_10"/>
+
     <include layout="@layout/partial_seller_migration_multi_icon_information"
         android:id="@+id/seller_migration_multi_icon_information"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/account_seller_migration_bottomsheet_title" />
+        android:layout_below="@id/sellerMigrationWarningCard" />
 
     <include layout="@layout/partial_seller_migration_footer"
         android:layout_below="@id/seller_migration_multi_icon_information"

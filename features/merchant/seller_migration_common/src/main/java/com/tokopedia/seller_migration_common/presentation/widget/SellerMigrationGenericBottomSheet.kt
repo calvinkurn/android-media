@@ -5,9 +5,12 @@ import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller_migration_common.R
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.ACCOUNT_SELLER_MIGRATION_IMAGE_LINK
+import com.tokopedia.seller_migration_common.getSellerMigrationDate
 import com.tokopedia.unifycomponents.toPx
+import kotlinx.android.synthetic.main.partial_seller_migration_warning.*
 import kotlinx.android.synthetic.main.widget_seller_migration_generic_bottom_sheet.*
 
 class SellerMigrationGenericBottomSheet : SellerMigrationBottomSheet() {
@@ -23,12 +26,21 @@ class SellerMigrationGenericBottomSheet : SellerMigrationBottomSheet() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupPadding()
         initView()
     }
 
     private fun initView() {
         accountSellerMigrationBottomsheetImage.loadImage(ACCOUNT_SELLER_MIGRATION_IMAGE_LINK)
+        setupPadding()
+        setupWarningCard()
+    }
+
+    private fun setupWarningCard() {
+        val remoteConfigDate = getSellerMigrationDate(context)
+        if(remoteConfigDate.isNotBlank()) {
+            sellerMigrationWarningCard.show()
+            sellerMigrationWarningDate.text = remoteConfigDate
+        }
     }
 
     private fun setupPadding() {
