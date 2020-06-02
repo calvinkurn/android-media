@@ -8,6 +8,6 @@ import androidx.fragment.app.Fragment
  */
 interface PlayBroadcastCoordinator {
 
-    fun navigateToFragment(fragmentClass: Class<out Fragment>, extras: Bundle = Bundle.EMPTY, recordBreadcrumbs: Boolean = true)
+    fun navigateToFragment(fragmentClass: Class<out Fragment>, extras: Bundle = Bundle.EMPTY)
 
 }

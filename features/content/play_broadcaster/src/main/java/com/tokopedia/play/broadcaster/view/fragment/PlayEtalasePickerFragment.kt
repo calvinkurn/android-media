@@ -92,6 +92,7 @@ class PlayEtalasePickerFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView(view)
+        bottomSheetCoordinator.setupTitle("Select Products or Collection")
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

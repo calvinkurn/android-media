@@ -85,7 +85,7 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
-    override fun navigateToFragment(fragmentClass: Class<out Fragment>, extras: Bundle, recordBreadcrumbs: Boolean) {
+    override fun navigateToFragment(fragmentClass: Class<out Fragment>, extras: Bundle) {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         val destFragment = getFragmentByClassName(fragmentClass)
         destFragment.arguments = extras
