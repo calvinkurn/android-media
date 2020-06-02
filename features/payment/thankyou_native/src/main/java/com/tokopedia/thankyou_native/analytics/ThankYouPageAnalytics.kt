@@ -56,7 +56,7 @@ class ThankYouPageAnalytics @Inject constructor(
     private fun getParentTrackingNode(thanksPageData: ThanksPageData, shopOrder: ShopOrder): MutableMap<String, Any> {
         return mutableMapOf(
                 ParentTrackingKey.KEY_EVENT to thanksPageData.event,
-                ParentTrackingKey.KEY_EVENT_CATEGORY to addSlashInCategory(thanksPageData.eventCategory),
+                ParentTrackingKey.KEY_EVENT_CATEGORY to thanksPageData.eventCategory,
                 ParentTrackingKey.KEY_EVENT_ACTION to shopOrder.storeType,
                 ParentTrackingKey.KEY_EVENT_LABEL to thanksPageData.eventLabel,
                 ParentTrackingKey.KEY_PAYMENT_ID to thanksPageData.paymentID,
@@ -96,7 +96,7 @@ class ThankYouPageAnalytics @Inject constructor(
             productNodeMap[ParentTrackingKey.KEY_ID] = item.productId
             productNodeMap[ProductNodeTrackingKey.KEY_PRICE] = item.price.toString()
             productNodeMap[ProductNodeTrackingKey.KEY_BRAND] = item.productBrand
-            productNodeMap[ParentTrackingKey.AF_KEY_CATEGORY_NAME] = item.category
+            productNodeMap[ParentTrackingKey.AF_KEY_CATEGORY_NAME] = addSlashInCategory(item.category)
             productNodeMap[ProductNodeTrackingKey.KEY_VARIANT] = item.variant
             productNodeMap[ParentTrackingKey.KEY_QTY] = item.quantity
             productNodeMap[ProductNodeTrackingKey.KEY_DIMENSION83] = item.bebasOngkirDimension
