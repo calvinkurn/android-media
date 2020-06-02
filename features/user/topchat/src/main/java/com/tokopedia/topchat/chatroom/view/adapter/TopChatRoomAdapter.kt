@@ -124,4 +124,8 @@ class TopChatRoomAdapter(
         if (context == null || chatTime == null || previousChatTime == null) return false
         return compareTime(context, chatTime, previousChatTime)
     }
+
+    fun dataExistAt(position: Int): Boolean {
+        return visitables.getOrNull(position) != null
+    }
 }

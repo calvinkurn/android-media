@@ -470,9 +470,27 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     override fun updateAttachmentsView(attachments: ArrayMap<String, Attachment>) {
-        val firstVisible = rvLayoutManager?.findFirstVisibleItemPosition() ?: return
-        val lastVisible = rvLayoutManager?.findLastVisibleItemPosition() ?: return
+        val firstVisible = getFirstVisibleItemPosition() ?: return
+        val lastVisible = getLastVisibleItemPosition() ?: return
         adapter.updateAttachmentView(firstVisible, lastVisible, attachments)
+    }
+
+    private fun getFirstVisibleItemPosition(): Int? {
+        var firstVisible = rvLayoutManager?.findFirstVisibleItemPosition() ?: return null
+        val partialVisible = firstVisible - 1
+        if (adapter.dataExistAt(partialVisible)) {
+            firstVisible = partialVisible
+        }
+        return firstVisible
+    }
+
+    private fun getLastVisibleItemPosition(): Int? {
+        var lastVisible = rvLayoutManager?.findLastVisibleItemPosition() ?: return null
+        val partialVisible = lastVisible + 1
+        if (adapter.dataExistAt(partialVisible)) {
+            lastVisible = partialVisible
+        }
+        return lastVisible
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
