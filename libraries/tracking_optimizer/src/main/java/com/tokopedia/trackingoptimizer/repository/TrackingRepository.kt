@@ -1,6 +1,9 @@
 package com.tokopedia.trackingoptimizer.repository
 
 import android.content.Context
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.trackingoptimizer.constant.Constant
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.ECOMMERCE
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.impressionEventList
@@ -134,7 +137,13 @@ class TrackingRepository(val context: Context) : ITrackingRepository<TrackingReg
         val currentEESize = trackingEEDbModel.enhanceEcommerce.length +
                 trackingEEDbModel.event.length +
                 trackingEEDbModel.customDimension.length
-        if (currentEESize >= ENHANCE_ECOMMERCE_SIZE_LIMIT) {
+
+        val remoteConfig =  FirebaseRemoteConfigImpl(context)
+        val enhanceEcommerceSizeLimit =
+                if (remoteConfig.getBoolean(RemoteConfigKey.REDUCE_TRACKING_QUEUE_SIZE_LIMIT)) ENHANCE_ECOMMERCE_SIZE_LIMIT_REDUCED
+                else ENHANCE_ECOMMERCE_SIZE_LIMIT
+
+        if (currentEESize >= enhanceEcommerceSizeLimit) {
             moveEETrackingToFull(trackingEEDbModel, inputEvent, inputCustomDimensionMap, inputEnhanceECommerceMap)
             return
         }
@@ -150,7 +159,7 @@ class TrackingRepository(val context: Context) : ITrackingRepository<TrackingReg
         val inputEnhanceECommerceMapString = HashMapJsonUtil.mapToJson(inputEnhanceECommerceMap)
                 ?: return
         val estimatedSizePerItem = inputEnhanceECommerceMapString.length / inputList.size
-        var itemCountToAdd = (ENHANCE_ECOMMERCE_SIZE_LIMIT - currentEESize) / estimatedSizePerItem
+        var itemCountToAdd = (enhanceEcommerceSizeLimit - currentEESize) / estimatedSizePerItem
         if (itemCountToAdd > inputList.size) {
             itemCountToAdd = inputList.size
         }
@@ -215,7 +224,8 @@ class TrackingRepository(val context: Context) : ITrackingRepository<TrackingReg
     }
 
     companion object {
-        const val ENHANCE_ECOMMERCE_SIZE_LIMIT = 6000 // bytes
+        const val ENHANCE_ECOMMERCE_SIZE_LIMIT_REDUCED = 6000 // bytes
+        const val ENHANCE_ECOMMERCE_SIZE_LIMIT = 7000 // bytes
     }
 
 }

@@ -227,4 +227,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_ONE_CLICK_CHECKOUT = "android_mainapp_enable_one_click_checkout";
 
     public static final String ENABLE_AMPLIFICATION = "app_push_amplification_enabled";
+
+    public static final String REDUCE_TRACKING_QUEUE_SIZE_LIMIT = "android_analytics_reduce_optimizer_size_limit";
 }
