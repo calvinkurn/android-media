@@ -1,5 +1,6 @@
 package com.tokopedia.topupbills.telco.view.fragment
 
+import android.content.ComponentName
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,6 +25,7 @@ import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
 import com.tokopedia.topupbills.telco.view.model.DigitalTrackProductTelco
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalTelcoProductWidget
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
 
 /**
@@ -127,13 +129,14 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
                 activity?.let {
                     val seeMoreBottomSheet = DigitalProductBottomSheet.newInstance(
-                            itemProduct.attributes.info,
+                            itemProduct.attributes.desc,
                             MethodChecker.fromHtml(itemProduct.attributes.detail).toString(),
                             itemProduct.attributes.price)
-                    seeMoreBottomSheet.setDismissListener {
+                    seeMoreBottomSheet.setOnDismissListener {
                         topupAnalytics.eventCloseDetailProduct(itemProduct.attributes.categoryId)
                     }
                     seeMoreBottomSheet.show(it.supportFragmentManager, "")
+
                 }
             }
 
@@ -164,12 +167,12 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
     private fun wrapDataCollections(productInput: TelcoCatalogProductInput): List<TelcoProduct> {
         val dataCollections = mutableListOf<TelcoProduct>()
-        productInput.products.dataCollections.map {
-            if (productInput.products.dataCollections.size > 1 && productInput.label != "Pulsa") {
+        productInput.product.dataCollections.map {
+            if (productInput.product.dataCollections.size > 1 && productInput.label != TelcoComponentName.PRODUCT_PULSA) {
                 if (it.name.isNotEmpty()) {
                     dataCollections.add(TelcoProduct(titleSection = it.name, isTitle = true))
                 } else {
-                    dataCollections.add(TelcoProduct(titleSection = "Rekomendasi Lainnya", isTitle = true))
+                    dataCollections.add(TelcoProduct(titleSection = getString(R.string.telco_other_recommendation), isTitle = true))
                 }
             }
             dataCollections.addAll(it.products)

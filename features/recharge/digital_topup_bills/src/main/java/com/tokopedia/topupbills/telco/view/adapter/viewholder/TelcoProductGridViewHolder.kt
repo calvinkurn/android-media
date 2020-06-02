@@ -1,19 +1,23 @@
 package com.tokopedia.topupbills.telco.view.adapter.viewholder
 
 import android.view.View
-import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.getColorFromResources
 import com.tokopedia.topupbills.telco.data.TelcoProduct
 import com.tokopedia.topupbills.telco.view.adapter.DigitalProductAdapter
+import com.tokopedia.unifycomponents.Label
 
 class TelcoProductGridViewHolder(itemView: View, listener: DigitalProductAdapter.ActionListener)
     : BaseTelcoProductViewHolder(itemView, listener) {
 
-    private val layoutProduct: LinearLayout = itemView.findViewById(R.id.layout_product)
-    private val descProduct: TextView = itemView.findViewById(R.id.desc_product)
+    private val titleProduct: TextView = itemView.findViewById(R.id.title_product)
+    private val layoutProduct: RelativeLayout = itemView.findViewById(R.id.layout_product)
     private val productPromoPrice: TextView = itemView.findViewById(R.id.product_promo_price)
     private val productPrice: TextView = itemView.findViewById(R.id.product_price)
+    private val productLabel: Label = itemView.findViewById(R.id.label_product)
+    private lateinit var product: TelcoProduct
 
     init {
         layoutProduct.setOnClickListener {
@@ -23,8 +27,24 @@ class TelcoProductGridViewHolder(itemView: View, listener: DigitalProductAdapter
 
     override fun bindView(products: List<TelcoProduct>, item: TelcoProduct) {
         super.bindView(products, item)
-        bindViewItem(descProduct, productPromoPrice, productPrice)
+        product = item
+        titleProduct.text = item.attributes.desc
+
+        renderTextColor()
+        renderPrice(productPromoPrice, productPrice)
+        renderLabel(productLabel)
         setItemSelected(layoutProduct)
+        renderOutOfStockProduct(layoutProduct, productLabel)
+    }
+
+    private fun renderTextColor() {
+        if (isProductOutOfStock()) {
+            titleProduct.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, com.tokopedia.unifyprinciples.R.color.light_N700_44))
+            productPrice.setTextColor(itemView.context.resources.getColorFromResources(itemView.context, com.tokopedia.unifyprinciples.R.color.light_N700_44))
+        } else {
+            titleProduct.setTextColor(itemView.context.resources.getColorFromResources(itemView.context,com.tokopedia.unifyprinciples.R.color.light_N700_96))
+            productPrice.setTextColor(itemView.context.resources.getColorFromResources(itemView.context,R.color.digital_orange_price))
+        }
     }
 
     companion object {

@@ -343,6 +343,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     }
 
     fun getMenuDetail(menuId: Int) {
+        onLoadingMenuDetail(true)
         topupBillsViewModel.getMenuDetail(GraphqlHelper.loadRawString(resources, R.raw.query_menu_detail),
                 topupBillsViewModel.createMenuDetailParams(menuId))
     }
@@ -387,15 +388,20 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     abstract fun processEnquiry(data: TopupBillsEnquiryData)
 
     open fun processMenuDetail(data: TopupBillsMenuDetail) {
+        onLoadingMenuDetail(false)
         isExpressCheckout = data.isExpressCheckout
         categoryName = data.catalog.label
     }
 
+    open fun onMenuDetailError(error: Throwable) {
+        onLoadingMenuDetail(false)
+    }
+
+    abstract fun onLoadingMenuDetail(showLoading:  Boolean)
+
     abstract fun processFavoriteNumbers(data: TopupBillsFavNumber)
 
     abstract fun onEnquiryError(error: Throwable)
-
-    abstract fun onMenuDetailError(error: Throwable)
 
     abstract fun onCatalogPluginDataError(error: Throwable)
 

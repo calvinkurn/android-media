@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -25,9 +25,9 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.generateRechargeCheckoutToken
-import com.tokopedia.topupbills.telco.data.TelcoCatalogPrefixSelect
 import com.tokopedia.topupbills.telco.data.RechargeCatalogPrefixSelect
 import com.tokopedia.topupbills.telco.data.RechargePrefix
+import com.tokopedia.topupbills.telco.data.TelcoCatalogPrefixSelect
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.view.activity.DigitalSearchNumberActivity
@@ -47,8 +47,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var postpaidClientNumberWidget: DigitalPostpaidClientNumberWidget
     private lateinit var buyWidget: TopupBillsCheckoutWidget
     private lateinit var enquiryViewModel: DigitalTelcoEnquiryViewModel
-    private lateinit var layoutProgressBar: ProgressBar
     private lateinit var performanceMonitoring: PerformanceMonitoring
+    private lateinit var loadingShimmering: LinearLayout
 
     private var traceStop = false
 
@@ -93,7 +93,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         promoListWidget = view.findViewById(R.id.promo_widget)
         buyWidget = view.findViewById(R.id.buy_widget)
         tickerView = view.findViewById(R.id.ticker_view)
-        layoutProgressBar = view.findViewById(R.id.layout_progress_bar)
+        loadingShimmering = view.findViewById(R.id.loading_telco_shimmering)
         return view
     }
 
@@ -149,12 +149,12 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     fun getInputFilterDataCollections() {
-        customViewModel.getCustomDataPostpaid(GraphqlHelper.loadRawString(resources,
-                R.raw.query_prefix_select_telco),
+        customViewModel.getPrefixOperator(GraphqlHelper.loadRawString(resources,
+                R.raw.query_prefix_select_telco), menuId,
                 this::onSuccessCustomData, this::onErrorCustomData)
     }
 
-    fun getCatalogMenuDetail() {
+    private fun getCatalogMenuDetail() {
         getMenuDetail(TelcoComponentType.TELCO_POSTPAID)
         getFavoriteNumbers(TelcoComponentType.FAV_NUMBER_POSTPAID)
     }
@@ -289,13 +289,13 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
-    fun onLoadingMenuDetail(showLoading: Boolean) {
+    override fun onLoadingMenuDetail(showLoading: Boolean) {
         if (showLoading) {
-            layoutProgressBar.visibility = View.VISIBLE
-            recentNumbersWidget.visibility = View.GONE
-            promoListWidget.visibility = View.GONE
+            loadingShimmering.visibility = View.VISIBLE
+            mainContainer.visibility = View.GONE
         } else {
-            layoutProgressBar.visibility = View.GONE
+            loadingShimmering.visibility = View.GONE
+            mainContainer.visibility = View.VISIBLE
             recentNumbersWidget.visibility = View.VISIBLE
             promoListWidget.visibility = View.VISIBLE
         }
