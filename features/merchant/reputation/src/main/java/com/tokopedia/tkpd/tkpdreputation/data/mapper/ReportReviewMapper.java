@@ -28,8 +28,7 @@ public class ReportReviewMapper implements Func1<Response<TokopediaWsV4Response>
             } else {
                 if (response.body().getErrorMessages() != null
                         && !response.body().getErrorMessages().isEmpty()) {
-                    String errorMessage = response.body().getErrorMessageJoined();
-                    return mappingToDomain(errorMessage);
+                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
                 } else {
                     throw new ErrorMessageException("");
                 }
@@ -40,7 +39,7 @@ public class ReportReviewMapper implements Func1<Response<TokopediaWsV4Response>
                 messageError = response.body().getErrorMessageJoined();
             }
             if (!TextUtils.isEmpty(messageError)) {
-                throw new ErrorMessageException(messageError);
+                return mappingToDomain(messageError);
             } else {
                 throw new RuntimeException(String.valueOf(response.code()));
             }
