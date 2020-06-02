@@ -94,6 +94,7 @@ android {
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles 'proguard-rules.txt'
             ext.enableHansel = project.hasProperty('hanselEnableDebug')
+            ext.enableBugsnag = false
         }
         release {
             if (devMode()) {
@@ -226,8 +227,6 @@ dependencies {
     implementation project(rootProject.ext.features.tkpdinbox)
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.reputationCommon)
-    implementation project(rootProject.ext.features.tkpdtransaction)
-    implementation project(rootProject.ext.features.tkpdtransactioncommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.commonPayment)

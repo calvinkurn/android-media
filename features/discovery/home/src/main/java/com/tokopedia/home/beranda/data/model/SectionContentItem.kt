@@ -10,30 +10,14 @@ data class SectionContentItem (
     val tagAttributes: TagAttributes? = null,
     @SerializedName("type")
     val type: String = ""
-) {
-    override fun toString(): String {
-        return "SectionContentItem{" +
-                "textAttributes = '" + textAttributes + '\'' +
-                ",tagAttributes = '" + tagAttributes + '\'' +
-                ",type = '" + type + '\'' +
-                "}"
-    }
-}
+)
 
 data class TagAttributes(
     @SerializedName("text")
     val text: String = "",
     @SerializedName("backgroundColor")
     val backgroundColour: String = ""
-){
-
-    override fun toString(): String {
-        return "TagAttributes{" +
-                "text = '" + text + '\'' +
-                ",backgroundColour = '" + backgroundColour + '\'' +
-                "}"
-    }
-}
+)
 
 
 data class TextAttributes(
@@ -43,13 +27,4 @@ data class TextAttributes(
     val text: String = "",
     @SerializedName("isBold")
     val isBold: Boolean = false
-){
-
-    override fun toString(): String {
-        return "TextAttributes{" +
-                "colour = '" + colour + '\'' +
-                ",text = '" + text + '\'' +
-                ",isBold = '" + isBold + '\'' +
-                "}"
-    }
-}
+)

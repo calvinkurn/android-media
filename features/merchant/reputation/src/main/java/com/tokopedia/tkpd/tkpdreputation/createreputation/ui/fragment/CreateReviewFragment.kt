@@ -387,22 +387,22 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
                 setHtmlDescription(ticker.subtitle)
                 setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        val bottomSheet: BottomSheetUnify = IncentiveOvoBottomSheet(IncentiveOvoMapper.mapIncentiveOvoReviewtoIncentiveOvoInbox(data))
+                        val bottomSheet: BottomSheetUnify = IncentiveOvoBottomSheet(IncentiveOvoMapper.mapIncentiveOvoReviewtoIncentiveOvoInbox(data), "")
                         bottomSheet.isFullpage = true
                         fragmentManager?.let { bottomSheet.show(it, bottomSheet.tag)}
                         bottomSheet.setCloseClickListener {
-                            reviewTracker.onClickDismissIncentiveOvoBottomSheetTracker()
+                            reviewTracker.onClickDismissIncentiveOvoBottomSheetTracker("")
                             bottomSheet.dismiss()
                         }
-                        reviewTracker.onClickReadSkIncentiveOvoTracker(ticker.title);
+                        reviewTracker.onClickReadSkIncentiveOvoTracker(tickerTitle, "")
                     }
 
                     override fun onDismiss() {
-                        reviewTracker.onClickDismissIncentiveOvoTracker(ticker.title);
+                        reviewTracker.onClickDismissIncentiveOvoTracker(tickerTitle, "")
                     }
                 })
+                reviewTracker.onSuccessGetIncentiveOvoTracker(tickerTitle, "")
             }
-            reviewTracker.onSuccessGetIncentiveOvoTracker(ticker.title);
         }
     }
 

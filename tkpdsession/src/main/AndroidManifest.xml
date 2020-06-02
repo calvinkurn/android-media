@@ -64,6 +64,18 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan"/>
 
+        <activity
+            android:name=".register.view.activity.TermPrivacy"
+            android:label="@string/title_activity_term_and_privacy"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <data android:scheme="launch.TermPrivacy" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

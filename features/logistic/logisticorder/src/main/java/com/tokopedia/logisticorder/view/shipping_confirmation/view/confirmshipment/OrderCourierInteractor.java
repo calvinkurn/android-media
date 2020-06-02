@@ -1,7 +1,7 @@
 package com.tokopedia.logisticorder.view.shipping_confirmation.view.confirmshipment;
 
 
-import com.tokopedia.transaction.common.data.order.ListCourierViewModel;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierViewModel;
 
 import java.util.Map;
 

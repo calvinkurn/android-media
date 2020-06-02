@@ -151,21 +151,6 @@ public void sendAnalyticsAnomalyResponse(String title,
     }
 
     @Override
-    public Intent getActivitySellingTransactionShippingStatusReal(Context mContext) {
-        return null;
-    }
-
-    @Override
-    public Class getSellingActivityClassReal() {
-        return null;
-    }
-
-    @Override
-    public Intent getActivitySellingTransactionListReal(Context mContext) {
-        return null;
-    }
-
-    @Override
     public Intent getHomeIntent(Context context) {
         return null;
     }
