@@ -7,115 +7,127 @@
     android:background="@color/play_bg_dark_transparent"
     android:visibility="gone"
     tools:visibility="visible"
+    android:padding="@dimen/spacing_lvl6"
     android:id="@+id/container_permission">
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/title"
-        app:layout_constraintRight_toLeftOf="@+id/space_icon"
-        android:layout_marginBottom="@dimen/play_space_icon_camera"
-        app:srcCompat="@drawable/ic_play_camera_white" />
-
-    <View
-        android:id="@+id/space_icon"
-        android:layout_width="@dimen/layout_lvl2"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/title" />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_play_audio_white"
-        android:layout_marginBottom="@dimen/play_space_icon_audio"
-        app:layout_constraintLeft_toRightOf="@+id/space_icon"
-        app:layout_constraintBottom_toTopOf="@+id/title"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_lvl2"
         android:gravity="center"
-        android:text="@string/play_allow_title"
+        android:text="@string/play_permit_title"
         android:textColor="@color/Neutral_N0"
-        android:textSize="@dimen/fontSize_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
         app:layout_constraintBottom_toTopOf="@+id/description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="heading_2"
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/description"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl6"
-        android:layout_marginEnd="@dimen/spacing_lvl6"
         android:gravity="center"
+        android:text="@string/play_permit_description"
         android:textColor="@color/Neutral_N0"
-        android:textSize="@dimen/fontSize_lvl2"
+        app:typographyType="body_2"
+        app:layout_constraintBottom_toTopOf="@+id/view_center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <View
+        android:id="@+id/view_center"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:text="@string/play_allow_description" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_check_camera"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:background="@drawable/bg_play_round_border_gray"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        android:layout_marginRight="@dimen/spacing_lvl5"
-        android:layout_marginEnd="@dimen/spacing_lvl5"
-        app:layout_constraintTop_toTopOf="@+id/text_allow_camera"
-        app:layout_constraintEnd_toStartOf="@+id/text_allow_camera"
-        android:visibility="gone"
-        tools:visibility="visible"
-        app:srcCompat="@drawable/ic_play_checkbox_checked" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/text_allow_camera"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/fontSize_lvl3"
-        android:textColor="@color/Green_G500"
-        android:gravity="center"
-        android:layout_marginStart="@dimen/spacing_lvl6"
-        android:layout_marginEnd="@dimen/spacing_lvl6"
-        android:layout_marginTop="@dimen/spacing_lvl5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/description"
-        tools:textColor="@color/play_granted_permission"
-        android:text="@string/play_allow_camera" />
+        app:layout_constraintTop_toBottomOf="@+id/view_center">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_check_mic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        android:layout_marginRight="@dimen/spacing_lvl5"
-        android:layout_marginEnd="@dimen/spacing_lvl5"
-        app:layout_constraintTop_toTopOf="@+id/text_allow_mic"
-        app:layout_constraintEnd_toStartOf="@+id/text_allow_mic"
-        android:visibility="gone"
-        app:srcCompat="@drawable/ic_play_checkbox_checked" />
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/iv_camera"
+            android:layout_width="@dimen/play_permit_icon_width"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/divider"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="@dimen/play_permit_spacing"
+            app:srcCompat="@drawable/ic_play_camera_white" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/text_allow_mic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/fontSize_lvl3"
-        android:textColor="@color/Green_G500"
-        android:gravity="center"
-        android:layout_marginStart="@dimen/spacing_lvl6"
-        android:layout_marginEnd="@dimen/spacing_lvl6"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_allow_camera"
-        android:text="@string/play_allow_mic" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/text_allow_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
+            android:text="@string/play_permit_allow_camera"
+            android:textColor="@color/Neutral_N0"
+            android:textSize="@dimen/fontSize_lvl2"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_camera"
+            app:layout_constraintStart_toEndOf="@+id/iv_camera"
+            app:layout_constraintTop_toTopOf="@+id/iv_camera" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/iv_check_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/dark_G500"
+            android:textSize="@dimen/fontSize_lvl2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/text_allow_camera"
+            android:text="@string/play_permit_active" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/play_permit_divider_height"
+            android:background="@color/play_permit_stroke"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_microphone"
+            android:layout_width="@dimen/play_permit_icon_width"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/divider"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="@dimen/play_permit_spacing"
+            app:srcCompat="@drawable/ic_play_audio_white" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/text_allow_mic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
+            android:text="@string/play_permit_allow_mic"
+            android:textColor="@color/Neutral_N0"
+            android:textSize="@dimen/fontSize_lvl2"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_microphone"
+            app:layout_constraintStart_toEndOf="@+id/iv_microphone"
+            app:layout_constraintTop_toTopOf="@+id/iv_microphone" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/iv_check_mic"
+            android:layout_width="@dimen/play_permit_icon_width"
+            android:layout_height="wrap_content"
+            android:textColor="@color/dark_G500"
+            android:textSize="@dimen/fontSize_lvl2"
+            app:drawableRightCompat="@drawable/ic_play_check_green"
+            app:layout_constraintBottom_toBottomOf="@+id/text_allow_mic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/text_allow_mic" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
