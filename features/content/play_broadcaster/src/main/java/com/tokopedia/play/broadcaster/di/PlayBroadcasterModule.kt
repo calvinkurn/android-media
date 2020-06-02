@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastSocket.Companion.KEY_GROUPCHAT_PREFERENCES
 import com.tokopedia.play.broadcaster.dispatcher.PlayBroadcastDispatcher
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
+import com.tokopedia.play.broadcaster.pusher.PlayPusherBuilder
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -44,6 +45,6 @@ class PlayBroadcasterModule(val context: Context) {
 
     @Provides
     fun providePlayPusher(): PlayPusher {
-        return PlayPusher.Builder(context).build()
+        return PlayPusherBuilder(context).build()
     }
 }

@@ -12,7 +12,7 @@ import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherCountDownTimerListe
 /**
  * Created by mzennis on 24/05/20.
  */
-class PlayPusherImplNoop(private val builder: PlayPusher.Builder) : PlayPusher {
+class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
 
     private val _observableInfoState = MutableLiveData<PlayPusherInfoState>()
     private val _observableNetworkState = MutableLiveData<PlayPusherNetworkState>()
