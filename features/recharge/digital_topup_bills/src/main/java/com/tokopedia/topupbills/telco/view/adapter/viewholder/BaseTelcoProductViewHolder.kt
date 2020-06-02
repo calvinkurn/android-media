@@ -61,12 +61,12 @@ abstract class BaseTelcoProductViewHolder(itemView: View, val listener: DigitalP
         }
     }
 
-    protected fun renderOutOfStockProduct(viewGrup: ViewGroup, productLabel: Label) {
+    protected fun renderOutOfStockProduct(viewGroup: ViewGroup, productLabel: Label) {
         if (isProductOutOfStock()) {
             productLabel.text = itemView.context.getString(R.string.telco_label_out_of_stock)
             productLabel.visibility = View.VISIBLE
             productLabel.setLabelType(Label.GENERAL_DARK_GREY)
-            viewGrup.setBackgroundResource(R.drawable.digital_bg_grey_rounded)
+            viewGroup.setBackgroundResource(R.drawable.digital_bg_grey_rounded)
         }
     }
 
