@@ -105,16 +105,19 @@ class HotelCancellationFragment : HotelBaseFragment() {
         super.onActivityCreated(savedInstanceState)
 
         cancellationViewModel.cancellationData.observe(this, androidx.lifecycle.Observer {
-            hideLoadingState()
             when (it) {
                 is Success -> {
                     initView(it.data)
+                    hideLoadingState()
                 }
                 is Fail -> {
                     when {
                         ErrorHandlerHotel.isOrderNotFound(it.throwable) -> showErrorOrderNotFound()
                         ErrorHandlerHotel.isOrderHasBeenCancelled(it.throwable) -> showErrorOrderHasBeenCancelled()
-                        else -> showErrorState(it.throwable)
+                        else -> {
+                            hideLoadingState()
+                            showErrorState(it.throwable)
+                        }
                     }
                 }
             }
@@ -127,7 +130,7 @@ class HotelCancellationFragment : HotelBaseFragment() {
     }
 
     private fun showErrorOrderHasBeenCancelled() {
-        startActivity(HotelCancellationConfirmationActivity.getCallingIntent(requireContext(), getErrorOrderHasBeenCancelled(), true))
+        startActivity(HotelCancellationConfirmationActivity.getCallingIntent(requireContext(), getErrorOrderHasBeenCancelled(), false))
         activity?.finish()
     }
 
@@ -168,7 +171,8 @@ class HotelCancellationFragment : HotelBaseFragment() {
             if (it.desc.isEmpty()) {
                 hotel_cancellation_ticker_refund_info.hide()
             } else {
-                val description = it.desc.replace("<hyperlink>", "<a href=\"\">").replace("</hyperlink>", "</a>")
+                val description = it.desc.replace(getString(R.string.hotel_cancellation_hyperlink_open_tag), getString(R.string.hotel_cancellation_a_hyperlink_open_tag))
+                        .replace(getString(R.string.hotel_cancellation_hyperlink_close_tag), getString(R.string.hotel_cancellation_a_hyperlink_close_tag))
                 hotel_cancellation_ticker_refund_info.setHtmlDescription(description)
                 hotel_cancellation_ticker_refund_info.isClickable = it.isClickable
                 hotel_cancellation_ticker_refund_info.tickerShape = Ticker.SHAPE_LOOSE
@@ -193,8 +197,11 @@ class HotelCancellationFragment : HotelBaseFragment() {
                         override fun onDismiss() {
                             //do nothing
                         }
-
                     })
+
+                    hotel_cancellation_ticker_refund_info.setOnClickListener {
+                        fragmentManager?.let { fm -> cancelInfoBottomSheet.show(fm, "") }
+                    }
                 }
             }
         }

@@ -105,13 +105,13 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
         super.onActivityCreated(savedInstanceState)
 
         cancellationViewModel.cancellationSubmitData.observe(this, Observer {
-            hideLoadingState()
             when (it) {
                 is Success -> {
                     initView(it.data)
                 }
                 is Fail -> { showErrorState(it.throwable) }
             }
+            hideLoadingState()
         })
     }
 
@@ -182,6 +182,7 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
                 HotelCancellationConfirmationFragment().also {
                     it.arguments = Bundle().apply {
                         putParcelable(EXTRA_HOTEL_CANCELLATION_SUBMIT_DATA, submitModel)
+                        putBoolean(EXTRA_HOTEL_CANCELLATION_IS_ORDER_NOT_FOUND, isOrderNotFound)
                     }
                 }
     }
