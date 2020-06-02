@@ -1,9 +1,9 @@
 package com.tokopedia.product.util.processor
 
 
+import com.tokopedia.analytic.annotation.Key
 import com.tokopedia.analytic_constant.Param
 import com.tokopedia.annotation.BundleThis
-import com.tokopedia.analytic.annotation.Key
 import com.tokopedia.annotation.defaultvalues.DefaultValueLong
 import com.tokopedia.annotation.defaultvalues.DefaultValueString
 
