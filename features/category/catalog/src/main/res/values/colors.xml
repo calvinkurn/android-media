@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="see_all_official_brand_button" type="id"/>
+    <color name="catalog_clr_31353b">#31353b</color>
 </resources>
