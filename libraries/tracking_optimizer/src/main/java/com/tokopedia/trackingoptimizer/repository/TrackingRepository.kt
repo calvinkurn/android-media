@@ -38,6 +38,10 @@ class TrackingRepository(val context: Context) : ITrackingRepository<TrackingReg
         TrackingScreenNameDataSource(context)
     }
 
+    val remoteConfig by lazy {
+        FirebaseRemoteConfigImpl(context)
+    }
+
     override fun putScreenName(screenName: String?) {
         if (screenName.isNullOrEmpty()) {
             return
@@ -138,7 +142,6 @@ class TrackingRepository(val context: Context) : ITrackingRepository<TrackingReg
                 trackingEEDbModel.event.length +
                 trackingEEDbModel.customDimension.length
 
-        val remoteConfig =  FirebaseRemoteConfigImpl(context)
         val enhanceEcommerceSizeLimit = remoteConfig.getLong(
                 RemoteConfigKey.TRACKING_QUEUE_SIZE_LIMIT_VALUE,
                 ENHANCE_ECOMMERCE_SIZE_LIMIT_DEFAULT).toInt()
