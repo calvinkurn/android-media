@@ -78,4 +78,5 @@
     <dimen name="mvc_dimen_140dp">140dp</dimen>
     <dimen name="mvc_dimen_6dp">6dp</dimen>
     <dimen name="mvc_tnc_spacing">5sp</dimen>
+    <dimen name="mvc_success_info_margin">12dp</dimen>
 </resources>

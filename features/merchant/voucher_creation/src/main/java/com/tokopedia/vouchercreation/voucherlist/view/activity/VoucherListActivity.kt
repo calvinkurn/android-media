@@ -16,6 +16,10 @@ import com.tokopedia.vouchercreation.voucherlist.view.fragment.VoucherListFragme
 
 class VoucherListActivity : BaseActivity(), VoucherListFragment.Listener {
 
+    companion object {
+        const val SUCCESS_VOUCHER_ID_KEY = "success_voucher_id"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mvc_voucher_list)

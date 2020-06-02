@@ -12,7 +12,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.*
@@ -39,12 +38,14 @@ import com.tokopedia.vouchercreation.voucherlist.model.ui.*
 import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel.HeaderChip
 import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel.ResetChip
 import com.tokopedia.vouchercreation.voucherlist.model.ui.MoreMenuUiModel.*
+import com.tokopedia.vouchercreation.voucherlist.view.activity.VoucherListActivity
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactoryImpl
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.VoucherViewHolder
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.VoucherListViewModel
 import com.tokopedia.vouchercreation.voucherlist.view.widget.CancelVoucherDialog
 import com.tokopedia.vouchercreation.voucherlist.view.widget.EditQuotaBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.MoreMenuBottomSheet
+import com.tokopedia.vouchercreation.voucherlist.view.widget.SuccessCreateBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.FilterBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.FilterBy
 import com.tokopedia.vouchercreation.voucherlist.view.widget.headerchips.ChipType
@@ -127,6 +128,10 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
+
+        savedInstanceState?.getInt(VoucherListActivity.SUCCESS_VOUCHER_ID_KEY)?.let { voucherId ->
+            showSuccessCreateBottomSheet(voucherId)
+        }
 
         setupView()
         observeVoucherList()
@@ -264,6 +269,13 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                     VoucherDetailActivity.createDetailIntent(it, VoucherDetailActivity.DETAIL_PAGE)
                             .putExtra(VoucherDetailActivity.VOUCHER_ID, voucherId))
         }
+    }
+
+    private fun showSuccessCreateBottomSheet(voucherId: Int) {
+        //Todo: fetch voucher info from be
+        val parent = view as? ViewGroup ?: return
+        SuccessCreateBottomSheet.createInstance(parent)
+                .show(childFragmentManager)
     }
 
     private fun showEditPeriodBottomSheet(voucher: VoucherUiModel) {

@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.usecase.coroutines.Fail
@@ -39,6 +40,7 @@ import com.tokopedia.vouchercreation.detail.model.FooterUiModel
 import com.tokopedia.vouchercreation.detail.model.TipsUiModel
 import com.tokopedia.vouchercreation.detail.view.adapter.factory.VoucherDetailAdapterFactoryImpl
 import com.tokopedia.vouchercreation.detail.view.fragment.BaseDetailFragment
+import com.tokopedia.vouchercreation.voucherlist.view.activity.VoucherListActivity
 import kotlinx.android.synthetic.main.fragment_base_list.*
 import javax.inject.Inject
 
@@ -199,7 +201,12 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                         if (result.data.status != CreateVoucherUseCase.STATUS_SUCCESS) {
                             failedCreateVoucherDialog?.show()
                         } else {
-                            //Todo: Prompt to list page
+                            context?.run {
+                                val intent = RouteManager.getIntent(this, ApplinkConstInternalSellerapp.VOUCHER_LIST).apply {
+                                    putExtra(VoucherListActivity.SUCCESS_VOUCHER_ID_KEY, result.data.voucherId)
+                                }
+                                startActivity(intent)
+                            }
                         }
                     }
                     is Fail -> {
