@@ -63,6 +63,7 @@ class AddToCartDoneBottomSheet :
         const val KEY_ADDED_PRODUCT_DATA_MODEL = "addedProductDataModel"
         private const val abNewPdpAfterAtcKey = "PDP ATC 2020"
         private const val oldVariantPDP = "PDP after ATC"
+        private const val className: String = "com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet"
     }
 
     @Inject
@@ -262,7 +263,7 @@ class AddToCartDoneBottomSheet :
     }
 
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
-        if (item.isTopAds) ImpresionTask().execute(item.clickUrl)
+        if (item.isTopAds) ImpresionTask(className).execute(item.clickUrl)
         DynamicProductDetailTracking.Click.eventAddToCartRecommendationClick(
                 item,
                 item.position,
@@ -279,7 +280,7 @@ class AddToCartDoneBottomSheet :
     }
 
     override fun onProductImpression(item: RecommendationItem) {
-        if (item.isTopAds) ImpresionTask().execute(item.trackerImageUrl)
+        if (item.isTopAds) ImpresionTask(className).execute(item.trackerImageUrl)
         productDetailTracking.eventAddToCartRecommendationImpression(
                 item.position,
                 item,

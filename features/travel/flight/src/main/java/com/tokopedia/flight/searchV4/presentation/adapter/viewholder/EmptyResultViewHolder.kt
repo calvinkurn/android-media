@@ -3,7 +3,7 @@ package com.tokopedia.flight.searchV4.presentation.adapter.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.flight.R
-import com.tokopedia.flight.searchV4.presentation.model.EmptyResultModel
+import com.tokopedia.flight.common.view.model.EmptyResultModel
 import kotlinx.android.synthetic.main.item_flight_empty_search.view.*
 
 /**

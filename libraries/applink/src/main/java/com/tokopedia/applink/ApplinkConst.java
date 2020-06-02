@@ -249,6 +249,7 @@ public interface ApplinkConst {
     String ADD_NAME_REGISTER = "tokopedia://addnameregister/{phone}";
     String ADD_NAME_PROFILE = "tokopedia://addname";
     String CREATE_PASSWORD = "tokopedia://createpassword";
+    String RESET_PASSWORD = "tokopedia://resetpassword";
     String PHONE_VERIFICATION = "tokopedia://phoneverification";
     String CHANGE_INACTIVE_PHONE = "tokopedia://changeinactivephone";
     String ADD_PIN_ONBOARD = "tokopedia://add-pin-onboarding";
@@ -296,6 +297,8 @@ public interface ApplinkConst {
     String SALAM_UMRAH_PDP = "tokopedia://s/umroh/produk/{slug}";
     String SALAM_UMRAH_CHECKOUT = "tokopedia://s/umroh/checkout";
     String SALAM_UMRAH_SHOP = "tokopedia://shop/7298319";
+    String THANK_YOU_PAGE_NATIVE = "tokopedia://payment/thankyou";
+
     String SALAM_UMRAH_AGEN = "tokopedia://s/umroh/agen/{slug}";
     String SALAM_UMRAH_LIST_AGEN = "tokopedia://s/umroh/agen";
 
@@ -340,6 +343,7 @@ public interface ApplinkConst {
 
         String COUPON_DETAIL3 = "tokopedia://tokopoints/kupon-saya/detail/{coupon_code}";
         String COUPON_DETAIL4 = "tokopedia://tokopoints/kupon-saya/detail/{coupon_code}/";
+
     }
     String OQR_PIN_URL_ENTRY_LINK = "tokopedia://ovoqrthanks/";
 

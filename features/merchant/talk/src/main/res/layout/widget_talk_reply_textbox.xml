@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingTop="@dimen/dp_12"
+    android:paddingEnd="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/spacing_lvl4"
+    android:background="@android:color/white">
+
+    <EditText
+        android:id="@+id/replyEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:layout_toStartOf="@+id/replySendButton"
+        android:layout_toLeftOf="@+id/replySendButton"
+        android:background="@drawable/bg_rounded_chat_input"
+        android:hint="@string/reply_editText_placeholder"
+        android:inputType="textMultiLine"
+        android:textColorHint="@color/Neutral_N700_32"
+        android:maxLines="4"
+        android:scrollbars="vertical"
+        android:minHeight="@dimen/layout_lvl5"
+        android:paddingStart="@dimen/spacing_lvl7"
+        android:paddingLeft="@dimen/spacing_lvl7"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingEnd="@dimen/spacing_lvl7"
+        android:paddingRight="@dimen/spacing_lvl7"
+        android:paddingBottom="@dimen/dp_10"
+        android:textSize="@dimen/fontSize_lvl4" />
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/layout_lvl1"
+        android:layout_alignBottom="@id/replyEditText"
+        android:layout_alignEnd="@+id/replyEditText"
+        android:layout_alignRight="@+id/replyEditText"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl3">
+
+        <ImageView
+            android:id="@+id/replyAttachProduct"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/talk_ic_attach_product_chat" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_alignStart="@+id/replyEditText"
+        android:layout_alignLeft="@+id/replyEditText"
+        android:layout_alignBottom="@id/replyEditText"
+        android:layout_marginBottom="@dimen/layout_lvl1"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginLeft="@dimen/layout_lvl1">
+
+        <ImageView
+            android:id="@+id/replyUserProfilePicture"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/replySendButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/replyEditText"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/ic_send_grey_chat_common" />
+
+</RelativeLayout>

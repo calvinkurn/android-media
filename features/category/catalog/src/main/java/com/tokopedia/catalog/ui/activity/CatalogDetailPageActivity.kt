@@ -174,7 +174,7 @@ class CatalogDetailPageActivity : BaseActivity(),
             toolbar.elevation = 10f
             toolbar.setBackgroundResource(com.tokopedia.abstraction.R.color.white)
         } else {
-            toolbar.setBackgroundResource(com.tokopedia.transaction.R.drawable.bg_white_toolbar_drop_shadow)
+            toolbar.setBackgroundResource(com.tokopedia.buyerorder.R.drawable.bg_white_toolbar_drop_shadow)
         }
         img_share_button.setOnClickListener {
             if (shareData != null) {

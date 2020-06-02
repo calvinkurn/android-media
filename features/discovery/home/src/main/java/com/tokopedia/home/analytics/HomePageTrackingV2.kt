@@ -309,23 +309,52 @@ object HomePageTrackingV2 : BaseTracking() {
                     Event.KEY, CustomEvent.CLICK_HOMEPAGE,
                     Category.KEY, Category.HOMEPAGE,
                     Action.KEY, CLICK_MIX_LEFT_LOADMORE,
-                    Label.KEY, channel.header.name,
-                    Label.CHANNEL_LABEL, channel.id
+                    Label.KEY, channel.id + " - " + channel.header.name
             ) as HashMap<String, Any>
         }
 
-        fun getMixLeftClickLoadMoreCard(channel: DynamicHomeChannel.Channels): HashMap<String, Any> {
+        fun getMixLeftClickLoadMoreCard(channel: DynamicHomeChannel.Channels, userId: String): HashMap<String, Any> {
             return DataLayer.mapOf(
                     Event.KEY, CustomEvent.CLICK_HOMEPAGE,
                     Category.KEY, Category.HOMEPAGE,
                     Action.KEY, CLICK_MIX_LEFT_LOADMORE_CARD,
-                    Label.KEY, channel.header.name,
-                    Label.CHANNEL_LABEL, channel.id
+                    Label.KEY, channel.id + " - " + channel.header.name,
+                    CurrentSite.KEY, CurrentSite.DEFAULT,
+                    Screen.KEY, Screen.DEFAULT,
+                    UserId.KEY, userId,
+                    BusinessUnit.KEY, BusinessUnit.DEFAULT
             ) as HashMap<String, Any>
         }
 
-        fun getMixLeftProductView(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductChannelView(
-                event = if(isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
+        fun getMixLeftProductView(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position:Int) = getBasicProductChannelView(
+                event = Event.PRODUCT_VIEW,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = IMPRESSION_MIX_LEFT,
+                eventLabel = channel.header.name,
+                products =  listOf(Product(
+                        name = grid.name,
+                        id = grid.id,
+                        productPrice = convertRupiahToInt(
+                                grid.price
+                        ).toString(),
+                        brand = Value.NONE_OTHER,
+                        category = Value.NONE_OTHER,
+                        variant = Value.NONE_OTHER,
+                        productPosition = (position + 1).toString(),
+                        channelId = channel.id,
+                        isFreeOngkir = grid.freeOngkir.isActive,
+                        persoType = channel.persoType,
+                        categoryId = channel.categoryID,
+                        isTopAds = grid.isTopads
+                )),
+                list = String.format(
+                        Value.LIST_WITH_HEADER, "1", LIST_MIX_LEFT, channel.header.name
+                ),
+                channelId = channel.id
+        )
+
+        fun getMixLeftIrisProductView(channel: DynamicHomeChannel.Channels) = getBasicProductChannelView(
+                event = Event.PRODUCT_VIEW_IRIS,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = IMPRESSION_MIX_LEFT,
                 eventLabel = channel.header.name,
@@ -403,7 +432,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 eventCategory = Category.HOMEPAGE,
                 eventAction = CLICK_MIX_LEFT_BANNER,
                 campaignCode = channel.campaignCode,
-                eventLabel = Label.NONE,
+                eventLabel = channel.id + " - " + channel.header.name,
                 channelId = channel.id,
                 categoryId = channel.categoryPersona,
                 affinity = channel.persona,
@@ -423,8 +452,12 @@ object HomePageTrackingV2 : BaseTracking() {
             getTracker().sendEnhanceEcommerceEvent(getMixLeftProductClick(channel, grid, position))
         }
 
-        fun sendMixLeftSeeAllCardClick(channel: DynamicHomeChannel.Channels){
-            getTracker().sendEnhanceEcommerceEvent(getMixLeftClickLoadMoreCard(channel))
+        fun sendMixLeftSeeAllCardClick(channel: DynamicHomeChannel.Channels, userId: String){
+            getTracker().sendEnhanceEcommerceEvent(getMixLeftClickLoadMoreCard(channel, userId))
+        }
+
+        fun sendMixLeftSeeAllClick(channel: DynamicHomeChannel.Channels, userId: String) {
+            getTracker().sendEnhanceEcommerceEvent(getMixLeftClickLoadMore(channel))
         }
 
         fun sendMixLeftBannerClick(channel: DynamicHomeChannel.Channels, position: Int){
