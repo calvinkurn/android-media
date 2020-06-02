@@ -100,7 +100,6 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                                 continue;
                             }
 
-                            //TODO need to save response of individual query
                             BackendCache cache = caches.get(requests.get(i).getMd5());
                             JsonElement object = graphqlResponseInternal.getOriginalResponse().get(i).getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA);
                             if (object != null && cache != null) {
