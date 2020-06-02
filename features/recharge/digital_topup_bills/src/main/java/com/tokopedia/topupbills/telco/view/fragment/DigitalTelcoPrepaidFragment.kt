@@ -446,7 +446,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 .textColorRes(com.tokopedia.design.R.color.grey_400)
                 .textSizeRes(com.tokopedia.design.R.dimen.sp_12)
                 .titleTextSizeRes(com.tokopedia.design.R.dimen.sp_16)
-                .finishStringRes(com.tokopedia.showcase.R.string.finish)
+                .finishStringRes(R.string.telco_showcase_finish)
                 .clickable(true)
                 .useArrow(true)
                 .build()

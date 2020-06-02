@@ -23,6 +23,9 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         intent?.handleExtra()
+
+        //draw background without overdraw GPU
+        window.setBackgroundDrawableResource(R.color.digital_cardview_light_background)
     }
 
     /* This Method is use to tracking Action click when user click TelcoProduct
