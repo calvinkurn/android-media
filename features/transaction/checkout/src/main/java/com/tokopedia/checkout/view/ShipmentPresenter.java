@@ -753,7 +753,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                        CheckoutRequest checkoutRequest) {
         Map<String, Object> params = new HashMap<>();
         params.put(CheckoutGqlUseCase.PARAM_CARTS, checkoutRequest);
-        params.put(CheckoutGqlUseCase.PARAM_IS_ONE_CLICK_SHIPMENT, isOneClickShipment);
+        params.put(CheckoutGqlUseCase.PARAM_IS_ONE_CLICK_SHIPMENT, String.valueOf(isOneClickShipment));
         if (isTradeIn) {
             params.put(CheckoutGqlUseCase.PARAM_IS_TRADE_IN, true);
             params.put(CheckoutGqlUseCase.PARAM_IS_TRADE_IN_DROP_OFF, isTradeInDropOff);

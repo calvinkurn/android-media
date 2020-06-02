@@ -1,11 +1,12 @@
 package com.tokopedia.checkout.domain.usecase
 
-import com.tokopedia.checkout.data.model.response.checkout.CheckoutResponse
+import com.tokopedia.checkout.data.model.response.checkout.CheckoutGqlResponse
 import com.tokopedia.checkout.domain.mapper.ICheckoutMapper
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_GLOBAL
+import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -36,16 +37,16 @@ class CheckoutGqlUseCase @Inject constructor(@Named(CHECKOUT_MUTATION) private v
 
     override fun createObservable(requestParam: RequestParams): Observable<CheckoutData> {
         val params = mapOf("carts" to requestParam.parameters)
-        val graphqlRequest = GraphqlRequest(queryString, CheckoutResponse::class.java, params)
+        val graphqlRequest = GraphqlRequest(queryString, CheckoutGqlResponse::class.java, params)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
                 .map {
-                    val gqlResponse = it.getData<CheckoutResponse>(CheckoutResponse::class.java)
+                    val gqlResponse = it.getData<CheckoutGqlResponse>(CheckoutGqlResponse::class.java)
                     if (gqlResponse != null) {
-                        checkoutMapper.convertCheckoutData(gqlResponse)
+                        checkoutMapper.convertCheckoutData(gqlResponse.checkout)
                     } else {
-                        throw ResponseErrorException()
+                        throw CartResponseErrorException(CART_ERROR_GLOBAL)
                     }
                 }
                 .subscribeOn(schedulers.io)

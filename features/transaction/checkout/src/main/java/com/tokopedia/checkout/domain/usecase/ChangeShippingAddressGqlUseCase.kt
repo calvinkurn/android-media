@@ -5,6 +5,9 @@ import com.tokopedia.checkout.domain.model.cartmultipleshipment.SetShippingAddre
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.purchase_platform.common.constant.CartConstant
+import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_GLOBAL
+import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -38,7 +41,7 @@ class ChangeShippingAddressGqlUseCase @Inject constructor(@Named(CHANGE_SHIPPING
                                 .messages(gqlResponse.changeShippingAddressResponse.dataResponse.messages ?: emptyList())
                                 .build()
                     } else {
-                        throw ResponseErrorException()
+                        throw CartResponseErrorException(CART_ERROR_GLOBAL)
                     }
                 }
                 .subscribeOn(schedulers.io)

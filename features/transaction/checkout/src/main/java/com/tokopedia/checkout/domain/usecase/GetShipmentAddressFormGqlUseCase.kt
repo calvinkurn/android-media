@@ -5,7 +5,7 @@ import com.tokopedia.checkout.domain.mapper.IShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_GLOBAL
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.usecase.RequestParams
@@ -46,11 +46,11 @@ class GetShipmentAddressFormGqlUseCase @Inject constructor(@Named(SHIPMENT_ADDRE
                             if (gqlResponse.shipmentAddressFormResponse.errorMessages.isNotEmpty()) {
                                 throw CartResponseErrorException(gqlResponse.shipmentAddressFormResponse.errorMessages.joinToString())
                             } else {
-                                throw ResponseErrorException()
+                                throw CartResponseErrorException(CART_ERROR_GLOBAL)
                             }
                         }
                     } else {
-                        throw ResponseErrorException()
+                        throw CartResponseErrorException(CART_ERROR_GLOBAL)
                     }
                 }
                 .subscribeOn(schedulers.io)
