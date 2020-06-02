@@ -1,6 +1,9 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
+import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
 import com.tokopedia.play.broadcaster.ui.model.PlayEtalaseUiModel
+import com.tokopedia.play.broadcaster.ui.model.ProductUiModel
+import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 
 /**
@@ -14,6 +17,21 @@ object PlayBroadcasterUiMapper {
                 name = it.name,
                 productList = emptyList(),
                 totalProduct = it.count
+        )
+    }
+
+    fun mapProductList(
+            productsResponse: GetProductsByEtalaseResponse.GetShopProductData,
+            isSelectedHandler: (Long) -> Boolean,
+            isSelectableHandler: () -> SelectableState
+    ) = productsResponse.data.map {
+        ProductUiModel(
+                id = it.productId.toLong(),
+                name = it.name,
+                imageUrl = it.primaryImage.resize300,
+                stock = it.stock,
+                isSelectedHandler = isSelectedHandler,
+                isSelectable = isSelectableHandler
         )
     }
 }

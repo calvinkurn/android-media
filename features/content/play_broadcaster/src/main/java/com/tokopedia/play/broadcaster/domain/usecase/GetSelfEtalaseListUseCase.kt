@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.domain
+package com.tokopedia.play.broadcaster.domain.usecase
 
 import com.tokopedia.play.broadcaster.dispatcher.PlayBroadcastDispatcher
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
@@ -25,7 +25,7 @@ class GetSelfEtalaseListUseCase @Inject constructor(
         get() = GetShopEtalaseByShopUseCase.createRequestParams(
                 shopId = userSession.shopId,
                 hideNoCount = true,
-                hideShowCaseGroup = false,
+                hideShowCaseGroup = true,
                 isOwner = true
         )
 

@@ -4,7 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.play.broadcaster.dispatcher.PlayBroadcastDispatcher
-import com.tokopedia.play.broadcaster.domain.GetSelfEtalaseListUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetProductsInEtalaseUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetSelfEtalaseListUseCase
 import com.tokopedia.play.broadcaster.error.SelectForbiddenException
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcasterUiMapper
@@ -14,6 +15,7 @@ import com.tokopedia.play.broadcaster.ui.model.SearchSuggestionUiModel
 import com.tokopedia.play.broadcaster.view.state.NotSelectable
 import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.play.broadcaster.view.state.SelectableState
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
@@ -21,7 +23,6 @@ import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.debounce
 import javax.inject.Inject
 import javax.inject.Named
-import kotlin.random.Random
 
 /**
  * Created by jegul on 26/05/20
@@ -30,7 +31,9 @@ class PlayEtalasePickerViewModel @Inject constructor(
         @Named(PlayBroadcastDispatcher.MAIN) private val mainDispatcher: CoroutineDispatcher,
         @Named(PlayBroadcastDispatcher.IO) private val ioDispatcher: CoroutineDispatcher,
         @Named(PlayBroadcastDispatcher.COMPUTATION) private val computationDispatcher: CoroutineDispatcher,
-        private val getSelfEtalaseListUseCase: GetSelfEtalaseListUseCase
+        private val getSelfEtalaseListUseCase: GetSelfEtalaseListUseCase,
+        private val getProductsInEtalaseUseCase: GetProductsInEtalaseUseCase,
+        private val userSession: UserSessionInterface
 ): ViewModel() {
 
     private val job: Job = SupervisorJob()
@@ -206,9 +209,16 @@ class PlayEtalasePickerViewModel @Inject constructor(
     }
 
     private suspend fun getEtalaseProductsById(etalaseId: Long, page: Int) = withContext(ioDispatcher) {
-        return@withContext PlayBroadcastMocker.getMockProductList(Random.nextInt(1, 5)).map {
-            it.copy(isSelectedHandler = ::isProductSelected, isSelectable = ::isSelectable)
-        }
+        val productList = getProductsInEtalaseUseCase.apply {
+            params = GetProductsInEtalaseUseCase.createParams(
+                    shopId = userSession.shopId,
+                    page = page,
+                    perPage = PRODUCTS_PER_PAGE,
+                    etalaseId = etalaseId.toString()
+            )
+        }.executeOnBackground()
+
+        return@withContext PlayBroadcasterUiMapper.mapProductList(productList, ::isProductSelected, ::isSelectable)
     }
 
     private suspend fun getEtalaseList() = withContext(ioDispatcher) {
@@ -229,5 +239,6 @@ class PlayEtalasePickerViewModel @Inject constructor(
     companion object {
 
         private const val MAX_PRODUCT_IMAGE_COUNT = 4
+        private const val PRODUCTS_PER_PAGE = 4
     }
 }
