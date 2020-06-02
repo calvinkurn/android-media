@@ -14,7 +14,6 @@ import com.tokopedia.play.broadcaster.di.PlayBroadcasterModule
 import com.tokopedia.play.broadcaster.util.event.EventObserver
 import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
 import com.tokopedia.play.broadcaster.view.event.ScreenStateEvent
-import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment.Companion.PARENT_FRAGMENT_TAG
 import com.tokopedia.play.broadcaster.view.fragment.PlayLiveBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayPrepareBroadcastFragment
@@ -50,6 +49,7 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
     private fun inject() {
         DaggerPlayBroadcasterComponent.builder()
                 .playBroadcasterModule(PlayBroadcasterModule(this))
+                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
     }
@@ -94,10 +94,10 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
                 .commit()
     }
 
-    private fun getParentFragment() = PlayBroadcastFragment.newInstance()
+    private fun getParentFragment() = getFragmentByClassName(PlayLiveBroadcastFragment::class.java)
 
     private fun getFragmentByClassName(fragmentClass: Class<out Fragment>): Fragment {
-        return fragmentFactory.instantiate(fragmentClass.classLoader!!, fragmentClass.name)
+        return fragmentFactory.instantiate(classLoader, fragmentClass.name)
     }
 
     //region observe

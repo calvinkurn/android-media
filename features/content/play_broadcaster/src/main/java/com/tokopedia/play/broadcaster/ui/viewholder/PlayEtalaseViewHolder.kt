@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.ProductPreviewItemDecoration
+import com.tokopedia.play.broadcaster.ui.model.PlayEtalaseUiModel
 import com.tokopedia.play.broadcaster.view.adapter.PlayProductPreviewAdapter
-import com.tokopedia.play.broadcaster.view.uimodel.PlayEtalaseUiModel
 
 /**
  * Created by jegul on 26/05/20

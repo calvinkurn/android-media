@@ -63,7 +63,7 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
                 if (!fragmentBreadcrumbs.empty()) {
                     val lastFragmentBreadcrumbs = fragmentBreadcrumbs.pop()
                     navigateToFragment(lastFragmentBreadcrumbs.fragmentClass, lastFragmentBreadcrumbs.extras, recordBreadcrumbs = false)
-                } else super.onBackPressed()
+                } else cancel()
             }
         }
     }

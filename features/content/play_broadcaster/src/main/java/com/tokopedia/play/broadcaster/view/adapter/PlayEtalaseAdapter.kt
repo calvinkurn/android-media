@@ -1,12 +1,12 @@
 package com.tokopedia.play.broadcaster.view.adapter
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
+import com.tokopedia.play.broadcaster.ui.model.PlayEtalaseUiModel
+import com.tokopedia.play.broadcaster.ui.model.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayEtalaseViewHolder
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.delegate.PlayEtalaseAdapterDelegate
 import com.tokopedia.play.broadcaster.view.adapter.delegate.ProductSelectableAdapterDelegate
-import com.tokopedia.play.broadcaster.view.uimodel.PlayEtalaseUiModel
-import com.tokopedia.play.broadcaster.view.uimodel.ProductUiModel
 
 /**
  * Created by jegul on 26/05/20

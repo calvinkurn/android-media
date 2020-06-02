@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.ui.model.ProductUiModel
 import com.tokopedia.play.broadcaster.util.changeConstraint
-import com.tokopedia.play.broadcaster.view.uimodel.ProductUiModel
 
 /**
  * Created by jegul on 26/05/20

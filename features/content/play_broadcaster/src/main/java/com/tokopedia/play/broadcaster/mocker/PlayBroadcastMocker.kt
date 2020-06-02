@@ -6,8 +6,8 @@ import android.text.Spanned
 import android.text.style.StyleSpan
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.model.Configuration
+import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.view.state.Selectable
-import com.tokopedia.play.broadcaster.view.uimodel.*
 
 /**
  * Created by jegul on 20/05/20

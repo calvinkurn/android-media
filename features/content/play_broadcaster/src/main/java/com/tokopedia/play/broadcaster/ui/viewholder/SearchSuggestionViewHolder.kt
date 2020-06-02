@@ -4,7 +4,7 @@ import android.view.View
 import android.widget.TextView
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.view.uimodel.SearchSuggestionUiModel
+import com.tokopedia.play.broadcaster.ui.model.SearchSuggestionUiModel
 
 /**
  * Created by jegul on 29/05/20

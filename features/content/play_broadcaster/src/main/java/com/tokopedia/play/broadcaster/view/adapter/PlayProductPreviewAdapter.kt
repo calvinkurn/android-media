@@ -1,8 +1,8 @@
 package com.tokopedia.play.broadcaster.view.adapter
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
+import com.tokopedia.play.broadcaster.ui.model.ProductUiModel
 import com.tokopedia.play.broadcaster.view.adapter.delegate.PlayProductPreviewAdapterDelegate
-import com.tokopedia.play.broadcaster.view.uimodel.ProductUiModel
 
 /**
  * Created by jegul on 26/05/20

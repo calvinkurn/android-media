@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.view.uimodel
+package com.tokopedia.play.broadcaster.ui.model
 
 /**
  * Created by jegul on 26/05/20

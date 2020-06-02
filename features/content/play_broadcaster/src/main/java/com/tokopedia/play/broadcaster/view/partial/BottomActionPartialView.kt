@@ -7,7 +7,7 @@ import android.widget.TextView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.view.uimodel.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.ProductUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 
 /**

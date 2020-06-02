@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
+import com.tokopedia.play.broadcaster.ui.model.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductPreviewViewHolder
-import com.tokopedia.play.broadcaster.view.uimodel.ProductUiModel
 
 /**
  * Created by jegul on 26/05/20

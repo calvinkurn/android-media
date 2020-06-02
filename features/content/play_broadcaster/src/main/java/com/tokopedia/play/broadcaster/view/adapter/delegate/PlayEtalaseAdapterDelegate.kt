@@ -2,10 +2,9 @@ package com.tokopedia.play.broadcaster.view.adapter.delegate
 
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
+import com.tokopedia.play.broadcaster.ui.model.PlayEtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayEtalaseViewHolder
-import com.tokopedia.play.broadcaster.view.uimodel.PlayEtalaseUiModel
 
 /**
  * Created by jegul on 26/05/20

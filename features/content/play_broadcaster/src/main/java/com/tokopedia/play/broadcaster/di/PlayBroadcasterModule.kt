@@ -18,7 +18,7 @@ import javax.inject.Named
  * Created by jegul on 20/05/20
  */
 @Module
-class PlayBroadcasterModule(val context: Context) {
+class PlayBroadcasterModule(val mContext: Context) {
 
     @Provides
     @Named(PlayBroadcastDispatcher.MAIN)
@@ -33,17 +33,17 @@ class PlayBroadcasterModule(val context: Context) {
     fun provideComputationDispatcher(): CoroutineDispatcher = Dispatchers.Default
 
     @Provides
-    fun provideUserSessionInterface(): UserSessionInterface {
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
     @Provides
     fun provideLocalCacheHandler(): LocalCacheHandler {
-        return LocalCacheHandler(context, KEY_GROUPCHAT_PREFERENCES)
+        return LocalCacheHandler(mContext, KEY_GROUPCHAT_PREFERENCES)
     }
 
     @Provides
-    fun providePlayPusher(): PlayPusher {
+    fun providePlayPusher(@ApplicationContext context: Context): PlayPusher {
         return PlayPusher.Builder(context).build()
     }
 }
