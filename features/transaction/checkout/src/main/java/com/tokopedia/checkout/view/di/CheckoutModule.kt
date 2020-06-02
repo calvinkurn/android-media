@@ -19,6 +19,7 @@ import com.tokopedia.checkout.domain.mapper.IShipmentMapper
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase.Companion.CHANGE_SHIPPING_ADDRESS_MUTATION
+import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase.Companion.CHECKOUT_MUTATION
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormGqlUseCase.Companion.SHIPMENT_ADDRESS_FORM_QUERY
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase.Companion.SAVE_SHIPMENT_STATE_MUTATION
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
@@ -254,7 +255,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
     @Provides
     @CheckoutScope
     fun provideShipmentPresenter(compositeSubscription: CompositeSubscription,
-                                 checkoutUseCase: CheckoutUseCase,
+                                 checkoutGqlUseCase: CheckoutGqlUseCase,
                                  getShipmentAddressFormGqlUseCase: GetShipmentAddressFormGqlUseCase,
                                  editAddressUseCase: EditAddressUseCase,
                                  changeShippingAddressGqlUseCase: ChangeShippingAddressGqlUseCase,
@@ -275,7 +276,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  releaseBookingUseCase: ReleaseBookingUseCase,
                                  validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase): ShipmentContract.Presenter {
         return ShipmentPresenter(compositeSubscription,
-                checkoutUseCase, getShipmentAddressFormGqlUseCase,
+                checkoutGqlUseCase, getShipmentAddressFormGqlUseCase,
                 editAddressUseCase, changeShippingAddressGqlUseCase,
                 saveShipmentStateGqlUseCase,
                 ratesUseCase, ratesApiUseCase,
@@ -322,6 +323,13 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
     @Named(CHANGE_SHIPPING_ADDRESS_MUTATION)
     fun provideChangeShippingAddressMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.change_shipping_address_mutation)
+    }
+
+    @Provides
+    @CheckoutScope
+    @Named(CHECKOUT_MUTATION)
+    fun provideCheckoutMutation(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.checkout_mutation)
     }
 
 }

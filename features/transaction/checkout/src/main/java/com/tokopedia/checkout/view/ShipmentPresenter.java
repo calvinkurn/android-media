@@ -1,11 +1,11 @@
 package com.tokopedia.checkout.view;
 
+import android.os.Build;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.authentication.AuthHelper;
@@ -28,11 +28,12 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressF
 import com.tokopedia.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase;
-import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
+import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase;
 import com.tokopedia.checkout.domain.usecase.CodCheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormGqlUseCase;
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase;
+import com.tokopedia.checkout.utils.FingerprintUtil;
 import com.tokopedia.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter;
@@ -46,6 +47,7 @@ import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.fingerprint.view.FingerPrintDialog;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter;
@@ -112,6 +114,7 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -135,7 +138,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         implements ShipmentContract.Presenter {
 
     private static final long LAST_THREE_DIGIT_MODULUS = 1000;
-    private final CheckoutUseCase checkoutUseCase;
+    private final CheckoutGqlUseCase checkoutGqlUseCase;
     private final CompositeSubscription compositeSubscription;
     private final GetShipmentAddressFormGqlUseCase getShipmentAddressFormGqlUseCase;
     private final EditAddressUseCase editAddressUseCase;
@@ -188,7 +191,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Inject
     public ShipmentPresenter(CompositeSubscription compositeSubscription,
-                             CheckoutUseCase checkoutUseCase,
+                             CheckoutGqlUseCase checkoutGqlUseCase,
                              GetShipmentAddressFormGqlUseCase getShipmentAddressFormGqlUseCase,
                              EditAddressUseCase editAddressUseCase,
                              ChangeShippingAddressGqlUseCase changeShippingAddressGqlUseCase,
@@ -210,7 +213,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              ReleaseBookingUseCase releaseBookingUseCase,
                              ValidateUsePromoRevampUseCase validateUsePromoRevampUseCase) {
         this.compositeSubscription = compositeSubscription;
-        this.checkoutUseCase = checkoutUseCase;
+        this.checkoutGqlUseCase = checkoutGqlUseCase;
         this.getShipmentAddressFormGqlUseCase = getShipmentAddressFormGqlUseCase;
         this.editAddressUseCase = editAddressUseCase;
         this.changeShippingAddressGqlUseCase = changeShippingAddressGqlUseCase;
@@ -540,7 +543,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             getView().showInitialLoading();
         }
 
-        Map<String, Object> params = generateParamShipmentAddressForm(
+        Map<String, Object> params = generateShipmentAddressFormParams(
                 isOneClickShipment, isTradeIn, isSkipUpdateOnboardingState, cornerId, deviceId, leasingId
         );
 
@@ -554,12 +557,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @NotNull
-    private Map<String, Object> generateParamShipmentAddressForm(boolean isOneClickShipment,
-                                                                 boolean isTradeIn,
-                                                                 boolean isSkipUpdateOnboardingState,
-                                                                 @Nullable String cornerId,
-                                                                 @Nullable String deviceId,
-                                                                 @Nullable String leasingId) {
+    private Map<String, Object> generateShipmentAddressFormParams(boolean isOneClickShipment,
+                                                                  boolean isTradeIn,
+                                                                  boolean isSkipUpdateOnboardingState,
+                                                                  @Nullable String cornerId,
+                                                                  @Nullable String deviceId,
+                                                                  @Nullable String leasingId) {
         Map<String, Object> params = new HashMap<>();
         params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_LANG, "id");
         params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_IS_ONE_CLICK_SHIPMENT, isOneClickShipment);
@@ -715,36 +718,63 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void processCheckout(boolean hasInsurance,
-                                boolean isOneClickShipment, boolean isTradeIn, boolean isTradeInDropOff,
-                                String deviceId, String cornerId, String leasingId) {
+                                boolean isOneClickShipment,
+                                boolean isTradeIn,
+                                boolean isTradeInDropOff,
+                                String deviceId,
+                                String cornerId,
+                                String leasingId) {
+        getView().showLoading();
         removeErrorShopProduct();
         CheckoutRequest checkoutRequest = generateCheckoutRequest(null, hasInsurance,
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0, leasingId
         );
 
         if (checkoutRequest != null && checkoutRequest.data != null && checkoutRequest.data.size() > 0) {
-            getView().showLoading();
+            Map<String, Object> params = generateCheckoutParams(isOneClickShipment, isTradeIn, isTradeInDropOff, deviceId, checkoutRequest);
             RequestParams requestParams = RequestParams.create();
-            if (isTradeIn) {
-                Map<String, String> params = new HashMap<>();
-                params.put(CheckoutUseCase.PARAM_IS_TRADEIN, String.valueOf(true));
-                params.put(CheckoutUseCase.PARAM_IS_TRADE_IN_DROP_OFF, String.valueOf(isTradeInDropOff));
-                params.put(CheckoutUseCase.PARAM_DEVICE_ID, deviceId);
-                requestParams.putObject(CheckoutUseCase.PARAM_TRADE_IN_DATA, params);
-            }
-            requestParams.putObject(CheckoutUseCase.PARAM_CARTS, checkoutRequest);
-            requestParams.putBoolean(CheckoutUseCase.PARAM_ONE_CLICK_SHIPMENT, isOneClickShipment);
+            requestParams.putAll(params);
             compositeSubscription.add(
-                    checkoutUseCase.createObservable(requestParams)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .unsubscribeOn(Schedulers.io())
+                    checkoutGqlUseCase.createObservable(requestParams)
                             .subscribe(getSubscriberCheckoutCart(checkoutRequest, isOneClickShipment, isTradeIn, deviceId, cornerId, leasingId))
             );
         } else {
             getView().hideLoading();
             getView().showToastError(getView().getActivityContext().getString(R.string.message_error_checkout_empty));
         }
+    }
+
+    @NotNull
+    private Map<String, Object> generateCheckoutParams(boolean isOneClickShipment,
+                                                       boolean isTradeIn,
+                                                       boolean isTradeInDropOff,
+                                                       String deviceId,
+                                                       CheckoutRequest checkoutRequest) {
+        Map<String, Object> params = new HashMap<>();
+        params.put(CheckoutGqlUseCase.PARAM_CARTS, checkoutRequest);
+        params.put(CheckoutGqlUseCase.PARAM_IS_ONE_CLICK_SHIPMENT, isOneClickShipment);
+        if (isTradeIn) {
+            params.put(CheckoutGqlUseCase.PARAM_IS_TRADE_IN, true);
+            params.put(CheckoutGqlUseCase.PARAM_IS_TRADE_IN_DROP_OFF, isTradeInDropOff);
+            params.put(CheckoutGqlUseCase.PARAM_DEV_ID, deviceId);
+        }
+        params.put(CheckoutGqlUseCase.PARAM_OPTIONAL, 0);
+        params.put(CheckoutGqlUseCase.PARAM_IS_THANKYOU_NATIVE, true);
+        params.put(CheckoutGqlUseCase.PARAM_IS_THANKYOU_NATIVE_NEW, true);
+        params.put(CheckoutGqlUseCase.PARAM_IS_EXPRESS, false);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && FingerprintUtil.getEnableFingerprintPayment(getView().getActivityContext())) {
+            PublicKey publicKey = FingerPrintDialog.generatePublicKey(getView().getActivityContext());
+            if (publicKey != null) {
+                params.put(CheckoutGqlUseCase.PARAM_FINGERPRINT_PUBLICKEY, FingerPrintDialog.getPublicKey(publicKey));
+                params.put(CheckoutGqlUseCase.PARAM_FINGERPRINT_SUPPORT, String.valueOf(true));
+            } else {
+                params.put(CheckoutGqlUseCase.PARAM_FINGERPRINT_SUPPORT, String.valueOf(false));
+            }
+        } else {
+            params.put(CheckoutGqlUseCase.PARAM_FINGERPRINT_SUPPORT, String.valueOf(false));
+        }
+        return params;
     }
 
     private void removeErrorShopProduct() {
