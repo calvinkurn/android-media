@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.cancellation.data.HotelCancellationModel
+import com.tokopedia.hotel.cancellation.data.HotelCancellationSubmitModel
 import com.tokopedia.hotel.cancellation.data.HotelCancellationSubmitParam
 import com.tokopedia.hotel.cancellation.di.HotelCancellationComponent
 import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationActivity
@@ -82,6 +83,7 @@ class HotelCancellationReasonFragment : HotelBaseFragment() {
                     initView(it.data)
                 }
                 is Fail -> {
+
                 }
             }
         })
@@ -130,6 +132,7 @@ class HotelCancellationReasonFragment : HotelBaseFragment() {
         dialog.setSecondaryCTAText(getString(R.string.hotel_cancellation_reason_submit))
         dialog.setPrimaryCTAText(getString(R.string.hotel_cancellation_reason_dismiss))
         dialog.setPrimaryCTAClickListener { dialog.dismiss() }
+        dialog.dialogDesc.maxLines = 99
         dialog.setSecondaryCTAClickListener {
             trackingHotelUtil.clickSubmitCancellation(requireContext(), invoiceId, hotelCancellationModel, HOTEL_CANCELLATION_REASON_SCREEN_NAME)
             startActivity(HotelCancellationConfirmationActivity.getCallingIntent(requireContext(), invoiceId, orderAmount, cancellationFee, refundAmount,

@@ -251,7 +251,19 @@
     <string name="hotel_cancellation_success">Pembatalan Berhasil</string>
     <string name="hotel_cancellation_failed">Pembatalan Gagal</string>
     <string name="hotel_cancellation_reason_free_text_placeholder">Tulis alasan kamu di sini</string>
-    <string name="hotel_cancellation_reason_free_text_label">Alasan Lain</string>
+    <string name="hotel_cancellation_reason_free_text_label">Alasan lain</string>
+    <string name="hotel_cancellation_reason_free_text_minimal_10_char">minimal 10 karakter</string>
     <string name="hotel_cancellation_success_status">success</string>
     <string name="hotel_cancellation_fail_status">fail</string>
+    <string name="hotel_cancellation_fail_has_been_cancelled_title">Pembatalanmu gagal diproses</string>
+    <string name="hotel_cancellation_fail_has_been_cancelled_description">Kamu sudah membatalkan pesanan ini sebelumnya. Cek info tentang pengajuan pembatalanmu di halaman Daftar Transaksi</string>
+    <string name="hotel_cancellation_fail_has_been_cancelled_cta">Lihat Daftar Transaksi</string>
+    <string name="hotel_cancellation_fail_order_not_found_title">Pesanan ini tidak tersedia</string>
+    <string name="hotel_cancellation_fail_order_not_found_description">Pesanan ini tidak terdaftar di Tokopedia</string>
+    <string name="hotel_cancellation_fail_order_not_found_cta">Lihat Daftar Transaksi</string>
+    <string name="hotel_cancellation_order_list_applink">tokopedia://hotel/order/</string>
+    <string name="hotel_cancellation_hyperlink_open_tag">&lt;hyperlink&gt;</string>
+    <string name="hotel_cancellation_hyperlink_close_tag">&lt;&#47;hyperlink&gt;</string>
+    <string name="hotel_cancellation_a_hyperlink_open_tag">&lt;a href=""&gt;</string>
+    <string name="hotel_cancellation_a_hyperlink_close_tag">&lt;&#47;a&gt;</string>
 </resources>

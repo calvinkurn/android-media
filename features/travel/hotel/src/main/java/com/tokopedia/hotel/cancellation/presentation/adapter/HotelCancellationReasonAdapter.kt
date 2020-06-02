@@ -74,12 +74,13 @@ class HotelCancellationReasonAdapter: RecyclerView.Adapter<RecyclerView.ViewHold
                 hotel_cancellation_reason_hotel_description.text = reason.title
 
                 hotel_cancellation_reason_radio_button.isChecked = reason.id == selectedId
-                if (!hotel_cancellation_reason_radio_button.isChecked)
-                    hotel_cancellation_reason_free_text_tf.hide()
+                if (!hotel_cancellation_reason_radio_button.isChecked) hotel_cancellation_reason_free_text_tf.hide()
+
                 itemView.setOnClickListener {
                     if (reason.freeText) hotel_cancellation_reason_free_text_tf.show()
                     listener?.onClick(reason.id, !reason.freeText)
                 }
+
                 hotel_cancellation_reason_radio_button.setOnClickListener {
                     if (reason.freeText) hotel_cancellation_reason_free_text_tf.show()
                     listener?.onClick(reason.id, !reason.freeText)
@@ -98,8 +99,16 @@ class HotelCancellationReasonAdapter: RecyclerView.Adapter<RecyclerView.ViewHold
                     override fun afterTextChanged(s: Editable?) {
                         CoroutineScope(Dispatchers.Main).launch {
                             delay(300)
-                            if (s.toString().length > 10) listener?.onTypeFreeTextAndMoreThan10Words(true, s.toString())
-                            else listener?.onTypeFreeTextAndMoreThan10Words(false)
+                            if (s.toString().trim().length >= 10) {
+                                hotel_cancellation_reason_free_text_tf.setError(false)
+                                hotel_cancellation_reason_free_text_tf.setMessage("")
+                                listener?.onTypeFreeTextAndMoreThan10Words(true, s.toString())
+                            }
+                            else {
+                                hotel_cancellation_reason_free_text_tf.setError(true)
+                                hotel_cancellation_reason_free_text_tf.setMessage(resources.getString(R.string.hotel_cancellation_reason_free_text_minimal_10_char))
+                                listener?.onTypeFreeTextAndMoreThan10Words(false)
+                            }
                         }
                     }
 

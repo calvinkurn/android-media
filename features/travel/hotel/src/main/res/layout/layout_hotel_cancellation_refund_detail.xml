@@ -48,7 +48,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl1"
         android:background="@drawable/bg_dash_stroke_hotel"
-        android:layout_marginTop="@dimen/layout_lvl2"/>
+        android:layout_marginTop="@dimen/layout_lvl2" />
 
     <LinearLayout
         android:id="@+id/hotel_cancellation_total_price_refund"
