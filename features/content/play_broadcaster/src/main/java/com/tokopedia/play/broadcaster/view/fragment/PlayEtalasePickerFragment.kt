@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.di.DaggerPlayBroadcasterComponent
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayEtalaseViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.PlayEtalaseAdapter
@@ -62,12 +61,13 @@ class PlayEtalasePickerFragment @Inject constructor(
     }
 
     override fun onEtalaseClicked(etalaseId: Long) {
-        broadcastCoordinator.navigateToFragment(
+        /*broadcastCoordinator.navigateToFragment(
                 PlayEtalaseDetailFragment::class.java,
                 Bundle().apply {
                     putLong(PlayEtalaseDetailFragment.EXTRA_ETALASE_ID, etalaseId)
                 }
-        )
+        )*/
+        broadcastCoordinator.navigateToFragment(PlayCoverTitleSetupFragment::class.java)
     }
 
     private fun initView(view: View) {
