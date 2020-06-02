@@ -29,9 +29,7 @@ class PermissionUtil(private val mContext: Context) {
         fun onPermissionGranted(permissions: List<String>)
 
         /**
-         * When the permission is previously asked but not granted &
-         * When the permission is disabled by device policy or the user checked "Never ask again"
-         *     check box on previous request permission
+         * When the permission is previously asked but not granted
          */
         fun onPermissionDisabled()
 
