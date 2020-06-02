@@ -54,6 +54,7 @@ class ProductCardItemViewModel(val application: Application, private val compone
         }
     }
 
+    // Apply Transformation on this live data
     fun getFreeOngkirImage(): LiveData<String> {
         if (dataItem.value?.freeOngkir?.isActive == true) {
             freeOngkirImage.value = dataItem.value?.freeOngkir?.freeOngkirImageUrl
