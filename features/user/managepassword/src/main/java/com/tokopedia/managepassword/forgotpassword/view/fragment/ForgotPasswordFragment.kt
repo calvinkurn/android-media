@@ -16,13 +16,13 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.managepassword.R
 import com.tokopedia.managepassword.di.ManagePasswordComponent
+import com.tokopedia.managepassword.forgotpassword.analytics.ForgotPasswordAnalytics
 import com.tokopedia.managepassword.forgotpassword.view.viewmodel.ForgotPasswordViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_forgot_password.*
-import java.lang.StringBuilder
 import javax.inject.Inject
 
 /**
@@ -40,6 +40,8 @@ class ForgotPasswordFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ForgotPasswordViewModel::class.java) }
+
+    private var tracker: ForgotPasswordAnalytics = ForgotPasswordAnalytics()
 
     private val email: String
         get() = arguments?.getString(ApplinkConstInternalGlobal.PARAM_EMAIL, "") ?: ""
@@ -79,6 +81,7 @@ class ForgotPasswordFragment : BaseDaggerFragment() {
         }
 
         btnRegister?.setOnClickListener {
+            tracker.onCLickRegister()
             gotoRegister()
         }
 
@@ -128,6 +131,7 @@ class ForgotPasswordFragment : BaseDaggerFragment() {
 
     private fun onSuccessReset() {
         hideLoading()
+        tracker.onSuccessReset()
         layoutForgotPassword?.visibility = View.GONE
         setOnSuccessView()
     }
@@ -143,6 +147,7 @@ class ForgotPasswordFragment : BaseDaggerFragment() {
 
     private fun onFailedReset(message: String) {
         hideLoading()
+        tracker.onError(message)
         view?.let {
             Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
         }

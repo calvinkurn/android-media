@@ -12,6 +12,7 @@ import com.tokopedia.managepassword.di.ManagePasswordComponent
 import com.tokopedia.managepassword.di.module.ManagePasswordModule
 import com.tokopedia.managepassword.forgotpassword.view.fragment.ForgotPasswordFragment
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 
 /**
  * @author rival
@@ -28,8 +29,10 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 
 class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePasswordComponent> {
 
+    private lateinit var remoteConfigInstance: RemoteConfigInstance
+
     private val isDirectToWebView: Boolean
-        get() = RemoteConfigInstance.getInstance().abTestPlatform.getBoolean(REMOTE_FORGOT_PASSWORD_DIRECT_TO_WEBVIEW, false)
+        get() = getAbTestPlatform()?.getString(AB_TEST_RESET_PASSWORD_KEY) == AB_TEST_RESET_PASSWORD
 
     override fun getScreenName(): String {
         return SCREEN_FORGOT_PASSWORD
@@ -53,13 +56,21 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component.inject(this)
-        RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
+
+        getAbTestPlatform()?.fetch(null)
 
         if (isDirectToWebView) {
             RouteManager.route(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlResetPassword()))
             finish()
             return
         }
+    }
+
+    private fun getAbTestPlatform(): AbTestPlatform? {
+        if (remoteConfigInstance == null) {
+            remoteConfigInstance = RemoteConfigInstance(this.application)
+        }
+        return remoteConfigInstance.abTestPlatform
     }
 
     private fun urlResetPassword(): String {
@@ -73,8 +84,9 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
 
     companion object {
         private const val SCREEN_FORGOT_PASSWORD = "Forgot password page"
-        private const val URL_FORGOT_PASSWORD = "https://accounts.tokopedia.com/reset-password/islogin?theme=mobile"
-        private const val REMOTE_FORGOT_PASSWORD_DIRECT_TO_WEBVIEW = "android_forgot_password_webview"
+        private const val URL_FORGOT_PASSWORD = "http://m.tokopedia.com/reset-password"
         private const val REMOTE_FORGOT_PASSWORD_DIRECT_TO_WEBVIEW_URL = "android_forgot_password_webview_url"
+        private const val AB_TEST_RESET_PASSWORD_KEY = "Reset Password AND"
+        private const val AB_TEST_RESET_PASSWORD = "Reset Password AND"
     }
 }

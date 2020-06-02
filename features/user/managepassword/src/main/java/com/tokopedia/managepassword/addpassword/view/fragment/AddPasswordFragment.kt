@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.managepassword.addpassword.analytics.AddPasswordAnalytics
 import com.tokopedia.managepassword.addpassword.view.viewmodel.AddPasswordViewModel
 import com.tokopedia.managepassword.di.ManagePasswordComponent
 import com.tokopedia.unifycomponents.Toaster
@@ -39,6 +40,7 @@ class AddPasswordFragment : BaseDaggerFragment() {
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(AddPasswordViewModel::class.java) }
 
+    private val tracker: AddPasswordAnalytics = AddPasswordAnalytics()
 
     override fun getScreenName(): String {
         return SCREEN_ADD_PASSWORD
@@ -79,6 +81,7 @@ class AddPasswordFragment : BaseDaggerFragment() {
             if (txtPassword?.isTextFieldError != true && password.isNotEmpty()) {
                 showLoading()
                 btnSubmit?.isEnabled = false
+                tracker.onClickSubmit()
                 viewModel.createPassword(password)
             }
         }
@@ -135,6 +138,7 @@ class AddPasswordFragment : BaseDaggerFragment() {
 
     private fun onSuccessAdd() {
         activity?.let {
+            tracker.onSuccessAddPassword()
             it.setResult(Activity.RESULT_OK)
             it.finish()
         }
@@ -143,6 +147,7 @@ class AddPasswordFragment : BaseDaggerFragment() {
     private fun onFailedAdd(message: String) {
         hideLoading()
         btnSubmit?.isEnabled = true
+        tracker.onFailedAddPassword(message)
         view?.let {
             Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
         }

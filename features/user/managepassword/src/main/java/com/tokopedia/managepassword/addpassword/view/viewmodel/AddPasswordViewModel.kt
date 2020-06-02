@@ -74,11 +74,11 @@ class AddPasswordViewModel @Inject constructor(
         private const val PARAM_OS_TYPE: String = "os_type"
         private const val OS_TYPE_ANDROID: String = "1"
 
-        private const val MIN_COUNT = 6
+        private const val MIN_COUNT = 8
         private const val MAX_COUNT = 32
         private const val ERROR_FIELD_REQUIRED = "Harus diisi"
-        private const val ERROR_MIN_CHAR = "Minimum 6 karakter"
-        private const val ERROR_MAX_CHAR = "Maksimum 32 karakter"
+        private const val ERROR_MIN_CHAR = "Minimum $MIN_COUNT karakter"
+        private const val ERROR_MAX_CHAR = "Maksimum $MAX_COUNT karakter"
 
 
         private fun generateParam(email: String, userSession: UserSessionInterface): RequestParams {
