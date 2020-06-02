@@ -16,8 +16,8 @@ object ThankPageTypeMapper {
 
     fun getThankPageType(thanksPageData: ThanksPageData): ThankPageType {
         return when (thanksPageData.merchantCode) {
-            DIGITAL_MERCHANT_CODE -> DigitalThankPage
-            else -> MarketPlaceThankPage
+            MARKETPLACE_MERCHANT_CODE -> MarketPlaceThankPage
+            else -> DigitalThankPage
         }
     }
 }
