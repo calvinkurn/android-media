@@ -57,9 +57,6 @@ import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsur
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.DefaultSchedulers
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey.AKAMAI_CART_ENABLE
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -121,21 +118,13 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
     @Provides
     @PurchasePlatformAkamaiQualifier
     @CheckoutScope
-    fun provideAkamaiRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
-        return FirebaseRemoteConfigImpl(context)
-    }
-
-    @Provides
-    @PurchasePlatformAkamaiQualifier
-    @CheckoutScope
     fun provideCartAkamaiApiOkHttpClient(
             @ApplicationContext context: Context,
             @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
             cartApiInterceptor: CartApiInterceptor,
             okHttpRetryPolicy: OkHttpRetryPolicy,
             fingerprintInterceptor: FingerprintInterceptor,
-            chuckInterceptor: ChuckerInterceptor,
-            @PurchasePlatformAkamaiQualifier remoteConfig: RemoteConfig): OkHttpClient {
+            chuckInterceptor: ChuckerInterceptor): OkHttpClient {
 
         val builder = OkHttpClient.Builder()
                 .readTimeout(okHttpRetryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
@@ -148,9 +137,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                     chain.proceed(newRequest.build())
                 }
                 .addInterceptor(cartApiInterceptor)
-        if (remoteConfig.getBoolean(AKAMAI_CART_ENABLE, true)) {
-            builder.addInterceptor(AkamaiBotInterceptor(context))
-        }
+        builder.addInterceptor(AkamaiBotInterceptor(context))
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(httpLoggingInterceptor)
                     .addInterceptor(chuckInterceptor)

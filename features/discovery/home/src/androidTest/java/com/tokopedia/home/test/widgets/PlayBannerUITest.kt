@@ -37,6 +37,28 @@ class PlayBannerUITest : BaseWidgetUiTest(){
     @JvmField
     val taskExecutorRule = InstantTaskExecutorRule()
 
+    private val userSessionInterface = mockk<UserSessionInterface>(relaxed = true)
+    private val dismissHomeReviewUseCase = mockk<DismissHomeReviewUseCase>(relaxed = true)
+    private val getHomeReviewSuggestedUseCase = mockk<GetHomeReviewSuggestedUseCase>(relaxed = true)
+    private val getKeywordSearchUseCase = mockk<GetKeywordSearchUseCase>(relaxed = true)
+    private val getRecommendationTabUseCase = mockk<GetRecommendationTabUseCase>(relaxed = true)
+    private val getHomeTokopointsDataUseCase = mockk<GetHomeTokopointsDataUseCase>(relaxed = true)
+    private val getCoroutinePendingCashbackUseCase = mockk<GetCoroutinePendingCashbackUseCase> (relaxed = true)
+    private val getPlayLiveDynamicUseCase = mockk<GetPlayLiveDynamicUseCase> (relaxed = true)
+    private val getCoroutineWalletBalanceUseCase = mockk<GetCoroutineWalletBalanceUseCase> (relaxed = true)
+    private val getHomeUseCase = mockk<dagger.Lazy<HomeUseCase>> (relaxed = true)
+    private val getSendGeolocationInfoUseCase = mockk<dagger.Lazy<SendGeolocationInfoUseCase>> (relaxed = true)
+    private val getStickyLoginUseCase = mockk<StickyLoginUseCase> (relaxed = true)
+    private val getBusinessWidgetTab = mockk<GetBusinessWidgetTab> (relaxed = true)
+    private val getBusinessUnitDataUseCase = mockk<GetBusinessUnitDataUseCase> (relaxed = true)
+    private val getPopularKeywordUseCase = mockk<GetPopularKeywordUseCase> (relaxed = true)
+    private val getDynamicChannelsUseCase = mockk<GetDynamicChannelsUseCase> (relaxed = true)
+    private val getAtcUseCase = mockk<AddToCartOccUseCase>(relaxed = true)
+    private val getRechargeRecommendationUseCase = mockk<GetRechargeRecommendationUseCase>(relaxed = true)
+    private val declineRechargeRecommendationUseCase = mockk<DeclineRechargeRecommendationUseCase>(relaxed = true)
+    private val closeChannelUseCase = mockk<CloseChannelUseCase>(relaxed = true)
+    val injectCouponTimeBasedUseCase = mockk<InjectCouponTimeBasedUseCase>(relaxed = true)
+    private val homeDataMapper = HomeDataMapper(InstrumentationRegistry.getInstrumentation().context, HomeVisitableFactoryImpl(userSessionInterface), mockk(relaxed = true))
     private val context = InstrumentationRegistry.getInstrumentation().context
     private lateinit var viewModel: HomeViewModel
 
@@ -288,4 +310,41 @@ class PlayBannerUITest : BaseWidgetUiTest(){
         onView(withId(TITLE)).check(matches(withText("Play Widget")))
         onView(withId(TITLE_CONTENT)).check(matches(withText("Channel 2")))
     }
+  
+    private fun <T : ViewModel> createViewModelFactory(viewModel: T): ViewModelProvider.Factory {
+        return object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(viewModelClass: Class<T>): T {
+                if (viewModelClass.isAssignableFrom(viewModel.javaClass)) {
+                    @Suppress("UNCHECKED_CAST")
+                    return viewModel as T
+                }
+                throw IllegalArgumentException("Unknown view model class " + viewModelClass)
+            }
+        }
+    }
+
+    private fun reInitViewModel() = HomeViewModel(
+            dismissHomeReviewUseCase = dismissHomeReviewUseCase,
+            getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
+            getBusinessWidgetTab = getBusinessWidgetTab,
+            getDynamicChannelsUseCase = getDynamicChannelsUseCase,
+            getHomeReviewSuggestedUseCase = getHomeReviewSuggestedUseCase,
+            getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase,
+            getKeywordSearchUseCase = getKeywordSearchUseCase,
+            getPendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
+            getPlayCardHomeUseCase = getPlayLiveDynamicUseCase,
+            getRecommendationTabUseCase = getRecommendationTabUseCase,
+            getWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
+            homeDispatcher = TestDispatcherProvider(),
+            homeUseCase = getHomeUseCase,
+            popularKeywordUseCase = getPopularKeywordUseCase,
+            sendGeolocationInfoUseCase = getSendGeolocationInfoUseCase,
+            stickyLoginUseCase = getStickyLoginUseCase,
+            userSession = userSessionInterface,
+            getAtcUseCase = getAtcUseCase,
+            closeChannelUseCase = closeChannelUseCase,
+            getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
+            declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase,
+            injectCouponTimeBasedUseCase = injectCouponTimeBasedUseCase
+    )
 }

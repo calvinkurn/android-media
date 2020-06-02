@@ -34,6 +34,7 @@ import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -2203,7 +2204,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun showToastMessageRed(throwable: Throwable) {
         var errorMessage = throwable.message ?: ""
-        if (throwable !is CartResponseErrorException) {
+        if (!(throwable is CartResponseErrorException || throwable is AkamaiErrorException)) {
             errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
         }
 

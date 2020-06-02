@@ -106,8 +106,7 @@ class MultipleAddressModule {
             cartApiInterceptor: CartApiInterceptor,
             okHttpRetryPolicy: OkHttpRetryPolicy,
             fingerprintInterceptor: FingerprintInterceptor,
-            chuckInterceptor: ChuckerInterceptor,
-            @PurchasePlatformAkamaiQualifier remoteConfig: RemoteConfig): OkHttpClient {
+            chuckInterceptor: ChuckerInterceptor): OkHttpClient {
 
         val builder = OkHttpClient.Builder()
                 .readTimeout(okHttpRetryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
@@ -120,9 +119,7 @@ class MultipleAddressModule {
                     chain.proceed(newRequest.build())
                 }
                 .addInterceptor(cartApiInterceptor)
-        if (remoteConfig.getBoolean(RemoteConfigKey.AKAMAI_CART_ENABLE, true)) {
-            builder.addInterceptor(AkamaiBotInterceptor(context))
-        }
+        builder.addInterceptor(AkamaiBotInterceptor(context))
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(httpLoggingInterceptor)
                     .addInterceptor(chuckInterceptor)

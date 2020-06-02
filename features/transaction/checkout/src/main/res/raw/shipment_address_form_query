@@ -16,6 +16,8 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
       is_ineligible_promo_dialog_enabled
       disabled_features
       donation_checkbox_status
+      open_prerequisite_site
+      eligible_new_shipping_experience
       group_address {
         errors
         user_address {

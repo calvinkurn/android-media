@@ -352,15 +352,15 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
     }
 
     private fun setOnRecyclerViewLayoutReady() {
-        recycler_view_coupons.viewTreeObserver
-                .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        recycler_view_coupons?.viewTreeObserver
+                ?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
                         if (pageLoadTimePerformanceMonitoring != null) {
                             stopRenderPerformanceMonitoring()
                             stopPerformanceMonitoring()
                         }
                         pageLoadTimePerformanceMonitoring = null
-                        recycler_view_coupons.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        recycler_view_coupons?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                     }
                 })
     }

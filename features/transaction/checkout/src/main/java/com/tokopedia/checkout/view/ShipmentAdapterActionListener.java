@@ -116,4 +116,6 @@ public interface ShipmentAdapterActionListener {
     void onSendAnalyticsViewPromoCheckoutApplied();
 
     void onCheckShippingCompletionClicked();
+
+    void onShowTickerShippingCompletion();
 }
