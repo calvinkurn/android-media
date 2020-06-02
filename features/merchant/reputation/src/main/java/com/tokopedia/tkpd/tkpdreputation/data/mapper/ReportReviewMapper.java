@@ -40,7 +40,7 @@ public class ReportReviewMapper implements Func1<Response<TokopediaWsV4Response>
                 messageError = response.body().getErrorMessageJoined();
             }
             if (!TextUtils.isEmpty(messageError)) {
-                return mappingToDomain(messageError);
+                throw new ErrorMessageException(messageError);
             } else {
                 throw new RuntimeException(String.valueOf(response.code()));
             }
