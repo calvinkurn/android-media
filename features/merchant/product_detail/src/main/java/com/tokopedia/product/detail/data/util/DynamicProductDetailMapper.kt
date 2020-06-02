@@ -86,25 +86,40 @@ object DynamicProductDetailMapper {
         return listOfComponent
     }
 
+    /**
+     * Combine all important data of all component to one Source of Truth
+     * Component need to combine : Snapshot/Content , Notify Me , Media
+     * @param DynamicProductInfoP1 Source of Truth PDP
+     */
     fun mapToDynamicProductDetailP1(data: PdpGetLayout): DynamicProductInfoP1 {
-        val componentData = data.components.find {
+        val snapshotData = data.components.find {
             it.type == ProductDetailConstant.PRODUCT_SNAPSHOT
-        }?.componentData?.firstOrNull() ?: ComponentData()
+        }?.componentData?.firstOrNull()
+
+        val contentData = data.components.find {
+            it.type == ProductDetailConstant.BASIC_CONTENT
+        }?.componentData?.firstOrNull()
 
         val upcomingData = data.components.find {
             it.type == ProductDetailConstant.NOTIFY_ME
         }?.componentData?.firstOrNull() ?: ComponentData()
 
-        val newData = componentData.copy(
+        val mediaData = data.components.find {
+            it.type == ProductDetailConstant.MEDIA
+        }?.componentData?.firstOrNull() ?: ComponentData()
+
+        val newDataWithUpcoming = contentData?.copy(
                 campaignId = upcomingData.campaignId,
                 campaignType = upcomingData.campaignType,
                 campaignTypeName = upcomingData.campaignTypeName,
                 endDate = upcomingData.endDate,
                 startDate = upcomingData.startDate,
                 notifyMe = upcomingData.notifyMe
-        )
+        ) ?: ComponentData()
 
-        return DynamicProductInfoP1(layoutName = data.generalName, basic = data.basicInfo, data = newData)
+        val newDataWithMedia = newDataWithUpcoming.copy(media = mediaData.media)
+
+        return DynamicProductInfoP1(layoutName = data.generalName, basic = data.basicInfo, data = newDataWithMedia)
     }
 
     fun hashMapLayout(data: List<DynamicPdpDataModel>): Map<String, DynamicPdpDataModel> {
