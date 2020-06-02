@@ -276,7 +276,6 @@ dependencies {
     implementation project(rootProject.ext.features.home)
     implementation project(rootProject.ext.features.vote)
     implementation project(rootProject.ext.features.event)
-    implementation project(rootProject.ext.features.eventPDP)
     implementation project(rootProject.ext.features.commonWallet)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.tkpdinbox)
