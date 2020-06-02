@@ -2,7 +2,7 @@
     <string name="app_name">Talk</string>
 
     <!-- ACTIVITY TITLE -->
-    <string name="title_product_discussion">Q&amp;A Produk</string>
+    <string name="title_product_discussion">Q&amp;A</string>
     <string name="title_report_talk">Laporkan</string>
     <string name="title_reading_page">Q&amp;A</string>
     <string name="title_talk_discuss">Diskusi</string>
