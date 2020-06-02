@@ -16,6 +16,7 @@ import static com.tokopedia.purchase_platform.common.analytics.ConstantTransacti
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventLabel;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.Key;
+
 import com.tokopedia.iris.util.ConstantKt;
 
 
@@ -316,12 +317,12 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
     }
 
 
-    private void sendEnhancedECommerce(Map<String, Object> cartMap, String eventLabel) {
+    private void sendEnhancedECommerce(int step, Map<String, Object> cartMap, String eventLabel) {
 
         Map<String, Object> dataLayer = DataLayer.mapOf(
                 Key.EVENT, EventName.CHECKOUT,
                 Key.EVENT_CATEGORY, EventCategory.CART,
-                Key.EVENT_ACTION, EventAction.VIEW_CART_PAGE,
+                Key.EVENT_ACTION, step == 0 ? EventAction.VIEW_CART_PAGE : EventAction.CLICK_CHECKOUT,
                 Key.EVENT_LABEL, eventLabel,
                 Key.E_COMMERCE, cartMap,
                 Key.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
@@ -340,51 +341,51 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
     }
 
     public void enhancedECommerceCartLoadedStep0(Map<String, Object> cartMap) {
-        sendEnhancedECommerce(cartMap, "");
+        sendEnhancedECommerce(0, cartMap, "");
         flushEnhancedECommerce();
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessDefault(Map<String, Object> cartMap, boolean eligibleCod) {
         if (eligibleCod) {
-            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_DEFAULT_ELIGIBLE_COD);
+            sendEnhancedECommerce(1, cartMap, EventLabel.CHECKOUT_SUCCESS_DEFAULT_ELIGIBLE_COD);
         } else {
-            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_DEFAULT);
+            sendEnhancedECommerce(1, cartMap, EventLabel.CHECKOUT_SUCCESS_DEFAULT);
         }
         flushEnhancedECommerce();
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessCheckAll(Map<String, Object> cartMap, boolean eligibleCod) {
         if (eligibleCod) {
-            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL_ELIGIBLE_COD);
+            sendEnhancedECommerce(1, cartMap, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL_ELIGIBLE_COD);
         } else {
-            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL);
+            sendEnhancedECommerce(1, cartMap, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL);
         }
         flushEnhancedECommerce();
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessPartialShop(Map<String, Object> cartMap, boolean eligibleCod) {
         if (eligibleCod) {
-            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_ELIGIBLE_COD);
+            sendEnhancedECommerce(1, cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_ELIGIBLE_COD);
         } else {
-            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP);
+            sendEnhancedECommerce(1, cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP);
         }
         flushEnhancedECommerce();
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessPartialProduct(Map<String, Object> cartMap, boolean eligibleCod) {
         if (eligibleCod) {
-            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT_ELIGIBLE_COD);
+            sendEnhancedECommerce(1, cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT_ELIGIBLE_COD);
         } else {
-            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT);
+            sendEnhancedECommerce(1, cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT);
         }
         flushEnhancedECommerce();
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(Map<String, Object> cartMap, boolean eligibleCod) {
         if (eligibleCod) {
-            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT_ELIGIBLE_COD);
+            sendEnhancedECommerce(1, cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT_ELIGIBLE_COD);
         } else {
-            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT);
+            sendEnhancedECommerce(1, cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT);
         }
         flushEnhancedECommerce();
     }
@@ -987,6 +988,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         mapEvent.put("productId", productId);
         sendGeneralEvent(mapEvent);
     }
+
     public void eventClickBrowseButtonOnTickerProductContainTobacco() {
         sendEventCategoryAction(
                 EventName.CLICK_ATC,

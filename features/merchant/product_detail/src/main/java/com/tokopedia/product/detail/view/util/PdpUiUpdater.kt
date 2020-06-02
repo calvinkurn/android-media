@@ -11,6 +11,7 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationResponse
+import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.product.detail.data.model.variant.VariantDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -46,6 +47,9 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
     val productDiscussionMap: ProductDiscussionDataModel?
         get() = mapOfData[ProductDetailConstant.DISCUSSION] as? ProductDiscussionDataModel
+
+    val productDiscussionMostHelpfulMap: ProductDiscussionMostHelpfulDataModel?
+        get() = mapOfData[ProductDetailConstant.DISCUSSION_FAQ] as? ProductDiscussionMostHelpfulDataModel
 
     val productMostHelpfulMap: ProductMostHelpfulReviewDataModel?
         get() = mapOfData[ProductDetailConstant.MOST_HELPFUL_REVIEW] as? ProductMostHelpfulReviewDataModel
@@ -294,6 +298,12 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 latestTalk = it.latestTalk
             }
 
+            productDiscussionMostHelpfulMap?.run {
+                questions = it.discussionMostHelpful.questions
+                totalQuestion = it.discussionMostHelpful.totalQuestion
+                isShimmering = false
+            }
+
             productMostHelpfulMap?.run {
                 listOfReviews = it.helpfulReviews
                 imageReviews = it.imageReviews
@@ -345,6 +355,14 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     fun updateNearestWarehouseData(data: ProductSnapshotDataModel.NearestWarehouseDataModel) {
         basicContentMap?.nearestWarehouseDataModel = data
         snapShotMap?.nearestWarehouseDataModel = data
+    }
+
+    fun updateDiscussionData(discussionMostHelpful: DiscussionMostHelpful) {
+        productDiscussionMostHelpfulMap?.run {
+            questions = discussionMostHelpful.questions
+            totalQuestion = discussionMostHelpful.totalQuestion
+            isShimmering = false
+        }
     }
 
     private fun mapToCardModel(data: RecommendationWidget): List<ProductCardModel> {

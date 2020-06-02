@@ -13,7 +13,7 @@ import com.tokopedia.entertainment.pdp.data.Package
 import javax.inject.Inject
 
 class BaseListPackageAdapter(packageTypeFactoryImp: PackageTypeFactoryImp,
-                             val setTotalAndPackageId: (String, String, String, Boolean, String, String, String)->Unit,
+                             val setTotalAndPackageId: (String,String, String, String, Boolean, String, String, String)->Unit,
                              val eventPDPTracking: EventPDPTracking
                              ):
         BaseListAdapter<EventPDPTicketModel, PackageTypeFactory>(packageTypeFactoryImp) {
@@ -29,8 +29,8 @@ class BaseListPackageAdapter(packageTypeFactoryImp: PackageTypeFactoryImp,
         super.onBindViewHolder(holder, position)
     }
 
-    private fun quantitiyEditorValueButtonListener(idPackages: String, price: String, qty: Int, isError: Boolean, product_name: String, product_id: String){
-        setTotalAndPackageId(idPackages, CurrencyFormatter.getRupiahFormat(price.toLong()*qty), qty.toString(), isError, product_name, product_id, price)
+    private fun quantitiyEditorValueButtonListener(idPackages: String, idGroup:String, price: String, qty: Int, isError: Boolean, product_name: String, product_id: String){
+        setTotalAndPackageId(idPackages,idGroup, CurrencyFormatter.getRupiahFormat(price.toLong()*qty), qty.toString(), isError, product_name, product_id, price)
     }
 
     private fun pilihButtonClicked(idClicked: String){
