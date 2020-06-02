@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatroom.domain.usecase
 
 import androidx.collection.ArrayMap
 import com.tokopedia.chat_common.data.AttachmentType
+import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceSentPojo
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -85,8 +86,13 @@ class ChatAttachmentUseCase @Inject constructor(
     private fun parseAttribute(attachment: Attachment) {
         attachment.parsedAttributes = when (attachment.type) {
             AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT.toInt() -> convertToProductAttachment(attachment)
+            AttachmentType.Companion.TYPE_INVOICE_SEND.toInt() -> convertToInvoiceAttachment(attachment)
             else -> null
         }
+    }
+
+    private fun convertToInvoiceAttachment(attachment: Attachment): InvoiceSentPojo {
+        return CommonUtil.fromJson<InvoiceSentPojo>(attachment.attributes, InvoiceSentPojo::class.java)
     }
 
     private fun convertToProductAttachment(attachment: Attachment): ProductAttachmentAttributes {
