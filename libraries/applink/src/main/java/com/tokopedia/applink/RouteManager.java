@@ -39,7 +39,7 @@ public class RouteManager {
     public static final String BRANCH = "branch";
     public static final String BRANCH_FORCE_NEW_SESSION = "branch_force_new_session";
 
-    private static final String KEY_REDIRECT_TO_SELLER_APP = "redirect_to_sellerapp";
+    public static final String KEY_REDIRECT_TO_SELLER_APP = "redirect_to_sellerapp";
     private static final String SELLER_APP_PACKAGE_NAME = "com.tokopedia.sellerapp";
 
     /**
@@ -60,14 +60,6 @@ public class RouteManager {
         }
         ApplinkLogger.getInstance(context).appendTrace("Implicit intent result:\n" + intent.toString());
         return intent;
-    }
-
-    private static Intent getIntentToPlayStore(String packageName) {
-        try {
-            return new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + packageName));
-        } catch (ActivityNotFoundException e) {
-            return new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + packageName));
-        }
     }
 
     /**
@@ -99,13 +91,7 @@ public class RouteManager {
         final boolean shouldRedirectToSellerApp = uri.getBooleanQueryParameter(KEY_REDIRECT_TO_SELLER_APP, false);
 
         if (shouldRedirectToSellerApp) {
-            Intent intentToSellerApp = context.getPackageManager().getLaunchIntentForPackage(SELLER_APP_PACKAGE_NAME);
-            if (intentToSellerApp != null) {
-                intentToSellerApp.setData(uri);
-                return intentToSellerApp;
-            } else {
-                return getIntentToPlayStore(SELLER_APP_PACKAGE_NAME);
-            }
+            return getIntentRedirectSellerApp(context, uri);
         } else if (resolveInfos == null || resolveInfos.size() == 0) {
             // intent cannot be viewed in app
             ApplinkLogger.getInstance(context).appendTrace("Intent cannot be viewed in app");
@@ -141,6 +127,26 @@ public class RouteManager {
                 return null;
             }
 
+        }
+    }
+
+    private static Intent getIntentRedirectSellerApp(Context context, Uri uri) {
+        boolean isSellerAppInstalled = (context.getPackageManager().getLaunchIntentForPackage(SELLER_APP_PACKAGE_NAME) != null);
+        if (isSellerAppInstalled) {
+            Intent intentToSellerApp = new Intent(Intent.ACTION_VIEW);
+            intentToSellerApp.setPackage(SELLER_APP_PACKAGE_NAME);
+            intentToSellerApp.setData(uri);
+            return intentToSellerApp;
+        } else {
+            return getIntentToPlayStore(SELLER_APP_PACKAGE_NAME);
+        }
+    }
+
+    private static Intent getIntentToPlayStore(String packageName) {
+        try {
+            return new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + packageName));
+        } catch (ActivityNotFoundException e) {
+            return new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + packageName));
         }
     }
 
