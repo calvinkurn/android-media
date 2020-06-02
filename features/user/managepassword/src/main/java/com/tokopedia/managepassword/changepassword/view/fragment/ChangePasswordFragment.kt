@@ -227,7 +227,6 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
             NetworkErrorHelper.showRedSnackbar(activity, errorMessage)
             tracker.onErrorValidate(errorMessage)
         }
-
     }
 
     override fun onDestroyView() {

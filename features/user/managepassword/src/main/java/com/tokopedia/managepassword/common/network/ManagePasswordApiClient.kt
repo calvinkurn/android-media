@@ -4,6 +4,7 @@ import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.managepassword.di.ManagePasswordContext
 import com.tokopedia.network.NetworkRouter
@@ -11,7 +12,6 @@ import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.DebugInterceptor
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
-import com.tokopedia.network.refreshtoken.AccountsBasicInterceptor
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -35,7 +35,6 @@ class ManagePasswordApiClient<T> @Inject constructor(
     private val userSession: UserSessionInterface = UserSession(context)
     private val fingerprintInterceptor: FingerprintInterceptor = FingerprintInterceptor(context as NetworkRouter, userSession)
     private val tkpdAuthInterceptor: TkpdAuthInterceptor = TkpdAuthInterceptor(context, context as NetworkRouter, userSession)
-    private val accountInterceptor = AccountsBasicInterceptor(context, context as NetworkRouter, userSession)
     private val gson: Gson = GsonBuilder()
             .setDateFormat(DATE_FORMAT)
             .setPrettyPrinting()
@@ -47,9 +46,8 @@ class ManagePasswordApiClient<T> @Inject constructor(
     }
 
     private fun getClient(): OkHttpClient {
-        return OkHttpClient().newBuilder().apply {
+        return OkHttpClient.Builder().apply {
             addInterceptor(fingerprintInterceptor)
-            addInterceptor(accountInterceptor)
             addInterceptor(tkpdAuthInterceptor)
 
             if (GlobalConfig.isAllowDebuggingTools()) {
@@ -60,17 +58,19 @@ class ManagePasswordApiClient<T> @Inject constructor(
         }.build()
     }
 
-    private fun retrofitBuilder(): Retrofit {
+    private fun retrofitBuilder(): Retrofit.Builder {
         return Retrofit.Builder()
-                .client(getClient())
                 .baseUrl(TokopediaUrl.getInstance().ACCOUNTS)
                 .addConverterFactory(StringResponseConverter())
+                .addConverterFactory(TokopediaWsV4ResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(gson))
-                .build()
     }
 
     fun call(): T {
-        return retrofitBuilder().create(service)
+        return retrofitBuilder()
+                .client(getClient())
+                .build()
+                .create(service)
     }
 
     companion object {

@@ -67,7 +67,7 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
     }
 
     private fun getAbTestPlatform(): AbTestPlatform? {
-        if (remoteConfigInstance == null) {
+        if (!::remoteConfigInstance.isInitialized) {
             remoteConfigInstance = RemoteConfigInstance(this.application)
         }
         return remoteConfigInstance.abTestPlatform
