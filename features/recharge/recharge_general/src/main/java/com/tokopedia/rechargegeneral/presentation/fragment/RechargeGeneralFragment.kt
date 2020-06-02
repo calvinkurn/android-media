@@ -872,6 +872,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     override fun onMenuDetailError(error: Throwable) {
+        super.onMenuDetailError(error)
         showGetListError(error)
     }
 

@@ -41,10 +41,6 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
     val enquiryData: LiveData<Result<TopupBillsEnquiryData>>
         get() = _enquiryData
 
-    private val _loadingMenuData = MutableLiveData<Boolean>()
-    val loadingMenuData: LiveData<Boolean>
-        get() = _loadingMenuData
-
     private val _menuDetailData = MutableLiveData<Result<TopupBillsMenuDetail>>()
     val menuDetailData: LiveData<Result<TopupBillsMenuDetail>>
         get() = _menuDetailData
@@ -95,7 +91,6 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
     }
 
     fun getMenuDetail(rawQuery: String, mapParam: Map<String, Any>, isLoadFromCloud: Boolean = false) {
-        _loadingMenuData.postValue(true)
         launchCatchError(block = {
             val data = withContext(Dispatchers.IO) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogMenuDetailData::class.java, mapParam)
@@ -103,10 +98,8 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<TelcoCatalogMenuDetailData>()
 
-            _loadingMenuData.postValue(false)
             _menuDetailData.postValue(Success(data.catalogMenuDetailData))
         }) {
-            _loadingMenuData.postValue(false)
             _menuDetailData.postValue(Fail(it))
         }
     }

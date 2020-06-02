@@ -285,6 +285,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     override fun onMenuDetailError(error: Throwable) {
+        super.onMenuDetailError(error)
         Toast.makeText(activity, error.message, Toast.LENGTH_SHORT).show()
     }
 
