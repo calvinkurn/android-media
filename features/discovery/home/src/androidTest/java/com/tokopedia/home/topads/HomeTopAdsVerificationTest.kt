@@ -137,15 +137,14 @@ class HomeTopAdsVerificationTest {
             }
             is HomeRecommendationFeedViewHolder -> {
                 waitForData()
-                clickOnEachItemInRecommendationProduct(viewholder, 40)
+                clickOnEachItemInRecommendationProduct(40)
             }
         }
     }
 
-    private fun clickOnEachItemInRecommendationProduct(viewholder: HomeRecommendationFeedViewHolder, numberOfTestProduct: Int) {
-        val homeFeedsViewPager: ViewPager = viewholder.itemView.findViewById(R.id.view_pager_home_feeds)
+    private fun clickOnEachItemInRecommendationProduct(numberOfTestProduct: Int) {
         val childItemCount = numberOfTestProduct
-        for (j in 0 until childItemCount - 1) {
+        for (j in 1 until childItemCount) {
             try {
                 Espresso.onView(firstView(withId(R.id.home_feed_fragment_recycler_view)))
                         .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(j, click()))
@@ -162,7 +161,7 @@ class HomeTopAdsVerificationTest {
         val childItemCount = childRecyclerView.adapter?.itemCount ?: 0
         logTestMessage("ChildCount Here: "+childItemCount+" item")
 
-        for (j in 0 until childItemCount - 1) {
+        for (j in 1 until childItemCount) {
             try {
                 Espresso.onView(firstView(withId(recyclerViewId)))
                         .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(j, click()))
