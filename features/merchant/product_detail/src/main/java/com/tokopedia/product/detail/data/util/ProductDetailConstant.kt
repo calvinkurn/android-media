@@ -113,6 +113,7 @@ object ProductDetailConstant {
     const val SHOP_INFO = "shop_info"
     const val PRODUCT_INFO = "product_info"
     const val DISCUSSION = "discussion"
+    const val DISCUSSION_FAQ = "discussion_faq"
     const val MOST_HELPFUL_REVIEW = "most_helpful_review"
     const val TRADE_IN = "tradein"
     const val INFO = "info"
@@ -184,4 +185,7 @@ object ProductDetailConstant {
     //OVO
     const val OVO_INACTIVE_STATUS = 1;
     const val OVO_INSUFFICIENT_BALANCE_STATUS = 2;
+
+    const val ENABLE_NEW_DISCUSSION_REMOTE_CONFIG = "android_enable_new_discussion"
+    const val SHOW_LABEL_SHARED_PREFERENCE_KEY = "discussion_show_new_%s"
 }

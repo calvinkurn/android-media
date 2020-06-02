@@ -124,13 +124,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         if (!isMainProcess()) {
             return;
         }
-        Chucker.registerDefaultCrashHandler(new ChuckerCollector(this, false));
         initConfigValues();
         initializeSdk();
         initRemoteConfig();
         TokopediaUrl.Companion.init(this); // generate base url
 
-        FpmLogger.init(this);
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
@@ -139,13 +137,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         createAndCallPreSeq();
         super.onCreate();
 
-        initGqlNWClient();
         createAndCallPostSeq();
         createAndCallFontLoad();
 
         registerActivityLifecycleCallbacks();
 
-        initBlockCanary();
     }
 
     private void registerActivityLifecycleCallbacks() {
@@ -211,6 +207,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         initReact();
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
         PersistentCacheManager.init(ConsumerMainApplication.this);
+        Chucker.registerDefaultCrashHandler(new ChuckerCollector(ConsumerMainApplication.this, false));
+        FpmLogger.init(ConsumerMainApplication.this);
         return true;
     }
 
@@ -230,7 +228,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.tokopedia.config.GlobalConfig.HOME_ACTIVITY_CLASS_NAME = MainParentActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME = DeeplinkHandlerActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME = DeepLinkActivity.class.getName();
-        com.tokopedia.config.GlobalConfig.DEVICE_ID = DeviceInfo.getAndroidId(this);
+        if(com.tokopedia.config.GlobalConfig.DEBUG) {
+            com.tokopedia.config.GlobalConfig.DEVICE_ID = DeviceInfo.getAndroidId(this);
+        }
         generateConsumerAppNetworkKeys();
     }
 
@@ -266,6 +266,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         gratificationSubscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(gratificationSubscriber);
         getAmplificationPushData();
+        initBlockCanary();
         return true;
     }
 

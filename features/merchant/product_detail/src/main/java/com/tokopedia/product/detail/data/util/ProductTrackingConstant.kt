@@ -28,6 +28,9 @@ object ProductTrackingConstant {
         const val KEY_DETAIl = "detail"
         const val KEY_PROMO_ID = "promoId"
         const val USER_NON_LOGIN = "non login"
+        const val KEY_BUSINESS_UNIT = "businessUnit"
+        const val KEY_CURRENT_SITE = "currentSite"
+        const val KEY_SCREEN_NAME = "screenName"
 
         const val KEY_USER_ID_VARIANT = "userId"
 
@@ -63,6 +66,9 @@ object ProductTrackingConstant {
         const val KEY_COMPONENT = "component"
         const val KEY_ISLOGGIN = "isLoggedInStatus"
         const val KEY_ADD = "add"
+        const val BUSINESS_UNIT = "physical goods"
+        const val CURRENT_SITE = "tokopediamarketplace"
+        const val KEY_DISCUSSION_USER_ID = "userId"
 
         const val KEY_DIMENSION_81 = "dimension81"
         const val KEY_DIMENSION_83 = "dimension83"
@@ -77,7 +83,6 @@ object ProductTrackingConstant {
         const val KEY_DIMENSION_98 = "dimension98"
 
     }
-
     object Action {
         const val CLICK = "click"
         const val ADD = "add"
@@ -148,12 +153,20 @@ object ProductTrackingConstant {
         const val CLICK_TOPUP_BOTTOMSHEET_OVO = "on bottomsheet"
 
         const val ACTION_VIEW_ERROR_WHEN_ADD_TO_CART = "view error when add to cart"
+
+        const val CLICK_DISCUSSION_SEE_ALL = "click - lihat semua diskusi on diskusi terakhir"
+        const val CLICK_THREAD_DETAIL_DISCUSSION = "click - thread detail on diskusi"
+        const val CLICK_SEND_QUESTION = "click - kirim pertanyaan on diskusi"
     }
+
 
     object Label {
         const val EMPTY_LABEL = ""
         const val CLICK = "click"
         const val PDP = "pdp"
+        const val DISCUSSION_EMPTY_QUESTION = "count thread:{{0}};"
+        const val DISCUSSION_SEE_ALL ="count thread:{{%s}};"
+        const val DISCUSSION_DETAIL = "talk id:{{%s}};count thread:{{%s}};"
     }
 
     object Report {
