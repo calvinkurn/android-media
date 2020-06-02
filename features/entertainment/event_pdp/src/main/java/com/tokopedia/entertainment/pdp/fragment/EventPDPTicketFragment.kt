@@ -103,8 +103,9 @@ class EventPDPTicketFragment: BaseListFragment<EventPDPTicketModel, PackageTypeF
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun setSelectedPackages(idPackages: String, nominal: String, qty: String, isError: Boolean, product_name: String, product_id: String, price: String){
+    private fun setSelectedPackages(idPackages: String, idGroup:String, nominal: String, qty: String, isError: Boolean, product_name: String, product_id: String, price: String){
         this.EXTRA_PACKAGES_ID = idPackages
+        viewModel.EXTRA_GROUPS_ID = idGroup
         this.AMOUNT_TICKET = qty
         this.PRODUCT_NAME = product_name
         this.PRODUCT_ID = product_id

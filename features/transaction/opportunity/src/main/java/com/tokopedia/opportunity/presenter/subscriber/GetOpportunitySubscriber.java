@@ -1,6 +1,8 @@
 package com.tokopedia.opportunity.presenter.subscriber;
 
-import com.tokopedia.core.database.model.PagingHandler;
+import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.opportunity.data.OpportunityModel;
 import com.tokopedia.opportunity.data.entity.opportunitydata.DetailCancelRequest;
 import com.tokopedia.opportunity.data.entity.opportunitydata.DetailPreorder;
 import com.tokopedia.opportunity.data.entity.opportunitydata.OpportunityList;
@@ -15,8 +17,6 @@ import com.tokopedia.opportunity.data.entity.opportunitydata.OrderProduct;
 import com.tokopedia.opportunity.data.entity.opportunitydata.OrderShipment;
 import com.tokopedia.opportunity.data.entity.opportunitydata.OrderShop;
 import com.tokopedia.opportunity.data.entity.opportunitydata.Paging;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.opportunity.data.OpportunityModel;
 import com.tokopedia.opportunity.listener.OpportunityListView;
 import com.tokopedia.opportunity.viewmodel.opportunitylist.DetailCancelRequestViewModel;
 import com.tokopedia.opportunity.viewmodel.opportunitylist.DetailPreorderViewModel;

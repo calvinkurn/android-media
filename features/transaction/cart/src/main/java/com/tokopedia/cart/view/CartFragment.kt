@@ -36,6 +36,7 @@ import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -199,6 +200,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     companion object {
 
+        private const val className: String = "com.tokopedia.purchase_platform.features.cart.view.CartFragment"
         private const val LOYALTY_ACTIVITY_REQUEST_CODE = 12345
         private var FLAG_BEGIN_SHIPMENT_PROCESS = false
         private var FLAG_SHOULD_CLEAR_RECYCLERVIEW = false
@@ -1172,7 +1174,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         when {
             topAds -> {
-                ImpresionTask().execute(clickUrl)
+                activity?.let { ImpresionTask(it::class.qualifiedName).execute(clickUrl) }
             }
         }
         onProductClicked(productId)
@@ -1181,7 +1183,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onRecommendationProductImpression(topAds: Boolean, trackingImageUrl: String) {
         when {
             topAds -> {
-                ImpresionTask().execute(trackingImageUrl)
+                activity?.let { ImpresionTask(it::class.qualifiedName).execute(trackingImageUrl) }
             }
         }
     }
@@ -2187,7 +2189,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun showToastMessageRed(throwable: Throwable) {
         var errorMessage = throwable.message ?: ""
-        if (throwable !is CartResponseErrorException) {
+        if (!(throwable is CartResponseErrorException || throwable is AkamaiErrorException)) {
             errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
         }
 
