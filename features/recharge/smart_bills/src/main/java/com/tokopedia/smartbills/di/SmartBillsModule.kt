@@ -92,7 +92,7 @@ class SmartBillsModule {
     @Provides
     fun provideGqlApiService(gson: Gson, client: OkHttpClient): SmartBillsApi {
         val retrofitBuilder = Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(DigitalUrl.BASE_URL)
                 .addConverterFactory(StringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(gson))
         retrofitBuilder.client(client)
@@ -110,9 +110,5 @@ class SmartBillsModule {
     @Provides
     fun provideAnalytics(): SmartBillsAnalytics {
         return SmartBillsAnalytics()
-    }
-
-    companion object {
-        var BASE_URL = DigitalUrl.BASE_URL
     }
 }

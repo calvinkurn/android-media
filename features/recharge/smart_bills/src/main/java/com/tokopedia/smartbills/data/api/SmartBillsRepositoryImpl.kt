@@ -14,7 +14,7 @@ class SmartBillsRepositoryImpl @Inject constructor(private val smartBillsApi: Sm
         val idempotencyKey = request.attributes.identifier.userId?.generateRechargeCheckoutToken() ?: ""
         val response = smartBillsApi.postMultiCheckout(DataRequest(request), idempotencyKey)
         if (response.isSuccessful) {
-            return response.body()!!.data
+            return response.body()?.data ?: RechargeMultiCheckoutResponse()
         } else {
             throw MessageErrorException(response.errorBody().toString())
         }
