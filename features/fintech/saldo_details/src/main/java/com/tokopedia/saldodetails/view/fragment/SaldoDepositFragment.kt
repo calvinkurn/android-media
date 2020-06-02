@@ -166,7 +166,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         initialVar()
         initListeners()
         startShowCase()
-        context?.let { UpdateShopActiveService.startService(it, "android-${BuildConfig.VERSION_NAME}") }
+        context?.let { UpdateShopActiveService.startService(it) }
     }
 
     private fun initRemoteConfig() {

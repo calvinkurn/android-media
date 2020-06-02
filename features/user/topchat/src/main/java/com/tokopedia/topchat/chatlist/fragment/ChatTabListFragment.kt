@@ -86,7 +86,7 @@ class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
         initData()
         initOnBoarding()
         initChatCounterObserver()
-        context?.let { UpdateShopActiveService.startService(it, "android-${BuildConfig.VERSION_NAME}") }
+        context?.let { UpdateShopActiveService.startService(it) }
     }
 
     override fun onStart() {

@@ -174,7 +174,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
         observeDomainNameValidationData()
         observeDomainShopNameSuggestions()
         observeCreateShopData()
-        context?.let { UpdateShopActiveService.startService(it, "android-${BuildConfig.VERSION_NAME}") }
+        context?.let { UpdateShopActiveService.startService(it) }
     }
 
     override fun getComponent(): ShopOpenRevampComponent {

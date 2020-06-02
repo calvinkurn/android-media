@@ -191,7 +191,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         observingFilter()
         observingStatusList()
         observingOrders()
-        context?.let { UpdateShopActiveService.startService(it, "android-${BuildConfig.VERSION_NAME}") }
+        context?.let { UpdateShopActiveService.startService(it) }
     }
 
     private fun prepareLayout() {

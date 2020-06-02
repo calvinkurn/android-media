@@ -430,7 +430,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         }
 
         if(viewModel.isAdding && viewModel.getDraftId() == 0L) {
-            context?.let { UpdateShopActiveService.startService(it, "android-${BuildConfig.VERSION_NAME}") }
+            context?.let { UpdateShopActiveService.startService(it) }
         }
         //If you add another observe, don't forget to remove observers at removeObservers()
         observeIsEditingStatus()

@@ -200,7 +200,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
         setupDialogFeaturedProduct()
 
-        context?.let { UpdateShopActiveService.startService(it, "android-${BuildConfig.VERSION_NAME}") }
+        context?.let { UpdateShopActiveService.startService(it) }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

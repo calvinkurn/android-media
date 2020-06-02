@@ -133,7 +133,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
 
         setupView()
         initData()
-        context?.let { UpdateShopActiveService.startService(it, "android-${BuildConfig.VERSION_NAME}") }
+        context?.let { UpdateShopActiveService.startService(it) }
     }
 
     private fun setupView() {

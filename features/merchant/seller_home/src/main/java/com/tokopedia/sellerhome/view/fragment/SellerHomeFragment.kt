@@ -140,7 +140,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         observeWidgetData(sellerHomeViewModel.carouselWidgetData, WidgetType.CAROUSEL)
         observeTickerLiveData()
         observeShopStatusLiveData()
-        context?.let { UpdateShopActiveService.startService(it, "android-${BuildConfig.VERSION_NAME}") }
+        context?.let { UpdateShopActiveService.startService(it) }
     }
 
     override fun onResume() {
