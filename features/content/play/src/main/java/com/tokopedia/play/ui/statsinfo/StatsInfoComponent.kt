@@ -35,7 +35,7 @@ open class StatsInfoComponent(
                                 uiView.setLiveBadgeVisibility(it.videoStream.channelType.isLive)
                             is ScreenStateEvent.SetTotalViews -> uiView.setTotalViews(it.totalView)
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze || it.event.isBanned) {
-                                uiView.hide()
+                                uiView.show()
                             }
                             is ScreenStateEvent.BottomInsetsChanged -> if (!it.isAnyShown) uiView.show() else uiView.hide()
                         }
