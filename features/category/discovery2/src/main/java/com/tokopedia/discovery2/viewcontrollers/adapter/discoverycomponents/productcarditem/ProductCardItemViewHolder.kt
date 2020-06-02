@@ -159,7 +159,7 @@ class ProductCardItemViewHolder(itemView: View, fragment: Fragment) : AbstractVi
     }
 
     private fun showStockProgressTitle(stockWording: StockWording) {
-        if (!stockWording.title.isNullOrEmpty() && productCardName != "product_card_revamp_item" && productCardName == "product_card_carousel_item") {
+        if (!stockWording.title.isNullOrEmpty() && productCardName != "product_card_revamp_item" && productCardName != "product_card_carousel_item") {
             stockTitle.show()
             stockTitle.setTextAndCheckShow(stockWording.title)
             stockTitle.setTextColor(Color.parseColor(stockWording.color))
