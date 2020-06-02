@@ -45,7 +45,7 @@ class ShowcaseProductListAdapter(
         else {
             LayoutInflater.from(context).inflate(R.layout.item_showcase_product_loading, parent, false)
         }
-        return ShowcaseProductItemViewHolder(view, context)
+        return ShowcaseProductItemViewHolder(view)
     }
 
     override fun getItemCount(): Int {
