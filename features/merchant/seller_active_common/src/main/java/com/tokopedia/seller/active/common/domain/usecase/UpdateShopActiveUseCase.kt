@@ -1,10 +1,11 @@
 package com.tokopedia.seller.active.common.domain.usecase
 
 import com.tokopedia.seller.active.common.data.model.UpdateShopActiveResponse
-import com.tokopedia.seller.active.common.data.param.UpdateShopActiveParam
+import com.tokopedia.seller.active.common.data.query.param.UpdateShopActiveParam
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.seller.active.common.BuildConfig
+import com.tokopedia.seller.active.common.data.query.UpdateShopActiveQuery
 import javax.inject.Inject
 
 class UpdateShopActiveUseCase @Inject constructor(
@@ -16,13 +17,7 @@ class UpdateShopActiveUseCase @Inject constructor(
     }
 
     init {
-        val query = "mutation updateShopActive(\$input: ParamUpdateLastActive!){\n" +
-                "  updateShopActive(input: \$input) {\n" +
-                "    success\n" +
-                "    message\n" +
-                "  }\n" +
-                "}"
-        setGraphqlQuery(query)
+        setGraphqlQuery(UpdateShopActiveQuery.QUERY)
         setTypeClass(UpdateShopActiveResponse::class.java)
     }
 
