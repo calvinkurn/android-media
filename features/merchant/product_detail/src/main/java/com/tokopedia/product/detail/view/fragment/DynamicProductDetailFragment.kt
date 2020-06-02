@@ -1474,6 +1474,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewModel.installmentData = it.productFinancingCalculationData
         if (it.latestTalk.id.isEmpty() || remoteConfig.getBoolean(ProductDetailConstant.ENABLE_NEW_DISCUSSION_REMOTE_CONFIG, true)) {
             dynamicAdapter.removeDiscussionSection(pdpHashMapUtil?.productDiscussionMap)
+        } else {
+            dynamicAdapter.removeQnaSection(pdpHashMapUtil?.productDiscussionMostHelpfulMap)
         }
 
         if (it.vouchers.isNullOrEmpty()) {
