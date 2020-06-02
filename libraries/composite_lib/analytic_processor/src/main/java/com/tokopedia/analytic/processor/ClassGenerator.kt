@@ -87,6 +87,12 @@ abstract class ClassGenerator(
             throw IllegalArgumentException("Unknown put statement")
         }
 
+        val checkerStatement = addCheckerStatement(field, putStatement)
+
+        return checkerStatement.build()
+    }
+
+    open fun addCheckerStatement(field: ModelClassField, putStatement: CodeBlock): CodeBlock.Builder {
         val checkerStatement = CodeBlock.builder()
         if (field.element.getAnnotation(CustomChecker::class.java) != null) {
             createCustomCheckerCondition(field, checkerStatement, false)
@@ -97,11 +103,10 @@ abstract class ClassGenerator(
         } else {
             checkerStatement.add(putStatement)
         }
-
-        return checkerStatement.build()
+        return checkerStatement;
     }
 
-    private fun createCheckerFailedBlock(field: ModelClassField, checkerStatement: CodeBlock.Builder) {
+    protected fun createCheckerFailedBlock(field: ModelClassField, checkerStatement: CodeBlock.Builder) {
         val loggerAnnotation = clazz.element.getAnnotation(Logger::class.java)
         val customCheckerAnnotation = field.element.getAnnotation(CustomChecker::class.java)
         var checkerClass: TypeMirror? = null
@@ -141,14 +146,15 @@ abstract class ClassGenerator(
                 AnnotationProcessor.messenger?.printMessage(Diagnostic.Kind.ERROR, "Error handler class not found", clazz.element)
             }
 
-            checkerStatement.addStatement("\$T.INSTANCE.onError(new \$T(\$S))",
+            if (customCheckerAnnotation.level == Level.ERROR)
+                checkerStatement.addStatement("\$T.INSTANCE.onError(new \$T(\$S))",
                     ClassName.get(errorHandlerClass),
                     ClassName.get("java.lang", "Exception"),
                     "${checkerClass.toString().split(".").last()} return false when checking ${field.element.asType()} ${field.key} using ${customCheckerAnnotation.functionName}")
         }
     }
 
-    private fun createCheckerSuccessBlock(field: ModelClassField, checkerStatement: CodeBlock.Builder) {
+    protected fun createCheckerSuccessBlock(field: ModelClassField, checkerStatement: CodeBlock.Builder) {
         val loggerAnnotation = clazz.element.getAnnotation(Logger::class.java)
         val customCheckerAnnotation = field.element.getAnnotation(CustomChecker::class.java)
         if (loggerAnnotation != null) {
@@ -538,6 +544,7 @@ abstract class ClassGenerator(
         }
     }
 
+
     // this function is used to generate put expression for primitive + string data type
     private fun createPutRawStatement(field: ModelClassField): CodeBlock {
         val statementBuilder = CodeBlock.builder()
@@ -555,11 +562,13 @@ abstract class ClassGenerator(
         return statementBuilder.build()
     }
 
+    private fun getType(field: ModelClassField) = getValueStatement(field)
+
     // Some data may have an owner so that we need to specify the owner in order to get the data
     // We first check whether the data is owned by an instance
     // If true (not empty) then we need to make a getter expression for that owner instance (owner.getXXX())
     // If false (empty) then we can access that data directly by using it's name
-    private fun getValueStatement(field: ModelClassField): String {
+    protected fun getValueStatement(field: ModelClassField): String {
         val ownerName = getOwnerName(field)
         return if (ownerName.isEmpty()) {
             field.element.simpleName.toString()
@@ -869,7 +878,7 @@ abstract class ClassGenerator(
         }
     }
 
-    private fun createCustomCheckerCondition(
+    protected fun createCustomCheckerCondition(
             field: ModelClassField,
             checkerStatement: CodeBlock.Builder,
             isFromMap: Boolean

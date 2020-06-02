@@ -1,9 +1,6 @@
 package com.tokopedia.analytic.processor
 
-import com.squareup.javapoet.ClassName
-import com.squareup.javapoet.JavaFile
-import com.squareup.javapoet.MethodSpec
-import com.squareup.javapoet.TypeName
+import com.squareup.javapoet.*
 import com.tokopedia.analytic.annotation.CustomChecker
 import javax.lang.model.element.Modifier
 
@@ -23,6 +20,31 @@ class ModelClassGenerator(clazz: AnnotatedModelClass) : ClassGenerator(clazz) {
             bundleClassName,
             bundleClassName
         )
+
+    override fun addCheckerStatement(field: ModelClassField, putStatement: CodeBlock): CodeBlock.Builder {
+        val checkerStatement = CodeBlock.builder()
+
+        val fieldTypeName = TypeName.get(field.element.asType()) // tipe
+
+        //  double price = productListImpressionProduct.getPrice();
+        checkerStatement.addStatement(
+                "\$T \$L = \$N",
+                fieldTypeName,
+                field.key,
+                getValueStatement(field)
+        )
+
+        if (field.element.getAnnotation(CustomChecker::class.java) != null) {
+            createCustomCheckerCondition(field, checkerStatement, false)
+            checkerStatement.add(putStatement)
+            createCheckerSuccessBlock(field, checkerStatement)
+            createCheckerFailedBlock(field, checkerStatement)
+            checkerStatement.endControlFlow()
+        } else {
+            checkerStatement.add(putStatement)
+        }
+        return checkerStatement;
+    }
 
     override val getBundleFromMap: MethodSpec.Builder = MethodSpec
         .methodBuilder("getBundle")
@@ -46,10 +68,6 @@ class ModelClassGenerator(clazz: AnnotatedModelClass) : ClassGenerator(clazz) {
         clazz.fields.forEach {
             getBundleFuncBuilder.addCode(createPutStatement(it.value))
             getBundleFromMap.addCode(createPutStatementFromMap(it.value))
-            if (it.value.element.getAnnotation(CustomChecker::class.java) != null) {
-//                getBundleFuncBuilder.addCode(addChecker(it.value))
-//                getBundleFromMap.addCode(addChecker(it.value))
-            }
         }
 
         getBundleFromMap

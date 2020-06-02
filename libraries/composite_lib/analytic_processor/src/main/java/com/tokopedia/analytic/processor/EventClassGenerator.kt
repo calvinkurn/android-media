@@ -1,7 +1,6 @@
 package com.tokopedia.analytic.processor
 
 import com.squareup.javapoet.*
-import com.tokopedia.analytic.annotation.CustomChecker
 import javax.lang.model.element.Modifier
 
 // This class is used to generate the event bundler classes
@@ -47,10 +46,6 @@ class EventClassGenerator(clazz: AnnotatedEventClass) : ClassGenerator(clazz) {
             )
             getBundleFuncBuilder.addCode(createPutStatement(it.value))
             getBundleFromMap.addCode(createPutStatementFromMap(it.value))
-            if (it.value.element.getAnnotation(CustomChecker::class.java) != null) {
-//                getBundleFuncBuilder.addCode(addChecker(it.value))
-//                getBundleFromMap.addCode(addChecker(it.value))
-            }
         }
 
         getBundleFromMap

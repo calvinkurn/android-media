@@ -38,7 +38,7 @@ repositories {
 project.ext {
     artifactId = 'processor'
     groupId = 'com.tokopedia.analytic'
-    versionName = "0.0.2-alpha1"
+    versionName = "0.0.2-alpha2"
     artifactName = "analytic_processor"
 }
 

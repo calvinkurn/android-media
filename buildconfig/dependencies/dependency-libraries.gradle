@@ -21,7 +21,7 @@ ext {
             fakeresponseNoOp        : "com.tokopedia.fakeresponse:fakeresponse_no_op:0.0.4",
             analyticAnnotation      : "com.tokopedia.analytic:annotation:0.0.2-alpha3",
             analyticParam           : "com.tokopedia.analytic:param:0.0.1-alpha",
-            analyticProcessor       : "com.tokopedia.analytic:processor:0.0.2-alpha1",
+            analyticProcessor       : "com.tokopedia.analytic:processor:0.0.2-alpha2",
             analyticFirebaseRules   : "com.tokopedia.analytic.rules:firebase:0.0.1-alpha2",
             analyticGTMUtil         : "com.tokopedia.analytic:gtmutil:0.0.1-alpha"
     ]
