@@ -40,7 +40,6 @@ class BottomSheetCheck(val mActivity: FragmentActivity, val data: GetObjectPojo)
                 viewBottomSheetDialog.bs_layout_button.setOnClickListener {
                     RouteManager.route(mActivity, data.bottomSheetModel?.applink)
                 }
-                setTitle("")
                 setChild(viewBottomSheetDialog)
                 setCloseClickListener {
                     this.dismiss()

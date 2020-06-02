@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 
+import com.tokopedia.additional_check.data.GetObjectPojo;
 import com.tokopedia.home.account.presentation.listener.BaseAccountView;
 
 /**
@@ -13,10 +14,12 @@ public interface AccountHome {
     interface Presenter extends CustomerPresenter<View> {
         void sendUserAttributeTracker();
         void openTabByParam(String param);
+        void checkStatus();
     }
 
     interface View extends BaseAccountView {
         Context getContext();
         void openSellerTab();
+        void openBottomSheet(GetObjectPojo data);
     }
 }

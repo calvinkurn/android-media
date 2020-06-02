@@ -5,6 +5,9 @@ import com.tokopedia.additional_check.data.MockGetObjectResponse
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 /**
@@ -29,6 +32,11 @@ class AdditionalCheckUseCase @Inject constructor(
 
     fun getMockBottomSheetSuccess(onSuccess: (GetObjectPojo) -> Unit, onError: (Throwable) -> Unit){
         onSuccess(MockGetObjectResponse.getObjectSuccess())
+    }
+
+    fun getMockBottomSheetSuccessObservable(): Observable<GetObjectPojo> {
+        return Observable.just(MockGetObjectResponse.getObjectSuccess())
+                .observeOn(AndroidSchedulers.mainThread())
     }
 
 //    fun createRequestParam(signature: FingerprintSignature, publicKey: String): Map<String, String>{
