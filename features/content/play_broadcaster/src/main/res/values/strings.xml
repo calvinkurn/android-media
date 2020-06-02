@@ -33,6 +33,8 @@
     <string name="play_prepare_broadcast_promo_detail_title">Diskon Produk &amp; Kuotanya</string>
     <string name="play_prepare_broadcast_promo_detail_description"><![CDATA[<b>Diskon %1$d\%%</b> (%2$d Kuota)]]></string>
 
+    <string name="play_prepare_cover_title_header_description">Buatlah cover &amp; judul yang kreatif yang bisa bikin calon penonton live streaming tokomu jadi penasaran!</string>
+
     <string name="play_prepare_broadcast_label_next">Lanjutkan</string>
     <string name="play_prepare_broadcast_label_save">Simpan</string>
 </resources>
