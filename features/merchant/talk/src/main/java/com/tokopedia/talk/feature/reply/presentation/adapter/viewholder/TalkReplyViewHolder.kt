@@ -39,8 +39,8 @@ class TalkReplyViewHolder(view: View,
     override fun bind(element: TalkReplyUiModel) {
         itemView.talkReplyContainer.setBackgroundColor(Color.WHITE)
         element.answer.apply {
-            showProfilePicture(userThumbnail, userId)
-            showDisplayName(userName, userId)
+            showProfilePicture(userThumbnail, userId, isSeller, element.shopId)
+            showDisplayName(userName, userId, isSeller, element.shopId)
             showDate(createTimeFormatted)
             showSellerLabelWithCondition(isSeller)
             showAnswer(content, state.isMasked, maskedContent)
@@ -51,12 +51,12 @@ class TalkReplyViewHolder(view: View,
         }
     }
 
-    private fun showProfilePicture(userThumbNail: String, userId: String) {
+    private fun showProfilePicture(userThumbNail: String, userId: String, isSeller: Boolean, shopId: String) {
         if(userThumbNail.isNotEmpty()) {
             itemView.replyProfilePicture.apply {
                 loadImage(userThumbNail)
                 setOnClickListener {
-                    threadListener.onUserDetailsClicked(userId)
+                    threadListener.onUserDetailsClicked(userId, isSeller, shopId)
                 }
                 show()
             }
@@ -65,12 +65,12 @@ class TalkReplyViewHolder(view: View,
         }
     }
 
-    private fun showDisplayName(userName: String, userId: String) {
+    private fun showDisplayName(userName: String, userId: String, isSeller: Boolean, shopId: String) {
         if(userName.isNotEmpty()) {
             itemView.replyDisplayName.apply{
                 text = userName
                 setOnClickListener {
-                    threadListener.onUserDetailsClicked(userId)
+                    threadListener.onUserDetailsClicked(userId, isSeller, shopId)
                 }
                 show()
             }

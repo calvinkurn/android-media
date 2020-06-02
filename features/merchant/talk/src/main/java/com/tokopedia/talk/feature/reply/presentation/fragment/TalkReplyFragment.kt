@@ -242,7 +242,11 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         castContextToTalkPerformanceMonitoringListener(context)
     }
 
-    override fun onUserDetailsClicked(userId: String) {
+    override fun onUserDetailsClicked(userId: String, isSeller: Boolean, shopdId: String) {
+        if(isSeller) {
+            goToShopPageActivity(shopId)
+            return
+        }
         goToProfileActivity(userId)
     }
 
@@ -281,6 +285,11 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun goToPdp(productId: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+        startActivity(intent)
+    }
+
+    private fun goToShopPageActivity(shopId: String) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_PAGE, shopId)
         startActivity(intent)
     }
 
