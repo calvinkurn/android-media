@@ -45,7 +45,6 @@ import org.junit.*
  */
 class HomeTopAdsVerificationTest {
     private var requestParams: RequestParams = RequestParams.create()
-    private var numOfProduct = 0
 
     @get:Rule
     var activityRule: ActivityTestRule<InstrumentationHomeTestActivity> = ActivityTestRule(InstrumentationHomeTestActivity::class.java)
