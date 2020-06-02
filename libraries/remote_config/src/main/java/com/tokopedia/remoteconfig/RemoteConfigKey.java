@@ -175,8 +175,6 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_OFFICIAL_STORE_OS = "android_enable_officialstore_native";
 
-    public static final String AKAMAI_CART_ENABLE = "android_akamai_cart_enable";
-
     public static final String ENABLE_NEW_WISHLIST_PAGE = "android_flag_enable_new_wishlist_page";
 
     public static final String ENABLE_TRACEROUTE_MIN_VERSION = "android_main_app_enabled_traceroute_min_version";
@@ -207,11 +205,11 @@ public class RemoteConfigKey {
     public static final String ENABLE_ASYNC_OPENHOME_EVENT = "android_async_openhome_event";
     public static final String ENABLE_ASYNC_FIRSTTIME_EVENT = "android_async_firsttime_event";
     public static final String ENABLE_ASYNC_CREATE_APPSFLYER = "android_async_create_appsflyer";
-    public static final String ENABLE_ASYNC_GTMREFRESH = "android_async_gtmrefresh";
     public static final String ENABLE_ASYNC_INSTALLTRACK = "android_async_installtrack";
     public static final String ENABLE_ASYNC_HOME_SNDSCR = "android_enable_home_sndscr";
     public static final String ENABLE_ASYNC_ADDSHORTCUTS = "android_async_addshortcuts";
     public static final String ENABLE_ASYNC_CHECKAPPSIGNATURE = "android_async_checkappsignature";
+    public static final String ENABLE_ASYNC_HANSEL_INIT = "android_async_hansel_init";
 
     public static final String WHITELIST_USER_LOG_NOTIFICATION = "key_whitelist_user_log_notification";
     public static final String ENABLE_BRANCH_UTM_SUPPORT = "app_enable_branch_utm_support";
@@ -227,4 +225,6 @@ public class RemoteConfigKey {
     public static final String CHAT_PRODUCT_CAROUSEL = "android_chat_product_carousel";
 
     public static final String ENABLE_ONE_CLICK_CHECKOUT = "android_mainapp_enable_one_click_checkout";
+
+    public static final String ENABLE_AMPLIFICATION = "app_push_amplification_enabled";
 }

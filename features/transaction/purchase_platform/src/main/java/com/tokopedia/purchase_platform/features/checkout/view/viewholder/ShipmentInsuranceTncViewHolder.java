@@ -2,6 +2,7 @@ package com.tokopedia.purchase_platform.features.checkout.view.viewholder;
 
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
@@ -37,9 +38,18 @@ public class ShipmentInsuranceTncViewHolder extends RecyclerView.ViewHolder {
         llContainer = itemView.findViewById(R.id.ll_container);
     }
 
-    public void bindViewHolder(ShipmentInsuranceTncModel shipmentInsuranceTncModel) {
+    public void bindViewHolder(ShipmentInsuranceTncModel shipmentInsuranceTncModel, int itemCount) {
         this.shipmentInsuranceTncModel = shipmentInsuranceTncModel;
         if (shipmentInsuranceTncModel.isVisible()) {
+            if (getAdapterPosition() == itemCount - 3) {
+                int padding = itemView.getContext().getResources().getDimensionPixelOffset(R.dimen.dp_16);
+                tvInsuranceTnc.setPadding(padding, 0, padding, padding);
+            } else {
+                int padding = itemView.getContext().getResources().getDimensionPixelOffset(R.dimen.dp_16);
+                int paddingBottom = itemView.getContext().getResources().getDimensionPixelOffset(R.dimen.dp_4);
+                tvInsuranceTnc.setPadding(padding, padding, padding, paddingBottom);
+            }
+
             String formatText = tvInsuranceTnc.getContext().getString(R.string.text_tos_agreement);
             String messageTosAgreement = tvInsuranceTnc.getContext().getString(R.string.message_tos_agreement);
             int startSpan = messageTosAgreement.indexOf(formatText);
@@ -60,10 +70,6 @@ public class ShipmentInsuranceTncViewHolder extends RecyclerView.ViewHolder {
         } else {
             llContainer.setVisibility(View.GONE);
         }
-    }
-
-    public boolean isShow() {
-        return shipmentInsuranceTncModel != null && shipmentInsuranceTncModel.isVisible();
     }
 
 }

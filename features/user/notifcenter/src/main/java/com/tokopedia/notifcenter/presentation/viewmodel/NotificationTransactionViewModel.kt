@@ -33,6 +33,7 @@ interface NotificationTransactionContract {
     fun getInfoStatusNotification()
     fun resetNotificationFilter()
     fun getNotificationFilter()
+    fun cleared()
 }
 
 typealias FilterWrapper = NotificationFilterSectionViewBean
@@ -181,6 +182,10 @@ class NotificationTransactionViewModel @Inject constructor(
                 _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
             }
         }
+    }
+
+    override fun cleared() {
+        onCleared()
     }
 
     companion object {

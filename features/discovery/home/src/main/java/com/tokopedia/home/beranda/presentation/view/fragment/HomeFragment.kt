@@ -13,10 +13,10 @@ import android.os.Handler
 import android.provider.Settings
 import android.text.TextUtils
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import androidx.annotation.VisibleForTesting
 import androidx.core.app.ActivityCompat
@@ -63,7 +63,7 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerImpre
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerClick
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.LegoBanner.getLegoBannerFourImageImpression
-import com.tokopedia.home.analytics.HomePageTrackingV2.MixLeft.getMixLeftProductView
+import com.tokopedia.home.analytics.HomePageTrackingV2.MixLeft.getMixLeftIrisProductView
 import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.getPopularKeywordImpressionItem
 import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.sendPopularKeywordClickItem
 import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.sendPopularKeywordClickReload
@@ -71,6 +71,7 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getAdd
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getCloseClickOnDynamicListCarousel
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getRecommendationListImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.SprintSale.getSprintSaleImpression
+import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
 import com.tokopedia.home.analytics.v2.MixTopTracking.getMixTopViewIris
 import com.tokopedia.home.analytics.v2.MixTopTracking.mapChannelToProductTracker
 import com.tokopedia.home.analytics.v2.ProductHighlightTracking.getProductHighlightImpression
@@ -80,9 +81,11 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
+import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.helper.ViewHelper
+import com.tokopedia.home.beranda.helper.benchmark.TRACE_INFLATE_HOME_FRAGMENT
 import com.tokopedia.home.beranda.listener.*
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
@@ -111,6 +114,7 @@ import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.loyalty.view.activity.PromoListActivity
@@ -126,6 +130,7 @@ import com.tokopedia.stickylogin.data.StickyLoginTickerPojo.TickerDetail
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
@@ -150,7 +155,7 @@ import javax.inject.Inject
  * @author by errysuprayogi on 11/27/17.
  */
 @SuppressLint("SyntheticAccessor")
-class HomeFragment : BaseDaggerFragment(),
+open class HomeFragment : BaseDaggerFragment(),
         OnRefreshListener,
         HomeCategoryListener,
         CountDownListener,
@@ -181,6 +186,7 @@ class HomeFragment : BaseDaggerFragment(),
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
         private const val SEND_SCREEN_MIN_INTERVAL_MILLIS: Long = 1000
         private const val DEFAULT_UTM_SOURCE = "home_notif"
+        private const val SEE_ALL_CARD = "android_mainapp_home_see_all_card_config"
         private const val REQUEST_CODE_PLAY_ROOM = 256
         private const val PERFORMANCE_PAGE_NAME_HOME = "home"
         var HIDE_TICKER = false
@@ -219,12 +225,11 @@ class HomeFragment : BaseDaggerFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    override var trackingQueue: TrackingQueue? = null
+    protected var trackingQueue: TrackingQueue? = null
 
     private lateinit var viewModel: HomeViewModel
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var userSession: UserSessionInterface
-    private lateinit var homeRecyclerView: NestedRecyclerView
     private lateinit var root: FrameLayout
     private lateinit var refreshLayout: ToggleableSwipeRefreshLayout
     private lateinit var floatingTextButton: FloatingTextButton
@@ -232,10 +237,11 @@ class HomeFragment : BaseDaggerFragment(),
     private lateinit var onEggScrollListener: RecyclerView.OnScrollListener
     private lateinit var irisAnalytics: Iris
     private lateinit var irisSession: IrisSession
-    private lateinit var homeMainToolbar: HomeMainToolbar
     private lateinit var statusBarBackground: View
     private lateinit var tickerDetail: TickerDetail
     private lateinit var sharedPrefs: SharedPreferences
+    private var homeRecyclerView: NestedRecyclerView? = null
+    private var homeMainToolbar: HomeMainToolbar? = null
     private var homeSnackbar: Snackbar? = null
     private var component: BerandaComponent? = null
     private var adapter: HomeRecycleAdapter? = null
@@ -246,6 +252,7 @@ class HomeFragment : BaseDaggerFragment(),
     private var homePerformanceMonitoringListener: HomePerformanceMonitoringListener? = null
     private var showRecomendation = false
     private var mShowTokopointNative = false
+    private var showSeeAllCard = true
     private var isShowFirstInstallSearch = false
     private var scrollToRecommendList = false
     private var isFeedLoaded = false
@@ -289,14 +296,62 @@ class HomeFragment : BaseDaggerFragment(),
         }
         searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_searchbar_transition_range)
         startToTransitionOffset = resources.getDimensionPixelSize(R.dimen.banner_background_height) / 2
-        if (getPageLoadTimeCallback() != null) {
-            getPageLoadTimeCallback()?.stopPreparePagePerformanceMonitoring()
-            getPageLoadTimeCallback()?.startNetworkRequestPerformanceMonitoring()
-        }
+        initViewModel()
+        setGeolocationPermission()
+        needToShowGeolocationComponent()
+        injectCouponTimeBased()
+        stickyContent
+        searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_searchbar_transition_range)
+        startToTransitionOffset = resources.getDimensionPixelSize(R.dimen.banner_background_height) / 2
         initViewModel()
         setGeolocationPermission()
         needToShowGeolocationComponent()
         stickyContent
+    }
+
+    private fun getUserSession() : UserSessionInterface{
+        if(!::userSession.isInitialized){
+            activity?.let {
+                userSession = UserSession(it)
+            }
+        }
+        return userSession
+    }
+
+    private fun getIrisAnalytics() : Iris{
+        if(!::irisAnalytics.isInitialized){
+            activity?.let {
+                irisAnalytics = getInstance(it)
+            }
+        }
+        return irisAnalytics
+    }
+
+    private fun getIrisSession() : IrisSession{
+        if(!::irisSession.isInitialized){
+            activity?.let {
+                irisSession = IrisSession(it)
+            }
+        }
+        return irisSession
+    }
+
+    private fun getRemoteConfig() : RemoteConfig{
+        if(!::remoteConfig.isInitialized){
+            activity?.let {
+                remoteConfig = FirebaseRemoteConfigImpl(it)
+            }
+        }
+        return remoteConfig
+    }
+
+    override fun getTrackingQueueObj() : TrackingQueue?{
+        if(trackingQueue == null){
+            activity?.let {
+                trackingQueue = TrackingQueue(it)
+            }
+        }
+        return trackingQueue
     }
 
     @VisibleForTesting
@@ -327,6 +382,7 @@ class HomeFragment : BaseDaggerFragment(),
             showRecomendation = it.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_RECOMENDATION_BUTTON, false)
             mShowTokopointNative = it.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_TOKOPOINT_NATIVE, true)
             isShowFirstInstallSearch = it.getBoolean(ConstantKey.RemoteConfigKey.REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH, false)
+            showSeeAllCard = it.getBoolean(SEE_ALL_CARD, true)
         }
     }
 
@@ -337,7 +393,9 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        BenchmarkHelper.beginSystraceSection(TRACE_INFLATE_HOME_FRAGMENT)
         val view = inflater.inflate(R.layout.fragment_home, container, false)
+        BenchmarkHelper.endSystraceSection()
         fragmentFramePerformanceIndexMonitoring.init(
                 "home", this, object : OnFrameListener {
             override fun onFrameRendered(fpiPerformanceData: FpiPerformanceData) {}
@@ -347,10 +405,10 @@ class HomeFragment : BaseDaggerFragment(),
             viewLifecycleOwner.lifecycle.addObserver(fragmentFramePerformanceIndexMonitoring)
         }
         homeMainToolbar = view.findViewById(R.id.toolbar)
-        homeMainToolbar.setAfterInflationCallable(afterInflationCallable)
+        homeMainToolbar?.setAfterInflationCallable(afterInflationCallable)
         statusBarBackground = view.findViewById(R.id.status_bar_bg)
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
-        homeRecyclerView.setHasFixedSize(true)
+        homeRecyclerView?.setHasFixedSize(true)
         refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout)
         floatingTextButton = view.findViewById(R.id.recom_action_button)
         stickyLoginView = view.findViewById(R.id.sticky_login_text)
@@ -376,12 +434,12 @@ class HomeFragment : BaseDaggerFragment(),
 
     private fun setupHomeRecyclerView() { //giving recyclerview larger cache to prevent lag, we can implement this because home dc content
 //is finite
-        homeRecyclerView.setItemViewCacheSize(20)
-        homeRecyclerView.itemAnimator = null
-        if (homeRecyclerView.itemDecorationCount == 0) {
-            homeRecyclerView.addItemDecoration(HomeRecyclerDecoration(resources.getDimensionPixelSize(R.dimen.home_recyclerview_item_spacing)))
+        homeRecyclerView?.setItemViewCacheSize(20)
+        homeRecyclerView?.itemAnimator = null
+        if (homeRecyclerView?.itemDecorationCount == 0) {
+            homeRecyclerView?.addItemDecoration(HomeRecyclerDecoration(resources.getDimensionPixelSize(R.dimen.home_recyclerview_item_spacing)))
         }
-        homeRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        homeRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 evaluateHomeComponentOnScroll(recyclerView)
@@ -422,17 +480,17 @@ class HomeFragment : BaseDaggerFragment(),
             refreshLayout.setCanChildScrollUp(true)
         }
         if (recyclerView.canScrollVertically(1)) {
-            if (homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
-                homeMainToolbar.showShadow()
+            if (homeMainToolbar != null && homeMainToolbar?.getViewHomeMainToolBar() != null) {
+                homeMainToolbar?.showShadow()
             }
             showFeedSectionViewHolderShadow(false)
-            homeRecyclerView.setNestedCanScroll(false)
+            homeRecyclerView?.setNestedCanScroll(false)
         } else { //home feed now can scroll up, so hide maintoolbar shadow
-            if (homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
-                homeMainToolbar.hideShadow()
+            if (homeMainToolbar != null && homeMainToolbar?.getViewHomeMainToolBar() != null) {
+                homeMainToolbar?.hideShadow()
             }
             showFeedSectionViewHolderShadow(true)
-            homeRecyclerView.setNestedCanScroll(true)
+            homeRecyclerView?.setNestedCanScroll(true)
         }
     }
 
@@ -470,7 +528,7 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun scrollToRecommendList() {
-        homeRecyclerView.smoothScrollToPosition(viewModel.getRecommendationFeedSectionPosition())
+        homeRecyclerView?.smoothScrollToPosition(viewModel.getRecommendationFeedSectionPosition())
         scrollToRecommendList = false
     }
 
@@ -494,6 +552,15 @@ class HomeFragment : BaseDaggerFragment(),
         if (activityStateListener != null) {
             activityStateListener!!.onResume()
         }
+        adjustStatusBarColor()
+    }
+
+    private fun adjustStatusBarColor() {
+        if (homeRecyclerView != null) {
+            calculateSearchbarView(homeRecyclerView!!.computeVerticalScrollOffset())
+        } else {
+            calculateSearchbarView(0)
+        }
     }
 
     private fun createAndCallSendScreen() {
@@ -502,13 +569,13 @@ class HomeFragment : BaseDaggerFragment(),
                 return sendScreen()
             }
         }
-        executeWeaveCoRoutine(sendScrWeave, WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, remoteConfig))
+        executeWeaveCoRoutine(sendScrWeave, WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, getRemoteConfig()))
     }
 
     override fun onPause() {
         super.onPause()
         adapter?.onPause()
-        trackingQueue?.sendAll()
+        getTrackingQueueObj()?.sendAll()
         if (activityStateListener != null) {
             activityStateListener!!.onPause()
         }
@@ -517,9 +584,9 @@ class HomeFragment : BaseDaggerFragment(),
     override fun onDestroy() {
         super.onDestroy()
         adapter?.onDestroy()
-        homeRecyclerView.adapter = null
+        homeRecyclerView?.adapter = null
         adapter = null
-        homeRecyclerView.layoutManager = null
+        homeRecyclerView?.layoutManager = null
         layoutManager = null
         unRegisterBroadcastReceiverTokoCash()
     }
@@ -530,8 +597,8 @@ class HomeFragment : BaseDaggerFragment(),
             viewModel.refreshHomeData()
             /*
              * set notification gimmick
-             */if (homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
-            homeMainToolbar.setNotificationNumber(0)
+             */if (homeMainToolbar != null && homeMainToolbar?.getViewHomeMainToolBar() != null) {
+            homeMainToolbar?.setNotificationNumber(0)
         }
         }
         refreshLayout.setOnRefreshListener(this)
@@ -547,8 +614,8 @@ class HomeFragment : BaseDaggerFragment(),
         observeStickyLogin()
         observeTrackingData()
         observeRequestImagePlayBanner()
-        observeHomeRequestNetwork();
         observeViewModelInitialized();
+        observeHomeRequestNetwork();
     }
 
     private fun observeHomeRequestNetwork() {
@@ -615,7 +682,7 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun observeSearchHint() {
-        if (view != null && !viewModel.searchHint.hasObservers() && homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
+        if (view != null && !viewModel.searchHint.hasObservers() && homeMainToolbar != null && homeMainToolbar?.getViewHomeMainToolBar() != null) {
             viewModel.searchHint.observe(viewLifecycleOwner, Observer { data: SearchPlaceholder -> setHint(data) })
         }
     }
@@ -694,7 +761,6 @@ class HomeFragment : BaseDaggerFragment(),
     private fun setData(data: List<HomeVisitable?>, isCache: Boolean) {
         if(!data.isEmpty()) {
             if (needToPerformanceMonitoring() && getPageLoadTimeCallback() != null) {
-                getPageLoadTimeCallback()?.startRenderPerformanceMonitoring();
                 setOnRecyclerViewLayoutReady(isCache);
                 adapter?.submitList(data);
                 adapter?.notifyDataSetChanged();
@@ -736,21 +802,21 @@ class HomeFragment : BaseDaggerFragment(),
         if (offsetAlpha < 0) {
             offsetAlpha = 0f
         }
-        if (homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
+        if (homeMainToolbar != null && homeMainToolbar?.getViewHomeMainToolBar() != null) {
             if (offsetAlpha >= 150) {
-                homeMainToolbar.switchToDarkToolbar()
+                homeMainToolbar?.switchToDarkToolbar()
                 if (isLightThemeStatusBar) requestStatusBarDark()
             } else {
-                homeMainToolbar.switchToLightToolbar()
+                homeMainToolbar?.switchToLightToolbar()
                 if (!isLightThemeStatusBar) requestStatusBarLight()
             }
         }
         if (offsetAlpha >= 255) {
             offsetAlpha = 255f
         }
-        if (homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
+        if (homeMainToolbar != null && homeMainToolbar?.getViewHomeMainToolBar() != null) {
             if (offsetAlpha >= 0 && offsetAlpha <= 255) {
-                homeMainToolbar.setBackgroundAlpha(offsetAlpha)
+                homeMainToolbar?.setBackgroundAlpha(offsetAlpha)
                 setStatusBarAlpha(offsetAlpha)
             }
         }
@@ -767,6 +833,10 @@ class HomeFragment : BaseDaggerFragment(),
         floatingEggButtonFragment?.hideOnScrolling()
     }
 
+    override fun isShowSeeAllCard(): Boolean {
+        return showSeeAllCard
+    }
+
     private fun initEggTokenScrollListener() {
         onEggScrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -781,8 +851,8 @@ class HomeFragment : BaseDaggerFragment(),
                 }
             }
         }
-        homeRecyclerView.removeOnScrollListener(onEggScrollListener)
-        homeRecyclerView.addOnScrollListener(onEggScrollListener)
+        homeRecyclerView?.removeOnScrollListener(onEggScrollListener)
+        homeRecyclerView?.addOnScrollListener(onEggScrollListener)
     }
 
     // https://stackoverflow.com/questions/28672883/java-lang-illegalstateexception-fragment-not-attached-to-activity
@@ -794,15 +864,14 @@ class HomeFragment : BaseDaggerFragment(),
 
     private fun initAdapter() {
         layoutManager = LinearLayoutManager(context)
-        homeRecyclerView.layoutManager = layoutManager
+        homeRecyclerView?.layoutManager = layoutManager
         val adapterFactory = HomeAdapterFactory(
-                childsFragmentManager,
                 this,
                 this,
                 this,
                 this,
                 this,
-                homeRecyclerView.recycledViewPool,
+                homeRecyclerView?.recycledViewPool?: RecyclerView.RecycledViewPool(),
                 this,
                 this
         )
@@ -810,7 +879,7 @@ class HomeFragment : BaseDaggerFragment(),
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
                 .build()
         adapter = HomeRecycleAdapter(asyncDifferConfig, adapterFactory, ArrayList<HomeVisitable>())
-        homeRecyclerView.adapter = adapter
+        homeRecyclerView?.adapter = adapter
     }
 
     override fun onSectionItemClicked(actionLink: String) {
@@ -928,7 +997,9 @@ class HomeFragment : BaseDaggerFragment(),
         } else {
             openWebViewURL(slidesModel.redirectUrl, activity)
         }
-        viewModel.onBannerClicked(slidesModel)
+        if (slidesModel.redirectUrl.isNotEmpty()) {
+            TopAdsUrlHitter(HomeFragment::class.qualifiedName).hitClickUrl(getContext(), slidesModel.redirectUrl)
+        }
     }
 
     override fun onPromoAllClick() {
@@ -1002,10 +1073,10 @@ class HomeFragment : BaseDaggerFragment(),
 
     private fun onNetworkRetry() { //on refresh most likely we already lay out many view, then we can reduce
 //animation to keep our performance
-        homeRecyclerView.itemAnimator = null
+        homeRecyclerView?.itemAnimator = null
         resetFeedState()
         removeNetworkError()
-        homeRecyclerView.isEnabled = false
+        homeRecyclerView?.isEnabled = false
         if (viewModel != null) {
             viewModel.refresh(isFirstInstall())
             stickyContent
@@ -1041,33 +1112,30 @@ class HomeFragment : BaseDaggerFragment(),
         }
 
     private fun executeGetStickyContent():Boolean{
-        val isShowSticky = remoteConfig?.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true)
-        if (isShowSticky && !userSession?.isLoggedIn) viewModel.getStickyContent()
+        val isShowSticky = getRemoteConfig().getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true)
+        if (isShowSticky && !getUserSession().isLoggedIn) viewModel.getStickyContent()
         return true
     }
 
+    private fun injectCouponTimeBased() {
+         if(userSession.isLoggedIn()) viewModel.injectCouponTimeBased();
+     }
+
     private fun hideLoading() {
         refreshLayout.isRefreshing = false
-        homeRecyclerView.isEnabled = true
+        homeRecyclerView?.isEnabled = true
     }
 
     private fun setOnRecyclerViewLayoutReady(isCache: Boolean) {
         isOnRecylerViewLayoutAdded = true
-        homeRecyclerView.viewTreeObserver?.let {
-            it.addOnGlobalLayoutListener { object : ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-
-                    homePerformanceMonitoringListener?.stopHomePerformanceMonitoring(isCache);
-
-                    homePerformanceMonitoringListener = null;
-                    it.removeOnGlobalLayoutListener(this);
-                }
-            }}
+        homeRecyclerView?.addOneTimeGlobalLayoutListener {
+            homePerformanceMonitoringListener?.stopHomePerformanceMonitoring(isCache);
+            homePerformanceMonitoringListener = null;
         }
     }
 
     private fun needToShowGeolocationComponent() {
-        val firebaseShowGeolocationComponent = remoteConfig?.getBoolean(RemoteConfigKey.SHOW_HOME_GEOLOCATION_COMPONENT, true)
+        val firebaseShowGeolocationComponent = getRemoteConfig().getBoolean(RemoteConfigKey.SHOW_HOME_GEOLOCATION_COMPONENT, true)
         if (!firebaseShowGeolocationComponent) {
             viewModel.setNeedToShowGeolocationComponent(false)
             return
@@ -1170,7 +1238,7 @@ class HomeFragment : BaseDaggerFragment(),
 
     private fun isFirstInstall(): Boolean {
         context?.let {
-            if (!userSession?.isLoggedIn &&
+            if (!getUserSession().isLoggedIn &&
                     isShowFirstInstallSearch) {
                 sharedPrefs = it.getSharedPreferences(
                         ConstantKey.FirstInstallCache.KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
@@ -1202,7 +1270,7 @@ class HomeFragment : BaseDaggerFragment(),
 
     private fun setHint(searchPlaceholder: SearchPlaceholder) {
         if (searchPlaceholder.data != null && searchPlaceholder.data.placeholder != null && searchPlaceholder.data.keyword != null) {
-            homeMainToolbar.setHint(
+            homeMainToolbar?.setHint(
                     searchPlaceholder.data.placeholder,
                     searchPlaceholder.data.keyword,
                     isFirstInstall())
@@ -1216,14 +1284,14 @@ class HomeFragment : BaseDaggerFragment(),
                 if (visitable is HomeVisitable) {
                     val homeVisitable = visitable
                     if (homeVisitable.isTrackingCombined && homeVisitable.trackingDataForCombination != null) {
-                        HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(trackingQueue, homeVisitable.getTrackingDataForCombination());
+                        HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(getTrackingQueueObj(), homeVisitable.getTrackingDataForCombination());
                     } else if (!homeVisitable.isTrackingCombined && homeVisitable.trackingData != null) {
-                        HomePageTracking.eventEnhancedImpressionWidgetHomePage(trackingQueue, homeVisitable.trackingData)
+                        HomePageTracking.eventEnhancedImpressionWidgetHomePage(getTrackingQueueObj(), homeVisitable.trackingData)
                     }
                 }
             }
             if (!combinedTracking.isEmpty()) {
-                HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(trackingQueue, combinedTracking)
+                HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(getTrackingQueueObj(), combinedTracking)
             }
         }
     }
@@ -1314,7 +1382,11 @@ class HomeFragment : BaseDaggerFragment(),
         if (!TextUtils.isEmpty(url) && context != null) {
             val intent = RouteManager.getIntent(context, ApplinkConst.PROMO)
             intent.putExtra(EXTRA_URL, url)
-            startActivity(intent)
+            try {
+                startActivity(intent)
+            } catch (exception: ActivityNotFoundException) {
+                exception.printStackTrace()
+            }
         }
     }
 
@@ -1347,11 +1419,11 @@ class HomeFragment : BaseDaggerFragment(),
         if (bannerSlidesModel.type == BannerSlidesModel.TYPE_BANNER_PERSO && !bannerSlidesModel.isInvoke) {
             putEEToTrackingQueue(getOverlayBannerImpression(bannerSlidesModel) as HashMap<String, Any>)
         } else if (!bannerSlidesModel.isInvoke) {
-            if (!bannerSlidesModel.topadsViewUrl.isEmpty()) {
-                viewModel.sendTopAds(bannerSlidesModel.topadsViewUrl)
+            if (bannerSlidesModel.topadsViewUrl.isNotEmpty()) {
+                TopAdsUrlHitter(HomeFragment::class.qualifiedName).hitImpressionUrl(context, bannerSlidesModel.topadsViewUrl)
             }
             val dataLayer = getBannerImpression(bannerSlidesModel) as HashMap<String, Any>
-            dataLayer[KEY_SESSION_IRIS] = irisSession?.getSessionId()
+            dataLayer[KEY_SESSION_IRIS] = getIrisSession().getSessionId()
             putEEToTrackingQueue(dataLayer)
         }
     }
@@ -1377,7 +1449,7 @@ class HomeFragment : BaseDaggerFragment(),
     private fun sendScreen(): Boolean {
         if (activity != null && System.currentTimeMillis() > lastSendScreenTimeMillis + SEND_SCREEN_MIN_INTERVAL_MILLIS) {
             lastSendScreenTimeMillis = System.currentTimeMillis()
-            HomePageTracking.sendScreen(activity, screenName, userSession?.isLoggedIn)
+            HomePageTracking.sendScreen(activity, screenName, getUserSession().isLoggedIn)
         }
         return true
     }
@@ -1386,7 +1458,7 @@ class HomeFragment : BaseDaggerFragment(),
         get() = userVisibleHint
 
     override val parentPool: RecyclerView.RecycledViewPool
-        get() = homeRecyclerView.recycledViewPool
+        get() = homeRecyclerView?.recycledViewPool?: RecyclerView.RecycledViewPool()
 
     override val isHomeFragment: Boolean
         get() {
@@ -1402,9 +1474,7 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onScrollToTop() {
-        if (homeRecyclerView != null) {
-            homeRecyclerView.smoothScrollToPosition(0)
-        }
+        homeRecyclerView?.smoothScrollToPosition(0)
     }
 
     override fun isLightThemeStatusBar(): Boolean {
@@ -1421,7 +1491,7 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onPopularKeywordItemImpressed(channel: DynamicHomeChannel.Channels, position: Int, keyword: String) {
-        trackingQueue?.putEETracking(getPopularKeywordImpressionItem(channel, position, keyword) as HashMap<String, Any>)
+        getTrackingQueueObj()?.putEETracking(getPopularKeywordImpressionItem(channel, position, keyword) as HashMap<String, Any>)
     }
 
     override fun onPopularKeywordItemClicked(applink: String, channel: DynamicHomeChannel.Channels, position: Int, keyword: String) {
@@ -1462,10 +1532,10 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     private val isUserLoggedIn: Boolean
-        private get() = userSession!!.isLoggedIn
+        private get() = getUserSession().isLoggedIn
 
     private val userShopId: String
-        private get() = userSession!!.shopId
+        private get() = getUserSession().shopId
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
@@ -1502,9 +1572,9 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onNotificationChanged(notificationCount: Int, inboxCount: Int) {
-        if (homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
-            homeMainToolbar.setNotificationNumber(notificationCount)
-            homeMainToolbar.setInboxNumber(inboxCount)
+        if (homeMainToolbar != null && homeMainToolbar?.getViewHomeMainToolBar() != null) {
+            homeMainToolbar?.setNotificationNumber(notificationCount)
+            homeMainToolbar?.setInboxNumber(inboxCount)
         }
     }
     
@@ -1513,16 +1583,18 @@ class HomeFragment : BaseDaggerFragment(),
         get() {
             var height = 0
             if (homeMainToolbar != null) {
-                height = homeMainToolbar.height
-                if (!homeMainToolbar.isShadowApplied()) {
-                    height += resources.getDimensionPixelSize(R.dimen.dp_8)
+                height = homeMainToolbar?.height?:0
+                homeMainToolbar?.let {
+                    if (!it.isShadowApplied()) {
+                        height += resources.getDimensionPixelSize(R.dimen.dp_8)
+                    }
                 }
             }
             return height
         }
 
     private fun showFeedSectionViewHolderShadow(show: Boolean) {
-        val feedViewHolder = homeRecyclerView.findViewHolderForAdapterPosition(
+        val feedViewHolder = homeRecyclerView?.findViewHolderForAdapterPosition(
                 viewModel.getRecommendationFeedSectionPosition()
         )
         if (feedViewHolder is HomeRecommendationFeedViewHolder) {
@@ -1531,7 +1603,7 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun inheritScrollVelocityToRecommendation(velocity: Int) {
-        val feedViewHolder = homeRecyclerView.findViewHolderForAdapterPosition(
+        val feedViewHolder = homeRecyclerView?.findViewHolderForAdapterPosition(
                 viewModel.getRecommendationFeedSectionPosition()
         )
         if (feedViewHolder is HomeRecommendationFeedViewHolder) {
@@ -1595,8 +1667,8 @@ class HomeFragment : BaseDaggerFragment(),
     override fun onPromoDragStart() {}
     override fun onPromoDragEnd() {}
     override fun putEEToTrackingQueue(data: HashMap<String, Any>) {
-        if (trackingQueue != null) {
-            trackingQueue?.putEETracking(data)
+        if (getTrackingQueueObj() != null) {
+            getTrackingQueueObj()?.putEETracking(data)
         }
     }
 
@@ -1605,9 +1677,7 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun putEEToIris(data: HashMap<String, Any>) {
-        if (irisAnalytics != null) {
-            irisAnalytics?.saveEvent(data)
-        }
+        getIrisAnalytics().saveEvent(data)
     }
 
     private fun setStickyContent(tickerDetail: TickerDetail) {
@@ -1624,7 +1694,7 @@ class HomeFragment : BaseDaggerFragment(),
             hideStickyLogin()
             return
         }
-        val isCanShowing = remoteConfig?.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true)
+        val isCanShowing = getRemoteConfig().getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true)
         if (!isCanShowing) {
             hideStickyLogin()
             return
@@ -1682,9 +1752,7 @@ class HomeFragment : BaseDaggerFragment(),
 
     private fun resetImpressionListener() {
         for ((_, value) in impressionScrollListeners) {
-            if (homeRecyclerView != null) {
-                homeRecyclerView.removeOnScrollListener(value)
-            }
+            homeRecyclerView?.removeOnScrollListener(value)
         }
         impressionScrollListeners.clear()
     }
@@ -1733,12 +1801,12 @@ class HomeFragment : BaseDaggerFragment(),
                         sendIrisTracker(DynamicChannelViewHolder.Companion.getLayoutType(dynamicChannelDataModel.channel!!),
                                 dynamicChannelDataModel.channel!!,
                                 adapterPosition);
-                        homeRecyclerView.removeOnScrollListener(this);
+                        homeRecyclerView?.removeOnScrollListener(this);
                     }
                 }
             }
             impressionScrollListeners.put(dynamicChannelDataModel.channel?.id!!, listener);
-            homeRecyclerView.addOnScrollListener(listener);
+            homeRecyclerView?.addOnScrollListener(listener);
         }
     }
 
@@ -1787,10 +1855,16 @@ class HomeFragment : BaseDaggerFragment(),
                 )
             }
             DynamicChannelViewHolder.TYPE_MIX_TOP -> putEEToIris(getMixTopViewIris(mapChannelToProductTracker(channel), channel.header.name, channel.id, position.toString()) as HashMap<String, Any>)
-            DynamicChannelViewHolder.TYPE_MIX_LEFT -> putEEToIris(getMixLeftProductView(channel, true) as HashMap<String, Any>)
+            DynamicChannelViewHolder.TYPE_MIX_LEFT -> putEEToIris(getMixLeftIrisProductView(channel) as HashMap<String, Any>)
             DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST -> putEEToIris(getRecommendationListImpression(channel, true, viewModel.getUserId()) as HashMap<String, Any>)
             DynamicChannelViewHolder.TYPE_PRODUCT_HIGHLIGHT -> putEEToIris(getProductHighlightImpression(
                     channel, true
+            ) as HashMap<String, Any>)
+            DynamicChannelViewHolder.TYPE_CATEGORY_WIDGET -> putEEToIris(CategoryWidgetTracking.getCategoryWidgetBanneImpression(
+                    channel.grids.toList(),
+                    viewModel.getUserId(),
+                    true,
+                    channel
             ) as HashMap<String, Any>)
         }
     }
@@ -1809,8 +1883,8 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun getPageLoadTimeCallback(): PageLoadTimePerformanceInterface? {
-        if (homePerformanceMonitoringListener != null && homePerformanceMonitoringListener!!.pageLoadTimePerformanceInterface != null) {
-           pageLoadTimeCallback =  homePerformanceMonitoringListener!!.pageLoadTimePerformanceInterface
+        if (homePerformanceMonitoringListener != null && homePerformanceMonitoringListener?.pageLoadTimePerformanceInterface != null) {
+           pageLoadTimeCallback =  homePerformanceMonitoringListener?.pageLoadTimePerformanceInterface
         }
         return pageLoadTimeCallback
     }

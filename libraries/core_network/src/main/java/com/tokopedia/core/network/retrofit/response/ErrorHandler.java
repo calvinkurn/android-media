@@ -35,7 +35,6 @@ public class ErrorHandler {
     private static final String UNKNOWN_INFO = "Network Error";
     private static final String TIMEOUT_INFO = "Network Timeout";
     private static final String ERROR_MESSAGE = "message_error";
-    private static final String ERROR_MESSAGE_TOKOCASH = "errors";
 
     public ErrorHandler(@NonNull ErrorListener listener, int code) {
         switch (code) {
