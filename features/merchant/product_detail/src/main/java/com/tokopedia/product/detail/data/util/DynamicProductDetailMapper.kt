@@ -12,22 +12,8 @@ object DynamicProductDetailMapper {
         val listOfComponent: MutableList<DynamicPdpDataModel> = mutableListOf()
         data.forEachIndexed { index, component ->
             when (component.type) {
-                ProductDetailConstant.PRODUCT_SNAPSHOT -> {
-                    listOfComponent.add(ProductSnapshotDataModel(type = component.type, name = component.componentName))
-                }
                 ProductDetailConstant.NOTIFY_ME -> {
-                    listOfComponent.add(ProductNotifyMeDataModel(
-                            type = component.type,
-                            name = component.componentName,
-                            campaignID = component.componentData.firstOrNull()?.campaignId ?: "",
-                            campaignType = component.componentData.firstOrNull()?.campaignType
-                                    ?: "",
-                            campaignTypeName = component.componentData.firstOrNull()?.campaignTypeName
-                                    ?: "",
-                            endDate = component.componentData.firstOrNull()?.endDate ?: "",
-                            startDate = component.componentData.firstOrNull()?.startDate ?: "",
-                            notifyMe = component.componentData.firstOrNull()?.notifyMe ?: false
-                    ))
+                    listOfComponent.add(ProductNotifyMeDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.DISCUSSION -> {
                     listOfComponent.add(ProductDiscussionDataModel(type = component.type, name = component.componentName))
@@ -78,7 +64,7 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.MINI_SHOP_INFO -> {
                     listOfComponent.add(ProductMiniShopInfoDataModel(type = component.type, name = component.componentName))
                 }
-                ProductDetailConstant.BASIC_CONTENT -> {
+                ProductDetailConstant.PRODUCT_CONTENT -> {
                     listOfComponent.add(ProductContentDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.MEDIA -> {
@@ -100,7 +86,7 @@ object DynamicProductDetailMapper {
         }?.componentData?.firstOrNull()
 
         val contentData = data.components.find {
-            it.type == ProductDetailConstant.BASIC_CONTENT
+            it.type == ProductDetailConstant.PRODUCT_CONTENT
         }?.componentData?.firstOrNull()
 
         val upcomingData = data.components.find {

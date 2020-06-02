@@ -37,7 +37,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         get() = mapOfData[ProductDetailConstant.PRODUCT_SNAPSHOT] as? ProductSnapshotDataModel
 
     val basicContentMap: ProductContentDataModel?
-        get() = mapOfData[ProductDetailConstant.BASIC_CONTENT] as? ProductContentDataModel
+        get() = mapOfData[ProductDetailConstant.PRODUCT_CONTENT] as? ProductContentDataModel
 
     val shopInfoMap: ProductShopInfoDataModel?
         get() = mapOfData[ProductDetailConstant.SHOP_INFO] as? ProductShopInfoDataModel
