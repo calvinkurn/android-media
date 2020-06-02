@@ -190,6 +190,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var listRedPromos: List<String> = emptyList()
     private var prevCbSelectAllIsSelected: Boolean = false
     private var cbChangeJob: Job? = null
+    private var showPromoButtonJob: Job? = null
     private var isButtonAnimating = false
     private var _animator: Animator? = null
     private val ANIMATION_TYPE = "translationY"
@@ -197,6 +198,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     //    private val TRANSLATION_LENGTH = 1800f
     private var TRANSLATION_LENGTH = 0f
     private var isKeyboardOpened = false
+    private var notifyScrollEnded = false
 
     companion object {
 
@@ -531,6 +533,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         llPromoCheckout.gone()
                         return
                     }
+
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE && notifyScrollEnded) {
+                        showPromoButtonJob?.cancel()
+                        showPromoButtonJob = GlobalScope.launch(Dispatchers.Main) {
+                            delay(800L)
+                            showPromoButton()
+                        }
+                    }
                 }
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -546,7 +556,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     if (!isButtonAnimating && TRANSLATION_LENGTH < 5000 && dy > 0) {
                         TRANSLATION_LENGTH += (dy * 25f)
                     }
-                    hidePromoButton()
+                    hidePromoButton(dy != 0)
                 }
             })
 
@@ -572,7 +582,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    private fun hidePromoButton() {
+    private fun hidePromoButton(isScrolling: Boolean) {
         ObjectAnimator.ofFloat(llPromoCheckout, ANIMATION_TYPE, TRANSLATION_LENGTH).apply {
             duration = ANIMATION_DURATION_IN_MILIS
             addListener(object : Animator.AnimatorListener {
@@ -591,7 +601,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 override fun onAnimationEnd(animation: Animator) {
                     isButtonAnimating = false
                     TRANSLATION_LENGTH = 0f
-                    showPromoButton()
+                    if (!isScrolling) {
+                        notifyScrollEnded = false
+                        showPromoButton()
+                    } else {
+                        notifyScrollEnded = true
+                    }
                 }
             })
             if (!isButtonAnimating) {
