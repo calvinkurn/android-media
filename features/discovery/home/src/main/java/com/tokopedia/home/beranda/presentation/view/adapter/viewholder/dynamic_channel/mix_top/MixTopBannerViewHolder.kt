@@ -83,12 +83,12 @@ class MixTopBannerViewHolder(
     }
 
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
-        homeCategoryListener.sendEETracking(MixTopTracking.getMixTopSeeAllClick(channel.header.name) as HashMap<String, Any>)
+        homeCategoryListener.sendEETracking(MixTopTracking.getMixTopSeeAllClick(channel.id, channel.header.name) as HashMap<String, Any>)
     }
 
     override fun onBannerSeeMoreClicked(applink: String, channel: DynamicHomeChannel.Channels) {
         RouteManager.route(itemView.context, applink)
-        homeCategoryListener.sendEETracking(MixTopTracking.getMixTopSeeAllCardClick(channel.header.name) as HashMap<String, Any>)
+        homeCategoryListener.sendEETracking(MixTopTracking.getMixTopSeeAllCardClick(channel.id, channel.header.name, homeCategoryListener.userId) as HashMap<String, Any>)
     }
 
     override fun onFlashSaleCardImpressed(position: Int, channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid) {
@@ -154,7 +154,7 @@ class MixTopBannerViewHolder(
         bannerDescription.setTextColor(textColor)
 
         bannerUnifyButton.setOnClickListener {
-            homeCategoryListener.sendEETracking(MixTopTracking.getMixTopButtonClick(channel.header.name, ctaData.text) as HashMap<String, Any>)
+            homeCategoryListener.sendEETracking(MixTopTracking.getMixTopButtonClick(channel.id, channel.header.name, ctaData.text) as HashMap<String, Any>)
             if (ctaData.couponCode.isEmpty()) {
                 homeCategoryListener.onSectionItemClicked(channel.banner.applink)
             } else {
@@ -164,6 +164,11 @@ class MixTopBannerViewHolder(
 
         itemView.setOnClickListener {
             homeCategoryListener.onSectionItemClicked(channel.banner.applink)
+        }
+
+        background.setOnClickListener {
+            homeCategoryListener.onDynamicChannelClicked(bannerItem.applink)
+            homeCategoryListener.sendEETracking(MixTopTracking.getBackgroundClick(channel, homeCategoryListener.userId) as HashMap<String, Any>)
         }
     }
 

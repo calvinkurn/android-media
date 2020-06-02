@@ -50,15 +50,7 @@ class BrandlistPageViewModel @Inject constructor(
     private var firstLetterChanged = false
     private var totalBrandSize = 0
     private var currentOffset = INITIAL_OFFSET
-    private var currentLetter = INITIAL_LETTER
 
-    fun getCurrentOffset(): Int {
-        return currentOffset
-    }
-
-    fun getCurrentLetter(): String {
-        return currentLetter.toString()
-    }
 
     fun updateTotalBrandSize(totalBrandSize: Int) {
         this.totalBrandSize = totalBrandSize
@@ -68,34 +60,15 @@ class BrandlistPageViewModel @Inject constructor(
         currentOffset += renderedBrands
     }
 
-    fun updateCurrentLetter() {
-        val firstLetter = getTheFirstLetter(totalBrandSize, currentOffset)
-        if (firstLetter != currentLetter) {
-            currentLetter = firstLetter
-            firstLetterChanged = true
-        }
-    }
-
-    fun updateAllBrandRequestParameter() {
-        if (firstLetterChanged) {
-            totalBrandSize = 0
-            currentOffset = 0
-            firstLetterChanged = false
-        }
-    }
-
     fun resetAllBrandRequestParameter() {
         firstLetterChanged = false
         totalBrandSize = 0
         currentOffset = INITIAL_OFFSET
-        currentLetter = INITIAL_LETTER
+//        currentLetter = INITIAL_LETTER
     }
 
-    private fun getTheFirstLetter(totalBrandSize: Int, currentOffset: Int): Char {
-        return if (totalBrandSize == currentOffset) {
-            val newLetter = currentLetter + 1
-            newLetter
-        } else currentLetter
+    fun setOffset() {
+        currentOffset = 100
     }
 
     fun loadInitialData(category: Category?, userId: String?) {
@@ -124,10 +97,40 @@ class BrandlistPageViewModel @Inject constructor(
         }, onError = {})
     }
 
-    fun loadMoreAllBrands(category: Category?) {
+    fun loadBrandsPerAlphabet(category: Category?, brandFirstLetter: String) {
+        launchCatchError(block = {
+            _getAllBrandResult.postValue(Success(getAllBrandAsync(
+                    category?.categoryId,
+                    INITIAL_OFFSET,
+                    ALL_BRANDS_QUERY,
+                    ALL_BRANDS_REQUEST_SIZE,
+                    ALPHABETIC_ASC_SORT,
+                    brandFirstLetter).await()))
+        }, onError = {})
+    }
 
+    fun loadAllBrands(category: Category?) {
+        launchCatchError(block = {
+            _getAllBrandHeaderResult.postValue(Success(getAllBrandAsync(
+                    category?.categoryId,
+                    INITIAL_OFFSET,
+                    ALL_BRANDS_QUERY,
+                    ALL_BRANDS_HEADER_REQUEST_SIZE,
+                    ALPHABETIC_ASC_SORT,
+                    "").await()))
+
+            _getAllBrandResult.postValue(Success(getAllBrandAsync(
+                    category?.categoryId,
+                    INITIAL_OFFSET,
+                    ALL_BRANDS_QUERY,
+                    ALL_BRANDS_REQUEST_SIZE,
+                    ALPHABETIC_ASC_SORT,
+                    INITIAL_LETTER.toString()).await()))
+        }, onError = {})
+    }
+
+    fun loadMoreAllBrands(category: Category?, brandFirstLetter: String) {
         val requestSize = geRequestSize(totalBrandSize, currentOffset)
-
         launchCatchError(block = {
             _getAllBrandResult.postValue(Success(getAllBrandAsync(
                     category?.categoryId,
@@ -135,7 +138,7 @@ class BrandlistPageViewModel @Inject constructor(
                     ALL_BRANDS_QUERY,
                     requestSize,
                     ALPHABETIC_ASC_SORT,
-                    currentLetter.toString()).await()))
+                    brandFirstLetter).await()))
         }, onError = {})
     }
 
