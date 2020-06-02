@@ -102,6 +102,14 @@
         <meta-data
             android:name="com.bugsnag.android.API_KEY"
             android:value="50d42520ce58b3168a5a721995812a72"/>
+        <meta-data
+            android:name="HANSEL_APP_ID"
+            android:value="AZ9LDQCRS09BKXEZB92T7LZYR"
+            tools:replace="android:value" />
+        <meta-data
+            android:name="HANSEL_APP_KEY"
+            android:value="S9EC0H596C9P8DED5HC3P0DW40ZACDMDNH59RCGFWJWDOD214P"
+            tools:replace="android:value" />
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />

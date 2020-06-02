@@ -154,6 +154,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.hansel.hanselsdk.Hansel;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 import rx.Observable;
@@ -201,6 +202,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void onCreate() {
         super.onCreate();
+        Hansel.init(this);
         initializeDagger();
         initializeRemoteConfig();
         initResourceDownloadManager();

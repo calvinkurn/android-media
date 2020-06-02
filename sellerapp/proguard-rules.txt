@@ -426,3 +426,9 @@
 -keep class com.tokopedia.abstraction.processor.** { *; }
 -keep class com.tokopedia.product.util.processor.** { *; }
 -dontwarn com.squareup.javapoet.**
+
+-dontwarn io.hansel.**
+-keep class io.hansel.**{*;}
+-keep class **.HanselDialog.*{*;}
+-keep class * implements io.hansel.**.* {*;}
+-keep class * extends io.hansel.**.* {*;}
