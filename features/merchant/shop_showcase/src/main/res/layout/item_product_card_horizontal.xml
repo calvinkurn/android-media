@@ -11,6 +11,7 @@
         android:id="@+id/card_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:checked="false"
         android:visibility="visible"
         tools:visibility="visible"
         android:layout_marginTop="@dimen/dp_8"

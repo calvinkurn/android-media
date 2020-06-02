@@ -13,7 +13,6 @@ import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.ShowcaseProduct
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.viewholder.ShowcaseProductItemViewHolder
 import kotlinx.android.synthetic.main.fragment_shop_showcase_product_add.view.*
-import kotlinx.android.synthetic.main.item_add_product_showcase_grid.view.*
 import kotlinx.android.synthetic.main.item_product_card_horizontal.view.*
 
 /**
@@ -46,7 +45,6 @@ class ShowcaseProductListAdapter(
         else {
             LayoutInflater.from(context).inflate(R.layout.item_showcase_product_loading, parent, false)
         }
-//        val view = LayoutInflater.from(context).inflate(R.layout.item_product_card_horizontal, parent, false)
         return ShowcaseProductItemViewHolder(view, context)
     }
 
@@ -66,33 +64,41 @@ class ShowcaseProductListAdapter(
         holder.bind(item)
         if (item is ShowcaseProduct) {
             holder.itemView.parent_item_product_card.setOnClickListener {
-                val cardState = !item.ishighlighted
-                if (cardState) {
-                    val targetExcluded = excludedProduct.singleOrNull {
-                        it.productId == item.productId
-                    }
-                    if(targetExcluded == null) {
-                        item.isNewAppended = true
-                    }
-                    if(deletedProduct.size > 0)
-                        deletedProduct.remove(item)
-                    selectedProduct.add(item)
-                } else {
-                    item.isNewAppended = false
-                    val targetedProduct = selectedProduct.singleOrNull {
-                        it.productId == item.productId
-                    }
-                    if(targetedProduct != null) {
-                        deletedProduct.add(targetedProduct)
-                        selectedProduct.remove(targetedProduct)
-                    }
-                }
-                item.ishighlighted = cardState
-                holder.renderCardState(item)
-                showProductCounter(getSelectedProductSize())
-                viewListener.onCLickProductCardTracking()
+                chooseProduct(holder, item)
+            }
+
+            holder.itemView.card_checkbox.setOnClickListener {
+                chooseProduct(holder, item)
             }
         }
+    }
+
+    private fun chooseProduct(holder: ShowcaseProductItemViewHolder, item: ShowcaseProduct) {
+        val cardState = !item.ishighlighted
+        if (cardState) {
+            val targetExcluded = excludedProduct.singleOrNull {
+                it.productId == item.productId
+            }
+            if(targetExcluded == null) {
+                item.isNewAppended = true
+            }
+            if(deletedProduct.size > 0)
+                deletedProduct.remove(item)
+            selectedProduct.add(item)
+        } else {
+            item.isNewAppended = false
+            val targetedProduct = selectedProduct.singleOrNull {
+                it.productId == item.productId
+            }
+            if(targetedProduct != null) {
+                deletedProduct.add(targetedProduct)
+                selectedProduct.remove(targetedProduct)
+            }
+        }
+        item.ishighlighted = cardState
+        holder.renderCardState(item)
+        showProductCounter(getSelectedProductSize())
+        viewListener.onCLickProductCardTracking()
     }
 
     fun updateShopProductList(isLoadNextPage: Boolean,
@@ -111,10 +117,6 @@ class ShowcaseProductListAdapter(
             showProductCounter(getSelectedProductSize())
         }
         notifyDataSetChanged()
-    }
-
-    fun isShowCaseProductItem(position: Int): Boolean {
-        return shopProductList[position] is ShowcaseProduct
     }
 
     fun showLoadingProgress() {

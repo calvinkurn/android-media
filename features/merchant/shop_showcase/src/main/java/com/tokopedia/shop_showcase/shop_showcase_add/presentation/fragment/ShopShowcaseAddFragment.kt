@@ -11,7 +11,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -24,8 +24,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.removeObservers
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
 import com.tokopedia.shop_showcase.common.*
@@ -88,8 +87,6 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     private var addShopShowcaseParam = AddShopShowcaseParam()
     private var updateShopShowcaseParam = UpdateShopShowcaseParam()
     private var selectedProductListFilter = GetProductListFilter()
-    private var viewVisible = View.VISIBLE
-    private var viewGone = View.GONE
     private var excludedProduct: List<ShowcaseProduct> = listOf()
     private var isActionEdit: Boolean = false
     private var showcaseId: String? = DEFAULT_SHOWCASE_ID
@@ -161,10 +158,6 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         view?.findViewById<Typography>(R.id.total_selected_product_counter)
     }
 
-    private val undoDeleteProductButton: Typography? by lazy {
-        view?.findViewById<Typography>(R.id.delete_counter_cancel)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -178,8 +171,6 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
             }
         }
     }
-
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -227,15 +218,11 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
                 R.string.deleted_product_counter_text,
                 showcaseAddAdapter?.getDeletedProductList()?.size.toString()
         )
-        undoDeleteProductButton?.setOnClickListener {
-            showcaseAddAdapter?.undoDeleteSelectedProduct()
-            showSelectedProductList()
-        }
-        productCounter?.visibility = View.VISIBLE
+        productCounter?.visible()
     }
 
     override fun hideDeleteCounter() {
-        productCounter?.visibility = View.GONE
+        productCounter?.gone()
     }
 
     override fun deleteSelectedProduct(position: Int) {
@@ -247,8 +234,8 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     override fun showChooseProduct() {
         if(showcaseAddAdapter?.getSelectedProductList()?.size == 0) {
             emptyStateProduct?.setImageUrl(ImageAssets.PRODUCT_EMPTY)
-            emptyStateProduct?.visibility = View.VISIBLE
-            headerUnify?.actionTextView?.visibility = View.GONE
+            emptyStateProduct?.visible()
+            headerUnify?.actionTextView?.gone()
             hideSelectedProductList()
         }
     }
@@ -272,7 +259,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     private fun initRecyclerView(view: View?, previewListener: ShopShowcasePreviewListener) {
         view?.findViewById<RecyclerView>(R.id.rv_showcase_add)?.apply {
             setHasFixedSize(true)
-            layoutManager = GridLayoutManager(context, 2)
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             showcaseAddAdapter = ShopShowcaseAddAdapter(context, previewListener)
             adapter = showcaseAddAdapter
         }
@@ -393,7 +380,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         activity?.also {
             val deletedProductSize = showcaseAddAdapter?.getDeletedProductList()?.size
             deletedProductSize?.let { size ->
-                if(size > 0 && productCounter?.visibility == viewVisible) {
+                if(size > 0 && productCounter?.visibility == View.VISIBLE) {
                     val confirmDialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
                     confirmDialog.apply {
                         setTitle(getString(R.string.text_confirm_dialog_title))
@@ -421,11 +408,11 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     private fun showSelectedProductList() {
         showcaseAddAdapter?.itemCount?.let {
             if(it > 0) {
-                selectedProductText?.visibility = View.VISIBLE
-                chooseProductText?.visibility = View.VISIBLE
-                selectedProductListRecyclerView?.visibility = View.VISIBLE
-                emptyStateProduct?.visibility = View.INVISIBLE
-                headerUnify?.actionTextView?.visibility = View.VISIBLE
+                selectedProductText?.visible()
+                chooseProductText?.visible()
+                selectedProductListRecyclerView?.visible()
+                emptyStateProduct?.invisible()
+                headerUnify?.actionTextView?.visible()
             } else {
                 showChooseProduct()
             }
@@ -433,35 +420,35 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     }
 
     private fun hideSelectedProductList() {
-        selectedProductText?.visibility = View.GONE
-        chooseProductText?.visibility = View.GONE
-        selectedProductListRecyclerView?.visibility = View.GONE
+        selectedProductText?.gone()
+        chooseProductText?.gone()
+        selectedProductListRecyclerView?.gone()
     }
 
     private fun showLoader() {
-        loaderUnify?.visibility = viewVisible
-        tvShowcaseTitle?.visibility = viewGone
-        textFieldShowcaseName?.visibility = viewGone
-        selectedProductText?.visibility = viewGone
-        chooseProductText?.visibility = viewGone
-        selectedProductListRecyclerView?.visibility = viewGone
-        headerUnify?.actionTextView?.visibility = viewGone
+        loaderUnify?.visible()
+        tvShowcaseTitle?.gone()
+        textFieldShowcaseName?.gone()
+        selectedProductText?.gone()
+        chooseProductText?.gone()
+        selectedProductListRecyclerView?.gone()
+        headerUnify?.actionTextView?.gone()
     }
 
     private fun hideLoader() {
-        loaderUnify?.visibility = viewGone
-        tvShowcaseTitle?.visibility = viewVisible
-        chooseProductText?.visibility = viewVisible
-        selectedProductText?.visibility = viewVisible
-        selectedProductListRecyclerView?.visibility = viewVisible
-        textFieldShowcaseName?.visibility = viewVisible
-        headerUnify?.actionTextView?.visibility = viewVisible
+        loaderUnify?.gone()
+        tvShowcaseTitle?.visible()
+        chooseProductText?.visible()
+        selectedProductText?.visible()
+        selectedProductListRecyclerView?.visible()
+        textFieldShowcaseName?.visible()
+        headerUnify?.actionTextView?.visible()
     }
 
     private fun setCurrentlyShowcaseData(showcaseName: String?) {
-        loaderUnify?.visibility = viewGone
-        tvShowcaseTitle?.visibility = viewVisible
-        textFieldShowcaseName?.visibility = viewVisible
+        loaderUnify?.gone()
+        tvShowcaseTitle?.visible()
+        textFieldShowcaseName?.visible()
         textFieldShowcaseName?.textFieldInput?.setText(showcaseName)
         textFieldShowcaseName?.setMessage(resources.getString(R.string.showcase_name_hint))
     }
@@ -603,8 +590,10 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
 
     private fun showSoftKeyboard() {
         activity?.window?.run {
-            textFieldShowcaseName?.textFieldInput?.requestFocus()
-            setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+            if(!isActionEdit) {
+                textFieldShowcaseName?.textFieldInput?.requestFocus()
+                setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+            }
         }
     }
 

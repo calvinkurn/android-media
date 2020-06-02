@@ -11,7 +11,6 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -22,7 +21,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
 import com.tokopedia.shop_showcase.common.ImageAssets
@@ -92,30 +94,6 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
     override fun onCLickProductCardTracking() {
         tracking.addShowcaseProductCardClick(shopId, shopType, isActionEdit)
     }
-
-//    /**
-//     * Setup Grid layout manager for mutliple item view type
-//     * the span count will change to 1 if the item view is loading
-//     */
-//    private val gridLayoutManager by lazy {
-//        GridLayoutManager(context, 2).apply {
-//            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-//                override fun getSpanSize(position: Int): Int {
-//                    return try {
-//                        val isShowcaseProductItem = showcaseProductListAdapter?.isShowCaseProductItem(position)
-//                        if (isShowcaseProductItem == false) {
-//                            spanCount
-//                        } else {
-//                            // Change span count to 1 if type of view is loading
-//                            1
-//                        }
-//                    } catch (e: IndexOutOfBoundsException) {
-//                        spanCount
-//                    }
-//                }
-//            }
-//        }
-//    }
 
     private val linearLayoutManager: LinearLayoutManager by lazy {
         LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -249,7 +227,7 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
     }
 
     private fun initView(view: View?, listener: ShopShowcaseProductAddListener) {
-        emptyState?.visibility = View.INVISIBLE
+        emptyState?.visible()
         initRecyclerView(view, listener)
         getProductList(productListFilter)
 
@@ -320,12 +298,12 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
     private fun showEmptyViewProductSearch(state: Boolean) {
         emptyState?.setImageUrl(ImageAssets.SEARCH_SHOWCASE_NOT_FOUND)
         if(state) {
-            recyclerViewProductList?.visibility = View.GONE
-            emptyState?.visibility = View.VISIBLE
+            recyclerViewProductList?.gone()
+            emptyState?.visible()
         }
         else {
-            recyclerViewProductList?.visibility = View.VISIBLE
-            emptyState?.visibility = View.GONE
+            recyclerViewProductList?.visible()
+            emptyState?.gone()
         }
     }
 
@@ -394,14 +372,14 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
     }
 
     private fun showFetchingProgress(view: View?) {
-        emptyState?.visibility = View.INVISIBLE
-        view?.loaderUnify?.visibility = View.VISIBLE
-        view?.rv_showcase_add_product?.visibility = View.GONE
+        emptyState?.invisible()
+        view?.loaderUnify?.visible()
+        view?.rv_showcase_add_product?.gone()
     }
 
     private fun hideFetchingProgress(view: View?) {
-        view?.loaderUnify?.visibility = View.GONE
-        view?.rv_showcase_add_product?.visibility = View.VISIBLE
+        view?.loaderUnify?.gone()
+        view?.rv_showcase_add_product?.visible()
     }
 
     private fun hideLoadingProgress() {
