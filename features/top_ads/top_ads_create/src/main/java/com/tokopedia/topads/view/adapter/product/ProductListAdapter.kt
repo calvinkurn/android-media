@@ -60,7 +60,5 @@ class ProductListAdapter(val typeFactory: ProductListAdapterTypeFactory) : Recyc
                 }
             }
         }
-        notifyDataSetChanged()
-
     }
 }

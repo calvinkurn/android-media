@@ -49,5 +49,5 @@ public interface KYCConstant {
     int USER_EXIT = -9;
 
     String KYC_OVERLAY_COLOR = "#ae000000";
-    String KYC_AB_KEYWORD = "Liveness Detection 1";
+    String KYC_AB_KEYWORD = "Liveness Detection 2";
 }

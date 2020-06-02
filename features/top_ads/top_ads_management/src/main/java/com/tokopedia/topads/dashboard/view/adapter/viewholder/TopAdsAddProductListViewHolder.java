@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.view.listener.AdapterSelectionListener;
 import com.tokopedia.topads.dashboard.view.listener.BindViewHolder;
@@ -61,10 +61,10 @@ public class TopAdsAddProductListViewHolder extends RecyclerView.ViewHolder
 
         boolean b = !adapterSelectionListener.isSelected(model.productDomain);// not selected
         if (b) {
-            imageHandler.loadImage(topAdsAddProductListImageView, model.imageUrl, true);
+            imageHandler.LoadImage(topAdsAddProductListImageView, model.imageUrl);
             itemView.setBackgroundColor(transparantColor);
         } else {
-            imageHandler.loadImage(topAdsAddProductListImageView, R.drawable.ic_top_ads_selected);
+            imageHandler.loadImageWithId(topAdsAddProductListImageView, R.drawable.ic_top_ads_selected);
             itemView.setBackgroundColor(topAdsSelectionColor);
         }
 

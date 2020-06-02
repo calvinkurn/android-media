@@ -1,7 +1,8 @@
 package com.tokopedia.product.manage.feature.list.analytics
 
-import com.tokopedia.product.manage.feature.list.constant.ProductManageDataLayer
 import com.tokopedia.product.manage.feature.list.constant.CLICK
+import com.tokopedia.product.manage.feature.list.constant.ProductManageDataLayer
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.track.TrackApp
 
 object ProductManageTracking {
@@ -35,10 +36,6 @@ object ProductManageTracking {
 
     fun eventMultipleSelect() {
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_MULTIPLE, "")
-    }
-
-    fun eventEditVariants(label: String) {
-        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_EDIT_VARIANTS, label)
     }
 
     fun eventEditPrice(label: String) {
@@ -214,4 +211,38 @@ object ProductManageTracking {
         eventEditProduct(action, shopId)
     }
 
+    fun eventClickEditPriceVariant() {
+        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ON_EDIT_PRICE_VARIANT, "")
+    }
+
+    fun eventClickEditPriceVariantSave() {
+        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ON_EDIT_PRICE_VARIANT_SAVE, "")
+    }
+
+    fun eventClickEditStockVariant() {
+        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ON_EDIT_STOCK_VARIANT, "")
+    }
+
+    fun eventClickStatusToggleVariant(status: ProductStatus) {
+        with(ProductManageDataLayer) {
+            val label = if(status == ProductStatus.ACTIVE) {
+                STATUS_TOGGLE_ON
+            } else {
+                STATUS_TOGGLE_OFF
+            }
+            eventProductManage(EVENT_ACTION_CLICK_ON_STATUS_TOGGLE_VARIANT, label)
+        }
+    }
+
+    fun eventClickChangeAmountVariant() {
+        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ON_CHANGE_AMOUNT_VARIANT, "")
+    }
+
+    fun eventClickEditStockVariantSave() {
+        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ON_EDIT_STOCK_VARIANT_SAVE, "")
+    }
+
+    fun sendScreen(screenName: String) {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
+    }
 }

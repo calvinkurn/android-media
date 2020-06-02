@@ -5,7 +5,7 @@
     android:id="@+id/linearLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/topads_create_bg_top_round"
+    android:background="@drawable/topads_bg_top_round"
     android:padding="@dimen/dp_16">
 
 
@@ -21,15 +21,16 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/typography22"
-        style="@style/TextView.TitleBig.Bold"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_8"
         android:gravity="center_vertical"
         android:text="@string/seputar_biaya_iklan"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_close"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_3" />
 
 
     <ImageView

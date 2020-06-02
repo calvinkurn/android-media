@@ -13,10 +13,10 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
-import com.tokopedia.seller.base.view.fragment.TopAdsFilterListFragment;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.view.adapter.TopAdsListAdapterTypeFactory;
 import com.tokopedia.topads.common.view.fragment.TopAdsBaseListFragment;
+import com.tokopedia.topads.common.view.fragment.TopAdsFilterListFragment;
 import com.tokopedia.topads.common.view.utils.TopAdsBottomSheetsSelectGroup;
 import com.tokopedia.topads.common.TopAdsMenuBottomSheets;
 import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;

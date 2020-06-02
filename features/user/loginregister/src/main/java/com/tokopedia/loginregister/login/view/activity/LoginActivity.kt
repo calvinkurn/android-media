@@ -27,7 +27,7 @@ import com.tokopedia.user.session.UserSession
 /**
  * @author by nisie on 10/1/18.
  */
-class LoginActivity : BaseSimpleActivity(), HasComponent<LoginRegisterComponent> {
+open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginRegisterComponent> {
 
     companion object {
 
@@ -136,15 +136,6 @@ class LoginActivity : BaseSimpleActivity(), HasComponent<LoginRegisterComponent>
         return DaggerLoginRegisterComponent.builder().baseAppComponent((application as BaseMainApplication).baseAppComponent).build()
     }
 
-    override fun onBackPressed() {
-        if (supportFragmentManager.findFragmentById(R.id.parent_view) is LoginEmailPhoneContract.View) {
-            (supportFragmentManager.findFragmentById(R.id
-                    .parent_view) as LoginEmailPhoneContract.View).onBackPressed()
-        } else {
-            super.onBackPressed()
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -156,6 +147,15 @@ class LoginActivity : BaseSimpleActivity(), HasComponent<LoginRegisterComponent>
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && GlobalConfig.isSellerApp()) {
             setStatusBarColor(Color.WHITE)
             setLightStatusBar(true)
+        }
+    }
+
+    override fun onBackPressed() {
+        if (supportFragmentManager.findFragmentById(R.id.parent_view) is LoginEmailPhoneContract.View) {
+            (supportFragmentManager.findFragmentById(R.id
+                    .parent_view) as LoginEmailPhoneContract.View).onBackPressed()
+        } else {
+            super.onBackPressed()
         }
     }
 
