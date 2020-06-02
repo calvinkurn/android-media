@@ -577,7 +577,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     }
 
     private fun updateSelectedProduct(showcaseAddAdapter: ShopShowcaseAddAdapter?, selectedProductList: ArrayList<ShowcaseProduct>?) {
-        showcaseAddAdapter?.updateSelectedDataSet(selectedProductList, isActionEdit)
+        showcaseAddAdapter?.updateSelectedDataSet(selectedProductList)
     }
 
     private fun updateAppendedSelectedProduct(showcaseAddAdapter: ShopShowcaseAddAdapter?, newSelectedProductList: ArrayList<ShowcaseProduct>?) {
