@@ -31,6 +31,8 @@ const val ERR_STATE_SOCKET = "Socket Connection"
 const val ERR_STATE_VIDEO = "Video Player"
 const val ERR_STATE_GLOBAL = "Global Error"
 
+const val EMPTY_PRODUCT_IMAGE_URL = "https://ecs7.tokopedia.net/img/android/others/product_search_not_found.png"
+
 /**
  * Performance Monitoring for Play
  * Start: PlayActivity before onCreate()
