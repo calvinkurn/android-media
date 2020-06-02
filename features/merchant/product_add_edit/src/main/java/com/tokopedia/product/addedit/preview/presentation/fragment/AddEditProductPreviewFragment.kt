@@ -729,7 +729,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                         AddEditProductVariantActivity::class.java).apply {
                     putExtra(EXTRA_CACHE_MANAGER_ID, cacheManager.id)
                 }
-                startActivityForResult(intent, REQUEST_CODE_DETAIL_EDIT)
+                startActivityForResult(intent, 9999)
             }
         })
     }
