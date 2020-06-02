@@ -175,12 +175,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
         _observableEtalaseAndSearch.value = withContext(computationDispatcher) {
             etalaseMap.values.map { etalase ->
                 etalase.copy(
-                        productList = etalase.productList.take(MAX_PRODUCT_IMAGE_COUNT).map { product ->
-                            product.copy(
-                                    isSelectedHandler = ::isProductSelected,
-                                    isSelectable = ::isSelectable
-                            )
-                        }
+                        productList = etalase.productList.take(MAX_PRODUCT_IMAGE_COUNT)
                 )
             }
         }
