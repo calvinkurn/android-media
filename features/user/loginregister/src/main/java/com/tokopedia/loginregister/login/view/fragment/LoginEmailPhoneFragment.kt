@@ -951,15 +951,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
         }
     }
 
-    override fun onGoToCreatePassword(): (String, String) -> Unit {
-        return { fullName: String, userId: String ->
-            val intent = RouteManager.getIntent(context, ApplinkConst.CREATE_PASSWORD)
-            intent.putExtra("name", fullName)
-            intent.putExtra("user_id", userId)
-            startActivityForResult(intent, REQUESTS_CREATE_PASSWORD)
-        }
-    }
-
     override fun onGoToActivationPage(email: String): (MessageErrorException) -> Unit {
         return {
             val intent = ActivationActivity.getCallingIntent(activity,

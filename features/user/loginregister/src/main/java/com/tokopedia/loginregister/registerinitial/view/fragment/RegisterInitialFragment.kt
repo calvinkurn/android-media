@@ -890,12 +890,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         }
     }
 
-    private fun goToProfileCompletionPage() {
-        activity?.let {
-            (it.applicationContext as ApplinkRouter).goToApplinkActivity(activity, ApplinkConst.PROFILE_COMPLETION)
-        }
-    }
-
     override fun onActionPartialClick(id: String) {
         registerAnalytics.trackClickSignUpButton()
         registerInitialViewModel.registerCheck(id)
@@ -1115,19 +1109,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
     private fun onGoToForbiddenPage() {
         ForbiddenActivity.startActivity(activity)
-    }
-
-    fun onGoToCreatePassword(): (fullName: String, userId: String) -> Unit {
-        return { fullName: String, userId: String ->
-
-            activity?.let {
-                val intent = (it.applicationContext as ApplinkRouter).getApplinkIntent(activity, ApplinkConst.CREATE_PASSWORD)
-                intent.putExtra("name", fullName)
-                intent.putExtra("user_id", userId)
-                startActivityForResult(intent, REQUEST_CREATE_PASSWORD)
-            }
-
-        }
     }
 
     private fun getTickerType(hexColor: String): Int {
