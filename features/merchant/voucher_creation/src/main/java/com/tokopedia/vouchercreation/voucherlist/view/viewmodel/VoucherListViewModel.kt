@@ -34,8 +34,12 @@ class VoucherListViewModel @Inject constructor(
         @Named("Main") dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
-    private val activeVoucherRequestParam by lazy {
-        VoucherListParam.createParam(status = VoucherStatus.ACTIVE)
+    private val notStartedVoucherRequestParam by lazy {
+        VoucherListParam.createParam(status = VoucherStatus.NOT_STARTED)
+    }
+
+    private val ongoingVoucherRequestParam by lazy {
+        VoucherListParam.createParam(status = VoucherStatus.ONGOING)
     }
 
     private val _keywordLiveData = MutableLiveData<String>()
@@ -104,9 +108,13 @@ class VoucherListViewModel @Inject constructor(
                     shopBasicDataUseCase.executeOnBackground()
                 })
             }
-            getVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(activeVoucherRequestParam)
             _voucherList.value = Success(withContext(Dispatchers.IO) {
-                getVoucherListUseCase.executeOnBackground()
+                mutableListOf<VoucherUiModel>().apply {
+                    getVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(ongoingVoucherRequestParam)
+                    addAll(getVoucherListUseCase.executeOnBackground())
+                    getVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(notStartedVoucherRequestParam)
+                    addAll(getVoucherListUseCase.executeOnBackground())
+                }
             })
         }, onError = {
             _voucherList.value = Fail(it)
