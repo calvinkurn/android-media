@@ -75,6 +75,7 @@
             android:layout_width="@dimen/play_permit_icon_width"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/play_permit_spacing"
+            android:background="@android:color/transparent"
             app:layout_constraintBottom_toTopOf="@+id/divider"
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/ic_play_camera_white" />

@@ -7,6 +7,7 @@ import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastSocket.Companion.
 import com.tokopedia.play.broadcaster.dispatcher.PlayBroadcastDispatcher
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
 import com.tokopedia.play.broadcaster.pusher.PlayPusherBuilder
+import com.tokopedia.play.broadcaster.util.PermissionUtil
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -46,5 +47,10 @@ class PlayBroadcasterModule(val context: Context) {
     @Provides
     fun providePlayPusher(): PlayPusher {
         return PlayPusherBuilder(context).build()
+    }
+
+    @Provides
+    fun providePlayPermissionUtil(): PermissionUtil {
+        return PermissionUtil(context)
     }
 }

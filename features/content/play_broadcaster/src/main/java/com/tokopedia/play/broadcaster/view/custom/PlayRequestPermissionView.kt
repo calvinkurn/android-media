@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.view.custom
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -49,21 +50,30 @@ class PlayRequestPermissionView : ConstraintLayout {
         }
     }
 
-    fun goToDeviceSetting() {
+    private fun goToDeviceSetting() {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
         val uri: Uri = Uri.fromParts("package", context.packageName, null)
         intent.data = uri
         (context as? Activity)?.startActivity(intent)
     }
 
-    fun setup() {
-        tvCheckMic.text = ""
-        tvCheckMic.setCompoundDrawablesWithIntrinsicBounds(
+    fun setPermissionGranted(permissions: List<String>) {
+        permissions.forEach {
+            if (it == Manifest.permission.CAMERA) {
+                setPermissionGranted(tvCheckCamera)
+            } else if (it == Manifest.permission.RECORD_AUDIO) {
+                setPermissionGranted(tvCheckMic)
+            }
+        }
+    }
+
+    private fun setPermissionGranted(textView: AppCompatTextView) {
+        textView.text = ""
+        textView.setCompoundDrawablesWithIntrinsicBounds(
                 0,
                 0,
                 R.drawable.ic_play_check_green,
                 0
         )
     }
-
 }
