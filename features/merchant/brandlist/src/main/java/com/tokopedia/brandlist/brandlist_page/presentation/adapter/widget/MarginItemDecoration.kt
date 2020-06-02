@@ -27,11 +27,7 @@ class MarginItemDecoration(private val marginSize: Int) : RecyclerView.ItemDecor
             val viewType = it.getItemViewType(position)
 
             // All Brand
-            if (viewType == AllBrandViewHolder.LAYOUT ||
-                    viewType == BrandlistSearchRecommendationViewHolder.LAYOUT ||
-                    viewType == BrandlistSearchResultViewHolder.LAYOUT ||
-                    viewType == BrandlistSearchShimmeringViewHolder.LAYOUT) {
-
+            if (viewType == AllBrandViewHolder.LAYOUT) {
                 val layoutParams = view.layoutParams as GridLayoutManager.LayoutParams
 
                 when (layoutParams.spanIndex) {

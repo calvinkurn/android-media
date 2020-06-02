@@ -294,6 +294,7 @@ dependencies {
     implementation project(rootProject.ext.features.productDetail)
     implementation project(rootProject.ext.features.tkpddiscovery)
     implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.features.thankYouNative)
     implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.homeRecom)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
