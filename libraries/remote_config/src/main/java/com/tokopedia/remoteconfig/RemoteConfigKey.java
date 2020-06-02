@@ -228,5 +228,5 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_AMPLIFICATION = "app_push_amplification_enabled";
 
-    public static final String REDUCE_TRACKING_QUEUE_SIZE_LIMIT = "android_analytics_reduce_optimizer_size_limit";
+    public static final String TRACKING_QUEUE_SIZE_LIMIT_VALUE = "android_mainapp_analytics_reduce_optimizer_size_limit";
 }

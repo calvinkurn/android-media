@@ -139,9 +139,9 @@ class TrackingRepository(val context: Context) : ITrackingRepository<TrackingReg
                 trackingEEDbModel.customDimension.length
 
         val remoteConfig =  FirebaseRemoteConfigImpl(context)
-        val enhanceEcommerceSizeLimit =
-                if (remoteConfig.getBoolean(RemoteConfigKey.REDUCE_TRACKING_QUEUE_SIZE_LIMIT)) ENHANCE_ECOMMERCE_SIZE_LIMIT_REDUCED
-                else ENHANCE_ECOMMERCE_SIZE_LIMIT
+        val enhanceEcommerceSizeLimit = remoteConfig.getLong(
+                RemoteConfigKey.TRACKING_QUEUE_SIZE_LIMIT_VALUE,
+                ENHANCE_ECOMMERCE_SIZE_LIMIT_DEFAULT).toInt()
 
         if (currentEESize >= enhanceEcommerceSizeLimit) {
             moveEETrackingToFull(trackingEEDbModel, inputEvent, inputCustomDimensionMap, inputEnhanceECommerceMap)
@@ -224,8 +224,6 @@ class TrackingRepository(val context: Context) : ITrackingRepository<TrackingReg
     }
 
     companion object {
-        const val ENHANCE_ECOMMERCE_SIZE_LIMIT_REDUCED = 6000 // bytes
-        const val ENHANCE_ECOMMERCE_SIZE_LIMIT = 7000 // bytes
+        const val ENHANCE_ECOMMERCE_SIZE_LIMIT_DEFAULT = 6000L // bytes
     }
-
 }
