@@ -74,9 +74,9 @@ class PlayPrepareBroadcastFragment @Inject constructor(
 
     private fun setupView(view: View) {
         btnSetup.setOnClickListener {
-            // openBroadcastSetupPage()
+             openBroadcastSetupPage()
             // TODO("for testing live")
-            doCreateChannel()
+//            doCreateChannel()
         }
 
         rvFollowers.adapter = followersAdapter
