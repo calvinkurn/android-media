@@ -3,7 +3,6 @@ package com.tokopedia.seller.active.common.service
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.JobIntentService
-import com.tokopedia.seller.active.common.BuildConfig
 import com.tokopedia.seller.active.common.di.DaggerUpdateShopActiveComponent
 import com.tokopedia.seller.active.common.di.UpdateShopActiveModule
 import com.tokopedia.seller.active.common.domain.usecase.UpdateShopActiveUseCase
@@ -37,7 +36,7 @@ class UpdateShopActiveService: JobIntentService(), CoroutineScope  {
 
     override fun onHandleWork(intent: Intent) {
         launch {
-            updateShopActiveUseCase.setParam("android-${BuildConfig.VERSION_NAME}")
+            updateShopActiveUseCase.setParam()
             updateShopActiveUseCase.executeOnBackground()
         }
     }
