@@ -237,11 +237,13 @@ class EditQuotaBottomSheet(parent: ViewGroup) : BottomSheetUnify() {
         show(fm, EditQuotaBottomSheet::class.java.simpleName)
     }
 
-    fun setOnSuccessUpdateVoucher(action: () -> Unit) {
+    fun setOnSuccessUpdateVoucher(action: () -> Unit): EditQuotaBottomSheet {
         onSuccessUpdateVoucher = action
+        return this
     }
 
-    fun setOnFailUpdateVoucher(action: (String) -> Unit) {
+    fun setOnFailUpdateVoucher(action: (String) -> Unit): EditQuotaBottomSheet {
         onFailUpdateVoucher = action
+        return this
     }
 }

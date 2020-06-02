@@ -16,7 +16,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class EditQuotaViewModel @Inject constructor(
-        @Named("Main") dispatcher: CoroutineDispatcher,
+        dispatcher: CoroutineDispatcher,
         private val updateQuotaUseCase: UpdateQuotaUseCase): BaseViewModel(dispatcher) {
 
     private val mQuotaLiveData = MutableLiveData<Pair<Int, Int>>()

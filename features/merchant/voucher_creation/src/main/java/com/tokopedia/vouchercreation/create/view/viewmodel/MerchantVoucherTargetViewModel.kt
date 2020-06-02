@@ -21,7 +21,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class MerchantVoucherTargetViewModel @Inject constructor(
-        @Named("Main") dispatcher: CoroutineDispatcher,
+        dispatcher: CoroutineDispatcher,
         private val voucherTargetValidationUseCase: VoucherTargetValidationUseCase
 ) : BaseViewModel(dispatcher) {
 

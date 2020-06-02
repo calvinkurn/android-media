@@ -18,67 +18,67 @@ import dagger.multibindings.IntoMap
 @Module
 abstract class VoucherCreationViewModelModule {
 
-    @Binds
     @VoucherCreationScope
-    abstract fun provideViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
+    @Binds
+    internal abstract fun provideViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds
     @IntoMap
     @ViewModelKey(CreateMerchantVoucherStepsViewModel::class)
-    abstract fun provideCreateMerchantVoucherStepsViewModel(createMerchantVoucherStepsViewModel: CreateMerchantVoucherStepsViewModel): ViewModel
+    internal abstract fun provideCreateMerchantVoucherStepsViewModel(createMerchantVoucherStepsViewModel: CreateMerchantVoucherStepsViewModel): ViewModel
 
     @Binds
     @IntoMap
     @ViewModelKey(MerchantVoucherTargetViewModel::class)
-    abstract fun provideMerchantVoucherTargetViewModel(merchantVoucherTargetViewModel: MerchantVoucherTargetViewModel): ViewModel
+    internal abstract fun provideMerchantVoucherTargetViewModel(merchantVoucherTargetViewModel: MerchantVoucherTargetViewModel): ViewModel
 
     @Binds
     @IntoMap
     @ViewModelKey(VoucherListViewModel::class)
-    abstract fun provideVoucherListViewModel(voucherListViewModel: VoucherListViewModel): ViewModel
+    internal abstract fun provideVoucherListViewModel(voucherListViewModel: VoucherListViewModel): ViewModel
 
     @Binds
     @IntoMap
     @ViewModelKey(FreeDeliveryVoucherCreateViewModel::class)
-    abstract fun provideFreeDeliveryVoucherCreateViewModel(freeDeliveryVoucherCreateViewModel: FreeDeliveryVoucherCreateViewModel): ViewModel
+    internal abstract fun provideFreeDeliveryVoucherCreateViewModel(freeDeliveryVoucherCreateViewModel: FreeDeliveryVoucherCreateViewModel): ViewModel
 
     @Binds
     @IntoMap
     @ViewModelKey(CashbackVoucherCreateViewModel::class)
-    abstract fun provideCashbackVoucherCreateViewModel(cashbackVoucherCreateViewModel: CashbackVoucherCreateViewModel): ViewModel
+    internal abstract fun provideCashbackVoucherCreateViewModel(cashbackVoucherCreateViewModel: CashbackVoucherCreateViewModel): ViewModel
 
     @Binds
     @IntoMap
     @ViewModelKey(PromotionBudgetAndTypeViewModel::class)
-    abstract fun providePromotionBudgetAndTypeViewModel(promotionBudgetAndTypeViewModel: PromotionBudgetAndTypeViewModel): ViewModel
+    internal abstract fun providePromotionBudgetAndTypeViewModel(promotionBudgetAndTypeViewModel: PromotionBudgetAndTypeViewModel): ViewModel
 
     @Binds
     @IntoMap
     @ViewModelKey(CreatePromoCodeViewModel::class)
-    abstract fun provideCreatePromoCodeViewModel(createPromoCodeViewModel: CreatePromoCodeViewModel): ViewModel
+    internal abstract fun provideCreatePromoCodeViewModel(createPromoCodeViewModel: CreatePromoCodeViewModel): ViewModel
 
     @Binds
     @IntoMap
     @ViewModelKey(SetVoucherPeriodViewModel::class)
-    abstract fun provideSetVoucherPeriodViewModel(setVoucherPeriodViewModel: SetVoucherPeriodViewModel): ViewModel
+    internal abstract fun provideSetVoucherPeriodViewModel(setVoucherPeriodViewModel: SetVoucherPeriodViewModel): ViewModel
 
     @Binds
     @IntoMap
     @ViewModelKey(ReviewVoucherViewModel::class)
-    abstract fun provideReviewVoucherViewModel(reviewVoucherViewModel: ReviewVoucherViewModel): ViewModel
+    internal abstract fun provideReviewVoucherViewModel(reviewVoucherViewModel: ReviewVoucherViewModel): ViewModel
 
     @Binds
     @IntoMap
     @ViewModelKey(ChangeVoucherPeriodViewModel::class)
-    abstract fun provideChangeVoucherPeriodViewModel(changeVoucherPeriodViewModel: ChangeVoucherPeriodViewModel): ViewModel
+    internal abstract fun provideChangeVoucherPeriodViewModel(changeVoucherPeriodViewModel: ChangeVoucherPeriodViewModel): ViewModel
 
     @Binds
     @IntoMap
     @ViewModelKey(VoucherDetailViewModel::class)
-    abstract fun provideVoucherDetailViewModel(voucherDetailViewModel: VoucherDetailViewModel): ViewModel
+    internal abstract fun provideVoucherDetailViewModel(voucherDetailViewModel: VoucherDetailViewModel): ViewModel
 
     @Binds
     @IntoMap
     @ViewModelKey(EditQuotaViewModel::class)
-    abstract fun provideEditQuotaViewModel(editQuotaViewModel: EditQuotaViewModel): ViewModel
+    internal abstract fun provideEditQuotaViewModel(editQuotaViewModel: EditQuotaViewModel): ViewModel
 }

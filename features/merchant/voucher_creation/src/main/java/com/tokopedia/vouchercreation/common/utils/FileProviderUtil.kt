@@ -12,7 +12,7 @@ private const val FILE_DIR = "voucher_images"
 fun Bitmap.getSavedImageDirPath(context: Context, filename: String): String {
     val contextWrapper = ContextWrapper(context)
     val fileDir = contextWrapper.getDir(FILE_DIR, Context.MODE_PRIVATE)
-    val filePath = File(fileDir, "$filename.jpg")
+    val filePath = File(fileDir, "${filename}.jpg")
 
     val fos = FileOutputStream(filePath)
     try {

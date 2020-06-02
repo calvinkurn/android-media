@@ -18,7 +18,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class SetVoucherPeriodViewModel @Inject constructor(
-        @Named("Main") dispatcher: CoroutineDispatcher,
+        dispatcher: CoroutineDispatcher,
         private val periodValidationUseCase: PeriodValidationUseCase
 ) : BaseViewModel(dispatcher) {
 

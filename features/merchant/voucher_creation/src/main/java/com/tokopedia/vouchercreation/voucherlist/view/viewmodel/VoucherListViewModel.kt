@@ -31,7 +31,7 @@ class VoucherListViewModel @Inject constructor(
         private val getVoucherListUseCase: GetVoucherListUseCase,
         private val cancelVoucherUseCase: CancelVoucherUseCase,
         private val shopBasicDataUseCase: ShopBasicDataUseCase,
-        @Named("Main") dispatcher: CoroutineDispatcher
+        dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
     private val notStartedVoucherRequestParam by lazy {

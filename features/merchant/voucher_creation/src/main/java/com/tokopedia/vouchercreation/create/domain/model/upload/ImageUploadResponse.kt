@@ -1,19 +1,32 @@
 package com.tokopedia.vouchercreation.create.domain.model.upload
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ImageUploadResponse (
         @SerializedName("data")
-        val data: ImageUploadData = ImageUploadData()
-)
+        @Expose
+        val data: ImageUploadData? = null,
+        @SerializedName("message_error")
+        @Expose
+        val messageError: MutableList<String> = mutableListOf()) {
 
-data class ImageUploadData(
-        @SerializedName("pic_obj")
-        val picObj: String? = "",
-        @SerializedName("pic_src")
-        val picSrc: String? = "",
-        @SerializedName("server_id")
-        val serverId: String? = "",
-        @SerializedName("success")
-        val success: String? = ""
-)
+        data class ImageUploadData(
+                @SerializedName("message_status")
+                @Expose
+                val messageStatus: String? = null,
+                @SerializedName("pic_obj")
+                @Expose
+                val picObj: String? = null,
+                @SerializedName("pic_src")
+                @Expose
+                val picSrc: String? = null,
+                @SerializedName("server_id")
+                @Expose
+                val serverId: String? = null,
+                @SerializedName("success")
+                @Expose
+                val success: String = "1"
+        )
+}
+

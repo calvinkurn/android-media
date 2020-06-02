@@ -17,9 +17,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
-import javax.inject.Named
 
-class ChangeVoucherPeriodViewModel @Inject constructor(@Named("Main") dispatcher: CoroutineDispatcher,
+class ChangeVoucherPeriodViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                                                        private val changeVoucherPeriodUseCase: ChangeVoucherPeriodUseCase,
                                                        private val getTokenUseCase: GetTokenUseCase) : BaseViewModel(dispatcher) {
 

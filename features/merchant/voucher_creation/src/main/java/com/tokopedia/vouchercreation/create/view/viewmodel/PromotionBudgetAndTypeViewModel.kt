@@ -18,7 +18,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class PromotionBudgetAndTypeViewModel @Inject constructor(
-        @Named("Main") dispatcher: CoroutineDispatcher,
+        dispatcher: CoroutineDispatcher,
         private val basicShopInfoUseCase: BasicShopInfoUseCase,
         private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcher){

@@ -25,7 +25,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class CashbackVoucherCreateViewModel @Inject constructor(
-        @Named("Main") dispatcher: CoroutineDispatcher,
+        dispatcher: CoroutineDispatcher,
         private val cashbackRupiahValidationUseCase: CashbackRupiahValidationUseCase,
         private val cashbackPercentageValidationUseCase: CashbackPercentageValidationUseCase
 ) : BaseViewModel(dispatcher) {

@@ -20,13 +20,9 @@ import dagger.Component
 
 @VoucherCreationScope
 @Component(
-        modules = [
-            VoucherCreationModule::class,
-            VoucherCreationViewModelModule::class
-        ], dependencies = [BaseAppComponent::class]
+        modules = [VoucherCreationModule::class, VoucherCreationViewModelModule::class], dependencies = [BaseAppComponent::class]
 )
 interface VoucherCreationComponent {
-
     fun inject(createMerchantVoucherStepsActivity: CreateMerchantVoucherStepsActivity)
     fun inject(merchantVoucherTargetFragment: MerchantVoucherTargetFragment)
     fun inject(voucherListFragment: VoucherListFragment)

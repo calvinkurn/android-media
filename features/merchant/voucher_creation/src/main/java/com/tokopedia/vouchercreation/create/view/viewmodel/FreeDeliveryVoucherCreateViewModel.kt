@@ -17,10 +17,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Named
 
 class FreeDeliveryVoucherCreateViewModel @Inject constructor(
-        @Named("Main") dispatcher: CoroutineDispatcher,
+        dispatcher: CoroutineDispatcher,
         private val freeDeliveryValidationUseCase: FreeDeliveryValidationUseCase
 ) : BaseViewModel(dispatcher) {
 

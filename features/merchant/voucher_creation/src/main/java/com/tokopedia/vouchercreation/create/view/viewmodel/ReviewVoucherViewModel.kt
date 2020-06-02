@@ -11,7 +11,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.create.domain.model.CreateVoucherParam
 import com.tokopedia.vouchercreation.create.domain.model.MerchantPromotionCreateMvData
-import com.tokopedia.vouchercreation.create.domain.model.upload.ImageUploadResponse
 import com.tokopedia.vouchercreation.create.domain.usecase.CreateVoucherUseCase
 import com.tokopedia.vouchercreation.create.domain.usecase.SaveBannerVoucherUseCase
 import com.tokopedia.vouchercreation.create.domain.usecase.SaveSquareVoucherUseCase
@@ -25,10 +24,9 @@ import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import javax.inject.Inject
-import javax.inject.Named
 
 class ReviewVoucherViewModel @Inject constructor(
-        @Named("Main") dispatcher: CoroutineDispatcher,
+        dispatcher: CoroutineDispatcher,
         private val createVoucherUseCase: CreateVoucherUseCase,
         private val uploadVoucherUseCase: UploadVoucherUseCase,
         private val saveBannerVoucherUseCase: SaveBannerVoucherUseCase,
@@ -63,11 +61,11 @@ class ReviewVoucherViewModel @Inject constructor(
         getUploadVoucherImagesObservable(bannerImagePath, squareImagePath)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe( object : Subscriber<Pair<String,String>>() {
-                    override fun onNext(resultPair: Pair<String, String>?) {
+                .subscribe( object : Subscriber<MutableList<String?>>() {
+                    override fun onNext(t: MutableList<String?>?) {
                         createVoucherParam.run {
-                            image = resultPair?.first.toBlankOrString()
-                            image_square = resultPair?.second.toBlankOrString()
+                            image = t?.get(0).toBlankOrString()
+                            image_square = t?.get(1).toBlankOrString()
                         }
                         createVoucher(createVoucherParam)
                     }
@@ -83,20 +81,8 @@ class ReviewVoucherViewModel @Inject constructor(
     }
 
     private fun getUploadVoucherImagesObservable(bannerImagePath: String,
-                                                 squareImagePath: String): Observable<Pair<String, String>> =
-        Observable.zip(
-                uploadBannerImage(bannerImagePath),
-                uploadSquareImage(squareImagePath)) { bannerResponse, squareResponse ->
-            Pair(bannerResponse.data.picObj.toBlankOrString(), squareResponse.data.picObj.toBlankOrString())
-        }
-
-    private fun uploadBannerImage(bannerImagePath: String): Observable<ImageUploadResponse> =
-            uploadVoucherUseCase.createObservable(UploadVoucherUseCase.createRequestParams(bannerImagePath))
-                    .subscribeOn(Schedulers.io())
-
-    private fun uploadSquareImage(squareImagePath: String): Observable<ImageUploadResponse> =
-            uploadVoucherUseCase.createObservable(UploadVoucherUseCase.createRequestParams(squareImagePath))
-                    .subscribeOn(Schedulers.io())
+                                                 squareImagePath: String): Observable<MutableList<String?>> =
+            uploadVoucherUseCase.createObservable(UploadVoucherUseCase.createRequestParams(bannerImagePath, squareImagePath))
 
     fun createVoucher(createVoucherParam: CreateVoucherParam) {
         launchCatchError(

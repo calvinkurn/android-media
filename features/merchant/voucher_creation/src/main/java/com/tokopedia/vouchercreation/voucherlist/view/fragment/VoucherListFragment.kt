@@ -81,7 +81,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     private var fragmentListener: Listener? = null
 
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val mViewModel: VoucherListViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(VoucherListViewModel::class.java)
@@ -363,23 +363,21 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         if (!isAdded) return
         val parent = view as? ViewGroup ?: return
         EditQuotaBottomSheet.createInstance(parent, voucher)
-                .apply {
-                    setOnSuccessUpdateVoucher {
-                        view?.run {
-                            Toaster.make(this,
-                                    context?.getString(R.string.mvc_quota_success).toBlankOrString(),
-                                    Toaster.LENGTH_SHORT,
-                                    Toaster.TYPE_NORMAL,
-                                    context?.getString(R.string.mvc_oke).toBlankOrString())
-                        }
+                .setOnSuccessUpdateVoucher {
+                    view?.run {
+                        Toaster.make(this,
+                                context?.getString(R.string.mvc_quota_success).toBlankOrString(),
+                                Toaster.LENGTH_SHORT,
+                                Toaster.TYPE_NORMAL,
+                                context?.getString(R.string.mvc_oke).toBlankOrString())
                     }
-                    setOnFailUpdateVoucher { errorMessage ->
-                        view?.run {
-                            Toaster.make(this,
-                                    errorMessage,
-                                    Toaster.LENGTH_SHORT,
-                                    Toaster.TYPE_ERROR)
-                        }
+                }
+                .setOnFailUpdateVoucher { errorMessage ->
+                    view?.run {
+                        Toaster.make(this,
+                                errorMessage,
+                                Toaster.LENGTH_SHORT,
+                                Toaster.TYPE_ERROR)
                     }
                 }.show(childFragmentManager)
     }

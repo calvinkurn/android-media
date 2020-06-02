@@ -1,6 +1,8 @@
 package com.tokopedia.vouchercreation.create.domain.usecase
 
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
+import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -8,53 +10,59 @@ import com.tokopedia.vouchercreation.create.domain.model.upload.ImageUploadRespo
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import rx.Observable
-import java.util.*
+import rx.functions.Func1
 import javax.inject.Inject
 
 class UploadVoucherUseCase @Inject constructor(
-        private val uploadImageUseCase: UploadImageUseCase<ImageUploadResponse>,
-        private val userSession: UserSessionInterface) : UseCase<ImageUploadResponse>() {
+        private val uploadImageUseCase: UploadImageUseCase<ImageUploadResponse.ImageUploadData>,
+        private val userSession: UserSessionInterface) : UseCase<MutableList<String?>>() {
 
     companion object {
         private const val PARAM_ID = "id"
-        private const val PARAM_RESOLUTION = "param_resolution"
+        private const val PARAM_TOKEN = "token"
+        private const val PARAM_RESOLUTION = "resolution"
         private const val DEFAULT_UPLOAD_PATH = "/upload/attachment"
         private const val DEFAULT_UPLOAD_TYPE = "fileToUpload\"; filename=\"image.jpg"
         private const val DEFAULT_RESOLUTION = "100-square"
         private const val RESOLUTION_500 = "500"
         private const val TEXT_PLAIN = "text/plain"
-        private const val FILE_PREFIX = "file:"
-        private const val IMAGE_PATH = "image_path"
+        private const val IMAGES_PATH = "images_path"
 
-        fun createRequestParams(imagePath: String):
-                RequestParams {
-            val requestParams = RequestParams.create()
-            requestParams.putObject(IMAGE_PATH, imagePath)
-            return requestParams
+        fun createRequestParams(bannerImagePath: String,
+                                squareImagePath: String): RequestParams =
+            RequestParams.create().apply {
+                putObject(IMAGES_PATH, listOf(bannerImagePath, squareImagePath))
+            }
+    }
+
+    override fun createObservable(requestParams: RequestParams): Observable<MutableList<String?>> {
+        val imagesField = requestParams.parameters[IMAGES_PATH]
+        val images = (imagesField as? List<Any?>)?.filterIsInstance<String>().orEmpty()
+        val uploadParamSource = images.map { createUploadParams(it) }
+        return with(uploadParamSource) {
+            Observable.from(this)
+                    .flatMap { uploadImageUseCase.createObservable(it) }
+                    .map(mapToHighResolutionUrl())
+                    .filter { it != null }
+                    .toList()
         }
     }
 
-    override fun createObservable(requestParams: RequestParams): Observable<ImageUploadResponse> {
-        return uploadImageUseCase.getExecuteObservable(
-                createUploadParams(
-                        requestParams.getString(IMAGE_PATH, "")))
-                .flatMap { model ->
-                    Observable.just<ImageUploadResponse>(model.dataResultImageUpload)
+    private fun mapToHighResolutionUrl(): Func1<ImageUploadDomainModel<ImageUploadResponse.ImageUploadData>, String> =
+            Func1 { model ->
+                val lowResUrl = model.dataResultImageUpload.picSrc.toBlankOrString()
+                if (lowResUrl.contains(DEFAULT_RESOLUTION)) {
+                    lowResUrl.replaceFirst(DEFAULT_RESOLUTION.toRegex(), RESOLUTION_500)
+                } else {
+                    lowResUrl
                 }
-    }
+            }
 
-    private fun createUploadParams(fileLocation: String?): RequestParams {
-        val maps = HashMap<String, RequestBody>()
-        val resolution = RequestBody.create(
-                MediaType.parse(TEXT_PLAIN),
-                RESOLUTION_500
-        )
-        val id = RequestBody.create(
-                MediaType.parse(TEXT_PLAIN),
-                userSession.userId + UUID.randomUUID() + System.currentTimeMillis()
-        )
-        maps[PARAM_ID] = id
-        maps[PARAM_RESOLUTION] = resolution
+    private fun createUploadParams(fileLocation: String): RequestParams {
+        val id = RequestBody.create(MediaType.parse(TEXT_PLAIN), userSession.userId)
+        val token = RequestBody.create(MediaType.parse(TEXT_PLAIN), userSession.accessToken)
+        val resolution = RequestBody.create(MediaType.parse(TEXT_PLAIN), RESOLUTION_500)
+        val maps = mapOf(PARAM_ID to id, PARAM_TOKEN to token, PARAM_RESOLUTION to resolution)
         return uploadImageUseCase.createRequestParam(
                 fileLocation,
                 DEFAULT_UPLOAD_PATH,

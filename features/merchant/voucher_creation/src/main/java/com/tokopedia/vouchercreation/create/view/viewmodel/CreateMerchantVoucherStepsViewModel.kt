@@ -23,7 +23,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class CreateMerchantVoucherStepsViewModel @Inject constructor(
-        @Named("Main") dispatcher: CoroutineDispatcher,
+        dispatcher: CoroutineDispatcher,
         private val initiateVoucherUseCase: InitiateVoucherUseCase,
         private val basicShopInfoUseCase: BasicShopInfoUseCase,
         private val userSession: UserSessionInterface
