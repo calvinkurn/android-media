@@ -9,5 +9,5 @@ import com.google.gson.annotations.SerializedName
 data class TelcoCatalogPrefixSelect(
         @SerializedName("rechargeCatalogPrefixSelect")
         @Expose
-        val rechargeCatalogPrefixSelect: RechargeCatalogPrefixSelect
+        val rechargeCatalogPrefixSelect: RechargeCatalogPrefixSelect = RechargeCatalogPrefixSelect()
 )

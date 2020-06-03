@@ -36,26 +36,26 @@ data class RechargeCatalogPrefixSelect(
 data class RechargePrefix(
         @SerializedName("key")
         @Expose
-        val key: String,
+        val key: String = "",
         @SerializedName("value")
         @Expose
-        val value: String,
+        val value: String = "",
         @SerializedName("operator")
         @Expose
-        val operator: TelcoOperator
+        val operator: TelcoOperator = TelcoOperator()
 )
 
 data class RechargeValidation(
         @SerializedName("id")
         @Expose
-        val id: Int,
+        val id: Int = 0,
         @SerializedName("title")
         @Expose
-        val title: String,
+        val title: String = "",
         @SerializedName("message")
         @Expose
-        val message: String,
+        val message: String = "",
         @SerializedName("rule")
         @Expose
-        val rule: String
+        val rule: String = ""
 )

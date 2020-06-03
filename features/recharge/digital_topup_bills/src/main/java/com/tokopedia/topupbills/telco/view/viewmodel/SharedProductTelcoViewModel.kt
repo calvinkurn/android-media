@@ -3,7 +3,6 @@ package com.tokopedia.topupbills.telco.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -27,11 +26,17 @@ class SharedProductTelcoViewModel @Inject constructor(private val graphqlReposit
                                                       val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
-    val productCatalogItem = MutableLiveData<TelcoProduct>()
-    val showTotalPrice = MutableLiveData<Boolean>()
-    val promoItem = MutableLiveData<Int>()
-    val enquiryResult = MutableLiveData<TelcoEnquiryData>()
-    val productList = MutableLiveData<List<TelcoCatalogProductInput>>()
+    private val _productCatalogItem = MutableLiveData<TelcoProduct>()
+    val productCatalogItem: LiveData<TelcoProduct>
+        get() = _productCatalogItem
+
+    private val _showTotalPrice = MutableLiveData<Boolean>()
+    val showTotalPrice: LiveData<Boolean>
+        get() = _showTotalPrice
+
+    private val _productList = MutableLiveData<List<TelcoCatalogProductInput>>()
+    val productList: LiveData<List<TelcoCatalogProductInput>>
+        get() = _productList
 
     private val _errorProductList = MutableLiveData<Throwable>()
     val errorProductList: LiveData<Throwable>
@@ -42,19 +47,11 @@ class SharedProductTelcoViewModel @Inject constructor(private val graphqlReposit
         get() = _loadingProductList
 
     fun setProductCatalogSelected(productCatalogItem: TelcoProduct) {
-        this.productCatalogItem.value = productCatalogItem
+        _productCatalogItem.postValue(productCatalogItem)
     }
 
     fun setShowTotalPrice(show: Boolean) {
-        this.showTotalPrice.value = show
-    }
-
-    fun setPromoSelected(promoId: Int) {
-        this.promoItem.value = promoId
-    }
-
-    fun setEnquiryResult(telcoEnquiryData: TelcoEnquiryData) {
-        this.enquiryResult.value = telcoEnquiryData
+        _showTotalPrice.postValue(show)
     }
 
     // cache in 10 minutes
@@ -76,7 +73,7 @@ class SharedProductTelcoViewModel @Inject constructor(private val graphqlReposit
             if (data.rechargeCatalogProductDataData.productInputList.isEmpty()) {
                 _errorProductList.postValue(MessageErrorException())
             } else {
-                productList.postValue(data.rechargeCatalogProductDataData.productInputList)
+                _productList.postValue(data.rechargeCatalogProductDataData.productInputList)
             }
         }) {
             _loadingProductList.postValue(false)

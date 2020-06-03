@@ -1,38 +1,44 @@
 package com.tokopedia.topupbills.telco.view.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topupbills.telco.data.TelcoCatalogPrefixSelect
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
  * Created by nabillasabbaha on 10/05/19.
  */
-class DigitalTelcoCustomViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                                      val dispatcher: CoroutineDispatcher)
+class DigitalTelcoOperatorViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
+                                                        val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
-    fun getPrefixOperator(rawQuery: String, menuId: Int,
-                          onSuccess: (TelcoCatalogPrefixSelect) -> Unit,
-                          onError: (Throwable) -> Unit) {
+    private val _catalogPrefixSelect = MutableLiveData<Result<TelcoCatalogPrefixSelect>>()
+    val catalogPrefixSelect: LiveData<Result<TelcoCatalogPrefixSelect>>
+        get() = _catalogPrefixSelect
+
+    fun getPrefixOperator(rawQuery: String, menuId: Int) {
         launchCatchError(block = {
             var mapParam = HashMap<String, kotlin.Any>()
             mapParam[KEY_MENU_ID] = menuId
 
-            val data = withContext(Dispatchers.Default) {
+            val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogPrefixSelect::class.java, mapParam)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TelcoCatalogPrefixSelect>()
 
-            onSuccess(data)
+            _catalogPrefixSelect.postValue(Success(data))
         }) {
-            onError(it)
+            _catalogPrefixSelect.postValue(Fail(it))
         }
     }
 

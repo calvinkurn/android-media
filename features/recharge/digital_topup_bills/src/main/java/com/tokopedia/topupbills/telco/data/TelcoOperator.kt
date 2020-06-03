@@ -9,8 +9,8 @@ import com.google.gson.annotations.SerializedName
 data class TelcoOperator(
         @SerializedName("id")
         @Expose
-        val id: String,
+        val id: String = "",
         @SerializedName("attributes")
         @Expose
-        val attributes: TelcoAttributesOperator
+        val attributes: TelcoAttributesOperator = TelcoAttributesOperator()
 )
