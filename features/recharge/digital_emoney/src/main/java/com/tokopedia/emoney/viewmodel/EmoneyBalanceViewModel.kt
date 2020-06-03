@@ -115,11 +115,11 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
                     }
                 }
             } catch (e: IOException) {
-                errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_UPDATE_BALANCE)
-            } finally {
                 isoDep.close()
+                errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_UPDATE_BALANCE)
             }
         } else {
+            isoDep.close()
             errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_UPDATE_BALANCE)
         }
     }
