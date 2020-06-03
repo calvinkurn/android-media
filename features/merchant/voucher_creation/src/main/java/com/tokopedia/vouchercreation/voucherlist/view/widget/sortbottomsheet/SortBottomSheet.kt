@@ -117,7 +117,7 @@ class SortBottomSheet(
         fun getMvcSortItems(context: Context): MutableList<SortUiModel> {
             return mutableListOf(
                     SortUiModel(context.getString(R.string.mvc_newest_done_date), SortBy.NEWEST_DONE_DATE, true),
-                    SortUiModel(context.getString(R.string.mvc_oldest_done_date), SortBy.NEWEST_DONE_DATE)
+                    SortUiModel(context.getString(R.string.mvc_oldest_done_date), SortBy.OLDEST_DONE_DATE)
             )
         }
     }

@@ -157,6 +157,8 @@
     <string name="mvc_apply">Terapkan</string>
     <string name="mvc_newest_done_date">Tanggal selesai terkini</string>
     <string name="mvc_oldest_done_date">Tanggal selesai terlama</string>
+    <string name="mvc_newest">Terkini</string>
+    <string name="mvc_oldest">Terlama</string>
     <string name="mvc_filter">Filter</string>
     <string name="mvc_reset">Reset</string>
     <string name="mvc_free_shipping">Gratis Ongkir</string>

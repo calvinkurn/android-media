@@ -51,6 +51,7 @@ import com.tokopedia.vouchercreation.voucherlist.view.widget.headerchips.ChipTyp
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.SocmedType
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sortbottomsheet.SortBottomSheet
+import com.tokopedia.vouchercreation.voucherlist.view.widget.sortbottomsheet.SortBy
 import kotlinx.android.synthetic.main.fragment_mvc_voucher_list.*
 import kotlinx.android.synthetic.main.fragment_mvc_voucher_list.view.*
 import javax.inject.Inject
@@ -126,6 +127,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     private var voucherTarget: List<Int>? = null
     @VoucherSort
     private var voucherSort: String? = null
+    private var isInverted: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_mvc_voucher_list, container, false)
@@ -192,13 +194,13 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         if (isActiveVoucher) {
             mViewModel.getActiveVoucherList(shopBasicData == null)
         } else {
-            mViewModel.getVoucherListHistory(voucherType, voucherTarget, voucherSort, page)
+            mViewModel.getVoucherListHistory(voucherType, voucherTarget, voucherSort, page, isInverted)
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            android.R.id.home -> activity?.finish()
+            android.R.id.home -> activity?.onBackPressed()
             R.id.menuMvcShowVoucherActive -> {
                 fragmentListener?.switchFragment(true)
             }
@@ -498,7 +500,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         if (!isAdded) return
         sortBottomSheet
                 ?.setOnApplySortListener {
-                    applyFilter()
+                    applySort()
                 }
                 ?.setOnCancelApply { previousSortItems ->
                     sortItems.clear()
@@ -518,6 +520,18 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                     filterItems.addAll(previousFilterItems)
                 }
                 ?.show(childFragmentManager, filterItems)
+    }
+
+    private fun applySort() {
+        clearAllData()
+
+        voucherSort = VoucherSort.FINISH_TIME
+
+        val activeSort = sortItems.first { it.isSelected }
+        headerChipMvc?.setActiveSort(activeSort)
+        isInverted = activeSort.key == SortBy.OLDEST_DONE_DATE
+
+        loadData(1)
     }
 
     private fun applyFilter() {

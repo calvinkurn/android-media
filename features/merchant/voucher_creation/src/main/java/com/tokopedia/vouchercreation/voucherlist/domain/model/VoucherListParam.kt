@@ -9,7 +9,8 @@ data class VoucherListParam (
         val is_public: String?,
         var page: Int?,
         val per_page: Int? = 10,
-        val sort_by: String? = null) {
+        val sort_by: String? = null,
+        val is_inverted: Boolean) {
 
     companion object {
         @JvmStatic
@@ -17,13 +18,15 @@ data class VoucherListParam (
                         @VoucherStatus status: String,
                         targetList: List<Int>? = null,
                         @VoucherSort sort: String? = null,
-                        page: Int? = null) : VoucherListParam {
+                        page: Int? = null,
+                        isInverted: Boolean = false) : VoucherListParam {
             return VoucherListParam(
                     voucher_type = type,
                     voucher_status = status,
                     is_public = targetList?.joinToString(separator = ","),
                     page = page,
-                    sort_by = sort
+                    sort_by = sort,
+                    is_inverted = isInverted
             )
         }
     }
@@ -60,7 +63,7 @@ annotation class VoucherTarget {
 annotation class VoucherSort {
     companion object {
         const val CREATE_TIME = "create_time"
-        const val START_TIME = "start_time"
-        const val FINISH_TIME = "finish_time"
+        const val START_TIME = "voucher_start_time"
+        const val FINISH_TIME = "voucher_finish_time"
     }
 }

@@ -12,7 +12,9 @@ import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseFilterUiModel
 import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel
 import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel.HeaderChip
 import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel.ResetChip
+import com.tokopedia.vouchercreation.voucherlist.model.ui.SortUiModel
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.HeaderChipsAdapter
+import com.tokopedia.vouchercreation.voucherlist.view.widget.sortbottomsheet.SortBy
 
 /**
  * Created By @ilhamsuaib on 20/04/20
@@ -107,6 +109,18 @@ class HeaderChipsView : RecyclerView {
             }
         }
         notifyItem(filterChip)
+    }
+
+    fun setActiveSort(activeSort: SortUiModel) {
+        with(sortChip) {
+            text = when(activeSort.key) {
+                SortBy.OLDEST_DONE_DATE -> context?.getString(R.string.mvc_oldest).toBlankOrString()
+                SortBy.NEWEST_DONE_DATE -> context?.getString(R.string.mvc_newest).toBlankOrString()
+                else -> context?.getString(R.string.mvc_sort).toBlankOrString()
+            }
+            isActive = true
+        }
+        notifyItem(sortChip)
     }
 
     fun setOnItemClickListener(onClick: (element: BaseHeaderChipUiModel) -> Unit) {

@@ -38,7 +38,7 @@ class VoucherListActivity : BaseActivity(), VoucherListFragment.Listener {
         if (isActiveVoucher) {
             super.onBackPressed()
         } else {
-            switchFragment(isActiveVoucher)
+            switchFragment(true)
         }
     }
 

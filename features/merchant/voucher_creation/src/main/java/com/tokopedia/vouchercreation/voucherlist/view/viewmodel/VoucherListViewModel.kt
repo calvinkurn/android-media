@@ -144,7 +144,8 @@ class VoucherListViewModel @Inject constructor(
     fun getVoucherListHistory(@VoucherTypeConst type: Int?,
                               targetList: List<Int>?,
                               @VoucherSort sort: String?,
-                              page: Int) {
+                              page: Int,
+                              isInverted: Boolean) {
         launchCatchError(block = {
             getVoucherListUseCase.params = GetVoucherListUseCase.createRequestParam(
                     VoucherListParam.createParam(
@@ -152,7 +153,8 @@ class VoucherListViewModel @Inject constructor(
                             type = type,
                             targetList = targetList,
                             sort = sort,
-                            page = page)
+                            page = page,
+                            isInverted = isInverted)
             )
             withContext(Dispatchers.IO) {
                 val voucherList = getVoucherListUseCase.executeOnBackground()
