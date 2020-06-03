@@ -8,15 +8,15 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class DeviceInfo {
-    @SerializedName("device_time")
+    @SerializedName("device_name")
     @Expose
-    private String deviceTime;
+    private String deviceName;
     @SerializedName("device_version")
     @Expose
     private String deviceVersion;
 
-    public String getDeviceTime() {
-        return deviceTime;
+    public String getDeviceName() {
+        return deviceName;
     }
 
     public String getDeviceVersion() {
