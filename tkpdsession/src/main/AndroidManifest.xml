@@ -61,13 +61,6 @@
         </activity>
 
         <activity
-            android:name=".changename.view.activity.ChangeNameActivity"
-            android:label="@string/title_change_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustResize"/>
-
-        <activity
             android:name=".register.registerphonenumber.view.activity.AddNameRegisterPhoneActivity"
             android:label="@string/title_add_name_empty"
             android:screenOrientation="portrait"
