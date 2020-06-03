@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.pdp.adapter.EventPDPTicketItemPackageAdapter
+import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
 import com.tokopedia.entertainment.pdp.data.PackageV3
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
 import com.tokopedia.entertainment.pdp.widget.WidgetEventPDPExpandable
@@ -18,6 +19,7 @@ class PackageParentViewHolder (view: View,
         WidgetEventPDPExpandable.EventWidgetExpandableListener{
 
     lateinit var chooseNewPackage: (String) -> Unit
+    lateinit var eventPDPTracking: EventPDPTracking
     var idPackage = ""
 
     var eventPDPTicketAdapter = EventPDPTicketItemPackageAdapter(onBindItemTicketListener)
@@ -29,6 +31,7 @@ class PackageParentViewHolder (view: View,
                 expand_event_pdp_ticket.setExpand(false)
             }
             eventPDPTicketAdapter.setList(element.packageItems, element.id)
+            eventPDPTicketAdapter.eventPDPTracking = eventPDPTracking
             tg_event_pdp_expand_title.text = element.name
             tg_event_pdp_expand_price.text = Html.fromHtml(context.resources.getString(R.string.ent_checkout_price_expand,
                     CurrencyFormatter.getRupiahFormat(element.salesPrice.toLong())))

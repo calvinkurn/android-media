@@ -101,7 +101,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
     }
 
     override fun createAdapterInstance(): BaseListAdapter<EventPDPTicketModel, PackageTypeFactory> {
-        return EventPDPParentPackageAdapter(packageTypeFactoryImp)
+        return EventPDPParentPackageAdapter(packageTypeFactoryImp, eventPDPTracking)
     }
 
 
@@ -222,13 +222,13 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
     }
 
     private fun setupPilihTicketButton() {
-        eventPDPTracking.onClickPesanTiket(viewModel.categoryData,
-                PRODUCT_NAME, PRODUCT_ID, PRODUCT_PRICE, AMOUNT_TICKET,PACKAGES_ID)
         pilihTicketBtn.setOnClickListener {
             eventVerifyRequest.cartdata.metadata.totalPrice = getTotalPrice(hashItemMap)
             eventVerifyRequest.cartdata.metadata.itemIds = getItemIds(hashItemMap)
             eventVerifyRequest.cartdata.metadata.itemMaps = getListItemMap(hashItemMap)
             eventVerifyRequest.cartdata.metadata.quantity = getTotalQuantity(hashItemMap)
+            eventPDPTracking.onClickPesanTiket(viewModel.categoryData,
+                    PRODUCT_NAME, PRODUCT_ID, PRODUCT_PRICE, AMOUNT_TICKET,PACKAGES_ID)
             viewModel.verify(GraphqlHelper.loadRawString(resources, R.raw.gql_mutation_event_verify_v2), eventVerifyRequest)
         }
     }

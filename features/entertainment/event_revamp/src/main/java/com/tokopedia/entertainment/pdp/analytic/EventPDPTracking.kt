@@ -154,11 +154,12 @@ class EventPDPTracking constructor(val userSession: UserSessionInterface, val ir
     }
 
     fun onViewCheckoutPage(mPackage: PackageV3, productDetailData: ProductDetailData, qty: Int){
+        val title = productDetailData.category.firstOrNull()?.title
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 Event.KEY, "checkout",
                 Event.CATEGORY, "digital - event",
                 Event.ACTION, "view checkout",
-                Event.LABEL, String.format("%s -  %s", productDetailData.category[0].title, mPackage.name),
+                Event.LABEL, String.format("%s -  %s", title , mPackage.name),
                 Other.SCREENNAME, "digital/events/summary",
                 Other.CLIENTID, userSession.deviceId,
                 Other.SESSIONIRIS, irisSession.getSessionId(),
@@ -188,11 +189,12 @@ class EventPDPTracking constructor(val userSession: UserSessionInterface, val ir
     }
 
     fun onClickCheckoutButton(mPackage: PackageV3, productDetailData: ProductDetailData, qty: Int){
+        val title = productDetailData.category.firstOrNull()?.title
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 Event.KEY, "checkout",
                 Event.CATEGORY, "digital - event",
                 Event.ACTION, "clicked proceed payment",
-                Event.LABEL, String.format("%s -  %s", productDetailData.category[0].title, mPackage.name),
+                Event.LABEL, String.format("%s -  %s", title, mPackage.name),
                 Other.SCREENNAME, "digital/events/summary",
                 Other.CLIENTID, userSession.deviceId,
                 Other.SESSIONIRIS, irisSession.getSessionId(),
