@@ -2,57 +2,57 @@ package com.tokopedia.payment.setting.list.view.presenter
 
 import android.content.res.Resources
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.payment.setting.R
-import com.tokopedia.payment.setting.list.model.DataCreditCardList
-import com.tokopedia.usecase.RequestParams
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.payment.setting.list.domain.GetCreditCardListUseCase
+import com.tokopedia.payment.setting.list.model.GQLPaymentQueryResponse
+import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
+import javax.inject.Inject
 
-class SettingListPaymentPresenter(val userSession: UserSession) : BaseDaggerPresenter<SettingListPaymentContract.View>(), SettingListPaymentContract.Presenter {
+class SettingListPaymentPresenter @Inject constructor(
+        private val userSession: UserSessionInterface,
+        private val getCreditCardListUseCase: GetCreditCardListUseCase)
+    : BaseDaggerPresenter<SettingListPaymentContract.View>(), SettingListPaymentContract.Presenter {
 
-    private val getCCListUseCase = GraphqlUseCase()
-
-    override fun getCreditCardList(resources : Resources) {
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.credit_card_list_query), DataCreditCardList::class.java, null, false)
-        getCCListUseCase.clearRequest()
-        getCCListUseCase.addRequest(graphqlRequest)
-        getCCListUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
-            override fun onCompleted() {
-
-            }
-
-            override fun onError(e: Throwable) {
+    override fun getCreditCardList(resources: Resources) {
+        getCreditCardListUseCase.execute(object : Subscriber<GraphqlResponse>() {
+            override fun onNext(objects: GraphqlResponse?) {
                 if (isViewAttached) {
-                    view.showGetListError(e)
+                    val response = objects?.getData<GQLPaymentQueryResponse>(GQLPaymentQueryResponse::class.java)
+                    response?.let {
+                        view.onPaymentSignature(response.paymentQueryResponse.paymentSignature)
+                        view.renderList(response.paymentQueryResponse.creditCard.cards
+                                ?: ArrayList())
+                    }
                 }
             }
 
-            override fun onNext(objects: GraphqlResponse) {
-                val paymentList = objects.getData<DataCreditCardList>(DataCreditCardList::class.java)
-                view.renderList(paymentList?.creditCard?.cards?:ArrayList())
+            override fun onCompleted() {
             }
+
+            override fun onError(e: Throwable?) {
+                if (isViewAttached) {
+                    e?.let {
+                        view.showGetListError(e)
+                    }
+                }
+            }
+
         })
     }
 
     override fun checkVerificationPhone() {
         view.showLoadingDialog()
-        if(userSession.isMsisdnVerified){
+        if (userSession.isMsisdnVerified) {
             view.hideLoadingDialog()
             view.onSuccessVerifPhone()
-        }else{
+        } else {
             view.hideLoadingDialog()
             view.onNeedVerifPhone()
         }
     }
 
     override fun detachView() {
-        getCCListUseCase.unsubscribe()
-        super.detachView()
+        getCreditCardListUseCase.unSubscribe()
     }
-
 }

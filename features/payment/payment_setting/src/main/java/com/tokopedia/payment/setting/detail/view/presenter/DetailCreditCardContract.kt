@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 
 interface DetailCreditCardContract {
-    interface View : CustomerView{
+    interface View : CustomerView {
         fun onDeleteCCResult(success: Boolean?, message: String?, tokenId: String?)
         fun onErrorDeleteCC(e: Throwable, tokenId: String?)
         fun showProgressDialog()
@@ -13,7 +13,7 @@ interface DetailCreditCardContract {
 
     }
 
-    interface Presenter : CustomerPresenter<View>{
-        fun deleteCreditCard(tokenId: String?, resources: Resources?)
+    interface Presenter : CustomerPresenter<View> {
+        fun deleteCreditCard(tokenId: String, resources: Resources?)
     }
 }

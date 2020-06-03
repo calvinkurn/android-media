@@ -16,8 +16,6 @@ import com.tokopedia.payment.setting.list.model.SettingListPaymentModel
 import javax.inject.Inject
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.graphql.data.GraphqlClient
@@ -32,14 +30,17 @@ import com.tokopedia.payment.setting.list.view.adapter.SettingListPaymentAdapter
 import kotlinx.android.synthetic.main.fragment_setting_list_payment.*
 import kotlinx.android.synthetic.main.fragment_setting_list_payment.view.*
 import com.tokopedia.design.component.Dialog
+import com.tokopedia.payment.setting.list.model.PaymentSignature
 
 
 class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, SettingListPaymentAdapterTypeFactory>(),
         SettingListPaymentContract.View, SettingListEmptyViewHolder.ListenerEmptyViewHolder {
 
+    private var paymentSignature: PaymentSignature? = null
+
     @Inject
-    lateinit var settingListPaymentPresenter : SettingListPaymentPresenter
-    val progressDialog : ProgressDialog by lazy { ProgressDialog(context) }
+    lateinit var settingListPaymentPresenter: SettingListPaymentPresenter
+    private val progressDialog: ProgressDialog by lazy { ProgressDialog(context) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         activity?.run {
@@ -49,8 +50,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_setting_list_payment, container, false)
-        return view
+        return inflater.inflate(R.layout.fragment_setting_list_payment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -61,7 +61,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
             ContextCompat.getDrawable(it, R.drawable.divider_list_card)?.let { it1 -> dividerItemDecoration.setDrawable(it1) }
             getRecyclerView(view).addItemDecoration(dividerItemDecoration)
         }
-        view.authenticateCreditCard.setOnClickListener{
+        view.authenticateCreditCard.setOnClickListener {
             activity?.run {
                 settingListPaymentPresenter.checkVerificationPhone()
             }
@@ -69,7 +69,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
         updateViewCounter(adapter.dataSize)
     }
 
-    private fun updateViewCounter(size : Int) {
+    private fun updateViewCounter(size: Int) {
         view?.counterCreditCard?.setText(getString(R.string.payment_label_saved_card, size))
     }
 
@@ -85,13 +85,16 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
 
     override fun onClickAddCard() {
         activity?.run {
-            this@SettingListPaymentFragment.startActivityForResult(AddCreditCardActivity.createIntent(this), REQUEST_CODE_ADD_CREDIT_CARD)
+            paymentSignature?.let {paymentSignature->
+                this@SettingListPaymentFragment
+                        .startActivityForResult(AddCreditCardActivity.createIntent(this, paymentSignature), REQUEST_CODE_ADD_CREDIT_CARD)
+            }
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(resultCode == Activity.RESULT_OK){
-            when (requestCode){
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
                 REQUEST_CODE_DETAIL_CREDIT_CARD, REQUEST_CODE_ADD_CREDIT_CARD, REQUEST_CODE_AUTH_CREDIT_CARD -> loadInitialData()
                 REQUEST_CODE_VERIF_PHONE -> onSuccessVerifPhone()
             }
@@ -114,7 +117,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
 
     override fun renderList(list: MutableList<SettingListPaymentModel>) {
         updateViewCounter(list.size)
-        if(list.size > 0 && list.size < 4){
+        if (list.size in 1..3) {
             list.add(SettingListAddCardModel())
         }
         super.renderList(list)
@@ -163,6 +166,10 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
         dialog.show()
     }
 
+    override fun onPaymentSignature(paymentSignature: PaymentSignature?) {
+        this.paymentSignature = paymentSignature
+    }
+
     override fun onDestroy() {
         settingListPaymentPresenter.detachView()
         super.onDestroy()
@@ -188,12 +195,12 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
     override fun getRecyclerViewResourceId() = R.id.recycler_view
 
     companion object {
-        val REQUEST_CODE_DETAIL_CREDIT_CARD = 4213
-        val REQUEST_CODE_ADD_CREDIT_CARD = 4273
-        val REQUEST_CODE_AUTH_CREDIT_CARD = 4275
-        val REQUEST_CODE_VERIF_PHONE = 3734
+        const val REQUEST_CODE_DETAIL_CREDIT_CARD = 4213
+        const val REQUEST_CODE_ADD_CREDIT_CARD = 4273
+        const val REQUEST_CODE_AUTH_CREDIT_CARD = 4275
+        const val REQUEST_CODE_VERIF_PHONE = 3734
 
-        fun createInstance() : SettingListPaymentFragment {
+        fun createInstance(): SettingListPaymentFragment {
             return SettingListPaymentFragment()
         }
     }
