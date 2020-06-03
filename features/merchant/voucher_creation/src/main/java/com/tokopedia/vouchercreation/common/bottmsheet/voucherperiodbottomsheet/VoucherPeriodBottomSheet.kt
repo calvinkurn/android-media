@@ -86,9 +86,6 @@ class VoucherPeriodBottomSheet(
 
         setTitle(parent.context.getString(R.string.mvc_edit_shown_period))
         setChild(child)
-        setAction(parent.context.getString(R.string.mvc_retry)) {
-
-        }
         setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
     }
 
@@ -118,8 +115,7 @@ class VoucherPeriodBottomSheet(
         tvMvcVoucherName.text = voucher.name
         tvMvcVoucherDescription.text = String.format(context?.getString(R.string.mvc_cashback_formatted).toBlankOrString(), voucher.discountAmtFormatted)
 
-        startCalendar = getGregorianDate(voucher.startTime)
-        endCalendar = getGregorianDate(voucher.finishTime)
+        resetDate()
 
         edtMvcStartDate?.run {
             startCalendar?.run {
@@ -164,6 +160,20 @@ class VoucherPeriodBottomSheet(
                 viewModel.validateVoucherPeriod(voucher)
             }
         }
+
+        setAction(context?.getString(R.string.mvc_retry).toBlankOrString()) {
+            resetDate()
+            edtMvcStartDate?.run {
+                startCalendar?.run {
+                    setDateText(this)
+                }
+            }
+            edtMvcEndDate?.run {
+                endCalendar?.run {
+                    setDateText(this)
+                }
+            }
+        }
     }
 
     private fun View.setupBottomSheetChildNoMargin() {
@@ -200,6 +210,11 @@ class VoucherPeriodBottomSheet(
                 dismiss()
             }
         }
+    }
+
+    private fun resetDate() {
+        startCalendar = getGregorianDate(voucher.startTime)
+        endCalendar = getGregorianDate(voucher.finishTime)
     }
 
     private fun getGregorianDate(date: String): GregorianCalendar {
