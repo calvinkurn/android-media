@@ -3,10 +3,13 @@ package com.tokopedia.play_common.widget.playBannerCarousel.typeFactory
 import android.view.View
 import com.tokopedia.play_common.R
 import com.tokopedia.play_common.widget.playBannerCarousel.event.PlayBannerCarouselViewEventListener
+import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselBannerDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselEmptyDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
-import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselBannerDataModel
-import com.tokopedia.play_common.widget.playBannerCarousel.viewHolder.*
+import com.tokopedia.play_common.widget.playBannerCarousel.viewHolder.BasePlayBannerCarouselViewHolder
+import com.tokopedia.play_common.widget.playBannerCarousel.viewHolder.PlayBannerCarouselBannerViewHolder
+import com.tokopedia.play_common.widget.playBannerCarousel.viewHolder.PlayBannerCarouselEmptyViewHolder
+import com.tokopedia.play_common.widget.playBannerCarousel.viewHolder.PlayBannerCarouselItemViewHolder
 
 class PlayBannerCarouselTypeImpl(
         private var listener: PlayBannerCarouselViewEventListener? = null

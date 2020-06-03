@@ -6,8 +6,8 @@ import android.text.Spanned
 import android.text.style.StyleSpan
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.model.Configuration
+import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.view.state.Selectable
-import com.tokopedia.play.broadcaster.view.uimodel.*
 
 /**
  * Created by jegul on 20/05/20
@@ -34,13 +34,14 @@ object PlayBroadcastMocker {
         PlayEtalaseUiModel(
                 id = it + 1L,
                 name = "Etalase ${it + 1}",
-                productList = emptyList(),
-                totalProduct = (it + 1) * 100
+                productMap = mutableMapOf(),
+                totalProduct = (it + 1) * 100,
+                stillHasProduct = false
         )
     }
 
     fun getMockProductList(itemCount: Int) = List(itemCount) {
-        ProductUiModel(
+        ProductContentUiModel(
                 id = 12345L + it,
                 name = "Product ${it + 1}",
                 imageUrl = when (it) {

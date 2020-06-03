@@ -1,9 +1,9 @@
 package com.tokopedia.play.broadcaster.view.adapter
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
+import com.tokopedia.play.broadcaster.ui.model.FollowerUiModel
 import com.tokopedia.play.broadcaster.view.adapter.delegate.PlayUnknownFollowerAdapterDelegate
 import com.tokopedia.play.broadcaster.view.adapter.delegate.PlayUserFollowerAdapterDelegate
-import com.tokopedia.play.broadcaster.view.uimodel.FollowerUiModel
 
 /**
  * Created by jegul on 20/05/20

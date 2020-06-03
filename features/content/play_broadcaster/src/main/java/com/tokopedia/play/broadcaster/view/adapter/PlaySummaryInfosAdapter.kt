@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.view.uimodel.SummaryUiModel
+import com.tokopedia.play.broadcaster.ui.model.SummaryUiModel
 import kotlinx.android.synthetic.main.item_play_summary_info.view.*
 
 /**

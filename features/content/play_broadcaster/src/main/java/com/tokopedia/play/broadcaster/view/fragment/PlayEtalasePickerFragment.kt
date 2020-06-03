@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.gone
@@ -14,14 +15,19 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
+import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
+import com.tokopedia.play.broadcaster.ui.model.ResultState
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayEtalaseViewHolder
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 import com.tokopedia.play.broadcaster.ui.viewholder.SearchSuggestionViewHolder
+import com.tokopedia.play.broadcaster.util.scroll.EndlessRecyclerViewScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.PlayEtalaseAdapter
+import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
 import com.tokopedia.play.broadcaster.view.adapter.SearchSuggestionsAdapter
 import com.tokopedia.play.broadcaster.view.custom.PlaySearchBar
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
+import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 /**
@@ -37,6 +43,7 @@ class PlayEtalasePickerFragment @Inject constructor(
     private lateinit var tvInfo: TextView
     private lateinit var psbSearch: PlaySearchBar
     private lateinit var rvEtalase: RecyclerView
+    private lateinit var rvSearchedProducts: RecyclerView
     private lateinit var rvSuggestions: RecyclerView
 
     private val etalaseAdapter = PlayEtalaseAdapter(object : PlayEtalaseViewHolder.Listener {
@@ -52,12 +59,20 @@ class PlayEtalasePickerFragment @Inject constructor(
         override fun onEtalaseBound(etalaseId: Long) {
             viewModel.loadEtalaseProductPreview(etalaseId)
         }
-    }, object : ProductSelectableViewHolder.Listener {
+    })
+
+    private val searchProductsAdapter = ProductSelectableAdapter(object : ProductSelectableViewHolder.Listener {
         override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
             viewModel.selectProduct(productId, isSelected)
         }
 
         override fun onProductSelectError(reason: Throwable) {
+            Toaster.make(
+                    view = requireView(),
+                    text = reason.localizedMessage,
+                    duration = Toaster.LENGTH_SHORT,
+                    actionText = getString(R.string.play_ok)
+            )
         }
     })
 
@@ -68,9 +83,7 @@ class PlayEtalasePickerFragment @Inject constructor(
         }
     })
 
-    override fun getTitle(): String = "Select Products or Collection"
-
-    override fun isRootFragment(): Boolean = true
+    private lateinit var scrollListener: EndlessRecyclerViewScrollListener
 
     override fun refresh() {
         etalaseAdapter.notifyDataSetChanged()
@@ -92,12 +105,14 @@ class PlayEtalasePickerFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView(view)
+        bottomSheetCoordinator.setupTitle("Select Products or Collection")
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         observeEtalase()
+        observeSearchProducts()
         observeSearchSuggestions()
     }
 
@@ -107,6 +122,7 @@ class PlayEtalasePickerFragment @Inject constructor(
             tvInfo = findViewById(R.id.tv_info)
             psbSearch = findViewById(R.id.psb_search)
             rvEtalase = findViewById(R.id.rv_etalase)
+            rvSearchedProducts = findViewById(R.id.rv_searched_products)
             rvSuggestions = findViewById(R.id.rv_suggestions)
         }
     }
@@ -133,15 +149,44 @@ class PlayEtalasePickerFragment @Inject constructor(
             }
         })
 
+        setupEtalaseList()
+        setupSearchList()
+        setupSuggestionList()
+    }
+
+    private fun setupEtalaseList() {
         rvEtalase.adapter = etalaseAdapter
         rvEtalase.addItemDecoration(PlayGridTwoItemDecoration(requireContext()))
+    }
 
+    private fun setupSearchList() {
+        rvSearchedProducts.layoutManager = GridLayoutManager(rvSearchedProducts.context, SPAN_COUNT, RecyclerView.VERTICAL, false).apply {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+
+                override fun getSpanSize(position: Int): Int {
+                    return if (searchProductsAdapter.getItem(position) == ProductLoadingUiModel) SPAN_COUNT
+                    else 1
+                }
+            }
+        }
+        rvSearchedProducts.adapter = searchProductsAdapter
+        rvSearchedProducts.addItemDecoration(PlayGridTwoItemDecoration(requireContext()))
+        scrollListener = object : EndlessRecyclerViewScrollListener(rvSearchedProducts.layoutManager!!) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                viewModel.searchProductsByKeyword(psbSearch.text, page)
+            }
+        }
+        rvSearchedProducts.addOnScrollListener(scrollListener)
+    }
+
+    private fun setupSuggestionList() {
         rvSuggestions.adapter = searchSuggestionsAdapter
     }
 
     private fun enterSearchMode() {
         tvInfo.gone()
         rvEtalase.gone()
+        rvSearchedProducts.gone()
 
         rvSuggestions.visible()
 
@@ -154,7 +199,14 @@ class PlayEtalasePickerFragment @Inject constructor(
 
     private fun exitSearchMode() {
         tvInfo.visible()
-        rvEtalase.visible()
+
+        if (psbSearch.text.isNotEmpty()) {
+            rvSearchedProducts.visible()
+            rvEtalase.gone()
+        } else {
+            rvSearchedProducts.gone()
+            rvEtalase.visible()
+        }
 
         rvSuggestions.invisible()
 
@@ -162,7 +214,9 @@ class PlayEtalasePickerFragment @Inject constructor(
     }
 
     private fun shouldSearchProductWithKeyword(keyword: String) {
-        viewModel.searchProductsByKeyword(keyword)
+        scrollListener.resetState()
+        scrollListener.loadMoreNextPage()
+
         exitSearchMode()
     }
 
@@ -171,8 +225,29 @@ class PlayEtalasePickerFragment @Inject constructor(
      * Observe
      */
     private fun observeEtalase() {
-        viewModel.observableEtalaseAndSearch.observe(viewLifecycleOwner, Observer {
+        viewModel.observableEtalase.observe(viewLifecycleOwner, Observer {
             etalaseAdapter.setItemsAndAnimateChanges(it)
+        })
+    }
+
+    private fun observeSearchProducts() {
+        viewModel.observableSearchedProducts.observe(viewLifecycleOwner, Observer {
+            when (it.state) {
+                is ResultState.Success -> {
+                    searchProductsAdapter.setItemsAndAnimateChanges(it.currentValue)
+
+                    scrollListener.setHasNextPage(it.state.hasNextPage)
+                    scrollListener.updateState(true)
+                }
+                ResultState.Loading -> {
+                    searchProductsAdapter.setItemsAndAnimateChanges(it.currentValue + ProductLoadingUiModel)
+                }
+                is ResultState.Fail -> {
+                    searchProductsAdapter.setItemsAndAnimateChanges(it.currentValue)
+                    scrollListener.setHasNextPage(true)
+                    scrollListener.updateState(false)
+                }
+            }
         })
     }
 
@@ -182,4 +257,9 @@ class PlayEtalasePickerFragment @Inject constructor(
         })
     }
     //endregion
+
+    companion object {
+
+        private const val SPAN_COUNT = 2
+    }
 }
