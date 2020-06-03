@@ -322,6 +322,12 @@ data class DataItem(
         @SerializedName("stock_wording")
         val stockWording: StockWording? = null,
 
+        @SerializedName("total_interest_notify_me")
+        val notifyMeCount: Int? = null,
+
+        @SerializedName("threshold_interest")
+        val thresholdInterest: Int? = null,
+
         var status: String? = null,
 
         var parentComponentName: String? = "",

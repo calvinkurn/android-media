@@ -17,9 +17,18 @@ class ProductCardItemViewModel(val application: Application, private val compone
     private val shopBadge: MutableLiveData<Int> = MutableLiveData()
     private val freeOngkirImage: MutableLiveData<String> = MutableLiveData()
     private val pdpViewLiveCount: MutableLiveData<String> = MutableLiveData()
+    private val interestedCount: MutableLiveData<String> = MutableLiveData()
     private val stockWordLiveData: MutableLiveData<StockWording> = MutableLiveData()
     private lateinit var context: Context
+    private var productItemData: DataItem? = null
 
+    init {
+        components.data?.let {
+            if (it.isNotEmpty()) {
+                productItemData = components.data?.get(0)
+            }
+        }
+    }
 
     companion object {
         const val OFFICIAL_STORE = 1
@@ -30,11 +39,6 @@ class ProductCardItemViewModel(val application: Application, private val compone
     fun setContext(context: Context) {
         this.context = context
     }
-
-
-    override fun initDaggerInject() {
-    }
-
 
     fun getComponentName(): MutableLiveData<String> {
         componentName.value = components.name
@@ -66,51 +70,63 @@ class ProductCardItemViewModel(val application: Application, private val compone
 
     // Apply Transformation on this live data
     fun getFreeOngkirImage(): LiveData<String> {
-        dataItem.value?.freeOngkir?.isActive.let {
-            if (dataItem.value?.freeOngkir?.isActive == true) {
-                freeOngkirImage.value = dataItem.value?.freeOngkir?.freeOngkirImageUrl
-            } else {
-                freeOngkirImage.value = ""
-            }
+        val isBebasActive = productItemData?.freeOngkir?.isActive
+
+        if (isBebasActive == true) {
+            freeOngkirImage.value = productItemData!!.freeOngkir!!.freeOngkirImageUrl
+        } else {
+            freeOngkirImage.value = ""
         }
         return freeOngkirImage
     }
 
 
     fun getPDPViewCount(): LiveData<String> {
-        val pdpViewData = dataItem.value?.pdpView
-        pdpViewData.let {
+        val pdpViewData = productItemData?.pdpView
+
+        if (pdpViewData != null) {
             try {
-                if (pdpViewData?.toInt()!! >= 1000) {
-                    val viewCount = Utils.getPDPCount(pdpViewData!!.toDouble())
-                    if (viewCount.isNotEmpty()) {
-                        pdpViewLiveCount.value = viewCount
-                    } else {
-                        pdpViewLiveCount.value = ""
-                    }
+                if (pdpViewData.toInt() >= 1000) {
+                    pdpViewLiveCount.value = Utils.getCountView(pdpViewData.toDouble())
                 } else {
                     pdpViewLiveCount.value = ""
                 }
             } catch (exception: NumberFormatException) {
             }
+        } else {
+            pdpViewLiveCount.value = ""
         }
         return pdpViewLiveCount
     }
 
+
+    fun getInterestedCount(): MutableLiveData<String> {
+        val notifyMeCount = productItemData?.notifyMeCount
+        val interestThreshold = productItemData?.thresholdInterest
+        interestedCount.value = ""
+
+        if (notifyMeCount != null && interestThreshold != null && notifyMeCount >= interestThreshold) {
+            interestedCount.value = Utils.getCountView(notifyMeCount.toDouble(), "tertarik")
+        } else {
+            interestedCount.value = ""
+        }
+        return interestedCount
+    }
+
     fun getStockWord(): LiveData<StockWording> {
         var stockWordTitleColour = "#1e31353b"
-        var stockWordTitle = dataItem.value?.stockWording?.title
+        var stockWordTitle = productItemData?.stockWording?.title
         var stockAvailableCount: String? = ""
         val stockWording = StockWording()
 
-        if (stockWordTitle != null && stockWordTitle.isNotEmpty()) {
+        if (!stockWordTitle.isNullOrEmpty()) {
             stockWording.title = stockWordTitle
-            stockWording.color = dataItem.value?.stockWording?.color
+            stockWording.color = productItemData?.stockWording?.color
                     ?: stockWordTitleColour
         } else {
-            val campaignSoldCount = dataItem.value?.campaignSoldCount
-            val threshold: Int? = dataItem.value?.threshold
-            val customStock: Int? = dataItem.value?.customStock
+            val campaignSoldCount = productItemData?.campaignSoldCount
+            val threshold: Int? = productItemData?.threshold
+            val customStock: Int? = productItemData?.customStock
 
             if (campaignSoldCount != null && threshold != null && customStock != null) {
                 if (campaignSoldCount > 0) {
@@ -145,6 +161,9 @@ class ProductCardItemViewModel(val application: Application, private val compone
 
     fun handleUIClick() {
         navigate(context, dataItem.value?.applinks)
+    }
+
+    override fun initDaggerInject() {
     }
 
 }

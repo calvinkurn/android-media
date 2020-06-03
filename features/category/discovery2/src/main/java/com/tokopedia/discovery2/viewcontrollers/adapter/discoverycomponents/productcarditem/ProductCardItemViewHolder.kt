@@ -46,6 +46,7 @@ class ProductCardItemViewHolder(itemView: View, fragment: Fragment) : AbstractVi
     private var pdpViewImage: ImageView = itemView.findViewById(R.id.imageViewProductView)
     private var pdpViewCount: TextView = itemView.findViewById(R.id.textViewProductViewCount)
     private var stockTitle: TextView = itemView.findViewById(R.id.stockText)
+    private var interestedView: TextView = itemView.findViewById(R.id.textViewProductInterestedView)
 
     private lateinit var productCardItemViewModel: ProductCardItemViewModel
     private var lifecycleOwner: LifecycleOwner = fragment.viewLifecycleOwner
@@ -103,11 +104,15 @@ class ProductCardItemViewHolder(itemView: View, fragment: Fragment) : AbstractVi
             showStockProgressTitle(it)
         })
 
+        productCardItemViewModel.getInterestedCount().observe(lifecycleOwner, Observer {
+            showInterestedView(it)
+        })
+
     }
 
 
-    private fun showFreeOngKir(freeOngkirActive: String) {
-        if (freeOngkirActive.isNotEmpty()) {
+    private fun showFreeOngKir(freeOngkirActive: String?) {
+        if (!freeOngkirActive.isNullOrEmpty()) {
             ImageHandler.LoadImage(imageFreeOngkirPromo, freeOngkirActive)
             imageFreeOngkirPromo.show()
         } else {
@@ -168,8 +173,17 @@ class ProductCardItemViewHolder(itemView: View, fragment: Fragment) : AbstractVi
         }
     }
 
-    private fun setPDPView(it: String) {
-        if (it.isNotEmpty()) {
+    private fun showInterestedView(interestedData: String?) {
+        if (!interestedData.isNullOrEmpty()) {
+            interestedView.show()
+            interestedView.setTextAndCheckShow(interestedData)
+        } else {
+            interestedView.hide()
+        }
+    }
+
+    private fun setPDPView(it: String?) {
+        if (!it.isNullOrEmpty()) {
             pdpViewImage.show()
             pdpViewCount.show()
             pdpViewCount.setTextAndCheckShow(it)

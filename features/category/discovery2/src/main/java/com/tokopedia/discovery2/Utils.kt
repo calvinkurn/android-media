@@ -41,23 +41,23 @@ class Utils {
             context?.startActivity(Intent.createChooser(share, shareTxt))
         }
 
-        fun getPDPCount(pdpCount: Double, notifyMeText: String = ""): String {
-            if (pdpCount >= SERIBU && pdpCount < SEJUTA) {
-                val rbCount = pdpCount / SERIBU
+        fun getCountView(countView: Double, notifyMeText: String = ""): String {
+            if (countView >= SERIBU && countView < SEJUTA) {
+                val rbCount = countView / SERIBU
                 return if (checkForPrice(rbCount)) {
                     "${rbCount.toInt()} rb orang $notifyMeText"
                 } else {
                     "${"%.1f".format(rbCount).replace('.', ',')} rb orang $notifyMeText"
                 }
-            } else if (pdpCount >= SEJUTA && pdpCount < SEMILIAR) {
-                val jtCount = pdpCount / SEJUTA
+            } else if (countView >= SEJUTA && countView < SEMILIAR) {
+                val jtCount = countView / SEJUTA
                 return if (checkForPrice(jtCount)) {
                     "${jtCount.toInt()} jt orang $notifyMeText"
                 } else {
                     "${"%.1f".format(jtCount).replace('.', ',')} jt orang $notifyMeText"
                 }
-            } else if (pdpCount >= SEMILIAR) {
-                val MCount = pdpCount / SEMILIAR
+            } else if (countView >= SEMILIAR) {
+                val MCount = countView / SEMILIAR
                 return if (checkForPrice(MCount)) {
                     "${MCount.toInt()} M orang $notifyMeText"
                 } else {
@@ -67,8 +67,8 @@ class Utils {
             return ""
         }
 
-        private fun checkForPrice(currentPDPCount: Double): Boolean {
-            return currentPDPCount % 1 < VIEW_LIMIT
+        private fun checkForPrice(currentViewCount: Double): Boolean {
+            return currentViewCount % 1 < VIEW_LIMIT
         }
     }
 }

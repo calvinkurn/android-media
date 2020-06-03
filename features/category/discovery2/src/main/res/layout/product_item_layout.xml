@@ -398,7 +398,7 @@
         <com.tokopedia.unifycomponents.ProgressBarUnify
             android:id="@+id/stockPercentageProgress"
             android:layout_width="0dp"
-            android:layout_height="@dimen/dp_5"
+            android:layout_height="@dimen/dp_7"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_8"
