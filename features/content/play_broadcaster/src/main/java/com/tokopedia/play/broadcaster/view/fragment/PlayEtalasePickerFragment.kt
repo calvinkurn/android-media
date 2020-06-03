@@ -237,7 +237,7 @@ class PlayEtalasePickerFragment @Inject constructor(
                     searchProductsAdapter.setItemsAndAnimateChanges(it.currentValue)
 
                     scrollListener.setHasNextPage(it.state.hasNextPage)
-                    scrollListener.updateStateAfterGetData()
+                    scrollListener.updateState(true)
                 }
                 ResultState.Loading -> {
                     searchProductsAdapter.setItemsAndAnimateChanges(it.currentValue + ProductLoadingUiModel)
@@ -245,7 +245,7 @@ class PlayEtalasePickerFragment @Inject constructor(
                 is ResultState.Fail -> {
                     searchProductsAdapter.setItemsAndAnimateChanges(it.currentValue)
                     scrollListener.setHasNextPage(true)
-                    scrollListener.updateStateAfterGetData()
+                    scrollListener.updateState(false)
                 }
             }
         })

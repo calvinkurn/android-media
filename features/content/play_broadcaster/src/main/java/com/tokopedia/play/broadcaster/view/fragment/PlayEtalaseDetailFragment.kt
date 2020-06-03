@@ -120,7 +120,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
                     selectableProductAdapter.setItemsAndAnimateChanges(it.currentValue.productMap.values.flatten())
 
                     scrollListener.setHasNextPage(it.currentValue.stillHasProduct)
-                    scrollListener.updateStateAfterGetData()
+                    scrollListener.updateState(true)
                 }
                 ResultState.Loading -> {
                     selectableProductAdapter.setItemsAndAnimateChanges(it.currentValue.productMap.values.flatten() + ProductLoadingUiModel)
@@ -128,7 +128,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
                 is ResultState.Fail -> {
                     selectableProductAdapter.setItemsAndAnimateChanges(it.currentValue.productMap.values.flatten())
                     scrollListener.setHasNextPage(it.currentValue.stillHasProduct)
-                    scrollListener.updateStateAfterGetData()
+                    scrollListener.updateState(false)
                 }
             }
         })

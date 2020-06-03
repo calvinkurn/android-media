@@ -98,12 +98,12 @@ abstract class EndlessRecyclerViewScrollListener(
         hasNextPage = true
     }
 
-    fun updateStateAfterGetData() {
+    fun updateState(isSuccess: Boolean) {
         loading = false
         val totalItemCount = layoutManager.itemCount
         if (totalItemCount > currentItemCount) {
             currentItemCount = totalItemCount
-            currentPage++
+            if (isSuccess) currentPage++
         }
     }
 
