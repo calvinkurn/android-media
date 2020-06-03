@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.ui.model.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.util.changeConstraint
 
 /**
@@ -25,7 +25,7 @@ class ProductPreviewViewHolder(
     private val spanSizeLookup = gridLayoutManager.spanSizeLookup
     private val spanCount = gridLayoutManager.spanCount
 
-    fun bind(item: ProductUiModel, itemCount: Int) {
+    fun bind(item: ProductContentUiModel, itemCount: Int) {
         if (itemView.height != 0) {
             adjustSize(itemCount)
         } else {

@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
-import com.tokopedia.play.broadcaster.ui.model.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
 
@@ -83,13 +83,13 @@ class SelectedProductPagePartialView(
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
-    fun setSelectedProductList(productList: List<ProductUiModel>) {
+    fun setSelectedProductList(productList: List<ProductContentUiModel>) {
         updateTitle(productList.size)
         selectableProductAdapter.setItems(productList)
         selectableProductAdapter.notifyDataSetChanged()
     }
 
-    fun onSelectedProductsUpdated(productList: List<ProductUiModel>) {
+    fun onSelectedProductsUpdated(productList: List<ProductContentUiModel>) {
         updateTitle(productList.size)
     }
 

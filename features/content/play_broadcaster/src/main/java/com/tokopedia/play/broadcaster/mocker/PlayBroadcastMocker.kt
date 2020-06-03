@@ -41,7 +41,7 @@ object PlayBroadcastMocker {
     }
 
     fun getMockProductList(itemCount: Int) = List(itemCount) {
-        ProductUiModel(
+        ProductContentUiModel(
                 id = 12345L + it,
                 name = "Product ${it + 1}",
                 imageUrl = when (it) {

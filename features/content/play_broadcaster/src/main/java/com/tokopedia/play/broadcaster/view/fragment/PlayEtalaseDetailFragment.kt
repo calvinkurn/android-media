@@ -7,10 +7,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
+import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
+import com.tokopedia.play.broadcaster.ui.model.ResultState
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 import com.tokopedia.play.broadcaster.util.scroll.EndlessRecyclerViewScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
@@ -92,6 +95,15 @@ class PlayEtalaseDetailFragment @Inject constructor(
     }
 
     private fun setupView(view: View) {
+        rvProduct.layoutManager = GridLayoutManager(rvProduct.context, 2, RecyclerView.VERTICAL, false).apply {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+
+                override fun getSpanSize(position: Int): Int {
+                    return if (selectableProductAdapter.getItem(position) == ProductLoadingUiModel) 2
+                    else 1
+                }
+            }
+        }
         rvProduct.adapter = selectableProductAdapter
         rvProduct.addItemDecoration(PlayGridTwoItemDecoration(requireContext()))
         scrollListener = object : EndlessRecyclerViewScrollListener(rvProduct.layoutManager!!) {
@@ -105,12 +117,24 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
     private fun observeProductsInSelectedEtalase() {
         viewModel.observableSelectedEtalase.observe(viewLifecycleOwner, Observer {
-            selectableProductAdapter.setItemsAndAnimateChanges(it.productMap.values.flatten())
-            bottomSheetCoordinator.setupTitle(it.name)
-            tvInfo.text = getString(R.string.play_product_select_max_info, viewModel.maxProduct)
 
-            scrollListener.setHasNextPage(it.stillHasProduct)
-            scrollListener.updateStateAfterGetData()
+            when (it.state) {
+                is ResultState.Success -> {
+                    selectableProductAdapter.setItemsAndAnimateChanges(it.currentValue.productMap.values.flatten())
+                    bottomSheetCoordinator.setupTitle(it.currentValue.name)
+                    tvInfo.text = getString(R.string.play_product_select_max_info, viewModel.maxProduct)
+                    scrollListener.setHasNextPage(it.currentValue.stillHasProduct)
+                    scrollListener.updateStateAfterGetData()
+                }
+                ResultState.Loading -> {
+                    selectableProductAdapter.setItemsAndAnimateChanges(it.currentValue.productMap.values.flatten() + ProductLoadingUiModel)
+                }
+                is ResultState.Fail -> {
+                    selectableProductAdapter.setItemsAndAnimateChanges(it.currentValue.productMap.values.flatten())
+                    scrollListener.setHasNextPage(it.currentValue.stillHasProduct)
+                    scrollListener.updateStateAfterGetData()
+                }
+            }
         })
     }
 

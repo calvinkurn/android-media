@@ -2,7 +2,7 @@ package com.tokopedia.play.broadcaster.ui.mapper
 
 import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
 import com.tokopedia.play.broadcaster.ui.model.PlayEtalaseUiModel
-import com.tokopedia.play.broadcaster.ui.model.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 
@@ -26,7 +26,7 @@ object PlayBroadcasterUiMapper {
             isSelectedHandler: (Long) -> Boolean,
             isSelectableHandler: () -> SelectableState
     ) = productsResponse.data.map {
-        ProductUiModel(
+        ProductContentUiModel(
                 id = it.productId.toLong(),
                 name = it.name,
                 imageUrl = it.primaryImage.resize300,

@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.view.adapter.delegate
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
+import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 
@@ -11,9 +12,9 @@ import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
  */
 class ProductSelectableAdapterDelegate(
         private val listener: ProductSelectableViewHolder.Listener
-) : TypedAdapterDelegate<ProductUiModel, ProductUiModel, ProductSelectableViewHolder>(ProductSelectableViewHolder.LAYOUT) {
+) : TypedAdapterDelegate<ProductContentUiModel, ProductUiModel, ProductSelectableViewHolder>(ProductSelectableViewHolder.LAYOUT) {
 
-    override fun onBindViewHolder(item: ProductUiModel, holder: ProductSelectableViewHolder) {
+    override fun onBindViewHolder(item: ProductContentUiModel, holder: ProductSelectableViewHolder) {
         holder.bind(item)
     }
 
