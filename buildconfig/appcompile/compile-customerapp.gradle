@@ -218,7 +218,6 @@ include "features:fcm_common"
 
 include "tkpdcore"
 include "tkpdinbox"
-include "tkpddiscovery"
 include "tkpdsession"
 include "tkpddesign"
 include "tkpdseller"
