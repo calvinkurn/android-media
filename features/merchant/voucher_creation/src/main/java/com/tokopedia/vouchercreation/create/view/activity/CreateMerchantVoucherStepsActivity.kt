@@ -65,7 +65,6 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         const val EDIT_VOUCHER = "edit_voucher"
         const val IS_EDIT = "is_edit"
         const val EDIT_STEP = "edit_step"
-        const val VOUCHER_ID = "voucher_id"
     }
 
     @Inject
@@ -241,8 +240,12 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     }
 
     private fun initiateVoucherPage() {
-        if (!(checkIfDuplicate() || checkIfEdit())) {
-            viewModel.initiateVoucherPage()
+        when {
+            checkIfDuplicate() -> return
+            checkIfEdit() -> return
+            else -> {
+                viewModel.initiateVoucherPage()
+            }
         }
     }
 
@@ -327,7 +330,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     private fun checkIfEdit(): Boolean {
         intent?.run {
             getParcelableExtra<VoucherUiModel>(EDIT_VOUCHER)?.let { voucherUiModel ->
-                getIntExtra(VOUCHER_ID, 0).let { id ->
+                voucherUiModel.id.let { id ->
                     return if (id != 0) {
                         viewModel.initiateEditDuplicateVoucher()
                         setDuplicateEditVoucherData(voucherUiModel)
@@ -442,7 +445,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
     private fun getBannerBitmap() = bannerBitmap
 
-    private fun getVoucherId() = isEditVoucher
+    private fun getVoucherId() = voucherId
 
     private fun onCancelVoucher() {
         cancelDialog.show()

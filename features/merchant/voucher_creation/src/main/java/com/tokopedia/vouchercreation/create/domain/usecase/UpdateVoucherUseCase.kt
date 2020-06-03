@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.voucherlist.domain.usecase
+package com.tokopedia.vouchercreation.create.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -7,10 +7,10 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.vouchercreation.common.base.BaseGqlUseCase
 import com.tokopedia.vouchercreation.common.domain.model.UpdateVoucherParam
 import com.tokopedia.vouchercreation.voucherlist.domain.model.UpdateVoucherResponse
-import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
+import com.tokopedia.vouchercreation.voucherlist.domain.usecase.ChangeVoucherPeriodUseCase
 import javax.inject.Inject
 
-class ChangeVoucherPeriodUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) : BaseGqlUseCase<Boolean>() {
+class UpdateVoucherUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) : BaseGqlUseCase<Boolean>()  {
 
     companion object {
         const val MUTATION = "mutation ChangeVoucherPromo(\$update_param: mvUpdateData!) {\n" +
@@ -29,18 +29,13 @@ class ChangeVoucherPeriodUseCase @Inject constructor(private val gqlRepository: 
         private const val UPDATE_PARAM_KEY = "update_param"
 
         @JvmStatic
-        fun createRequestParam(uiModel: VoucherUiModel,
-                               token: String,
-                               startDate: String,
-                               startHour: String,
-                               endDate: String,
-                               endHour: String) = RequestParams().apply {
-            putObject(UPDATE_PARAM_KEY, UpdateVoucherParam.mapToParam(uiModel, token, startDate, startHour, endDate, endHour))
+        fun createRequestParam(updateVoucherParam: UpdateVoucherParam) = RequestParams().apply {
+            putObject(UPDATE_PARAM_KEY, updateVoucherParam)
         }
     }
 
     override suspend fun executeOnBackground(): Boolean {
-        val request = GraphqlRequest(MUTATION, UpdateVoucherResponse::class.java, params.parameters)
+        val request = GraphqlRequest(ChangeVoucherPeriodUseCase.MUTATION, UpdateVoucherResponse::class.java, params.parameters)
         val response = gqlRepository.getReseponse(listOf(request))
 
         val error = response.getError(UpdateVoucherResponse::class.java)

@@ -189,6 +189,15 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     }
 
     override fun onFooterButtonClickListener() {
+        isWaitingForResult = true
+        activity?.intent?.getBooleanExtra(CreateMerchantVoucherStepsActivity.IS_EDIT, false)?.let { isEdit ->
+            if (isEdit) {
+                updateVoucher()
+            } else {
+                createVoucher()
+            }
+            return
+        }
         createVoucher()
     }
 
@@ -197,32 +206,47 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     }
 
     private fun observeLiveData() {
-        viewLifecycleOwner.observe(viewModel.createVoucherResponseLiveData) { result ->
-            if (isWaitingForResult) {
-                when(result) {
-                    is Success -> {
-                        if (result.data.status != CreateVoucherUseCase.STATUS_SUCCESS) {
-                            failedCreateVoucherDialog?.show()
-                        } else {
-                            context?.run {
-                                val intent = RouteManager.getIntent(this, ApplinkConstInternalSellerapp.VOUCHER_LIST).apply {
-                                    putExtra(VoucherListActivity.SUCCESS_VOUCHER_ID_KEY, result.data.voucherId)
+        viewLifecycleOwner.run {
+            observe(viewModel.createVoucherResponseLiveData) { result ->
+                if (isWaitingForResult) {
+                    when(result) {
+                        is Success -> {
+                            if (result.data.status != CreateVoucherUseCase.STATUS_SUCCESS) {
+                                failedCreateVoucherDialog?.show()
+                            } else {
+                                context?.run {
+                                    val intent = RouteManager.getIntent(this, ApplinkConstInternalSellerapp.VOUCHER_LIST).apply {
+                                        putExtra(VoucherListActivity.SUCCESS_VOUCHER_ID_KEY, result.data.voucherId)
+                                    }
+                                    startActivity(intent)
+                                    activity?.finish()
                                 }
-                                startActivity(intent)
-                                activity?.finish()
                             }
                         }
+                        is Fail -> {
+                            failedCreateVoucherDialog?.show()
+                        }
                     }
-                    is Fail -> {
-                        failedCreateVoucherDialog?.show()
+                    with(adapter) {
+                        notifyItemChanged(data.indexOf(buttonUiModel))
                     }
+                    loadingDialog?.dismiss()
                 }
-                with(adapter) {
-                    notifyItemChanged(data.indexOf(buttonUiModel))
-                }
-                loadingDialog?.dismiss()
+                isWaitingForResult = false
             }
-            isWaitingForResult = false
+            observe(viewModel.updateVoucherSuccessLiveData) { result ->
+                if (isWaitingForResult) {
+                    when(result) {
+                        is Success -> {
+                            RouteManager.route(context, ApplinkConstInternalSellerapp.VOUCHER_LIST)
+                        }
+                        is Fail -> {
+                            failedCreateVoucherDialog?.show()
+                        }
+                    }
+                }
+                isWaitingForResult = false
+            }
         }
     }
 
@@ -297,18 +321,29 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     private fun getPublicVoucherDisplay() = VoucherTargetCardType.PUBLIC
 
     private fun createVoucher() {
-        isWaitingForResult = true
-        getBannerBitmap()?.let { bannerBitmap ->
+        getBannerBitmap()?.let startCheck@ { bannerBitmap ->
             squareVoucherBitmap?.let { squareBitmap ->
-                if (getVoucherId() != null) {
-                    //Todo: add update voucher
-                } else {
-                    viewModel.createVoucher(
+                viewModel.createVoucher(
+                        bannerBitmap,
+                        squareBitmap,
+                        CreateVoucherParam.mapToParam(
+                                getVoucherReviewUiModel(), getToken()
+                        ))
+            }
+        }
+    }
+
+    private fun updateVoucher() {
+        getBannerBitmap()?.let startCheck@ { bannerBitmap ->
+            squareVoucherBitmap?.let { squareBitmap ->
+                getVoucherId()?.let { voucherId ->
+                    viewModel.updateVoucher(
                             bannerBitmap,
                             squareBitmap,
-                            CreateVoucherParam.mapToParam(
-                                    getVoucherReviewUiModel(), getToken()
-                            ))
+                            getVoucherReviewUiModel(),
+                            getToken(),
+                            voucherId
+                    )
                 }
             }
         }
