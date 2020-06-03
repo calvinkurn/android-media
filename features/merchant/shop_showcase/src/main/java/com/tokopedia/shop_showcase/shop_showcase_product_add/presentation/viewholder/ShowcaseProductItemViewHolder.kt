@@ -32,12 +32,21 @@ class ShowcaseProductItemViewHolder(itemView: View): RecyclerView.ViewHolder(ite
                     ratingString = element.ratingStarAvg.toString(),
                     reviewCount = element.totalReview
             ))
-            (CompoundButtonCompat.getButtonDrawable(itemView.card_checkbox) as AnimatedVectorDrawableCompat).stop()
+            skipCheckboxAnimation()
         }
     }
 
     fun renderCardState(element: ShowcaseProduct) {
         itemView.card_checkbox.isChecked = element.ishighlighted
+    }
+
+    private fun skipCheckboxAnimation() {
+        // temporary solution to avoid unify checkbox intermittent animation when scrolling recyclerview
+        val checkboxDrawable = CompoundButtonCompat.getButtonDrawable(itemView.card_checkbox)
+        if(checkboxDrawable != null) {
+            val checkboxAnimatedVectorDrawableCompat = checkboxDrawable as AnimatedVectorDrawableCompat
+            checkboxAnimatedVectorDrawableCompat.stop()
+        }
     }
 
 }
