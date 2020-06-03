@@ -47,6 +47,7 @@ import com.tokopedia.otp.cotp.view.viewmodel.VerificationViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -442,9 +443,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         inputOtp.setFocusableInTouchMode(true);
         inputOtp.post(new Runnable() {
             public void run() {
-                inputOtp.requestFocusFromTouch();
-                InputMethodManager lManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                lManager.showSoftInput(inputOtp, 0);
+                showKeyboard();
             }
         });
         errorImage.setVisibility(View.VISIBLE);
@@ -669,7 +668,10 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     }
 
     private void showKeyboard() {
-        InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.toggleSoftInputFromWindow(inputOtp.getWindowToken(), InputMethodManager.SHOW_FORCED, 0);
+        if(getActivity() != null) {
+            inputOtp.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(inputOtp, InputMethodManager.SHOW_IMPLICIT);
+        }
     }
 }
