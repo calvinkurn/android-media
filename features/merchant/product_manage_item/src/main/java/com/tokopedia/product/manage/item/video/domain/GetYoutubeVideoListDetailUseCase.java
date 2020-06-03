@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailRxUseCase;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -21,17 +22,17 @@ import rx.functions.Func1;
 public class GetYoutubeVideoListDetailUseCase extends UseCase<List<Map<Type, RestResponse>>> {
     public static final String ID_LIST = "id_list";
 
-    private GetYoutubeVideoDetailUseCase getYoutubeVideoDetailUseCase;
+    private GetYoutubeVideoDetailRxUseCase getYoutubeVideoDetailUseCase;
 
     public GetYoutubeVideoListDetailUseCase(Context context) {
-        this.getYoutubeVideoDetailUseCase = new GetYoutubeVideoDetailUseCase(context);
+        this.getYoutubeVideoDetailUseCase = new GetYoutubeVideoDetailRxUseCase(context);
     }
 
     @Override
     public Observable<List<Map<Type, RestResponse>>> createObservable(RequestParams requestParams) {
         return Observable.from(getVideoIdList(requestParams))
                 .concatMap((Func1<String, Observable<Map<Type, RestResponse>>>) videoId -> getYoutubeVideoDetailUseCase.createObservable(
-                        GetYoutubeVideoDetailUseCase.generateRequestParam(videoId)))
+                        GetYoutubeVideoDetailRxUseCase.Companion.generateRequestParam(videoId)))
                 .toList();
     }
 

@@ -71,6 +71,7 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
+    implementation project(rootProject.ext.features.youtubeCommon)
 }
 
 project.ext {
