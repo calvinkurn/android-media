@@ -250,10 +250,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                         return;
                     }
                     break;
-//                case DeepLinkChecker.PELUANG:
-//                    screenName = AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_BERANDA;
-//                    openPeluangPage(uriData.getPathSegments(), uriData, defaultBundle);
-//                    break;
                 case DeepLinkChecker.GROUPCHAT:
                     openGroupChat(linkSegment, defaultBundle);
                     screenName = AppScreen.GROUP_CHAT;
