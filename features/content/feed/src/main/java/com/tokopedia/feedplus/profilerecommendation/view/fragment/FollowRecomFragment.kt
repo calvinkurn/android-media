@@ -39,7 +39,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import java.lang.Exception
 import javax.inject.Inject
 
-/**
+/**\
  * Created by jegul on 2019-09-11.
  */
 class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, FollowRecomAdapter.ActionListener, DialogOnboardingRecomFollowView.ActionListener {

@@ -35,7 +35,8 @@ object PlayBroadcastMocker {
                 id = it + 1L,
                 name = "Etalase ${it + 1}",
                 productMap = mutableMapOf(),
-                totalProduct = (it + 1) * 100
+                totalProduct = (it + 1) * 100,
+                stillHasProduct = false
         )
     }
 

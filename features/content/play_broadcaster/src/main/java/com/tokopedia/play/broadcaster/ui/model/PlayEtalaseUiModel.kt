@@ -7,5 +7,12 @@ data class PlayEtalaseUiModel(
         val id: Long,
         val name: String,
         val productMap: MutableMap<Int, List<ProductUiModel>>,
-        val totalProduct: Int
-)
+        val totalProduct: Int,
+        val stillHasProduct: Boolean
+) {
+
+    companion object {
+
+        val EMPTY = PlayEtalaseUiModel(-1, "", mutableMapOf(), 0, false)
+    }
+}

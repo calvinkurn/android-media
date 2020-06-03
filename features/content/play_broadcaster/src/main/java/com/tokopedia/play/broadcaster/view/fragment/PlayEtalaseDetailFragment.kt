@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
+import com.tokopedia.play.broadcaster.util.scroll.EndlessRecyclerViewScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
@@ -26,6 +27,9 @@ class PlayEtalaseDetailFragment @Inject constructor(
 ) : PlayBaseSetupFragment() {
 
     private lateinit var viewModel: PlayEtalasePickerViewModel
+
+    private val etalaseId: Long
+        get() = arguments?.getLong(EXTRA_ETALASE_ID) ?: throw IllegalStateException("etalaseId must be set")
 
     private lateinit var tvInfo: TextView
     private lateinit var rvProduct: RecyclerView
@@ -46,9 +50,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
         }
     })
 
-    override fun getTitle(): String {
-        return ""
-    }
+    private lateinit var scrollListener: EndlessRecyclerViewScrollListener
 
     override fun isRootFragment(): Boolean {
         return false
@@ -63,7 +65,6 @@ class PlayEtalaseDetailFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(requireParentFragment(), viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
-        arguments?.getLong(EXTRA_ETALASE_ID)?.let { etalaseId -> viewModel.setSelectedEtalase(etalaseId) }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -93,6 +94,13 @@ class PlayEtalaseDetailFragment @Inject constructor(
     private fun setupView(view: View) {
         rvProduct.adapter = selectableProductAdapter
         rvProduct.addItemDecoration(PlayGridTwoItemDecoration(requireContext()))
+        scrollListener = object : EndlessRecyclerViewScrollListener(rvProduct.layoutManager!!) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                viewModel.loadCurrentEtalaseProducts(etalaseId, page)
+            }
+        }
+        scrollListener.loadMoreNextPage()
+        rvProduct.addOnScrollListener(scrollListener)
     }
 
     private fun observeProductsInSelectedEtalase() {

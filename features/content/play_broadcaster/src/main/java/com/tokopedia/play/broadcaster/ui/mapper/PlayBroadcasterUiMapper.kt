@@ -16,7 +16,8 @@ object PlayBroadcasterUiMapper {
                 id = it.id.toLong(),
                 name = it.name,
                 productMap = mutableMapOf(),
-                totalProduct = it.count
+                totalProduct = it.count,
+                stillHasProduct = true
         )
     }
 

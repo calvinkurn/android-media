@@ -17,6 +17,7 @@ import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoratio
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayEtalaseViewHolder
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 import com.tokopedia.play.broadcaster.ui.viewholder.SearchSuggestionViewHolder
+import com.tokopedia.play.broadcaster.util.scroll.EndlessRecyclerViewScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.PlayEtalaseAdapter
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
 import com.tokopedia.play.broadcaster.view.adapter.SearchSuggestionsAdapter
@@ -79,7 +80,7 @@ class PlayEtalasePickerFragment @Inject constructor(
         }
     })
 
-    override fun getTitle(): String = "Select Products or Collection"
+    private lateinit var scrollListener: EndlessRecyclerViewScrollListener
 
     override fun isRootFragment(): Boolean = true
 
@@ -152,6 +153,12 @@ class PlayEtalasePickerFragment @Inject constructor(
 
         rvSearchedProducts.adapter = searchProductsAdapter
         rvSearchedProducts.addItemDecoration(PlayGridTwoItemDecoration(requireContext()))
+        scrollListener = object : EndlessRecyclerViewScrollListener(rvSearchedProducts.layoutManager!!) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+
+            }
+        }
+        rvSearchedProducts.addOnScrollListener(scrollListener)
 
         rvSuggestions.adapter = searchSuggestionsAdapter
     }
