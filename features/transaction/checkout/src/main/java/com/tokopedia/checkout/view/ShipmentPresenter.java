@@ -82,6 +82,7 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData;
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException;
 import com.tokopedia.purchase_platform.common.feature.checkout.request.CheckoutRequest;
+import com.tokopedia.purchase_platform.common.feature.checkout.request.CheckoutRequestGqlDataMapper;
 import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.feature.checkout.request.EgoldData;
 import com.tokopedia.purchase_platform.common.feature.checkout.request.ProductDataCheckoutRequest;
@@ -752,7 +753,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                        String deviceId,
                                                        CheckoutRequest checkoutRequest) {
         Map<String, Object> params = new HashMap<>();
-        params.put(CheckoutGqlUseCase.PARAM_CARTS, checkoutRequest);
+        params.put(CheckoutGqlUseCase.PARAM_CARTS, CheckoutRequestGqlDataMapper.INSTANCE.map(checkoutRequest));
         params.put(CheckoutGqlUseCase.PARAM_IS_ONE_CLICK_SHIPMENT, String.valueOf(isOneClickShipment));
         if (isTradeIn) {
             params.put(CheckoutGqlUseCase.PARAM_IS_TRADE_IN, true);
