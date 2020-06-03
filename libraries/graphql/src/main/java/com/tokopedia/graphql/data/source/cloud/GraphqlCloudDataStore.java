@@ -52,10 +52,10 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
     }
 
     /*
-    * akamai wrapper for generating a sensor data
-    * the hash will be passing into header of
-    * X-acf-sensor-data;
-    * */
+     * akamai wrapper for generating a sensor data
+     * the hash will be passing into header of
+     * X-acf-sensor-data;
+     * */
     private Observable<Response<JsonArray>> getResponse(List<GraphqlRequest> requests) {
         CYFMonitor.setLogLevel(CYFMonitor.INFO);
         if (isAkamai(requests.get(0).getQuery())) {
@@ -95,15 +95,15 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                     if (caches != null && !caches.isEmpty()) {
                         int size = requests.size();
                         for (int i = 0; i < size; i++) {
-
-                            if (requests.get(i) == null || requests.get(i).isNoCache() || caches.get(requests.get(i).getMd5()) == null) {
+                            GraphqlRequest request = requests.get(i);
+                            if (request == null || request.isNoCache() || caches.get(request.getMd5()) == null) {
                                 continue;
                             }
 
-                            BackendCache cache = caches.get(requests.get(i).getMd5());
+                            BackendCache cache = caches.get(request.getMd5());
                             JsonElement object = graphqlResponseInternal.getOriginalResponse().get(i).getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA);
-                            if (object != null && cache != null) {
-                                mCacheManager.save(requests.get(i).cacheKey(), object.toString(), cache.getMaxAge() * 1000);
+                            if (object != null) {
+                                mCacheManager.save(request.cacheKey(), object.toString(), cache.getMaxAge() * 1000);
                             }
                         }
                     }
