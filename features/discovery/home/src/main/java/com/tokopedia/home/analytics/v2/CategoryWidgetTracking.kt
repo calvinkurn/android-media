@@ -40,6 +40,7 @@ object CategoryWidgetTracking : BaseTracking() {
     fun getCategoryWidgetBannerClick(
             headerName: String,
             channelId: String,
+            userId: String,
             position: String,
             grid: DynamicHomeChannel.Grid,
             channel: DynamicHomeChannel.Channels
@@ -53,6 +54,7 @@ object CategoryWidgetTracking : BaseTracking() {
             attribution = channel.galaxyAttribution,
             categoryId = channel.categoryID,
             shopId = channel.brandId,
+            userId = userId,
             campaignCode = channel.campaignCode,
             promotions = listOf(
                     Promotion(
@@ -64,14 +66,14 @@ object CategoryWidgetTracking : BaseTracking() {
             )
     )
 
-    fun sendCategoryWidgetSeeAllClick(headerName: String) {
+    fun sendCategoryWidgetSeeAllClick(userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
-                Event.KEY, Event.CLICK_HOMEPAGE,
-                Category.KEY, Category.HOMEPAGE,
-                Action.KEY, CustomAction.CLICK_VIEW_ALL_CATEGORY_WIDGET,
-                Label.KEY, Label.NONE
-        )
+                        Event.KEY, Event.CLICK_HOMEPAGE,
+                        Category.KEY, Category.HOMEPAGE,
+                        Action.KEY, CustomAction.CLICK_VIEW_ALL_CATEGORY_WIDGET,
+                        Label.KEY, Label.NONE,
+                        UserId.KEY, userId)
         )
     }
 }
