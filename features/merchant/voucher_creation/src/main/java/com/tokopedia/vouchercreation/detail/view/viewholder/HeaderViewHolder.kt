@@ -65,7 +65,7 @@ class HeaderViewHolder(
                     timer.start()
 
                     headerContainer?.visible()
-                    statusResId = R.string.mvc_is_ongoing
+                    statusResId = R.string.mvc_ongoing
                     containerColor = ContainerUnify.GREEN
                     textColorResId = R.color.Green_G500
                 }

@@ -145,12 +145,12 @@ class VoucherViewHolder(
             val statusIndicatorBg: Int
             when (element.status) {
                 VoucherStatusConst.ONGOING -> {
-                    statusStr = context.getString(R.string.mvc_is_ongoing)
+                    statusStr = context.getString(R.string.mvc_ongoing)
                     colorRes = R.color.Green_G500
                     statusIndicatorBg = R.drawable.mvc_view_voucher_status_green
                 }
                 VoucherStatusConst.NOT_STARTED -> {
-                    statusStr = context.getString(R.string.mvc_not_started_yet)
+                    statusStr = context.getString(R.string.mvc_future)
                     colorRes = R.color.Neutral_N700_68
                     statusIndicatorBg = R.drawable.mvc_view_voucher_status_grey
                 }
