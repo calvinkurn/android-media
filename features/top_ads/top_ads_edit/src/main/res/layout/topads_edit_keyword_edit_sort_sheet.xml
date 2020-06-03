@@ -47,7 +47,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_10"
-            android:checked="true"
             android:gravity="start"
             android:layoutDirection="rtl"
             android:text="@string/topads_edit_keyword_edit_info_sheet_title_1"

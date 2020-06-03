@@ -11,7 +11,9 @@ import kotlinx.android.synthetic.main.topads_edit_negative_keyword_edit_item_lay
  * Created by Pika on 12/4/20.
  */
 
-class EditNegKeywordItemViewHolder(val view: View, private var actionDelete: ((pos: Int) -> Unit)?) : EditNegKeywordViewHolder<EditNegKeywordItemViewModel>(view) {
+class EditNegKeywordItemViewHolder(val view: View,
+                                   private var actionDelete: ((pos: Int) -> Unit)?,
+                                   private var actionStatusChange: ((pos: Int) -> Unit)) : EditNegKeywordViewHolder<EditNegKeywordItemViewModel>(view) {
 
     companion object {
         @LayoutRes
@@ -37,9 +39,13 @@ class EditNegKeywordItemViewHolder(val view: View, private var actionDelete: ((p
 
             view.sort.setOnClickListener {
                 sortKeywordList = EditKeywordSortSheet.newInstance(view.context)
+                sortKeywordList.setChecked(view.sort.text.toString())
                 sortKeywordList.show()
                 sortKeywordList.onItemClick = {
+                    val prev = view.sort.text
                     view.sort.text = sortKeywordList.getSelectedSortId()
+                    if (prev != view.sort.text)
+                        actionStatusChange.invoke(adapterPosition)
                     if (sortKeywordList.getSelectedSortId() == TITLE_1) {
                         item.data.type = BROAD
                     } else {

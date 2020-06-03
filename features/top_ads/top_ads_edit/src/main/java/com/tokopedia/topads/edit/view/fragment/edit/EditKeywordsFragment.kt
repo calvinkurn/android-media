@@ -91,7 +91,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = EditKeywordListAdapter(EditKeywordListAdapterTypeFactoryImpl(this::onDeleteKeyword, this::onAddKeyword, this::getMinMax, this::actionEnable))
+        adapter = EditKeywordListAdapter(EditKeywordListAdapterTypeFactoryImpl(this::onDeleteKeyword, this::onAddKeyword, this::getMinMax, this::actionEnable,this::actionStatusChange))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -115,6 +115,13 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private fun actionEnable() {
         val enable = !adapter.isError()
         callBack.buttonDisable(enable)
+    }
+
+    private fun actionStatusChange(position:Int) {
+        if(isExistsOriginal(position)) {
+            deletedKeywords?.add((adapter.items[position] as EditKeywordItemViewModel).data)
+            addedKeywords?.add((adapter.items[position] as EditKeywordItemViewModel).data)
+        }
     }
 
     private fun onSuccessSuggestion(data: List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) {
