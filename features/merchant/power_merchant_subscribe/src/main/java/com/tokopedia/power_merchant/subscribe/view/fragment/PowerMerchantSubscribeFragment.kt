@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -31,9 +30,8 @@ import com.tokopedia.power_merchant.subscribe.view.activity.PowerMerchantTermsAc
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantCancelBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantNotificationBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantNotificationBottomSheet.CTAMode
-import com.tokopedia.power_merchant.subscribe.view.contract.PmSubscribeContract
-import com.tokopedia.power_merchant.subscribe.view.model.ViewState
-import com.tokopedia.power_merchant.subscribe.view.model.ViewState.*
+import com.tokopedia.power_merchant.subscribe.view.model.ViewState.HideLoading
+import com.tokopedia.power_merchant.subscribe.view.model.ViewState.ShowLoading
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.PmSubscribeViewModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -122,10 +120,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         viewModel.getPmStatusInfo(userSessionInterface.shopId)
     }
 
-    private fun onErrorCancelMembership(throwable: Throwable) {
-        showToasterError(throwable)
-    }
-
     private fun showLoading() {
         mainContainer.hide()
         btnCallToAction.hide()
@@ -151,7 +145,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
             showBottomSheetSuccess()
             refreshData()
         } else if (requestCode == TURN_OFF_AUTOEXTEND_INTENT_CODE && resultCode == Activity.RESULT_OK){
-            refreshData()
+            onSuccessCancelMembership()
         }
     }
 
@@ -196,15 +190,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         context?.let {
             val intent = PMCancellationQuestionnaireActivity.newInstance(it)
             startActivityForResult(intent, TURN_OFF_AUTOEXTEND_INTENT_CODE)
-        }
-    }
-
-    private fun showToasterError(throwable: Throwable) {
-        view?.let {
-            val message = ErrorHandler.getErrorMessage(activity, throwable)
-            val actionLabel = getString(R.string.error_cancellation_tryagain)
-            val onClickActionLabel = View.OnClickListener { cancelMembership() }
-            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, actionLabel, onClickActionLabel)
         }
     }
 

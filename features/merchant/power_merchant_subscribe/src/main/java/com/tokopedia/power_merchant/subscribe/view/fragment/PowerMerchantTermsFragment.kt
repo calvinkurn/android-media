@@ -107,10 +107,6 @@ class PowerMerchantTermsFragment : BaseWebViewFragment() {
         resultOkAndFinish()
     }
 
-    private fun onSuccessAutoExtend() {
-        resultOkAndFinish()
-    }
-
     private fun onError(throwable: Throwable?) {
         view?.let {
             Toaster.make(it, ErrorHandler.getErrorMessage(context, throwable), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
