@@ -6,7 +6,7 @@ import com.tokopedia.utils.htmltags.HtmlUtil.LI_TAG
 import com.tokopedia.utils.htmltags.HtmlUtil.OL_TAG
 import com.tokopedia.utils.htmltags.HtmlUtil.UL_TAG
 import org.xml.sax.XMLReader
-import java.util.*
+import java.util.Stack
 
 class ListTagHandler : Html.TagHandler {
 
