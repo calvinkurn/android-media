@@ -423,6 +423,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
         }
         banner_hotel_homepage_promo.setBannerIndicator(Indicator.GREEN)
 
+        banner_hotel_homepage_promo.setOnPromoScrolledListener { }
+
         banner_hotel_homepage_promo.setOnPromoClickListener { position ->
             onPromoClicked(promoDataList.getOrNull(position)
                     ?: TravelCollectiveBannerModel.Banner(), position)
