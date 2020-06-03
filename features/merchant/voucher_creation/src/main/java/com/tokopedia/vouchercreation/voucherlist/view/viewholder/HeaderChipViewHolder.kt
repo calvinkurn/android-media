@@ -2,8 +2,8 @@ package com.tokopedia.vouchercreation.voucherlist.view.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel.HeaderChip
@@ -25,12 +25,13 @@ class HeaderChipViewHolder(
 
     override fun bind(element: HeaderChip) {
         with(itemView) {
-            itemChipMvc.chip_text.text = element.text
+            itemChipMvc.run {
+                chip_text.text = element.text
+                chip_right_icon.visible()
+            }
 
             setOnClickListener { onClick(element) }
             setChipState(element.isActive)
-
-            itemChipMvc.chip_right_icon.setImageResource(R.drawable.ic_mvc_chevron_down)
 
             setChipVisibility(element)
         }
@@ -47,10 +48,10 @@ class HeaderChipViewHolder(
         itemView.itemChipMvc.run {
             if (isActive) {
                 chipType = ChipsUnify.TYPE_SELECTED
-                chip_right_icon.setColorFilter(ContextCompat.getColor(context, R.color.Green_G500))
+                chip_right_icon.setImageResource(R.drawable.unify_chips_ic_chevron_selected)
             } else {
                 chipType = ChipsUnify.TYPE_NORMAL
-                chip_right_icon.setColorFilter(ContextCompat.getColor(context, R.color.Neutral_N400))
+                chip_right_icon.setImageResource(R.drawable.unify_chips_ic_chevron_normal)
             }
         }
     }

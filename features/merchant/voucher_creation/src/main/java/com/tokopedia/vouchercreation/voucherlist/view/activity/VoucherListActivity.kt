@@ -22,6 +22,8 @@ class VoucherListActivity : BaseActivity(), VoucherListFragment.Listener {
 
     private var isSuccessDialogAlreadyShowed = false
 
+    private var isActiveVoucher = true
+
     private val successVoucherId by lazy { intent?.extras?.getInt(SUCCESS_VOUCHER_ID_KEY) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,6 +32,19 @@ class VoucherListActivity : BaseActivity(), VoucherListFragment.Listener {
 
         showFragment(getFragment(true))
         setWhiteStatusBar()
+    }
+
+    override fun onBackPressed() {
+        if (isActiveVoucher) {
+            super.onBackPressed()
+        } else {
+            switchFragment(isActiveVoucher)
+        }
+    }
+
+    override fun switchFragment(isActiveVoucher: Boolean) {
+        this.isActiveVoucher = isActiveVoucher
+        showFragment(getFragment(isActiveVoucher))
     }
 
     private fun showFragment(fragment: Fragment) {
@@ -60,9 +75,5 @@ class VoucherListActivity : BaseActivity(), VoucherListFragment.Listener {
                 arguments = bundle
             }
         }
-    }
-
-    override fun switchFragment(isActiveVoucher: Boolean) {
-        showFragment(getFragment(isActiveVoucher))
     }
 }
