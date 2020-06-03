@@ -2,6 +2,7 @@ package com.tokopedia.vouchercreation.voucherlist.view.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.vouchercreation.R
@@ -26,9 +27,10 @@ class HeaderChipViewHolder(
         with(itemView) {
             itemChipMvc.chip_text.text = element.text
 
-            itemChipMvc.setChevronClickListener { onClick(element) }
             setOnClickListener { onClick(element) }
             setChipState(element.isActive)
+
+            itemChipMvc.chip_right_icon.setImageResource(R.drawable.ic_mvc_chevron_down)
 
             setChipVisibility(element)
         }
@@ -42,10 +44,14 @@ class HeaderChipViewHolder(
     }
 
     private fun setChipState(isActive: Boolean) {
-        itemView.itemChipMvc.chipType = if (isActive) {
-            ChipsUnify.TYPE_SELECTED
-        } else {
-            ChipsUnify.TYPE_NORMAL
+        itemView.itemChipMvc.run {
+            if (isActive) {
+                chipType = ChipsUnify.TYPE_SELECTED
+                chip_right_icon.setColorFilter(ContextCompat.getColor(context, R.color.Green_G500))
+            } else {
+                chipType = ChipsUnify.TYPE_NORMAL
+                chip_right_icon.setColorFilter(ContextCompat.getColor(context, R.color.Neutral_N400))
+            }
         }
     }
 }
