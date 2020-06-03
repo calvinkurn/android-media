@@ -201,8 +201,10 @@ class PromotionBudgetAndTypeFragment : BaseCreateMerchantVoucherFragment<Promoti
                             if (painter == null) {
                                 painter = VoucherPreviewPainter(context, bitmap, ::onSuccessGetBanner, getBannerBaseUiModel())
                             }
-                            bannerVoucherUiModel.let {
-                                painter?.drawInitial(it)
+                            activity?.runOnUiThread {
+                                bannerVoucherUiModel.let {
+                                    painter?.drawInitial(it)
+                                }
                             }
                             return false
                         }
@@ -230,8 +232,10 @@ class PromotionBudgetAndTypeFragment : BaseCreateMerchantVoucherFragment<Promoti
     }
 
     private fun onSuccessGetBanner(bitmap: Bitmap) {
-        bannerImage?.setImageBitmap(bitmap)
-        isReadyToDraw = true
-        onShouldChangeBannerValue(tempVoucherType)
+        activity?.runOnUiThread {
+            bannerImage?.setImageBitmap(bitmap)
+            isReadyToDraw = true
+            onShouldChangeBannerValue(tempVoucherType)
+        }
     }
 }
