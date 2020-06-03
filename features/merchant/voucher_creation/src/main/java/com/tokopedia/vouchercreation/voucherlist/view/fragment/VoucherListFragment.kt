@@ -38,7 +38,6 @@ import com.tokopedia.vouchercreation.voucherlist.model.ui.*
 import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel.HeaderChip
 import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel.ResetChip
 import com.tokopedia.vouchercreation.voucherlist.model.ui.MoreMenuUiModel.*
-import com.tokopedia.vouchercreation.voucherlist.view.activity.VoucherListActivity
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactoryImpl
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.VoucherViewHolder
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.VoucherListViewModel
@@ -69,6 +68,9 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         private val MENU_VOUCHER_HISTORY_ID = R.id.menuMvcShowVoucherHistory
 
         private const val COPY_PROMO_CODE_LABEL = "list_promo_code"
+
+        const val IS_SUCCESS_VOUCHER = "is_success"
+        const val VOUCHER_ID_KEY = "voucher_id"
 
         fun newInstance(isActiveVoucher: Boolean): VoucherListFragment {
             return VoucherListFragment().apply {
@@ -111,6 +113,10 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     private val isActiveVoucher by lazy { getBooleanArgs(KEY_IS_ACTIVE_VOUCHER, true) }
 
+    private val isNeedToShowSuccessDialog by lazy { getBooleanArgs(IS_SUCCESS_VOUCHER, false) }
+
+    private val successVoucherId by lazy { getIntArgs(VOUCHER_ID_KEY, 0) }
+
     private var isToolbarAlreadyLoaded = false
 
     private var shopBasicData: ShopBasicDataResult? = null
@@ -129,8 +135,8 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
 
-        savedInstanceState?.getInt(VoucherListActivity.SUCCESS_VOUCHER_ID_KEY)?.let { voucherId ->
-            showSuccessCreateBottomSheet(voucherId)
+        if (successVoucherId != 0) {
+            showSuccessCreateBottomSheet(successVoucherId)
         }
 
         setupView()
@@ -272,10 +278,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     }
 
     private fun showSuccessCreateBottomSheet(voucherId: Int) {
-        //Todo: fetch voucher info from be
-        val parent = view as? ViewGroup ?: return
-        SuccessCreateBottomSheet.createInstance(parent)
-                .show(childFragmentManager)
+        mViewModel.getSuccessCreatedVoucher(voucherId)
     }
 
     private fun showEditPeriodBottomSheet(voucher: VoucherUiModel) {
@@ -565,11 +568,10 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     }
 
     private fun setOnSuccessGetVoucherList(vouchers: List<VoucherUiModel>) {
-        if (isToolbarAlreadyLoaded) {
+        if (isToolbarAlreadyLoaded && !isActiveVoucher) {
+            renderList(vouchers, vouchers.isNotEmpty())
             if (adapter.data.isEmpty()) {
                 renderList(listOf(NoResultStateUiModel))
-            } else {
-                renderList(vouchers, vouchers.isNotEmpty())
             }
         } else {
             clearAllData()
@@ -621,6 +623,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                 when(result) {
                     is Success -> {
                         val voucherId = result.data
+                        loadData(1)
                         showCancellationSuccessToaster(true, voucherId)
                     }
                     is Fail -> {
@@ -634,6 +637,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                 when(result) {
                     is Success -> {
                         val voucherId = result.data
+                        loadData(1)
                         showCancellationSuccessToaster(false, voucherId)
                     }
                     is Fail -> {
@@ -646,6 +650,32 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
             observe(mViewModel.shopBasicLiveData) { result ->
                 if (result is Success) {
                     shopBasicData = result.data
+                }
+            }
+            observe(mViewModel.successVoucherLiveData) { result ->
+                if (result is Success) {
+                    result.data.let { uiModel ->
+                        if (uiModel.isPublic) {
+                            view?.run {
+                                Toaster.make(this,
+                                        context?.getString(R.string.mvc_success_toaster).toBlankOrString(),
+                                        Toaster.LENGTH_LONG,
+                                        Toaster.TYPE_NORMAL,
+                                        context?.getString(R.string.mvc_oke).toBlankOrString(),
+                                        View.OnClickListener {})
+                            }
+                        } else {
+                            val parent = view as? ViewGroup ?: return@observe
+                            SuccessCreateBottomSheet.createInstance(parent, uiModel)
+                                    .setOnShareClickListener {
+                                        showShareBottomSheet(uiModel)
+                                    }
+                                    .setOnDownloadClickListener {
+                                        showDownloadBottomSheet(uiModel)
+                                    }
+                                    .show(childFragmentManager)
+                        }
+                    }
                 }
             }
         }

@@ -23,7 +23,7 @@ class UploadVoucherUseCase @Inject constructor(
         private const val PARAM_RESOLUTION = "resolution"
         private const val DEFAULT_UPLOAD_PATH = "/upload/attachment"
         private const val DEFAULT_UPLOAD_TYPE = "fileToUpload\"; filename=\"image.jpg"
-        private const val DEFAULT_RESOLUTION = "100-square"
+        private const val DEFAULT_RESOLUTION = "/cache/100-square"
         private const val RESOLUTION_500 = "500"
         private const val TEXT_PLAIN = "text/plain"
         private const val IMAGES_PATH = "images_path"
@@ -52,7 +52,7 @@ class UploadVoucherUseCase @Inject constructor(
             Func1 { model ->
                 val lowResUrl = model.dataResultImageUpload.picSrc.toBlankOrString()
                 if (lowResUrl.contains(DEFAULT_RESOLUTION)) {
-                    lowResUrl.replaceFirst(DEFAULT_RESOLUTION.toRegex(), RESOLUTION_500)
+                    lowResUrl.replaceFirst(DEFAULT_RESOLUTION.toRegex(), "")
                 } else {
                     lowResUrl
                 }

@@ -10,11 +10,11 @@
         android:id="@+id/successTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/mvc_success_create_title"
         android:textColor="@color/black"
         android:lines="2"
         app:typographyType="heading_2"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/mvc_success_create_title"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/successDesc"
@@ -51,10 +51,10 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/mvc_success_info_margin"
             android:layout_marginStart="@dimen/mvc_success_info_margin"
+            android:text="@string/mvc_success_active_info"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/successDate"
-            app:layout_constraintStart_toEndOf="@id/successImage"
-            tools:text="Voucher akan aktif pada :"/>
+            app:layout_constraintStart_toEndOf="@id/successImage"/>
 
         <com.tokopedia.vouchercreation.detail.view.component.StartEndVoucher
             android:id="@+id/successDate"
@@ -85,6 +85,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginBottom="@dimen/layout_lvl2"
         android:text="@string/mvc_download"
         app:unifyButtonSize="large"
         app:unifyButtonType="main"

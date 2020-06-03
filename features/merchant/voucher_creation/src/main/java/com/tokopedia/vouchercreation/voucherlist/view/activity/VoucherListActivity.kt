@@ -20,6 +20,10 @@ class VoucherListActivity : BaseActivity(), VoucherListFragment.Listener {
         const val SUCCESS_VOUCHER_ID_KEY = "success_voucher_id"
     }
 
+    private var isSuccessDialogAlreadyShowed = false
+
+    private val successVoucherId by lazy { intent?.extras?.getInt(SUCCESS_VOUCHER_ID_KEY) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mvc_voucher_list)
@@ -44,6 +48,17 @@ class VoucherListActivity : BaseActivity(), VoucherListFragment.Listener {
     private fun getFragment(isActiveVoucher: Boolean): VoucherListFragment {
         return VoucherListFragment.newInstance(isActiveVoucher).apply {
             setFragmentListener(this@VoucherListActivity)
+            val willShowSuccessCreationDialog = !isSuccessDialogAlreadyShowed && isActiveVoucher && successVoucherId != 0
+            if (willShowSuccessCreationDialog) {
+                val bundle = Bundle().apply {
+                    putBoolean(VoucherListFragment.IS_SUCCESS_VOUCHER, true)
+                    successVoucherId?.run {
+                        putInt(VoucherListFragment.VOUCHER_ID_KEY, this)
+                    }
+                }
+                isSuccessDialogAlreadyShowed = true
+                arguments = bundle
+            }
         }
     }
 

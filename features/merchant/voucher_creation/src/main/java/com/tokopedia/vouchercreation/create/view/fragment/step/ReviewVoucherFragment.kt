@@ -206,6 +206,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                                     putExtra(VoucherListActivity.SUCCESS_VOUCHER_ID_KEY, result.data.voucherId)
                                 }
                                 startActivity(intent)
+                                activity?.finish()
                             }
                         }
                     }

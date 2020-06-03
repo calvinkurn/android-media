@@ -9,3 +9,7 @@ import androidx.fragment.app.Fragment
 fun Fragment.getBooleanArgs(key: String, defValue: Boolean = false): Boolean {
     return arguments?.getBoolean(key, defValue) ?: defValue
 }
+
+fun Fragment.getIntArgs(key: String, defValue: Int = 0): Int {
+    return arguments?.getInt(key, defValue) ?: defValue
+}
