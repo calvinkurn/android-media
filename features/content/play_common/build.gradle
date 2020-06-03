@@ -30,6 +30,9 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.global_error
 
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
 
 //    implementation rootProject.ext.miscDependencies.exoPlayerCore
