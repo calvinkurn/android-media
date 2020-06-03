@@ -37,7 +37,7 @@ public class ForgotPasswordActivity extends BasePresenterActivity {
     private static final String INTENT_EXTRA_AUTO_RESET = "INTENT_EXTRA_AUTO_RESET";
     private static final String INTENT_EXTRA_REMOVE_FOOTER = "INTENT_EXTRA_REMOVE_FOOTER";
 
-    private static final String URL_FORGOT_PASSWORD = "http://m.tokopedia.com/reset-password";
+    private static final String URL_FORGOT_PASSWORD = "https://m.tokopedia.com/reset-password";
     private static final String REMOTE_FORGOT_PASSWORD_DIRECT_TO_WEBVIEW_URL = "android_forgot_password_webview_url";
     private static final String AB_TEST_RESET_PASSWORD_KEY = "Reset Password AND";
     private static final String AB_TEST_RESET_PASSWORD = "Reset Password AND";
