@@ -110,7 +110,9 @@ open class WebsocketMessageMapper @Inject constructor() {
                 pojoAttribute.productProfile.playStoreData,
                 pojoAttribute.productProfile.remainingStock,
                 pojoAttribute.productProfile.status
-        )
+        ).apply {
+            finishLoading()
+        }
     }
 
     private fun convertToInvoiceSent(pojo: ChatSocketPojo, jsonAttribute: JsonObject):

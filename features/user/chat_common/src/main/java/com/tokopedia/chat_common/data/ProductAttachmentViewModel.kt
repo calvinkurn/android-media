@@ -337,6 +337,11 @@ open class ProductAttachmentViewModel : SendableViewModel,
         return productId.toString()
     }
 
+    fun finishLoading() {
+        this.isLoading = false
+        this.isError = false
+    }
+
     companion object {
         const val statusDeleted = 0
         const val statusActive = 1
