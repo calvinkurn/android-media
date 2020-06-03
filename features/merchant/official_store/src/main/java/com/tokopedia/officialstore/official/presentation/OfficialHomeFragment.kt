@@ -762,8 +762,14 @@ class OfficialHomeFragment :
         }
     }
 
-    override fun onClickMixLeftBannerImage(applink: String) {
-        RouteManager.route(context, applink)
+    override fun onClickMixLeftBannerImage(channel: Channel, position: Int) {
+        if (RouteManager.route(context, channel.banner?.applink.orEmpty())) {
+            tracking?.eventClickMixLeftImageBanner(channel, category?.title.orEmpty(), position)
+        }
+    }
+
+    override fun onMixLeftBannerImpressed(channel: Channel, position: Int) {
+        tracking?.eventImpressionMixLeftImageBanner(channel, category?.title.orEmpty(), position)
     }
 
     private fun removeLoading() {
