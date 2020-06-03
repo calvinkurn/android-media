@@ -18,7 +18,11 @@ import kotlinx.android.synthetic.main.topads_edit_keyword_edit_item_layout.view.
  * Created by Pika on 9/4/20.
  */
 
-class EditKeywordItemViewHolder(val view: View, private var actionDelete: ((pos: Int) -> Unit)?, private val actionClick: (() -> MutableMap<String, Int>), var actionEnable: (() -> Unit)) : EditKeywordViewHolder<EditKeywordItemViewModel>(view) {
+class EditKeywordItemViewHolder(val view: View,
+                                private var actionDelete: ((pos: Int) -> Unit)?,
+                                private val actionClick: (() -> MutableMap<String, Int>),
+                                private var actionEnable: (() -> Unit),
+                                private var actionStatusChange: ((pos: Int) -> Unit)) : EditKeywordViewHolder<EditKeywordItemViewModel>(view) {
 
     companion object {
         @LayoutRes
@@ -54,16 +58,19 @@ class EditKeywordItemViewHolder(val view: View, private var actionDelete: ((pos:
             actionEnable.invoke()
             view.sort.setOnClickListener {
                 sortKeywordList = EditKeywordSortSheet.newInstance(view.context)
+                sortKeywordList.setChecked(view.sort.text.toString())
                 sortKeywordList.show()
                 sortKeywordList.onItemClick = {
+                    val prev = view.sort.text
                     view.sort.text = sortKeywordList.getSelectedSortId()
                     if (sortKeywordList.getSelectedSortId() == TITLE_1) {
                         item.data.type = KEYWORD_TYPE_PHRASE
                     } else {
                         item.data.type = KEYWORD_TYPE_EXACT
                     }
+                    if (prev != view.sort.text)
+                        actionStatusChange.invoke(adapterPosition)
                 }
-
             }
             view.budget.textFieldInput.addTextChangedListener(object : NumberTextWatcher(view.budget.textFieldInput, "0") {
                 override fun onNumberChanged(number: Double) {

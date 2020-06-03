@@ -135,23 +135,7 @@ class TopAdsCreateUseCase @Inject constructor(@ActivityContext
             adOperation.action = ACTION_REMOVE
             productList.add(adOperation)
         }
-        keywordsPositiveCreate?.forEach { keyPos ->
-            val keywordEditInput = KeywordEditInput()
-            val keyword = KeywordEditInput.Keyword()
-            keyword.source = keyPos.source
-            keyword.id = keyPos.keywordId
-            keyword.price_bid = keyPos.priceBid
-            keyword.status = ACTIVE
-            keyword.tag = keyPos.tag
-            if (keyPos.type == KEYWORD_TYPE_PHRASE) {
-                keyword.type = POSTIVE_PHRASE
-            } else {
-                keyword.type = POSITIVE_SPECIFIC
-            }
-            keywordEditInput.keyword = keyword
-            keywordEditInput.action = ACTION_CREATE
-            keywordList.add(keywordEditInput)
-        }
+
         keywordsPostiveEdit?.forEach { posKey ->
             val keywordEditInput = KeywordEditInput()
             val keyword = KeywordEditInput.Keyword()
@@ -179,20 +163,19 @@ class TopAdsCreateUseCase @Inject constructor(@ActivityContext
             keywordEditInput.action = ACTION_DELETE
             keywordList.add(keywordEditInput)
         }
-
-        keywordsNegCreate?.forEach { negKey ->
+        keywordsPositiveCreate?.forEach { keyPos ->
             val keywordEditInput = KeywordEditInput()
             val keyword = KeywordEditInput.Keyword()
-            keyword.id = "0"
-            keyword.price_bid = 0
-            if (negKey.type == KEYWORD_TYPE_NEGATIVE_PHRASE) {
-                keyword.type = NEGATIVE_PHRASE
-            } else {
-                keyword.type = NEGATIVE_SPECIFIC
-            }
+            keyword.source = keyPos.source
+            keyword.id = keyPos.keywordId
+            keyword.price_bid = keyPos.priceBid
             keyword.status = ACTIVE
-            keyword.tag = negKey.tag
-            keyword.source = negKey.source
+            keyword.tag = keyPos.tag
+            if (keyPos.type == KEYWORD_TYPE_PHRASE) {
+                keyword.type = POSTIVE_PHRASE
+            } else {
+                keyword.type = POSITIVE_SPECIFIC
+            }
             keywordEditInput.keyword = keyword
             keywordEditInput.action = ACTION_CREATE
             keywordList.add(keywordEditInput)
@@ -209,6 +192,24 @@ class TopAdsCreateUseCase @Inject constructor(@ActivityContext
             keyword.source = null
             keywordEditInput.keyword = keyword
             keywordEditInput.action = ACTION_DELETE
+            keywordList.add(keywordEditInput)
+        }
+
+        keywordsNegCreate?.forEach { negKey ->
+            val keywordEditInput = KeywordEditInput()
+            val keyword = KeywordEditInput.Keyword()
+            keyword.id = "0"
+            keyword.price_bid = 0
+            if (negKey.type == KEYWORD_TYPE_NEGATIVE_PHRASE) {
+                keyword.type = NEGATIVE_PHRASE
+            } else {
+                keyword.type = NEGATIVE_SPECIFIC
+            }
+            keyword.status = ACTIVE
+            keyword.tag = negKey.tag
+            keyword.source = negKey.source
+            keywordEditInput.keyword = keyword
+            keywordEditInput.action = ACTION_CREATE
             keywordList.add(keywordEditInput)
         }
 

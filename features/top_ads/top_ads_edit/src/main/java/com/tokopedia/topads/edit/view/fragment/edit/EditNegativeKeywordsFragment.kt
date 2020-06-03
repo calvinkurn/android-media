@@ -49,7 +49,7 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = EditNegKeywordListAdapter(EditNegKeywordListAdapterTypeFactoryImpl(this::onDeleteNegKeyword, this::onAddKeyword))
+        adapter = EditNegKeywordListAdapter(EditNegKeywordListAdapterTypeFactoryImpl(this::onDeleteNegKeyword, this::onAddKeyword, ::onStatusChange))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -58,6 +58,13 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
 
     private fun onDeleteNegKeyword(position: Int) {
         showNegConfirmationDialog(position)
+    }
+
+    private fun onStatusChange(position: Int) {
+        if (isExistsOriginal(position)) {
+            deletedKeywords?.add((adapter.items[position] as EditNegKeywordItemViewModel).data)
+            addedKeywords?.add((adapter.items[position] as EditNegKeywordItemViewModel).data)
+        }
     }
 
     private fun showNegConfirmationDialog(position: Int) {
@@ -194,7 +201,6 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
         setVisibilityOperation(View.VISIBLE)
         updateItemCount()
         adapter.notifyDataSetChanged()
-
     }
 
     private fun isExistsOriginal(position: Int): Boolean {
