@@ -7,8 +7,11 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.analytics.ChatbotAnalytics.Companion.chatbotAnalytics
+import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 import com.tokopedia.csat_rating.fragment.BaseFragmentProvideRating
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -78,6 +81,22 @@ class ChatBotProvideRatingFragment: BaseFragmentProvideRating() {
         mTxtFinished = view.findViewById(getTextFinishedId())
         mFilterReview = view.findViewById(getFilterReviewId())
     }
+
+
+    override fun getLayoutManager(filterList: List<BadCsatReasonListItem>): RecyclerView.LayoutManager {
+        val gridLayoutManager = GridLayoutManager(context, 2)
+        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(i: Int): Int {
+                return if (filterList.size % 2 == 0) {
+                    1
+                } else {
+                    if (i == filterList.size - 1) 2 else 1
+                }
+            }
+        }
+        return gridLayoutManager
+    }
+
 
     override fun getTextHelpTitleId():Int = R.id.txt_help_title
     override fun getSmilleLayoutId():Int = R.id.smile_layout

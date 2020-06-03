@@ -522,6 +522,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_MIX_TOP: String = "top_carousel"
             const val LAYOUT_PRODUCT_HIGHLIGHT: String = "product_highlight"
             const val LAYOUT_RECHARGE_RECOMMENDATION: String = "dg_bills"
+            const val LAYOUT_CATEGORY_WIDGET: String = "category_widget"
             const val channelId: String = "channelId"
             const val campaignCodeLabel: String = "campaignCode"
         }
@@ -555,6 +556,9 @@ data class DynamicHomeChannel(
             @Expose
             @SerializedName("id")
             val id: String = "",
+            @Expose
+            @SerializedName("back_color")
+            val backColor: String = "",
             @Expose
             @SerializedName("warehouseID")
             val warehouseId: String = "",
@@ -617,7 +621,9 @@ data class DynamicHomeChannel(
             val isOutOfStock: Boolean = false,
             @Expose
             @SerializedName("labelGroup")
-            val labelGroup: Array<LabelGroup> = arrayOf()
+            val labelGroup: Array<LabelGroup> = arrayOf(),
+            @SerializedName("has_buy_button")
+            val hasBuyButton: Boolean = false
     )
 
     data class Header(

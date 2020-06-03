@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTrackingConstant;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ProductRevIncentiveOvoDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.bottomsheet.IncentiveOvoBottomSheet;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.customview.ShopReputationView;
@@ -325,28 +326,28 @@ public class InboxReputationDetailHeaderViewHolder extends
             ovoTicker.setDescriptionClickEvent(new TickerCallback() {
                 @Override
                 public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
-                    BottomSheetUnify bottomSheet = new IncentiveOvoBottomSheet(productRevIncentiveOvoDomain);
+                    BottomSheetUnify bottomSheet = new IncentiveOvoBottomSheet(productRevIncentiveOvoDomain, ReputationTrackingConstant.INVOICE);
                     bottomSheet.setFullpage(true);
                     if(fragmentManager != null) {
                         bottomSheet.show(fragmentManager,IncentiveOvoBottomSheet.Companion.getTAG());
                         bottomSheet.setCloseClickListener(new Function1<View, Unit>() {
                             @Override
                             public Unit invoke(View view) {
-                                reputationTracking.onClickDismissIncentiveOvoBottomSheetTracker();
+                                reputationTracking.onClickDismissIncentiveOvoBottomSheetTracker(ReputationTrackingConstant.INVOICE);
                                 bottomSheet.dismiss();
                                 return Unit.INSTANCE;
                             }
                         });
                     }
-                    reputationTracking.onClickReadSkIncentiveOvoTracker(title);
+                    reputationTracking.onClickReadSkIncentiveOvoTracker(title, ReputationTrackingConstant.INVOICE);
                 }
 
                 @Override
                 public void onDismiss() {
-                    reputationTracking.onClickDismissIncentiveOvoTracker(title);
+                    reputationTracking.onClickDismissIncentiveOvoTracker(title, ReputationTrackingConstant.INVOICE);
                 }
             });
-            reputationTracking.onSuccessGetIncentiveOvoTracker(title);
+            reputationTracking.onSuccessGetIncentiveOvoTracker(title, ReputationTrackingConstant.INVOICE);
         }
     }
 }

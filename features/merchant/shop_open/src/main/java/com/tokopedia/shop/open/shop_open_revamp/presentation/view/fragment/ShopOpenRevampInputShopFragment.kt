@@ -274,6 +274,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                     if (_shopId.isNotEmpty() && _isSuccess) {
                         isSuccess = true
                         userSession.shopId = _shopId
+                        userSession.shopName = shopNameValue
                         fragmentNavigationInterface?.navigateToNextPage(PageNameConstant.SPLASH_SCREEN_PAGE, FIRST_FRAGMENT_TAG)
                         shopOpenRevampTracking?.clickCreateShop(isSuccess, shopNameValue)
                     } else {
