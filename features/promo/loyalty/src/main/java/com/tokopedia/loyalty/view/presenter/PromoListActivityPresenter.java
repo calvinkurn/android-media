@@ -1,5 +1,8 @@
 package com.tokopedia.loyalty.view.presenter;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
@@ -33,40 +36,64 @@ public class PromoListActivityPresenter implements IPromoListActivityPresenter {
 
     @Override
     public void processGetPromoMenu() {
+        view.showProgressLoading();
         promoInteractor.getPromoMenuList(
                 new TKPDMapParam<String, String>(), new Subscriber<List<PromoMenuData>>() {
                     @Override
                     public void onCompleted() {
-
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                view.hideProgressLoading();
+                            }
+                        },000L);
                     }
 
                     @Override
                     public void onError(Throwable e) {
+
                         e.printStackTrace();
-                        if (e instanceof UnknownHostException) {
-                             /* Ini kalau ga ada internet */
-                            view.renderErrorNoConnectionGetPromoMenuDataList(
-                                    ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                            );
-                        } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                            /* Ini kalau timeout */
-                            view.renderErrorTimeoutConnectionGetPromoMenuDataListt(
-                                    ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                            );
-                        } else if (e instanceof HttpErrorException) {
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                view.hideProgressLoading();
+                                if (e instanceof UnknownHostException) {
+                                    /* Ini kalau ga ada internet */
+                                    view.renderErrorNoConnectionGetPromoMenuDataList(
+                                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+                                    );
+                                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+                                    /* Ini kalau timeout */
+                                    view.renderErrorTimeoutConnectionGetPromoMenuDataListt(
+                                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                                    );
+                                } else if (e instanceof HttpErrorException) {
                             /* Ini Http error, misal 403, 500, 404,
                             code http errornya bisa diambil
                              e.getErrorCode */
-                            view.renderErrorHttpGetPromoMenuDataList(e.getMessage());
-                        } else {
-                             /* Ini diluar dari segalanya hahahaha */
-                            view.renderErrorHttpGetPromoMenuDataList(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                        }
+                                    view.renderErrorHttpGetPromoMenuDataList(e.getMessage());
+                                } else {
+                                    /* Ini diluar dari segalanya hahahaha */
+                                    view.renderErrorHttpGetPromoMenuDataList(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                }
+                            }
+                        },2000L);
                     }
 
                     @Override
                     public void onNext(List<PromoMenuData> promoMenuData) {
-                        view.renderPromoMenuDataList(promoMenuData);
+//                        if(true)
+//                            throw new RuntimeException();
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                view.renderPromoMenuDataList(promoMenuData);
+                            }
+                        },000L);
+
                     }
                 }
         );
