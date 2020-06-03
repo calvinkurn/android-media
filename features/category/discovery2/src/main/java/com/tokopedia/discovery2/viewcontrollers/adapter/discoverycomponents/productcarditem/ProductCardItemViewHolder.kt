@@ -12,7 +12,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.discovery2.R
-import com.tokopedia.discovery2.StockWording
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel.Companion.GOLD_MERCHANT
@@ -55,11 +54,14 @@ class ProductCardItemViewHolder(itemView: View, fragment: Fragment) : AbstractVi
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         productCardItemViewModel = discoveryBaseViewModel as ProductCardItemViewModel
-        init()
+        initView()
     }
 
-    fun init() {
+    private fun initView() {
         productCardItemViewModel.setContext(productCardView.context)
+        productCardView.setOnClickListener {
+            productCardItemViewModel.handleUIClick()
+        }
     }
 
     override fun onViewAttachedToWindow() {
@@ -74,51 +76,21 @@ class ProductCardItemViewHolder(itemView: View, fragment: Fragment) : AbstractVi
     }
 
     private fun setUpObserver() {
-        productCardItemViewModel.getComponentName().observe(lifecycleOwner, Observer {
-            productCardName = it
-        })
+        productCardName = productCardItemViewModel.getComponentName()
+
         productCardItemViewModel.getDataItemValue().observe(lifecycleOwner, Observer {
             populateData(it)
         })
 
         productCardItemViewModel.getShopBadge().observe(lifecycleOwner, Observer {
-            if (it == OFFICIAL_STORE)
-                shopBadge.setImageResource(R.drawable.discovery_official_store_icon)
-            else if (it == GOLD_MERCHANT)
-                shopBadge.setImageResource(R.drawable.discovery_gold_merchant_icon)
-            else
-                shopBadge.hide()
+            when (it) {
+                OFFICIAL_STORE -> shopBadge.setImageResource(R.drawable.discovery_official_store_icon)
+                GOLD_MERCHANT -> shopBadge.setImageResource(R.drawable.discovery_gold_merchant_icon)
+                else -> shopBadge.hide()
+            }
         })
-        productCardItemViewModel.getFreeOngkirImage().observe(lifecycleOwner, Observer {
-            showFreeOngKir(it)
-        })
-        productCardView.setOnClickListener {
-            productCardItemViewModel.handleUIClick()
-        }
-
-        productCardItemViewModel.getPDPViewCount().observe(lifecycleOwner, Observer {
-            setPDPView(it)
-        })
-
-        productCardItemViewModel.getStockWord().observe(lifecycleOwner, Observer {
-            showStockProgressTitle(it)
-        })
-
-        productCardItemViewModel.getInterestedCount().observe(lifecycleOwner, Observer {
-            showInterestedView(it)
-        })
-
     }
 
-
-    private fun showFreeOngKir(freeOngkirActive: String?) {
-        if (!freeOngkirActive.isNullOrEmpty()) {
-            ImageHandler.LoadImage(imageFreeOngkirPromo, freeOngkirActive)
-            imageFreeOngkirPromo.show()
-        } else {
-            imageFreeOngkirPromo.hide()
-        }
-    }
 
     private fun populateData(dataItem: DataItem) {
         if (productCardName == "product_card_revamp_item" || productCardName == "product_card_carousel_item") {
@@ -129,7 +101,7 @@ class ProductCardItemViewHolder(itemView: View, fragment: Fragment) : AbstractVi
             productName.setTextAndCheckShow(dataItem.title)
             setSlashedPrice(dataItem.price)
             textViewPrice.setTextAndCheckShow(dataItem.discountedPrice)
-            setStockProgress(dataItem.stockSoldPercentage)
+            setStockProgress(dataItem)
         }
         setLabelDiscount(dataItem.discountPercentage.toString())
         textViewShopName.setTextAndCheckShow(dataItem.shopName)
@@ -140,57 +112,76 @@ class ProductCardItemViewHolder(itemView: View, fragment: Fragment) : AbstractVi
         setShopIcon(dataItem.shopLogo)
         setProductImage(dataItem.imageUrlMobile)
         setTopads(dataItem.isTopads)
+        showFreeOngKir(dataItem)
+        setPDPView(dataItem)
+        showInterestedView(dataItem)
+    }
+
+
+    private fun showFreeOngKir(dataItem: DataItem) {
+        val freeOngkirImage = productCardItemViewModel.getFreeOngkirImage(dataItem)
+        if (freeOngkirImage.isNotEmpty()) {
+            ImageHandler.LoadImage(imageFreeOngkirPromo, freeOngkirImage)
+            imageFreeOngkirPromo.show()
+        } else {
+            imageFreeOngkirPromo.hide()
+        }
+    }
+
+    private fun setPDPView(dataItem: DataItem) {
+        val pdpCount = productCardItemViewModel.getPDPViewCount(dataItem)
+        if (pdpCount.isNotEmpty()) {
+            pdpViewImage.show()
+            pdpViewCount.show()
+            pdpViewCount.setTextAndCheckShow(pdpCount)
+        } else {
+            pdpViewImage.hide()
+            pdpViewCount.hide()
+        }
+    }
+
+    private fun setStockProgress(dataItem: DataItem) {
+        val stockSold = dataItem.stockSoldPercentage
+        stockPercentageProgress.hide()
+        stockTitle.hide()
+        if (!stockSold.isNullOrEmpty()) {
+            if (stockSold.toIntOrZero() < 100) {
+                stockPercentageProgress.show()
+                stockPercentageProgress.setValue(stockSold.toIntOrZero())
+                showStockProgressTitle(dataItem)
+            }
+        }
+    }
+
+
+    private fun showStockProgressTitle(dataItem: DataItem) {
+        val stockWording = productCardItemViewModel.getStockWord(dataItem)
+        stockTitle.hide()
+        if (!stockWording.title.isNullOrEmpty() && productCardName != "product_card_revamp_item" && productCardName != "product_card_carousel_item") {
+            stockTitle.show()
+            stockTitle.setTextAndCheckShow(stockWording.title)
+            stockTitle.setTextColor(Color.parseColor(stockWording.color))
+        }
+    }
+
+    private fun showInterestedView(dataItem: DataItem) {
+        val interestCount = productCardItemViewModel.getInterestedCount(dataItem)
+        interestedView.hide()
+        if (interestCount.isNotEmpty()) {
+            interestedView.show()
+            interestedView.setTextAndCheckShow(interestCount)
+        }
     }
 
     private fun setTopads(topads: Boolean?) {
+        topadsImage.hide()
         if (topads!!) {
             topadsImage.show()
-        } else {
-            topadsImage.hide()
         }
     }
 
     private fun setProductImage(imageUrlMobile: String?) {
         productImage.loadImage(imageUrlMobile ?: "")
-    }
-
-    private fun setStockProgress(stockPercent: String?) {
-        if (!stockPercent.isNullOrEmpty()) {
-            stockPercentageProgress.show()
-            stockPercentageProgress.setValue(stockPercent.toIntOrZero())
-        } else {
-            stockPercentageProgress.hide()
-        }
-    }
-
-    private fun showStockProgressTitle(stockWording: StockWording) {
-        if (!stockWording.title.isNullOrEmpty() && productCardName != "product_card_revamp_item" && productCardName != "product_card_carousel_item") {
-            stockTitle.show()
-            stockTitle.setTextAndCheckShow(stockWording.title)
-            stockTitle.setTextColor(Color.parseColor(stockWording.color))
-        } else {
-            stockTitle.hide()
-        }
-    }
-
-    private fun showInterestedView(interestedData: String?) {
-        if (!interestedData.isNullOrEmpty()) {
-            interestedView.show()
-            interestedView.setTextAndCheckShow(interestedData)
-        } else {
-            interestedView.hide()
-        }
-    }
-
-    private fun setPDPView(it: String?) {
-        if (!it.isNullOrEmpty()) {
-            pdpViewImage.show()
-            pdpViewCount.show()
-            pdpViewCount.setTextAndCheckShow(it)
-        } else {
-            pdpViewImage.hide()
-            pdpViewCount.hide()
-        }
     }
 
     private fun setShopIcon(shopLogo: String?) {
@@ -200,14 +191,13 @@ class ProductCardItemViewHolder(itemView: View, fragment: Fragment) : AbstractVi
     }
 
     private fun setCashbackLabel(cashback: String?) {
+        labelCashbackPromo.hide()
         if (!cashback.isNullOrEmpty()) {
             labelCashbackPromo.let {
                 it.show()
                 it.text = String.format("%s", "Cashback $cashback%")
                 it.setLabelType(Label.GENERAL_LIGHT_GREEN)
             }
-        } else {
-            labelCashbackPromo.hide()
         }
     }
 

@@ -9,26 +9,17 @@ import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 class ProductCardItemViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
 
-    private val componentName: MutableLiveData<String> = MutableLiveData()
+    private var componentName: String = ""
     private val dataItem: MutableLiveData<DataItem> = MutableLiveData()
     private val shopBadge: MutableLiveData<Int> = MutableLiveData()
-    private val freeOngkirImage: MutableLiveData<String> = MutableLiveData()
-    private val pdpViewLiveCount: MutableLiveData<String> = MutableLiveData()
-    private val interestedCount: MutableLiveData<String> = MutableLiveData()
-    private val stockWordLiveData: MutableLiveData<StockWording> = MutableLiveData()
+    private val stockWordData: StockWording = StockWording()
     private lateinit var context: Context
-    private var productItemData: DataItem? = null
 
-    init {
-        components.data?.let {
-            if (it.isNotEmpty()) {
-                productItemData = components.data?.get(0)
-            }
-        }
-    }
 
     companion object {
         const val OFFICIAL_STORE = 1
@@ -40,8 +31,10 @@ class ProductCardItemViewModel(val application: Application, private val compone
         this.context = context
     }
 
-    fun getComponentName(): MutableLiveData<String> {
-        componentName.value = components.name
+    fun getComponentName(): String {
+        components.name?.let {
+            componentName = it
+        }
         return componentName
     }
 
@@ -68,65 +61,52 @@ class ProductCardItemViewModel(val application: Application, private val compone
         }
     }
 
-    // Apply Transformation on this live data
-    fun getFreeOngkirImage(): LiveData<String> {
-        val isBebasActive = productItemData?.freeOngkir?.isActive
 
-        if (isBebasActive == true) {
-            freeOngkirImage.value = productItemData!!.freeOngkir!!.freeOngkirImageUrl
+    fun getFreeOngkirImage(dataItem: DataItem): String {
+        val isBebasActive = dataItem.freeOngkir?.isActive
+        return if (isBebasActive == true) {
+            dataItem.freeOngkir.freeOngkirImageUrl
         } else {
-            freeOngkirImage.value = ""
+            ""
         }
-        return freeOngkirImage
     }
 
 
-    fun getPDPViewCount(): LiveData<String> {
-        val pdpViewData = productItemData?.pdpView
+    fun getPDPViewCount(dataItem: DataItem): String {
+        val pdpViewData = dataItem.pdpView
 
-        if (pdpViewData != null) {
-            try {
-                if (pdpViewData.toInt() >= 1000) {
-                    pdpViewLiveCount.value = Utils.getCountView(pdpViewData.toDouble())
-                } else {
-                    pdpViewLiveCount.value = ""
-                }
-            } catch (exception: NumberFormatException) {
-            }
+        return if (pdpViewData.toIntOrZero() >= 1000) {
+            Utils.getCountView(pdpViewData.toDoubleOrZero())
         } else {
-            pdpViewLiveCount.value = ""
+            ""
         }
-        return pdpViewLiveCount
     }
 
 
-    fun getInterestedCount(): MutableLiveData<String> {
-        val notifyMeCount = productItemData?.notifyMeCount
-        val interestThreshold = productItemData?.thresholdInterest
-        interestedCount.value = ""
+    fun getInterestedCount(dataItem: DataItem): String {
+        val notifyMeCount = dataItem.notifyMeCount
+        val interestThreshold = dataItem.thresholdInterest
 
-        if (notifyMeCount != null && interestThreshold != null && notifyMeCount >= interestThreshold) {
-            interestedCount.value = Utils.getCountView(notifyMeCount.toDouble(), "tertarik")
+        return if (notifyMeCount != null && interestThreshold != null && notifyMeCount >= interestThreshold) {
+            Utils.getCountView(notifyMeCount.toDouble(), "tertarik")
         } else {
-            interestedCount.value = ""
+            ""
         }
-        return interestedCount
     }
 
-    fun getStockWord(): LiveData<StockWording> {
+    fun getStockWord(dataItem: DataItem): StockWording {
         var stockWordTitleColour = "#1e31353b"
-        var stockWordTitle = productItemData?.stockWording?.title
+        var stockWordTitle = dataItem.stockWording?.title
         var stockAvailableCount: String? = ""
-        val stockWording = StockWording()
 
         if (!stockWordTitle.isNullOrEmpty()) {
-            stockWording.title = stockWordTitle
-            stockWording.color = productItemData?.stockWording?.color
+            stockWordData.title = stockWordTitle
+            stockWordData.color = dataItem.stockWording?.color
                     ?: stockWordTitleColour
         } else {
-            val campaignSoldCount = productItemData?.campaignSoldCount
-            val threshold: Int? = productItemData?.threshold
-            val customStock: Int? = productItemData?.customStock
+            val campaignSoldCount = dataItem.campaignSoldCount
+            val threshold: Int? = dataItem.threshold
+            val customStock: Int? = dataItem.customStock
 
             if (campaignSoldCount != null && threshold != null && customStock != null) {
                 if (campaignSoldCount > 0) {
@@ -140,7 +120,7 @@ class ProductCardItemViewModel(val application: Application, private val compone
                         customStock <= threshold -> {
                             stockWordTitle = "Tersisa"
                             stockAvailableCount = customStock.toString()
-                            stockWordTitleColour = "##ef144a"
+                            stockWordTitleColour = "#ef144a"
                         }
                         else -> {
                             stockWordTitle = "Terjual"
@@ -152,15 +132,16 @@ class ProductCardItemViewModel(val application: Application, private val compone
                     stockWordTitle = "Masih Tersedia"
                 }
             }
-            stockWording.title = stockWordTitle
-            stockWording.color = stockWordTitleColour
+            stockWordData.title = stockWordTitle
+            stockWordData.color = stockWordTitleColour
         }
-        stockWordLiveData.value = stockWording
-        return stockWordLiveData
+        return stockWordData
     }
 
     fun handleUIClick() {
-        navigate(context, dataItem.value?.applinks)
+        dataItem.value?.applinks?.let { applink ->
+            navigate(context, applink)
+        }
     }
 
     override fun initDaggerInject() {

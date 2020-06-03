@@ -41,7 +41,6 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     DynamicCategoryItem(R.layout.dynamic_category_single_item_layout, ComponentNames.DynamicCategoryItem.componentName),
     LihatFlashSaleTimer(R.layout.lihat_flash_sale_timer_widget, ComponentNames.FlashSaleTimer.componentName),
     TimerSprintSale(R.layout.discovery_timer_sprint_sale_layout, ComponentNames.TimerSprintSale.componentName),
-
     //    CustomTopChat(R.layout.coming_soon_view, ComponentNames.CustomTopchat.componentName),
     ShimmerProductCard(R.layout.discovery_shimmer_product_card_layout, ComponentNames.ShimmerProductCard.componentName),
     Shimmer(R.layout.discovery_shimmer_layout, ComponentNames.Shimmer.componentName),
