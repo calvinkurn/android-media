@@ -1,4 +1,4 @@
-package com.tokopedia.review.feature.review.data
+package com.tokopedia.review.feature.reviewform.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
