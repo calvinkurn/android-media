@@ -3,6 +3,8 @@ package com.tokopedia.vouchercreation.voucherlist.view.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel.ResetChip
 
@@ -22,14 +24,14 @@ class HeaderChipResetViewHolder(
 
     override fun bind(element: ResetChip) {
         with(itemView) {
-            if (!element.isVisible) {
-                layoutParams.width = 0
-                requestLayout()
+            if (element.isVisible) {
+                visible()
+            } else {
+                gone()
             }
 
             setOnClickListener {
                 onResetClick(element)
-                element.isVisible = false
             }
         }
     }

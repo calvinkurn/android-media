@@ -489,11 +489,17 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         filterItems.clear()
         filterItems.addAll(FilterBottomSheet.getMvcFilterItems(requireContext()))
 
+        view?.headerChipMvc?.resetFilter()
+
+        resetFetchValues()
+    }
+
+    private fun resetFetchValues() {
         voucherTarget = null
         voucherSort = null
         voucherType = null
-
-        view?.headerChipMvc?.resetFilter()
+        isInverted = false
+        loadData(1)
     }
 
     private fun showSortBottomSheet() {

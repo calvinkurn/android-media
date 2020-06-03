@@ -84,14 +84,22 @@ class HeaderChipsView : RecyclerView {
     }
 
     fun showResetButton() {
-        resetChip.isVisible = true
-        notifyItem(resetChip)
+        if (!resetChip.isVisible) {
+            resetChip.isVisible = true
+            notifyItem(resetChip)
+        }
     }
 
     fun resetFilter() {
         resetChip.isVisible = false
-        filterChip.isActive = false
-        sortChip.isActive = false
+        with(filterChip) {
+            isActive = false
+            text = context?.getString(R.string.mvc_voucher_type).toBlankOrString()
+        }
+        with(sortChip) {
+            isActive = false
+            text = context?.getString(R.string.mvc_sort).toBlankOrString()
+        }
         chipAdapter.notifyDataSetChanged()
     }
 
