@@ -10,8 +10,7 @@ import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 import javax.inject.Named
 
-class GetProductReputationForm @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                                   @Named("review_form") private val rawQuery: String) {
+class GetProductReputationForm @Inject constructor(private val graphqlRepository: GraphqlRepository) {
 
     companion object {
         const val REPUTATION_ID = "reputationId"
@@ -25,11 +24,39 @@ class GetProductReputationForm @Inject constructor(private val graphqlRepository
         }
     }
 
+    private val query by lazy {
+        """
+            query productrevGetForm(${'$'}reputationId:Int!,${'$'}productId:Int!){
+              productrevGetForm(reputationID:${'$'}reputationId, productID:${'$'}productId){
+                reputationID
+                orderID
+                validToReview
+                productData{
+                  productID
+                  productName
+                  productStatus
+                  productPageURL
+                  productImageURL
+                }
+                shopData{
+                  shopID
+                  shopOpen
+                }
+                userData{
+                  userID
+                  userName
+                  userStatus
+                }
+              }
+            }
+        """.trimIndent()
+    }
+
     var forceRefresh = true
 
     suspend fun getReputationForm(requestParams: RequestParams): ProductRevGetForm {
         val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
-        val graphqlRequest = GraphqlRequest(rawQuery, ProductRevGetForm::class.java, requestParams.parameters)
+        val graphqlRequest = GraphqlRequest(query, ProductRevGetForm::class.java, requestParams.parameters)
 
         val response = graphqlRepository.getReseponse(listOf(graphqlRequest), cacheStrategy)
 

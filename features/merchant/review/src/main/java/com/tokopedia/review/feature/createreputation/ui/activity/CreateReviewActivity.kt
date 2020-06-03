@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdreputation.createreputation.ui.activity
+package com.tokopedia.review.feature.createreputation.ui.activity
 
 import android.app.Activity
 import android.app.NotificationManager
@@ -12,9 +12,9 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.review.common.ReviewConstants
+import com.tokopedia.review.common.analytics.ReviewTracking
 import com.tokopedia.review.feature.createreputation.ui.fragment.CreateReviewFragment
-import com.tokopedia.review.feature.createreputation.util.ReviewTracking
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity
 
 // ApplinkConstInternalMarketPlace.CREATE_REVIEW
 class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent> {
@@ -44,8 +44,8 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
             rating = uri.getQueryParameter(PARAM_RATING)?.toIntOrNull() ?: DEFAULT_PRODUCT_RATING
             utmSource = uri.getQueryParameter(PARAM_UTM_SOURCE) ?: DEFAULT_UTM_SOURCE
         } else {
-            productId = bundle?.getString(InboxReputationFormActivity.ARGS_PRODUCT_ID) ?: ""
-            reputationId = bundle?.getString(InboxReputationFormActivity.ARGS_REPUTATION_ID) ?: ""
+            productId = bundle?.getString(ReviewConstants.ARGS_PRODUCT_ID) ?: ""
+            reputationId = bundle?.getString(ReviewConstants.ARGS_REPUTATION_ID) ?: ""
         }
         createReviewFragment = CreateReviewFragment.createInstance(
                 productId,

@@ -3,37 +3,25 @@ package com.tokopedia.review.feature.createreputation.ui.fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.review.common.coroutine.CoroutineDispatchers
 import com.tokopedia.review.feature.createreputation.model.*
 import com.tokopedia.review.feature.createreputation.usecase.GetProductIncentiveOvo
 import com.tokopedia.review.feature.createreputation.usecase.GetProductReputationForm
-import com.tokopedia.review.feature.createreputation.util.Fail
-import com.tokopedia.review.feature.createreputation.util.LoadingDataState
-import com.tokopedia.review.feature.createreputation.util.LoadingView
-import com.tokopedia.review.feature.createreputation.util.Success
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewUseCase
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewValidateUseCase
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewDomain
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewValidateDomain
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload
+import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import rx.Subscriber
 import java.util.*
 import javax.inject.Inject
-import javax.inject.Named
 import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
 
-class CreateReviewViewModel @Inject constructor(@Named("Main")
-                                                val dispatcher: CoroutineDispatcher,
+class CreateReviewViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                                                 private val getProductReputationForm: GetProductReputationForm,
-                                                private val getProductIncentiveOvo: GetProductIncentiveOvo,
-                                                private val sendReviewWithoutImage: SendReviewValidateUseCase,
-                                                private val sendReviewWithImage: SendReviewUseCase) : BaseViewModel(dispatcher) {
+                                                private val getProductIncentiveOvo: GetProductIncentiveOvo
+) : BaseViewModel(dispatcher.io) {
 
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
@@ -43,11 +31,8 @@ class CreateReviewViewModel @Inject constructor(@Named("Main")
     private var reputationDataForm = MutableLiveData<Result<ProductRevGetForm>>()
     val getReputationDataForm = reputationDataForm
 
-    private var _incentiveOvo = MutableLiveData<Result<ProductRevIncentiveOvo>>()
-    val incentiveOvo: LiveData<Result<ProductRevIncentiveOvo>> = _incentiveOvo
-
-    private var submitReviewResponse = MutableLiveData<LoadingDataState<SendReviewValidateDomain>>()
-    val getSubmitReviewResponse: LiveData<LoadingDataState<SendReviewValidateDomain>> = submitReviewResponse
+    private var _incentiveOvo = MutableLiveData<Result<ProductRevIncentiveOvoDomain>>()
+    val incentiveOvo: LiveData<Result<ProductRevIncentiveOvoDomain>> = _incentiveOvo
 
     fun submitReview(reviewId: String, reputationId: String, productId: String, shopId: String, reviewDesc: String,
                      ratingCount: Float, listOfImages: List<String>, isAnonymous: Boolean, utmSource: String) {
@@ -111,59 +96,9 @@ class CreateReviewViewModel @Inject constructor(@Named("Main")
 
     private fun sendReviewWithoutImage(reviewId: String, reputationId: String, productId: String, shopId: String,
                                        reviewDesc: String, ratingCount: Float, isAnonymous: Boolean, utmSource: String) {
-        submitReviewResponse.value = LoadingView
-        sendReviewWithoutImage.execute(SendReviewValidateUseCase.getParam(reviewId, productId,
-                reputationId, shopId, ratingCount.toString(), reviewDesc, isAnonymous, utmSource)
-                , object : Subscriber<SendReviewValidateDomain>() {
-            override fun onNext(data: SendReviewValidateDomain) {
-                submitReviewResponse.value = Success(data)
-            }
-
-            override fun onCompleted() {
-
-            }
-
-            override fun onError(e: Throwable) {
-                submitReviewResponse.value = Fail(e)
-            }
-
-        })
     }
 
     private fun sendReviewWithImage(reviewId: String, reputationId: String, productId: String, shopId: String,
                                     reviewDesc: String, ratingCount: Float, isAnonymous: Boolean, listOfImages: List<String>, utmSource: String) {
-        submitReviewResponse.value = LoadingView
-        sendReviewWithImage.execute(SendReviewUseCase.getParam(reviewId, productId, reputationId, shopId, ratingCount.toString(),
-                reviewDesc, mapImageToObjectUpload(listOfImages), listOf(), isAnonymous, utmSource), object : Subscriber<SendReviewDomain>() {
-            override fun onNext(data: SendReviewDomain) {
-                if (data.isSuccess) {
-                    submitReviewResponse.value = Success(SendReviewValidateDomain("", 0, if (data.isSuccess) 1 else 0))
-                } else {
-                    onError(Throwable())
-                }
-            }
-
-            override fun onCompleted() {
-            }
-
-            override fun onError(e: Throwable) {
-                submitReviewResponse.value = Fail(e)
-            }
-
-        })
-    }
-
-    private fun mapImageToObjectUpload(listOfImages: List<String>): ArrayList<ImageUpload> {
-        val imageUpload: ArrayList<ImageUpload> = arrayListOf()
-        listOfImages.forEachIndexed { index, s ->
-            val imageUploadPojo = ImageUpload()
-            imageUploadPojo.fileLoc = s
-            imageUploadPojo.description = ""
-            imageUploadPojo.position = index
-            imageUploadPojo.imageId = "${SendReviewUseCase.IMAGE}${UUID.randomUUID()}"
-            imageUpload.add(imageUploadPojo)
-        }
-
-        return imageUpload
     }
 }

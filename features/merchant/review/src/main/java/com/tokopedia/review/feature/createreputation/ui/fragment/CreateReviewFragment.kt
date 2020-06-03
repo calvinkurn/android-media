@@ -17,8 +17,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieCompositionFactory
 import com.airbnb.lottie.LottieDrawable
@@ -27,7 +25,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.review.R
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -40,22 +37,19 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.reputation.common.view.AnimatedReputationView
+import com.tokopedia.review.ReviewInstance
+import com.tokopedia.review.common.ReviewConstants
 import com.tokopedia.review.common.analytics.ReviewTracking
+import com.tokopedia.review.feature.createreputation.di.DaggerCreateReviewComponent
 import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
-import com.tokopedia.review.feature.createreputation.model.ProductRevIncentiveOvo
-import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.activity.CreateReviewActivity
+import com.tokopedia.review.feature.createreputation.ui.activity.CreateReviewActivity
 import com.tokopedia.review.feature.createreputation.ui.adapter.ImageReviewAdapter
 import com.tokopedia.review.feature.createreputation.ui.listener.OnAddImageClickListener
-import com.tokopedia.review.feature.createreputation.util.Fail
-import com.tokopedia.review.feature.createreputation.util.LoadingView
-import com.tokopedia.review.feature.createreputation.util.Success
+import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.data.mapper.IncentiveOvoMapper
-import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent
-import com.tokopedia.tkpd.tkpdreputation.di.ReputationModule
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.IncentiveOvoMapper
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity.ARGS_RATING
 import com.tokopedia.review.feature.ovoincentive.presentation.bottomsheet.IncentiveOvoBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -105,10 +99,9 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
     }
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var createReviewViewModel: CreateReviewViewModel
 
     private lateinit var animatedReviewPicker: AnimatedReputationView
-    private lateinit var createReviewViewModel: CreateReviewViewModel
     private val imageAdapter: ImageReviewAdapter by lazy {
         ImageReviewAdapter(this)
     }
@@ -123,7 +116,7 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
     private var productId: Int = 0
     private var currentBackground: Drawable? = null
     private var productRevGetForm: ProductRevGetForm = ProductRevGetForm()
-    private var productRevIncentiveOvo: ProductRevIncentiveOvo = ProductRevIncentiveOvo()
+    private var productRevIncentiveOvo: ProductRevIncentiveOvoDomain = ProductRevIncentiveOvoDomain()
     private var shopId: String = ""
     private var orderId: String = ""
     private var utmSource: String = ""
@@ -137,11 +130,10 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        context?.let {
-            DaggerReputationComponent
+        activity?.let {
+            DaggerCreateReviewComponent
                     .builder()
-                    .reputationModule(ReputationModule())
-                    .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+                    .reviewComponent(ReviewInstance.getComponent(it.application))
                     .build()
                     .inject(this)
         }
@@ -165,8 +157,6 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
         if (reviewClickAt > CreateReviewActivity.DEFAULT_PRODUCT_RATING || reviewClickAt < 0) {
             reviewClickAt = CreateReviewActivity.DEFAULT_PRODUCT_RATING
         }
-
-        createReviewViewModel = ViewModelProviders.of(this, viewModelFactory).get(CreateReviewViewModel::class.java)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -176,21 +166,6 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
             when (it) {
                 is CoroutineSuccess -> onSuccessGetReviewForm(it.data)
                 is CoroutineFail -> onErrorGetReviewForm(it.throwable)
-            }
-        })
-
-        createReviewViewModel.getSubmitReviewResponse.observe(this, Observer {
-            when (it) {
-                is LoadingView -> showLoading()
-                is Fail -> {
-                    stopLoading()
-                    showLayout()
-                    showToasterError(it.fail.message ?: "")
-                }
-                is Success -> {
-                    showToasterSuccess()
-                    onSuccessSubmitReview()
-                }
             }
         })
 
@@ -215,7 +190,7 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
         animatedReviewPicker.resetStars()
         animatedReviewPicker.setListener(object : AnimatedReputationView.AnimatedReputationListener {
             override fun onClick(position: Int) {
-                reviewTracker.reviewOnRatingChangedTracker(
+                ReviewTracking.reviewOnRatingChangedTracker(
                         orderId,
                         productId.toString(10),
                         (position).toString(10),
@@ -304,7 +279,6 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
     override fun onDestroy() {
         super.onDestroy()
         createReviewViewModel.getReputationDataForm.removeObservers(this)
-        createReviewViewModel.getSubmitReviewResponse.removeObservers(this)
     }
 
     override fun onAddImageClick() {
@@ -339,7 +313,7 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
     private fun submitReview() {
         val reviewMessage = edit_text_review.text.toString()
 
-        reviewTracker.reviewOnSubmitTracker(
+        ReviewTracking.reviewOnSubmitTracker(
                 orderId,
                 productId.toString(10),
                 reviewClickAt.toString(10),
@@ -367,7 +341,7 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
             hideShimmering()
             showLayout()
 
-            reviewTracker.reviewOnViewTracker(orderID, productId.toString())
+            ReviewTracking.reviewOnViewTracker(orderID, productId.toString())
             img_review.loadImage(productData.productImageURL)
 
             shopId = shopData.shopID.toString()
@@ -376,7 +350,7 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
         }
     }
 
-    private fun onSuccessGetIncentiveOvo(data: ProductRevIncentiveOvo) {
+    private fun onSuccessGetIncentiveOvo(data: ProductRevIncentiveOvoDomain) {
         productRevIncentiveOvo = data
         with(data.productrevIncentiveOvo) {
             ovoPointsTicker.apply {
@@ -447,7 +421,7 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
                     selectedImage = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
                     createReviewViewModel.initImageData()
 
-                    reviewTracker.reviewOnImageUploadTracker(
+                    ReviewTracking.reviewOnImageUploadTracker(
                             orderId,
                             productId.toString(10),
                             true,
@@ -635,7 +609,7 @@ class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
                 startActivity(intent)
             } else {
                 val intent = Intent()
-                intent.putExtra(ARGS_RATING, reviewClickAt.toFloat())
+                intent.putExtra(ReviewConstants.ARGS_RATING, reviewClickAt.toFloat())
                 if (success) {
                     setResult(Activity.RESULT_OK, intent)
                 }

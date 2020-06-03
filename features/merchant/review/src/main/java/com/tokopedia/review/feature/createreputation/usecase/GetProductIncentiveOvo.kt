@@ -4,20 +4,36 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.review.feature.createreputation.model.ProductRevIncentiveOvo
+import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import javax.inject.Inject
-import javax.inject.Named
 
-class GetProductIncentiveOvo @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                                 @Named("review_incentive_ovo") private val rawQuery: String) {
+class GetProductIncentiveOvo @Inject constructor(private val graphqlRepository: GraphqlRepository) {
 
-    suspend fun getIncentiveOvo(): ProductRevIncentiveOvo {
+    private val query by lazy {
+        """
+            query getProductRevIncentiveOvo{
+            	productrevIncentiveOvo{
+                ticker{
+                  title
+                  subtitle
+                }
+                title
+                subtitle
+                description
+                numbered_list
+                cta_text
+              }
+            }
+        """.trimIndent()
+    }
+
+    suspend fun getIncentiveOvo(): ProductRevIncentiveOvoDomain {
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-        val graphqlRequest = GraphqlRequest(rawQuery, ProductRevIncentiveOvo::class.java)
+        val graphqlRequest = GraphqlRequest(query, ProductRevIncentiveOvoDomain::class.java)
 
         val response = graphqlRepository.getReseponse(listOf(graphqlRequest), cacheStrategy)
 
-        val data: ProductRevIncentiveOvo? = response.getData(ProductRevIncentiveOvo::class.java)
+        val data: ProductRevIncentiveOvoDomain? = response.getData(ProductRevIncentiveOvoDomain::class.java)
         if (data == null) {
             throw RuntimeException()
         } else {

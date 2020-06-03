@@ -1,12 +1,11 @@
 package com.tokopedia.review.feature.ovoincentive.data.mapper
 
-import com.tokopedia.review.feature.createreputation.model.ProductRevIncentiveOvo
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 
 
 object IncentiveOvoMapper {
 
-    fun mapIncentiveOvoReviewtoIncentiveOvoInbox(incentiveOvoReview: ProductRevIncentiveOvo): ProductRevIncentiveOvoDomain {
+    fun mapIncentiveOvoReviewtoIncentiveOvoInbox(incentiveOvoReview: ProductRevIncentiveOvoDomain): ProductRevIncentiveOvoDomain {
         val productRevIncentiveOvoDomain = ProductRevIncentiveOvoDomain()
         productRevIncentiveOvoDomain.productrevIncentiveOvo.apply {
             title = incentiveOvoReview.productrevIncentiveOvo.title
