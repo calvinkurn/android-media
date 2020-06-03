@@ -1,10 +1,7 @@
 package com.tokopedia.entertainment.pdp.analytic
 
 import com.google.android.gms.tagmanager.DataLayer
-import com.tokopedia.entertainment.pdp.data.Category
-import com.tokopedia.entertainment.pdp.data.Form
-import com.tokopedia.entertainment.pdp.data.Package
-import com.tokopedia.entertainment.pdp.data.ProductDetailData
+import com.tokopedia.entertainment.pdp.data.*
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.iris.util.IrisSession
@@ -92,7 +89,7 @@ class EventPDPTracking constructor(val userSession: UserSessionInterface, val ir
         ))
     }
 
-    fun onClickPackage(mPackage: Package, qty: Int){
+    fun onClickPackage(mPackage: PackageItem, qty: Int){
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 Event.KEY, "clickEvent",
                 Event.CATEGORY, "digital - event",
@@ -156,7 +153,7 @@ class EventPDPTracking constructor(val userSession: UserSessionInterface, val ir
                 ))))))
     }
 
-    fun onViewCheckoutPage(mPackage: Package, productDetailData: ProductDetailData, qty: Int){
+    fun onViewCheckoutPage(mPackage: PackageV3, productDetailData: ProductDetailData, qty: Int){
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 Event.KEY, "checkout",
                 Event.CATEGORY, "digital - event",
@@ -190,7 +187,7 @@ class EventPDPTracking constructor(val userSession: UserSessionInterface, val ir
                 ))))))
     }
 
-    fun onClickCheckoutButton(mPackage: Package, productDetailData: ProductDetailData, qty: Int){
+    fun onClickCheckoutButton(mPackage: PackageV3, productDetailData: ProductDetailData, qty: Int){
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 Event.KEY, "checkout",
                 Event.CATEGORY, "digital - event",

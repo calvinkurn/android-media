@@ -241,7 +241,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
             )
         }
 
-//        eventPDPTracking.onViewCheckoutPage(getPackage(scheduleID, groupID, packetID, pdp), pdp, amount)
+        eventPDPTracking.onViewCheckoutPage(getPackage(pdp, packageID), pdp, amount)
     }
 
     private fun renderFooter(productDetailData: ProductDetailData) {
@@ -260,7 +260,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                         Toaster.make(view, it.getString(R.string.ent_event_checkout_submit_name), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error))
                     } else {
                         progressDialog.show()
-                        // eventPDPTracking.onClickCheckoutButton(getPackage(scheduleID, groupID, packetID, productDetailData), productDetailData, amount)
+                         eventPDPTracking.onClickCheckoutButton(getPackage(productDetailData, packageID), productDetailData, amount)
                         if (name.isEmpty()) name = userSessionInterface.name
                         if (email.isEmpty()) email = userSessionInterface.email
                         metadata = getPassengerMetaData(metadata, forms)

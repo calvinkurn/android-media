@@ -10,7 +10,6 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -39,7 +38,6 @@ import com.tokopedia.entertainment.pdp.common.util.CurrencyFormatter.getRupiahFo
 import com.tokopedia.entertainment.pdp.data.PackageItem
 import com.tokopedia.entertainment.pdp.data.ProductDetailData
 import com.tokopedia.entertainment.pdp.data.pdp.*
-import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.getActiveDate
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventVerifyMapper.getInitialVerify
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventVerifyMapper.getItemIds
@@ -61,8 +59,8 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
     private var startDate = ""
     private var endDate = ""
     private var selectedDate = ""
-    private var EXTRA_PACKAGES_ID = ""
-    private var AMOUNT_TICKET = ""
+    private var PACKAGES_ID = ""
+    private var AMOUNT_TICKET = 0
     private var PRODUCT_NAME = ""
     private var PRODUCT_ID = ""
     private var PRODUCT_PRICE = ""
@@ -128,17 +126,17 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
     override fun quantityEditorValueButtonClicked(idPackages: String, idPackagesItem: String, packageItem: PackageItem, totalPrice: Int,
                                                   qty: String, isError: Boolean, product_name: String,
                                                   product_id: String, price: String, selectedDate: String) {
-        this.EXTRA_PACKAGES_ID = idPackagesItem
-        this.AMOUNT_TICKET = qty
-        this.PRODUCT_NAME = product_name
-        this.PRODUCT_ID = product_id
-        this.PRODUCT_PRICE = price
-
         if (!idPackageActive.equals(idPackages)) {
             hashItemMap.clear()
             idPackageActive = idPackages
         }
         hashItemMap.put(idPackagesItem, getItemMap(packageItem, pdpData, qty.toInt(), totalPrice, selectedDate))
+
+        this.PACKAGES_ID = idPackagesItem
+        this.AMOUNT_TICKET = getTotalQuantity(hashItemMap)
+        this.PRODUCT_NAME = product_name
+        this.PRODUCT_ID = product_id
+        this.PRODUCT_PRICE = getTotalPrice(hashItemMap).toString()
 
         setTotalPrice(getRupiahFormat(getTotalPrice(hashItemMap)))
         showViewBottom(!isError)
@@ -197,8 +195,8 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
                         activity?.txtDate?.text = DateFormatUtils.getFormattedDate(date.time, DateFormatUtils.FORMAT_D_MMMM_YYYY)
                         selectedDate = (date.time / 1000L).toString()
                         bottomSheets.dismiss()
-                        EXTRA_PACKAGES_ID = ""
-                        AMOUNT_TICKET = ""
+                        PACKAGES_ID = ""
+                        AMOUNT_TICKET = 0
                         eventPDPTracking.onClickPickDate()
                         showViewBottom(false)
                         loadInitialData()
@@ -224,6 +222,8 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
     }
 
     private fun setupPilihTicketButton() {
+        eventPDPTracking.onClickPesanTiket(viewModel.categoryData,
+                PRODUCT_NAME, PRODUCT_ID, PRODUCT_PRICE, AMOUNT_TICKET,PACKAGES_ID)
         pilihTicketBtn.setOnClickListener {
             eventVerifyRequest.cartdata.metadata.totalPrice = getTotalPrice(hashItemMap)
             eventVerifyRequest.cartdata.metadata.itemIds = getItemIds(hashItemMap)
