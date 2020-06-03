@@ -1,13 +1,15 @@
 package com.tokopedia.play.broadcaster.view.activity
 
-import android.Manifest
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.view.WindowManager
+import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -17,8 +19,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.di.DaggerPlayBroadcasterComponent
 import com.tokopedia.play.broadcaster.di.PlayBroadcasterModule
-import com.tokopedia.play.broadcaster.util.PermissionUtil
 import com.tokopedia.play.broadcaster.util.event.EventObserver
+import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
+import com.tokopedia.play.broadcaster.view.contract.PlayActionBarInteraction
 import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
 import com.tokopedia.play.broadcaster.view.custom.PlayRequestPermissionView
 import com.tokopedia.play.broadcaster.view.event.ScreenStateEvent
@@ -33,7 +36,7 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 19/05/20.
  */
-class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator, PermissionUtil.Listener {
+class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -41,11 +44,10 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator, Permissio
     @Inject
     lateinit var fragmentFactory: FragmentFactory
 
-    @Inject
-    lateinit var permissionUtil: PermissionUtil
-
     private lateinit var viewModel: PlayBroadcastViewModel
 
+    private lateinit var containerSetup: FrameLayout
+    private lateinit var viewActionBar: View
     private lateinit var viewRequestPermission: PlayRequestPermissionView
     private lateinit var ivSwitchCamera: AppCompatImageView
     private lateinit var tvClose: AppCompatTextView
@@ -60,8 +62,11 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator, Permissio
         setContentView(R.layout.activity_play_broadcast)
         setupContent()
         setupPermission()
+        getConfiguration()
+        setupToolbar()
 
         observeScreenStateEvent()
+        observePermissionStateEvent()
     }
 
     private fun inject() {
@@ -80,6 +85,8 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator, Permissio
     }
 
     private fun setupContent() {
+        containerSetup = findViewById(R.id.fl_setup)
+        viewActionBar = findViewById(R.id.view_action_bar)
         val currentFragment = supportFragmentManager.findFragmentByTag(PARENT_FRAGMENT_TAG)
         if (currentFragment == null) {
             supportFragmentManager.beginTransaction()
@@ -90,10 +97,6 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator, Permissio
 
     private fun setupPermission() {
         viewRequestPermission = findViewById(R.id.view_request_permission)
-        permissionUtil.setListener(this)
-        permissionUtil.checkPermission(arrayOf(
-                Manifest.permission.CAMERA,
-                Manifest.permission.RECORD_AUDIO))
     }
 
     private fun setupToolbar() {
@@ -102,7 +105,10 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator, Permissio
         tvClose = findViewById(R.id.tv_close)
 
         ivSwitchCamera.setOnClickListener {
-            viewModel.getPlayPusher().switchCamera()
+            doSwitchCamera()
+        }
+        tvClose.setOnClickListener {
+            doClosePage()
         }
     }
 
@@ -121,11 +127,11 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator, Permissio
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        permissionUtil.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        viewModel.getPermissionUtil().onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        permissionUtil.onActivityResult(requestCode, resultCode, data)
+        viewModel.getPermissionUtil().onActivityResult(requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)
     }
 
@@ -142,10 +148,27 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator, Permissio
         tvTitle.text = title
     }
 
+    private fun doSwitchCamera() {
+        viewModel.getPlayPusher().switchCamera()
+    }
+
+    private fun doClosePage() {
+        val currentVisibleFragment = getCurrentVisibleFragment()
+        if (currentVisibleFragment == null
+                || currentVisibleFragment !is PlayActionBarInteraction
+                || !currentVisibleFragment.onCloseActionBar()) {
+            this.onBackPressed()
+        }
+    }
+
     private fun getParentFragment() = PlayBroadcastFragment.newInstance()
 
     private fun getFragmentByClassName(fragmentClass: Class<out Fragment>): Fragment {
         return fragmentFactory.instantiate(fragmentClass.classLoader!!, fragmentClass.name)
+    }
+
+    private fun getCurrentVisibleFragment(): Fragment? {
+        return supportFragmentManager.findFragmentById(R.id.fl_setup)
     }
 
     //region observe
@@ -169,23 +192,32 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator, Permissio
             }
         })
     }
+
+    private fun observePermissionStateEvent() {
+        viewModel.observablePermissionState.observe(this, Observer {
+            when(it) {
+                is PlayPermissionState.Granted -> onPermissionGranted()
+                is PlayPermissionState.Denied -> onPermissionDisabled(it.permissions)
+                is PlayPermissionState.Error -> onError(it.throwable)
+            }
+        })
+    }
     //endregion
 
-    override fun onAllPermissionGranted() {
+    private fun onPermissionGranted() {
+        containerSetup.show()
+        viewActionBar.show()
         viewRequestPermission.hide()
-        getConfiguration()
-        setupToolbar()
     }
 
-    override fun onPermissionGranted(permissions: List<String>) {
+    private fun onPermissionDisabled(permissions: List<String>) {
+        containerSetup.hide()
+        viewActionBar.hide()
+        viewRequestPermission.show()
         viewRequestPermission.setPermissionGranted(permissions)
     }
 
-    override fun onPermissionDisabled() {
-        viewRequestPermission.show()
-    }
-
-    override fun onError(throwable: Throwable) {
+    private fun onError(throwable: Throwable) {
         viewRequestPermission.hide()
         // TODO("handle error app")
         if (GlobalConfig.DEBUG) {

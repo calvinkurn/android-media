@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
+import android.Manifest
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,6 +11,8 @@ import com.tokopedia.play.broadcaster.pusher.PlayPusher
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
 import com.tokopedia.play.broadcaster.util.event.Event
+import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
+import com.tokopedia.play.broadcaster.util.permission.PlayPermissionUtil
 import com.tokopedia.play.broadcaster.view.event.ScreenStateEvent
 import com.tokopedia.play.broadcaster.view.uimodel.ChannelInfoUiModel
 import com.tokopedia.play.broadcaster.view.uimodel.PlayChannelStatus
@@ -25,6 +28,7 @@ import javax.inject.Named
  */
 class PlayBroadcastViewModel  @Inject constructor(
         private val playPusher: PlayPusher,
+        private val permissionUtil: PlayPermissionUtil,
         @Named(PlayBroadcastDispatcher.MAIN) private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
@@ -43,6 +47,8 @@ class PlayBroadcastViewModel  @Inject constructor(
         get() = _observableLiveInfoState
     val observableLiveNetworkState: LiveData<Event<PlayPusherNetworkState>>
         get() = _observableLiveNetworkState
+    val observablePermissionState: LiveData<PlayPermissionState>
+        get() = _observablePermissionState
 
     private val _observableChannelInfo = MutableLiveData<ChannelInfoUiModel>()
     private val _observableTotalView = MutableLiveData<TotalViewUiModel>()
@@ -58,8 +64,16 @@ class PlayBroadcastViewModel  @Inject constructor(
             value = Event(it)
         }
     }
+    private val _observablePermissionState = MediatorLiveData<PlayPermissionState>().apply {
+        addSource(permissionUtil.getObservablePlayPermissionState()) {
+            value = it
+        }
+    }
 
     init {
+        permissionUtil.checkPermission(arrayOf(
+                Manifest.permission.CAMERA,
+                Manifest.permission.RECORD_AUDIO))
         playPusher.create()
     }
 
@@ -121,5 +135,9 @@ class PlayBroadcastViewModel  @Inject constructor(
 
     fun getPlayPusher(): PlayPusher {
         return playPusher
+    }
+
+    fun getPermissionUtil(): PlayPermissionUtil {
+        return permissionUtil
     }
 }

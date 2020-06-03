@@ -1,6 +1,9 @@
 package com.tokopedia.play.broadcaster.pusher
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.view.SurfaceView
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.alivc.live.pusher.AlivcLivePushConfig
@@ -65,7 +68,10 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     override fun startPreview(surfaceView: SurfaceView) {
         if (mAliVcLivePusher != null) {
             try {
-                mAliVcLivePusher?.startPreviewAysnc(surfaceView)
+                if (ActivityCompat.checkSelfPermission(builder.context, Manifest.permission.CAMERA)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    mAliVcLivePusher?.startPreviewAysnc(surfaceView)
+                }
             } catch (e: IllegalArgumentException) {
                 if (GlobalConfig.DEBUG) {
                     e.printStackTrace()

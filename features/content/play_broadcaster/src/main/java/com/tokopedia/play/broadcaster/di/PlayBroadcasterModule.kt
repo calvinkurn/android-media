@@ -1,13 +1,12 @@
 package com.tokopedia.play.broadcaster.di
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastSocket.Companion.KEY_GROUPCHAT_PREFERENCES
 import com.tokopedia.play.broadcaster.dispatcher.PlayBroadcastDispatcher
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
 import com.tokopedia.play.broadcaster.pusher.PlayPusherBuilder
-import com.tokopedia.play.broadcaster.util.PermissionUtil
+import com.tokopedia.play.broadcaster.util.permission.PlayPermissionUtil
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -50,7 +49,7 @@ class PlayBroadcasterModule(val context: Context) {
     }
 
     @Provides
-    fun providePlayPermissionUtil(): PermissionUtil {
-        return PermissionUtil(context)
+    fun providePlayPermissionUtil(): PlayPermissionUtil {
+        return PlayPermissionUtil(context)
     }
 }

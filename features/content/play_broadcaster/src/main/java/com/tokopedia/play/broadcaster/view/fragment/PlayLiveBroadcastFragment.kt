@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.util.event.EventObserver
@@ -86,6 +87,29 @@ class PlayLiveBroadcastFragment @Inject constructor(
 
     private fun setTotalLike(totalLike: TotalLikeUiModel) {
         tvTotalLike.text = totalLike.totalLike
+    }
+
+    private fun setupDialog(
+            title: String,
+            description: String,
+            primaryCta: String,
+            primaryCtaClick: () -> Unit,
+            secondaryCta: String = "",
+            secondaryCtaClick: () -> Unit = {}
+    ): DialogUnify? {
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(title)
+            dialog.setDescription(description)
+            dialog.setPrimaryCTAText(primaryCta)
+            dialog.setPrimaryCTAClickListener(primaryCtaClick)
+            if (secondaryCta.isNotEmpty()) {
+                dialog.setSecondaryCTAText(secondaryCta)
+                dialog.setSecondaryCTAClickListener(secondaryCtaClick)
+            }
+            return dialog
+        }
+        return null
     }
 
     //region observe
