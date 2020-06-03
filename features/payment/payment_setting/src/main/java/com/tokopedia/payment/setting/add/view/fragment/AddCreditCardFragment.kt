@@ -59,8 +59,8 @@ class AddCreditCardFragment : BaseWebViewFragment() {
                 "$SIGNATURE=${getUrlEncoded(paymentSignature.hash)}"
     }
 
-    private fun getUrlEncoded(valueStr : String){
-        URLEncoder.encode(valueStr, ENCODING_UTF_8)
+    private fun getUrlEncoded(valueStr: String): String {
+        return URLEncoder.encode(valueStr, ENCODING_UTF_8)
     }
 
     override fun initInjector() {
