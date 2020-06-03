@@ -18,6 +18,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
@@ -169,10 +170,22 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         sahBottomNav.labelVisibilityMode = LabelVisibilityMode.LABEL_VISIBILITY_LABELED
         sahBottomNav.setOnNavigationItemSelectedListener { menu ->
             when (menu.itemId) {
-                R.id.menu_sah_home -> showContainerFragment(PageFragment(FragmentType.HOME), TrackingConstant.CLICK_HOME)
-                R.id.menu_sah_product -> showContainerFragment(lastProductMangePage, TrackingConstant.CLICK_PRODUCT)
-                R.id.menu_sah_chat -> showContainerFragment(PageFragment(FragmentType.CHAT), TrackingConstant.CLICK_CHAT)
-                R.id.menu_sah_order -> showContainerFragment(lastSomTab, TrackingConstant.CLICK_ORDER)
+                R.id.menu_sah_home -> {
+                    UpdateShopActiveService.startService(this)
+                    showContainerFragment(PageFragment(FragmentType.HOME), TrackingConstant.CLICK_HOME)
+                }
+                R.id.menu_sah_product -> {
+                    UpdateShopActiveService.startService(this)
+                    showContainerFragment(lastProductMangePage, TrackingConstant.CLICK_PRODUCT)
+                }
+                R.id.menu_sah_chat -> {
+                    UpdateShopActiveService.startService(this)
+                    showContainerFragment(PageFragment(FragmentType.CHAT), TrackingConstant.CLICK_CHAT)
+                }
+                R.id.menu_sah_order -> {
+                    UpdateShopActiveService.startService(this)
+                    showContainerFragment(lastSomTab, TrackingConstant.CLICK_ORDER)
+                }
                 R.id.menu_sah_other -> showOtherSettingsFragment()
             }
             return@setOnNavigationItemSelectedListener true
