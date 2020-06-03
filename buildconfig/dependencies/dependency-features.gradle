@@ -223,7 +223,6 @@ ext {
             liveness                        : ":features:user:liveness",
             fcm_common                      : ":features:fcm_common",
             tkpdcore                        : ":tkpdcore",
-            tkpddiscovery                   : ":tkpddiscovery",
             tkpdinbox                       : ":tkpdinbox",
             tkpdseller                      : ":tkpdseller",
             tkpdsession                     : ":tkpdsession",
