@@ -4,15 +4,9 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.network.constant.ErrorNetMessage;
+import com.tokopedia.seller.purchase.detail.data.CourierServiceModel;
 import com.tokopedia.seller.purchase.detail.data.CourierViewModel;
 import com.tokopedia.seller.purchase.detail.data.ListCourierViewModel;
-import com.tokopedia.transaction.common.data.order.ButtonData;
-import com.tokopedia.transaction.common.data.order.CourierServiceModel;
-import com.tokopedia.transaction.common.data.order.CourierViewModel;
-import com.tokopedia.transaction.common.data.order.ListCourierViewModel;
-import com.tokopedia.transaction.common.data.order.OrderDetailData;
-import com.tokopedia.transaction.common.data.order.OrderDetailItemData;
-import com.tokopedia.transaction.common.exception.ResponseRuntimeException;
 import com.tokopedia.seller.purchase.detail.model.detail.response.Buttons;
 import com.tokopedia.seller.purchase.detail.model.detail.response.OnlineBooking;
 import com.tokopedia.seller.purchase.detail.model.detail.response.OrderDetailResponse;
