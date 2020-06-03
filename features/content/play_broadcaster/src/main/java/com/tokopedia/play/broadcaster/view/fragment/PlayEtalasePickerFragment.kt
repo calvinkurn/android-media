@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.gone
@@ -14,6 +15,8 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
+import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
+import com.tokopedia.play.broadcaster.ui.model.ResultState
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayEtalaseViewHolder
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 import com.tokopedia.play.broadcaster.ui.viewholder.SearchSuggestionViewHolder
@@ -146,24 +149,44 @@ class PlayEtalasePickerFragment @Inject constructor(
             }
         })
 
+        setupEtalaseList()
+        setupSearchList()
+        setupSuggestionList()
+    }
+
+    private fun setupEtalaseList() {
         rvEtalase.adapter = etalaseAdapter
         rvEtalase.addItemDecoration(PlayGridTwoItemDecoration(requireContext()))
+    }
 
+    private fun setupSearchList() {
+        rvSearchedProducts.layoutManager = GridLayoutManager(rvSearchedProducts.context, SPAN_COUNT, RecyclerView.VERTICAL, false).apply {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+
+                override fun getSpanSize(position: Int): Int {
+                    return if (searchProductsAdapter.getItem(position) == ProductLoadingUiModel) SPAN_COUNT
+                    else 1
+                }
+            }
+        }
         rvSearchedProducts.adapter = searchProductsAdapter
         rvSearchedProducts.addItemDecoration(PlayGridTwoItemDecoration(requireContext()))
         scrollListener = object : EndlessRecyclerViewScrollListener(rvSearchedProducts.layoutManager!!) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-
+                viewModel.searchProductsByKeyword(psbSearch.text, page)
             }
         }
         rvSearchedProducts.addOnScrollListener(scrollListener)
+    }
 
+    private fun setupSuggestionList() {
         rvSuggestions.adapter = searchSuggestionsAdapter
     }
 
     private fun enterSearchMode() {
         tvInfo.gone()
         rvEtalase.gone()
+        rvSearchedProducts.gone()
 
         rvSuggestions.visible()
 
@@ -191,7 +214,9 @@ class PlayEtalasePickerFragment @Inject constructor(
     }
 
     private fun shouldSearchProductWithKeyword(keyword: String) {
-        viewModel.searchProductsByKeyword(keyword)
+        scrollListener.resetState()
+        scrollListener.loadMoreNextPage()
+
         exitSearchMode()
     }
 
@@ -207,7 +232,22 @@ class PlayEtalasePickerFragment @Inject constructor(
 
     private fun observeSearchProducts() {
         viewModel.observableSearchedProducts.observe(viewLifecycleOwner, Observer {
-            searchProductsAdapter.setItemsAndAnimateChanges(it)
+            when (it.state) {
+                is ResultState.Success -> {
+                    searchProductsAdapter.setItemsAndAnimateChanges(it.currentValue)
+
+                    scrollListener.setHasNextPage(it.state.hasNextPage)
+                    scrollListener.updateStateAfterGetData()
+                }
+                ResultState.Loading -> {
+                    searchProductsAdapter.setItemsAndAnimateChanges(it.currentValue + ProductLoadingUiModel)
+                }
+                is ResultState.Fail -> {
+                    searchProductsAdapter.setItemsAndAnimateChanges(it.currentValue)
+                    scrollListener.setHasNextPage(true)
+                    scrollListener.updateStateAfterGetData()
+                }
+            }
         })
     }
 
@@ -217,4 +257,9 @@ class PlayEtalasePickerFragment @Inject constructor(
         })
     }
     //endregion
+
+    companion object {
+
+        private const val SPAN_COUNT = 2
+    }
 }

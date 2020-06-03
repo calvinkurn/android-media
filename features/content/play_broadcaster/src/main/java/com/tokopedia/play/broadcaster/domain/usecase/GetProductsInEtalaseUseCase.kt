@@ -52,12 +52,6 @@ class GetProductsInEtalaseUseCase @Inject constructor(
         }
     }
 
-    data class Filter(
-            val page: Int,
-            val perPage: Int,
-            val fMenu: String
-    )
-
     companion object {
 
         private const val PARAMS_SHOP_ID = "shopId"
@@ -65,19 +59,22 @@ class GetProductsInEtalaseUseCase @Inject constructor(
         private const val PARAMS_PAGE = "page"
         private const val PARAMS_PER_PAGE = "perPage"
         private const val PARAMS_ETALASE_ID = "fmenu"
+        private const val PARAMS_KEYWORD = "fkeyword"
         private const val PARAMS_SORT = "sort"
 
         fun createParams(
                 shopId: String,
                 page: Int,
                 perPage: Int,
-                etalaseId: String
+                etalaseId: String = "",
+                keyword: String = ""
         ): Map<String, Any> = mapOf(
                 PARAMS_SHOP_ID to shopId,
                 PARAMS_FILTER to mapOf(
                         PARAMS_PAGE to page,
                         PARAMS_PER_PAGE to perPage,
                         PARAMS_ETALASE_ID to etalaseId,
+                        PARAMS_KEYWORD to keyword,
                         PARAMS_SORT to 0
                 )
         )

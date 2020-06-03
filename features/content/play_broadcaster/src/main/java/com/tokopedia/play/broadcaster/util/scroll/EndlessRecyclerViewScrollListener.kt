@@ -14,7 +14,7 @@ abstract class EndlessRecyclerViewScrollListener(
 
     private val threshold = 2
     private val visibleThreshold: Int
-    private var currentPage: Int = 0
+    private var currentPage: Int = STARTING_PAGE_INDEX
     private var currentItemCount = 0
     private var loading = false
     private var hasNextPage = true

@@ -91,11 +91,11 @@ class PlayEtalaseDetailFragment @Inject constructor(
     }
 
     private fun setupView(view: View) {
-        rvProduct.layoutManager = GridLayoutManager(rvProduct.context, 2, RecyclerView.VERTICAL, false).apply {
+        rvProduct.layoutManager = GridLayoutManager(rvProduct.context, SPAN_COUNT, RecyclerView.VERTICAL, false).apply {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
 
                 override fun getSpanSize(position: Int): Int {
-                    return if (selectableProductAdapter.getItem(position) == ProductLoadingUiModel) 2
+                    return if (selectableProductAdapter.getItem(position) == ProductLoadingUiModel) SPAN_COUNT
                     else 1
                 }
             }
@@ -137,5 +137,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
     companion object {
 
         const val EXTRA_ETALASE_ID = "etalase_id"
+
+        private const val SPAN_COUNT = 2
     }
 }
