@@ -50,8 +50,6 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback;
 import org.jetbrains.annotations.NotNull;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
 
 
 /**
@@ -277,17 +275,8 @@ public class InboxReputationFragment extends BaseDaggerFragment
             @Override
             public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
                 BottomSheetUnify bottomSheet = new IncentiveOvoBottomSheet(productRevIncentiveOvoDomain, ReputationTrackingConstant.WAITING_REVIEWED);
-                bottomSheet.setFullpage(true);
                 if(getFragmentManager() != null) {
                     bottomSheet.show(getFragmentManager(),IncentiveOvoBottomSheet.Companion.getTAG());
-                    bottomSheet.setCloseClickListener(new Function1<View, Unit>() {
-                        @Override
-                        public Unit invoke(View view) {
-                            reputationTracking.onClickDismissIncentiveOvoBottomSheetTracker(ReputationTrackingConstant.WAITING_REVIEWED);
-                            bottomSheet.dismiss();
-                            return Unit.INSTANCE;
-                        }
-                    });
                 }
                 reputationTracking.onClickReadSkIncentiveOvoTracker(title, ReputationTrackingConstant.WAITING_REVIEWED);
             }
