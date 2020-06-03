@@ -6,11 +6,9 @@ import android.view.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.alivc.live.pusher.SurfaceStatus
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.di.DaggerPlayBroadcasterComponent
-import com.tokopedia.play.broadcaster.di.PlayBroadcasterModule
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import javax.inject.Inject
@@ -18,10 +16,9 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 19/05/20.
  */
-class PlayBroadcastFragment: BaseDaggerFragment() {
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+class PlayBroadcastFragment @Inject constructor(
+        private val viewModelFactory: ViewModelFactory
+): TkpdBaseV4Fragment() {
 
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
@@ -30,13 +27,6 @@ class PlayBroadcastFragment: BaseDaggerFragment() {
     private var surfaceStatus = SurfaceStatus.UNINITED
 
     override fun getScreenName(): String = "Play Broadcast"
-
-    override fun initInjector() {
-        DaggerPlayBroadcasterComponent.builder()
-                .playBroadcasterModule(PlayBroadcasterModule(requireContext()))
-                .build()
-                .inject(this)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -122,9 +112,5 @@ class PlayBroadcastFragment: BaseDaggerFragment() {
     companion object {
 
         const val PARENT_FRAGMENT_TAG = "parent_fragment"
-
-        fun newInstance(): PlayBroadcastFragment {
-            return PlayBroadcastFragment()
-        }
     }
 }

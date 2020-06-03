@@ -7,7 +7,7 @@ import android.widget.TextView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.view.uimodel.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 
 /**
@@ -27,7 +27,7 @@ class BottomActionPartialView(
         ivInventory.setOnClickListener { listener.onInventoryIconClicked() }
     }
 
-    fun setupBottomActionWithProducts(productList: List<ProductUiModel>) {
+    fun setupBottomActionWithProducts(productList: List<ProductContentUiModel>) {
         if (productList.isEmpty()) {
             ivInventory.setImageResource(R.drawable.ic_play_inventory_disabled)
             ivInventory.isClickable = false

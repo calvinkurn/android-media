@@ -12,10 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayFollowerItemDecoration
+import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
 import com.tokopedia.play.broadcaster.view.adapter.PlayFollowersAdapter
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
-import com.tokopedia.play.broadcaster.view.uimodel.ChannelInfoUiModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayPrepareBroadcastViewModel
 import com.tokopedia.unifycomponents.UnifyButton

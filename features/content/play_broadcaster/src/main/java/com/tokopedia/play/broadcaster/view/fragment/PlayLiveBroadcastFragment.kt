@@ -11,10 +11,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
+import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
+import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
 import com.tokopedia.play.broadcaster.util.event.EventObserver
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
-import com.tokopedia.play.broadcaster.view.uimodel.TotalLikeUiModel
-import com.tokopedia.play.broadcaster.view.uimodel.TotalViewUiModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.unifyprinciples.Typography
 import java.util.concurrent.TimeUnit

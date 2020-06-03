@@ -62,8 +62,9 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
             override fun onBackPressed() {
                 if (!fragmentBreadcrumbs.empty()) {
                     val lastFragmentBreadcrumbs = fragmentBreadcrumbs.pop()
-                    navigateToFragment(lastFragmentBreadcrumbs.fragmentClass, lastFragmentBreadcrumbs.extras, recordBreadcrumbs = false)
-                } else super.onBackPressed()
+                    childFragmentManager.popBackStack(lastFragmentBreadcrumbs.fragmentClass.name, 0)
+                    setupHeader()
+                } else cancel()
             }
         }
     }
@@ -106,20 +107,10 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         observeSelectedProducts()
     }
 
-    override fun navigateToFragment(fragmentClass: Class<out Fragment>, extras: Bundle, recordBreadcrumbs: Boolean) {
-        if (recordBreadcrumbs) addBreadcrumb()
-        val fragment = openFragment(fragmentClass, extras)
-
-        if (fragment is PlayBaseSetupFragment) {
-            setupTitle(fragment.getTitle())
-            ivBack.setImageResource(
-                    if (fragment.isRootFragment()) com.tokopedia.unifycomponents.R.drawable.unify_bottomsheet_close
-                    else R.drawable.ic_system_action_back_grayscale_24
-            )
-        } else {
-            setupTitle("")
-            ivBack.setImageResource(com.tokopedia.unifycomponents.R.drawable.unify_bottomsheet_close)
-        }
+    override fun navigateToFragment(fragmentClass: Class<out Fragment>, extras: Bundle) {
+        addBreadcrumb()
+        openFragment(fragmentClass, extras)
+        setupHeader()
     }
 
     override fun setupTitle(title: String) {
@@ -132,6 +123,13 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
 
     fun show(fragmentManager: FragmentManager) {
         show(fragmentManager, TAG)
+    }
+
+    private fun setupHeader() {
+        ivBack.setImageResource(
+                if (fragmentBreadcrumbs.isEmpty()) com.tokopedia.unifycomponents.R.drawable.unify_bottomsheet_close
+                else R.drawable.ic_system_action_back_grayscale_24
+        )
     }
 
     private fun setupDialog(dialog: Dialog) {
@@ -176,6 +174,7 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         destFragment.arguments = extras
         fragmentTransaction
                 .replace(R.id.fl_fragment, destFragment, fragmentClass.name)
+                .addToBackStack(fragmentClass.name)
                 .commit()
 
         return destFragment
@@ -233,7 +232,5 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
 
     companion object {
         private const val TAG = "PlayBroadcastSetupBottomSheet"
-
-        private const val MAX_HEIGHT_MULTIPLIER = 0.8
     }
 }

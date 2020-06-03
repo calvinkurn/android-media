@@ -3,9 +3,8 @@ package com.tokopedia.play.broadcaster.view.adapter.delegate
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
-import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.ui.model.FollowerUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayUnknownFollowerViewHolder
-import com.tokopedia.play.broadcaster.view.uimodel.FollowerUiModel
 
 /**
  * Created by jegul on 20/05/20

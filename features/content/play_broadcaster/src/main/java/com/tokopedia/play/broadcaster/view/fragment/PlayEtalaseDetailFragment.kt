@@ -7,11 +7,15 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
+import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
+import com.tokopedia.play.broadcaster.ui.model.ResultState
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
+import com.tokopedia.play.broadcaster.util.scroll.EndlessRecyclerViewScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
@@ -26,6 +30,9 @@ class PlayEtalaseDetailFragment @Inject constructor(
 ) : PlayBaseSetupFragment() {
 
     private lateinit var viewModel: PlayEtalasePickerViewModel
+
+    private val etalaseId: Long
+        get() = arguments?.getLong(EXTRA_ETALASE_ID) ?: throw IllegalStateException("etalaseId must be set")
 
     private lateinit var tvInfo: TextView
     private lateinit var rvProduct: RecyclerView
@@ -46,13 +53,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
         }
     })
 
-    override fun getTitle(): String {
-        return ""
-    }
-
-    override fun isRootFragment(): Boolean {
-        return false
-    }
+    private lateinit var scrollListener: EndlessRecyclerViewScrollListener
 
     override fun refresh() {
         selectableProductAdapter.notifyDataSetChanged()
@@ -63,7 +64,6 @@ class PlayEtalaseDetailFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(requireParentFragment(), viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
-        arguments?.getLong(EXTRA_ETALASE_ID)?.let { etalaseId -> viewModel.setSelectedEtalase(etalaseId) }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -91,20 +91,53 @@ class PlayEtalaseDetailFragment @Inject constructor(
     }
 
     private fun setupView(view: View) {
+        rvProduct.layoutManager = GridLayoutManager(rvProduct.context, SPAN_COUNT, RecyclerView.VERTICAL, false).apply {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+
+                override fun getSpanSize(position: Int): Int {
+                    return if (selectableProductAdapter.getItem(position) == ProductLoadingUiModel) SPAN_COUNT
+                    else 1
+                }
+            }
+        }
         rvProduct.adapter = selectableProductAdapter
         rvProduct.addItemDecoration(PlayGridTwoItemDecoration(requireContext()))
+        scrollListener = object : EndlessRecyclerViewScrollListener(rvProduct.layoutManager!!) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                viewModel.loadEtalaseProducts(etalaseId, page)
+            }
+        }
+        scrollListener.loadMoreNextPage()
+        rvProduct.addOnScrollListener(scrollListener)
     }
 
     private fun observeProductsInSelectedEtalase() {
         viewModel.observableSelectedEtalase.observe(viewLifecycleOwner, Observer {
-            selectableProductAdapter.setItemsAndAnimateChanges(it.productList)
-            bottomSheetCoordinator.setupTitle(it.name)
+            bottomSheetCoordinator.setupTitle(it.currentValue.name)
             tvInfo.text = getString(R.string.play_product_select_max_info, viewModel.maxProduct)
+            when (it.state) {
+                is ResultState.Success -> {
+                    selectableProductAdapter.setItemsAndAnimateChanges(it.currentValue.productMap.values.flatten())
+
+                    scrollListener.setHasNextPage(it.currentValue.stillHasProduct)
+                    scrollListener.updateState(true)
+                }
+                ResultState.Loading -> {
+                    selectableProductAdapter.setItemsAndAnimateChanges(it.currentValue.productMap.values.flatten() + ProductLoadingUiModel)
+                }
+                is ResultState.Fail -> {
+                    selectableProductAdapter.setItemsAndAnimateChanges(it.currentValue.productMap.values.flatten())
+                    scrollListener.setHasNextPage(it.currentValue.stillHasProduct)
+                    scrollListener.updateState(false)
+                }
+            }
         })
     }
 
     companion object {
 
         const val EXTRA_ETALASE_ID = "etalase_id"
+
+        private const val SPAN_COUNT = 2
     }
 }

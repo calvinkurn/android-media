@@ -1,24 +1,24 @@
 package com.tokopedia.play.broadcaster.view.adapter
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
+import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.view.adapter.delegate.PlayProductPreviewAdapterDelegate
-import com.tokopedia.play.broadcaster.view.uimodel.ProductUiModel
 
 /**
  * Created by jegul on 26/05/20
  */
-class PlayProductPreviewAdapter : BaseDiffUtilAdapter<ProductUiModel>() {
+class PlayProductPreviewAdapter : BaseDiffUtilAdapter<ProductContentUiModel>() {
 
     init {
         delegatesManager
                 .addDelegate(PlayProductPreviewAdapterDelegate())
     }
 
-    override fun areItemsTheSame(oldItem: ProductUiModel, newItem: ProductUiModel): Boolean {
+    override fun areItemsTheSame(oldItem: ProductContentUiModel, newItem: ProductContentUiModel): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: ProductUiModel, newItem: ProductUiModel): Boolean {
+    override fun areContentsTheSame(oldItem: ProductContentUiModel, newItem: ProductContentUiModel): Boolean {
         return oldItem == newItem
     }
 }

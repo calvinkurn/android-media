@@ -3,8 +3,8 @@ package com.tokopedia.play.broadcaster.view.adapter.delegate
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
+import com.tokopedia.play.broadcaster.ui.model.SearchSuggestionUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.SearchSuggestionViewHolder
-import com.tokopedia.play.broadcaster.view.uimodel.SearchSuggestionUiModel
 
 /**
  * Created by jegul on 29/05/20

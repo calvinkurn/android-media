@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.ProductPreviewItemDecoration
+import com.tokopedia.play.broadcaster.ui.model.PlayEtalaseUiModel
 import com.tokopedia.play.broadcaster.view.adapter.PlayProductPreviewAdapter
-import com.tokopedia.play.broadcaster.view.uimodel.PlayEtalaseUiModel
 
 /**
  * Created by jegul on 26/05/20
@@ -56,7 +56,7 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
         }
         tvEtalaseTitle.text = item.name
         tvEtalaseAmount.text = getString(R.string.play_etalase_product_amount, item.totalProduct)
-        productPreviewAdapter.setItemsAndAnimateChanges(item.productList)
+        productPreviewAdapter.setItemsAndAnimateChanges(item.productMap.values.flatten())
     }
 
     companion object {

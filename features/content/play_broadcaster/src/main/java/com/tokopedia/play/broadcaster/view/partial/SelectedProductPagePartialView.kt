@@ -1,20 +1,18 @@
 package com.tokopedia.play.broadcaster.view.partial
 
 import android.content.Context
-import android.os.Build
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
+import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
-import com.tokopedia.play.broadcaster.view.uimodel.ProductUiModel
 
 /**
  * Created by jegul on 28/05/20
@@ -85,13 +83,13 @@ class SelectedProductPagePartialView(
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
-    fun setSelectedProductList(productList: List<ProductUiModel>) {
+    fun setSelectedProductList(productList: List<ProductContentUiModel>) {
         updateTitle(productList.size)
         selectableProductAdapter.setItems(productList)
         selectableProductAdapter.notifyDataSetChanged()
     }
 
-    fun onSelectedProductsUpdated(productList: List<ProductUiModel>) {
+    fun onSelectedProductsUpdated(productList: List<ProductContentUiModel>) {
         updateTitle(productList.size)
     }
 

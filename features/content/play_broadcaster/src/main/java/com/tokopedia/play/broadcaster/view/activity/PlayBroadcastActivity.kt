@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.config.GlobalConfig
@@ -25,7 +26,6 @@ import com.tokopedia.play.broadcaster.view.contract.PlayActionBarInteraction
 import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
 import com.tokopedia.play.broadcaster.view.custom.PlayRequestPermissionView
 import com.tokopedia.play.broadcaster.view.event.ScreenStateEvent
-import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment.Companion.PARENT_FRAGMENT_TAG
 import com.tokopedia.play.broadcaster.view.fragment.PlayLiveBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayPrepareBroadcastFragment
@@ -72,6 +72,7 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
     private fun inject() {
         DaggerPlayBroadcasterComponent.builder()
                 .playBroadcasterModule(PlayBroadcasterModule(this))
+                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
     }
@@ -135,7 +136,7 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun navigateToFragment(fragmentClass: Class<out Fragment>, extras: Bundle, recordBreadcrumbs: Boolean) {
+    override fun navigateToFragment(fragmentClass: Class<out Fragment>, extras: Bundle) {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         val destFragment = getFragmentByClassName(fragmentClass)
         destFragment.arguments = extras
@@ -146,6 +147,16 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
 
     override fun setupTitle(title: String) {
         tvTitle.text = title
+    }
+
+    private fun getParentFragment() = getFragmentByClassName(PlayLiveBroadcastFragment::class.java)
+
+    private fun getFragmentByClassName(fragmentClass: Class<out Fragment>): Fragment {
+        return fragmentFactory.instantiate(classLoader, fragmentClass.name)
+    }
+
+    private fun getCurrentVisibleFragment(): Fragment? {
+        return supportFragmentManager.findFragmentById(R.id.fl_setup)
     }
 
     private fun doSwitchCamera() {
@@ -159,16 +170,6 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
                 || !currentVisibleFragment.onCloseActionBar()) {
             this.onBackPressed()
         }
-    }
-
-    private fun getParentFragment() = PlayBroadcastFragment.newInstance()
-
-    private fun getFragmentByClassName(fragmentClass: Class<out Fragment>): Fragment {
-        return fragmentFactory.instantiate(fragmentClass.classLoader!!, fragmentClass.name)
-    }
-
-    private fun getCurrentVisibleFragment(): Fragment? {
-        return supportFragmentManager.findFragmentById(R.id.fl_setup)
     }
 
     //region observe
