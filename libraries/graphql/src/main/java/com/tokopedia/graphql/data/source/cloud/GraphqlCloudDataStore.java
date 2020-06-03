@@ -110,7 +110,7 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                             }
 
                             JsonElement childResp = rawResp.getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA);
-                            if (object != null) {
+                            if (childResp != null) {
                                 mCacheManager.save(request.cacheKey(), childResp.toString(), cache.getMaxAge() * 1000);
                             }
                         }
