@@ -51,7 +51,6 @@ import com.tokopedia.rechargegeneral.R
 import com.tokopedia.rechargegeneral.di.RechargeGeneralComponent
 import com.tokopedia.rechargegeneral.model.RechargeGeneralDynamicInput
 import com.tokopedia.rechargegeneral.model.RechargeGeneralOperatorCluster
-import com.tokopedia.rechargegeneral.model.RechargeGeneralProductData
 import com.tokopedia.rechargegeneral.model.RechargeGeneralProductInput
 import com.tokopedia.rechargegeneral.model.mapper.RechargeGeneralMapper
 import com.tokopedia.rechargegeneral.presentation.adapter.RechargeGeneralAdapter
@@ -334,11 +333,13 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     operatorCluster = getClusterOfOperatorId(operatorClusters, operatorId)?.name ?: ""
                     renderOperatorCluster(operatorClusters)
 
-                    val operatorGroup = groups.first { it.name == operatorCluster }
-                    val isOperatorHidden = operatorClusters.style == OPERATOR_TYPE_HIDDEN
-                    renderOperatorList(operatorGroup, isOperatorHidden, operatorClusters.text)
+                    val operatorGroup = groups.firstOrNull { it.name == operatorCluster }
+                    operatorGroup?.run {
+                        val isOperatorHidden = operatorClusters.style == OPERATOR_TYPE_HIDDEN
+                        renderOperatorList(operatorGroup, isOperatorHidden, operatorClusters.text)
 
-                    if (operatorGroup.operators.size > 1) getProductList(menuId, operatorId)
+                        if (operatorGroup.operators.size > 1) getProductList(menuId, operatorId)
+                    }
                 }
             }
         }
@@ -696,8 +697,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 tab_layout.show()
 
                 // Hide widget title
-                (product_view_pager.getChildAt(0) as TopupBillsWidgetInterface).toggleTitle(false)
-                (product_view_pager.getChildAt(1) as TopupBillsWidgetInterface).toggleTitle(false)
+                (product_view_pager.getChildAt(0) as? TopupBillsWidgetInterface)?.toggleTitle(false)
+                (product_view_pager.getChildAt(1) as? TopupBillsWidgetInterface)?.toggleTitle(false)
             }
             product_view_pager.show()
         } else {
@@ -836,7 +837,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         super.processMenuDetail(data)
         with (data.catalog) {
             (activity as? BaseSimpleActivity)?.updateTitle(label)
-            rechargeAnalytics.eventOpenScreen(userSession.isLoggedIn, categoryName, categoryId.toString())
+            rechargeAnalytics.eventOpenScreen(
+                    userSession.isLoggedIn,
+                    categoryName,
+                    categoryId.toString())
         }
         renderTickers(data.tickers)
         // Set recommendation data if available

@@ -94,7 +94,11 @@ object DeeplinkMapperDigital {
     private fun getDigitalSmartcardNavigation(deeplink: String): String {
         val uri = Uri.parse(deeplink)
         var paramValue = uri.getQueryParameter(ApplinkConsInternalDigital.PARAM_SMARTCARD) ?: ""
+        var statusBrizzi = uri.getQueryParameter(ApplinkConsInternalDigital.PARAM_BRIZZI)?: "false"
 
-        return UriUtil.buildUri(ApplinkConsInternalDigital.INTERNAL_SMARTCARD, paramValue)
+        return if (statusBrizzi == "true")
+            UriUtil.buildUri(ApplinkConsInternalDigital.INTERNAL_SMARTCARD_BRIZZI, paramValue)
+        else
+            UriUtil.buildUri(ApplinkConsInternalDigital.INTERNAL_SMARTCARD_EMONEY, paramValue)
     }
 }

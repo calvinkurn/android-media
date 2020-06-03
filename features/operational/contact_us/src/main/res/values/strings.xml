@@ -108,4 +108,21 @@
     <string name="contactus_error_field_required">Harus diisi</string>
     <string name="contactus_error_invalid_email">Email ini tidak valid.</string>
     <string name="contact_us_something_went_wrong">Something went wrong</string>
+
+    <string-array name="contactus_csat_question">
+        <item>Apa yang bisa diperbaiki dari layanan kami?</item>
+        <item>Apa yang bisa diperbaiki dari layanan kami?</item>
+        <item>Apa yang bisa ditingkatkan dari layanan kami?</item>
+        <item>Apa yang bisa ditingkatkan dari layanan kami?</item>
+        <item>Apa yang sebaiknya dipertahankan dari layanan kami?</item>
+    </string-array>
+
+    <string-array name="contactus_csat_caption">
+        <item>Tidak Memuaskan</item>
+        <item>Kurang Memuaskan</item>
+        <item>Cukup Memuaskan</item>
+        <item>Memuaskan</item>
+        <item>Sangat Memuaskan</item>
+    </string-array>
+
 </resources>
