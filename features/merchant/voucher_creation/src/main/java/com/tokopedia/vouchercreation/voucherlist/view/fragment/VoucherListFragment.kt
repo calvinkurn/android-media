@@ -126,7 +126,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     private var voucherType: Int? = null
     private var voucherTarget: List<Int>? = null
     @VoucherSort
-    private var voucherSort: String? = null
+    private var voucherSort: String = VoucherSort.FINISH_TIME
     private var isInverted: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -496,7 +496,6 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     private fun resetFetchValues() {
         voucherTarget = null
-        voucherSort = null
         voucherType = null
         isInverted = false
 
