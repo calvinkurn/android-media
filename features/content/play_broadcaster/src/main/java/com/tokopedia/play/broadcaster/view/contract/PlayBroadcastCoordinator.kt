@@ -10,4 +10,5 @@ interface PlayBroadcastCoordinator {
 
     fun navigateToFragment(fragmentClass: Class<out Fragment>, extras: Bundle = Bundle.EMPTY)
 
+    fun setupTitle(title: String)
 }

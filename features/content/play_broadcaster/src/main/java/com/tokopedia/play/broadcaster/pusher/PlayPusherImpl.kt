@@ -18,7 +18,7 @@ import com.tokopedia.play.broadcaster.pusher.type.PlayPusherQualityMode
 /**
  * Created by mzennis on 24/05/20.
  */
-class PlayPusherImpl(private val builder: PlayPusher.Builder) : PlayPusher {
+class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
     private var mCountDownTimer: PlayPusherCountDownTimer? = null
     private var mIngestUrl: String = ""

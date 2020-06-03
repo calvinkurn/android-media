@@ -12,11 +12,14 @@
     <string name="play_product_select_max_info">Pilih maks. %d produk</string>
     <string name="play_empty_stock">Stok Habis</string>
 
-    <string name="play_default_title">Buat Live Streaming</string>
-    <string name="play_allow_title">Aktifkan kamera &amp; mikrofon</string>
-    <string name="play_allow_description">Untuk memulai live streaming, berikan akses kamera &amp; mikrofon di HP kamu.</string>
-    <string name="play_allow_camera">Aktifkan Akses Kamera</string>
-    <string name="play_allow_mic">Aktifkan Akses Mikrofon</string>
+    <string name="play_status_bar_prepare_title">Buat Live Streaming</string>
+    <string name="play_status_bar_end">Akhiri</string>
+
+    <string name="play_permit_title">Aktifkan kamera &amp; mikrofon</string>
+    <string name="play_permit_description">Untuk memulai live streaming, berikan akses kamera &amp; mikrofon di HP kamu.</string>
+    <string name="play_permit_allow_camera">Aktifkan Akses Kamera</string>
+    <string name="play_permit_allow_mic">Aktifkan Akses Mikrofon</string>
+    <string name="play_permit_active">Aktifkan</string>
 
     <string name="play_next">Lanjutkan</string>
     <string name="play_ok">Oke</string>
