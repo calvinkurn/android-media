@@ -125,8 +125,15 @@ class AddEditProductDetailViewModel @Inject constructor(
         val isProductPhotoError = mIsProductPhotoError.value ?: false
 
         // mandatory fields that empty by default (adding new product)
-        val isProductNameError = mIsProductNameInputError.value ?: isAdding
-        val isProductPriceError = mIsProductPriceInputError.value ?: isAdding
+        val isProductNameError: Boolean
+        val isProductPriceError: Boolean
+        if (isAdding) {
+            isProductNameError = mIsProductNameInputError.value ?: !isEditing
+            isProductPriceError = mIsProductPriceInputError.value ?: !isEditing
+        } else {
+            isProductNameError = mIsProductNameInputError.value ?: false
+            isProductPriceError = mIsProductPriceInputError.value ?: false
+        }
 
         // by default the product stock is never empty
         val isProductStockError = mIsProductStockInputError.value ?: false
