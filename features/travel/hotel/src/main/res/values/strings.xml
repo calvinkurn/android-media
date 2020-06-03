@@ -252,7 +252,7 @@
     <string name="hotel_cancellation_failed">Pembatalan Gagal</string>
     <string name="hotel_cancellation_reason_free_text_placeholder">Tulis alasan kamu di sini</string>
     <string name="hotel_cancellation_reason_free_text_label">Alasan lain</string>
-    <string name="hotel_cancellation_reason_free_text_minimal_10_char">minimal 10 karakter</string>
+    <string name="hotel_cancellation_reason_free_text_minimal_10_char">Min. 10 karakter</string>
     <string name="hotel_cancellation_success_status">success</string>
     <string name="hotel_cancellation_fail_status">fail</string>
     <string name="hotel_cancellation_fail_has_been_cancelled_title">Pembatalanmu gagal diproses</string>
