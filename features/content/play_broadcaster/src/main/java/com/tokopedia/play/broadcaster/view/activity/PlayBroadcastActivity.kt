@@ -26,6 +26,7 @@ import com.tokopedia.play.broadcaster.view.contract.PlayActionBarInteraction
 import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
 import com.tokopedia.play.broadcaster.view.custom.PlayRequestPermissionView
 import com.tokopedia.play.broadcaster.view.event.ScreenStateEvent
+import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment.Companion.PARENT_FRAGMENT_TAG
 import com.tokopedia.play.broadcaster.view.fragment.PlayLiveBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayPrepareBroadcastFragment
@@ -149,7 +150,7 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
         tvTitle.text = title
     }
 
-    private fun getParentFragment() = getFragmentByClassName(PlayLiveBroadcastFragment::class.java)
+    private fun getParentFragment() = getFragmentByClassName(PlayBroadcastFragment::class.java)
 
     private fun getFragmentByClassName(fragmentClass: Class<out Fragment>): Fragment {
         return fragmentFactory.instantiate(classLoader, fragmentClass.name)

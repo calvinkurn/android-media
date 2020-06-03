@@ -44,13 +44,17 @@ class PlayLiveBroadcastFragment @Inject constructor(
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_play_live_broadcast, container, false)
-        initView(view)
-        return view
+        return inflater.inflate(R.layout.fragment_play_live_broadcast, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView(view)
+        setupView()
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
         observeChannelInfo()
         observeCountDownDuration()
@@ -62,6 +66,10 @@ class PlayLiveBroadcastFragment @Inject constructor(
         tvTimeCounter = view.findViewById(R.id.tv_time_counter)
         tvTotalView = view.findViewById(R.id.tv_total_views)
         tvTotalLike = view.findViewById(R.id.tv_total_likes)
+    }
+
+    private fun setupView() {
+        broadcastCoordinator.setupTitle("")
     }
 
     private fun setupContent() {

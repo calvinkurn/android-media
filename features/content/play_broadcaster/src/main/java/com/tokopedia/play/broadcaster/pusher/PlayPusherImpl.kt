@@ -227,19 +227,19 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     private val mCountDownTimerListener = object: PlayPusherCountDownTimerListener {
 
         override fun onCountDownActive(millisUntilFinished: Long) {
-            _observableInfoState.value  = PlayPusherInfoState.Active(millisUntilFinished)
+            _observableInfoState.postValue(PlayPusherInfoState.Active(millisUntilFinished))
         }
 
         override fun onCountDownFinish() {
             stopPush()
-            _observableInfoState.value = PlayPusherInfoState.Finish
+            _observableInfoState.postValue(PlayPusherInfoState.Finish)
         }
 
     }
 
     private val mAliVcLivePushNetworkListener = object: AlivcLivePushNetworkListener {
         override fun onNetworkRecovery(pusher: AlivcLivePusher?) {
-            _observableNetworkState.value = PlayPusherNetworkState.Recover
+            _observableNetworkState.postValue(PlayPusherNetworkState.Recover)
         }
 
         override fun onSendMessage(pusher: AlivcLivePusher?) {
@@ -252,14 +252,14 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         }
 
         override fun onConnectFail(pusher: AlivcLivePusher?) {
-            _observableNetworkState.value = PlayPusherNetworkState.Loss
+            _observableNetworkState.postValue(PlayPusherNetworkState.Loss)
         }
 
         override fun onReconnectStart(pusher: AlivcLivePusher?) {
         }
 
         override fun onReconnectSucceed(pusher: AlivcLivePusher?) {
-            _observableNetworkState.value = PlayPusherNetworkState.Recover
+            _observableNetworkState.postValue(PlayPusherNetworkState.Recover)
         }
 
         override fun onPushURLAuthenticationOverdue(pusher: AlivcLivePusher?): String {
@@ -267,7 +267,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         }
 
         override fun onNetworkPoor(pusher: AlivcLivePusher?) {
-            _observableNetworkState.value = PlayPusherNetworkState.Poor
+            _observableNetworkState.postValue(PlayPusherNetworkState.Poor)
         }
 
     }

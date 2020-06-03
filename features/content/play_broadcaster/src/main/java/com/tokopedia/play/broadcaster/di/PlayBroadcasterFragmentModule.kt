@@ -49,4 +49,9 @@ abstract class PlayBroadcasterFragmentModule {
     @IntoMap
     @FragmentKey(PlayLiveBroadcastFragment::class)
     abstract fun getPlayLiveBroadcastFragment(fragment: PlayLiveBroadcastFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(PlayBroadcastFragment::class)
+    abstract fun getParentBroadcastFragment(fragment: PlayBroadcastFragment): Fragment
 }
