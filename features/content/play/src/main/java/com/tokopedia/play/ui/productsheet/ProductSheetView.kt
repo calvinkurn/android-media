@@ -5,18 +5,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.play.EMPTY_PRODUCT_IMAGE_URL
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.ui.productsheet.adapter.MerchantVoucherAdapter
@@ -51,7 +48,6 @@ class ProductSheetView(
     private val globalError: GlobalError = view.findViewById(R.id.global_error_product)
 
     private val clProductEmpty: ConstraintLayout = view.findViewById(R.id.cl_product_empty)
-    private val ivIllustration: AppCompatImageView = view.findViewById(R.id.iv_img_illustration)
     private val btnProductEmpty: UnifyButton = view.findViewById(R.id.btn_action_product_empty)
 
     private val productLineAdapter = ProductLineAdapter(object : ProductLineViewHolder.Listener {
@@ -167,7 +163,6 @@ class ProductSheetView(
         globalError.hide()
         clProductEmpty.show()
 
-        ImageHandler.LoadImage(ivIllustration, EMPTY_PRODUCT_IMAGE_URL)
         btnProductEmpty.setOnClickListener {
             listener.onEmptyButtonClicked(partnerId)
         }
