@@ -245,6 +245,6 @@ class PlayEtalasePickerViewModel @Inject constructor(
     companion object {
 
         private const val MAX_PRODUCT_IMAGE_COUNT = 4
-        private const val PRODUCTS_PER_PAGE = 25
+        private const val PRODUCTS_PER_PAGE = 4
     }
 }

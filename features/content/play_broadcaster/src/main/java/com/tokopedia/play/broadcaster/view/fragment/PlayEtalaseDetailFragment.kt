@@ -108,6 +108,9 @@ class PlayEtalaseDetailFragment @Inject constructor(
             selectableProductAdapter.setItemsAndAnimateChanges(it.productMap.values.flatten())
             bottomSheetCoordinator.setupTitle(it.name)
             tvInfo.text = getString(R.string.play_product_select_max_info, viewModel.maxProduct)
+
+            scrollListener.setHasNextPage(it.stillHasProduct)
+            scrollListener.updateStateAfterGetData()
         })
     }
 
