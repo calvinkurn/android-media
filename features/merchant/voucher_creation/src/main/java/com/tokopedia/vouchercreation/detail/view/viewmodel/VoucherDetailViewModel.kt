@@ -15,7 +15,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Named
 
 class VoucherDetailViewModel @Inject constructor(
         dispatcher: CoroutineDispatcher,
@@ -42,13 +41,13 @@ class VoucherDetailViewModel @Inject constructor(
     val merchantVoucherModelLiveData: LiveData<Result<VoucherUiModel>>
         get() = mMerchantVoucherModelLiveData
 
-    private val mCancelledVoucherIdLiveData = MutableLiveData<Int>()
+    private val mCancelledVoucherIdLiveData = MutableLiveData<Pair<Int, String>>()
 
     private val mCancelVoucherResultLiveData = MediatorLiveData<Result<Int>>().apply {
-        addSource(mCancelledVoucherIdLiveData) { voucherId ->
+        addSource(mCancelledVoucherIdLiveData) { voucherPair ->
             launchCatchError(
                     block = {
-                        cancelVoucherUseCase.params = CancelVoucherUseCase.createRequestParam(voucherId)
+                        cancelVoucherUseCase.params = CancelVoucherUseCase.createRequestParam(voucherPair.first, voucherPair.second)
                         value = Success(withContext(Dispatchers.IO) {
                             cancelVoucherUseCase.executeOnBackground()
                         })
@@ -66,8 +65,9 @@ class VoucherDetailViewModel @Inject constructor(
         mVoucherIdLiveData.value = voucherId
     }
 
-    fun cancelVoucher(voucherId: Int) {
-        mCancelledVoucherIdLiveData.value = voucherId
+    fun cancelVoucher(voucherId: Int,
+                      @CancelVoucherUseCase.CancelStatus cancelStatus: String) {
+        mCancelledVoucherIdLiveData.value = Pair(voucherId, cancelStatus)
     }
 
 }

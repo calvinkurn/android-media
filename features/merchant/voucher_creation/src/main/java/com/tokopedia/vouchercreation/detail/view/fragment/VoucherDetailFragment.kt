@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.Toaster
@@ -20,10 +22,12 @@ import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadV
 import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.TipsTrickBottomSheet
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.DASH_DATE_FORMAT
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.HOUR_FORMAT
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
+import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.create.view.enums.getVoucherImageType
 import com.tokopedia.vouchercreation.detail.model.*
 import com.tokopedia.vouchercreation.detail.view.viewmodel.VoucherDetailViewModel
@@ -95,7 +99,19 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
     }
 
     override fun onFooterButtonClickListener() {
-        showShareBottomSheet()
+        voucherUiModel?.run {
+            if (status == VoucherStatusConst.ONGOING) {
+                showShareBottomSheet()
+            } else {
+                activity?.let {
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER).apply {
+                        putExtra(CreateMerchantVoucherStepsActivity.DUPLICATE_VOUCHER, this@run)
+                        putExtra(CreateMerchantVoucherStepsActivity.IS_DUPLICATE, true)
+                    }
+                    startActivity(intent)
+                }
+            }
+        }
     }
 
     override fun onFooterCtaTextClickListener() {
@@ -104,14 +120,14 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
                 VoucherStatusConst.NOT_STARTED -> {
                     CancelVoucherDialog(context ?: return)
                             .setOnPrimaryClickListener {
-                                viewModel.cancelVoucher(id)
+                                viewModel.cancelVoucher(id, CancelVoucherUseCase.CancelStatus.DELETE)
                             }
                             .show(this)
                 }
                 VoucherStatusConst.ONGOING -> {
                     StopVoucherDialog(context ?: return)
                             .setOnPrimaryClickListener {
-                                viewModel.cancelVoucher(id)
+                                viewModel.cancelVoucher(id, CancelVoucherUseCase.CancelStatus.STOP)
                             }
                             .show(this)
                 }

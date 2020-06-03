@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.common.domain.usecase
 
+import androidx.annotation.StringDef
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.vouchercreation.common.base.BaseGqlUseCase
@@ -14,10 +15,10 @@ class CancelVoucherUseCase @Inject constructor(private val gqlRepository: Graphq
 
     companion object {
 
-        const val MUTATION = "mutation CancelVoucher (\$voucher_id: Int!, \$token: String!, \$source: String!){\n" +
+        const val MUTATION = "mutation CancelVoucher (\$voucher_id: Int!, \$token: String!, \$source: String!, \$status: String!){\n" +
                 "  merchantPromotionUpdateStatusMV(merchantVoucherUpdateStatusData:{\n" +
                 "    voucher_id: \$voucher_id,\n" +
-                "    voucher_status:\"delete\",\n" +
+                "    voucher_status:\$status,\n" +
                 "    token: \$token,\n" +
                 "    source: \$source\n" +
                 "  }){\n" +
@@ -34,13 +35,26 @@ class CancelVoucherUseCase @Inject constructor(private val gqlRepository: Graphq
 
         private const val VOUCHER_ID_KEY = "voucher_id"
         private const val TOKEN_KEY = "token"
+        private const val STATUS_KEY = "status"
 
         @JvmStatic
-        fun createRequestParam(voucherId: Int) =
+        fun createRequestParam(voucherId: Int,
+                               @CancelStatus cancelStatus: String) =
             VoucherSource.getVoucherRequestParams().apply {
                 putInt(VOUCHER_ID_KEY, voucherId)
+                putString(STATUS_KEY, cancelStatus)
             }
 
+    }
+
+    @MustBeDocumented
+    @Retention(AnnotationRetention.SOURCE)
+    @StringDef(CancelStatus.STOP, CancelStatus.DELETE)
+    annotation class CancelStatus {
+        companion object {
+            const val STOP = "stop"
+            const val DELETE = "delete"
+        }
     }
 
     override suspend fun executeOnBackground(): Int {

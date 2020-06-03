@@ -67,7 +67,7 @@ class VoucherListViewModel @Inject constructor(
         addSource(_cancelledVoucherLiveData) { id ->
             launchCatchError(
                     block = {
-                        cancelVoucherUseCase.params = CancelVoucherUseCase.createRequestParam(id)
+                        cancelVoucherUseCase.params = CancelVoucherUseCase.createRequestParam(id, CancelVoucherUseCase.CancelStatus.DELETE)
                         value = Success(withContext(Dispatchers.IO) {
                             cancelVoucherUseCase.executeOnBackground()
                         })
@@ -85,7 +85,7 @@ class VoucherListViewModel @Inject constructor(
         addSource(_stoppedVoucherLiveData) { id ->
             launchCatchError(
                     block = {
-                        cancelVoucherUseCase.params = CancelVoucherUseCase.createRequestParam(id)
+                        cancelVoucherUseCase.params = CancelVoucherUseCase.createRequestParam(id, CancelVoucherUseCase.CancelStatus.STOP)
                         value = Success(withContext(Dispatchers.IO) {
                             cancelVoucherUseCase.executeOnBackground()
                         })
