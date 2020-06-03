@@ -5,11 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.play.broadcaster.dispatcher.PlayBroadcastDispatcher
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
-import com.tokopedia.play.broadcaster.view.uimodel.FollowerUiModel
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
+import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
+import com.tokopedia.play.broadcaster.ui.model.FollowerUiModel
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.*
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -27,7 +27,17 @@ class PlayPrepareBroadcastViewModel @Inject constructor(
         get() = _observableFollowers
     private val _observableFollowers = MutableLiveData<List<FollowerUiModel>>()
 
+    val observableCreateChannel: LiveData<Result<ChannelInfoUiModel>>
+        get() = _observableCreateChannel
+    private val _observableCreateChannel = MutableLiveData<Result<ChannelInfoUiModel>>()
+
     init {
         _observableFollowers.value = PlayBroadcastMocker.getMockUnknownFollower()
+    }
+
+    fun createChannel(shopId: Long, productIds: Array<Int>, coverUrl: String, title: String) {
+        scope.launch {
+            _observableCreateChannel.value = Success(PlayBroadcastMocker.getMockActiveChannel())
+        }
     }
 }

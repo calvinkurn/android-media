@@ -2,7 +2,7 @@ package com.tokopedia.play.broadcaster.ui.viewholder
 
 import android.view.View
 import com.tokopedia.adapterdelegate.BaseViewHolder
-import com.tokopedia.play.broadcaster.view.uimodel.FollowerUiModel
+import com.tokopedia.play.broadcaster.ui.model.FollowerUiModel
 
 /**
  * Created by jegul on 20/05/20

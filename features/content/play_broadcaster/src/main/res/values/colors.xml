@@ -8,6 +8,7 @@
     <color name="play_bg_dark_transparent">#CC000000</color>
     <color name="play_granted_permission">#979797</color>
     <color name="play_denied_permission">@color/Green_G500</color>
+    <color name="play_permit_stroke">#4DFFFFFF</color>
 
     <color name="play_bg_shadow">#1F31353B</color>
 
