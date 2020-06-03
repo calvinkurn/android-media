@@ -70,7 +70,7 @@ object CategoryWidgetTracking : BaseTracking() {
                 Event.KEY, Event.CLICK_HOMEPAGE,
                 Category.KEY, Category.HOMEPAGE,
                 Action.KEY, CustomAction.CLICK_VIEW_ALL_CATEGORY_WIDGET,
-                Label.KEY, headerName
+                Label.KEY, Label.NONE
         )
         )
     }
