@@ -108,6 +108,7 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
                         putExtra(CreateMerchantVoucherStepsActivity.DUPLICATE_VOUCHER, this@run)
                         putExtra(CreateMerchantVoucherStepsActivity.IS_DUPLICATE, true)
                     }
+                    it.finish()
                     startActivity(intent)
                 }
             }

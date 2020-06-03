@@ -47,6 +47,8 @@ class HeaderViewHolder(
             val statusResId: Int
             val textColorResId: Int
 
+            headerContainer?.gone()
+
             when(element.status) {
                 VoucherStatusConst.NOT_STARTED -> {
                     statusResId = R.string.mvc_future
@@ -62,6 +64,7 @@ class HeaderViewHolder(
                     val timer = TimerRunnable(diffMillis, ::onCountdownTick)
                     timer.start()
 
+                    headerContainer?.visible()
                     statusResId = R.string.mvc_is_ongoing
                     containerColor = ContainerUnify.GREEN
                     textColorResId = R.color.Green_G500

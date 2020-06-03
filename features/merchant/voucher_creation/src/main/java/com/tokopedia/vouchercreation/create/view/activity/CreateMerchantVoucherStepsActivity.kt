@@ -61,6 +61,9 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
         const val DUPLICATE_VOUCHER = "duplicate_voucher"
         const val IS_DUPLICATE = "is_duplicate"
+
+        const val EDIT_VOUCHER = "edit_voucher"
+        const val IS_EDIT = "is_edit"
     }
 
     @Inject
