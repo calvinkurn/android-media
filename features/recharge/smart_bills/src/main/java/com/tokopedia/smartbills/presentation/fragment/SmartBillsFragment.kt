@@ -44,12 +44,10 @@ import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapterFactory
 import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsViewHolder
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsViewModel
 import com.tokopedia.smartbills.presentation.widget.SmartBillsItemDetailBottomSheet
-import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.hansel.core.utils.HSLUtils.dpToPx
 import kotlinx.android.synthetic.main.fragment_smart_bills.*
 import java.util.*
 import javax.inject.Inject
@@ -106,13 +104,22 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
         viewModel.statementMonths.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    // TODO: Run statement bills query with info from statement months
+                    val ongoingMonth = it.data.firstOrNull { monthItem -> monthItem.isOngoing }
+                    if (ongoingMonth != null) {
+                        viewModel.getStatementBills(
+                                GraphqlHelper.loadRawString(resources, R.raw.query_recharge_statement_bills),
+                                viewModel.createStatementBillsParams(ongoingMonth.month, ongoingMonth.year),
+                                swipeToRefresh?.isRefreshing ?: false
+                        )
+                    } else {
+                        showGetListError(getDataErrorException())
+                    }
                 }
                 is Fail -> {
                     view_smart_bills_shimmering.hide()
                     var throwable = it.throwable
-                    if (throwable.message == SmartBillsViewModel.STATEMENT_MONTHS_EMPTY_ERROR) {
-                        throwable = MessageErrorException(getString(R.string.smart_bills_empty_months_statement_error))
+                    if (throwable.message == SmartBillsViewModel.STATEMENT_MONTHS_ERROR) {
+                        throwable = getDataErrorException()
                     }
                     showGetListError(throwable)
                 }
@@ -149,7 +156,11 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                     }
                 }
                 is Fail -> {
-                    showGetListError(it.throwable)
+                    var throwable = it.throwable
+                    if (throwable.message == SmartBillsViewModel.STATEMENT_BILLS_ERROR) {
+                        throwable = getDataErrorException()
+                    }
+                    showGetListError(throwable)
                 }
             }
         })
@@ -298,15 +309,15 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                 viewModel.createStatementMonthsParams(1),
                 swipeToRefresh?.isRefreshing ?: false
         )
-        val calendarInstance = Calendar.getInstance()
-        viewModel.getStatementBills(
-                GraphqlHelper.loadRawString(resources, R.raw.query_recharge_statement_bills),
-                viewModel.createStatementBillsParams(
-                        calendarInstance.get(Calendar.MONTH),
-                        calendarInstance.get(Calendar.YEAR)
-                ),
-                swipeToRefresh?.isRefreshing ?: false
-        )
+//        val calendarInstance = Calendar.getInstance()
+//        viewModel.getStatementBills(
+//                GraphqlHelper.loadRawString(resources, R.raw.query_recharge_statement_bills),
+//                viewModel.createStatementBillsParams(
+//                        calendarInstance.get(Calendar.MONTH),
+//                        calendarInstance.get(Calendar.YEAR)
+//                ),
+//                swipeToRefresh?.isRefreshing ?: false
+//        )
     }
 
     override fun getRecyclerViewResourceId(): Int {
@@ -454,6 +465,10 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
         // Reset visited onboarding state after each session
         sharedPrefs.edit().remove(SMART_BILLS_VISITED_ONBOARDING_PAGE).apply()
         super.onDestroy()
+    }
+
+    private fun getDataErrorException(): Throwable {
+        return MessageErrorException(getString(R.string.smart_bills_data_error))
     }
 
     companion object {

@@ -23,6 +23,6 @@ data class RechargeStatementMonths(
     data class Response(
             @SerializedName("rechargeStatementMonths")
             @Expose
-            val response: List<RechargeStatementMonths> = listOf()
+            val response: List<RechargeStatementMonths>? = null
     )
 }

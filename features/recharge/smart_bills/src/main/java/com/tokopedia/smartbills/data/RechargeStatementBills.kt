@@ -32,7 +32,7 @@ data class RechargeStatementBills(
     data class Response(
             @SerializedName("rechargeStatementBills")
             @Expose
-            val response: RechargeStatementBills = RechargeStatementBills()
+            val response: RechargeStatementBills? = null
     )
 
     data class Summaries(

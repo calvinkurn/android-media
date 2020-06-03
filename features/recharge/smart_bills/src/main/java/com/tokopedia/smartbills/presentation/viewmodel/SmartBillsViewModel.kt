@@ -50,12 +50,10 @@ class SmartBillsViewModel @Inject constructor(
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeStatementMonths.Response>()
 
-            if (data.response.isNotEmpty()) {
+            if (!data.response.isNullOrEmpty()) {
                 mutableStatementMonths.postValue(Success(data.response))
             } else {
-                mutableStatementMonths.postValue(
-                    Fail(MessageErrorException(STATEMENT_MONTHS_EMPTY_ERROR))
-                )
+                throw(MessageErrorException(STATEMENT_MONTHS_ERROR))
             }
         }) {
             mutableStatementMonths.postValue(Fail(it))
@@ -72,7 +70,11 @@ class SmartBillsViewModel @Inject constructor(
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeStatementBills.Response>()
 
-            mutableStatementBills.postValue(Success(data.response))
+            if (data.response != null) {
+                mutableStatementBills.postValue(Success(data.response))
+            } else {
+                throw(MessageErrorException(STATEMENT_BILLS_ERROR))
+            }
         }) {
             mutableStatementBills.postValue(Fail(it))
         }
@@ -127,7 +129,8 @@ class SmartBillsViewModel @Inject constructor(
         const val PARAM_MONTH = "month"
         const val PARAM_YEAR = "year"
 
-        const val STATEMENT_MONTHS_EMPTY_ERROR = "STATEMENT_MONTHS_EMPTY_ERROR"
+        const val STATEMENT_MONTHS_ERROR = "STATEMENT_MONTHS_ERROR"
+        const val STATEMENT_BILLS_ERROR = "STATEMENT_BILLS_ERROR"
         const val MULTI_CHECKOUT_EMPTY_REQUEST = "MULTI_CHECKOUT_EMPTY_REQUEST"
 
         const val DEFAULT_OS_TYPE = "1"

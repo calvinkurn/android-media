@@ -21,7 +21,7 @@
     <string name="smart_bills_empty_state_title">Belum ada transaksi yang ditemukan</string>
     <string name="smart_bills_empty_state_description">Tagihan yang pernah dibayar akan muncul di sini dan kamu bisa bayar lagi sekaligus.</string>
     <string name="smart_bills_empty_state_button_label">Mulai Bayar Tagihan</string>
-    <string name="smart_bills_empty_months_statement_error">"Terdapat kesalahan pada pengambilan data"</string>
+    <string name="smart_bills_data_error">Terdapat kesalahan pada pengambilan data</string>
     <string name="smart_bills_checkout_view_button_label">Bayar</string>
     <string name="smart_bills_no_item_price">Rp -</string>
     <string name="smart_bills_item_default_error">Terdapat kendala pada tagihan ini</string>
