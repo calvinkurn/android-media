@@ -13,9 +13,9 @@ import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.video.domain.GetYoutubeVideoListDetailUseCase
 import com.tokopedia.product.manage.item.video.domain.model.videorecommendation.VideoRecommendationData
 import com.tokopedia.product.manage.item.video.domain.model.videorecommendation.VideoRecommendationResult
-import com.tokopedia.product.manage.item.video.domain.model.youtube.YoutubeVideoModel
 import com.tokopedia.product.manage.item.video.view.listener.ProductAddVideoView
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailRxUseCase
 import rx.Subscriber
 import java.lang.reflect.Type
@@ -102,7 +102,7 @@ class ProductAddVideoPresenter : BaseDaggerPresenter<ProductAddVideoView>() {
 
             override fun onNext(maps: List<Map<Type, RestResponse>>) {
                 if (isViewAttached) {
-                    val youtubeVideoModelArrayList = ArrayList<YoutubeVideoModel>()
+                    val youtubeVideoModelArrayList = ArrayList<YoutubeVideoDetailModel>()
                     for (map in maps) {
                         youtubeVideoModelArrayList.add(convertToModel(map))
                     }
@@ -138,8 +138,8 @@ class ProductAddVideoPresenter : BaseDaggerPresenter<ProductAddVideoView>() {
         })
     }
 
-    private fun convertToModel(typeRestResponseMap: Map<Type, RestResponse>): YoutubeVideoModel {
-        val restResponse = typeRestResponseMap[YoutubeVideoModel::class.java]
+    private fun convertToModel(typeRestResponseMap: Map<Type, RestResponse>): YoutubeVideoDetailModel {
+        val restResponse = typeRestResponseMap[YoutubeVideoDetailModel::class.java]
         return restResponse!!.getData()
     }
 
