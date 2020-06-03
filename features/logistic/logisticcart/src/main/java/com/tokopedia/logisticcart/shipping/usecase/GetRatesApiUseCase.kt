@@ -23,7 +23,6 @@ class GetRatesApiUseCase @Inject constructor(
         private val scheduler: SchedulerProvider) {
 
     fun execute(param: RatesParam): Observable<ShippingRecommendationData> {
-        val errorMessageDefault = context.getString(R.string.default_request_error_unknown_short)
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.ratesv3api)
         val gqlRequest = GraphqlRequest(query, RatesApiGqlResponse::class.java, mapOf(
                 "param" to param.toMap())
@@ -37,7 +36,7 @@ class GetRatesApiUseCase @Inject constructor(
                             graphqlResponse.getData<RatesApiGqlResponse>(RatesApiGqlResponse::class.java)
                     response?.let {
                         converter.convertModel(it.ratesData)
-                    } ?: throw MessageErrorException(errorMessageDefault)
+                    } ?: throw MessageErrorException(context.getString(R.string.default_request_error_unknown))
                 }
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
