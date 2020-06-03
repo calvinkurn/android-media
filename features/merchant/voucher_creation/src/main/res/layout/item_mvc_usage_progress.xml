@@ -77,6 +77,7 @@
         android:layout_marginRight="@dimen/layout_lvl3"
         android:text="@string/mvc_spending_so_far"
         android:textColor="@color/Neutral_N700_68"
+        android:visibility="gone"
         app:typographyType="body_3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -89,13 +90,13 @@
         android:layout_height="@dimen/layout_lvl3"
         android:background="@android:color/transparent"
         android:padding="@dimen/mvc_dimen_6dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/tvMvcSpendingInfo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/tvMvcSpendingInfo"
         app:layout_constraintTop_toTopOf="@+id/tvMvcSpendingInfo"
-        app:srcCompat="@drawable/ic_mvc_info"
-        tools:visibility="visible" />
+        app:srcCompat="@drawable/ic_mvc_info"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMvcSpending"
@@ -103,6 +104,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:textColor="@color/Neutral_N700_96"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tvMvcSpendingInfo"
