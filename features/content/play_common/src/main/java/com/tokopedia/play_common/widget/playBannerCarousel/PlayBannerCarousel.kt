@@ -4,9 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
-import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,9 +16,7 @@ import com.tokopedia.play_common.R
 import com.tokopedia.play_common.widget.playBannerCarousel.adapter.PlayBannerCarouselAdapter
 import com.tokopedia.play_common.widget.playBannerCarousel.event.PlayBannerCarouselViewEventListener
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
-import com.tokopedia.play_common.widget.playBannerCarousel.extension.setGradientBackground
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.showOrHideView
-import com.tokopedia.play_common.widget.playBannerCarousel.mapper.PlayBannerMapper
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.typeFactory.PlayBannerCarouselTypeImpl
 import kotlinx.android.synthetic.main.layout_header_play_banner.view.*
@@ -50,7 +46,7 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
     }
 
     fun setItem(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
-        val list = PlayBannerMapper.mapToDataModel(playBannerCarouselDataModel)
+        val list = playBannerCarouselDataModel.channelList
         if(adapter == null){
             recycler_view?.setMedia(list)
             adapter = PlayBannerCarouselAdapter(adapterTypeFactory)
@@ -94,19 +90,18 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
     private fun configureBackground(playBannerCarouselDataModel: PlayBannerCarouselDataModel) {
         if (playBannerCarouselDataModel.backgroundUrl.isNotEmpty()) {
             background_loader?.show()
-            parallax_image.loadImage(playBannerCarouselDataModel.backgroundUrl, object : ImageHandler.ImageLoaderStateListener{
+            parallax_background?.loadImage(playBannerCarouselDataModel.backgroundUrl, object : ImageHandler.ImageLoaderStateListener{
                 override fun successLoad() {
-                    parallax_background.setGradientBackground(playBannerCarouselDataModel.gradientColors)
                     background_loader.hide()
                 }
 
                 override fun failedLoad() {
-                    parallax_background.setGradientBackground(playBannerCarouselDataModel.gradientColors)
                     background_loader.hide()
                 }
             })
+            parallax_image?.loadImage(playBannerCarouselDataModel.imageUrl)
         } else {
-            background_loader.hide()
+            background_loader?.hide()
         }
     }
 
