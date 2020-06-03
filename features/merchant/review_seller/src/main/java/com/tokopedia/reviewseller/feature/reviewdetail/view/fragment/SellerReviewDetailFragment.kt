@@ -48,7 +48,6 @@ import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_rating_product.*
 import kotlinx.android.synthetic.main.fragment_seller_review_detail.*
 import kotlinx.android.synthetic.main.item_overall_review_detail.view.*
 import javax.inject.Inject
@@ -165,7 +164,8 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     override fun loadData(page: Int) {}
 
     override fun loadInitialData() {
-        clearAllData()
+        isLoadingInitialData = true
+        reviewSellerDetailAdapter.clearAllElements()
         rvRatingDetail?.show()
         globalError_reviewDetail?.hide()
         showLoading()
@@ -358,7 +358,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         swipeToRefreshReviewDetail?.isRefreshing = false
         val feedbackReviewCount = reviewSellerDetailAdapter.list.count { it is FeedbackUiModel }
         if (feedbackReviewCount == 0) {
-            globalError_reviewSeller?.setType(GlobalError.SERVER_ERROR)
+            globalError_reviewDetail?.setType(GlobalError.SERVER_ERROR)
             reviewSellerDetailAdapter.removeReviewNotFound()
             rvRatingDetail?.hide()
             globalError_reviewDetail?.show()
