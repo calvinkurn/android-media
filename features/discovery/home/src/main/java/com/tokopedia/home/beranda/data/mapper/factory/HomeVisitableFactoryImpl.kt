@@ -51,6 +51,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
         private const val PROMO_NAME_LEGO_3_IMAGE = "/ - p%s - lego banner 3 image - %s"
         private const val PROMO_NAME_LEGO_4_IMAGE = "/ - p%s - lego banner 4 image - %s"
         private const val PROMO_NAME_MIX_LEFT = "/ - p%s - mix left - %s"
+        private const val PROMO_NAME_CATEGORY_WIDGET = "/ - p%s - category widget banner - %s"
         private const val PROMO_NAME_SPRINT = "/ - p%s - %s"
         private const val PROMO_NAME_SPOTLIGHT_BANNER = "/ - p%s - spotlight banner"
         private const val PROMO_NAME_GIF_BANNER = "/ - p%s - lego banner gif - %s"
@@ -307,7 +308,11 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
             } else if(channel.layout == DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT) {
                 channel.promoName = String.format(PROMO_NAME_MIX_LEFT, position.toString(), channel.header.name)
                 channel.setPosition(position)
-            } else {
+            } else if(channel.layout == DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET) {
+                channel.promoName = String.format(PROMO_NAME_CATEGORY_WIDGET, position.toString(), channel.header.name)
+                channel.setPosition(position)
+            }
+            else {
                 val headerName = if (channel.header.name.isEmpty()) VALUE_BANNER_UNKNOWN else channel.header.name
                 val layoutType = if (channel.layout.isEmpty()) VALUE_BANNER_UNKNOWN_LAYOUT_TYPE else channel.layout
                 channel.promoName = String.format(PROMO_NAME_UNKNOWN, position.toString(), layoutType, headerName)
