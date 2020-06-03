@@ -34,12 +34,4 @@ class EditNegKeywordListAdapter(val typeFactory: EditNegKeywordListAdapterTypeFa
         holder.bind(items[position])
     }
 
-    fun getCurrentItems(): List<GetKeywordResponse.KeywordsItem> {
-        val list: ArrayList<GetKeywordResponse.KeywordsItem> = arrayListOf()
-        items.forEach {
-            if (it is EditNegKeywordItemViewModel)
-                list.add(it.data)
-        }
-        return list
-    }
 }
