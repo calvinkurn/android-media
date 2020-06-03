@@ -1,15 +1,11 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
 import androidx.collection.ArrayMap
-import com.tokopedia.chat_common.data.AttachmentType
-import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceSentPojo
-import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
-import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
-import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -19,6 +15,7 @@ import kotlin.coroutines.CoroutineContext
 
 class ChatAttachmentUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<ChatAttachmentResponse>,
+        private val mapper: ChatAttachmentMapper,
         private var dispatchers: TopchatCoroutineContextProvider
 ) : CoroutineScope {
 
@@ -41,14 +38,14 @@ class ChatAttachmentUseCase @Inject constructor(
                         setRequestParams(params)
                         setGraphqlQuery(query)
                     }.executeOnBackground()
-                    val mapAttachment = map(response)
+                    val mapAttachment = mapper.map(response)
                     withContext(dispatchers.Main) {
                         onSuccess(mapAttachment)
                     }
                 },
                 {
+                    val mapErrorAttachment = mapper.mapError(attachmentId)
                     withContext(dispatchers.Main) {
-                        val mapErrorAttachment = mapError(attachmentId)
                         onError(it, mapErrorAttachment)
                     }
                 }
@@ -63,40 +60,6 @@ class ChatAttachmentUseCase @Inject constructor(
                 paramMsgId to msgId,
                 paramLimit to attachmentId
         )
-    }
-
-    private fun map(response: ChatAttachmentResponse): ArrayMap<String, Attachment> {
-        val map = ArrayMap<String, Attachment>()
-        for (attachment in response.chatAttachments.list) {
-            parseAttribute(attachment)
-            map[attachment.id] = attachment
-        }
-        return map
-    }
-
-    private fun mapError(attachmentId: String): ArrayMap<String, Attachment> {
-        val map = ArrayMap<String, Attachment>()
-        val attachments = attachmentId.split(",")
-        attachments.forEach {
-            map[it.trim()] = ErrorAttachment()
-        }
-        return map
-    }
-
-    private fun parseAttribute(attachment: Attachment) {
-        attachment.parsedAttributes = when (attachment.type) {
-            AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT.toInt() -> convertToProductAttachment(attachment)
-            AttachmentType.Companion.TYPE_INVOICE_SEND.toInt() -> convertToInvoiceAttachment(attachment)
-            else -> null
-        }
-    }
-
-    private fun convertToInvoiceAttachment(attachment: Attachment): InvoiceSentPojo {
-        return CommonUtil.fromJson<InvoiceSentPojo>(attachment.attributes, InvoiceSentPojo::class.java)
-    }
-
-    private fun convertToProductAttachment(attachment: Attachment): ProductAttachmentAttributes {
-        return CommonUtil.fromJson<ProductAttachmentAttributes>(attachment.attributes, ProductAttachmentAttributes::class.java)
     }
 
     val query = """
@@ -115,8 +78,4 @@ class ChatAttachmentUseCase @Inject constructor(
           }
         }
     """.trimIndent()
-
-    companion object {
-
-    }
 }
