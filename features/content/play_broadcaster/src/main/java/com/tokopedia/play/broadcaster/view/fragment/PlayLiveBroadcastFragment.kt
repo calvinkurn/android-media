@@ -110,26 +110,30 @@ class PlayLiveBroadcastFragment @Inject constructor(
                 setDescription(getString(R.string.play_live_broadcast_dialog_end_desc))
                 setPrimaryCTAText(getString(R.string.play_live_broadcast_dialog_end_primary))
                 setSecondaryCTAText(getString(R.string.play_live_broadcast_dialog_end_secondary))
-                setPrimaryCTAClickListener { this.dismiss() }
+                setPrimaryCTAClickListener { dismiss() }
                 setSecondaryCTAClickListener {
-                    this.dismiss()
+                    dismiss()
                     doEndStreaming()
                 }
+                setCancelable(false)
+                setOverlayClose(false)
             }.show()
         }
     }
 
     private fun showDialogWhenTimeout() {
         context?.let {
-            DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(getString(R.string.play_live_broadcast_dialog_end_timeout_title))
-                setDescription(getString(R.string.play_live_broadcast_dialog_end_timeout_desc))
-                setPrimaryCTAText(getString(R.string.play_live_broadcast_dialog_end_timeout_primary))
-                setPrimaryCTAClickListener {
-                    this.dismiss()
-                    doEndStreaming()
-                }
-            }.show()
+            val dialog =  DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(getString(R.string.play_live_broadcast_dialog_end_timeout_title))
+            dialog.setDescription(getString(R.string.play_live_broadcast_dialog_end_timeout_desc))
+            dialog.setPrimaryCTAText(getString(R.string.play_live_broadcast_dialog_end_timeout_primary))
+            dialog.setPrimaryCTAClickListener {
+                dialog.dismiss()
+                navigateToSummary()
+            }
+            dialog.setCancelable(false)
+            dialog.setOverlayClose(false)
+            dialog.show()
         }
     }
 
@@ -148,8 +152,14 @@ class PlayLiveBroadcastFragment @Inject constructor(
      */
     private fun observeCountDownDuration() {
         parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, EventObserver{
-            if (it is PlayPusherInfoState.Active) {
-                setCountDownTimer(it.millisUntilFinished)
+            when (it) {
+                is PlayPusherInfoState.Active -> {
+                    setCountDownTimer(it.millisUntilFinished)
+                }
+                is PlayPusherInfoState.Finish -> {
+                    parentViewModel.stopPushBroadcast()
+                    showDialogWhenTimeout()
+                }
             }
         })
     }

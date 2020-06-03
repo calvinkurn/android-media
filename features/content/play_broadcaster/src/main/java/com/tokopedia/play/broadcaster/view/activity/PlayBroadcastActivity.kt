@@ -199,7 +199,6 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
                     navigateToFragment(PlayLiveBroadcastFragment::class.java,
                             Bundle().apply {
                                 putString(PlayLiveBroadcastFragment.KEY_CHANNEL_ID, it.channelId)
-                                putString(PlayLiveBroadcastFragment.KEY_INGEST_URL, it.ingestUrl)
                             })
                 }
             }

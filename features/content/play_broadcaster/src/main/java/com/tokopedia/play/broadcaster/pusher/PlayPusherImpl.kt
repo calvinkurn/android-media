@@ -231,7 +231,6 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         }
 
         override fun onCountDownFinish() {
-            stopPush()
             _observableInfoState.postValue(PlayPusherInfoState.Finish)
         }
 
