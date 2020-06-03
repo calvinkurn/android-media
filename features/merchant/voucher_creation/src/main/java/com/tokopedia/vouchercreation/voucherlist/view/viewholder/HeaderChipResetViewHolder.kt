@@ -1,6 +1,7 @@
 package com.tokopedia.vouchercreation.voucherlist.view.viewholder
 
 import android.view.View
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
@@ -26,8 +27,12 @@ class HeaderChipResetViewHolder(
         with(itemView) {
             if (element.isVisible) {
                 visible()
+                layoutParams.width = WRAP_CONTENT
+                requestLayout()
             } else {
                 gone()
+                layoutParams.width = 0
+                requestLayout()
             }
 
             setOnClickListener {
