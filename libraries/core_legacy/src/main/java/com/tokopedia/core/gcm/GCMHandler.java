@@ -33,14 +33,14 @@ public class GCMHandler {
         return FCMCacheManager.getRegistrationId(context);
     }
 
-    public void actionRegisterOrUpdateDevice(GCMHandlerListener listener) {
+    public void actionRegisterOrUpdateDevice(GCMHandlerListener listener, boolean isPlayServiceAvailable) {
         if (listener != null) {
             gcmlistener = listener;
         } else {
             return;
         }
 
-        if (isPlayServicesAvailable()) {
+        if (isPlayServiceAvailable) {
             registerDeviceToFCM();
         } else {
             Log.d(TAG, " Play services not available");
