@@ -26,6 +26,7 @@ import com.tokopedia.contactus.inboxticket2.view.utils.CLOSED
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.utils.htmltags.HtmlUtil
 
 private const val ROLE_TYPE_AGENT = "agent"
 
@@ -144,10 +145,10 @@ class InboxDetailAdapter(private val mContext: Context,
                 }
                 if (searchMode) {
                     tvComment?.text = utils.getHighlightText(searchText ?: "",
-                            MethodChecker.fromHtml(item.message).toString())
+                            HtmlUtil.fromHtml(item.message ?: "").toString())
                     tvComment?.movementMethod = LinkMovementMethod.getInstance()
                 } else {
-                    tvComment?.text = MethodChecker.fromHtml(item.message)
+                    tvComment?.text = HtmlUtil.fromHtml(item.message ?: "")
                     tvComment?.movementMethod = LinkMovementMethod.getInstance()
                 }
                 tvComment?.show()
