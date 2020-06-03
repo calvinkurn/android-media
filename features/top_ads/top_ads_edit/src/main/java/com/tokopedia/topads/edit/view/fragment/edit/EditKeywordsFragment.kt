@@ -122,6 +122,12 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             deletedKeywords?.add((adapter.items[position] as EditKeywordItemViewModel).data)
             addedKeywords?.add((adapter.items[position] as EditKeywordItemViewModel).data)
         }
+        else{
+            addedKeywords?.forEach {
+                if(it.tag == (adapter.items[position] as EditKeywordItemViewModel).data.tag)
+                    it.type = (adapter.items[position] as EditKeywordItemViewModel).data.type
+            }
+        }
     }
 
     private fun onSuccessSuggestion(data: List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) {
@@ -325,8 +331,13 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         if (adapter.items[0] !is EditKeywordEmptyViewModel) {
             adapter.items.forEachIndexed { index, item ->
                 if ((item as EditKeywordItemViewModel).data.priceBid != adapter.data[index]) {
-                    (adapter.items[index] as EditKeywordItemViewModel).data.priceBid = adapter.data[index]
-                    editedKeywords?.add((adapter.items[index] as EditKeywordItemViewModel).data)
+                    item.data.priceBid = adapter.data[index]
+                    addedKeywords?.forEach {
+                        if (it.tag == item.data.tag)
+                            it.priceBid = adapter.data[index]
+                    }
+                    if (isExistsOriginal(item.data.tag))
+                        editedKeywords?.add(item.data)
                 }
             }
         }
