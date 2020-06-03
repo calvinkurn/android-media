@@ -109,7 +109,6 @@ include "features:transaction:transactionanalytics"
 include "features:transaction:transactiondata"
 include "features:transaction:express_checkout_common"
 include "features:transaction:purchase_platform_common"
-//include "features:transaction:opportunity"
 include "features:transaction:sellerorder"
 
 include "features:top_ads:top_ads_widget"

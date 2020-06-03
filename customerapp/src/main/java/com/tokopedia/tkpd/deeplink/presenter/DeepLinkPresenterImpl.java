@@ -376,17 +376,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
     }
 
-//    private void openPeluangPage(List<String> linkSegment, Uri uriData, Bundle bundle) {
-//        String query = uriData.getQueryParameter("q");
-//        Intent intent = RouteManager.getIntent(context, ApplinkConst.SELLER_OPPORTUNITY);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        intent.putExtras(bundle);
-//        context.startActivity(intent);
-//        context.finish();
-//    }
-
     private void openHotel(Uri uri, Bundle bundle) {
         RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.DASHBOARD_HOTEL));
         context.finish();

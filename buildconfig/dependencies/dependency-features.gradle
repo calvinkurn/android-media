@@ -188,7 +188,6 @@ ext {
             loyaltyCommon                   : ":features:promo:loyalty_common",
             sellerorder                     : ":features:transaction:sellerorder",
             buyerorder                      : ":features:transaction:buyerorder",
-            opportunity                     : ":features:transaction:opportunity",
 
             attachproduct                   : ":features:user:attachproduct",
             attachinvoice                   : ":features:user:attachinvoice",

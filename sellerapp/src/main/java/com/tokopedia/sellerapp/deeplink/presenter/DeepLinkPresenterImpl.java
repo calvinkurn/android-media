@@ -202,15 +202,5 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         context.finish();
     }
 
-//    private void openPeluangPage(List<String> linkSegment, Uri uriData) {
-//        String query = uriData.getQueryParameter("q");
-//        Intent intent = RouteManager.getIntent(context, ApplinkConst.SELLER_OPPORTUNITY);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        context.startActivity(intent);
-//        context.finish();
-//    }
-
 
 }
