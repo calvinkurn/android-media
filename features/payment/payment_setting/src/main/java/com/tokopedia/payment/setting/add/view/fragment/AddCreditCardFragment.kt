@@ -97,9 +97,11 @@ class AddCreditCardFragment : BaseWebViewFragment() {
         const val CALLBACK_URL = "callback_url"
         const val CUSTOMER_MSISDN = "customer_msisdn"
         const val SIGNATURE = "signature"
-        fun createInstance(bundle: Bundle): AddCreditCardFragment {
+
+        fun createInstance(bundle: Bundle?): AddCreditCardFragment {
             return AddCreditCardFragment().apply {
-                arguments = bundle
+                if (bundle != null)
+                    arguments = bundle
             }
         }
     }

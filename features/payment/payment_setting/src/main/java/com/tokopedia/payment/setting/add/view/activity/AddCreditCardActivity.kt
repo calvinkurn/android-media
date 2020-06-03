@@ -11,18 +11,13 @@ import com.tokopedia.payment.setting.list.model.PaymentSignature
 class AddCreditCardActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment? {
-        val bundle = Bundle()
-        intent.extras?.let {
-            if (it.containsKey(ARG_PAYMENT_SIGNATURE))
-                bundle.putAll(it)
-        }
-        return AddCreditCardFragment.createInstance(bundle)
+        return AddCreditCardFragment.createInstance(intent.extras)
     }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         validateBundleData()
+        super.onCreate(savedInstanceState)
     }
 
     private fun validateBundleData() {
