@@ -103,6 +103,8 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     private var webChromeWebviewClient: CommonWebViewClient? = null
 
+    private val localCacheHandler by lazy { LocalCacheHandler(this, GCM_STORAGE) }
+
     private val webViewOnKeyListener: View.OnKeyListener
         get() = View.OnKeyListener { _, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_BACK) {
@@ -607,7 +609,6 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     }
 
     private fun getRegistrationIdWithTemp(): String {
-        val localCacheHandler = LocalCacheHandler(this.applicationContext, GCM_STORAGE)
         var id = localCacheHandler.getString(GCM_ID, "")
         if (id.isEmpty()) {
             id = UUID.randomUUID().toString()
