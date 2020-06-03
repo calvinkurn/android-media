@@ -108,6 +108,7 @@ import com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.user.session.UserSessionInterface
@@ -128,7 +129,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    lateinit var bottomActionView: BottomActionView
+    lateinit var bottomActionView: FloatingButtonUnify
     lateinit var progressDialog: ProgressDialog
     lateinit var coordinatorLayout: CoordinatorLayout
     lateinit var topAdsWidgetFreeClaim: TopAdsWidgetFreeClaim
@@ -214,14 +215,14 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         setupBottomSheet()
         renderCheckedView()
 
-        bottomActionView.setButton1OnClickListener {
+        bottomActionView.setDefault()
+        bottomActionView.sortItem.listener = {
             context?.let {
                 val intent = ProductManageSortActivity.createIntent(it, sortProductOption)
                 startActivityForResult(intent, REQUEST_CODE_SORT)
             }
         }
-
-        bottomActionView.setButton2OnClickListener {
+        bottomActionView.filterItem.listener = {
             context?.let {
                 val intent = ProductManageFilterActivity.createIntent(it, productManageFilterModel)
                 startActivityForResult(intent, REQUEST_CODE_FILTER)
