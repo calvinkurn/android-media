@@ -72,30 +72,6 @@
     <string name="title_activity_etalase_shop_editor">Pengaturan Etalase Toko</string>
     <string name="label_manage_your_shop">Kelola Toko Anda</string>
 
-    <!-- OPPORTUNITY -->
-    <string name="same_day">Same Day</string>
-    <string name="next_day">Next Day</string>
-    <string name="reguler">Reguler</string>
-    <string name="supported_courier">Dukungan Pengiriman</string>
-    <string name="deadline">Jatuh Tempo</string>
-    <string name="highest_transaction_price">Nilai Transaksi Tertinggi</string>
-    <string name="lowest_transaction_price">Nilai Transaksi Terendah</string>
-    <string name="action_agree">Setuju</string>
-    <string name="action_back">Kembali</string>
-    <string name="cashback">Cashback :</string>
-    <string name="cashback_for_buyer">Cashback Untuk Pembeli:</string>
-    <string name="respond_deadline">Batas Respon:</string>
-    <string name="destination_city">Kota Tujuan:</string>
-    <string name="shipping">Pengiriman:</string>
-    <string name="title_quantity_colon">Jumlah:</string>
-    <string name="item">barang</string>
-    <string name="title_supported_shipping">Dukungan Pengiriman</string>
-    <string name="action_sort">Urutkan</string>
-    <string name="cashbak_info">Dapatkan cashback ke TopPoints</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
-    <string name="couldn_t_add_videos">tidak dapat menambahkan video</string>
-
 
     <string name="product_no_have_product_name_yet">Belum ada nama produk</string>
     <string name="product_draft_item_percent_complete">%1$d%% complete</string>

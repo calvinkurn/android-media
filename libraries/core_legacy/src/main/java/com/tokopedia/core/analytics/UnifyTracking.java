@@ -365,16 +365,6 @@ public class UnifyTracking extends TrackingUtils {
         eventCreateShopSellerApp(context, AppEventTracking.EventLabel.SAVE_LOGISTIC_ERROR);
     }
 
-    public static void eventOpportunity(Context context, String event, String category,
-                                        String action, String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
-                event,
-                category,
-                action,
-                label)
-                .getEvent());
-    }
-
     public static void eventReferralAndShare(Context context, String action, String label) {
         Map<String,Object> gtmMap=new EventTracking(
                 AppEventTracking.Event.CLICK_APP_SHARE_REFERRAL,
