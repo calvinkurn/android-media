@@ -75,10 +75,10 @@ class PictureScrollingView @JvmOverloads constructor(
         }
     }
 
-    fun showImageReview(shouldShow:Boolean, onOnSeeAllReviewClick: OnSeeAllReviewClick? = null) {
+    fun showImageReview(shouldShow:Boolean, onReviewMediaClicked : () -> Unit) {
         imageFromUser?.shouldShowWithAction(shouldShow) {
             imageFromUser?.setOnClickListener {
-                onOnSeeAllReviewClick?.invoke(null)
+                onReviewMediaClicked.invoke()
             }
             imageFromUser?.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable(context, R.drawable.ic_chevron_right_black_24dp), null)
         }

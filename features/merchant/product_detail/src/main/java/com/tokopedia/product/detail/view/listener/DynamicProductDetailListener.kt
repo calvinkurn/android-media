@@ -125,5 +125,10 @@ interface DynamicProductDetailListener {
     /**
      * ProductMiniShopInfoViewHolder
      */
-    fun onMiniShopInfoClicked()
+    fun onMiniShopInfoClicked(componentTrackDataModel: ComponentTrackDataModel)
+
+    /**
+     * ProductMediaViewHolder
+     */
+    fun onImageReviewMediaClicked(componentTrackDataModel: ComponentTrackDataModel)
 }

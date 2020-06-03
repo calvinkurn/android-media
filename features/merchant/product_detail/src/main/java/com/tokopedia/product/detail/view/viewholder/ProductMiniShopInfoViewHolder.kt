@@ -17,6 +17,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.merchantvoucher.common.widget.CustomVoucherView
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniShopInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -44,7 +46,7 @@ class ProductMiniShopInfoViewHolder(private val view: View, private val listener
                 view.layoutParams.height = 0
             } else {
                 hideLoading()
-                view.setOnClickListener { listener.onMiniShopInfoClicked() }
+                view.setOnClickListener { listener.onMiniShopInfoClicked(getComponentTrackData(element)) }
                 view.setPadding(16.toPx(), 0, 16.toPx(), 16.toPx())
                 view.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
                 showOfficialStore(element.isGoldMerchant, element.isOS, element.shopName)
@@ -99,4 +101,7 @@ class ProductMiniShopInfoViewHolder(private val view: View, private val listener
         txt_mini_shop_desc?.show()
         txt_mini_shop_title?.show()
     }
+
+    private fun getComponentTrackData(element: ProductMiniShopInfoDataModel?) = ComponentTrackDataModel(element?.type
+            ?: "", element?.name ?: "", adapterPosition + 1)
 }

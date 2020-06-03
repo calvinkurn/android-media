@@ -65,7 +65,12 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(ProductMiniShopInfoDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.PRODUCT_CONTENT -> {
-                    listOfComponent.add(ProductContentDataModel(type = component.type, name = component.componentName))
+                    //Will be remove soon
+                    if (component.componentName == ProductDetailConstant.PRODUCT_CONTENT) {
+                        listOfComponent.add(ProductContentDataModel(type = component.type, name = component.componentName))
+                    } else {
+                        listOfComponent.add(ProductSnapshotDataModel(type = component.type, name = component.componentName))
+                    }
                 }
                 ProductDetailConstant.MEDIA -> {
                     listOfComponent.add(ProductMediaDataModel(type = component.type, name = component.componentName))
@@ -81,10 +86,6 @@ object DynamicProductDetailMapper {
      * @param DynamicProductInfoP1 Source of Truth PDP
      */
     fun mapToDynamicProductDetailP1(data: PdpGetLayout): DynamicProductInfoP1 {
-        val snapshotData = data.components.find {
-            it.type == ProductDetailConstant.PRODUCT_SNAPSHOT
-        }?.componentData?.firstOrNull()
-
         val contentData = data.components.find {
             it.type == ProductDetailConstant.PRODUCT_CONTENT
         }?.componentData?.firstOrNull()

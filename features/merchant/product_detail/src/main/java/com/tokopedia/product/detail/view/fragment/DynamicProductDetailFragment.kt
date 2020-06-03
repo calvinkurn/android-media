@@ -453,8 +453,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 }
                 shouldRenderSticky = true
                 updateStickyContent()
-                if(resultCode == Activity.RESULT_OK && viewModel.userSessionInterface.isLoggedIn) {
-                    when(viewModel.talkLastAction) {
+                if (resultCode == Activity.RESULT_OK && viewModel.userSessionInterface.isLoggedIn) {
+                    when (viewModel.talkLastAction) {
                         is DynamicProductDetailTalkGoToWriteDiscussion -> goToWriteActivity()
                         is DynamicProductDetailTalkGoToReplyDiscussion -> goToReplyActivity((viewModel.talkLastAction as DynamicProductDetailTalkGoToReplyDiscussion).questionId)
                     }
@@ -565,7 +565,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     /**
      * ProductMiniShopInfoViewHolder
      */
-    override fun onMiniShopInfoClicked() {
+    override fun onMiniShopInfoClicked(componentTrackDataModel: ComponentTrackDataModel) {
+        DynamicProductDetailTracking.Click.eventClickShopMiniShopInfo(viewModel.getDynamicProductInfoP1, componentTrackDataModel, viewModel.userId)
         scrollToPosition(dynamicAdapter.getShopInfoPosition(pdpUiUpdater?.shopInfoMap))
     }
 
@@ -741,12 +742,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
      * ProductReviewViewHolder
      */
     override fun onSeeAllReviewClick(componentTrackDataModel: ComponentTrackDataModel?) {
-        context?.let {
-            val productId = viewModel.getDynamicProductInfoP1?.basic?.getProductId() ?: 0
-            DynamicProductDetailTracking.Click.eventClickReviewOnSeeAllImage(viewModel.getDynamicProductInfoP1, componentTrackDataModel
-                    ?: ComponentTrackDataModel())
-            ImageReviewGalleryActivity.moveTo(activity, productId)
-        }
+        DynamicProductDetailTracking.Click.eventClickReviewOnSeeAllImage(viewModel.getDynamicProductInfoP1, componentTrackDataModel
+                ?: ComponentTrackDataModel())
+        goToReviewImagePreview()
     }
 
     override fun onImageReviewClick(listOfImage: List<ImageReviewItem>, position: Int, componentTrackDataModel: ComponentTrackDataModel?) {
@@ -782,6 +780,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 ?: ComponentTrackDataModel(),
                 reviewId)
         context?.let { ImageReviewGalleryActivity.moveTo(it, ArrayList(listOfImages), position) }
+    }
+
+    /**
+     * ProductMediaViewHolder
+     */
+    override fun onImageReviewMediaClicked(componentTrackDataModel: ComponentTrackDataModel) {
+        DynamicProductDetailTracking.Click.eventClickReviewImageMedia(viewModel.getDynamicProductInfoP1, componentTrackDataModel, viewModel.userId)
+        goToReviewImagePreview()
     }
 
     /**
@@ -993,6 +999,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun disscussionClicked() {
         goToReadingActivity()
+    }
+
+    private fun goToReviewImagePreview() {
+        val productId = viewModel.getDynamicProductInfoP1?.basic?.getProductId() ?: 0
+        ImageReviewGalleryActivity.moveTo(activity, productId)
     }
 
     /**
@@ -2853,7 +2864,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             val intent = RouteManager.getIntent(context,
                     Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.PRODUCT_TALK, it.basic.productID))
                             .buildUpon()
-                            .appendQueryParameter(PARAM_APPLINK_SHOP_ID,it.basic.shopID)
+                            .appendQueryParameter(PARAM_APPLINK_SHOP_ID, it.basic.shopID)
                             .build().toString()
             )
             startActivity(intent)

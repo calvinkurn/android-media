@@ -126,6 +126,23 @@
         android:visibility="visible">
 
         <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_top_ads"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_8"
+            android:text="@string/promote_topads"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_edit_product"
+            app:unifyButtonVariant="ghost"
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="transaction"
+            android:visibility="visible"
+            />
+
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_edit_product"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
@@ -133,30 +150,13 @@
             android:text="@string/edit_product_text"
             android:visibility="visible"
             android:gravity="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn_top_ads"
-            app:unifyButtonSize="medium"
-            app:unifyButtonType="alternate"
-            app:unifyButtonVariant="ghost" />
-
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_top_ads"
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp_8"
-            android:text="@string/promote_topads"
-            android:gravity="center"
-            app:layout_constraintStart_toEndOf="@+id/btn_edit_product"
+            app:layout_constraintStart_toEndOf="@+id/btn_top_ads"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:unifyButtonVariant="filled"
             app:unifyButtonSize="medium"
-            app:unifyButtonType="transaction"
-            android:visibility="visible"
-            />
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="filled" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
