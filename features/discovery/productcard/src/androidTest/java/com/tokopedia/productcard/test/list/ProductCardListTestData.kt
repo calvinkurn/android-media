@@ -82,14 +82,10 @@ private fun testDeleteProductButton(): ProductCardModelMatcher {
         it[R.id.imageProduct] = isDisplayed()
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.buttonAddToCart] = isDisplayed()
         it[R.id.imageRatingString] = isDisplayed()
         it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
         it[R.id.buttonDeleteProduct] = isDisplayed()
-        it[R.id.buttonAddToCart] = isNotDisplayed()
-        it[R.id.buttonRemoveFromWishlist] = isNotDisplayed()
-        it[R.id.imageRemoveFromWishlist] = isNotDisplayed()
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
