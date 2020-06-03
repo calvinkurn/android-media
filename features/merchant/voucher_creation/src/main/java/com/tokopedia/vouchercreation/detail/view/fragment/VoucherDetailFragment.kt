@@ -28,6 +28,7 @@ import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.DASH_DATE_FORMAT
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.HOUR_FORMAT
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
+import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.create.view.enums.getVoucherImageType
 import com.tokopedia.vouchercreation.detail.model.*
 import com.tokopedia.vouchercreation.detail.view.viewmodel.VoucherDetailViewModel
@@ -94,8 +95,22 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
                 .inject(this)
     }
 
-    override fun loadData(page: Int) {
+    override fun loadData(page: Int) {}
 
+    override fun onInfoContainerCtaClick(dataKey: String) {
+        val editStep =
+                when(dataKey) {
+                    VOUCHER_INFO_DATA_KEY -> VoucherCreationStep.TARGET
+                    VOUCHER_BENEFIT_DATA_KEY -> VoucherCreationStep.BENEFIT
+                    PERIOD_DATA_KEY -> VoucherCreationStep.PERIOD
+                    else -> VoucherCreationStep.REVIEW
+                }
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER).apply {
+            putExtra(CreateMerchantVoucherStepsActivity.EDIT_VOUCHER, voucherUiModel)
+            putExtra(CreateMerchantVoucherStepsActivity.IS_EDIT, true)
+            putExtra(CreateMerchantVoucherStepsActivity.EDIT_STEP, editStep)
+        }
+        startActivity(intent)
     }
 
     override fun onFooterButtonClickListener() {
@@ -266,8 +281,8 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
 
             if (status == VoucherStatusConst.ENDED) {
                 voucherDetailInfoList.add(
-                        //Todo: Add calculation
-                        PromoPerformanceUiModel("Rp.123.456.789", bookedQuota, quota)
+                        //Todo: Remove
+                        PromoPerformanceUiModel("Rp.-", bookedQuota, quota)
                 )
             }
 
@@ -280,15 +295,15 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
                         }
                 addAll(listOf(
                         DividerUiModel(DividerUiModel.THICK),
-                        getVoucherInfoSection(voucherTargetType, name, code),
+                        getVoucherInfoSection(voucherTargetType, name, code, voucherUiModel.status == VoucherStatusConst.NOT_STARTED),
                         DividerUiModel(DividerUiModel.THIN)
                 ))
                 getVoucherImageType(type, discountTypeFormatted, discountAmt, discountAmtMax)?.let { imageType ->
-                    add(getVoucherBenefitSection(imageType, minimumAmt, quota))
+                    add(getVoucherBenefitSection(imageType, minimumAmt, quota, voucherUiModel.status == VoucherStatusConst.NOT_STARTED))
                 }
                 addAll(listOf(
                         DividerUiModel(DividerUiModel.THIN),
-                        getPeriodSection(fullDisplayedDate),
+                        getPeriodSection(fullDisplayedDate, voucherUiModel.status == VoucherStatusConst.NOT_STARTED),
                         DividerUiModel(DividerUiModel.THICK)
                 ))
                 getButtonUiModel(status)?.let { button ->

@@ -64,6 +64,8 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
         const val EDIT_VOUCHER = "edit_voucher"
         const val IS_EDIT = "is_edit"
+        const val EDIT_STEP = "edit_step"
+        const val VOUCHER_ID = "voucher_id"
     }
 
     @Inject
@@ -86,7 +88,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
             put(VoucherCreationStepInfo.STEP_ONE, MerchantVoucherTargetFragment.createInstance(::setVoucherName, ::getPromoCodePrefix))
             put(VoucherCreationStepInfo.STEP_TWO, PromotionBudgetAndTypeFragment.createInstance(::setVoucherBenefit, ::getBannerVoucherUiModel, viewModel::setVoucherPreviewBitmap, ::getBannerBaseUiModel, ::onSetShopInfo))
             put(VoucherCreationStepInfo.STEP_THREE, SetVoucherPeriodFragment.createInstance(::setVoucherPeriod, ::getBannerVoucherUiModel, ::getBannerBaseUiModel, ::onSuccessGetSquareBitmap))
-            put(VoucherCreationStepInfo.STEP_FOUR, ReviewVoucherFragment.createInstance(::getVoucherReviewUiModel, ::getToken, ::getPostBaseUiModel, ::onReturnToStep, ::getBannerBitmap))
+            put(VoucherCreationStepInfo.STEP_FOUR, ReviewVoucherFragment.createInstance(::getVoucherReviewUiModel, ::getToken, ::getPostBaseUiModel, ::onReturnToStep, ::getBannerBitmap, ::getVoucherId))
         }
     }
 
@@ -139,6 +141,10 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     private var promoCodePrefix = ""
 
     private var isDuplicateVoucher = false
+
+    private var isEditVoucher = false
+
+    private var voucherId: Int? = null
 
     private var bannerBaseUiModel =
             BannerBaseUiModel(
@@ -235,7 +241,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     }
 
     private fun initiateVoucherPage() {
-        if (!checkIfDuplicate()) {
+        if (!(checkIfDuplicate() || checkIfEdit())) {
             viewModel.initiateVoucherPage()
         }
     }
@@ -289,6 +295,10 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                     setupViewPager()
                     if (isDuplicateVoucher) {
                         createMerchantVoucherViewPager?.currentItem = VoucherCreationStep.REVIEW
+                    } else if (isEditVoucher) {
+                        intent?.getIntExtra(EDIT_STEP, VoucherCreationStep.REVIEW)?.let { step ->
+                            createMerchantVoucherViewPager?.currentItem = step
+                        }
                     }
                 }
                 is Fail -> {
@@ -305,8 +315,8 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
     private fun checkIfDuplicate(): Boolean {
         intent?.getParcelableExtra<VoucherUiModel>(DUPLICATE_VOUCHER)?.let { voucherUiModel ->
-            viewModel.initiateDuplicateVoucher()
-            setDuplicateVoucherData(voucherUiModel)
+            viewModel.initiateEditDuplicateVoucher()
+            setDuplicateEditVoucherData(voucherUiModel)
             isDuplicateVoucher = true
             createMerchantVoucherHeader?.setTitle(R.string.mvc_duplicate_voucher)
             return true
@@ -314,7 +324,27 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         return false
     }
 
-    private fun setDuplicateVoucherData(voucherUiModel: VoucherUiModel) {
+    private fun checkIfEdit(): Boolean {
+        intent?.run {
+            getParcelableExtra<VoucherUiModel>(EDIT_VOUCHER)?.let { voucherUiModel ->
+                getIntExtra(VOUCHER_ID, 0).let { id ->
+                    return if (id != 0) {
+                        viewModel.initiateEditDuplicateVoucher()
+                        setDuplicateEditVoucherData(voucherUiModel)
+                        isEditVoucher = true
+                        voucherId = id
+                        createMerchantVoucherHeader?.setTitle(R.string.mvc_edit_voucher)
+                        true
+                    } else {
+                        false
+                    }
+                }
+            }
+        }
+        return false
+    }
+
+    private fun setDuplicateEditVoucherData(voucherUiModel: VoucherUiModel) {
         with(voucherUiModel) {
             val targetType =
                     if (isPublic) {
@@ -411,6 +441,8 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     private fun getPostBaseUiModel() = postBaseUiModel
 
     private fun getBannerBitmap() = bannerBitmap
+
+    private fun getVoucherId() = isEditVoucher
 
     private fun onCancelVoucher() {
         cancelDialog.show()

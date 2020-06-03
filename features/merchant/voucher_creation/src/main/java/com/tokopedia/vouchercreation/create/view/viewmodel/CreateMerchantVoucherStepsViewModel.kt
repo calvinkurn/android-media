@@ -102,7 +102,7 @@ class CreateMerchantVoucherStepsViewModel @Inject constructor(
         )
     }
 
-    fun initiateDuplicateVoucher() {
+    fun initiateEditDuplicateVoucher() {
         launchCatchError(
                 block = {
                     withContext(Dispatchers.IO) {

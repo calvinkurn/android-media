@@ -52,12 +52,14 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                            getToken: () -> String,
                            getPostBaseUiModel: () -> PostBaseUiModel,
                            onReturnToStep: (Int) -> Unit,
-                           getBannerBitmap: () -> Bitmap? ): ReviewVoucherFragment = ReviewVoucherFragment().apply {
+                           getBannerBitmap: () -> Bitmap?,
+                           getVoucherId: () -> Int?): ReviewVoucherFragment = ReviewVoucherFragment().apply {
             this.getVoucherReviewUiModel = getVoucherReviewUiModel
             this.getToken = getToken
             this.getPostBaseUiModel = getPostBaseUiModel
             this.onReturnToStep = onReturnToStep
             this.getBannerBitmap = getBannerBitmap
+            this.getVoucherId = getVoucherId
         }
 
         private const val VOUCHER_TIPS_INDEX = 1
@@ -76,6 +78,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
         )}
     private var onReturnToStep: (Int) -> Unit = { _ -> }
     private var getBannerBitmap: () -> Bitmap? = { null }
+    private var getVoucherId: () -> Int? = { null }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -297,12 +300,16 @@ class ReviewVoucherFragment : BaseDetailFragment() {
         isWaitingForResult = true
         getBannerBitmap()?.let { bannerBitmap ->
             squareVoucherBitmap?.let { squareBitmap ->
-                viewModel.createVoucher(
-                        bannerBitmap,
-                        squareBitmap,
-                        CreateVoucherParam.mapToParam(
-                                getVoucherReviewUiModel(), getToken()
-                        ))
+                if (getVoucherId() != null) {
+                    //Todo: add update voucher
+                } else {
+                    viewModel.createVoucher(
+                            bannerBitmap,
+                            squareBitmap,
+                            CreateVoucherParam.mapToParam(
+                                    getVoucherReviewUiModel(), getToken()
+                            ))
+                }
             }
         }
     }
