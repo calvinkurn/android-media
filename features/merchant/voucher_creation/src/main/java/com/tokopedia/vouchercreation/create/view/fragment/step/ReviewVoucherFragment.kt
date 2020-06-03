@@ -242,6 +242,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                     when(result) {
                         is Success -> {
                             RouteManager.route(context, ApplinkConstInternalSellerapp.VOUCHER_LIST)
+                            activity?.finish()
                         }
                         is Fail -> {
                             failedCreateVoucherDialog?.show()
