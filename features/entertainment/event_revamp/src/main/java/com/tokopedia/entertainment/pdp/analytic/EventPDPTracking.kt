@@ -214,7 +214,7 @@ class EventPDPTracking constructor(val userSession: UserSessionInterface, val ir
                         Product.ID, mPackage.id,
                         Product.PRICE, (mPackage.salesPrice.toInt() * qty),
                         Product.BRAND, "",
-                        Product.CATEGORY, productDetailData.category[0].title,
+                        Product.CATEGORY, title,
                         Product.VARIANT, mPackage.id,
                         Product.QUANTITY, qty.toString(),
                         Product.SHOPID, "",
