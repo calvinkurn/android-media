@@ -372,6 +372,8 @@ public interface ApplinkConst {
         String TOPADS_AUTOADS = "sellerapp://topads/autoads";
         String FLASHSALE_MANAGEMENT = "sellerapp://flashsale/management";
         String WEBVIEW = "sellerapp://webview";
+        String VOUCHER_LIST = "sellerapp://voucher-list";
+        String CREATE_VOUCHER = "sellerapp://create-voucher";
     }
 
     interface Query {
