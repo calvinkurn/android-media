@@ -21,6 +21,7 @@
     <color name="topads_shalshed_price_color">#7031353B</color>
     <color name="topads_promoted_color">#7031353b</color>
     <color name="topads_product_name">#f531353b</color>
+    <color name="topads_product_rating_count">#AD31353b</color>
     <color name="topads_product_review_count">#7031353b</color>
     <color name="topads_shop_name">#f531353b</color>
     <color name="tkpd_dark_gray">#999999</color>

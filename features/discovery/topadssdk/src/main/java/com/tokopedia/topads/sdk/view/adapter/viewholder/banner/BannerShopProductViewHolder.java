@@ -31,7 +31,7 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
     private ImpressedImageView imageView;
     private TextView descTxt;
     private TextView priceTxt;
-    private TextView reviewCountTxt;
+    private TextView reviewCountTxt, textViewRatingCount;
     private TextView discountTxt;
     private TextView newLabelTxt;
     private TextView slashedPrice;
@@ -59,6 +59,7 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
         rating4 = itemView.findViewById(R.id.imageViewRating4);
         rating5 = itemView.findViewById(R.id.imageViewRating5);
         reviewCountTxt = itemView.findViewById(R.id.textViewReviewCount);
+        textViewRatingCount = itemView.findViewById(R.id.textViewRatingCount);
         discountTxt = itemView.findViewById(R.id.discount_txt);
         newLabelTxt = itemView.findViewById(R.id.label_new);
         slashedPrice = itemView.findViewById(R.id.slashed_price);
@@ -115,15 +116,9 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
     private void setRating(int productRating, boolean isVisible) {
         int rating = Math.round(productRating / 20f);
         rating1.setImageResource(getRatingDrawable(rating >= 1));
-        rating2.setImageResource(getRatingDrawable(rating >= 2));
-        rating3.setImageResource(getRatingDrawable(rating >= 3));
-        rating4.setImageResource(getRatingDrawable(rating >= 4));
-        rating5.setImageResource(getRatingDrawable(rating >= 5));
         rating1.setVisibility((isVisible && (rating > 0)) ? View.VISIBLE : View.GONE);
-        rating2.setVisibility((isVisible && (rating > 0)) ? View.VISIBLE : View.GONE);
-        rating3.setVisibility((isVisible && (rating > 0)) ? View.VISIBLE : View.GONE);
-        rating4.setVisibility((isVisible && (rating > 0)) ? View.VISIBLE : View.GONE);
-        rating5.setVisibility((isVisible && (rating > 0)) ? View.VISIBLE : View.GONE);
+        textViewRatingCount.setText(String.valueOf(productRating / 20f));
+        textViewRatingCount.setVisibility((isVisible && (rating >0)) ? View.VISIBLE : View.GONE);
         reviewCountTxt.setVisibility((isVisible && (rating > 0)) ? View.VISIBLE : View.GONE);
     }
 
