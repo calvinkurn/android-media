@@ -101,9 +101,17 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                             }
 
                             BackendCache cache = caches.get(request.getMd5());
-                            JsonElement object = graphqlResponseInternal.getOriginalResponse().get(i).getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA);
+
+                            JsonElement rawResp = graphqlResponseInternal.getOriginalResponse().get(i);
+                            if (rawResp == null
+                                    || rawResp.getAsJsonObject() == null
+                                    || rawResp.getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA) == null) {
+                                continue;
+                            }
+
+                            JsonElement childResp = rawResp.getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA);
                             if (object != null) {
-                                mCacheManager.save(request.cacheKey(), object.toString(), cache.getMaxAge() * 1000);
+                                mCacheManager.save(request.cacheKey(), childResp.toString(), cache.getMaxAge() * 1000);
                             }
                         }
                     }
