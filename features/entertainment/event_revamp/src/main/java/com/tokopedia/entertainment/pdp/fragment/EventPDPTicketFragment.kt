@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.calendar.CalendarPickerView
+import com.tokopedia.calendar.Legend
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity
 import com.tokopedia.entertainment.pdp.adapter.factory.PackageTypeFactory
@@ -38,6 +39,8 @@ import com.tokopedia.entertainment.pdp.common.util.CurrencyFormatter.getRupiahFo
 import com.tokopedia.entertainment.pdp.data.PackageItem
 import com.tokopedia.entertainment.pdp.data.ProductDetailData
 import com.tokopedia.entertainment.pdp.data.pdp.*
+import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper
+import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.getActiveDate
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventVerifyMapper.getInitialVerify
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventVerifyMapper.getItemIds
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventVerifyMapper.getItemMap
@@ -65,6 +68,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
     private var PRODUCT_PRICE = ""
     private var idPackageActive = ""
     private var metaDataResponse = MetaDataResponse()
+    private var listHoliday: List<Legend> = arrayListOf()
     lateinit var bottomSheets: BottomSheetUnify
     private var eventVerifyRequest: VerifyRequest = VerifyRequest()
     private var hashItemMap: HashMap<String, ItemMap> = hashMapOf()
@@ -185,7 +189,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
             bottomSheets = BottomSheetUnify()
             val view = LayoutInflater.from(context).inflate(R.layout.widget_event_pdp_calendar, null)
             view.bottom_sheet_calendar.run {
-                calendarPickerView?.init(Date(startDate.toLong() * 1000), Date(endDate.toLong() * 1000), ArrayList(), viewModel.listsActiveDate)
+                calendarPickerView?.init(Date(startDate.toLong() * 1000), Date(endDate.toLong() * 1000), listHoliday, getActiveDate(pdpData))
                         ?.inMode(CalendarPickerView.SelectionMode.SINGLE)
                         ?.withSelectedDate(Date(selectedDate.toLong() * 1000))
                 calendarPickerView?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
@@ -260,7 +264,6 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
             it?.run { renderList(this) }
             showViewTop(true)
             showUbah(true)
-            setupBottomSheet()
         })
 
         viewModel.error.observe(this, Observer {
@@ -285,6 +288,11 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
                 startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
                         REQUEST_CODE_LOGIN)
             }
+        })
+
+        viewModel.eventHoliday.observe(this, Observer {
+            listHoliday = it
+            setupBottomSheet()
         })
     }
 
