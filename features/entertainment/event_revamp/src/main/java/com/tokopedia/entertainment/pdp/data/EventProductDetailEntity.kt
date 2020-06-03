@@ -30,6 +30,12 @@ data class ProductDetailData(
         @SerializedName("autocode")
         @Expose
         val autocode: String = "",
+        @SerializedName("checkout_business_type")
+        @Expose
+        val checkoutBusinessType: Int = 0,
+        @SerializedName("checkout_data_type")
+        @Expose
+        val checkoutDataType: String = "",
         @SerializedName("brand")
         @Expose
         val brand: Brand = Brand(),

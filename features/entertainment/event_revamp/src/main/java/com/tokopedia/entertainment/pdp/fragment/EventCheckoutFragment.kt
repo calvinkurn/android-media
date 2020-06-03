@@ -156,10 +156,19 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                 val data = it
                 context?.let {
                     progressDialog.dismiss()
+                    val context = it
 
                     val paymentData = data.checkout.data.data.queryString
                     val paymentURL: String = data.checkout.data.data.redirectUrl
-                    ScroogePGUtil.openScroogePage(activity, paymentURL, true, paymentData, it.resources.getString(R.string.pembayaran))
+
+                    if(!paymentData.isNullOrEmpty() || !paymentURL.isNullOrEmpty()) {
+                        ScroogePGUtil.openScroogePage(activity, paymentURL, true, paymentData, it.resources.getString(R.string.pembayaran))
+                    }else{
+                        view?.let {
+                            Toaster.make(it, data.checkout.data.error, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                                    context.getString(R.string.ent_checkout_error))
+                        }
+                    }
                 }
             }
         })
@@ -174,7 +183,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
     private fun requestData() {
         urlPDP.let {
             eventCheckoutViewModel.getDataProductDetail(GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_product_detail_v3),
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_content_by_id), it,GraphqlHelper.loadRawString(resources, R.raw.dummy_response))
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_content_by_id), it)
         }
     }
 
@@ -191,7 +200,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
         renderDesc(eventProductDetailEntity.eventProductDetail.productDetailData)
         renderPassenger()
         renderSummary(eventProductDetailEntity.eventProductDetail.productDetailData)
-        renderFooter()
+        renderFooter(eventProductDetailEntity.eventProductDetail.productDetailData)
 
     }
 
@@ -235,7 +244,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
 //        eventPDPTracking.onViewCheckoutPage(getPackage(scheduleID, groupID, packetID, pdp), pdp, amount)
     }
 
-    private fun renderFooter() {
+    private fun renderFooter(productDetailData: ProductDetailData) {
         cb_event_checkout.setOnCheckedChangeListener { _, isChecked ->
             btn_event_checkout.isEnabled = isChecked
         }
@@ -256,7 +265,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                         if (email.isEmpty()) email = userSessionInterface.email
                         metadata = getPassengerMetaData(metadata, forms)
                         eventCheckoutViewModel.checkoutEvent(GraphqlHelper.loadRawString(resources, R.raw.gql_mutation_event_checkout_v2),
-                                getCheckoutParam(metadata))
+                                getCheckoutParam(metadata,productDetailData))
                     }
                 }
             }

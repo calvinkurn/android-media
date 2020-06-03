@@ -9,4 +9,6 @@ interface OnBindItemTicketListener {
                                          product_name: String, product_id: String,
                                          price: String,selectedDate: String)
     fun getSelectedDate():String
+
+    fun resetPackage()
 }

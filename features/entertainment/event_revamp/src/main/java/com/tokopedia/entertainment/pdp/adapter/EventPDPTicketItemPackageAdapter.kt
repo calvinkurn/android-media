@@ -26,8 +26,6 @@ class EventPDPTicketItemPackageAdapter(
     private var isError = false
     private var idPackage = ""
 
-    lateinit var chooseNewPackage: (String) -> Unit
-
     inner class EventPDPTicketItemPackageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(items: PackageItem) {
@@ -107,7 +105,6 @@ class EventPDPTicketItemPackageAdapter(
                     itemView.quantityEditor.editText.visibility = View.VISIBLE
                     itemView.quantityEditor.addButton.visibility = View.VISIBLE
                     itemView.quantityEditor.subtractButton.visibility = View.VISIBLE
-                    chooseNewPackage.invoke(idPackage)
                 }
             }
         }

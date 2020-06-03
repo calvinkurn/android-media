@@ -23,10 +23,10 @@ class EventPDPFormViewModel@Inject constructor(private val dispatcher: Coroutine
     val mFormData : LiveData<MutableList<Form>>
         get() = mFormDataMutable
 
-    fun getData(url: String, rawQueryPDP: String,rawQueryContent: String, dummyResponse:String){
+    fun getData(url: String, rawQueryPDP: String,rawQueryContent: String){
         val formData: MutableList<Form> = mutableListOf()
         launch {
-            when(val data = usecase.executeUseCase(rawQueryPDP, rawQueryContent, false, url, dummyResponse)){
+            when(val data = usecase.executeUseCase(rawQueryPDP, rawQueryContent, false, url)){
                 is Success -> {
                     data.data.eventProductDetailEntity.eventProductDetail.productDetailData.forms.forEach {
                         formData.add(it)

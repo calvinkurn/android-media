@@ -9,19 +9,26 @@ import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.pdp.adapter.EventPDPTicketItemPackageAdapter
 import com.tokopedia.entertainment.pdp.data.PackageV3
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
+import com.tokopedia.entertainment.pdp.widget.WidgetEventPDPExpandable
 import kotlinx.android.synthetic.main.custom_event_expandable_parent.view.*
 import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket.view.*
 
 class PackageParentViewHolder (view: View,
-                               onBindItemTicketListener: OnBindItemTicketListener): AbstractViewHolder<PackageV3>(view){
+                               private val onBindItemTicketListener: OnBindItemTicketListener): AbstractViewHolder<PackageV3>(view),
+        WidgetEventPDPExpandable.EventWidgetExpandableListener{
 
     lateinit var chooseNewPackage: (String) -> Unit
+    var idPackage = ""
 
     var eventPDPTicketAdapter = EventPDPTicketItemPackageAdapter(onBindItemTicketListener)
     override fun bind(element: PackageV3) {
+        itemView.expand_event_pdp_ticket.setListener(this)
         with(itemView){
+            idPackage = element.id
+            if(!element.isChoosen){
+                expand_event_pdp_ticket.setExpand(false)
+            }
             eventPDPTicketAdapter.setList(element.packageItems, element.id)
-            eventPDPTicketAdapter.chooseNewPackage = ::chooseNewPackage
             tg_event_pdp_expand_title.text = element.name
             tg_event_pdp_expand_price.text = Html.fromHtml(context.resources.getString(R.string.ent_checkout_price_expand,
                     CurrencyFormatter.getRupiahFormat(element.salesPrice.toLong())))
@@ -32,14 +39,18 @@ class PackageParentViewHolder (view: View,
                         RecyclerView.VERTICAL, false
                 )
             }
-        }
-    }
 
-    fun chooseNewPackage(idPackage: String){
-        chooseNewPackage.invoke(idPackage)
+        }
     }
 
     companion object {
         val LAYOUT = R.layout.item_event_pdp_parent_ticket
+    }
+
+    override fun onParentClicked(toogle: Boolean) {
+        if(toogle){
+            onBindItemTicketListener.resetPackage()
+        }
+        chooseNewPackage.invoke(idPackage)
     }
 }

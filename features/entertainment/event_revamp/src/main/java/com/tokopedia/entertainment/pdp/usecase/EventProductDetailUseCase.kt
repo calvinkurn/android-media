@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 class EventProductDetailUseCase @Inject constructor(private val useCase: MultiRequestGraphqlUseCase){
 
-    suspend fun executeUseCase(rawQueryPDP: String, rawQueryContent: String, fromCloud: Boolean = false, urlPdp:String, dummyResponse: String): Result<EventPDPContentCombined> {
+    suspend fun executeUseCase(rawQueryPDP: String, rawQueryContent: String, fromCloud: Boolean = false, urlPdp:String): Result<EventPDPContentCombined> {
         try {
             useCase.clearRequest()
             useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(if (fromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
@@ -27,11 +27,7 @@ class EventProductDetailUseCase @Inject constructor(private val useCase: MultiRe
             val pdpRequest = GraphqlRequest(rawQueryPDP, EventProductDetailEntity::class.java, mapOf(URL_PDP to urlPdp))
             useCase.addRequest(pdpRequest)
 
-            //val pdpData = useCase.executeOnBackground().getSuccessData<EventProductDetailEntity>()
-
-
-            val gson = Gson()
-            val pdpData = gson.fromJson(dummyResponse, EventProductDetailEntity::class.java)
+            val pdpData = useCase.executeOnBackground().getSuccessData<EventProductDetailEntity>()
 
             val contentRequest = GraphqlRequest(rawQueryContent, EventContentByIdEntity::class.java, mapOf(TYPE_VALUE to pdpData.eventProductDetail.productDetailData.id))
             useCase.addRequest(contentRequest)

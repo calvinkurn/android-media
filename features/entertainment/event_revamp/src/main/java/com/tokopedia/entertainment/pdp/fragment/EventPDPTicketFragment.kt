@@ -95,7 +95,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
 
     override fun loadData(p0: Int) {
         viewModel.getData(urlPDP, selectedDate, swipe_refresh_layout.isRefreshing, GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_product_detail_v3),
-                GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_content_by_id), GraphqlHelper.loadRawString(resources, R.raw.dummy_response))
+                GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_content_by_id))
     }
 
     override fun createAdapterInstance(): BaseListAdapter<EventPDPTicketModel, PackageTypeFactory> {
@@ -245,6 +245,12 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
                 }
             }
         }
+    }
+
+    override fun resetPackage() {
+        hashItemMap.clear()
+        idPackageActive = ""
+        setTotalPrice(getRupiahFormat(0))
     }
 
     private fun observeData() {

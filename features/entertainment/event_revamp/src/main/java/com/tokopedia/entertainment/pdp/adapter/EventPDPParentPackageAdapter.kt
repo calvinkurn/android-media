@@ -17,15 +17,18 @@ class EventPDPParentPackageAdapter (packageTypeFactoryImp: PackageTypeFactoryImp
             holder.chooseNewPackage = ::chooseNewPackage
         }
         super.onBindViewHolder(holder, position)
+
     }
 
     private fun chooseNewPackage(idPackage: String){
         data.forEachIndexed{index, it ->
             if(it is PackageV3) {
-                if(!it.id.equals(idPackage)){
+                if(it.id.equals(idPackage)){
                     it.isChoosen = true
                     notifyItemChanged(index)
-                    return
+                } else {
+                    it.isChoosen = false
+                    notifyItemChanged(index)
                 }
             }
         }

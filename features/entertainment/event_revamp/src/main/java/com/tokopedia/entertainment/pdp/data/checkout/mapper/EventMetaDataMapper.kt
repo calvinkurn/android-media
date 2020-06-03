@@ -2,6 +2,7 @@ package com.tokopedia.entertainment.pdp.data.checkout.mapper
 
 import com.google.gson.Gson
 import com.tokopedia.entertainment.pdp.data.Form
+import com.tokopedia.entertainment.pdp.data.ProductDetailData
 import com.tokopedia.entertainment.pdp.data.checkout.*
 import com.tokopedia.entertainment.pdp.data.pdp.ItemMapResponse
 import com.tokopedia.entertainment.pdp.data.pdp.MetaDataResponse
@@ -23,10 +24,11 @@ object EventMetaDataMapper {
     }
 
 
-    fun getCheckoutParam(metaDataResponse: MetaDataResponse): CheckoutGeneralV2Params {
+    fun getCheckoutParam(metaDataResponse: MetaDataResponse, productDetailData: ProductDetailData): CheckoutGeneralV2Params {
         val gson = Gson()
         val checkoutGeneralV2Params = CheckoutGeneralV2Params()
-        val cartInfo = CartInfo(gson.toJson(mapToIntMetaData(metaDataResponse)))
+        val cartInfo = CartInfo(gson.toJson(mapToIntMetaData(metaDataResponse)),productDetailData.checkoutDataType)
+        checkoutGeneralV2Params.carts.businessType = productDetailData.checkoutBusinessType
         checkoutGeneralV2Params.carts.cartInfo.add(0, cartInfo)
         return checkoutGeneralV2Params
     }

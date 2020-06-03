@@ -46,11 +46,11 @@ class EventPDPTicketViewModel @Inject constructor(private val dispatcher: Corout
 
     var categoryData = Category()
 
-    fun getData(url: String, selectedDate: String, state: Boolean, rawQueryPDP: String, rawQueryContent: String, dummyResponse: String) {
+    fun getData(url: String, selectedDate: String, state: Boolean, rawQueryPDP: String, rawQueryContent: String) {
         launch {
             lists.clear()
             listsActiveDate.clear()
-            val data = usecase.executeUseCase(rawQueryPDP, rawQueryContent, state, url, dummyResponse)
+            val data = usecase.executeUseCase(rawQueryPDP, rawQueryContent, state, url)
             when (data) {
                 is Success -> {
                     productDetailEntityMutable.value = data.data.eventProductDetailEntity
