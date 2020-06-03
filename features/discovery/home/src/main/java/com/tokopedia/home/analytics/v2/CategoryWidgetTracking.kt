@@ -47,7 +47,7 @@ object CategoryWidgetTracking : BaseTracking() {
             event = Event.PROMO_CLICK,
             eventCategory = Category.HOMEPAGE,
             eventAction = CustomAction.CLICK_ON_CATEGORY_WIDGET,
-            eventLabel = headerName,
+            eventLabel = CustomAction.FORMAT_CAT_ID_NAME.format(grid.id, grid.name),
             channelId = channelId,
             affinity = channel.persona,
             attribution = channel.galaxyAttribution,
