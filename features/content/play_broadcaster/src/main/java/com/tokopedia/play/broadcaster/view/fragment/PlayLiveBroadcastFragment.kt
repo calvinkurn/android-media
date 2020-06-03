@@ -70,6 +70,7 @@ class PlayLiveBroadcastFragment @Inject constructor(
 
     private fun setupView() {
         broadcastCoordinator.setupTitle("")
+        broadcastCoordinator.setupCloseButton(getString(R.string.play_action_bar_end))
     }
 
     private fun setupContent() {
@@ -79,6 +80,11 @@ class PlayLiveBroadcastFragment @Inject constructor(
         arguments?.getString(KEY_INGEST_URL)?.let {
             ingestUrl -> parentViewModel.startPushBroadcast(ingestUrl)
         }
+    }
+
+    override fun onBackPressed(): Boolean {
+        showDialogWhenActionClose()
+        return true
     }
 
     private fun setCountDownTimer(millisUntilFinish: Long) {
@@ -97,27 +103,43 @@ class PlayLiveBroadcastFragment @Inject constructor(
         tvTotalLike.text = totalLike.totalLike
     }
 
-    private fun setupDialog(
-            title: String,
-            description: String,
-            primaryCta: String,
-            primaryCtaClick: () -> Unit,
-            secondaryCta: String = "",
-            secondaryCtaClick: () -> Unit = {}
-    ): DialogUnify? {
+    private fun showDialogWhenActionClose() {
         context?.let {
-            val dialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
-            dialog.setTitle(title)
-            dialog.setDescription(description)
-            dialog.setPrimaryCTAText(primaryCta)
-            dialog.setPrimaryCTAClickListener(primaryCtaClick)
-            if (secondaryCta.isNotEmpty()) {
-                dialog.setSecondaryCTAText(secondaryCta)
-                dialog.setSecondaryCTAClickListener(secondaryCtaClick)
-            }
-            return dialog
+            DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.play_live_broadcast_dialog_end_title))
+                setDescription(getString(R.string.play_live_broadcast_dialog_end_desc))
+                setPrimaryCTAText(getString(R.string.play_live_broadcast_dialog_end_primary))
+                setSecondaryCTAText(getString(R.string.play_live_broadcast_dialog_end_secondary))
+                setPrimaryCTAClickListener { this.dismiss() }
+                setSecondaryCTAClickListener {
+                    this.dismiss()
+                    doEndStreaming()
+                }
+            }.show()
         }
-        return null
+    }
+
+    private fun showDialogWhenTimeout() {
+        context?.let {
+            DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.play_live_broadcast_dialog_end_timeout_title))
+                setDescription(getString(R.string.play_live_broadcast_dialog_end_timeout_desc))
+                setPrimaryCTAText(getString(R.string.play_live_broadcast_dialog_end_timeout_primary))
+                setPrimaryCTAClickListener {
+                    this.dismiss()
+                    doEndStreaming()
+                }
+            }.show()
+        }
+    }
+
+    private fun doEndStreaming() {
+        parentViewModel.stopPushBroadcast()
+        navigateToSummary()
+    }
+
+    private fun navigateToSummary() {
+        broadcastCoordinator.navigateToFragment(PlayBroadcastSummaryFragment::class.java)
     }
 
     //region observe

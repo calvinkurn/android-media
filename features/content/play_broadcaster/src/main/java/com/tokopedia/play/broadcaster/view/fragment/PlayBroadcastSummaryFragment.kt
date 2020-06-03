@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.SummaryUiModel
 import com.tokopedia.play.broadcaster.view.adapter.PlaySummaryInfosAdapter
+import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import kotlinx.android.synthetic.main.fragment_play_broadcaster_summary.*
 import javax.inject.Inject
@@ -27,7 +28,7 @@ import javax.inject.Inject
  * @author by jessica on 26/05/20
  */
 
-class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFactory: ViewModelFactory) : TkpdBaseV4Fragment() {
+class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFactory: ViewModelFactory) : PlayBaseBroadcastFragment() {
 
     private lateinit var viewModel: PlayBroadcastSummaryViewModel
 
@@ -38,6 +39,11 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_play_broadcaster_summary, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupView()
     }
 
     override fun getScreenName(): String = ""
@@ -51,6 +57,10 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
         viewModel.observableSummary.observe(viewLifecycleOwner, Observer {
             renderView(it)
         })
+    }
+
+    private fun setupView() {
+        broadcastCoordinator.showActionBar(false)
     }
 
     private fun renderView(summaryUiModel: SummaryUiModel) {

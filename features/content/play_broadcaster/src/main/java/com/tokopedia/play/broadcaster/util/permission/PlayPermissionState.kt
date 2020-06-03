@@ -7,7 +7,7 @@ package com.tokopedia.play.broadcaster.util.permission
 sealed class PlayPermissionState {
 
     /**
-     * When all permission is granted
+     * When all permission granted
      */
     object Granted: PlayPermissionState()
 

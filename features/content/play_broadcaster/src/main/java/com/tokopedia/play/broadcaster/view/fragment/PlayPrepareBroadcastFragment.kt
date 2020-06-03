@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayFollowerItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
@@ -73,9 +74,9 @@ class PlayPrepareBroadcastFragment @Inject constructor(
     }
 
     private fun setupView(view: View) {
-        broadcastCoordinator.setupTitle(getString(R.string.play_status_bar_prepare_title))
+        broadcastCoordinator.setupTitle(getString(R.string.play_action_bar_prepare_title))
         btnSetup.setOnClickListener {
-//             openBroadcastSetupPage()
+            // openBroadcastSetupPage()
             // TODO("for testing live")
             doCreateChannel()
         }
@@ -88,6 +89,11 @@ class PlayPrepareBroadcastFragment @Inject constructor(
                 return true
             }
         })
+    }
+
+    override fun onBackPressed(): Boolean {
+        showDialogWhenActionClose()
+        return true
     }
 
     private fun doCreateChannel() {
@@ -111,6 +117,21 @@ class PlayPrepareBroadcastFragment @Inject constructor(
                     putString(PlayLiveBroadcastFragment.KEY_CHANNEL_ID, channelInfo.channelId)
                     putString(PlayLiveBroadcastFragment.KEY_INGEST_URL, channelInfo.ingestUrl)
                 })
+    }
+
+    private fun showDialogWhenActionClose() {
+        activity?.let {
+            DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.play_prepare_broadcast_dialog_end_title))
+                setDescription(getString(R.string.play_prepare_broadcast_dialog_end_desc))
+                setPrimaryCTAText(getString(R.string.play_prepare_broadcast_dialog_end_primary))
+                setSecondaryCTAText(getString(R.string.play_prepare_broadcast_dialog_end_secondary))
+                setPrimaryCTAClickListener { this.dismiss() }
+                setSecondaryCTAClickListener {
+                    it.finish()
+                }
+            }.show()
+        }
     }
 
     //region observe

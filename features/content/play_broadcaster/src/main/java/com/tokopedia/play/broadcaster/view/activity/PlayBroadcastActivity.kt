@@ -22,7 +22,6 @@ import com.tokopedia.play.broadcaster.di.DaggerPlayBroadcasterComponent
 import com.tokopedia.play.broadcaster.di.PlayBroadcasterModule
 import com.tokopedia.play.broadcaster.util.event.EventObserver
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
-import com.tokopedia.play.broadcaster.view.contract.PlayActionBarInteraction
 import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
 import com.tokopedia.play.broadcaster.view.custom.PlayRequestPermissionView
 import com.tokopedia.play.broadcaster.view.event.ScreenStateEvent
@@ -30,6 +29,7 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment.Companion.PARENT_FRAGMENT_TAG
 import com.tokopedia.play.broadcaster.view.fragment.PlayLiveBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayPrepareBroadcastFragment
+import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
@@ -110,7 +110,7 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
             doSwitchCamera()
         }
         tvClose.setOnClickListener {
-            doClosePage()
+            onBackPressed()
         }
     }
 
@@ -150,27 +150,38 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
         tvTitle.text = title
     }
 
+    override fun setupCloseButton(actionTitle: String) {
+        tvClose.text = actionTitle
+        tvClose.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+    }
+
+    override fun showActionBar(shouldShow: Boolean) {
+        if (shouldShow) viewActionBar.show() else viewActionBar.hide()
+    }
+
     private fun getParentFragment() = getFragmentByClassName(PlayBroadcastFragment::class.java)
 
     private fun getFragmentByClassName(fragmentClass: Class<out Fragment>): Fragment {
         return fragmentFactory.instantiate(classLoader, fragmentClass.name)
     }
 
-    private fun getCurrentVisibleFragment(): Fragment? {
-        return supportFragmentManager.findFragmentById(R.id.fl_setup)
-    }
+    private fun getCurrentFragment() = supportFragmentManager.findFragmentById(R.id.fl_setup)
 
     private fun doSwitchCamera() {
         viewModel.getPlayPusher().switchCamera()
     }
 
-    private fun doClosePage() {
-        val currentVisibleFragment = getCurrentVisibleFragment()
-        if (currentVisibleFragment == null
-                || currentVisibleFragment !is PlayActionBarInteraction
-                || !currentVisibleFragment.onCloseActionBar()) {
-            this.onBackPressed()
+    private fun onClosePage(): Boolean {
+        val currentVisibleFragment = getCurrentFragment()
+        if (currentVisibleFragment != null && currentVisibleFragment is PlayBaseBroadcastFragment) {
+            return currentVisibleFragment.onBackPressed()
         }
+        return false
+    }
+
+    override fun onBackPressed() {
+        if (onClosePage()) return
+        super.onBackPressed()
     }
 
     //region observe
