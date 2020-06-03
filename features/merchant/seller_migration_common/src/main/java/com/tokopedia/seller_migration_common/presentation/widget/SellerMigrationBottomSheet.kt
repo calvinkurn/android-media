@@ -27,12 +27,12 @@ abstract class SellerMigrationBottomSheet(private val titles: List<String> = emp
                                           private val images: ArrayList<String> = arrayListOf()) : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupPadding()
         setUpButtons()
         setupText()
         setupImages()
         setupWarningCard()
-        super.onViewCreated(view, savedInstanceState)
     }
 
     private fun setupPadding() {
