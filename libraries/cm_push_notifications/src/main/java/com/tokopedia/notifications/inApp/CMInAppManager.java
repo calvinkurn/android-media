@@ -46,7 +46,10 @@ public class CMInAppManager implements CmInAppListener {
 
     final Object lock = new Object();
 
-    public long cmInAppEndTimeInterval = HOURS_24_IN_MILLIS * 7;
+    public long getCmInAppEndTimeInterval() {
+        return ((CMRouter) application.getApplicationContext()).getLongRemoteConfig(
+                KEY_CM_INAPP_END_TIME_INTERVAL, HOURS_24_IN_MILLIS * 7);
+    }
 
     public static CMInAppManager getInstance() {
         return inAppManager;
@@ -59,8 +62,6 @@ public class CMInAppManager implements CmInAppListener {
     public void init(@NonNull Application application) {
         this.application = application;
         this.cmInAppListener = this;
-        cmInAppEndTimeInterval = ((CMRouter) application.getApplicationContext()).getLongRemoteConfig(
-                KEY_CM_INAPP_END_TIME_INTERVAL, HOURS_24_IN_MILLIS * 7);
         RulesManager.initRuleEngine(application);
         initInAppManager();
     }
@@ -187,6 +188,11 @@ public class CMInAppManager implements CmInAppListener {
                 RulesManager.getInstance().viewDismissed(cmInApp.id);
             }
         }
+    }
+
+    @Override
+    public void onCMinAppInteraction(CMInApp cmInApp) {
+        RulesManager.getInstance().interactedWithView(cmInApp.id);
     }
 
     @Override

@@ -25,7 +25,7 @@ import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.ElapsedTime
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
 import com.tokopedia.notifications.model.BaseNotificationModel;
 
-@Database(entities = {CMInApp.class, ElapsedTime.class, BaseNotificationModel.class}, version = 7)
+@Database(entities = {CMInApp.class, ElapsedTime.class, BaseNotificationModel.class}, version = 9)
 @TypeConverters({ButtonListConverter.class,
         NotificationModeConverter.class,
         NotificationStatusConverter.class,
@@ -155,12 +155,11 @@ public abstract class RoomDB extends RoomDatabase {
     private static final Migration MIGRATION_6_7 = new Migration(6, 7) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
-            database.execSQL("ALTER TABLE `BaseNotificationModel` " +
-                    "ADD COLUMN `transId` TEXT, " +
-                    "ADD COLUMN `userTransId` TEXT, " +
-                    "ADD COLUMN `userId` TEXT, " +
-                    "ADD COLUMN `shopId` TEXT, " +
-                    "ADD COLUMN `notifcenterBlastId` TEXT");
+            database.execSQL("ALTER TABLE `BaseNotificationModel` ADD COLUMN `transId` TEXT");
+            database.execSQL("ALTER TABLE `BaseNotificationModel` ADD COLUMN `userTransId` TEXT");
+            database.execSQL("ALTER TABLE `BaseNotificationModel` ADD COLUMN `userId` TEXT");
+            database.execSQL("ALTER TABLE `BaseNotificationModel` ADD COLUMN `shopId` TEXT");
+            database.execSQL("ALTER TABLE `BaseNotificationModel` ADD COLUMN `notifcenterBlastId` TEXT");
         }
     };
 
@@ -172,6 +171,18 @@ public abstract class RoomDB extends RoomDatabase {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             database.execSQL("ALTER TABLE `BaseNotificationModel` ADD COLUMN `webhook_params` TEXT");
+        }
+    };
+
+    /**
+     * Migration for adding persistanceToggle in inapp db
+     * @column: perst_on
+     */
+    private static final Migration MIGRATION_8_9 = new Migration(8, 9) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE `inapp_data` ADD COLUMN `perst_on` INTEGER NOT NULL");
+            database.execSQL("ALTER TABLE `inapp_data` ADD COLUMN `is_interacted` INTEGER NOT NULL");
         }
     };
 
@@ -188,7 +199,8 @@ public abstract class RoomDB extends RoomDatabase {
                                     MIGRATION_4_5,
                                     MIGRATION_5_6,
                                     MIGRATION_6_7,
-                                    MIGRATION_7_8
+                                    MIGRATION_7_8,
+                                    MIGRATION_8_9
                             )
                             .build();
                 }

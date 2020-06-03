@@ -396,6 +396,7 @@ public class ViewEngine {
                 CmInAppListener listener = CMInAppManager.getCmInAppListener();
                 if (listener != null && !TextUtils.isEmpty(deepLink)) {
                     listener.onCMinAppDismiss();
+                    listener.onCMinAppInteraction(cmInApp);
                     listener.onCMInAppLinkClick(Uri.parse(deepLink), cmInApp, elementType);
                 }
                 if (inAppView != null)
@@ -445,6 +446,7 @@ public class ViewEngine {
             if (listener != null) {
                 listener.onCMInAppClosed(cmInApp);
                 listener.onCMinAppDismiss();
+                listener.onCMinAppInteraction(cmInApp);
             }
             ((ViewGroup) view.getParent()).removeView(view);
         };
