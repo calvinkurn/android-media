@@ -1123,7 +1123,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun injectCouponTimeBased() {
-        if (userSession.isLoggedIn()) viewModel.get().injectCouponTimeBased();
+        if(userSession.isLoggedIn()) viewModel.get().injectCouponTimeBased();
     }
 
     private fun hideLoading() {
