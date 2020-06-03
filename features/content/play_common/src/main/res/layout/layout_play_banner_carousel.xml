@@ -54,7 +54,7 @@
             android:layout_marginLeft="-40dp"
             android:layout_marginRight="-40dp">
 
-            <View
+            <ImageView
                 android:id="@+id/parallax_background"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
