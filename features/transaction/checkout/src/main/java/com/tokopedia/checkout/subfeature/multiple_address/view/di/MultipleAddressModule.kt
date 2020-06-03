@@ -6,12 +6,11 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.checkout.R
-import com.tokopedia.checkout.data.api.*
-import com.tokopedia.checkout.data.repository.CommonPurchaseRepository
-import com.tokopedia.checkout.data.repository.ICommonPurchaseRepository
+import com.tokopedia.checkout.data.api.CartApiInterceptor
+import com.tokopedia.checkout.data.api.CartResponseConverter
+import com.tokopedia.checkout.data.api.CommonPurchaseApiUrl
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.subfeature.multiple_address.data.api.MultipleAddressApi
 import com.tokopedia.checkout.subfeature.multiple_address.data.repository.IMultipleAddressRepository
@@ -34,7 +33,6 @@ import com.tokopedia.purchase_platform.common.schedulers.DefaultSchedulers
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -98,36 +96,6 @@ class MultipleAddressModule {
     }
 
     @Provides
-    @PurchasePlatformAkamaiQualifier
-    @MultipleAddressScope
-    fun provideCartAkamaiApiOkHttpClient(
-            @ApplicationContext context: Context,
-            @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
-            cartApiInterceptor: CartApiInterceptor,
-            okHttpRetryPolicy: OkHttpRetryPolicy,
-            fingerprintInterceptor: FingerprintInterceptor,
-            chuckInterceptor: ChuckerInterceptor): OkHttpClient {
-
-        val builder = OkHttpClient.Builder()
-                .readTimeout(okHttpRetryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
-                .writeTimeout(okHttpRetryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
-                .connectTimeout(okHttpRetryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
-                .addInterceptor(fingerprintInterceptor)
-                .addInterceptor { chain ->
-                    val newRequest = chain.request().newBuilder()
-                    newRequest.addHeader("User-Agent", AuthHelper.getUserAgent())
-                    chain.proceed(newRequest.build())
-                }
-                .addInterceptor(cartApiInterceptor)
-        builder.addInterceptor(AkamaiBotInterceptor(context))
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            builder.addInterceptor(httpLoggingInterceptor)
-                    .addInterceptor(chuckInterceptor)
-        }
-        return builder.build()
-    }
-
-    @Provides
     @PurchasePlatformQualifier
     @MultipleAddressScope
     fun provideCartApiRetrofit(@PurchasePlatformQualifier okHttpClient: OkHttpClient): Retrofit {
@@ -139,38 +107,6 @@ class MultipleAddressModule {
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(okHttpClient)
                 .build()
-    }
-
-    @Provides
-    @PurchasePlatformAkamaiQualifier
-    @MultipleAddressScope
-    fun provideCartAkamaiApiRetrofit(@PurchasePlatformAkamaiQualifier okHttpClient: OkHttpClient): Retrofit {
-        return Retrofit.Builder()
-                .baseUrl(TokopediaUrl.getInstance().API)
-                .addConverterFactory(CartResponseConverter.create())
-                .addConverterFactory(StringResponseConverter())
-                .addConverterFactory(GsonConverterFactory.create(Gson()))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .client(okHttpClient)
-                .build()
-    }
-
-    @Provides
-    @MultipleAddressScope
-    fun provideCommonPurchaseApi(@PurchasePlatformQualifier retrofit: Retrofit): CommonPurchaseApi {
-        return retrofit.create(CommonPurchaseApi::class.java)
-    }
-
-    @Provides
-    @MultipleAddressScope
-    fun provideCommonPurchaseAkamaiApi(@PurchasePlatformAkamaiQualifier retrofit: Retrofit): CommonPurchaseAkamaiApi {
-        return retrofit.create(CommonPurchaseAkamaiApi::class.java)
-    }
-
-    @Provides
-    @MultipleAddressScope
-    fun provideCommonPurchaseRepository(commonPurchaseApi: CommonPurchaseApi, commonPurchaseAkamaiApi: CommonPurchaseAkamaiApi): ICommonPurchaseRepository {
-        return CommonPurchaseRepository(commonPurchaseApi, commonPurchaseAkamaiApi)
     }
 
     @Provides
