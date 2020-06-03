@@ -25,7 +25,7 @@
     <string name="account_home_label_logout">Keluar dari Tokopedia</string>
     <string name="account_home_button_logout">Keluar</string>
     <string name="title_personal_data_setting">Data Diri</string>
-    <string name="title_password_setting">Kata Sandi</string>
+    <string name="title_password_setting">Ubah Kata Sandi</string>
     <string name="title_kyc_setting">Verifikasi Data Diri</string>
     <string name="title_setting_pin">PIN Tokopedia</string>
     <string name="title_address_setting">Daftar Alamat</string>
