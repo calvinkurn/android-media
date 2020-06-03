@@ -53,13 +53,15 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                            getPostBaseUiModel: () -> PostBaseUiModel,
                            onReturnToStep: (Int) -> Unit,
                            getBannerBitmap: () -> Bitmap?,
-                           getVoucherId: () -> Int?): ReviewVoucherFragment = ReviewVoucherFragment().apply {
+                           getVoucherId: () -> Int?,
+                           getPromoCodePrefix: () -> String): ReviewVoucherFragment = ReviewVoucherFragment().apply {
             this.getVoucherReviewUiModel = getVoucherReviewUiModel
             this.getToken = getToken
             this.getPostBaseUiModel = getPostBaseUiModel
             this.onReturnToStep = onReturnToStep
             this.getBannerBitmap = getBannerBitmap
             this.getVoucherId = getVoucherId
+            this.getPromoCodePrefix = getPromoCodePrefix
         }
 
         private const val VOUCHER_TIPS_INDEX = 1
@@ -79,6 +81,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     private var onReturnToStep: (Int) -> Unit = { _ -> }
     private var getBannerBitmap: () -> Bitmap? = { null }
     private var getVoucherId: () -> Int? = { null }
+    private var getPromoCodePrefix: () -> String = { "" }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -261,7 +264,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
 
             val reviewInfoList = mutableListOf(
                     with(voucherReviewUiModel) {
-                        getVoucherPreviewSection(voucherType, voucherName, shopAvatarUrl, shopName, promoCode, postDisplayedDate)
+                        getVoucherPreviewSection(voucherType, voucherName, shopAvatarUrl, shopName, getPromoCodePrefix() + promoCode, postDisplayedDate)
                     },
                     getVoucherInfoSection(targetType, voucherName, promoCode, true),
                     DividerUiModel(DividerUiModel.THIN),

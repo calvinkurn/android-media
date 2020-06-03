@@ -114,7 +114,7 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
                     val errorMessage = result.data.promoCodeError
                     errorMessage.run {
                         if (isBlank() && isWaitingForValidation) {
-                            onNextClick(promoCodePrefix + createPromoCodeTextField?.textFieldInput?.text?.toString().toBlankOrString())
+                            onNextClick(createPromoCodeTextField?.textFieldInput?.text?.toString().toBlankOrString())
                         } else {
                             createPromoCodeTextField?.setTextFieldError(this)
                         }
@@ -185,7 +185,7 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
                     if (canValidateCode) {
                         isLoading = true
                         isWaitingForValidation = true
-                        viewModel.validatePromoCode(promoCodePrefix + promoCode)
+                        viewModel.validatePromoCode(promoCode)
                     }
                 }
             }
