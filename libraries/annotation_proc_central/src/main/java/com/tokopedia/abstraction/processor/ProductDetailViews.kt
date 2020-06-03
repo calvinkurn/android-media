@@ -9,7 +9,6 @@ import com.tokopedia.annotation.BundleThis
 import com.tokopedia.annotation.defaultvalues.DefaultValueLong
 import com.tokopedia.annotation.defaultvalues.DefaultValueString
 import com.tokopedia.checkers.ProductDetailViewsChecker
-import com.tokopedia.checkers.ProductListClickChecker
 import com.tokopedia.checkers.ProductListImpressionProductChecker
 import com.tokopedia.firebase.analytic.rules.ProductDetailViewsRules
 import com.tokopedia.product.util.processor.KEY_SESSION_IRIS
@@ -27,7 +26,7 @@ data class ProductDetailViews(
         val shopName: String,
         @Key("shopId")
         val shopId: String,
-        @CustomChecker(ProductListClickChecker::class, "isOnlyOneProduct", Level.ERROR)
+        @CustomChecker(ProductDetailViewsChecker::class, "isOnlyOneProduct", Level.ERROR)
         @Key("items")
         val items: List<ProductDetailProduct>,
 
@@ -38,7 +37,7 @@ data class ProductDetailViews(
         @DefaultValueString("")
         @Key("currentSite")
         val currentSite: String?,
-        @CustomChecker(ProductDetailViewsChecker::class, "isOnlyOneProduct", Level.ERROR)
+        @CustomChecker(ProductDetailViewsChecker::class, "onlyViewItem", Level.ERROR)
         @DefaultValueString("")
         @Key("event")
         val event: String?,
@@ -100,5 +99,7 @@ data class ProductDetailProduct(
         @Key(KEY_DIMENSION_37)
         val dimension37: String,
         @Key(KEY_DIMENSION_98)
-        val dimension98: String
+        val dimension98: String,
+
+        val map: HashMap<String, String>
 )
