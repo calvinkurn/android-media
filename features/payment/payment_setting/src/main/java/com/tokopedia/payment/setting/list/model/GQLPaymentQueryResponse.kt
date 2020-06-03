@@ -18,7 +18,7 @@ data class PaymentQueryResponse(
         var paymentSignature: PaymentSignature,
         @SerializedName("creditCard")
         @Expose
-        var creditCard: CreditCard
+        var creditCard: CreditCardData
 )
 
 data class PaymentSignature(
@@ -84,7 +84,7 @@ data class PaymentSignature(
     }
 }
 
-data class CreditCard(
+data class CreditCardData(
         @SerializedName("error")
         @Expose
         val error: String,
