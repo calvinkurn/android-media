@@ -25,6 +25,8 @@ class IncentiveOvoBottomSheet(private val productRevIncentiveOvoDomain: ProductR
         const val url = "https://ecs7.tokopedia.net/android/others/ovo_incentive_bottom_sheet_image.png"
     }
 
+    private val reputationTracking: ReputationTracking by lazy { ReputationTracking() }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = View.inflate(context, layout, null)
         initView(view)
@@ -61,7 +63,6 @@ class IncentiveOvoBottomSheet(private val productRevIncentiveOvoDomain: ProductR
     }
 
     private fun hitContinueOrDismissTracker(checkBtnContinue: Boolean) {
-        val reputationTracking = ReputationTracking()
         if(checkBtnContinue) {
             reputationTracking.onClickContinueIncentiveOvoBottomSheetTracker(category)
         } else {
