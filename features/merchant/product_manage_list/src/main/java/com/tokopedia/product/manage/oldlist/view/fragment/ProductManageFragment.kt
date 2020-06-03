@@ -43,6 +43,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.config.GlobalConfig
@@ -1134,5 +1135,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     companion object {
         private const val LOCAL_PATH_IMAGE_LIST = "loca_img_list"
         private const val DESC_IMAGE_LIST = "desc_img_list"
+        const val EXTRA_PRODUCT_ID = "PRODUCT_ID"
+        const val EXTRA_IS_DUPLICATE = "IS_DUPLICATE"
     }
 }

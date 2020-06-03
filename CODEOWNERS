@@ -58,6 +58,8 @@
 /features/merchant/product_detail/                      @tokopedia/minion-stuart
 /features/merchant/product_detail_common/               @tokopedia/minion-stuart
 /features/merchant/product_draft_database/              @tokopedia/minion-stuart
+/features/merchant/product_add_edit/                    @tokopedia/minion-stuart
+/features/merchant/product_manage_common/               @tokopedia/minion-stuart
 /features/merchant/product_manage_item/                 @tokopedia/minion-stuart
 /features/merchant/product_manage_list/                 @tokopedia/minion-stuart
 /features/merchant/product_share/                       @tokopedia/minion-stuart
@@ -68,6 +70,7 @@
 /features/merchant/shop_common/                         @tokopedia/minion-stuart
 /features/merchant/shop_etalase_picker/                 @tokopedia/minion-stuart
 /features/merchant/shop_open/                           @tokopedia/minion-stuart
+/features/merchant/shop_showcase/                       @tokopedia/minion-stuart
 /features/merchant/shop_page/                           @tokopedia/minion-stuart
 
 /features/top_ads/top_ads_free_claim/                   @tokopedia/minion-skywalker
@@ -79,9 +82,11 @@
 /features/top_ads/top_ads_detail_sheet/                 @tokopedia/minion-skywalker
 
 /features/merchant/shop_settings/                       @tokopedia/minion-stuart
+/features/merchant/talk/                            	@tokopedia/minion-stuart
 /features/merchant/variant_common/                      @tokopedia/minion-stuart
 
 /features/merchant/seller_home/                         @tokopedia/minion-stuart
+/features/merchant/seller_onboarding/                   @tokopedia/minion-stuart
 /features/merchant/seller_home_drawer/                  @tokopedia/minion-stuart
 /libraries/kotlin_extensions/                           @tokopedia/minion-stuart
 
@@ -128,6 +133,7 @@
 /features/transaction/atc_common/               		@tokopedia/minion-bob
 /features/transaction/opportunity/               		@tokopedia/minion-bob
 /features/transaction/sellerorder/                      @tokopedia/minion-bob
+/features/transaction/buyerorder/                       @tokopedia/minion-bob
 /features/transaction/purchase_platform/        		@tokopedia/minion-bob
 /features/transaction/purchase_platform_common/ 		@tokopedia/minion-bob
 /features/logistic/logisticdata/                		@tokopedia/minion-bob
@@ -155,7 +161,6 @@
 /features/user/loginphone/                      		@tokopedia/minion-kevin
 /features/user/notifcenter/                     		@tokopedia/minion-kevin
 /features/user/attachproduct/                   		@tokopedia/minion-kevin
-/features/user/talk/                            		@tokopedia/minion-kevin
 /features/user/changephonenumber                		@tokopedia/minion-kevin
 /features/user/onboarding                       		@tokopedia/minion-kevin
 /features/user/phoneverification                		@tokopedia/minion-kevin
@@ -174,7 +179,7 @@
 /features/home/account-home/                        	@tokopedia/minion-kevin
 /features/user/loginfingerprint/                        @tokopedia/minion-kevin
 
-/features/operational/contact_us        				@tokopedia/minion-darth
+/features/operational/contact_us        				@tokopedia/minion-skywalker
 
 /features/fintech/common_wallet         				@tokopedia/minion-solo
 /features/fintech/instant_loan          				@tokopedia/minion-solo
@@ -200,9 +205,11 @@
 /features/payment/common_payment                        @tokopedia/minion-yoda
 /features/digital/instant_debit_bca                     @tokopedia/minion-yoda
 /features/fintech/wallet                				@tokopedia/minion-yoda
+/features/payment/thankyou_native                		@tokopedia/minion-yoda
 
 
 /libraries/adapter_delegate/							@tokopedia/core-team
+/libraries/akamai_bot_lib/							    @tokopedia/core-team
 /libraries/analytics/							        @tokopedia/core-team
 /libraries/analytics_debugger/							@tokopedia/core-team
 /libraries/analytics_debugger_noop/					    @tokopedia/core-team
@@ -228,6 +235,7 @@
 /libraries/encryption/							        @tokopedia/core-team
 /libraries/fingerprint/									@tokopedia/core-team
 /libraries/graph_view/									@tokopedia/core-team
+/libraries/graphql/									    @tokopedia/core-team
 /libraries/image_picker/								@tokopedia/core-team
 /libraries/image_preview/								@tokopedia/core-team
 /libraries/imageuploader/								@tokopedia/core-team
@@ -239,6 +247,7 @@
 /libraries/logger/										@tokopedia/core-team
 /libraries/oms/											@tokopedia/core-team
 /libraries/permissionchecker/							@tokopedia/core-team
+/libraries/product_photo_adapter/                       @tokopedia/minion-stuart
 /libraries/promotions_target/							@tokopedia/core-team
 /libraries/push_notification/							@tokopedia/core-team
 /libraries/react_native/								@tokopedia/core-team
@@ -260,13 +269,12 @@
 /libraries/youtubeutil/									@tokopedia/core-team
 /libraries/imagepreviewslider                           @tokopedia/core-team
 /libraries/blockcanary                                  @tokopedia/core-team
+/libraries/annotation_proc_central                      @tokopedia/core-team
 
 /tkpddiscovery/                                        	@tokopedia/core-team
 /tkpdsession/                                       	@tokopedia/core-team
 /tkpddigital/                                       	@tokopedia/core-team
 /tkpdinbox/                                         	@tokopedia/core-team
-/tkpdtransaction/                                   	@tokopedia/core-team
-/tkpdtransaction-common/                                @tokopedia/core-team
 /tkpdseller/                                        	@tokopedia/core-team
 
 /tkpddesign/                                        	@tokopedia/android-gatekeeper-legacy-code

@@ -5,8 +5,8 @@ import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.flight.airport.data.source.entity.ResponseFlightAirportSuggesstion
-import com.tokopedia.flight.airport.domain.FlightAirportMapper
+import com.tokopedia.flight.airportv2.data.source.entity.ResponseFlightAirportSuggesstion
+import com.tokopedia.flight.airportv2.domain.FlightAirportMapper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase

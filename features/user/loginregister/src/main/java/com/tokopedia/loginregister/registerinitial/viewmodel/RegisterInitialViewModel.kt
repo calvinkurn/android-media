@@ -1,8 +1,8 @@
 package com.tokopedia.loginregister.registerinitial.viewmodel
 
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.fragment.app.Fragment
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -37,7 +37,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
-import java.lang.RuntimeException
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named

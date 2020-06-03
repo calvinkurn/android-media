@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/chip_alphabet_header"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/chip_normal_small"
+    android:orientation="vertical"
+    android:layout_marginRight="@dimen/dp_8">
+
+    <TextView
+        android:id="@+id/chip_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:layout_marginRight="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_6"
+        android:layout_marginBottom="@dimen/dp_6"
+        android:background="@drawable/unify_chips_bg_img_rounded_corner"
+        android:textAlignment="center"
+        android:text="Test chips"
+        android:textColor="@color/grey_500"
+        android:textSize="@dimen/sp_14" />
+
+</LinearLayout>

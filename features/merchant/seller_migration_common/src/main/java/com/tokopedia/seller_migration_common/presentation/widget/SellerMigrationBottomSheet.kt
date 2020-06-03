@@ -24,14 +24,16 @@ abstract class SellerMigrationBottomSheet(val titles: List<String> = emptyList()
         val contents: List<String> = emptyList(),
         val images: ArrayList<String> = arrayListOf()) : BottomSheetUnify() {
 
+    companion object {
+        const val KEY_AUTO_LOGIN = "is_auto_login"
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setUpButtons()
         setupText()
         setupImages()
-        super.onViewCreated(view, savedInstanceState)
     }
-
-
 
     private fun setUpButtons() {
         sellerMigrationBottomSheetButton.setOnClickListener {
@@ -97,6 +99,7 @@ abstract class SellerMigrationBottomSheet(val titles: List<String> = emptyList()
         try {
             val intent = context?.packageManager?.getLaunchIntentForPackage(PACKAGE_SELLER_APP)
             if(intent != null) {
+                intent.putExtra(KEY_AUTO_LOGIN, true)
                 this.activity?.startActivity(intent)
             } else {
                 this.activity?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(APPLINK_PLAYSTORE + PACKAGE_SELLER_APP)))
