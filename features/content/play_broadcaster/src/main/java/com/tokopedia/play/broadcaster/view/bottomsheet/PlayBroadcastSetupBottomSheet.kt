@@ -232,7 +232,5 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
 
     companion object {
         private const val TAG = "PlayBroadcastSetupBottomSheet"
-
-        private const val MAX_HEIGHT_MULTIPLIER = 0.8
     }
 }
