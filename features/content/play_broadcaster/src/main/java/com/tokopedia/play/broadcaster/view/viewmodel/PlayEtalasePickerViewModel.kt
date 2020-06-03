@@ -81,7 +81,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
         job.cancelChildren()
     }
 
-    fun loadCurrentEtalaseProducts(etalaseId: Long, page: Int) {
+    fun loadEtalaseProducts(etalaseId: Long, page: Int) {
         val currentValue = _observableSelectedEtalase.value?.currentValue
         val etalase = etalaseMap[etalaseId]
         _observableSelectedEtalase.value = PageResult.Loading(

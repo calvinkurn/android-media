@@ -104,7 +104,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
         rvProduct.addItemDecoration(PlayGridTwoItemDecoration(requireContext()))
         scrollListener = object : EndlessRecyclerViewScrollListener(rvProduct.layoutManager!!) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.loadCurrentEtalaseProducts(etalaseId, page)
+                viewModel.loadEtalaseProducts(etalaseId, page)
             }
         }
         scrollListener.loadMoreNextPage()
