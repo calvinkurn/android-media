@@ -262,6 +262,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
                 showProgressDialog()
                 dialogInterface.dismiss()
                 RouteManager.route(context, ApplinkConstInternalGlobal.LOGOUT)
+                activity?.finish()
             }
             setNegativeButton(context.getString(R.string.seller_home_cancel)) {
                 dialogInterface, _ -> dialogInterface.dismiss()

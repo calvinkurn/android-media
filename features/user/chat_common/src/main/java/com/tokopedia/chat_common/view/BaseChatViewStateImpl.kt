@@ -115,7 +115,8 @@ open class BaseChatViewStateImpl(
 
     override fun updateHeader(chatroomViewModel: ChatroomViewModel, onToolbarClicked: () -> Unit) {
         val title = toolbar.findViewById<TextView>(R.id.title)
-        title.text = getInterlocutorName(chatroomViewModel.getHeaderName())
+        val interlocutorName = getInterlocutorName(chatroomViewModel.getHeaderName())
+        title.text = MethodChecker.fromHtml(interlocutorName)
 
         setLabel(chatroomViewModel.headerModel.label)
 
@@ -331,7 +332,7 @@ open class BaseChatViewStateImpl(
 
     override fun showErrorWebSocket(isWebSocketError: Boolean) {}
 
-    open fun getInterlocutorName(headerName: CharSequence): CharSequence = headerName
+    open fun getInterlocutorName(headerName: String): String = headerName
     open fun getRecyclerViewId() = R.id.recycler_view
     open fun getProgressId() = R.id.progress
     open fun getNewCommentId() = R.id.new_comment

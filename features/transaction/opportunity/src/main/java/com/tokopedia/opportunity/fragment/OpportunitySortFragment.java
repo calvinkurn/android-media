@@ -3,12 +3,13 @@ package com.tokopedia.opportunity.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
@@ -95,12 +96,12 @@ public class OpportunitySortFragment extends BasePresenterFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(com.tokopedia.core2.R.menu.menu_sort, menu);
+        inflater.inflate(R.menu.menu_sort, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == com.tokopedia.core2.R.id.action_close) {
+        if (item.getItemId() == R.id.action_close) {
             getActivity().finish();
             return true;
         } else

@@ -10,9 +10,11 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.presentation.viewmodel.ProductFlashSaleDataModel
@@ -27,7 +29,7 @@ import kotlinx.coroutines.launch
 class DynamicChannelMixLeftViewHolder(
         view: View?,
         private val dcEventHandler: DynamicChannelEventHandler
-) : AbstractViewHolder<DynamicChannelViewModel>(view), CoroutineScope {
+) : AbstractViewHolder<DynamicChannelViewModel>(view), CoroutineScope, TransparentProductFlashSaleClickListener {
 
     companion object {
         @LayoutRes
@@ -51,9 +53,14 @@ class DynamicChannelMixLeftViewHolder(
 
     override fun bind(element: DynamicChannelViewModel?) {
         element?.run {
+            dcEventHandler.onMixLeftBannerImpressed(dynamicChannelData, 1)
             setupHeader(dynamicChannelData)
             setupContent(dynamicChannelData)
         }
+    }
+
+    override fun onClickTransparentItem() {
+        image.performClick()
     }
 
     private fun setupHeader(channel: Channel) {
@@ -100,6 +107,7 @@ class DynamicChannelMixLeftViewHolder(
         channel.banner?.let{ banner ->
             setGradientBackground(bannerBackground, banner.gradientColor)
             image.loadImage(banner.imageUrl)
+            image.setOnClickListener { dcEventHandler.onClickMixLeftBannerImage(channel, 1) }
         }
     }
 
@@ -108,9 +116,10 @@ class DynamicChannelMixLeftViewHolder(
         recyclerViewProductList.resetLayout()
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerViewProductList.layoutManager = layoutManager
-        val typeFactoryImpl = OfficialStoreFlashSaleCardViewTypeFactoryImpl(dcEventHandler, channel)
+        val typeFactoryImpl = OfficialStoreFlashSaleCardViewTypeFactoryImpl(dcEventHandler, this, channel)
         val productDataList = convertDataToProductData(channel)
         adapter = MixWidgetAdapter(typeFactoryImpl)
+        adapter?.addElement(EmptyModel())
         adapter?.addElement(productDataList)
         recyclerViewProductList.adapter = adapter
         recyclerViewProductList.addOnScrollListener(getParallaxEffect())
@@ -146,13 +155,14 @@ class DynamicChannelMixLeftViewHolder(
         return object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (layoutManager?.findFirstVisibleItemPosition() == 0) {
-                    val firstView = layoutManager?.findViewByPosition(layoutManager?.findFirstVisibleItemPosition()!!)
-                    firstView?.let { it ->
+                if (layoutManager?.findFirstVisibleItemPosition().orZero() <= 1 && layoutManager?.findLastVisibleItemPosition().orZero() >= 1) {
+                    val firstTransparentView = layoutManager?.findViewByPosition(0)
+                    val firstNonTransparentView = layoutManager?.findViewByPosition(1)
+                    firstNonTransparentView?.let { it ->
                         val distanceFromLeft = it.left
-                        val translateX = (recyclerViewProductList.paddingLeft - distanceFromLeft) * -0.1f
+                        val translateX = (firstTransparentView?.width.orZero() - distanceFromLeft) * -0.1f
                         image.translationX = translateX
-                        val alpha = distanceFromLeft.toFloat() / recyclerViewProductList.paddingLeft.toFloat()
+                        val alpha = distanceFromLeft.toFloat() / (firstTransparentView?.width.orZero()).toFloat()
                         image.alpha = alpha
                     }
                 }else{

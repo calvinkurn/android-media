@@ -19,6 +19,10 @@ public class ImagePickerEditorBuilder implements Parcelable {
     int[] imageEditActionType;
     private boolean circlePreview;
     private ArrayList<ImageRatioTypeDef> imageRatioTypeDefs;
+    private String belowMinResolutionErrorMessage;
+    private String imageTooLargeErrorMessage;
+    private boolean recheckSizeAfterResize;
+
 
     public static ImagePickerEditorBuilder getDefaultBuilder(){
         return new ImagePickerEditorBuilder(
@@ -47,6 +51,30 @@ public class ImagePickerEditorBuilder implements Parcelable {
         return imageRatioTypeDefs;
     }
 
+    public void setBelowMinResolutionErrorMessage(String errorMessage) {
+        this.belowMinResolutionErrorMessage = errorMessage;
+    }
+
+    public String getBelowMinResolutionErrorMessage() {
+        return this.belowMinResolutionErrorMessage;
+    }
+
+    public String getImageTooLargeErrorMessage() {
+        return imageTooLargeErrorMessage;
+    }
+
+    public void setImageTooLargeErrorMessage(String imageTooLargeErrorMessage) {
+        this.imageTooLargeErrorMessage = imageTooLargeErrorMessage;
+    }
+
+    public boolean isRecheckSizeAfterResize() {
+        return recheckSizeAfterResize;
+    }
+
+    public void setRecheckSizeAfterResize(boolean recheckSizeAfterResize) {
+        this.recheckSizeAfterResize = recheckSizeAfterResize;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -57,6 +85,8 @@ public class ImagePickerEditorBuilder implements Parcelable {
         dest.writeIntArray(this.imageEditActionType);
         dest.writeByte(this.circlePreview ? (byte) 1 : (byte) 0);
         dest.writeList(this.imageRatioTypeDefs);
+        dest.writeString(this.belowMinResolutionErrorMessage);
+        dest.writeString(this.imageTooLargeErrorMessage);
     }
 
     protected ImagePickerEditorBuilder(Parcel in) {
@@ -64,6 +94,8 @@ public class ImagePickerEditorBuilder implements Parcelable {
         this.circlePreview = in.readByte() != 0;
         this.imageRatioTypeDefs = new ArrayList<ImageRatioTypeDef>();
         in.readList(this.imageRatioTypeDefs, ImageRatioTypeDef.class.getClassLoader());
+        this.belowMinResolutionErrorMessage = in.readString();
+        this.imageTooLargeErrorMessage = in.readString();
     }
 
     public static final Creator<ImagePickerEditorBuilder> CREATOR = new Creator<ImagePickerEditorBuilder>() {
