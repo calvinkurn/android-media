@@ -4,6 +4,8 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.network.constant.ErrorNetMessage;
+import com.tokopedia.seller.purchase.detail.data.CourierViewModel;
+import com.tokopedia.seller.purchase.detail.data.ListCourierViewModel;
 import com.tokopedia.transaction.common.data.order.ButtonData;
 import com.tokopedia.transaction.common.data.order.CourierServiceModel;
 import com.tokopedia.transaction.common.data.order.CourierViewModel;
