@@ -135,7 +135,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
 
-        if (successVoucherId != 0) {
+        if (successVoucherId != 0 && isNeedToShowSuccessDialog) {
             showSuccessCreateBottomSheet(successVoucherId)
         }
 
@@ -386,6 +386,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                                 Toaster.TYPE_NORMAL,
                                 context?.getString(R.string.mvc_oke).toBlankOrString())
                     }
+                    loadData(1)
                 }
                 .setOnFailUpdateVoucher { errorMessage ->
                     view?.run {
@@ -584,7 +585,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                     isToolbarAlreadyLoaded = true
                     setupSearchBar()
                 }
-                renderList(vouchers, vouchers.isNotEmpty())
+                renderList(vouchers, vouchers.isNotEmpty() && !isActiveVoucher)
             }
         }
     }
@@ -603,6 +604,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                     Toaster.TYPE_NORMAL,
                     context?.getString(R.string.mvc_oke).toBlankOrString())
         }
+        loadData(1)
     }
 
     private fun observeVoucherList() {

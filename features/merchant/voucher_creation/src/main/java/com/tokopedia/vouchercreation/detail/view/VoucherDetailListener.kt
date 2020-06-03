@@ -23,4 +23,6 @@ interface VoucherDetailListener {
     fun onTickerClicked()
 
     fun onSuccessDrawPostVoucher(postVoucherBitmap: Bitmap)
+
+    fun onErrorTryAgain()
 }

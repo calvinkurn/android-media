@@ -46,6 +46,8 @@ class VoucherDetailAdapterFactoryImpl(
 
     override fun type(model: DetailLoadingStateUiModel): Int = DetailLoadingStateViewHolder.RES_LAYOUT
 
+    override fun type(model: ErrorDetailUiModel): Int = ErrorDetailViewHolder.RES_LAYOUT
+
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             HeaderViewHolder.RES_LAYOUT -> HeaderViewHolder(parent) {
@@ -81,6 +83,9 @@ class VoucherDetailAdapterFactoryImpl(
                 voucherDetailListener.onSuccessDrawPostVoucher(it)
             }
             DetailLoadingStateViewHolder.RES_LAYOUT -> DetailLoadingStateViewHolder(parent)
+            ErrorDetailViewHolder.RES_LAYOUT -> ErrorDetailViewHolder(parent) {
+                voucherDetailListener.onErrorTryAgain()
+            }
 
             else -> super.createViewHolder(parent, type)
         }

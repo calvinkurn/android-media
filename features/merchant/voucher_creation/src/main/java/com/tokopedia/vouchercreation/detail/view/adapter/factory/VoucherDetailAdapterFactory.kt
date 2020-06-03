@@ -34,4 +34,6 @@ interface VoucherDetailAdapterFactory {
     fun type(model: PostVoucherUiModel): Int
 
     fun type(model: DetailLoadingStateUiModel): Int
+
+    fun type(model: ErrorDetailUiModel): Int
 }

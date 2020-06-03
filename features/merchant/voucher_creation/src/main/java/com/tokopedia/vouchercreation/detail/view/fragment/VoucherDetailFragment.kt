@@ -137,11 +137,15 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
         DownloadVoucherBottomSheet(
                 parent,
                 voucherUiModel?.image.toBlankOrString(),
-                voucherUiModel?.image.toBlankOrString())
+                voucherUiModel?.imageSquare.toBlankOrString())
                 .setOnDownloadClickListener {
 
                 }
                 .show(childFragmentManager)
+    }
+
+    override fun onErrorTryAgain() {
+        setupView()
     }
 
     private fun observeLiveData() {
@@ -154,7 +158,8 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
                         renderVoucherDetailInformation(result.data)
                     }
                     is Fail -> {
-                        //Todo: show error state
+                        clearAllData()
+                        renderList(listOf(ErrorDetailUiModel))
                     }
                 }
             }
@@ -166,6 +171,7 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
                                 VoucherStatusConst.ONGOING -> showCancellationSuccessToaster(false)
                                 VoucherStatusConst.NOT_STARTED -> showCancellationSuccessToaster(true)
                             }
+                            activity?.finish()
                         }
                     }
                     is Fail -> {
@@ -210,6 +216,7 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
     }
 
     private fun renderVoucherDetailInformation(voucherUiModel: VoucherUiModel) {
+        clearAllData()
         with(voucherUiModel) {
             setToolbarTitle(name)
             val startDate = DateTimeUtils.reformatUnsafeDateTime(startTime, DASH_DATE_FORMAT)
@@ -349,40 +356,5 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
                     Toaster.LENGTH_LONG,
                     Toaster.TYPE_ERROR)
         }
-    }
-
-    private fun showDummyData() {
-        val dummy = listOf(
-                //PromoPerformanceUiModel("Rp3.000.000", 30, 120),
-//                VoucherHeaderUiModel(),
-//                UsageProgressUiModel(30),
-                DividerUiModel(8),
-                TipsUiModel(
-                        context?.getString(R.string.mvc_detail_ticker_private).toBlankOrString(),
-                        context?.getString(R.string.mvc_detail_ticker_private_clickable).toBlankOrString()),
-                DividerUiModel(8),
-                InfoContainerUiModel(R.string.mvc_detail_voucher_info, listOf(
-                        SubInfoItemUiModel(R.string.mvc_voucher_target, "Khusus"),
-                        SubInfoItemUiModel(R.string.mvc_detail_voucher_name, "Voucher Hura Test Doang"),
-                        SubInfoItemUiModel(R.string.mvc_detail_promo_code, "TESTDOANG")
-                )),
-                DividerUiModel(2),
-                InfoContainerUiModel(R.string.mvc_detail_voucher_benefit, listOf(
-                        SubInfoItemUiModel(R.string.mvc_type_of_voucher, "Cashback"),
-                        SubInfoItemUiModel(R.string.mvc_detail_discount_amount, "10%"),
-                        SubInfoItemUiModel(R.string.mvc_detail_quota, "100"),
-                        SubInfoItemUiModel(R.string.mvc_detail_terms, "Min. pembelian Rp50.000 - <br>Max. potongan Rp20.000")
-                )),
-                DividerUiModel(2),
-                InfoContainerUiModel(R.string.mvc_detail_voucher_period, listOf(
-                        SubInfoItemUiModel(R.string.mvc_period, "17 Jan 2020, 08:30 WIB - <br>17 Feb 2020, 22:00 WIB")
-                )),
-                DividerUiModel(8),
-                FooterButtonUiModel("Bagikan Voucher", ""),
-                FooterUiModel(
-                        context?.getString(R.string.mvc_detail_ticker_stop_promo).toBlankOrString(),
-                        context?.getString(R.string.mvc_detail_ticker_here).toBlankOrString())
-        )
-        renderList(dummy)
     }
 }
