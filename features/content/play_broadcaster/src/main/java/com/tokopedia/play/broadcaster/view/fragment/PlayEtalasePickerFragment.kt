@@ -137,7 +137,6 @@ class PlayEtalasePickerFragment @Inject constructor(
 
             override fun onCanceled(view: PlaySearchBar) {
                 exitSearchMode()
-                viewModel.loadEtalaseList()
             }
 
             override fun onNewKeyword(view: PlaySearchBar, keyword: String) {
@@ -190,8 +189,6 @@ class PlayEtalasePickerFragment @Inject constructor(
 
         rvSuggestions.visible()
 
-        etalaseAdapter.clearAllItems()
-        etalaseAdapter.notifyDataSetChanged()
         viewModel.loadSuggestionsFromKeyword(psbSearch.text)
 
         bottomSheetCoordinator.showBottomAction(false)
