@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
 import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
+import com.tokopedia.play.broadcaster.type.EtalaseType
 import com.tokopedia.play.broadcaster.ui.model.PlayEtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.view.state.SelectableState
@@ -17,7 +18,8 @@ object PlayBroadcasterUiMapper {
                 name = it.name,
                 productMap = mutableMapOf(),
                 totalProduct = it.count,
-                stillHasProduct = true
+                stillHasProduct = true,
+                type = EtalaseType.getByType(it.type)
         )
     }
 

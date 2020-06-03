@@ -85,9 +85,8 @@ class PlayEtalasePickerViewModel @Inject constructor(
         val currentValue = _observableSelectedEtalase.value?.currentValue
         val etalase = etalaseMap[etalaseId]
         _observableSelectedEtalase.value = PageResult.Loading(
-                if (page == 1 || currentValue == null) PlayEtalaseUiModel.EMPTY.copy(
-                        name = etalase?.name.orEmpty()
-                ) else currentValue
+                if (page == 1 || currentValue == null) PlayEtalaseUiModel.Empty(name = etalase?.name.orEmpty())
+                else currentValue
         )
 
         scope.launch {
@@ -195,7 +194,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
             }
         } else {
             PageResult(
-                    currentValue = PlayEtalaseUiModel.EMPTY,
+                    currentValue = PlayEtalaseUiModel.Empty(),
                     state = ResultState.Fail(IllegalStateException("Etalase not found"))
             )
         }

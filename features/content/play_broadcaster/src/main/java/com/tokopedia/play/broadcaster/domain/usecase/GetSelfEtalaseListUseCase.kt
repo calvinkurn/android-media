@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.domain.usecase
 
 import com.tokopedia.play.broadcaster.dispatcher.PlayBroadcastDispatcher
+import com.tokopedia.play.broadcaster.type.EtalaseType
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.usecase.RequestParams
@@ -17,7 +18,7 @@ class GetSelfEtalaseListUseCase @Inject constructor(
         @Named(PlayBroadcastDispatcher.IO) private val ioDispatcher: CoroutineDispatcher,
         private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
         private val userSession: UserSessionInterface
-) : UseCase<ArrayList<ShopEtalaseModel>>(
+) : UseCase<List<ShopEtalaseModel>>(
         defaultDispatchers = ioDispatcher
 ) {
 
@@ -25,11 +26,18 @@ class GetSelfEtalaseListUseCase @Inject constructor(
         get() = GetShopEtalaseByShopUseCase.createRequestParams(
                 shopId = userSession.shopId,
                 hideNoCount = true,
-                hideShowCaseGroup = true,
+                hideShowCaseGroup = false,
                 isOwner = true
         )
 
-    override suspend fun executeOnBackground(): ArrayList<ShopEtalaseModel> {
-        return getShopEtalaseByShopUseCase.getData(params)
+    override suspend fun executeOnBackground(): List<ShopEtalaseModel> {
+        return getShopEtalaseByShopUseCase.getData(params).filter {
+            it.id.toInt() == ALL_PRODUCTS_ID || EtalaseType.getByType(it.type) == EtalaseType.User
+        }
+    }
+
+    companion object {
+
+        private const val ALL_PRODUCTS_ID = 2
     }
 }
