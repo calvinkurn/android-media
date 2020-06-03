@@ -9,10 +9,10 @@
     android:clickable="true"
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground"
-    android:layout_marginRight="@dimen/dp_4"
-    android:layout_marginEnd="@dimen/dp_4"
-    app:cardCornerRadius="@dimen/dp_8"
-    app:cardElevation="@dimen/dp_2"
+    android:layout_marginRight="@dimen/spacing_lvl2"
+    android:layout_marginEnd="@dimen/spacing_lvl2"
+    app:cardCornerRadius="@dimen/spacing_lvl2"
+    app:cardElevation="@dimen/spacing_lvl1"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true">
 
@@ -34,9 +34,9 @@
             layout="@layout/layout_live_badge"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -45,9 +45,9 @@
             layout="@layout/layout_viewer_badge"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
-            android:layout_marginStart="@dimen/dp_2"
-            android:layout_marginLeft="@dimen/dp_2"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginStart="@dimen/spacing_lvl1"
+            android:layout_marginLeft="@dimen/spacing_lvl1"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             app:layout_constraintStart_toEndOf="@+id/live_badge"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -56,9 +56,9 @@
             layout="@layout/layout_promo_badge"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginBottom="@dimen/dp_4"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
+            android:layout_marginBottom="@dimen/spacing_lvl2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/container_content" />
 
@@ -74,9 +74,9 @@
                 android:id="@+id/channel_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginEnd="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                android:layout_marginEnd="@dimen/spacing_lvl3"
+                android:layout_marginTop="@dimen/spacing_lvl3"
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:textColor="@android:color/white"
@@ -85,16 +85,16 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:typographyType="heading_6"
-                tools:layout_editor_absoluteX="8dp"
+                tools:layout_editor_absoluteX="@dimen/spacing_lvl3"
                 tools:text="Google Assistant review with me" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/channel_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginEnd="@dimen/dp_8"
-                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                android:layout_marginEnd="@dimen/spacing_lvl3"
+                android:layout_marginBottom="@dimen/spacing_lvl3"
                 android:textColor="@android:color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

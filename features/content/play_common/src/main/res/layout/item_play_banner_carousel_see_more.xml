@@ -7,8 +7,8 @@
     android:foreground="?attr/selectableItemBackground"
     android:layout_width="@dimen/play_banner_item_carousel_width"
     android:layout_height="@dimen/play_banner_item_carousel_height"
-    app:cardCornerRadius="@dimen/dp_8"
-    app:cardElevation="@dimen/dp_4"
+    app:cardCornerRadius="@dimen/spacing_lvl3"
+    app:cardElevation="@dimen/spacing_lvl2"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true">
 
@@ -44,8 +44,8 @@
 
         <ImageView
             android:id="@+id/banner_mix_arrow"
-            android:layout_width="@dimen/dp_48"
-            android:layout_height="@dimen/dp_48"
+            android:layout_width="@dimen/spacing_lvl8"
+            android:layout_height="@dimen/spacing_lvl8"
             app:srcCompat="@drawable/ic_play_banner_see_more"
             app:layout_constraintBottom_toTopOf="@+id/see_more"
             app:layout_constraintEnd_toEndOf="parent"
