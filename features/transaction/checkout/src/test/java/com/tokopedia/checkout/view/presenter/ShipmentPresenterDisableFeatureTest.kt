@@ -48,7 +48,7 @@ object ShipmentPresenterDisableFeatureTest : Spek({
 
     val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase = mockk()
     val compositeSubscription: CompositeSubscription = mockk(relaxed = true)
-    val checkoutUseCase: CheckoutUseCase = mockk()
+    val checkoutUseCase: CheckoutGqlUseCase = mockk()
     val graphqlUseCase: GraphqlUseCase = mockk(relaxUnitFun = true)
     val getShipmentAddressFormGqlUseCase = GetShipmentAddressFormGqlUseCase("", graphqlUseCase, ShipmentMapper(), TestSchedulers)
     val editAddressUseCase: EditAddressUseCase = mockk()

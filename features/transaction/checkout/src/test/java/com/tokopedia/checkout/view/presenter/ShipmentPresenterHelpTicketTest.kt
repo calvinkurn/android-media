@@ -40,7 +40,7 @@ object ShipmentPresenterHelpTicketTest : Spek({
 
     val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase = mockk()
     val compositeSubscription: CompositeSubscription = mockk(relaxed = true)
-    val checkoutUseCase: CheckoutUseCase = mockk()
+    val checkoutUseCase: CheckoutGqlUseCase = mockk()
     val getShipmentAddressFormGqlUseCase: GetShipmentAddressFormGqlUseCase = mockk()
     val editAddressUseCase: EditAddressUseCase = mockk()
     val changeShippingAddressGqlUseCase: ChangeShippingAddressGqlUseCase = mockk()
