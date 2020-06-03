@@ -190,7 +190,9 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
             when (it) {
                 is Success -> {
                     SomAnalytics.eventClickKonfirmasi(true)
-                    confirmShippingResponseMsg = it.data.listMessage.first()
+                    if (it.data.listMessage.isNotEmpty()) {
+                        confirmShippingResponseMsg = it.data.listMessage.first()
+                    }
                     activity?.setResult(Activity.RESULT_OK, Intent().apply {
                         putExtra(RESULT_CONFIRM_SHIPPING, confirmShippingResponseMsg)
                     })
