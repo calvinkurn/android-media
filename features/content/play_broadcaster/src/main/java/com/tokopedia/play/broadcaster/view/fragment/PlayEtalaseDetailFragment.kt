@@ -55,10 +55,6 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
 
-    override fun isRootFragment(): Boolean {
-        return false
-    }
-
     override fun refresh() {
         selectableProductAdapter.notifyDataSetChanged()
     }
@@ -117,12 +113,12 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
     private fun observeProductsInSelectedEtalase() {
         viewModel.observableSelectedEtalase.observe(viewLifecycleOwner, Observer {
-
+            bottomSheetCoordinator.setupTitle(it.currentValue.name)
+            tvInfo.text = getString(R.string.play_product_select_max_info, viewModel.maxProduct)
             when (it.state) {
                 is ResultState.Success -> {
                     selectableProductAdapter.setItemsAndAnimateChanges(it.currentValue.productMap.values.flatten())
-                    bottomSheetCoordinator.setupTitle(it.currentValue.name)
-                    tvInfo.text = getString(R.string.play_product_select_max_info, viewModel.maxProduct)
+
                     scrollListener.setHasNextPage(it.currentValue.stillHasProduct)
                     scrollListener.updateStateAfterGetData()
                 }

@@ -63,7 +63,7 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
                 if (!fragmentBreadcrumbs.empty()) {
                     val lastFragmentBreadcrumbs = fragmentBreadcrumbs.pop()
                     childFragmentManager.popBackStack(lastFragmentBreadcrumbs.fragmentClass.name, 0)
-                    childFragmentManager.findFragmentById(R.id.fl_fragment)?.let { setupHeader(it) }
+                    setupHeader()
                 } else cancel()
             }
         }
@@ -109,8 +109,8 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
 
     override fun navigateToFragment(fragmentClass: Class<out Fragment>, extras: Bundle) {
         addBreadcrumb()
-        val fragment = openFragment(fragmentClass, extras)
-        setupHeader(fragment)
+        openFragment(fragmentClass, extras)
+        setupHeader()
     }
 
     override fun setupTitle(title: String) {
@@ -125,15 +125,11 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         show(fragmentManager, TAG)
     }
 
-    private fun setupHeader(fragment: Fragment) {
-        if (fragment is PlayBaseSetupFragment) {
-            ivBack.setImageResource(
-                    if (fragment.isRootFragment()) com.tokopedia.unifycomponents.R.drawable.unify_bottomsheet_close
-                    else R.drawable.ic_system_action_back_grayscale_24
-            )
-        } else {
-            ivBack.setImageResource(com.tokopedia.unifycomponents.R.drawable.unify_bottomsheet_close)
-        }
+    private fun setupHeader() {
+        ivBack.setImageResource(
+                if (fragmentBreadcrumbs.isEmpty()) com.tokopedia.unifycomponents.R.drawable.unify_bottomsheet_close
+                else R.drawable.ic_system_action_back_grayscale_24
+        )
     }
 
     private fun setupDialog(dialog: Dialog) {

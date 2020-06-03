@@ -82,8 +82,6 @@ class PlayEtalasePickerFragment @Inject constructor(
 
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
 
-    override fun isRootFragment(): Boolean = true
-
     override fun refresh() {
         etalaseAdapter.notifyDataSetChanged()
     }

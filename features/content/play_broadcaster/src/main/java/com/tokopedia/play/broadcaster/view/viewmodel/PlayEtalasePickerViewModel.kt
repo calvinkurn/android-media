@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.debounce
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.math.min
 
 /**
  * Created by jegul on 26/05/20
@@ -82,8 +83,11 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
     fun loadCurrentEtalaseProducts(etalaseId: Long, page: Int) {
         val currentValue = _observableSelectedEtalase.value?.currentValue
+        val etalase = etalaseMap[etalaseId]
         _observableSelectedEtalase.value = PageResult.Loading(
-                if (page == 1 || currentValue == null) PlayEtalaseUiModel.EMPTY else currentValue
+                if (page == 1 || currentValue == null) PlayEtalaseUiModel.EMPTY.copy(
+                        name = etalase?.name.orEmpty()
+                ) else currentValue
         )
         scope.launch {
             _observableSelectedEtalase.value = fetchEtalaseProduct(etalaseId, page)
@@ -195,9 +199,22 @@ class PlayEtalasePickerViewModel @Inject constructor(
     private suspend fun broadcastNewEtalaseList(etalaseMap: Map<Long, PlayEtalaseUiModel>) {
         _observableEtalase.value = withContext(computationDispatcher) {
             etalaseMap.values.map { etalase ->
+
+                val currentProductList = etalase.productMap[1]
+                val newProductList = mutableListOf<ProductContentUiModel>()
+                for (index in 0 until min((currentProductList?.size ?: 0), MAX_PRODUCT_IMAGE_COUNT)) {
+                    newProductList.add(
+                            if (index % 2 == 0) {
+                                currentProductList!![(index + 1) / 2]
+                            } else {
+                                currentProductList!![index + (MAX_PRODUCT_IMAGE_COUNT - index) / 2]
+                            }
+                    )
+                }
+
                 etalase.copy(
                         productMap = mutableMapOf(
-                                1 to etalase.productMap[1].orEmpty().take(MAX_PRODUCT_IMAGE_COUNT)
+                                1 to newProductList
                         )
                 )
             }

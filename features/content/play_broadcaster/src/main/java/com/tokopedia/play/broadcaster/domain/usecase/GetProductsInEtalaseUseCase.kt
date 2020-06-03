@@ -65,6 +65,7 @@ class GetProductsInEtalaseUseCase @Inject constructor(
         private const val PARAMS_PAGE = "page"
         private const val PARAMS_PER_PAGE = "perPage"
         private const val PARAMS_ETALASE_ID = "fmenu"
+        private const val PARAMS_SORT = "sort"
 
         fun createParams(
                 shopId: String,
@@ -76,7 +77,8 @@ class GetProductsInEtalaseUseCase @Inject constructor(
                 PARAMS_FILTER to mapOf(
                         PARAMS_PAGE to page,
                         PARAMS_PER_PAGE to perPage,
-                        PARAMS_ETALASE_ID to etalaseId
+                        PARAMS_ETALASE_ID to etalaseId,
+                        PARAMS_SORT to 0
                 )
         )
     }

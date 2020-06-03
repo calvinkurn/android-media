@@ -8,8 +8,6 @@ import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
  */
 abstract class PlayBaseSetupFragment : TkpdBaseV4Fragment() {
 
-    abstract fun isRootFragment(): Boolean
-
     abstract fun refresh()
 
     protected open val bottomSheetCoordinator: PlayBottomSheetCoordinator
