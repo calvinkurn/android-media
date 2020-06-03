@@ -23,20 +23,18 @@ import com.tokopedia.applink.SessionApplinkModuleLoader;
 import com.tokopedia.applink.TkpdApplinkDelegate;
 import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModule;
 import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModuleLoader;
+import com.tokopedia.buyerorder.common.applink.TransactionApplinkModule;
+import com.tokopedia.buyerorder.common.applink.TransactionApplinkModuleLoader;
 import com.tokopedia.cachemanager.PersistentCacheManager;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.createpost.view.applink.CreatePostModule;
 import com.tokopedia.createpost.view.applink.CreatePostModuleLoader;
 import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModule;
 import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModuleLoader;
-import com.tokopedia.discovery.applink.DiscoveryApplinkModule;
-import com.tokopedia.discovery.applink.DiscoveryApplinkModuleLoader;
 import com.tokopedia.events.deeplink.EventsDeepLinkModule;
 import com.tokopedia.events.deeplink.EventsDeepLinkModuleLoader;
 import com.tokopedia.explore.applink.ExploreApplinkModule;
@@ -84,15 +82,14 @@ import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.HistoryNotification;
 import com.tokopedia.recentview.view.applink.RecentViewApplinkModule;
 import com.tokopedia.recentview.view.applink.RecentViewApplinkModuleLoader;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.logisticorder.applink.TrackingAppLinkModule;
-import com.tokopedia.logisticorder.applink.TrackingAppLinkModuleLoader;
-import com.tokopedia.transaction.applink.TransactionApplinkModule;
-import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
 import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneApplinkModule;
 import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneApplinkModuleLoader;
 import com.tokopedia.url.TokopediaUrl;
@@ -112,19 +109,13 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
-
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
-        CoreDeeplinkModule.class,
         InboxDeeplinkModule.class,
         SellerApplinkModule.class,
         TransactionApplinkModule.class,
         ProductDetailApplinkModule.class,
         HomeApplinkModule.class,
-        DiscoveryApplinkModule.class,
         SessionApplinkModule.class,
         FeedDeeplinkModule.class,
         InstantDebitBcaApplinkModule.class,
@@ -136,7 +127,6 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
         KolApplinkModule.class,
         ExploreApplinkModule.class,
         InterestPickApplinkModule.class,
-        TrackingAppLinkModule.class,
         HowtopayApplinkModule.class,
         HomeNavigationApplinkModule.class,
         AccountHomeApplinkModule.class,
@@ -167,7 +157,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new TransactionApplinkModuleLoader(),
                     new ProductDetailApplinkModuleLoader(),
                     new HomeApplinkModuleLoader(),
-                    new DiscoveryApplinkModuleLoader(),
                     new SessionApplinkModuleLoader(),
                     new FeedDeeplinkModuleLoader(),
                     new InstantDebitBcaApplinkModuleLoader(),
@@ -178,7 +167,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new KolApplinkModuleLoader(),
                     new ExploreApplinkModuleLoader(),
                     new InterestPickApplinkModuleLoader(),
-                    new TrackingAppLinkModuleLoader(),
                     new HowtopayApplinkModuleLoader(),
                     new HomeNavigationApplinkModuleLoader(),
                     new AccountHomeApplinkModuleLoader(),
@@ -330,7 +318,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
                     if (getApplicationContext() instanceof TkpdCoreRouter) {
                         taskStackBuilder.addNextIntent(
-                                HomeRouter.getHomeActivityInterfaceRouter(this)
+                                ((com.tokopedia.core.TkpdCoreRouter) getApplicationContext()).getHomeIntent(this)
                         );
                         getIntent().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     }

@@ -8,7 +8,7 @@ interface FlashSaleCardListener {
     fun onBannerSeeMoreClicked(applink: String, channel: DynamicHomeChannel.Channels)
 
     //flash sale card listener
-    fun onFlashSaleCardImpressed(position: Int, channel: DynamicHomeChannel.Channels)
+    fun onFlashSaleCardImpressed(position: Int, channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid)
     fun onFlashSaleCardClicked(position: Int, channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, applink: String)
 
 }

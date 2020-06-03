@@ -1009,8 +1009,17 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     }
 
     override fun processGetWishlistData() {
+        val variables = HashMap<String, Any>()
+
+        variables[GetWishlistUseCase.PAGE] = GetWishlistUseCase.DEFAULT_PAGE
+        variables[GetWishlistUseCase.COUNT] = GetWishlistUseCase.DEFAULT_COUNT
+        variables[GetWishlistUseCase.FILTER] = mapOf(GetWishlistUseCase.SOURCE to GetWishlistUseCase.SOURCE_CART)
+
+        val requestParams = RequestParams.create()
+        requestParams.putAll(variables)
+
         compositeSubscription.add(
-                getWishlistUseCase?.createObservable(RequestParams.EMPTY)
+                getWishlistUseCase?.createObservable(requestParams)
                         ?.subscribe(GetWishlistSubscriber(view, this))
         )
     }
@@ -1030,20 +1039,31 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
         var productId = 0
         var shopId = 0
+        var productName = ""
+        var productCategory = ""
+        var productPrice = ""
         var externalSource = ""
         var clickUrl = ""
         if (productModel is CartWishlistItemHolderData) {
             productId = if (productModel.id.isNotBlank()) Integer.parseInt(productModel.id) else 0
             shopId = if (productModel.shopId.isNotBlank()) Integer.parseInt(productModel.shopId) else 0
+            productName = productModel.name
+            productCategory = productModel.category
+            productPrice = productModel.price
             externalSource = AddToCartRequestParams.ATC_FROM_WISHLIST
         } else if (productModel is CartRecentViewItemHolderData) {
             productId = if (productModel.id.isNotBlank()) Integer.parseInt(productModel.id) else 0
             shopId = if (productModel.shopId.isNotBlank()) Integer.parseInt(productModel.shopId) else 0
+            productName = productModel.name
+            productPrice = productModel.price
             externalSource = AddToCartRequestParams.ATC_FROM_RECENT_VIEW
         } else if (productModel is CartRecommendationItemHolderData) {
             val (recommendationItem) = productModel
             productId = recommendationItem.productId
             shopId = recommendationItem.shopId
+            productName = recommendationItem.name
+            productCategory = recommendationItem.categoryBreadcrumbs
+            productPrice = recommendationItem.price
             externalSource = AddToCartRequestParams.ATC_FROM_RECOMMENDATION
             clickUrl = recommendationItem.clickUrl
         }
@@ -1058,6 +1078,9 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             this.notes = ""
             this.warehouseId = 0
             this.atcFromExternalSource = externalSource
+            this.productName = productName
+            this.category = productCategory
+            this.price = productPrice
         }
 
         val requestParams = RequestParams.create()

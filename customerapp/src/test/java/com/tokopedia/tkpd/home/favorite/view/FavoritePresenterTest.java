@@ -6,12 +6,9 @@ import android.content.res.Resources;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.tkpd.home.favorite.data.FavoriteDataRepository;
-import com.tokopedia.tkpd.home.favorite.domain.interactor.AddFavoriteShopUseCase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetAllDataFavoriteUseCase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetFavoriteShopUsecase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetInitialDataPageUsecase;
@@ -21,19 +18,14 @@ import com.tokopedia.tkpd.home.favorite.domain.model.TopAdsShop;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.DataFavoriteMapper;
 
 import org.junit.Before;
-import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import rx.Observable;
 import rx.Scheduler;
 import rx.android.plugins.RxAndroidPlugins;
 import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.schedulers.Schedulers;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyList;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -96,8 +88,6 @@ public class FavoritePresenterTest {
     @Mock
     private DataFavoriteMapper favoriteMapper;
     @Mock
-    private PagingHandler pagingHandler;
-    @Mock
     private FavoriteContract.View view;
     @Mock
     private FavoriteDataRepository repository;
@@ -107,8 +97,6 @@ public class FavoritePresenterTest {
     private FavoriteShop mockFavoriteShop;
     @Mock
     private TopAdsShop mockTopAdsShop;
-    @Mock
-    private PagingHandler.PagingHandlerModel mockPagingHandler;
     @Mock
     private Resources resources;
 

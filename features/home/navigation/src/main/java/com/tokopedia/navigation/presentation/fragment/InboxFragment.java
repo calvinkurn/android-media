@@ -2,12 +2,13 @@ package com.tokopedia.navigation.presentation.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-import android.view.View;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -18,16 +19,15 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.internal.ApplinkConstInternalOperational;
 import com.tokopedia.discovery.common.manager.ProductCardOptionsManager;
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel;
 import com.tokopedia.navigation.GlobalNavAnalytics;
-import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.analytics.InboxGtmTracker;
 import com.tokopedia.navigation.domain.model.Inbox;
 import com.tokopedia.navigation.domain.model.Recommendation;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapter;
-import com.tokopedia.navigation.presentation.view.InboxAdapterListener;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapterTypeFactory;
 import com.tokopedia.navigation.presentation.adapter.RecomItemDecoration;
 import com.tokopedia.navigation.presentation.base.BaseTestableParentFragment;
@@ -35,6 +35,7 @@ import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.InboxPresenter;
+import com.tokopedia.navigation.presentation.view.InboxAdapterListener;
 import com.tokopedia.navigation.presentation.view.InboxView;
 import com.tokopedia.navigation_common.model.NotificationsModel;
 import com.tokopedia.network.utils.ErrorHandler;
@@ -44,19 +45,20 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
+import com.tokopedia.unifycomponents.Toaster;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.unifycomponents.Toaster;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by meta on 19/06/18.
@@ -73,6 +75,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private static final String PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition";
     private static final String WIHSLIST_STATUS_IS_WISHLIST = "isWishlist";
     private static final int REQUEST_FROM_PDP = 138;
+    private static final String className = "com.tokopedia.navigation.presentation.fragment.InboxFragment";
 
     @Inject
     InboxPresenter presenter;
@@ -340,9 +343,9 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
                 if (getActivity() != null
                         && getActivity().getApplicationContext() != null) {
                     TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData("clickInboxChat",
-                                        "inbox - talk",
-                                        "click on diskusi product",
-                                        ""));
+                            "inbox - talk",
+                            "click on diskusi product",
+                            ""));
 
                     RouteManager.route(getActivity(), ApplinkConstInternalGlobal.INBOX_TALK);
                 }
@@ -447,7 +450,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     private void onImpressionTopAds(RecommendationItem item) {
-        new ImpresionTask().execute(item.getTrackerImageUrl());
+        new ImpresionTask(getActivity().getClass().getName()).execute(item.getTrackerImageUrl());
         InboxGtmTracker.getInstance().addInboxProductViewImpressions(item, item.getPosition(), item.isTopAds());
     }
 
@@ -456,7 +459,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     private void onClickTopAds(RecommendationItem item) {
-        new ImpresionTask().execute(item.getClickUrl());
+        new ImpresionTask(getActivity().getClass().getName()).execute(item.getClickUrl());
         InboxGtmTracker.getInstance().eventInboxProductClick(getContext(), item, item.getPosition(), item.isTopAds());
     }
 

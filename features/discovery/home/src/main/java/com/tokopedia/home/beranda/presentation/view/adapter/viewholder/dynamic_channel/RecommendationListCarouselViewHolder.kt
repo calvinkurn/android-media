@@ -88,16 +88,17 @@ class RecommendationListCarouselViewHolder(itemView: View,
                 }
                 val newList : MutableList<HomeRecommendationListCarousel> = channel.grids.map {
                     HomeRecommendationListData(
-                            it.imageUrl,
-                            it.name,
-                            it.discount,
-                            it.slashedPrice,
-                            it.price,
-                            it.applink,
-                            channel.grids.size > 1,
-                            channel,
-                            it,
-                            listener
+                            recommendationImageUrl = it.imageUrl,
+                            recommendationTitle =  it.name,
+                            recommendationDiscountLabel = it.discount,
+                            recommendationSlashedPrice = it.slashedPrice,
+                            recommendationPrice = it.price,
+                            recommendationApplink = it.applink,
+                            isCarousel = channel.grids.size > 1,
+                            isTopAds = it.isTopads,
+                            channel = channel,
+                            grid = it,
+                            listener = listener
                     )
                 }.toMutableList()
                 if(channel.grids.size > 1 && channel.header.applink.isNotEmpty()) newList.add(HomeRecommendationListSeeMoreData(channel, listener))
@@ -148,7 +149,8 @@ class RecommendationListCarouselViewHolder(itemView: View,
                                 discountPercentage = recommendation.recommendationDiscountLabel,
                                 slashedPrice = recommendation.recommendationSlashedPrice,
                                 formattedPrice = recommendation.recommendationPrice,
-                                hasAddToCartButton = recommendation.channel.hasCloseButton
+                                hasAddToCartButton = recommendation.channel.hasCloseButton,
+                                isTopAds = recommendation.isTopAds
                         )
                 )
                 val addToCartButton = recommendationCard.findViewById<UnifyButton>(R.id.buttonAddToCart)
@@ -172,7 +174,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
         override fun bind(homeRecommendationListData: HomeRecommendationListCarousel) {
             if(homeRecommendationListData is HomeRecommendationListSeeMoreData) {
                 container.setOnClickListener {
-                    HomePageTrackingV2.RecommendationList.sendRecommendationListSeeAllClick(homeRecommendationListData.channel)
+                    HomePageTrackingV2.RecommendationList.sendRecommendationListSeeAllCardClick(homeRecommendationListData.channel)
                     homeRecommendationListData.listener.onDynamicChannelClicked(applink = homeRecommendationListData.channel.header.applink)
                 }
             }
@@ -189,6 +191,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
             val recommendationPrice: String,
             val recommendationApplink: String,
             val isCarousel: Boolean,
+            val isTopAds: Boolean,
             val channel: DynamicHomeChannel.Channels,
             val grid: DynamicHomeChannel.Grid,
             val listener: HomeCategoryListener
