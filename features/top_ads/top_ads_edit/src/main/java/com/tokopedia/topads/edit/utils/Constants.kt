@@ -75,6 +75,7 @@ object Constants {
     const val KEYWORD_SOURCE ="es"
     const val INPUT = "input"
     const val DEBOUNCE_CONST:Long = 200
+    const val MULTIPLY_CONST = 50
 
     var locale = Locale("in", "ID")
 

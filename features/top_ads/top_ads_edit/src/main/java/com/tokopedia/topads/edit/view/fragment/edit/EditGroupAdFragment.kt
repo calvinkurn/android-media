@@ -26,6 +26,7 @@ import com.tokopedia.topads.edit.utils.Constants.GROUPKEY
 import com.tokopedia.topads.edit.utils.Constants.GROUP_ID
 import com.tokopedia.topads.edit.utils.Constants.GROUP_NAME
 import com.tokopedia.topads.edit.utils.Constants.MULTIPLIER
+import com.tokopedia.topads.edit.utils.Constants.MULTIPLY_CONST
 import com.tokopedia.topads.edit.utils.Constants.NAME_EDIT
 import com.tokopedia.topads.edit.utils.Constants.PRICE_BID
 import com.tokopedia.topads.edit.utils.Constants.PRODUCT
@@ -205,6 +206,11 @@ class EditGroupAdFragment : BaseDaggerFragment() {
                         validation2 = false
                         actionEnable()
                         setMessageErrorField(getString(R.string.max_bid_error), maxBid, true)
+                    }
+                    result % MULTIPLY_CONST != 0 -> {
+                        validation2 = false
+                        actionEnable()
+                        setMessageErrorField(getString(R.string.topads_common_50_multiply_error), MULTIPLY_CONST, true)
                     }
                     else -> {
                         validation2 = true
