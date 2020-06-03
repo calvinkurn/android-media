@@ -1,6 +1,5 @@
 package com.tokopedia.power_merchant.subscribe.view.fragment
 
-
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -19,6 +18,7 @@ import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.power_merchant.subscribe.ACTION_ACTIVATE
@@ -32,10 +32,15 @@ import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantCan
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantNotificationBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantNotificationBottomSheet.CTAMode
 import com.tokopedia.power_merchant.subscribe.view.contract.PmSubscribeContract
+import com.tokopedia.power_merchant.subscribe.view.model.ViewState
+import com.tokopedia.power_merchant.subscribe.view.model.ViewState.*
+import com.tokopedia.power_merchant.subscribe.view.viewmodel.PmSubscribeViewModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey.ANDROID_PM_F1_ENABLED
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user_identification_common.KYCConstant.MERCHANT_KYC_PROJECT_ID
 import com.tokopedia.user_identification_common.KYCConstant.PARAM_PROJECT_ID
@@ -43,13 +48,13 @@ import com.tokopedia.user_identification_common.KYCConstant.STATUS_VERIFIED
 import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.*
 import javax.inject.Inject
 
-class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract.View {
+class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     @Inject
-    lateinit var presenter: PmSubscribeContract.Presenter
+    lateinit var viewModel: PmSubscribeViewModel
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
     @Inject
-    lateinit var powerMerchantTracking:PowerMerchantTracking
+    lateinit var powerMerchantTracking: PowerMerchantTracking
 
     private var bottomSheetCancel: PowerMerchantCancelBottomSheet? = null
 
@@ -66,7 +71,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
                         .baseAppComponent(appComponent)
                         .build().inject(this)
             }
-        presenter.attachView(this)
     }
 
     companion object {
@@ -88,9 +92,11 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        observeGetPmStatusInfo()
+        observeViewState()
 
         if (remoteConfig.getBoolean(ANDROID_PM_F1_ENABLED, false)) {
-            presenter.getPmStatusInfo(userSessionInterface.shopId)
+            viewModel.getPmStatusInfo(userSessionInterface.shopId)
         } else {
             activity?.let {
                 if (userSessionInterface.isGoldMerchant) {
@@ -103,37 +109,37 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         }
     }
 
-    override fun cancelMembership() {
+    private fun cancelMembership() {
         redirectToPMCancellationQuestionnairePage()
     }
 
-    override fun onSuccessCancelMembership() {
+    private fun onSuccessCancelMembership() {
         showToasterCancellationSuccess()
         refreshData()
     }
 
-    override fun refreshData() {
-        presenter.getPmStatusInfo(userSessionInterface.shopId)
+    private fun refreshData() {
+        viewModel.getPmStatusInfo(userSessionInterface.shopId)
     }
 
-    override fun onErrorCancelMembership(throwable: Throwable) {
+    private fun onErrorCancelMembership(throwable: Throwable) {
         showToasterError(throwable)
     }
 
-    override fun showLoading() {
+    private fun showLoading() {
         mainContainer.hide()
         btnCallToAction.hide()
         progressBar.show()
     }
 
-    override fun hideLoading() {
+    private fun hideLoading() {
         mainContainer.show()
         progressBar.hide()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        presenter.detachView()
+        viewModel.detachView()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -149,9 +155,27 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         }
     }
 
-    override fun showEmptyState(throwable: Throwable) {
+    private fun showEmptyState(throwable: Throwable) {
         NetworkErrorHelper.showEmptyState(context, view, ErrorHandler.getErrorMessage(context, throwable)) {
             refreshData()
+        }
+    }
+
+    private fun observeGetPmStatusInfo() {
+        observe(viewModel.getPmStatusInfoResult) {
+            when(it) {
+                is Success -> onSuccessGetPmInfo(it.data)
+                is Fail -> showEmptyState(it.throwable)
+            }
+        }
+    }
+
+    private fun observeViewState() {
+        observe(viewModel.viewState) {
+            when(it) {
+                is ShowLoading -> showLoading()
+                is HideLoading -> hideLoading()
+            }
         }
     }
 
@@ -208,7 +232,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         bottomSheetCancel?.show(childFragmentManager)
     }
 
-    override fun onSuccessGetPmInfo(powerMerchantStatus: PowerMerchantStatus) {
+    private fun onSuccessGetPmInfo(powerMerchantStatus: PowerMerchantStatus) {
         val shopStatusModel = powerMerchantStatus.goldGetPmOsStatus.result.data
         val shopStatus = powerMerchantStatus.goldGetPmOsStatus.result.data
 

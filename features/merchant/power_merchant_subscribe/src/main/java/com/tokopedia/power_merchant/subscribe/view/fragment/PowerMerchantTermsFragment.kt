@@ -12,6 +12,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.hideLoading
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.showLoading
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.ACTION_ACTIVATE
@@ -25,9 +26,12 @@ import com.tokopedia.power_merchant.subscribe.URL_GAINS_SCORE_POINT
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantNotificationBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantNotificationBottomSheet.*
-import com.tokopedia.power_merchant.subscribe.view.contract.PmTermsContract
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment.Companion.APPLINK_POWER_MERCHANT_KYC
+import com.tokopedia.power_merchant.subscribe.view.model.ViewState.*
+import com.tokopedia.power_merchant.subscribe.view.viewmodel.PmTermsViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseWebViewFragment
 import com.tokopedia.webview.KEY_URL
@@ -37,12 +41,12 @@ import javax.inject.Inject
 /**
  * @author by milhamj on 14/06/19.
  */
-class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
+class PowerMerchantTermsFragment : BaseWebViewFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
     @Inject
-    lateinit var presenter: PmTermsContract.Presenter
+    lateinit var viewModel: PmTermsViewModel
     @Inject
     lateinit var powerMerchantTracking: PowerMerchantTracking
     private var isTermsAgreed: Boolean = false
@@ -70,14 +74,16 @@ class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        presenter.attachView(this)
+        observeActivatePm()
+        observeViewState()
+
         initVar()
         initView()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        presenter.detachView()
+        viewModel.detachView()
     }
 
     override fun getLayout(): Int {
@@ -89,23 +95,23 @@ class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
         footer?.visible()
     }
 
-    override fun showLoading() {
+    private fun showLoading() {
         mainView.showLoading()
     }
 
-    override fun hideLoading() {
+    private fun hideLoading() {
         mainView.hideLoading()
     }
 
-    override fun onSuccessActivate() {
+    private fun onSuccessActivate() {
         resultOkAndFinish()
     }
 
-    override fun onSuccessAutoExtend() {
+    private fun onSuccessAutoExtend() {
         resultOkAndFinish()
     }
 
-    override fun onError(throwable: Throwable?) {
+    private fun onError(throwable: Throwable?) {
         view?.let {
             Toaster.make(it, ErrorHandler.getErrorMessage(context, throwable), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
@@ -117,6 +123,24 @@ class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
 
     override fun setProgressBar(): Int {
         return R.id.progressbarPm
+    }
+
+    private fun observeActivatePm() {
+        observe(viewModel.activatePmResult) {
+            when(it) {
+                is Success -> onSuccessActivate()
+                is Fail -> onError(it.throwable)
+            }
+        }
+    }
+
+    private fun observeViewState() {
+        observe(viewModel.viewState) {
+            when(it) {
+                is ShowLoading -> showLoading()
+                is HideLoading -> hideLoading()
+            }
+        }
     }
 
     private fun initVar() {
@@ -145,7 +169,7 @@ class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
     private fun onClickActivateButton() {
         when(action) {
             ACTION_ACTIVATE,
-            ACTION_AUTO_EXTEND -> presenter.activatePowerMerchant()
+            ACTION_AUTO_EXTEND -> viewModel.activatePowerMerchant()
             ACTION_SHOP_SCORE -> showShopScoreBottomSheet()
             ACTION_KYC -> showDialogKyc()
         }
