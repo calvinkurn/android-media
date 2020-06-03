@@ -12,6 +12,7 @@
 
     <color name="play_bg_shadow">#1F31353B</color>
 
+    <color name="test">#33C4C4C4</color>
     <color name="play_bg_choose_cover">#4D40454C</color>
     <color name="play_title_text_hint_color">#99FFFFFF</color>
     <color name="play_title_text_white_96">#F5FFFFFF</color>

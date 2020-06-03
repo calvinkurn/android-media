@@ -40,4 +40,6 @@
     <dimen name="play_drag_indicator_width">40dp</dimen>
 
     <dimen name="play_cover_from_camera_size">70dp</dimen>
+    <dimen name="play_cover_width">234dp</dimen>
+    <dimen name="play_cover_height">415dp</dimen>
 </resources>

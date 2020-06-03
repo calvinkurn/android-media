@@ -23,15 +23,9 @@ class PlayCoverTitleSetupFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory
 ) : PlayBaseSetupFragment(), PlayBroadcastChooseCoverBottomSheet.Listener {
 
-    override fun getTitle(): String = "Tambah Cover & Judul"
-
-    override fun isRootFragment(): Boolean = false
-
     override fun getScreenName(): String = "Play Cover Title Setup"
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    override fun refresh() {}
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_play_cover_title_setup, container, false)
@@ -40,7 +34,7 @@ class PlayCoverTitleSetupFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-        setupView(view)
+        setupView()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -55,7 +49,10 @@ class PlayCoverTitleSetupFragment @Inject constructor(
     }
 
     override fun onGetCoverFromCamera(imageUri: Uri?) {
-        ivPlayCoverTitleImage.setImageURI(imageUri)
+//        ivPlayCoverTitleImage.setImageURI(imageUri)
+        bottomSheetCoordinator.navigateToFragment(PlayCoverCropperFragment::class.java, Bundle().apply {
+            putString(PlayCoverCropperFragment.EXTRA_IMAGE_URI, imageUri.toString())
+        })
     }
 
     private fun initView() {
@@ -64,7 +61,9 @@ class PlayCoverTitleSetupFragment @Inject constructor(
         }
     }
 
-    private fun setupView(view: View) {
+    private fun setupView() {
+        bottomSheetCoordinator.setupTitle(getString(R.string.play_prepare_cover_title_title))
+
         tfPlayCoverTitleText.textFieldInput.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N0))
         tfPlayCoverTitleText.textFieldInput.setHintTextColor(resources.getColor(R.color.play_title_text_hint_color))
         tfPlayCoverTitleText.textFieldInput.setSingleLine(false)
