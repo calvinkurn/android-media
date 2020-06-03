@@ -3,7 +3,6 @@ package com.tokopedia.product.manage.oldlist.view.fragment
 import android.app.Activity
 import android.app.Dialog
 import android.app.ProgressDialog
-import android.app.ProgressDialog.show
 import android.content.*
 import android.graphics.Typeface
 import android.net.Uri
@@ -48,7 +47,6 @@ import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
-import com.tokopedia.design.button.BottomActionView
 import com.tokopedia.gm.common.constant.IMG_URL_POWER_MERCHANT_IDLE_POPUP
 import com.tokopedia.gm.common.constant.IMG_URL_REGULAR_MERCHANT_POPUP
 import com.tokopedia.gm.common.constant.URL_POWER_MERCHANT_SCORE_TIPS
@@ -56,7 +54,6 @@ import com.tokopedia.gm.common.widget.MerchantCommonBottomSheet
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
@@ -473,7 +470,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 
     private fun showToasterNormal(message: String) {
         view?.let {
-            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.close), View.OnClickListener {  })
+            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.close), View.OnClickListener { })
         }
     }
 
@@ -653,13 +650,14 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     private fun getChangeFeaturedErrorMessage(throwable: Throwable): String =
-        when(throwable) {
-            is UnknownHostException -> getString(R.string.product_manage_failed_no_internet)
-            is TimeoutException -> getString(R.string.product_manage_failed_set_featured_product)
-            is com.tokopedia.network.exception.MessageErrorException ->
-                throwable.message?: getString(R.string.product_manage_failed_set_featured_product)
-            else -> ErrorHandler.getErrorMessage(context, throwable)
-        }
+            when (throwable) {
+                is UnknownHostException -> getString(R.string.product_manage_failed_no_internet)
+                is TimeoutException -> getString(R.string.product_manage_failed_set_featured_product)
+                is com.tokopedia.network.exception.MessageErrorException ->
+                    throwable.message
+                            ?: getString(R.string.product_manage_failed_set_featured_product)
+                else -> ErrorHandler.getErrorMessage(context, throwable)
+            }
 
 
     private fun updateBulkLayout() {
@@ -1114,14 +1112,15 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     private fun setupTicker() {
-        if(isSellerMigrationEnabled(context)) {
+        if (isSellerMigrationEnabled(context)) {
             sellerMigrationTicker.apply {
                 tickerTitle = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_product_manage_ticker_title)
                 setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_product_manage_ticker_content))
-                setDescriptionClickEvent(object: TickerCallback {
+                setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
                         openSellerMigrationBottomSheet()
                     }
+
                     override fun onDismiss() {
                         // No Op
                     }
