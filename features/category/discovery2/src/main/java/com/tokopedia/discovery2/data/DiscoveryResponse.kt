@@ -10,11 +10,6 @@ data class DiscoveryResponse(
         @SerializedName("component")
         val component: ComponentsItem? = null,
 
-        @SerializedName("layout_info")
-        val layoutInfo: LayoutInfo? = null,
-
-        @SerializedName("seo_info")
-        val seoInfo: SeoInfo? = null,
 
         @SerializedName("page_info")
         val pageInfo: PageInfo? = null,

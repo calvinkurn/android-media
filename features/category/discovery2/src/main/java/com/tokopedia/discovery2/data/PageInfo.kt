@@ -7,23 +7,8 @@ data class PageInfo(
         @SerializedName("Path")
         val path: String? = "",
 
-        @SerializedName("meta_title")
-        val metaTitle: String? = "",
-
-        @SerializedName("TTL")
-        val tTL: Int = 0,
-
         @SerializedName("Name")
         val name: String? = "",
-
-        @SerializedName("og_image")
-        val ogImage: String? = "",
-
-        @SerializedName("robot")
-        val robot: String? = "",
-
-        @SerializedName("meta_description")
-        val metaDescription: String? = "",
 
         @SerializedName("Type")
         val type: String? = "",
@@ -33,9 +18,6 @@ data class PageInfo(
 
         @SerializedName("Identifier")
         val identifier: String? = "",
-
-        @SerializedName("search_url")
-        val searchUrl: String? = "",
 
         @SerializedName("Id")
         val id: Int = 0,

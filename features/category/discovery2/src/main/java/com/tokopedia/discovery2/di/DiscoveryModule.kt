@@ -12,6 +12,7 @@ import com.tokopedia.discovery2.repository.cpmtopads.CpmTopAdsGQLRepository
 import com.tokopedia.discovery2.repository.cpmtopads.CpmTopAdsRepository
 import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatGqlRepository
 import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatRepository
+import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryDataGQLRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRestRepository
 import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRepository
@@ -95,8 +96,11 @@ class DiscoveryModule {
     @DiscoveryScope
     @Provides
     fun provideDiscoveryPageRepository(@ApplicationContext context: Context): DiscoveryPageRepository {
-        return DiscoveryPageRestRepository()
+        return DiscoveryDataGQLRepository(provideGetStringMethod(context))
+//            return DiscoveryPageRestRepository()
     }
+
+
 
 
 
