@@ -27,14 +27,13 @@ abstract class SellerMigrationBottomSheet(val titles: List<String> = emptyList()
     companion object {
         const val KEY_AUTO_LOGIN = "is_auto_login"
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setUpButtons()
         setupText()
         setupImages()
-        super.onViewCreated(view, savedInstanceState)
     }
-
-
 
     private fun setUpButtons() {
         sellerMigrationBottomSheetButton.setOnClickListener {
