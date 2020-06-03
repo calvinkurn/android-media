@@ -42,21 +42,25 @@ class AddCreditCardFragment : BaseWebViewFragment() {
 
     private fun onSuccessGetIFrameData(paymentSignature: PaymentSignature) {
         loadWeb()
-        webView.postUrl("$PAYMENT_SETTING_URL$GET_IFRAME_ADD_CC_URL", getIFrameUrlStr().toByteArray())
+        webView.postUrl("$PAYMENT_SETTING_URL$GET_IFRAME_ADD_CC_URL", getURLQuery().toByteArray())
         callbackUrl = paymentSignature.callbackUrl
     }
 
-    private fun getIFrameUrlStr(): String {
-        return "$MERCHANT_CODE=${URLEncoder.encode(this.paymentSignature.merchantCode, "UTF-8")}&" +
-                "$PROFILE_CODE=${URLEncoder.encode(this.paymentSignature.profileCode, "UTF-8")}&" +
-                "$IP_ADDRESS=${URLEncoder.encode(this.paymentSignature.ipAddress, "UTF-8")}&" +
-                "$DATE=${URLEncoder.encode(this.paymentSignature.date, "UTF-8")}&" +
-                "$USER_ID=${URLEncoder.encode(this.paymentSignature.userId.toString(), "UTF-8")}&" +
-                "$CUSTOMER_NAME=${URLEncoder.encode(this.paymentSignature.customerName, "UTF-8")}&" +
-                "$CUSTOMER_EMAIL=${URLEncoder.encode(this.paymentSignature.customerEmail, "UTF-8")}&" +
-                "$CALLBACK_URL=${URLEncoder.encode(this.paymentSignature.callbackUrl, "UTF-8")}&" +
-                "$CUSTOMER_MSISDN=${URLEncoder.encode(this.paymentSignature.customerMsisdn, "UTF-8")}&" +
-                "$SIGNATURE=${URLEncoder.encode(this.paymentSignature.hash, "UTF-8")}"
+    private fun getURLQuery(): String {
+        return "$MERCHANT_CODE=${getUrlEncoded(paymentSignature.merchantCode)}&" +
+                "$PROFILE_CODE=${getUrlEncoded(paymentSignature.profileCode)}&" +
+                "$IP_ADDRESS=${getUrlEncoded(paymentSignature.ipAddress)}&" +
+                "$DATE=${getUrlEncoded(paymentSignature.date)}&" +
+                "$USER_ID=${getUrlEncoded(paymentSignature.userId.toString())}&" +
+                "$CUSTOMER_NAME=${getUrlEncoded(paymentSignature.customerName)}&" +
+                "$CUSTOMER_EMAIL=${getUrlEncoded(paymentSignature.customerEmail)}&" +
+                "$CALLBACK_URL=${getUrlEncoded(paymentSignature.callbackUrl)}&" +
+                "$CUSTOMER_MSISDN=${getUrlEncoded(paymentSignature.customerMsisdn)}&" +
+                "$SIGNATURE=${getUrlEncoded(paymentSignature.hash)}"
+    }
+
+    private fun getUrlEncoded(valueStr : String){
+        URLEncoder.encode(valueStr, ENCODING_UTF_8)
     }
 
     override fun initInjector() {
@@ -66,7 +70,7 @@ class AddCreditCardFragment : BaseWebViewFragment() {
         if (callbackUrl == "") {
             return false
         }
-        if (url.equals(callbackUrl)) {
+        if (url == callbackUrl) {
             activity?.setResult(Activity.RESULT_OK)
             activity?.finish()
         }
@@ -82,6 +86,7 @@ class AddCreditCardFragment : BaseWebViewFragment() {
     }
 
     companion object {
+        const val ENCODING_UTF_8 = "UTF-8"
         const val MERCHANT_CODE = "merchant_code"
         const val PROFILE_CODE = "profile_code"
         const val IP_ADDRESS = "ip_address"

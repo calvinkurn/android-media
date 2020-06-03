@@ -22,7 +22,6 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.payment.setting.add.view.activity.AddCreditCardActivity
 import com.tokopedia.payment.setting.authenticate.view.activity.AuthenticateCreditCardActivity
 import com.tokopedia.payment.setting.detail.view.activity.DetailCreditCardActivity
-import com.tokopedia.payment.setting.list.di.SettingListPaymentModule
 import com.tokopedia.payment.setting.list.view.presenter.SettingListPaymentContract
 import com.tokopedia.payment.setting.list.view.presenter.SettingListPaymentPresenter
 import com.tokopedia.payment.setting.list.view.adapter.SettingListEmptyViewHolder
@@ -85,7 +84,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
 
     override fun onClickAddCard() {
         activity?.run {
-            paymentSignature?.let {paymentSignature->
+            paymentSignature?.let { paymentSignature ->
                 this@SettingListPaymentFragment
                         .startActivityForResult(AddCreditCardActivity.createIntent(this, paymentSignature), REQUEST_CODE_ADD_CREDIT_CARD)
             }
@@ -127,7 +126,6 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
     override fun initInjector() {
         DaggerSettingListPaymentComponent.builder()
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .settingListPaymentModule(SettingListPaymentModule())
                 .build()
                 .inject(this)
         settingListPaymentPresenter.attachView(this)

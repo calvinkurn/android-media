@@ -17,7 +17,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.payment.setting.R
 import com.tokopedia.payment.setting.authenticate.di.DaggerAuthenticateCreditCardComponent
-import com.tokopedia.payment.setting.authenticate.di.AuthenticateCreditCardModule
 import com.tokopedia.payment.setting.authenticate.model.CheckWhiteListStatus
 import com.tokopedia.payment.setting.authenticate.model.TypeAuthenticateCreditCard
 import com.tokopedia.payment.setting.authenticate.view.adapter.AuthenticateCCAdapterFactory
@@ -80,7 +79,6 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
     override fun initInjector() {
         DaggerAuthenticateCreditCardComponent.builder()
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .authenticateCreditCardModule(AuthenticateCreditCardModule())
                 .build()
                 .inject(this)
         authenticateCCPresenter.attachView(this)
@@ -182,9 +180,9 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
     override fun getRecyclerViewResourceId() = R.id.recycler_view
 
     companion object {
-        val REQUEST_CODE_OTP_PAYMENT = 1273
-        val OTP_TYPE_VERIFY_AUTH_CREDIT_CARD = 122
-        val MODE_SMS = "sms"
+        const val REQUEST_CODE_OTP_PAYMENT = 1273
+        const val OTP_TYPE_VERIFY_AUTH_CREDIT_CARD = 122
+        const val MODE_SMS = "sms"
         fun createInstance(): AuthenticateCreditCardFragment {
             return AuthenticateCreditCardFragment()
         }
