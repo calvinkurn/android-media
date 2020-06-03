@@ -1,0 +1,39 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+        jcenter()
+        google()
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.baseList)
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.remoteConfig)
+
+    implementation rootProject.ext.unifyDependencies.carousel
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.unifyDependencies.principles
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+}
+
+project.ext {
+    artifactId = 'review'
+    groupId = 'com.tokopedia.merchant'
+    versionName = "0.0.1"
+    artifactName ="review-release"
+}
+
+apply from: '../../../publish_local.gradle'
