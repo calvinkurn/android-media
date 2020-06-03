@@ -9,7 +9,7 @@ data class SummaryUiModel(
         val tickerContent: TickerContent = TickerContent(),
         val liveTitle: String = "",
         val liveDuration: String = "",
-        val liveInfos: List<LiveInfo> = listOf(),
+        val liveTrafficMetrics: List<LiveTrafficMetric> = listOf(),
         val finishRedirectUrl: String = ""
 ) {
     data class TickerContent(
@@ -17,9 +17,10 @@ data class SummaryUiModel(
             val tickerDescription: String = "",
             val showTicker: Boolean = false
     )
-    data class LiveInfo(
-            val liveInfoIcon: String = "",
-            val liveInfoDescription: String = "",
-            val liveInfoCount: String = ""
+    data class LiveTrafficMetric(
+            val liveTrafficMetricIcon: String = "",
+            val liveTrafficMetricDescription: String = "",
+            val liveTrafficMetricCount: String = "",
+            val liveTrafficMetricEnum: LiveTrafficMetricsEnum? = null
     )
 }

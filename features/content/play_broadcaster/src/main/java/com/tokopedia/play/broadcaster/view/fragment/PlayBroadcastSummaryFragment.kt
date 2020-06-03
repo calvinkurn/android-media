@@ -69,7 +69,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
 
         rv_play_summary_live_information.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         rv_play_summary_live_information.removeItemDecorations()
-        rv_play_summary_live_information.adapter = PlaySummaryInfosAdapter(summaryUiModel.liveInfos)
+        rv_play_summary_live_information.adapter = PlaySummaryInfosAdapter(summaryUiModel.liveTrafficMetrics)
 
         btn_play_summary_finish.setOnClickListener {
             //put action here

@@ -13,22 +13,31 @@ import kotlinx.android.synthetic.main.item_play_summary_info.view.*
  * @author by jessica on 26/05/20
  */
 
-class PlaySummaryInfosAdapter(private val infos: List<SummaryUiModel.LiveInfo>): RecyclerView.Adapter<PlaySummaryInfosAdapter.ViewHolder>() {
+class PlaySummaryInfosAdapter(private val trafficMetrics: List<SummaryUiModel.LiveTrafficMetric>) : RecyclerView.Adapter<PlaySummaryInfosAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
             ViewHolder(LayoutInflater.from(parent.context).inflate(VH_LAYOUT, parent, false))
 
-    override fun getItemCount(): Int = infos.size
+    override fun getItemCount(): Int = trafficMetrics.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        with(holder.itemView) {
-            iv_item_play_summary_info_icon.loadImage(infos[position].liveInfoIcon)
-            tv_item_play_summary_description.text = infos[position].liveInfoDescription
-            tv_item_play_summary_count_info.text = infos[position].liveInfoCount
-        }
+        holder.bind(trafficMetrics[position])
     }
 
-    class ViewHolder(view: View): RecyclerView.ViewHolder(view)
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        fun bind(trafficMetric: SummaryUiModel.LiveTrafficMetric) {
+            with(itemView) {
+                if (trafficMetric.liveTrafficMetricEnum != null) {
+                    iv_item_play_summary_info_icon.setImageResource(trafficMetric.liveTrafficMetricEnum.thumbnailRes)
+                    tv_item_play_summary_description.text = resources.getString(trafficMetric.liveTrafficMetricEnum.descriptionRes)
+                } else {
+                    iv_item_play_summary_info_icon.loadImage(trafficMetric.liveTrafficMetricIcon)
+                    tv_item_play_summary_description.text = trafficMetric.liveTrafficMetricDescription
+                }
+                tv_item_play_summary_count_info.text = trafficMetric.liveTrafficMetricCount
+            }
+        }
+    }
 
     companion object {
         val VH_LAYOUT = R.layout.item_play_summary_info

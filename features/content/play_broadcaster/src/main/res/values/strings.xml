@@ -38,4 +38,11 @@
 
     <string name="play_summary_title">Laporan Live Streaming</string>
     <string name="play_summary_button_finish">Selesai</string>
+    <string name="play_summary_total_view">Penonton</string>
+    <string name="play_summary_total_likes">Menyukai</string>
+    <string name="play_summary_shop_visit">Mengunjungi Tokomu</string>
+    <string name="play_summary_product_visit">Mengunjungi Produkmu</string>
+    <string name="play_summary_atc">Ditambahkan Ke Keranjang</string>
+    <string name="play_summary_purchased_product">Produk Dibeli</string>
+    <string name="play_summary_new_buyer">Pembeli Baru</string>
 </resources>
