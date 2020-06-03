@@ -15,15 +15,23 @@ class AddCreditCardActivity : BaseSimpleActivity() {
         intent.extras?.let {
             if (it.containsKey(ARG_PAYMENT_SIGNATURE))
                 bundle.putAll(it)
-            else {
-                finish()
-                return null
-            }
-        } ?: run {
-            finish()
-            return null
         }
         return AddCreditCardFragment.createInstance(bundle)
+    }
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        validateBundleData()
+    }
+
+    private fun validateBundleData() {
+        intent.extras?.let {
+            if (!it.containsKey(ARG_PAYMENT_SIGNATURE))
+                finish()
+        } ?: run {
+            finish()
+        }
     }
 
     companion object {
