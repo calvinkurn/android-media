@@ -203,24 +203,6 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name="com.tokopedia.seller.transaction.neworder.view.presenter.GetOrderService"
-            android:exported="false" />
-
-        <service
-            android:name="com.tokopedia.seller.transaction.neworder.view.appwidget.ListOrderViewServiceWidget"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
-
-        <receiver android:name="com.tokopedia.seller.transaction.neworder.view.appwidget.NewOrderWidget">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/new_order_widget_info" />
-        </receiver>
-
         <provider
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="com.facebook.app.FacebookContentProvider411083689235522"
