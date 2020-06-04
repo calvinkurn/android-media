@@ -19,14 +19,14 @@ class RecommendationListCarouselComponentCallback(val homeViewModel: HomeViewMod
     }
 
     override fun onRecommendationSeeMoreClick(channelModel: ChannelModel, applink: String) {
-        HomePageTrackingV2.RecommendationList.sendRecommendationListSeeAllClick(channelModel.channelHeader.name)
+        HomePageTrackingV2.RecommendationList.sendRecommendationListSeeAllClick(channelModel.id, channelModel.channelHeader.name)
     }
 
     override fun onRecommendationProductClick(channelModel: ChannelModel,
                                               channelGrid: ChannelGrid,
                                               position: Int,
                                               applink: String) {
-        HomePageTrackingV2.RecommendationList.sendRecommendationListHomeComponentClick(channelModel, channelGrid, position, applink)
+        HomePageTrackingV2.RecommendationList.sendRecommendationListHomeComponentClick(channelModel, channelGrid, position, homeViewModel.getUserId())
         homeCategoryListener.onSectionItemClicked(applink)
     }
 

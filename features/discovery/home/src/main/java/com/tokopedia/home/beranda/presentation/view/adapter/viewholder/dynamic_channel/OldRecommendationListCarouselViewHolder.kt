@@ -140,7 +140,7 @@ class OldRecommendationListCarouselViewHolder(
     }
 
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
-        HomePageTrackingV2.RecommendationList.sendRecommendationListSeeAllClick(channel.header.name)
+        HomePageTrackingV2.RecommendationList.sendRecommendationListSeeAllClick(channel.id, channel.header.name)
     }
 
     fun mapGridToProductData(grid: DynamicHomeChannel.Grid) :ProductCardModel{
