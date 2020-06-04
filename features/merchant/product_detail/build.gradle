@@ -17,6 +17,7 @@ android {
         }
         dev {
             dimension "client"
+            testInstrumentationRunner "com.tokopedia.test.application.environment.MockInstrumentationTestRunner"
         }
     }
 
@@ -36,7 +37,6 @@ android {
 
     defaultConfig {
         multiDexEnabled true
-        testInstrumentationRunner "com.tokopedia.test.application.environment.MockInstrumentationTestRunner"
     }
 }
 
