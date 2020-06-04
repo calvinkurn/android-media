@@ -32,6 +32,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface;
+import com.tokopedia.analytics.performance.util.PltPerformanceData;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
@@ -862,5 +863,14 @@ public class SearchActivity extends BaseActivity
             pageLoadTimePerformanceMonitoring.stopMonitoring();
             pageLoadTimePerformanceMonitoring = null;
         }
+    }
+
+    @Nullable
+    @Override
+    public PltPerformanceData getPltPerformanceResultData() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            return pageLoadTimePerformanceMonitoring.getPltPerformanceData();
+        }
+        return null;
     }
 }

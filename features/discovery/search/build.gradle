@@ -19,6 +19,42 @@ buildscript {
 }
 
 android {
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    flavorDimensions "tier", "client"
+    productFlavors {
+        benchmark {
+            dimension "client"
+            testInstrumentationRunner 'com.tokopedia.test.application.environment.TkpdAndroidBenchmarkTestRunner'
+            testInstrumentationRunnerArgument 'androidx.benchmark.suppressErrors', 'EMULATOR,LOW_BATTERY,ERRORS,UNLOCKED,ENG-BUILD'
+        }
+        prod {
+            dimension "client"
+            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+        }
+        live {
+            dimension "tier"
+        }
+        staging {
+            dimension "tier"
+        }
+        dev {
+            dimension "client"
+        }
+    }
+
+    defaultConfig {
+        defaultConfig {
+            multiDexEnabled true
+            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+        }
+    }
+
     testOptions {
         unitTests.all {
             testLogging.events = ["passed", "skipped", "failed"]
@@ -98,6 +134,8 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.json
+
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
 }
 
 project.ext {
