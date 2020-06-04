@@ -185,7 +185,7 @@ public class ShipmentAddressFormDataResponse {
     }
 
     public boolean isEligibleNewShippingExperience() {
-        return true;
+        return eligibleNewShippingExperience;
     }
 
 }
