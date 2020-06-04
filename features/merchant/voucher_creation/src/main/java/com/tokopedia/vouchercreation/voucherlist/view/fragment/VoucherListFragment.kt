@@ -136,6 +136,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     @VoucherSort
     private var voucherSort: String = VoucherSort.FINISH_TIME
     private var isInverted: Boolean = false
+    private var isSortApplied: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_mvc_voucher_list, container, false)
@@ -526,6 +527,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         voucherTarget = null
         voucherType = null
         isInverted = false
+        isSortApplied = false
 
         clearAllData()
         loadData(1)
@@ -560,6 +562,8 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     private fun applySort() {
         clearAllData()
 
+        isSortApplied = true
+
         voucherSort = VoucherSort.FINISH_TIME
 
         val activeSort = sortItems.first { it.isSelected }
@@ -580,6 +584,8 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         val canResetFilter = activeFilterList.isNotEmpty()
         if (canResetFilter) {
             view?.headerChipMvc?.showResetButton()
+        } else if (!isSortApplied){
+            view?.headerChipMvc?.resetFilter()
         }
         headerChipMvc?.setActiveFilter(activeFilterList)
 
