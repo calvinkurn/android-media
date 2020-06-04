@@ -47,7 +47,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_play_live_broadcast, container, false)
+        return inflater.inflate(R.layout.fragment_play_broadcast_user_interaction, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
