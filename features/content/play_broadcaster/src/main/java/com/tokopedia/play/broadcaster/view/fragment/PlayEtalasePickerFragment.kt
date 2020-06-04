@@ -47,16 +47,16 @@ class PlayEtalasePickerFragment @Inject constructor(
     private lateinit var rvSuggestions: RecyclerView
 
     private val etalaseAdapter = PlayEtalaseAdapter(object : PlayEtalaseViewHolder.Listener {
-        override fun onEtalaseClicked(etalaseId: Long) {
+        override fun onEtalaseClicked(etalaseId: String) {
             bottomSheetCoordinator.navigateToFragment(
                     PlayEtalaseDetailFragment::class.java,
                     Bundle().apply {
-                        putLong(PlayEtalaseDetailFragment.EXTRA_ETALASE_ID, etalaseId)
+                        putString(PlayEtalaseDetailFragment.EXTRA_ETALASE_ID, etalaseId)
                     }
             )
         }
 
-        override fun onEtalaseBound(etalaseId: Long) {
+        override fun onEtalaseBound(etalaseId: String) {
             viewModel.loadEtalaseProductPreview(etalaseId)
         }
     })
@@ -137,7 +137,6 @@ class PlayEtalasePickerFragment @Inject constructor(
 
             override fun onCanceled(view: PlaySearchBar) {
                 exitSearchMode()
-                viewModel.loadEtalaseList()
             }
 
             override fun onNewKeyword(view: PlaySearchBar, keyword: String) {
@@ -190,8 +189,6 @@ class PlayEtalasePickerFragment @Inject constructor(
 
         rvSuggestions.visible()
 
-        etalaseAdapter.clearAllItems()
-        etalaseAdapter.notifyDataSetChanged()
         viewModel.loadSuggestionsFromKeyword(psbSearch.text)
 
         bottomSheetCoordinator.showBottomAction(false)

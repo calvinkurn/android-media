@@ -65,7 +65,7 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
 
     interface Listener {
 
-        fun onEtalaseBound(etalaseId: Long)
-        fun onEtalaseClicked(etalaseId: Long)
+        fun onEtalaseBound(etalaseId: String)
+        fun onEtalaseClicked(etalaseId: String)
     }
 }
