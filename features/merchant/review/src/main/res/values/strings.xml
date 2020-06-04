@@ -16,4 +16,20 @@
     <string name="review_msg_placeholder">Ulasan saya</string>
     <string name="image_description">Keterangan gambar...</string>
     <string name="txt_success_submit_review">Terima kasih %s sudah memberikan ulasanmu untuk barang ini</string>
+
+    <string name="review_pending_search_error_toaster">Ketik min. 3 karakter agar menemukan barang yang dicari.</string>
+    <string name="review_pending_search_error_toaster_dismiss">Oke</string>
+    <string name="review_pending_lazy_load_network_error_toaster">Oops, halaman bermasalah. Cek koneksimu dan coba refresh, ya.</string>
+    <string name="review_pending_lazy_load_network_error_toaster_refresh">Refresh</string>
+    <string name="review_pending_network_error_title">Koneksi internetmu terganggu!</string>
+    <string name="review_pending_network_error_content">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
+    <string name="review_pending_tab_title">Menunggu Diulas (%s)</string>
+    <string name="review_pending_network_error_retry_button">Coba Lagi</string>
+    <string name="review_pending_network_error_go_to_settings_button">Ke Pengaturan</string>
+    <string name="review_pending_no_product_empty_title">Belum ada barang untuk kamu ulas</string>
+    <string name="review_pending_no_product_empty_content">Saatnya kamu belanja dan kasih ulasanmu ke jutaan orang!</string>
+    <string name="review_pending_no_product_search_result_title">Oops, produk nggak ditemukan</string>
+    <string name="review_pending_no_product_search_content">Cari barang yang sudah kamu beli dengan kata kunci lain, lalu kasih ulasan sekarang.</string>
+
+    <string name="review_history_tab_title">Riwayat</string>
 </resources>
