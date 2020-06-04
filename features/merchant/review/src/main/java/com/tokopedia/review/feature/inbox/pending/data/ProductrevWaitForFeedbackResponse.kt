@@ -1,12 +1,12 @@
-package com.tokopedia.review.feature.inbox.data.history
+package com.tokopedia.review.feature.inbox.pending.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class ProductrevFeedbackHistoryResponse(
+data class ProductrevWaitForFeedbackResponse (
         @SerializedName("list")
         @Expose
-        val list: ProductrevFeedbackHistoryList = ProductrevFeedbackHistoryList(),
+        val list: ProductrevWaitForFeedbackList = ProductrevWaitForFeedbackList(),
         @SerializedName("filterBy")
         @Expose
         val filterBy: String = "",

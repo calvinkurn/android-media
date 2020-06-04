@@ -1,4 +1,4 @@
-package com.tokopedia.review.feature.inbox.data.common
+package com.tokopedia.review.feature.inbox.common.data.common
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

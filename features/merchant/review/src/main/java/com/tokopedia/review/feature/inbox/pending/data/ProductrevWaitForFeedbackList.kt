@@ -1,9 +1,9 @@
-package com.tokopedia.review.feature.inbox.data.pending
+package com.tokopedia.review.feature.inbox.pending.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.review.feature.inbox.data.common.ProductrevProduct
-import com.tokopedia.review.feature.inbox.data.common.ProductrevTimestamp
+import com.tokopedia.review.feature.inbox.common.data.common.ProductrevProduct
+import com.tokopedia.review.feature.inbox.common.data.common.ProductrevTimestamp
 
 data class ProductrevWaitForFeedbackList(
         @SerializedName("reputationID")

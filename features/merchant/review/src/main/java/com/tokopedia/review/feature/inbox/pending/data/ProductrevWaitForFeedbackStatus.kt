@@ -1,4 +1,4 @@
-package com.tokopedia.review.feature.inbox.data.pending
+package com.tokopedia.review.feature.inbox.pending.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
