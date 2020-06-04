@@ -50,19 +50,21 @@ class ProductManageFilterTab(
         val tabs = data.tabs
 
         tabs.forEachIndexed { index, tab ->
-            if (sortFilterTab.chipItems.isNotEmpty()) {
-                val filter = sortFilterTab.chipItems[index]
+            val filter = sortFilterTab.chipItems.getOrNull(index)
+            if(filter != null) {
                 val chipText = context.getString(tab.titleId, tab.count)
                 val chipType = filter.refChipUnify.chipType
-
                 sortFilterTab.chipItems[index] = filter.apply {
                     title = chipText
                     listener = { toggleFilterTab(filter, tab) }
                 }
-
-                if (chipType == ChipsUnify.TYPE_SELECTED) {
+                if(chipType == ChipsUnify.TYPE_SELECTED) {
                     setSelectedFilter(filter, tab)
                 }
+            } else {
+                val title = context.getString(tab.titleId, tab.count)
+                val item = SortFilterItem(title)
+                sortFilterTab.chipItems.add(item)
             }
         }
     }
