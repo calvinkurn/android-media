@@ -1,4 +1,4 @@
-package com.example.review
+package com.tokopedia.review
 
 import org.junit.Test
 

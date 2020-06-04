@@ -1,4 +1,4 @@
-package com.tokopedia.review.feature.inbox.pending.domain
+package com.tokopedia.review.feature.inbox.pending.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -17,27 +17,28 @@ class ProductrevWaitForFeedbackUseCase @Inject constructor(graphqlRepository: Gr
             """
                 query productrevWaitForFeedback(${'$'}filterBy: String, ${'$'}sortBy: String, ${'$'}limit: Int!, ${'$'}page: Int!) {
                     productrevWaitForFeedback(filterBy: ${'$'}filterBy, sortBy: ${'$'}sortBy, limit: ${'$'}limit, page: ${'$'}page) {
-                  list {
-                    reputationID
-                    product {
-                      productID
-                      productName
-                      productImageURL
-                      productVariantName
+                      list {
+                        reputationID
+                        product {
+                          productID
+                          productName
+                          productImageURL
+                          productVariantName
+                        }
+                        timestamp {
+                          createTime
+                          createTimeFormatted
+                        }
+                        status {
+                          seen
+                        }
+                      }
+                      filterBy
+                      sortBy
+                      page
+                      limit
+                      hasNext
                     }
-                    timestamp {
-                      createTime
-                      createTimeFormatted
-                    }
-                    status {
-                      seen
-                    }
-                  }
-                  filterBy
-                  sortBy
-                  page
-                  limit
-                  hasNext
                 }
             """.trimIndent()
         }

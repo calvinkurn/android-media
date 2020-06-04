@@ -3,7 +3,7 @@ package com.tokopedia.review.feature.createreputation.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.review.R
+import com.tokopedia.review.R
 import com.tokopedia.review.feature.createreputation.model.BaseImageReviewViewModel
 import com.tokopedia.review.feature.createreputation.model.DefaultImageReviewModel
 import com.tokopedia.review.feature.createreputation.model.ImageReviewViewModel

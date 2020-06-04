@@ -52,6 +52,18 @@
             app:layout_constraintTop_toTopOf="@id/reviewPendingProductImage"
             app:layout_constraintEnd_toEndOf="parent"/>
 
+        <com.tokopedia.reputation.common.view.AnimatedReputationView
+            android:id="@+id/reviewStars"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_20"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/reviewPendingProductName"
+            app:layout_constraintTop_toBottomOf="@id/reviewPendingProductName"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:show_desc="false" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Review</string>
+
+    <string name="title_activity_reputation_review">Ulasan</string>
     <string name="review_add_photo_txt">Tambah \nfoto</string>
     <string name="image_picker_title">Pilih foto</string>
     <string name="error_upload_image">Gagal mengunggah gambar</string>

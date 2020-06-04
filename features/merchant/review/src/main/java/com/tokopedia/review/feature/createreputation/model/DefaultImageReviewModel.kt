@@ -1,7 +1,7 @@
 package com.tokopedia.review.feature.createreputation.model
 
 import androidx.annotation.StringRes
-import com.example.review.R
+import com.tokopedia.review.R
 
 data class DefaultImageReviewModel(
         @StringRes

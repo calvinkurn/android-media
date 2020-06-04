@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.review.R
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.review.R
 import com.tokopedia.review.common.analytics.ReviewTracking
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.unifycomponents.BottomSheetUnify

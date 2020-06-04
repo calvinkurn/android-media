@@ -1,9 +1,9 @@
 package com.tokopedia.review.feature.inbox.pending.presentation.adapter.viewholder
 
 import android.view.View
-import com.example.review.R
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.review.R
 import com.tokopedia.review.feature.inbox.pending.data.ReviewPendingEmptyState
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingEmptyUiModel
 import kotlinx.android.synthetic.main.item_review_pending_empty.view.*

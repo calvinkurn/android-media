@@ -1,9 +1,10 @@
 package com.tokopedia.review.feature.inbox.pending.presentation.adapter.viewholder
 
 import android.view.View
-import com.example.review.R
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.reputation.common.view.AnimatedReputationView
+import com.tokopedia.review.R
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendingItemListener
 import kotlinx.android.synthetic.main.item_review_pending.view.*
@@ -21,25 +22,9 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
                 showProductName(productName)
                 showProductVariantName(productVariantName)
                 setListener(reputationId, productId)
+                setupStars(reputationId, productId)
             }
             showDate(timestamp.createTimeFormatted)
-        }
-    }
-
-    private fun setListener(reputationId: Int, productId: String) {
-        itemView.setOnClickListener {
-            reviewPendingItemListener.onCardClicked(reputationId, productId)
-        }
-    }
-
-    private fun showProductVariantName(productVariantName: String) {
-        if(productVariantName.isEmpty()) {
-            itemView.reviewPendingProductVariant.hide()
-            return
-        }
-        itemView.reviewPendingProductVariant.apply {
-            text = (getString(R.string.review_pending_variant, productVariantName))
-            show()
         }
     }
 
@@ -57,6 +42,35 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
 
     private fun showProductName(productName: String) {
         itemView.reviewPendingProductName.setTextAndCheckShow(productName)
+    }
+
+    private fun showProductVariantName(productVariantName: String) {
+        if(productVariantName.isEmpty()) {
+            itemView.reviewPendingProductVariant.hide()
+            return
+        }
+        itemView.reviewPendingProductVariant.apply {
+            text = (getString(R.string.review_pending_variant, productVariantName))
+            show()
+        }
+    }
+
+    private fun setListener(reputationId: Int, productId: String) {
+        itemView.setOnClickListener {
+            reviewPendingItemListener.onCardClicked(reputationId, productId)
+        }
+    }
+
+    private fun setupStars(reputationId: Int, productId: String) {
+        itemView.reviewStars.apply {
+            resetStars()
+            setListener(object : AnimatedReputationView.AnimatedReputationListener {
+                override fun onClick(position: Int) {
+                    reviewPendingItemListener.onCardClicked(reputationId, productId)
+                }
+            })
+            show()
+        }
     }
 
     private fun showDate(date: String) {

@@ -1,8 +1,8 @@
 package com.tokopedia.review.feature.createreputation.ui.viewholder
 
 import android.view.View
-import com.example.review.R
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.review.R
 import com.tokopedia.review.feature.createreputation.model.ImageReviewViewModel
 import com.tokopedia.review.feature.createreputation.ui.listener.OnAddImageClickListener
 import kotlinx.android.synthetic.main.item_image_chooser_review.view.*
