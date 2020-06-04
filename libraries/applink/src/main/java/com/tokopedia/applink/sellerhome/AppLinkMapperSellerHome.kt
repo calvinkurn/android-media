@@ -1,14 +1,13 @@
 package com.tokopedia.applink.sellerhome
 
 import android.net.Uri
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerCancelled
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerFinished
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerInShipping
-import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerNewOrder
-import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerReadyToShip
 import com.tokopedia.config.GlobalConfig
 
 /**
@@ -21,7 +20,7 @@ object AppLinkMapperSellerHome {
         return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(deepLink)) {
             ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER
         } else {
-            getRegisteredNavigationMainAppSellerNewOrder()
+            ApplinkConst.SELLER_NEW_ORDER
         }
     }
 
@@ -29,7 +28,7 @@ object AppLinkMapperSellerHome {
         return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(deepLink)) {
             ApplinkConstInternalSellerapp.SELLER_HOME_SOM_READY_TO_SHIP
         } else {
-            getRegisteredNavigationMainAppSellerReadyToShip()
+            ApplinkConst.SELLER_SHIPMENT
         }
     }
 
