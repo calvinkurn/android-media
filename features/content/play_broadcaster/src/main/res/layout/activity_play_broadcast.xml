@@ -16,7 +16,8 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <include
-        layout="@layout/view_status_bar"
+        android:id="@+id/view_action_bar"
+        layout="@layout/view_action_bar"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"

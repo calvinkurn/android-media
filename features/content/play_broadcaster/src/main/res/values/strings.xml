@@ -12,8 +12,8 @@
     <string name="play_product_select_max_info">Pilih maks. %d produk</string>
     <string name="play_empty_stock">Stok Habis</string>
 
-    <string name="play_status_bar_prepare_title">Buat Live Streaming</string>
-    <string name="play_status_bar_end">Akhiri</string>
+    <string name="play_action_bar_prepare_title">Buat Live Streaming</string>
+    <string name="play_action_bar_end">Akhiri</string>
 
     <string name="play_permit_title">Aktifkan kamera &amp; mikrofon</string>
     <string name="play_permit_description">Untuk memulai live streaming, berikan akses kamera &amp; mikrofon di HP kamu.</string>
@@ -46,7 +46,19 @@
     <string name="play_prepare_broadcast_label_next">Lanjutkan</string>
     <string name="play_prepare_broadcast_label_save">Simpan</string>
 
+    <string name="play_prepare_broadcast_dialog_end_title">Eh, kamu mau ke mana?</string>
+    <string name="play_prepare_broadcast_dialog_end_desc">Tinggal selangkah lagi lho untuk kamu memulai live streaming.</string>
+    <string name="play_prepare_broadcast_dialog_end_primary">Lanjut</string>
+    <string name="play_prepare_broadcast_dialog_end_secondary">Keluar</string>
+
     <string name="play_live_broadcast_time_default">00:00</string>
+    <string name="play_live_broadcast_dialog_end_title">Eh, kamu mau ke mana?</string>
+    <string name="play_live_broadcast_dialog_end_desc">Banyak penonton kamu yg akan sedih kalau kamu keluar dari live streaming sekarang.</string>
+    <string name="play_live_broadcast_dialog_end_primary">Lanjut Siaran</string>
+    <string name="play_live_broadcast_dialog_end_secondary">Keluar</string>>
+    <string name="play_live_broadcast_dialog_end_timeout_title">Live streaming selesai</string>
+    <string name="play_live_broadcast_dialog_end_timeout_desc">Yay, kamu telah berhasil melakukan live streaming. Ayo lihat hasil siaranmu!</string>
+    <string name="play_live_broadcast_dialog_end_timeout_primary">Lihat Laporan</string>
 
     <string name="play_summary_title">Laporan Live Streaming</string>
     <string name="play_summary_button_finish">Selesai</string>

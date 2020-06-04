@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
@@ -43,13 +44,17 @@ class PlayLiveBroadcastFragment @Inject constructor(
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_play_live_broadcast, container, false)
-        initView(view)
-        return view
+        return inflater.inflate(R.layout.fragment_play_live_broadcast, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView(view)
+        setupView()
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
         observeChannelInfo()
         observeCountDownDuration()
@@ -63,6 +68,11 @@ class PlayLiveBroadcastFragment @Inject constructor(
         tvTotalLike = view.findViewById(R.id.tv_total_likes)
     }
 
+    private fun setupView() {
+        broadcastCoordinator.setupTitle("")
+        broadcastCoordinator.setupCloseButton(getString(R.string.play_action_bar_end))
+    }
+
     private fun setupContent() {
         arguments?.getString(KEY_CHANNEL_ID)?.let {
             channelId -> parentViewModel.getChannel(channelId)
@@ -70,6 +80,11 @@ class PlayLiveBroadcastFragment @Inject constructor(
         arguments?.getString(KEY_INGEST_URL)?.let {
             ingestUrl -> parentViewModel.startPushBroadcast(ingestUrl)
         }
+    }
+
+    override fun onBackPressed(): Boolean {
+        showDialogWhenActionClose()
+        return true
     }
 
     private fun setCountDownTimer(millisUntilFinish: Long) {
@@ -88,14 +103,63 @@ class PlayLiveBroadcastFragment @Inject constructor(
         tvTotalLike.text = totalLike.totalLike
     }
 
+    private fun showDialogWhenActionClose() {
+        context?.let {
+            DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.play_live_broadcast_dialog_end_title))
+                setDescription(getString(R.string.play_live_broadcast_dialog_end_desc))
+                setPrimaryCTAText(getString(R.string.play_live_broadcast_dialog_end_primary))
+                setSecondaryCTAText(getString(R.string.play_live_broadcast_dialog_end_secondary))
+                setPrimaryCTAClickListener { dismiss() }
+                setSecondaryCTAClickListener {
+                    dismiss()
+                    doEndStreaming()
+                }
+                setCancelable(false)
+                setOverlayClose(false)
+            }.show()
+        }
+    }
+
+    private fun showDialogWhenTimeout() {
+        context?.let {
+            val dialog =  DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(getString(R.string.play_live_broadcast_dialog_end_timeout_title))
+            dialog.setDescription(getString(R.string.play_live_broadcast_dialog_end_timeout_desc))
+            dialog.setPrimaryCTAText(getString(R.string.play_live_broadcast_dialog_end_timeout_primary))
+            dialog.setPrimaryCTAClickListener {
+                dialog.dismiss()
+                navigateToSummary()
+            }
+            dialog.setCancelable(false)
+            dialog.setOverlayClose(false)
+            dialog.show()
+        }
+    }
+
+    private fun doEndStreaming() {
+        parentViewModel.stopPushBroadcast()
+        navigateToSummary()
+    }
+
+    private fun navigateToSummary() {
+        broadcastCoordinator.navigateToFragment(PlayBroadcastSummaryFragment::class.java)
+    }
+
     //region observe
     /**
      * Observe
      */
     private fun observeCountDownDuration() {
         parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, EventObserver{
-            if (it is PlayPusherInfoState.Active) {
-                setCountDownTimer(it.millisUntilFinished)
+            when (it) {
+                is PlayPusherInfoState.Active -> {
+                    setCountDownTimer(it.millisUntilFinished)
+                }
+                is PlayPusherInfoState.Finish -> {
+                    parentViewModel.stopPushBroadcast()
+                    showDialogWhenTimeout()
+                }
             }
         })
     }
