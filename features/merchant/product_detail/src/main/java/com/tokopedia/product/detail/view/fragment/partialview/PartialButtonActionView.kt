@@ -238,10 +238,6 @@ class PartialButtonActionView private constructor(val view: View,
         view.base_btn_action.gone()
     }
 
-    fun visible() {
-        view.base_btn_action.visible()
-    }
-
     fun showByMe(show: Boolean, pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate) {
         with(view) {
             if (show && !isWarehouseProduct) {

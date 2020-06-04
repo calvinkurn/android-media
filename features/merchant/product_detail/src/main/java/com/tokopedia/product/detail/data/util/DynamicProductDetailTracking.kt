@@ -56,7 +56,7 @@ object DynamicProductDetailTracking {
             val mapEvent = TrackAppUtils.gtmData(
                     ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.CLICK_SHOP_INFO_MINI, "")
+                    ProductTrackingConstant.Action.CLICK_SHOP_INFO_MINI, "${ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER} : ${productInfo?.basic?.shopID}")
             mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
             mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] = productInfo?.basic?.shopID ?: ""
             mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_TYPE] = productInfo?.shopTypeString ?: ""

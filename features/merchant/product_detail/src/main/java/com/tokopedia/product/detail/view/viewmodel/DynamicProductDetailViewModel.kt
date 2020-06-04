@@ -477,6 +477,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         val isOfficialStore = getDynamicProductInfoP1?.data?.isOS == true
         val isVariant = getDynamicProductInfoP1?.data?.variant?.isVariant == true
         val isTeaser = getDynamicProductInfoP1?.shouldShowNotifyMe() ?: false
+        val layoutName = getDynamicProductInfoP1?.layoutName ?: ""
+        val headNshoulderView = layoutName == ProductDetailConstant.LAYOUT_DEFAULT || layoutName == ProductDetailConstant.LAYOUT_HEAD_N_SHOULDERS
 
         val removedData = initialLayoutData.map {
             if ((!isTradein || isShopOwner()) && it.name() == ProductDetailConstant.TRADE_IN) {
@@ -494,6 +496,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             } else if (it.name() == ProductDetailConstant.UPCOMING_DEALS && !isTeaser && !isVariant) {
                 it
             } else if (GlobalConfig.isSellerApp() && it.type() == ProductDetailConstant.PRODUCT_LIST) {
+                it
+            } else if ((it.type() == ProductDetailConstant.SOCIAL_PROOF || it.type() == ProductDetailConstant.VALUE_PROP) && headNshoulderView) {
                 it
             } else {
                 null
@@ -675,7 +679,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun getDiscussionMostHelpful(productId: String, shopId: String) {
-        launchCatchError(block =  {
+        launchCatchError(block = {
             val response = withContext(dispatcher.io()) {
                 discussionMostHelpfulUseCase.createRequestParams(productId, shopId)
                 discussionMostHelpfulUseCase.executeOnBackground()

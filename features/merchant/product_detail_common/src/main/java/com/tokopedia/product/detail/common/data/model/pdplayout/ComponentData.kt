@@ -81,9 +81,9 @@ data class ComponentData(
 
         return if (firstImage != null) {
             when {
-                firstImage.uRLThumbnail.isNotEmpty() -> pictures[0].urlThumbnail
-                firstImage.uRL300.isNotEmpty() -> pictures[0].url300
-                firstImage.uRLOriginal.isNotEmpty() -> pictures[0].urlOriginal
+                firstImage.uRLThumbnail.isNotEmpty() -> pictures.firstOrNull()?.urlThumbnail ?: ""
+                firstImage.uRL300.isNotEmpty() -> pictures.firstOrNull()?.url300 ?: ""
+                firstImage.uRLOriginal.isNotEmpty() -> pictures.firstOrNull()?.urlOriginal ?: ""
                 else -> ""
             }
         } else {

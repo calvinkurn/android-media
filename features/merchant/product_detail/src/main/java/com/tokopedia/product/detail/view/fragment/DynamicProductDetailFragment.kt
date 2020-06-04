@@ -492,6 +492,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun onDestroy() {
+        hideProgressDialog()
         viewModel.productLayout.removeObservers(this)
         viewModel.p2ShopDataResp.removeObservers(this)
         viewModel.p2General.removeObservers(this)
@@ -2649,7 +2650,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun hideProgressDialog() {
-        loadingProgressDialog?.dismiss()
+        if (loadingProgressDialog != null && loadingProgressDialog?.isShowing == true) {
+            loadingProgressDialog?.dismiss()
+        }
     }
 
     private fun scrollToPosition(position: Int) {
