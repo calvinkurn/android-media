@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.view.fragment
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.Fade
+import androidx.transition.Slide
+import androidx.transition.TransitionManager
+import androidx.transition.TransitionSet
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -20,6 +25,7 @@ import com.tokopedia.play.broadcaster.ui.model.ResultState
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayEtalaseViewHolder
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 import com.tokopedia.play.broadcaster.ui.viewholder.SearchSuggestionViewHolder
+import com.tokopedia.play.broadcaster.util.doOnPreDraw
 import com.tokopedia.play.broadcaster.util.scroll.EndlessRecyclerViewScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.PlayEtalaseAdapter
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
@@ -47,12 +53,13 @@ class PlayEtalasePickerFragment @Inject constructor(
     private lateinit var rvSuggestions: RecyclerView
 
     private val etalaseAdapter = PlayEtalaseAdapter(object : PlayEtalaseViewHolder.Listener {
-        override fun onEtalaseClicked(etalaseId: String) {
+        override fun onEtalaseClicked(etalaseId: String, sharedElements: List<View>) {
             bottomSheetCoordinator.navigateToFragment(
                     PlayEtalaseDetailFragment::class.java,
                     Bundle().apply {
                         putString(PlayEtalaseDetailFragment.EXTRA_ETALASE_ID, etalaseId)
-                    }
+                    },
+                    sharedElements = sharedElements
             )
         }
 
@@ -93,11 +100,13 @@ class PlayEtalasePickerFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setupTransition()
         viewModel = ViewModelProviders.of(requireParentFragment(), viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         bottomSheetCoordinator.showBottomAction(false)
+        postponeEnterTransition()
         return inflater.inflate(R.layout.fragment_play_etalase_picker, container, false)
     }
 
@@ -114,6 +123,10 @@ class PlayEtalasePickerFragment @Inject constructor(
         observeEtalase()
         observeSearchProducts()
         observeSearchSuggestions()
+    }
+
+    override fun onInterceptBackPressed(): Boolean {
+        return false
     }
 
     private fun initView(view: View) {
@@ -183,7 +196,8 @@ class PlayEtalasePickerFragment @Inject constructor(
     }
 
     private fun enterSearchMode() {
-        tvInfo.gone()
+        onSearchModeTransition()
+
         rvEtalase.gone()
         rvSearchedProducts.gone()
 
@@ -195,7 +209,7 @@ class PlayEtalasePickerFragment @Inject constructor(
     }
 
     private fun exitSearchMode() {
-        tvInfo.visible()
+        onSearchModeTransition()
 
         if (psbSearch.text.isNotEmpty()) {
             rvSearchedProducts.visible()
@@ -224,6 +238,7 @@ class PlayEtalasePickerFragment @Inject constructor(
     private fun observeEtalase() {
         viewModel.observableEtalase.observe(viewLifecycleOwner, Observer {
             etalaseAdapter.setItemsAndAnimateChanges(it)
+            startPostponedTransition()
         })
     }
 
@@ -254,6 +269,47 @@ class PlayEtalasePickerFragment @Inject constructor(
         })
     }
     //endregion
+
+    /**
+     * Transition
+     */
+    private fun onSearchModeTransition() {
+        TransitionManager.beginDelayedTransition(
+                container,
+                TransitionSet()
+                        .addTransition(
+                                Slide(Gravity.BOTTOM)
+                                        .addTarget(rvEtalase)
+                                        .setDuration(300)
+                        ).excludeChildren(psbSearch, true)
+        )
+    }
+
+    private fun startPostponedTransition() {
+        requireView().doOnPreDraw {
+            startPostponedEnterTransition()
+        }
+    }
+
+    private fun setupTransition() {
+        setupExitTransition()
+        setupReenterTransition()
+    }
+
+    private fun setupExitTransition() {
+        exitTransition = TransitionSet()
+                .addTransition(Slide(Gravity.START))
+                .addTransition(Fade(Fade.OUT))
+                .setDuration(300)
+    }
+
+    private fun setupReenterTransition() {
+        reenterTransition = TransitionSet()
+                .addTransition(Slide(Gravity.START))
+                .addTransition(Fade(Fade.IN))
+                .setStartDelay(200)
+                .setDuration(300)
+    }
 
     companion object {
 

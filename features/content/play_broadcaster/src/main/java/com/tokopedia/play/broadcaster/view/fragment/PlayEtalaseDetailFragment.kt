@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.view.fragment
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,12 +10,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.*
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
 import com.tokopedia.play.broadcaster.ui.model.ResultState
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
+import com.tokopedia.play.broadcaster.util.doOnPreDraw
 import com.tokopedia.play.broadcaster.util.scroll.EndlessRecyclerViewScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
@@ -63,6 +66,8 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setupTransition()
+        postponeEnterTransition()
         viewModel = ViewModelProviders.of(requireParentFragment(), viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
     }
 
@@ -81,6 +86,10 @@ class PlayEtalaseDetailFragment @Inject constructor(
         super.onActivityCreated(savedInstanceState)
 
         observeProductsInSelectedEtalase()
+    }
+
+    override fun onInterceptBackPressed(): Boolean {
+        return false
     }
 
     private fun initView(view: View) {
@@ -119,6 +128,8 @@ class PlayEtalaseDetailFragment @Inject constructor(
                 is ResultState.Success -> {
                     selectableProductAdapter.setItemsAndAnimateChanges(it.currentValue.productMap.values.flatten())
 
+                    startPostponedTransition()
+
                     scrollListener.setHasNextPage(it.currentValue.stillHasProduct)
                     scrollListener.updateState(true)
                 }
@@ -132,6 +143,45 @@ class PlayEtalaseDetailFragment @Inject constructor(
                 }
             }
         })
+    }
+
+    /**
+     * Transition
+     */
+    private fun setupTransition() {
+        setupEnterTransition()
+        setupReturnTransition()
+    }
+
+    private fun setupEnterTransition() {
+        enterTransition = TransitionSet()
+                .addTransition(Slide(Gravity.END))
+                .addTransition(Fade(Fade.IN))
+                .setStartDelay(200)
+                .setDuration(300)
+
+        sharedElementEnterTransition = TransitionSet()
+                .addTransition(ChangeTransform())
+                .addTransition(ChangeBounds())
+                .setDuration(450)
+    }
+
+    private fun setupReturnTransition() {
+        returnTransition = TransitionSet()
+                .addTransition(Slide(Gravity.END))
+                .addTransition(Fade(Fade.OUT))
+                .setDuration(250)
+
+        sharedElementReturnTransition = TransitionSet()
+                .addTransition(ChangeTransform())
+                .addTransition(ChangeBounds())
+                .setDuration(450)
+    }
+
+    private fun startPostponedTransition() {
+        requireView().doOnPreDraw {
+            startPostponedEnterTransition()
+        }
     }
 
     companion object {

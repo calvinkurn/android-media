@@ -137,7 +137,7 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun navigateToFragment(fragmentClass: Class<out Fragment>, extras: Bundle) {
+    override fun navigateToFragment(fragmentClass: Class<out Fragment>, extras: Bundle, sharedElements: List<View>, onFragment: (Fragment) -> Unit) {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         val destFragment = getFragmentByClassName(fragmentClass)
         destFragment.arguments = extras

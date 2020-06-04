@@ -2,7 +2,6 @@ package com.tokopedia.play.broadcaster.ui.viewholder
 
 import android.content.Context
 import android.view.View
-import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -10,6 +9,7 @@ import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.ProductPreviewItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.PlayEtalaseUiModel
+import com.tokopedia.play.broadcaster.util.doOnPreDraw
 import com.tokopedia.play.broadcaster.view.adapter.PlayProductPreviewAdapter
 
 /**
@@ -40,19 +40,20 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
             }
         }
         rvProductPreview.adapter = productPreviewAdapter
-        rvProductPreview.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
-            override fun onPreDraw(): Boolean {
-                if (rvProductPreview.itemDecorationCount == 0) rvProductPreview.addItemDecoration(ProductPreviewItemDecoration())
-                rvProductPreview.viewTreeObserver.removeOnPreDrawListener(this)
-                return true
-            }
-        })
+        rvProductPreview.doOnPreDraw {
+            if (rvProductPreview.itemDecorationCount == 0)
+                rvProductPreview.addItemDecoration(ProductPreviewItemDecoration())
+        }
     }
 
     fun bind(item: PlayEtalaseUiModel) {
         listener.onEtalaseBound(item.id)
         vClickArea.setOnClickListener {
-            listener.onEtalaseClicked(item.id)
+            listener.onEtalaseClicked(item.id, (0 until rvProductPreview.childCount).map {
+                val childView = rvProductPreview.getChildAt(it)
+                val viewHolder = rvProductPreview.getChildViewHolder(childView) as ProductPreviewViewHolder
+                viewHolder.ivImage
+            })
         }
         tvEtalaseTitle.text = item.name
         tvEtalaseAmount.text = getString(R.string.play_etalase_product_amount, item.totalProduct)
@@ -66,6 +67,6 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
     interface Listener {
 
         fun onEtalaseBound(etalaseId: String)
-        fun onEtalaseClicked(etalaseId: String)
+        fun onEtalaseClicked(etalaseId: String, sharedElements: List<View>)
     }
 }
