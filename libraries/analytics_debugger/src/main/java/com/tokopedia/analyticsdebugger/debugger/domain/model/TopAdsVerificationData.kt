@@ -3,10 +3,10 @@ package com.tokopedia.analyticsdebugger.debugger.domain.model
 import com.google.gson.annotations.SerializedName
 
 data class TopAdsVerificationData(@SerializedName("TopadsVerifyClicksViews")
-                                  var topadsVerifyClicksViews : TopadsVerifyClicksViews)
+                                  var topadsVerifyClicksViews : TopadsVerifyClicksViews? = null)
 
 data class TopadsVerifyClicksViews (
-        val data : List<Item>
+        val data : List<Item>?
 )
 
 data class Item (
