@@ -106,4 +106,5 @@ class DownloadVoucherBottomSheet(
             mAdapter.notifyItemChanged(notifiedIndex)
         }
     }
+
 }

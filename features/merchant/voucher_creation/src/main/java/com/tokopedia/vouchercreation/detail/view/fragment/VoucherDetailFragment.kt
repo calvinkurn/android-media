@@ -1,11 +1,15 @@
 package com.tokopedia.vouchercreation.detail.view.fragment
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -13,6 +17,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.kotlin.util.DownloadHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -45,6 +50,8 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
 
     companion object {
         fun newInstance(voucherId: Int): VoucherDetailFragment = VoucherDetailFragment(voucherId)
+
+        const val DOWNLOAD_REQUEST_CODE = 222
     }
 
     private var voucherUiModel: VoucherUiModel? = null
@@ -170,8 +177,14 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
                 parent,
                 voucherUiModel?.image.toBlankOrString(),
                 voucherUiModel?.imageSquare.toBlankOrString())
-                .setOnDownloadClickListener {
-
+                .setOnDownloadClickListener { voucherList ->
+                    voucherList.forEach {
+                        if (activity?.let { it1 -> ActivityCompat.checkSelfPermission(it1, Manifest.permission.WRITE_EXTERNAL_STORAGE) } != PackageManager.PERMISSION_GRANTED) {
+                            downloadFiles(it.downloadVoucherType.imageUrl)
+                        } else {
+                            downloadFiles(it.downloadVoucherType.imageUrl)
+                        }
+                    }
                 }
                 .show(childFragmentManager)
     }
@@ -387,6 +400,16 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
                     errorMessage,
                     Toaster.LENGTH_LONG,
                     Toaster.TYPE_ERROR)
+        }
+    }
+
+    @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    private fun downloadFiles(uri: String) {
+        val missingPermissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        activity?.let {
+            ActivityCompat.requestPermissions(it, missingPermissions, DOWNLOAD_REQUEST_CODE)
+            val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString(), null)
+            helper.downloadFile { true }
         }
     }
 }
