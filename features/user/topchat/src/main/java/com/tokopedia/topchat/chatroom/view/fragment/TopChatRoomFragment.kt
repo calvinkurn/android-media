@@ -346,6 +346,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
             checkShowLoading(it.canLoadMore)
             loadChatRoomSettings(it)
             presenter.updateMinReplyTime(it)
+            presenter.loadAttachmentData(messageId.toInt(), it)
         }
     }
 

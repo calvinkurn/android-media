@@ -25,7 +25,6 @@ open class GetExistingChatMapper @Inject constructor() {
     protected var latestHeaderDate: String = ""
 
     open fun map(pojo: GetExistingChatPojo): ChatroomViewModel {
-
         val listChat = mappingListChat(pojo)
         val headerModel = mappingHeaderModel(pojo)
         val canLoadMore = pojo.chatReplies.hasNext
