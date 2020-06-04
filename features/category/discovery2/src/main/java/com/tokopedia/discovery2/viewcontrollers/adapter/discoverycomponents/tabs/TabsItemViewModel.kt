@@ -25,11 +25,6 @@ class TabsItemViewModel(val application: Application, components: ComponentsItem
 
     init {
         componentData.value = components
-//        components.data?.get(0)?.let {
-//            if(position==0 && it.isSelected){
-//                populateTabCompositeComponents(it)
-//            }
-//        }
     }
 
     fun getComponentLiveData(): LiveData<ComponentsItem> {
