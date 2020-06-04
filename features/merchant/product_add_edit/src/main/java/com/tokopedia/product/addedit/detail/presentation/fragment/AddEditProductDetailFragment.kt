@@ -332,6 +332,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         preOrderSwitch?.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
+                // tracker
+                if (viewModel.isEditing && !viewModel.isAdding) {
+                    ProductEditMainTracking.clickPreorderButton(shopId)
+                } else {
+                    ProductAddMainTracking.clickPreorderButton(shopId)
+                }
+
                 preOrderInputLayout?.visibility = View.VISIBLE
             } else {
                 preOrderInputLayout?.visibility = View.GONE
@@ -979,15 +986,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         viewModel.isPreOrderActivated.observe(this, Observer {
             if (it) preOrderInputLayout?.visible()
             else preOrderInputLayout?.hide()
-
-            if (isPreOrderFirstTime) {
-                if (viewModel.isEditing && !viewModel.isAdding) {
-                    ProductEditMainTracking.clickPreorderButton(shopId)
-                } else {
-                    ProductAddMainTracking.clickPreorderButton(shopId)
-                }
-            }
-            isPreOrderFirstTime = true
         })
     }
 
