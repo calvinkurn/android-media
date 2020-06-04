@@ -284,7 +284,7 @@ class AddToCartDoneBottomSheet :
     }
 
     override fun state(): BottomSheetsState {
-        return BottomSheetsState.FLEXIBLE
+        return BottomSheetsState.FULL
     }
 
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
