@@ -59,13 +59,16 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
         return super.getItemId(position)
     }
 
-
-    fun setDataList(dataList: ArrayList<ComponentsItem>?) {
+    fun addDataList(dataList: ArrayList<ComponentsItem>?){
         if (dataList != null) {
             componentList.clear()
             viewHolderListModel.clearList()
             componentList.addAll(dataList)
         }
+    }
+
+    fun setDataList(dataList: ArrayList<ComponentsItem>?) {
+        addDataList(dataList)
         notifyDataSetChanged()
     }
 

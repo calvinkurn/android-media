@@ -53,7 +53,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
     }
 
     fun getCompositeComponentsList(compositeList: List<ComponentsItem>) {
-        compositeAdapter.setDataList(compositeList as ArrayList<ComponentsItem>)
+        compositeAdapter.addDataList(compositeList as ArrayList<ComponentsItem>)
         addChildAdapterCallback.notifyMergeAdapter()
     }
 }

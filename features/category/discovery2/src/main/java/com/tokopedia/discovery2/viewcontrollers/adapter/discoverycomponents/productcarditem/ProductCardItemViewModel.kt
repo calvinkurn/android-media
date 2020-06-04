@@ -143,11 +143,11 @@ class ProductCardItemViewModel(val application: Application, private val compone
                     ?: stockWordTitleColour
         } else {
             val campaignSoldCount = dataItem.campaignSoldCount
-            val threshold: Int? = dataItem.threshold
-            val customStock: Int? = dataItem.customStock
+            val threshold: Int? = dataItem.threshold.toIntOrZero()
+            val customStock: Int? = dataItem.customStock.toIntOrZero()
 
             if (campaignSoldCount != null && threshold != null && customStock != null) {
-                if (campaignSoldCount > 0) {
+                if (campaignSoldCount.toIntOrZero() > 0) {
                     when {
                         customStock == 0 -> {
                             stockWordTitle = "Terjual habis"

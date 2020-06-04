@@ -5,7 +5,6 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
@@ -13,9 +12,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImageWithCallback
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.utils.image.ImageUtils
 
 class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
     private val tabImageView: ImageView = itemView.findViewById(R.id.tab_image)
@@ -23,44 +20,63 @@ class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : Abstr
     private val tabTextView: TextView = itemView.findViewById(R.id.tab_text)
     private lateinit var tabsItemViewModel: TabsItemViewModel
     private var positionForParentAdapter: Int = -1
+    private var tabItem: DataItem? = null
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         tabsItemViewModel = discoveryBaseViewModel as TabsItemViewModel
     }
 
     override fun onViewAttachedToWindow() {
-        setUpDataObserver(fragment.viewLifecycleOwner)
+        super.onViewAttachedToWindow()
+        setUpObservers()
+        tabItem?.let {
+            if (tabsItemViewModel.position == 0 && it.isSelected && !isDefaultFetched()) {
+                fetchTabCompositeComponents(it)
+                setDefaultItemFetched()
+            }
+        }
     }
 
-    private fun setUpDataObserver(viewLifecycleOwner: LifecycleOwner) {
-        tabsItemViewModel.getComponentLiveData().observe(viewLifecycleOwner, Observer {
+    private fun setDefaultItemFetched() {
+        (fragment as? DiscoveryFragment)?.let {
+            return it.setDefaultTabDataFetched()
+        }
+    }
+
+    private fun isDefaultFetched(): Boolean {
+        (fragment as? DiscoveryFragment)?.let {
+            return it.isDefaultTabDataFetched()
+        }
+        return false
+    }
+
+    private fun setUpObservers() {
+        tabsItemViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer {
             val itemData = it.data?.get(0)
             positionForParentAdapter = itemData?.positionForParentItem ?: -1
             itemData?.let { item ->
-                tabImageView.loadImageWithCallback(item.backgroundImage
-                        ?: "", object : ImageUtils.ImageLoaderStateListener {
-                    override fun successLoad() {
-                        item.name?.let { name ->
-                            setTabText(name)
-                        }
-                        item.fontColor?.let { fontColor ->
-                            setFontColor(fontColor)
-                        }
-                        showSelectedView(item.isSelected)
-                        setClick(item)
-                    }
-
-                    override fun failedLoad() {
-
-                    }
-                })
-
+                tabItem = item
+                tabsItemViewModel.loadImage(tabImageView, item.backgroundImage)
             }
         })
-        tabsItemViewModel.getCompositeComponentLiveData().observe(viewLifecycleOwner, Observer {
+
+        tabsItemViewModel.getImageLoadedLiveData().observe(fragment.viewLifecycleOwner, Observer {
+            if (it) {
+                tabItem?.let { item ->
+                    item.name?.let { name ->
+                        setTabText(name)
+                    }
+                    item.fontColor?.let { fontColor ->
+                        setFontColor(fontColor)
+                    }
+                    showSelectedView(item.isSelected)
+                    setClick(item)
+                }
+            }
+        })
+        tabsItemViewModel.getCompositeComponentLiveData().observe(fragment.viewLifecycleOwner, Observer {
             (parentAbstractViewHolder as? TabsViewHolder)?.getCompositeComponentsList(it)
         })
-
     }
 
     private fun setTabText(name: String) {
@@ -77,16 +93,25 @@ class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : Abstr
     private fun setClick(data: DataItem) {
         tabImageView.setOnClickListener {
             if (!data.isSelected) {
-                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackTabsClick(data.name
-                        ?: "")
+                sendAnalytics(data.name)
                 (it as ImageView).apply {
                     data.isSelected = !data.isSelected
                     showSelectedView(data.isSelected)
                 }
-                tabsItemViewModel.populateTabCompositeComponents(data)
                 changeDataInTabsViewModel()
+                fetchTabCompositeComponents(data)
             }
         }
+    }
+
+    private fun sendAnalytics(name: String?) {
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackTabsClick(name
+                ?: "")
+
+    }
+
+    private fun fetchTabCompositeComponents(data: DataItem) {
+        tabsItemViewModel.populateTabCompositeComponents(data)
     }
 
     //temp code
@@ -101,7 +126,6 @@ class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : Abstr
                             item.data?.get(0)?.isSelected = false
                         }
                     }
-                    tabsViewModel.getListDataLiveData().value = listData
                 }
             }
         }
@@ -114,7 +138,6 @@ class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : Abstr
         } else {
             selectedView.hide()
         }
-
     }
 
 }

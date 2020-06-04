@@ -52,6 +52,7 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback {
     var pageEndPoint = ""
     private lateinit var mergeAdapters: MergeAdapters<RecyclerView.Adapter<AbstractViewHolder>>
     private lateinit var discoveryRecycleAdapter: DiscoveryRecycleAdapter
+    private var defaultTabDataFetched = false
 
     @Inject
     lateinit var trackingQueue: TrackingQueue
@@ -128,7 +129,7 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback {
         discoveryViewModel.getDiscoveryResponseList().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    discoveryRecycleAdapter.setDataList(it.data)
+                    discoveryRecycleAdapter.addDataList(it.data)
                     mergeAdapters.notifyDataSetChanged()
                 }
             }
@@ -269,5 +270,13 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback {
     fun getDiscoveryAnalytics(): DiscoveryAnalytics {
         val discoveryAnalytics: DiscoveryAnalytics by lazy { DiscoveryAnalytics(trackingQueue = trackingQueue, pagePath = discoveryViewModel.pagePath, pageType = discoveryViewModel.pageType) }
         return discoveryAnalytics
+    }
+
+    fun isDefaultTabDataFetched():Boolean {
+        return defaultTabDataFetched
+    }
+
+    fun setDefaultTabDataFetched() {
+        defaultTabDataFetched = true
     }
 }
