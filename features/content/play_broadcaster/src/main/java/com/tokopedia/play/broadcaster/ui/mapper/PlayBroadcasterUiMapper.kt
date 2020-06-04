@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
 import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
+import com.tokopedia.play.broadcaster.type.EtalaseType
 import com.tokopedia.play.broadcaster.ui.model.PlayEtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.view.state.SelectableState
@@ -12,8 +13,9 @@ import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 object PlayBroadcasterUiMapper {
 
     fun mapEtalaseList(etalaseList: List<ShopEtalaseModel>): List<PlayEtalaseUiModel> = etalaseList.map {
+        val type = EtalaseType.getByType(it.type, it.id)
         PlayEtalaseUiModel(
-                id = it.id.toLong(),
+                id = if (type is EtalaseType.Group) type.fMenu else it.id,
                 name = it.name,
                 productMap = mutableMapOf(),
                 totalProduct = it.count,

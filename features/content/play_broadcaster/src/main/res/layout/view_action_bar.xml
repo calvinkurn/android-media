@@ -37,7 +37,8 @@
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:textColor="@color/Neutral_N0"
         android:textStyle="bold"
-        app:drawableRightCompat="@drawable/ic_play_close_white"
+        app:drawableRightCompat="@drawable/ic_system_close_default"
+        app:drawableTint="@color/Neutral_N0"
         app:layout_constraintBottom_toBottomOf="@+id/tv_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_title" />

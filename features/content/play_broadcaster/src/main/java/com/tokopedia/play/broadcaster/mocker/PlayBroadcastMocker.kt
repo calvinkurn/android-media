@@ -32,7 +32,7 @@ object PlayBroadcastMocker {
      */
     fun getMockEtalaseList() = List(6) {
         PlayEtalaseUiModel(
-                id = it + 1L,
+                id = (it + 1L).toString(),
                 name = "Etalase ${it + 1}",
                 productMap = mutableMapOf(),
                 totalProduct = (it + 1) * 100,
