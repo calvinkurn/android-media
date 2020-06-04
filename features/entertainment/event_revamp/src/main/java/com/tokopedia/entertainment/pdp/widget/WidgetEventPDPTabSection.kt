@@ -58,7 +58,7 @@ class WidgetEventPDPTabSection @JvmOverloads constructor(context: Context, attrs
 
     fun setNullMode(){
         val params = tab_widget.layoutParams
-        params.height = context.resources.getDimensionPixelSize(R.dimen.layout_lvl0)
+        params.height = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl0)
         tab_widget.layoutParams = params
     }
 

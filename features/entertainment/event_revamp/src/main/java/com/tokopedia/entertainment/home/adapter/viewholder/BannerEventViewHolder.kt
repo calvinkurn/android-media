@@ -35,9 +35,9 @@ BannerView.OnPromoDragListener, BannerView.OnPromoLoadedListener {
         itemView.banner_home_ent?.onPromoScrolledListener = this
         itemView.banner_home_ent?.setOnPromoDragListener(this)
         itemView.banner_home_ent?.customWidth = getDisplayMetric(context).widthPixels -
-                        context.resources.getDimensionPixelSize(R.dimen.spacing_lvl4)
+                        context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
         itemView.banner_home_ent?.customHeight = context.resources.getDimensionPixelSize(R.dimen.dimen_dp_110)
-        itemView.banner_home_ent?.setBannerSeeAllTextColor(ContextCompat.getColor(context, R.color.Green_G500))
+        itemView.banner_home_ent?.setBannerSeeAllTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500))
         itemView.banner_home_ent?.setBannerIndicator(Indicator.GREEN)
     }
 
