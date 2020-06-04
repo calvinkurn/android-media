@@ -311,22 +311,22 @@ data class DataItem(
         val pdpView: String = "",
 
         @SerializedName("campaign_sold_count")
-        val campaignSoldCount: Int? = null,
+        val campaignSoldCount: String? = null,
 
         @SerializedName("threshold")
-        val threshold: Int? = null,
+        val threshold: String? = null,
 
         @SerializedName("custom_stock")
-        val customStock: Int? = null,
+        val customStock: String? = null,
 
         @SerializedName("stock_wording")
         val stockWording: StockWording? = null,
 
         @SerializedName("total_interest_notify_me")
-        val notifyMeCount: Int? = null,
+        val notifyMeCount: String? = null,
 
         @SerializedName("threshold_interest")
-        val thresholdInterest: Int? = null,
+        val thresholdInterest: String? = null,
 
         var status: String? = null,
 
