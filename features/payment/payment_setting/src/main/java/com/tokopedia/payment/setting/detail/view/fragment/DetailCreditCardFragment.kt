@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.payment.setting.R
-import com.tokopedia.payment.setting.detail.di.DaggerDetailCreditCardComponent
 import com.tokopedia.payment.setting.detail.di.DetailCreditCardComponent
 import com.tokopedia.payment.setting.detail.view.presenter.DetailCreditCardContract
 import com.tokopedia.payment.setting.detail.view.presenter.DetailCreditCardPresenter
@@ -108,7 +107,7 @@ class DetailCreditCardFragment : BaseDaggerFragment(), DetailCreditCardContract.
             val errorMessage = ErrorHandler.getErrorMessage(context, e)
             view?.let { view ->
                 Toaster.make(view, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
-                        getString(R.string.pms_coba_lagi), View.OnClickListener {
+                        getString(R.string.payment_label_coba_lagi), View.OnClickListener {
                     onConfirmDelete(tokenId)
                 })
             }

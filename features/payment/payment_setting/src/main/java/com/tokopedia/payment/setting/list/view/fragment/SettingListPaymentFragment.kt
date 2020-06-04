@@ -115,7 +115,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
 
     override fun renderList(list: MutableList<SettingListPaymentModel>) {
         updateViewCounter(list.size)
-        if (list.size in 1..3) {
+        if (list.size in CARD_LIST_RANGE_FOR_ADD_MORE_CARD) {
             list.add(SettingListAddCardModel())
         }
         super.renderList(list)
@@ -189,6 +189,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
     override fun getRecyclerViewResourceId() = R.id.recycler_view
 
     companion object {
+        val CARD_LIST_RANGE_FOR_ADD_MORE_CARD = 1..3
         const val REQUEST_CODE_DETAIL_CREDIT_CARD = 4213
         const val REQUEST_CODE_ADD_CREDIT_CARD = 4273
         const val REQUEST_CODE_AUTH_CREDIT_CARD = 4275
