@@ -41,6 +41,7 @@ public class RouteManager {
 
     public static final String KEY_REDIRECT_TO_SELLER_APP = "redirect_to_sellerapp";
     private static final String SELLER_APP_PACKAGE_NAME = "com.tokopedia.sellerapp";
+    private static final String SELLER_APP_SPLASH_SCREEN_ACTIVITY = "com.tokopedia.sellerapp.SplashScreenActivity";
 
     /**
      * will create implicit internal Intent ACTION_VIEW correspond to deeplink
@@ -90,7 +91,7 @@ public class RouteManager {
         Uri uri = Uri.parse(deeplink);
         final boolean shouldRedirectToSellerApp = uri.getBooleanQueryParameter(KEY_REDIRECT_TO_SELLER_APP, false);
 
-        if (shouldRedirectToSellerApp) {
+        if (shouldRedirectToSellerApp && !GlobalConfig.isSellerApp()) {
             return getIntentRedirectSellerApp(context, uri);
         } else if (resolveInfos == null || resolveInfos.size() == 0) {
             // intent cannot be viewed in app
@@ -130,11 +131,16 @@ public class RouteManager {
         }
     }
 
+    /**
+     * Create intent redirect to sellerapp
+     * If sellerapp not installed yet then open sellerapp on google playstore
+     * */
     private static Intent getIntentRedirectSellerApp(Context context, Uri uri) {
         boolean isSellerAppInstalled = (context.getPackageManager().getLaunchIntentForPackage(SELLER_APP_PACKAGE_NAME) != null);
         if (isSellerAppInstalled) {
             Intent intentToSellerApp = new Intent(Intent.ACTION_VIEW);
             intentToSellerApp.setPackage(SELLER_APP_PACKAGE_NAME);
+            intentToSellerApp.setClassName(SELLER_APP_PACKAGE_NAME, SELLER_APP_SPLASH_SCREEN_ACTIVITY);
             intentToSellerApp.setData(uri);
             return intentToSellerApp;
         } else {
