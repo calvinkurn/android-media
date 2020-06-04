@@ -13,13 +13,13 @@ import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 object PlayBroadcasterUiMapper {
 
     fun mapEtalaseList(etalaseList: List<ShopEtalaseModel>): List<PlayEtalaseUiModel> = etalaseList.map {
+        val type = EtalaseType.getByType(it.type, it.id)
         PlayEtalaseUiModel(
-                id = it.id.toLong(),
+                id = if (type is EtalaseType.Group) type.fMenu else it.id,
                 name = it.name,
                 productMap = mutableMapOf(),
                 totalProduct = it.count,
-                stillHasProduct = true,
-                type = EtalaseType.getByType(it.type)
+                stillHasProduct = true
         )
     }
 
