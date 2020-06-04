@@ -266,6 +266,9 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         startNetworkRequestPerformanceMonitoring()
         initListener()
         mPresenter.getTokoPointDetail()
+        if (userLoggedInStatus!!) {
+            mPresenter.getTokenDetail()
+        }
         val localCacheHandler = LocalCacheHandler(appContext, CommonConstant.PREF_TOKOPOINTS)
         if (!localCacheHandler.getBoolean(CommonConstant.PREF_KEY_ON_BOARDED)) {
             showOnBoardingTooltip(getString(R.string.tp_label_know_tokopoints), getString(R.string.tp_message_tokopoints_on_boarding))
@@ -421,7 +424,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     AnalyticsTrackerUtil.ActionKeys.CLICK_LOYALTY_SAYA,
                     "")
         } else if (source.id == R.id.text_failed_action) {
-            mPresenter!!.getTokoPointDetail()
+            mPresenter.getTokoPointDetail()
+            mPresenter.getTokenDetail()
         } else if (source.id == R.id.container_fab_egg_token) {
             if (mSumToken <= 0) {
                 if (mStartPurchaseBottomSheet != null) {
@@ -949,7 +953,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         private const val CONTAINER_LOADER = 0
         private const val CONTAINER_DATA = 1
         private const val CONTAINER_ERROR = 2
-        private const val REQUEST_CODE_LOGIN = 1
+        const val REQUEST_CODE_LOGIN = 1
         fun newInstance(): TokoPointsHomeFragmentNew {
             return TokoPointsHomeFragmentNew()
         }
@@ -1027,7 +1031,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                             stopPerformanceMonitoring()
                         }
                         pageLoadTimePerformanceMonitoring = null
-                        rv_dynamic_link.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        rv_dynamic_link?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                     }
                 })
     }
