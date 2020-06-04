@@ -49,7 +49,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                     val data = discoveryDataUseCase.getDiscoveryPageDataUseCase(pageIdentifier)
                     data.let {
                         withContext(Dispatchers.Default) {
-                            findAndRemoveSecondYoutubeComponent(it.components)
+//                            findAndRemoveSecondYoutubeComponent(it.components)
                             checkLoginAndUpdateList(it.components)
                             findCustomTopChatComponentsIfAny(it.components)
                         }
@@ -96,8 +96,8 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     private fun checkLoginAndUpdateList(components: List<ComponentsItem>?) {
         if (!userSession.isLoggedIn) {
-            val list = components?.filter { it.name != "topads" }
-            discoveryResponseList.postValue(Success(list as ArrayList<ComponentsItem>))
+            val components = components?.filter { it.name != "topads" }
+            discoveryResponseList.postValue(Success(components as ArrayList<ComponentsItem>))
 
         } else {
             discoveryResponseList.postValue(Success(components as ArrayList<ComponentsItem>))
