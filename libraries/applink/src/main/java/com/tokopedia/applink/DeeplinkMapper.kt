@@ -145,6 +145,8 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.SELLER_HISTORY, true) -> getRegisteredNavigationMainAppSellerHistory()
                     deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_SHIPPED) -> getSomShippedAppLink(deeplink)
                     deeplink.startsWith(ApplinkConst.SELLER_SHIPMENT, true) -> getSomReadyToShipAppLink(deeplink)
+                    GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.SELLER_NEW_ORDER, true) -> getSomNewOrderAppLink(deeplink)
+                    GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.SELLER_SHIPMENT, true) -> getSomReadyToShipAppLink(deeplink)
                     deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_FINISHED, true) -> getSomDoneAppLink(deeplink)
                     deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_CANCELED, true) -> getSomCancelledAppLink(deeplink)
                     deeplink.startsWithPattern(ApplinkConst.FEED_DETAILS) ->
