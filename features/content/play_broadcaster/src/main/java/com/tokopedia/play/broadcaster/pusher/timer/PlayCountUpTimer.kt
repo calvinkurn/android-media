@@ -35,7 +35,7 @@ abstract class PlayCountUpTimer(millisInFuture: Long, countDownInterval: Long) {
         return this
     }
 
-    abstract fun onTick(elapsedTime: Long, millisUntilFinished: Long)
+    abstract fun onTick(elapsedTime: Long)
 
     abstract fun onFinish()
 
@@ -45,13 +45,13 @@ abstract class PlayCountUpTimer(millisInFuture: Long, countDownInterval: Long) {
                 if (mCancelled) {
                     return
                 }
-                val millisLeft = mStopTimeInFuture - SystemClock.elapsedRealtime()
-                val elapsedTime = SystemClock.elapsedRealtime() - mBase
+                val millisLeft = (mStopTimeInFuture - SystemClock.elapsedRealtime())+1000
+                val elapsedTime = (SystemClock.elapsedRealtime() - mBase)+1000
                 if (millisLeft <= 0) {
                     onFinish()
                 } else {
                     val lastTickStart = SystemClock.elapsedRealtime()
-                    onTick(elapsedTime, millisLeft)
+                    onTick(elapsedTime)
                     val lastTickDuration = SystemClock.elapsedRealtime() - lastTickStart
                     var delay: Long
                     if (millisLeft < mInterval) {

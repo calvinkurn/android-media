@@ -72,8 +72,16 @@ class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
     override fun addMaxStreamDuration(millis: Long) {
         this.mTimer = PlayPusherTimer(builder.context, millis)
         this.mTimer?.addCallback(object: PlayPusherTimerListener {
-            override fun onCountDownActive(elapsedTime: String, isFiveMinutesLeft: Boolean, isTwoMinutesLeft: Boolean) {
-//                _observableInfoState.value  = PlayPusherInfoState.Active(elapsedTime, isFiveMinutesLeft, isTwoMinutesLeft)
+            override fun onCountDownActive(
+                    elapsedTime: String,
+                    minutesUntilFinished: Long,
+                    secondsUntilFinished: Long
+            ) {
+                _observableInfoState.value  = PlayPusherInfoState.Active(
+                        elapsedTime,
+                        minutesUntilFinished,
+                        secondsUntilFinished
+                )
             }
 
             override fun onCountDownFinish() {

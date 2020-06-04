@@ -7,8 +7,8 @@ package com.tokopedia.play.broadcaster.pusher.timer
 interface PlayPusherTimerListener {
     fun onCountDownActive(
             elapsedTime: String,
-            isFiveMinutesLeft: Boolean,
-            isTwoMinutesLeft: Boolean
+            minutesUntilFinished: Long,
+            secondsUntilFinished: Long
     )
     fun onCountDownFinish()
 }

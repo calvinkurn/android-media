@@ -10,7 +10,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
@@ -21,7 +20,6 @@ import com.tokopedia.play.broadcaster.util.event.EventObserver
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.unifyprinciples.Typography
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -61,7 +59,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-//        observeChannelInfo() // TODO("called twice")
+//        observeChannelInfo() // TODO("double check")
         observeCountDownDuration()
         observeTotalViews()
         observeTotalLikes()
@@ -93,17 +91,25 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         return true
     }
 
-    private fun setCountDownTimer(elapsedTime: String, isFiveMinutesLeft: Boolean, isTwoMinutesLeft: Boolean) {
-        if (isFiveMinutesLeft || isTwoMinutesLeft) {
+    private fun setCountDownTimer(
+            elapsedTime: String,
+            minutesUntilFinished: Long,
+            secondsUntilFinished: Long
+    ) {
+        if (shouldShowWhenFiveTwoMinutesLeft(minutesUntilFinished, secondsUntilFinished)) {
             tvTimeCounterEnd.show()
             tvTimeCounter.invisible()
         } else {
             tvTimeCounterEnd.invisible()
             tvTimeCounter.show()
         }
-        tvTimeCounterEnd.text = "Sisa 5 menit"
+        tvTimeCounterEnd.text = getString(R.string.play_live_broadcast_time_left, minutesUntilFinished)
         tvTimeCounter.text = elapsedTime
     }
+
+    private fun shouldShowWhenFiveTwoMinutesLeft(minutesUntilFinished: Long,
+                                                 secondsUntilFinished: Long): Boolean =
+            (minutesUntilFinished == 2L || minutesUntilFinished == 5L) && secondsUntilFinished in 0..3
 
     private fun setTotalView(totalView: TotalViewUiModel) {
         tvTotalView.text = totalView.totalView
@@ -164,7 +170,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, EventObserver{
             when (it) {
                 is PlayPusherInfoState.Active -> {
-                    setCountDownTimer(it.elapsedTime, it.isFiveMinutesLeft, it.isTwoMinutesLeft)
+                    setCountDownTimer(it.elapsedTime, it.minutesUntilFinished, it.secondsUntilFinished)
                 }
                 is PlayPusherInfoState.Finish -> {
                     parentViewModel.stopPushBroadcast()
