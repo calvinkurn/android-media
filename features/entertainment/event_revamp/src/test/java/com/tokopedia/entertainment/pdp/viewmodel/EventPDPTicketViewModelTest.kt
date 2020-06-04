@@ -4,12 +4,20 @@ import android.content.Context
 import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
+import com.tokopedia.calendar.Legend
 import com.tokopedia.entertainment.pdp.EventJsonMapper.getJson
 import com.tokopedia.entertainment.pdp.data.EventContentByIdEntity
 import com.tokopedia.entertainment.pdp.data.EventPDPContentCombined
+import com.tokopedia.entertainment.pdp.data.EventPDPTicketModel
 import com.tokopedia.entertainment.pdp.data.EventProductDetailEntity
+import com.tokopedia.entertainment.pdp.data.pdp.EventVerifyResponseV2
+import com.tokopedia.entertainment.pdp.data.pdp.VerifyRequest
 import com.tokopedia.entertainment.pdp.usecase.EventProductDetailUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlError
+import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.travelcalendar.data.entity.TravelCalendarHoliday
 import com.tokopedia.travelcalendar.domain.TravelCalendarHolidayUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -24,6 +32,7 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.lang.reflect.Type
 
 class EventPDPTicketViewModelTest {
 
@@ -33,13 +42,7 @@ class EventPDPTicketViewModelTest {
     lateinit var eventPDPTicketViewModel: EventPDPTicketViewModel
 
     @MockK
-    lateinit var graphqlRepository: MultiRequestGraphqlUseCase
-
-    @MockK
-    lateinit var userSessionInterface: UserSessionInterface
-
-    @MockK
-    lateinit var resources: Resources
+    lateinit var graphqlRepository: GraphqlRepository
 
     @MockK
     lateinit var eventProductDetailUseCase: EventProductDetailUseCase
@@ -47,12 +50,10 @@ class EventPDPTicketViewModelTest {
     @MockK
     lateinit var usecaseHoliday: TravelCalendarHolidayUseCase
 
-    val context = mockk<Context>(relaxed = true)
-
     @Before
     fun setUp(){
         MockKAnnotations.init(this)
-        eventPDPTicketViewModel = EventPDPTicketViewModel(Dispatchers.Unconfined, eventProductDetailUseCase)
+        eventPDPTicketViewModel = EventPDPTicketViewModel(Dispatchers.Unconfined, graphqlRepository, eventProductDetailUseCase, usecaseHoliday)
     }
 
     @Test
@@ -61,31 +62,63 @@ class EventPDPTicketViewModelTest {
         Assert.assertNotNull(usecaseHoliday)
         Assert.assertNotNull(graphqlRepository)
         Assert.assertNotNull(eventPDPTicketViewModel)
-        Assert.assertNotNull(userSessionInterface)
     }
 
     @Test
-    fun `ProductdetailTicketData_SuccessShowProduct_ShowActualResult`(){
+    fun `ProductdetailTicketData_SuccessShowProductSuccessShowHoliday_ShowActualResult`(){
         //given
         val contentMock = Gson().fromJson(getJson("content_mock.json"), EventContentByIdEntity::class.java)
         val pdpMock = Gson().fromJson(getJson("pdp_mock.json"), EventProductDetailEntity::class.java)
 
+        val travelHoliday = TravelCalendarHoliday(id = "123123", attribute = TravelCalendarHoliday.HolidayAttribute("2020-01-01", label = "LabelTest"))
+        val travelHolidayData = TravelCalendarHoliday.HolidayData(listOf(travelHoliday))
+
         coEvery { eventProductDetailUseCase.executeUseCase("", "", false, "") } returns Success(EventPDPContentCombined(contentMock, pdpMock))
+        coEvery {
+            usecaseHoliday.execute()
+        } returns Success(travelHolidayData)
+
 
         //When
         eventPDPTicketViewModel.getData("", "1557853200", false,"","")
 
         //then
         assertNotNull(eventPDPTicketViewModel.ticketModel)
-        assertEquals(eventPDPTicketViewModel.lists, pdpMock.eventProductDetail.productDetailData.schedules[0].groups[0].packages)
+        assertEquals(eventPDPTicketViewModel.lists, pdpMock.eventProductDetail.productDetailData.packages)
         assertEquals(eventPDPTicketViewModel.ticketModel.value, eventPDPTicketViewModel.lists)
+        assertNotNull(eventPDPTicketViewModel.eventHoliday.value)
     }
 
     @Test
-    fun `ProductdetailTicketData_FailShowProduct_FailActualResult`(){
+    fun `ProductdetailTicketData_FailShowProductSuccessShowHoliday_ShowActualResult`(){
+        //given
+        val travelHoliday = TravelCalendarHoliday(id = "123123", attribute = TravelCalendarHoliday.HolidayAttribute("2020-01-01", label = "LabelTest"))
+        val travelHolidayData = TravelCalendarHoliday.HolidayData(listOf(travelHoliday))
+
+        coEvery { eventProductDetailUseCase.executeUseCase("", "", false, "") } returns
+                Fail(Throwable("Error Ticket Data"))
+        coEvery {
+            usecaseHoliday.execute()
+        } returns Success(travelHolidayData)
+
+
+        //When
+        eventPDPTicketViewModel.getData("", "1557853200", false,"","")
+
+        //then
+        assertNull(eventPDPTicketViewModel.ticketModel.value)
+        assertEquals(eventPDPTicketViewModel.error.value,"java.lang.Throwable: Error Ticket Data")
+        assertNotNull(eventPDPTicketViewModel.eventHoliday.value)
+    }
+
+    @Test
+    fun `ProductdetailTicketData_FailShowProductFailShowHoliday_FailActualResult`(){
         //given
         coEvery { eventProductDetailUseCase.executeUseCase("",
                 "", false, "") } returns Fail(Throwable("Error Ticket Data"))
+        coEvery {
+            usecaseHoliday.execute()
+        } returns Fail(Throwable())
 
         //When
         eventPDPTicketViewModel.getData( "", "", false,"","")
@@ -94,6 +127,32 @@ class EventPDPTicketViewModelTest {
         assertNull(eventPDPTicketViewModel.ticketModel.value)
         assertNotNull(eventPDPTicketViewModel.error.value)
         assertEquals(eventPDPTicketViewModel.error.value,"java.lang.Throwable: Error Ticket Data")
+        assert(eventPDPTicketViewModel.eventHoliday.value == arrayListOf<Legend>())
     }
 
+    @Test
+    fun `VerifyData_SuccessVerify_ShouldSuccessVerify`(){
+        val result = HashMap<Type, Any>()
+        result[EventVerifyResponseV2::class.java] = EventVerifyResponseV2()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(),any()) } returns gqlResponse
+
+        eventPDPTicketViewModel.verify("", VerifyRequest())
+
+        val actual = eventPDPTicketViewModel.verifyResponse.value
+        //assert(actual is EventVerifyResponseV2())
+    }
+
+
+    @Test
+    fun `VerifyData_FailVerify_ShouldFailVerify`(){
+        coEvery { graphqlRepository.getReseponse(any(),any()) } coAnswers {throw Throwable("Error Verify") }
+
+        eventPDPTicketViewModel.verify("",VerifyRequest())
+
+        val actual = eventPDPTicketViewModel.error.value
+        assert(actual.equals("Error Verify"))
+
+    }
 }
