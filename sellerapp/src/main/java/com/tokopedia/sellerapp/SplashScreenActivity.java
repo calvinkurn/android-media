@@ -57,9 +57,13 @@ public class SplashScreenActivity extends SplashScreen {
     private boolean handleAppLink() {
         Uri uri = getIntent().getData();
         if (null != uri) {
-            RouteManager.route(this, uri.toString());
-            finish();
-            return true;
+            boolean isFromMainApp = uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false);
+            if (isFromMainApp) {
+                RouteManager.route(this, uri.toString());
+                finish();
+                return true;
+            }
+            return false;
         }
         return false;
     }
