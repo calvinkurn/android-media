@@ -22,6 +22,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.prod
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
@@ -121,6 +122,7 @@ class ProductCardItemViewHolder(itemView: View, fragment: Fragment) : AbstractVi
 
     // TODO : Improve in future
     private fun populateData(dataItem: DataItem) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().addProductCardImpressions(dataItem, productCardItemViewModel.isUserLoggedIn(), adapterPosition)
         if (productCardName == "product_card_revamp_item" || productCardName == "product_card_carousel_item") {
             productName.setTextAndCheckShow(dataItem.name)
             setSlashedPrice(dataItem.discountedPrice)

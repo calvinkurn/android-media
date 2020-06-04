@@ -338,8 +338,9 @@ data class DataItem(
 
         var parentComponentName: String? = "",
 
-        var positionForParentItem: Int = 0
+        var positionForParentItem:Int = 0,
 
+        var typeProductCard: String? = ""
 ) {
     val leftMargin: Int
         get() {

@@ -33,5 +33,9 @@ class ProductCardsRestRepository @Inject constructor() : BaseRepository(), Produ
 //            DiscoveryDataMapper().mapListToComponentList(response.data.component?.data , "product_card_horizontal_item", null)
 //        else
 //            DiscoveryDataMapper().mapListToComponentList(response.data.component?.data , "product_card_item", null)
+//        return if(isHorizontal)
+//            DiscoveryDataMapper().mapListToComponentList(response.data.component?.data , "product_card_horizontal_item", null, "carousel")
+//        else
+//            DiscoveryDataMapper().mapListToComponentList(response.data.component?.data , "product_card_item", null, "product_card_revamp")
     }
 }

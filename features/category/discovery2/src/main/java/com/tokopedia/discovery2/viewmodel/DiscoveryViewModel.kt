@@ -14,7 +14,6 @@ import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.usecase.CustomTopChatUseCase
 import com.tokopedia.discovery2.usecase.DiscoveryDataUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -27,8 +26,7 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: DiscoveryDataUseCase,
-                                             private val userSession: UserSessionInterface,
-                                             private val trackingQueue: TrackingQueue) : BaseViewModel(), CoroutineScope {
+                                             private val userSession: UserSessionInterface) : BaseViewModel(), CoroutineScope {
 
     private val discoveryPageInfo = MutableLiveData<Result<PageInfo>>()
     private val discoveryFabLiveData = MutableLiveData<Result<ComponentsItem>>()
@@ -50,7 +48,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                     val data = discoveryDataUseCase.getDiscoveryPageDataUseCase(pageIdentifier)
                     data.let {
                         withContext(Dispatchers.Default) {
-                            findAndRemoveSecondYoutubeComponent(it.components)
                             setDiscoveryComponentList(it.components)
                             findCustomTopChatComponentsIfAny(it.components)
                         }
@@ -62,17 +59,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 }
         )
 
-    }
-
-    // temp code
-    private fun findAndRemoveSecondYoutubeComponent(components: MutableList<ComponentsItem>?) {
-        val videoComponentToRemove = components?.filter { it.name == ComponentNames.Video.componentName }
-        videoComponentToRemove?.let {
-            var index = 0
-            while (++index < it.size) {
-                components.remove(it[index])
-            }
-        }
     }
 
     private fun setPageInfo(pageInfo: PageInfo?) {
@@ -99,11 +85,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         components.let {
             discoveryResponseList.postValue(Success(components as ArrayList<ComponentsItem>))
         }
-//        if (!userSession.isLoggedIn) {
-//            val components = components?.filter { it.name != "topads" }
-//        } else {
-//            discoveryResponseList.postValue(Success(components as ArrayList<ComponentsItem>))
-//        }
+
     }
 
     fun getBitmapFromURL(src: String?): Bitmap? = runBlocking {
@@ -148,10 +130,5 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         } else {
             fetchTopChatMessageId(context, appLinks, shopId)
         }
-    }
-
-    override fun doOnPause() {
-        super.doOnPause()
-        trackingQueue.sendAll()
     }
 }
