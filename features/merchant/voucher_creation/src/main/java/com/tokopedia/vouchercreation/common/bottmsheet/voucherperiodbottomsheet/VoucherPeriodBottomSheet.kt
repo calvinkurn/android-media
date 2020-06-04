@@ -146,7 +146,7 @@ class VoucherPeriodBottomSheet(
                 keyListener = null
             }
         }
-        context?.getMinStartDate()?.let { calendar ->
+        startCalendar?.let { calendar ->
             val initialTime = calendar.time?.toFormattedString(DATE_OF_WEEK_FORMAT, locale).toBlankOrString()
             startDateString = initialTime
             viewModel.setStartDateCalendar(calendar)
