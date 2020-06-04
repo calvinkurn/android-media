@@ -267,7 +267,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                     with(voucherReviewUiModel) {
                         getVoucherPreviewSection(voucherType, voucherName, shopAvatarUrl, shopName, getPromoCodePrefix() + promoCode, postDisplayedDate)
                     },
-                    getVoucherInfoSection(targetType, voucherName, promoCode, true),
+                    getVoucherInfoSection(targetType, voucherName, getPromoCodePrefix() + promoCode, true),
                     DividerUiModel(DividerUiModel.THIN),
                     getVoucherBenefitSection(voucherType, minPurchase, voucherQuota, true),
                     getExpenseEstimationSection(voucherType.value, voucherQuota),
