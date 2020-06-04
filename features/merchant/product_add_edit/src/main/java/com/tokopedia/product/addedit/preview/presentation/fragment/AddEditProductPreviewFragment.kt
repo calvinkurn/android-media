@@ -323,7 +323,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         }
 
         productStatusSwitch?.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isProductStatusSwitchFirstTime) {
+            if (isProductStatusSwitchFirstTime && isChecked) {
                 if (viewModel.isEditing.value == true) {
                     ProductEditStepperTracking.trackChangeProductStatus(shopId)
                 }
