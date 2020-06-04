@@ -29,7 +29,7 @@ interface PreferenceEditParent {
 
     fun getListShopShipment(): ArrayList<ShopShipment>?
 
-    fun getShouldShowDeleteButton(): Boolean
+    fun isExtraProfile(): Boolean
 
     fun setHeaderTitle(title: String)
     fun setHeaderSubtitle(subtitle: String)

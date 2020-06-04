@@ -237,7 +237,10 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
 
         val parent = activity
         if (parent is PreferenceEditParent) {
-            if (!parent.getShouldShowDeleteButton() || data.status == 2) {
+            if (arguments?.getBoolean(ARG_IS_EDIT) == false && !parent.isExtraProfile()) {
+                cbMainPreference?.gone()
+                tvMainPreference?.gone()
+            } else if (data.status == 2) {
                 cbMainPreference?.gone()
                 tvMainPreference?.gone()
             }
@@ -363,7 +366,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
             parent.hideAddButton()
             val profileId = parent.getProfileId()
             if (arguments?.getBoolean(ARG_IS_EDIT) == true && profileId > -1) {
-                if (parent.getShouldShowDeleteButton()) {
+                if (parent.isExtraProfile()) {
                     parent.showDeleteButton()
                     parent.setDeleteButtonOnClickListener {
                         preferenceListAnalytics.eventClickTrashBinInEditPreference()
