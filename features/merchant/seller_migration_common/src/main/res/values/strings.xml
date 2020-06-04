@@ -1,6 +1,6 @@
 <resources>
     <string name="seller_migration_bottom_sheet_button">Beralih ke Tokopedia Seller</string>
-    <string name="seller_migration_bottom_sheet_footer">Pelajari keuntungan menggunakan Seller App &lt;a href="https://seller.tokopedia.com/edu/aplikasi-topseller/"&gt;di sini&lt;/a&gt;</string>
+    <string name="seller_migration_bottom_sheet_footer">Pelajari keuntungan lainnya &lt;a href="https://seller.tokopedia.com/edu/aplikasi-topseller/"&gt;di sini&lt;/a&gt;</string>
 
     <string name="seller_migration_warning_title">Semua fitur penjual akan dialihkan pada:</string>
 
@@ -18,7 +18,7 @@
     <string name="seller_migration_chat_bottom_sheet_first_page_description">Jawab semua pertanyaan dari pembeli langsung dari notifikasi chat di HP kamu.</string>
     <string name="seller_migration_chat_bottom_sheet_second_page_description">Kamu bisa memantau jumlah chat masuk atau langsung balas chat pembeli di notifikasi.</string>
 
-    <string name="seller_migration_product_manage_ticker_title">Kelola stok langsung di aplikasi Tokopedia Seller</string>
+    <string name="seller_migration_product_manage_ticker_title">Kelola stok cepat di aplikasi Tokopedia Seller</string>
     <string name="seller_migration_product_manage_ticker_content">Penuhi permintaan pembeli dengan rutin cek ketersediaan stok produkmu. Pelajari &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
     <string name="seller_migration_product_bottom_sheet_title">Tampilan baru pengaturan produk di aplikasi Tokopedia Seller</string>
     <string name="seller_migration_product_bottom_sheet_content">Kini kamu bisa langsung menambah stok produk, memasang pengingat stok, dan mengubah harga dengan mudah dan cepat.</string>
