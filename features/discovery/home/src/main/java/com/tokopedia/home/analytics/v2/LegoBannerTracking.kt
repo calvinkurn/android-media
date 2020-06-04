@@ -54,7 +54,7 @@ object LegoBannerTracking : BaseTracking() {
             Event.KEY, Event.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
             Action.KEY, CLICK_VIEW_ALL_ON_LEGO_6,
-            Label.KEY, headerName,
+            Label.KEY, Value.FORMAT_2_ITEMS_DASH.format(channelId, headerName),
             ChannelId.KEY, channelId
     ) as HashMap<String, Any>
 
@@ -62,7 +62,7 @@ object LegoBannerTracking : BaseTracking() {
             Event.KEY, Event.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
             Action.KEY, CLICK_VIEW_ALL_ON_LEGO_4,
-            Label.KEY, headerName,
+            Label.KEY, Value.FORMAT_2_ITEMS_DASH.format(channelId, headerName),
             ChannelId.KEY, channelId
     ) as HashMap<String, Any>
 
@@ -70,7 +70,7 @@ object LegoBannerTracking : BaseTracking() {
             Event.KEY, Event.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
             Action.KEY, CLICK_VIEW_ALL_ON_LEGO_3,
-            Label.KEY, headerName,
+            Label.KEY, Value.FORMAT_2_ITEMS_DASH.format(channelId, headerName),
             ChannelId.KEY, channelId
     ) as HashMap<String, Any>
 
@@ -78,7 +78,7 @@ object LegoBannerTracking : BaseTracking() {
             event = Event.PROMO_CLICK,
             eventCategory = Category.HOMEPAGE,
             eventAction = CLICK_ON_LEGO_6,
-            eventLabel = channelGrid.attribution,
+            eventLabel = Value.FORMAT_2_ITEMS_DASH.format(channelModel.id, channelModel.channelHeader.name),
             channelId = channelModel.id,
             affinity = channelModel.trackingAttributionModel.persona,
             categoryId = channelModel.trackingAttributionModel.categoryPersona,
@@ -94,7 +94,7 @@ object LegoBannerTracking : BaseTracking() {
             event = Event.PROMO_CLICK,
             eventCategory = Category.HOMEPAGE,
             eventAction = CLICK_ON_LEGO_4,
-            eventLabel = channelGrid.attribution,
+            eventLabel = Value.FORMAT_2_ITEMS_DASH.format(channelModel.id, channelModel.channelHeader.name),
             channelId = channelModel.id,
             affinity = channelModel.trackingAttributionModel.persona,
             categoryId = channelModel.trackingAttributionModel.categoryPersona,
@@ -110,7 +110,7 @@ object LegoBannerTracking : BaseTracking() {
             event = Event.PROMO_CLICK,
             eventCategory = Category.HOMEPAGE,
             eventAction = CLICK_ON_LEGO_3,
-            eventLabel = channelGrid.attribution,
+            eventLabel = Value.FORMAT_2_ITEMS_DASH.format(channelModel.id, channelModel.channelHeader.name),
             channelId = channelModel.id,
             affinity = channelModel.trackingAttributionModel.persona,
             categoryId = channelModel.trackingAttributionModel.categoryPersona,
@@ -121,7 +121,4 @@ object LegoBannerTracking : BaseTracking() {
             ),
             attribution = channelModel.trackingAttributionModel.galaxyAttribution
     )
-
-
-
 }

@@ -83,6 +83,7 @@ abstract class BaseTracking {
         const val LIST_HEADER_NAME = "/ - p%s - %s - %s"
         const val EMPTY = ""
         const val FORMAT_2_ITEMS_UNDERSCORE = "%s_%s"
+        const val FORMAT_2_ITEMS_DASH = "%s - %s"
 
         fun getFreeOngkirValue(grid: DynamicHomeChannel.Grid) = if (grid.freeOngkir.isActive)"bebas ongkir" else "none / other"
     }

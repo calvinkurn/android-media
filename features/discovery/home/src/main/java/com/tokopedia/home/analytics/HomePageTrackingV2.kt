@@ -143,7 +143,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 Event.KEY, CustomEvent.CLICK_HOMEPAGE,
                 Category.KEY, Category.HOMEPAGE,
                 Action.KEY, Action.CLICK.format(LEGO_BANNER_4_IMAGE_NAME) + " view all",
-                Label.KEY, channelHeaderName,
+                Label.KEY, "$channelId - $channelHeaderName",
                 Label.CHANNEL_LABEL, channelId
             ) as HashMap<String, Any>
         }

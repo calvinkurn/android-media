@@ -392,7 +392,7 @@ public class HomePageTracking {
                 EVENT, PROMO_CLICK,
                 EVENT_CATEGORY, CATEGORY_HOME_PAGE,
                 EVENT_ACTION, EVENT_ACTION_LEGO_BANNER_CLICK,
-                EVENT_LABEL, grid.getAttribution(),
+                EVENT_LABEL, channel.getId() + " - " + channel.getHeader().getName(),
                 CHANNEL_ID, channel.getId(),
                 ATTRIBUTION, channel.getGalaxyAttribution(),
                 AFFINITY_LABEL, channel.getPersona(),
@@ -421,7 +421,7 @@ public class HomePageTracking {
                 EVENT, PROMO_CLICK,
                 EVENT_CATEGORY, CATEGORY_HOME_PAGE,
                 EVENT_ACTION, LEGO_BANNER_3_IMAGE_CLICK,
-                EVENT_LABEL, grid.getAttribution(),
+                EVENT_LABEL, channel.getId() + " - " + channel.getHeader().getName(),
                 CHANNEL_ID, channel.getId(),
                 ATTRIBUTION, channel.getGalaxyAttribution(),
                 AFFINITY_LABEL, channel.getPersona(),
@@ -455,7 +455,7 @@ public class HomePageTracking {
                 EVENT, PROMO_CLICK,
                 EVENT_CATEGORY, CATEGORY_HOME_PAGE,
                 EVENT_ACTION, LEGO_BANNER_4_IMAGE_CLICK,
-                EVENT_LABEL, grid.getAttribution(),
+                EVENT_LABEL, channel.getId() + " - " + channel.getHeader().getName(),
                 CHANNEL_ID, channel.getId(),
                 ATTRIBUTION, channel.getGalaxyAttribution(),
                 AFFINITY_LABEL, channel.getPersona(),
@@ -528,7 +528,7 @@ public class HomePageTracking {
         map.put(EVENT, EVENT_CLICK_HOME_PAGE);
         map.put(EVENT_CATEGORY, CATEGORY_HOME_PAGE);
         map.put(EVENT_ACTION, ACTION_CLICK_SEE_ALL_LEGO_BANNER_CHANNEL);
-        map.put(EVENT_LABEL, headerName);
+        map.put(EVENT_LABEL, channelId+" - "+headerName);
         map.put(CHANNEL_ID, channelId);
         getTracker().sendGeneralEvent(map);
     }
@@ -551,7 +551,7 @@ public class HomePageTracking {
         map.put(EVENT, EVENT_CLICK_HOME_PAGE);
         map.put(EVENT_CATEGORY, CATEGORY_HOME_PAGE);
         map.put(EVENT_ACTION, ACTION_CLICK_SEE_ALL_LEGO_THREE_IMAGE_BANNER_CHANNEL);
-        map.put(EVENT_LABEL, headerName);
+        map.put(EVENT_LABEL, channelId+" - "+headerName);
         map.put(CHANNEL_ID, channelId);
         getTracker().sendGeneralEvent(map);
     }
