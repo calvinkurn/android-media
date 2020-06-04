@@ -9,9 +9,9 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 
 class ProductManageFilterTab(
-    private val sortFilterTab: SortFilter,
-    private val onClickMoreFilter: (FilterTabViewModel) -> Unit,
-    private val onClickFilterTab: (FilterTabViewModel) -> Unit
+        private val sortFilterTab: SortFilter,
+        private val onClickMoreFilter: (FilterTabViewModel) -> Unit,
+        private val onClickFilterTab: (FilterTabViewModel) -> Unit
 ) {
 
     companion object {
@@ -49,8 +49,8 @@ class ProductManageFilterTab(
     fun update(data: GetFilterTabResult) {
         val tabs = data.tabs
 
-        if(tabs.isNotEmpty()) {
-            tabs.forEachIndexed { index, tab ->
+        tabs.forEachIndexed { index, tab ->
+            if (sortFilterTab.chipItems.isNotEmpty()) {
                 val filter = sortFilterTab.chipItems[index]
                 val chipText = context.getString(tab.titleId, tab.count)
                 val chipType = filter.refChipUnify.chipType
@@ -72,7 +72,7 @@ class ProductManageFilterTab(
         val selectedFilter = selectedTab?.filter
         val index = chipItems.indexOf(selectedFilter)
 
-        return when(index) {
+        return when (index) {
             ACTIVE_TAB_POSITION -> ProductStatus.ACTIVE
             INACTIVE_TAB_POSITION -> ProductStatus.INACTIVE
             VIOLATION_TAB_POSITION -> ProductStatus.VIOLATION
@@ -83,10 +83,10 @@ class ProductManageFilterTab(
     fun setActiveFilterCount(count: Int) {
         activeFilterCount = count
 
-        sortFilterTab.indicatorCounter = if(isFilterActive()) {
+        sortFilterTab.indicatorCounter = if (isFilterActive()) {
             val selectedTabCount = sortFilterTab.chipItems
-                .filter { it.type == ChipsUnify.TYPE_SELECTED }
-                .count()
+                    .filter { it.type == ChipsUnify.TYPE_SELECTED }
+                    .count()
 
             activeFilterCount + selectedTabCount
         } else {
