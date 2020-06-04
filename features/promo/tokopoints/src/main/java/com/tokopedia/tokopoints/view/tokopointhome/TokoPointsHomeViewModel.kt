@@ -22,43 +22,38 @@ class TokoPointsHomeViewModel @Inject constructor(private val repository: Tokopo
 
     override fun getTokoPointDetail() {
         launchCatchError(block = {
-            tokopointDetailLiveData.value = Loading()
+         tokopointDetailLiveData.value = Loading()
             val graphqlResponse = repository.getTokoPointDetailData()
             val data = graphqlResponse.getData<TokoPointDetailEntity>(TokoPointDetailEntity::class.java)
             val dataSection = graphqlResponse.getData<TokopointsSectionOuter>(TokopointsSectionOuter::class.java)
             if (data != null && dataSection != null && dataSection.sectionContent != null) {
-                tokopointDetailLiveData.value = Success(TokopointSuccess(data.tokoPoints, dataSection.sectionContent.sectionContent))
+                tokopointDetailLiveData.value = Success(TokopointSuccess(data.tokoPoints,dataSection.sectionContent.sectionContent))
             }
-
-        }) {
-            tokopointDetailLiveData.value = ErrorMessage(it.localizedMessage)
-        }
-    }
-
-    override fun tokopointOnboarding2020(view: TokoPointsHomeContract.View) {
-        TokoPointsNotificationManager.fetchNotification(view.activityContext, "onboarding", Tokopoint2020Subscriber(view))
-    }
-
-    fun getTokenDetail() {
-        launchCatchError(block = {
-            val graphqlResponse = repository.getTokenDetail()
+            //handling for lucky egg data
             val tokenDetail = graphqlResponse.getData<TokenDetailOuter>(TokenDetailOuter::class.java)
             if (tokenDetail != null && tokenDetail.tokenDetail != null && tokenDetail.tokenDetail.resultStatus.code == CommonConstant.CouponRedemptionCode.SUCCESS) {
                 tokoenDetailLiveData.value = tokenDetail.tokenDetail
             }
-        }) {}
+        }){
+            tokopointDetailLiveData.value = ErrorMessage(it.localizedMessage)
+        }
     }
+
+    override fun tokopointOnboarding2020(view : TokoPointsHomeContract.View) {
+        TokoPointsNotificationManager.fetchNotification(view.activityContext, "onboarding", Tokopoint2020Subscriber(view))
+    }
+
 
     //Handling sum token
     val couponCount: Unit
         get() {
             launchCatchError(block = {
                 val couponOuter = repository.getCouponCountData()
-                if (couponOuter.tokopointsSumCoupon != null) {
+                if ( couponOuter.tokopointsSumCoupon != null) {
                     couponCountLiveData.value = couponOuter.tokopointsSumCoupon
                 }
-            }) {}
+            }){}
         }
 }
 
-data class TokopointSuccess(val tokoPointEntity: TokoPointEntity, val sectionList: MutableList<SectionContent>)
+data class TokopointSuccess(val tokoPointEntity: TokoPointEntity,val sectionList: MutableList<SectionContent>)
