@@ -54,10 +54,12 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupView()
+        setUpView()
     }
 
     private fun setUpView() {
+        broadcastCoordinator.showActionBar(false)
+
         rv_play_summary_live_information.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         rv_play_summary_live_information.removeItemDecorations()
         rv_play_summary_live_information.adapter = playSummaryInfosAdapter
@@ -106,10 +108,6 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
                             trafficMetricEnum = TrafficMetricsEnum.VIDEO_LIKES,
                             liveTrafficMetricCount = totalLike.totalLike))
         }
-    }
-
-    private fun setupView() {
-        broadcastCoordinator.showActionBar(false)
     }
 
     private fun renderView(summaryUiModel: SummaryUiModel) {
