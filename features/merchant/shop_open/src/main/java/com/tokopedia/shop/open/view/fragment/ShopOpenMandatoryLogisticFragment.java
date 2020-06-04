@@ -7,10 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AlertDialog;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -22,27 +18,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.crashlytics.android.Crashlytics;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
+
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.AppWidgetUtil;
-import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.logistic.model.Courier;
-import com.tokopedia.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.seller.logistic.model.CouriersModel;
-import com.tokopedia.shop.open.di.component.ShopOpenDomainComponent;
-import com.tokopedia.shop.open.view.model.CourierServiceIdWrapper;
-import com.tokopedia.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.shop.open.data.model.response.isreservedomain.Shipment;
-import com.tokopedia.shop.open.view.widget.ShopOpenCourierListViewGroup;
-import com.tokopedia.shop.open.view.widget.ShopOpenCourierExpandableOption;
-import com.tokopedia.shop.open.view.listener.ShopOpenLogisticView;
-import com.tokopedia.shop.open.view.presenter.ShopOpenLogisticPresenterImpl;
+import com.tokopedia.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.shop.open.util.ShopErrorHandler;
+import com.tokopedia.shop.open.view.listener.ShopOpenLogisticView;
+import com.tokopedia.shop.open.view.model.CourierServiceIdWrapper;
+import com.tokopedia.shop.open.view.model.ShopOpenStepperModel;
+import com.tokopedia.shop.open.view.presenter.ShopOpenLogisticPresenterImpl;
+import com.tokopedia.shop.open.view.widget.ShopOpenCourierExpandableOption;
+import com.tokopedia.shop.open.view.widget.ShopOpenCourierListViewGroup;
 
 import java.util.List;
 
@@ -74,8 +71,6 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     private ShopOpenCourierListViewGroup courierListViewGroup;
     private TkpdProgressDialog tkpdProgressDialog;
 
-    @Inject
-    ShopOpenTracking trackingOpenShop;
 
     public static ShopOpenMandatoryLogisticFragment newInstance() {
         return new ShopOpenMandatoryLogisticFragment();
@@ -94,7 +89,6 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
         } else {
             selectedCourierServiceIdWrapper = savedInstanceState.getParcelable(SAVED_SELECTED_COURIER);
         }
-        trackingOpenShop.eventMoEngageOpenShop(KURIR);
     }
 
     @Nullable
@@ -286,7 +280,6 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
 
     @Override
     public void onCourierServiceInfoIconClicked(String title, String description) {
-        trackingOpenShop.eventOpenShopShippingServices(title);
         BottomSheetDialog dialog = new BottomSheetDialog(getActivity());
         dialog.setContentView(com.tokopedia.seller.R.layout.shipping_info_bottom_sheet);
 
@@ -330,7 +323,6 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     @Override
     public void onErrorSaveCourier(Throwable t) {
         hideSubmitLoading();
-        trackingOpenShop.eventOpenShopShippingError(ShopErrorHandler.getErrorMessage(getActivity(), t));
         NetworkErrorHelper.showSnackbar(getActivity(), ShopErrorHandler.getErrorMessage(getActivity(), t));
     }
 
@@ -343,7 +335,6 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     public void onSuccessCreateShop() {
         hideSubmitLoading();
         AppWidgetUtil.sendBroadcastToAppWidget(getActivity());
-        trackingOpenShop.eventOpenShopShippingSuccess();
         onShopStepperListener.finishPage();
     }
 

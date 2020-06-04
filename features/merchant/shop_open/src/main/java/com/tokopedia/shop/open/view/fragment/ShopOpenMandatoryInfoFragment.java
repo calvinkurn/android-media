@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.content.res.AppCompatResources;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,8 +16,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
+
 import com.bumptech.glide.Glide;
-import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -31,9 +31,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
-import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.listener.StepperListener;
-import com.tokopedia.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.shop.open.data.model.response.isreservedomain.UserData;
 import com.tokopedia.shop.open.di.component.DaggerShopSettingInfoComponent;
@@ -84,9 +82,6 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
     private String uriPathImage = "";
     private StepperListener<ShopOpenStepperModel> onShopStepperListener;
 
-    @Inject
-    ShopOpenTracking trackingOpenShop;
-
     public static ShopOpenMandatoryInfoFragment createInstance() {
         return new ShopOpenMandatoryInfoFragment();
     }
@@ -130,7 +125,6 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
                 }
             }
         }
-        trackingOpenShop.eventMoEngageOpenShop(INFO_TOKO);
     }
 
     private void updateView(UserData userData) {
@@ -213,7 +207,6 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
             userData.setLogo(responseModel.getPicSrc());
             userData.setTagLine(responseModel.getShopTagLine());
         }
-        trackingOpenShop.eventOpenShopFormSuccess();
         if (onShopStepperListener != null) {
             onShopStepperListener.goToNextPage(null);
         }
@@ -222,7 +215,6 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
     @Override
     public void onFailedSaveInfoShop(Throwable t) {
         String errorMessage = ShopErrorHandler.getErrorMessage(getActivity(), t);
-        trackingOpenShop.eventOpenShopFormError(errorMessage);
         onErrorGetReserveDomain(errorMessage);
     }
 

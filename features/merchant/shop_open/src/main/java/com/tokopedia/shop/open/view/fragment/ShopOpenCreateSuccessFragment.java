@@ -21,7 +21,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.imageeditor.view.WatermarkPresenterView;
-import com.tokopedia.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.shop.open.di.component.DaggerShopOpenDomainComponent;
 import com.tokopedia.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.shop.open.view.presenter.ShopOpenCreateSuccessPresenter;
@@ -40,9 +39,6 @@ public class ShopOpenCreateSuccessFragment extends BasePresenterFragment impleme
     private LoadingStateView loadingStateView;
     private TextView tvShopName;
     private String shopId = "";
-
-    @Inject
-    ShopOpenTracking trackingOpenShop;
 
     public static ShopOpenCreateSuccessFragment newInstance() {
         return new ShopOpenCreateSuccessFragment();
@@ -69,14 +65,12 @@ public class ShopOpenCreateSuccessFragment extends BasePresenterFragment impleme
         buttonAddProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                trackingOpenShop.eventOpenShopThanksClickAddProduct();
                 getActivity().finish();
             }
         });
         buttonToShopPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                trackingOpenShop.eventOpenShopThanksGoToMyShop();
                 Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.SHOP, shopId);
                 startActivity(intent);
                 getActivity().finish();

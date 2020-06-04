@@ -42,7 +42,6 @@ import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddr
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.shop.open.R;
-import com.tokopedia.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.shop.open.analytic.ShopOpenTrackingConstant;
 import com.tokopedia.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.shop.open.util.ShopErrorHandler;
@@ -57,9 +56,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -103,8 +100,6 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
 
     @Inject
     ShopOpenDomainPresenterImpl shopOpenDomainPresenter;
-    @Inject
-    ShopOpenTracking trackingOpenShop;
     @Inject
     UserSessionInterface userSession;
 
@@ -196,7 +191,6 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
         });
 
         buttonSubmit.setOnClickListener(v -> {
-            trackingOpenShop.eventOpenShopSuccessClick();
             onButtonSubmitClicked();
         });
         return view;
@@ -217,9 +211,6 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        trackingOpenShop.eventMoEngageOpenShop(SCREEN_NAME);
-        if (isFromAppShortCut())
-            trackingOpenShop.eventSellShortcut();
     }
 
     private void setupTncOpenShop() {
@@ -249,11 +240,6 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
             @Override
             public void onClick(@NotNull View textView) {
                 if (getActivity() != null) {
-                    if (url.equals(URL_TNC)) {
-                        trackingOpenShop.eventTncClick();
-                    } else {
-                        trackingOpenShop.eventPrivacyPolicyClick();
-                    }
                     RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW_TITLE, title, url);
                 }
 
@@ -330,7 +316,6 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
         editTextInputDomainName.setText("");
         textInputDomainName.resetCounter();
         textInputDomainName.setSuccess("");
-        trackingOpenShop.eventOpenShopBiodataNameError(message);
     }
 
     @Override
@@ -346,7 +331,6 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     @Override
     public void onErrorCheckShopDomain(String message) {
         textInputDomainName.setError(message);
-        trackingOpenShop.eventOpenShopBiodataDomainError(message);
     }
 
     @Override
@@ -390,10 +374,8 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     }
 
     private void sendErrorTracking(String errorMessage) {
-        trackingOpenShop.eventOpenShopBiodataError(errorMessage);
         String generatedErrorMessage = ShopErrorHandler.getGeneratedErrorMessage(errorMessage.toCharArray(),
                 editTextInputShopName.getText().toString(), editTextInputDomainName.getTextWithoutPrefix());
-        trackingOpenShop.eventOpenShopBiodataErrorWithData(generatedErrorMessage);
     }
 
 //    @Override
@@ -427,7 +409,6 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     public void onSuccessCreateShop(String message, String shopId) {
         hideSubmitLoading();
         AppWidgetUtil.sendBroadcastToAppWidget(getActivity());
-        trackingOpenShop.eventShopCreatedSuccessfully(setUserData(shopId));
         if (getActivity() != null) {
             if (!GlobalConfig.isSellerApp()) {
                 DFInstaller.installOnBackground(getActivity().getApplication(), DeeplinkDFMapper.DF_MERCHANT_SELLER, "Shop Open");
@@ -436,15 +417,6 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
             startActivity(intent);
             getActivity().finish();
         }
-    }
-
-    private HashMap<String, Object> setUserData(String shopId){
-        HashMap<String, Object> dataMap = new HashMap<>();
-        dataMap.put(ShopOpenTrackingConstant.Keys.PHONE, userSession.getPhoneNumber());
-        dataMap.put(ShopOpenTrackingConstant.Keys.SHOPID, shopId);
-        dataMap.put(ShopOpenTrackingConstant.Keys.USEREMAIL, userSession.getEmail());
-        dataMap.put(ShopOpenTrackingConstant.Keys.USERID, userSession.getUserId());
-        return dataMap;
     }
 
     @Override
