@@ -7,27 +7,26 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
-import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.logistic.GetOpenShopLocationPassUseCase;
 import com.tokopedia.seller.logistic.GetOpenShopTokenUseCase;
+import com.tokopedia.seller.logistic.data.repository.DistrictLogisticDataRepositoryImpl;
+import com.tokopedia.seller.logistic.data.source.LogisticDataSource;
 import com.tokopedia.seller.logistic.data.source.cloud.api.WSLogisticApi;
+import com.tokopedia.seller.logistic.domain.DistrictLogisticDataRepository;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.shop.open.R;
-import com.tokopedia.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.shop.open.data.repository.ShopOpenRepository;
 import com.tokopedia.shop.open.data.repository.ShopOpenRepositoryImpl;
 import com.tokopedia.shop.open.data.source.ShopOpenDataSource;
+import com.tokopedia.shop.open.data.source.cloud.api.OpenShopApi;
 import com.tokopedia.shop.open.data.source.cloud.api.TomeApi;
 import com.tokopedia.shop.open.di.scope.ShopOpenDomainScope;
-import com.tokopedia.shop.open.data.source.cloud.api.OpenShopApi;
-import com.tokopedia.seller.logistic.data.repository.DistrictLogisticDataRepositoryImpl;
-import com.tokopedia.seller.logistic.data.source.LogisticDataSource;
-import com.tokopedia.seller.logistic.domain.DistrictLogisticDataRepository;
 import com.tokopedia.shop.open.view.fragment.ShopOpenReserveDomainFragment;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Named;
+
 import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
@@ -84,17 +83,6 @@ public class ShopOpenDomainModule {
     @Provides
     UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);
-    }
-
-    @ShopOpenDomainScope
-    @Provides
-    public ShopOpenTracking provideTrackingOpenShop(@ApplicationContext Context context,
-                                                    UserSessionInterface userSessionInterface){
-        if(context instanceof SellerModuleRouter) {
-            return new ShopOpenTracking((SellerModuleRouter)context, userSessionInterface);
-        }else{
-            return null;
-        }
     }
 
     @ShopOpenDomainScope

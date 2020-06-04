@@ -11,17 +11,16 @@ import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
-import com.tokopedia.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.shop.open.data.repository.ShopOpenRepository;
 import com.tokopedia.shop.open.data.source.cloud.api.TomeApi;
 import com.tokopedia.shop.open.di.module.ShopOpenDomainModule;
+import com.tokopedia.shop.open.di.module.ShopSettingInfoModule;
 import com.tokopedia.shop.open.di.scope.ShopOpenDomainScope;
 import com.tokopedia.shop.open.view.fragment.ShopOpenCreateReadyFragment;
 import com.tokopedia.shop.open.view.fragment.ShopOpenCreateSuccessFragment;
-import com.tokopedia.shop.open.view.fragment.ShopOpenReserveDomainFragment;
 import com.tokopedia.shop.open.view.fragment.ShopOpenMandatoryLogisticFragment;
+import com.tokopedia.shop.open.view.fragment.ShopOpenReserveDomainFragment;
 import com.tokopedia.shop.open.view.fragment.ShopOpenRoutingFragment;
-import com.tokopedia.shop.open.di.module.ShopSettingInfoModule;
 import com.tokopedia.shop.open.view.presenter.ShopOpenInfoPresenter;
 
 import dagger.Component;
@@ -66,8 +65,6 @@ public interface ShopOpenDomainComponent {
     ShopOpenRepository provideShopOpenRepository();
 
     ShopOpenInfoPresenter shopSettingInfoPresenter();
-
-    ShopOpenTracking trackingOpenShop();
 
     SessionHandler sessionHandler();
 

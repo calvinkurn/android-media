@@ -2,7 +2,6 @@ package com.tokopedia.shop.open.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,18 +9,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.crashlytics.android.Crashlytics;
+import androidx.annotation.Nullable;
+
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.loading.LoadingStateView;
-import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.imageeditor.view.WatermarkPresenterView;
-import com.tokopedia.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.shop.open.di.component.DaggerShopOpenDomainComponent;
 import com.tokopedia.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.shop.open.view.presenter.ShopOpenCreateSuccessPresenter;
@@ -40,9 +37,6 @@ public class ShopOpenCreateSuccessFragment extends BasePresenterFragment impleme
     private LoadingStateView loadingStateView;
     private TextView tvShopName;
     private String shopId = "";
-
-    @Inject
-    ShopOpenTracking trackingOpenShop;
 
     public static ShopOpenCreateSuccessFragment newInstance() {
         return new ShopOpenCreateSuccessFragment();
@@ -69,7 +63,6 @@ public class ShopOpenCreateSuccessFragment extends BasePresenterFragment impleme
         buttonAddProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                trackingOpenShop.eventOpenShopThanksClickAddProduct();
 //                ProductAddActivity.start(getActivity());
                 getActivity().finish();
             }
@@ -77,7 +70,6 @@ public class ShopOpenCreateSuccessFragment extends BasePresenterFragment impleme
         buttonToShopPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                trackingOpenShop.eventOpenShopThanksGoToMyShop();
                 Intent intent = ((SellerModuleRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shopId);
                 startActivity(intent);
                 getActivity().finish();
