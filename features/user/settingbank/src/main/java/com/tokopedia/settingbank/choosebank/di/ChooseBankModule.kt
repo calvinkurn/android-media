@@ -3,15 +3,13 @@ package com.tokopedia.settingbank.choosebank.di
 import android.app.Activity
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.DebugInterceptor
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
-import com.tokopedia.settingbank.addeditaccount.di.AddEditAccountScope
 import com.tokopedia.settingbank.choosebank.data.BankListApi
 import com.tokopedia.settingbank.choosebank.data.BankListUrl
 import com.tokopedia.settingbank.choosebank.data.database.BankDao
@@ -58,7 +56,7 @@ class ChooseBankModule(val activity: Activity) {
     @ChooseBankScope
     @Provides
     fun provideNetworkRouter(context: Context): NetworkRouter {
-        return (context as NetworkRouter)
+        return (context.applicationContext as NetworkRouter)
     }
 
     @ChooseBankScope

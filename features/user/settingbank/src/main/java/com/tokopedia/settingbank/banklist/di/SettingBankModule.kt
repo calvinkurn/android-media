@@ -58,7 +58,7 @@ open class SettingBankModule(val activity: Activity) {
     @SettingBankScope
     @Provides
     fun provideNetworkRouter(context: Context): NetworkRouter {
-        return (context as NetworkRouter)
+        return (context.applicationContext as NetworkRouter)
     }
 
     @SettingBankScope
