@@ -2,15 +2,14 @@ package com.tokopedia.play.broadcaster.view.bottomsheet
 
 import android.Manifest
 import android.app.Activity
-import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.view.activity.PlayCoverCameraActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.bottom_sheet_play_choose_cover.*
@@ -97,13 +96,16 @@ class PlayBroadcastChooseCoverBottomSheet : BottomSheetUnify() {
     }
 
     private fun takeCoverFromCamera() {
-        val values = ContentValues()
+        /*val values = ContentValues()
         values.put(MediaStore.Images.Media.TITLE, "New Picture")
         values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera")
         imageUri = requireActivity().contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
 
         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
+        startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE)*/
+
+        val cameraIntent = Intent(context, PlayCoverCameraActivity::class.java)
         startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE)
     }
 

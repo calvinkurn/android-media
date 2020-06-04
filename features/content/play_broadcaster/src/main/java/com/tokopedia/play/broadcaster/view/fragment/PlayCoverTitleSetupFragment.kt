@@ -65,7 +65,7 @@ class PlayCoverTitleSetupFragment @Inject constructor(
         bottomSheetCoordinator.setupTitle(getString(R.string.play_prepare_cover_title_title))
 
         tfPlayCoverTitleText.textFieldInput.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N0))
-        tfPlayCoverTitleText.textFieldInput.setHintTextColor(resources.getColor(R.color.play_title_text_hint_color))
+        tfPlayCoverTitleText.textFieldInput.setHintTextColor(resources.getColor(R.color.play_white_68))
         tfPlayCoverTitleText.textFieldInput.setSingleLine(false)
         context?.let {
             tfPlayCoverTitleText.textFieldInput.layoutParams.height = it.resources.getDimensionPixelSize(R.dimen.layout_lvl5)

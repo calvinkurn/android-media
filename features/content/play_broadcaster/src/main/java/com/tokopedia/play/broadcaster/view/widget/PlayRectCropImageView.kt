@@ -20,7 +20,6 @@ class PlayRectCropImageView @JvmOverloads constructor(context: Context, attrs: A
 
         val centerOfCanvas = Point(width / 2, height / 2)
         val rectW = resources.getDimensionPixelSize(R.dimen.play_cover_width)
-        val rectH = resources.getDimensionPixelSize(R.dimen.play_cover_height)
         val left = (centerOfCanvas.x - (rectW / 2)).toFloat()
         val top = 0f
         val right = (centerOfCanvas.x + (rectW / 2)).toFloat()

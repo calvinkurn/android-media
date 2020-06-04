@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/play_prepare_cover_title_choose_cover_label"
-            android:textColor="@color/play_title_text_white_96"
+            android:textColor="@color/play_white_96"
             app:typographyType="body_1"
             app:typographyWeight="bold" />
 

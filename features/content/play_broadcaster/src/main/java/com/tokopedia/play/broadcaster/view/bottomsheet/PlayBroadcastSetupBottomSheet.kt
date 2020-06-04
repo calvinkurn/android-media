@@ -23,6 +23,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.util.BreadcrumbsModel
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
+import com.tokopedia.play.broadcaster.view.fragment.PlayCoverTitleSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.partial.BottomActionPartialView
@@ -164,6 +165,7 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         ivBack.setOnClickListener { dialog?.onBackPressed() }
 
         navigateToFragment(PlayEtalasePickerFragment::class.java)
+        navigateToFragment(PlayCoverTitleSetupFragment::class.java)
     }
 
     private fun maxHeight(): Int = (getScreenHeight()).toInt()

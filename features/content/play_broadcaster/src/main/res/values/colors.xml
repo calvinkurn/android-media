@@ -14,6 +14,6 @@
 
     <color name="test">#33C4C4C4</color>
     <color name="play_bg_choose_cover">#4D40454C</color>
-    <color name="play_title_text_hint_color">#99FFFFFF</color>
-    <color name="play_title_text_white_96">#F5FFFFFF</color>
+    <color name="play_white_68">#ADFFFFFF</color>
+    <color name="play_white_96">#F5FFFFFF</color>
 </resources>
