@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
+import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
@@ -22,6 +22,8 @@ class SuccessCreateBottomSheet(parent: ViewGroup): BottomSheetUnify() {
 
         private const val DATE_FORMAT = "dd MMM yyyy"
         private const val HOUR_FORMAT = "HH:mm"
+
+        private const val DEFAULT_RADIUS = 8.0f
 
         @JvmStatic
         fun createInstance(parent: ViewGroup,
@@ -54,7 +56,7 @@ class SuccessCreateBottomSheet(parent: ViewGroup): BottomSheetUnify() {
             voucherUiModel?.let { uiModel ->
                 successTitle?.text = String.format(context?.getString(R.string.mvc_success_create_title).toBlankOrString(), uiModel.typeFormatted)
 
-                successImage?.loadImageWithoutPlaceholder(uiModel.imageSquare)
+                successImage?.loadImageRounded(uiModel.imageSquare, resources?.getDimensionPixelSize(R.dimen.layout_lvl1)?.toFloat() ?: DEFAULT_RADIUS)
 
                 val startDate = DateTimeUtils.reformatUnsafeDateTime(uiModel.startTime, DATE_FORMAT)
                 val endDate = DateTimeUtils.reformatUnsafeDateTime(uiModel.finishTime, DATE_FORMAT)

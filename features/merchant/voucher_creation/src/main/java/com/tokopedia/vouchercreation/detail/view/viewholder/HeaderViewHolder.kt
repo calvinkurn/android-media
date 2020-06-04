@@ -6,7 +6,7 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.res.ResourcesCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ContainerUnify
@@ -33,6 +33,8 @@ class HeaderViewHolder(
 
         private const val DATE_FORMAT = "dd MMM yyyy"
         private const val HOUR_FORMAT = "HH:mm"
+
+        private const val DEFAULT_RADIUS = 8.0f
     }
 
     override fun bind(element: VoucherHeaderUiModel) {
@@ -102,7 +104,7 @@ class HeaderViewHolder(
                 setEndTime(StartEndVoucher.Model(endDate, endHour))
             }
 
-            imgMvcVoucherDetail?.loadImage(element.voucherImageUrl)
+            imgMvcVoucherDetail?.loadImageRounded(element.voucherImageUrl, resources?.getDimensionPixelSize(R.dimen.layout_lvl1)?.toFloat() ?: DEFAULT_RADIUS)
             voucherStatus?.run {
                 setTextColor(resources?.run { ResourcesCompat.getColor(this, textColorResId, null) } ?: Color.BLACK)
                 text = context?.getString(statusResId).toBlankOrString()
