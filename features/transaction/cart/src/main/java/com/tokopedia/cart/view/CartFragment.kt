@@ -535,6 +535,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         llPromoCheckout.gone()
                         return
                     }
+/*
                     Log.d("ScrollEnd", "rvState: $newState")
 
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
@@ -556,6 +557,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         Log.d("ScrollEnd", "RV not Idle")
                         alreadyTryToShowPromoButtonOrIdle = false
                     }
+*/
                 }
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -568,11 +570,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     } else {
                         enableSwipeRefresh()
                     }
-                    if (!isButtonAnimating && TRANSLATION_LENGTH < 5000 && dy > 0) {
+                    if (!isButtonAnimating) {
                         TRANSLATION_LENGTH += (dy * 25f)
+                        if (TRANSLATION_LENGTH > 5000) TRANSLATION_LENGTH = 5000f
+                        else if (TRANSLATION_LENGTH < 0) TRANSLATION_LENGTH = 0f
                     }
                     Log.d("ScrollEnd", "Check DY: $dy| Translation Length: $TRANSLATION_LENGTH")
-                    hidePromoButton(dy != 0)
+                    hidePromoButton(/*dy != 0*/)
                 }
             })
 
@@ -598,7 +602,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    private fun hidePromoButton(isScrolling: Boolean) {
+    private fun hidePromoButton(/*isScrolling: Boolean*/) {
         ObjectAnimator.ofFloat(llPromoCheckout, ANIMATION_TYPE, TRANSLATION_LENGTH).apply {
             duration = ANIMATION_DURATION_IN_MILIS
             addListener(object : Animator.AnimatorListener {
@@ -617,19 +621,19 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 override fun onAnimationEnd(animation: Animator) {
                     isButtonAnimating = false
                     TRANSLATION_LENGTH = 0f
-                    if (!isScrolling) {
-                        Log.d("ScrollEnd", "NotScrolling")
-                        notifyScrollEnded = false
-                        Log.d("ScrollEnd", "ShowButton : after scroll end")
-                        showPromoButton()
-                    } else {
-                        Log.d("ScrollEnd", "Scrolling")
-                        notifyScrollEnded = true
-                        if (alreadyTryToShowPromoButtonOrIdle) {
-                            Log.d("ScrollEnd", "ShowButton : force")
-                            showPromoButton()
-                        }
-                    }
+//                    if (!isScrolling) {
+//                        Log.d("ScrollEnd", "NotScrolling")
+//                        notifyScrollEnded = false
+//                        Log.d("ScrollEnd", "ShowButton : after scroll end")
+//                        showPromoButton()
+//                    } else {
+//                        Log.d("ScrollEnd", "Scrolling")
+//                        notifyScrollEnded = true
+//                        if (alreadyTryToShowPromoButtonOrIdle) {
+//                            Log.d("ScrollEnd", "ShowButton : force")
+//                            showPromoButton()
+//                        }
+//                    }
                 }
             })
             if (!isButtonAnimating) {
