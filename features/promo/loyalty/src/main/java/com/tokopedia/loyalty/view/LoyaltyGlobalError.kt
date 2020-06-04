@@ -4,15 +4,14 @@ import android.view.View
 import android.widget.LinearLayout
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.toPx
 
-fun GlobalError.addButton(text:String): View {
+fun GlobalError.addButton(text: String): View {
     val unifyButton = UnifyButton(context)
-    val width = 220.toPx()
+    val width = resources.getDimension(com.tokopedia.design.R.dimen.dp_220).toInt()
     val height = LinearLayout.LayoutParams.WRAP_CONTENT
     val lp = LinearLayout.LayoutParams(width, height)
-    val margin = 16.toPx()
-    val topMargin = 8.toPx()
+    val margin = resources.getDimension(com.tokopedia.design.R.dimen.dp_16).toInt()
+    val topMargin = resources.getDimension(com.tokopedia.design.R.dimen.dp_8).toInt()
     lp.setMargins(margin, topMargin, margin, margin)
     unifyButton.text = text
     unifyButton.buttonSize = UnifyButton.Size.LARGE

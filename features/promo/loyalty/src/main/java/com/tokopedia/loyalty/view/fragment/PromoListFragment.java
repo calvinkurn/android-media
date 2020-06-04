@@ -76,12 +76,12 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
     public final int CONTAINER_ERROR = 2;
 
     private static final String TYPE_FILTER_ALL = "all";
-    QuickSingleFilterView quickSingleFilterView;
-    RecyclerView rvPromoList;
-    View containerList;
-    ViewFlipper viewFlipper;
-    GlobalError globalError;
-    View btnOpenSettings;
+    private QuickSingleFilterView quickSingleFilterView;
+    private RecyclerView rvPromoList;
+    private View containerList;
+    private ViewFlipper viewFlipper;
+    private GlobalError globalError;
+    private View btnOpenSettings;
 
     @Inject
     IPromoListPresenter dPresenter;

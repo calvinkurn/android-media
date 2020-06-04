@@ -53,13 +53,13 @@ public class PromoListActivity extends BaseActivity implements IPromoListActivit
     public static final String DEFAULT_AUTO_SELECTED_CATEGORY_ID = "0";
     public static final String DEFAULT_AUTO_SELECTED_MENU_ID = "0";
 
-    TouchViewPager2 viewPager;
-    TabLayout tabLayout;
-    View shimmerLayout;
-    Toolbar toolbar;
-    AppCompatImageView shimmerImageBack;
-    GlobalError globalError;
-    View btnOpenSettings;
+    private TouchViewPager2 viewPager;
+    private TabLayout tabLayout;
+    private View shimmerLayout;
+    private Toolbar toolbar;
+    private AppCompatImageView shimmerImageBack;
+    private GlobalError globalError;
+    private View btnOpenSettings;
 
     private String autoSelectedMenuId;
     private String autoSelectedCategoryId;
