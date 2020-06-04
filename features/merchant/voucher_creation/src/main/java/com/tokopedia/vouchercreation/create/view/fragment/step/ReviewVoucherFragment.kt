@@ -206,6 +206,11 @@ class ReviewVoucherFragment : BaseDetailFragment() {
 
     override fun onSuccessDrawPostVoucher(postVoucherBitmap: Bitmap) {
         squareVoucherBitmap = postVoucherBitmap
+        activity?.intent?.getBooleanExtra(CreateMerchantVoucherStepsActivity.IS_DUPLICATE, false)?.let { isDuplicate ->
+            if (isDuplicate) {
+                recycler_view?.scrollToPosition(adapter.dataSize - 1)
+            }
+        }
     }
 
     private fun observeLiveData() {
@@ -294,11 +299,6 @@ class ReviewVoucherFragment : BaseDetailFragment() {
             }
             adapter.data.clear()
             renderList(reviewInfoList)
-            activity?.intent?.getBooleanExtra(CreateMerchantVoucherStepsActivity.IS_DUPLICATE, false)?.let { isDuplicate ->
-                if (isDuplicate) {
-                    recycler_view?.scrollToPosition(adapter.dataSize - 1)
-                }
-            }
         }
     }
 
