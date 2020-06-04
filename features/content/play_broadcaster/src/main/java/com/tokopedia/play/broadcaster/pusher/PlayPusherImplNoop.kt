@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
-import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherCountDownTimer
-import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherCountDownTimerListener
+import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherTimer
+import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherTimerListener
 
 
 /**
@@ -18,7 +18,8 @@ class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
     private val _observableNetworkState = MutableLiveData<PlayPusherNetworkState>()
 
     //TODO("for testing only")
-    private var mCountDownTimer: PlayPusherCountDownTimer? = null
+    private var mTimer: PlayPusherTimer? = null
+    private var isPushing: Boolean = false
 
     override fun create() {
         _observableInfoState.value = PlayPusherInfoState.Error
@@ -31,38 +32,50 @@ class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
     }
 
     override fun startPush(ingestUrl: String) {
-        mCountDownTimer?.start()
+        if (!isPushing) {
+            mTimer?.start()
+            this.isPushing = true
+        }
     }
 
     override fun restartPush() {
-        mCountDownTimer?.start()
     }
 
     override fun stopPush() {
-        mCountDownTimer?.stop()
+        if (isPushing) {
+            mTimer?.stop()
+            this.isPushing = false
+        }
     }
 
     override fun switchCamera() {
     }
 
     override fun resume() {
-        mCountDownTimer?.start()
+        if (isPushing) {
+            mTimer?.start()
+        }
     }
 
     override fun pause() {
-        mCountDownTimer?.pause()
+        if (isPushing) {
+            mTimer?.pause()
+        }
     }
 
     override fun destroy() {
-        mCountDownTimer?.pause()
+        if (isPushing) {
+            mTimer?.pause()
+        }
     }
 
     override fun addMaxStreamDuration(millis: Long) {
-        this.mCountDownTimer = PlayPusherCountDownTimer(builder.context, millis)
-        this.mCountDownTimer?.addCallback( object: PlayPusherCountDownTimerListener {
-            override fun onCountDownActive(millisUntilFinished: Long) {
-                _observableInfoState.value  = PlayPusherInfoState.Active(millisUntilFinished, millis)
+        this.mTimer = PlayPusherTimer(builder.context, millis)
+        this.mTimer?.addCallback(object: PlayPusherTimerListener {
+            override fun onCountDownActive(elapsedTime: String, isFiveMinutesLeft: Boolean, isTwoMinutesLeft: Boolean) {
+//                _observableInfoState.value  = PlayPusherInfoState.Active(elapsedTime, isFiveMinutesLeft, isTwoMinutesLeft)
             }
+
             override fun onCountDownFinish() {
                 stopPush()
                 _observableInfoState.value = PlayPusherInfoState.Finish

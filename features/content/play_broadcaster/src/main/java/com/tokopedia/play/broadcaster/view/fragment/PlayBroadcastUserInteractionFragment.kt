@@ -61,7 +61,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        observeChannelInfo()
+//        observeChannelInfo() // TODO("called twice")
         observeCountDownDuration()
         observeTotalViews()
         observeTotalLikes()
@@ -93,31 +93,17 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         return true
     }
 
-    private fun setCountDownTimer(millisUntilFinish: Long, duration: Long) {
-//        when {
-//            millisToMinutes(millisUntilFinish) < 2  && millisSeconds(millisUntilFinish) < 57 -> {
-//                tvTimeCounterEnd.show()
-//                tvTimeCounter.invisible()
-//                tvTimeCounterEnd.text = "Sisa 2 menit"
-//            }
-//            millisToMinutes(millisUntilFinish) < 5  && millisSeconds(millisUntilFinish) < 57 -> {
-//                tvTimeCounterEnd.show()
-//                tvTimeCounter.invisible()
-//                tvTimeCounterEnd.text = "Sisa 5 menit"
-//            }
-//            else -> {
-//                tvTimeCounter.show()
-//                tvTimeCounterEnd.invisible()
-//                tvTimeCounter.text = String.format("%02d:%02d",
-//                        millisToMinutes(duration) - millisToMinutes(millisUntilFinish) - 1,
-//                        millisSeconds(duration)
-//                )
-//            }
-//        }
+    private fun setCountDownTimer(elapsedTime: String, isFiveMinutesLeft: Boolean, isTwoMinutesLeft: Boolean) {
+        if (isFiveMinutesLeft || isTwoMinutesLeft) {
+            tvTimeCounterEnd.show()
+            tvTimeCounter.invisible()
+        } else {
+            tvTimeCounterEnd.invisible()
+            tvTimeCounter.show()
+        }
+        tvTimeCounterEnd.text = "Sisa 5 menit"
+        tvTimeCounter.text = elapsedTime
     }
-
-    private fun millisToMinutes(millis: Long) = TimeUnit.MILLISECONDS.toMinutes(millis)
-    private fun millisSeconds(millis: Long) = TimeUnit.MILLISECONDS.toSeconds(millis)
 
     private fun setTotalView(totalView: TotalViewUiModel) {
         tvTotalView.text = totalView.totalView
@@ -178,7 +164,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, EventObserver{
             when (it) {
                 is PlayPusherInfoState.Active -> {
-                    setCountDownTimer(it.millisUntilFinished, it.duration)
+                    setCountDownTimer(it.elapsedTime, it.isFiveMinutesLeft, it.isTwoMinutesLeft)
                 }
                 is PlayPusherInfoState.Finish -> {
                     parentViewModel.stopPushBroadcast()
@@ -188,11 +174,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         })
     }
 
-    private fun observeChannelInfo() {
-        parentViewModel.channelInfo.observe(viewLifecycleOwner, Observer {
-            parentViewModel.startPushBroadcast(ingestUrl = it.ingestUrl)
-        })
-    }
+//    private fun observeChannelInfo() {
+//        parentViewModel.channelInfo.observe(viewLifecycleOwner, Observer {
+//            parentViewModel.startPushBroadcast(ingestUrl = it.ingestUrl)
+//        })
+//    }
 
     private fun observeTotalViews() {
         parentViewModel.totalView.observe(viewLifecycleOwner, Observer(::setTotalView))
