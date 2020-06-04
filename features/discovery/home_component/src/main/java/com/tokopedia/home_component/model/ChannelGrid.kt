@@ -23,5 +23,6 @@ data class ChannelGrid(
         val isFreeOngkirActive: Boolean = false,
         val freeOngkirImageUrl: String = "",
         val shopId: String = "",
-        val labelGroup: List<LabelGroup> = listOf()
+        val labelGroup: List<LabelGroup> = listOf(),
+        val hasBuyButton: Boolean = false
 )

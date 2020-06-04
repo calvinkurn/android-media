@@ -24,12 +24,22 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.utils.getMaxHeightForListView
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 class RecommendationListCarouselViewHolder(itemView: View,
                                            private val listCarouselListener: RecommendationListCarouselListener,
-                                           private val parentRecycledViewPool: RecyclerView.RecycledViewPool): AbstractViewHolder<RecommendationListCarouselDataModel>(itemView) {
+                                           private val parentRecycledViewPool: RecyclerView.RecycledViewPool): AbstractViewHolder<RecommendationListCarouselDataModel>(itemView), CoroutineScope {
+
+    private val masterJob = SupervisorJob()
+
+    override val coroutineContext = masterJob + Dispatchers.Main
+
     override fun bind(element: RecommendationListCarouselDataModel) {
         val listCarouselTitle = itemView.findViewById<Typography>(R.id.list_carousel_title)
         val listCarouselDescription = itemView.findViewById<Typography>(R.id.list_carousel_description)
@@ -94,7 +104,10 @@ class RecommendationListCarouselViewHolder(itemView: View,
                 } else {
                     GridLayoutManager(itemView.context, 1)
                 }
+                val tempDataList: MutableList<ProductCardModel> = mutableListOf()
                 val newList : MutableList<HomeRecommendationListCarousel> = channel.channelGrids.map {
+                    val productData = mapGridToProductData(it)
+                    tempDataList.add(productData)
                     HomeRecommendationListData(
                             it.imageUrl,
                             it.name,
@@ -107,10 +120,19 @@ class RecommendationListCarouselViewHolder(itemView: View,
                             channel,
                             it,
                             adapterPosition,
-                            listCarouselListener
+                            listCarouselListener,
+                            productData
                     )
                 }.toMutableList()
                 if(channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty()) newList.add(HomeRecommendationListSeeMoreData(channel, listCarouselListener, adapterPosition))
+                launch {
+                    try {
+                        setHeightBasedOnProductCardMaxHeight(tempDataList)
+                    }
+                    catch (throwable: Throwable) {
+                        throwable.printStackTrace()
+                    }
+                }
                 adapter = RecommendationListAdapter(newList, listCarouselListener)
                 setRecycledViewPool(parentRecycledViewPool)
                 clearItemRecyclerViewDecoration(this)
@@ -120,6 +142,34 @@ class RecommendationListCarouselViewHolder(itemView: View,
             }
         }
     }
+
+    private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
+            productCardModelList: List<ProductCardModel>) {
+        val productCardHeight = getProductCardMaxHeight(productCardModelList)
+
+        val carouselLayoutParams = this.layoutParams
+        carouselLayoutParams?.height = productCardHeight
+        this.layoutParams = carouselLayoutParams
+    }
+
+    suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
+        return productCardModelList.getMaxHeightForListView(itemView.context, Dispatchers.Default)
+    }
+
+
+    fun mapGridToProductData(grid: ChannelGrid) :ProductCardModel{
+        return ProductCardModel(
+                productImageUrl = grid.imageUrl,
+                productName = grid.name,
+                discountPercentage = grid.discount,
+                slashedPrice = grid.slashedPrice,
+                formattedPrice = grid.price,
+                hasAddToCartButton = grid.hasBuyButton,
+                isTopAds = grid.isTopads,
+                addToCardText = itemView.context.getString(R.string.home_global_component_buy_again)
+        )
+    }
+
 
     private fun setViewportImpression(element: RecommendationListCarouselDataModel) {
         itemView.addOnImpressionListener(element.channelModel) {
@@ -228,7 +278,8 @@ class RecommendationListCarouselViewHolder(itemView: View,
             val channelModel: ChannelModel,
             val grid: ChannelGrid,
             val parentPosition: Int,
-            val listener: RecommendationListCarouselListener
+            val listener: RecommendationListCarouselListener,
+            val productData: ProductCardModel
     ): HomeRecommendationListCarousel()
 
     data class HomeRecommendationListSeeMoreData(
