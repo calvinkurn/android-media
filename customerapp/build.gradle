@@ -416,6 +416,7 @@ dependencies {
     implementation project(rootProject.ext.features.findNative)
     implementation project(rootProject.ext.features.promoGamificationCommon)
     implementation project(rootProject.ext.libraries.shakeDetect)
+    implementation project(rootProject.ext.libraries.mapviewer)
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.preReleaseInspector)
     } else {
