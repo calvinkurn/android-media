@@ -1,9 +1,6 @@
 package com.tokopedia.loyalty.view.presenter;
 
 import android.content.res.Resources;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
 
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
@@ -78,15 +75,16 @@ public class PromoListPresenter implements IPromoListPresenter {
         return new Subscriber<List<PromoData>>() {
             @Override
             public void onCompleted() {
-                view.enableSwipeRefresh();
                 observableListPromo = null;
+                view.enableSwipeRefresh();
             }
 
             @Override
             public void onError(Throwable e) {
+                observableListPromo = null;
                 handleErrorInitialPage(e);
                 if (page == 1) view.stopPerformanceMonitoring();
-                observableListPromo = null;
+
             }
 
             @Override
@@ -169,10 +167,6 @@ public class PromoListPresenter implements IPromoListPresenter {
 
     @Override
     public void processGetPromoListLoadMore(String subCategories, final String categoryName) {
-        Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
                 view.disableSwipeRefresh();
                 TKPDMapParam<String, String> param = new TKPDMapParam<>();
                 param.put("categories", subCategories);
@@ -207,9 +201,6 @@ public class PromoListPresenter implements IPromoListPresenter {
                         view.renderPromoDataList(promoData, false);
                     }
                 });
-            }
-        }, 000L);
-
     }
 
     private void handleErrorInitialPage(Throwable e) {

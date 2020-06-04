@@ -1,14 +1,11 @@
 package com.tokopedia.loyalty.view.presenter;
 
-import android.os.Handler;
-import android.os.Looper;
-
-import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.loyalty.view.data.PromoMenuData;
 import com.tokopedia.loyalty.view.interactor.IPromoInteractor;
 import com.tokopedia.loyalty.view.view.IPromoListActivityView;
+import com.tokopedia.network.constant.ErrorNetMessage;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -41,59 +38,38 @@ public class PromoListActivityPresenter implements IPromoListActivityPresenter {
                 new TKPDMapParam<String, String>(), new Subscriber<List<PromoMenuData>>() {
                     @Override
                     public void onCompleted() {
-                        Handler handler = new Handler(Looper.getMainLooper());
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                view.hideProgressLoading();
-                            }
-                        },000L);
+                        view.hideProgressLoading();
                     }
 
                     @Override
                     public void onError(Throwable e) {
 
                         e.printStackTrace();
-                        Handler handler = new Handler(Looper.getMainLooper());
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                view.hideProgressLoading();
-                                if (e instanceof UnknownHostException) {
-                                    /* Ini kalau ga ada internet */
-                                    view.renderErrorNoConnectionGetPromoMenuDataList(
-                                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                                    );
-                                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                                    /* Ini kalau timeout */
-                                    view.renderErrorTimeoutConnectionGetPromoMenuDataListt(
-                                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                                    );
-                                } else if (e instanceof HttpErrorException) {
+                        view.hideProgressLoading();
+                        if (e instanceof UnknownHostException) {
+                            /* Ini kalau ga ada internet */
+                            view.renderErrorNoConnectionGetPromoMenuDataList(
+                                    ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+                            );
+                        } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+                            /* Ini kalau timeout */
+                            view.renderErrorTimeoutConnectionGetPromoMenuDataListt(
+                                    ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                            );
+                        } else if (e instanceof HttpErrorException) {
                             /* Ini Http error, misal 403, 500, 404,
                             code http errornya bisa diambil
                              e.getErrorCode */
-                                    view.renderErrorHttpGetPromoMenuDataList(e.getMessage());
-                                } else {
-                                    /* Ini diluar dari segalanya hahahaha */
-                                    view.renderErrorHttpGetPromoMenuDataList(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                                }
-                            }
-                        },2000L);
+                            view.renderErrorHttpGetPromoMenuDataList(e.getMessage());
+                        } else {
+                            /* Ini diluar dari segalanya hahahaha */
+                            view.renderErrorHttpGetPromoMenuDataList(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                        }
                     }
 
                     @Override
                     public void onNext(List<PromoMenuData> promoMenuData) {
-//                        if(true)
-//                            throw new RuntimeException();
-                        Handler handler = new Handler(Looper.getMainLooper());
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                view.renderPromoMenuDataList(promoMenuData);
-                            }
-                        },000L);
-
+                        view.renderPromoMenuDataList(promoMenuData);
                     }
                 }
         );
