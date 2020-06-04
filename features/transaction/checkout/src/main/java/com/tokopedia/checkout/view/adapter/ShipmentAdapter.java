@@ -714,10 +714,11 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void setSelectedCourierTradeInPickup(CourierItemData courierItemData) {
         // Should be only one invoice
         int index = 0;
+        ShipmentCartItemModel shipmentCartItemModel = null;
         for (Object object : shipmentDataList) {
             if (object instanceof ShipmentCartItemModel) {
                 index = shipmentDataList.indexOf(object);
-                ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) object;
+                shipmentCartItemModel = (ShipmentCartItemModel) object;
                 if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
                     ShipmentDetailData shipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
                     shipmentDetailData.setSelectedCourierTradeInDropOff(courierItemData);
@@ -737,6 +738,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             notifyItemChanged(getShipmentCostPosition());
             notifyItemChanged(index);
             checkHasSelectAllCourier(false);
+            if (shipmentCartItemModel.isEligibleNewShippingExperience()) {
+                updateShippingCompletionTickerVisibility();
+            }
         }
     }
 
