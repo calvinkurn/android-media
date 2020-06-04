@@ -113,7 +113,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     lateinit var viewModel: AddEditProductDetailViewModel
 
     private var selectedDurationPosition: Int = UNIT_DAY
-    private var isPreOrderFirstTime = false
+    private var isPreOrderFirstTime = true
     private var countTouchPhoto = 0
 
     // product photo
@@ -330,19 +330,24 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // set input type no suggestion to prevent red underline on text
         preOrderDurationUnitField?.textFieldInput?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 
+        // pre order checked change listener
         preOrderSwitch?.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 // tracker
-                if (viewModel.isEditing && !viewModel.isAdding) {
-                    ProductEditMainTracking.clickPreorderButton(shopId)
-                } else {
-                    ProductAddMainTracking.clickPreorderButton(shopId)
+                if (!isPreOrderFirstTime) {
+                    if (viewModel.isEditing && !viewModel.isAdding) {
+                        ProductEditMainTracking.clickPreorderButton(shopId)
+                    } else {
+                        ProductAddMainTracking.clickPreorderButton(shopId)
+                    }
                 }
 
                 preOrderInputLayout?.visibility = View.VISIBLE
             } else {
                 preOrderInputLayout?.visibility = View.GONE
             }
+
+            viewModel.isPreOrderActivated.value = isChecked
         }
 
         preOrderDurationUnitField?.apply {
@@ -479,11 +484,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 productStockInput.let { viewModel.validateProductStockInput(it) }
             }
         })
-
-        // pre order checked change listener
-        preOrderSwitch?.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.isPreOrderActivated.value = isChecked
-        }
 
         // product pre order duration text change listener
         preOrderDurationField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
@@ -984,6 +984,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun subscribeToPreOrderSwitchStatus() {
         viewModel.isPreOrderActivated.observe(this, Observer {
+            isPreOrderFirstTime = false
             if (it) preOrderInputLayout?.visible()
             else preOrderInputLayout?.hide()
         })
