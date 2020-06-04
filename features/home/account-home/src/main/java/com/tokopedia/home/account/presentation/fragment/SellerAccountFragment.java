@@ -278,9 +278,10 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
             migrationTicker.setTickerTitle(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_title));
             String remoteConfigDate = getSellerMigrationDate(this.getContext());
             if(remoteConfigDate.isEmpty()) {
-                remoteConfigDate = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_default_migration_date);
+                migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_generic_ticker_content));
+            } else {
+                migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_content, remoteConfigDate));
             }
-            migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_content, remoteConfigDate));
             migrationTicker.setDescriptionClickEvent(new TickerCallback() {
                 @Override
                 public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
