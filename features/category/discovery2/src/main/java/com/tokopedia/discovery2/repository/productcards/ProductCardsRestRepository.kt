@@ -19,8 +19,8 @@ class ProductCardsRestRepository @Inject constructor() : BaseRepository(), Produ
                 queryParamterMap)
 
         return if(isHorizontal)
-            DiscoveryDataMapper().mapListToComponentList(response.data.component?.data , "product_card_horizontal_item", null)
+            DiscoveryDataMapper().mapListToComponentList(response.data.component?.data , "product_card_horizontal_item", null, "carousel")
         else
-            DiscoveryDataMapper().mapListToComponentList(response.data.component?.data , "product_card_item", null)
+            DiscoveryDataMapper().mapListToComponentList(response.data.component?.data , "product_card_item", null, "product_card_revamp")
     }
 }
