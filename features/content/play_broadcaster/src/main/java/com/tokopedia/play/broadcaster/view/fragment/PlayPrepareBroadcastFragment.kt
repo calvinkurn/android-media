@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -13,6 +12,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayFollowerItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
+import com.tokopedia.play.broadcaster.util.doOnPreDraw
 import com.tokopedia.play.broadcaster.view.adapter.PlayFollowersAdapter
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
@@ -81,13 +81,10 @@ class PlayPrepareBroadcastFragment @Inject constructor(
         }
 
         rvFollowers.adapter = followersAdapter
-        rvFollowers.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
-            override fun onPreDraw(): Boolean {
-                if (rvFollowers.itemDecorationCount == 0) rvFollowers.addItemDecoration(PlayFollowerItemDecoration())
-                rvFollowers.viewTreeObserver.removeOnPreDrawListener(this)
-                return true
-            }
-        })
+        rvFollowers.doOnPreDraw {
+            if (rvFollowers.itemDecorationCount == 0)
+                rvFollowers.addItemDecoration(PlayFollowerItemDecoration())
+        }
     }
 
     private fun doCreateChannel() {

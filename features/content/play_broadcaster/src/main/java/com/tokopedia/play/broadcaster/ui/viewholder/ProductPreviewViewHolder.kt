@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.ui.viewholder
 
 import android.view.View
-import android.view.ViewTreeObserver
 import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.adapterdelegate.BaseViewHolder
@@ -10,6 +9,7 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.util.changeConstraint
 import com.tokopedia.play.broadcaster.util.compatTransitionName
+import com.tokopedia.play.broadcaster.util.doOnPreDraw
 
 /**
  * Created by jegul on 26/05/20
@@ -30,13 +30,9 @@ class ProductPreviewViewHolder(
         if (itemView.height != 0) {
             adjustSize(itemCount)
         } else {
-            itemView.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
-                override fun onPreDraw(): Boolean {
-                    adjustSize(itemCount)
-                    itemView.viewTreeObserver.removeOnPreDrawListener(this)
-                    return true
-                }
-            })
+            itemView.doOnPreDraw {
+                adjustSize(itemCount)
+            }
         }
 
         ivImage.loadImage(item.imageUrl)
