@@ -35,6 +35,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -83,6 +84,7 @@ open class HomeViewModel @Inject constructor(
         private val sendTopAdsUseCase: SendTopAdsUseCase,
         private val getRechargeRecommendationUseCase: GetRechargeRecommendationUseCase,
         private val declineRechargeRecommendationUseCase: DeclineRechargeRecommendationUseCase,
+        private val getPlayBannerUseCase: GetPlayWidgetUseCase,
         private val homeDispatcher: HomeDispatcherProvider
 ) : BaseViewModel(homeDispatcher.io()){
 
