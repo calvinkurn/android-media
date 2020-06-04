@@ -18,7 +18,7 @@ import com.tokopedia.play.broadcaster.view.adapter.PlayFollowersAdapter
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayPrepareBroadcastViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSetupViewModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -27,12 +27,12 @@ import javax.inject.Inject
 /**
  * Created by jegul on 20/05/20
  */
-class PlayPrepareBroadcastFragment @Inject constructor(
+class PlayBroadcastSetupFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
         private val fragmentFactory: FragmentFactory
 ) : PlayBaseBroadcastFragment() {
 
-    private lateinit var viewModel: PlayPrepareBroadcastViewModel
+    private lateinit var viewModel: PlayBroadcastSetupViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
     private lateinit var btnSetup: UnifyButton
@@ -44,7 +44,7 @@ class PlayPrepareBroadcastFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayPrepareBroadcastViewModel::class.java)
+        viewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastSetupViewModel::class.java)
         parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
     }
 
@@ -112,10 +112,10 @@ class PlayPrepareBroadcastFragment @Inject constructor(
     }
 
     private fun openBroadcastLivePage(channelInfo: ChannelInfoUiModel) {
-        broadcastCoordinator.navigateToFragment(PlayLiveBroadcastFragment::class.java,
+        broadcastCoordinator.navigateToFragment(PlayBroadcastUserInteractionFragment::class.java,
                 Bundle().apply {
-                    putString(PlayLiveBroadcastFragment.KEY_CHANNEL_ID, channelInfo.channelId)
-                    putString(PlayLiveBroadcastFragment.KEY_INGEST_URL, channelInfo.ingestUrl)
+                    putString(PlayBroadcastUserInteractionFragment.KEY_CHANNEL_ID, channelInfo.channelId)
+                    putString(PlayBroadcastUserInteractionFragment.KEY_INGEST_URL, channelInfo.ingestUrl)
                 })
     }
 

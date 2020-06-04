@@ -16,7 +16,7 @@ import javax.inject.Named
 /**
  * Created by jegul on 20/05/20
  */
-class PlayPrepareBroadcastViewModel @Inject constructor(
+class PlayBroadcastSetupViewModel @Inject constructor(
         @Named(PlayBroadcastDispatcher.MAIN) dispatcher: CoroutineDispatcher
 ) : ViewModel() {
 

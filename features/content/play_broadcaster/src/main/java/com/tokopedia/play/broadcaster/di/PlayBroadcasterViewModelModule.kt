@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayPrepareBroadcastViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSetupViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -23,14 +23,13 @@ abstract class PlayBroadcasterViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(PlayPrepareBroadcastViewModel::class)
-    abstract fun getPlayPrepareViewModel(viewModel: PlayPrepareBroadcastViewModel): ViewModel
+    @ViewModelKey(PlayBroadcastSetupViewModel::class)
+    abstract fun getPlayPrepareViewModel(viewModel: PlayBroadcastSetupViewModel): ViewModel
 
     @Binds
     @IntoMap
     @ViewModelKey(PlayEtalasePickerViewModel::class)
     abstract fun getPlayEtalasePickerViewModel(viewModel: PlayEtalasePickerViewModel): ViewModel
-    abstract fun getPlayViewModel(viewModel: PlayPrepareBroadcastViewModel): ViewModel
 
     @Binds
     @IntoMap

@@ -28,7 +28,7 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 25/05/20.
  */
-class PlayLiveBroadcastFragment @Inject constructor(
+class PlayBroadcastUserInteractionFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
         private val fragmentFactory: FragmentFactory
 ): PlayBaseBroadcastFragment() {
