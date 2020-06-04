@@ -123,6 +123,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible"
         android:visibility="visible">
 
         <com.tokopedia.unifycomponents.UnifyButton
@@ -176,7 +177,7 @@
         app:unifyButtonVariant="filled"
         app:unifyButtonType="main"
         android:enabled="false"
-        android:visibility="gone"
+        android:visibility="visible"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

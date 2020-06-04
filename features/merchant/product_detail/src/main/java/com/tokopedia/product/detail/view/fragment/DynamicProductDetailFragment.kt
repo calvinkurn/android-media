@@ -1132,11 +1132,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun updateButtonAfterClickVariant(indexOfVariantButton: Int?) {
-        if (viewModel.shopInfo == null) {
-            actionButtonView.visibility = !isAffiliate
-        } else {
-            actionButtonView.visibility = !isAffiliate && viewModel.shopInfo?.statusInfo?.shopStatus == 1
-        }
+        showOrHideButton()
 
         viewModel.getDynamicProductInfoP1?.let {
             actionButtonView.renderData(!it.isProductActive(viewModel.selectedMultiOrigin.stock),
@@ -1425,18 +1421,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun onSuccessGetDataP2Shop(it: ProductInfoP2ShopData) {
         viewModel.getDynamicProductInfoP1?.let { p1 ->
             val productStock = p1.getFinalStock(viewModel.selectedMultiOrigin.getOriginStock()).toIntOrZero()
+
             actionButtonView.renderData(!p1.isProductActive(productStock), viewModel.hasShopAuthority(), viewModel.isShopOwner(),
                     hasTopAds(), it.cartRedirectionResponse.cartRedirection?.data?.firstOrNull())
+            showOrHideButton()
+            setupTickerOcc()
 
             trackProductView(viewModel.tradeInParams.isEligible == 1)
 
-            if (viewModel.shopInfo == null) {
-                actionButtonView.visibility = !isAffiliate
-            } else {
-                actionButtonView.visibility = !isAffiliate && viewModel.shopInfo?.statusInfo?.shopStatus == 1
-            }
-
-            setupTickerOcc()
 
             viewModel.shopInfo?.let { shopInfo ->
                 DynamicProductDetailTracking.Moengage.sendMoEngageOpenProduct(p1, shopInfo.shopCore.name)
@@ -1462,6 +1454,18 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         pdpUiUpdater?.updateFulfillmentData(context, viewModel.selectedMultiOrigin.warehouseInfo.isFulfillment)
         pdpUiUpdater?.updateDataP2Shop(it)
         adapter.notifyDataSetChanged()
+    }
+
+    private fun showOrHideButton() {
+        viewModel.shopInfo?.let {
+            if (viewModel.isShopOwner()) {
+                actionButtonView.visibility = true
+            } else {
+                actionButtonView.visibility = !isAffiliate && viewModel.shopInfo?.statusInfo?.shopStatus == ProductDetailConstant.STATUS_AVAILABLE
+            }
+            return
+        }
+        actionButtonView.visibility = !isAffiliate
     }
 
     private fun setupTickerOcc() {

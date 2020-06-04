@@ -70,7 +70,7 @@ class PartialButtonActionView private constructor(val view: View,
 
     private fun renderButton() {
         if (isWarehouseProduct) {
-            showNoStockButton()
+            showWarehouseButton()
         } else if (hasShopAuthority) {
             showShopManageButton()
         } else if (!GlobalConfig.isSellerApp() && onSuccessGetCartType) {
@@ -231,6 +231,14 @@ class PartialButtonActionView private constructor(val view: View,
             btn_empty_stock.show()
             btn_topchat.showWithCondition(!isShopOwner)
             btn_topchat.setOnClickListener(this@PartialButtonActionView)
+        }
+    }
+
+    private fun showWarehouseButton() {
+        if (isShopOwner) {
+            showShopManageButton()
+        } else {
+            showNoStockButton()
         }
     }
 
