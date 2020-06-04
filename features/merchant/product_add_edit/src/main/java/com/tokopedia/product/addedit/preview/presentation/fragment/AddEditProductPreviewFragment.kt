@@ -299,10 +299,12 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         loadingLayout = view.findViewById(R.id.loading_layout)
 
         addEditProductPhotoButton?.setOnClickListener {
-
             // tracking
+            val buttonTextStart: String = getString(R.string.action_start)
             if (viewModel.isEditing.value == true) {
                 ProductEditStepperTracking.trackClickChangeProductPic(shopId)
+            } else if (addEditProductPhotoButton?.text == buttonTextStart){
+                ProductAddStepperTracking.trackStart(shopId)
             }
 
             productPhotoAdapter?.run {
@@ -461,7 +463,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                             viewModel.updateProductPhotos(imagePickerResult, originalImageUrl, isEditted)
                         } else {
                             // this only executed when we came from empty stepper page (add product)
-                            ProductAddStepperTracking.trackStart(shopId)
                             val newProductInputModel = viewModel.getNewProductInputModel(imagePickerResult)
                             startAddEditProductDetailActivity(newProductInputModel, isEditing = false, isAdding = true)
                         }
