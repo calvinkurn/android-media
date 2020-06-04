@@ -113,7 +113,7 @@ class EventCategoryFragment : BaseDaggerFragment() {
             addOnScrollListener(endlessScroll)
             adapter = eventGridAdapter
             setPadding(context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2), context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl0)
-                    , context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2), context.resources.getDimensionPixelSize(R.dimen.layout_lvl0))
+                    , context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2), context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl0))
         }
     }
 
