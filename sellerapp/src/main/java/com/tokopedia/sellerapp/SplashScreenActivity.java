@@ -49,6 +49,19 @@ public class SplashScreenActivity extends SplashScreen {
             finish();
         }
         syncFcmToken();
+
+        handleAppLink();
+    }
+
+    /**
+     * handle/forward app link redirection from customer app to seller app
+     * */
+    private void handleAppLink() {
+        Uri uri = getIntent().getData();
+        if (null != uri) {
+            RouteManager.route(this, uri.toString());
+            finish();
+        }
     }
 
     private void syncFcmToken() {
