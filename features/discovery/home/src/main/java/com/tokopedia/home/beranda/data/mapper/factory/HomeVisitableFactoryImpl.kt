@@ -12,8 +12,8 @@ import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
@@ -162,6 +162,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
         homeData?.dynamicHomeChannel?.channels?.forEachIndexed { index, channel ->
             val position = index+1
             setDynamicChannelPromoName(position, channel)
+
             when (channel.layout) {
                 DynamicHomeChannel.Channels.LAYOUT_TOPADS -> createDynamicTopAds(channel)
                 DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT -> {

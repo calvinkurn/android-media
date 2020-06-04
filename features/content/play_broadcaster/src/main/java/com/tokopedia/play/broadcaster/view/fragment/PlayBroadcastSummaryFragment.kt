@@ -16,8 +16,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.ui.model.SummaryUiModel
 import com.tokopedia.play.broadcaster.view.adapter.PlaySummaryInfosAdapter
-import com.tokopedia.play.broadcaster.view.uimodel.SummaryUiModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import kotlinx.android.synthetic.main.fragment_play_broadcaster_summary.*
 import javax.inject.Inject
