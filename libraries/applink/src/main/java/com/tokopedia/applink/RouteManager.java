@@ -41,7 +41,6 @@ public class RouteManager {
 
     public static final String KEY_REDIRECT_TO_SELLER_APP = "redirect_to_sellerapp";
     private static final String SELLER_APP_PACKAGE_NAME = "com.tokopedia.sellerapp";
-    private static final String SELLER_APP_SPLASH_SCREEN_ACTIVITY = "com.tokopedia.sellerapp.SplashScreenActivity";
 
     /**
      * will create implicit internal Intent ACTION_VIEW correspond to deeplink
