@@ -46,7 +46,6 @@ class ShopShowcaseListActivity : BaseActivity(), ShopShowcaseFragmentNavigation 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.fragment_shop_showcase_list_container)
 
         val bundle = intent.getBundleExtra("bundle")
         if (bundle != null) {
@@ -104,7 +103,7 @@ class ShopShowcaseListActivity : BaseActivity(), ShopShowcaseFragmentNavigation 
     private fun navigateToOtherFragment(fragment: Fragment, tag: String?) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction
-                .replace(R.id.shop_showcase_container, fragment)
+                .replace(android.R.id.content, fragment)
                 .addToBackStack(tag)
                 .commit()
     }
