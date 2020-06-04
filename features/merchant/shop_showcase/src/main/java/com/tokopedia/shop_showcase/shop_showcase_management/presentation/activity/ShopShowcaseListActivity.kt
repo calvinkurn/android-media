@@ -103,7 +103,7 @@ class ShopShowcaseListActivity : BaseActivity(), ShopShowcaseFragmentNavigation 
     private fun navigateToOtherFragment(fragment: Fragment, tag: String?) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction
-                .replace(android.R.id.content, fragment)
+                .replace(R.id.shop_showcase_container, fragment)
                 .addToBackStack(tag)
                 .commit()
     }
