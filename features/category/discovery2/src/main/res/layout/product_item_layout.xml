@@ -431,25 +431,28 @@
             tools:text="Tersisa 6" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/textViewAddToCart"
+            android:id="@+id/textViewNotifyMe"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_10"
             android:layout_marginRight="@dimen/dp_8"
-            android:background="@drawable/productcard_module_bg_button_atc"
+            android:background="@drawable/productcard_module_bg_button_inactive"
             android:foreground="?selectableItemBackground"
             android:gravity="center"
-            android:padding="@dimen/dp_8"
-            android:text="@string/product_card_module_label_add_to_card"
+            android:paddingHorizontal="@dimen/dp_22"
+            android:paddingVertical="@dimen/dp_8"
+            android:text="@string/product_card_module_label_subscribe"
             android:textAllCaps="false"
-            android:textColor="@color/orange_red"
-            android:visibility="gone"
+            app:typographyWeight="bold"
+            android:textColor="@color/clr_03AC0E"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageFreeOngkirPromo"
+            app:layout_constraintTop_toBottomOf="@+id/stockText"
             app:typographyType="heading_6"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

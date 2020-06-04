@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.Paint
 import android.view.View
@@ -11,6 +12,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -46,10 +49,12 @@ class ProductCardItemViewHolder(itemView: View, fragment: Fragment) : AbstractVi
     private var pdpViewCount: TextView = itemView.findViewById(R.id.textViewProductViewCount)
     private var stockTitle: TextView = itemView.findViewById(R.id.stockText)
     private var interestedView: TextView = itemView.findViewById(R.id.textViewProductInterestedView)
+    private var notifyMeView: TextView = itemView.findViewById(R.id.textViewNotifyMe)
 
     private lateinit var productCardItemViewModel: ProductCardItemViewModel
     private var lifecycleOwner: LifecycleOwner = fragment.viewLifecycleOwner
     private var productCardName = ""
+    private var context: Context? = fragment.activity
 
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
@@ -60,7 +65,10 @@ class ProductCardItemViewHolder(itemView: View, fragment: Fragment) : AbstractVi
     private fun initView() {
         productCardItemViewModel.setContext(productCardView.context)
         productCardView.setOnClickListener {
-            productCardItemViewModel.handleUIClick()
+            handleUIClick(it)
+        }
+        notifyMeView.setOnClickListener {
+            handleUIClick(it)
         }
     }
 
@@ -89,9 +97,22 @@ class ProductCardItemViewHolder(itemView: View, fragment: Fragment) : AbstractVi
                 else -> shopBadge.hide()
             }
         })
+
+        productCardItemViewModel.getShowLoginData().observe(lifecycleOwner, Observer { showLogin ->
+            context?.let {
+                if (showLogin) {
+                    it.startActivity(RouteManager.getIntent(it, ApplinkConst.LOGIN))
+                }
+            }
+        })
+
+        productCardItemViewModel.notifyMeCurrentStatus().observe(lifecycleOwner, Observer { status ->
+            updateNotifyMeState(status)
+        })
     }
 
 
+    // TODO : Improve in future
     private fun populateData(dataItem: DataItem) {
         if (productCardName == "product_card_revamp_item" || productCardName == "product_card_carousel_item") {
             productName.setTextAndCheckShow(dataItem.name)
@@ -115,6 +136,36 @@ class ProductCardItemViewHolder(itemView: View, fragment: Fragment) : AbstractVi
         showFreeOngKir(dataItem)
         setPDPView(dataItem)
         showInterestedView(dataItem)
+        showNotifyMe(dataItem)
+    }
+
+    private fun showNotifyMe(dataItem: DataItem) {
+        if (productCardItemViewModel.notifyMeVisibility() == true) {
+            notifyMeView.show()
+            updateNotifyMeState(dataItem.notifyMe)
+        } else {
+            notifyMeView.hide()
+        }
+    }
+
+    private fun updateNotifyMeState(notifyMeStatus: Boolean) {
+        if (notifyMeStatus) {
+            notifyMeActiveState()
+        } else {
+            notifyMeInActiveState()
+        }
+    }
+
+    private fun notifyMeActiveState() {
+        notifyMeView.text = "Pengingat Aktif"
+        notifyMeView.setTextColor(Color.parseColor("#ae31353b"))
+        notifyMeView.setBackgroundResource(R.drawable.productcard_module_bg_button_active)
+    }
+
+    private fun notifyMeInActiveState() {
+        notifyMeView.text = "Ingatkan Saya"
+        notifyMeView.setTextColor(Color.parseColor("#03ac0e"))
+        notifyMeView.setBackgroundResource(R.drawable.productcard_module_bg_button_inactive)
     }
 
 
@@ -216,7 +267,6 @@ class ProductCardItemViewHolder(itemView: View, fragment: Fragment) : AbstractVi
                 (linearLayoutImageRating.getChildAt(r) as ImageView).setImageResource(R.drawable.product_card_ic_rating_active)
             }
         }
-
     }
 
     private fun setSlashedPrice(discountedPrice: String?) {
@@ -233,6 +283,13 @@ class ProductCardItemViewHolder(itemView: View, fragment: Fragment) : AbstractVi
         } else {
             labelDiscount.show()
             labelDiscount.text = String.format("%s", "$text%")
+        }
+    }
+
+    private fun handleUIClick(view: View) {
+        when (view) {
+            productCardView -> productCardItemViewModel.handleNavigation()
+            notifyMeView -> productCardItemViewModel.subscribeUser()
         }
     }
 }

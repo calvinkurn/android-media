@@ -42,7 +42,6 @@ class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment
         mProductRevampComponentViewModel.getProductCarouselItemsListData().observe(lifecycleOwner, Observer { item ->
             mDiscoveryRecycleAdapter.setDataList(item)
             addChildAdapterCallback.notifyMergeAdapter()
-
         })
     }
 }

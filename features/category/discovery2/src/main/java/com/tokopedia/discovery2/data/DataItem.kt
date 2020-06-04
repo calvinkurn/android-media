@@ -328,6 +328,12 @@ data class DataItem(
         @SerializedName("threshold_interest")
         val thresholdInterest: Int? = null,
 
+        @SerializedName("notify_me")
+        var notifyMe: Boolean = false,
+
+        @SerializedName("campaign_id")
+        val campaignId: String = "",
+
         var status: String? = null,
 
         var parentComponentName: String? = "",

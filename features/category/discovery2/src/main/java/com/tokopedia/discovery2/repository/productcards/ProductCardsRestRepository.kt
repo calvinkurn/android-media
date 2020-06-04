@@ -18,12 +18,14 @@ class ProductCardsRestRepository @Inject constructor() : BaseRepository(), Produ
                 RequestType.GET,
                 queryParamterMap)
 
+        val componentData = response.data.component?.data
+        val componentProperties = response.data.component?.properties
         return when (productComponentName) {
-            "product_card_revamp" -> DiscoveryDataMapper().mapListToComponentList(response.data.component?.data, "product_card_revamp_item", null)
-            "product_card_carousel" -> DiscoveryDataMapper().mapListToComponentList(response.data.component?.data, "product_card_carousel_item", null)
-            "product_card_sprint_sale" -> DiscoveryDataMapper().mapListToComponentList(response.data.component?.data, "product_card_sprint_sale_item", null)
-            "product_card_sprint_sale_carousel" -> DiscoveryDataMapper().mapListToComponentList(response.data.component?.data, "product_card_sprint_sale_carousel_item", null)
-            else -> DiscoveryDataMapper().mapListToComponentList(response.data.component?.data, "product_card_revamp_item", null)
+            "product_card_revamp" -> DiscoveryDataMapper().mapListToComponentList(componentData, "product_card_revamp_item", componentProperties)
+            "product_card_carousel" -> DiscoveryDataMapper().mapListToComponentList(componentData, "product_card_carousel_item", componentProperties)
+            "product_card_sprint_sale" -> DiscoveryDataMapper().mapListToComponentList(componentData, "product_card_sprint_sale_item", componentProperties)
+            "product_card_sprint_sale_carousel" -> DiscoveryDataMapper().mapListToComponentList(componentData, "product_card_sprint_sale_carousel_item", componentProperties)
+            else -> DiscoveryDataMapper().mapListToComponentList(componentData, "product_card_revamp_item", null)
 
         }
 
