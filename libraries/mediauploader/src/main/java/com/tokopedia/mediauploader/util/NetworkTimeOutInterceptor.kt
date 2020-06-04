@@ -18,9 +18,9 @@ class NetworkTimeOutInterceptor: Interceptor {
         val readTimeout = timeOut?.toInt()?: DEFAULT_TIMEOUT
 
         return chain
-                .withConnectTimeout(connectTimeout, TimeUnit.MILLISECONDS)
-                .withWriteTimeout(writeTimeout, TimeUnit.MILLISECONDS)
-                .withReadTimeout(readTimeout, TimeUnit.MILLISECONDS)
+                .withConnectTimeout(connectTimeout, TimeUnit.SECONDS)
+                .withWriteTimeout(writeTimeout, TimeUnit.SECONDS)
+                .withReadTimeout(readTimeout, TimeUnit.SECONDS)
                 .proceed(request)
     }
 
