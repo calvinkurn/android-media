@@ -142,7 +142,8 @@ class AddToCartDoneBottomSheet :
             val bottomSheet = (it as BottomSheetDialog).findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout?
             val behavior = BottomSheetBehavior.from(bottomSheet)
             behavior.state = BottomSheetBehavior.STATE_EXPANDED
-
+            dialog.setCancelable(false)
+            dialog.setCanceledOnTouchOutside(true)
             behavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
                     if (newState == BottomSheetBehavior.STATE_DRAGGING) {
@@ -154,7 +155,6 @@ class AddToCartDoneBottomSheet :
             })
         }
 
-        // Do something with your dialog like setContentView() or whatever
         return dialog
     }
 
