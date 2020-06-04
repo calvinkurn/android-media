@@ -230,7 +230,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
                             recommendation.channelModel,
                             recommendation.grid,
                             adapterPosition,
-                            listener
+                            recommendation.recommendationApplink
                     )
                 }
             } else if(recommendation is HomeRecommendationListSeeMoreData) {
