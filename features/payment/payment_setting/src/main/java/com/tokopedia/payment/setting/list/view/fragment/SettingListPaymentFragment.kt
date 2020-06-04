@@ -7,29 +7,28 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.payment.setting.R
-import com.tokopedia.payment.setting.list.di.DaggerSettingListPaymentComponent
-import com.tokopedia.payment.setting.list.model.SettingListAddCardModel
-import com.tokopedia.payment.setting.list.model.SettingListPaymentModel
-import javax.inject.Inject
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.design.component.Dialog
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.payment.setting.R
 import com.tokopedia.payment.setting.add.view.activity.AddCreditCardActivity
 import com.tokopedia.payment.setting.authenticate.view.activity.AuthenticateCreditCardActivity
 import com.tokopedia.payment.setting.detail.view.activity.DetailCreditCardActivity
-import com.tokopedia.payment.setting.list.view.presenter.SettingListPaymentContract
-import com.tokopedia.payment.setting.list.view.presenter.SettingListPaymentPresenter
+import com.tokopedia.payment.setting.list.di.DaggerSettingListPaymentComponent
+import com.tokopedia.payment.setting.list.model.PaymentSignature
+import com.tokopedia.payment.setting.list.model.SettingListAddCardModel
+import com.tokopedia.payment.setting.list.model.SettingListPaymentModel
 import com.tokopedia.payment.setting.list.view.adapter.SettingListEmptyViewHolder
 import com.tokopedia.payment.setting.list.view.adapter.SettingListPaymentAdapterTypeFactory
+import com.tokopedia.payment.setting.list.view.presenter.SettingListPaymentContract
+import com.tokopedia.payment.setting.list.view.presenter.SettingListPaymentPresenter
 import kotlinx.android.synthetic.main.fragment_setting_list_payment.*
 import kotlinx.android.synthetic.main.fragment_setting_list_payment.view.*
-import com.tokopedia.design.component.Dialog
-import com.tokopedia.payment.setting.list.model.PaymentSignature
+import javax.inject.Inject
 
 
 class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, SettingListPaymentAdapterTypeFactory>(),
@@ -124,10 +123,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
     }
 
     override fun initInjector() {
-        DaggerSettingListPaymentComponent.builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+        getComponent(DaggerSettingListPaymentComponent::class.java).inject(this)
         settingListPaymentPresenter.attachView(this)
     }
 

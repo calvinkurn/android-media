@@ -4,25 +4,25 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.DividerItemDecoration
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.base.app.BaseMainApplication
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.payment.setting.R
+import com.tokopedia.payment.setting.authenticate.di.AuthenticateCreditCardComponent
 import com.tokopedia.payment.setting.authenticate.di.DaggerAuthenticateCreditCardComponent
 import com.tokopedia.payment.setting.authenticate.model.CheckWhiteListStatus
 import com.tokopedia.payment.setting.authenticate.model.TypeAuthenticateCreditCard
 import com.tokopedia.payment.setting.authenticate.view.adapter.AuthenticateCCAdapterFactory
+import com.tokopedia.payment.setting.authenticate.view.adapter.AuthenticateCreditCardAdapter
 import com.tokopedia.payment.setting.authenticate.view.presenter.AuthenticateCCContract
 import com.tokopedia.payment.setting.authenticate.view.presenter.AuthenticateCCPresenter
-import com.tokopedia.payment.setting.authenticate.view.adapter.AuthenticateCreditCardAdapter
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_authenticate_credit_card.*
 import javax.inject.Inject
@@ -77,10 +77,7 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
     }
 
     override fun initInjector() {
-        DaggerAuthenticateCreditCardComponent.builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+        getComponent(AuthenticateCreditCardComponent::class.java).inject(this)
         authenticateCCPresenter.attachView(this)
     }
 

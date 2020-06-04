@@ -1,6 +1,5 @@
 package com.tokopedia.payment.setting.authenticate.view.presenter
 
-import android.content.res.Resources
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.payment.setting.authenticate.model.CheckWhiteListStatus

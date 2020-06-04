@@ -6,13 +6,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.payment.setting.R
 import com.tokopedia.payment.setting.detail.di.DaggerDetailCreditCardComponent
+import com.tokopedia.payment.setting.detail.di.DetailCreditCardComponent
 import com.tokopedia.payment.setting.detail.view.presenter.DetailCreditCardContract
 import com.tokopedia.payment.setting.detail.view.presenter.DetailCreditCardPresenter
 import com.tokopedia.payment.setting.list.model.SettingListPaymentModel
@@ -120,10 +120,7 @@ class DetailCreditCardFragment : BaseDaggerFragment(), DetailCreditCardContract.
     }
 
     override fun initInjector() {
-        DaggerDetailCreditCardComponent.builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+        getComponent(DetailCreditCardComponent::class.java).inject(this)
         detailCreditCardPresenter.attachView(this)
     }
 
