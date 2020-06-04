@@ -28,6 +28,9 @@ class HeaderChipViewHolder(
             itemChipMvc.run {
                 chip_text.text = element.text
                 chip_right_icon.visible()
+                chip_right_icon.setOnClickListener {
+                    onClick(element)
+                }
             }
 
             setOnClickListener { onClick(element) }
