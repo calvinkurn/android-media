@@ -7,13 +7,13 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.annotation.LayoutRes;
 import androidx.core.content.ContextCompat;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.airport.view.model.FlightAirportModel;
+import com.tokopedia.unifyprinciples.Typography;
 
 /**
  * Created by zulfikarrahman on 10/24/17.
@@ -23,8 +23,8 @@ public class FlightAirportViewHolder extends AbstractViewHolder<FlightAirportMod
     @LayoutRes
     public static int LAYOUT = com.tokopedia.flight.R.layout.item_flight_airport;
 
-    private TextView cityTextView;
-    private TextView airportTextView;
+    private Typography cityTextView;
+    private Typography airportTextView;
 
     private FlightAirportClickListener filterTextListener;
     private ForegroundColorSpan boldColor;
@@ -32,8 +32,8 @@ public class FlightAirportViewHolder extends AbstractViewHolder<FlightAirportMod
 
     public FlightAirportViewHolder(View itemView, FlightAirportClickListener filterTextListener) {
         super(itemView);
-        cityTextView = (TextView) itemView.findViewById(com.tokopedia.flight.R.id.city);
-        airportTextView = (TextView) itemView.findViewById(com.tokopedia.flight.R.id.airport);
+        cityTextView = itemView.findViewById(com.tokopedia.flight.R.id.city);
+        airportTextView = itemView.findViewById(com.tokopedia.flight.R.id.airport);
         this.filterTextListener = filterTextListener;
         boldColor = new ForegroundColorSpan(ContextCompat.getColor(itemView.getContext(),
                 com.tokopedia.unifyprinciples.R.color.Neutral_N700_96));
@@ -44,6 +44,11 @@ public class FlightAirportViewHolder extends AbstractViewHolder<FlightAirportMod
     public void bind(final FlightAirportModel airport) {
         Context context = itemView.getContext();
         String filterText = filterTextListener.getFilterText();
+
+        if (filterText.length() > 0) {
+            cityTextView.setWeight(Typography.REGULAR);
+            airportTextView.setWeight(Typography.REGULAR);
+        }
 
         String cityStr = context.getString(com.tokopedia.flight.R.string.flight_label_city,
                 airport.getCityName(), airport.getCountryName());

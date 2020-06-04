@@ -50,7 +50,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.networkDependencies.glide
 
-    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
+    androidTestImplementation project(rootProject.ext.libraries.akamaiBotLib)
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.network
 
 }

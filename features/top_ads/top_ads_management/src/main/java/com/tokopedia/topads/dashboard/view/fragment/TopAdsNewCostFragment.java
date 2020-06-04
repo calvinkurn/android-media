@@ -16,7 +16,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.product.manage.item.common.util.CurrencyIdrTextWatcher;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.listener.StepperListener;

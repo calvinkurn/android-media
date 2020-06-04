@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.annotation.StringRes
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.crashlytics.android.Crashlytics
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
@@ -59,12 +60,16 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
+import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.QuotationViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.StickerViewHolder
+import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
+import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
 import com.tokopedia.topchat.chatroom.view.custom.TransactionOrderProgressLayout
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
@@ -90,10 +95,12 @@ import javax.inject.Inject
  * @author : Steven 29/11/18
  */
 
-class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
-        , TypingListener, SendButtonListener, ImagePickerListener, ChatTemplateListener,
+class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingListener,
+        SendButtonListener, ImagePickerListener, ChatTemplateListener,
         HeaderMenuListener, DualAnnouncementListener, TopChatVoucherListener,
-        InvoiceThumbnailListener, QuotationViewHolder.QuotationListener, TransactionOrderProgressLayout.Listener {
+        InvoiceThumbnailListener, QuotationViewHolder.QuotationListener,
+        TransactionOrderProgressLayout.Listener, ChatMenuStickerView.StickerMenuListener,
+        StickerViewHolder.Listener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -126,20 +133,26 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private var seenAttachedBannedProduct = HashSet<Int>()
     private var composeArea: EditText? = null
     private var orderProgress: TransactionOrderProgressLayout? = null
+    private var chatMenu: ChatMenuView? = null
 
-    override fun rvAttachmentMenuId() = R.id.rv_attachment_menu
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getAnalytic(): TopChatAnalytics = analytics
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_topchat_chatroom, container, false).also {
             bindView(it)
+            initStickerView()
         }
     }
 
     private fun bindView(view: View?) {
         composeArea = view?.findViewById(R.id.new_comment)
         orderProgress = view?.findViewById(R.id.ll_transaction_progress)
+        chatMenu = view?.findViewById(R.id.fl_chat_menu)
+    }
+
+    private fun initStickerView() {
+        chatMenu?.setStickerListener(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -159,6 +172,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onCreateViewState(view: View): BaseChatViewState {
         return TopChatViewStateImpl(
                 view,
+                this,
                 this,
                 this,
                 this,
@@ -273,13 +287,14 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         getViewState().onSetCustomMessage(customMessage)
         presenter.getTemplate(getUserSession().shopId == shopId.toString())
         loadChatRoomSettings(chatRoom)
+        presenter.getStickerGroupList(chatRoom)
 
         fpm.stopTrace()
     }
 
     private fun checkCanAttachVoucher(room: ChatroomViewModel) {
         if (room.isSeller()) {
-            addVoucherAttachmentMenu()
+            chatMenu?.addVoucherAttachmentMenu()
         }
     }
 
@@ -479,6 +494,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         orderProgress?.render(this, chatOrder)
     }
 
+    override fun getChatMenuView(): ChatMenuView? {
+        return getViewState().chatMenu
+    }
+
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
         if (adapterTypeFactory !is TopChatTypeFactoryImpl) {
             throw IllegalStateException("getAdapterTypeFactory() must return TopChatTypeFactoryImpl")
@@ -517,11 +536,22 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                 sendMessage,
                 startTime,
                 opponentId,
-                onSendingMessage(sendMessage, startTime)
+                onSendingMessage()
         )
     }
 
-    private fun onSendingMessage(sendMessage: String, startTime: String): () -> Unit {
+    override fun onClickSticker(sticker: Sticker) {
+        val startTime = SendableViewModel.generateStartTime()
+        presenter.sendAttachmentsAndSticker(
+                messageId,
+                sticker,
+                startTime,
+                opponentId,
+                onSendingMessage()
+        )
+    }
+
+    private fun onSendingMessage(): () -> Unit {
         return {
             analytics.eventSendMessage()
             getViewState().scrollToBottom()
@@ -1070,5 +1100,17 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                 arguments = bundle
             }
         }
+    }
+
+    override fun onStickerOpened() {
+        getViewState().onStickerOpened()
+    }
+
+    override fun onStickerClosed() {
+        getViewState().onStickerClosed()
+    }
+
+    override fun getFragmentActivity(): FragmentActivity? {
+        return activity
     }
 }

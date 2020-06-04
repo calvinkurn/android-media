@@ -2,7 +2,9 @@ package com.tokopedia.loginregister.login.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
@@ -12,6 +14,9 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.setLightStatusBar
+import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
@@ -137,6 +142,27 @@ class LoginActivity : BaseSimpleActivity(), HasComponent<LoginRegisterComponent>
                     .parent_view) as LoginEmailPhoneContract.View).onBackPressed()
         } else {
             super.onBackPressed()
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        setWhiteStatusBarIfSellerApp()
+        removeBackButtonIfSellerApp()
+    }
+
+    private fun setWhiteStatusBarIfSellerApp() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && GlobalConfig.isSellerApp()) {
+            setStatusBarColor(Color.WHITE)
+            setLightStatusBar(true)
+        }
+    }
+
+    private fun removeBackButtonIfSellerApp() {
+        if (GlobalConfig.isSellerApp()) {
+            toolbar?.setPadding(30, 0, 0, 0)
+            supportActionBar?.setDisplayHomeAsUpEnabled(false)
         }
     }
 }

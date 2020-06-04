@@ -9,6 +9,12 @@ import com.tokopedia.gm.common.domain.repository.GMCommonRepository
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.product.manage.common.draft.data.db.AddEditProductDraftDao
+import com.tokopedia.product.manage.common.draft.data.db.AddEditProductDraftDb
+import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepository
+import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepositoryImpl
+import com.tokopedia.product.manage.common.draft.data.db.source.AddEditProductDraftDataSource
+import com.tokopedia.product.manage.common.draft.domain.usecase.GetAllProductsCountDraftUseCase
 import com.tokopedia.product.manage.feature.filter.domain.GetProductListMetaUseCase
 import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
@@ -23,6 +29,7 @@ import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftP
 import com.tokopedia.product.manage.oldlist.constant.GQL_FEATURED_PRODUCT
 import com.tokopedia.product.manage.oldlist.constant.GQL_UPDATE_PRODUCT
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant
+import com.tokopedia.product.manage.oldlist.di.OldProductManageScope
 import com.tokopedia.product.manage.oldlist.domain.ClearAllDraftProductUseCase
 import com.tokopedia.product.manage.oldlist.domain.FetchAllDraftProductCountUseCase
 import com.tokopedia.product.manage.oldlist.view.presenter.ProductDraftListCountPresenter
@@ -35,6 +42,7 @@ import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRep
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal
 import com.tokopedia.topads.sourcetagging.domain.repository.TopAdsSourceTaggingRepository
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -46,12 +54,16 @@ class ProductManageListModule {
     @Provides
     @ProductManageListScope
     fun providePresenterDraft(
-        fetchAllDraftProductCountUseCase: FetchAllDraftProductCountUseCase,
-        clearAllDraftProductUseCase: ClearAllDraftProductUseCase,
-        updateUploadingDraftProductUseCase: UpdateUploadingDraftProductUseCase
+            fetchAllDraftProductCountUseCase: FetchAllDraftProductCountUseCase,
+            getAllProductsCountDraftUseCase: GetAllProductsCountDraftUseCase,
+            clearAllDraftProductUseCase: ClearAllDraftProductUseCase,
+            updateUploadingDraftProductUseCase: UpdateUploadingDraftProductUseCase
     ): ProductDraftListCountPresenter {
-        return ProductDraftListCountPresenterImpl(fetchAllDraftProductCountUseCase,
-            clearAllDraftProductUseCase, updateUploadingDraftProductUseCase)
+        return ProductDraftListCountPresenterImpl(
+                fetchAllDraftProductCountUseCase,
+                getAllProductsCountDraftUseCase,
+                clearAllDraftProductUseCase,
+                updateUploadingDraftProductUseCase)
     }
 
     @Provides
@@ -181,4 +193,21 @@ class ProductManageListModule {
     @Provides
     fun provideRemoteConfig(@ApplicationContext context: Context): FirebaseRemoteConfigImpl =
             FirebaseRemoteConfigImpl(context)
+
+    @ProductManageListScope
+    @Provides
+    fun provideProductDraftDb(@ApplicationContext context: Context): AddEditProductDraftDb = AddEditProductDraftDb.getInstance(context)
+
+    @ProductManageListScope
+    @Provides
+    fun provideProductDraftDao(draftDb: AddEditProductDraftDb): AddEditProductDraftDao = draftDb.getDraftDao()
+
+    @ProductManageListScope
+    @Provides
+    fun provideProductDraftRepository(
+            draftDataSource: AddEditProductDraftDataSource,
+            userSession: UserSessionInterface
+    ): AddEditProductDraftRepository {
+        return AddEditProductDraftRepositoryImpl(draftDataSource, userSession)
+    }
 }

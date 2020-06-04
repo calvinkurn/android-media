@@ -1,7 +1,5 @@
 package com.tokopedia.notifcenter.analytics
 
-import android.util.Log
-import com.google.gson.Gson
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.notifcenter.data.entity.ProductData
@@ -61,6 +59,7 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
         const val LABEL_LOCATION_UPDATE = "tab notif center page"
         const val LABEL_LOCATION = "lonceng"
         const val LABEL_BOTTOM_SHEET_LOCATION = "bottom_sheet"
+        const val LABEL_NOTIF_LIST_LOCATION = "notif_list"
 
         // Other
         const val ECOMMERCE = "ecommerce"
@@ -475,7 +474,8 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
 
     fun trackAtcOnSingleProductClick(
             eventLocation: String = LABEL_LOCATION,
-            notification: NotificationItemViewBean
+            notification: NotificationItemViewBean,
+            cartId: String
     ) {
         val eventLabel = getImpressionTrackLabel(
                 location = eventLocation,
@@ -487,14 +487,15 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
                 ACTION_CLICK_BUY_BUTTON,
                 eventLabel,
                 notification.getAtcProduct(),
-                notification.userInfo
+                cartId
         )
     }
 
     fun trackAtcOnMultiProductClick(
             eventLocation: String = "notif_list",
             productNumber: Int = 0,
-            notification: MultipleProductCardViewBean
+            notification: MultipleProductCardViewBean,
+            cartId: String
     ) {
         val eventLabel = getImpressionTrackLabel(
                 notificationId = notification.notificationId,
@@ -505,7 +506,7 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
                 ACTION_CLICK_MP_BUY_BUTTON,
                 eventLabel,
                 notification.product,
-                notification.userInfo
+                cartId
         )
     }
 
@@ -514,7 +515,7 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
             eventAction: String,
             eventLabel: String,
             product: ProductData?,
-            userInfo: UserInfo
+            cartId: String = ""
     ) {
         val products = DataLayer.mapOf(
                 "name", product?.name,
@@ -524,11 +525,11 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
                 "category", "",
                 "variant", "",
                 "quantity", "1",
-                "dimension79", userInfo.shopId,
+                "dimension79", product?.shop?.id.toString(),
                 "dimension81", "", //shop type
                 "dimension80", product?.shop?.name, //shop name
                 "dimension82", "", //category child id
-                "dimension45", "", //cart_id
+                "dimension45", cartId, //cart_id
                 "dimension40", "/notifcenter" //list name
         )
 
@@ -573,7 +574,7 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
                                     "shop_type", "",
                                     "shop_name", product.shop?.name,
                                     "category_id", "",
-                                    "dimension82", atc.cartId.toString(),
+                                    "dimension82", atc.cartId,
                                     "dimension45", ""
                                 )
                             )
@@ -581,6 +582,50 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
                 )
             )
         )
+    }
+
+    fun trackAtcOnClick(
+            templateKey: String,
+            notificationId: String,
+            product: ProductData,
+            atc: DataModel
+    ) {
+        val eventLabel = getImpressionTrackLabel(
+                location = LABEL_NOTIF_LIST_LOCATION,
+                templateKey = templateKey,
+                notificationId = notificationId
+        )
+
+        val products = DataLayer.mapOf(
+                "products", listOf(DataLayer.mapOf(
+                        "name", product.name,
+                        "id", product.productId,
+                        "price", product.price,
+                        "brand", "",
+                        "category", "",
+                        "variant", "",
+                        "quantity", "1",
+                        "dimension79", product.shop?.id.toString(),
+                        "dimension81", "",
+                        "dimension80", product.shop?.name.toString(),
+                        "dimension82", "",
+                        "dimension45", atc.cartId,
+                        "dimension40", "/notifcenter"
+                ))
+        )
+
+        val ecommerce = DataLayer.mapOf(
+                "currencyCode", "IDR",
+                "add", products
+        )
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                EVENT_NAME, NAME_EVENT_ATC,
+                EVENT_CATEGORY, CATEGORY_NOTIF_CENTER,
+                EVENT_ACTION, ACTION_CLICK_ATC_BUTTON,
+                EVENT_LABEL, eventLabel,
+                ECOMMERCE, ecommerce
+        ))
     }
 
     // #NC7

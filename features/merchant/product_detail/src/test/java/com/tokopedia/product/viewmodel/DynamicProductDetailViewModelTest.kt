@@ -25,6 +25,7 @@ import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductOpenShopDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
+import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.AddressModel
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesModel
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.SummaryText
@@ -135,6 +136,9 @@ class DynamicProductDetailViewModelTest {
     @RelaxedMockK
     lateinit var sendTopAdsUseCase: SendTopAdsUseCase
 
+    @RelaxedMockK
+    lateinit var discussionMostHelpfulUseCase: DiscussionMostHelpfulUseCase
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -151,7 +155,7 @@ class DynamicProductDetailViewModelTest {
 
     private val viewModel by lazy {
         DynamicProductDetailViewModel(TestDispatcherProvider(), stickyLoginUseCase, getPdpLayoutUseCase, getProductInfoP2ShopUseCase, getProductInfoP2LoginUseCase, getProductInfoP2GeneralUseCase, getProductInfoP3RateEstimateUseCase, toggleFavoriteUseCase, removeWishlistUseCase, addWishListUseCase, getRecommendationUseCase,
-                moveProductToWarehouseUseCase, moveProductToEtalaseUseCase, trackAffiliateUseCase, submitHelpTicketUseCase, updateCartCounterUseCase, addToCartUseCase, addToCartOcsUseCase, addToCartOccUseCase, getProductInfoP3VariantUseCase, toggleNotifyMeUseCase, sendTopAdsUseCase, userSessionInterface)
+                moveProductToWarehouseUseCase, moveProductToEtalaseUseCase, trackAffiliateUseCase, submitHelpTicketUseCase, updateCartCounterUseCase, addToCartUseCase, addToCartOcsUseCase, addToCartOccUseCase, getProductInfoP3VariantUseCase, toggleNotifyMeUseCase, sendTopAdsUseCase, discussionMostHelpfulUseCase, userSessionInterface)
     }
 
     //=========================================VARIABLE SECTION======================================//
@@ -1179,6 +1183,37 @@ class DynamicProductDetailViewModelTest {
     fun onSuccessCancelEtalaseJob() {
         viewModel.cancelEtalaseUseCase()
         verify { viewModel.cancelEtalaseUseCase() }
+    }
+
+    /**
+     * Discussion Most Helpful
+     */
+    @Test
+    fun `on success getDiscussionMostHelpful`() = runBlockingTest {
+        val expectedResponse = DiscussionMostHelpfulResponseWrapper()
+
+        coEvery {
+            discussionMostHelpfulUseCase.executeOnBackground()
+        } returns expectedResponse
+
+        viewModel.getDiscussionMostHelpful("", "")
+        coVerify { discussionMostHelpfulUseCase.executeOnBackground() }
+
+        Assert.assertEquals(expectedResponse, (viewModel.discussionMostHelpful.value as Success).data)
+    }
+
+    @Test
+    fun `on error getDiscussionMostHelpful`() = runBlockingTest {
+        val expectedError = Throwable()
+
+        coEvery {
+            discussionMostHelpfulUseCase.executeOnBackground()
+        } throws expectedError
+
+        viewModel.getDiscussionMostHelpful("", "")
+        coVerify { discussionMostHelpfulUseCase.executeOnBackground() }
+
+        Assert.assertTrue(viewModel.discussionMostHelpful.value is Fail)
     }
     //======================================END OF PDP SECTION=======================================//
     //==============================================================================================//

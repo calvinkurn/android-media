@@ -1,6 +1,5 @@
 package com.tokopedia.seller.transaction.neworder.view.presenter;
 
-import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
 import com.tokopedia.seller.transaction.neworder.domain.interactor.GetNewOrderWidgetUseCase;
 import com.tokopedia.seller.transaction.neworder.domain.model.neworder.DataOrderDomainWidget;
 import com.tokopedia.seller.transaction.neworder.view.mapper.NewOrderMapperView;

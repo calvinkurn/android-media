@@ -1,5 +1,6 @@
 package com.tokopedia.home_recom.view.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Paint
@@ -28,13 +29,9 @@ import com.tokopedia.home_recom.util.Status
 import com.tokopedia.home_recom.util.fadeShow
 import com.tokopedia.home_recom.view.fragment.ProductInfoFragment.Companion.WIHSLIST_STATUS_IS_WISHLIST
 import com.tokopedia.home_recom.viewmodel.PrimaryProductViewModel
-import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.error_product_info_layout.*
@@ -52,7 +49,6 @@ import javax.inject.Inject
  * @property viewModelProvider the viewModelProvider by Dagger
  * @property primaryProductViewModel the viewModel for Primary Product.
  * @property productView the view for Primary Product.
- * @property productDataModel the model for Primary Product.
  * @property recommendationItem the model for handle tracker.
  * @property menu the menu of this activity.
  * @property WIHSLIST_STATUS_IS_WISHLIST the const value for get extras `isWhislist` from ActivityFromResult ProductDetailActivity.
@@ -60,10 +56,8 @@ import javax.inject.Inject
  * @property REQUEST_CODE_LOGIN the const value for set request calling startActivityForResult LoginActivity.
  * @constructor Creates an empty recommendation.
  */
+@SuppressLint("SyntheticAccessor")
 class ProductInfoFragment : BaseDaggerFragment() {
-
-    private val REQUEST_CODE_LOGIN = 283
-    private val REQUEST_CODE_PDP = 284
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -104,11 +98,9 @@ class ProductInfoFragment : BaseDaggerFragment() {
             this.internalRef = internalRef
         }
 
+        private const val REQUEST_CODE_LOGIN = 283
+        private const val REQUEST_CODE_PDP = 284
         private const val WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition"
-
-        val CART_ID = "cartId"
-        val MESSAGE = "message"
-        val STATUS = "status"
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
 
     }
@@ -130,47 +122,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         configureContentView(false)
-        parentFragment?.viewLifecycleOwner?.let {
-            primaryProductViewModel.productInfoDataModel.observe(it, Observer {
-            it?.let {
-                response ->
-                container_loading?.hide()
-                container_error?.hide()
-                container_empty?.hide()
-                container_product?.hide()
-                when(response.status){
-                    Status.LOADING -> {
-                        container_unify?.show()
-                        container_loading?.fadeShow()
-                        container_error?.hide()
-                        container_empty?.hide()
-                        container_product?.hide()
-                    }
-                    Status.SUCCESS -> {
-                        container_loading?.hide()
-                        container_error?.hide()
-                        container_empty?.hide()
-                        container_product?.fadeShow()
-                        response.data?.let { primaryProduct ->
-                            initView(primaryProduct)
-                        }
-                    }
-                    Status.EMPTY -> {
-                        container_unify?.hide()
-                    }
-                    else -> {
-                        container_loading?.hide()
-                        container_empty?.hide()
-                        container_product?.hide()
-                        container_error?.fadeShow()
-                        buttonReload?.setOnClickListener {
-                            primaryProductViewModel.getPrimaryProduct(productId, queryParam)
-                        }
-                    }
-                }
-            }
-        })
-        }
+        observeAllLiveData()
     }
 
     /**
@@ -185,10 +137,10 @@ class ProductInfoFragment : BaseDaggerFragment() {
         product_price?.text = productDataModel.productDetailData.price
         location?.text = productDataModel.productDetailData.shop.location
         if (productDataModel.productDetailData.badges.isNotEmpty()) {
-            badge?.visibility = View.VISIBLE
+            badge?.show()
             ImageHandler.loadImageFitCenter(context, badge, productDataModel.productDetailData.badges[0].imageUrl)
         } else {
-            badge?.visibility = View.GONE
+            badge?.hide()
         }
         updateWishlist(productDataModel.productDetailData.isWishlist)
         ImageHandler.loadImageRounded2(context, product_image, productDataModel.productDetailData.imageUrl)
@@ -204,7 +156,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
             3 -> {
                 add_to_cart.isEnabled = false
                 buy_now.hide()
-                add_to_cart.text = "Stok Habis"
+                add_to_cart.text = getString(R.string.empty_stock)
             }
         }
 
@@ -234,6 +186,179 @@ class ProductInfoFragment : BaseDaggerFragment() {
         review_count?.visibility = show
         buy_now?.visibility = show
         add_to_cart?.visibility = show
+    }
+
+    /**
+     * Void [observeAllLiveData]
+     * This void handle grouping observe live data from view model
+     */
+    private fun observeAllLiveData(){
+        observeProductInfoLiveData()
+        observeAtcLiveData()
+        observeBuyNowLiveData()
+        observeAddWishlistLiveData()
+        observeRemoveWishlistLiveData()
+    }
+
+    /**
+     * Void [observeProductInfoLiveData]
+     * This void handle observe changes data primary product from view model
+     */
+    private fun observeProductInfoLiveData(){
+        parentFragment?.viewLifecycleOwner?.let { viewLifecycleOwner ->
+            primaryProductViewModel.productInfoDataModel.observe(viewLifecycleOwner, Observer {response ->
+                response?.let {
+                    when(response.status){
+                        Status.LOADING -> {
+                            showLoadingView()
+                        }
+                        Status.SUCCESS -> {
+                            showProductView()
+                            response.data?.let { primaryProduct ->
+                                initView(primaryProduct)
+                            }
+                        }
+                        Status.EMPTY -> {
+                            showEmptyView()
+                        }
+                        else -> {
+                            showErrorView()
+                            buttonReload?.setOnClickListener {
+                                primaryProductViewModel.getPrimaryProduct(productId, queryParam)
+                            }
+                        }
+                    }
+                }
+            })
+        }
+    }
+
+    /**
+     * Void [observeAtcLiveData]
+     * This void handle observe changes status atc from view model
+     */
+    private fun observeAtcLiveData(){
+        primaryProductViewModel.addToCartLiveData.observe(viewLifecycleOwner, Observer { response ->
+            when(response.status){
+                Status.SUCCESS -> {
+                    response.data?.let {
+                        recommendationItem.cartId = response.data.toString()
+                        RecommendationPageTracking.eventUserClickAddToCartWithProductId(recommendationItem, ref, internalRef)
+                        add_to_cart?.isEnabled = true
+                        showToastSuccessWithAction(response.message ?: "", getString(R.string.recom_see_cart)){
+                            RecommendationPageTracking.eventUserClickSeeToCartWithProductId()
+                            goToCart()
+                        }
+                    }
+                }
+                else -> {
+                    add_to_cart?.isEnabled = true
+                    showToastError(MessageErrorException(response.message ?: ""))
+                }
+            }
+        })
+    }
+
+    /**
+     * Void [observeBuyNowLiveData]
+     * This void handle observe changes status buy now from view model
+     */
+    private fun observeBuyNowLiveData(){
+        primaryProductViewModel.buyNowLiveData.observe(viewLifecycleOwner, Observer { response ->
+            when(response.status){
+                Status.SUCCESS -> {
+                    response.data?.let {
+                        buy_now?.isEnabled = true
+                        RecommendationPageTracking.eventUserClickBuyWithProductId(recommendationItem, ref, internalRef)
+                        goToCart()
+                    }
+                }
+                else -> {
+                    buy_now.isEnabled = true
+                    showToastError(MessageErrorException(response.message ?: ""))
+                }
+            }
+        })
+    }
+
+    /**
+     * Void [observeAddWishlistLiveData]
+     * This void handle observe changes status add wishlist from view model
+     */
+    private fun observeAddWishlistLiveData(){
+        primaryProductViewModel.addWishlistLiveData.observe(viewLifecycleOwner, Observer { response ->
+            when(response.status){
+                Status.SUCCESS -> {
+                    onSuccessAddWishlist(response.data)
+                }
+                else -> {
+                    onErrorAddWishList(response.message)
+                }
+            }
+        })
+    }
+
+    /**
+     * Void [observeRemoveWishlistLiveData]
+     * This void handle observe changes status remove wishlist from view model
+     */
+    private fun observeRemoveWishlistLiveData(){
+        primaryProductViewModel.removeWishlistLiveData.observe(viewLifecycleOwner, Observer { response ->
+            when(response.status){
+                Status.SUCCESS -> {
+                    onSuccessRemoveWishlist(response.data)
+                }
+                else -> {
+                    onErrorRemoveWishList(response.message)
+                }
+            }
+        })
+    }
+
+    /**
+     * Void [showLoadingView]
+     * This void handle showing loading view
+     */
+    private fun showLoadingView(){
+        container_unify?.show()
+        container_loading?.show()
+        container_error?.hide()
+        container_empty?.hide()
+        container_product?.hide()
+    }
+
+    /**
+     * Void [showEmptyView]
+     * This void handle showing empty view
+     */
+    private fun showEmptyView(){
+        container_loading?.hide()
+        container_error?.hide()
+        container_empty?.hide()
+        container_product?.hide()
+        container_unify.hide()
+    }
+
+    /**
+     * Void [showProductView]
+     * This void handle showing product view
+     */
+    private fun showProductView(){
+        container_loading?.hide()
+        container_error?.hide()
+        container_empty?.hide()
+        container_product?.show()
+    }
+
+    /**
+     * Void [showErrorView]
+     * This void handle showing error view
+     */
+    private fun showErrorView(){
+        container_loading?.hide()
+        container_empty?.hide()
+        container_product?.hide()
+        container_error?.show()
     }
 
     /**
@@ -275,26 +400,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
         add_to_cart?.setOnClickListener {
             if (primaryProductViewModel.isLoggedIn()) {
                 add_to_cart?.isEnabled = false
-                addToCart(
-                        productDetailData,
-                        success = { result ->
-                            recommendationItem.cartId = result[CART_ID].toString()
-                            RecommendationPageTracking.eventUserClickAddToCartWithProductId(recommendationItem, ref, internalRef)
-                            add_to_cart?.isEnabled = true
-                            if(result.containsKey(STATUS) && !(result[STATUS] as Boolean)){
-                                showToastError(MessageErrorException(result[MESSAGE].toString()))
-                            }else{
-                                showToastSuccessWithAction(result[MESSAGE].toString(), getString(R.string.recom_see_cart)){
-                                    RecommendationPageTracking.eventUserClickSeeToCartWithProductId()
-                                    goToCart()
-                                }
-                            }
-                        },
-                        error = {
-                            add_to_cart?.isEnabled = true
-                            showToastError(it)
-                        }
-                )
+                addToCart(productDetailData)
             } else {
                 context?.let {
                     RecommendationPageTracking.eventUserAddToCartNonLoginWithProductId(ref)
@@ -312,22 +418,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
         buy_now?.setOnClickListener {
             if (primaryProductViewModel.isLoggedIn()){
                 buy_now?.isEnabled = false
-                addToCart(
-                        productDetailData,
-                        success = { result ->
-                            buy_now?.isEnabled = true
-                            if(result.containsKey(STATUS) && !(result[STATUS] as Boolean)){
-                                showToastError(MessageErrorException(result[MESSAGE].toString()))
-                            }else if(result.containsKey(CART_ID) && result[CART_ID].toString().isNotEmpty()){
-                                RecommendationPageTracking.eventUserClickBuyWithProductId(recommendationItem, ref, internalRef)
-                                goToCart()
-                            }
-                        },
-                        error = {
-                            buy_now.isEnabled = true
-                            showToastError(it)
-                        }
-                )
+                buyNow(productDetailData)
             } else {
                 RecommendationPageTracking.eventUserClickBuyNonLoginWithProductId(ref)
                 context?.let {
@@ -338,7 +429,6 @@ class ProductInfoFragment : BaseDaggerFragment() {
         }
     }
 
-
     /**
      * [onClickWishlist] it will handle click wishlist icon
      */
@@ -347,13 +437,9 @@ class ProductInfoFragment : BaseDaggerFragment() {
             if (primaryProductViewModel.isLoggedIn()) {
                 RecommendationPageTracking.eventUserClickProductToWishlistForUserLoginWithProductId(!it.isActivated, ref)
                 if (it.isActivated) {
-                    primaryProductViewModel.removeWishList(productId,
-                            onSuccessRemoveWishlist = this::onSuccessRemoveWishlist,
-                            onErrorRemoveWishList = this::onErrorRemoveWishList)
+                    primaryProductViewModel.removeWishList(productId)
                 } else {
-                    primaryProductViewModel.addWishList(productId,
-                            onSuccessAddWishlist = this::onSuccessAddWishlist,
-                            onErrorAddWishList = this::onErrorAddWishList)
+                    primaryProductViewModel.addWishList(productId)
                 }
             } else {
                 RecommendationPageTracking.eventUserClickProductToWishlistForNonLoginWithProductId(ref)
@@ -364,14 +450,24 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
     /**
      * [addToCart] it will handle click add to cart
-     * @param success success callback
-     * @param error error calback
      */
-    private fun addToCart(
-            productDetailData: ProductDetailData,
-            success: (Map<String, Any>) -> Unit,
-            error: (Throwable) -> Unit
-    ){
+    private fun addToCart(productDetailData: ProductDetailData){
+        val addToCartRequestParams = AddToCartRequestParams()
+        addToCartRequestParams.productId = productDetailData.id.toLong()
+        addToCartRequestParams.shopId = productDetailData.shop.id
+        addToCartRequestParams.quantity = productDetailData.minOrder
+        addToCartRequestParams.notes = ""
+        addToCartRequestParams.productName = productDetailData.name
+        addToCartRequestParams.category = productDetailData.categoryBreadcrumbs
+        addToCartRequestParams.price = productDetailData.price
+
+        primaryProductViewModel.addToCart(addToCartRequestParams)
+    }
+
+    /**
+     * [buyNow] it will handle click buy now
+     */
+    private fun buyNow(productDetailData: ProductDetailData){
         val addToCartRequestParams = AddToCartRequestParams()
         addToCartRequestParams.productId = productDetailData.id.toLong()
         addToCartRequestParams.shopId = productDetailData.shop.id
@@ -382,7 +478,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
         addToCartRequestParams.category = productDetailData.categoryBreadcrumbs
         addToCartRequestParams.price = productDetailData.price
 
-        primaryProductViewModel.addToCart(addToCartRequestParams, success, error)
+        primaryProductViewModel.buyNow(addToCartRequestParams)
     }
 
     /**
@@ -401,7 +497,6 @@ class ProductInfoFragment : BaseDaggerFragment() {
         showToastSuccess(getString(R.string.msg_success_remove_wishlist))
         updateWishlist(false)
         sendIntentResusltWishlistChange(productId ?: "", false)
-
     }
 
     /**
@@ -440,10 +535,11 @@ class ProductInfoFragment : BaseDaggerFragment() {
      */
     private fun showToastSuccessWithAction(message: String, actionString: String, action: () -> Unit){
         activity?.run {
-            Toaster.showNormalWithAction(
+            Toaster.make(
                     findViewById(android.R.id.content),
                     message,
-                    Snackbar.LENGTH_LONG,
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
                     actionString,
                     View.OnClickListener {
                         action.invoke()
@@ -458,10 +554,12 @@ class ProductInfoFragment : BaseDaggerFragment() {
      */
     private fun showToastError(throwable: Throwable) {
         activity?.run {
-            Toaster.showError(
+            Toaster.make(
                     findViewById(android.R.id.content),
                     RecommendationPageErrorHandler.getErrorMessage(this, throwable),
-                    Snackbar.LENGTH_LONG)
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR
+            )
         }
     }
 
@@ -471,7 +569,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
      */
     private fun showToastSuccess(message: String) {
         activity?.run {
-            Toaster.showNormal(
+            Toaster.make(
                     findViewById(android.R.id.content),
                     message,
                     Snackbar.LENGTH_LONG)
@@ -582,13 +680,13 @@ class ProductInfoFragment : BaseDaggerFragment() {
      */
     private fun handleDiscount(discountPercentage: Int, slashedPrice: String){
         if(discountPercentage > 0){
-            product_discount.visibility = View.VISIBLE
-            product_slashed_price.visibility = View.VISIBLE
-            product_discount.text = "${discountPercentage}%"
+            product_discount.show()
+            product_slashed_price.show()
+            product_discount.text = String.format(getString(R.string.percentage_template), discountPercentage)
             setSplashedText(slashedPrice)
         } else {
-            product_discount.visibility = View.GONE
-            product_slashed_price.visibility = View.GONE
+            product_discount.gone()
+            product_slashed_price.gone()
         }
     }
 
