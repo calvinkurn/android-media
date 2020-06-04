@@ -19,8 +19,6 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel.Companion.GOLD_MERCHANT
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel.Companion.OFFICIAL_STORE
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.*
@@ -30,7 +28,7 @@ import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.Toaster
 
 
-class ProductCardItemViewHolder(itemView: View, fragment: Fragment) : AbstractViewHolder(itemView) {
+class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView) {
 
     private var productImage: ImageUnify = itemView.findViewById(R.id.imageProduct)
     private var topadsImage: ImageView = itemView.findViewById(R.id.imageTopAds)

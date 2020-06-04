@@ -22,7 +22,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
-import com.tokopedia.user.session.UserSession
 
 class ProductCardItemViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
@@ -235,10 +234,6 @@ class ProductCardItemViewModel(val application: Application, private val compone
                 .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
-    }
-
-    private fun isUserLoggedIn(): Boolean {
-        return UserSession(application).isLoggedIn
     }
 
 }
