@@ -86,7 +86,6 @@ dependencies {
     implementation project(rootProject.ext.features.discoveryCommon)
     implementation project(rootProject.ext.features.dynamicBanner)
     implementation project(rootProject.ext.features.feed)
-//    implementation project(rootProject.ext.features.feedComponent)
     implementation project(rootProject.ext.features.homeComponent)
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.kolCommon)
