@@ -16,6 +16,4 @@ import dagger.Component
 interface PlayBroadcasterComponent {
 
     fun inject(broadcastActivity: PlayBroadcastActivity)
-
-    fun inject(liveBroadcastFragment: PlayLiveBroadcastFragment)
 }

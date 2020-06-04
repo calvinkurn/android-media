@@ -44,13 +44,20 @@ class PlayPusherCountDownTimer(val context: Context,
         lastMillis = 0L
     }
 
-    private fun saveLastState() {
-        val editor = sharedPreferences?.edit()
-        editor?.putLong(PLAY_TIMER_LAST_STATE, lastMillis)
-        editor?.apply()
+    private fun clear() {
+        countDownTimer?.cancel()
+        clearLastState()
     }
 
-    private fun clear() {
+    private fun saveLastState() {
+        if (lastMillis > 0) {
+            val editor = sharedPreferences?.edit()
+            editor?.putLong(PLAY_TIMER_LAST_STATE, lastMillis)
+            editor?.apply()
+        }
+    }
+
+    private fun clearLastState() {
         val editor = sharedPreferences?.edit()
         editor?.remove(PLAY_TIMER_LAST_STATE)
         editor?.apply()
@@ -59,8 +66,9 @@ class PlayPusherCountDownTimer(val context: Context,
     private fun getCountDownTimer(maxLiveStreamDuration: Long): CountDownTimer {
         return object : CountDownTimer(maxLiveStreamDuration, DEFAULT_COUNT_DOWN_INTERVAL) {
             override fun onFinish() {
-                callback?.onCountDownFinish()
                 clear()
+                callback?.onCountDownFinish()
+                destroy()
             }
 
             override fun onTick(millisUntilFinished: Long) {
@@ -73,7 +81,6 @@ class PlayPusherCountDownTimer(val context: Context,
     companion object {
         const val DEFAULT_MAX_LIVE_STREAM_DURATION = 1800000L
         const val DEFAULT_COUNT_DOWN_INTERVAL = 1000L
-        const val PLAY_TIMER_PREFERENCES = "play_broadcast_timer"
         const val PLAY_TIMER_LAST_STATE = "play_broadcast_timer_last_state"
     }
 }

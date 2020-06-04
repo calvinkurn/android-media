@@ -9,7 +9,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
@@ -17,6 +16,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.ui.model.SummaryUiModel
+import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.view.adapter.TrafficMetricReportAdapter
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
@@ -29,7 +30,7 @@ import javax.inject.Inject
  * @author by jessica on 26/05/20
  */
 
-class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFactory: ViewModelFactory) : TkpdBaseV4Fragment() {
+class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFactory: ViewModelFactory) : PlayBaseBroadcastFragment() {
 
     private lateinit var viewModel: PlayBroadcastSummaryViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
@@ -53,7 +54,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpView()
+        setupView()
     }
 
     private fun setUpView() {
@@ -105,6 +106,10 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
                             trafficMetricEnum = TrafficMetricsEnum.VIDEO_LIKES,
                             liveTrafficMetricCount = totalLike.totalLike))
         }
+    }
+
+    private fun setupView() {
+        broadcastCoordinator.showActionBar(false)
     }
 
     private fun renderView(summaryUiModel: SummaryUiModel) {

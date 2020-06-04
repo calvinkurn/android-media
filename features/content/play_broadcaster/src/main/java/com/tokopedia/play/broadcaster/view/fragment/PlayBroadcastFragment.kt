@@ -1,12 +1,15 @@
 package com.tokopedia.play.broadcaster.view.fragment
 
+import android.Manifest
 import android.os.Bundle
 import android.view.*
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.alivc.live.pusher.SurfaceStatus
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import javax.inject.Inject
 
@@ -15,7 +18,7 @@ import javax.inject.Inject
  */
 class PlayBroadcastFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory
-): BaseDaggerFragment() {
+): TkpdBaseV4Fragment() {
 
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
@@ -24,8 +27,6 @@ class PlayBroadcastFragment @Inject constructor(
     private var surfaceStatus = SurfaceStatus.UNINITED
 
     override fun getScreenName(): String = "Play Broadcast"
-
-    override fun initInjector() {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +37,11 @@ class PlayBroadcastFragment @Inject constructor(
         val view = inflater.inflate(R.layout.fragment_play_broadcast, container, false)
         initView(view)
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        observePermissionStateEvent()
     }
 
     private fun initView(view: View) {
@@ -52,12 +58,10 @@ class PlayBroadcastFragment @Inject constructor(
             override fun surfaceCreated(surfaceHolder: SurfaceHolder?) {
                 if (surfaceStatus == SurfaceStatus.UNINITED) {
                     surfaceStatus = SurfaceStatus.CREATED
-//                    if (isPermissionGranted(Manifest.permission.CAMERA)) {
-//                        startPreview()
-//                    }
                 } else if (surfaceStatus == SurfaceStatus.DESTROYED) {
                     surfaceStatus = SurfaceStatus.RECREATED
                 }
+                startPreview()
             }
         })
     }
@@ -82,6 +86,27 @@ class PlayBroadcastFragment @Inject constructor(
     override fun onDestroy() {
         parentViewModel.getPlayPusher().destroy()
         super.onDestroy()
+    }
+
+    //region observe
+    /**
+     * Observe
+     */
+
+    private fun observePermissionStateEvent() {
+        parentViewModel.observablePermissionState.observe(this, Observer {
+            when(it) {
+                is PlayPermissionState.Granted -> startPreview()
+                is PlayPermissionState.Denied -> checkPermissionBeforeStartPreview(it.permissions)
+            }
+        })
+    }
+    //endregion
+
+    private fun checkPermissionBeforeStartPreview(permissions: List<String>) {
+        if (permissions.contains(Manifest.permission.CAMERA)) {
+            startPreview()
+        }
     }
 
     companion object {

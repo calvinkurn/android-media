@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.util
+package com.tokopedia.play.broadcaster.util.permission
 
 import android.app.Activity
 import android.content.Context
@@ -9,39 +9,21 @@ import android.os.Build
 import android.preference.PreferenceManager
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 
 
 /**
  * Created by mzennis on 02/06/20.
  */
-class PermissionUtil(private val mContext: Context) {
-
-    interface Listener {
-
-        /**
-         * When all permission is granted
-         */
-        fun onAllPermissionGranted()
-
-        /**
-         * When one permission is granted
-         */
-        fun onPermissionGranted(permissions: List<String>)
-
-        /**
-         * When the permission is previously asked but not granted
-         */
-        fun onPermissionDisabled()
-
-        fun onError(throwable: Throwable)
-    }
+class PlayPermissionUtil(private val mContext: Context) {
 
     private var mPreference: SharedPreferences? = PreferenceManager.getDefaultSharedPreferences(mContext)
     private var mPermission: MutableList<Permission> = mutableListOf()
-    private var mListener: Listener? = null
+    private val _observablePermissionState = MutableLiveData<PlayPermissionState>()
 
-    fun setListener(listener: Listener) {
-        this.mListener = listener
+    fun getObservablePlayPermissionState(): LiveData<PlayPermissionState> {
+        return _observablePermissionState
     }
 
     fun checkPermission(permissions: Array<out String>) {
@@ -49,30 +31,28 @@ class PermissionUtil(private val mContext: Context) {
             defineGrantedPermission(permissions)
 
             if (isAllPermissionGranted()) {
-                mListener?.onAllPermissionGranted()
+                _observablePermissionState.value = PlayPermissionState.Granted
                 return
             }
 
             if (mContext is Activity) {
                 defineFirstTimePermission()
             } else {
-                mListener?.onError(Throwable("Context is not activity"))
+                _observablePermissionState.value = PlayPermissionState.Error(Throwable("Context is not activity"))
+                return
             }
 
             if (isAnyPermissionDenied()) {
-                mListener?.onPermissionDisabled()
+                val permissionsGranted = listPermissionsGranted()
+                _observablePermissionState.value = PlayPermissionState.Denied(permissionsGranted)
+                return
             } else {
                 saveState()
                 askPermission(permissions)
             }
 
-            val permissionsGranted = listPermissionsGranted()
-            if (permissionsGranted.isNotEmpty()) {
-                mListener?.onPermissionGranted(permissionsGranted)
-            }
-
         } else {
-            mListener?.onAllPermissionGranted()
+            _observablePermissionState.value = PlayPermissionState.Granted
         }
     }
 
@@ -83,17 +63,13 @@ class PermissionUtil(private val mContext: Context) {
             }
 
             if (isAllPermissionGranted()) {
-                mListener?.onAllPermissionGranted()
+                _observablePermissionState.value = PlayPermissionState.Granted
                 return
             }
 
             if (isAnyPermissionDenied()) {
-                mListener?.onPermissionDisabled()
-            }
-
-            val permissionsGranted = listPermissionsGranted()
-            if (permissionsGranted.isNotEmpty()) {
-                mListener?.onPermissionGranted(permissionsGranted)
+                val permissionsGranted = listPermissionsGranted()
+                _observablePermissionState.value = PlayPermissionState.Denied(permissionsGranted)
             }
         }
     }
@@ -106,14 +82,12 @@ class PermissionUtil(private val mContext: Context) {
             }
 
             if (isAllPermissionGranted()) {
-                mListener?.onAllPermissionGranted()
+                _observablePermissionState.value = PlayPermissionState.Granted
                 return
             }
 
             val permissionsGranted = listPermissionsGranted()
-            if (permissionsGranted.isNotEmpty()) {
-                mListener?.onPermissionGranted(permissionsGranted)
-            }
+            _observablePermissionState.value = PlayPermissionState.Denied(permissionsGranted)
         }
     }
 
@@ -145,7 +119,7 @@ class PermissionUtil(private val mContext: Context) {
         }
     }
 
-    private fun isAllPermissionGranted() : Boolean= mPermission.none { !it.isGranted }
+    private fun isAllPermissionGranted() : Boolean = mPermission.none { !it.isGranted }
 
     private fun isAnyPermissionDenied(): Boolean = mPermission.any { !it.isFirstTime }
 
@@ -154,9 +128,6 @@ class PermissionUtil(private val mContext: Context) {
         (mContext as Activity).requestPermissions(permissions, PLAY_REQUEST_PERMISSION_CODE)
     }
 
-    /**
-     * Check if version is marshmallow and above.
-     */
     private fun shouldAskPermission(): Boolean {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
     }
