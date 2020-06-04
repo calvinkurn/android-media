@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.view.fragment
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.Slide
+import androidx.transition.TransitionManager
+import androidx.transition.TransitionSet
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -183,7 +187,8 @@ class PlayEtalasePickerFragment @Inject constructor(
     }
 
     private fun enterSearchMode() {
-        tvInfo.gone()
+        onSearchModeTransition()
+
         rvEtalase.gone()
         rvSearchedProducts.gone()
 
@@ -195,7 +200,7 @@ class PlayEtalasePickerFragment @Inject constructor(
     }
 
     private fun exitSearchMode() {
-        tvInfo.visible()
+        onSearchModeTransition()
 
         if (psbSearch.text.isNotEmpty()) {
             rvSearchedProducts.visible()
@@ -254,6 +259,18 @@ class PlayEtalasePickerFragment @Inject constructor(
         })
     }
     //endregion
+
+    private fun onSearchModeTransition() {
+        TransitionManager.beginDelayedTransition(
+                container,
+                TransitionSet()
+                        .addTransition(
+                                Slide(Gravity.BOTTOM)
+                                        .addTarget(rvEtalase)
+                                        .setDuration(300)
+                        ).excludeChildren(psbSearch, true)
+        )
+    }
 
     companion object {
 

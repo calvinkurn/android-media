@@ -10,7 +10,6 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.FragmentManager
@@ -73,7 +72,7 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         childFragmentManager.fragmentFactory = fragmentFactory
         super.onCreate(savedInstanceState)
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.Style_FloatingBottomSheet)
+//        setStyle(DialogFragment.STYLE_NORMAL, R.style.Style_FloatingBottomSheet)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
     }
 
