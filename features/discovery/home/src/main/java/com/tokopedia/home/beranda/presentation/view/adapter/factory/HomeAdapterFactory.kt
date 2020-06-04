@@ -155,13 +155,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
              * refer to dynamic channel sprint layout {@link com.tokopedia.home.R.layout#layout_sprint_product_item
              */
             return DynamicChannelSprintViewHolder.LAYOUT
-        } else if (bannerLayout.contains(layout)) {
-            /**
-             * Layout registered as sprint sale viewholder
-             * refer to banner organic layout {@link com.tokopedia.home.R.layout#home_banner_item}
-             * refer to banner organic carousel layout {@link com.tokopedia.home.R.layout#home_banner_item_carousel}
-             */
-            return BannerOrganicViewHolder.LAYOUT
         }
 
         return when (layout) {
@@ -246,7 +239,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             InspirationHeaderViewHolder.LAYOUT -> viewHolder = InspirationHeaderViewHolder(view)
             HomeRecommendationFeedViewHolder.LAYOUT -> viewHolder = HomeRecommendationFeedViewHolder(view, listener)
             GeolocationPromptViewHolder.LAYOUT -> viewHolder = GeolocationPromptViewHolder(view, listener)
-            BannerOrganicViewHolder.LAYOUT -> viewHolder = BannerOrganicViewHolder(view, listener, parentRecycledViewPool)
             BannerImageViewHolder.LAYOUT -> viewHolder = BannerImageViewHolder(view, listener)
             ReviewViewHolder.LAYOUT -> viewHolder = ReviewViewHolder(view, homeReviewListener, listener)
             PlayCardViewHolder.LAYOUT -> viewHolder = PlayCardViewHolder(view, listener)
