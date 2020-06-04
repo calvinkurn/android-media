@@ -128,17 +128,20 @@ class AddToCartDoneBottomSheet :
                 bottomSheetBehavior = BottomSheetBehavior.from(parent)
                 val bottomSheetView = findViewById<FrameLayout>(R.id.design_bottom_sheet)
                 bottomSheetView.setBackgroundResource(android.R.color.transparent)
-                dialog.setCanceledOnTouchOutside(false)
-                val bottomSheetBehavior = BottomSheetBehavior.from<View>(bottomSheetView)
-                bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetCallback() {
-                    override fun onStateChanged(bottomSheet: View, newState: Int) {
-                        if(newState == BottomSheetBehavior.STATE_DRAGGING){
-                            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                if(RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewPdpAfterAtcKey) != oldVariantPDP){
+                    dialog.setCanceledOnTouchOutside(false)
+                    recyclerView.isNestedScrollingEnabled = false
+                    val bottomSheetBehavior = BottomSheetBehavior.from<View>(bottomSheetView)
+                    bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetCallback() {
+                        override fun onStateChanged(bottomSheet: View, newState: Int) {
+                            if(newState == BottomSheetBehavior.STATE_DRAGGING){
+                                bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                            }
                         }
-                    }
 
-                    override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-                })
+                        override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+                    })
+                }
             }
         }
     }
