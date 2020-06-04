@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class ProductrevWaitForFeedbackResponse (
         @SerializedName("list")
         @Expose
-        val list: ProductrevWaitForFeedbackList = ProductrevWaitForFeedbackList(),
+        val list: List<ProductrevWaitForFeedback> = listOf(),
         @SerializedName("filterBy")
         @Expose
         val filterBy: String = "",

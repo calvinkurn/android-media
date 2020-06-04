@@ -34,7 +34,4 @@
     <dimen name="max_width_incentive_ovo_subtitle">300dp</dimen>
     <dimen name="margin_top_incentive_ovo_description">30dp</dimen>
     <dimen name="size_incentive_ovo_image">200dp</dimen>
-
-    <dimen name="dp_12">12dp</dimen>
-    <dimen name="dp_56">56dp</dimen>
 </resources>

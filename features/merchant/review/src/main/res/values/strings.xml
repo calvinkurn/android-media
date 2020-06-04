@@ -30,6 +30,7 @@
     <string name="review_pending_no_product_empty_content">Saatnya kamu belanja dan kasih ulasanmu ke jutaan orang!</string>
     <string name="review_pending_no_product_search_result_title">Oops, produk nggak ditemukan</string>
     <string name="review_pending_no_product_search_content">Cari barang yang sudah kamu beli dengan kata kunci lain, lalu kasih ulasan sekarang.</string>
+    <string name="review_pending_variant">Varian: %s</string>
 
     <string name="review_history_tab_title">Riwayat</string>
 </resources>
