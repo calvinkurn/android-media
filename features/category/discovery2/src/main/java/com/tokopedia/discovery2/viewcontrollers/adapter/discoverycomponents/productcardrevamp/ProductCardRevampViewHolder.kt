@@ -10,13 +10,15 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.AddChildAdapterCallback
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 
 class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
 
-    private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
+    private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment, this)
     private lateinit var mProductRevampComponentViewModel: ProductCardRevampViewModel
     private var addChildAdapterCallback: AddChildAdapterCallback = (fragment as AddChildAdapterCallback)
+    private var productDataList: ArrayList<ComponentsItem> = ArrayList()
 
     init {
         mDiscoveryRecycleAdapter.setHasStableIds(true)
@@ -40,8 +42,28 @@ class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment
 
     private fun setUpDataObserver(lifecycleOwner: LifecycleOwner) {
         mProductRevampComponentViewModel.getProductCarouselItemsListData().observe(lifecycleOwner, Observer { item ->
+//            productDataList.addAll(item)
             mDiscoveryRecycleAdapter.setDataList(item)
             addChildAdapterCallback.notifyMergeAdapter()
         })
     }
+
+//    fun removeProduct(productID: Int) {
+//        var removeProductIndex = -1
+//        if (!productDataList.isNullOrEmpty()) {
+//            for ((index, productItem) in productDataList.withIndex()) {
+//                productItem.data?.let {
+//                    if(it[0].id.toIntOrZero() == productID){
+//                        removeProductIndex =  index
+//                    }
+//                }
+//            }
+//
+//            if(removeProductIndex >= 0 && productDataList.size > removeProductIndex){
+//                productDataList.removeAt(removeProductIndex)
+//                mDiscoveryRecycleAdapter.setDataList(productDataList)
+//                addChildAdapterCallback.notifyMergeAdapter()
+//            }
+//        }
+//    }
 }

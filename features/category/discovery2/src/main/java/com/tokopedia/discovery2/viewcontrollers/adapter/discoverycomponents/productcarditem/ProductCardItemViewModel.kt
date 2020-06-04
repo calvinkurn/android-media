@@ -25,7 +25,6 @@ import kotlin.coroutines.CoroutineContext
 
 class ProductCardItemViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
-    private var componentName: String = ""
     private val dataItem: MutableLiveData<DataItem> = MutableLiveData()
     private val shopBadge: MutableLiveData<Int> = MutableLiveData()
     private val stockWordData: StockWording = StockWording()
@@ -33,6 +32,7 @@ class ProductCardItemViewModel(val application: Application, private val compone
     private var productData: DataItem? = null
     private val showLoginLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private val notifyMeCurrentStatus: MutableLiveData<Boolean> = MutableLiveData()
+    private val showNotifyToast: MutableLiveData<Triple<Boolean, String?, Int?>> = MutableLiveData()
 
     @Inject
     lateinit var campaignNotifyUserCase: CampaignNotifyUserCase
@@ -44,6 +44,7 @@ class ProductCardItemViewModel(val application: Application, private val compone
         const val SOURCE = "discovery"
         const val REGISTER = "REGISTER"
         const val UNREGISTER = "UNREGISTER"
+        const val ERROR_MESSAGE = "Terjadi kesalahan, coba lagi nanti."
     }
 
     init {
@@ -60,15 +61,21 @@ class ProductCardItemViewModel(val application: Application, private val compone
 
     fun getShowLoginData(): LiveData<Boolean> = showLoginLiveData
     fun notifyMeCurrentStatus(): LiveData<Boolean> = notifyMeCurrentStatus
+    fun showNotifyToastMessage(): LiveData<Triple<Boolean, String?, Int?>> = showNotifyToast
     fun setContext(context: Context) {
         this.context = context
     }
 
     fun getComponentName(): String {
+        var componentName: String = ""
         components.name?.let {
             componentName = it
         }
         return componentName
+    }
+
+    fun getRemoveProductProperty(): Boolean? {
+        return components.properties?.buttonNotification
     }
 
     fun getDataItemValue(): LiveData<DataItem> {
@@ -107,7 +114,6 @@ class ProductCardItemViewModel(val application: Application, private val compone
 
     fun getPDPViewCount(dataItem: DataItem): String {
         val pdpViewData = dataItem.pdpView
-
         return if (pdpViewData.toIntOrZero() >= 1000) {
             Utils.getCountView(pdpViewData.toDoubleOrZero())
         } else {
@@ -119,7 +125,6 @@ class ProductCardItemViewModel(val application: Application, private val compone
     fun getInterestedCount(dataItem: DataItem): String {
         val notifyMeCount = dataItem.notifyMeCount
         val interestThreshold = dataItem.thresholdInterest
-
         return if (notifyMeCount != null && interestThreshold != null && notifyMeCount >= interestThreshold) {
             Utils.getCountView(notifyMeCount.toDouble(), "tertarik")
         } else {
@@ -184,17 +189,24 @@ class ProductCardItemViewModel(val application: Application, private val compone
     fun subscribeUser() {
         if (isUserLoggedIn()) {
             productData?.let { productItemData ->
+
                 launchCatchError(block = {
                     val campaignNotifyResponse = campaignNotifyUserCase.subscribeToCampaignNotifyMe(getNotifyRequestBundle(productItemData))
-                    if (campaignNotifyResponse.checkCampaignNotifyMeResponse?.success == true) {
-                        productItemData.notifyMe = !productItemData.notifyMe
-                        notifyMeCurrentStatus.value = productItemData.notifyMe
+                    campaignNotifyResponse.checkCampaignNotifyMeResponse?.let { campaignResponse ->
+                        if (campaignResponse.success == true) {
+                            productItemData.notifyMe = !productItemData.notifyMe
+                            notifyMeCurrentStatus.value = productItemData.notifyMe
+                            showNotifyToast.value = Triple(false, campaignResponse.message, productItemData.campaignId.toIntOrZero())
+
+                        } else {
+                            showNotifyToast.value = Triple(true, campaignResponse.errorMessage, 0)
+                        }
                     }
                 }, onError = {
+                    showNotifyToast.value = Triple(true, ERROR_MESSAGE, 0)
                     it.printStackTrace()
                 })
             }
-
         } else {
             showLoginLiveData.value = true
         }

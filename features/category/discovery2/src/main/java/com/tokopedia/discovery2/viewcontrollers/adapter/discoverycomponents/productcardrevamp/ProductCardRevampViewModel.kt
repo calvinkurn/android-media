@@ -46,11 +46,7 @@ class ProductCardRevampViewModel(val application: Application, components: Compo
                 .inject(this)
     }
 
-
-    fun getProductCarouselItemsListData(): LiveData<ArrayList<ComponentsItem>> {
-
-        return productCarouselList
-    }
+    fun getProductCarouselItemsListData() = productCarouselList
 
     fun fetchProductsData(pageEndPoint: String, queryMap: MutableMap<String, Any> = getQueryParameterMap()) {
         if (productCarouselList.value.isNullOrEmpty()) {
@@ -74,12 +70,4 @@ class ProductCardRevampViewModel(val application: Application, components: Compo
         return queryParameterMap
     }
 
-    fun fetchProductCarouselDataSecond(pageEndPoint: String) {
-        pageNumber++
-        if (productPerPageSize >= 20) {
-            fetchProductsData(pageEndPoint, getQueryParameterMap(pageNumber))
-        }
-
-
-    }
 }

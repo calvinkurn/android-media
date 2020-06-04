@@ -19,11 +19,14 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel.Companion.GOLD_MERCHANT
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel.Companion.OFFICIAL_STORE
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifycomponents.Toaster
 
 
 class ProductCardItemViewHolder(itemView: View, fragment: Fragment) : AbstractViewHolder(itemView) {
@@ -109,6 +112,10 @@ class ProductCardItemViewHolder(itemView: View, fragment: Fragment) : AbstractVi
         productCardItemViewModel.notifyMeCurrentStatus().observe(lifecycleOwner, Observer { status ->
             updateNotifyMeState(status)
         })
+
+        productCardItemViewModel.showNotifyToastMessage().observe(lifecycleOwner, Observer { message ->
+            showNotifyResultToast(message)
+        })
     }
 
 
@@ -167,7 +174,6 @@ class ProductCardItemViewHolder(itemView: View, fragment: Fragment) : AbstractVi
         notifyMeView.setTextColor(Color.parseColor("#03ac0e"))
         notifyMeView.setBackgroundResource(R.drawable.productcard_module_bg_button_inactive)
     }
-
 
     private fun showFreeOngKir(dataItem: DataItem) {
         val freeOngkirImage = productCardItemViewModel.getFreeOngkirImage(dataItem)
@@ -292,5 +298,26 @@ class ProductCardItemViewHolder(itemView: View, fragment: Fragment) : AbstractVi
             notifyMeView -> productCardItemViewModel.subscribeUser()
         }
     }
+
+    private fun showNotifyResultToast(toastData: Triple<Boolean, String?, Int?>) {
+        if (!toastData.first && !toastData.second.isNullOrEmpty()) {
+            Toaster.make(itemView.rootView, toastData.second!!, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+            removeProductItem(toastData.third)
+        } else if (!toastData.second.isNullOrEmpty()) {
+            Toaster.make(itemView.rootView, toastData.second!!, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+        }
+    }
+
+    private fun removeProductItem(productID: Int?) {
+        productID?.let {
+            if (productID > 0 && productCardItemViewModel.getRemoveProductProperty() == true) {
+//                (parentAbstractViewHolder as? ProductCardRevampViewHolder)?.removeProduct(productID)
+            }
+        }
+    }
 }
+
+
+
+
 
