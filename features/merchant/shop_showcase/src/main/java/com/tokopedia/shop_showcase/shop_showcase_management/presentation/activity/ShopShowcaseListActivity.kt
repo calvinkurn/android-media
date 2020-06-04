@@ -46,6 +46,7 @@ class ShopShowcaseListActivity : BaseActivity(), ShopShowcaseFragmentNavigation 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.fragment_shop_showcase_list_container)
 
         val bundle = intent.getBundleExtra("bundle")
         if (bundle != null) {
