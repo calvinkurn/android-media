@@ -47,6 +47,7 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
+import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
 import com.tokopedia.shop.pageheader.di.component.DaggerShopPageComponent
 import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
 import com.tokopedia.shop.pageheader.di.module.ShopPageModule
@@ -54,6 +55,7 @@ import com.tokopedia.shop.pageheader.presentation.ShopPageViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerAdapter
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentHeaderViewHolder
+import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 import com.tokopedia.shop.product.view.fragment.HomeProductFragment
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
@@ -125,7 +127,6 @@ class ShopPageFragment :
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var cartLocalCacheHandler: LocalCacheHandler
     var shopPageTracking: ShopPageTrackingBuyer? = null
-    var titles = listOf<String>()
     var shopId: String? = null
     var shopRef: String = ""
     var shopDomain: String? = null
@@ -150,6 +151,7 @@ class ShopPageFragment :
     private val intentData: Intent = Intent()
     private var isFirstLoading: Boolean = false
     private var shouldOverrideTabToHome: Boolean = false
+    private var listShopPageTabModel = listOf<ShopPageTabModel>()
     private val customDimensionShopPage: CustomDimensionShopPage by lazy {
         CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
     }
@@ -218,7 +220,7 @@ class ShopPageFragment :
                 } else {
                     (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
                         shopPageTracking?.clickTab(shopViewModel.isMyShop(it.shopCore.shopID),
-                                titles[tab.position],
+                                listShopPageTabModel[tab.position].tabTitle,
                                 CustomDimensionShopPage.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
                                         it.goldOS.isGold == 1))
                     }
@@ -250,6 +252,7 @@ class ShopPageFragment :
             shopPageFragmentHeaderViewHolder.updateFavoriteData(it ?: ShopInfo.FavoriteData())
         })
         shopViewModel.shopInfoResp.observe(owner, Observer { result ->
+            startShopPageHeaderMonitoringPltRenderPage()
             when (result) {
                 is Success -> {
                     onSuccessGetShopInfo(result.data)
@@ -259,6 +262,7 @@ class ShopPageFragment :
                 }
             }
             stopPerformanceMonitoring()
+            stopShopPageHeaderMonitoringPltRenderPage()
         })
 
         shopViewModel.whiteListResp.observe(this, Observer { response ->
@@ -284,6 +288,22 @@ class ShopPageFragment :
                 )
             }
         })
+    }
+
+    private fun stopShopPageHeaderMonitoringPltRenderPage() {
+        (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let {shopPageActivity ->
+            shopPageActivity.getShopPageHeaderLoadTimePerformanceCallback()?.let {
+                shopPageActivity.stopMonitoringPltRenderPage(it)
+            }
+        }
+    }
+
+    private fun startShopPageHeaderMonitoringPltRenderPage() {
+        (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let {shopPageActivity ->
+            shopPageActivity.getShopPageHeaderLoadTimePerformanceCallback()?.let {
+                shopPageActivity.startMonitoringPltRenderPage(it)
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -320,7 +340,16 @@ class ShopPageFragment :
             shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageViewModel::class.java)
             initViews(view)
             observeLiveData(this)
+            startPltNetworkPerformanceMonitoring()
             getShopInfo()
+        }
+    }
+
+    private fun startPltNetworkPerformanceMonitoring() {
+        (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let {shopPageActivity ->
+            shopPageActivity.getShopPageHeaderLoadTimePerformanceCallback()?.let {
+                shopPageActivity.startMonitoringPltNetworkRequest(it)
+            }
         }
     }
 
@@ -585,15 +614,8 @@ class ShopPageFragment :
     }
 
     private fun setupTabs() {
-        titles = mutableListOf<String>().apply {
-            if (isShowHomeTab())
-                add(getString(R.string.shop_info_title_tab_home))
-            add(getString(R.string.new_shop_info_title_tab_product))
-            if (isShowFeed)
-                add(getString(R.string.shop_info_title_tab_feed))
-            add(getString(R.string.shop_info_title_tab_review))
-        }
-        viewPagerAdapter.setTabData(generateTabData())
+        listShopPageTabModel = createListShopPageTabModel()
+        viewPagerAdapter.setTabData(listShopPageTabModel)
         viewPagerAdapter.notifyDataSetChanged()
         var selectedPosition = getSelectedTabPosition()
         if(shouldOverrideTabToHome){
@@ -610,6 +632,46 @@ class ShopPageFragment :
         }
         setViewState(VIEW_CONTENT)
         viewPager.setCurrentItem(selectedPosition, false)
+    }
+
+    private fun createListShopPageTabModel(): List<ShopPageTabModel> {
+        return mutableListOf<ShopPageTabModel>().apply {
+            if (isShowHomeTab()){
+                getHomeFragment()?.let{homeFragment ->
+                    add(ShopPageTabModel(
+                            getString(R.string.shop_info_title_tab_home),
+                            iconTabHome,
+                            homeFragment
+                    ))
+                }
+            }
+            val shopPageProductFragment = ShopPageProductListFragment.createInstance(shopAttribution, shopRef).apply {
+                getShopInfoData()?.let {
+                    setShopInfo(it)
+                }
+            }
+            add(ShopPageTabModel(
+                    getString(R.string.new_shop_info_title_tab_product),
+                    iconTabProduct,
+                    shopPageProductFragment
+            ))
+            if (isShowFeed){
+                val feedFragment = FeedShopFragment.createInstance(shopId ?: "", createPostUrl)
+                add(ShopPageTabModel(
+                        getString(R.string.shop_info_title_tab_feed),
+                        iconTabFeed,
+                        feedFragment
+                ))
+            }
+            if(activity?.application is ShopModuleRouter){
+                val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity, shopId, shopDomain)
+                add(ShopPageTabModel(
+                        getString(R.string.shop_info_title_tab_review),
+                        iconTabReview,
+                        shopReviewFragment
+                ))
+            }
+        }
     }
 
     private fun getSelectedTabPosition(): Int {
@@ -636,30 +698,6 @@ class ShopPageFragment :
         } ?: false
     }
 
-    private fun generateTabData(): Pair<List<Int>, List<Fragment>> {
-        return Pair(getListTitleIcon(), getListFragment())
-    }
-
-    private fun getListFragment(): List<Fragment> {
-        val shopPageProductFragment = ShopPageProductListFragment.createInstance(shopAttribution, shopRef).apply {
-            getShopInfoData()?.let {
-                setShopInfo(it)
-            }
-        }
-        val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity, shopId, shopDomain)
-        val homeFragment = getHomeFragment()
-        val feedFragment = FeedShopFragment.createInstance(shopId ?: "", createPostUrl)
-        return mutableListOf<Fragment>().apply {
-            homeFragment?.let {
-                if (isShowHomeTab()) add(it)
-            }
-            add(shopPageProductFragment)
-            if (isShowFeed)
-                add(feedFragment)
-            add(shopReviewFragment)
-        }
-    }
-
     private fun getHomeFragment(): Fragment? {
         return if (isShowHomeTab()) {
             if (isShowNewHomeTab()) {
@@ -680,17 +718,6 @@ class ShopPageFragment :
             }
         } else {
             null
-        }
-    }
-
-    private fun getListTitleIcon(): List<Int> {
-        return mutableListOf<Int>().apply {
-            if (isShowHomeTab())
-                add(iconTabHome)
-            add(iconTabProduct)
-            if (isShowFeed)
-                add(iconTabFeed)
-            add(iconTabReview)
         }
     }
 

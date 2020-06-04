@@ -17,6 +17,8 @@ object TargetedPromotionAnalytics {
     private const val VIEW_TARGETED_PROMO_IRIS = "viewTargetedPromoIris"
     private const val CLICK_TARGETED_PROMO = "clickTargetedPromo"
     private const val PROMO_VIEW = "promoView"
+    private const val LOGIN = "login"
+    private const val NON_LOGIN = "non login"
 
     private fun getTracker(): Analytics {
         return TrackApp.getInstance().gtm
@@ -26,7 +28,7 @@ object TargetedPromotionAnalytics {
     fun viewCoupon(catalogId: String, isLoogedIn: Boolean, userId:String) {
         val map = mutableMapOf<String, Any>()
 
-        val isLoggedInText = if (isLoogedIn) "login" else "nonlogin"
+        val isLoggedInText = if (isLoogedIn) LOGIN else NON_LOGIN
         map[KEY_EVENT] = PROMO_VIEW
         map[KEY_EVENT_CATEGORY] = TARGETED_PROMOTION
         map[KEY_EVENT_ACTION] = "view coupon - $isLoggedInText"
@@ -39,7 +41,7 @@ object TargetedPromotionAnalytics {
     fun clickClaimCoupon(catalogId: String, isLoogedIn: Boolean, buttonText: String, userId: String) {
         val map = mutableMapOf<String, Any>()
 
-        val isLoggedInText = if (isLoogedIn) "login" else "nonlogin"
+        val isLoggedInText = if (isLoogedIn) LOGIN else NON_LOGIN
         map[KEY_EVENT] = CLICK_TARGETED_PROMO
         map[KEY_EVENT_CATEGORY] = TARGETED_PROMOTION
         map[KEY_EVENT_ACTION] = "click $buttonText - $isLoggedInText"

@@ -423,4 +423,9 @@ Anda di sini.</string>
     <string name="month_10">Okt</string>
     <string name="month_11">Nov</string>
     <string name="month_12">Des</string>
+
+    <string name="popup_selesai_title">Selesaikan Pesanan</string>
+    <string name="popup_selesai_desc">Dengan klik selesai, dana akan diteruskan ke penjual dan Anda tidak dapat mengajukan komplain</string>
+    <string name="popup_selesai_ok_btn">Selesai</string>
+    <string name="popup_selesai_cancel_btn">Kembali</string>
 </resources>

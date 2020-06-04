@@ -15,7 +15,6 @@
         android:layout_gravity="bottom"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:paddingTop="@dimen/dp_20"
         android:paddingBottom="@dimen/dp_16">
 
         <ViewFlipper

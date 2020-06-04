@@ -30,7 +30,7 @@ class SellerMigrationGenericBottomSheet : SellerMigrationBottomSheet() {
     }
 
     private fun initView() {
-        accountSellerMigrationBottomsheetImage.loadImage(ACCOUNT_SELLER_MIGRATION_IMAGE_LINK)
+        accountSellerMigrationBottomsheetImage?.loadImage(ACCOUNT_SELLER_MIGRATION_IMAGE_LINK)
         setupPadding()
         setupWarningCard()
     }
