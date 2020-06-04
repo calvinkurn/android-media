@@ -51,12 +51,14 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initInjector()
-
         activity?.let {
-            brizziInstance.setNfcAdapter(it)
-            processTagIntent(it.intent)
+            try {
+                brizziInstance.setNfcAdapter(it)
+                processTagIntent(it.intent)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
@@ -105,7 +107,7 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
     }
 
     fun processBrizzi(intent: Intent) {
-        if(CardUtils.cardIsEmoney(intent)){
+        if (CardUtils.cardIsEmoney(intent)) {
             processEmoney(intent)
         } else {
             executeBrizzi(false, intent)
