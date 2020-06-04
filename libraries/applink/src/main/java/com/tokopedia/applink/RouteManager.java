@@ -136,13 +136,10 @@ public class RouteManager {
      * If sellerapp not installed yet then open sellerapp on google playstore
      * */
     private static Intent getIntentRedirectSellerApp(Context context, Uri uri) {
-        boolean isSellerAppInstalled = (context.getPackageManager().getLaunchIntentForPackage(SELLER_APP_PACKAGE_NAME) != null);
-        if (isSellerAppInstalled) {
-            Intent intentToSellerApp = new Intent(Intent.ACTION_VIEW);
-            intentToSellerApp.setPackage(SELLER_APP_PACKAGE_NAME);
-            intentToSellerApp.setClassName(SELLER_APP_PACKAGE_NAME, SELLER_APP_SPLASH_SCREEN_ACTIVITY);
-            intentToSellerApp.setData(uri);
-            return intentToSellerApp;
+        Intent intent = context.getPackageManager().getLaunchIntentForPackage(SELLER_APP_PACKAGE_NAME);
+        if (null != intent) {
+            intent.setData(uri);
+            return intent;
         } else {
             return getIntentToPlayStore(SELLER_APP_PACKAGE_NAME);
         }
