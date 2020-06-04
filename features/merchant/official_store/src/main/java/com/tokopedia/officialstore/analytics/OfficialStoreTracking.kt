@@ -1,8 +1,10 @@
 package com.tokopedia.officialstore.analytics
 
 import android.content.Context
+import android.os.Bundle
 import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Banner
@@ -747,5 +749,58 @@ class OfficialStoreTracking(context: Context) {
         } else {
             ""
         }
+    }
+
+    // No 31
+    fun eventClickMixLeftImageBanner(channel: Channel, categoryName: String, bannerPosition: Int) {
+        val eventDataLayer = Bundle()
+        eventDataLayer.putString(CLICK, PROMO_CLICK)
+        eventDataLayer.putString(EVENT_CATEGORY, "${OS_MICROSITE}$categoryName")
+        eventDataLayer.putString(EVENT_ACTION, "$CLICK banner $VALUE_DYNAMIC_MIX_LEFT_CAROUSEL")
+        eventDataLayer.putString(EVENT_LABEL, channel.id)
+        eventDataLayer.putString(ATTRIBUTION, channel.galaxyAttribution)
+        eventDataLayer.putString(AFFINITY_LABEL, channel.persona)
+        eventDataLayer.putString(CATEGORY_ID, channel.categoryPersona)
+        eventDataLayer.putString(SHOP_ID, channel.brandId)
+        eventDataLayer.putString(CAMPAIGN_CODE, "${channel.campaignID.orZero()}")
+        eventDataLayer.putParcelableArrayList("promotions", createMixLeftEcommerceDataLayer(
+                channelId = channel.id,
+                categoryName = categoryName,
+                headerName = channel.header?.name.orEmpty(),
+                bannerPosition = bannerPosition,
+                creative = channel.name,
+                creativeUrl = channel.banner?.applink.orEmpty()
+        ))
+
+        tracker.sendEnhanceEcommerceEvent("select_content", eventDataLayer)
+    }
+
+    // No 32
+    fun eventImpressionMixLeftImageBanner(channel: Channel, categoryName: String, bannerPosition: Int) {
+        val eventDataLayer = Bundle()
+        eventDataLayer.putString(EVENT, PROMO_VIEW)
+        eventDataLayer.putString(EVENT_CATEGORY, "${OS_MICROSITE}$categoryName")
+        eventDataLayer.putString(EVENT_ACTION, "$IMPRESSION banner $VALUE_DYNAMIC_MIX_LEFT_CAROUSEL")
+        eventDataLayer.putString(EVENT_LABEL, channel.id)
+        eventDataLayer.putParcelableArrayList("promotions", createMixLeftEcommerceDataLayer(
+                channelId = channel.id,
+                categoryName = categoryName,
+                headerName = channel.header?.name.orEmpty(),
+                bannerPosition = bannerPosition,
+                creative = channel.name,
+                creativeUrl = channel.banner?.applink.orEmpty()
+        ))
+
+        tracker.sendEnhanceEcommerceEvent("view_item", eventDataLayer)
+    }
+
+    private fun createMixLeftEcommerceDataLayer(channelId: String, categoryName: String, headerName: String, bannerPosition: Int, creative: String, creativeUrl: String): ArrayList<Bundle> {
+        val promotion = Bundle()
+        promotion.putString("id", channelId)
+        promotion.putString("name", arrayOf("$SLASH_OFFICIAL_STORE/$categoryName", VALUE_DYNAMIC_MIX_LEFT_CAROUSEL, headerName).joinToString(" - "))
+        promotion.putString("position", "$bannerPosition")
+        promotion.putString("creative", creative)
+        promotion.putString("creative_url", creativeUrl)
+        return arrayListOf(promotion)
     }
 }
