@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -19,7 +20,6 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
@@ -33,6 +33,8 @@ import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConst
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity
 import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.tp_fragment_stacked_coupon_listing.*
 import kotlinx.android.synthetic.main.tp_fragment_stacked_coupon_listing.view.*
 import javax.inject.Inject
@@ -215,48 +217,69 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
     }
 
     fun showCouponInStackBottomSheet(data: TokoPointPromosEntity) {
-        val closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(activity)
-        val view = layoutInflater.inflate(R.layout.tp_bottosheet_coupon_in_stack, null, false)
-        val recyclerView = view.findViewById<RecyclerView>(R.id.rv_coupon_in_stack)
+        this.context?.let { context ->
+            this.fragmentManager?.let { fm ->
+                val closeableBottomSheetDialog = BottomSheetUnify()
 
-        if (mItemDecoration != null) {
-            recyclerView.addItemDecoration(mItemDecoration!!)
+                closeableBottomSheetDialog.setShowListener {
+                    val sideMargin = 8.toPx()
+                    closeableBottomSheetDialog.bottomSheetWrapper.setPadding(sideMargin, sideMargin, sideMargin, 0)
+                    (closeableBottomSheetDialog.bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(sideMargin, sideMargin, sideMargin, 0)
+                }
+
+                val view = layoutInflater.inflate(R.layout.tp_bottosheet_coupon_in_stack, null, false)
+                val recyclerView = view.findViewById<RecyclerView>(R.id.rv_coupon_in_stack)
+                if (mItemDecoration != null) {
+                    recyclerView.addItemDecoration(mItemDecoration!!)
+                }
+
+                val mStackedInadapter = CouponInStackBaseAdapter(object : AdapterCallback {
+                    override fun onRetryPageLoad(pageNumber: Int) {
+
+                    }
+
+                    override fun onEmptyList(rawObject: Any) {
+
+                    }
+
+                    override fun onStartFirstPageLoad() {
+
+                    }
+
+                    override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
+                        closeableBottomSheetDialog.show(fm, "")
+                    }
+
+                    override fun onStartPageLoad(pageNumber: Int) {
+
+                    }
+
+                    override fun onFinishPageLoad(itemCount: Int, pageNumber: Int, rawObject: Any?) {
+
+                    }
+
+                    override fun onError(pageNumber: Int) {
+
+                    }
+                }, data)
+
+                recyclerView.adapter = mStackedInadapter
+                closeableBottomSheetDialog.apply {
+                    setChild(view)
+                    isDragable = true
+                    isHideable = true
+                    showCloseIcon = false
+                    showHeader = false
+                    isFullpage = false
+                    showKnob = true
+                    this@CouponListingStackedFragment.view?.height?.div(2)?.let { height ->
+                        customPeekHeight = height
+                    }
+                }
+                closeableBottomSheetDialog.show(fm, "")
+                mStackedInadapter.startDataLoading()
+            }
         }
-
-        val mStackedInadapter = CouponInStackBaseAdapter(object : AdapterCallback {
-            override fun onRetryPageLoad(pageNumber: Int) {
-
-            }
-
-            override fun onEmptyList(rawObject: Any) {
-
-            }
-
-            override fun onStartFirstPageLoad() {
-
-            }
-
-            override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
-                closeableBottomSheetDialog.show()
-            }
-
-            override fun onStartPageLoad(pageNumber: Int) {
-
-            }
-
-            override fun onFinishPageLoad(itemCount: Int, pageNumber: Int, rawObject: Any?) {
-
-            }
-
-            override fun onError(pageNumber: Int) {
-
-            }
-        }, data)
-
-        recyclerView.adapter = mStackedInadapter
-        closeableBottomSheetDialog.setContentView(view)
-        mStackedInadapter.startDataLoading()
-
     }
 
     override fun onDestroyView() {
@@ -329,15 +352,15 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
     }
 
     private fun setOnRecyclerViewLayoutReady() {
-        recycler_view_coupons.viewTreeObserver
-                .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        recycler_view_coupons?.viewTreeObserver
+                ?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
                         if (pageLoadTimePerformanceMonitoring != null) {
                             stopRenderPerformanceMonitoring()
                             stopPerformanceMonitoring()
                         }
                         pageLoadTimePerformanceMonitoring = null
-                        recycler_view_coupons.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        recycler_view_coupons?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                     }
                 })
     }

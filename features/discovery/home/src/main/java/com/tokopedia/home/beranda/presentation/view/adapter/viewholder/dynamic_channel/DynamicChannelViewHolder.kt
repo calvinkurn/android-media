@@ -54,6 +54,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
         const val TYPE_MIX_LEFT = 20
         const val TYPE_RECOMMENDATION_LIST = 14
         const val TYPE_PRODUCT_HIGHLIGHT = 11
+        const val TYPE_CATEGORY_WIDGET = 15
 
         fun getLayoutType(channels: DynamicHomeChannel.Channels): Int {
             when(channels.layout) {
@@ -70,6 +71,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
                 DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> return TYPE_PRODUCT_HIGHLIGHT
                 DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> return TYPE_MIX_LEFT
                 DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL -> return TYPE_RECOMMENDATION_LIST
+                DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET -> return TYPE_CATEGORY_WIDGET
             }
             return TYPE_CURATED
         }

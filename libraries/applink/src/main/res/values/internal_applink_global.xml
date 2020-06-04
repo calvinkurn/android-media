@@ -66,4 +66,5 @@
     <string name="path_add_fingerprint_onboarding">/add-fingerprint-onboarding</string>
     <string name="path_manage_notification">/manage-notification</string>
 
+    <string name="path_reply_talk" translatable="false">/reply-talk/.*\\/</string>
 </resources>

@@ -103,15 +103,17 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     }
 
     private void requestInAppReviewFlow() {
-        inAppReviewManager = InAppReviewManagerFactory.create(this);
-        inAppReviewManager.requestInAppReviewFlow().addOnCompleteListener(new OnCompleteListener<InAppReviewInfo>() {
-            @Override
-            public void onComplete(Task<InAppReviewInfo> request) {
-                if (request.isSuccessful()) {
-                    inAppReviewRequest = request;
+        try {
+            inAppReviewManager = InAppReviewManagerFactory.create(this);
+            inAppReviewManager.requestInAppReviewFlow().addOnCompleteListener(new OnCompleteListener<InAppReviewInfo>() {
+                @Override
+                public void onComplete(Task<InAppReviewInfo> request) {
+                    if (request.isSuccessful()) {
+                        inAppReviewRequest = request;
+                    }
                 }
-            }
-        });
+            });
+        } catch (Exception e) { }
     }
 
     @Override
@@ -201,24 +203,26 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
 
     @Override
     public void onBackPressed() {
-        FragmentManager manager = getSupportFragmentManager();
-        if (isDigital() && manager != null) {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M && inAppReviewManager != null && inAppReviewRequest != null) {
-                inAppReviewManager.launchInAppReviewFlow(this, inAppReviewRequest.getResult()).addOnCompleteListener(new OnCompleteListener<Integer>() {
-                    @Override
-                    public void onComplete(Task<Integer> task) {
-                        setInAppReviewHasShownBefore();
-                        closeThankyouPage();
-                    }
-                });
+        try {
+            FragmentManager manager = getSupportFragmentManager();
+            if (isDigital() && manager != null) {
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M && inAppReviewManager != null && inAppReviewRequest != null) {
+                    inAppReviewManager.launchInAppReviewFlow(this, inAppReviewRequest.getResult()).addOnCompleteListener(new OnCompleteListener<Integer>() {
+                        @Override
+                        public void onComplete(Task<Integer> task) {
+                            setInAppReviewHasShownBefore();
+                            closeThankyouPage();
+                        }
+                    });
+                } else {
+                    AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
+                    rating.setDialogDismissListener(this::closeThankyouPage);
+                    rating.showDialog(manager, this);
+                }
             } else {
-                AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
-                rating.setDialogDismissListener(this::closeThankyouPage);
-                rating.showDialog(manager, this);
+                closeThankyouPage();
             }
-        } else {
-            closeThankyouPage();
-        }
+        } catch (Exception e) { closeThankyouPage();}
     }
 
     private boolean getInAppReviewHasShownBefore() {

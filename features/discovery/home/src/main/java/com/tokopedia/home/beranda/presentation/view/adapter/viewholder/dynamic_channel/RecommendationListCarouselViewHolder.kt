@@ -88,17 +88,17 @@ class RecommendationListCarouselViewHolder(itemView: View,
                 }
                 val newList : MutableList<HomeRecommendationListCarousel> = channel.grids.map {
                     HomeRecommendationListData(
-                            it.imageUrl,
-                            it.name,
-                            it.discount,
-                            it.slashedPrice,
-                            it.price,
-                            it.applink,
-                            channel.grids.size > 1,
-                            it.isTopads,
-                            channel,
-                            it,
-                            listener
+                            recommendationImageUrl = it.imageUrl,
+                            recommendationTitle =  it.name,
+                            recommendationDiscountLabel = it.discount,
+                            recommendationSlashedPrice = it.slashedPrice,
+                            recommendationPrice = it.price,
+                            recommendationApplink = it.applink,
+                            isCarousel = channel.grids.size > 1,
+                            isTopAds = it.isTopads,
+                            channel = channel,
+                            grid = it,
+                            listener = listener
                     )
                 }.toMutableList()
                 if(channel.grids.size > 1 && channel.header.applink.isNotEmpty()) newList.add(HomeRecommendationListSeeMoreData(channel, listener))
@@ -190,8 +190,8 @@ class RecommendationListCarouselViewHolder(itemView: View,
             val recommendationSlashedPrice: String,
             val recommendationPrice: String,
             val recommendationApplink: String,
-            val isTopAds: Boolean,
             val isCarousel: Boolean,
+            val isTopAds: Boolean,
             val channel: DynamicHomeChannel.Channels,
             val grid: DynamicHomeChannel.Grid,
             val listener: HomeCategoryListener

@@ -27,6 +27,7 @@ internal constructor() : Func1<TopAdsLogDB, Observable<Visitable<*>>> {
         viewModel.sourceName = topAdsLogDB.sourceName
         viewModel.eventStatus = topAdsLogDB.eventStatus
         viewModel.timestamp = dateFormat.format(Date(topAdsLogDB.timestamp))
+        viewModel.fullResponse = topAdsLogDB.fullResponse
 
         return Observable.just(viewModel as Visitable<*>)
     }

@@ -67,6 +67,7 @@ dependencies {
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.rechargeCreditCard)
     implementation project(rootProject.ext.features.digitalEmoney)
+    implementation project(rootProject.ext.features.digitalBrizzi)
     //Discovery
     implementation project(rootProject.ext.features.similarSearch)
     implementation project(rootProject.ext.features.search)
@@ -84,6 +85,7 @@ dependencies {
     implementation project(rootProject.ext.features.dropOff)
     //Merchant
     implementation project(rootProject.ext.features.shopOpen)
+    implementation project(rootProject.ext.features.talk)
     //Operational
 
     //Payment
@@ -94,7 +96,6 @@ dependencies {
 
     //Travel
     implementation project(rootProject.ext.features.travelHomepage)
-    implementation project(rootProject.ext.features.flight)
     implementation project(rootProject.ext.features.hotel)
     //User
     implementation project(rootProject.ext.features.changePhoneNumber)
@@ -105,7 +106,6 @@ dependencies {
     implementation project(rootProject.ext.features.kyccentralized)
     implementation project(rootProject.ext.features.loginfingerprint)
     implementation project(rootProject.ext.features.notifCenter)
-    implementation project(rootProject.ext.features.talk)
     implementation project(rootProject.ext.features.attachvoucher)
     implementation project(rootProject.ext.features.topchat)
     //Entertainment

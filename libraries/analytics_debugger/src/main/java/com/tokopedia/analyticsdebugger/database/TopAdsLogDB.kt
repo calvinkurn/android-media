@@ -30,5 +30,8 @@ data class TopAdsLogDB (
     var eventStatus: String = "",
 
     @ColumnInfo(name = "timestamp")
-    var timestamp: Long = 0
+    var timestamp: Long = 0,
+
+    @ColumnInfo(name = "fullResponse")
+    var fullResponse: String = ""
 )

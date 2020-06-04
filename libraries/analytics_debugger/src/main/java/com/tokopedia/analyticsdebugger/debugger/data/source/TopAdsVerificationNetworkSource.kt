@@ -1,20 +1,24 @@
 package com.tokopedia.analyticsdebugger.debugger.data.source
 
 import android.content.Context
+import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.database.*
+import com.tokopedia.analyticsdebugger.debugger.domain.model.Item
 import com.tokopedia.analyticsdebugger.debugger.domain.model.TopAdsVerificationData
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
 import rx.Observable
+import java.io.UnsupportedEncodingException
+import java.net.URLDecoder
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.HashMap
 
 class TopAdsVerificationNetworkSource @Inject
-internal constructor(val context: Context, val graphqlUseCase: GraphqlUseCase) {
+constructor(val context: Context, val graphqlUseCase: GraphqlUseCase) {
 
     var PENDING_DURATION_MS = 5 * 60 * 1000 // 5 minutes
 
@@ -51,25 +55,36 @@ internal constructor(val context: Context, val graphqlUseCase: GraphqlUseCase) {
         graphqlRequest.setVariables(variables)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
-        val response = graphqlUseCase.getData(RequestParams.EMPTY)
+        val response: TopAdsVerificationData? = graphqlUseCase.getData(RequestParams.EMPTY)
                 .getData<TopAdsVerificationData>(TopAdsVerificationData::class.java)
-        val resultList = response.topadsVerifyClicksViews.data
-        for (result in resultList) {
-            val item = urlCheckMap[result.url.trim()]
-            item?.let {
-                if (result.status) {
-                    if (result.type == it.eventType) {
-                        it.eventStatus = STATUS_MATCH
-                        updateItem(it)
+        val resultList = response?.topadsVerifyClicksViews?.data
+        resultList?.let {
+            for (result in resultList) {
+                val item = urlCheckMap[result.url.trim()]
+                item?.let {
+                    if (result.status) {
+                        if (result.type == it.eventType) {
+                            it.eventStatus = STATUS_MATCH
+                        } else {
+                            it.eventStatus = STATUS_NOT_MATCH
+                        }
                     } else {
-                        it.eventStatus = STATUS_NOT_MATCH
-                        updateItem(it)
+                        it.eventStatus = STATUS_DATA_NOT_FOUND
                     }
-                } else {
-                    it.eventStatus = STATUS_DATA_NOT_FOUND
+
+                    it.fullResponse = convertToFormattedString(result)
                     updateItem(it)
                 }
             }
+        }
+    }
+
+    private fun convertToFormattedString(item: Item) : String {
+        val gson = GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create()
+        try {
+            return URLDecoder.decode(gson.toJson(item), "UTF-8")
+        } catch (e: UnsupportedEncodingException) {
+            return gson.toJson(item)
         }
     }
 

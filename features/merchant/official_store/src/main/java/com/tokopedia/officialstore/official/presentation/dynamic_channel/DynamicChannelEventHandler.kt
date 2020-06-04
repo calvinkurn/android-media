@@ -31,4 +31,5 @@ interface DynamicChannelEventHandler : CountDownView.CountDownListener {
     fun onClickMixTopBannerItem(applink: String)
     fun onClickMixTopBannerCtaButton(cta: Cta, channelId: String, applink: String)
 
+    fun onClickMixLeftBannerImage(applink: String)
 }

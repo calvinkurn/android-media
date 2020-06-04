@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--Travel & Hotel-->
+    <string name="df_title_travel">Travel</string>
     <string name="title_hotel_travel">Hotel</string>
     <string name="hotel_app_name">Hotel</string>
     <string name="hotel_order_detail_title">Detail Pesanan</string>
@@ -232,8 +233,8 @@
     <string name="title_upload_user_identification_common">Upload Foto</string>
 
     <!-- Dynamic feature for user talk-->
-    <string name="write_new_talk">Tulis Diskusi Baru</string>
-    <string name="title_product_discussion">Diskusi Produk</string>
+    <string name="write_new_talk">Kirim Pertanyaan</string>
+    <string name="title_product_discussion">Q&amp;A</string>
     <string name="title_report_talk">Laporkan</string>
 
     <string name="sbank_title_add_bank_account">Tambah Rekening</string>
