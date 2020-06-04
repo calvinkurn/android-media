@@ -18,7 +18,8 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_play_close_white" />
+        app:srcCompat="@drawable/ic_system_close_default"
+        app:tint="@color/Neutral_N0" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="@dimen/layout_lvl0"
