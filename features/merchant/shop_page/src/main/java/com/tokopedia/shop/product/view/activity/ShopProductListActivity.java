@@ -93,9 +93,6 @@ public class ShopProductListActivity extends BaseSimpleActivity
         return intent;
     }
 
-    //TODO milhamj
-//                .putExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, extras.getBoolean(ShopParamConstant.KEY_RELOAD_STATE))
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         remoteConfig = new FirebaseRemoteConfigImpl(this);

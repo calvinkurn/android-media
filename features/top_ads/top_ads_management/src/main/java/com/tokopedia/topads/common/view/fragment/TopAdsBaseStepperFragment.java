@@ -6,8 +6,8 @@ import androidx.annotation.Nullable;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
-import com.tokopedia.seller.base.view.listener.StepperListener;
+import com.tokopedia.topads.common.view.activity.BaseStepperActivity;
+import com.tokopedia.topads.common.view.listener.StepperListener;
 import com.tokopedia.topads.keyword.view.model.TopAdsKeywordStepperModel;
 
 /**
@@ -40,6 +40,9 @@ public abstract class TopAdsBaseStepperFragment<T extends TopAdsKeywordStepperMo
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null && getArguments() != null)
             stepperModel = getArguments().getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA);
+        if (getContext() instanceof StepperListener) {
+            this.stepperListener = (StepperListener) getContext();
+        }
     }
 
     @Override
@@ -47,14 +50,6 @@ public abstract class TopAdsBaseStepperFragment<T extends TopAdsKeywordStepperMo
         super.onViewCreated(view, savedInstanceState);
         if (stepperModel != null) {
             populateView(stepperModel);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof StepperListener) {
-            this.stepperListener = (StepperListener) context;
         }
     }
 }

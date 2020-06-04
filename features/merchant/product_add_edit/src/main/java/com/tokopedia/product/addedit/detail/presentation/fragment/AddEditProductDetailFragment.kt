@@ -283,7 +283,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         productWholeSaleInputLayout = view.findViewById(R.id.wholesale_input_layout)
         productWholeSaleInputFormsView = view.findViewById(R.id.rv_wholesale_input_forms)
         wholeSaleInputFormsAdapter = WholeSalePriceInputAdapter(this,
-
                 onDeleteWholesale = {
                     if (viewModel.isEditing && !viewModel.isAdding) {
                         ProductEditMainTracking.clickRemoveWholesale(shopId)
@@ -296,14 +295,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                         }
                     }
                     addNewWholeSalePriceButton?.visibility = View.VISIBLE
-                },
-
-                onAddWholesale = {
-                    if (viewModel.isEditing && !viewModel.isAdding) {
-                        ProductEditMainTracking.clickAddWholesale(shopId)
-                    } else {
-                        ProductAddMainTracking.clickAddWholesale(shopId)
-                    }
                 })
 
         productWholeSaleInputFormsView?.apply {
@@ -312,6 +303,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         }
         addNewWholeSalePriceButton = view.findViewById(R.id.tv_add_new_wholesale_price)
         addNewWholeSalePriceButton?.setOnClickListener {
+            if (viewModel.isEditing && !viewModel.isAdding) {
+                ProductEditMainTracking.clickAddWholesale(shopId)
+            } else {
+                ProductAddMainTracking.clickAddWholesale(shopId)
+            }
             wholeSaleInputFormsAdapter?.itemCount?.let {
                 if (it >= AddEditProductDetailConstants.MAX_WHOLESALE_PRICES - 1) {
                     addNewWholeSalePriceButton?.visibility = View.GONE
@@ -356,11 +352,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         // new condition
         val newCondition = ListItemUnify(getString(R.string.label_new), "")
+        newCondition.isBold = false
         newCondition.setVariant(null, ListItemUnify.RADIO_BUTTON, null)
         newCondition.run { productConditions.add(NEW_PRODUCT_INDEX, this) }
 
         // secondhand condition
         val secondHandCondition = ListItemUnify(getString(R.string.label_secondhand), "")
+        secondHandCondition.isBold = false
         secondHandCondition.setVariant(null, ListItemUnify.RADIO_BUTTON, getString(R.string.label_secondhand))
         secondHandCondition.run { productConditions.add(USED_PRODUCT_INDEX, this) }
 
@@ -430,20 +428,18 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // product whole sale checked change listener
         productWholeSaleSwitch?.setOnCheckedChangeListener { _, isChecked ->
             viewModel.isWholeSalePriceActivated.value = isChecked
-            if (viewModel.isEditing && !viewModel.isAdding) {
-                ProductEditMainTracking.clickWholesale(shopId)
-            } else {
-                ProductAddMainTracking.clickWholesale(shopId)
-            }
 
             if (isChecked) {
+                if (viewModel.isEditing && !viewModel.isAdding) {
+                    ProductEditMainTracking.clickWholesale(shopId)
+                } else {
+                    ProductAddMainTracking.clickWholesale(shopId)
+                }
+
                 val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().replace(".", "")
                 wholeSaleInputFormsAdapter?.setProductPrice(productPriceInput)
-                val wholesalePriceExist = wholeSaleInputFormsAdapter?.itemCount != 0
-                if (!wholesalePriceExist) wholeSaleInputFormsAdapter?.addNewWholeSalePriceForm()
-                if (viewModel.isAdding && viewModel.hasVariants) {
-                    showVariantWholesalePriceToast()
-                }
+                val wholesalePriceEmpty = wholeSaleInputFormsAdapter?.itemCount == 0
+                if (wholesalePriceEmpty) wholeSaleInputFormsAdapter?.addNewWholeSalePriceForm()
             }
         }
 
@@ -633,7 +629,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     productCategoryLayout?.show()
                     productCategoryRecListView?.show()
                     val selectedCategory = ArrayList<ListItemUnify>()
-                    selectedCategory.add(ListItemUnify(categoryName, ""))
+                    val selectedCategoryItemUnify = ListItemUnify(categoryName, "")
+                    selectedCategoryItemUnify.isBold = false
+                    selectedCategory.add(selectedCategoryItemUnify)
                     productCategoryRecListView?.setData(selectedCategory)
                 }
                 REQUEST_CODE_DESCRIPTION -> {
@@ -651,16 +649,25 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
         photoItemTouchHelper?.startDrag(viewHolder)
+        //countTouchPhoto is used for count how many times images hit
+        // we use this because startDrag(viewHolder) can hit tracker two times
         countTouchPhoto += 1
-        // photoItemTouchHelper?.startDrag(viewHolder) can hit tracker one time
-        // to avoid double hit tracker when dragging or touching image product, we need count how many onStartDrag func run
-        if(countTouchPhoto == 2) {
-            if (viewModel.isEditing && !viewModel.isAdding) {
-                ProductEditMainTracking.trackDragPhoto(shopId)
-            } else {
-                ProductAddMainTracking.trackDragPhoto(shopId)
+        //countTouchPhoto can increment 1 every time we come or back to this page
+        //if we back from ActivityOnResult countTouchPhoto still increment,
+        //to avoid that we have to make sure the value of countTouchPhoto must be 1
+        if(countTouchPhoto > 2) {
+            countTouchPhoto = 1
+        }
+        // tracker only hit when there are two images of product
+        if(productPhotoAdapter?.itemCount ?: 0 > 1) {
+            // to avoid double hit tracker when dragging or touching image product, we have to put if here
+            if (countTouchPhoto == 2) {
+                if (viewModel.isEditing && !viewModel.isAdding) {
+                    ProductEditMainTracking.trackDragPhoto(shopId)
+                } else {
+                    ProductAddMainTracking.trackDragPhoto(shopId)
+                }
             }
-            countTouchPhoto = 0
         }
     }
 
@@ -923,7 +930,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     productNameRecAdapter?.setProductNameInput(productNameInput)
                     viewModel.getProductNameRecommendation(query = productNameInput)
                 }
-                // show category recommendations to the product has no variants
+                // show category recommendations to the product that has no variants
                 if (viewModel.isAdding) viewModel.getCategoryRecommendation(productNameInput)
             } else {
                 // show empty recommendations for input with error

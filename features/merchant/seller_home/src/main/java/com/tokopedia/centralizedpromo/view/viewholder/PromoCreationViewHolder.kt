@@ -7,7 +7,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.R.layout.centralized_promo_item_promo_creation
@@ -35,7 +34,6 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
                         context.resources.getDimension(R.dimen.layout_lvl4).toInt())
             } else {
                 tvRecommendedPromoExtra.text = ""
-                icRecommendedPromoExtra.gone()
                 tvRecommendedPromoDescription.setPadding(
                         context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
                         context.resources.getDimension(R.dimen.layout_lvl0).toInt(),

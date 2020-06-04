@@ -18,7 +18,7 @@ import com.tokopedia.topads.data.param.AutoAdsParam
 import com.tokopedia.topads.data.response.AdCreationOption
 import com.tokopedia.topads.data.response.AutoAdsResponse
 import com.tokopedia.topads.data.response.TopAdsAutoAds
-import com.tokopedia.topads.internal.ParamObject.SHOP_Id
+import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_Id
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher

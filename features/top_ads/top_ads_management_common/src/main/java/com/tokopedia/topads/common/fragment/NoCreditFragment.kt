@@ -30,6 +30,7 @@ class NoCreditFragment : TkpdBaseV4Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         btn_topup.setOnClickListener {
             val intent =RouteManager.getIntent(context,ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT)
             startActivity(intent)
