@@ -7,9 +7,7 @@ import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -23,6 +21,13 @@ class ChatAttachmentUseCase @Inject constructor(
 
     private val paramMsgId = "msgId"
     private val paramLimit = "AttachmentIDs"
+
+    fun safeCancel() {
+        if (coroutineContext.isActive) {
+            gqlUseCase.cancelJobs()
+            cancel()
+        }
+    }
 
     fun getAttachments(
             msgId: Int,

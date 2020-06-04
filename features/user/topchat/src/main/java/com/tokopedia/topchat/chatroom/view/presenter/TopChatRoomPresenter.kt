@@ -548,6 +548,7 @@ class TopChatRoomPresenter @Inject constructor(
         }
         compressImageSubscription.unsubscribe()
         groupStickerUseCase.safeCancel()
+        chatAttachmentUseCase.safeCancel()
         super.detachView()
     }
 
