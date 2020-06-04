@@ -39,6 +39,10 @@ import com.tokopedia.seller.shopsettings.shipping.model.editshipping.ShopShippin
 import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresenter;
 import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresenterImpl;
+import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifycomponents.ticker.TickerCallback;
+
+import org.jetbrains.annotations.NotNull;
 
 import timber.log.Timber;
 
@@ -60,6 +64,8 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     TextView submitButtonCreateShop;
 
     LogisticRouter logisticRouter;
+
+    Ticker chargeBoTicker;
 
     private EditShippingPresenter editShippingPresenter;
     private TkpdProgressDialog mainProgressDialog;
@@ -122,6 +128,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
         if (getActivity().getApplicationContext() instanceof LogisticRouter) {
             logisticRouter = (LogisticRouter) getActivity().getApplicationContext();
         }
+        observingTicker();
     }
 
     @Override
@@ -158,6 +165,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
         editShippingPresenter = new EditShippingPresenterImpl(this);
         inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
+        chargeBoTicker = mainView.findViewById(R.id.ticker_charge_bo);
         fragmentShipingMainLayout = (LinearLayout) mainView.findViewById(R.id.fragment_shipping_main_layout);
         fragmentShippingHeader = (ShippingHeaderLayout) mainView.findViewById(R.id.fragment_shipping_header);
         addressLayout = (ShippingAddressLayout) mainView.findViewById(R.id.shipping_address_layout);
@@ -526,6 +534,21 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
             outState.putParcelable(CURRENT_COURIER_MODEL,
                     editShippingPresenter.getShopModel());
         }
+    }
+    private void observingTicker(){
+        chargeBoTicker.setTickerTitle(getString(R.string.charge_bo_ticker_title));
+        chargeBoTicker.setHtmlDescription(getString(R.string.charge_bo_ticker_content));
+        chargeBoTicker.setDescriptionClickEvent(new TickerCallback() {
+            @Override
+            public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
+                //
+            }
+
+            @Override
+            public void onDismiss() {
+                //
+            }
+        });
     }
 
 }
