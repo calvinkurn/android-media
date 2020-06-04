@@ -11,6 +11,7 @@ import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -199,6 +200,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var TRANSLATION_LENGTH = 0f
     private var isKeyboardOpened = false
     private var notifyScrollEnded = false
+    private var alreadyTryToShowPromoButtonOrIdle = false
 
     companion object {
 
@@ -533,13 +535,26 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         llPromoCheckout.gone()
                         return
                     }
+                    Log.d("ScrollEnd", "rvState: $newState")
 
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE && notifyScrollEnded) {
-                        showPromoButtonJob?.cancel()
-                        showPromoButtonJob = GlobalScope.launch(Dispatchers.Main) {
-                            delay(800L)
-                            showPromoButton()
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        if (notifyScrollEnded) {
+                            Log.d("ScrollEnd", "StateIddle")
+                            showPromoButtonJob?.cancel()
+                            showPromoButtonJob = GlobalScope.launch(Dispatchers.Main) {
+                                delay(800L)
+                                Log.d("ScrollEnd", "StateIddleAfterDelay")
+                                Log.d("ScrollEnd", "ShowButton : after rv idle")
+                                showPromoButton()
+                                alreadyTryToShowPromoButtonOrIdle = true
+                            }
+                        } else {
+                            Log.d("ScrollEnd", "RV Idle but notifyScrollEnded false")
+                            alreadyTryToShowPromoButtonOrIdle = true
                         }
+                    } else {
+                        Log.d("ScrollEnd", "RV not Idle")
+                        alreadyTryToShowPromoButtonOrIdle = false
                     }
                 }
 
@@ -556,6 +571,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     if (!isButtonAnimating && TRANSLATION_LENGTH < 5000 && dy > 0) {
                         TRANSLATION_LENGTH += (dy * 25f)
                     }
+                    Log.d("ScrollEnd", "Check DY: $dy| Translation Length: $TRANSLATION_LENGTH")
                     hidePromoButton(dy != 0)
                 }
             })
@@ -602,10 +618,17 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     isButtonAnimating = false
                     TRANSLATION_LENGTH = 0f
                     if (!isScrolling) {
+                        Log.d("ScrollEnd", "NotScrolling")
                         notifyScrollEnded = false
+                        Log.d("ScrollEnd", "ShowButton : after scroll end")
                         showPromoButton()
                     } else {
+                        Log.d("ScrollEnd", "Scrolling")
                         notifyScrollEnded = true
+                        if (alreadyTryToShowPromoButtonOrIdle) {
+                            Log.d("ScrollEnd", "ShowButton : force")
+                            showPromoButton()
+                        }
                     }
                 }
             })
