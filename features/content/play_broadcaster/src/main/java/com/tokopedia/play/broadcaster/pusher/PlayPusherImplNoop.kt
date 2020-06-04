@@ -50,16 +50,24 @@ class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
     }
 
     override fun pause() {
-        mCountDownTimer?.stop()
+        mCountDownTimer?.pause()
     }
 
     override fun destroy() {
-        mCountDownTimer?.stop()
+        mCountDownTimer?.pause()
     }
 
     override fun addMaxStreamDuration(millis: Long) {
         this.mCountDownTimer = PlayPusherCountDownTimer(builder.context, millis)
-        this.mCountDownTimer?.addCallback(mCountDownTimerListener)
+        this.mCountDownTimer?.addCallback( object: PlayPusherCountDownTimerListener {
+            override fun onCountDownActive(millisUntilFinished: Long) {
+                _observableInfoState.value  = PlayPusherInfoState.Active(millisUntilFinished, millis)
+            }
+            override fun onCountDownFinish() {
+                stopPush()
+                _observableInfoState.value = PlayPusherInfoState.Finish
+            }
+        })
     }
 
     override fun getObservablePlayPusherInfoState(): LiveData<PlayPusherInfoState> {
@@ -68,18 +76,5 @@ class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
 
     override fun getObservablePlayPusherNetworkState(): LiveData<PlayPusherNetworkState> {
         return _observableNetworkState
-    }
-
-    private val mCountDownTimerListener = object: PlayPusherCountDownTimerListener {
-
-        override fun onCountDownActive(millisUntilFinished: Long) {
-            _observableInfoState.value  = PlayPusherInfoState.Active(millisUntilFinished)
-        }
-
-        override fun onCountDownFinish() {
-            stopPush()
-            _observableInfoState.value = PlayPusherInfoState.Finish
-        }
-
     }
 }

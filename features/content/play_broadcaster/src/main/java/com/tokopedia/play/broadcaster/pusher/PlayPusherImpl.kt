@@ -168,7 +168,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     override fun pause() {
         try {
             if (mAliVcLivePusher?.isPushing == true) {
-                mCountDownTimer?.stop()
+                mCountDownTimer?.pause()
                 mAliVcLivePusher?.pause()
             }
         } catch (e: java.lang.IllegalStateException) {
@@ -181,7 +181,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     override fun destroy() {
         try {
             if (mAliVcLivePusher?.isPushing == true) {
-                mCountDownTimer?.stop()
+                mCountDownTimer?.pause()
             }
             mAliVcLivePusher?.destroy()
         } catch (e: java.lang.IllegalStateException) {
@@ -196,7 +196,15 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
     override fun addMaxStreamDuration(millis: Long) {
         this.mCountDownTimer = PlayPusherCountDownTimer(builder.context, millis)
-        this.mCountDownTimer?.addCallback(mCountDownTimerListener)
+        this.mCountDownTimer?.addCallback(object: PlayPusherCountDownTimerListener {
+            override fun onCountDownActive(millisUntilFinished: Long) {
+                _observableInfoState.postValue(PlayPusherInfoState.Active(millisUntilFinished, millis))
+            }
+
+            override fun onCountDownFinish() {
+                _observableInfoState.postValue(PlayPusherInfoState.Finish)
+            }
+        })
     }
 
     override fun getObservablePlayPusherInfoState(): LiveData<PlayPusherInfoState> {
@@ -222,18 +230,6 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
                 }
             }
         }
-    }
-
-    private val mCountDownTimerListener = object: PlayPusherCountDownTimerListener {
-
-        override fun onCountDownActive(millisUntilFinished: Long) {
-            _observableInfoState.postValue(PlayPusherInfoState.Active(millisUntilFinished))
-        }
-
-        override fun onCountDownFinish() {
-            _observableInfoState.postValue(PlayPusherInfoState.Finish)
-        }
-
     }
 
     private val mAliVcLivePushNetworkListener = object: AlivcLivePushNetworkListener {

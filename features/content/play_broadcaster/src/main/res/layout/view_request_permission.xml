@@ -65,7 +65,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/spacing_lvl6"
         android:layout_marginRight="@dimen/spacing_lvl6"
-        android:background="@drawable/bg_play_round_border_gray"
+        android:background="@drawable/bg_play_light_gray_border_rounded"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view_center">

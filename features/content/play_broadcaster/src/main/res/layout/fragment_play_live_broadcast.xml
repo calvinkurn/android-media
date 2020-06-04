@@ -19,7 +19,26 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_2" />
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_time_counter_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_lvl2"
+        android:background="@drawable/bg_play_red_rounded_corner"
+        android:drawablePadding="@dimen/spacing_lvl1"
+        android:gravity="center"
+        android:textColor="@color/Neutral_N0"
+        android:textSize="@dimen/fontSize_lvl1"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:drawableLeftCompat="@drawable/ic_play_clock_white"
+        app:layout_constraintBottom_toTopOf="@+id/include"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_time_counter" />
+
     <include
+        android:id="@+id/include"
         layout="@layout/view_stats_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

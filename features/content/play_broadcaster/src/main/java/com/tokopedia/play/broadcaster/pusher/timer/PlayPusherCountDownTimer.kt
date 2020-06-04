@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.CountDownTimer
 import android.preference.PreferenceManager
+import kotlin.math.max
 
 
 /**
@@ -33,20 +34,20 @@ class PlayPusherCountDownTimer(val context: Context,
 
     fun stop() {
         countDownTimer?.cancel()
+        clearLastState()
+        destroy()
+    }
+
+    fun pause() {
+        countDownTimer?.cancel()
         saveLastState()
         destroy()
     }
 
     private fun destroy() {
         countDownTimer = null
-        callback = null
         sharedPreferences = null
         lastMillis = 0L
-    }
-
-    private fun clear() {
-        countDownTimer?.cancel()
-        clearLastState()
     }
 
     private fun saveLastState() {
@@ -66,9 +67,8 @@ class PlayPusherCountDownTimer(val context: Context,
     private fun getCountDownTimer(maxLiveStreamDuration: Long): CountDownTimer {
         return object : CountDownTimer(maxLiveStreamDuration, DEFAULT_COUNT_DOWN_INTERVAL) {
             override fun onFinish() {
-                clear()
+                stop()
                 callback?.onCountDownFinish()
-                destroy()
             }
 
             override fun onTick(millisUntilFinished: Long) {
