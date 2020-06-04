@@ -79,6 +79,7 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.SALAM_UMRAH_SHOP, true) -> getRegisteredNavigationSalamUmrahShop(deeplink, context)
                     deeplink.startsWith(ApplinkConst.TOP_CHAT, true) && isChatBotTrue(deeplink) ->
                         getChatbotDeeplink(deeplink)
+                    deeplink.startsWith(ApplinkConst.TOP_CHAT, true) -> AppLinkMapperSellerHome.getTopChatAppLink(deeplink)
                     deeplink.startsWith(ApplinkConst.HOTEL, true) -> deeplink
                     deeplink.startsWith(ApplinkConst.DIGITAL, true) ->
                         getRegisteredNavigationDigital(context, deeplink)
