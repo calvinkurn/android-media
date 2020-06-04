@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.util.changeConstraint
+import com.tokopedia.play.broadcaster.util.compatTransitionName
 
 /**
  * Created by jegul on 26/05/20
@@ -18,7 +19,7 @@ class ProductPreviewViewHolder(
         gridLayoutManager: GridLayoutManager
 ) : BaseViewHolder(itemView) {
 
-    private val ivImage: ImageView = itemView.findViewById(R.id.iv_image)
+    val ivImage: ImageView = itemView.findViewById(R.id.iv_image)
 
     val spacing = itemView.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
 
@@ -39,6 +40,7 @@ class ProductPreviewViewHolder(
         }
 
         ivImage.loadImage(item.imageUrl)
+        ivImage.compatTransitionName = item.id.toString()
     }
 
     private fun adjustSize(itemCount: Int) {

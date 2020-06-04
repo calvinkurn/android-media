@@ -63,6 +63,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        postponeEnterTransition()
         viewModel = ViewModelProviders.of(requireParentFragment(), viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
     }
 
@@ -118,6 +119,8 @@ class PlayEtalaseDetailFragment @Inject constructor(
             when (it.state) {
                 is ResultState.Success -> {
                     selectableProductAdapter.setItemsAndAnimateChanges(it.currentValue.productMap.values.flatten())
+
+                    startPostponedEnterTransition()
 
                     scrollListener.setHasNextPage(it.currentValue.stillHasProduct)
                     scrollListener.updateState(true)

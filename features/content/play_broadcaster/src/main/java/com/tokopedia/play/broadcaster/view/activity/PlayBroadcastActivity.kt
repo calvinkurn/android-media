@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.view.activity
 import android.Manifest
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
@@ -130,7 +131,7 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator, Permissio
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun navigateToFragment(fragmentClass: Class<out Fragment>, extras: Bundle) {
+    override fun navigateToFragment(fragmentClass: Class<out Fragment>, extras: Bundle, sharedElements: List<View>, onFragment: (Fragment) -> Unit) {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         val destFragment = getFragmentByClassName(fragmentClass)
         destFragment.arguments = extras

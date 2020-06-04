@@ -53,6 +53,7 @@
                 android:id="@+id/fl_fragment"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="@dimen/layout_lvl0"
+                android:background="@color/Neutral_N0"
                 app:layout_constraintBottom_toTopOf="@id/bottom_sheet_action"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.view.contract
 
 import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.Fragment
 
 /**
@@ -8,7 +9,12 @@ import androidx.fragment.app.Fragment
  */
 interface PlayBroadcastCoordinator {
 
-    fun navigateToFragment(fragmentClass: Class<out Fragment>, extras: Bundle = Bundle.EMPTY)
+    fun navigateToFragment(
+            fragmentClass: Class<out Fragment>,
+            extras: Bundle = Bundle.EMPTY,
+            sharedElements: List<View> = emptyList(),
+            onFragment: (Fragment) -> Unit = {}
+    )
 
     fun setupTitle(title: String)
 }

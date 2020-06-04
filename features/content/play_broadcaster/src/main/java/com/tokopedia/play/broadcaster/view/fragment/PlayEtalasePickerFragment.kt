@@ -10,9 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.Slide
-import androidx.transition.TransitionManager
-import androidx.transition.TransitionSet
+import androidx.transition.*
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -51,11 +49,27 @@ class PlayEtalasePickerFragment @Inject constructor(
     private lateinit var rvSuggestions: RecyclerView
 
     private val etalaseAdapter = PlayEtalaseAdapter(object : PlayEtalaseViewHolder.Listener {
-        override fun onEtalaseClicked(etalaseId: Long) {
+        override fun onEtalaseClicked(etalaseId: Long, sharedElements: List<View>) {
+            exitTransition = TransitionSet()
+                    .addTransition(Slide(Gravity.START))
+                    .addTransition(Fade(Fade.OUT))
+                    .setDuration(300)
+
             bottomSheetCoordinator.navigateToFragment(
                     PlayEtalaseDetailFragment::class.java,
                     Bundle().apply {
                         putLong(PlayEtalaseDetailFragment.EXTRA_ETALASE_ID, etalaseId)
+                    },
+                    sharedElements = sharedElements,
+                    onFragment = {
+                        it.enterTransition = TransitionSet()
+                                .addTransition(Slide(Gravity.END))
+                                .addTransition(Fade(Fade.IN))
+                                .setStartDelay(200)
+                                .setDuration(300)
+
+                        it.sharedElementEnterTransition = ChangeTransform()
+                                .setDuration(600)
                     }
             )
         }

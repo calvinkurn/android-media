@@ -52,7 +52,11 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
     fun bind(item: PlayEtalaseUiModel) {
         listener.onEtalaseBound(item.id)
         vClickArea.setOnClickListener {
-            listener.onEtalaseClicked(item.id)
+            listener.onEtalaseClicked(item.id, (0 until rvProductPreview.childCount).map {
+                val childView = rvProductPreview.getChildAt(it)
+                val viewHolder = rvProductPreview.getChildViewHolder(childView) as ProductPreviewViewHolder
+                viewHolder.ivImage
+            })
         }
         tvEtalaseTitle.text = item.name
         tvEtalaseAmount.text = getString(R.string.play_etalase_product_amount, item.totalProduct)
@@ -66,6 +70,6 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
     interface Listener {
 
         fun onEtalaseBound(etalaseId: Long)
-        fun onEtalaseClicked(etalaseId: Long)
+        fun onEtalaseClicked(etalaseId: Long, sharedElements: List<View>)
     }
 }
