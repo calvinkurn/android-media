@@ -18,7 +18,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Named
 
 class MerchantVoucherTargetViewModel @Inject constructor(
         dispatcher: CoroutineDispatcher,
@@ -49,7 +48,7 @@ class MerchantVoucherTargetViewModel @Inject constructor(
         mVoucherTargetListData.value = VoucherTargetStaticDataSource.getVoucherTargetItemUiModelList()
     }
 
-    fun setPromoCode(promoCode: String) {
+    fun setPromoCode(promoCode: String, promoCodePrefix: String) {
         mShouldReturnToInitialValue.value = false
         mVoucherTargetListData.value = listOf(
                 VoucherTargetItemUiModel(
@@ -60,7 +59,7 @@ class MerchantVoucherTargetViewModel @Inject constructor(
                         voucherTargetType = VoucherTargetCardType.PRIVATE,
                         isEnabled = true,
                         isHavePromoCard = true,
-                        promoCode = promoCode)
+                        promoCode = promoCodePrefix + promoCode)
         )
         mPrivateVoucherPromoCode.value = promoCode
     }

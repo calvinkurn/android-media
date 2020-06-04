@@ -144,9 +144,7 @@ class MerchantVoucherTargetFragment : BaseCreateMerchantVoucherFragment<VoucherT
         }
     }
 
-    override fun onFinishRenderInitial() {
-
-    }
+    override fun onFinishRenderInitial() {}
 
     override fun onDestroy() {
         super.onDestroy()
@@ -267,10 +265,10 @@ class MerchantVoucherTargetFragment : BaseCreateMerchantVoucherFragment<VoucherT
     }
 
     private fun onNextCreatePromoCode(promoCode: String) {
-        viewModel.setPromoCode(getPromoCodePrefix() + promoCode)
+        viewModel.setPromoCode(promoCode, getPromoCodePrefix())
     }
 
-    private fun getPromoCodeString() : String = promoCodeText
+    private fun getPromoCodeString() : String = getPromoCodePrefix() + promoCodeText
 
     private fun getClickedVoucherDisplayType() : VoucherTargetCardType = lastClickedVoucherDisplayType
 
