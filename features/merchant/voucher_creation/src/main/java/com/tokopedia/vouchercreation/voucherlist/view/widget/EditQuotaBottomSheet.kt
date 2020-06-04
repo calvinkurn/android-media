@@ -158,7 +158,7 @@ class EditQuotaBottomSheet(parent: ViewGroup) : BottomSheetUnify() {
             }
 
             tvMvcVoucherName.text = name
-            tvMvcVoucherDescription.text = String.format(context?.getString(R.string.mvc_cashback_formatted).toBlankOrString(), discountAmtFormatted)
+            tvMvcVoucherDescription.text = String.format(context?.getString(R.string.mvc_discount_formatted).toBlankOrString(), typeFormatted, discountAmtFormatted)
             mvcTicker.run {
                 title = context?.getString(R.string.mvc_estimation_title).toBlankOrString()
                 description = context?.getString(R.string.mvc_estimation_description).toBlankOrString()

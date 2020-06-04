@@ -21,6 +21,7 @@ import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMaxStartDate
@@ -30,6 +31,7 @@ import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.ChangeVoucherPeriodViewModel
 import kotlinx.android.synthetic.main.bottomsheet_mvc_voucher_edit_period.*
 import kotlinx.android.synthetic.main.bottomsheet_mvc_voucher_edit_period.view.*
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -111,9 +113,10 @@ class VoucherPeriodBottomSheet(
     }
 
     private fun setupView(view: View) = with(view) {
-        imgMvcVoucher.loadImageDrawable(R.drawable.img_mvc_cashback_khusus)
+        setImageVoucher(voucher.isPublic, voucher.type)
+
         tvMvcVoucherName.text = voucher.name
-        tvMvcVoucherDescription.text = String.format(context?.getString(R.string.mvc_cashback_formatted).toBlankOrString(), voucher.discountAmtFormatted)
+        tvMvcVoucherDescription.text = String.format(context?.getString(R.string.mvc_discount_formatted).toBlankOrString(), voucher.typeFormatted, voucher.discountAmtFormatted)
 
         resetDate()
 
@@ -280,6 +283,23 @@ class VoucherPeriodBottomSheet(
     private fun TextFieldUnify.setDateText(calendar: GregorianCalendar) {
         val formattedDate = calendar.time.toFormattedString(FULL_DAY_FORMAT, locale).toBlankOrString()
         textFieldInput.setText(formattedDate)
+    }
+
+    private fun setImageVoucher(isPublic: Boolean, @VoucherTypeConst voucherType: Int) {
+        try {
+            view?.imgMvcVoucher?.run {
+                val drawableRes = when {
+                    isPublic && (voucherType == VoucherTypeConst.CASHBACK || voucherType == VoucherTypeConst.DISCOUNT) -> R.drawable.ic_mvc_cashback_publik
+                    !isPublic && (voucherType == VoucherTypeConst.CASHBACK || voucherType == VoucherTypeConst.DISCOUNT) -> R.drawable.ic_mvc_cashback_khusus
+                    isPublic && (voucherType == VoucherTypeConst.FREE_ONGKIR) -> R.drawable.ic_mvc_ongkir_publik
+                    !isPublic && (voucherType == VoucherTypeConst.FREE_ONGKIR) -> R.drawable.ic_mvc_ongkir_khusus
+                    else -> R.drawable.ic_mvc_cashback_publik
+                }
+                loadImageDrawable(drawableRes)
+            }
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
     }
 
     fun setOnSuccessClickListener(callback: () -> Unit): VoucherPeriodBottomSheet {
