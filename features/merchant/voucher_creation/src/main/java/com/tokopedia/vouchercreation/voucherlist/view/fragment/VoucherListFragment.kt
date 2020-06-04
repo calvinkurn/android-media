@@ -1,11 +1,16 @@
 package com.tokopedia.vouchercreation.voucherlist.view.fragment
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
+import android.widget.Toast
+import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -15,6 +20,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.util.DownloadHelper
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
@@ -61,7 +67,7 @@ import javax.inject.Inject
  */
 
 class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFactoryImpl>(),
-        VoucherViewHolder.Listener {
+        VoucherViewHolder.Listener, DownloadHelper.DownloadHelperListener {
 
     companion object {
         private const val KEY_IS_ACTIVE_VOUCHER = "is_active_voucher"
@@ -72,6 +78,8 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
         const val IS_SUCCESS_VOUCHER = "is_success"
         const val VOUCHER_ID_KEY = "voucher_id"
+
+        private const val DOWNLOAD_REQUEST_CODE = 223
 
         fun newInstance(isActiveVoucher: Boolean): VoucherListFragment {
             return VoucherListFragment().apply {
@@ -261,6 +269,19 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         loadData(1)
     }
 
+    override fun onDownloadComplete() {}
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (grantResults.size == 1) {
+            if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                Toast.makeText(activity, getString(R.string.storage_permission_enabled_needed), Toast.LENGTH_LONG).show()
+            } else {
+                //Todo: fix logic to download straight away
+            }
+        }
+    }
+
     private fun duplicateVoucher(voucher: VoucherUiModel) {
         activity?.let {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER).apply {
@@ -354,7 +375,14 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         if (!isAdded) return
         val parent = view as? ViewGroup ?: return
         DownloadVoucherBottomSheet(parent, voucher.image, voucher.imageSquare)
-                .setOnDownloadClickListener {
+                .setOnDownloadClickListener { voucherList ->
+                    voucherList.forEach {
+                        if (activity?.let { it1 -> ActivityCompat.checkSelfPermission(it1, Manifest.permission.WRITE_EXTERNAL_STORAGE) } != PackageManager.PERMISSION_GRANTED) {
+                            downloadFiles(it.downloadVoucherType.imageUrl)
+                        } else {
+                            downloadFiles(it.downloadVoucherType.imageUrl)
+                        }
+                    }
 
                 }
                 .show(childFragmentManager)
@@ -757,6 +785,16 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                     View.OnClickListener {
                         mViewModel.cancelVoucher(voucherId, isCancel)
                     })
+        }
+    }
+
+    @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    private fun downloadFiles(uri: String) {
+        val missingPermissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        activity?.let {
+            ActivityCompat.requestPermissions(it, missingPermissions, DOWNLOAD_REQUEST_CODE)
+            val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString(), this@VoucherListFragment)
+            helper.downloadFile { true }
         }
     }
 

@@ -238,6 +238,7 @@
     <string name="mvc_hour_wib">%s WIB</string>
     <string name="mvc_lihat">Lihat</string>
     <string name="mvc_share_now">Bagikan Sekarang</string>
+    <string name="mvc_storage_permission_enabled_needed"></string>
 
     <!-- voucher list -->
     <string name="mvc_ongoing">Berlangsung</string>
