@@ -61,6 +61,9 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : BottomSheetDialog(requireContext(), theme) {
             override fun onBackPressed() {
+                val currentFragment = childFragmentManager.findFragmentById(R.id.fl_fragment)
+                if (currentFragment is PlayBaseSetupFragment && currentFragment.onInterceptBackPressed()) return
+
                 if (!fragmentBreadcrumbs.empty()) {
                     val lastFragmentBreadcrumbs = fragmentBreadcrumbs.pop()
                     childFragmentManager.popBackStack(lastFragmentBreadcrumbs.fragmentClass.name, 0)
