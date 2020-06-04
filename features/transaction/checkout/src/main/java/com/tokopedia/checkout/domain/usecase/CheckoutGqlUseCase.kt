@@ -21,6 +21,7 @@ class CheckoutGqlUseCase @Inject constructor(@Named(CHECKOUT_MUTATION) private v
 
     companion object {
         const val CHECKOUT_MUTATION = "CHECKOUT_MUTATION"
+        const val CHECKOUT_PARAM_CARTS = "carts"
 
         const val PARAM_FINGERPRINT_SUPPORT = "fingerprint_support"
         const val PARAM_FINGERPRINT_PUBLICKEY = "fingerprint_publickey"
@@ -36,7 +37,7 @@ class CheckoutGqlUseCase @Inject constructor(@Named(CHECKOUT_MUTATION) private v
     }
 
     override fun createObservable(requestParam: RequestParams): Observable<CheckoutData> {
-        val params = mapOf("carts" to requestParam.parameters)
+        val params = mapOf(CHECKOUT_PARAM_CARTS to requestParam.parameters)
         val graphqlRequest = GraphqlRequest(queryString, CheckoutGqlResponse::class.java, params)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
