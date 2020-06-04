@@ -22,6 +22,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GENERAL_SETTING
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
@@ -182,7 +183,11 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         goToLoginActivity()
     }
 
-    override fun onUserDetailsClicked(userId: String) {
+    override fun onUserDetailsClicked(userId: String, isSeller: Boolean, shopId: String) {
+        if(isSeller) {
+            goToShopPageActivity(shopId)
+            return
+        }
         goToProfileActivity(userId)
     }
 
@@ -485,6 +490,11 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun goToProfileActivity(userId: String) {
         val intent = RouteManager.getIntent(context, ApplinkConst.PROFILE, userId)
+        startActivity(intent)
+    }
+
+    private fun goToShopPageActivity(shopId: String) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_PAGE, shopId)
         startActivity(intent)
     }
 

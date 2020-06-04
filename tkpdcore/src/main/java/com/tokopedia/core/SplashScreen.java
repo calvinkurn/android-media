@@ -129,7 +129,7 @@ public class SplashScreen extends AppCompatActivity {
         }
         Pgenerator = new PasswordGenerator(SplashScreen.this);
         InitNew();
-        registerFCMDeviceID();
+        registerFCMDeviceID(status);
         return true;
     }
 
@@ -150,9 +150,9 @@ public class SplashScreen extends AppCompatActivity {
         };
     }
 
-    private void registerFCMDeviceID() {
+    private void registerFCMDeviceID(boolean isPlayServiceAvailable) {
         GCMHandler gcm = new GCMHandler(this);
-        gcm.actionRegisterOrUpdateDevice(getGCMHandlerListener());
+        gcm.actionRegisterOrUpdateDevice(getGCMHandlerListener(), isPlayServiceAvailable);
     }
 
     public void finishSplashScreen() {

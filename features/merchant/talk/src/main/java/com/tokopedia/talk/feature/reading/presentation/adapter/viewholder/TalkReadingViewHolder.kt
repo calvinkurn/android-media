@@ -32,8 +32,8 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
             showQuestionWithCondition(state.isMasked, content, maskedContent, questionID)
             if(totalAnswer > 0 && answer.answerID.isNotEmpty()) {
                 hideNoAnswersText()
-                showProfilePicture(answer.userThumbnail, answer.userId)
-                showDisplayName(answer.userName, answer.userId)
+                showProfilePicture(answer.userThumbnail, answer.userId, answer.isSeller, element.shopId)
+                showDisplayName(answer.userName, answer.userId, answer.isSeller, element.shopId)
                 showSellerLabelWithCondition(answer.isSeller)
                 showDate(answer.createTimeFormatted)
                 if(answer.state.isMasked) {
@@ -88,12 +88,12 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
         }
     }
 
-    private fun showProfilePicture(userThumbNail: String, userId: String) {
+    private fun showProfilePicture(userThumbNail: String, userId: String, isSeller: Boolean, shopId: String) {
         if(userThumbNail.isNotEmpty()) {
             itemView.readingProfilePicture.apply {
                 loadImage(userThumbNail)
                 setOnClickListener {
-                    threadListener.onUserDetailsClicked(userId)
+                    threadListener.onUserDetailsClicked(userId, isSeller, shopId)
                 }
                 show()
             }
@@ -102,12 +102,12 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
         }
     }
 
-    private fun showDisplayName(userName: String, userId: String) {
+    private fun showDisplayName(userName: String, userId: String, isSeller: Boolean, shopId: String) {
         if(userName.isNotEmpty()) {
             itemView.readingDisplayName.apply{
                 text = userName
                 setOnClickListener {
-                    threadListener.onUserDetailsClicked(userId)
+                    threadListener.onUserDetailsClicked(userId, isSeller, shopId)
                 }
                 show()
             }
