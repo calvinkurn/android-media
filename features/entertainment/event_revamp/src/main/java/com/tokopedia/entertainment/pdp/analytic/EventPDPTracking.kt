@@ -1,10 +1,7 @@
 package com.tokopedia.entertainment.pdp.analytic
 
 import com.google.android.gms.tagmanager.DataLayer
-import com.tokopedia.entertainment.pdp.data.Category
-import com.tokopedia.entertainment.pdp.data.Form
-import com.tokopedia.entertainment.pdp.data.Package
-import com.tokopedia.entertainment.pdp.data.ProductDetailData
+import com.tokopedia.entertainment.pdp.data.*
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.iris.util.IrisSession
@@ -92,7 +89,7 @@ class EventPDPTracking constructor(val userSession: UserSessionInterface, val ir
         ))
     }
 
-    fun onClickPackage(mPackage: Package, qty: Int){
+    fun onClickPackage(mPackage: PackageItem, qty: Int){
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 Event.KEY, "clickEvent",
                 Event.CATEGORY, "digital - event",
@@ -156,12 +153,13 @@ class EventPDPTracking constructor(val userSession: UserSessionInterface, val ir
                 ))))))
     }
 
-    fun onViewCheckoutPage(mPackage: Package, productDetailData: ProductDetailData, qty: Int){
+    fun onViewCheckoutPage(mPackage: PackageV3, productDetailData: ProductDetailData, qty: Int){
+        val title = productDetailData.category.firstOrNull()?.title
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 Event.KEY, "checkout",
                 Event.CATEGORY, "digital - event",
                 Event.ACTION, "view checkout",
-                Event.LABEL, String.format("%s -  %s", productDetailData.category[0].title, mPackage.name),
+                Event.LABEL, String.format("%s -  %s", title , mPackage.name),
                 Other.SCREENNAME, "digital/events/summary",
                 Other.CLIENTID, userSession.deviceId,
                 Other.SESSIONIRIS, irisSession.getSessionId(),
@@ -190,12 +188,13 @@ class EventPDPTracking constructor(val userSession: UserSessionInterface, val ir
                 ))))))
     }
 
-    fun onClickCheckoutButton(mPackage: Package, productDetailData: ProductDetailData, qty: Int){
+    fun onClickCheckoutButton(mPackage: PackageV3, productDetailData: ProductDetailData, qty: Int){
+        val title = productDetailData.category.firstOrNull()?.title
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 Event.KEY, "checkout",
                 Event.CATEGORY, "digital - event",
                 Event.ACTION, "clicked proceed payment",
-                Event.LABEL, String.format("%s -  %s", productDetailData.category[0].title, mPackage.name),
+                Event.LABEL, String.format("%s -  %s", title, mPackage.name),
                 Other.SCREENNAME, "digital/events/summary",
                 Other.CLIENTID, userSession.deviceId,
                 Other.SESSIONIRIS, irisSession.getSessionId(),
@@ -215,7 +214,7 @@ class EventPDPTracking constructor(val userSession: UserSessionInterface, val ir
                         Product.ID, mPackage.id,
                         Product.PRICE, (mPackage.salesPrice.toInt() * qty),
                         Product.BRAND, "",
-                        Product.CATEGORY, productDetailData.category[0].title,
+                        Product.CATEGORY, title,
                         Product.VARIANT, mPackage.id,
                         Product.QUANTITY, qty.toString(),
                         Product.SHOPID, "",

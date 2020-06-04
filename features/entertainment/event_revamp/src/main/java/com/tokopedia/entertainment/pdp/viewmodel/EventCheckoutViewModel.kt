@@ -50,9 +50,9 @@ class EventCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
     val eventCheckoutResponse: LiveData<EventCheckoutResponse>
         get() = eventCheckoutResponseMutable
 
-    fun getDataProductDetail(rawQueryPDP: String, rawQueryContent: String, urlPdp: String, dummyResponse:String) {
+    fun getDataProductDetail(rawQueryPDP: String, rawQueryContent: String, urlPdp: String) {
         launch {
-            val result = usecase.executeUseCase(rawQueryPDP, rawQueryContent, true, urlPdp,dummyResponse)
+            val result = usecase.executeUseCase(rawQueryPDP, rawQueryContent, true, urlPdp)
             when (result) {
                 is Success -> {
                     eventProductDetailMutable.value = result.data.eventProductDetailEntity

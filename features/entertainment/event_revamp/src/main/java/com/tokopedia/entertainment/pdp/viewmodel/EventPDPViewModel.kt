@@ -42,9 +42,9 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
         eventProductDetaiListlMutable.value = list
     }
 
-    fun getDataProductDetail(rawQueryPDP: String, rawQueryContent: String, urlPdp: String, dummyResponse: String) {
+    fun getDataProductDetail(rawQueryPDP: String, rawQueryContent: String, urlPdp: String) {
         launch {
-            val result = usecase.executeUseCase(rawQueryPDP, rawQueryContent, true, urlPdp, dummyResponse)
+            val result = usecase.executeUseCase(rawQueryPDP, rawQueryContent, true, urlPdp)
             val resultHoliday = useCaseHoliday.execute()
             when (result) {
                 is Success -> {

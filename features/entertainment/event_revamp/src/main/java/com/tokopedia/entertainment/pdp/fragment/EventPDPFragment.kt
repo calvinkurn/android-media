@@ -155,7 +155,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     private fun requestData() {
         urlPDP?.let {
             eventPDPViewModel.getDataProductDetail(GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_product_detail_v3),
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_content_by_id), it, GraphqlHelper.loadRawString(resources, R.raw.dummy_response))
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_event_content_by_id), it)
         }
 
     }

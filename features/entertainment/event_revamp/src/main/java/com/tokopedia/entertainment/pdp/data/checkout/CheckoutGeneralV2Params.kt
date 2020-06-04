@@ -12,7 +12,7 @@ data class CheckoutGeneralV2Params(
 data class Carts(
         @SerializedName("business_type")
         @Expose
-        val businessType: Int = 31,
+        var businessType: Int = 0,
         @SerializedName("cart_info")
         @Expose
         var cartInfo: MutableList<CartInfo> = arrayListOf()
@@ -24,5 +24,5 @@ data class CartInfo(
         var metaData: String = "",
         @SerializedName("data_type")
         @Expose
-        val dataType: String = "event"
+        var dataType: String = ""
 )
