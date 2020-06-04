@@ -170,7 +170,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
 
                 Timber.w("P2#PRODUCT_UPLOAD#%s", message)
 
-                notificationManager?.onFailedUpload(result.reason.name)
+                notificationManager?.onFailedUpload(result.message)
                 ""
             }
         }
