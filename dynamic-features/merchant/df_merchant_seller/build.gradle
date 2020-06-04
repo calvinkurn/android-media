@@ -53,7 +53,6 @@ dependencies {
     implementation project(rootProject.ext.features.powerMerchantSubscribe)
     implementation project(rootProject.ext.features.shopSettings)
     implementation project(rootProject.ext.features.topAdsDashboard)
-    implementation project(rootProject.ext.features.opportunity)
     implementation project(rootProject.ext.features.sellerorder)
     implementation project(rootProject.ext.features.shopShowcase)
 }
