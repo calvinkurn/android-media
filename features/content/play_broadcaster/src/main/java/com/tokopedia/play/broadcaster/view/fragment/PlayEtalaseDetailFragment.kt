@@ -34,8 +34,8 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
     private lateinit var viewModel: PlayEtalasePickerViewModel
 
-    private val etalaseId: Long
-        get() = arguments?.getLong(EXTRA_ETALASE_ID) ?: throw IllegalStateException("etalaseId must be set")
+    private val etalaseId: String
+        get() = arguments?.getString(EXTRA_ETALASE_ID) ?: throw IllegalStateException("etalaseId must be set")
 
     private lateinit var tvInfo: TextView
     private lateinit var rvProduct: RecyclerView

@@ -1,20 +1,12 @@
 package com.tokopedia.play.broadcaster.view.contract
 
-import android.os.Bundle
-import android.view.View
-import androidx.fragment.app.Fragment
 
 /**
- * Created by mzennis on 29/05/20.
+ * Created by mzennis on 03/06/20.
  */
-interface PlayBroadcastCoordinator {
+interface PlayBroadcastCoordinator : PlayBaseCoordinator {
 
-    fun navigateToFragment(
-            fragmentClass: Class<out Fragment>,
-            extras: Bundle = Bundle.EMPTY,
-            sharedElements: List<View> = emptyList(),
-            onFragment: (Fragment) -> Unit = {}
-    )
+    fun setupCloseButton(actionTitle: String = "")
 
-    fun setupTitle(title: String)
+    fun showActionBar(shouldShow: Boolean)
 }

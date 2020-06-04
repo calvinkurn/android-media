@@ -3,20 +3,26 @@ package com.tokopedia.play.broadcaster.type
 /**
  * Created by jegul on 03/06/20
  */
-enum class EtalaseType(val typeInt: Int) {
+sealed class EtalaseType {
 
-    User(1),
-    Group(-1),
-    Unknown(Int.MIN_VALUE);
+    object User : EtalaseType()
+    data class Group(val fMenu: String) : EtalaseType()
+    object Unknown : EtalaseType()
 
     companion object {
-        val values = values()
-
-        fun getByType(type: Int): EtalaseType {
-            values.forEach {
-                if (it.typeInt == type) return it
+        fun getByType(type: Int, etalaseId: String): EtalaseType {
+            return when (type) {
+                1 -> User
+                -1 -> Group(getFMenuByEtalaseId(etalaseId))
+                else -> Unknown
             }
-            return Unknown
+        }
+
+        private fun getFMenuByEtalaseId(etalaseId: String): String {
+            return when (etalaseId) {
+                "2" -> ""
+                else -> ""
+            }
         }
     }
 }

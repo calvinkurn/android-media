@@ -6,7 +6,6 @@ import android.text.Spanned
 import android.text.style.StyleSpan
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.model.Configuration
-import com.tokopedia.play.broadcaster.type.EtalaseType
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.view.state.Selectable
 
@@ -33,12 +32,11 @@ object PlayBroadcastMocker {
      */
     fun getMockEtalaseList() = List(6) {
         PlayEtalaseUiModel(
-                id = it + 1L,
+                id = (it + 1L).toString(),
                 name = "Etalase ${it + 1}",
                 productMap = mutableMapOf(),
                 totalProduct = (it + 1) * 100,
-                stillHasProduct = false,
-                type = EtalaseType.User
+                stillHasProduct = false
         )
     }
 
@@ -78,7 +76,7 @@ object PlayBroadcastMocker {
             isOfficial = false,
             channelId = "",
             maxTaggedProduct = 15,
-            maxLiveStreamDuration = (60*1000)*30,
+            maxLiveStreamDuration = 5000,
             countDownDuration = 10
     )
 

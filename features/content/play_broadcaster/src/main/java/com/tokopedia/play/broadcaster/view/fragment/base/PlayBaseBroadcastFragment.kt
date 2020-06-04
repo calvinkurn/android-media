@@ -11,4 +11,9 @@ abstract class PlayBaseBroadcastFragment: TkpdBaseV4Fragment() {
 
     protected open val broadcastCoordinator: PlayBroadcastCoordinator
         get() = activity as PlayBroadcastCoordinator
+
+    /**
+     * set true to override
+     */
+    open fun onBackPressed(): Boolean = false
 }

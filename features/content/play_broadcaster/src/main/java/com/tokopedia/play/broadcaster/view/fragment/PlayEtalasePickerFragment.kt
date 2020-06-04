@@ -53,17 +53,17 @@ class PlayEtalasePickerFragment @Inject constructor(
     private lateinit var rvSuggestions: RecyclerView
 
     private val etalaseAdapter = PlayEtalaseAdapter(object : PlayEtalaseViewHolder.Listener {
-        override fun onEtalaseClicked(etalaseId: Long, sharedElements: List<View>) {
+        override fun onEtalaseClicked(etalaseId: String, sharedElements: List<View>) {
             bottomSheetCoordinator.navigateToFragment(
                     PlayEtalaseDetailFragment::class.java,
                     Bundle().apply {
-                        putLong(PlayEtalaseDetailFragment.EXTRA_ETALASE_ID, etalaseId)
+                        putString(PlayEtalaseDetailFragment.EXTRA_ETALASE_ID, etalaseId)
                     },
                     sharedElements = sharedElements
             )
         }
 
-        override fun onEtalaseBound(etalaseId: Long) {
+        override fun onEtalaseBound(etalaseId: String) {
             viewModel.loadEtalaseProductPreview(etalaseId)
         }
     })

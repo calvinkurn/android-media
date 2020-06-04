@@ -2,7 +2,6 @@ package com.tokopedia.play.broadcaster.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
-import com.tokopedia.play.broadcaster.view.fragment.PlayLiveBroadcastFragment
 import dagger.Component
 
 /**
@@ -16,6 +15,4 @@ import dagger.Component
 interface PlayBroadcasterComponent {
 
     fun inject(broadcastActivity: PlayBroadcastActivity)
-
-    fun inject(liveBroadcastFragment: PlayLiveBroadcastFragment)
 }

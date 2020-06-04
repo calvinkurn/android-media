@@ -1,6 +1,9 @@
 package com.tokopedia.play.broadcaster.pusher
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.view.SurfaceView
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.alivc.live.pusher.AlivcLivePushConfig
@@ -65,7 +68,10 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     override fun startPreview(surfaceView: SurfaceView) {
         if (mAliVcLivePusher != null) {
             try {
-                mAliVcLivePusher?.startPreviewAysnc(surfaceView)
+                if (ActivityCompat.checkSelfPermission(builder.context, Manifest.permission.CAMERA)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    mAliVcLivePusher?.startPreviewAysnc(surfaceView)
+                }
             } catch (e: IllegalArgumentException) {
                 if (GlobalConfig.DEBUG) {
                     e.printStackTrace()
@@ -221,19 +227,18 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     private val mCountDownTimerListener = object: PlayPusherCountDownTimerListener {
 
         override fun onCountDownActive(millisUntilFinished: Long) {
-            _observableInfoState.value  = PlayPusherInfoState.Active(millisUntilFinished)
+            _observableInfoState.postValue(PlayPusherInfoState.Active(millisUntilFinished))
         }
 
         override fun onCountDownFinish() {
-            stopPush()
-            _observableInfoState.value = PlayPusherInfoState.Finish
+            _observableInfoState.postValue(PlayPusherInfoState.Finish)
         }
 
     }
 
     private val mAliVcLivePushNetworkListener = object: AlivcLivePushNetworkListener {
         override fun onNetworkRecovery(pusher: AlivcLivePusher?) {
-            _observableNetworkState.value = PlayPusherNetworkState.Recover
+            _observableNetworkState.postValue(PlayPusherNetworkState.Recover)
         }
 
         override fun onSendMessage(pusher: AlivcLivePusher?) {
@@ -246,14 +251,14 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         }
 
         override fun onConnectFail(pusher: AlivcLivePusher?) {
-            _observableNetworkState.value = PlayPusherNetworkState.Loss
+            _observableNetworkState.postValue(PlayPusherNetworkState.Loss)
         }
 
         override fun onReconnectStart(pusher: AlivcLivePusher?) {
         }
 
         override fun onReconnectSucceed(pusher: AlivcLivePusher?) {
-            _observableNetworkState.value = PlayPusherNetworkState.Recover
+            _observableNetworkState.postValue(PlayPusherNetworkState.Recover)
         }
 
         override fun onPushURLAuthenticationOverdue(pusher: AlivcLivePusher?): String {
@@ -261,7 +266,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         }
 
         override fun onNetworkPoor(pusher: AlivcLivePusher?) {
-            _observableNetworkState.value = PlayPusherNetworkState.Poor
+            _observableNetworkState.postValue(PlayPusherNetworkState.Poor)
         }
 
     }

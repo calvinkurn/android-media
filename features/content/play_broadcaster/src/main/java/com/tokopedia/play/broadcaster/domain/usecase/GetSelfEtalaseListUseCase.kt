@@ -32,7 +32,7 @@ class GetSelfEtalaseListUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): List<ShopEtalaseModel> {
         return getShopEtalaseByShopUseCase.getData(params).filter {
-            it.id.toInt() == ALL_PRODUCTS_ID || EtalaseType.getByType(it.type) == EtalaseType.User
+            it.id.toInt() == ALL_PRODUCTS_ID || EtalaseType.getByType(it.type, it.id) == EtalaseType.User
         }
     }
 
