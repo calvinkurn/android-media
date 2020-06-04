@@ -97,6 +97,7 @@
             </LinearLayout>
 
             <View
+                android:id="@+id/layout_live_summary_info_overflow"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_lvl0"
                 android:background="@color/Neutral_N700_68"

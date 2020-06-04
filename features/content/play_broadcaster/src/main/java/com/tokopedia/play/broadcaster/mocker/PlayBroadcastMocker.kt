@@ -74,7 +74,7 @@ object PlayBroadcastMocker {
             isUserWhitelisted = true,
             isHaveOnGoingLive = false,
             isOfficial = false,
-            channelId = "",
+            channelId = "1",
             maxTaggedProduct = 15,
             maxLiveStreamDuration = (60*1000)*30,
             countDownDuration = 10
@@ -96,14 +96,11 @@ object PlayBroadcastMocker {
     )
 
     fun getSummary(): SummaryUiModel {
-        val infos = mutableListOf<SummaryUiModel.LiveTrafficMetric>()
-        infos.add(SummaryUiModel.LiveTrafficMetric("", "Description 1", "3000"))
-        infos.add(SummaryUiModel.LiveTrafficMetric(liveTrafficMetricCount = "300", liveTrafficMetricEnum = LiveTrafficMetricsEnum.NEW_BUYER))
-        infos.add(SummaryUiModel.LiveTrafficMetric(liveTrafficMetricCount = "700", liveTrafficMetricEnum = LiveTrafficMetricsEnum.NUMBER_OF_PAID_ORDER))
         val tickerContent = SummaryUiModel.TickerContent("Live Streaming Berakhir", "Waktu live streaming kamu sudah 30 menit", true)
         return SummaryUiModel(coverImage = "",
                 tickerContent = tickerContent ,
                 liveTitle = "Sneakers Hypebeast with Cashback 10%",
-                liveDuration = "28:42", liveTrafficMetrics = infos, finishRedirectUrl = "")
+                liveDuration = "28:42",
+                finishRedirectUrl = "")
     }
 }

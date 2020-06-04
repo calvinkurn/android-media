@@ -24,6 +24,7 @@ import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
 import com.tokopedia.play.broadcaster.view.custom.PlayRequestPermissionView
 import com.tokopedia.play.broadcaster.view.event.ScreenStateEvent
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment.Companion.PARENT_FRAGMENT_TAG
+import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayLiveBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayPrepareBroadcastFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -166,6 +167,12 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator, Permissio
                                 putString(PlayLiveBroadcastFragment.KEY_CHANNEL_ID, it.channelId)
                                 putString(PlayLiveBroadcastFragment.KEY_INGEST_URL, it.ingestUrl)
                             })
+                }
+                is ScreenStateEvent.ShowSummaryPage -> {
+                    navigateToFragment(PlayBroadcastSummaryFragment::class.java,
+                        Bundle().apply {
+                            putString(PlayBroadcastSummaryFragment.KEY_CHANNEL_ID, it.channelId)
+                        })
                 }
             }
         })
