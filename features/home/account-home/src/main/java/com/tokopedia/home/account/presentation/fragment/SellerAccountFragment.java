@@ -39,6 +39,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify;
 import com.tokopedia.unifycomponents.HtmlLinkHelper;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.Toaster;
+import com.tokopedia.unifycomponents.ticker.TickerCallback;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -279,19 +280,18 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
             if(remoteConfigDate.isEmpty()) {
                 remoteConfigDate = getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_default_migration_date);
             }
-            Function0<Unit> openSellerMigrationBottomSheet = () -> {
-                openSellerMigrationBottomSheet();
-                return null;
-            };
-            HtmlLinkHelper htmlString = new HtmlLinkHelper(getContext(), getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_content, remoteConfigDate));
-            if(htmlString.getUrlList() != null) {
-                htmlString.getUrlList().get(0).setOnClickListener(openSellerMigrationBottomSheet);
-            }
-            AppCompatTextView tickerTextView = getView().findViewById(R.id.ticker_description);
-            if(tickerTextView != null) {
-                tickerTextView.setMovementMethod(LinkMovementMethod.getInstance());
-            }
-            migrationTicker.setTextDescription(htmlString.getSpannedString());
+            migrationTicker.setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_account_home_ticker_content, remoteConfigDate));
+            migrationTicker.setDescriptionClickEvent(new TickerCallback() {
+                @Override
+                public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
+                    openSellerMigrationBottomSheet();
+                }
+
+                @Override
+                public void onDismiss() {
+                    // No op
+                }
+            });
         } else {
             migrationTicker.setVisibility(View.GONE);
         }
