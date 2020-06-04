@@ -10,6 +10,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
 import com.tokopedia.entertainment.pdp.common.util.CurrencyFormatter.getRupiahFormat
 import com.tokopedia.entertainment.pdp.data.PackageItem
 import kotlinx.android.synthetic.main.ent_ticket_adapter_item.view.*
@@ -26,7 +27,7 @@ class EventPDPTicketItemPackageAdapter(
     private var isError = false
     private var idPackage = ""
 
-    lateinit var chooseNewPackage: (String) -> Unit
+    lateinit var eventPDPTracking: EventPDPTracking
 
     inner class EventPDPTicketItemPackageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -56,6 +57,7 @@ class EventPDPTicketItemPackageAdapter(
                             items.salesPrice.toInt()*newValue, newValue.toString(),
                             isError, items.name, items.productId,items.salesPrice,
                             getDate(items.dates, onBindItemTicketListener.getSelectedDate()))
+                    eventPDPTracking.onClickQuantity()
                 }
 
 
@@ -107,7 +109,7 @@ class EventPDPTicketItemPackageAdapter(
                     itemView.quantityEditor.editText.visibility = View.VISIBLE
                     itemView.quantityEditor.addButton.visibility = View.VISIBLE
                     itemView.quantityEditor.subtractButton.visibility = View.VISIBLE
-                    chooseNewPackage.invoke(idPackage)
+                    eventPDPTracking.onClickPackage(items, itemView.quantityEditor.getValue())
                 }
             }
         }

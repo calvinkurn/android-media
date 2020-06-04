@@ -3,6 +3,7 @@ package com.tokopedia.entertainment.pdp.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.calendar.Legend
 import com.tokopedia.entertainment.pdp.common.util.EventDateUtil
 import com.tokopedia.entertainment.pdp.data.Category
 import com.tokopedia.entertainment.pdp.data.EventPDPTicketModel
@@ -17,6 +18,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.travelcalendar.data.entity.TravelCalendarHoliday
+import com.tokopedia.travelcalendar.domain.TravelCalendarHolidayUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -25,7 +28,8 @@ import javax.inject.Inject
 
 class EventPDPTicketViewModel @Inject constructor(private val dispatcher: CoroutineDispatcher,
                                                   private val graphqlRepository: GraphqlRepository,
-                                                  private val usecase: EventProductDetailUseCase) : BaseViewModel(dispatcher) {
+                                                  private val usecase: EventProductDetailUseCase,
+                                                  private val useCaseHoliday: TravelCalendarHolidayUseCase) : BaseViewModel(dispatcher) {
 
     val error: MutableLiveData<String> by lazy { MutableLiveData<String>() }
 
@@ -40,32 +44,27 @@ class EventPDPTicketViewModel @Inject constructor(private val dispatcher: Corout
     val verifyResponse: LiveData<EventVerifyResponseV2>
         get() = mutableVerifyResponse
 
+    private val eventHolidayMutable = MutableLiveData<List<Legend>>()
+    val eventHoliday: LiveData<List<Legend>>
+        get() = eventHolidayMutable
+
 
     var lists: MutableList<EventPDPTicketModel> = mutableListOf()
-    var listsActiveDate: MutableList<Date> = mutableListOf()
 
     var categoryData = Category()
 
-    fun getData(url: String, selectedDate: String, state: Boolean, rawQueryPDP: String, rawQueryContent: String, dummyResponse: String) {
+    fun getData(url: String, selectedDate: String, state: Boolean, rawQueryPDP: String, rawQueryContent: String) {
         launch {
             lists.clear()
-            listsActiveDate.clear()
-            val data = usecase.executeUseCase(rawQueryPDP, rawQueryContent, state, url, dummyResponse)
+            val data = usecase.executeUseCase(rawQueryPDP, rawQueryContent, state, url)
+            val dataHoliday = useCaseHoliday.execute()
             when (data) {
                 is Success -> {
                     productDetailEntityMutable.value = data.data.eventProductDetailEntity
-                    if (selectedDate.isNotBlank()) {
-                        data.data.eventProductDetailEntity.eventProductDetail.productDetailData.packages.forEach {
-                            lists.add(it)
-                            listsActiveDate.add(Date(it.startDate.toLong() * 1000L))
-                        }
-                    } else {
-                        if (data.data.eventProductDetailEntity.eventProductDetail.productDetailData.packages.size == 1) {
-                            data.data.eventProductDetailEntity.eventProductDetail.productDetailData.packages.forEach {
-                                lists.add(it)
-                            }
-                        }
+                    data.data.eventProductDetailEntity.eventProductDetail.productDetailData.packages.forEach {
+                       lists.add(it)
                     }
+
                     if (data.data.eventProductDetailEntity.eventProductDetail.productDetailData.category.isNotEmpty())
                         categoryData = data.data.eventProductDetailEntity.eventProductDetail.productDetailData.category[0]
                     _ticketModel.value = lists
@@ -74,10 +73,20 @@ class EventPDPTicketViewModel @Inject constructor(private val dispatcher: Corout
                     error.value = data.throwable.toString()
                 }
             }
+
+            when(dataHoliday){
+                is Success -> {
+                    eventHolidayMutable.value = mappingHolidayData(dataHoliday.data)
+                }
+
+                is Fail -> {
+                    eventHolidayMutable.value = arrayListOf()
+                }
+            }
         }
     }
 
-    fun verify(rawQuery: String, verifyRequest: VerifyRequest){
+    fun verify(rawQuery: String, verifyRequest: VerifyRequest) {
         val params = mapOf(eventVerify to verifyRequest)
         launchCatchError(block = {
             val data = withContext(dispatcher) {
@@ -85,12 +94,21 @@ class EventPDPTicketViewModel @Inject constructor(private val dispatcher: Corout
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<EventVerifyResponseV2>()
             mutableVerifyResponse.value = data
-        }){
+        }) {
             error.value = it.message
         }
     }
 
-    companion object{
+    private fun mappingHolidayData(holidayData: TravelCalendarHoliday.HolidayData): ArrayList<Legend> {
+        val legendList = arrayListOf<Legend>()
+        for (holiday in holidayData.data) {
+            legendList.add(Legend(EventDateUtil.stringToDate("yyyy-MM-dd", holiday.attribute.date),
+                    holiday.attribute.label))
+        }
+        return legendList
+    }
+
+    companion object {
         const val eventVerify = "eventVerify"
     }
 }

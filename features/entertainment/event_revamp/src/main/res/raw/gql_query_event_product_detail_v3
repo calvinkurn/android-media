@@ -6,6 +6,8 @@ event_product_detail_v3(URL:$urlPDP) {
       brand_id
       category_id
       provider_id
+      checkout_business_type
+      checkout_data_type
       child_category_ids
       provider_product_id
       provider_product_code

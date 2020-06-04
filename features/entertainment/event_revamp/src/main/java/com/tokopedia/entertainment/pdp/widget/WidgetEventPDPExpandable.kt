@@ -19,6 +19,8 @@ class WidgetEventPDPExpandable  @JvmOverloads constructor(context: Context, attr
     lateinit var imageDown: Drawable
     private var isUseRotateAnimation = false
     private var hasFinishInflate = false
+    lateinit var eventWidgetExpandableListener:EventWidgetExpandableListener
+
 
     override fun init() {
         setHeaderLayoutRes(R.layout.custom_event_expandable_parent)
@@ -44,6 +46,7 @@ class WidgetEventPDPExpandable  @JvmOverloads constructor(context: Context, attr
         container_event_pdp_expandable.setOnClickListener {
             if(isEnabled){
                 toggle()
+                eventWidgetExpandableListener.onParentClicked(isEnabled)
             }
         }
 
@@ -93,5 +96,13 @@ class WidgetEventPDPExpandable  @JvmOverloads constructor(context: Context, attr
 
     override fun initView(view: View?) {
 
+    }
+
+    fun setListener(eventWidgetExpandableListener: EventWidgetExpandableListener){
+        this.eventWidgetExpandableListener = eventWidgetExpandableListener
+    }
+
+    interface EventWidgetExpandableListener {
+        fun onParentClicked(toogle: Boolean)
     }
 }
