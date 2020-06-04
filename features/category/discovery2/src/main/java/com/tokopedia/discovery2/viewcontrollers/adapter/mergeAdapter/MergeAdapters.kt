@@ -1,54 +1,86 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.mergeAdapter
 
-import android.util.Log
+import android.content.Context
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 
-class MergeAdapters : RecyclerView.Adapter<AbstractViewHolder>() {
-    private val adapterList: ArrayList<DiscoveryRecycleAdapter> = ArrayList()
-    private var currentActiveAdapter: DiscoveryRecycleAdapter? = null
-    var index = 0
-    var lastListCount = 0
-    fun addAdapter(discoveryRecycleAdapter: DiscoveryRecycleAdapter) {
-        if (adapterList.isEmpty()) {
-            currentActiveAdapter = discoveryRecycleAdapter
-        }
-        adapterList.add(discoveryRecycleAdapter)
+class MergeAdapters<T : RecyclerView.Adapter<AbstractViewHolder>>() : RecyclerView.Adapter<AbstractViewHolder>() {
+    private val childAdapterList: ArrayList<LocalAdapter<T>> = ArrayList()
+    private lateinit var mContext: Context
+    private var mViewTypeIndex = 0
+
+    constructor(context: Context) : this() {
+        this.mContext = context;
+    }
+
+    fun addAdapter(childAdapter: T) {
+//         New Implementation
+        childAdapterList.add(LocalAdapter(childAdapter))
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder {
-        return currentActiveAdapter?.onCreateViewHolder(parent, viewType)!!
-    }
 
-    override fun onBindViewHolder(holder: AbstractViewHolder, position: Int) {
-        val pair = getActiveAdapter(position)
-        setViewSpanType(holder)
-        pair.first.onBindViewHolder(holder, position - pair.second)
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        val pair = getActiveAdapter(position)
-        val id = pair.first.getItemViewType(position - pair.second)
-        return id ?: 0
-    }
-
-    fun getActiveAdapter(position: Int): Pair<DiscoveryRecycleAdapter, Int> {
-        var xCount = 0
-        var xAdapter = adapterList[0]
-        for (it in adapterList) {
-            if (xCount + it.itemCount > position) {
-                xAdapter = it
-                break
-            } else {
-                xCount += it.itemCount
+//         New Implementation
+        var viewHolder: AbstractViewHolder = childAdapterList[0].mAdapter.onCreateViewHolder(parent, 0)
+        for (adapter in childAdapterList) {
+            if (adapter.mViewTypesMap.containsKey(viewType)) {
+                viewHolder = adapter.mAdapter.onCreateViewHolder(parent, adapter.mViewTypesMap[viewType]!!)
+                return viewHolder
             }
         }
-        return Pair(xAdapter, xCount)
+        return viewHolder
+    }
+
+
+    override fun onBindViewHolder(holder: AbstractViewHolder, position: Int) {
+        // New Implementation
+        val result: LocalAdapter<*> = getActiveAdapter(position)
+        setViewSpanType(holder)
+        result.mAdapter.onBindViewHolder(holder, result.mLocalPosition)
+    }
+
+
+    override fun getItemViewType(position: Int): Int {
+        // New Implementation
+        val resultAdapter = getActiveAdapter(position)
+        val localViewType = resultAdapter.mAdapter.getItemViewType(resultAdapter.mLocalPosition)
+        if (resultAdapter.mViewTypesMap.containsValue(localViewType)) {
+            for ((key, value) in resultAdapter.mViewTypesMap) {
+                if (value == localViewType) {
+                    return key
+                }
+            }
+        }
+        mViewTypeIndex += 1
+        resultAdapter.mViewTypesMap[mViewTypeIndex] = localViewType
+        return mViewTypeIndex
+    }
+
+    override fun getItemCount(): Int {
+        // New Implementation
+        return childAdapterList.sumBy { it.mAdapter.itemCount }
+    }
+
+    // New Implementation
+    private fun getActiveAdapter(position: Int): LocalAdapter<*> {
+        var currentChildAdapter = childAdapterList[0]
+        val adapterCount: Int = childAdapterList.size
+        var index = 0
+        var listDataCount = 0
+        while (index < adapterCount) {
+            currentChildAdapter = childAdapterList[index]
+            val newlistDataCount = listDataCount + currentChildAdapter.mAdapter.itemCount
+            if (position < newlistDataCount) {
+                currentChildAdapter.mLocalPosition = position - listDataCount
+                return currentChildAdapter
+            }
+            listDataCount = newlistDataCount
+            index++
+        }
+        return currentChildAdapter
     }
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder) {
@@ -61,14 +93,7 @@ class MergeAdapters : RecyclerView.Adapter<AbstractViewHolder>() {
         super.onViewDetachedFromWindow(holder)
     }
 
-    override fun getItemCount(): Int {
-        return adapterList.sumBy { it.itemCount }
-    }
-
-    fun setDataList(dataList: ArrayList<ComponentsItem>?) {
-        currentActiveAdapter?.setDataList(dataList)
-    }
-
+    // New Implementation
     private fun setViewSpanType(holder: AbstractViewHolder) {
         val layoutParams = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
         when (holder) {

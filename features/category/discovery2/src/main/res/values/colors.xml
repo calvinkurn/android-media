@@ -5,6 +5,7 @@
     <color name="clr_ff8000">#ff8000</color>
     <color name="clr_03AC0E">#03AC0E</color>
     <color name="greenColor">#03ac0e</color>
+    <color name="clr_9fa6b0">#9fa6b0</color>
     <color name="activeBannerDot">#f80</color>
     <color name="inActiveBannerDot">#c9c9c9</color>
     <color name="clr_f531353b">#f531353b</color>
@@ -14,6 +15,7 @@
     <color name="clr_ffeaef">#ffeaef</color>
     <color name="voucher_text_color_disable">#abadb1</color>
     <color name="clr_fd412b">#fd412b</color>
+    <color name="clr_ae31353b">#ae31353b</color>
 
     <color name="white">#FFFFFF</color>
     <color name="charcoal_grey_88">#e131353b</color>

@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.data
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.discovery2.StockWording
 import com.tokopedia.discovery2.data.productcardcarousel.FreeOngkir
 
 
@@ -306,6 +307,33 @@ data class DataItem(
         @SerializedName("free_ongkir")
         val freeOngkir: FreeOngkir? = null,
 
+        @SerializedName("pdp_view")
+        val pdpView: String = "",
+
+        @SerializedName("campaign_sold_count")
+        val campaignSoldCount: String? = null,
+
+        @SerializedName("threshold")
+        val threshold: String? = null,
+
+        @SerializedName("custom_stock")
+        val customStock: String? = null,
+
+        @SerializedName("stock_wording")
+        val stockWording: StockWording? = null,
+
+        @SerializedName("total_interest_notify_me")
+        val notifyMeCount: String? = null,
+
+        @SerializedName("threshold_interest")
+        val thresholdInterest: String? = null,
+
+        @SerializedName("notify_me")
+        var notifyMe: Boolean = false,
+
+        @SerializedName("campaign_id")
+        val campaignId: String = "",
+
         var status: String? = null,
 
         var parentComponentName: String? = "",
@@ -313,8 +341,7 @@ data class DataItem(
         var positionForParentItem:Int = 0,
 
         var typeProductCard: String? = ""
-
-        ) {
+) {
     val leftMargin: Int
         get() {
             return leftMarginMobile?.toIntOrNull() ?: 0

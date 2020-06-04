@@ -11,12 +11,12 @@ class PushStatusGQLRepository @Inject constructor(val getGQLString: (Int) -> Str
 
     override suspend fun checkPushStatus(compaignId: Int): PushStatusResponse {
         return getGQLData(getGQLString(R.raw.check_push_reminder_gql),
-                PushStatusResponse::class.java, mapOf("campaignID" to compaignId)) as PushStatusResponse
+                PushStatusResponse::class.java, mapOf("campaignID" to compaignId))
     }
 
     override suspend fun subscribeToPush(compaignId: Int): PushSubscriptionResponse {
         return getGQLData(getGQLString(R.raw.set_push_reminder_gql),
-                PushSubscriptionResponse::class.java, mapOf("campaignID" to compaignId)) as PushSubscriptionResponse
+                PushSubscriptionResponse::class.java, mapOf("campaignID" to compaignId))
     }
 
 

@@ -23,6 +23,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.adapter.AddChildAdapterCallback
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.mergeAdapter.MergeAdapters
+import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.globalerror.GlobalError
@@ -49,9 +50,10 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback {
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     private lateinit var globalError: GlobalError
     var pageEndPoint = ""
-    private lateinit var mergeAdapters: MergeAdapters
+    private lateinit var mergeAdapters: MergeAdapters<RecyclerView.Adapter<AbstractViewHolder>>
     private lateinit var discoveryRecycleAdapter: DiscoveryRecycleAdapter
     private val analytics: DiscoveryAnalytics by lazy { DiscoveryAnalytics(trackingQueue = trackingQueue, pagePath = discoveryViewModel.pagePath, pageType = discoveryViewModel.pageType) }
+    private var defaultTabDataFetched = false
 
     @Inject
     lateinit var trackingQueue: TrackingQueue
@@ -108,6 +110,7 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         discoveryViewModel = (activity as DiscoveryActivity).getViewModel()
+        /** Future Improvement : Please don't remove any commented code from this file. Need to work on this **/
 //        mDiscoveryViewModel = ViewModelProviders.of(requireActivity()).get((activity as BaseViewModelActivity<DiscoveryViewModel>).getViewModelType())
 
         discoveryRecycleAdapter = DiscoveryRecycleAdapter(this)
@@ -127,7 +130,7 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback {
         discoveryViewModel.getDiscoveryResponseList().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    discoveryRecycleAdapter.setDataList(it.data)
+                    discoveryRecycleAdapter.addDataList(it.data)
                     mergeAdapters.notifyDataSetChanged()
                 }
             }
@@ -273,5 +276,13 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback {
         super.onPause()
         getDiscoveryAnalytics().trackEventImpressionProductCard()
         trackingQueue.sendAll()
+    }
+
+    fun isDefaultTabDataFetched():Boolean {
+        return defaultTabDataFetched
+    }
+
+    fun setDefaultTabDataFetched() {
+        defaultTabDataFetched = true
     }
 }

@@ -14,7 +14,6 @@ import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.usecase.CustomTopChatUseCase
 import com.tokopedia.discovery2.usecase.DiscoveryDataUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -49,8 +48,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                     val data = discoveryDataUseCase.getDiscoveryPageDataUseCase(pageIdentifier)
                     data.let {
                         withContext(Dispatchers.Default) {
-//                            findAndRemoveSecondYoutubeComponent(it.components)
-                            checkLoginAndUpdateList(it.components)
+                            setDiscoveryComponentList(it.components)
                             findCustomTopChatComponentsIfAny(it.components)
                         }
                         setPageInfo(it.pageInfo)
@@ -61,17 +59,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 }
         )
 
-    }
-
-    // temp code
-    private fun findAndRemoveSecondYoutubeComponent(components: MutableList<ComponentsItem>?) {
-        val videoComponentToRemove = components?.filter { it.name == ComponentNames.Video.componentName }
-        videoComponentToRemove?.let {
-            var index = 0
-            while (++index < it.size){
-                components.remove(it[index])
-            }
-        }
     }
 
     private fun setPageInfo(pageInfo: PageInfo?) {
@@ -94,12 +81,8 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     }
 
-    private fun checkLoginAndUpdateList(components: List<ComponentsItem>?) {
-        if (!userSession.isLoggedIn) {
-            val components = components?.filter { it.name != "topads" }
-            discoveryResponseList.postValue(Success(components as ArrayList<ComponentsItem>))
-
-        } else {
+    private fun setDiscoveryComponentList(components: List<ComponentsItem>?) {
+        components.let {
             discoveryResponseList.postValue(Success(components as ArrayList<ComponentsItem>))
         }
 

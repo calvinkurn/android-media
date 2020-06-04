@@ -106,7 +106,6 @@ class MultiBannerViewModel(val application: Application, var components: Compone
 
     fun isUserLoggedIn(): Boolean {
         return UserSession(application).isLoggedIn
-
     }
 
     fun campaignSubscribedStatus(position: Int) {
