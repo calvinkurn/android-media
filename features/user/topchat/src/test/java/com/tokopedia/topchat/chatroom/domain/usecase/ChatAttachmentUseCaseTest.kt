@@ -36,6 +36,7 @@ class ChatAttachmentUseCaseTest {
         const val msgId: Int = 123123
         const val attachmentId: String = "213213"
 
+        val throwable = Throwable()
         val successResponse: ChatAttachmentResponse = FileUtil.parse(
                 "/success_chat_list_group_sticker.json",
                 ChatAttachmentResponse::class.java
@@ -55,7 +56,17 @@ class ChatAttachmentUseCaseTest {
         // When
         useCase.getAttachments(Dummy.msgId, Dummy.attachmentId, onSuccess, onError)
         // Then
-        verify { onSuccess.invoke(mapper.map(Dummy.successResponse)) }
+        verify { onSuccess.invoke(any()) }
+    }
+
+    @Test
+    fun `on error get chat attachment`() {
+        // Given
+        coEvery { gqlUseCase.executeOnBackground() } throws Dummy.throwable
+        // When
+        useCase.getAttachments(Dummy.msgId, Dummy.attachmentId, onSuccess, onError)
+        // Then
+        verify { onError.invoke(Dummy.throwable, any()) }
     }
 
 }
