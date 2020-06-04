@@ -183,7 +183,8 @@ class MixTopBannerViewHolder(
 
         if (cta.text.isEmpty()) {
             bannerUnifyButton.visibility = View.GONE
-            return
+        }else {
+            bannerUnifyButton.visibility = View.VISIBLE
         }
         var mode = CTA_MODE_MAIN
         var type = CTA_TYPE_FILLED
