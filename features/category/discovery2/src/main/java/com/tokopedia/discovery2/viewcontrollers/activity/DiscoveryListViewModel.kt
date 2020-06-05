@@ -10,6 +10,7 @@ class DiscoveryListViewModel(private val applicationContext: Application) : Andr
 
     fun getViewHolderModel(viewModel: KFunction<DiscoveryBaseViewModel>, componentItem: ComponentsItem, position: Int): DiscoveryBaseViewModel {
         if (viewHolderViewModelList.size - 1 >= position) {
+
             return viewHolderViewModelList[position]
         }
         val viewModelObject = viewModel.call(applicationContext, componentItem, position)

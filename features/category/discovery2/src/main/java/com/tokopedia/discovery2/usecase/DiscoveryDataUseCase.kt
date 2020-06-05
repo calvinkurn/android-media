@@ -1,6 +1,5 @@
 package com.tokopedia.discovery2.usecase
 
-import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.datamapper.DiscoveryPageData
 import com.tokopedia.discovery2.datamapper.mapDiscoveryResponseToPageData
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository

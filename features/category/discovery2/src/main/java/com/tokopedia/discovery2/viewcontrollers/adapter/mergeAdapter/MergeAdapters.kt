@@ -1,19 +1,17 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.mergeAdapter
 
-import android.util.Log
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 
-class MergeAdapters : RecyclerView.Adapter<AbstractViewHolder>() {
+class MergeAdapters : ListAdapter<ComponentsItem,AbstractViewHolder>(ComponentsDiffCallBacks()) {
     private val adapterList: ArrayList<DiscoveryRecycleAdapter> = ArrayList()
     private var currentActiveAdapter: DiscoveryRecycleAdapter? = null
-    var index = 0
-    var lastListCount = 0
     fun addAdapter(discoveryRecycleAdapter: DiscoveryRecycleAdapter) {
         if (adapterList.isEmpty()) {
             currentActiveAdapter = discoveryRecycleAdapter
@@ -76,4 +74,17 @@ class MergeAdapters : RecyclerView.Adapter<AbstractViewHolder>() {
             else -> layoutParams.isFullSpan = true
         }
     }
+}
+
+class ComponentsDiffCallBacks : DiffUtil.ItemCallback<ComponentsItem>() {
+    override fun areItemsTheSame(oldItem: ComponentsItem, newItem: ComponentsItem): Boolean {
+        return oldItem?.id == newItem?.id //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun areContentsTheSame(oldItem: ComponentsItem, newItem: ComponentsItem): Boolean {
+        return newItem == oldItem
+    }
+
+
+
 }

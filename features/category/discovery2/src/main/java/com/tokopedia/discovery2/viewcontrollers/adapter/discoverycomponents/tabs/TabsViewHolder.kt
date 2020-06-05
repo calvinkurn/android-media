@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.list.adapter.SpaceItemDecoration
 import com.tokopedia.discovery2.R
-import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.AddChildAdapterCallback
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
@@ -43,6 +42,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         tabsViewModel = discoveryBaseViewModel as TabsViewModel
         setUpObservers()
+
     }
 
 
@@ -50,10 +50,12 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
         tabsViewModel.getListDataLiveData().observe(fragment.viewLifecycleOwner, Observer {
             tabsRecyclerViewAdapter.setDataList(it)
         })
+        tabsViewModel.getSelectedTabDataLiveData().observe(fragment.viewLifecycleOwner, Observer {
+            compositeAdapter.setDataList(it)
+            addChildAdapterCallback.notifyMergeAdapter()
+        })
     }
-
-    fun getCompositeComponentsList(compositeList: List<ComponentsItem>) {
-        compositeAdapter.setDataList(compositeList as ArrayList<ComponentsItem>)
-        addChildAdapterCallback.notifyMergeAdapter()
+    fun onTabClick(id: String) {
+            tabsViewModel.onTabClick(id)
     }
 }

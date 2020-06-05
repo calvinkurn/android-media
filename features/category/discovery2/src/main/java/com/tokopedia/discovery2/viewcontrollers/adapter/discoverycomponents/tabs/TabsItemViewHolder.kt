@@ -8,10 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.discovery2.R
-import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
-import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageWithCallback
 import com.tokopedia.kotlin.extensions.view.show
@@ -47,7 +45,7 @@ class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : Abstr
                             setFontColor(fontColor)
                         }
                         showSelectedView(item.isSelected)
-                        setClick(item)
+                        setClick(it.id)
                     }
 
                     override fun failedLoad() {
@@ -57,9 +55,7 @@ class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : Abstr
 
             }
         })
-        tabsItemViewModel.getCompositeComponentLiveData().observe(viewLifecycleOwner, Observer {
-            (parentAbstractViewHolder as? TabsViewHolder)?.getCompositeComponentsList(it)
-        })
+
 
     }
 
@@ -74,39 +70,13 @@ class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : Abstr
         }
     }
 
-    private fun setClick(data: DataItem) {
-        tabImageView.setOnClickListener {
-            if (!data.isSelected) {
-                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackTabsClick(data.name
-                        ?: "")
-                (it as ImageView).apply {
-                    data.isSelected = !data.isSelected
-                    showSelectedView(data.isSelected)
-                }
-                tabsItemViewModel.populateTabCompositeComponents(data)
-                changeDataInTabsViewModel()
-            }
+    private fun setClick(id: String) {
+        itemView.setOnClickListener {
+            (parentAbstractViewHolder as TabsViewHolder).onTabClick(id)
         }
     }
 
-    //temp code
-    private fun changeDataInTabsViewModel() {
-        (fragment as? DiscoveryFragment)?.let { discoveryFragment ->
-            (discoveryFragment.getDiscoveryRecyclerViewAdapter().getChildHolderViewModel(positionForParentAdapter) as? TabsViewModel)?.let { tabsViewModel ->
-                val tabsListData = tabsViewModel.getListDataLiveData().value
-                tabsListData?.let { listData ->
-                    listData.forEach { item ->
-                        if (item.data?.get(0)?.isSelected == true
-                                && item.data?.get(0)?.name != tabsItemViewModel.getComponentLiveData().value?.data?.get(0)?.name) {
-                            item.data?.get(0)?.isSelected = false
-                        }
-                    }
-                    tabsViewModel.getListDataLiveData().value = listData
-                }
-            }
-        }
 
-    }
 
     private fun showSelectedView(isSelected: Boolean) {
         if (isSelected) {
@@ -118,3 +88,5 @@ class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : Abstr
     }
 
 }
+
+

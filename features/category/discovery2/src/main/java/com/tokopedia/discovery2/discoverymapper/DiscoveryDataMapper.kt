@@ -34,7 +34,7 @@ class DiscoveryDataMapper {
         fun mapTabsListToComponentList(itemList: List<DataItem>, subComponentName: String = "", position: Int): ArrayList<ComponentsItem> {
             val list = ArrayList<ComponentsItem>()
             var isSelectedFound = false
-            itemList.forEach {
+            itemList.forEachIndexed { index, it ->
                 if (it.isSelected) {
                     isSelectedFound = true
                 }
@@ -44,6 +44,7 @@ class DiscoveryDataMapper {
                 val dataItem = mutableListOf<DataItem>()
                 dataItem.add(it)
                 componentsItem.data = dataItem
+                componentsItem.id = "tab_item_$index"
                 list.add(componentsItem)
             }
             if (!isSelectedFound) {

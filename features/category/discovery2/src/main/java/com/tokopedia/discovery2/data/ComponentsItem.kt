@@ -2,13 +2,14 @@ package com.tokopedia.discovery2.data
 
 import com.google.gson.annotations.SerializedName
 
-data class ComponentsItem (
+data class ComponentsItem(
 
         @SerializedName("render_by_default")
         val renderByDefault: Boolean = false,
 
         @SerializedName("data")
         var data: List<DataItem>? = null,
+
 
         @SerializedName("ab_modulo")
         val abModulo: String? = "",
@@ -20,7 +21,7 @@ data class ComponentsItem (
         val abDefault: Boolean = false,
 
         @SerializedName("id")
-        val id: String = "",
+        var id: String = "",
 
         @SerializedName("is_ab")
         val isAb: Boolean = false,
@@ -39,4 +40,6 @@ data class ComponentsItem (
         var shimmerWidth: Int = 0,
 
         var constraintRatio: String? = null
-)
+) {
+    var componentsItem: List<ComponentsItem>? = null
+}
