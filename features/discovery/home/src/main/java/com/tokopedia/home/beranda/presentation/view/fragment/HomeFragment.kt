@@ -688,7 +688,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun observeSearchHint() {
-        if (view != null && !viewModel.get().searchHint.hasObservers() && homeMainToolbar != null && homeMainToolbar?.getViewHomeMainToolBar() != null) {
+        if (view != null && ::viewModel.isInitialized && !viewModel.get().searchHint.hasObservers() && homeMainToolbar != null && homeMainToolbar?.getViewHomeMainToolBar() != null) {
             viewModel.get().searchHint.observe(viewLifecycleOwner, Observer { data: SearchPlaceholder -> setHint(data) })
         }
     }
