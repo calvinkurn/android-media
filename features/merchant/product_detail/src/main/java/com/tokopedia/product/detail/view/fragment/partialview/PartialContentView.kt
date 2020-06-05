@@ -48,7 +48,6 @@ class PartialContentView(private val view: View,
         }
 
         renderStockAvailable(campaign, data.variant.isVariant, data.stock.getFinalStockWording(nearestWarehouseStockWording), basic.isActive())
-        label_prescription.showWithCondition(basic.needPrescription)
     }
 
     fun updateWishlist(wishlisted: Boolean, shouldShowWishlist: Boolean) = with(view) {

@@ -79,7 +79,7 @@ class ProductMiniShopInfoViewHolder(private val view: View, private val listener
     private fun renderTxtIcon(labelIc: String, imageIc: ImageSpan) = with(view.txt_mini_shop_title) {
         val blackString = context.getString(R.string.label_dijual) + "  "
         val startSpan = blackString.length
-        val spanText = android.text.SpannableString(blackString + "   " +
+        val spanText = android.text.SpannableString(blackString + "  " +
                 labelIc)
         val boldTypeface = com.tokopedia.unifyprinciples.getTypeface(context, "RobotoBold.ttf")
 

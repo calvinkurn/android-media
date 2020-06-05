@@ -6,7 +6,6 @@ import android.app.Application
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
@@ -77,6 +76,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_PRODUCT_ID
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_SHOP_ID
+import com.tokopedia.product.detail.common.data.model.constant.ProductShopStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
@@ -164,21 +164,20 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         trackerAttribution: String? = null,
                         trackerListName: String? = null,
                         affiliateString: String? = null,
-                        deeplinkUrl: String? = null) =
-                DynamicProductDetailFragment().also {
-                    it.arguments = Bundle().apply {
-                        productId?.let { pid -> putString(ProductDetailConstant.ARG_PRODUCT_ID, pid) }
-                        warehouseId?.let { whId -> putString(ProductDetailConstant.ARG_WAREHOUSE_ID, whId) }
-                        productKey?.let { pkey -> putString(ProductDetailConstant.ARG_PRODUCT_KEY, pkey) }
-                        shopDomain?.let { domain -> putString(ProductDetailConstant.ARG_SHOP_DOMAIN, domain) }
-                        trackerAttribution?.let { attribution -> putString(ProductDetailConstant.ARG_TRACKER_ATTRIBUTION, attribution) }
-                        trackerListName?.let { listName -> putString(ProductDetailConstant.ARG_TRACKER_LIST_NAME, listName) }
-                        affiliateString?.let { affiliateString -> putString(ProductDetailConstant.ARG_AFFILIATE_STRING, affiliateString) }
-                        deeplinkUrl?.let { deeplinkUrl -> putString(ProductDetailConstant.ARG_DEEPLINK_URL, deeplinkUrl) }
-                        putBoolean(ProductDetailConstant.ARG_FROM_DEEPLINK, isFromDeeplink)
-                        putBoolean(ProductDetailConstant.ARG_FROM_AFFILIATE, isAffiliate)
-                    }
-                }
+                        deeplinkUrl: String? = null) = DynamicProductDetailFragment().also {
+            it.arguments = Bundle().apply {
+                productId?.let { pid -> putString(ProductDetailConstant.ARG_PRODUCT_ID, pid) }
+                warehouseId?.let { whId -> putString(ProductDetailConstant.ARG_WAREHOUSE_ID, whId) }
+                productKey?.let { pkey -> putString(ProductDetailConstant.ARG_PRODUCT_KEY, pkey) }
+                shopDomain?.let { domain -> putString(ProductDetailConstant.ARG_SHOP_DOMAIN, domain) }
+                trackerAttribution?.let { attribution -> putString(ProductDetailConstant.ARG_TRACKER_ATTRIBUTION, attribution) }
+                trackerListName?.let { listName -> putString(ProductDetailConstant.ARG_TRACKER_LIST_NAME, listName) }
+                affiliateString?.let { affiliateString -> putString(ProductDetailConstant.ARG_AFFILIATE_STRING, affiliateString) }
+                deeplinkUrl?.let { deeplinkUrl -> putString(ProductDetailConstant.ARG_DEEPLINK_URL, deeplinkUrl) }
+                putBoolean(ProductDetailConstant.ARG_FROM_DEEPLINK, isFromDeeplink)
+                putBoolean(ProductDetailConstant.ARG_FROM_AFFILIATE, isAffiliate)
+            }
+        }
     }
 
     @Inject
@@ -543,7 +542,23 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 onShopChatClicked()
             }
             R.id.btn_apply_leasing -> doAtc(ProductDetailConstant.LEASING_BUTTON)
-            R.id.btn_edit_product -> gotoEditProduct()
+            R.id.btn_edit_product -> {
+                val shopInfo = viewModel.shopInfo
+                val productInfo = viewModel.getDynamicProductInfoP1
+                if (shopInfo != null && shopInfo.isAllowManage == 1) {
+                    if (productInfo?.basic?.status != ProductStatusTypeDef.PENDING) {
+                        DynamicProductDetailTracking.Click.eventEditProductClick(viewModel.isUserSessionActive, viewModel.getDynamicProductInfoP1, ComponentTrackDataModel())
+                        gotoEditProduct()
+                    } else {
+                        activity?.run {
+                            val statusMessage = productInfo.basic.statusMessage(this)
+                            if (statusMessage.isNotEmpty()) {
+                                showToasterWithAction(getString(R.string.product_is_at_status_x, statusMessage), getString(R.string.close), {})
+                            }
+                        }
+                    }
+                }
+            }
             else -> {
             }
         }
@@ -895,23 +910,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun onFabWishlistClicked(isActive: Boolean, componentTrackDataModel: ComponentTrackDataModel) {
-        val shopInfo = viewModel.shopInfo
         val productInfo = viewModel.getDynamicProductInfoP1
         if (viewModel.isUserSessionActive) {
             val productP3value = viewModel.productInfoP3RateEstimate.value
-            if (shopInfo != null && shopInfo.isAllowManage == 1) {
-                if (productInfo?.basic?.status != ProductStatusTypeDef.PENDING) {
-                    DynamicProductDetailTracking.Click.eventEditProductClick(viewModel.isUserSessionActive, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-                    gotoEditProduct()
-                } else {
-                    activity?.run {
-                        val statusMessage = productInfo.basic.statusMessage(this)
-                        if (statusMessage.isNotEmpty()) {
-                            showToasterWithAction(getString(R.string.product_is_at_status_x, statusMessage), getString(R.string.close), {})
-                        }
-                    }
-                }
-            } else if (productP3value != null) {
+            if (productP3value != null) {
                 if (isActive) {
                     productInfo?.basic?.productID?.let {
                         viewModel.removeWishList(it,
@@ -1458,10 +1460,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun showOrHideButton() {
         viewModel.shopInfo?.let {
+            val shopStatus = viewModel.shopInfo?.statusInfo?.shopStatus
+            val shouldShowSellerButtonByShopType = shopStatus != ProductShopStatusTypeDef.DELETED && shopStatus != ProductShopStatusTypeDef.MODERATED_PERMANENTLY
             if (viewModel.isShopOwner()) {
-                actionButtonView.visibility = true
+                actionButtonView.visibility = shouldShowSellerButtonByShopType
             } else {
-                actionButtonView.visibility = !isAffiliate && viewModel.shopInfo?.statusInfo?.shopStatus == ProductDetailConstant.STATUS_AVAILABLE
+                actionButtonView.visibility = !isAffiliate && viewModel.shopInfo?.statusInfo?.shopStatus == ProductShopStatusTypeDef.OPEN
             }
             return
         }

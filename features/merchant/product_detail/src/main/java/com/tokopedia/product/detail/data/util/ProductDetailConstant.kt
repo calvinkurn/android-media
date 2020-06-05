@@ -28,10 +28,6 @@ object ProductDetailConstant {
 
     const val VALUE_NEW_ETALASE = "new"
 
-    //Status Code
-    const val STATUS_BANNED = -2
-    const val STATUS_AVAILABLE = 1
-
     //waarehouse product
     const val PATH_MOVE_TO_WAREHOUSE = "move_to_warehouse.pl"
     const val PATH_MOVE_TO_ETALASE = "edit_etalase.pl"

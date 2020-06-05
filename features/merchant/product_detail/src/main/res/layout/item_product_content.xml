@@ -262,30 +262,11 @@
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/label_prescription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_4"
-            android:layout_marginRight="@dimen/dp_4"
-            android:background="@drawable/bg_rounded_pink"
-            android:paddingLeft="@dimen/dp_4"
-            android:paddingTop="@dimen/dp_3"
-            android:paddingRight="@dimen/dp_4"
-            android:paddingBottom="@dimen/dp_3"
-            android:textColor="@color/red_400"
-            android:visibility="gone"
-            app:typographyType="small"
-            app:typographyWeight="bold"
-            tools:text="Obat Keras"
-            tools:visibility="visible" />
-
-        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_slash_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
-            android:textColor="@color/Neutral_N700_32"
+            android:textColor="@color/Neutral_N700_68"
             android:visibility="gone"
             app:typographyType="body_3"
             tools:text="Rp300.000"

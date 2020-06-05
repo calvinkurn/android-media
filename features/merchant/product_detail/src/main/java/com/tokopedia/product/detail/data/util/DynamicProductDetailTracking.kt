@@ -165,7 +165,7 @@ object DynamicProductDetailTracking {
             val mapEvent = TrackAppUtils.gtmData(
                     ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Category.PDP,
-                    "click $buttonActionText on pdp - non login",
+                    "click $buttonActionText on pdp - before login",
                     "")
             mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID] = userId
             mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] = productInfo?.basic?.shopID
@@ -596,7 +596,7 @@ object DynamicProductDetailTracking {
             )
         }
 
-        fun eventEditProductClick (isSessionActive: Boolean, productInfo: DynamicProductInfoP1?,
+        fun eventEditProductClick(isSessionActive: Boolean, productInfo: DynamicProductInfoP1?,
                                    componentTrackDataModel: ComponentTrackDataModel) {
             val topAdsAction = ProductTrackingConstant.Action.TOPADS_CLICK + (if (!isSessionActive) " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}" else "")
 

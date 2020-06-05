@@ -23,7 +23,7 @@
     <string name="template_cashback">Cashback %1$s%%</string>
     <string name="template_price">%1$s%2$s</string>
     <string name="template_weight">%1$s %2$s</string>
-    <string name="template_campaign_off">%1$s%% OFF </string>
+    <string name="template_campaign_off">%1$s%%</string>
     <string name="template_review">%1$d Ulasan</string>
     <string name="template_success_rate">%1$s%% (%2$s)</string>
     <string name="template_talk">%1$d Q&amp;A</string>
@@ -226,8 +226,8 @@
     <!--Social Proof-->
     <string name="bracket_formated">(%1s)</string>
     <string name="label_terjual">Terjual</string>
-    <string name="terjual_single_text_template_builder">%1s orang sudah membeli barang ini.</string>
-    <string name="product_view_single_text__template_builder">%1s orang sudah melihat barang ini.</string>
+    <string name="terjual_single_text_template_builder">%1s barang berhasil terjual.</string>
+    <string name="product_view_single_text__template_builder">%1s orang melihat barang ini.</string>
     <string name="label_wishlist">Wishlist</string>
     <string name="label_qna"><![CDATA[Q&A]]></string>
     <string name="qna_template_builder"><![CDATA[<b>Q&A</b> %1s]]></string>
