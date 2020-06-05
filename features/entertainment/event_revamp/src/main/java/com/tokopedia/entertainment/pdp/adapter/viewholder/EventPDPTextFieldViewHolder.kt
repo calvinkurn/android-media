@@ -24,7 +24,7 @@ class EventPDPTextFieldViewHolder(val view: View,
 
     fun bind(element: Form, position: Int){
         with(itemView){
-            if(position > 0) txtValue.setMargin(0, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, context.resources.getDimension(R.dimen.spacing_lvl3), context.resources.displayMetrics).toInt(), 0, 0)
+            if(position > 0) txtValue.setMargin(0, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3), context.resources.displayMetrics).toInt(), 0, 0)
 
             txtValue.setPlaceholder(element.helpText)
             txtValue.textFiedlLabelText.text = element.title
