@@ -83,6 +83,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     companion object {
 
         private const val ARG_IS_EDIT = "is_edit"
+        private const val DEFAULT_PREFERENCE_STATUS = 2
 
         fun newInstance(isEdit: Boolean = false): PreferenceSummaryFragment {
             val preferenceSummaryFragment = PreferenceSummaryFragment()
@@ -240,7 +241,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
             if (arguments?.getBoolean(ARG_IS_EDIT) == false && !parent.isExtraProfile()) {
                 cbMainPreference?.gone()
                 tvMainPreference?.gone()
-            } else if (data.status == 2) {
+            } else if (data.status == DEFAULT_PREFERENCE_STATUS) {
                 cbMainPreference?.gone()
                 tvMainPreference?.gone()
             }
