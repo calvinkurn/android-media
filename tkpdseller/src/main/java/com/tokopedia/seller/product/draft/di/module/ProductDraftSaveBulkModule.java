@@ -32,12 +32,15 @@ import dagger.Provides;
 @Module
 public class ProductDraftSaveBulkModule extends ProductAddModule {
 
+    //this is for seller app
     private final Context context;
 
+    //this is for seller app
     public ProductDraftSaveBulkModule(Context context) {
         this.context = context;
     }
 
+    //this is for seller app
     @ProductAddScope
     @com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
     @Provides
@@ -66,28 +69,32 @@ public class ProductDraftSaveBulkModule extends ProductAddModule {
 
     @ProductAddScope
     @Provides
-    UserSessionInterface provideUserSession(@com.tokopedia.abstraction.common.di.qualifier.ApplicationContext Context context) {
-        return new UserSession(context);
-    }
-
-    @ProductAddScope
-    @Provides
     ProductDraftDao provideProductDraftDao(ProductDraftDB productDraftDB){
         return productDraftDB.getProductDraftDao();
     }
 
+    //this is for seller app
+    @ProductAddScope
+    @Provides
+    UserSessionInterface provideUserSession(@com.tokopedia.abstraction.common.di.qualifier.ApplicationContext Context context) {
+        return new UserSession(context);
+    }
+
+    //this is for seller app
     @ProductAddScope
     @Provides
     AddEditProductDraftDb provideAddEditProductDraftDb(@com.tokopedia.abstraction.common.di.qualifier.ApplicationContext Context context) {
         return AddEditProductDraftDb.getInstance(context);
     }
 
+    //this is for seller app
     @ProductAddScope
     @Provides
     AddEditProductDraftDao provideAddEditProductDraftDao(AddEditProductDraftDb draftDb) {
         return draftDb.getDraftDao();
     }
 
+    //this is for seller app
     @ProductAddScope
     @Provides
     AddEditProductDraftRepository provideAddEditProductDraftRepository(

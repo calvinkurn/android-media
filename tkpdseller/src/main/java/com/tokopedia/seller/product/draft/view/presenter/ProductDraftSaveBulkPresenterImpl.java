@@ -10,6 +10,7 @@ import com.tokopedia.seller.product.draft.domain.interactor.SaveInstagramToProdu
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import rx.Subscriber;
@@ -62,8 +63,7 @@ public class ProductDraftSaveBulkPresenterImpl extends ProductDraftSaveBulkPrese
             saveInstagramToProductDraftUseCase.execute(
                     SaveInstagramToProductDraftUseCase.Companion.generateUploadProductParam(
                     correctResolutionLocalPathList, correctResolutionInstagramDescList),
-                    getSaveInstagramToProductDraftSubscriber()
-            );
+                    getSaveInstagramToProductDraftSubscriber());
         } else {
             saveBulkDraftProductUseCase.execute(
                     SaveBulkDraftProductUseCase.generateUploadProductParam(
@@ -121,7 +121,8 @@ public class ProductDraftSaveBulkPresenterImpl extends ProductDraftSaveBulkPrese
             @Override
             public void onNext(List<? extends Long> productIds) {
                 if(isViewAttached()) {
-                    getView().onSaveBulkDraftSuccess((List<Long>) productIds);
+                    List<Long> productIdList = new LinkedList<Long>(productIds);
+                    getView().onSaveBulkDraftSuccess(productIdList);
                 }
             }
         };
