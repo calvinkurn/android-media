@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.viewModel
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -42,7 +43,6 @@ import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import kotlinx.coroutines.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelChildren
@@ -75,6 +75,7 @@ open class HomeViewModel @Inject constructor(
         private val getHomeTokopointsDataUseCase: GetHomeTokopointsDataUseCase,
         private val getKeywordSearchUseCase: GetKeywordSearchUseCase,
         private val getPendingCashbackUseCase: GetCoroutinePendingCashbackUseCase,
+        private val getPlayBannerUseCase: GetPlayWidgetUseCase,
         private val getPlayCardHomeUseCase: GetPlayLiveDynamicUseCase,
         private val getRecommendationTabUseCase: GetRecommendationTabUseCase,
         private val getWalletBalanceUseCase: GetCoroutineWalletBalanceUseCase,
@@ -84,7 +85,6 @@ open class HomeViewModel @Inject constructor(
         private val sendTopAdsUseCase: SendTopAdsUseCase,
         private val getRechargeRecommendationUseCase: GetRechargeRecommendationUseCase,
         private val declineRechargeRecommendationUseCase: DeclineRechargeRecommendationUseCase,
-        private val getPlayBannerUseCase: GetPlayWidgetUseCase,
         private val homeDispatcher: HomeDispatcherProvider
 ) : BaseViewModel(homeDispatcher.io()){
 
@@ -97,7 +97,7 @@ open class HomeViewModel @Inject constructor(
         const val ATC = "atc"
         const val CHANNEL = "channel"
         const val GRID = "grid"
-        const val QUANTITIY = "quantity"
+        const val QUANTITY = "quantity"
         const val POSITION = "position"
         private var lastRequestTimeHomeData: Long = 0
         private var lastRequestTimeSendGeolocation: Long = 0
@@ -255,6 +255,27 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
+    private fun getPlayBannerV2(playCarouselCardDataModel: PlayCarouselCardDataModel){
+        launch(coroutineContext){
+            getPlayBannerUseCase.setParams(
+                    widgetType = GetPlayWidgetUseCase.HOME_WIDGET_TYPE,
+                    authorId = "",
+                    authorType = GetPlayWidgetUseCase.HOME_AUTHOR_TYPE
+            )
+            val newPlayCarouselDataModel = getPlayBannerUseCase.executeOnBackground()
+            val newList = mutableListOf<Visitable<*>>()
+            newList.addAll(_homeLiveData.value?.list ?: listOf())
+            val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCarouselCardDataModel }
+            if(playIndex != -1 && newList[playIndex] is PlayCarouselCardDataModel){
+                launch {
+                    updateWidget(UpdateLiveDataModel(ACTION_UPDATE, playCarouselCardDataModel.copy(
+                            playBannerCarouselDataModel = newPlayCarouselDataModel
+                    ), playIndex))
+                }
+            }
+        }
+    }
+
     private fun updateHeaderViewModel(tokopointsDrawer: TokopointsDrawer? = null,
                                       homeHeaderWalletAction: HomeHeaderWalletAction? = null,
                                       tokopointHomeDrawerData: TokopointHomeDrawerData? = null,
@@ -321,6 +342,7 @@ open class HomeViewModel @Inject constructor(
             var newHomeViewModel = homeDataModel
             if(isNeedShowGeoLocation) newHomeViewModel = onRemoveSuggestedReview(it)
             newHomeViewModel = evaluatePlayWidget(newHomeViewModel)
+            newHomeViewModel = evaluatePlayCarouselWidget(newHomeViewModel)
             newHomeViewModel = evaluateBuWidgetData(newHomeViewModel)
             newHomeViewModel = evaluateRecommendationSection(newHomeViewModel)
             newHomeViewModel = evaluatePopularKeywordComponent(newHomeViewModel)
@@ -362,6 +384,19 @@ open class HomeViewModel @Inject constructor(
         val playBanner = _homeLiveData.value?.list?.find { it is PlayCardDataModel }
         if(playBanner != null && playBanner is PlayCardDataModel) {
             getLoadPlayBannerFromNetwork(playBanner)
+        }
+    }
+
+    // Logic get play carousel and should load from API
+    fun getPlayBannerCarousel(position: Int = 0){
+        val visitable = _homeLiveData.value?.list?.get(position)
+        if(visitable != null && visitable is PlayCarouselCardDataModel){
+            getPlayBannerV2(visitable)
+        } else {
+            val playBannerCarousel = _homeLiveData.value?.list?.find { it is PlayCarouselCardDataModel }
+            if(playBannerCarousel != null && playBannerCarousel is PlayCarouselCardDataModel){
+                getPlayBannerV2(playBannerCarousel)
+            }
         }
     }
 
@@ -546,6 +581,26 @@ open class HomeViewModel @Inject constructor(
         return homeDataModel
     }
 
+    private fun evaluatePlayCarouselWidget(homeDataModel: HomeDataModel?): HomeDataModel? {
+        homeDataModel?.let { homeViewModel ->
+            // find the old data from current list
+            val playWidget = _homeLiveData.value?.list?.find { visitable -> visitable is PlayCarouselCardDataModel}
+            if(playWidget != null) {
+                // Find the new play widget is still available or not
+                val list = homeViewModel.list.toMutableList()
+                val playIndex = list.indexOfFirst { visitable -> visitable is PlayCarouselCardDataModel }
+
+                // if on new home available the data, it will be load new data
+                if(playIndex != -1){
+                    list[playIndex] = playWidget
+                    return homeViewModel.copy(list = list)
+                }
+            }
+        }
+
+        return homeDataModel
+    }
+
     private fun evaluateBuWidgetData(homeDataModel: HomeDataModel?): HomeDataModel? {
         homeDataModel?.let { homeViewModel ->
             val findBuWidgetViewModel =
@@ -638,6 +693,7 @@ open class HomeViewModel @Inject constructor(
                     getHeaderData()
                     getReviewData()
                     getPlayBanner()
+                    getPlayBannerCarousel()
                     getPopularKeyword()
                     getRechargeRecommendation()
                     _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>() ?: listOf()))
@@ -895,7 +951,7 @@ open class HomeViewModel @Inject constructor(
                                                 ATC to it,
                                                 CHANNEL to channel,
                                                 GRID to grid,
-                                                QUANTITIY to quantity,
+                                                QUANTITY to quantity,
                                                 POSITION to position
 
                                         )
@@ -988,6 +1044,7 @@ open class HomeViewModel @Inject constructor(
                                 else newList.add(data.position, homeVisitable)
                             }
                             ACTION_UPDATE -> {
+                                Log.d("UPDATE", "UPDATE WIDGET $homeVisitable")
                                 if (data.position != -1 && newList.isNotEmpty() && newList.size > data.position && newList[data.position]::class.java == homeVisitable::class.java) {
                                     newList[data.position] = homeVisitable
                                 } else {

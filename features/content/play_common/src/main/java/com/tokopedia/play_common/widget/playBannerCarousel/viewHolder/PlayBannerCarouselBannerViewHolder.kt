@@ -9,6 +9,6 @@ import kotlinx.android.synthetic.main.item_play_banner_carousel_banner.view.*
 class PlayBannerCarouselBannerViewHolder(parent: View, private val listener: PlayBannerCarouselViewEventListener?): BasePlayBannerCarouselViewHolder<PlayBannerCarouselBannerDataModel>(parent){
     override fun bind(dataModel: PlayBannerCarouselBannerDataModel) {
         itemView.background_banner_mix_more?.loadImage(dataModel.imageUrl)
-        itemView.setOnClickListener { listener?.onSeeMoreClick(dataModel.applink) }
+        itemView.setOnClickListener { listener?.onSeeMoreClick(dataModel, adapterPosition) }
     }
 }

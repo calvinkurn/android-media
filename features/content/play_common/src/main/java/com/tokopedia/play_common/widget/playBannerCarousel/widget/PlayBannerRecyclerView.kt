@@ -56,6 +56,7 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
     // Media List
     private val mediaObjects: MutableList<BasePlayBannerCarouselModel> = mutableListOf()
     private val mediaObjectsLastPosition = mutableListOf<Int>()
+    private var isAutoPlay: Boolean = false
 
     constructor(context: Context) : this(context, null, 0)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -114,6 +115,8 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
 
     private fun playVideos() {
         try{
+            if(!isAutoPlay) return
+
             val targetPositions: MutableList<Int> = mutableListOf()
                 var startPosition: Int = (Objects.requireNonNull(
                         layoutManager) as LinearLayoutManager).findFirstVisibleItemPosition()
@@ -148,7 +151,7 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
                 val playPosition = targetPositions[i]
                 val media = mediaObjects[playPosition]
 
-                if(media is PlayBannerCarouselItemDataModel && !media.isAutoPlay){
+                if(media is PlayBannerCarouselItemDataModel){
                     if(!targetPositions.contains(videoPlayer1.position)){
                         /* stop previous player if running */
                         removeVideoView(videoPlayer1)
@@ -243,6 +246,10 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
         this.mediaObjectsLastPosition.addAll(list.map { 0 })
         resetVideoPlayer()
         playVideos()
+    }
+
+    fun setAutoPlay(isAutoPlay: Boolean){
+        this.isAutoPlay = isAutoPlay
     }
 
     private fun getMediaSourceBySource(context: Context, uri: Uri, appName: String): MediaSource {

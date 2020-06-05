@@ -94,6 +94,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataMo
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomepageBannerDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCarouselCardDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerOrganicViewHolder
@@ -139,6 +140,7 @@ import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutine
 import com.tokopedia.weaver.WeaverFirebaseConditionCheck
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.jetbrains.annotations.NotNull
 import rx.Observable
 import rx.schedulers.Schedulers
@@ -153,6 +155,7 @@ import javax.inject.Inject
  * @author by errysuprayogi on 11/27/17.
  */
 @SuppressLint("SyntheticAccessor")
+@ExperimentalCoroutinesApi
 open class HomeFragment : BaseDaggerFragment(),
         OnRefreshListener,
         HomeCategoryListener,
@@ -1267,6 +1270,10 @@ open class HomeFragment : BaseDaggerFragment(),
         } else {
             openWebViewURL(actionLink, activity)
         }
+    }
+
+    override fun onPlayBannerCarouselRefresh(playCarouselCardDataModel: PlayCarouselCardDataModel, position: Int) {
+        viewModel?.getPlayBannerCarousel(position)
     }
 
     private fun openApplink(applink: String, trackingAttribution: String) {

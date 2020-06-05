@@ -48,6 +48,7 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
     fun setItem(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
         val list = playBannerCarouselDataModel.channelList
         if(adapter == null){
+            recycler_view?.setAutoPlay(playBannerCarouselDataModel.isAutoPlay)
             recycler_view?.setMedia(list)
             adapter = PlayBannerCarouselAdapter(adapterTypeFactory)
             recycler_view?.layoutManager = linearLayoutManager

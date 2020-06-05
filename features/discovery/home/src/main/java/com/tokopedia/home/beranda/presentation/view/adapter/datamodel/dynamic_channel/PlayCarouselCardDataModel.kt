@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel
 
 import android.os.Bundle
-import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
@@ -10,7 +9,6 @@ import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarou
 
 data class PlayCarouselCardDataModel(
         val channel: DynamicHomeChannel.Channels? = null,
-        val playCardHome: PlayChannel? = null,
         val playBannerCarouselDataModel: PlayBannerCarouselDataModel = PlayBannerCarouselDataModel()
 ): HomeVisitable, ImpressHolder() {
     override fun visitableId(): String {
@@ -23,16 +21,7 @@ data class PlayCarouselCardDataModel(
                     && channel?.name == b.channel?.name
                     && channel?.header?.name == b.channel?.header?.name
                     && channel?.header?.applink == b.channel?.header?.applink
-                    && playCardHome == b.playCardHome
-                    && playCardHome?.channelId == b.playCardHome?.channelId
-                    && playCardHome?.coverUrl == b.playCardHome?.coverUrl
-                    && playCardHome?.videoStream?.config?.streamUrl == b.playCardHome?.videoStream?.config?.streamUrl
-                    && playCardHome?.videoStream?.isLive == b.playCardHome?.videoStream?.isLive
-                    && playCardHome?.description == b.playCardHome?.description
-                    && playCardHome?.moderatorName == b.playCardHome?.moderatorName
-                    && playCardHome?.title == b.playCardHome?.title
-                    && playCardHome?.totalView == b.playCardHome?.totalView
-                    && playCardHome?.isShowTotalView == b.playCardHome?.isShowTotalView
+                    && playBannerCarouselDataModel == b.playBannerCarouselDataModel
         }
         return false
     }

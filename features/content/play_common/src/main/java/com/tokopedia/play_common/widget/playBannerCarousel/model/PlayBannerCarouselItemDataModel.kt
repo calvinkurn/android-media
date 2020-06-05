@@ -11,7 +11,6 @@ data class PlayBannerCarouselItemDataModel(
         val channelTitle: String = "",
         val channelCreator: String = "",
         val isLive: Boolean = false,
-        val isAutoPlay: Boolean = false,
         val isShowTotalView: Boolean = false,
         val countView: String = "",
         val coverUrl: String = "",
