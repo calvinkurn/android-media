@@ -27,8 +27,8 @@ import com.tokopedia.play.broadcaster.view.custom.PlayRequestPermissionView
 import com.tokopedia.play.broadcaster.view.event.ScreenStateEvent
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment.Companion.PARENT_FRAGMENT_TAG
-import com.tokopedia.play.broadcaster.view.fragment.PlayLiveBroadcastFragment
-import com.tokopedia.play.broadcaster.view.fragment.PlayPrepareBroadcastFragment
+import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
+import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.unifyprinciples.Typography
@@ -192,13 +192,13 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
     private fun observeScreenStateEvent() {
         viewModel.observableScreenStateEvent.observe(this, EventObserver{
             when(it) {
-                is ScreenStateEvent.ShowPreparePage -> {
-                    navigateToFragment(PlayPrepareBroadcastFragment::class.java)
+                is ScreenStateEvent.ShowSetupPage -> {
+                    navigateToFragment(PlayBroadcastSetupFragment::class.java)
                 }
-                is ScreenStateEvent.ShowLivePage -> {
-                    navigateToFragment(PlayLiveBroadcastFragment::class.java,
+                is ScreenStateEvent.ShowUserInteractionPage -> {
+                    navigateToFragment(PlayBroadcastUserInteractionFragment::class.java,
                             Bundle().apply {
-                                putString(PlayLiveBroadcastFragment.KEY_CHANNEL_ID, it.channelId)
+                                putString(PlayBroadcastUserInteractionFragment.KEY_CHANNEL_ID, it.channelId)
                             })
                 }
             }

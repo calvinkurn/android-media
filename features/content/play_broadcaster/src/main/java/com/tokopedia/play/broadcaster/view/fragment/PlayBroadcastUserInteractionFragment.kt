@@ -4,11 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
@@ -17,14 +20,13 @@ import com.tokopedia.play.broadcaster.util.event.EventObserver
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.unifyprinciples.Typography
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
 /**
  * Created by mzennis on 25/05/20.
  */
-class PlayLiveBroadcastFragment @Inject constructor(
+class PlayBroadcastUserInteractionFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
         private val fragmentFactory: FragmentFactory
 ): PlayBaseBroadcastFragment() {
@@ -32,6 +34,7 @@ class PlayLiveBroadcastFragment @Inject constructor(
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
     private lateinit var tvTimeCounter: Typography
+    private lateinit var tvTimeCounterEnd: AppCompatTextView
     private lateinit var tvTotalView: Typography
     private lateinit var tvTotalLike: Typography
 
@@ -44,7 +47,7 @@ class PlayLiveBroadcastFragment @Inject constructor(
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_play_live_broadcast, container, false)
+        return inflater.inflate(R.layout.fragment_play_broadcast_user_interaction, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -56,7 +59,7 @@ class PlayLiveBroadcastFragment @Inject constructor(
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        observeChannelInfo()
+//        observeChannelInfo() // TODO("double check")
         observeCountDownDuration()
         observeTotalViews()
         observeTotalLikes()
@@ -64,6 +67,7 @@ class PlayLiveBroadcastFragment @Inject constructor(
 
     private fun initView(view: View) {
         tvTimeCounter = view.findViewById(R.id.tv_time_counter)
+        tvTimeCounterEnd = view.findViewById(R.id.tv_time_counter_end)
         tvTotalView = view.findViewById(R.id.tv_total_views)
         tvTotalLike = view.findViewById(R.id.tv_total_likes)
     }
@@ -87,13 +91,25 @@ class PlayLiveBroadcastFragment @Inject constructor(
         return true
     }
 
-    private fun setCountDownTimer(millisUntilFinish: Long) {
-        tvTimeCounter.text = String.format("%02d:%02d",
-                TimeUnit.MILLISECONDS.toMinutes(millisUntilFinish),
-                TimeUnit.MILLISECONDS.toSeconds(millisUntilFinish) -
-                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinish))
-        )
+    private fun setCountDownTimer(
+            elapsedTime: String,
+            minutesUntilFinished: Long,
+            secondsUntilFinished: Long
+    ) {
+        if (shouldShowWhenFiveTwoMinutesLeft(minutesUntilFinished, secondsUntilFinished)) {
+            tvTimeCounterEnd.show()
+            tvTimeCounter.invisible()
+        } else {
+            tvTimeCounterEnd.invisible()
+            tvTimeCounter.show()
+        }
+        tvTimeCounterEnd.text = getString(R.string.play_live_broadcast_time_left, minutesUntilFinished)
+        tvTimeCounter.text = elapsedTime
     }
+
+    private fun shouldShowWhenFiveTwoMinutesLeft(minutesUntilFinished: Long,
+                                                 secondsUntilFinished: Long): Boolean =
+            (minutesUntilFinished == 2L || minutesUntilFinished == 5L) && secondsUntilFinished in 0..3
 
     private fun setTotalView(totalView: TotalViewUiModel) {
         tvTotalView.text = totalView.totalView
@@ -154,7 +170,7 @@ class PlayLiveBroadcastFragment @Inject constructor(
         parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, EventObserver{
             when (it) {
                 is PlayPusherInfoState.Active -> {
-                    setCountDownTimer(it.millisUntilFinished)
+                    setCountDownTimer(it.elapsedTime, it.minutesUntilFinished, it.secondsUntilFinished)
                 }
                 is PlayPusherInfoState.Finish -> {
                     parentViewModel.stopPushBroadcast()
@@ -164,11 +180,11 @@ class PlayLiveBroadcastFragment @Inject constructor(
         })
     }
 
-    private fun observeChannelInfo() {
-        parentViewModel.channelInfo.observe(viewLifecycleOwner, Observer {
-            parentViewModel.startPushBroadcast(ingestUrl = it.ingestUrl)
-        })
-    }
+//    private fun observeChannelInfo() {
+//        parentViewModel.channelInfo.observe(viewLifecycleOwner, Observer {
+//            parentViewModel.startPushBroadcast(ingestUrl = it.ingestUrl)
+//        })
+//    }
 
     private fun observeTotalViews() {
         parentViewModel.totalView.observe(viewLifecycleOwner, Observer(::setTotalView))
