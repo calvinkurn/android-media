@@ -1,33 +1,27 @@
 package com.tokopedia.withdraw.saldowithdrawal.presentation.fragment
 
-import android.graphics.PorterDuff
+//import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import android.os.Bundle
 import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.annotation.ColorRes
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
-import com.tokopedia.design.intdef.CurrencyEnum
-import com.tokopedia.design.text.watcher.AfterTextWatcher
-import com.tokopedia.design.text.watcher.CurrencyTextWatcher
-import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.webview.TkpdWebView
+import com.tokopedia.utils.text.currency.*
 import com.tokopedia.withdraw.R
 import com.tokopedia.withdraw.saldowithdrawal.WithdrawAnalytics
 import com.tokopedia.withdraw.saldowithdrawal.constant.BuyerSaldoWithdrawal
@@ -36,11 +30,13 @@ import com.tokopedia.withdraw.saldowithdrawal.constant.SellerSaldoWithdrawal
 import com.tokopedia.withdraw.saldowithdrawal.constant.WithdrawConstant
 import com.tokopedia.withdraw.saldowithdrawal.di.component.WithdrawComponent
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.BankAccount
+import com.tokopedia.withdraw.saldowithdrawal.helper.CurrencyTextWatcher
 import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.BankAccountAdapter
 import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.decoration.SpaceItemDecoration
 import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.layoutmanager.NonScrollableLinerLayoutManager
 import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.BankAccountListViewModel
 import kotlinx.android.synthetic.main.swd_fragment_base_withdrawal.*
+import kotlinx.android.synthetic.main.swd_success_page.view.*
 import javax.inject.Inject
 
 abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter.BankAdapterListener {
@@ -100,9 +96,9 @@ abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter
             if (::bankAccountListViewModel.isInitialized)
                 observeBaseViewModel()
             observeBaseViewModel()
-            addTextWatcherToUpdateWithdrawalState()
-            if (savedInstanceState == null)
-                etWithdrawalInput.setText("0")
+            //addTextWatcherToUpdateWithdrawalState()
+            // if (savedInstanceState == null)
+            //   tfWithdrawal.textFieldInput.setText("0")
         }
     }
 
@@ -127,26 +123,19 @@ abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter
         })
     }
 
-    private fun addTextWatcherToUpdateWithdrawalState() {
-        etWithdrawalInput.addTextChangedListener(object : AfterTextWatcher() {
-            override fun afterTextChanged(s: Editable?) {
-                val withdrawal: Long = StringUtils.convertToNumeric(s.toString(),
-                        false).toLong()
-                updateWithdrawalHint(bankAccountAdapter.getSelectedBankAccount(), withdrawal)
-                if (withdrawal == 0L) {
-                    etWithdrawalInput.setSelection(etWithdrawalInput.length())
-                }
-                updateWithdrawalButtonState(bankAccountAdapter.getSelectedBankAccount(), withdrawal)
-            }
-        })
-    }
-
     fun changeHintTextColor(@ColorRes hintColor: Int,
                             @ColorRes underLineColor: Int, hintText: String) {
-        etWithdrawalInput.background.mutate().setColorFilter(resources.getColor(underLineColor),
+        if(underLineColor == R.color.swd_hint_red){
+            tfWithdrawal.setError(true)
+            tfWithdrawal.setMessage(hintText)
+        }else {
+            tfWithdrawal.setError(false)
+            tfWithdrawal.setMessage(hintText)
+        }
+        /*tfWithdrawal.background.mutate().setColorFilter(resources.getColor(underLineColor),
                 PorterDuff.Mode.SRC_ATOP)
         saldoWithdrawHint.setTextColor(resources.getColor(hintColor))
-        saldoWithdrawHint.text = hintText
+        saldoWithdrawHint.text = hintText*/
     }
 
     fun updateWithdrawalButton(canWithdraw: Boolean) {
@@ -167,8 +156,8 @@ abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter
         }
         this.balance = balance
         if (balance > 0L) {
-            tvTotalSaldoBalance.text = CurrencyFormatUtil
-                    .convertPriceValueToIdrFormat(balance, false)
+            tvTotalSaldoBalance.text = getString(R.string.swd_rp,
+                    CurrencyFormatHelper.convertToRupiah(balance.toString()))
         } else {
             showBlankState()
         }
@@ -205,14 +194,27 @@ abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter
     }
 
     private fun setCurrencyTextWatcherToSaldoInput() {
-        val currencyTextWatcher = CurrencyTextWatcher(etWithdrawalInput, CurrencyEnum.RPwithSpace)
-        currencyTextWatcher.setMaxLength(WithdrawConstant.MAX_WITHDRAWAL_INPUT_LENGTH)
-        currencyTextWatcher.setDefaultValue("")
-        etWithdrawalInput.addTextChangedListener(currencyTextWatcher)
+        tfWithdrawal.textFieldInput.filters = arrayOf<InputFilter>(InputFilter
+                .LengthFilter(WithdrawConstant.MAX_WITHDRAWAL_INPUT_LENGTH))
+        tfWithdrawal.textFieldInput.addTextChangedListener(watcher())
+    }
+
+    private fun watcher(): NumberTextWatcher? {
+        return object : NumberTextWatcher(tfWithdrawal.textFieldInput, "0") {
+            override fun onNumberChanged(number: Double) {
+                val withdrawal: Long = number.toLong()
+                updateWithdrawalHint(bankAccountAdapter.getSelectedBankAccount(), withdrawal)
+                if (withdrawal == 0L) {
+                    tfWithdrawal.textFieldInput.setSelection(tfWithdrawal.textFieldInput.length())
+                }
+                updateWithdrawalButtonState(bankAccountAdapter.getSelectedBankAccount(), withdrawal)
+            }
+        }
     }
 
     private fun copyAllBalanceToWithdrawalAmount() {
-        etWithdrawalInput.setText(balance.toString())
+        tfWithdrawal.textFieldInput.setText(balance.toString())
+        tfWithdrawal.textFieldInput.setSelection(tfWithdrawal.textFieldInput.length())
         analytics.eventClickWithdrawalAll();
     }
 
@@ -240,7 +242,7 @@ abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter
     }
 
     private fun openTermsAndConditionBottomSheet() {
-        val bottomSheet = CloseableBottomSheetDialog
+        /*val bottomSheet = CloseableBottomSheetDialog
                 .createInstanceRounded(activity)
         val view = layoutInflater.inflate(R.layout.swd_layout_withdraw_tnc,
                 null, true)
@@ -251,7 +253,7 @@ abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter
         closeBtn.setOnClickListener { bottomSheet.dismiss() }
         titleView.text = getString(R.string.swd_tnc_title)
         bottomSheet.setCustomContentView(view, getString(R.string.swd_tnc_title), false)
-        bottomSheet.show()
+        bottomSheet.show()*/
     }
 
     fun lockWithdrawal(isLocked: Boolean) {
@@ -283,11 +285,11 @@ abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter
     }
 
     override fun onBankAccountChanged() {
-        val withdrawal: Long = StringUtils.convertToNumeric(etWithdrawalInput.text.toString(),
+        val withdrawal: Long = StringUtils.convertToNumeric(tfWithdrawal.textFieldInput.text.toString(),
                 false).toLong()
         updateWithdrawalHint(bankAccountAdapter.getSelectedBankAccount(), withdrawal)
         if (withdrawal == 0L) {
-            etWithdrawalInput.setSelection(etWithdrawalInput.length())
+            tfWithdrawal.textFieldInput.setSelection(tfWithdrawal.textFieldInput.length())
         }
         updateWithdrawalButtonState(bankAccountAdapter.getSelectedBankAccount(), withdrawal)
     }
@@ -296,7 +298,7 @@ abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter
         analytics.eventClickTarikSaldo()
         bankAccountAdapter.getSelectedBankAccount()?.let { bankAccount ->
             val withdrawalAmount = StringUtils
-                    .convertToNumeric(etWithdrawalInput.text.toString(),
+                    .convertToNumeric(tfWithdrawal.textFieldInput.text.toString(),
                             false).toLong()
             if (parentFragment is SaldoWithdrawalFragment) {
                 when (accountBalanceType) {
@@ -314,4 +316,23 @@ abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter
     }
 
 }
+
+
+/*override fun onNumberChanged(number: Double) {
+            super.onNumberChanged(number)
+            var input = number.toInt()
+            if (input < stepperModel?.finalBidPerClick!! * MULTIPLIER
+                    && daily_budget.isVisible) {
+                daily_budget.setError(true)
+                daily_budget.setMessage(String.format(getString(R.string.daily_budget_error), suggestion))
+                btn_submit.isEnabled = false
+            } else {
+                stepperModel?.dailyBudget = input
+                btn_submit.isEnabled = true
+                daily_budget.setMessage("")
+                daily_budget.setError(false)
+
+            }
+        }*/
+
 

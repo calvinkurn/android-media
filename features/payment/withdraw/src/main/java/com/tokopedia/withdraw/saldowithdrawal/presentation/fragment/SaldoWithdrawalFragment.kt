@@ -24,7 +24,6 @@ import com.tokopedia.abstraction.common.utils.network.URLGenerator
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -258,7 +257,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
 
     private fun openBottomSheetForRekeningProgram(isRegisterForProgram: Boolean,
                                                   copyWriting: CopyWriting) {
-        val briProgramBottomSheet = CloseableBottomSheetDialog
+        /*val briProgramBottomSheet = CloseableBottomSheetDialog
                 .createInstanceRounded(activity);
         val view = layoutInflater.inflate(R.layout.swd_program_tarik_saldo,
                 null, true)
@@ -287,7 +286,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
         }
 
         briProgramBottomSheet.setContentView(view)
-        briProgramBottomSheet.show()
+        briProgramBottomSheet.show()*/
     }
 
     private fun openRekeningAccountWebLink(url: String?) {
@@ -325,14 +324,14 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
             saldoWithdrawalPagerAdapter.fragmentList.add(BuyerSaldoWithdrawalFragment.getInstance(it))
             saldoWithdrawalPagerAdapter.fragmentList.add(SellerSaldoWithdrawalFragment.getInstance(it))
             viewPagerSaldoWithdrawal.adapter = saldoWithdrawalPagerAdapter
-            tabSaldoWithdrawal.setupWithViewPager(viewPagerSaldoWithdrawal)
+            tabSaldoWithdrawal.tabLayout.setupWithViewPager(viewPagerSaldoWithdrawal)
             selectInitialPage()
         }
     }
 
     private fun selectInitialPage() {
         if (buyerSaldoBalance == 0L) {
-            tabSaldoWithdrawal.getTabAt(1)?.select()
+            tabSaldoWithdrawal.tabLayout.getTabAt(1)?.select()
         }
     }
 

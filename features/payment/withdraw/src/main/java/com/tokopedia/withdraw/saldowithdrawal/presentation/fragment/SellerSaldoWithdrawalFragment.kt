@@ -1,7 +1,7 @@
 package com.tokopedia.withdraw.saldowithdrawal.presentation.fragment
 
 import android.os.Bundle
-import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.withdraw.R
 import com.tokopedia.withdraw.saldowithdrawal.constant.SellerSaldoWithdrawal
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.BankAccount
@@ -9,9 +9,9 @@ import com.tokopedia.withdraw.saldowithdrawal.domain.model.BankAccount
 class SellerSaldoWithdrawalFragment : WithdrawalBaseFragment() {
 
     private var sellerSaldoBalance: Long = 0L
-    var showMclBlockTickerFirebaseFlag: Boolean = false
-    var mclLateCount = 0
-    var sellerWithdrawalLocked = 0
+    private var showMclBlockTickerFirebaseFlag: Boolean = false
+    private var mclLateCount = 0
+    private var sellerWithdrawalLocked = 0
 
     override fun onViewCreated(savedInstanceState: Bundle?) {
         arguments?.let {
@@ -37,8 +37,8 @@ class SellerSaldoWithdrawalFragment : WithdrawalBaseFragment() {
         bankAccount?.let {
             when (withdrawalAmount) {
                 0L -> {
-                    val minStr = CurrencyFormatUtil
-                            .convertPriceValueToIdrFormat(bankAccount.minAmount, false)
+                    val minStr = getString(R.string.swd_rp,
+                            CurrencyFormatHelper.convertToRupiah(bankAccount.minAmount.toString()))
                     changeHintTextColor(R.color.grey_button_compat, R.color.tkpd_main_green,
                             String.format(getString(R.string.swd_min_saldo_withdraw_hint), minStr))
                 }
@@ -48,20 +48,20 @@ class SellerSaldoWithdrawalFragment : WithdrawalBaseFragment() {
                 }
 
                 in 1L until bankAccount.minAmount -> {
-                    val minStr = CurrencyFormatUtil
-                            .convertPriceValueToIdrFormat(bankAccount.minAmount, false)
+                    val minStr = getString(R.string.swd_rp,
+                            CurrencyFormatHelper.convertToRupiah(bankAccount.minAmount.toString()))
                     changeHintTextColor(R.color.swd_hint_red, R.color.swd_hint_red,
                             String.format(getString(R.string.swd_min_saldo_withdraw_hint), minStr))
                 }
                 in bankAccount.minAmount..bankAccount.maxAmount -> {
-                    val minStr = CurrencyFormatUtil
-                            .convertPriceValueToIdrFormat(bankAccount.minAmount, false)
+                    val minStr = getString(R.string.swd_rp,
+                            CurrencyFormatHelper.convertToRupiah(bankAccount.minAmount.toString()))
                     changeHintTextColor(R.color.grey_button_compat, R.color.tkpd_main_green,
                             String.format(getString(R.string.swd_min_saldo_withdraw_hint), minStr))
                 }
                 else -> {
-                    val maxStr = CurrencyFormatUtil
-                            .convertPriceValueToIdrFormat(bankAccount.maxAmount, false)
+                    val maxStr = getString(R.string.swd_rp,
+                            CurrencyFormatHelper.convertToRupiah(bankAccount.maxAmount.toString()))
                     changeHintTextColor(R.color.swd_hint_red, R.color.swd_hint_red,
                             String.format(getString(R.string.swd_max_saldo_withdraw_hint), maxStr))
                 }

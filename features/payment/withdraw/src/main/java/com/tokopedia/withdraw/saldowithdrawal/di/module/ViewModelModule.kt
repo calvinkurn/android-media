@@ -13,11 +13,9 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
-@WithdrawScope
 @Module
 abstract class ViewModelModule {
 
-    @WithdrawScope
     @Binds
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 

@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.withdraw.R
 import com.tokopedia.withdraw.saldowithdrawal.WithdrawAnalytics
 import com.tokopedia.withdraw.saldowithdrawal.di.component.WithdrawComponent
@@ -74,8 +74,7 @@ class SuccessFragmentWithdrawal : BaseDaggerFragment() {
                 tvAdminFees.visibility = View.VISIBLE
             }
             tvAccountNumber.text = bankAccount.accountNo + "-" + bankAccount.accountName
-            tvTotalWithdrawalAmount.text = CurrencyFormatUtil
-                    .convertPriceValueToIdrFormat(withdrawalRequest.withdrawal, false)
+            tvTotalWithdrawalAmount.text = CurrencyFormatHelper.convertToRupiah(withdrawalRequest.withdrawal.toString())
         }
         btnOpenSaldoDetail.setOnClickListener { onGoToSaldoDetail() }
         btnShopOnTokopedia.setOnClickListener { onGoToHome() }

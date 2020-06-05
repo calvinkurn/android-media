@@ -3,6 +3,7 @@
     <string name="swd_activity_withdraw">Penarikan Saldo</string>
 
     <string name="swd_title_action_withdraw">Tarik Saldo</string>
+    <string name="swd_rp">Rp%s</string>
     <string name="swd_choose_bank_account">Pilih Rekening Tujuan</string>
     <string name="swd_has_no_bank">Anda belum memiliki rekening bank yang terdaftar di Tokopedia</string>
     <string name="swd_title_add_account_bank">Tambah Rekening</string>

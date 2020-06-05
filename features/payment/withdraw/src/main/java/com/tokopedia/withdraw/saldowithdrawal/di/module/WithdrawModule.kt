@@ -15,27 +15,22 @@ import kotlinx.coroutines.Dispatchers
 /**
  * @author by StevenFredian on 30/07/18.
  */
-@WithdrawScope
 @Module
 class WithdrawModule {
 
-    @WithdrawScope
     @Provides
     fun provideUserSession(@ApplicationContext context: Context?): UserSession {
         return UserSession(context)
     }
 
-    @WithdrawScope
     @Provides
     fun provideGraphqlUseCase(): GraphqlUseCase = GraphqlUseCase()
 
 
-    @WithdrawScope
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
 
-    @WithdrawScope
     @Provides
     fun provideGraphqlRepositoryModule(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository

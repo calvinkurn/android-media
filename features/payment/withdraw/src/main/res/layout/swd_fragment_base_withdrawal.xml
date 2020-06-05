@@ -54,7 +54,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvAccountBalanceType" />
 
-        <com.tokopedia.unifyprinciples.Typography
+        <!--<com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title_nominal_withdrawal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
             app:layout_constraintEnd_toStartOf="@+id/tvCopyAllSaldoAmount"
             app:layout_constraintStart_toStartOf="@+id/tvAccountBalanceType"
             app:layout_constraintTop_toBottomOf="@+id/view_divider"
-            app:typographyType="body_3" />
+            app:typographyType="body_3" />-->
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvCopyAllSaldoAmount"
@@ -81,43 +81,25 @@
             android:text="@string/swd_withdrawal_all"
             android:textColor="@color/tkpd_main_green"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/title_nominal_withdrawal"
-            app:layout_constraintTop_toTopOf="@+id/title_nominal_withdrawal"
+            app:layout_constraintTop_toBottomOf="@+id/view_divider"
             app:typographyType="body_3" />
 
-        <com.tokopedia.design.text.TkpdHintTextInputLayout
-            android:id="@+id/wrapper_total_withdrawal"
-            style="@style/HintTextInputLayout"
-            android:layout_width="0dp"
+
+        <com.tokopedia.unifycomponents.TextFieldUnify
+            android:id="@+id/tfWithdrawal"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/title_nominal_withdrawal"
+            android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_3"
             android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:textColorHint="@color/swd_grey"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/tvAccountBalanceType"
-            app:layout_constraintTop_toBottomOf="@+id/tvCopyAllSaldoAmount">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etWithdrawalInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="numberSigned"
-                android:textSize="@dimen/sp_16" />
-        </com.tokopedia.design.text.TkpdHintTextInputLayout>
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/saldoWithdrawHint"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/wrapper_total_withdrawal"
-            android:layout_marginTop="@dimen/dp_4"
-            android:lineSpacingExtra="@dimen/sp_4"
-            android:textColor="@color/grey_button_compat"
-            app:layout_constraintStart_toStartOf="@+id/tvAccountBalanceType"
-            app:layout_constraintTop_toBottomOf="@+id/wrapper_total_withdrawal"
-            app:typographyType="body_3"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvCopyAllSaldoAmount"
+            app:text_field_input_type="number"
+            app:text_field_label="@string/swd_nominal_withdrawal"
+            app:text_field_label_static="true"
+            app:text_field_prepend_text="Rp" />
 
         <View
             android:id="@+id/view_divider2"
@@ -128,7 +110,7 @@
             android:background="@color/grey_200"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/saldoWithdrawHint" />
+            app:layout_constraintTop_toBottomOf="@+id/tfWithdrawal" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title_choose_bank"
@@ -237,9 +219,8 @@
             android:layout_height="wrap_content"
             android:visibility="visible"
             app:constraint_referenced_ids="tvAccountBalanceType,tvTotalSaldoBalance,
-        view_divider,title_nominal_withdrawal,tvCopyAllSaldoAmount,
-        wrapper_total_withdrawal,saldoWithdrawHint,view_divider2,
-        title_choose_bank,view_divider3,recyclerBankList,
+        view_divider,tvCopyAllSaldoAmount,
+        tfWithdrawal,view_divider2,title_choose_bank,view_divider3,recyclerBankList,
         tv_info,withdrawalButton" />
 
         <androidx.constraintlayout.widget.Group
@@ -252,4 +233,21 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
+
+
+    <!--
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/saldoWithdrawHint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tfWithdrawal"
+                android:layout_marginTop="@dimen/dp_4"
+                android:lineSpacingExtra="@dimen/sp_4"
+                android:textColor="@color/orange_100"
+                app:layout_constraintStart_toStartOf="@+id/tvAccountBalanceType"
+                app:layout_constraintTop_toBottomOf="@+id/tfWithdrawal"
+                app:typographyType="body_3" />
+    -->
+
 
