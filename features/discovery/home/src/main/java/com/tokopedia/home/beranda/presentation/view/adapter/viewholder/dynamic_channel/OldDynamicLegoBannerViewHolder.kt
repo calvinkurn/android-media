@@ -22,9 +22,9 @@ import com.tokopedia.track.TrackApp
  * Created by devarafikry on 12/08/19.
  */
 
-class DynamicLegoBannerViewHolder(legoBannerView: View,
-                                  private val homeCategoryListener: HomeCategoryListener?,
-                                  private val parentRecycledViewPool: RecyclerView.RecycledViewPool?) :
+class OldDynamicLegoBannerViewHolder(legoBannerView: View,
+                                     private val homeCategoryListener: HomeCategoryListener?,
+                                     private val parentRecycledViewPool: RecyclerView.RecycledViewPool?) :
         DynamicChannelViewHolder(
                 legoBannerView, homeCategoryListener
         ) {
@@ -46,13 +46,14 @@ class DynamicLegoBannerViewHolder(legoBannerView: View,
             TYPE_SIX_GRID_LEGO -> HomePageTracking.eventClickSeeAllLegoBannerChannel(
                     channel.header.name, channel.id)
             TYPE_THREE_GRID_LEGO -> HomePageTracking.eventClickSeeAllThreeLegoBannerChannel(channel.header.name, channel.id)
-            TYPE_FOUR_GRID_LEGO -> TrackApp.getInstance().gtm.sendGeneralEvent(HomePageTrackingV2.LegoBanner.getLegoBannerFourImageSeeAllClick(channel))
+            TYPE_FOUR_GRID_LEGO -> TrackApp.getInstance().gtm.sendGeneralEvent(HomePageTrackingV2.LegoBanner.getLegoBannerFourImageSeeAllClick(
+                    channel.header.name, channel.id))
             else -> HomePageTracking.eventClickSeeAllLegoBannerChannel(channel.header.name, channel.id)
         }
     }
 
     override fun getViewHolderClassName(): String {
-        return DynamicLegoBannerViewHolder::class.java.simpleName
+        return OldDynamicLegoBannerViewHolder::class.java.simpleName
     }
 
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
@@ -128,7 +129,10 @@ class DynamicLegoBannerViewHolder(legoBannerView: View,
                         }
                         TYPE_FOUR_GRID_LEGO -> {
                             HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
-                                HomePageTrackingV2.LegoBanner.getLegoBannerFourImageClick(channels, grid, position + 1)
+                                    HomePageTracking.getEnhanceClickFourLegoBannerHomePage(
+                                            grid,
+                                            channels,
+                                            position + 1)
                             )
                         }
                     }

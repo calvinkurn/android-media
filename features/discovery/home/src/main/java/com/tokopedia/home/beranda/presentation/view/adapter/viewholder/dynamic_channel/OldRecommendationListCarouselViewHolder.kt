@@ -27,7 +27,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
-class RecommendationListCarouselViewHolder(
+class OldRecommendationListCarouselViewHolder(
         itemView: View,
         private val listener: HomeCategoryListener,
         private val parentRecycledViewPool: RecyclerView.RecycledViewPool)
@@ -116,7 +116,7 @@ class RecommendationListCarouselViewHolder(
                     )
                 }.toMutableList()
                 if(channel.grids.size > 1 && channel.header.applink.isNotEmpty()) newList.add(HomeRecommendationListSeeMoreData(channel, listener))
-                adapter = RecommendationListAdapter(newList)
+                adapter = RecommendationListAdapter(newList, listener)
                 setRecycledViewPool(parentRecycledViewPool)
                 clearItemRecyclerViewDecoration(this)
                 if (channel.grids.size > 1) {
@@ -136,11 +136,11 @@ class RecommendationListCarouselViewHolder(
     }
 
     override fun getViewHolderClassName(): String {
-        return RecommendationListCarouselViewHolder::class.java.name
+        return OldRecommendationListCarouselViewHolder::class.java.name
     }
 
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
-        HomePageTrackingV2.RecommendationList.sendRecommendationListSeeAllClick(channel)
+        HomePageTrackingV2.RecommendationList.sendRecommendationListSeeAllClick(channel.id, channel.header.name, listener.userId)
     }
 
     fun mapGridToProductData(grid: DynamicHomeChannel.Grid) :ProductCardModel{
@@ -205,14 +205,15 @@ class RecommendationListCarouselViewHolder(
     }
 
     class HomeRecommendationSeeMoreViewHolder(
-            itemView: View
+            itemView: View,
+            val listener: HomeCategoryListener
     ): RecommendationListCarouselItem(itemView){
 
         private val container: View by lazy { itemView.findViewById<View>(R.id.container_banner_mix_more) }
         override fun bind(homeRecommendationListData: HomeRecommendationListCarousel) {
             if(homeRecommendationListData is HomeRecommendationListSeeMoreData) {
                 container.setOnClickListener {
-                    HomePageTrackingV2.RecommendationList.sendRecommendationListSeeAllCardClick(homeRecommendationListData.channel)
+                    HomePageTrackingV2.RecommendationList.sendRecommendationListSeeAllCardClick(homeRecommendationListData.channel, listener.userId)
                     homeRecommendationListData.listener.onDynamicChannelClicked(applink = homeRecommendationListData.channel.header.applink)
                 }
             }
@@ -241,7 +242,7 @@ class RecommendationListCarouselViewHolder(
             val listener: HomeCategoryListener
     ): HomeRecommendationListCarousel
 
-    class RecommendationListAdapter(private val recommendationList: List<HomeRecommendationListCarousel>): RecyclerView.Adapter<RecommendationListCarouselItem>() {
+    class RecommendationListAdapter(private val recommendationList: List<HomeRecommendationListCarousel>, val listener: HomeCategoryListener): RecyclerView.Adapter<RecommendationListCarouselItem>() {
         companion object{
             private const val LAYOUT_TYPE_CAROUSEL = 87
             private const val LAYOUT_TYPE_NON_CAROUSEL = 90
@@ -252,7 +253,7 @@ class RecommendationListCarouselViewHolder(
             val inflater = LayoutInflater.from(parent.context)
             return when (viewType) {
                 LAYOUT_TYPE_CAROUSEL -> HomeRecommendationListViewHolder(inflater.inflate(R.layout.home_recommendation_list_card_carousel, parent, false))
-                LAYOUT_SEE_ALL_BUTTON -> HomeRecommendationSeeMoreViewHolder(inflater.inflate(R.layout.home_banner_item_carousel_see_more, parent, false))
+                LAYOUT_SEE_ALL_BUTTON -> HomeRecommendationSeeMoreViewHolder(inflater.inflate(R.layout.home_banner_item_carousel_see_more, parent, false), listener)
                 else -> HomeRecommendationListViewHolder(inflater.inflate(R.layout.home_recommendation_list_card, parent, false))
             }
         }

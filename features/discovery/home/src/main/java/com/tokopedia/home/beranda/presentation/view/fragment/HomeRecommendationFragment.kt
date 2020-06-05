@@ -118,6 +118,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
                     handleWishlistAction(productCardOptionsModel)
                 }
             })
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
