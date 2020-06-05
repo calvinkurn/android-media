@@ -50,6 +50,7 @@ import com.tokopedia.talk_old.R
 import com.tokopedia.talk_old.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_talk_reading.pageError
 import kotlinx.android.synthetic.main.fragment_talk_reading.pageLoading
@@ -412,9 +413,13 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         showPageLoading()
     }
 
-    private fun onFailCreateComment() {
-        adjustToasterHeight()
-        view?.let { Toaster.make(it, getString(R.string.reply_toaster_network_error), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.talk_ok)) }
+    private fun onFailCreateComment(errorMessage: String?) {
+        val newErrorMessage = if(errorMessage.isNullOrEmpty()) {
+            getString(R.string.reply_toaster_network_error)
+        } else {
+            errorMessage
+        }
+        showErrorToaster(newErrorMessage, resources.getBoolean(R.bool.reply_adjust_toaster_height))
     }
 
     private fun adjustToasterHeight() {
@@ -495,7 +500,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         viewModel.createNewCommentResult.observe(this, Observer {
             when(it) {
                 is Success -> onSuccessCreateComment()
-                else -> onFailCreateComment()
+                is Fail -> onFailCreateComment(it.throwable.message)
             }
         })
     }
