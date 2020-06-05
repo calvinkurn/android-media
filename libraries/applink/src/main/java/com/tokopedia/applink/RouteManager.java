@@ -192,12 +192,19 @@ public class RouteManager {
         } else if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(mappedDeeplink)) {
             ApplinkLogger.getInstance(context).appendTrace("AirBnB deeplink supported, redirect to AirBnB deeplink handler");
             ApplinkLogger.getInstance(context).save();
-            if (context instanceof Activity) {
-                ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity((Activity) context, mappedDeeplink, queryParamBundle);
+
+            Uri uri = Uri.parse(mappedDeeplink);
+            final boolean shouldRedirectToSellerApp = uri.getBooleanQueryParameter(KEY_REDIRECT_TO_SELLER_APP, false);
+            if (shouldRedirectToSellerApp) {
+                intent = buildInternalExplicitIntent(context, mappedDeeplink);
             } else {
-                ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity(context, mappedDeeplink);
+                if (context instanceof Activity) {
+                    ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity((Activity) context, mappedDeeplink, queryParamBundle);
+                } else {
+                    ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity(context, mappedDeeplink);
+                }
+                return true;
             }
-            return true;
         } else if (URLUtil.isNetworkUrl(mappedDeeplink)) {
             ApplinkLogger.getInstance(context).appendTrace("Network url detected");
             intent = buildInternalImplicitIntent(context, mappedDeeplink);
