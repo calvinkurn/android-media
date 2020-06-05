@@ -5,7 +5,7 @@
     android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/topads_create_bg_top_round">
+    android:background="@drawable/topads_bg_top_round">
 
     <ImageView
         android:id="@+id/btn_close"
@@ -28,7 +28,7 @@
         android:layout_marginEnd="20dp"
         android:layout_marginRight="20dp"
         android:contentDescription="@string/ilustration"
-        android:src="@drawable/topads_create_auto_ad_confirmation"
+        app:srcCompat="@drawable/topads_create_auto_ad_confirmation"
         app:layout_constraintBottom_toTopOf="@+id/title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

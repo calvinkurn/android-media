@@ -15,7 +15,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.seller.common.widget.LabelView;
@@ -33,6 +32,7 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsEditProductMainPageAct
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupEditPromoActivity;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailProductPresenter;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailProductViewPresenterImpl;
+import com.tokopedia.user.session.UserSession;
 
 import timber.log.Timber;
 /**
@@ -112,7 +112,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
     protected void initialPresenter() {
         super.initialPresenter();
         presenter = new TopAdsDetailProductViewPresenterImpl(getActivity(), this, new TopAdsProductAdInteractorImpl(
-                new TopAdsManagementService(new SessionHandler(getActivity())),
+                new TopAdsManagementService(new UserSession(getActivity())),
                 new TopAdsCacheDataSourceImpl(getActivity())));
     }
 

@@ -121,10 +121,17 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     private fun isInputValid(): Boolean {
 
+        // by default the product photos are never empty
         val isProductPhotoError = mIsProductPhotoError.value ?: false
-        val isProductNameError = mIsProductNameInputError.value ?: false
-        val isProductPriceError = mIsProductPriceInputError.value ?: false
+
+        // mandatory fields that empty by default (adding new product)
+        val isProductNameError = mIsProductNameInputError.value ?: isAdding
+        val isProductPriceError = mIsProductPriceInputError.value ?: isAdding
+
+        // by default the product stock is never empty
         val isProductStockError = mIsProductStockInputError.value ?: false
+
+        // by default the product min order is never empty
         val isOrderQuantityError = mIsOrderQuantityInputError.value ?: false
 
         // if not activated; wholesale error is not countable
@@ -301,16 +308,6 @@ class AddEditProductDetailViewModel @Inject constructor(
         }
         preOrderDurationMessage = ""
         mIsPreOrderDurationInputError.value = false
-    }
-
-    fun recalculateWholeSaleMinOrder(wholesaleList: List<WholeSaleInputModel>) : List<WholeSaleInputModel> {
-        wholesaleList.forEach { wholesaleInputModel ->
-            // recalculate wholesale min order because of > symbol
-            val oldValue = wholesaleInputModel.quantity.toBigInteger()
-            val newValue = oldValue - 1.toBigInteger()
-            wholesaleInputModel.quantity = newValue.toString()
-        }
-        return wholesaleList
     }
 
     fun updateProductPhotos(imagePickerResult: ArrayList<String>, originalImageUrl: ArrayList<String>, editted: ArrayList<Boolean>) {

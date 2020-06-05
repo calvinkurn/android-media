@@ -39,6 +39,7 @@ import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
@@ -405,7 +406,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun onProductClicked(element: ProductAttachmentViewModel) {
         super.onProductClicked(element)
-        analytics.eventClickProductThumbnailEE(element, session)
+        context?.let {
+            analytics.eventClickProductThumbnailEE(it, element, session)
+        }
+
         analytics.trackProductAttachmentClicked()
     }
 
@@ -890,7 +894,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun trackSeenProduct(element: ProductAttachmentViewModel) {
         if (seenAttachedProduct.add(element.productId)) {
-            analytics.eventSeenProductAttachment(element, session)
+            analytics.eventSeenProductAttachment(requireContext(), element, session)
         }
     }
 

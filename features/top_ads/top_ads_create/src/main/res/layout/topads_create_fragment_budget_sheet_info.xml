@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/dp_16"
-    android:background="@drawable/topads_create_bg_top_round">
+    android:background="@drawable/topads_bg_top_round">
 
 
     <ImageView
@@ -21,15 +21,16 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/typography20"
-        style="@style/TextView.TitleBig.Bold"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:text="@string/biaya_per_klik"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="@+id/btn_close"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_close"
-        app:layout_constraintTop_toTopOf="@+id/btn_close" />
+        app:layout_constraintTop_toTopOf="@+id/btn_close"
+        app:typographyType="heading_3" />
 
 
     <com.tokopedia.unifyprinciples.Typography
@@ -43,7 +44,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/btn_close"
         app:layout_constraintTop_toBottomOf="@+id/typography20"
-        app:typographyType="body_3" />
+        app:typographyType="body_2" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

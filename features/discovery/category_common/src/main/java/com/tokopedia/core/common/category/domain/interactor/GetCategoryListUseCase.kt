@@ -18,8 +18,8 @@ class GetCategoryListUseCase @Inject constructor(
         private val query by lazy {
             val filter = "\$filter"
             """
-            query getCategoryListLite($filter: String!){
-                getCategoryListLite(filter:$filter){
+            query categoryAllListLite($filter: String!){
+                categoryAllListLite(filter:$filter){
                     categories {
                         id
                         name

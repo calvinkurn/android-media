@@ -16,10 +16,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.text.SpinnerTextView;
+import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.product.manage.item.common.util.CurrencyIdrTextWatcher;
 import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.topads.R;

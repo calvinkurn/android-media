@@ -34,6 +34,7 @@ class PostListViewHolder(
     private var dataKey: String = ""
 
     override fun bind(element: PostListWidgetUiModel) {
+        itemView.rvPostList.isNestedScrollingEnabled = false
         observeState(element)
     }
 
@@ -51,7 +52,6 @@ class PostListViewHolder(
 
     private fun onLoading() {
         showLoadingState()
-        listener.getPostData()
     }
 
     private fun onError(cardTitle: String) {

@@ -443,6 +443,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Fragment getReviewSellerFragment() {
+        return null;
+    }
+
+    @Override
     public Intent getOrderHistoryIntent(Context context, String orderId) {
         return RouteManager.getIntent(context, ApplinkConst.ORDER_TRACKING, orderId);
     }

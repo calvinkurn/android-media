@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.base.list.seller.common.util.ItemType;

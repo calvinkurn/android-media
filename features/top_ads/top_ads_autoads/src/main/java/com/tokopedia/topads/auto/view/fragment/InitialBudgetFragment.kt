@@ -17,7 +17,6 @@ import com.tokopedia.topads.auto.internal.TopAdsUserStatusInfo
 import com.tokopedia.topads.auto.view.activity.ConfirmationDialogActivity
 import com.tokopedia.topads.auto.view.widget.InfoAutoAdsSheet
 import com.tokopedia.topads.auto.view.widget.ManualAdsConfirmationSheet
-import com.tokopedia.topads.common.constant.TopAdsReasonOption
 
 /**
  * Author errysuprayogi on 14,May,2019
@@ -34,12 +33,10 @@ class InitialBudgetFragment : DailyBudgetFragment(), View.OnClickListener, Manua
         setHasOptionsMenu(true)
         adsConfirmationSheet = ManualAdsConfirmationSheet.newInstance(activity!!)
         budgetViewModel.autoAdsData.observe(this, Observer {
-            when(it!!.adsInfo.reason){
-                TopAdsReasonOption.INSUFFICIENT_CREDIT -> insufficientCredit(it!!.adsInfo.message)
-                TopAdsReasonOption.ELIGIBLE -> eligible()
-                TopAdsReasonOption.NOT_ELIGIBLE -> notEligible()
-                else -> activity!!.finish()
-            }
+            if (topAdsDeposit <= 0) {
+                insufficientCredit()
+            } else
+                eligible()
         })
     }
 

@@ -2,6 +2,8 @@ package com.tokopedia.product.addedit.preview.presentation.activity
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -11,6 +13,7 @@ import com.tokopedia.product.addedit.R
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_DRAFT_ID
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_FROM_NOTIF_EDIT_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_FROM_NOTIF_SUCCESS
@@ -83,6 +86,9 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
             }
         }
         super.onCreate(savedInstanceState)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            setStatusBarColor(Color.WHITE)
+        }
     }
 
     override fun onBackPressed() {
@@ -91,7 +97,7 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
             setTitle(getString(R.string.label_title_on_dialog))
             setPrimaryCTAText(getString(R.string.label_cta_primary_button_on_dialog))
             setSecondaryCTAText(getString(R.string.label_cta_secondary_button_on_dialog))
-            if(isEditing()) {
+            if(isEditing()  || dataBackPressedLoss()) {
                 setDescription(getString(R.string.label_description_on_dialog_edit))
                 setSecondaryCTAClickListener {
                     super.onBackPressed()
@@ -133,6 +139,14 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
         if (f != null && f is AddEditProductPreviewFragment) {
             f.saveProductDraft()
         }
+    }
+
+    private fun dataBackPressedLoss(): Boolean {
+        val f = fragment
+        if (f != null && f is AddEditProductPreviewFragment) {
+            return f.dataBackPressedLoss()
+        }
+        return false
     }
 
     private fun onCtaYesPressedHitTracking() {

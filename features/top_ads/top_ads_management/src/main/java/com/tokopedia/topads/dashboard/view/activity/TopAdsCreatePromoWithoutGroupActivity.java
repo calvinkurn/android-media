@@ -1,20 +1,20 @@
 package com.tokopedia.topads.dashboard.view.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.topads.common.view.activity.BaseStepperActivity;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewCostWithoutGroupFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewProductListWithoutGroupFragment;
-import com.tokopedia.topads.dashboard.view.model.TopAdsCreatePromoExistingGroupModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsCreatePromoWithoutGroupModel;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ import java.util.List;
  * Created by zulfikarrahman on 8/9/17.
  */
 
-public class TopAdsCreatePromoWithoutGroupActivity extends BaseStepperActivity<TopAdsCreatePromoWithoutGroupModel> implements HasComponent<AppComponent> {
+public class TopAdsCreatePromoWithoutGroupActivity extends BaseStepperActivity implements HasComponent<BaseAppComponent> {
     private List<Fragment> fragmentList;
 
     @NonNull
@@ -43,9 +43,9 @@ public class TopAdsCreatePromoWithoutGroupActivity extends BaseStepperActivity<T
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        stepperModel = createNewStepperModel();
     }
 
-    @Override
     public TopAdsCreatePromoWithoutGroupModel createNewStepperModel() {
         String itemIdToAdd = null;
         String source = "";
@@ -56,7 +56,7 @@ public class TopAdsCreatePromoWithoutGroupActivity extends BaseStepperActivity<T
         stepperModel = new TopAdsCreatePromoWithoutGroupModel();
         ((TopAdsCreatePromoWithoutGroupModel)stepperModel).setIdToAdd(itemIdToAdd);
         ((TopAdsCreatePromoWithoutGroupModel)stepperModel).setSource(source);
-        return stepperModel;
+        return (TopAdsCreatePromoWithoutGroupModel) stepperModel;
     }
 
     public static Intent createIntent(Context context, String itemIdToAdd, String source){
@@ -67,7 +67,7 @@ public class TopAdsCreatePromoWithoutGroupActivity extends BaseStepperActivity<T
     }
 
     @Override
-    public AppComponent getComponent() {
-        return getApplicationComponent();
+    public BaseAppComponent getComponent() {
+        return ((BaseMainApplication)getApplication()).getBaseAppComponent();
     }
 }

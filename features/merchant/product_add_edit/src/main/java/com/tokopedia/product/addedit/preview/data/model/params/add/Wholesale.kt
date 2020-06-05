@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
+import java.math.BigInteger
 
 @Parcelize
 data class Wholesale(
@@ -12,7 +13,7 @@ data class Wholesale(
         var minQty: Int = 0,
         @SerializedName("price")
     @Expose
-        var price: Float = 0F
+        var price: BigInteger = 0.toBigInteger()
 ) : Parcelable
 
 @Parcelize

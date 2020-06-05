@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="topads_heading_color">#F531353B</color>
+    <color name="topads_common_select_color_checked">#03AC0E</color>
+    <color name="topads_common_select_color_unchecked">#AD31353B</color>
+    <color name="topads_common_green_tab">#42b549</color>
+    <color name="topads_common_line_color">#E5E7E9</color>
+    <color name="topads_common_shimmer_color">#FA591D</color>
+
 </resources>

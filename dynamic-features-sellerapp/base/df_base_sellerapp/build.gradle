@@ -65,7 +65,8 @@ dependencies {
 
     //Content
 //    implementation project(rootProject.ext.features.profile)
-
+    //Discovery
+    implementation project(rootProject.ext.features.productCardOptions)
     //Fintech
 //    implementation project(rootProject.ext.features.instantLoan)
 //    implementation project(rootProject.ext.features.saldodetails)

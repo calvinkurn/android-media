@@ -137,6 +137,7 @@ ext {
             reputationCommon                : ":features:merchant:reputation_common",
             sellerHome                      : ":features:merchant:seller_home",
             sellerOnboarding                : ":features:merchant:seller_onboarding",
+            reviewSeller                    : ":features:merchant:review_seller",
             sellerMigrationCommon           : ":features:merchant:seller_migration_common",
             shopCommon                      : ":features:merchant:shop_common",
             shopEtalasePicker               : ":features:merchant:shop_etalase_picker",
@@ -147,6 +148,7 @@ ext {
             officialStore                  : ":features:merchant:official_store",
             brandlist                       : ":features:merchant:brandlist",
             favorite                        : ":features:merchant:favorite",
+            youtubeCommon                   : ":features:merchant:youtube_common",
             onboarding                      : ":features:user:onboarding",
             contactUs                       : ":features:operational:contact_us",
             csat_rating                       : ":features:operational:csat_rating",
@@ -176,6 +178,7 @@ ext {
             topAdsDetailSheet               : ":features:top_ads:top_ads_detail_sheet",
             topAdsWidget                    : ":features:top_ads:top_ads_widget",
             topAdsManagement                : ":features:top_ads:top_ads_management",
+            topAdsEdit                      : ":features:top_ads:top_ads_edit",
             topAdsManagementCommon          : ":features:top_ads:top_ads_management_common",
             topAdsManagementSourceTagging   : ":features:top_ads:top_ads_management_sourcetagging",
 

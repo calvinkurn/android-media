@@ -16,8 +16,7 @@ data class ProductVariantInputModel (
         var productVariant: ArrayList<ProductVariantCombinationViewModel> = ArrayList(),
         @SerializedName("productSizeChart")
         @Expose
-        var productSizeChart: PictureViewModel? = null,
-        var isRemoveVariant: Boolean = false
+        var productSizeChart: PictureViewModel? = null
 ): Parcelable
 
 @Parcelize

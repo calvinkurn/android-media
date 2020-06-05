@@ -1,7 +1,6 @@
 package com.tokopedia.product.addedit.preview.domain.mapper
 
 import android.net.Uri
-import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.description.presentation.model.*
@@ -109,7 +108,7 @@ class AddProductInputMapper @Inject constructor() {
             val levelIndex = it.opt.firstOrNull()
             val product = Product(
                     mapProductCombination(it.opt),
-                    it.priceVar,
+                    it.priceVar.toBigDecimal().toBigInteger(),
                     it.sku,
                     getActiveStatus(it.st),
                     it.stock,
@@ -165,7 +164,8 @@ class AddProductInputMapper @Inject constructor() {
         val data: ArrayList<Wholesale> = ArrayList()
         wholesaleList.forEach {
             val quantity = it.quantity.replace(".", "").toIntOrZero()
-            val price = it.price.replace(".", "").toFloatOrZero()
+            val price = it.price.replace(".", "")
+                    .toBigIntegerOrNull() ?: 0.toBigInteger()
             if (quantity > 1) {
                 data.add(Wholesale(
                         quantity,

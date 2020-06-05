@@ -51,19 +51,7 @@
 
         <activity
             android:name=".welcome.WelcomeActivity"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_sellerapp"
-                    android:path="@string/path_welcome"
-                    android:scheme="@string/internal_scheme" />
-            </intent-filter>
-        </activity>
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name="com.tokopedia.sellerhome.view.activity.SellerHomeActivity"
@@ -214,24 +202,6 @@
 
             </intent-filter>
         </activity>
-
-        <service
-            android:name="com.tokopedia.seller.transaction.neworder.view.presenter.GetOrderService"
-            android:exported="false" />
-
-        <service
-            android:name="com.tokopedia.seller.transaction.neworder.view.appwidget.ListOrderViewServiceWidget"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
-
-        <receiver android:name="com.tokopedia.seller.transaction.neworder.view.appwidget.NewOrderWidget">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/new_order_widget_info" />
-        </receiver>
 
         <provider
             android:name="com.facebook.FacebookContentProvider"

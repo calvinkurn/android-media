@@ -45,7 +45,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/topads_create_ic_check"
+        app:srcCompat="@drawable/topads_ic_check"
         android:visibility="invisible"
         tools:visibility="visible"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

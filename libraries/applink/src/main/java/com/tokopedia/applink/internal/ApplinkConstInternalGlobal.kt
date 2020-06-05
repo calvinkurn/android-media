@@ -454,4 +454,8 @@ object ApplinkConstInternalGlobal {
     //ManageNotificationActivity
     @JvmField
     val MANAGE_NOTIFICATION = "$INTERNAL_GLOBAL/manage-notification"
+
+    //SeamlessActivity
+    @JvmField
+    val SEAMLESS_LOGIN = "${INTERNAL_GLOBAL}/login-seamless"
 }

@@ -1,7 +1,6 @@
 package com.tokopedia.product.addedit.preview.domain.mapper
 
 import android.net.Uri
-import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.description.presentation.model.*
@@ -13,7 +12,6 @@ import com.tokopedia.product.addedit.preview.data.model.params.add.*
 import com.tokopedia.product.addedit.preview.data.model.params.edit.ProductEditParam
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 /**
  * Created by faisalramd on 2020-03-23.
@@ -82,8 +80,7 @@ class EditProductInputMapper @Inject constructor() {
                                 variantOptionUploadId: List<String>,
                                 sizeChartUploadId: String): Variant? {
         if (variantInputModel.productVariant.size == 0) {
-            // if product variant size is decreased to empty then use empty Variant() object
-            return if (variantInputModel.isRemoveVariant) Variant() else null
+            return null
         }
 
         return Variant(
@@ -115,7 +112,7 @@ class EditProductInputMapper @Inject constructor() {
             val levelIndex = it.opt.firstOrNull()
             val product = Product(
                     mapProductCombination(it.opt),
-                    it.priceVar,
+                    it.priceVar.toBigDecimal().toBigInteger(),
                     it.sku,
                     getActiveStatus(it.st),
                     it.stock,
@@ -143,7 +140,9 @@ class EditProductInputMapper @Inject constructor() {
             }
             variantOptionUploadId.getOrNull(this - 1)?.apply {
                 if (this.isNotEmpty()) {
-                    variantPictureList = listOf(Picture(uploadId = this))
+                    val picture = Picture(uploadId = this)
+                    picture.picID  = ""
+                    variantPictureList = listOf(picture)
                 }
             }
         }
@@ -199,7 +198,8 @@ class EditProductInputMapper @Inject constructor() {
         val data: ArrayList<Wholesale> = ArrayList()
         wholesaleList.forEach {
             val quantity = it.quantity.replace(".", "").toIntOrZero()
-            val price = it.price.replace(".", "").toFloatOrZero()
+            val price = it.price.replace(".", "")
+                    .toBigIntegerOrNull() ?: 0.toBigInteger()
             if (quantity > 1) {
                 data.add(Wholesale(
                         quantity,

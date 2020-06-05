@@ -14,6 +14,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
@@ -59,10 +60,12 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
+import com.tokopedia.product.manage.feature.list.view.activity.ProductManageActivity;
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.reviewseller.feature.reviewlist.view.fragment.RatingProductFragment;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
@@ -78,9 +81,9 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
 import com.tokopedia.sellerapp.utils.DeferredResourceInitializer;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
-import com.tokopedia.sellerapp.welcome.WelcomeActivity;
 import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
+import com.tokopedia.selleronboarding.activity.SellerOnboardingActivity;
 import com.tokopedia.selleronboarding.utils.OnboardingPreference;
 import com.tokopedia.sellerorder.common.util.SomConsts;
 import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment;
@@ -116,6 +119,7 @@ import rx.Observable;
 import timber.log.Timber;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
+import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP;
 
 /**
  * Created by normansyahputa on 12/15/16.
@@ -145,6 +149,7 @@ public abstract class SellerRouterApplication extends MainApplication
     private TopAdsComponent topAdsComponent;
     private DaggerShopComponent.Builder daggerShopBuilder;
     private ShopComponent shopComponent;
+    private TetraDebugger tetraDebugger;
 
     @Override
     public void onCreate() {
@@ -153,6 +158,7 @@ public abstract class SellerRouterApplication extends MainApplication
         initializeRemoteConfig();
         initResourceDownloadManager();
         initIris();
+        initTetraDebugger();
     }
 
     private void initResourceDownloadManager() {
@@ -171,6 +177,19 @@ public abstract class SellerRouterApplication extends MainApplication
     private void initializeDagger() {
         daggerGMBuilder = DaggerGMComponent.builder().gMModule(new GMModule());
         daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
+    }
+
+    private void initTetraDebugger() {
+        if(GlobalConfig.isAllowDebuggingTools()) {
+            tetraDebugger = TetraDebugger.Companion.instance(this);
+            tetraDebugger.init();
+        }
+    }
+
+    private void setTetraUserId(String userId) {
+        if(tetraDebugger != null) {
+            tetraDebugger.setUserId(userId);
+        }
     }
 
     public GMComponent getGMComponent() {
@@ -231,9 +250,14 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public Fragment getReviewSellerFragment() {
+        return RatingProductFragment.Companion.createInstance();
+    }
+
+    @Override
     public Intent getHomeIntent(Context context) {
         UserSessionInterface userSession = new UserSession(context);
-        Intent intent = new Intent(context, WelcomeActivity.class);
+        Intent intent = new Intent(context, SellerOnboardingActivity.class);
         if (userSession.isLoggedIn()) {
             if (userSession.hasShop()) {
                 return SellerHomeActivity.createIntent(context);
@@ -256,7 +280,7 @@ public abstract class SellerRouterApplication extends MainApplication
         if (userSession.isLoggedIn()) {
             return SellerHomeActivity.class;
         } else {
-            return WelcomeActivity.class;
+            return SellerOnboardingActivity.class;
         }
     }
 
@@ -266,6 +290,7 @@ public abstract class SellerRouterApplication extends MainApplication
         sessionHandler.forceLogout();
         new CacheApiClearAllUseCase(this).executeSync();
         TkpdSellerLogout.onLogOut(appComponent, this);
+        setTetraUserId("");
     }
 
     @Override

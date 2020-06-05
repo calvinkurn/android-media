@@ -32,6 +32,7 @@ data class ProductCardModel (
         val ratingString: String = "",
         val hasThreeDots: Boolean = false,
         val labelGroupList: List<LabelGroup> = listOf(),
+        val hasDeleteProductButton: Boolean = false,
         val hasAddToCartButton: Boolean = false,
         val hasRemoveFromWishlistButton: Boolean = false,
         val pdpViewCount: String = "",

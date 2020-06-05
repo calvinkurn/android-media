@@ -11,7 +11,6 @@ import com.tokopedia.product.addedit.detail.presentation.viewholder.WholeSaleInp
 import java.math.BigInteger
 
 class WholeSalePriceInputAdapter(private val listener: WholeSaleInputViewHolder.TextChangedListener,
-                                 private val onAddWholesale: (() -> Unit)? = null,
                                  private val onDeleteWholesale: (() -> Unit)? = null) :
         RecyclerView.Adapter<WholeSaleInputViewHolder>(), WholeSaleInputViewHolder.OnDeleteButtonClickListener {
 
@@ -62,7 +61,6 @@ class WholeSalePriceInputAdapter(private val listener: WholeSaleInputViewHolder.
     fun addNewWholeSalePriceForm() {
         val wholeSaleInputModel = WholeSaleInputModel()
         wholeSaleInputModelList.add(wholeSaleInputModel)
-        onAddWholesale?.invoke()
         notifyItemInserted(wholeSaleInputModelList.lastIndex)
     }
 

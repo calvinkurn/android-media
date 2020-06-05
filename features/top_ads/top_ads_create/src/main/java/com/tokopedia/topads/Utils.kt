@@ -12,6 +12,7 @@ import java.util.*
 object Utils {
     private val suffixes = TreeMap<Long, String>()
     var locale = Locale("in", "ID")
+    const val KALI = " kali"
 
 
     init {
@@ -36,12 +37,12 @@ object Utils {
     }
 
         fun convertToCurrencyString(value: Long): String {
-            return (NumberFormat.getNumberInstance(locale).format(value)+" kali")
+            return (NumberFormat.getNumberInstance(locale).format(value)+ KALI)
         }
 
     fun dismissKeyboard(context: Context?, view: View?) {
         val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-        if (inputMethodManager != null && inputMethodManager.isAcceptingText) {
+        if (inputMethodManager?.isAcceptingText == true) {
             inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
         }
     }

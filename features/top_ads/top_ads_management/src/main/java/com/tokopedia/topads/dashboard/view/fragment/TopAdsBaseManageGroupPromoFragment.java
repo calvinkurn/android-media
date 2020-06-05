@@ -14,8 +14,9 @@ import androidx.annotation.IdRes;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;

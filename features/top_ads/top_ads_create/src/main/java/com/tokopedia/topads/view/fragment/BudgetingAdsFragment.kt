@@ -50,6 +50,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     companion object {
         private const val MAX_BID = "max"
         private const val MIN_BID = "min"
+        private const val FACTOR = 50
         fun createInstance(): Fragment {
             val fragment = BudgetingAdsFragment()
             val args = Bundle()
@@ -205,6 +206,11 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
                     result > maxBid -> {
                         isEnable = false
                         setMessageErrorField(getString(R.string.max_bid_error), maxBid, true)
+                    }
+
+                    result % FACTOR != 0 ->{
+                        isEnable = false
+                        setMessageErrorField(getString(R.string.error_multiple_50),FACTOR ,true)
                     }
                     else -> {
                         isEnable = true
