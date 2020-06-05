@@ -191,7 +191,7 @@ class PlayEtalasePickerFragment @Inject constructor(
             }
         }
         rvSearchedProducts.addOnScrollListener(scrollListener)
-        rvEtalase.addOnScrollListener(StopFlingScrollListener())
+        rvSearchedProducts.addOnScrollListener(StopFlingScrollListener())
     }
 
     private fun setupSuggestionList() {
