@@ -47,9 +47,13 @@ class ShopHomeViewModel @Inject constructor(
         const val ALL_SHOWCASE_ID = "etalase"
     }
 
-    val productListData: LiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>
-        get() = _productListData
-    private val _productListData = MutableLiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>()
+    val initialProductListData: LiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>
+        get() = _initialProductListData
+    private val _initialProductListData = MutableLiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>()
+
+    val newProductListData: LiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>
+        get() = _newProductListData
+    private val _newProductListData = MutableLiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>()
 
     val shopHomeLayoutData: LiveData<Result<ShopPageHomeLayoutUiModel>>
         get() = _shopHomeLayoutData
@@ -66,7 +70,10 @@ class ShopHomeViewModel @Inject constructor(
     val userId: String
         get() = userSession.userId
 
-    fun getShopPageHomeData(shopId: String) {
+    fun getShopPageHomeData(
+            shopId: String,
+            sortId: Int
+    ) {
         launchCatchError(block = {
             val shopLayoutWidget = asyncCatchError(
                     dispatcherProvider.io(),
@@ -80,30 +87,31 @@ class ShopHomeViewModel @Inject constructor(
             )
             val productList = asyncCatchError(
                     dispatcherProvider.io(),
-                    block = { getProductList(shopId, 1) },
+                    block = { getProductListData(shopId, sortId, 1) },
                     onError = { null }
             )
             shopLayoutWidget.await()?.let {
                 _shopHomeLayoutData.postValue(Success(it))
                 productList.await()?.let { productListData ->
-                    _productListData.postValue(Success(productListData))
+                    _initialProductListData.postValue(Success(productListData))
                 }
             }
         }) {
         }
     }
 
-    fun getNextProductList(
+    fun getNewProductList(
             shopId: String,
+            sortId: Int,
             page: Int
     ) {
         launchCatchError(block = {
             val listProductData = withContext(dispatcherProvider.io()) {
-                getProductList(shopId, page)
+                getProductListData(shopId,sortId, page)
             }
-            _productListData.postValue(Success(listProductData))
+            _newProductListData.postValue(Success(listProductData))
         }) {
-            _productListData.postValue(Fail(it))
+            _newProductListData.postValue(Fail(it))
         }
     }
 
@@ -130,48 +138,6 @@ class ShopHomeViewModel @Inject constructor(
         getShopProductUseCase.clearCache()
     }
 
-    fun removeWishList(
-            productId: String,
-            onSuccessRemoveWishList: () -> Unit,
-            onErrorRemoveWishList: (errorMessage: String?) -> Unit
-    ) {
-        removeWishlistUseCase.createObservable(productId, userId, object : WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
-
-            override fun onSuccessAddWishlist(productId: String?) {}
-
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                onErrorRemoveWishList.invoke(errorMessage)
-            }
-
-            override fun onSuccessRemoveWishlist(productId: String?) {
-                onSuccessRemoveWishList.invoke()
-            }
-
-        })
-    }
-
-    fun addWishList(
-            productId: String,
-            onSuccessAddWishList: () -> Unit,
-            onErrorAddWishList: (errorMessage: String?) -> Unit
-    ) {
-        addWishListUseCase.createObservable(productId, userId, object : WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                onErrorAddWishList.invoke(errorMessage)
-            }
-
-            override fun onSuccessAddWishlist(productId: String?) {
-                onSuccessAddWishList.invoke()
-            }
-
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
-
-            override fun onSuccessRemoveWishlist(productId: String?) {}
-
-        })
-    }
-
     fun getWishlistStatus(shopHomeCarousellProductUiModel: List<ShopHomeCarousellProductUiModel>) {
         launchCatchError(block = {
             val listResultCheckWishlist = shopHomeCarousellProductUiModel.map {
@@ -194,8 +160,9 @@ class ShopHomeViewModel @Inject constructor(
         )
     }
 
-    private suspend fun getProductList(
+    private suspend fun getProductListData(
             shopId: String,
+            sortId: Int,
             page: Int
     ): Pair<Boolean, List<ShopHomeProductViewModel>> {
         getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(
@@ -203,6 +170,7 @@ class ShopHomeViewModel @Inject constructor(
                 ShopProductFilterInput().apply {
                     etalaseMenu = ALL_SHOWCASE_ID
                     this.page = page
+                    sort = sortId
                 }
         )
         val productListResponse = getShopProductUseCase.executeOnBackground()

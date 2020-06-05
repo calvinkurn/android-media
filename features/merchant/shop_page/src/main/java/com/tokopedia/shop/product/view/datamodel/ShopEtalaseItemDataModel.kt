@@ -4,20 +4,19 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef.ETALASE_DEFAULT
-import com.tokopedia.shop.product.view.adapter.ShopProductEtalaseAdapterTypeFactory
 
 /**
  * Created by normansyahputa on 2/28/18.
  */
 
-data class ShopProductEtalaseChipItemViewModel(
+data class ShopEtalaseItemDataModel(
         val etalaseId: String = "",
         val etalaseName: String = "",
         @ShopEtalaseTypeDef val type: Int = ETALASE_DEFAULT,
         val etalaseBadge: String = "",
         val etalaseCount: Long = 0,
         val highlighted: Boolean = false
-) : BaseShopProductEtalaseViewModel, Parcelable {
+) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
@@ -25,10 +24,6 @@ data class ShopProductEtalaseChipItemViewModel(
             parcel.readString() ?: "",
             parcel.readLong(),
             parcel.readByte() != 0.toByte())
-
-    override fun type(typeFactory: ShopProductEtalaseAdapterTypeFactory): Int {
-        return typeFactory.type(this)
-    }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(etalaseId)
@@ -43,12 +38,12 @@ data class ShopProductEtalaseChipItemViewModel(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<ShopProductEtalaseChipItemViewModel> {
-        override fun createFromParcel(parcel: Parcel): ShopProductEtalaseChipItemViewModel {
-            return ShopProductEtalaseChipItemViewModel(parcel)
+    companion object CREATOR : Parcelable.Creator<ShopEtalaseItemDataModel> {
+        override fun createFromParcel(parcel: Parcel): ShopEtalaseItemDataModel {
+            return ShopEtalaseItemDataModel(parcel)
         }
 
-        override fun newArray(size: Int): Array<ShopProductEtalaseChipItemViewModel?> {
+        override fun newArray(size: Int): Array<ShopEtalaseItemDataModel?> {
             return arrayOfNulls(size)
         }
     }
