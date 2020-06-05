@@ -145,7 +145,7 @@ class PartialSnapshotView(private val view: View,
 
     fun renderCod(showCod: Boolean) = with(view) {
         cod_header_container.showWithCondition(showCod)
-        cod_header_container.setCompoundDrawables(MethodChecker.getDrawable(view.context, R.drawable.ic_cod_white), null, null, null)
+        cod_header_container.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, R.drawable.ic_cod_white), null, null, null)
     }
 
     fun renderTradein(showTradein: Boolean) = with(view) {

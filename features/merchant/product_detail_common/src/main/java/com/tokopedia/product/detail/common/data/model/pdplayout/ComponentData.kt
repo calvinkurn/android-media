@@ -39,8 +39,6 @@ data class ComponentData(
         val media: List<Media> = listOf(),
         @SerializedName("name")
         val name: String = "",
-        @SerializedName("pictures")
-        val pictures: List<Picture> = listOf(),
         @SerializedName("price")
         val price: Price = Price(),
         @SerializedName("stock")
@@ -81,9 +79,9 @@ data class ComponentData(
 
         return if (firstImage != null) {
             when {
-                firstImage.uRLThumbnail.isNotEmpty() -> pictures.firstOrNull()?.urlThumbnail ?: ""
-                firstImage.uRL300.isNotEmpty() -> pictures.firstOrNull()?.url300 ?: ""
-                firstImage.uRLOriginal.isNotEmpty() -> pictures.firstOrNull()?.urlOriginal ?: ""
+                firstImage.uRLThumbnail.isNotEmpty() -> firstImage.uRLThumbnail
+                firstImage.uRL300.isNotEmpty() -> firstImage.uRL300 ?: ""
+                firstImage.uRLOriginal.isNotEmpty() -> firstImage.uRLOriginal
                 else -> ""
             }
         } else {

@@ -990,9 +990,7 @@ object DynamicProductDetailTracking {
                             put("is_official_store", data.isOS)
                             put("shop_id", productInfo.basic.shopID)
                             put("shop_name", shopName)
-                            if (data.pictures.isNotEmpty()) {
-                                put("product_image_url", data.pictures.get(0).urlOriginal)
-                            }
+                            put("product_image_url", data.getFirstProductImage().toString())
                         }
                 )
             }

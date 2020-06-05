@@ -35,7 +35,6 @@ class ProductVariantViewHolder(val view: View,
             }
 
             element.listOfVariantCategory?.let {
-                variant_separator.show()
                 containerAdapter = VariantContainerAdapter(listener)
                 rvContainerVariant.adapter = containerAdapter
                 if (rvContainerVariant.itemDecorationCount == 0) {

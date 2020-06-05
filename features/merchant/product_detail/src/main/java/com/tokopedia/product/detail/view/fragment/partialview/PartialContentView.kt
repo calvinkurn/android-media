@@ -34,7 +34,6 @@ class PartialContentView(private val view: View,
 
         img_free_ongkir.shouldShowWithAction(data.isFreeOngkir.isActive) {
             ImageHandler.loadImageRounded2(context, img_free_ongkir, data.isFreeOngkir.imageURL)
-//            text_free_ongkir.text = "Bebas Ongkir min. Belanja 50 rb".boldTextWithGiven(view.context, "Bebas Ongkir")
         }
 
         text_cashback_green.shouldShowWithAction(data.isCashback.percentage > 0) {
@@ -141,7 +140,7 @@ class PartialContentView(private val view: View,
 
     fun renderCod(showCod: Boolean) = with(view) {
         cod_header_container.showWithCondition(showCod)
-        cod_header_container.setCompoundDrawables(MethodChecker.getDrawable(view.context, R.drawable.ic_cod_white), null, null, null)
+        cod_header_container.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, R.drawable.ic_cod_white), null, null, null)
     }
 
     fun renderTradein(showTradein: Boolean) = with(view) {

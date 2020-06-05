@@ -37,6 +37,11 @@ class ProductMediaViewHolder(private val view: View,
                 listener.onImageReviewMediaClicked(getComponentTrackData(element))
             }
 
+            if (element.shouldRenderImageVariant) {
+                viewMediaPager.updateImage(element.listOfMedia)
+                element.shouldRenderImageVariant = false
+            }
+
             viewMediaPager?.isVisibleOnTheScreen({},{
                 viewMediaPager?.stopVideo()
             })

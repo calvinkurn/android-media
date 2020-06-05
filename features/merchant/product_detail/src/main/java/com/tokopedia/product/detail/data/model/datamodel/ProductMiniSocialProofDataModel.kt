@@ -35,6 +35,11 @@ data class ProductMiniSocialProofDataModel(
         return typeFactory.type(this)
     }
 
+
+    /**
+     * Social proof mini should only show 3 of this, with hierarchy
+     * When it only contains 1 data, it will show single line social proof
+     */
     val getLastThreeHirarchyData: List<Pair<String, Int>>
         get() = listOf(RATING to ratingCount,
                 TALK to talkCount,
@@ -43,17 +48,6 @@ data class ProductMiniSocialProofDataModel(
                 VIEW_COUNT to viewCount)
                 .filter { it.second > 0 }
                 .take(3)
-
-    private fun shouldShowSingleQna(): Boolean {
-        val data = getLastThreeHirarchyData
-        return if (data.size == 2) {
-            data.size == data.count {
-                it.first == TALK || it.first == VIEW_COUNT
-            }
-        } else {
-            false
-        }
-    }
 
     private fun shouldShowSinglePaymentVerified(): Boolean {
         val data = getLastThreeHirarchyData
@@ -72,6 +66,6 @@ data class ProductMiniSocialProofDataModel(
     }
 
     fun shouldShowSingleViewSocialProof(): Boolean {
-        return shouldShowSingleQna() || shouldShowSinglePaymentVerified() || shouldShowSingleViewCount()
+        return shouldShowSinglePaymentVerified() || shouldShowSingleViewCount()
     }
 }

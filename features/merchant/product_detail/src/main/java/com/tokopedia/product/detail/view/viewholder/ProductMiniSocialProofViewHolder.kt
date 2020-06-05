@@ -82,10 +82,6 @@ class ProductMiniSocialProofViewHolder(private val view: View, private val liste
         socProofTitle?.hide()
 
         when (element.first) {
-            ProductMiniSocialProofDataModel.TALK -> {
-                view.setOnClickListener { listener.onReviewClick() }
-                textSocialProofValue?.text = view.context.getString(R.string.qna_single_text_template_builder, element.second.productThousandFormatted())
-            }
             ProductMiniSocialProofDataModel.PAYMENT_VERIFIED -> {
                 textSocialProofValue?.text = view.context.getString(R.string.terjual_single_text_template_builder, element.second.productThousandFormatted())
             }

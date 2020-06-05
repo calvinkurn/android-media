@@ -115,6 +115,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                data = it
             }
             mediaMap?.run {
+                shouldRenderImageVariant = true
                 listOfMedia = DynamicProductDetailMapper.convertMediaToDataModel(it.data.media.toMutableList())
                 basicStatus = it.basic.status
             }
@@ -345,6 +346,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     }
 
     fun updateImageAfterClickVariant(it: MutableList<Media>) {
+        mediaMap?.shouldRenderImageVariant = true
         mediaMap?.listOfMedia = DynamicProductDetailMapper.convertMediaToDataModel(it)
     }
 
