@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.presentation.view.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -67,6 +68,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.TestOnly;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -133,6 +135,13 @@ public class SearchActivity extends BaseActivity
 
     private PageLoadTimePerformanceInterface pageLoadTimePerformanceMonitoring;
     private SearchParameter searchParameter;
+
+    @TestOnly
+    public static Intent createIntent(Context context, String query) {
+        Intent intent = new Intent(context, SearchActivity.class);
+        intent.setData(Uri.parse(ApplinkConstInternalDiscovery.SEARCH_RESULT + "?q="+query));
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,5 +1,6 @@
 package com.tokopedia.search
 
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
@@ -13,17 +14,24 @@ class PltSearchPerformanceTest {
     }
 
     @get:Rule
-    var activityRule: ActivityTestRule<SearchActivity> = ActivityTestRule(SearchActivity::class.java)
+    var activityRule: ActivityTestRule<SearchActivity> = ActivityTestRule(SearchActivity::class.java, false, false)
 
     @get:Rule
     var testRepeatRule: TestRepeatRule = TestRepeatRule()
 
     @Test
     fun testPageLoadTimePerformance() {
+        setUpActivity()
         Thread.sleep(10000)
         savePLTPerformanceResultData(TEST_CASE_PAGE_LOAD_TIME_SEARCH_PERFORMANCE)
         activityRule.activity.finishAndRemoveTask()
         Thread.sleep(1000)
+    }
+
+    private fun setUpActivity() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val intent = SearchActivity.createIntent(context, "samsung")
+        activityRule.launchActivity(intent)
     }
 
     private fun savePLTPerformanceResultData(tag: String) {
