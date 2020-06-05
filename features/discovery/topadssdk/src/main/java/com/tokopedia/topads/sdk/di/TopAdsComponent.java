@@ -7,13 +7,14 @@ import com.tokopedia.topads.sdk.view.adapter.TopAdsPlacer;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 import com.tokopedia.topads.sdk.widget.TopAdsCarouselView;
 import com.tokopedia.topads.sdk.widget.TopAdsDynamicChannelView;
+import com.tokopedia.topads.sdk.widget.TopAdsImageView;
 import com.tokopedia.topads.sdk.widget.TopAdsView;
 import com.tokopedia.topads.sdk.widget.TopAdsWidgetView;
 
 import dagger.Component;
 
 @TopAdsScope
-@Component(modules = {TopAdsModule.class, TopAdsWishlistModule.class}, dependencies = BaseAppComponent.class)
+@Component(modules = {TopAdsModule.class, TopAdsWishlistModule.class, TopAdsViewModelModule.class}, dependencies = BaseAppComponent.class)
 public interface TopAdsComponent {
 
     void inject(BannerAdsPresenter bannerAdsPresenter);
@@ -31,4 +32,6 @@ public interface TopAdsComponent {
     void inject(TopAdsPlacer topAdsPlacer);
 
     void inject(TopAdsDynamicChannelView topAdsDynamicChannelView);
+
+    void inject(TopAdsImageView topAdsImageView);
 }
