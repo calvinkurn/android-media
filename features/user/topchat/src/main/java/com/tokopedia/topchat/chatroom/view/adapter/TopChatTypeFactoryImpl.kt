@@ -18,6 +18,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBanner
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingFraudAlert
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.*
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.fallback.FallbackMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.fallback.LeftFallbackMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.fallback.RightFallbackMessageViewHolder
@@ -42,7 +43,7 @@ open class TopChatTypeFactoryImpl(
         private val voucherListener: TopChatVoucherListener,
         private val invoiceThumbnailListener: InvoiceThumbnailListener,
         private val quotationListener: QuotationViewHolder.QuotationListener,
-        private val useNewProductCard: Boolean
+        private val deferredAttachment: DeferredViewHolderAttachment
 ) : BaseChatTypeFactoryImpl(
         imageAnnouncementListener,
         chatLinkHandlerListener,
@@ -110,11 +111,7 @@ open class TopChatTypeFactoryImpl(
     }
 
     override fun type(productAttachmentViewModel: ProductAttachmentViewModel): Int {
-        return if (useNewProductCard) {
-            TopchatProductAttachmentViewHolder.LAYOUT
-        } else {
-            super.type(productAttachmentViewModel)
-        }
+        return TopchatProductAttachmentViewHolder.LAYOUT
     }
 
     // Check if chat bubble first, if not return default ViewHolder
@@ -136,7 +133,7 @@ open class TopChatTypeFactoryImpl(
             productCarouselListListener: ProductCarouselListAttachmentViewHolder.Listener
     ): AbstractViewHolder<*> {
         return when (type) {
-            ProductCarouselListAttachmentViewHolder.LAYOUT -> ProductCarouselListAttachmentViewHolder(parent, productAttachmentListener, productCarouselListListener)
+            ProductCarouselListAttachmentViewHolder.LAYOUT -> ProductCarouselListAttachmentViewHolder(parent, productAttachmentListener, productCarouselListListener, deferredAttachment)
             else -> createViewHolder(parent, type)
         }
     }
@@ -146,7 +143,7 @@ open class TopChatTypeFactoryImpl(
             StickerMessageViewHolder.LAYOUT -> StickerMessageViewHolder(parent)
             HeaderDateViewHolder.LAYOUT -> HeaderDateViewHolder(parent)
             ProductAttachmentViewHolder.LAYOUT -> TopchatOldProductAttachmentViewHolder(parent, productAttachmentListener)
-            TopchatProductAttachmentViewHolder.LAYOUT -> TopchatProductAttachmentViewHolder(parent, productAttachmentListener)
+            TopchatProductAttachmentViewHolder.LAYOUT -> TopchatProductAttachmentViewHolder(parent, productAttachmentListener, deferredAttachment)
             TopchatEmptyViewHolder.LAYOUT -> TopchatEmptyViewHolder(parent)
             QuotationViewHolder.LAYOUT -> QuotationViewHolder(parent, chatLinkHandlerListener, quotationListener)
             RoomSettingBannerViewHolder.LAYOUT -> RoomSettingBannerViewHolder(parent)
@@ -158,7 +155,7 @@ open class TopChatTypeFactoryImpl(
             RightChatMessageViewHolder.LAYOUT -> RightChatMessageViewHolder(parent, chatLinkHandlerListener)
             ImageDualAnnouncementViewHolder.LAYOUT -> ImageDualAnnouncementViewHolder(parent, imageDualAnnouncementListener)
             TopChatVoucherViewHolder.LAYOUT -> TopChatVoucherViewHolder(parent, voucherListener)
-            AttachedInvoiceViewHolder.LAYOUT -> AttachedInvoiceViewHolder(parent, invoiceThumbnailListener)
+            AttachedInvoiceViewHolder.LAYOUT -> AttachedInvoiceViewHolder(parent, invoiceThumbnailListener, deferredAttachment)
             else -> super.createViewHolder(parent, type)
         }
     }
