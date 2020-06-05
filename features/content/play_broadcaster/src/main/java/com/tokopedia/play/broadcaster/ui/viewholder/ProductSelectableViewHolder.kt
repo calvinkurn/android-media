@@ -85,7 +85,7 @@ class ProductSelectableViewHolder(
 
     companion object {
 
-        val LAYOUT = R.layout.item_product_selectable
+        val LAYOUT = R.layout.item_play_product_selectable
     }
 
     interface Listener {

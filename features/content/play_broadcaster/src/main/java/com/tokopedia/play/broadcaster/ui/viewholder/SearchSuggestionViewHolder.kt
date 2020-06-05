@@ -23,7 +23,7 @@ class SearchSuggestionViewHolder(
 
     companion object {
 
-        val LAYOUT = R.layout.item_search_suggestion
+        val LAYOUT = R.layout.item_play_search_suggestion
     }
 
     interface Listener {

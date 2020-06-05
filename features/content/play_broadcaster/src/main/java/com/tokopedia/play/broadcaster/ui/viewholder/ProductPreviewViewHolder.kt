@@ -63,6 +63,6 @@ class ProductPreviewViewHolder(
     }
 
     companion object {
-        val LAYOUT = R.layout.item_product_preview
+        val LAYOUT = R.layout.item_play_product_preview
     }
 }

@@ -18,6 +18,6 @@ class PlayUnknownFollowerViewHolder(itemView: View) : BaseViewHolder(itemView) {
     }
 
     companion object {
-        val LAYOUT = R.layout.item_unknown_follower
+        val LAYOUT = R.layout.item_play_unknown_follower
     }
 }
