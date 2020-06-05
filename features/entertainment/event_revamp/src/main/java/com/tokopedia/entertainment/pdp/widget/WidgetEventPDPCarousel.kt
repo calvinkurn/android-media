@@ -70,8 +70,8 @@ class WidgetEventPDPCarousel @JvmOverloads constructor(context: Context, attrs: 
 
         for (count in 0 until imageUrls.size) {
             val pointView = ImageView(context)
-            pointView.setPadding(resources.getDimensionPixelSize(R.dimen.dimen_dp_5),resources.getDimensionPixelSize(R.dimen.layout_lvl0),
-                    resources.getDimensionPixelSize(R.dimen.dimen_dp_5),resources.getDimensionPixelSize(R.dimen.layout_lvl0))
+            pointView.setPadding(resources.getDimensionPixelSize(R.dimen.dimen_dp_5),resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl0),
+                    resources.getDimensionPixelSize(R.dimen.dimen_dp_5),resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl0))
             if (count == 0) pointView.setImageDrawable(resizeIndicator(getIndicatorFocus(),imageUrls.size))
             else pointView.setImageDrawable(resizeIndicator(getIndicator(),imageUrls.size))
 

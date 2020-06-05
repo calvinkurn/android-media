@@ -45,6 +45,7 @@
         />
 
     <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_event_checkout"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/widget_event_checkout_pessanger"
         android:layout_width="match_parent"
