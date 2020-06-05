@@ -20,7 +20,6 @@ object PlayWidgetMapper {
                     } else {
                         PlayBannerCarouselItemDataModel(
                                 channelTitle = it.title,
-                                isAutoPlay = playWidget.meta.autoplay,
                                 applink = it.appLink,
                                 channelCreator = it.partner.name,
                                 countView = it.stats.view.formatted,
@@ -42,6 +41,7 @@ object PlayWidgetMapper {
         return PlayBannerCarouselDataModel(
                 title = playWidget.meta.widgetTitle,
                 backgroundUrl = playWidget.meta.widgetBackground,
+                isAutoPlay = playWidget.meta.autoplay,
                 isAutoRefresh = playWidget.meta.isAutoRefresh,
                 isAutoRefreshTimer = playWidget.meta.autoRefreshTimer,
                 seeMoreApplink = playWidget.meta.buttonApplink,
