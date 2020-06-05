@@ -22,7 +22,6 @@ dependencies {
         transitive = true
     }
 
-    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
@@ -49,6 +48,7 @@ dependencies {
     //test
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
+    androidTestImplementation project(rootProject.ext.libraries.tkpddesign)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
