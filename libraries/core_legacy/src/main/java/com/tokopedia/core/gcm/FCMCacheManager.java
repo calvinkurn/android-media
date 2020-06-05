@@ -151,15 +151,12 @@ public class FCMCacheManager {
     }
 
     public static void storeRegId(String id, Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
-        cache.putString(GCM_ID, id);
-        cache.applyEditor();
+        new UserSession(context).setDeviceId(id);
     }
 
     public static void storeFcmTimestamp(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
-        cache.putLong(GCM_ID_TIMESTAMP, System.currentTimeMillis());
-        cache.applyEditor();
+        UserSession userSession = new UserSession(context);
+        userSession.setFcmTimestamp();
     }
 
     public static String getRegistrationId(Context context) {
@@ -167,14 +164,14 @@ public class FCMCacheManager {
     }
 
     public static String getRegistrationIdWithTemp(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
-        if (cache.getString("gcm_id", "").equals("")) {
+        UserSession userSession = new UserSession(context);
+        String deviceId = userSession.getDeviceId();
+        if (TextUtils.isEmpty(deviceId)) {
             String tempID = getTempFcmId();
-            cache.putString("gcm_id", tempID);
-            cache.applyEditor();
+            userSession.setDeviceId(tempID);
             return tempID;
         }
-        return cache.getString("gcm_id", "");
+        return deviceId;
     }
 
     public String getRegistrationId() {
