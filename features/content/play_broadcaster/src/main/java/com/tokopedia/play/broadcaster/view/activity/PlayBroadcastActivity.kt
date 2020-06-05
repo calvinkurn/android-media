@@ -30,8 +30,6 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment.Compan
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastSummaryFragment
-import com.tokopedia.play.broadcaster.view.fragment.PlayLiveBroadcastFragment
-import com.tokopedia.play.broadcaster.view.fragment.PlayPrepareBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.unifyprinciples.Typography
