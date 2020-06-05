@@ -3,7 +3,6 @@ package com.tokopedia.seller.product.draft.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -18,11 +17,12 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftAddActivity;
 import com.tokopedia.seller.ProductEditItemComponentInstance;
@@ -136,7 +136,7 @@ public class ProductDraftListActivity extends BaseSimpleActivity
     public void saveValidImagesToDraft(ArrayList<String> localPaths, @NonNull ArrayList<String> imageDescriptionList) {
         DaggerProductDraftSaveBulkComponent
                 .builder()
-                .productDraftSaveBulkModule(new ProductDraftSaveBulkModule())
+                .productDraftSaveBulkModule(new ProductDraftSaveBulkModule(this))
                 .productComponent(ProductEditItemComponentInstance.getComponent(getApplication()))
                 .build()
                 .inject(ProductDraftListActivity.this);
@@ -190,7 +190,11 @@ public class ProductDraftListActivity extends BaseSimpleActivity
         hideProgressDialog();
         hasSaveInstagramToDraft = true;
         if (draftProductIdList.size() == 1) {
-            startActivity(ProductDraftAddActivity.Companion.createInstance(this, draftProductIdList.get(0)));
+            if(GlobalConfig.isSellerApp()) {
+                startActivity(AddEditProductPreviewActivity.Companion.createInstance(this, draftProductIdList.get(0).toString(), true, false));
+            } else {
+                startActivity(ProductDraftAddActivity.Companion.createInstance(this, draftProductIdList.get(0)));
+            }
         } else {
             CommonUtils.UniversalToast(this, getString(R.string.product_draft_instagram_save_success,
                     draftProductIdList.size()));

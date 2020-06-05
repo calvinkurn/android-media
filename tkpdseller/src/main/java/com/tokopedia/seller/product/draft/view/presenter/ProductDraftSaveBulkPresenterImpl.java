@@ -4,7 +4,9 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import androidx.annotation.NonNull;
 
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.seller.product.draft.domain.interactor.SaveBulkDraftProductUseCase;
+import com.tokopedia.seller.product.draft.domain.interactor.SaveInstagramToProductDraftUseCase;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -19,9 +21,12 @@ import rx.Subscriber;
 public class ProductDraftSaveBulkPresenterImpl extends ProductDraftSaveBulkPresenter {
     public static final int MIN_IMG_RESOLUTION = 300;
     private SaveBulkDraftProductUseCase saveBulkDraftProductUseCase;
+    private SaveInstagramToProductDraftUseCase saveInstagramToProductDraftUseCase;
 
-    public ProductDraftSaveBulkPresenterImpl(SaveBulkDraftProductUseCase saveBulkDraftProductUseCase){
+    public ProductDraftSaveBulkPresenterImpl(SaveBulkDraftProductUseCase saveBulkDraftProductUseCase,
+                                             SaveInstagramToProductDraftUseCase saveInstagramToProductDraftUseCase){
         this.saveBulkDraftProductUseCase = saveBulkDraftProductUseCase;
+        this.saveInstagramToProductDraftUseCase = saveInstagramToProductDraftUseCase;
     }
 
     @Override
@@ -51,10 +56,20 @@ public class ProductDraftSaveBulkPresenterImpl extends ProductDraftSaveBulkPrese
             getView().hideDraftLoading();
             return;
         }
-        saveBulkDraftProductUseCase.execute(
-                SaveBulkDraftProductUseCase.generateUploadProductParam(
-                        correctResolutionLocalPathList, correctResolutionInstagramDescList),
-                getSaveInstagramToDraftSubscriber());
+
+        // this is for seller app
+        if(GlobalConfig.isSellerApp()) {
+            saveInstagramToProductDraftUseCase.execute(
+                    SaveInstagramToProductDraftUseCase.Companion.generateUploadProductParam(
+                    correctResolutionLocalPathList, correctResolutionInstagramDescList),
+                    getSaveInstagramToProductDraftSubscriber()
+            );
+        } else {
+            saveBulkDraftProductUseCase.execute(
+                    SaveBulkDraftProductUseCase.generateUploadProductParam(
+                    correctResolutionLocalPathList, correctResolutionInstagramDescList),
+                    getSaveInstagramToDraftSubscriber());
+        }
     }
 
     private boolean isResolutionCorrect(String localPath){
@@ -90,10 +105,33 @@ public class ProductDraftSaveBulkPresenterImpl extends ProductDraftSaveBulkPrese
         };
     }
 
+    // this is for seller app
+    private Subscriber<List<? extends Long>> getSaveInstagramToProductDraftSubscriber() {
+        return new Subscriber<List<? extends Long>>() {
+            @Override
+            public void onCompleted() { }
+
+            @Override
+            public void onError(Throwable e) {
+                if(isViewAttached()) {
+                    getView().onErrorSaveBulkDraft(e);
+                }
+            }
+
+            @Override
+            public void onNext(List<? extends Long> productIds) {
+                if(isViewAttached()) {
+                    getView().onSaveBulkDraftSuccess((List<Long>) productIds);
+                }
+            }
+        };
+    }
+
     @Override
     public void detachView() {
         super.detachView();
         saveBulkDraftProductUseCase.unsubscribe();
+        saveInstagramToProductDraftUseCase.unsubscribe();
     }
 
 }
