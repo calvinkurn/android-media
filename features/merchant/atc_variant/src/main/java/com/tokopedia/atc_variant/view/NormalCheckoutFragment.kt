@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
@@ -516,7 +517,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
     }
 
     private fun showToastError(throwable: Throwable?, onRetry: ((v: View) -> Unit)?) {
-        val message = if (throwable is MessageErrorException && throwable.message?.isNotEmpty() == true) {
+        val message = if ((throwable is MessageErrorException || throwable is AkamaiErrorException) && throwable.message?.isNotEmpty() == true) {
             throwable.message
         } else {
             ErrorHandler.getErrorMessage(context, throwable)

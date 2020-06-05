@@ -27,7 +27,7 @@ import com.tokopedia.home.util.setGradientBackground
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.productcard.ProductCardFlashSaleModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import kotlinx.coroutines.CoroutineScope
@@ -51,11 +51,11 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
 
     override val coroutineContext = masterJob + Dispatchers.Main
 
-    private val recyclerView: RecyclerView = itemView.findViewById(R.id.rv_product)
-    private val image: ImageView = itemView.findViewById(R.id.parallax_image)
-    private val loadingBackground: ImageView = itemView.findViewById(R.id.background_loader)
-    private val parallaxBackground: View = itemView.findViewById(R.id.parallax_background)
-    private val parallaxView: View = itemView.findViewById(R.id.parallax_view)
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var image: ImageView
+    private lateinit var loadingBackground: ImageView
+    private lateinit var parallaxBackground: View
+    private lateinit var parallaxView: View
 
     private lateinit var layoutManager: LinearLayoutManager
 
@@ -67,6 +67,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
     }
 
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
+        initVar()
         setupBackground(channel)
         setupList(channel)
         setSnapEffect()
@@ -77,12 +78,13 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
     }
 
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
-        this.onBannerSeeMoreClicked(applink, channel)
+        RouteManager.route(itemView.context, applink)
+        HomePageTrackingV2.MixLeft.sendMixLeftSeeAllClick(channel, homeCategoryListener.userId)
     }
 
     override fun onBannerSeeMoreClicked(applink: String, channel: DynamicHomeChannel.Channels) {
         RouteManager.route(itemView.context, applink)
-        HomePageTrackingV2.MixLeft.sendMixLeftSeeAllCardClick(channel)
+        HomePageTrackingV2.MixLeft.sendMixLeftSeeAllCardClick(channel, homeCategoryListener.userId)
     }
 
     override fun onFlashSaleCardImpressed(position: Int, channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid) {
@@ -96,6 +98,14 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
         //because we have empty value at beginning of list, we need to reduce pos by 1
         RouteManager.route(itemView.context, applink)
         HomePageTrackingV2.MixLeft.sendMixLeftProductClick(channel, grid, position - 1)
+    }
+
+    private fun initVar() {
+        recyclerView = itemView.findViewById(R.id.rv_product)
+        image = itemView.findViewById(R.id.parallax_image)
+        loadingBackground = itemView.findViewById(R.id.background_loader)
+        parallaxBackground = itemView.findViewById(R.id.parallax_background)
+        parallaxView = itemView.findViewById(R.id.parallax_view)
     }
 
     private fun setupBackground(channel: DynamicHomeChannel.Channels) {
@@ -177,7 +187,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
         val list :MutableList<FlashSaleDataModel> = mutableListOf()
         for (element in channel.grids) {
             list.add(FlashSaleDataModel(
-                    ProductCardFlashSaleModel(
+                    ProductCardModel(
                             slashedPrice = element.slashedPrice,
                             productName = element.name,
                             formattedPrice = element.price,
@@ -188,12 +198,16 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
                             isTopAds = element.isTopads,
                             stockBarPercentage = element.soldPercentage,
                             labelGroupList = element.labelGroup.map {
-                                ProductCardFlashSaleModel.LabelGroup(
+                                ProductCardModel.LabelGroup(
                                         position = it.position,
                                         title = it.title,
                                         type = it.type
                                 )
                             },
+                            freeOngkir = ProductCardModel.FreeOngkir(
+                                    element.freeOngkir.isActive,
+                                    element.freeOngkir.imageUrl
+                            ),
                             isOutOfStock = element.isOutOfStock
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
@@ -212,7 +226,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
     }
 
     private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
-            productCardModelList: List<ProductCardFlashSaleModel>) {
+            productCardModelList: List<ProductCardModel>) {
         val productCardHeight = getProductCardMaxHeight(productCardModelList)
 
         val carouselLayoutParams = this.layoutParams
@@ -220,7 +234,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
         this.layoutParams = carouselLayoutParams
     }
 
-    private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardFlashSaleModel>): Int {
+    private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
         val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.product_card_flashsale_width)
         return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
     }

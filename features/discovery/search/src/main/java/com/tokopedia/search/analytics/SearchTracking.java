@@ -790,4 +790,48 @@ public class SearchTracking {
                 )
         );
     }
+
+    public static void trackEventImpressionBroadMatch(String keyword, String alternativeKeyword, List<Object> broadMatchItems) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
+                        EVENT_CATEGORY,  SearchEventTracking.Category.SEARCH_RESULT,
+                        EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_BROAD_MATCH,
+                        EVENT_LABEL, String.format("%s - %s", keyword, alternativeKeyword),
+                        ECOMMERCE, DataLayer.mapOf(
+                                "currencyCode", "IDR",
+                                "impressions", DataLayer.listOf(
+                                        broadMatchItems.toArray(new Object[broadMatchItems.size()])
+                                ))
+                )
+        );
+    }
+
+    public static void trackEventClickBroadMatchSeeMore(String keyword, String alternativeKeyword) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, SearchEventTracking.Event.SEARCH_RESULT,
+                        EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+                        EVENT_ACTION, SearchEventTracking.Action.CLICK_BROAD_MATCH_LIHAT_SEMUA,
+                        EVENT_LABEL, String.format("%s - %s", keyword, alternativeKeyword)
+                )
+        );
+    }
+
+    public static void trackEventClickBroadMatchItem(String keyword, String alternativeKeyword, List<Object> broadMatchItems) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
+                        EVENT_CATEGORY,  SearchEventTracking.Category.SEARCH_RESULT,
+                        EVENT_ACTION, SearchEventTracking.Action.CLICK_BROAD_MATCH,
+                        EVENT_LABEL, String.format("%s - %s", keyword, alternativeKeyword),
+                        ECOMMERCE, DataLayer.mapOf("click",
+                                DataLayer.mapOf("actionField",
+                                        DataLayer.mapOf("list", "/search - broad match"),
+                                        "products", DataLayer.listOf(
+                                                broadMatchItems.toArray(new Object[broadMatchItems.size()])
+                                        )
+                                )
+                        )
+                )
+        );
+    }
 }

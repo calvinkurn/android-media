@@ -16,7 +16,6 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
 }
 
 project.ext {

@@ -3,16 +3,14 @@ package com.tokopedia.design.behavior;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.view.ViewCompat;
-import androidx.cardview.widget.CardView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.design.R;
-import com.tokopedia.design.button.BottomActionView;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.view.ViewCompat;
 
 /**
  * Simple scrolling behavior that monitors nested events in the scrolling
@@ -136,7 +134,7 @@ public class QuickHideBehaviour extends CoordinatorLayout.Behavior<View> {
     private float getTargetHideValue(ViewGroup parent, View target) {
         if (target instanceof ConstraintLayout) {
             return -target.getHeight();
-        } else if (target instanceof BottomActionView || target instanceof CardView) {
+        } else if (target instanceof CardView) {
             return parent.getHeight() - target.getTop();
         }
 

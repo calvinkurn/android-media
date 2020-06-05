@@ -4,7 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.common_category.data.catalog.CatalogTypeFactory
+import com.tokopedia.common_category.factory.catalog.CatalogTypeFactory
 
 
 data class CatalogItem(

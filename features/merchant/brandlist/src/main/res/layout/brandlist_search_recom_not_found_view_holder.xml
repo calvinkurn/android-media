@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/brand_not_found_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/dp_100"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/img_brand_not_found"
+        android:layout_width="220dp"
+        android:layout_height="165dp"
+        android:layout_marginLeft="49dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginRight="51dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:lines="1"
+        android:text="@string/title_brand_not_found"
+        android:layout_marginTop="@dimen/dp_18"
+        app:layout_constraintTop_toBottomOf="@+id/img_brand_not_found"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:textAlignment="center"
+        android:textColor="@color/defaultText"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:lines="1"
+        android:text="@string/subtitle_all_brand_not_found"
+        android:textAlignment="center"
+        android:textColor="@color/charcoal_grey_68"
+        android:layout_marginTop="@dimen/dp_8"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_header"
+        app:typographyType="body_3" />
+
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_search_brands"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/button_all_brand_not_found"
+        android:layout_marginTop="@dimen/dp_28"
+        android:layout_marginLeft="@dimen/dp_60"
+        android:layout_marginRight="@dimen/dp_60"
+        app:layout_constraintTop_toBottomOf="@+id/tv_subtitle"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:unifyButtonSize="small" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

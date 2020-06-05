@@ -20,13 +20,23 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.productcard.utils.getMaxHeightForListView
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
-class RecommendationListCarouselViewHolder(itemView: View,
-                                           private val listener: HomeCategoryListener,
-                                           private val parentRecycledViewPool: RecyclerView.RecycledViewPool): DynamicChannelViewHolder(
-        itemView, listener) {
+class RecommendationListCarouselViewHolder(
+        itemView: View,
+        private val listener: HomeCategoryListener,
+        private val parentRecycledViewPool: RecyclerView.RecycledViewPool)
+    : DynamicChannelViewHolder(itemView, listener), CoroutineScope {
+
+    private val masterJob = SupervisorJob()
+
+    override val coroutineContext = masterJob + Dispatchers.Main
+
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
         val listCarouselTitle = itemView.findViewById<Typography>(R.id.list_carousel_title)
         val listCarouselDescription = itemView.findViewById<Typography>(R.id.list_carousel_description)
@@ -86,19 +96,23 @@ class RecommendationListCarouselViewHolder(itemView: View,
                 } else {
                     GridLayoutManager(itemView.context, 1)
                 }
+                val tempDataList: MutableList<ProductCardModel> = mutableListOf()
                 val newList : MutableList<HomeRecommendationListCarousel> = channel.grids.map {
+                    val productData = mapGridToProductData(it)
+                    tempDataList.add(productData)
                     HomeRecommendationListData(
-                            it.imageUrl,
-                            it.name,
-                            it.discount,
-                            it.slashedPrice,
-                            it.price,
-                            it.applink,
-                            channel.grids.size > 1,
-                            it.isTopads,
-                            channel,
-                            it,
-                            listener
+                            recommendationImageUrl = it.imageUrl,
+                            recommendationTitle =  it.name,
+                            recommendationDiscountLabel = it.discount,
+                            recommendationSlashedPrice = it.slashedPrice,
+                            recommendationPrice = it.price,
+                            recommendationApplink = it.applink,
+                            isCarousel = channel.grids.size > 1,
+                            isTopAds = it.isTopads,
+                            channel = channel,
+                            grid = it,
+                            listener = listener,
+                            productData = productData
                     )
                 }.toMutableList()
                 if(channel.grids.size > 1 && channel.header.applink.isNotEmpty()) newList.add(HomeRecommendationListSeeMoreData(channel, listener))
@@ -108,7 +122,16 @@ class RecommendationListCarouselViewHolder(itemView: View,
                 if (channel.grids.size > 1) {
                     addItemDecoration(SimpleHorizontalLinearLayoutDecoration())
                 }
+                launch {
+                    try {
+                        setHeightBasedOnProductCardMaxHeight(tempDataList)
+                    }
+                    catch (throwable: Throwable) {
+                        throwable.printStackTrace()
+                    }
+                }
             }
+
         }
     }
 
@@ -118,6 +141,19 @@ class RecommendationListCarouselViewHolder(itemView: View,
 
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
         HomePageTrackingV2.RecommendationList.sendRecommendationListSeeAllClick(channel)
+    }
+
+    fun mapGridToProductData(grid: DynamicHomeChannel.Grid) :ProductCardModel{
+       return ProductCardModel(
+               productImageUrl = grid.imageUrl,
+               productName = grid.name,
+               discountPercentage = grid.discount,
+               slashedPrice = grid.slashedPrice,
+               formattedPrice = grid.price,
+               hasAddToCartButton = grid.hasBuyButton,
+               isTopAds = grid.isTopads,
+               addToCardText = itemView.context.getString(R.string.home_buy_again)
+        )
     }
 
     private fun clearItemRecyclerViewDecoration(itemRecyclerView: RecyclerView) {
@@ -141,20 +177,9 @@ class RecommendationListCarouselViewHolder(itemView: View,
         private val recommendationCard = itemView.findViewById<ProductCardListView>(R.id.productCardView)
 
         override fun bind(recommendation: HomeRecommendationListCarousel) {
+            recommendationCard.applyCarousel()
             if(recommendation is HomeRecommendationListData) {
-                recommendationCard.setProductModel(
-                        ProductCardModel(
-                                productImageUrl = recommendation.recommendationImageUrl,
-                                productName = recommendation.recommendationTitle,
-                                discountPercentage = recommendation.recommendationDiscountLabel,
-                                slashedPrice = recommendation.recommendationSlashedPrice,
-                                formattedPrice = recommendation.recommendationPrice,
-                                hasAddToCartButton = recommendation.channel.hasCloseButton,
-                                isTopAds = recommendation.isTopAds
-                        )
-                )
-                val addToCartButton = recommendationCard.findViewById<UnifyButton>(R.id.buttonAddToCart)
-                addToCartButton.text = itemView.context.getString(R.string.home_buy_again)
+                recommendationCard.setProductModel(recommendation.productData)
                 recommendationCard.setAddToCartOnClickListener {
                     recommendation.listener.onBuyAgainOneClickCheckOutClick(recommendation.grid, recommendation.channel, position)
                 }
@@ -164,6 +189,19 @@ class RecommendationListCarouselViewHolder(itemView: View,
                 }
             }
         }
+    }
+
+    private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
+            productCardModelList: List<ProductCardModel>) {
+        val productCardHeight = getProductCardMaxHeight(productCardModelList)
+
+        val carouselLayoutParams = this.layoutParams
+        carouselLayoutParams?.height = productCardHeight
+        this.layoutParams = carouselLayoutParams
+    }
+
+    suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
+        return productCardModelList.getMaxHeightForListView(itemView.context, Dispatchers.Default)
     }
 
     class HomeRecommendationSeeMoreViewHolder(
@@ -190,11 +228,12 @@ class RecommendationListCarouselViewHolder(itemView: View,
             val recommendationSlashedPrice: String,
             val recommendationPrice: String,
             val recommendationApplink: String,
-            val isTopAds: Boolean,
             val isCarousel: Boolean,
+            val isTopAds: Boolean,
             val channel: DynamicHomeChannel.Channels,
             val grid: DynamicHomeChannel.Grid,
-            val listener: HomeCategoryListener
+            val listener: HomeCategoryListener,
+            val productData: ProductCardModel
     ): HomeRecommendationListCarousel
 
     data class HomeRecommendationListSeeMoreData(

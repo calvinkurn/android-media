@@ -41,20 +41,16 @@ class ShopShowcaseListAdapter (
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val context: Context
         private var titleShowcase: TextView? = null
-        private var subtitleShowcase: TextView? = null
         private var buttonMenuMore: ImageView? = null
 
         init {
             context = itemView.context
             titleShowcase = itemView.findViewById(R.id.tv_showcase_name)
-            subtitleShowcase = itemView.findViewById(R.id.tv_total_product)
             buttonMenuMore = itemView.findViewById(R.id.img_menu_more)
         }
 
         fun bindData(dataShowcase: ShowcaseItem, position: Int) {
-            val stringTotalProduct: String = dataShowcase.count.toString()
             titleShowcase?.text = dataShowcase.name
-            subtitleShowcase?.text = "$stringTotalProduct produk"
 
             if (dataShowcase.type == ShowcaseType.GENERATED || !isMyShop) {
                 buttonMenuMore?.visibility = View.INVISIBLE

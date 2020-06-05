@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/layout_lvl2"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/productDetailDiscussionQuestion"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
+        android:maxLines="2"
+        android:ellipsize="end"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/productDetailDiscussionQuestionChevron"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/productDetailDiscussionQuestionChevron"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_chevron_discussion"/>
+    
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/productDetailDiscussionProfilePicture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:unify_image_type="circle"
+        app:layout_constraintStart_toStartOf="@id/productDetailDiscussionQuestion"
+        app:layout_constraintTop_toBottomOf="@id/productDetailDiscussionQuestion"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/productDetailDiscussionTotalAnswer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:visibility="gone"
+        app:layout_goneMarginStart="@dimen/layout_lvl0"
+        app:typographyWeight="reguler"
+        app:typographyType="body_3"
+        app:layout_constraintTop_toBottomOf="@id/productDetailDiscussionQuestion"
+        app:layout_constraintStart_toEndOf="@id/productDetailDiscussionProfilePicture" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

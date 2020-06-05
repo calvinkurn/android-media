@@ -173,6 +173,12 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE -> DynamicLegoBannerViewHolder.LAYOUT
 
             /**
+             * refer to 1 grid item layout {@link com.tokopedia.home.R.layout#home_dc_category_widget}
+             * used by category widget
+             */
+            DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET -> CategoryWidgetViewHolder.LAYOUT
+
+            /**
              * refer to 1 grid item layout {@link com.tokopedia.home.R.layout#home_dc_deals}
              * used by deals widget to show 1 product item
              */
@@ -252,6 +258,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             MixTopBannerViewHolder.LAYOUT -> viewHolder = MixTopBannerViewHolder(view, listener)
             ProductHighlightViewHolder.LAYOUT -> viewHolder = ProductHighlightViewHolder(view, listener)
             RechargeRecommendationViewHolder.LAYOUT -> viewHolder = RechargeRecommendationViewHolder(view, rechargeRecommendationListener, listener)
+            CategoryWidgetViewHolder.LAYOUT -> viewHolder = CategoryWidgetViewHolder(view, listener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 
