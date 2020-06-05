@@ -255,6 +255,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         hashItemMap.clear()
         idPackageActive = ""
         setTotalPrice(getRupiahFormat(0))
+        showViewBottom(false)
     }
 
     private fun observeData() {

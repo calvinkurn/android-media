@@ -34,7 +34,7 @@ class PackageParentViewHolder (view: View,
             eventPDPTicketAdapter.eventPDPTracking = eventPDPTracking
             tg_event_pdp_expand_title.text = element.name
             tg_event_pdp_expand_price.text = Html.fromHtml(context.resources.getString(R.string.ent_checkout_price_expand,
-                    CurrencyFormatter.getRupiahFormat(element.salesPrice.toLong())))
+                    CurrencyFormatter.getRupiahAllowZeroFormat(element.salesPrice.toLong())))
             rv_event_parent_ticket.apply {
                 adapter = eventPDPTicketAdapter
                 layoutManager = LinearLayoutManager(

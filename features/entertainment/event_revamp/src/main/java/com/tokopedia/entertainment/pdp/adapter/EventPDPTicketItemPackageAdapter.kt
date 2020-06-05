@@ -45,8 +45,10 @@ class EventPDPTicketItemPackageAdapter(
                 txtSubtitle_ticket.text = items.description
                 txtPrice_ticket.text = getRupiahFormat(items.salesPrice.toInt())
 
-                txtPilih_ticket.visibility = if(checkDate(items.dates,onBindItemTicketListener.getSelectedDate())) View.VISIBLE else View.GONE
-                txtHabis_ticket.visibility = if(!checkDate(items.dates,onBindItemTicketListener.getSelectedDate())) View.VISIBLE else View.GONE
+                val itemIsAvailable = (checkDate(items.dates,onBindItemTicketListener.getSelectedDate()) || items.available.toInt()>=1)
+
+                txtPilih_ticket.visibility = if(itemIsAvailable) View.VISIBLE else View.GONE
+                txtHabis_ticket.visibility = if(!itemIsAvailable) View.VISIBLE else View.GONE
 
                 quantityEditor.minValue = items.minQty.toInt()
                 quantityEditor.maxValue = items.maxQty.toInt()
