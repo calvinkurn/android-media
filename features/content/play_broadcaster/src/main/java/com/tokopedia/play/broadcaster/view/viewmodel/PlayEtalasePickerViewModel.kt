@@ -175,20 +175,15 @@ class PlayEtalasePickerViewModel @Inject constructor(
             } else {
                 //if not yet retrieved
                 val (productList, totalData) = getEtalaseProductsById(etalaseId, page)
-                updateEtalaseMap(etalaseId, productList, page)
-                updateProductMap(productList)
-
-                val newProductMap = etalase.productMap.filterKeys { it <= page }.toMutableMap().also {
-                    it[page] = productList
+                etalase.productMap[page] = productList.map {
+                    it.copy(transitionName = "$etalaseId - ${it.id}")
                 }
+                launch { updateProductMap(productList) }
 
-                val stillHasNextPage = newProductMap.values.size < totalData
+                val stillHasNextPage = etalase.productMap.values.size < totalData
 
                 PageResult(
-                        currentValue = etalase.copy(
-                                productMap = newProductMap,
-                                stillHasProduct = stillHasNextPage
-                        ),
+                        currentValue = etalase.copy(stillHasProduct = stillHasNextPage),
                         state = ResultState.Success(stillHasNextPage)
                 )
             }
@@ -240,10 +235,6 @@ class PlayEtalasePickerViewModel @Inject constructor(
             if (etalase == null) etalaseMap[it.id] = it
         }
         return@withContext etalaseMap
-    }
-
-    private suspend fun updateEtalaseMap(etalaseId: String, productList: List<ProductContentUiModel>, page: Int) = withContext(computationDispatcher) {
-        etalaseMap[etalaseId]?.productMap?.put(page, productList)
     }
 
     private suspend fun updateProductMap(newProductList: List<ProductContentUiModel>) = withContext(computationDispatcher) {

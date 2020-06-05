@@ -27,6 +27,7 @@ import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 import com.tokopedia.play.broadcaster.ui.viewholder.SearchSuggestionViewHolder
 import com.tokopedia.play.broadcaster.util.doOnPreDraw
 import com.tokopedia.play.broadcaster.util.scroll.EndlessRecyclerViewScrollListener
+import com.tokopedia.play.broadcaster.util.scroll.StopFlingScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.PlayEtalaseAdapter
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
 import com.tokopedia.play.broadcaster.view.adapter.SearchSuggestionsAdapter
@@ -169,6 +170,7 @@ class PlayEtalasePickerFragment @Inject constructor(
     private fun setupEtalaseList() {
         rvEtalase.adapter = etalaseAdapter
         rvEtalase.addItemDecoration(PlayGridTwoItemDecoration(requireContext()))
+        rvEtalase.addOnScrollListener(StopFlingScrollListener())
     }
 
     private fun setupSearchList() {
@@ -189,6 +191,7 @@ class PlayEtalasePickerFragment @Inject constructor(
             }
         }
         rvSearchedProducts.addOnScrollListener(scrollListener)
+        rvSearchedProducts.addOnScrollListener(StopFlingScrollListener())
     }
 
     private fun setupSuggestionList() {
@@ -276,12 +279,11 @@ class PlayEtalasePickerFragment @Inject constructor(
     private fun onSearchModeTransition() {
         TransitionManager.beginDelayedTransition(
                 container,
-                TransitionSet()
-                        .addTransition(
-                                Slide(Gravity.BOTTOM)
-                                        .addTarget(rvEtalase)
-                                        .setDuration(300)
-                        ).excludeChildren(psbSearch, true)
+                Slide(Gravity.BOTTOM)
+                        .addTarget(rvEtalase)
+                        .setDuration(300)
+                        .setStartDelay(200)
+                        .excludeChildren(psbSearch, true)
         )
     }
 

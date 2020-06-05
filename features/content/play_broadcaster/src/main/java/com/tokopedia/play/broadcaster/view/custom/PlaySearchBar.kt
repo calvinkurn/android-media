@@ -131,6 +131,7 @@ class PlaySearchBar : ConstraintLayout {
                 TransitionSet()
                         .addTransition(getSearchBoxTransition())
                         .addTransition(getCancelButtonTransition())
+                        .setStartDelay(200)
         )
     }
 
