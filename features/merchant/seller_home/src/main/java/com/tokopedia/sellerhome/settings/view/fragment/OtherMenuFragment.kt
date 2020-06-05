@@ -24,6 +24,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
 import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
 import com.tokopedia.kotlin.extensions.view.show
@@ -136,6 +137,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         setupOffset()
         setupView(view)
         observeLiveData()
+        context?.let { UpdateShopActiveService.startService(it) }
     }
 
     override fun getAdapterTypeFactory(): OtherMenuAdapterTypeFactory = OtherMenuAdapterTypeFactory(this)

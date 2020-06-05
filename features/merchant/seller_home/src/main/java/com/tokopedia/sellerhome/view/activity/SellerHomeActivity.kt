@@ -186,7 +186,10 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
                     UpdateShopActiveService.startService(this)
                     showContainerFragment(lastSomTab, TrackingConstant.CLICK_ORDER)
                 }
-                R.id.menu_sah_other -> showOtherSettingsFragment()
+                R.id.menu_sah_other -> {
+                    UpdateShopActiveService.startService(this)
+                    showOtherSettingsFragment()
+                }
             }
             return@setOnNavigationItemSelectedListener true
         }
