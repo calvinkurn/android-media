@@ -1,4 +1,4 @@
-package com.tokopedia.shop.open.view.watcher;
+package com.tokopedia.shop.open.shop_open_revamp.presentation.view.watcher;
 
 import android.text.Editable;
 import android.text.TextWatcher;
