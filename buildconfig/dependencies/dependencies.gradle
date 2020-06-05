@@ -39,7 +39,7 @@ ext {
     stfalconVersion = '1.0.0'
 
     playServiceFirebaseConfig = '16.1.3'
-    playServiceBaseVersion = '16.0.1'
+    playServiceBaseVersion = '17.0.0'
     playServiceFirebaseIidVersion = '17.0.4'
 
     playCoreVersion = '1.6.3'
@@ -90,21 +90,21 @@ ext {
     ]
 
     unifyIconVersion = '0.0.4'
-    unifyPrinciplesVersion = '1.1.7'
-    unifyComponentsVersion = '1.1.37'
+    unifyPrinciplesVersion = '1.1.8'
+    unifyComponentsVersion = '1.1.38'
     unifyCoachMarkVersion = '1.2.5'
     unifyCalendarVersion = '1.0.2'
     unifyBannerVersion = '1.0.4'
-    unifyDialogVersion = '1.0.0'
+    unifyDialogVersion = '1.0.3'
     unifyDatePickerVersion = '1.0.3'
     unifyPinVersion = '1.0.1'
     unifyEmptyStateVersion = '1.0.5'
     unifyGlobalErrorVersion = '1.0.8'
-    unifyListVersion = "1.0.4"
     unifyHeaderVersion = '1.1.1'
-    unifySortFilterVersion = '1.0.1'
+    unifySortFilterVersion = '1.0.2'
     unifyIconNotificationVersion = '1.0.0'
     unifyCarouselVersion = '1.0.4'
+    unifyListVersion = '1.0.5'
 
     gradlePlugin = [
             crashlytics   : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",

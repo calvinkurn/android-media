@@ -452,6 +452,10 @@ public interface ConstantTransactionAnalytics {
         String VIEW_PROMO_RELEASED = "view promo released after adjust item";
         String VIEW_PROMO_DECREASED = "view promo decreased after adjust item";
 
+        // Shipping experience
+        String VIEW_SUMMARY_TRANSACTION_TICKER_COURIER_NOT_COMPLETE = "view summary transaction ticker courier not complete";
+        String CLICK_CEK_ON_SUMMARY_TRANSACTION_TICKER_COURIER_NOT_COMPLETE = "click cek on summary transaction ticker courier not complete";
+
     }
 
     interface EventLabel {

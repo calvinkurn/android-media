@@ -3,7 +3,7 @@ package com.tokopedia.entertainment.pdp.adapter.viewholder
 import android.text.Html
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.pdp.R
 import com.tokopedia.entertainment.pdp.data.pdp.EventPDPAboutEntity
 import com.tokopedia.entertainment.pdp.listener.OnBindItemListener
 import com.tokopedia.kotlin.extensions.view.gone
@@ -26,8 +26,7 @@ class EventPDPAboutViewHolder(view: View, val onBindItemListener: OnBindItemList
 
                 if(!element.longDesc.isNullOrEmpty()) {
                     tg_event_pdp_about_desc.apply {
-                        setLines(MAX_LINE)
-                        text = Html.fromHtml(element.longDesc)
+                        setText(Html.fromHtml(element.longDesc))
                     }
                 } else {
                     tg_event_pdp_about_desc.gone()
@@ -52,6 +51,5 @@ class EventPDPAboutViewHolder(view: View, val onBindItemListener: OnBindItemList
 
     companion object {
         val LAYOUT = R.layout.partial_event_pdp_about
-        const val MAX_LINE = 15
     }
 }

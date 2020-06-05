@@ -24,7 +24,12 @@ class EventPDPFacilitiesViewHolder(view: View, val onBindItemListener: OnBindIte
                 shimmering.gone()
 
                 if(!element.list.isNullOrEmpty()) {
-                    eventFacilitiestAdapter.setList(element.list.subList(0, 4))
+                    if(element.list.size > MAX_SIZE) {
+                        eventFacilitiestAdapter.setList(element.list.subList(0, MAX_SIZE))
+                    } else {
+                        eventFacilitiestAdapter.setList(element.list)
+                    }
+
                     rv_event_pdp_facilities.apply {
                         adapter = eventFacilitiestAdapter
                         layoutManager = GridLayoutManager(
@@ -49,5 +54,6 @@ class EventPDPFacilitiesViewHolder(view: View, val onBindItemListener: OnBindIte
 
     companion object {
         val LAYOUT = R.layout.partial_event_pdp_facilities
+        const val MAX_SIZE = 4
     }
 }

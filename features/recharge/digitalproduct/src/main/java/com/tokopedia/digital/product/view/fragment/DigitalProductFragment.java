@@ -405,7 +405,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
                     additionalETollOperatorName
             ));
             Intent intent = RouteManager.getIntent(getActivity(),
-                    ApplinkConsInternalDigital.INTERNAL_SMARTCARD, DigitalExtraParam.EXTRA_NFC_FROM_PDP);
+                    ApplinkConsInternalDigital.SMARTCARD, DigitalExtraParam.EXTRA_NFC_FROM_PDP, "false");
             startActivityForResult(intent, REQUEST_CODE_CHECK_SALDO_EMONEY);
         });
     }

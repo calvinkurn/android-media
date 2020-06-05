@@ -48,6 +48,22 @@ object DFDownloader {
         }
     }
 
+    @SuppressLint("NewApi")
+    fun stopService(context: Context) {
+        try {
+            val isAboveM = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+            if (isAboveM) {
+                cancelJob(context)
+                context.stopService(Intent(context, DFDownloadJobService::class.java))
+            } else {
+                setAlarm(context, isAlarmOn = false, isImmediate = false)
+                context.stopService(Intent(context, DFDownloadService::class.java))
+            }
+        } catch (ignored: Exception) {
+        }
+        isServiceRunning = false
+    }
+
     private fun setAlarm(context: Context, isAlarmOn: Boolean, isImmediate: Boolean) {
         if (isImmediate && isAlarmOn) {
             context.startService(Intent(context, DFDownloadService::class.java))
@@ -89,7 +105,18 @@ object DFDownloader {
                     .setOverrideDeadline(delay)
                     .setExtras(bundle)
                     .build())
-        } catch (e:Exception) {
+        } catch (e: Exception) {
+            // noop
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    private fun cancelJob(context: Context) {
+        val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as? JobScheduler
+            ?: return
+        try {
+            jobScheduler.cancel(JOB_ID)
+        } catch (e: Exception) {
             // noop
         }
     }

@@ -69,6 +69,7 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
     fun GraphqlResponseInternal.toGraphqlResponse(requests: List<GraphqlRequest>): GraphqlResponse {
         val errors = mutableMapOf<Type, List<GraphqlError>>()
         val tempRequest = requests.regroup(indexOfEmptyCached)
+        mResults.clear()
 
         originalResponse?.forEachIndexed { index, jsonElement ->
             try {

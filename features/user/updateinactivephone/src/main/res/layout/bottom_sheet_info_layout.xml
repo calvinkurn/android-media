@@ -5,41 +5,6 @@
     android:layout_marginTop="@dimen/spacing_lvl3"
     android:orientation="vertical">
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingBottom="@dimen/updateinactivephone_12dp"
-        android:paddingEnd="@dimen/spacing_lvl4"
-        android:paddingLeft="@dimen/spacing_lvl4"
-        android:paddingRight="@dimen/spacing_lvl4"
-        android:paddingStart="@dimen/spacing_lvl4"
-        android:paddingTop="@dimen/updateinactivephone_12dp">
-
-
-        <ImageView
-            android:id="@+id/button_cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/navigation_cancel" />
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_lvl5"
-            android:layout_marginStart="@dimen/spacing_lvl5"
-            android:fontFamily="sans-serif-medium"
-            android:lineSpacingExtra="@dimen/updateinactivephone_15sp"
-            android:text="@string/info_title"
-            android:textColor="@color/black_70"
-            android:textSize="@dimen/updateinactivephone_17sp"
-            android:textStyle="normal" />
-
-    </LinearLayout>
-
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl1"
