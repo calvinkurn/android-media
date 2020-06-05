@@ -6,8 +6,12 @@ import java.util.*
 
 object EventDateMapper{
 
-    fun getSizeSchedule(productDetailData: ProductDetailData):Boolean {
+    fun isScheduleWithDatePicker(productDetailData: ProductDetailData):Boolean {
         return productDetailData.dates.size > 1
+    }
+
+    fun isScheduleWithoutDatePicker(productDetailData: ProductDetailData):Boolean {
+        return productDetailData.dates.size == 1
     }
 
     fun getEndDate(productDetailData: ProductDetailData): String {

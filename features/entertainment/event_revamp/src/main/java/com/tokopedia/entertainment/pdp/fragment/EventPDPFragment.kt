@@ -14,13 +14,13 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
@@ -42,8 +42,9 @@ import com.tokopedia.entertainment.pdp.data.pdp.EventPDPModel
 import com.tokopedia.entertainment.pdp.data.pdp.OpenHour
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.getActiveDate
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.getEndDate
-import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.getSizeSchedule
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.getStartDate
+import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.isScheduleWithDatePicker
+import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.isScheduleWithoutDatePicker
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventLocationMapper.getLatitude
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventLocationMapper.getLongitude
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventMediaMapper.mapperMediaPDP
@@ -57,7 +58,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mapviewer.activity.MapViewerActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_about.view.*
 import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_facilities.view.*
@@ -66,8 +67,6 @@ import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_open_hour.view.*
 import kotlinx.android.synthetic.main.fragment_event_pdp.*
 import kotlinx.android.synthetic.main.partial_event_pdp_price.*
 import kotlinx.android.synthetic.main.widget_event_pdp_calendar.view.*
-import kotlinx.android.synthetic.main.widget_event_pdp_carousel.*
-import kotlinx.android.synthetic.main.widget_event_pdp_tab_section.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -214,7 +213,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     private fun loadCalendar(context: Context, productDetailData: ProductDetailData) {
         btn_event_pdp_cek_tiket.setOnClickListener {
             eventPDPTracking.onClickCariTicket(productDetailData)
-            if (getSizeSchedule(productDetailData)) {
+            if (isScheduleWithDatePicker(productDetailData)) {
 
                 val view = LayoutInflater.from(context).inflate(R.layout.widget_event_pdp_calendar, null)
                 val bottomSheets = BottomSheetUnify()
@@ -252,11 +251,15 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                 fragmentManager?.let {
                     bottomSheets.show(it, "")
                 }
-            } else {
+            } else if(isScheduleWithoutDatePicker(productDetailData)) {
                 if (userSession.isLoggedIn) { goToTicketPageWithoutDate() }
                 else {
                     startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
                             REQUEST_CODE_LOGIN_WITHOUT_DATE)
+                }
+            } else {
+                view?.let {
+                    Toaster.make(it, it.context.getString(R.string.ent_pdp_empty_package), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,it.context.getString(R.string.ent_checkout_error))
                 }
             }
         }
