@@ -90,21 +90,20 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
         isNotificationOn = false;
     }
 
-    private void initRemoteConfig() {
+    private RemoteConfig getRemoteConfig() {
         if(remoteConfig == null){
             remoteConfig = new FirebaseRemoteConfigImpl(mContext);
         }
+        return remoteConfig;
     }
 
     private boolean isShakeShakeEnable() {
-        initRemoteConfig();
-        return remoteConfig.getBoolean(FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY,true) && isNotificationOn;
+        return getRemoteConfig().getBoolean(FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY,true) && isNotificationOn;
 
     }
 
     private boolean isAudioShakeEnable() {
-        initRemoteConfig();
-        return remoteConfig.getBoolean(FIREBASE_SHAKE_SHAKE_AUDIO_REMOTE_CONFIG_KEY,false);
+        return getRemoteConfig().getBoolean(FIREBASE_SHAKE_SHAKE_AUDIO_REMOTE_CONFIG_KEY,false);
 
     }
 
