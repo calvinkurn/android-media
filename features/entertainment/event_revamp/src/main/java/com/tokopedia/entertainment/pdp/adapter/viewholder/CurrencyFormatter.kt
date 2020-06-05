@@ -10,4 +10,9 @@ object CurrencyFormatter {
         rupiahFormat.maximumFractionDigits = 0
         return if(x!=0L)rupiahFormat.format(x) else "-"
     }
+
+    fun getRupiahAllowZeroFormat(x: Long): String {
+        rupiahFormat.maximumFractionDigits = 0
+        return rupiahFormat.format(x)
+    }
 }
