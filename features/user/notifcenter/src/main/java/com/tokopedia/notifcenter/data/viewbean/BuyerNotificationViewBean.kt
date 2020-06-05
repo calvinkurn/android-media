@@ -1,7 +1,10 @@
 package com.tokopedia.notifcenter.data.viewbean
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.notifcenter.GlobalNavConstant.*
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.MENUNGGU_KONFIRMASI
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.PESANAN_DIPROSES
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.SAMPAI_TUJUAN
+import com.tokopedia.notifcenter.data.consts.GlobalNavConstant.SEDANG_DIKIRIM
 import com.tokopedia.notifcenter.data.model.DrawerNotification
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.transaction.NotificationTransactionFactory
 

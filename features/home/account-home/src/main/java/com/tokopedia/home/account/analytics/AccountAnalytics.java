@@ -66,6 +66,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.INBOX;
 import static com.tokopedia.home.account.AccountConstants.Analytics.LIST;
 import static com.tokopedia.home.account.AccountConstants.Analytics.NONE_OTHER;
 import static com.tokopedia.home.account.AccountConstants.Analytics.NOTIFICATION;
+import static com.tokopedia.home.account.AccountConstants.Analytics.PASSWORD;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PRODUCTS;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PROMOTIONS;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PROMOTION_CLICK;
@@ -171,6 +172,17 @@ public class AccountAnalytics {
                 AccountConstants.Analytics.CLICK_HOME_PAGE,
                 String.format("%s %s", ACCOUNT, SETTING),
                 String.format("%s %s", AccountConstants.Analytics.CLICK, item),
+                ""
+        ));
+    }
+
+    public void eventClickAccountPassword() {
+        Analytics analytics = TrackApp.getInstance().getGTM();
+
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                AccountConstants.Analytics.CLICK_ACCOUNT,
+                String.format("%s %s - %s", ACCOUNT, SETTING, PASSWORD),
+                AccountConstants.Analytics.CLICK_ON_PASSWORD,
                 ""
         ));
     }

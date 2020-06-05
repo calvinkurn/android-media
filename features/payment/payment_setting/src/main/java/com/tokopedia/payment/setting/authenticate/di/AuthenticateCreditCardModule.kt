@@ -1,20 +1,21 @@
 package com.tokopedia.payment.setting.authenticate.di
 
+import android.app.Activity
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.payment.setting.authenticate.view.presenter.AuthenticateCCPresenter
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
 @Module
-class AuthenticateCreditCardModule {
+class AuthenticateCreditCardModule(val activity: Activity) {
 
-    @AuthenticateCCScope
     @Provides
-    fun providePresenter(@ApplicationContext context: Context) : AuthenticateCCPresenter {
-        return AuthenticateCCPresenter(GraphqlUseCase(), UserSession(context))
+    fun getContext(): Context = activity
+
+    @Provides
+    fun provideUserSession(context: Context): UserSessionInterface {
+        return UserSession(context)
     }
 
 }

@@ -40,11 +40,11 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
-import com.tokopedia.iris.Iris
-import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamBoolean
@@ -69,6 +69,7 @@ import com.tokopedia.loginregister.login.di.DaggerLoginComponent
 import com.tokopedia.loginregister.login.domain.StatusFingerprint
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
+import com.tokopedia.loginregister.login.router.LoginRouter
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.presenter.LoginEmailPhonePresenter
@@ -111,7 +112,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
 
     private var isTraceStopped: Boolean = false
     private lateinit var performanceMonitoring: PerformanceMonitoring
-    private lateinit var mIris: Iris
 
     private lateinit var callbackManager: CallbackManager
     private lateinit var mGoogleSignInClient: GoogleSignInClient
@@ -240,10 +240,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
         }
 
         performanceMonitoring = PerformanceMonitoring.start(LOGIN_LOAD_TRACE)
-
-        context?.run {
-            mIris = IrisAnalytics.getInstance(this)
-        }
 
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
         isAutoLogin = getParamBoolean(IS_AUTO_LOGIN, arguments, savedInstanceState, false)
@@ -614,7 +610,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
     private fun goToRegisterInitial(source: String) {
         activity?.let {
             analytics.eventClickRegisterFromLogin()
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.INIT_REGISTER)
+            val intent = RouteManager.getIntent(context, ApplinkConst.CREATE_SHOP)
             intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
             startActivity(intent)
@@ -661,8 +657,12 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
             userSession.autofillUserData = emailPhoneEditText.text.toString()
 
         activity?.run {
-            setResult(Activity.RESULT_OK)
-            finish()
+            if (GlobalConfig.isSellerApp()) {
+                setLoginSuccessSellerApp()
+            } else {
+                setResult(Activity.RESULT_OK)
+                finish()
+            }
 
             analytics.eventSuccessLogin(context, userSession.loginMethod, registerAnalytics)
             setTrackingUserId(userSession.userId)
@@ -672,6 +672,20 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
 
         saveFirstInstallTime()
+    }
+
+    private fun setLoginSuccessSellerApp() = view?.run {
+        if (context.applicationContext is LoginRouter) {
+            (context.applicationContext as LoginRouter).setOnboardingStatus(true)
+        }
+        val intent = if (userSession.hasShop()) {
+            RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_HOME)
+        } else {
+            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.OPEN_SHOP)
+        }
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        startActivity(intent)
+        activity?.finish()
     }
 
     private fun setFCM() {
@@ -700,11 +714,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
                 LinkerManager.getInstance().sendEvent(
                         LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGIN_VAL, userData))
                 loginEventAppsFlyer(userSession.userId, userSession.email)
-            }
-
-            if (::mIris.isInitialized) {
-                mIris.setUserId(userId)
-                mIris.setDeviceId(userSession.deviceId)
             }
 
             TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(

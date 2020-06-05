@@ -29,6 +29,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -153,11 +154,9 @@ class FlightSearchViewModel @Inject constructor(
     }
 
     private fun fetchTickerData() {
-        launchCatchError(context = dispatcherProvider.ui(), block = {
+        launch(dispatcherProvider.ui()) {
             val tickerData = travelTickerUseCase.execute(TravelTickerInstanceId.FLIGHT, TravelTickerFlightPage.SEARCH)
             mutableTickerData.postValue(tickerData)
-        }) {
-            it.printStackTrace()
         }
     }
 
@@ -312,10 +311,8 @@ class FlightSearchViewModel @Inject constructor(
     }
 
     private fun onGetSearchMeta(flightSearchMeta: FlightSearchMetaModel, returnTrip: Boolean) {
-        if (flightSearchMeta.internationalTag != null) {
-            flightSearchCache.setInternationalTransitTag(flightSearchMeta.internationalTag)
-        }
 
+        flightSearchCache.setInternationalTransitTag(flightSearchMeta.internationalTag)
         if (flightSearchMeta.backgroundRefreshTime > 0) {
             flightSearchCache.setBackgroundRefreshTime(flightSearchMeta.backgroundRefreshTime)
         }

@@ -1,9 +1,9 @@
 package com.tokopedia.purchase_platform.features.cart.domain.usecase
 
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
+import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.features.cart.data.model.request.RemoveCartRequest
 import com.tokopedia.purchase_platform.features.cart.data.model.response.deletecart.Data
@@ -17,6 +17,7 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.observers.AssertableSubscriber
+import java.lang.reflect.Type
 
 object DeleteCartUseCaseTest : Spek({
 
@@ -34,10 +35,14 @@ object DeleteCartUseCaseTest : Spek({
 
         Scenario("success") {
 
+            val result = HashMap<Type, Any>()
+            result[DeleteCartGqlResponse::class.java] = DeleteCartGqlResponse(
+                    DeleteCartDataResponse(status = "OK", data = Data(0))
+            )
+            val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
             Given("mock response") {
-                every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(mapOf(DeleteCartGqlResponse::class.java to DeleteCartGqlResponse(
-                        DeleteCartDataResponse(status = "OK", data = Data(0))
-                )), null, false))
+                every { graphqlUseCase.createObservable(any()) } returns Observable.just(gqlResponse)
                 every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
             }
 
@@ -55,10 +60,14 @@ object DeleteCartUseCaseTest : Spek({
             val errorMessage = "something went wrong"
             val errorMessage2 = "something went wrong2"
 
+            val result = HashMap<Type, Any>()
+            result[DeleteCartGqlResponse::class.java] = DeleteCartGqlResponse(
+                    DeleteCartDataResponse(status = "ERROR", errorMessage = arrayListOf(errorMessage, errorMessage2), data = Data(0))
+            )
+            val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
             Given("mock response") {
-                every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(mapOf(DeleteCartGqlResponse::class.java to DeleteCartGqlResponse(
-                        DeleteCartDataResponse(status = "ERROR", errorMessage = arrayListOf(errorMessage, errorMessage2), data = Data(0))
-                )), null, false))
+                every { graphqlUseCase.createObservable(any()) } returns Observable.just(gqlResponse)
                 every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
             }
 
@@ -73,10 +82,14 @@ object DeleteCartUseCaseTest : Spek({
 
         Scenario("failure with no error message") {
 
+            val result = HashMap<Type, Any>()
+            result[DeleteCartGqlResponse::class.java] = DeleteCartGqlResponse(
+                    DeleteCartDataResponse(status = "ERROR", data = Data(0))
+            )
+            val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
             Given("mock response") {
-                every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(mapOf(DeleteCartGqlResponse::class.java to DeleteCartGqlResponse(
-                        DeleteCartDataResponse(status = "ERROR", data = Data(0))
-                )), null, false))
+                every { graphqlUseCase.createObservable(any()) } returns Observable.just(gqlResponse)
                 every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
             }
 

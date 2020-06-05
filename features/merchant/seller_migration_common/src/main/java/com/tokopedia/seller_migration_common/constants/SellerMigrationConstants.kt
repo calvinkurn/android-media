@@ -11,4 +11,5 @@ object SellerMigrationConstants {
     const val PACKAGE_SELLER_APP = "com.tokopedia.sellerapp"
     const val APPLINK_PLAYSTORE = "market://details?id="
     const val URL_PLAYSTORE = "https://play.google.com/store/apps/details?id="
+    const val APP_ENABLE_SELLER_MIGRATION = "android_mainapp_enable_seller_migration"
 }

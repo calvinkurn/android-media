@@ -20,6 +20,7 @@ import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.lang.reflect.Type
 
 class RechargeGeneralViewModelTest {
 
@@ -38,9 +39,13 @@ class RechargeGeneralViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
 
-        gqlResponseFail = GraphqlResponse(
-                mapOf(),
-                mapOf(MessageErrorException::class.java to listOf(GraphqlError())), false)
+        val result = HashMap<Type, Any?>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = MessageErrorException::class.java
+
+        result[objectType] = null
+        errors[objectType] = listOf(GraphqlError())
+        gqlResponseFail = GraphqlResponse(result, errors, false)
 
         rechargeGeneralViewModel =
                 RechargeGeneralViewModel(RechargeGeneralMapper(), graphqlRepository, RechargeGeneralTestDispatchersProvider())
@@ -53,9 +58,12 @@ class RechargeGeneralViewModelTest {
                         operators = listOf(CatalogOperator(1))
                 ))
         ))
-        val gqlResponseSuccess = GraphqlResponse(
-                mapOf(RechargeGeneralOperatorCluster.Response::class.java to operatorCluster),
-                mapOf(), false)
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = RechargeGeneralOperatorCluster.Response::class.java
+        result[objectType] = operatorCluster
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
 
         rechargeGeneralViewModel.getOperatorCluster("", mapParams)
@@ -74,9 +82,12 @@ class RechargeGeneralViewModelTest {
         val operatorCluster = RechargeGeneralOperatorCluster.Response(RechargeGeneralOperatorCluster(
                 operatorGroups = null
         ))
-        val gqlResponseNull = GraphqlResponse(
-                mapOf(RechargeGeneralOperatorCluster.Response::class.java to operatorCluster),
-                mapOf(), false)
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = RechargeGeneralOperatorCluster.Response::class.java
+        result[objectType] = operatorCluster
+        val gqlResponseNull = GraphqlResponse(result, errors, false)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseNull
 
         rechargeGeneralViewModel.getOperatorCluster("", mapParams)
@@ -104,9 +115,12 @@ class RechargeGeneralViewModelTest {
                 ))
         ))
 
-        val gqlResponseSuccess = GraphqlResponse(
-                mapOf(RechargeGeneralDynamicInput.Response::class.java to productData),
-                mapOf(), false)
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = RechargeGeneralDynamicInput.Response::class.java
+        result[objectType] = productData
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
 
         rechargeGeneralViewModel.getProductList("", mapParams)
@@ -124,9 +138,12 @@ class RechargeGeneralViewModelTest {
         val productData = RechargeGeneralDynamicInput.Response(RechargeGeneralDynamicInput(
                 enquiryFields = listOf(RechargeGeneralDynamicField())
         ))
-        val gqlResponseNull = GraphqlResponse(
-                mapOf(RechargeGeneralDynamicInput.Response::class.java to productData),
-                mapOf(), false)
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = RechargeGeneralDynamicInput.Response::class.java
+        result[objectType] = productData
+        val gqlResponseNull = GraphqlResponse(result, errors, false)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseNull
 
         rechargeGeneralViewModel.getProductList("", mapParams)

@@ -11,5 +11,5 @@ sealed class FeedDetailViewState {
     data class Success(val headerModel: FeedDetailHeaderModel, val feedDetailList: List<Visitable<*>>,
                        val hasNextPage: Boolean) : FeedDetailViewState()
 
-    data class Error(val errorMsg: String) : FeedDetailViewState()
+    data class Error(val error: Throwable) : FeedDetailViewState()
 }

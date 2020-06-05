@@ -35,6 +35,7 @@
             tools:text="Legoland Malaysia in Johor Bahru Admission Ticket" />
 
         <androidx.recyclerview.widget.RecyclerView
+            android:nestedScrollingEnabled="false"
             android:id="@+id/rv_event_pdp_highlight"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

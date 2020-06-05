@@ -23,8 +23,8 @@ import com.tokopedia.track.TrackApp
  */
 
 class DynamicLegoBannerViewHolder(legoBannerView: View,
-                                  private val homeCategoryListener: HomeCategoryListener,
-                                  private val parentRecycledViewPool: RecyclerView.RecycledViewPool) :
+                                  private val homeCategoryListener: HomeCategoryListener?,
+                                  private val parentRecycledViewPool: RecyclerView.RecycledViewPool?) :
         DynamicChannelViewHolder(
                 legoBannerView, homeCategoryListener
         ) {
@@ -82,7 +82,7 @@ class DynamicLegoBannerViewHolder(legoBannerView: View,
     }
 
     class LegoItemAdapter(private val context: Context,
-                             private val listener: HomeCategoryListener,
+                             private val listener: HomeCategoryListener?,
                              private val channels: DynamicHomeChannel.Channels,
                              private val legoBannerType: Int,
                              private val parentPosition: Int) : RecyclerView.Adapter<LegoItemViewHolder>() {
@@ -133,7 +133,7 @@ class DynamicLegoBannerViewHolder(legoBannerView: View,
                         }
                     }
 
-                    listener.onLegoBannerClicked(
+                    listener?.onLegoBannerClicked(
                             if (grid.applink.isNotEmpty()) grid.applink else grid.url,
                             channels.getHomeAttribution(position + 1, grid.attribution))
                     HomeTrackingUtils.homeDiscoveryWidgetClick(context,

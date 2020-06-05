@@ -29,11 +29,7 @@ class HomeBannerTrackerTest : Spek({
             applink = "tokopedia://discovery/salam-donasicovid19",
             topadsViewUrl = "",
             promoCode = "",
-            message = "X_Others_HPB2_Donasi COVID19_New User_22 Mar 20",
             creativeName = "X_Others_HPB2_Donasi COVID19_New User_22 Mar 20",
-            startTime = "",
-            expireTime = "",
-            slideIndex = 1,
             type = "new_user_mp",
             campaignCode = "this_is_campaign_code"
     )

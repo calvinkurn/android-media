@@ -68,7 +68,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
     private var isTraceStop = false
 
     private var hotelHomepageModel: HotelHomepageModel = HotelHomepageModel()
-    var promoScrolledListener: BannerView.OnPromoScrolledListener? = null
 
     private lateinit var remoteConfig: RemoteConfig
 
@@ -141,7 +140,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
         // last search need to reload every time user back to homepage
         hideHotelLastSearchContainer()
         loadRecentSearchData()
-        banner_hotel_homepage_promo.onPromoScrolledListener = promoScrolledListener
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -420,12 +418,10 @@ class HotelHomepageFragment : HotelBaseFragment(),
     private fun renderHotelPromo(promoDataList: List<TravelCollectiveBannerModel.Banner>) {
         showPromoContainer()
 
-        banner_hotel_homepage_promo.setBannerIndicator(Indicator.GREEN)
-        promoScrolledListener = BannerView.OnPromoScrolledListener { position ->
-            trackingHotelUtil.hotelBannerImpression(context, promoDataList.getOrNull(position)
-                    ?: TravelCollectiveBannerModel.Banner(), position, HOMEPAGE_SCREEN_NAME)
+        for ((index, promo) in promoDataList.withIndex()) {
+            trackingHotelUtil.hotelBannerImpression(context, promo, index, HOMEPAGE_SCREEN_NAME)
         }
-        banner_hotel_homepage_promo.onPromoScrolledListener = promoScrolledListener
+        banner_hotel_homepage_promo.setBannerIndicator(Indicator.GREEN)
 
         banner_hotel_homepage_promo.setOnPromoClickListener { position ->
             onPromoClicked(promoDataList.getOrNull(position)

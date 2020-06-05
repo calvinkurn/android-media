@@ -19,18 +19,6 @@ import rx.Observable;
 public interface PeopleActApi {
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.User.PATH_DELETE_ADDRESS)
-    Observable<Response<TkpdResponse>> deleteAddress(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.User.PATH_EDIT_ADDRESS)
-    Observable<Response<TkpdResponse>> editAddress(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.User.PATH_EDIT_DEFAULT_ADDRESS)
-    Observable<Response<TkpdResponse>> editDefaultAddress(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
     @POST(TkpdBaseURL.User.PATH_EDIT_NOTIFICATION)
     Observable<Response<TkpdResponse>> editNotification(@FieldMap Map<String, String> params);
 
