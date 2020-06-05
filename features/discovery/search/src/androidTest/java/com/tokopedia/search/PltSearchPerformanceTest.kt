@@ -1,8 +1,12 @@
 package com.tokopedia.search
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.test.application.TestRepeatRule
 import org.junit.Rule
@@ -30,8 +34,14 @@ class PltSearchPerformanceTest {
 
     private fun setUpActivity() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val intent = SearchActivity.createIntent(context, "samsung")
+        val intent = createIntent(context, "samsung")
         activityRule.launchActivity(intent)
+    }
+
+    private fun createIntent(context: Context?, query: String): Intent? {
+        val intent = Intent(context, SearchActivity::class.java)
+        intent.data = Uri.parse(ApplinkConstInternalDiscovery.SEARCH_RESULT + "?q=" + query)
+        return intent
     }
 
     private fun savePLTPerformanceResultData(tag: String) {

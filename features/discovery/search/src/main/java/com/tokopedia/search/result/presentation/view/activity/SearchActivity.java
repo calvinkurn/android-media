@@ -136,13 +136,6 @@ public class SearchActivity extends BaseActivity
     private PageLoadTimePerformanceInterface pageLoadTimePerformanceMonitoring;
     private SearchParameter searchParameter;
 
-    @TestOnly
-    public static Intent createIntent(Context context, String query) {
-        Intent intent = new Intent(context, SearchActivity.class);
-        intent.setData(Uri.parse(ApplinkConstInternalDiscovery.SEARCH_RESULT + "?q="+query));
-        return intent;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         startPerformanceMonitoring();
@@ -874,7 +867,6 @@ public class SearchActivity extends BaseActivity
     }
 
     @Nullable
-    @Override
     public PltPerformanceData getPltPerformanceResultData() {
         if (pageLoadTimePerformanceMonitoring != null) {
             return pageLoadTimePerformanceMonitoring.getPltPerformanceData();

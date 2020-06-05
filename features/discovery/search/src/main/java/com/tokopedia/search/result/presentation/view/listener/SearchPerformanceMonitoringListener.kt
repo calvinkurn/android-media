@@ -19,6 +19,4 @@ interface SearchPerformanceMonitoringListener {
     fun startRenderPerformanceMonitoring()
 
     fun stopRenderPerformanceMonitoring()
-
-    fun getPltPerformanceResultData(): PltPerformanceData?
 }
