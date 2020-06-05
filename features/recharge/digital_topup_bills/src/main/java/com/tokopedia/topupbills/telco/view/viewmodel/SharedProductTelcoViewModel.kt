@@ -14,6 +14,9 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.topupbills.telco.data.TelcoCatalogProductInput
 import com.tokopedia.topupbills.telco.data.TelcoCatalogProductInputMultiTab
 import com.tokopedia.topupbills.telco.data.TelcoProduct
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -23,7 +26,7 @@ import javax.inject.Inject
  * Created by nabillasabbaha on 20/05/19.
  */
 class SharedProductTelcoViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                                      val dispatcher: CoroutineDispatcher)
+                                                      private val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
     private val _productCatalogItem = MutableLiveData<TelcoProduct>()
@@ -34,17 +37,9 @@ class SharedProductTelcoViewModel @Inject constructor(private val graphqlReposit
     val showTotalPrice: LiveData<Boolean>
         get() = _showTotalPrice
 
-    private val _productList = MutableLiveData<List<TelcoCatalogProductInput>>()
-    val productList: LiveData<List<TelcoCatalogProductInput>>
+    private val _productList = MutableLiveData<Result<List<TelcoCatalogProductInput>>>()
+    val productList: LiveData<Result<List<TelcoCatalogProductInput>>>
         get() = _productList
-
-    private val _errorProductList = MutableLiveData<Throwable>()
-    val errorProductList: LiveData<Throwable>
-        get() = _errorProductList
-
-    private val _loadingProductList = MutableLiveData<Boolean>()
-    val loadingProductList: LiveData<Boolean>
-        get() = _loadingProductList
 
     fun setProductCatalogSelected(productCatalogItem: TelcoProduct) {
         _productCatalogItem.postValue(productCatalogItem)
@@ -56,28 +51,25 @@ class SharedProductTelcoViewModel @Inject constructor(private val graphqlReposit
 
     // cache in 10 minutes
     fun getCatalogProductList(rawQuery: String, menuId: Int, operatorId: String) {
-        _loadingProductList.postValue(true)
         launchCatchError(block = {
             val mapParam = HashMap<String, Any>()
             mapParam[KEY_MENU_ID] = menuId
             mapParam[KEY_OPERATOR_ID] = operatorId
 
-            val data = withContext(Dispatchers.Default) {
+            val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogProductInputMultiTab::class.java, mapParam)
                 graphqlRepository.getReseponse(listOf(graphqlRequest),
                         GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                                 .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 10).build())
             }.getSuccessData<TelcoCatalogProductInputMultiTab>()
 
-            _loadingProductList.postValue(false)
             if (data.rechargeCatalogProductDataData.productInputList.isEmpty()) {
-                _errorProductList.postValue(MessageErrorException())
+                _productList.postValue(Fail(MessageErrorException()))
             } else {
-                _productList.postValue(data.rechargeCatalogProductDataData.productInputList)
+                _productList.postValue(Success(data.rechargeCatalogProductDataData.productInputList))
             }
         }) {
-            _loadingProductList.postValue(false)
-            _errorProductList.postValue(it)
+            _productList.postValue(Fail(it))
         }
     }
 

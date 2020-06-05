@@ -40,7 +40,6 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 import com.tokopedia.topupbills.telco.view.activity.DigitalSearchNumberActivity
-import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoOperatorViewModel
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
 import com.tokopedia.unifycomponents.Toaster
@@ -57,7 +56,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var tabLayout: TabLayout
     private lateinit var buyWidget: TopupBillsCheckoutWidget
     private lateinit var sharedModel: SharedProductTelcoViewModel
-    private lateinit var operatorViewModel: DigitalTelcoOperatorViewModel
     private lateinit var loadingShimmering: LinearLayout
     private lateinit var performanceMonitoring: PerformanceMonitoring
 

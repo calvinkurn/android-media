@@ -18,11 +18,14 @@ import com.tokopedia.topupbills.common.DigitalTopupAnalytics
 import com.tokopedia.topupbills.telco.data.TelcoCatalogProductInput
 import com.tokopedia.topupbills.telco.data.TelcoProduct
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
+import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 import com.tokopedia.topupbills.telco.view.bottomsheet.DigitalProductBottomSheet
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
 import com.tokopedia.topupbills.telco.view.model.DigitalTrackProductTelco
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalTelcoProductWidget
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
@@ -41,6 +44,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
     private var titleProduct: String = ""
     private var selectedProductId: Int = 0
+    private var productType = TelcoProductType.PRODUCT_LIST
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -88,25 +92,16 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
         arguments?.let {
             titleProduct = it.getString(TITLE_PAGE)
-            val productType = it.getInt(PRODUCT_TYPE)
+            productType = it.getInt(PRODUCT_TYPE)
             selectedProductId = it.getInt(SELECTED_PRODUCT_ID)
             selectedOperatorName = it.getString(OPERATOR_NAME)
 
-            sharedModel.productList.observe(this, Observer { productList ->
-                productList.map { productInput ->
-                    if (productInput.label == titleProduct) {
-                        onSuccessProductList(productInput, productType)
-                    }
+            showShimmering()
+            sharedModel.productList.observe(this, Observer {
+                when (it) {
+                    is Success -> onSuccessProductList()
+                    is Fail -> onErrorProductList()
                 }
-            })
-
-            sharedModel.loadingProductList.observe(this, Observer { loadingShow ->
-                if (loadingShow) showShimmering()
-                else hideShimmering()
-            })
-
-            sharedModel.errorProductList.observe(this, Observer {
-                onErrorProductList()
             })
         }
 
@@ -141,23 +136,30 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         })
     }
 
-    private fun onSuccessProductList(productInput: TelcoCatalogProductInput, productType: Int) {
-        emptyStateProductView.visibility = View.GONE
-        telcoTelcoProductView.visibility = View.VISIBLE
+    private fun onSuccessProductList() {
+        hideShimmering()
+        val productInputList = (sharedModel.productList.value as Success).data
 
-        val dataCollections = wrapDataCollections(productInput)
+        productInputList.map {
+            if (it.label == titleProduct) {
+                emptyStateProductView.visibility = View.GONE
+                telcoTelcoProductView.visibility = View.VISIBLE
 
-        //set true on selected product datacollection list
-        var position = -1
-        if (selectedProductId > 0) {
-            for (i in dataCollections.indices) {
-                if (dataCollections[i].id == selectedProductId.toString()) {
-                    dataCollections[i].attributes.selected = true
-                    position = i
+                val dataCollections = wrapDataCollections(it)
+
+                //set true on selected product datacollection list
+                var position = -1
+                if (selectedProductId > 0) {
+                    for (i in dataCollections.indices) {
+                        if (dataCollections[i].id == selectedProductId.toString()) {
+                            dataCollections[i].attributes.selected = true
+                            position = i
+                        }
+                    }
                 }
+                telcoTelcoProductView.renderProductList(productType, dataCollections, position)
             }
         }
-        telcoTelcoProductView.renderProductList(productType, dataCollections, position)
     }
 
     private fun wrapDataCollections(productInput: TelcoCatalogProductInput): List<TelcoProduct> {
@@ -176,6 +178,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     }
 
     private fun onErrorProductList() {
+        hideShimmering()
         titleEmptyState.text = getString(R.string.title_telco_product_empty_state, titleProduct)
         descEmptyState.text = getString(R.string.desc_telco_product_empty_state, titleProduct)
         emptyStateProductView.visibility = View.VISIBLE

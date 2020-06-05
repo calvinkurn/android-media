@@ -10,4 +10,4 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 data class TelcoCatalogProductInputMultiTab(
         @SerializedName("rechargeCatalogProductInputMultiTab")
         @Expose
-        val rechargeCatalogProductDataData: TelcoCatalogProductInputData)
+        val rechargeCatalogProductDataData: TelcoCatalogProductInputData = TelcoCatalogProductInputData())
