@@ -138,6 +138,8 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     private var isInverted: Boolean = false
     private var isSortApplied: Boolean = false
 
+    private var downloadImagesAction: () -> Unit = {}
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_mvc_voucher_list, container, false)
     }
@@ -275,11 +277,12 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.size == 1) {
+        if (grantResults.size == 1 && requestCode == DOWNLOAD_REQUEST_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
                 Toast.makeText(activity, getString(R.string.storage_permission_enabled_needed), Toast.LENGTH_LONG).show()
             } else {
-                //Todo: fix logic to download straight away
+                downloadImagesAction()
+                downloadImagesAction = {}
             }
         }
     }
@@ -379,10 +382,14 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         DownloadVoucherBottomSheet(parent, voucher.image, voucher.imageSquare)
                 .setOnDownloadClickListener { voucherList ->
                     voucherList.forEach {
-                        if (activity?.let { it1 -> ActivityCompat.checkSelfPermission(it1, Manifest.permission.WRITE_EXTERNAL_STORAGE) } != PackageManager.PERMISSION_GRANTED) {
-                            downloadFiles(it.downloadVoucherType.imageUrl)
-                        } else {
-                            downloadFiles(it.downloadVoucherType.imageUrl)
+                        activity?.run {
+                            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                val missingPermissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                requestPermissions(missingPermissions, DOWNLOAD_REQUEST_CODE)
+                                setupDowloadAction(it.downloadVoucherType.imageUrl)
+                            } else {
+                                downloadFiles(it.downloadVoucherType.imageUrl)
+                            }
                         }
                     }
 
@@ -797,11 +804,21 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     private fun downloadFiles(uri: String) {
-        val missingPermissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
         activity?.let {
-            ActivityCompat.requestPermissions(it, missingPermissions, DOWNLOAD_REQUEST_CODE)
             val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString(), this@VoucherListFragment)
             helper.downloadFile { true }
+        }
+    }
+
+    private fun setupDowloadAction(uri: String) {
+        downloadImagesAction = {
+            activity?.let {
+                val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString(), this@VoucherListFragment)
+                if (ActivityCompat.checkSelfPermission(it, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    return@let
+                }
+                helper.downloadFile { true }
+            }
         }
     }
 
