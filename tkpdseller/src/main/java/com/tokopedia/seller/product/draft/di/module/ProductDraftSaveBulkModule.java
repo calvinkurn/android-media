@@ -32,22 +32,6 @@ import dagger.Provides;
 @Module
 public class ProductDraftSaveBulkModule extends ProductAddModule {
 
-    //this is for seller app
-    private final Context context;
-
-    //this is for seller app
-    public ProductDraftSaveBulkModule(Context context) {
-        this.context = context;
-    }
-
-    //this is for seller app
-    @ProductAddScope
-    @com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-    @Provides
-    Context provideApplicationContext() {
-        return context;
-    }
-
     @ProductAddScope
     @Provides
     ProductDraftRepository provideProductDraftRepository(ProductDraftDataSource productDraftDataSource, @ApplicationContext Context context){
@@ -76,14 +60,14 @@ public class ProductDraftSaveBulkModule extends ProductAddModule {
     //this is for seller app
     @ProductAddScope
     @Provides
-    UserSessionInterface provideUserSession(@com.tokopedia.abstraction.common.di.qualifier.ApplicationContext Context context) {
+    UserSessionInterface provideUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
     }
 
     //this is for seller app
     @ProductAddScope
     @Provides
-    AddEditProductDraftDb provideAddEditProductDraftDb(@com.tokopedia.abstraction.common.di.qualifier.ApplicationContext Context context) {
+    AddEditProductDraftDb provideAddEditProductDraftDb(@ApplicationContext Context context) {
         return AddEditProductDraftDb.getInstance(context);
     }
 

@@ -136,7 +136,7 @@ public class ProductDraftListActivity extends BaseSimpleActivity
     public void saveValidImagesToDraft(ArrayList<String> localPaths, @NonNull ArrayList<String> imageDescriptionList) {
         DaggerProductDraftSaveBulkComponent
                 .builder()
-                .productDraftSaveBulkModule(new ProductDraftSaveBulkModule(this))
+                .productDraftSaveBulkModule(new ProductDraftSaveBulkModule())
                 .productComponent(ProductEditItemComponentInstance.getComponent(getApplication()))
                 .build()
                 .inject(ProductDraftListActivity.this);
