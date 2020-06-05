@@ -276,12 +276,11 @@ class PlayEtalasePickerFragment @Inject constructor(
     private fun onSearchModeTransition() {
         TransitionManager.beginDelayedTransition(
                 container,
-                TransitionSet()
-                        .addTransition(
-                                Slide(Gravity.BOTTOM)
-                                        .addTarget(rvEtalase)
-                                        .setDuration(300)
-                        ).excludeChildren(psbSearch, true)
+                Slide(Gravity.BOTTOM)
+                        .addTarget(rvEtalase)
+                        .setDuration(300)
+                        .setStartDelay(200)
+                        .excludeChildren(psbSearch, true)
         )
     }
 
