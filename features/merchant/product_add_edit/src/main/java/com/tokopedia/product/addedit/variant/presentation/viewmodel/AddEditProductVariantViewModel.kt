@@ -23,6 +23,8 @@ class AddEditProductVariantViewModel @Inject constructor(
     val getCategoryVariantCombinationResult: LiveData<Result<GetCategoryVariantCombinationResponse>>
         get() = mGetCategoryVariantCombinationResult
 
+    var variantSizechartUrl = MutableLiveData<String>("")
+
     fun getCategoryVariantCombination(categoryId: String) {
         launchCatchError(block = {
             val result = withContext(Dispatchers.IO) {
