@@ -1,6 +1,7 @@
 package com.tokopedia.topupbills.telco.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -11,68 +12,67 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.Dispatchers
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.lang.reflect.Type
 
-class DigitalTelcoOperatorViewModelTest {
+class SharedTelcoPrepaidViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    lateinit var telcoOperatorViewModel: DigitalTelcoOperatorViewModel
+    lateinit var sharedTelcoPrepaidViewModel: SharedTelcoPrepaidViewModel
 
     @MockK
     lateinit var graphqlRepository: GraphqlRepository
+    lateinit var gson: Gson
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        telcoOperatorViewModel = DigitalTelcoOperatorViewModel(graphqlRepository, Dispatchers.Unconfined)
+        gson = Gson()
+        sharedTelcoPrepaidViewModel = SharedTelcoPrepaidViewModel(graphqlRepository, Dispatchers.Unconfined)
     }
 
     @Test
-    fun getPrefixOperator_DataValid_SuccessGetData() {
+    fun getCatalogProductList_DataValid_SuccessGetData() {
         //given
-        val listPrefixes = mutableListOf<RechargePrefix>()
-        listPrefixes.add(RechargePrefix(operator = TelcoOperator(attributes = TelcoAttributesOperator(name = "simpati"))))
-        val catalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect(prefixes = listPrefixes))
+        val multiTab = gson.fromJson(gson.JsonToString("multitab.json"), TelcoCatalogProductInputMultiTab::class.java)
 
         val result = HashMap<Type, Any>()
-        result[TelcoCatalogPrefixSelect::class.java] = catalogPrefixSelect
+        result[TelcoCatalogProductInputMultiTab::class.java] = multiTab
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        telcoOperatorViewModel.getPrefixOperator("", 2)
+        sharedTelcoPrepaidViewModel.getCatalogProductList("", 2, "1")
 
         //then
-        val actualData = telcoOperatorViewModel.catalogPrefixSelect.value
+        val actualData = sharedTelcoPrepaidViewModel.productList.value
         assertNotNull(actualData)
         assert(actualData is Success)
-        val prefixSelect = (actualData as Success).data.rechargeCatalogPrefixSelect.prefixes
-        assertEquals(listPrefixes, prefixSelect)
+        val labelPulsa = (actualData as Success).data[0].label
+        assertEquals(multiTab.rechargeCatalogProductDataData.productInputList[0].label, labelPulsa)
     }
 
     @Test
-    fun getPrefixOperator_DataValid_FailedGetData() {
+    fun getCatalogProductList_DataValid_FailedGetData() {
         //given
         val errorGql = GraphqlError()
         errorGql.message = "Error gql"
 
         val errors = HashMap<Type, List<GraphqlError>>()
-        errors[TelcoCatalogPrefixSelect::class.java] = listOf(errorGql)
+        errors[TelcoCatalogProductInputMultiTab::class.java] = listOf(errorGql)
         val gqlResponse = GraphqlResponse(HashMap<Type, Any>(), errors, false)
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        telcoOperatorViewModel.getPrefixOperator("", 2)
+        sharedTelcoPrepaidViewModel.getCatalogProductList("", 2, "1")
 
         //then
-        val actualData = telcoOperatorViewModel.catalogPrefixSelect.value
+        val actualData = sharedTelcoPrepaidViewModel.productList.value
         assertNotNull(actualData)
         assert(actualData is Fail)
         val error = (actualData as Fail).throwable

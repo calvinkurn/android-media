@@ -22,7 +22,7 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 import com.tokopedia.topupbills.telco.view.bottomsheet.DigitalProductBottomSheet
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
 import com.tokopedia.topupbills.telco.view.model.DigitalTrackProductTelco
-import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
+import com.tokopedia.topupbills.telco.view.viewmodel.SharedTelcoPrepaidViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalTelcoProductWidget
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -37,7 +37,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     private lateinit var emptyStateProductView: ConstraintLayout
     private lateinit var titleEmptyState: TextView
     private lateinit var descEmptyState: TextView
-    private lateinit var sharedModel: SharedProductTelcoViewModel
+    private lateinit var sharedModelPrepaid: SharedTelcoPrepaidViewModel
     private lateinit var selectedOperatorName: String
     private lateinit var shimmeringGridLayout: LinearLayout
     private lateinit var shimmeringListLayout: LinearLayout
@@ -55,13 +55,13 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
         activity?.let {
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
-            sharedModel = viewModelProvider.get(SharedProductTelcoViewModel::class.java)
+            sharedModelPrepaid = viewModelProvider.get(SharedTelcoPrepaidViewModel::class.java)
         }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        sharedModel.productCatalogItem.observe(this, Observer {
+        sharedModelPrepaid.productCatalogItem.observe(this, Observer {
             it?.run {
                 telcoTelcoProductView.notifyProductItemChanges(it.id)
             }
@@ -97,7 +97,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             selectedOperatorName = it.getString(OPERATOR_NAME)
 
             showShimmering()
-            sharedModel.productList.observe(this, Observer {
+            sharedModelPrepaid.productList.observe(this, Observer {
                 when (it) {
                     is Success -> onSuccessProductList()
                     is Fail -> onErrorProductList()
@@ -107,8 +107,8 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
         telcoTelcoProductView.setListener(object : DigitalTelcoProductWidget.ActionListener {
             override fun onClickProduct(itemProduct: TelcoProduct, position: Int) {
-                sharedModel.setProductCatalogSelected(itemProduct)
-                sharedModel.setShowTotalPrice(true)
+                sharedModelPrepaid.setProductCatalogSelected(itemProduct)
+                sharedModelPrepaid.setShowTotalPrice(true)
                 if (::selectedOperatorName.isInitialized) {
                     topupAnalytics.clickEnhanceCommerceProduct(itemProduct, position, selectedOperatorName)
                 }
@@ -138,7 +138,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
     private fun onSuccessProductList() {
         hideShimmering()
-        val productInputList = (sharedModel.productList.value as Success).data
+        val productInputList = (sharedModelPrepaid.productList.value as Success).data
 
         productInputList.map {
             if (it.label == titleProduct) {

@@ -18,8 +18,8 @@ import javax.inject.Inject
 /**
  * Created by nabillasabbaha on 10/05/19.
  */
-class DigitalTelcoOperatorViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                                        val dispatcher: CoroutineDispatcher)
+class SharedTelcoViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
+                                               val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
     private val _catalogPrefixSelect = MutableLiveData<Result<TelcoCatalogPrefixSelect>>()

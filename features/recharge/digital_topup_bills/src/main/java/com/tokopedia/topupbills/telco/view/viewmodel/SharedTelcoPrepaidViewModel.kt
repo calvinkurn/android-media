@@ -24,7 +24,7 @@ import javax.inject.Inject
 /**
  * Created by nabillasabbaha on 20/05/19.
  */
-class SharedProductTelcoViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
+class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                       private val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
