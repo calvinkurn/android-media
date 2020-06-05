@@ -2,6 +2,7 @@ package com.tokopedia.topads.sdk.utils;
 
 import android.os.AsyncTask;
 
+import com.tokopedia.entertainment.home.alert.ImpressionTaskAlert;
 import com.tokopedia.topads.sdk.listener.ImpressionListener;
 import com.tokopedia.topads.sdk.network.HttpMethod;
 import com.tokopedia.topads.sdk.network.HttpRequest;
@@ -19,14 +20,16 @@ public class ImpresionTask extends AsyncTask<String, Void, String> {
     private static final String KEY_SESSION_ID ="Tkpd-SessionID";
 
     private ImpressionListener impressionListener;
-
+    private ImpressionTaskAlert taskAlert;
     private UserSessionInterface userSession;
 
-    public ImpresionTask() {
+    public ImpresionTask(String className) {
+        taskAlert = ImpressionTaskAlert.getInstance(className);
     }
 
-    public ImpresionTask(ImpressionListener impressionListener) {
+    public ImpresionTask(String className, ImpressionListener impressionListener) {
         this.impressionListener = impressionListener;
+        taskAlert = ImpressionTaskAlert.getInstance(className);
     }
 
     public ImpresionTask(UserSessionInterface userSession) {
@@ -37,6 +40,7 @@ public class ImpresionTask extends AsyncTask<String, Void, String> {
     protected String doInBackground(String... params) {
         String url = params[0];
         if(url!=null) {
+            taskAlert.track(url);
             HttpRequest request = new HttpRequest.HttpRequestBuilder()
                     .setBaseUrl(url)
                     .addHeader(KEY_SESSION_ID, (userSession != null) ? userSession.getDeviceId() :"")

@@ -15,7 +15,6 @@
         android:layout_gravity="bottom"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:paddingTop="@dimen/dp_20"
         android:paddingBottom="@dimen/dp_16">
 
         <ViewFlipper
@@ -25,6 +24,7 @@
             android:layout_marginBottom="@dimen/dp_16"
             android:clipChildren="false"
             android:clipToPadding="false"
+            android:measureAllChildren="false"
             app:layout_constraintBottom_toTopOf="@+id/tvTitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -39,7 +39,7 @@
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/imageView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/dp_210"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_16"
@@ -59,7 +59,6 @@
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_16"
-            android:translationX="100dp"
             app:layout_constraintBottom_toTopOf="@+id/tvTitleRight"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">

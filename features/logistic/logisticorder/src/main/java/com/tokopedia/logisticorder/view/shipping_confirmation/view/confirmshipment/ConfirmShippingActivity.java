@@ -37,11 +37,10 @@ import com.tokopedia.logisticorder.view.shipping_confirmation.di.OrderCourierCom
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.barcodescanner.ReceiptShipmentBarcodeScannerActivity;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.CourierSelectionModel;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
-import com.tokopedia.transaction.common.data.order.ListCourierViewModel;
-import com.tokopedia.transaction.common.data.order.OrderDetailData;
-import com.tokopedia.transaction.common.data.order.OrderDetailShipmentModel;
-import com.tokopedia.transaction.common.data.order.OrderShipmentTypeDef;
-import com.tokopedia.transaction.common.listener.ToolbarChangeListener;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierViewModel;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.OrderDetailData;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.OrderDetailShipmentModel;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.OrderShipmentTypeDef;
 
 import org.jetbrains.annotations.NotNull;
 

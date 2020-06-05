@@ -37,8 +37,13 @@ class EventPDPLocationDetailViewHolder(view: View, val onBindItemListener: OnBin
                 }
 
                 if (!element.sectionData.content.isNullOrEmpty()) {
-                    if (!element.sectionData.content[0].valueBulletList.isNullOrEmpty()) {
-                        eventPdpLocationAdapter.setList(element.sectionData.content[0].valueBulletList.subList(0, 3))
+                    if (!element.sectionData.content.first().valueBulletList.isNullOrEmpty()) {
+                        if(element.sectionData.content.first().valueBulletList.size > MAX_VALUE) {
+                            eventPdpLocationAdapter.setList(element.sectionData.content.first().valueBulletList.subList(0, MAX_VALUE))
+                        }else {
+                            eventPdpLocationAdapter.setList(element.sectionData.content.first().valueBulletList)
+                        }
+
                         rv_event_pdp_detail_lokasi.apply {
                             adapter = eventPdpLocationAdapter
                             layoutManager = LinearLayoutManager(
@@ -50,9 +55,9 @@ class EventPDPLocationDetailViewHolder(view: View, val onBindItemListener: OnBin
                         rv_event_pdp_detail_lokasi.gone()
                     }
 
-                    if (!element.sectionData.content[0].valueBulletList.isNullOrEmpty() && !element.sectionData.section.isNullOrEmpty()) {
+                    if (!element.sectionData.content.first().valueBulletList.isNullOrEmpty() && !element.sectionData.section.isNullOrEmpty()) {
                         btn_event_pdp_detail_lokasi_see_all.setOnClickListener {
-                            onBindItemListener.seeAllHowtoGoThere(element.sectionData.content[0].valueBulletList, element.sectionData.section)
+                            onBindItemListener.seeAllHowtoGoThere(element.sectionData.content.first().valueBulletList, element.sectionData.section)
                         }
                     }else{
                         btn_event_pdp_detail_lokasi_see_all.gone()
@@ -70,5 +75,6 @@ class EventPDPLocationDetailViewHolder(view: View, val onBindItemListener: OnBin
 
     companion object {
         val LAYOUT = R.layout.partial_event_pdp_detail_lokasi
+        const val MAX_VALUE = 3
     }
 }

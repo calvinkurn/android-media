@@ -1,6 +1,5 @@
 package com.tokopedia.flight.homepage.presentation.fragment
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -22,9 +21,8 @@ import com.tokopedia.banner.Indicator
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.flight.R
-import com.tokopedia.flight.airport.view.activity.FlightAirportPickerActivity
-import com.tokopedia.flight.airport.view.fragment.FlightAirportPickerFragment
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
+import com.tokopedia.flight.airportv2.presentation.bottomsheet.FlightAirportPickerBottomSheet
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel
@@ -87,6 +85,7 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             flightHomepageViewModel = viewModelProvider.get(FlightHomepageViewModel::class.java)
+            flightHomepageViewModel.init()
 
             arguments?.let {
                 if (it.getString(EXTRA_TRIP, "").isNotEmpty() &&
@@ -177,13 +176,28 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
     }
 
     override fun onDepartureAirportClicked() {
-        startActivityForResult(FlightAirportPickerActivity.createInstance(requireContext(),
-                getString(R.string.flight_airportpicker_title)), REQUEST_CODE_AIRPORT_DEPARTURE)
+        val flightAirportPickerBottomSheet = FlightAirportPickerBottomSheet.getInstance()
+        flightAirportPickerBottomSheet.listener = object : FlightAirportPickerBottomSheet.Listener {
+            override fun onAirportSelected(selectedAirport: FlightAirportModel) {
+                flightHomepageViewModel.onDepartureAirportChanged(selectedAirport)
+            }
+        }
+        fragmentManager?.let {
+            flightAirportPickerBottomSheet.show(it, FlightAirportPickerBottomSheet.TAG_FLIGHT_AIRPORT_PICKER)
+        }
     }
 
     override fun onDestinationAirportClicked() {
-        val intent = FlightAirportPickerActivity.createInstance(requireContext(), getString(R.string.flight_airportpicker_title))
-        startActivityForResult(intent, REQUEST_CODE_AIRPORT_DESTINATION)
+        val flightAirportPickerBottomSheet = FlightAirportPickerBottomSheet.getInstance()
+        flightAirportPickerBottomSheet.listener = object : FlightAirportPickerBottomSheet.Listener {
+            override fun onAirportSelected(selectedAirport: FlightAirportModel) {
+                flightHomepageViewModel.onArrivalAirportChanged(selectedAirport)
+            }
+        }
+        flightAirportPickerBottomSheet.setShowListener { flightAirportPickerBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
+        fragmentManager?.let {
+            flightAirportPickerBottomSheet.show(it, FlightAirportPickerBottomSheet.TAG_FLIGHT_AIRPORT_PICKER)
+        }
     }
 
     override fun onDepartureDateClicked(departureAirport: String, arrivalAirport: String, flightClassId: Int,
@@ -271,22 +285,6 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
             flightHomepageSearchForm.init()
         }
 
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                REQUEST_CODE_AIRPORT_DEPARTURE -> {
-                    val departureAirport = data?.getParcelableExtra<FlightAirportModel>(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT)
-                    departureAirport?.let {
-                        flightHomepageViewModel.onDepartureAirportChanged(it)
-                    }
-                }
-                REQUEST_CODE_AIRPORT_DESTINATION -> {
-                    val destinationAirport = data?.getParcelableExtra<FlightAirportModel>(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT)
-                    destinationAirport?.let {
-                        flightHomepageViewModel.onArrivalAirportChanged(it)
-                    }
-                }
-            }
-        }
     }
 
     private fun renderBannerView(bannerList: List<TravelCollectiveBannerModel.Banner>) {
@@ -513,8 +511,6 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
         private const val EXTRA_CLASS = "EXTRA_CLASS"
         private const val EXTRA_AUTO_SEARCH = "EXTRA_AUTO_SEARCH"
 
-        private const val REQUEST_CODE_AIRPORT_DEPARTURE = 1
-        private const val REQUEST_CODE_AIRPORT_DESTINATION = 2
         private const val REQUEST_CODE_SEARCH = 5
 
         private const val FLIGHT_HOMEPAGE_TRACE = "tr_flight_homepage"

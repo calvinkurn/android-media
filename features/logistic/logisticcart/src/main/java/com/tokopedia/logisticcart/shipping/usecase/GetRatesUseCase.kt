@@ -34,7 +34,7 @@ class GetRatesUseCase @Inject constructor(
                 .map { graphqlResponse: GraphqlResponse ->
                     val response: RatesGqlResponse =
                             graphqlResponse.getData<RatesGqlResponse>(RatesGqlResponse::class.java)
-                                    ?: throw MessageErrorException(graphqlResponse.getError(RatesGqlResponse::class.java)[0].message)
+                                    ?: throw MessageErrorException(context.getString(R.string.default_request_error_unknown))
                     converter.convertModel(response.ratesData)
                 }
                 .subscribeOn(scheduler.io())

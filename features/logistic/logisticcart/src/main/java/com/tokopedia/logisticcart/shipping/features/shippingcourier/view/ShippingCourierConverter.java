@@ -76,13 +76,14 @@ public class ShippingCourierConverter {
         courierItemData.setSelected(true);
         if (shippingCourierUiModel.getProductData().getFeatures() != null &&
                 shippingCourierUiModel.getProductData().getFeatures().getOntimeDeliveryGuarantee() != null) {
-            OntimeDeliveryGuarantee otd_prev = shippingCourierUiModel.getProductData().getFeatures().getOntimeDeliveryGuarantee();
+            OntimeDeliveryGuarantee otdPrev = shippingCourierUiModel.getProductData().getFeatures().getOntimeDeliveryGuarantee();
             OntimeDelivery otd = new OntimeDelivery(
-                    otd_prev.getAvailable(),
-                    otd_prev.getTextLabel(),
-                    otd_prev.getTextDetail(),
-                    otd_prev.getUrlDetail(),
-                    otd_prev.getValue()
+                    otdPrev.getAvailable(),
+                    otdPrev.getTextLabel(),
+                    otdPrev.getTextDetail(),
+                    otdPrev.getUrlDetail(),
+                    otdPrev.getValue(),
+                    otdPrev.getIconUrl()
             );
             courierItemData.setOntimeDelivery(otd);
         }

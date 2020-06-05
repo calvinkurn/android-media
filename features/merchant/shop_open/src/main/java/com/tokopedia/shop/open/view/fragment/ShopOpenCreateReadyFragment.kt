@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.core.util.MethodChecker
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.seller.SellerModuleRouter
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.analytic.ShopOpenTracking

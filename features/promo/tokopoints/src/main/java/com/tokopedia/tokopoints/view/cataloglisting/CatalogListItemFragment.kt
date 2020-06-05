@@ -433,7 +433,6 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         val view = LayoutInflater.from(context)
                 .inflate(R.layout.layout_tp_network_error_large, null, false)
         val img = view.findViewById<ImageView>(R.id.img_error)
-        img.setImageResource(R.drawable.ic_tp_error_redeem_full)
         val titleText = view.findViewById<TextView>(R.id.text_title_error)
         if (title == null || title.isEmpty()) {
             titleText.setText(R.string.tp_label_too_many_access)

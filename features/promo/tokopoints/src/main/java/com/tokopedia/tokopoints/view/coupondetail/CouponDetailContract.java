@@ -5,12 +5,9 @@ import android.content.res.Resources;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.tokopoints.view.model.CatalogStatusItem;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.model.CouponSwipeUpdate;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
-
-import java.util.List;
 
 public interface CouponDetailContract {
 

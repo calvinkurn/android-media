@@ -119,6 +119,27 @@
             android:text="Device ID: 1213124" />
 
         <CheckBox
+            android:id="@+id/toggle_topads_debugger_notif"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:padding="@dimen/margin_small"
+            android:text="Enable TopAds Log on Notification" />
+
+        <TextView
+            android:id="@+id/goto_topads_debugger"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="View TopAds Log"
+            android:textColor="@color/white" />
+
+        <CheckBox
             android:id="@+id/toggle_applink_debugger_notif"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

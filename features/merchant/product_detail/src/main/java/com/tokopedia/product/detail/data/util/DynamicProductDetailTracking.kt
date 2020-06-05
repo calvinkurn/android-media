@@ -11,7 +11,6 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
 import com.tokopedia.product.util.processor.Product
 import com.tokopedia.product.util.processor.ProductDetailViewsBundler
 import com.tokopedia.product.detail.data.model.variant.VariantDataModel
@@ -572,8 +571,8 @@ object DynamicProductDetailTracking {
             )
         }
 
-        fun eventEditProductClick (product: ProductSnapshotDataModel, isSessionActive: Boolean,
-                                   productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
+        fun eventEditProductClick (isSessionActive: Boolean, productInfo: DynamicProductInfoP1?,
+                                   componentTrackDataModel: ComponentTrackDataModel) {
             val topAdsAction = ProductTrackingConstant.Action.TOPADS_CLICK + (if (!isSessionActive) " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}" else "")
 
             val editProductData = DataLayer.mapOf(
@@ -581,7 +580,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Category.PRODUCT_DETAIL_PAGE_SELLER,
                     ProductTrackingConstant.Tracking.KEY_ACTION, ProductTrackingConstant.Action.CLICK_EDIT_PRODUCT,
                     ProductTrackingConstant.Tracking.KEY_LABEL, "",
-                    ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, product.dynamicProductInfoP1?.parentProductId,
+                    ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, productInfo?.parentProductId,
                     ProductTrackingConstant.Tracking.KEY_LAYOUT, "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};",
                     ProductTrackingConstant.Tracking.KEY_COMPONENT, "comp:${componentTrackDataModel.componentType};temp:${componentTrackDataModel.componentName};elem:${topAdsAction};cpos:${componentTrackDataModel.adapterPosition};"
             )
@@ -770,6 +769,45 @@ object DynamicProductDetailTracking {
             )
 
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(mapEvent)
+        }
+
+        fun eventDiscussionSeeAll(productInfo: DynamicProductInfoP1, componentTrackDataModel: ComponentTrackDataModel?, userId: String, numberOfThreadsShown: String) {
+            val mapEvent = TrackingUtil.addDiscussionParams(
+                    TrackAppUtils.gtmData(
+                            ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                            ProductTrackingConstant.Category.PDP,
+                            ProductTrackingConstant.Action.CLICK_DISCUSSION_SEE_ALL,
+                            String.format(ProductTrackingConstant.Label.DISCUSSION_SEE_ALL, numberOfThreadsShown)),
+                    userId
+            )
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_DISCUSSION_SEE_ALL)
+        }
+
+        fun eventDiscussionDetails(productInfo: DynamicProductInfoP1, componentTrackDataModel: ComponentTrackDataModel?, userId: String, talkId: String, numberOfThreadsShown: String) {
+            val mapEvent = TrackingUtil.addDiscussionParams(
+                    TrackAppUtils.gtmData(
+                            ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                            ProductTrackingConstant.Category.PDP,
+                            ProductTrackingConstant.Action.CLICK_THREAD_DETAIL_DISCUSSION,
+                            String.format(ProductTrackingConstant.Label.DISCUSSION_DETAIL, talkId, numberOfThreadsShown)),
+                    userId
+            )
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_THREAD_DETAIL_DISCUSSION)
+        }
+
+        fun eventEmptyDiscussionSendQuestion(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel?, userId: String) {
+            val mapEvent = TrackingUtil.addDiscussionParams(
+                    TrackAppUtils.gtmData(
+                            ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                            ProductTrackingConstant.Category.PDP,
+                            ProductTrackingConstant.Action.CLICK_SEND_QUESTION,
+                            ProductTrackingConstant.Label.DISCUSSION_EMPTY_QUESTION),
+                    userId
+            )
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_SEND_QUESTION)
         }
     }
 

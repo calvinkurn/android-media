@@ -7,6 +7,10 @@ android {
         it.java.srcDirs += "src/$it.name/kotlin"
     }
 
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+
     testOptions {
         unitTests.all {
             testLogging.events = ["passed", "skipped", "failed"]
@@ -15,7 +19,7 @@ android {
 
     defaultConfig {
         multiDexEnabled true
-        testInstrumentationRunner "com.tokopedia.search.application.SearchInstrumentationTestRunner"
+        testInstrumentationRunner "com.tokopedia.test.application.environment.MockInstrumentationTestRunner"
     }
 }
 
@@ -75,7 +79,6 @@ dependencies {
     implementation project(rootProject.ext.features.atc_common)
     implementation project(rootProject.ext.libraries.videoplayer)
     implementation project(rootProject.ext.features.carouselProductCard)
-    implementation project(rootProject.ext.features.tkpdtransactioncommon)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.variantCommon)
@@ -90,6 +93,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.akamaiBotLib)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
@@ -131,6 +135,12 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
 
+    // UI Test
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
 }
 
 project.ext {

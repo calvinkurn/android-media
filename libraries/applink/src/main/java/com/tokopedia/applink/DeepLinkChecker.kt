@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.webkit.URLUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -39,7 +40,6 @@ object DeepLinkChecker {
     const val ACCOUNTS = 13
     const val RECHARGE = 14
     const val BLOG = 15
-    const val PELUANG = 16
     const val DISCOVERY_PAGE = 17
     const val FLIGHT = 18
     const val REFERRAL = 19
@@ -266,7 +266,7 @@ object DeepLinkChecker {
             intent = RouteManager.getIntent(context, constructSearchApplink(uriData))
             intent.putExtras(bundle)
         } else {
-            intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, departmentId)
+            intent = RouteManager.getIntent(context, ApplinkConstInternalCategory.INTERNAL_CATEGORY_DETAIL, departmentId)
         }
         return openIfExist(context, intent)
     }

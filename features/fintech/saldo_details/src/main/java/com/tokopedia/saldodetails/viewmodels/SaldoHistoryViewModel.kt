@@ -42,7 +42,7 @@ class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: Ge
     private val summaryDepositParam: Map<String, Any>
         get() {
             val param = SummaryDepositParam()
-            val sdf = SimpleDateFormat(DATE_FORMAT_VIEW, Locale.US)
+            val sdf = SimpleDateFormat(DATE_FORMAT_VIEW)
             val sdf_ws = SimpleDateFormat(DATE_FORMAT_WS, Locale.US)
             try {
                 val formattedStart = sdf.parse(paramStartDate)
@@ -61,7 +61,7 @@ class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: Ge
         get() {
             var isValid = true
 
-            val sdf = SimpleDateFormat(DATE_FORMAT_VIEW, Locale.US)
+            val sdf = SimpleDateFormat(DATE_FORMAT_VIEW)
             try {
                 val endDate = sdf.parse(paramEndDate)
                 val startDate = sdf.parse(paramStartDate)
@@ -153,7 +153,7 @@ class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: Ge
     }
 
     private fun getDate(year: Int, month: Int, day: Int): String {
-        val dateFormat = SimpleDateFormat(DATE_FORMAT_VIEW, Locale.US)
+        val dateFormat = SimpleDateFormat(DATE_FORMAT_VIEW)
         val date = Date()
         val cal = GregorianCalendar()
         cal.time = date
@@ -180,7 +180,7 @@ class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: Ge
 
     private fun dateFormatter(date: String): String? {
 
-        val sdf = SimpleDateFormat(DATE_FORMAT_VIEW, Locale.US)
+        val sdf = SimpleDateFormat(DATE_FORMAT_VIEW)
         val sdf_ws = SimpleDateFormat("dd/MM/yyyy", Locale.US)
         var formattedStart: Date? = null
         try {
@@ -199,7 +199,6 @@ class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: Ge
             if (isValid) {
                 showLoading()
                 onDepositSummaryFetched(getDepositSummaryUseCase.execute(summaryDepositParam))
-
             }
         }) {
             Log.e(TAG, it.toString())
