@@ -31,10 +31,7 @@ import com.tokopedia.shop.product.data.repository.ShopProductRepositoryImpl
 import com.tokopedia.shop.product.data.source.cloud.ShopProductCloudDataSource
 import com.tokopedia.shop.product.data.source.cloud.api.ShopOfficialStoreApi
 import com.tokopedia.shop.product.data.source.cloud.interceptor.ShopOfficialStoreAuthInterceptor
-import com.tokopedia.shop.product.di.ShopProductGMFeaturedQualifier
-import com.tokopedia.shop.product.di.ShopProductGetHighlightProductQualifier
-import com.tokopedia.shop.product.di.ShopProductQualifier
-import com.tokopedia.shop.product.di.ShopProductWishListFeaturedQualifier
+import com.tokopedia.shop.product.di.*
 import com.tokopedia.shop.product.di.scope.ShopProductScope
 import com.tokopedia.shop.product.domain.interactor.*
 import com.tokopedia.shop.product.domain.repository.ShopProductRepository
