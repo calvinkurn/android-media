@@ -132,8 +132,11 @@ class EventPDPTicketViewModelTest {
 
     @Test
     fun `VerifyData_SuccessVerify_ShouldSuccessVerify`(){
+
+        val verifyMock = Gson().fromJson(getJson("verify_mock.json"), EventVerifyResponseV2::class.java)
+
         val result = HashMap<Type, Any>()
-        result[EventVerifyResponseV2::class.java] = EventVerifyResponseV2()
+        result[EventVerifyResponseV2::class.java] = verifyMock
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         coEvery { graphqlRepository.getReseponse(any(),any()) } returns gqlResponse
@@ -141,16 +144,19 @@ class EventPDPTicketViewModelTest {
         eventPDPTicketViewModel.verify("", VerifyRequest())
 
         val actual = eventPDPTicketViewModel.verifyResponse.value
-        //assert(actual is EventVerifyResponseV2())
+        assertEquals(actual, verifyMock)
     }
 
 
     @Test
     fun `VerifyData_FailVerify_ShouldFailVerify`(){
+        //given
         coEvery { graphqlRepository.getReseponse(any(),any()) } coAnswers {throw Throwable("Error Verify") }
 
+        //when
         eventPDPTicketViewModel.verify("",VerifyRequest())
 
+        //then
         val actual = eventPDPTicketViewModel.error.value
         assert(actual.equals("Error Verify"))
 
