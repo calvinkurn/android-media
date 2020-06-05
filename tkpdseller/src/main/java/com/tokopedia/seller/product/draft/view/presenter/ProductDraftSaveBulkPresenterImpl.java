@@ -121,8 +121,10 @@ public class ProductDraftSaveBulkPresenterImpl extends ProductDraftSaveBulkPrese
             @Override
             public void onNext(List<? extends Long> productIds) {
                 if(isViewAttached()) {
-                    List<Long> productIdList = new LinkedList<Long>(productIds);
-                    getView().onSaveBulkDraftSuccess(productIdList);
+                    if(productIds != null) {
+                        List<Long> productIdList = new LinkedList<Long>(productIds);
+                        getView().onSaveBulkDraftSuccess(productIdList);
+                    }
                 }
             }
         };
