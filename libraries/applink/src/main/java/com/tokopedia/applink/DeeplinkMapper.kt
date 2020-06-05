@@ -174,8 +174,8 @@ object DeeplinkMapper {
                 tempDeeplink = createAppendDeeplinkWithQuery(tempDeeplink, query)
                 tempDeeplink
             }
-            deeplink.startsWith(DeeplinkConstant.SCHEME_SELLERAPP, true) -> getRegisteredNavigationFromSellerapp(context,deeplink)
             deeplink.startsWith(ApplinkConst.SellerApp.SELLER_APP_HOME) -> AppLinkMapperSellerHome.getSellerHomeAppLink(deeplink)
+            deeplink.startsWith(DeeplinkConstant.SCHEME_SELLERAPP, true) -> getRegisteredNavigationFromSellerapp(context,deeplink)
             deeplink.startsWith(ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST) -> DeepLinkMapperProductManage.getProductListInternalAppLink(deeplink)
             deeplink.startsWith(ApplinkConstInternalGlobal.TOPCHAT) -> AppLinkMapperSellerHome.getTopChatAppLink(deeplink)
             deeplink.startsWith(ApplinkConstInternalOrder.NEW_ORDER) -> getSomNewOrderAppLink(deeplink)
