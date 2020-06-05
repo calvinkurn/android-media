@@ -59,9 +59,7 @@ public class SplashScreenActivity extends SplashScreen {
         if (null != uri) {
             boolean isFromMainApp = uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false);
             if (isFromMainApp) {
-                RouteManager.route(this, uri.toString());
-                finish();
-                return true;
+                return RouteManager.route(this, uri.toString());
             }
             return false;
         }
@@ -78,7 +76,10 @@ public class SplashScreenActivity extends SplashScreen {
             return;
         }
 
-        if (handleAppLink()) return;
+        if (handleAppLink()) {
+            finish();
+            return;
+        }
 
         if (SessionHandler.isUserHasShop(this)) {
             if (getIntent().hasExtra(Constants.EXTRA_APPLINK)) {
