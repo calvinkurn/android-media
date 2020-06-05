@@ -31,6 +31,7 @@ import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.Promoti
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeBudgetTypeFactory
 import com.tokopedia.vouchercreation.create.view.uimodel.initiation.BannerBaseUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVoucherUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.widget.PromotionTypeInputUiModel
 import com.tokopedia.vouchercreation.create.view.viewmodel.PromotionBudgetAndTypeViewModel
 import kotlinx.android.synthetic.main.mvc_banner_voucher_fragment.*
@@ -44,12 +45,14 @@ class PromotionBudgetAndTypeFragment : BaseCreateMerchantVoucherFragment<Promoti
                            getVoucherUiModel: () -> BannerVoucherUiModel,
                            setVoucherBitmap: (Bitmap) -> Unit,
                            getBannerBaseUiModel: () -> BannerBaseUiModel,
-                           onSetShopInfo: (String, String) -> Unit) = PromotionBudgetAndTypeFragment().apply {
+                           onSetShopInfo: (String, String) -> Unit,
+                           getVoucherReviewData: () -> VoucherReviewUiModel) = PromotionBudgetAndTypeFragment().apply {
             this.onNextStep = onNext
             this.getVoucherUiModel = getVoucherUiModel
             this.setVoucherBitmap = setVoucherBitmap
             this.getBannerBaseUiModel = getBannerBaseUiModel
             this.onSetShopInfo = onSetShopInfo
+            this.getVoucherReviewData = getVoucherReviewData
         }
     }
 
@@ -70,6 +73,7 @@ class PromotionBudgetAndTypeFragment : BaseCreateMerchantVoucherFragment<Promoti
                 CreateMerchantVoucherStepsActivity.CASHBACK_UNTIL_URL
         )}
     private var onSetShopInfo: (String, String) -> Unit = { _,_ -> }
+    private var getVoucherReviewData: () -> VoucherReviewUiModel = { VoucherReviewUiModel() }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory

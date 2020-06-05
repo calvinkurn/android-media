@@ -39,24 +39,19 @@ class MerchantVoucherTargetFragment : BaseCreateMerchantVoucherFragment<VoucherT
         @JvmStatic
         fun createInstance(onNext: (Int, String, String) -> Unit,
                            getPromoCodePrefix: () -> String,
-                           getVoucherReviewUiModel: () -> VoucherReviewUiModel) = MerchantVoucherTargetFragment().apply {
-            setOnNextClick(onNext)
-            setGetPromoCodePrefix(getPromoCodePrefix)
+                           getVoucherReviewUiModel: () -> VoucherReviewUiModel,
+                           isCreateNew: Boolean) = MerchantVoucherTargetFragment().apply {
+            this.onNext = onNext
+            this.getPromoCodePrefix = getPromoCodePrefix
             this.getVoucherReviewUiModel = getVoucherReviewUiModel
+            this.isCreateNew = isCreateNew
         }
-    }
-
-    fun setOnNextClick(onNext: (Int, String, String) -> Unit) {
-        this.onNext = onNext
-    }
-
-    fun setGetPromoCodePrefix(getPromoCodePrefix: () -> String) {
-        this.getPromoCodePrefix = getPromoCodePrefix
     }
 
     private var onNext: (Int, String, String) -> Unit = { _,_,_ -> }
     private var getPromoCodePrefix: () -> String = {""}
     private var getVoucherReviewUiModel: () -> VoucherReviewUiModel = { VoucherReviewUiModel() }
+    private var isCreateNew = true
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -120,7 +115,9 @@ class MerchantVoucherTargetFragment : BaseCreateMerchantVoucherFragment<VoucherT
         setupTextFieldWidget()
         setupNextButton()
         setupBottomSheet()
-        setupReloadData()
+        if (!isCreateNew) {
+            setupReloadData()
+        }
     }
 
     override fun onDismissBottomSheet(bottomSheetType: CreateVoucherBottomSheetType) {
