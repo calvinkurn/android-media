@@ -89,7 +89,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
     private val fragmentStepsHashMap by lazy {
         LinkedHashMap<VoucherCreationStepInfo, Fragment>().apply {
-            put(VoucherCreationStepInfo.STEP_ONE, MerchantVoucherTargetFragment.createInstance(::setVoucherName, ::getPromoCodePrefix))
+            put(VoucherCreationStepInfo.STEP_ONE, MerchantVoucherTargetFragment.createInstance(::setVoucherName, ::getPromoCodePrefix, ::getVoucherReviewUiModel))
             put(VoucherCreationStepInfo.STEP_TWO, PromotionBudgetAndTypeFragment.createInstance(::setVoucherBenefit, ::getBannerVoucherUiModel, viewModel::setVoucherPreviewBitmap, ::getBannerBaseUiModel, ::onSetShopInfo))
             put(VoucherCreationStepInfo.STEP_THREE, SetVoucherPeriodFragment.createInstance(::setVoucherPeriod, ::getBannerVoucherUiModel, ::getBannerBaseUiModel, ::onSuccessGetSquareBitmap))
             put(VoucherCreationStepInfo.STEP_FOUR, ReviewVoucherFragment.createInstance(::getVoucherReviewUiModel, ::getToken, ::getPostBaseUiModel, ::onReturnToStep, ::getBannerBitmap, ::getVoucherId, ::getPromoCodePrefix))

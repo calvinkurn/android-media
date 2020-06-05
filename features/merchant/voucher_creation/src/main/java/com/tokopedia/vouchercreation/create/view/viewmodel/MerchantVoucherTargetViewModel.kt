@@ -68,6 +68,23 @@ class MerchantVoucherTargetViewModel @Inject constructor(
         mVoucherTargetTypeLiveData.value = targetType
     }
 
+    fun setReloadVoucherTargetData(@VoucherTargetType targetType: Int,
+                                   promoCode: String) {
+        mPrivateVoucherPromoCode.value = promoCode
+        mShouldReturnToInitialValue.value = targetType == VoucherTargetType.PRIVATE
+        mVoucherTargetListData.value = listOf(
+                VoucherTargetItemUiModel(
+                        voucherTargetType = VoucherTargetCardType.PUBLIC,
+                        isEnabled = targetType == VoucherTargetType.PUBLIC,
+                        isHavePromoCard = false),
+                VoucherTargetItemUiModel(
+                        voucherTargetType = VoucherTargetCardType.PRIVATE,
+                        isEnabled = targetType == VoucherTargetType.PRIVATE,
+                        isHavePromoCard = targetType == VoucherTargetType.PRIVATE && promoCode.isNotEmpty(),
+                        promoCode = promoCode)
+        )
+    }
+
     fun validateVoucherTarget(promoCode: String,
                               couponName: String) {
         launchCatchError(

@@ -23,6 +23,7 @@ import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.VoucherDis
 import com.tokopedia.vouchercreation.create.view.typefactory.CreateVoucherTypeFactory
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertarget.VoucherTargetAdapterTypeFactory
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertarget.VoucherTargetTypeFactory
+import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertarget.widgets.VoucherTargetUiModel
 import com.tokopedia.vouchercreation.create.view.viewholder.vouchertarget.widgets.FillVoucherNameViewHolder
 import com.tokopedia.vouchercreation.create.view.viewmodel.MerchantVoucherTargetViewModel
@@ -37,9 +38,11 @@ class MerchantVoucherTargetFragment : BaseCreateMerchantVoucherFragment<VoucherT
 
         @JvmStatic
         fun createInstance(onNext: (Int, String, String) -> Unit,
-                           getPromoCodePrefix: () -> String) = MerchantVoucherTargetFragment().apply {
+                           getPromoCodePrefix: () -> String,
+                           getVoucherReviewUiModel: () -> VoucherReviewUiModel) = MerchantVoucherTargetFragment().apply {
             setOnNextClick(onNext)
             setGetPromoCodePrefix(getPromoCodePrefix)
+            this.getVoucherReviewUiModel = getVoucherReviewUiModel
         }
     }
 
@@ -53,6 +56,7 @@ class MerchantVoucherTargetFragment : BaseCreateMerchantVoucherFragment<VoucherT
 
     private var onNext: (Int, String, String) -> Unit = { _,_,_ -> }
     private var getPromoCodePrefix: () -> String = {""}
+    private var getVoucherReviewUiModel: () -> VoucherReviewUiModel = { VoucherReviewUiModel() }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -116,6 +120,7 @@ class MerchantVoucherTargetFragment : BaseCreateMerchantVoucherFragment<VoucherT
         setupTextFieldWidget()
         setupNextButton()
         setupBottomSheet()
+        setupReloadData()
     }
 
     override fun onDismissBottomSheet(bottomSheetType: CreateVoucherBottomSheetType) {
@@ -255,6 +260,13 @@ class MerchantVoucherTargetFragment : BaseCreateMerchantVoucherFragment<VoucherT
         context?.run {
             addBottomSheetView(CreateVoucherBottomSheetType.CREATE_PROMO_CODE, createPromoCodeBottomSheetFragment)
             addBottomSheetView(CreateVoucherBottomSheetType.VOUCHER_DISPLAY, voucherDisplayBottomSheetFragment)
+        }
+    }
+
+    private fun setupReloadData() {
+        with(getVoucherReviewUiModel()) {
+            viewModel.setReloadVoucherTargetData(targetType, promoCode)
+            fillVoucherNameTextfield?.textFieldInput?.setText(voucherName)
         }
     }
 
