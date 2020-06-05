@@ -168,7 +168,7 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
         val shopShowcaseList = ArrayList<String>()
         shopShowcaseListReorderAdapter?._showcaseList?.let {
             for (shopShowcaseModel in it) {
-                if (shopShowcaseModel.type == ShowcaseType.GENERATED) {
+                if (shopShowcaseModel.type != ShowcaseType.GENERATED) {
                     shopShowcaseList.add(shopShowcaseModel.id)
                 }
             }
