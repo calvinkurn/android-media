@@ -351,11 +351,11 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
             adjustToasterHeight()
         }
         view?.let {
+            this.toaster = Toaster.build(it, successMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.talk_ok))
             toaster?.let { toaster ->
                 if(toaster.isShownOrQueued) {
                     return
                 }
-                this.toaster = Toaster.build(it, successMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.talk_ok))
                 toaster.show()
             }
         }
@@ -366,11 +366,11 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
             adjustToasterHeight()
         }
         view?.let {
+            this.toaster = Toaster.build(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_ok))
             toaster?.let { toaster ->
                 if(toaster.isShownOrQueued) {
                     return
                 }
-                this.toaster = Toaster.build(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_ok))
                 toaster.show()
             }
         }
