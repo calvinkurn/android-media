@@ -1,7 +1,6 @@
 package com.tokopedia.product.addedit.variant.presentation.fragment
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -19,10 +18,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.imagepicker.common.util.FileUtils
-import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
-import com.tokopedia.imagepicker.picker.main.builder.*
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -30,6 +25,8 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
+import com.tokopedia.product.addedit.imagepicker.view.activity.SizechartPickerAddProductActivity
+import com.tokopedia.product.addedit.imagepicker.view.activity.SizechartPickerEditPhotoActivity
 import com.tokopedia.product.addedit.variant.data.model.VariantDetail
 import com.tokopedia.product.addedit.variant.di.AddEditProductVariantComponent
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantPhotoAdapter
@@ -140,7 +137,7 @@ class AddEditProductVariantFragment : BaseDaggerFragment(), VariantTypeAdapter.O
 
     private fun onSizechartClicked() {
         if (viewModel.variantSizechartUrl.value.isNullOrEmpty()) {
-            showReplaceSizechartPicker()
+            showSizechartPicker()
         } else {
             val fm = activity!!.supportFragmentManager
             val dialogFragment = AddEditProductVariantSizechartDialogFragment.newInstance()
@@ -156,7 +153,7 @@ class AddEditProductVariantFragment : BaseDaggerFragment(), VariantTypeAdapter.O
                 }
 
                 override fun clickChangeImagePath() {
-                    showReplaceSizechartPicker()
+                    showSizechartPicker()
                 }
             })
         }
@@ -204,10 +201,9 @@ class AddEditProductVariantFragment : BaseDaggerFragment(), VariantTypeAdapter.O
         FileUtils.deleteFileInTokopediaFolder(url)
     }
 
-    private fun showReplaceSizechartPicker(){
+    private fun showSizechartPicker(){
         context?.apply {
-            val builder =  createSizechartImagePickerBuilder(this)
-            val intent = ImagePickerActivity.getIntent(this, builder)
+            val intent = SizechartPickerAddProductActivity.getIntent(this)
             startActivityForResult(intent, REQUEST_CODE_SIZECHART_IMAGE)
         }
     }
@@ -215,7 +211,7 @@ class AddEditProductVariantFragment : BaseDaggerFragment(), VariantTypeAdapter.O
     private fun showEditorSizechartPicker() {
         val url = viewModel.variantSizechartUrl.value.orEmpty()
         context?.apply {
-            val editorIntent = createEditorIntent(this, url)
+            val editorIntent = SizechartPickerEditPhotoActivity.createIntent(this, url)
             startActivityForResult(editorIntent, REQUEST_CODE_SIZECHART_IMAGE)
         }
     }
@@ -246,38 +242,6 @@ class AddEditProductVariantFragment : BaseDaggerFragment(), VariantTypeAdapter.O
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             addItemDecoration(HorizontalItemDecoration(resources.getDimensionPixelSize(R.dimen.spacing_lvl3)))
         }
-    }
-
-    fun createSizechartImagePickerBuilder(context: Context): ImagePickerBuilder {
-        return ImagePickerBuilder(context.getString(R.string.choose_image),
-                intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY,
-                        ImagePickerTabTypeDef.TYPE_CAMERA,
-                        ImagePickerTabTypeDef.TYPE_INSTAGRAM),
-                GalleryType.IMAGE_ONLY,
-                ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
-                ImageRatioTypeDef.RATIO_1_1,
-                true,
-                ImagePickerEditorBuilder(
-                        intArrayOf(ImageEditActionTypeDef.ACTION_BRIGHTNESS,
-                                ImageEditActionTypeDef.ACTION_CONTRAST,
-                                ImageEditActionTypeDef.ACTION_CROP,
-                                ImageEditActionTypeDef.ACTION_ROTATE),
-                        false,
-                        null),
-                null)
-    }
-
-    fun createEditorIntent(context: Context, uriOrPath: String): Intent {
-        return ImageEditorActivity.getIntent(context, uriOrPath,
-                null,
-                ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
-                intArrayOf(ImageEditActionTypeDef.ACTION_BRIGHTNESS,
-                        ImageEditActionTypeDef.ACTION_CONTRAST,
-                        ImageEditActionTypeDef.ACTION_CROP,
-                        ImageEditActionTypeDef.ACTION_ROTATE),
-                ImageRatioTypeDef.RATIO_1_1, false,
-                ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB.toLong(), null)
     }
 
     fun onBackPressed() {
