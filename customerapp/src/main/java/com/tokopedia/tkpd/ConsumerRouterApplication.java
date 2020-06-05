@@ -285,7 +285,19 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private void initIris() {
         mIris = IrisAnalytics.Companion.getInstance(this);
+        WeaveInterface irisInitializeWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return executeIrisInitialize();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineNow(irisInitializeWeave);
+    }
+
+    private boolean executeIrisInitialize(){
         mIris.initialize();
+        return true;
     }
 
     private void initTetraDebugger() {
