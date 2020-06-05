@@ -194,8 +194,8 @@ public class RouteManager {
             ApplinkLogger.getInstance(context).save();
 
             Uri uri = Uri.parse(mappedDeeplink);
-            final boolean shouldRedirectToSellerApp = uri.getBooleanQueryParameter(KEY_REDIRECT_TO_SELLER_APP, false);
-            if (shouldRedirectToSellerApp) {
+            boolean shouldRedirectToSellerApp = uri.getBooleanQueryParameter(KEY_REDIRECT_TO_SELLER_APP, false);
+            if (shouldRedirectToSellerApp && !GlobalConfig.isSellerApp()) { //create intent to redirect to sellerapp
                 intent = buildInternalExplicitIntent(context, mappedDeeplink);
             } else {
                 if (context instanceof Activity) {
