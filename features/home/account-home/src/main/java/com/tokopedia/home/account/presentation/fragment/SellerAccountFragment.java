@@ -3,14 +3,12 @@ package com.tokopedia.home.account.presentation.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -36,7 +34,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationAccountBottomSheet;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.unifycomponents.BottomSheetUnify;
-import com.tokopedia.unifycomponents.HtmlLinkHelper;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
