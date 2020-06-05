@@ -13,7 +13,8 @@ data class ProductContentUiModel(
         val imageUrl: String,
         val stock: Int,
         val isSelectedHandler: (Long) -> Boolean,
-        val isSelectable: () -> SelectableState
+        val isSelectable: () -> SelectableState,
+        val transitionName: String? = null
 ) : ProductUiModel() {
 
     val hasStock: Boolean

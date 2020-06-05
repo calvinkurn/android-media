@@ -44,7 +44,7 @@ class ProductSelectableViewHolder(
     fun bind(item: ProductContentUiModel) {
         cbSelected.forceSetCheckbox(item.isSelectedHandler(item.id))
         ivImage.loadImage(item.imageUrl)
-        ivImage.compatTransitionName = item.id.toString()
+        ivImage.compatTransitionName = item.transitionName
 
         tvProductName.text = item.name
         tvProductAmount.text = getString(R.string.play_product_stock_amount, item.stock)

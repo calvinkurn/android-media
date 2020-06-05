@@ -36,7 +36,7 @@ class ProductPreviewViewHolder(
         }
 
         ivImage.loadImage(item.imageUrl)
-        ivImage.compatTransitionName = item.id.toString()
+        ivImage.compatTransitionName = item.transitionName
     }
 
     private fun adjustSize(itemCount: Int) {
