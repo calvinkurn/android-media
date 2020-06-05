@@ -1,9 +1,12 @@
 package com.tokopedia.play.broadcaster.view.widget
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Path
+import android.os.Build
 import android.util.AttributeSet
-import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.play.broadcaster.R
 
@@ -13,36 +16,97 @@ import com.tokopedia.play.broadcaster.R
 class PlayRectCropImageView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : AppCompatImageView(context, attrs, defStyleAttr) {
 
-    val centerRect: RectF
+    private var mTransparentPaint: Paint = Paint()
+    private var mSemiPaint: Paint
+    private var mBlackTransparentPaint: Paint
+    private var mPath = Path()
+
+    private val centerOfX: Float
+    private var rectWidth: Int
+    private var rectHeight: Int
+    private var bottomDetailHeight: Int
 
     init {
-        setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        mTransparentPaint.color = Color.TRANSPARENT
+        mTransparentPaint.strokeWidth = STROKE_WIDTH
 
-        val centerOfCanvas = Point(width / 2, height / 2)
-        val rectW = resources.getDimensionPixelSize(R.dimen.play_cover_width)
-        val left = (centerOfCanvas.x - (rectW / 2)).toFloat()
-        val top = 0f
-        val right = (centerOfCanvas.x + (rectW / 2)).toFloat()
-        val bottom = height.toFloat()
-        centerRect = RectF(left, top, right, bottom)
+        mSemiPaint = Paint()
+        mSemiPaint.color = Color.TRANSPARENT
+        mSemiPaint.strokeWidth = STROKE_WIDTH
+
+        mBlackTransparentPaint = Paint()
+        mBlackTransparentPaint.color = resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_68)
+
+        centerOfX = (right - left).toFloat() / 2
+        rectWidth = resources.getDimensionPixelSize(R.dimen.play_cover_width)
+        rectHeight = resources.getDimensionPixelSize(R.dimen.play_cover_height)
+        bottomDetailHeight = resources.getDimensionPixelSize(R.dimen.play_cover_bottom_detail)
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        // Draw Overlay
-        val paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
-        paint.color = Color.parseColor("#33C4C4C4")
-        paint.style = Paint.Style.FILL
-        canvas.drawPaint(paint)
+        mPath.reset()
 
-        //Draw transparent shape
-        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
-        canvas.drawRoundRect(centerRect, CENTER_RECT_RADIUS, CENTER_RECT_RADIUS, paint)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            mPath.addRect(left + (((right - left).toFloat() / 2) - (rectWidth / 2)),
+                    0f,
+                    right - ((right - left).toFloat() / 2) + (rectWidth / 2).toFloat(),
+                    rectHeight.toFloat(),
+                    Path.Direction.CW)
+        } else {
+            mPath.addRoundRect(left + (((right - left).toFloat() / 2) - (rectWidth / 2)),
+                    0f,
+                    right - ((right - left).toFloat() / 2) + (rectWidth / 2).toFloat(),
+                    rectHeight.toFloat(),
+                    CENTER_RECT_RADIUS,
+                    CENTER_RECT_RADIUS,
+                    Path.Direction.CW)
+        }
+        mPath.fillType = Path.FillType.INVERSE_EVEN_ODD
+
+        // draw transparent center rect
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            canvas.drawRect(left + (((right - left).toFloat() / 2) - (rectWidth / 2)),
+                    0f,
+                    right - ((right - left).toFloat() / 2) + (rectWidth / 2).toFloat(),
+                    rectHeight.toFloat(),
+                    mTransparentPaint)
+        } else {
+            canvas.drawRoundRect(left + (((right - left).toFloat() / 2) - (rectWidth / 2)),
+                    0f,
+                    right - ((right - left).toFloat() / 2) + (rectWidth / 2).toFloat(),
+                    rectHeight.toFloat(),
+                    CENTER_RECT_RADIUS,
+                    CENTER_RECT_RADIUS,
+                    mTransparentPaint)
+        }
+
+        // draw bottom black overlay
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            canvas.drawRect(left + (((right - left).toFloat() / 2) - (rectWidth / 2)),
+                    rectHeight.toFloat() - bottomDetailHeight,
+                    right - ((right - left).toFloat() / 2) + (rectWidth / 2).toFloat(),
+                    rectHeight.toFloat(),
+                    mBlackTransparentPaint)
+        } else {
+            canvas.drawRoundRect(left + (((right - left).toFloat() / 2) - (rectWidth / 2)),
+                    rectHeight.toFloat() - bottomDetailHeight,
+                    right - ((right - left).toFloat() / 2) + (rectWidth / 2).toFloat(),
+                    rectHeight.toFloat(),
+                    CENTER_RECT_RADIUS,
+                    CENTER_RECT_RADIUS,
+                    mBlackTransparentPaint)
+        }
+
+        canvas.drawPath(mPath, mSemiPaint)
+        canvas.clipPath(mPath)
+        canvas.drawColor(resources.getColor(R.color.play_cover_crop_overlay))
     }
 
     companion object {
-        private const val CENTER_RECT_RADIUS = 8f
+        private const val CENTER_RECT_RADIUS = 20f
+        private const val STROKE_WIDTH = 10f
     }
 
 }

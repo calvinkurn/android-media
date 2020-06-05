@@ -21,46 +21,60 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivPlayCoverCropImage"
         android:layout_width="match_parent"
-        android:layout_height="415dp"
+        android:layout_height="@dimen/play_cover_height"
         android:layout_marginTop="@dimen/spacing_lvl4"
+        android:scaleType="centerCrop"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvPlayCoverCropHeaderDescription" />
 
     <com.tokopedia.play.broadcaster.view.widget.PlayRectCropImageView
         android:id="@+id/ivPlayCoverCropOverlay"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:scaleType="fitXY"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/play_cover_height"
         app:layout_constraintBottom_toBottomOf="@+id/ivPlayCoverCropImage"
         app:layout_constraintLeft_toLeftOf="@+id/ivPlayCoverCropImage"
         app:layout_constraintRight_toRightOf="@+id/ivPlayCoverCropImage"
         app:layout_constraintTop_toTopOf="@+id/ivPlayCoverCropImage" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_lvl1"
+        android:background="@color/play_bg_shadow"
+        app:layout_constraintBottom_toTopOf="@+id/containerPlayCoverTitleBottom"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
     <LinearLayout
         android:id="@+id/containerPlayCoverTitleBottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/spacing_lvl1"
-            android:background="@color/play_bg_shadow" />
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnPlayPrepareBroadcastChange"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginRight="@dimen/spacing_lvl3"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:layout_weight="1"
+            android:text="@string/play_prepare_broadcast_label_change"
+            app:unifyButtonType="alternate"
+            app:unifyButtonVariant="ghost" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnPlayPrepareBroadcastNext"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl3"
-            android:layout_marginRight="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl3"
-            android:enabled="false"
+            android:layout_weight="1"
             android:text="@string/play_prepare_broadcast_label_next" />
 
     </LinearLayout>

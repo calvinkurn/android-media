@@ -73,7 +73,8 @@ class PlayCoverCameraActivity : AppCompatActivity() {
         timer.schedule(object : TimerTask() {
             override fun run() {
                 runOnUiThread {
-                    showTimerLayout()
+                    if (timeToCapture > 0)
+                        showTimerLayout()
                 }
                 timeToCapture--
                 if (timeToCapture <= 0) {

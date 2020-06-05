@@ -58,6 +58,7 @@
     <string name="play_camera_get_ready_label">Siap-siap, ya!</string>
 
     <string name="play_prepare_broadcast_label_next">Lanjutkan</string>
+    <string name="play_prepare_broadcast_label_change">Ganti</string>
     <string name="play_prepare_broadcast_label_save">Simpan</string>
 
     <string name="play_live_broadcast_time_default">00:00</string>
