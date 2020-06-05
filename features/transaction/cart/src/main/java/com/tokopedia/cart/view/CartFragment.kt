@@ -188,30 +188,17 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var isInsuranceEnabled = false
     private var isToolbarWithBackButton = true
     private var noAvailableItems = false
-    private var listRedPromos: List<String> = emptyList()
-    private var prevCbSelectAllIsSelected: Boolean = false
     private var cbChangeJob: Job? = null
-    private var showPromoButtonJob: Job? = null
-    private var isButtonAnimating = false
-    private var _animator: Animator? = null
-    private val ANIMATION_TYPE = "translationY"
-    private val ANIMATION_DURATION_IN_MILIS = 1000L
-    //    private val TRANSLATION_LENGTH = 1800f
     private var TRANSLATION_LENGTH = 0f
     private var isKeyboardOpened = false
-    private var notifyScrollEnded = false
-    private var alreadyTryToShowPromoButtonOrIdle = false
+    private var initialPromoButtonPosition = 0f
 
     companion object {
 
         private const val className: String = "com.tokopedia.purchase_platform.features.cart.view.CartFragment"
-        private const val LOYALTY_ACTIVITY_REQUEST_CODE = 12345
         private var FLAG_BEGIN_SHIPMENT_PROCESS = false
         private var FLAG_SHOULD_CLEAR_RECYCLERVIEW = false
         private var FLAG_IS_CART_EMPTY = false
-
-        private val SHOP_INDEX_PROMO_GLOBAL = -1
-
         private val HAS_ELEVATION = 12
         private val NO_ELEVATION = 0
         private val CART_TRACE = "mp_cart"
@@ -222,8 +209,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         private val NAVIGATION_SHIPMENT = 983
         private val ADVERTISINGID = "ADVERTISINGID"
         private val KEY_ADVERTISINGID = "KEY_ADVERTISINGID"
-        val GO_TO_DETAIL = 2
-        val GO_TO_LIST = 1
 
         @JvmStatic
         fun newInstance(bundle: Bundle?, args: String): CartFragment {
@@ -570,13 +555,41 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     } else {
                         enableSwipeRefresh()
                     }
-                    if (!isButtonAnimating) {
-                        TRANSLATION_LENGTH += (dy * 25f)
-                        if (TRANSLATION_LENGTH > 5000) TRANSLATION_LENGTH = 5000f
-                        else if (TRANSLATION_LENGTH < 0) TRANSLATION_LENGTH = 0f
+                    Log.d("ScrollEnd", "View position Y: ${llPromoCheckout.y}")
+                    Log.d("ScrollEnd", "View Height : ${llPromoCheckout.height}")
+                    var valueY = llPromoCheckout.y + dy
+                    TRANSLATION_LENGTH += dy
+                    Log.d("ScrollEnd", "Check DY: $dy| Value Y: $valueY| Translation Length: $TRANSLATION_LENGTH")
+
+
+                    if (dy != 0) {
+                        if (TRANSLATION_LENGTH - dy == 0f) {
+                            // Initial position of View
+                            initialPromoButtonPosition = llPromoCheckout.y
+                        }
+
+                        if (TRANSLATION_LENGTH != 0f) {
+                            if (dy < 0 && valueY < initialPromoButtonPosition) {
+                                // Prevent scroll up move button exceed initial view position
+                                llPromoCheckout.animate()
+                                        .y(initialPromoButtonPosition)
+                                        .setDuration(0)
+                                        .start();
+                            } else if (valueY <= llPromoCheckout.height + initialPromoButtonPosition) {
+                                // Prevent scroll down move button too far
+                                llPromoCheckout.animate()
+                                        .y(valueY)
+                                        .setDuration(0)
+                                        .start();
+                            }
+                        } else {
+                            // Set to initial position if scroll up to top
+                            llPromoCheckout.animate()
+                                    .y(initialPromoButtonPosition)
+                                    .setDuration(0)
+                                    .start();
+                        }
                     }
-                    Log.d("ScrollEnd", "Check DY: $dy| Translation Length: $TRANSLATION_LENGTH")
-                    hidePromoButton(/*dy != 0*/)
                 }
             })
 
@@ -599,71 +612,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 }
             }
             addOnScrollListener(endlessRecyclerViewScrollListener)
-        }
-    }
-
-    private fun hidePromoButton(/*isScrolling: Boolean*/) {
-        ObjectAnimator.ofFloat(llPromoCheckout, ANIMATION_TYPE, TRANSLATION_LENGTH).apply {
-            duration = ANIMATION_DURATION_IN_MILIS
-            addListener(object : Animator.AnimatorListener {
-                override fun onAnimationRepeat(p0: Animator?) {
-                }
-
-                override fun onAnimationCancel(p0: Animator?) {
-                    isButtonAnimating = false
-                    TRANSLATION_LENGTH = 0f
-                }
-
-                override fun onAnimationStart(animation: Animator) {
-                    isButtonAnimating = true
-                }
-
-                override fun onAnimationEnd(animation: Animator) {
-                    isButtonAnimating = false
-                    TRANSLATION_LENGTH = 0f
-//                    if (!isScrolling) {
-//                        Log.d("ScrollEnd", "NotScrolling")
-//                        notifyScrollEnded = false
-//                        Log.d("ScrollEnd", "ShowButton : after scroll end")
-//                        showPromoButton()
-//                    } else {
-//                        Log.d("ScrollEnd", "Scrolling")
-//                        notifyScrollEnded = true
-//                        if (alreadyTryToShowPromoButtonOrIdle) {
-//                            Log.d("ScrollEnd", "ShowButton : force")
-//                            showPromoButton()
-//                        }
-//                    }
-                }
-            })
-            if (!isButtonAnimating) {
-                start()
-            }
-        }
-    }
-
-    private fun showPromoButton() {
-        ObjectAnimator.ofFloat(llPromoCheckout, ANIMATION_TYPE, 0f).apply {
-            duration = ANIMATION_DURATION_IN_MILIS
-            addListener(object : Animator.AnimatorListener {
-                override fun onAnimationRepeat(p0: Animator?) {
-                }
-
-                override fun onAnimationCancel(p0: Animator?) {
-                    isButtonAnimating = false
-                }
-
-                override fun onAnimationStart(animation: Animator) {
-                    isButtonAnimating = true
-                }
-
-                override fun onAnimationEnd(animation: Animator) {
-                    isButtonAnimating = false
-                }
-            })
-            if (!isButtonAnimating) {
-                start()
-            }
         }
     }
 
