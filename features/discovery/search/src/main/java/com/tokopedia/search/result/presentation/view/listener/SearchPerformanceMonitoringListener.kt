@@ -1,7 +1,5 @@
 package com.tokopedia.search.result.presentation.view.listener
 
-import com.tokopedia.analytics.performance.util.PltPerformanceData
-
 interface SearchPerformanceMonitoringListener {
 
     fun startPerformanceMonitoring()

@@ -1,6 +1,5 @@
 package com.tokopedia.search.result.presentation.view.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -68,7 +67,6 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.TestOnly;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
