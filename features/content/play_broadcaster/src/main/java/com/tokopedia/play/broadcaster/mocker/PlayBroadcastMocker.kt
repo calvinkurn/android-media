@@ -5,7 +5,7 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.data.model.Configuration
+import com.tokopedia.play.broadcaster.domain.model.Configuration
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.view.state.Selectable
 
@@ -76,7 +76,7 @@ object PlayBroadcastMocker {
             isOfficial = false,
             channelId = "",
             maxTaggedProduct = 15,
-            maxLiveStreamDuration = (1000*60)*6,
+            maxLiveStreamDuration = (1000 * 60) * 6,
             countDownDuration = 10
     )
 
