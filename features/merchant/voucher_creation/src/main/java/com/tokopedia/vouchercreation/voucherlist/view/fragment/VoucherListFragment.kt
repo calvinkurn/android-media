@@ -267,6 +267,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     }
 
     override fun onErrorTryAgain() {
+        clearAllData()
         loadData(1)
     }
 
