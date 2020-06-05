@@ -15,7 +15,7 @@ class TrafficMetricReportAdapter : BaseDiffUtilAdapter<TrafficMetricUiModel>() {
     }
 
     override fun areItemsTheSame(oldItem: TrafficMetricUiModel, newItem: TrafficMetricUiModel): Boolean {
-        return oldItem == newItem
+        return (oldItem.trafficMetricEnum == newItem.trafficMetricEnum) && (oldItem.liveTrafficMetricCount == newItem.liveTrafficMetricCount)
     }
 
     override fun areContentsTheSame(oldItem: TrafficMetricUiModel, newItem: TrafficMetricUiModel): Boolean {
