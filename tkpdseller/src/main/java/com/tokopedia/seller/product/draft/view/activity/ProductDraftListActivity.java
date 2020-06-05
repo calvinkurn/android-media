@@ -7,7 +7,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,19 +14,21 @@ import androidx.fragment.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftAddActivity;
 import com.tokopedia.seller.ProductEditItemComponentInstance;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftSaveBulkComponent;
 import com.tokopedia.seller.product.draft.di.module.ProductDraftSaveBulkModule;
-import com.tokopedia.seller.product.draft.utils.ImageDownloadHelper;
 import com.tokopedia.seller.product.draft.view.fragment.ProductDraftListFragment;
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftSaveBulkView;
 import com.tokopedia.seller.product.draft.view.model.InstagramMediaModel;
@@ -135,7 +136,7 @@ public class ProductDraftListActivity extends BaseSimpleActivity
     public void saveValidImagesToDraft(ArrayList<String> localPaths, @NonNull ArrayList<String> imageDescriptionList) {
         DaggerProductDraftSaveBulkComponent
                 .builder()
-                .productDraftSaveBulkModule(new ProductDraftSaveBulkModule())
+                .productDraftSaveBulkModule(new ProductDraftSaveBulkModule(this))
                 .productComponent(ProductEditItemComponentInstance.getComponent(getApplication()))
                 .build()
                 .inject(ProductDraftListActivity.this);
@@ -189,9 +190,14 @@ public class ProductDraftListActivity extends BaseSimpleActivity
         hideProgressDialog();
         hasSaveInstagramToDraft = true;
         if (draftProductIdList.size() == 1) {
-            startActivity(ProductDraftAddActivity.Companion.createInstance(this, draftProductIdList.get(0)));
+            if(GlobalConfig.isSellerApp()) {
+                startActivity(AddEditProductPreviewActivity.Companion.createInstance(this, draftProductIdList.get(0).toString(), true, false));
+            } else {
+                startActivity(ProductDraftAddActivity.Companion.createInstance(this, draftProductIdList.get(0)));
+            }
         } else {
-            Toast.makeText(this, MethodChecker.fromHtml(getString(R.string.product_draft_instagram_save_success, draftProductIdList.size())), Toast.LENGTH_LONG).show();
+            CommonUtils.UniversalToast(this, getString(R.string.product_draft_instagram_save_success,
+                    draftProductIdList.size()));
             ProductDraftListFragment productDraftListFragment = (ProductDraftListFragment) getSupportFragmentManager().findFragmentByTag(TAG);
             if (productDraftListFragment != null) {
                 productDraftListFragment.resetPageAndSearch();
