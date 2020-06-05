@@ -1,6 +1,7 @@
 package com.tokopedia.applink.sellerhome
 
 import android.net.Uri
+import com.tokopedia.applink.DeeplinkMapper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
@@ -68,5 +69,10 @@ object AppLinkMapperSellerHome {
     private fun shouldRedirectToSellerApp(deepLink: String): Boolean {
         val uri = Uri.parse(deepLink)
         return uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false)
+    }
+
+    fun getSellerHomeAppLink(deepLink: String): String {
+        val query = Uri.parse(deepLink).query
+        return DeeplinkMapper.createAppendDeeplinkWithQuery(ApplinkConstInternalSellerapp.SELLER_HOME, query)
     }
 }
