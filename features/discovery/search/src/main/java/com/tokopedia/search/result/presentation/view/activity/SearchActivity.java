@@ -870,7 +870,6 @@ public class SearchActivity extends BaseActivity
     public void stopPerformanceMonitoring() {
         if (pageLoadTimePerformanceMonitoring != null) {
             pageLoadTimePerformanceMonitoring.stopMonitoring();
-            pageLoadTimePerformanceMonitoring = null;
         }
     }
 

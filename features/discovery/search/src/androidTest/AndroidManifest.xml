@@ -3,11 +3,10 @@
     android:versionCode="1"
     android:versionName="1.0.0"
     package="com.tokopedia.search">
+
     <application
         android:label="Search Test"
-        tools:ignore="HardcodedDebugMode"
-        tools:replace="android:debuggable,android:label"
-        android:debuggable="false">
-
+        tools:replace="android:label">
     </application>
+
 </manifest>
