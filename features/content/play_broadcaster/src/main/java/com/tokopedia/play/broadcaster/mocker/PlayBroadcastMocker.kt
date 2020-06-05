@@ -63,7 +63,7 @@ object PlayBroadcastMocker {
         val fullText = "$keyword$suggestionText"
         SearchSuggestionUiModel(
                 queriedText = keyword,
-                suggestionText = suggestionText,
+                suggestedText = fullText,
                 spannedSuggestion = SpannableStringBuilder(fullText).apply {
                     setSpan(StyleSpan(Typeface.BOLD), fullText.indexOf(suggestionText), fullText.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
                 }

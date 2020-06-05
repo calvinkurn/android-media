@@ -18,7 +18,7 @@ class SearchSuggestionsAdapter(
     }
 
     override fun areItemsTheSame(oldItem: SearchSuggestionUiModel, newItem: SearchSuggestionUiModel): Boolean {
-        return oldItem.suggestionText == newItem.suggestionText
+        return oldItem.suggestedText == newItem.suggestedText
     }
 
     override fun areContentsTheSame(oldItem: SearchSuggestionUiModel, newItem: SearchSuggestionUiModel): Boolean {

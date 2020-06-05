@@ -112,8 +112,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
      * Search
      */
     fun loadSuggestionsFromKeyword(keyword: String) {
-        if (keyword.isEmpty()) _observableSuggestionList.value = emptyList()
-        else searchChannel.offer(keyword)
+        searchChannel.offer(keyword)
     }
 
     fun searchProductsByKeyword(keyword: String, page: Int) {
@@ -263,7 +262,18 @@ class PlayEtalasePickerViewModel @Inject constructor(
     }
 
     private suspend fun getSearchSuggestions(keyword: String) = withContext(ioDispatcher) {
-        return@withContext if (keyword.isEmpty()) emptyList() else PlayBroadcastMocker.getMockSearchSuggestions(keyword)
+        return@withContext if (keyword.isEmpty()) emptyList() else {
+            val suggestionList = getProductsInEtalaseUseCase.apply {
+                params = GetProductsInEtalaseUseCase.createParams(
+                        shopId = userSession.shopId,
+                        page = 1,
+                        perPage = SEARCH_SUGGESTIONS_PER_PAGE,
+                        keyword = keyword
+                )
+            }.executeOnBackground()
+
+            PlayBroadcasterUiMapper.mapSearchSuggestionList(keyword, suggestionList)
+        }
     }
 
     private suspend fun getProductsByKeyword(keyword: String, page: Int) = withContext(ioDispatcher) {
@@ -286,5 +296,6 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
         private const val MAX_PRODUCT_IMAGE_COUNT = 4
         private const val PRODUCTS_PER_PAGE = 26
+        private const val SEARCH_SUGGESTIONS_PER_PAGE = 30
     }
 }
