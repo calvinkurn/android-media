@@ -190,7 +190,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 event = Event.PRODUCT_CLICK,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = RECOMMENDATION_LIST_CLICK_EVENT_ACTION,
-                eventLabel = grid.attribution,
+                eventLabel = channel.id +" - "+ channel.header.name,
                 channelId = channel.id,
                 campaignCode = channel.campaignCode,
                 userId = userId,
@@ -219,7 +219,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 event = Event.PRODUCT_CLICK,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = RECOMMENDATION_LIST_CLICK_EVENT_ACTION,
-                eventLabel = grid.attribution,
+                eventLabel = channel.id +" - "+ channel.channelHeader.name,
                 channelId = channel.id,
                 campaignCode = channel.trackingAttributionModel.campaignCode,
                 userId = userId,
@@ -252,30 +252,32 @@ object HomePageTrackingV2 : BaseTracking() {
             getTracker().sendEnhanceEcommerceEvent(getRecommendationListClickHomeComponent(channel, grid, position, userId))
         }
 
-        private fun getRecommendationListSeeAllClick(channelId: String, headerName: String): HashMap<String, Any>{
+        private fun getRecommendationListSeeAllClick(channelId: String, headerName: String, userId: String): HashMap<String, Any>{
             return DataLayer.mapOf(
                     Event.KEY, Event.CLICK_HOMEPAGE,
                     Category.KEY, Category.HOMEPAGE,
                     Action.KEY, RECOMMENDATION_LIST_SEE_ALL_EVENT_ACTION,
-                    Label.KEY, channelId +" - "+ headerName
+                    Label.KEY, channelId +" - "+ headerName,
+                    UserId.KEY, userId
             ) as HashMap<String, Any>
         }
 
-        private fun getRecommendationListSeeAllCardClick(channel: DynamicHomeChannel.Channels): HashMap<String, Any>{
+        private fun getRecommendationListSeeAllCardClick(channel: DynamicHomeChannel.Channels, userId: String): HashMap<String, Any>{
             return DataLayer.mapOf(
                     Event.KEY, Event.CLICK_HOMEPAGE,
                     Category.KEY, Category.HOMEPAGE,
                     Action.KEY, RECOMMENDATION_LIST_SEE_ALL_CARD_EVENT_ACTION,
-                    Label.KEY, channel.id +" - "+ channel.header.name
+                    Label.KEY, channel.id +" - "+ channel.header.name,
+                    UserId.KEY, userId
             ) as HashMap<String, Any>
         }
 
-        fun sendRecommendationListSeeAllClick(channelId: String, headerName: String) {
+        fun sendRecommendationListSeeAllClick(channelId: String, headerName: String, userId: String) {
             getTracker().sendGeneralEvent(getRecommendationListSeeAllClick(channelId, headerName))
         }
 
-        fun sendRecommendationListSeeAllCardClick(channel: DynamicHomeChannel.Channels) {
-            getTracker().sendGeneralEvent(getRecommendationListSeeAllCardClick(channel))
+        fun sendRecommendationListSeeAllCardClick(channel: DynamicHomeChannel.Channels, userId: String) {
+            getTracker().sendGeneralEvent(getRecommendationListSeeAllCardClick(channel, userId))
         }
 
         fun getCloseClickOnDynamicListCarousel(channel: DynamicHomeChannel.Channels, userId: String = "") = DataLayer.mapOf(
@@ -338,7 +340,7 @@ object HomePageTrackingV2 : BaseTracking() {
         fun getAddToCartOnDynamicListCarouselHomeComponent(channel: ChannelModel, grid: ChannelGrid, position: Int, cartId: String, quantity: String = "0", userId: String = "") = DataLayer.mapOf(
                 Event.KEY, Event.PRODUCT_ADD_TO_CART,
                 Category.KEY, Category.HOMEPAGE,
-                Label.KEY, channel.channelHeader.name,
+                Label.KEY, channel.id +" - "+ channel.channelHeader.name,
                 Action.KEY,RECOMMENDATION_LIST_CLICK_ADD_TO_CART_EVENT_ACTION,
                 Label.CHANNEL_LABEL, channel.id +" - "+ channel.channelHeader.name,
                 Label.CAMPAIGN_CODE, channel.trackingAttributionModel.campaignCode,
