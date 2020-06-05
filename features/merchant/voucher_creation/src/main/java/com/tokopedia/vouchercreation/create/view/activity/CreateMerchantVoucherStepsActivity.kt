@@ -132,6 +132,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
     private val cancelDialog by lazy {
         CreateVoucherCancelDialog(this) {
+            setResult(Activity.RESULT_OK)
             finish()
         }
     }

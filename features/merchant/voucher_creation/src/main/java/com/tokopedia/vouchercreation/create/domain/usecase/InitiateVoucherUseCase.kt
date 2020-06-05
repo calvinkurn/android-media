@@ -46,7 +46,7 @@ class InitiateVoucherUseCase @Inject constructor(private val gqlRepository: Grap
         if (error.isNullOrEmpty()) {
             val data = response.getData<InitiateVoucherResponse>()
             with(data.initiateVoucherPage.header) {
-                if (messages.isNotEmpty()) {
+                if (!errorCode.isNullOrEmpty()) {
                     throw MessageErrorException(messages.first())
                 }
             }
