@@ -828,7 +828,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         AppWidgetUtil.sendBroadcastToAppWidget(activity);
         refreshFCMTokenFromForegroundToCM();
 
-        mIris.setUserId("");
         setTetraUserId("");
     }
 
