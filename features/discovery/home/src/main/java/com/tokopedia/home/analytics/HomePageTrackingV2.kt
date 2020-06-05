@@ -257,7 +257,7 @@ object HomePageTrackingV2 : BaseTracking() {
                     Event.KEY, Event.CLICK_HOMEPAGE,
                     Category.KEY, Category.HOMEPAGE,
                     Action.KEY, RECOMMENDATION_LIST_SEE_ALL_EVENT_ACTION,
-                    Label.KEY, channelId +" - "+ headerName,
+                    Label.KEY, Label.FORMAT_2_ITEMS.format(channelId, headerName),
                     UserId.KEY, userId
             ) as HashMap<String, Any>
         }
@@ -267,7 +267,7 @@ object HomePageTrackingV2 : BaseTracking() {
                     Event.KEY, Event.CLICK_HOMEPAGE,
                     Category.KEY, Category.HOMEPAGE,
                     Action.KEY, RECOMMENDATION_LIST_SEE_ALL_CARD_EVENT_ACTION,
-                    Label.KEY, channel.id +" - "+ channel.header.name,
+                    Label.KEY, Label.FORMAT_2_ITEMS.format(channel.id, channel.header.name),
                     UserId.KEY, userId
             ) as HashMap<String, Any>
         }
@@ -284,7 +284,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 Event.KEY, Event.CLICK_HOMEPAGE,
                 Category.KEY, Category.HOMEPAGE,
                 Action.KEY, RECOMMENDATION_LIST_CLOSE_EVENT_ACTION,
-                Label.KEY, channel.id +" - "+ channel.header.name,
+                Label.KEY, Label.FORMAT_2_ITEMS.format(channel.id, channel.header.name),
                 Screen.KEY, Screen.DEFAULT,
                 UserId.KEY, userId,
                 CurrentSite.KEY, CurrentSite.DEFAULT
@@ -294,7 +294,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 Event.KEY, Event.CLICK_HOMEPAGE,
                 Category.KEY, Category.HOMEPAGE,
                 Action.KEY, RECOMMENDATION_LIST_CLOSE_EVENT_ACTION,
-                Label.KEY, channel.id +" - "+ channel.channelHeader.name,
+                Label.KEY, Label.FORMAT_2_ITEMS.format(channel.id, channel.channelHeader.name),
                 Screen.KEY, Screen.DEFAULT,
                 UserId.KEY, userId,
                 CurrentSite.KEY, CurrentSite.DEFAULT
@@ -303,9 +303,8 @@ object HomePageTrackingV2 : BaseTracking() {
         fun getAddToCartOnDynamicListCarousel(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int, cartId: String, quantity: String = "0", userId: String = "") = DataLayer.mapOf(
                 Event.KEY, Event.PRODUCT_ADD_TO_CART,
                 Category.KEY, Category.HOMEPAGE,
-                Label.KEY, channel.id +" - "+ channel.header.name,
+                Label.KEY, Label.FORMAT_2_ITEMS.format(channel.id, channel.header.name),
                 Action.KEY,RECOMMENDATION_LIST_CLICK_ADD_TO_CART_EVENT_ACTION,
-                Label.CHANNEL_LABEL, channel.header.name,
                 Label.CAMPAIGN_CODE, channel.campaignCode,
                 Screen.KEY, Screen.DEFAULT,
                 CurrentSite.KEY, CurrentSite.DEFAULT,
@@ -340,9 +339,8 @@ object HomePageTrackingV2 : BaseTracking() {
         fun getAddToCartOnDynamicListCarouselHomeComponent(channel: ChannelModel, grid: ChannelGrid, position: Int, cartId: String, quantity: String = "0", userId: String = "") = DataLayer.mapOf(
                 Event.KEY, Event.PRODUCT_ADD_TO_CART,
                 Category.KEY, Category.HOMEPAGE,
-                Label.KEY, channel.id +" - "+ channel.channelHeader.name,
+                Label.KEY, Label.FORMAT_2_ITEMS.format(channel.id, channel.channelHeader.name),
                 Action.KEY,RECOMMENDATION_LIST_CLICK_ADD_TO_CART_EVENT_ACTION,
-                Label.CHANNEL_LABEL, channel.id +" - "+ channel.channelHeader.name,
                 Label.CAMPAIGN_CODE, channel.trackingAttributionModel.campaignCode,
                 Screen.KEY, Screen.DEFAULT,
                 CurrentSite.KEY, CurrentSite.DEFAULT,
