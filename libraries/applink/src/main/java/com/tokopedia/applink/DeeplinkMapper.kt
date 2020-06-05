@@ -240,7 +240,7 @@ object DeeplinkMapper {
         return Uri.parse(deeplink).getQueryParameter("is_chat_bot")?.equals("true") == true
     }
 
-    private fun createAppendDeeplinkWithQuery(deeplink: String, query: String?): String {
+    fun createAppendDeeplinkWithQuery(deeplink: String, query: String?): String {
         return if (query?.isNotEmpty() == true && deeplink.isNotEmpty()) {
             val questionMarkIndex = deeplink.indexOf("?")
             deeplink + if (questionMarkIndex == -1) {
