@@ -61,7 +61,7 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
     }
 
     companion object {
-        val LAYOUT = R.layout.item_etalase_play
+        val LAYOUT = R.layout.item_play_etalase
     }
 
     interface Listener {
