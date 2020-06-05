@@ -115,8 +115,8 @@ class RecommendationListCarouselViewHolder(itemView: View,
                             it.slashedPrice,
                             it.price,
                             it.applink,
-                            channel.channelGrids.size > 1,
                             it.isTopads,
+                            channel.channelGrids.size > 1,
                             channel,
                             it,
                             adapterPosition,
@@ -155,7 +155,6 @@ class RecommendationListCarouselViewHolder(itemView: View,
     suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
         return productCardModelList.getMaxHeightForListView(itemView.context, Dispatchers.Default)
     }
-
 
     fun mapGridToProductData(grid: ChannelGrid) :ProductCardModel{
         return ProductCardModel(
@@ -199,6 +198,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
         private val recommendationCard = itemView.findViewById<ProductCardListView>(R.id.productCardView)
 
         override fun bind(recommendation: HomeRecommendationListCarousel) {
+            recommendationCard.applyCarousel()
             if(recommendation is HomeRecommendationListData) {
                 itemView.addOnImpressionListener(recommendation) {
                     listCarouselListener.onRecommendationCarouselGridImpression(
