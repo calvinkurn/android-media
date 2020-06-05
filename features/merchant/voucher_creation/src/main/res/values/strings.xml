@@ -130,6 +130,7 @@
     <string name="mvc_create_fail_desc">Voucher kamu gagal ditambahkan. Coba buat ulang atau hubungi Pusat Bantuan.</string>
     <string name="mvc_displayed_date_format">%s, %s WIB - &lt;br>%s, %s WIB</string>
     <string name="mvc_displayed_date_post_format">%s - %s</string>
+    <string name="mvc_period_alert">Pilih periode tampil terlebih dulu.</string>
 
     <!-- Tips and trick -->
     <string name="mvc_tips_and_trick_private">Tips &amp; Trik Voucher Khusus</string>

@@ -13,6 +13,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
@@ -202,6 +203,17 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     }
 
     override fun onFooterButtonClickListener() {
+        if (getVoucherReviewUiModel().startDate.isBlank()) {
+            view?.run {
+                Toaster.make(this,
+                        context?.getString(R.string.mvc_period_alert).toBlankOrString(),
+                        Toaster.LENGTH_SHORT,
+                        Toaster.TYPE_ERROR,
+                        context?.getString(R.string.mvc_oke).toBlankOrString(),
+                        View.OnClickListener { })
+            }
+            return
+        }
         isWaitingForResult = true
         activity?.intent?.getBooleanExtra(CreateMerchantVoucherStepsActivity.IS_EDIT, false)?.let { isEdit ->
             if (isEdit) {

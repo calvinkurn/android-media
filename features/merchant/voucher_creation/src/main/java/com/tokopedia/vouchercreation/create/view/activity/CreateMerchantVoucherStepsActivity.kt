@@ -1,6 +1,8 @@
 package com.tokopedia.vouchercreation.create.view.activity
 
 import android.animation.ObjectAnimator
+import android.app.Activity
+import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -65,6 +67,9 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         const val EDIT_VOUCHER = "edit_voucher"
         const val IS_EDIT = "is_edit"
         const val EDIT_STEP = "edit_step"
+
+        const val ERROR_INITIATE = "error_initiate"
+        const val REQUEST_CODE = 7137
     }
 
     @Inject
@@ -305,6 +310,10 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                     }
                 }
                 is Fail -> {
+                    val returnIntent = Intent().apply {
+                        putExtra(ERROR_INITIATE, result.throwable.message)
+                    }
+                    setResult(Activity.RESULT_CANCELED, returnIntent)
                     finish()
                 }
             }

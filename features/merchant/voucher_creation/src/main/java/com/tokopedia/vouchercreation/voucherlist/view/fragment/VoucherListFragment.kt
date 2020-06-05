@@ -1,6 +1,8 @@
 package com.tokopedia.vouchercreation.voucherlist.view.fragment
 
 import android.Manifest
+import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Rect
 import android.os.Build
@@ -219,7 +221,8 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                 fragmentListener?.switchFragment(false)
             }
             R.id.menuMvcAddVoucher -> {
-                RouteManager.route(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER)
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER)
+                startActivityForResult(intent, CreateMerchantVoucherStepsActivity.REQUEST_CODE)
             }
         }
         return super.onOptionsItemSelected(item)
@@ -287,13 +290,26 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_CANCELED && requestCode == CreateMerchantVoucherStepsActivity.REQUEST_CODE) {
+            view?.run {
+                val errorMessage = data?.getStringExtra(CreateMerchantVoucherStepsActivity.ERROR_INITIATE).toBlankOrString()
+                Toaster.make(this,
+                        errorMessage,
+                        Toaster.LENGTH_SHORT,
+                        Toaster.TYPE_ERROR)
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
     private fun duplicateVoucher(voucher: VoucherUiModel) {
         activity?.let {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER).apply {
                 putExtra(CreateMerchantVoucherStepsActivity.DUPLICATE_VOUCHER, voucher)
                 putExtra(CreateMerchantVoucherStepsActivity.IS_DUPLICATE, true)
             }
-            startActivity(intent)
+            startActivityForResult(intent, CreateMerchantVoucherStepsActivity.REQUEST_CODE)
         }
     }
 
@@ -384,9 +400,13 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                     voucherList.forEach {
                         activity?.run {
                             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                val missingPermissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                                requestPermissions(missingPermissions, DOWNLOAD_REQUEST_CODE)
-                                setupDowloadAction(it.downloadVoucherType.imageUrl)
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    val missingPermissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                    requestPermissions(missingPermissions, DOWNLOAD_REQUEST_CODE)
+                                    setupDowloadAction(it.downloadVoucherType.imageUrl)
+                                } else {
+                                    downloadFiles(it.downloadVoucherType.imageUrl)
+                                }
                             } else {
                                 downloadFiles(it.downloadVoucherType.imageUrl)
                             }
