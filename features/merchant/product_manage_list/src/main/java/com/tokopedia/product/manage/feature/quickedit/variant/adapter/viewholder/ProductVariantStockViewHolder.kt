@@ -6,10 +6,10 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.getNumberFormatted
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.model.ProductVariant
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import kotlinx.android.synthetic.main.item_product_variant_stock.view.*
@@ -43,6 +43,8 @@ class ProductVariantStockViewHolder(
         setStockMinMaxValue()
         setStockEditorValue(variant.stock)
         addStockEditorTextChangedListener(variant)
+        setAddButtonClickListener()
+        setSubtractButtonClickListener()
     }
 
     private fun setupStatusSwitch(variant: ProductVariant) {
@@ -81,7 +83,7 @@ class ProductVariantStockViewHolder(
                 override fun afterTextChanged(editor: Editable?) {
                     val input = editor.toString()
                     val stock = if(input.isNotEmpty()) {
-                        input.replace(".", "").toIntOrZero()
+                        input.toInt()
                     } else {
                         MINIMUM_STOCK
                     }
@@ -95,6 +97,50 @@ class ProductVariantStockViewHolder(
                 }
             })
         }
+    }
+
+    private fun setAddButtonClickListener() {
+        itemView.quantityEditorStock.apply {
+            addButton.setOnClickListener {
+                val input = editText.text.toString()
+
+                var stock = if(input.isNotEmpty()) {
+                    input.toInt()
+                } else {
+                    MINIMUM_STOCK
+                }
+
+                stock++
+
+                if(stock <= MAXIMUM_STOCK) {
+                    editText.setText(stock.getNumberFormatted())
+                }
+            }
+        }
+    }
+
+    private fun setSubtractButtonClickListener() {
+        itemView.quantityEditorStock.apply {
+            subtractButton.setOnClickListener {
+                val input = editText.text.toString()
+
+                var stock = if(input.isNotEmpty()) {
+                    input.toInt()
+                } else {
+                    MINIMUM_STOCK
+                }
+
+                stock--
+
+                if(stock >= MINIMUM_STOCK) {
+                    editText.setText(stock.getNumberFormatted())
+                }
+            }
+        }
+    }
+
+    private fun String.toInt(): Int {
+        return replace(".", "").toIntOrZero()
     }
 
     interface ProductVariantStockListener {
