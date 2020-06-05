@@ -522,7 +522,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         showPromoButtonJob?.cancel()
                         showPromoButtonJob = GlobalScope.launch(Dispatchers.Main) {
-                            delay(1000L)
+                            delay(750L)
                             llPromoCheckout.animate()
                                     .y(initialPromoButtonPosition)
                                     .setDuration(500L)
