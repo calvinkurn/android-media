@@ -80,13 +80,13 @@ class PlayBroadcastViewModel  @Inject constructor(
     fun getConfiguration() {
         _observableScreenStateEvent.value = Event(ScreenStateEvent.ShowLoading)
         scope.launch {
-            val configuration = PlayBroadcastMocker.getMockConfiguration()
-            if (configuration.isUserWhitelisted) {
-                playPusher.addMaxStreamDuration(configuration.maxLiveStreamDuration)
-                if (configuration.isHaveOnGoingLive) {
-                    _observableScreenStateEvent.value = Event(ScreenStateEvent.ShowLivePage(configuration.channelId))
+            val config = PlayBroadcastMocker.getMockConfiguration()
+            if (config.isUserWhitelisted) {
+                playPusher.addMaxStreamDuration(config.maxLiveStreamDuration)
+                if (config.isHaveOnGoingLive) {
+                    _observableScreenStateEvent.value = Event(ScreenStateEvent.ShowUserInteractionPage(config.channelId))
                 } else {
-                    _observableScreenStateEvent.value = Event(ScreenStateEvent.ShowPreparePage)
+                    _observableScreenStateEvent.value = Event(ScreenStateEvent.ShowSetupPage)
                 }
             } else {
                 // TODO("ask PO for this case")

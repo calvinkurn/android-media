@@ -27,6 +27,8 @@ import com.tokopedia.play.broadcaster.view.custom.PlayRequestPermissionView
 import com.tokopedia.play.broadcaster.view.event.ScreenStateEvent
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment.Companion.PARENT_FRAGMENT_TAG
+import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
+import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayLiveBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayPrepareBroadcastFragment
@@ -138,7 +140,7 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun navigateToFragment(fragmentClass: Class<out Fragment>, extras: Bundle) {
+    override fun navigateToFragment(fragmentClass: Class<out Fragment>, extras: Bundle, sharedElements: List<View>, onFragment: (Fragment) -> Unit) {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         val destFragment = getFragmentByClassName(fragmentClass)
         destFragment.arguments = extras
@@ -193,13 +195,13 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
     private fun observeScreenStateEvent() {
         viewModel.observableScreenStateEvent.observe(this, EventObserver{
             when(it) {
-                is ScreenStateEvent.ShowPreparePage -> {
-                    navigateToFragment(PlayPrepareBroadcastFragment::class.java)
+                is ScreenStateEvent.ShowSetupPage -> {
+                    navigateToFragment(PlayBroadcastSetupFragment::class.java)
                 }
-                is ScreenStateEvent.ShowLivePage -> {
-                    navigateToFragment(PlayLiveBroadcastFragment::class.java,
+                is ScreenStateEvent.ShowUserInteractionPage -> {
+                    navigateToFragment(PlayBroadcastUserInteractionFragment::class.java,
                             Bundle().apply {
-                                putString(PlayLiveBroadcastFragment.KEY_CHANNEL_ID, it.channelId)
+                                putString(PlayBroadcastUserInteractionFragment.KEY_CHANNEL_ID, it.channelId)
                             })
                 }
                 is ScreenStateEvent.ShowSummaryPage -> {

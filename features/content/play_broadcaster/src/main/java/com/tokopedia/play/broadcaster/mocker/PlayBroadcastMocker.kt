@@ -32,7 +32,7 @@ object PlayBroadcastMocker {
      */
     fun getMockEtalaseList() = List(6) {
         PlayEtalaseUiModel(
-                id = it + 1L,
+                id = (it + 1L).toString(),
                 name = "Etalase ${it + 1}",
                 productMap = mutableMapOf(),
                 totalProduct = (it + 1) * 100,
@@ -76,7 +76,7 @@ object PlayBroadcastMocker {
             isOfficial = false,
             channelId = "1",
             maxTaggedProduct = 15,
-            maxLiveStreamDuration = 5000,
+            maxLiveStreamDuration = (1000*60)*6,
             countDownDuration = 10
     )
 

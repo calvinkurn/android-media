@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.util.BreadcrumbsModel
+import com.tokopedia.play.broadcaster.util.compatTransitionName
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
@@ -60,6 +61,9 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : BottomSheetDialog(requireContext(), theme) {
             override fun onBackPressed() {
+                val currentFragment = childFragmentManager.findFragmentById(R.id.fl_fragment)
+                if (currentFragment is PlayBaseSetupFragment && currentFragment.onInterceptBackPressed()) return
+
                 if (!fragmentBreadcrumbs.empty()) {
                     val lastFragmentBreadcrumbs = fragmentBreadcrumbs.pop()
                     childFragmentManager.popBackStack(lastFragmentBreadcrumbs.fragmentClass.name, 0)
@@ -72,6 +76,7 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         childFragmentManager.fragmentFactory = fragmentFactory
         super.onCreate(savedInstanceState)
+//        setStyle(DialogFragment.STYLE_NORMAL, R.style.Style_FloatingBottomSheet)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
     }
 
@@ -107,9 +112,9 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         observeSelectedProducts()
     }
 
-    override fun navigateToFragment(fragmentClass: Class<out Fragment>, extras: Bundle) {
+    override fun navigateToFragment(fragmentClass: Class<out Fragment>, extras: Bundle, sharedElements: List<View>, onFragment: (Fragment) -> Unit) {
         addBreadcrumb()
-        openFragment(fragmentClass, extras)
+        openFragment(fragmentClass, extras, sharedElements, onFragment)
         setupHeader()
     }
 
@@ -166,13 +171,22 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         navigateToFragment(PlayEtalasePickerFragment::class.java)
     }
 
-    private fun maxHeight(): Int = (getScreenHeight()).toInt()
+    private fun maxHeight(): Int = getScreenHeight()
 
-    private fun openFragment(fragmentClass: Class<out Fragment>, extras: Bundle): Fragment {
+    private fun openFragment(fragmentClass: Class<out Fragment>, extras: Bundle, sharedElements: List<View>, onFragment: (Fragment) -> Unit): Fragment {
         val fragmentTransaction = childFragmentManager.beginTransaction()
         val destFragment = getFragmentByClassName(fragmentClass)
         destFragment.arguments = extras
+        onFragment(destFragment)
         fragmentTransaction
+                .apply {
+                    sharedElements.forEach {
+                        val transitionName = it.compatTransitionName
+                        if (transitionName != null) addSharedElement(it, transitionName)
+                    }
+
+                    if (sharedElements.isNotEmpty()) setReorderingAllowed(true)
+                }
                 .replace(R.id.fl_fragment, destFragment, fragmentClass.name)
                 .addToBackStack(fragmentClass.name)
                 .commit()

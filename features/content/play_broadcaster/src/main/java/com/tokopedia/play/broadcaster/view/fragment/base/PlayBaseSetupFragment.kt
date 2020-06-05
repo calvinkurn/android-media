@@ -10,6 +10,11 @@ abstract class PlayBaseSetupFragment : TkpdBaseV4Fragment() {
 
     abstract fun refresh()
 
+    /**
+     * @return true means the back pressed has been intercepted, false otherwise
+     */
+    abstract fun onInterceptBackPressed(): Boolean
+
     protected open val bottomSheetCoordinator: PlayBottomSheetCoordinator
         get() = requireParentFragment() as PlayBottomSheetCoordinator
 }

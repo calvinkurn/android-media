@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
+import com.tokopedia.play.broadcaster.util.compatTransitionName
 import com.tokopedia.play.broadcaster.view.state.NotSelectable
 import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.unifycomponents.Label
@@ -43,6 +44,7 @@ class ProductSelectableViewHolder(
     fun bind(item: ProductContentUiModel) {
         cbSelected.forceSetCheckbox(item.isSelectedHandler(item.id))
         ivImage.loadImage(item.imageUrl)
+        ivImage.compatTransitionName = item.id.toString()
 
         tvProductName.text = item.name
         tvProductAmount.text = getString(R.string.play_product_stock_amount, item.stock)
@@ -83,7 +85,7 @@ class ProductSelectableViewHolder(
 
     companion object {
 
-        val LAYOUT = R.layout.item_product_selectable
+        val LAYOUT = R.layout.item_play_product_selectable
     }
 
     interface Listener {

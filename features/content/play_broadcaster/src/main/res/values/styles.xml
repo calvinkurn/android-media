@@ -11,4 +11,9 @@
         <item name="android:windowEnterAnimation">@anim/play_left_to_right_enter</item>
     </style>
 
+    <style name="Style.FloatingBottomSheet" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+    </style>
+
 </resources>

@@ -23,7 +23,7 @@ class CirclePersonView : FrameLayout {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     init {
-        val view = View.inflate(context, R.layout.view_circle_person, this)
+        val view = View.inflate(context, R.layout.view_play_circle_person, this)
         setWillNotDraw(false)
     }
 
