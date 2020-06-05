@@ -66,7 +66,11 @@ class MerchantVoucherTargetFragment : BaseCreateMerchantVoucherFragment<VoucherT
     }
 
     private val createPromoCodeBottomSheetFragment by lazy {
-        CreatePromoCodeBottomSheetFragment.createInstance(context, ::onNextCreatePromoCode, ::getPromoCodeString, getPromoCodePrefix)
+        CreatePromoCodeBottomSheetFragment.createInstance(context, ::onNextCreatePromoCode, ::getPromoCodeString, getPromoCodePrefix).apply {
+            setCloseClickListener {
+                dismiss()
+            }
+        }
     }
 
     private val voucherDisplayBottomSheetFragment by lazy {
