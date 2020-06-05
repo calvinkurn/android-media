@@ -1,7 +1,5 @@
 package com.tokopedia.cart.view
 
-import android.animation.Animator
-import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -11,7 +9,6 @@ import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -189,6 +186,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var isToolbarWithBackButton = true
     private var noAvailableItems = false
     private var cbChangeJob: Job? = null
+    private var showPromoButtonJob: Job? = null
     private var TRANSLATION_LENGTH = 0f
     private var isKeyboardOpened = false
     private var initialPromoButtonPosition = 0f
@@ -520,29 +518,17 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         llPromoCheckout.gone()
                         return
                     }
-/*
-                    Log.d("ScrollEnd", "rvState: $newState")
 
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        if (notifyScrollEnded) {
-                            Log.d("ScrollEnd", "StateIddle")
-                            showPromoButtonJob?.cancel()
-                            showPromoButtonJob = GlobalScope.launch(Dispatchers.Main) {
-                                delay(800L)
-                                Log.d("ScrollEnd", "StateIddleAfterDelay")
-                                Log.d("ScrollEnd", "ShowButton : after rv idle")
-                                showPromoButton()
-                                alreadyTryToShowPromoButtonOrIdle = true
-                            }
-                        } else {
-                            Log.d("ScrollEnd", "RV Idle but notifyScrollEnded false")
-                            alreadyTryToShowPromoButtonOrIdle = true
+                        showPromoButtonJob?.cancel()
+                        showPromoButtonJob = GlobalScope.launch(Dispatchers.Main) {
+                            delay(1000L)
+                            llPromoCheckout.animate()
+                                    .y(initialPromoButtonPosition)
+                                    .setDuration(500L)
+                                    .start();
                         }
-                    } else {
-                        Log.d("ScrollEnd", "RV not Idle")
-                        alreadyTryToShowPromoButtonOrIdle = false
                     }
-*/
                 }
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -555,13 +541,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     } else {
                         enableSwipeRefresh()
                     }
-                    Log.d("ScrollEnd", "View position Y: ${llPromoCheckout.y}")
-                    Log.d("ScrollEnd", "View Height : ${llPromoCheckout.height}")
-                    var valueY = llPromoCheckout.y + dy
+
+                    val valueY = llPromoCheckout.y + dy
                     TRANSLATION_LENGTH += dy
-                    Log.d("ScrollEnd", "Check DY: $dy| Value Y: $valueY| Translation Length: $TRANSLATION_LENGTH")
-
-
                     if (dy != 0) {
                         if (TRANSLATION_LENGTH - dy == 0f) {
                             // Initial position of View
