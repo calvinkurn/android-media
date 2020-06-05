@@ -32,7 +32,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     private val discoveryPageInfo = MutableLiveData<Result<PageInfo>>()
     private val discoveryFabLiveData = MutableLiveData<Result<ComponentsItem>>()
-    private val discoveryResponseList = MutableLiveData<Result<ArrayList<ComponentsItem>>>()
+    private val discoveryResponseList = MutableLiveData<Result<List<ComponentsItem>>>()
     var pageIdentifier: String = ""
     var pageType: String = ""
     var pagePath: String = ""
@@ -50,10 +50,8 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                     val data = discoveryDataUseCase.getDiscoveryPageDataUseCase(pageIdentifier)
                     data.let {
                         withContext(Dispatchers.Default) {
-                            findAndRemoveSecondYoutubeComponent(it.components[0].toMutableList())
-                            checkLoginAndUpdateList(it.components[0].toMutableList())
-                            findCustomTopChatComponentsIfAny(it.components[0].toMutableList()
-                            )
+                            discoveryResponseList.postValue(Success(it.components as List<ComponentsItem>))
+
                         }
                         setPageInfo(it.pageInfo)
                     }
@@ -65,16 +63,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     }
 
-    // temp code
-    private fun findAndRemoveSecondYoutubeComponent(components: MutableList<ComponentsItem>?) {
-        val videoComponentToRemove = components?.filter { it.name == ComponentNames.Video.componentName }
-        videoComponentToRemove?.let {
-            var index = 0
-            while (++index < it.size){
-                components.remove(it[index])
-            }
-        }
-    }
 
     private fun setPageInfo(pageInfo: PageInfo?) {
         if (pageInfo != null) {
@@ -96,16 +84,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     }
 
-    private fun checkLoginAndUpdateList(components: List<ComponentsItem>?) {
-        if (!userSession.isLoggedIn) {
-            val list = components?.filter { it.name != "topads" }
-            discoveryResponseList.postValue(Success(list as ArrayList<ComponentsItem>))
 
-        } else {
-            discoveryResponseList.postValue(Success(components as ArrayList<ComponentsItem>))
-        }
-
-    }
 
     fun getBitmapFromURL(src: String?): Bitmap? = runBlocking {
         getBitmap(src).await()
@@ -121,7 +100,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     }
 
     fun getDiscoveryPageInfo(): LiveData<Result<PageInfo>> = discoveryPageInfo
-    fun getDiscoveryResponseList(): LiveData<Result<ArrayList<ComponentsItem>>> = discoveryResponseList
+    fun getDiscoveryResponseList(): LiveData<Result<List<ComponentsItem>>> = discoveryResponseList
     fun getDiscoveryFabLiveData(): LiveData<Result<ComponentsItem>> = discoveryFabLiveData
 
     private fun fetchTopChatMessageId(context: Context, appLinks: String, shopId: Int) {

@@ -15,6 +15,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.analytics.DiscoveryAnalytics
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
@@ -49,8 +50,9 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback {
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     private lateinit var globalError: GlobalError
     var pageEndPoint = ""
-    private lateinit var mergeAdapters: MergeAdapters
-    private lateinit var discoveryRecycleAdapter: DiscoveryRecycleAdapter
+    private lateinit var discoveryAdapter: DiscoveryRecycleAdapter
+    private val analytics: DiscoveryAnalytics by lazy { DiscoveryAnalytics(trackingQueue = trackingQueue, pagePath = discoveryViewModel.pagePath, pageType = discoveryViewModel.pageType) }
+    private var defaultTabDataFetched = false
 
     @Inject
     lateinit var trackingQueue: TrackingQueue
@@ -107,13 +109,13 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         discoveryViewModel = (activity as DiscoveryActivity).getViewModel()
+        /** Future Improvement : Please don't remove any commented code from this file. Need to work on this **/
 //        mDiscoveryViewModel = ViewModelProviders.of(requireActivity()).get((activity as BaseViewModelActivity<DiscoveryViewModel>).getViewModelType())
 
-        discoveryRecycleAdapter = DiscoveryRecycleAdapter(this)
+
         recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        mergeAdapters = MergeAdapters()
-        mergeAdapters.addAdapter(discoveryRecycleAdapter)
-        recyclerView.adapter = mergeAdapters
+        discoveryAdapter = DiscoveryRecycleAdapter(this)
+        recyclerView.adapter = discoveryAdapter
 
         discoveryViewModel.pageIdentifier = arguments?.getString(END_POINT, "") ?: ""
         pageEndPoint = discoveryViewModel.pageIdentifier
@@ -126,8 +128,12 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback {
         discoveryViewModel.getDiscoveryResponseList().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    discoveryRecycleAdapter.setDataList(it.data)
-                    mergeAdapters.notifyDataSetChanged()
+                    it.data?.let {
+                        discoveryAdapter.submitList(it)
+                    }
+
+
+
                 }
             }
         })
@@ -253,19 +259,30 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback {
     }
 
     override fun addChildAdapter(discoveryRecycleAdapter: DiscoveryRecycleAdapter) {
-        mergeAdapters.addAdapter(discoveryRecycleAdapter)
     }
 
     override fun notifyMergeAdapter() {
         if (!recyclerView.isComputingLayout) {
-            mergeAdapters.notifyDataSetChanged()
+            discoveryAdapter.notifyDataSetChanged()
         }
     }
 
-    fun getDiscoveryRecyclerViewAdapter() = discoveryRecycleAdapter
 
     fun getDiscoveryAnalytics(): DiscoveryAnalytics {
-        val discoveryAnalytics: DiscoveryAnalytics by lazy { DiscoveryAnalytics(trackingQueue = trackingQueue, pagePath = discoveryViewModel.pagePath, pageType = discoveryViewModel.pageType) }
-        return discoveryAnalytics
+        return analytics
+    }
+
+    override fun onPause() {
+        super.onPause()
+        getDiscoveryAnalytics().trackEventImpressionProductCard()
+        trackingQueue.sendAll()
+    }
+
+    fun isDefaultTabDataFetched(): Boolean {
+        return defaultTabDataFetched
+    }
+
+    fun setDefaultTabDataFetched() {
+        defaultTabDataFetched = true
     }
 }

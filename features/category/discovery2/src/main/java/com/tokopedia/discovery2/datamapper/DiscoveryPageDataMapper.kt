@@ -10,7 +10,7 @@ fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse): Discov
     discoveryResponse.apply {
         val renderdByDefaultFalseComponentMap: MutableMap<String, ComponentsItem> = HashMap()
 
-        val listComponents: ArrayList<ComponentsItem> = ArrayList()
+        var listComponents: ArrayList<ComponentsItem> = ArrayList()
 
         components.forEach {
             renderdByDefaultFalseComponentMap[it.id] = it
@@ -46,7 +46,7 @@ fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse): Discov
             listComponents.add(component)
         }
 
-        discoveryPageData.components.add(listComponents)
+        discoveryPageData.components =  listComponents
 
     }
     return discoveryPageData

@@ -58,7 +58,7 @@ class ChipsFilterItemViewHolder(itemView: View, private val fragment: Fragment) 
                 }
                 sendChipClickEvent(chipData)
                 setChipType(chipData)
-                changeDataInChipsViewModel()
+               // changeDataInChipsViewModel()
             }
         }
     }
@@ -73,7 +73,7 @@ class ChipsFilterItemViewHolder(itemView: View, private val fragment: Fragment) 
     }
 
     //temp code
-    private fun changeDataInChipsViewModel() {
+   /* private fun changeDataInChipsViewModel() {
         (fragment as? DiscoveryFragment)?.let { discoveryFragment ->
             (discoveryFragment.getDiscoveryRecyclerViewAdapter().getChildHolderViewModel(positionForParentAdapter) as? ChipsFilterViewModel)?.let { chipsFilterViewModel ->
                 val chipsListData = chipsFilterViewModel.getListDataLiveData().value
@@ -89,6 +89,6 @@ class ChipsFilterItemViewHolder(itemView: View, private val fragment: Fragment) 
             }
         }
 
-    }
+    }*/
 
 }

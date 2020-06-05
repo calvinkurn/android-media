@@ -5,7 +5,7 @@ import com.tokopedia.discovery2.R
 
 
 enum class ComponentsList(val id: Int, val componentName: String) {
-    Default(R.layout.coming_soon_view, ComponentNames.Default.componentName),
+    Default(R.layout.coming_soon_view, ComponentNames.Default.componentName),   // ***** Don't move this line ******
     SingleBanner(R.layout.multi_banner_layout, ComponentNames.SingleBanner.componentName),
     DoubleBanner(R.layout.multi_banner_layout, ComponentNames.DoubleBanner.componentName),
     TripleBanner(R.layout.multi_banner_layout, ComponentNames.TripleBanner.componentName),
@@ -32,7 +32,6 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     TextComponent(R.layout.coming_soon_view, ComponentNames.TextComponent.componentName),
     ClaimCoupon(R.layout.component_claim_coupon_layout, ComponentNames.ClaimCoupon.componentName),
     ClaimCouponItem(R.layout.component_claim_coupon_item, ComponentNames.ClaimCouponItem.componentName),
-    CustomTopChat(R.layout.coming_soon_view, ComponentNames.CustomTopchat.componentName),
     Spacing(R.layout.spacing_layout, ComponentNames.Margin.componentName),
     ChipsFilter(R.layout.widget_recycler_view, ComponentNames.ChipsFilter.componentName),
     ChipsFilterItem(R.layout.chips_filter_item_layout, ComponentNames.ChipsFilterItem.componentName),
@@ -42,11 +41,25 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     DynamicCategoryItem(R.layout.dynamic_category_single_item_layout, ComponentNames.DynamicCategoryItem.componentName),
     LihatFlashSaleTimer(R.layout.lihat_flash_sale_timer_widget, ComponentNames.FlashSaleTimer.componentName),
     TimerSprintSale(R.layout.discovery_timer_sprint_sale_layout, ComponentNames.TimerSprintSale.componentName),
-    ProductCardCarousel(R.layout.horizontal_recycler_view_layout, ComponentNames.ProductCardCarousel.componentName),
-    PrductCardSprintSaleCarousel(R.layout.horizontal_recycler_view_layout, ComponentNames.PrductCardSprintSaleCarousel.componentName),
-    ProductCardRevamp(R.layout.product_card_revamp_layout, ComponentNames.ProductCardRevamp.componentName),
-    ProductCardItem(R.layout.product_item_layout, ComponentNames.ProductCardItem.componentName),
-    ProductCardHorizontalItem(R.layout.product_item_horizontal_layout, ComponentNames.ProductCardHorizontalItem.componentName),
+    //    CustomTopChat(R.layout.coming_soon_view, ComponentNames.CustomTopchat.componentName),
     ShimmerProductCard(R.layout.discovery_shimmer_product_card_layout, ComponentNames.ShimmerProductCard.componentName),
-    Shimmer(R.layout.discovery_shimmer_layout, ComponentNames.Shimmer.componentName)
+    Shimmer(R.layout.discovery_shimmer_layout, ComponentNames.Shimmer.componentName),
+
+    // Product Card Revamp
+    ProductCardRevamp(R.layout.product_card_revamp_layout, ComponentNames.ProductCardRevamp.componentName),
+    ProductCardRevampItem(R.layout.product_item_layout, ComponentNames.ProductCardRevampItem.componentName),
+
+    // Product Card Revamp Carousel
+    ProductCardCarousel(R.layout.horizontal_recycler_view_layout, ComponentNames.ProductCardCarousel.componentName),
+    ProductCardCarouselItem(R.layout.product_item_horizontal_layout, ComponentNames.ProductCardCarouselItem.componentName),
+
+    // Product Card Sprint Sale
+    ProductCardSprintSale(R.layout.product_card_revamp_layout, ComponentNames.ProductCardSprintSale.componentName),
+    ProductCardSprintSaleItem(R.layout.product_item_layout, ComponentNames.ProductCardSprintSaleItem.componentName),
+
+    // Product Card Sprint Sale Carousel
+    ProductCardSprintSaleCarousel(R.layout.horizontal_recycler_view_layout, ComponentNames.ProductCardSprintSaleCarousel.componentName),
+    ProductCardSprintSaleCarouselItem(R.layout.product_item_horizontal_layout, ComponentNames.ProductCardSprintSaleCarouselItem.componentName),
+
+
 }

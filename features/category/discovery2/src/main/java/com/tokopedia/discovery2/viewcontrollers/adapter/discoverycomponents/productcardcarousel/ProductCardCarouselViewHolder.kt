@@ -15,18 +15,17 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
 class ProductCardCarouselViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
 
-    private var mProductCarouselRecyclerView: RecyclerView
+    private var mProductCarouselRecyclerView: RecyclerView = itemView.findViewById(R.id.tokopoints_rv)
+    private var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
     private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
     private lateinit var mProductCarouselComponentViewModel: ProductCardCarouselViewModel
-    private var linearLayoutManager: LinearLayoutManager
-
 
     init {
-        mProductCarouselRecyclerView = itemView.findViewById(R.id.tokopoints_rv)
-        linearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         linearLayoutManager.initialPrefetchItemCount = 4
         mProductCarouselRecyclerView.layoutManager = linearLayoutManager
+        linearLayoutManager.recycleChildrenOnDetach = true
         mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
+        mDiscoveryRecycleAdapter.setHasStableIds(true)
         mProductCarouselRecyclerView.adapter = mDiscoveryRecycleAdapter
     }
 
@@ -48,7 +47,7 @@ class ProductCardCarouselViewHolder(itemView: View, private val fragment: Fragme
     }
 
     private fun addShimmer() {
-        val list : ArrayList<ComponentsItem> = ArrayList()
+        val list: ArrayList<ComponentsItem> = ArrayList()
         list.add(ComponentsItem(name = "shimmer_product_card"))
         list.add(ComponentsItem(name = "shimmer_product_card"))
         mDiscoveryRecycleAdapter.setDataList(list)

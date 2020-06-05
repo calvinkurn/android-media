@@ -116,7 +116,7 @@ object ImageUtils {
             Glide.with(imageview.context)
                     .load(url)
                     .dontAnimate()
-                    .addListener(object : RequestListener<Drawable>{
+                    .listener(object : RequestListener<Drawable>{
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                             imageLoaderStateListener.failedLoad()
                             return false

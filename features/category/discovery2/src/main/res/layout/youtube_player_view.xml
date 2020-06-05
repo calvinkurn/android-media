@@ -7,9 +7,8 @@
     android:background="@color/black"
     tools:context=".viewcontrollers.activity.DiscoveryActivity">
 
-    <fragment
-        android:id="@+id/youtube_player_fragment"
-        android:name="com.google.android.youtube.player.YouTubePlayerSupportFragment"
+    <WebView
+        android:id="@+id/youtube_webview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
