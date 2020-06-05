@@ -7,6 +7,7 @@ import com.tokopedia.core.common.category.di.module.CategoryPickerModule;
 import com.tokopedia.core.common.category.domain.CategoryRepository;
 import com.tokopedia.core.common.category.domain.interactor.ClearCategoryCacheUseCase;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
+import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepository;
 import com.tokopedia.product.manage.item.common.data.source.ShopInfoDataSource;
 import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
 import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
@@ -33,7 +34,7 @@ public class TkpdSellerLogoutModule {
 
     @TkpdSellerLogoutScope
     @Provides
-    ClearAllDraftProductUseCase provideClearAllDraftProductUseCase(ProductDraftRepository productDraftRepository){
+    ClearAllDraftProductUseCase provideClearAllDraftProductUseCase(AddEditProductDraftRepository productDraftRepository){
         return new ClearAllDraftProductUseCase(productDraftRepository);
     }
 

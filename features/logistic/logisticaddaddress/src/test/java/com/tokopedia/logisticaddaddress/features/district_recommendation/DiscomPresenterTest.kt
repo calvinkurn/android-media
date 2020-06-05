@@ -11,139 +11,193 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import io.mockk.verifyOrder
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.Before
-import org.junit.Test
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.Subscriber
 
-class DiscomPresenterTest {
-
-    private val first_page: Int = 1
+object DiscomPresenterTest: Spek({
+    val first_page = 1
     val view: DiscomContract.View = mockk(relaxed = true)
     val rest: GetDistrictRequestUseCase = mockk(relaxUnitFun = true)
     val gql: GetDistrictRecommendation = mockk(relaxUnitFun = true)
-    val mapper: DistrictRecommendationMapper = DistrictRecommendationMapper()
+    val mapper = DistrictRecommendationMapper()
     lateinit var presenter: DiscomPresenter
 
-    @Before
-    fun setup() {
+    beforeEachTest {
         presenter = DiscomPresenter(rest, gql, mapper)
         presenter.attach(view)
     }
 
-    @Test
-    fun loadDataWithData_returnSuccess() {
-        val query = "jak"
-        val expected = DiscomDummyProvider.getSuccessResponse()
-        every { gql.execute(any(), any()) } answers { Observable.just(expected) }
+    Feature("load data with data") {
+        Scenario("load data with data return success") {
+            val query = "jak"
+            val expected = DiscomDummyProvider.getSuccessResponse()
+            Given("data") {
+                every { gql.execute(any(), any())
+                } answers {
+                    Observable.just(expected)
+                }
+            }
 
-        presenter.loadData(query, first_page)
+            When("load data") {
+                presenter.loadData(query, first_page)
+            }
 
-        verify {
-            view.renderData(withArg { assertThat(it).isNotEmpty }, expected.keroDistrictRecommendation.nextAvailable)
-        }
-        verifyOrder {
-            view.setLoadingState(true)
-            view.setLoadingState(false)
-        }
-    }
+            Then("return success") {
+                verify {
+                    view.renderData(withArg { org.assertj.core.api.Assertions.assertThat(it).isNotEmpty }, expected.keroDistrictRecommendation.nextAvailable)
+                }
 
-    @Test
-    fun loadDataWithData_returnError() {
-        val query = "jak"
-        val throwable = Throwable()
-        every { gql.execute(any(), any()) } answers { Observable.error(throwable) }
-
-        presenter.loadData(query, first_page)
-
-        verify {
-            view.showGetListError(throwable)
-        }
-        verifyOrder {
-            view.setLoadingState(true)
-            view.setLoadingState(false)
-        }
-    }
-
-    @Test
-    fun loadDataWithData_returnEmpty() {
-        val query = "qwr"
-        val datum = DiscomDummyProvider.getEmptyResponse()
-        every { gql.execute(any(), any()) } answers { Observable.just(datum) }
-
-        presenter.loadData(query, first_page)
-
-        verify {
-            view.showEmpty()
-        }
-        verifyOrder {
-            view.setLoadingState(true)
-            view.setLoadingState(false)
-        }
-    }
-
-    @Test
-    fun loadDataWithTokenData_returnSuccess() {
-        val query = "jak"
-        val expected = AddressResponse().apply {
-            addresses = arrayListOf(
-                    Address().apply { cityName = "Jakarta" }
-            )
-            isNextAvailable = false
-        }
-        every { rest.execute(any(), any()) } answers {
-            secondArg<Subscriber<AddressResponse>>().onNext(expected)
+                verifyOrder {
+                    view.setLoadingState(true)
+                    view.setLoadingState(false)
+                }
+            }
         }
 
-        presenter.loadData(query, first_page, Token())
+        Scenario("load data with data return error") {
+            val query = "jak"
+            val throwable = Throwable()
+            Given("data") {
+                every { gql.execute(any(), any())
+                } answers {
+                    Observable.error(throwable)
+                }
+            }
 
-        verify {
-            view.renderData(expected.addresses, expected.isNextAvailable)
+            When("load data") {
+                presenter.loadData(query, first_page)
+            }
+
+            Then("return error"){
+                verify {
+                    view.showGetListError(throwable)
+                }
+
+                verifyOrder {
+                    view.setLoadingState(true)
+                    view.setLoadingState(false)
+                }
+            }
         }
-    }
 
-    @Test
-    fun loadDataWithTokenData_returnError() {
-        val query = "jak"
-        val throwable = Throwable()
-        every { rest.execute(any(), any()) } answers {
-            secondArg<Subscriber<AddressResponse>>().onError(throwable)
-        }
+        Scenario("load data with data return empty") {
+            val query = "qwr"
+            val datum = DiscomDummyProvider.getEmptyResponse()
+            Given("data") {
+                every { gql.execute(any(), any())
+                } answers {
+                    Observable.just(datum)
+                }
+            }
 
-        presenter.loadData(query, first_page, Token())
+            When("load data") {
+                presenter.loadData(query, first_page)
+            }
 
-        verify {
-            view.showGetListError(throwable)
+            Then("return empty") {
+                verify {
+                    view.showEmpty()
+                }
+
+                verifyOrder {
+                    view.setLoadingState(true)
+                    view.setLoadingState(false)
+                }
+            }
         }
     }
 
-    @Test
-    fun loadDataWithTokenData_returnEmpty() {
-        val query = "qwr"
-        val expected = AddressResponse().apply {
-            addresses = arrayListOf()
-            isNextAvailable = false
-        }
-        every { rest.execute(any(), any()) } answers {
-            secondArg<Subscriber<AddressResponse>>().onNext(expected)
+    Feature("load data with token data") {
+        Scenario("load data with token return success"){
+            val query = "jak"
+            val expected = AddressResponse().apply {
+                addresses = arrayListOf(
+                        Address().apply { cityName = "Jakarta" }
+                )
+                isNextAvailable = false
+            }
+            Given("token data") {
+                every { rest.execute(any(), any())
+                } answers {
+                    secondArg<Subscriber<AddressResponse>>().onNext(expected)
+                }
+            }
+
+            When("load data") {
+                presenter.loadData(query, first_page, Token())
+            }
+
+            Then("return success") {
+                verify {
+                    view.renderData(expected.addresses, expected.isNextAvailable)
+                }
+            }
         }
 
-        presenter.loadData(query, first_page, Token())
+        Scenario("load data with token return error") {
+            val query = "jak"
+            val throwable = Throwable()
+            every { rest.execute(any(), any()) } answers {
+                secondArg<Subscriber<AddressResponse>>().onError(throwable)
+            }
+            Given("token data") {
+               every { rest.execute(any(), any())
+               } answers {
+                   secondArg<Subscriber<AddressResponse>>().onError(throwable)
+               }
+            }
 
-        verify {
-            view.showEmpty()
+            When("load data") {
+                presenter.loadData(query, first_page, Token())
+            }
+
+            Then("return error") {
+                verify {
+                    view.showGetListError(throwable)
+                }
+            }
+        }
+
+        Scenario("load data with token return empty") {
+            val query = "qwr"
+            val expected = AddressResponse().apply {
+                addresses = arrayListOf()
+                isNextAvailable = false
+            }
+            Given("token data") {
+                every { rest.execute(any(), any())
+                } answers {
+                    secondArg<Subscriber<AddressResponse>>().onNext(expected)
+                }
+            }
+
+            When("load data") {
+                presenter.loadData(query, first_page, Token())
+            }
+
+            Then("return empty") {
+                verify {
+                    view.showEmpty()
+                }
+            }
         }
     }
 
-    @Test
-    fun whenDetachedShouldUnsubscribeUseCases() {
-        presenter.detach()
+    Feature("onDetach") {
+        Scenario("presenter onDetach") {
+            When("presenter onDetach") {
+                presenter.detach()
+            }
 
-        verify {
-            gql.unsubscribe()
-            rest.unsubscribe()
+            Then("gql unsubscribed") {
+                gql.unsubscribe()
+            }
+
+            Then("rest unsubscrbed") {
+                rest.unsubscribe()
+            }
         }
     }
-
-}
+})

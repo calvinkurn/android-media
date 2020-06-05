@@ -15,8 +15,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.textfield.TextInputEditText
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
@@ -24,7 +25,6 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.R
-import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogDetailsActivity
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.SendgiftPlt.Companion.SENDGIFT_TOKOPOINT_PLT
@@ -33,17 +33,20 @@ import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConst
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.SendgiftPlt.Companion.SENDGIFT_TOKOPOINT_PLT_RENDER_METRICS
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
 import com.tokopedia.tokopoints.view.util.*
+import javax.inject.Inject
+import com.tokopedia.unifycomponents.TextAreaUnify
 
 class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, View.OnClickListener, TextWatcher, TokopointPerformanceMonitoringListener {
     private var mContainerMain: ViewFlipper? = null
-    private var mEditEmail: TextInputEditText? = null
-    private var mEditNotes: TextInputEditText? = null
     private var mBtnSendGift: TextView? = null
     private var mBtnSendNow: TextView? = null
-    private var mWrapperEmail: TkpdHintTextInputLayout? = null
+    private var mWrapperEmail: TextAreaUnify? = null
+    private var mWrapperNote: TextAreaUnify? = null
     var tokoPointComponent: TokopointBundleComponent? = null
 
-    lateinit var mViewModel: SendGiftViewModel
+    @Inject
+    lateinit var factory: ViewModelFactory
+    private val mViewModel: SendGiftViewModel by lazy { ViewModelProviders.of(this, factory)[SendGiftViewModel::class.java] }
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,18 +69,17 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mContainerMain = view.findViewById(com.tokopedia.tokopoints.R.id.container_main)
-        mContainerMain?.setDisplayedChild(CONTAINER_SEND_FORM)
-        mEditEmail = view.findViewById(com.tokopedia.tokopoints.R.id.edit_email)
+        mContainerMain?.displayedChild = CONTAINER_SEND_FORM
         mWrapperEmail = view.findViewById(com.tokopedia.tokopoints.R.id.wrapper_email)
-        mEditNotes = view.findViewById(com.tokopedia.tokopoints.R.id.edit_notes)
+        mWrapperNote = view.findViewById(com.tokopedia.tokopoints.R.id.wrapper_text_count)
         mBtnSendGift = view.findViewById(com.tokopedia.tokopoints.R.id.button_send)
         mBtnSendNow = view.findViewById(com.tokopedia.tokopoints.R.id.button_send_now)
         val ivCancelInitial = getView()!!.findViewById<ImageView>(com.tokopedia.tokopoints.R.id.iv_cancel)
         val ivCancelPreConfirm = getView()!!.findViewById<ImageView>(com.tokopedia.tokopoints.R.id.iv_cancel_preconfirmation)
         ivCancelInitial.setOnClickListener { view1: View? -> dismiss() }
         ivCancelPreConfirm.setOnClickListener { view1: View? -> dismiss() }
-        mEditEmail?.addTextChangedListener(this)
-        mEditNotes?.addTextChangedListener(this)
+        mWrapperEmail?.textAreaWrapper?.editText?.addTextChangedListener(this)
+        mWrapperNote?.textAreaWrapper?.editText?.addTextChangedListener(this)
         mBtnSendGift?.setOnClickListener(View.OnClickListener { view: View -> onClick(view) })
         mBtnSendNow?.setOnClickListener(View.OnClickListener { view: View -> onClick(view) })
         stopPreparePagePerformanceMonitoring()
@@ -136,14 +138,14 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
             }
 
             KeyboardHandler.hideSoftKeyboard(activity)
-            mViewModel!!.preValidateGift(arguments!!.getInt(CommonConstant.EXTRA_COUPON_ID), mEditEmail!!.text.toString())
+            mViewModel!!.preValidateGift(arguments!!.getInt(CommonConstant.EXTRA_COUPON_ID), mWrapperEmail?.textAreaInput.toString())
         } else if (view.id == com.tokopedia.tokopoints.R.id.button_send_now) {
             if (arguments == null || activity == null) {
                 return
             }
             mViewModel.sendGift(arguments!!.getInt(CommonConstant.EXTRA_COUPON_ID),
-                    mEditEmail!!.text.toString(),
-                    mEditNotes!!.text.toString())
+                    mWrapperEmail?.textAreaInput.toString(),
+                    mWrapperNote?.textAreaInput.toString())
             AnalyticsTrackerUtil.sendEvent(context,
                     AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                     AnalyticsTrackerUtil.CategoryKeys.POPUP_KIRIM_KUPON,
@@ -215,14 +217,14 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
         ImageHandler.loadImage(this.context, imgBanner, arguments!!.getString(CommonConstant.EXTRA_COUPON_BANNER), R.color.grey_100)
         textTitle.text = couponTitle
         textPoint.text = couponPoint
-        textEmail.text = mEditEmail!!.text.toString()
-        if (!mEditNotes!!.text.toString().trim { it <= ' ' }.isEmpty()) {
-            textNotes.text = "\"" + mEditNotes!!.text.toString().trim { it <= ' ' } + "\""
+        textEmail.text = mWrapperEmail?.textAreaInput.toString()
+        if (!mWrapperNote?.textAreaInput.toString().trim { it <= ' ' }.isEmpty()) {
+            textNotes.text = "\"" + mWrapperNote?.textAreaInput.toString().trim { it <= ' ' } + "\""
         }
     }
 
     override fun onErrorPreValidate(error: String) {
-        mWrapperEmail!!.error = error
+        mWrapperEmail?.textAreaMessage = error
     }
 
     override fun onSuccess() {}

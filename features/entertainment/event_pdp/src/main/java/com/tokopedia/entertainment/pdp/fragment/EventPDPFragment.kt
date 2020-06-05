@@ -393,13 +393,12 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
             setTitle(title)
             setCloseClickListener { bottomSheets.dismiss() }
         }
-        CoroutineScope(Dispatchers.Main).launch {
+
             view.web_event_pdp_about.loadData(value, "text/html", "UTF-8")
-            delay(600)
             fragmentManager?.let {
                 bottomSheets.show(it, "")
             }
-        }
+
     }
 
     override fun seeLocationDetail(outlet: Outlet) {

@@ -2,7 +2,6 @@ package com.tokopedia.core.drawer2.data.repository;
 
 import com.tokopedia.core.drawer2.data.factory.NotificationSourceFactory;
 import com.tokopedia.core.drawer2.data.pojo.notification.NotificationModel;
-import com.tokopedia.core.drawer2.data.source.TopChatNotificationSource;
 import com.tokopedia.core.drawer2.domain.NotificationRepository;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
@@ -16,8 +15,7 @@ public class NotificationRepositoryImpl implements NotificationRepository {
 
     private final NotificationSourceFactory notificationSourceFactory;
 
-    public NotificationRepositoryImpl(NotificationSourceFactory notificationSourceFactory,
-                                      TopChatNotificationSource topChatNotificationSource) {
+    public NotificationRepositoryImpl(NotificationSourceFactory notificationSourceFactory) {
         this.notificationSourceFactory = notificationSourceFactory;
     }
 

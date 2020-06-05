@@ -24,7 +24,7 @@ import com.tokopedia.base.list.seller.common.util.ItemType;
 import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
 import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.common.utils.DefaultErrorSubscriber;
 import com.tokopedia.seller.common.utils.MenuTintUtils;

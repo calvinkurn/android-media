@@ -1,8 +1,9 @@
 package com.tokopedia.sellerhome.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.sellerhome.domain.model.GetShopStatusResponse
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.*
@@ -14,6 +15,8 @@ import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -145,7 +148,7 @@ class SellerHomeViewModelTest {
             getShopStatusUseCase.executeOnBackground()
         }
 
-        assertEquals(Fail(throwable), mViewModel.shopStatus.value)
+        assert(mViewModel.shopStatus.value is Fail)
     }
 
     @Test
@@ -201,7 +204,7 @@ class SellerHomeViewModelTest {
             getLayoutUseCase.executeOnBackground()
         }
 
-        assertEquals(Fail(throwable), mViewModel.widgetLayout.value)
+        assert(mViewModel.widgetLayout.value is Fail)
     }
 
     @Test
@@ -253,7 +256,7 @@ class SellerHomeViewModelTest {
             getShopLocationUseCase.executeOnBackground()
         }
 
-        assertEquals(Fail(throwable), mViewModel.shopLocation.value)
+        assert(mViewModel.shopLocation.value is Fail)
     }
 
     @Test
@@ -290,11 +293,13 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `get card widget data then returns failed result`() {
+    fun `get card widget data then returns failed result`() = runBlocking {
         val shopId = "12345"
         val dataKeys = listOf("a", "b", "c")
         val startDate = "02-03-20202"
         val endDate = "09-03-20202"
+
+        val throwable = ResponseErrorException()
 
         getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(shopId.toIntOrZero(), dataKeys, startDate, endDate)
 
@@ -304,20 +309,14 @@ class SellerHomeViewModelTest {
 
         coEvery {
             getCardDataUseCase.executeOnBackground()
-        } throws Throwable()
+        } throws throwable
 
         mViewModel.getCardWidgetData(dataKeys)
 
-        verify {
-            userSession.shopId
-        }
-
-        coVerify {
-            getCardDataUseCase.executeOnBackground()
-        }
+        delay(100)
 
         val result = mViewModel.cardWidgetData.value
-        assertTrue(result is Fail)
+        assert(result is Fail)
     }
 
     @Test
@@ -377,7 +376,7 @@ class SellerHomeViewModelTest {
             getLineGraphDataUseCase.executeOnBackground()
         }
 
-        assertEquals(Fail(throwable), mViewModel.lineGraphWidgetData.value)
+        assert(mViewModel.lineGraphWidgetData.value is Fail)
     }
 
     @Test
@@ -431,7 +430,7 @@ class SellerHomeViewModelTest {
             getProgressDataUseCase.executeOnBackground()
         }
 
-        assertEquals(Fail(throwable), mViewModel.progressWidgetData.value)
+        assert(mViewModel.progressWidgetData.value is Fail)
     }
 
     @Test
@@ -495,7 +494,7 @@ class SellerHomeViewModelTest {
             getPostDataUseCase.executeOnBackground()
         }
 
-        assertEquals(Fail(exception), mViewModel.postListWidgetData.value)
+        assert(mViewModel.postListWidgetData.value is Fail)
     }
 
     @Test
@@ -537,6 +536,6 @@ class SellerHomeViewModelTest {
             getCarouselDataUseCase.executeOnBackground()
         }
 
-        assertEquals(Fail(throwable), mViewModel.carouselWidgetData.value)
+        assert(mViewModel.carouselWidgetData.value is Fail)
     }
 }

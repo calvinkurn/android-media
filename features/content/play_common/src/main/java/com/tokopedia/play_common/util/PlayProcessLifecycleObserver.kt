@@ -1,7 +1,6 @@
 package com.tokopedia.play_common.util
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
@@ -15,25 +14,11 @@ class PlayProcessLifecycleObserver(private val context: Context) : LifecycleObse
     private val playVideoManager: PlayVideoManager
         get() = PlayVideoManager.getInstance(context.applicationContext)
 
-    private var isFirstTime = true
-
     /**
      * Called when app is going to background
      */
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
-        playVideoManager.stopPlayer(false)
-    }
-
-    /**
-     * Called when app is going to foreground
-     */
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun onResume() {
-        if (!isFirstTime) {
-            playVideoManager.resumeOrPlayPreviousVideo()
-        }
-
-        if (isFirstTime) isFirstTime = false
+        playVideoManager.stop(false)
     }
 }
