@@ -131,6 +131,16 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     private var isWaitingForResult = false
 
     private var squareVoucherBitmap: Bitmap? = null
+        set(value){
+            if (field == null) {
+                activity?.intent?.getBooleanExtra(CreateMerchantVoucherStepsActivity.IS_DUPLICATE, false)?.let { isDuplicate ->
+                    if (isDuplicate) {
+                        recycler_view?.scrollToPosition(adapter.dataSize - 1)
+                    }
+                }
+            }
+            field = value
+        }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_base_list, container, false)
@@ -206,11 +216,6 @@ class ReviewVoucherFragment : BaseDetailFragment() {
 
     override fun onSuccessDrawPostVoucher(postVoucherBitmap: Bitmap) {
         squareVoucherBitmap = postVoucherBitmap
-        activity?.intent?.getBooleanExtra(CreateMerchantVoucherStepsActivity.IS_DUPLICATE, false)?.let { isDuplicate ->
-            if (isDuplicate) {
-                recycler_view?.scrollToPosition(adapter.dataSize - 1)
-            }
-        }
     }
 
     private fun observeLiveData() {
