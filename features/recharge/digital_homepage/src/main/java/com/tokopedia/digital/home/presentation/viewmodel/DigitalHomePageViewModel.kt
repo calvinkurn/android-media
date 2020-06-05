@@ -13,8 +13,7 @@ import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.RECOMM
 import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.SPOTLIGHT_ORDER
 import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.SUBSCRIPTION_ORDER
 import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.TRUST_MARK_ORDER
-import com.tokopedia.digital.home.model.DigitalHomePageItemModel
-import com.tokopedia.digital.home.model.RechargeHomepageSections
+import com.tokopedia.digital.home.model.*
 import com.tokopedia.digital.home.presentation.Util.DigitalHomePageDispatchersProvider
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -75,12 +74,37 @@ class DigitalHomePageViewModel @Inject constructor(
             val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST).build()
             val data = withContext(dispatcher.IO) {
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
-            }.getSuccessData<RechargeHomepageSections.Response>()
+            }.getSuccessData<RechargeHomepageSections.Response>().response
 
-            mutableRechargeHomepageSections.postValue(Success(data.response))
+            // Map views based on section type
+            data.sections = data.sections.map {
+                when (it.template) {
+                    SECTION_TOP_BANNER -> RechargeHomepageTopBannerModel(it)
+                    SECTION_TOP_BANNER_EMPTY -> RechargeHomepageTopBannerEmptyModel(it)
+                    SECTION_TOP_ICONS -> RechargeHomepageTopIconsModel(it)
+                    SECTION_DYNAMIC_ICONS -> RechargeHomepageDynamicIconsModel(it)
+                    SECTION_DUAL_ICONS -> RechargeHomepageDualIconsModel(it)
+                    SECTION_URGENCY_WIDGET -> RechargeHomepageUrgencyWidgetModel(it)
+                    SECTION_VIDEO_HIGHLIGHT -> RechargeHomepageVideoHighlightModel(it)
+                    SECTION_VIDEO_HIGHLIGHTS -> RechargeHomepageVideoHighlightsModel(it)
+                    SECTION_SINGLE_BANNER -> RechargeHomepageSingleBannerModel(it)
+                    SECTION_COUNTDOWN_SINGLE_BANNER -> RechargeHomepageCountdownSingleBannerModel(it)
+                    SECTION_DUAL_BANNERS -> RechargeHomepageDualBannersModel(it)
+                    SECTION_LEGO_BANNERS -> RechargeHomepageLegoBannersModel(it)
+                    SECTION_PRODUCT_CARD_ROW -> RechargeHomepageProductCardRowModel(it)
+                    SECTION_COUNTDOWN_PRODUCT_BANNER -> RechargeHomepageCountdownProductBannerModel(it)
+                    else -> it
+                }
+            }
+
+            mutableRechargeHomepageSections.postValue(Success(data))
         }) {
             mutableRechargeHomepageSections.postValue(Fail(it))
         }
+    }
+
+    fun createRechargeHomepageSectionsParams(enablePersonalize: Boolean): Map<String, Any> {
+        return mapOf(PARAM_RECHARGE_HOMEPAGE_SECTIONS_PERSONALIZE to enablePersonalize)
     }
 
     companion object {
@@ -96,5 +120,22 @@ class DigitalHomePageViewModel @Inject constructor(
                 CATEGORY_ORDER to CATEGORY_SECTION_ORDER,
                 PROMO_ORDER to 8
         )
+
+        const val SECTION_TOP_BANNER = "TOP_BANNER"
+        const val SECTION_TOP_BANNER_EMPTY = "TOP_BANNER_EMPTY"
+        const val SECTION_TOP_ICONS = "TOP_ICONS"
+        const val SECTION_DYNAMIC_ICONS = "DYNAMIC_ICONS"
+        const val SECTION_DUAL_ICONS = "DUAL_ICONS"
+        const val SECTION_URGENCY_WIDGET = "URGENCY_WIDGET"
+        const val SECTION_VIDEO_HIGHLIGHT = "VIDEO_HIGHLIGHT"
+        const val SECTION_VIDEO_HIGHLIGHTS = "VIDEO_HIGHLIGHTS"
+        const val SECTION_SINGLE_BANNER = "SINGLE_BANNER"
+        const val SECTION_COUNTDOWN_SINGLE_BANNER = "COUNTDOWN_SINGLE_BANNER"
+        const val SECTION_DUAL_BANNERS = "DUAL_BANNERS"
+        const val SECTION_LEGO_BANNERS = "LEGO_BANNERS"
+        const val SECTION_PRODUCT_CARD_ROW = "PRODUCT_CARD_ROW"
+        const val SECTION_COUNTDOWN_PRODUCT_BANNER = "COUNTDOWN_PRODUCT_BANNER"
+
+        const val PARAM_RECHARGE_HOMEPAGE_SECTIONS_PERSONALIZE = "enablePersonalize"
     }
 }

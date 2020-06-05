@@ -8,7 +8,7 @@ import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageTypeFactor
 data class RechargeHomepageSections (
         @SerializedName("section")
         @Expose
-        val sections: List<Section> = listOf()
+        var sections: List<Section> = listOf()
 ) {
     data class Response (
             @SerializedName("rechargeGetDynamicPage")
@@ -16,7 +16,7 @@ data class RechargeHomepageSections (
             val response: RechargeHomepageSections = RechargeHomepageSections()
     )
 
-    data class Section (
+    abstract class Section (
             @SerializedName("title")
             @Expose
             val title: String = "",
@@ -28,15 +28,14 @@ data class RechargeHomepageSections (
             val template: String = "",
             @SerializedName("items")
             @Expose
-            val items: List<Items> = listOf(),
-            var layout: Int = 0
+            val items: List<Item> = listOf()
     ): Visitable<DigitalHomePageTypeFactory> {
-            override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
-                    return typeFactory.type(this)
-            }
+            abstract override fun type(typeFactory: DigitalHomePageTypeFactory): Int
+
+            constructor(section: Section): this(section.title, section.subTitle, section.template, section.items)
     }
 
-    data class Items (
+    data class Item (
             @SerializedName("title")
             @Expose
             val title: String = "",
@@ -80,4 +79,88 @@ data class RechargeHomepageSections (
             @Expose
             val dueDate: String = ""
     )
+}
+
+class RechargeHomepageTopBannerModel(section: RechargeHomepageSections.Section): RechargeHomepageSections.Section(section) {
+        override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+                return typeFactory.type(this)
+        }
+}
+
+class RechargeHomepageTopBannerEmptyModel(section: RechargeHomepageSections.Section): RechargeHomepageSections.Section(section) {
+        override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+                return typeFactory.type(this)
+        }
+}
+
+class RechargeHomepageTopIconsModel(section: RechargeHomepageSections.Section): RechargeHomepageSections.Section(section) {
+        override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+                return typeFactory.type(this)
+        }
+}
+
+class RechargeHomepageDynamicIconsModel(section: RechargeHomepageSections.Section): RechargeHomepageSections.Section(section) {
+        override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+                return typeFactory.type(this)
+        }
+}
+
+class RechargeHomepageDualIconsModel(section: RechargeHomepageSections.Section): RechargeHomepageSections.Section(section) {
+        override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+                return typeFactory.type(this)
+        }
+}
+
+class RechargeHomepageUrgencyWidgetModel(section: RechargeHomepageSections.Section): RechargeHomepageSections.Section(section) {
+        override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+                return typeFactory.type(this)
+        }
+}
+
+class RechargeHomepageVideoHighlightModel(section: RechargeHomepageSections.Section): RechargeHomepageSections.Section(section) {
+        override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+                return typeFactory.type(this)
+        }
+}
+
+class RechargeHomepageVideoHighlightsModel(section: RechargeHomepageSections.Section): RechargeHomepageSections.Section(section) {
+        override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+                return typeFactory.type(this)
+        }
+}
+
+class RechargeHomepageSingleBannerModel(section: RechargeHomepageSections.Section): RechargeHomepageSections.Section(section) {
+        override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+                return typeFactory.type(this)
+        }
+}
+
+class RechargeHomepageCountdownSingleBannerModel(section: RechargeHomepageSections.Section): RechargeHomepageSections.Section(section) {
+        override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+                return typeFactory.type(this)
+        }
+}
+
+class RechargeHomepageDualBannersModel(section: RechargeHomepageSections.Section): RechargeHomepageSections.Section(section) {
+        override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+                return typeFactory.type(this)
+        }
+}
+
+class RechargeHomepageLegoBannersModel(section: RechargeHomepageSections.Section): RechargeHomepageSections.Section(section) {
+        override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+                return typeFactory.type(this)
+        }
+}
+
+class RechargeHomepageProductCardRowModel(section: RechargeHomepageSections.Section): RechargeHomepageSections.Section(section) {
+        override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+                return typeFactory.type(this)
+        }
+}
+
+class RechargeHomepageCountdownProductBannerModel(section: RechargeHomepageSections.Section): RechargeHomepageSections.Section(section) {
+        override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+                return typeFactory.type(this)
+        }
 }

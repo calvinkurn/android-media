@@ -48,23 +48,77 @@ class DigitalHomePageTypeFactory(val onItemBindListener: OnItemBindListener,
         return DigitalHomePageRecommendationViewHolder.LAYOUT
     }
 
-    fun type(section: RechargeHomepageSections.Section): Int {
-        return section.layout
+    fun type(topBannerModel: RechargeHomepageTopBannerModel): Int {
+        return RechargeHomepageTopBannerViewHolder.LAYOUT
     }
 
-    override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
-        when (type) {
-            DigitalHomePageBannerViewHolder.LAYOUT -> return DigitalHomePageBannerViewHolder(parent, onItemBindListener)
-            DigitalHomePageCategoryViewHolder.LAYOUT -> return DigitalHomePageCategoryViewHolder(parent, onItemBindListener)
-            DigitalHomePageTransactionViewHolder.LAYOUT -> return DigitalHomePageTransactionViewHolder(parent, transactionListener)
-            DigitalHomePageFavoriteViewHolder.LAYOUT -> return DigitalHomePageFavoriteViewHolder(parent, onItemBindListener)
-            DigitalHomePageTrustMarkViewHolder.LAYOUT -> return DigitalHomePageTrustMarkViewHolder(parent, onItemBindListener)
-            DigitalHomePageNewUserZoneViewHolder.LAYOUT -> return DigitalHomePageNewUserZoneViewHolder(parent, onItemBindListener)
-            DigitalHomePageSpotlightViewHolder.LAYOUT -> return DigitalHomePageSpotlightViewHolder(parent, onItemBindListener)
-            DigitalHomePageSubscriptionViewHolder.LAYOUT -> return DigitalHomePageSubscriptionViewHolder(parent, onItemBindListener)
-            DigitalHomePageRecommendationViewHolder.LAYOUT -> return DigitalHomePageRecommendationViewHolder(parent, onItemBindListener)
+    fun type(topIconsModel: RechargeHomepageTopBannerEmptyModel): Int {
+        return RechargeHomepageTopBannerViewHolder.LAYOUT_EMPTY
+    }
+
+    fun type(topIconsModel: RechargeHomepageTopIconsModel): Int {
+        return RechargeHomepageFavoriteViewHolder.LAYOUT
+    }
+
+    fun type(dynamicIconsModel: RechargeHomepageDynamicIconsModel): Int {
+        return RechargeHomepageCategoryViewHolder.LAYOUT
+    }
+
+    fun type(dualIconsModel: RechargeHomepageDualIconsModel): Int {
+        return RechargeHomepageDualIconsViewHolder.LAYOUT
+    }
+
+    fun type(urgencyWidgetModel: RechargeHomepageUrgencyWidgetModel): Int {
+        return RechargeHomepageUrgencyWidgetViewHolder.LAYOUT
+    }
+
+    fun type(videoHighlightModel: RechargeHomepageVideoHighlightModel): Int {
+        return RechargeHomepageVideoHighlightViewHolder.LAYOUT
+    }
+
+    fun type(videoHighlightsModel: RechargeHomepageVideoHighlightsModel): Int {
+        return RechargeHomepageVideoHighlightsViewHolder.LAYOUT
+    }
+
+    fun type(singleBannerModel: RechargeHomepageSingleBannerModel): Int {
+        return RechargeHomepageSingleBannerViewHolder.LAYOUT
+    }
+
+    fun type(countdownSingleBannerModel: RechargeHomepageCountdownSingleBannerModel): Int {
+        return RechargeHomepageSingleViewHolder.LAYOUT_COUNTDOWN
+    }
+
+    fun type(dualBannersModel: RechargeHomepageDualBannersModel): Int {
+        return RechargeHomepageDualBannersViewHolder.LAYOUT
+    }
+
+    fun type(legoBannersModel: RechargeHomepageLegoBannersModel): Int {
+        return RechargeHomepageLegoBannersViewHolder.LAYOUT
+    }
+
+    fun type(productCardRowModel: RechargeHomepageProductCardRowModel): Int {
+        return RechargeHomepageProductCardRowViewHolder.LAYOUT
+    }
+
+    fun type(countdownProductBannerModel: RechargeHomepageCountdownProductBannerModel): Int {
+        return RechargeHomepageCountdownProductBannerViewHolder.LAYOUT
+    }
+
+    override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
+        return when (type) {
+            DigitalHomePageBannerViewHolder.LAYOUT -> DigitalHomePageBannerViewHolder(parent, onItemBindListener)
+            DigitalHomePageCategoryViewHolder.LAYOUT -> DigitalHomePageCategoryViewHolder(parent, onItemBindListener)
+            DigitalHomePageTransactionViewHolder.LAYOUT -> DigitalHomePageTransactionViewHolder(parent, transactionListener)
+            DigitalHomePageFavoriteViewHolder.LAYOUT -> DigitalHomePageFavoriteViewHolder(parent, onItemBindListener)
+            DigitalHomePageTrustMarkViewHolder.LAYOUT -> DigitalHomePageTrustMarkViewHolder(parent, onItemBindListener)
+            DigitalHomePageNewUserZoneViewHolder.LAYOUT -> DigitalHomePageNewUserZoneViewHolder(parent, onItemBindListener)
+            DigitalHomePageSpotlightViewHolder.LAYOUT -> DigitalHomePageSpotlightViewHolder(parent, onItemBindListener)
+            DigitalHomePageSubscriptionViewHolder.LAYOUT -> DigitalHomePageSubscriptionViewHolder(parent, onItemBindListener)
+            DigitalHomePageRecommendationViewHolder.LAYOUT -> DigitalHomePageRecommendationViewHolder(parent, onItemBindListener)
+
+            RechargeHomepageCategoryViewHolder.LAYOUT -> RechargeHomepageCategoryViewHolder(parent, onItemBindListener)
+            else -> super.createViewHolder(parent, type)
         }
-        return super.createViewHolder(parent, type)
     }
 
 }

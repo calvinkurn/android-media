@@ -29,10 +29,7 @@ import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.QUERY_
 import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.QUERY_CATEGORY
 import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.QUERY_RECOMMENDATION
 import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.QUERY_SECTIONS
-import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
-import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
-import com.tokopedia.digital.home.model.DigitalHomePageItemModel
-import com.tokopedia.digital.home.model.DigitalHomePageSectionModel
+import com.tokopedia.digital.home.model.*
 import com.tokopedia.digital.home.presentation.Util.DigitalHomePageCategoryDataMapper
 import com.tokopedia.digital.home.presentation.Util.DigitalHomeTrackingUtil
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.BANNER_IMPRESSION
@@ -47,6 +44,8 @@ import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageTypeFactor
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageTransactionViewHolder
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.layout_digital_home.*
 import javax.inject.Inject
 
@@ -188,6 +187,17 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
                 if (isAllError) NetworkErrorHelper.showEmptyState(context, view?.rootView) { loadInitialData() }
             }
         })
+
+        viewModel.rechargeHomepageSections.observe(this, Observer {
+            when (it) {
+                is Success -> {
+
+                }
+                is Fail -> {
+                    showGetListError(it.throwable)
+                }
+            }
+        })
     }
 
     override fun loadData(page: Int) {
@@ -206,7 +216,13 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
                 QUERY_RECOMMENDATION to GraphqlHelper.loadRawString(resources, com.tokopedia.common_digital.R.raw.digital_recommendation_list)
         )
         viewModel.initialize(queryList)
-        viewModel.getData(swipeToRefresh?.isRefreshing ?: false)
+//        viewModel.getData(swipeToRefresh?.isRefreshing ?: false)
+
+        viewModel.getRechargeHomepageSections(
+                GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_section),
+                viewModel.createRechargeHomepageSectionsParams(false),
+                swipeToRefresh?.isRefreshing ?: false
+        )
     }
 
     override fun onCategoryItemClicked(element: DigitalHomePageCategoryModel.Submenu?, position: Int) {
@@ -252,6 +268,18 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
 
     override fun onRecommendationImpression(elements: List<RecommendationItemEntity>) {
         trackingUtil.eventRecommendationImpression(elements)
+    }
+
+    override fun onRechargeCategoryItemClicked(element: RechargeHomepageSections.Item, position: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onRechargeSectionItemClicked(element: RechargeHomepageSections.Item, position: Int, sectionType: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onRechargeSectionItemImpression(elements: List<RechargeHomepageSections.Item>, sectionType: String) {
+        TODO("Not yet implemented")
     }
 
     override fun getAdapterTypeFactory(): DigitalHomePageTypeFactory {
