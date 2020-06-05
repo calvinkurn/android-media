@@ -38,17 +38,17 @@ class PlayEtalasePickerViewModel @Inject constructor(
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + mainDispatcher)
 
-    val observableEtalase: LiveData<List<PlayEtalaseUiModel>>
+    val observableEtalase: LiveData<PageResult<List<EtalaseContentUiModel>>>
         get() = _observableEtalase
-    private val _observableEtalase = MutableLiveData<List<PlayEtalaseUiModel>>()
+    private val _observableEtalase = MutableLiveData<PageResult<List<EtalaseContentUiModel>>>()
 
     val observableSearchedProducts: LiveData<PageResult<List<ProductContentUiModel>>>
         get() = _observableSearchedProducts
     private val _observableSearchedProducts = MutableLiveData<PageResult<List<ProductContentUiModel>>>()
 
-    val observableSelectedEtalase: LiveData<PageResult<PlayEtalaseUiModel>>
+    val observableSelectedEtalase: LiveData<PageResult<EtalaseContentUiModel>>
         get() = _observableSelectedEtalase
-    private val _observableSelectedEtalase = MutableLiveData<PageResult<PlayEtalaseUiModel>>()
+    private val _observableSelectedEtalase = MutableLiveData<PageResult<EtalaseContentUiModel>>()
 
     val observableSelectedProducts: LiveData<List<ProductContentUiModel>>
         get() = _observableSelectedProducts
@@ -65,7 +65,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
     val selectedProductList: List<ProductContentUiModel>
         get() = observableSelectedProducts.value.orEmpty()
 
-    private val etalaseMap = mutableMapOf<String, PlayEtalaseUiModel>()
+    private val etalaseMap = mutableMapOf<String, EtalaseContentUiModel>()
     private val productsMap = mutableMapOf<Long, ProductContentUiModel>()
     private val selectedProductIdList = mutableListOf<Long>()
 
@@ -85,7 +85,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
         val currentValue = _observableSelectedEtalase.value?.currentValue
         val etalase = etalaseMap[etalaseId]
         _observableSelectedEtalase.value = PageResult.Loading(
-                if (page == 1 || currentValue == null) PlayEtalaseUiModel.Empty(name = etalase?.name.orEmpty())
+                if (page == 1 || currentValue == null) EtalaseContentUiModel.Empty(name = etalase?.name.orEmpty())
                 else currentValue
         )
 
@@ -126,7 +126,8 @@ class PlayEtalasePickerViewModel @Inject constructor(
         }
     }
 
-    fun loadEtalaseList() {
+    private fun loadEtalaseList() {
+        _observableEtalase.value = PageResult.Loading(emptyList())
         scope.launch {
             val etalaseList = getEtalaseList()
             val newMap = updateEtalaseMap(etalaseList)
@@ -157,7 +158,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
         }
     }
 
-    private suspend fun fetchEtalaseProduct(etalaseId: String, page: Int): PageResult<PlayEtalaseUiModel> = withContext(computationDispatcher) {
+    private suspend fun fetchEtalaseProduct(etalaseId: String, page: Int): PageResult<EtalaseContentUiModel> = withContext(computationDispatcher) {
         val etalase = etalaseMap[etalaseId]
         return@withContext if (etalase != null) {
             val productListInMap = etalase.productMap[page]
@@ -188,14 +189,14 @@ class PlayEtalasePickerViewModel @Inject constructor(
             }
         } else {
             PageResult(
-                    currentValue = PlayEtalaseUiModel.Empty(),
+                    currentValue = EtalaseContentUiModel.Empty(),
                     state = ResultState.Fail(IllegalStateException("Etalase not found"))
             )
         }
     }
 
-    private suspend fun broadcastNewEtalaseList(etalaseMap: Map<String, PlayEtalaseUiModel>) {
-        _observableEtalase.value = withContext(computationDispatcher) {
+    private suspend fun broadcastNewEtalaseList(etalaseMap: Map<String, EtalaseContentUiModel>) {
+        val etalaseList = withContext(computationDispatcher) {
             etalaseMap.values.map { etalase ->
 
                 val currentProductList = etalase.productMap[1]
@@ -221,6 +222,11 @@ class PlayEtalasePickerViewModel @Inject constructor(
                 )
             }
         }
+
+        _observableEtalase.value = PageResult(
+                currentValue = etalaseList,
+                state = ResultState.Success(false)
+        )
     }
 
     private suspend fun getSearchedProducts(productList: List<ProductContentUiModel>, totalData: Int): PageResult<List<ProductContentUiModel>> = withContext(computationDispatcher) {
@@ -232,7 +238,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
         )
     }
 
-    private suspend fun updateEtalaseMap(newEtalaseList: List<PlayEtalaseUiModel>) = withContext(computationDispatcher) {
+    private suspend fun updateEtalaseMap(newEtalaseList: List<EtalaseContentUiModel>) = withContext(computationDispatcher) {
         newEtalaseList.forEach {
             val etalase = etalaseMap[it.id]
             if (etalase == null) etalaseMap[it.id] = it

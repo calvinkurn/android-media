@@ -31,7 +31,7 @@ object PlayBroadcastMocker {
      * Etalase
      */
     fun getMockEtalaseList() = List(6) {
-        PlayEtalaseUiModel(
+        EtalaseContentUiModel(
                 id = (it + 1L).toString(),
                 name = "Etalase ${it + 1}",
                 productMap = mutableMapOf(),

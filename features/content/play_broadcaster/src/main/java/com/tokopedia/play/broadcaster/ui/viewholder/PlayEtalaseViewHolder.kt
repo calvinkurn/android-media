@@ -11,7 +11,7 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.ProductPreviewItemDecoration
-import com.tokopedia.play.broadcaster.ui.model.PlayEtalaseUiModel
+import com.tokopedia.play.broadcaster.ui.model.EtalaseContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.util.doOnPreDraw
 import com.tokopedia.play.broadcaster.view.adapter.PlayProductPreviewAdapter
@@ -52,7 +52,7 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
         }
     }
 
-    fun bind(item: PlayEtalaseUiModel) {
+    fun bind(item: EtalaseContentUiModel) {
         setupProductPreview(item.productMap)
 
         listener.onEtalaseBound(item.id)
