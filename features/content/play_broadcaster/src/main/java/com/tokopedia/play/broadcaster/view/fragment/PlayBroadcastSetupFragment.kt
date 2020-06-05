@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
@@ -28,8 +27,7 @@ import javax.inject.Inject
  * Created by jegul on 20/05/20
  */
 class PlayBroadcastSetupFragment @Inject constructor(
-        private val viewModelFactory: ViewModelFactory,
-        private val fragmentFactory: FragmentFactory
+        private val viewModelFactory: ViewModelFactory
 ) : PlayBaseBroadcastFragment() {
 
     private lateinit var viewModel: PlayBroadcastSetupViewModel
@@ -51,7 +49,6 @@ class PlayBroadcastSetupFragment @Inject constructor(
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_play_broadcast_setup, container, false)
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -76,9 +73,9 @@ class PlayBroadcastSetupFragment @Inject constructor(
     private fun setupView(view: View) {
         broadcastCoordinator.setupTitle(getString(R.string.play_action_bar_prepare_title))
         btnSetup.setOnClickListener {
-             openBroadcastSetupPage()
+//             openBroadcastSetupPage()
             // TODO("for testing live")
-//            doCreateChannel()
+            doCreateChannel()
         }
 
         rvFollowers.adapter = followersAdapter
@@ -104,7 +101,8 @@ class PlayBroadcastSetupFragment @Inject constructor(
 
     private fun openBroadcastSetupPage() {
         val setupClass = PlayBroadcastSetupBottomSheet::class.java
-        val setupFragment = fragmentFactory.instantiate(setupClass.classLoader!!, setupClass.name) as PlayBroadcastSetupBottomSheet
+        val fragmentFactory = childFragmentManager.fragmentFactory
+        val setupFragment = fragmentFactory.instantiate(requireContext().classLoader, setupClass.name) as PlayBroadcastSetupBottomSheet
         setupFragment.show(childFragmentManager)
     }
 
