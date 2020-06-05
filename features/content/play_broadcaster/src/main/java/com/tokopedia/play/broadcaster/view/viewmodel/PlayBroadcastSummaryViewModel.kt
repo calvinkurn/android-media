@@ -8,6 +8,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.play.broadcaster.data.model.BroadcasterReportLiveSummaries
 import com.tokopedia.play.broadcaster.dispatcher.PlayBroadcastDispatcher
+import com.tokopedia.play.broadcaster.domain.usecase.GetLiveStatisticsUseCase
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.ui.mapper.PlaySummaryUiMapper
 import com.tokopedia.play.broadcaster.ui.model.SummaryUiModel
@@ -22,7 +23,7 @@ import javax.inject.Named
 
 class PlayBroadcastSummaryViewModel @Inject constructor(
         @Named(PlayBroadcastDispatcher.MAIN) private val dispatcher: CoroutineDispatcher,
-        val graphqlRepository: GraphqlRepository
+        private val getLiveStatisticsUseCase: GetLiveStatisticsUseCase
 ) : ViewModel() {
 
     private val job: Job = SupervisorJob()
@@ -41,23 +42,14 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
         _observableTrafficMetrics.value = listOf()
     }
 
-    fun getSummaryLiveReport(rawQuery: String, channelId: String) {
+    fun getLiveTrafficMetrics(channelId: String) {
         scope.launch {
             try {
-                val params = mapOf(PARAM_CHANNEL_ID to channelId)
-                val graphqlRequest = GraphqlRequest(rawQuery, BroadcasterReportLiveSummaries.Response::class.java, params)
-
-                val data = withContext(Dispatchers.IO + job) {
-                    graphqlRepository.getReseponse(listOf(graphqlRequest))
-                }.getSuccessData<BroadcasterReportLiveSummaries.Response>()
-                _observableTrafficMetrics.postValue(PlaySummaryUiMapper.mapToLiveTrafficUiMetrics(data.response.channel.metrics))
-            } catch (t: Throwable) {
-
-            }
+                val response = getLiveStatisticsUseCase.apply {
+                    params = GetLiveStatisticsUseCase.createParams(channelId)
+                }.executeOnBackground()
+                _observableTrafficMetrics.postValue(PlaySummaryUiMapper.mapToLiveTrafficUiMetrics(response.response.channel.metrics))
+            } catch (t: Throwable) { }
         }
-    }
-
-    companion object {
-        const val PARAM_CHANNEL_ID = "channelID"
     }
 }

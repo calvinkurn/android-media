@@ -10,16 +10,14 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.ui.model.SummaryUiModel
-import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.view.adapter.TrafficMetricReportAdapter
+import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import kotlinx.android.synthetic.main.fragment_play_broadcaster_summary.*
@@ -35,16 +33,17 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
     private lateinit var viewModel: PlayBroadcastSummaryViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
-    private val playSummaryInfosAdapter = TrafficMetricReportAdapter()
+    private val trafficMetricReportAdapter = TrafficMetricReportAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastSummaryViewModel::class.java)
         parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
         arguments?.let {
-            val channelId = it.getString(KEY_CHANNEL_ID)
-            parentViewModel.getChannel(channelId)
-            viewModel.getSummaryLiveReport(GraphqlHelper.loadRawString(resources, R.raw.gql_play_query_get_statistics), channelId)
+            it.getString(KEY_CHANNEL_ID)?.let {channelId ->
+                parentViewModel.getChannel(channelId)
+                viewModel.getLiveTrafficMetrics(channelId)
+            }
         }
     }
 
@@ -62,7 +61,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
 
         rv_play_summary_live_information.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         rv_play_summary_live_information.removeItemDecorations()
-        rv_play_summary_live_information.adapter = playSummaryInfosAdapter
+        rv_play_summary_live_information.adapter = trafficMetricReportAdapter
     }
 
     override fun getScreenName(): String = ""
@@ -95,7 +94,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
 
     private fun setTotalView(totalView: TotalViewUiModel) {
         if (viewModel.observableTrafficMetricsUiModel.value.isNullOrEmpty()) {
-            playSummaryInfosAdapter.addTrafficMetrics(
+            trafficMetricReportAdapter.addItemAndAnimateChanges(
                     TrafficMetricUiModel(trafficMetricEnum = TrafficMetricsEnum.TOTAL_VIEWS,
                             liveTrafficMetricCount = totalView.totalView))
         }
@@ -103,7 +102,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
 
     private fun setTotalLike(totalLike: TotalLikeUiModel) {
         if (viewModel.observableTrafficMetricsUiModel.value.isNullOrEmpty()) {
-            playSummaryInfosAdapter.addTrafficMetrics(
+            trafficMetricReportAdapter.addItemAndAnimateChanges(
                     TrafficMetricUiModel(
                             trafficMetricEnum = TrafficMetricsEnum.VIDEO_LIKES,
                             liveTrafficMetricCount = totalLike.totalLike))
@@ -132,7 +131,10 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
     }
 
     private fun renderTrafficMetrics(trafficMetricUiModels: List<TrafficMetricUiModel>) {
-        if (trafficMetricUiModels.isNotEmpty()) playSummaryInfosAdapter.updateTrafficMetrics(trafficMetricUiModels)
+        if (trafficMetricUiModels.isNotEmpty()) {
+            trafficMetricReportAdapter.clearAllItemsAndAnimateChanges()
+            trafficMetricReportAdapter.setItemsAndAnimateChanges(trafficMetricUiModels)
+        }
     }
 
     private fun entranceAnimation(v: View?) {

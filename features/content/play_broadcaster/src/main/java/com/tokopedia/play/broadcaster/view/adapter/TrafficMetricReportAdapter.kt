@@ -1,54 +1,25 @@
 package com.tokopedia.play.broadcaster.view.adapter
 
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.play.broadcaster.R
+import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
-import kotlinx.android.synthetic.main.item_play_summary_info.view.*
+import com.tokopedia.play.broadcaster.view.adapter.delegate.TrafficMetricAdapterDelegate
 
 /**
  * @author by jessica on 26/05/20
  */
 
-class TrafficMetricReportAdapter : RecyclerView.Adapter<TrafficMetricReportAdapter.ViewHolder>() {
+class TrafficMetricReportAdapter : BaseDiffUtilAdapter<TrafficMetricUiModel>() {
 
-    private var trafficMetrics = mutableListOf<TrafficMetricUiModel>()
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-            ViewHolder(LayoutInflater.from(parent.context).inflate(VH_LAYOUT, parent, false))
-
-    override fun getItemCount(): Int = trafficMetrics.size
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(trafficMetrics[position])
+    init {
+        delegatesManager.addDelegate(TrafficMetricAdapterDelegate())
     }
 
-    fun addTrafficMetrics(trafficMetricUiModel: TrafficMetricUiModel) {
-        this.trafficMetrics.add(trafficMetricUiModel)
-        notifyDataSetChanged()
+    override fun areItemsTheSame(oldItem: TrafficMetricUiModel, newItem: TrafficMetricUiModel): Boolean {
+        return oldItem == newItem
     }
 
-    fun updateTrafficMetrics(trafficMetricUiModels: List<TrafficMetricUiModel>) {
-        this.trafficMetrics.clear()
-        this.trafficMetrics.addAll(trafficMetricUiModels)
-        notifyDataSetChanged()
+    override fun areContentsTheSame(oldItem: TrafficMetricUiModel, newItem: TrafficMetricUiModel): Boolean {
+        return oldItem == newItem
     }
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        fun bind(trafficMetricUiModel: TrafficMetricUiModel) {
-            with(itemView) {
-                if (trafficMetricUiModel.trafficMetricEnum != null) {
-                    iv_item_play_summary_info_icon.setImageResource(trafficMetricUiModel.trafficMetricEnum.thumbnailRes)
-                    tv_item_play_summary_description.text = resources.getString(trafficMetricUiModel.trafficMetricEnum.descriptionRes)
-                }
-                tv_item_play_summary_count_info.text = trafficMetricUiModel.liveTrafficMetricCount
-            }
-        }
-    }
-
-    companion object {
-        val VH_LAYOUT = R.layout.item_play_summary_info
-    }
 }
