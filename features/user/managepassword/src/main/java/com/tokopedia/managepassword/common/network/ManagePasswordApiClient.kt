@@ -12,6 +12,7 @@ import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.DebugInterceptor
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.network.refreshtoken.AccountsBasicInterceptor
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -34,7 +35,7 @@ class ManagePasswordApiClient<T> @Inject constructor(
 ) {
     private val userSession: UserSessionInterface = UserSession(context)
     private val fingerprintInterceptor: FingerprintInterceptor = FingerprintInterceptor(context as NetworkRouter, userSession)
-    private val tkpdAuthInterceptor: TkpdAuthInterceptor = TkpdAuthInterceptor(context, context as NetworkRouter, userSession)
+//    private val tkpdAuthInterceptor: TkpdAuthInterceptor = TkpdAuthInterceptor(context, context as NetworkRouter, userSession)
     private val gson: Gson = GsonBuilder()
             .setDateFormat(DATE_FORMAT)
             .setPrettyPrinting()
@@ -48,7 +49,7 @@ class ManagePasswordApiClient<T> @Inject constructor(
     private fun getClient(): OkHttpClient {
         return OkHttpClient.Builder().apply {
             addInterceptor(fingerprintInterceptor)
-            addInterceptor(tkpdAuthInterceptor)
+//            addInterceptor(tkpdAuthInterceptor)
 
             if (GlobalConfig.isAllowDebuggingTools()) {
                 addInterceptor(ChuckerInterceptor(context))

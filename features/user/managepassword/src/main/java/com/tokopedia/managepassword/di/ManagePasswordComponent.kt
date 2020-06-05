@@ -3,6 +3,8 @@ package com.tokopedia.managepassword.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.managepassword.addpassword.view.activity.AddPasswordActivity
 import com.tokopedia.managepassword.addpassword.view.fragment.AddPasswordFragment
+import com.tokopedia.managepassword.changepassword.view.activity.ChangePasswordActivity
+import com.tokopedia.managepassword.changepassword.view.fragment.ChangePasswordFragment
 import com.tokopedia.managepassword.di.module.ManagePasswordModule
 import com.tokopedia.managepassword.di.module.ManagePasswordUseCaseModule
 import com.tokopedia.managepassword.di.module.ManagePasswordViewModelModule
@@ -23,6 +25,8 @@ interface ManagePasswordComponent {
     fun inject(activity: HasPasswordActivity)
     fun inject(activity: AddPasswordActivity)
     fun inject(activity: ForgotPasswordActivity)
+    fun inject(activity: ChangePasswordActivity)
     fun inject(fragment: AddPasswordFragment)
     fun inject(fragment: ForgotPasswordFragment)
+    fun inject(fragment: ChangePasswordFragment)
 }

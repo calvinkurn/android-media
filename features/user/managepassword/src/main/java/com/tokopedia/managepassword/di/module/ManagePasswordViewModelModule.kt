@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.managepassword.addpassword.view.viewmodel.AddPasswordViewModel
+import com.tokopedia.managepassword.changepassword.view.viewmodel.ChangePasswordViewModel
 import com.tokopedia.managepassword.di.ManagePasswordScope
 import com.tokopedia.managepassword.forgotpassword.view.viewmodel.ForgotPasswordViewModel
 import com.tokopedia.managepassword.haspassword.view.viewmode.HasPasswordViewModel
@@ -23,7 +24,7 @@ abstract class ManagePasswordViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(HasPasswordViewModel::class)
-    internal abstract fun changePasswordViewModel(viewModel: HasPasswordViewModel): ViewModel
+    internal abstract fun hasPasswordViewModel(viewModel: HasPasswordViewModel): ViewModel
 
     @ManagePasswordScope
     @Binds
@@ -36,4 +37,10 @@ abstract class ManagePasswordViewModelModule {
     @IntoMap
     @ViewModelKey(ForgotPasswordViewModel::class)
     internal abstract fun forgotPasswordViewModel(viewModel: ForgotPasswordViewModel): ViewModel
+
+    @ManagePasswordScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(ChangePasswordViewModel::class)
+    internal abstract fun changePasswordViewModel(viewModel: ChangePasswordViewModel): ViewModel
 }

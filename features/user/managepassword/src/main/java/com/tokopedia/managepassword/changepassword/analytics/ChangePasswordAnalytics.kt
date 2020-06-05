@@ -1,4 +1,4 @@
-package com.tokopedia.managepassword.changepassword.common.analytics
+package com.tokopedia.managepassword.changepassword.analytics
 
 import com.tokopedia.track.TrackApp
 
