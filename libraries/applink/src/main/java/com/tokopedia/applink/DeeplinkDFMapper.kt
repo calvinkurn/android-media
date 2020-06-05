@@ -210,7 +210,7 @@ object DeeplinkDFMapper {
             }, DF_GAMIFICATION,R.string.internet_title_gamification))
 
             //Entertainment
-            add(DFP({ it.startsWith(EVENT_HOME) }, DF_EVENT_REVAMP, R.string.title_event_entertainment))
+            add(DFP({ it.startsWith(EVENT_HOME) }, DF_BASE, R.string.title_home_event))
             // Salam
             add(DFP({ it.startsWith(SALAM_UMRAH_HOME_PAGE) }, DF_SALAM_UMRAH, R.string.title_salam, { DFWebviewFallbackUrl.SALAM_UMRAH }))
             add(DFP({ it.startsWith(SALAM_ORDER_DETAIL) }, DF_SALAM_UMRAH, R.string.title_salam, { DFWebviewFallbackUrl.SALAM_UMRAH }))

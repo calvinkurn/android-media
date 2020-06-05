@@ -162,7 +162,7 @@ class EventCheckoutFragment : BaseDaggerFragment() {
                     val paymentURL: String = data.checkout.data.data.redirectUrl
 
                     if(!paymentData.isNullOrEmpty() || !paymentURL.isNullOrEmpty()) {
-                        ScroogePGUtil.openScroogePage(activity, paymentURL, true, paymentData, it.resources.getString(R.string.pembayaran))
+                        ScroogePGUtil.openScroogePage(activity, paymentURL, true, paymentData, it.resources.getString(com.tokopedia.oms.R.string.pembayaran))
                     }else{
                         view?.let {
                             Toaster.make(it, data.checkout.data.error, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
