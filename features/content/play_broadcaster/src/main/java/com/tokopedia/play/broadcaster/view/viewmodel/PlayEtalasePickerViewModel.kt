@@ -199,21 +199,25 @@ class PlayEtalasePickerViewModel @Inject constructor(
             etalaseMap.values.map { etalase ->
 
                 val currentProductList = etalase.productMap[1]
-                val newProductList = mutableListOf<ProductContentUiModel>()
-                for (index in 0 until min((currentProductList?.size ?: 0), MAX_PRODUCT_IMAGE_COUNT)) {
-                    newProductList.add(
-                            if (index % 2 == 0) {
-                                currentProductList!![(index + 1) / 2]
-                            } else {
-                                currentProductList!![index + (MAX_PRODUCT_IMAGE_COUNT - index) / 2]
-                            }
-                    )
-                }
-
-                etalase.copy(
-                        productMap = mutableMapOf(
-                                1 to newProductList
+                if (currentProductList != null) {
+                    val newProductList = mutableListOf<ProductContentUiModel>()
+                    for (index in 0 until min(currentProductList.size, MAX_PRODUCT_IMAGE_COUNT)) {
+                        newProductList.add(
+                                if (index % 2 == 0) {
+                                    currentProductList[(index + 1) / 2]
+                                } else {
+                                    currentProductList[index + (MAX_PRODUCT_IMAGE_COUNT - index) / 2]
+                                }
                         )
+                    }
+
+                    etalase.copy(
+                            productMap = mutableMapOf(
+                                    1 to newProductList
+                            )
+                    )
+                } else etalase.copy(
+                        productMap = mutableMapOf()
                 )
             }
         }
