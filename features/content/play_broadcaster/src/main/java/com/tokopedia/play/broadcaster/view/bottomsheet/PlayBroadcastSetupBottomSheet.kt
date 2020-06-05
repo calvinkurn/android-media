@@ -36,8 +36,7 @@ import javax.inject.Inject
  * Created by jegul on 26/05/20
  */
 class PlayBroadcastSetupBottomSheet @Inject constructor(
-        private val viewModelFactory: ViewModelFactory,
-        private val fragmentFactory: FragmentFactory
+        private val viewModelFactory: ViewModelFactory
 ) : BottomSheetDialogFragment(), PlayBottomSheetCoordinator {
 
     private lateinit var viewModel: PlayEtalasePickerViewModel
@@ -58,6 +57,9 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
     private val currentFragment: Fragment?
         get() = childFragmentManager.findFragmentById(R.id.fl_fragment)
 
+    private val fragmentFactory: FragmentFactory
+        get() = childFragmentManager.fragmentFactory
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : BottomSheetDialog(requireContext(), theme) {
             override fun onBackPressed() {
@@ -74,7 +76,6 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        childFragmentManager.fragmentFactory = fragmentFactory
         super.onCreate(savedInstanceState)
 //        setStyle(DialogFragment.STYLE_NORMAL, R.style.Style_FloatingBottomSheet)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
