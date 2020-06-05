@@ -273,7 +273,7 @@ object HomePageTrackingV2 : BaseTracking() {
         }
 
         fun sendRecommendationListSeeAllClick(channelId: String, headerName: String, userId: String) {
-            getTracker().sendGeneralEvent(getRecommendationListSeeAllClick(channelId, headerName))
+            getTracker().sendGeneralEvent(getRecommendationListSeeAllClick(channelId, headerName, userId))
         }
 
         fun sendRecommendationListSeeAllCardClick(channel: DynamicHomeChannel.Channels, userId: String) {

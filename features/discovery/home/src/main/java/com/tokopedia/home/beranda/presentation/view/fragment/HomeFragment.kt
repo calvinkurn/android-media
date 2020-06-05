@@ -713,7 +713,7 @@ open class HomeFragment : BaseDaggerFragment(),
             }
         })
 
-        viewModel.woneClickCheckoutHomeComponent.observe(viewLifecycleOwner, Observer { event: Event<Any> ->
+        viewModel.oneClickCheckoutHomeComponent.observe(viewLifecycleOwner, Observer { event: Event<Any> ->
             val data = event.peekContent()
             if (data is Throwable) { // error
                 showToaster(getString(R.string.home_error_connection), TYPE_ERROR)
