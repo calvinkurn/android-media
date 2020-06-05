@@ -6,7 +6,6 @@ import android.app.Application
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
@@ -57,7 +56,6 @@ import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
-import com.tokopedia.design.dialog.IAccessRequestListener
 import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.device.info.permission.ImeiPermissionAsker
 import com.tokopedia.dialog.DialogUnify
@@ -155,7 +153,7 @@ import javax.inject.Inject
  * Top separator : All of the view holder except above
  */
 
-class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(), DynamicProductDetailListener, ProductVariantListener, IAccessRequestListener {
+class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(), DynamicProductDetailListener, ProductVariantListener, ProductAccessRequestDialogFragment.Listener {
 
     companion object {
         fun newInstance(productId: String? = null,
@@ -843,7 +841,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         scrollToPosition(dynamicAdapter.getTradeinPosition(pdpHashMapUtil?.productTradeinMap))
     }
 
-    override fun clickAccept() {
+    override fun onAccept() {
         val tradeinResponse = viewModel.p2ShopDataResp.value?.tradeinResponse ?: TradeinResponse()
         if (tradeinResponse.validateTradeInPDP.usedPrice > 0) {
             goToHargaFinal()
@@ -852,8 +850,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    override fun clickDeny() {
-    }
+    override fun onDecline() { }
 
     override fun getProductFragmentManager(): FragmentManager {
         return childFragmentManager
