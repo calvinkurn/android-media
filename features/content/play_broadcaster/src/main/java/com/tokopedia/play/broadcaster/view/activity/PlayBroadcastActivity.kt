@@ -29,6 +29,7 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment.Companion.PARENT_FRAGMENT_TAG
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastSetupFragment
+import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.unifyprinciples.Typography
@@ -200,6 +201,12 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
                             Bundle().apply {
                                 putString(PlayBroadcastUserInteractionFragment.KEY_CHANNEL_ID, it.channelId)
                             })
+                }
+                is ScreenStateEvent.ShowSummaryPage -> {
+                    navigateToFragment(PlayBroadcastSummaryFragment::class.java,
+                        Bundle().apply {
+                            putString(PlayBroadcastSummaryFragment.KEY_CHANNEL_ID, it.channelId)
+                        })
                 }
             }
         })
