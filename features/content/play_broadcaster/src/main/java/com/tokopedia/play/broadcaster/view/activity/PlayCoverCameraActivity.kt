@@ -66,7 +66,9 @@ class PlayCoverCameraActivity : AppCompatActivity() {
     }
 
     private fun takePicture() {
-        showTimerLayout()
+        if (timeToCapture > 0) {
+            showTimerLayout()
+        }
         val timer = Timer()
         timer.schedule(object : TimerTask() {
             override fun run() {

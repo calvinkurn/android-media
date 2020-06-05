@@ -20,7 +20,6 @@ import kotlinx.android.synthetic.main.bottom_sheet_play_choose_cover.*
 class PlayBroadcastChooseCoverBottomSheet : BottomSheetUnify() {
 
     var listener: Listener? = null
-    private var imageUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +45,7 @@ class PlayBroadcastChooseCoverBottomSheet : BottomSheetUnify() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+            val imageUri = data?.getParcelableExtra<Uri>(PlayCoverCameraActivity.EXTRA_IMAGE_URI)
             listener?.onGetCoverFromCamera(imageUri)
             dismiss()
         }
@@ -96,15 +96,6 @@ class PlayBroadcastChooseCoverBottomSheet : BottomSheetUnify() {
     }
 
     private fun takeCoverFromCamera() {
-        /*val values = ContentValues()
-        values.put(MediaStore.Images.Media.TITLE, "New Picture")
-        values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera")
-        imageUri = requireActivity().contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-
-        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
-        startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE)*/
-
         val cameraIntent = Intent(context, PlayCoverCameraActivity::class.java)
         startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE)
     }
