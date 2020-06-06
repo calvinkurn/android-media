@@ -45,8 +45,8 @@ class PlayBroadcastChooseCoverBottomSheet : BottomSheetUnify() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-            val imageAbsolutePath = data?.getStringExtra(PlayCoverCameraActivity.EXTRA_IMAGE_URI)
-            listener?.onGetCoverFromCamera(imageAbsolutePath)
+            val imageUri = data?.getParcelableExtra<Uri>(PlayCoverCameraActivity.EXTRA_IMAGE_URI)
+            listener?.onGetCoverFromCamera(imageUri)
             dismiss()
         }
     }
@@ -104,7 +104,7 @@ class PlayBroadcastChooseCoverBottomSheet : BottomSheetUnify() {
     }
 
     interface Listener {
-        fun onGetCoverFromCamera(imagePath: String?)
+        fun onGetCoverFromCamera(imageUri: Uri?)
     }
 
     companion object {

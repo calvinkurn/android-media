@@ -18,16 +18,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.play.broadcaster.view.widget.PlayCropImageView
         android:id="@+id/ivPlayCoverCropImage"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/play_cover_height"
         android:layout_marginTop="@dimen/spacing_lvl4"
+        android:scaleType="matrix"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvPlayCoverCropHeaderDescription" />
 
-    <com.tokopedia.play.broadcaster.view.widget.PlayRectCropImageView
+    <com.tokopedia.play.broadcaster.view.widget.PlayRectCropImageOverlay
         android:id="@+id/ivPlayCoverCropOverlay"
         android:layout_width="match_parent"
         android:layout_height="@dimen/play_cover_height"

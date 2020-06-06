@@ -1,10 +1,7 @@
 package com.tokopedia.play.broadcaster.view.widget
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Path
+import android.graphics.*
 import android.os.Build
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
@@ -13,7 +10,7 @@ import com.tokopedia.play.broadcaster.R
 /**
  * @author by furqan on 03/06/2020
  */
-class PlayRectCropImageView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
+class PlayRectCropImageOverlay @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : AppCompatImageView(context, attrs, defStyleAttr) {
 
     private var mTransparentPaint: Paint = Paint()
@@ -113,6 +110,9 @@ class PlayRectCropImageView @JvmOverloads constructor(context: Context, attrs: A
         canvas.clipPath(mPath)
         canvas.drawColor(resources.getColor(R.color.play_cover_crop_overlay))
     }
+
+    fun getCropRect(): RectF =
+            RectF(leftPosition, topPosition, rightPosition, bottomPosition)
 
     companion object {
         private const val CENTER_RECT_RADIUS = 20f

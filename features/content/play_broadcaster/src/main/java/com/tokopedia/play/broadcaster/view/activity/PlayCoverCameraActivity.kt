@@ -116,7 +116,7 @@ class PlayCoverCameraActivity : AppCompatActivity() {
     private fun onSuccessCaptureImageFromCamera(cameraResultFile: File) {
         if (cameraResultFile.exists()) {
             val resultIntent = Intent()
-            resultIntent.putExtra(EXTRA_IMAGE_URI, cameraResultFile.absolutePath)
+            resultIntent.putExtra(EXTRA_IMAGE_URI, Uri.fromFile(cameraResultFile))
             setResult(Activity.RESULT_OK, resultIntent)
             finish()
         }

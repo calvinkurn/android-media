@@ -1,21 +1,27 @@
 package com.tokopedia.play.broadcaster.view.fragment
 
+import android.graphics.Bitmap
+import android.graphics.RectF
 import android.net.Uri
+import android.os.AsyncTask
 import android.os.Bundle
+import android.os.Handler
 import android.text.InputFilter
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastChooseCoverBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverTitleSetupViewModel
+import com.yalantis.ucrop.callback.BitmapCropCallback
+import com.yalantis.ucrop.model.CropParameters
+import com.yalantis.ucrop.model.ExifInfo
+import com.yalantis.ucrop.model.ImageState
+import com.yalantis.ucrop.task.BitmapCropTask
+import com.yalantis.ucrop.util.RectUtils
 import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.fragment_play_cover_title_setup.*
 import kotlinx.android.synthetic.main.layout_play_cover_crop.*
@@ -23,13 +29,9 @@ import kotlinx.android.synthetic.main.layout_play_cover_title_setup.*
 import javax.inject.Inject
 
 /**
- * Created by jegul on 26/05/20
+ * Created by furqan on 02/06/20
  */
-class PlayCoverTitleSetupFragment @Inject constructor(
-        private val viewModelFactory: ViewModelFactory
-) : PlayBaseSetupFragment(), PlayBroadcastChooseCoverBottomSheet.Listener {
-
-    private lateinit var viewModel: PlayCoverTitleSetupViewModel
+class PlayCoverTitleSetupFragment @Inject constructor() : PlayBaseSetupFragment(), PlayBroadcastChooseCoverBottomSheet.Listener {
 
     private var imageLeft: Float = 0f
     private var imageTop: Float = 0f
@@ -39,12 +41,6 @@ class PlayCoverTitleSetupFragment @Inject constructor(
     override fun getScreenName(): String = "Play Cover Title Setup"
 
     override fun refresh() {}
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(requireParentFragment(), viewModelFactory)
-                .get(PlayCoverTitleSetupViewModel::class.java)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_play_cover_title_setup, container, false)
@@ -67,8 +63,8 @@ class PlayCoverTitleSetupFragment @Inject constructor(
         clearFindViewByIdCache()
     }
 
-    override fun onGetCoverFromCamera(imagePath: String?) {
-        imagePath?.let {
+    override fun onGetCoverFromCamera(imageUri: Uri?) {
+        imageUri?.let {
             showCoverCropLayout()
             renderCoverCropLayout(it)
         }
@@ -112,10 +108,14 @@ class PlayCoverTitleSetupFragment @Inject constructor(
         containerPlayCoverCropSetup.visibility = View.GONE
     }
 
-    private fun renderCoverCropLayout(imagePath: String) {
-        ivPlayCoverCropImage.setImageBitmap(ImageUtils.getBitmapFromPath(imagePath,
-                ImageUtils.DEF_WIDTH, ImageUtils.DEF_HEIGHT, true))
-        imageDragDrop()
+    private fun renderCoverCropLayout(imageUri: Uri) {
+        ivPlayCoverCropImage.setImageUri(imageUri, null)
+        ivPlayCoverCropImage.isScaleEnabled = true
+        ivPlayCoverCropImage.isRotateEnabled = false
+
+        Handler().postDelayed({
+            ivPlayCoverCropImage.setCropRect(ivPlayCoverCropOverlay.getCropRect())
+        }, SECONDS)
 
         imageLeft = ivPlayCoverCropImage.left.toFloat()
         imageTop = ivPlayCoverCropImage.top.toFloat()
@@ -123,47 +123,54 @@ class PlayCoverTitleSetupFragment @Inject constructor(
         imageBottom = ivPlayCoverCropImage.bottom.toFloat()
 
         btnPlayCoverCropNext.setOnClickListener {
-            val croppedImage = viewModel.cropImage(imagePath, ivPlayCoverCropImage,
-                    ivPlayCoverCropOverlay.leftPosition,
-                    resources.getDimensionPixelSize(R.dimen.play_cover_width))
-            ivPlayCoverCropImage.setImageURI(Uri.parse(croppedImage))
-        }
-    }
-
-    private fun imageDragDrop() {
-        var isDragging = false
-        var xSpaceFromLeftImage = 0f
-
-        ivPlayCoverCropImage.setOnTouchListener { view, motionEvent ->
-            val xPosition = motionEvent.rawX
-
-            when (motionEvent.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    if (!isDragging) {
-                        xSpaceFromLeftImage = xPosition - ivPlayCoverCropImage.left
-                        isDragging = true
-                    }
-                    true
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    if (ivPlayCoverCropImage.left < ivPlayCoverCropOverlay.leftPosition) {
-                        ivPlayCoverCropImage.x = xPosition - xSpaceFromLeftImage
-                    } else {
-                        ivPlayCoverCropImage.x = ivPlayCoverCropOverlay.leftPosition
-                    }
-                    true
-                }
-                MotionEvent.ACTION_UP -> {
-                    xSpaceFromLeftImage = 0f
-                    isDragging = false
-                    true
-                }
-                else -> false
+            ivPlayCoverCropImage.viewBitmap?.let {
+                cropImage(ivPlayCoverCropImage.imageInputPath,
+                        ivPlayCoverCropOverlay.getCropRect(),
+                        RectUtils.trapToRect(ivPlayCoverCropImage.getCurrentImageCorners()),
+                        ivPlayCoverCropImage.currentScale,
+                        ivPlayCoverCropImage.currentAngle,
+                        ivPlayCoverCropImage.exifInfo,
+                        it)
             }
         }
     }
 
+    private fun onImageCropped(resultImageUri: Uri) {
+
+    }
+
+    /**
+     * The Crop Task already runs in background, so we don't need to use View Model
+     */
+    private fun cropImage(imagePath: String, cropRect: RectF, currentImageRect: RectF,
+                          currentScale: Float, currentAngle: Float, exifInfo: ExifInfo,
+                          viewBitmap: Bitmap) {
+
+        val isPng = ImageUtils.isPng(imagePath)
+        val imageOutputDirectory = ImageUtils.getTokopediaPhotoPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, isPng)
+        val imageState = ImageState(cropRect, currentImageRect,
+                currentScale, currentAngle)
+        val cropParams = CropParameters(ImageUtils.DEF_WIDTH, ImageUtils.DEF_HEIGHT,
+                DEFAULT_COMPRESS_FORMAT, DEFAULT_COMPRESS_QUALITY,
+                imagePath, imageOutputDirectory.absolutePath, exifInfo)
+
+        context?.let {
+            BitmapCropTask(it, viewBitmap, imageState, cropParams, object : BitmapCropCallback {
+                override fun onBitmapCropped(resultUri: Uri, offsetX: Int, offsetY: Int, imageWidth: Int, imageHeight: Int) {
+                    onImageCropped(resultUri)
+                }
+
+                override fun onCropFailure(t: Throwable) {
+                    t.printStackTrace()
+                }
+            }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        }
+    }
+
     companion object {
+        private const val DEFAULT_COMPRESS_QUALITY = 90
+        private val DEFAULT_COMPRESS_FORMAT = Bitmap.CompressFormat.JPEG
         private const val MAX_CHARS = 38
+        private const val SECONDS: Long = 1000
     }
 }
