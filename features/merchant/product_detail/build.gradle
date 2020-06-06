@@ -4,23 +4,24 @@ apply plugin: 'io.hansel.preprocessor.module'
 
 android {
 
-//    buildTypes {
-//        debug {
-//            // Run code coverage reports by default on debug builds.
-//            testCoverageEnabled = true
-//
-//            // Uncomment this to run test against a minified version of the production APK
-//            /*
-//            minifyEnabled true
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//            testProguardFile 'proguard-test-rules.pro'
-//             */
-//        }
-//        release {
-//            minifyEnabled true
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//        }
-//    }
+    buildTypes {
+        debug {
+            // Run code coverage reports by default on debug builds.
+            testCoverageEnabled = true
+
+            // Uncomment this to run test against a minified version of the production APK
+            /*
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            testProguardFile 'proguard-test-rules.pro'
+             */
+        }
+        release {
+            minifyEnabled true
+            testCoverageEnabled = true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
 
     flavorDimensions "tier", "client"
     productFlavors {
