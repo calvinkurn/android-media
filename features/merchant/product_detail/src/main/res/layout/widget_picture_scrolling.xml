@@ -76,6 +76,8 @@
         android:paddingBottom="@dimen/dp_5"
         android:gravity="center"
         android:visibility="gone"
+        tools:visibility="visible"
+        android:alpha="0.9"
         android:text="@string/title_image_review"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
