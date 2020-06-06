@@ -560,7 +560,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun handlePromoButtonVisibilityOnIdle(newState: Int) {
-        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+        if (newState == RecyclerView.SCROLL_STATE_IDLE && initialPromoButtonPosition > 0) {
             // Delay after recycler view idle, then show promo button
             showPromoButtonJob?.cancel()
             showPromoButtonJob = GlobalScope.launch(Dispatchers.Main) {
