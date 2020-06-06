@@ -6,8 +6,6 @@ import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 abstract class BaseViewModel(private val baseDispatcher: CoroutineDispatcher): ViewModel(), CoroutineScope{
-    @Deprecated("No longer used")
-    protected val masterJob = SupervisorJob()
 
     override val coroutineContext: CoroutineContext
         get() = viewModelScope.coroutineContext + baseDispatcher
