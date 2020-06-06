@@ -12,7 +12,7 @@ abstract class BaseViewModel(private val baseDispatcher: CoroutineDispatcher): V
     protected val masterJob = SupervisorJob()
 
     override val coroutineContext: CoroutineContext
-        get() = viewModelScope.coroutineContext
+        get() = viewModelScope.coroutineContext + baseDispatcher
 
     @Deprecated("no longer used")
     open fun flush(){
