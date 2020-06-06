@@ -519,16 +519,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         return
                     }
 
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        showPromoButtonJob?.cancel()
-                        showPromoButtonJob = GlobalScope.launch(Dispatchers.Main) {
-                            delay(750L)
-                            llPromoCheckout.animate()
-                                    .y(initialPromoButtonPosition)
-                                    .setDuration(500L)
-                                    .start();
-                        }
-                    }
+                    handlePromoButtonVisibilityOnIdle(newState)
                 }
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -542,36 +533,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         enableSwipeRefresh()
                     }
 
-                    val valueY = llPromoCheckout.y + dy
-                    TRANSLATION_LENGTH += dy
-                    if (dy != 0) {
-                        if (TRANSLATION_LENGTH - dy == 0f) {
-                            // Initial position of View
-                            initialPromoButtonPosition = llPromoCheckout.y
-                        }
-
-                        if (TRANSLATION_LENGTH != 0f) {
-                            if (dy < 0 && valueY < initialPromoButtonPosition) {
-                                // Prevent scroll up move button exceed initial view position
-                                llPromoCheckout.animate()
-                                        .y(initialPromoButtonPosition)
-                                        .setDuration(0)
-                                        .start();
-                            } else if (valueY <= llPromoCheckout.height + initialPromoButtonPosition) {
-                                // Prevent scroll down move button too far
-                                llPromoCheckout.animate()
-                                        .y(valueY)
-                                        .setDuration(0)
-                                        .start();
-                            }
-                        } else {
-                            // Set to initial position if scroll up to top
-                            llPromoCheckout.animate()
-                                    .y(initialPromoButtonPosition)
-                                    .setDuration(0)
-                                    .start();
-                        }
-                    }
+                    handlePromoButtonVisibilityOnScroll(dy)
                 }
             })
 
@@ -594,6 +556,53 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 }
             }
             addOnScrollListener(endlessRecyclerViewScrollListener)
+        }
+    }
+
+    private fun handlePromoButtonVisibilityOnIdle(newState: Int) {
+        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+            // Delay after recycler view idle, then show promo button
+            showPromoButtonJob?.cancel()
+            showPromoButtonJob = GlobalScope.launch(Dispatchers.Main) {
+                delay(750L)
+                llPromoCheckout.animate()
+                        .y(initialPromoButtonPosition)
+                        .setDuration(500L)
+                        .start();
+            }
+        }
+    }
+
+    private fun handlePromoButtonVisibilityOnScroll(dy: Int) {
+        val valueY = llPromoCheckout.y + dy
+        TRANSLATION_LENGTH += dy
+        if (dy != 0) {
+            if (TRANSLATION_LENGTH - dy == 0f) {
+                // Initial position of View
+                initialPromoButtonPosition = llPromoCheckout.y
+            }
+
+            if (TRANSLATION_LENGTH != 0f) {
+                if (dy < 0 && valueY < initialPromoButtonPosition) {
+                    // Prevent scroll up move button exceed initial view position
+                    llPromoCheckout.animate()
+                            .y(initialPromoButtonPosition)
+                            .setDuration(0)
+                            .start();
+                } else if (valueY <= llPromoCheckout.height + initialPromoButtonPosition) {
+                    // Prevent scroll down move button too far
+                    llPromoCheckout.animate()
+                            .y(valueY)
+                            .setDuration(0)
+                            .start();
+                }
+            } else {
+                // Set to initial position if scroll up to top
+                llPromoCheckout.animate()
+                        .y(initialPromoButtonPosition)
+                        .setDuration(0)
+                        .start();
+            }
         }
     }
 
