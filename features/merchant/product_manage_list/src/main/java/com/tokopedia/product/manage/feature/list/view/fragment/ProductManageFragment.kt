@@ -16,13 +16,7 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
-import android.view.Window
+import android.view.*
 import android.widget.Button
 import android.widget.TextView
 import com.google.android.material.snackbar.Snackbar
@@ -35,10 +29,12 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.abstraction.constant.TkpdState
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.text.SearchInputView
@@ -59,6 +55,7 @@ import com.tokopedia.product.manage.feature.etalase.view.fragment.EtalasePickerF
 import com.tokopedia.product.manage.feature.etalase.view.fragment.EtalasePickerFragment.Companion.REQUEST_CODE_PICK_ETALASE
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
+import com.tokopedia.product.manage.feature.list.constant.ProductManageAnalytics.MP_PRODUCT_MANAGE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageUrl
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
 import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
@@ -68,20 +65,15 @@ import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductMan
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.FilterTabViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
-import com.tokopedia.product.manage.feature.list.view.model.SearchEmptyModel
-import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel
-import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult
+import com.tokopedia.product.manage.feature.list.view.model.*
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
-import com.tokopedia.product.manage.feature.list.view.model.ProductEmptyModel
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.*
-import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageBottomSheet
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.StockInformationBottomSheet
-import com.tokopedia.product.manage.feature.multiedit.ui.bottomsheet.ProductMultiEditBottomSheet
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
+import com.tokopedia.product.manage.feature.multiedit.ui.bottomsheet.ProductMultiEditBottomSheet
 import com.tokopedia.product.manage.feature.multiedit.ui.toast.MultiEditToastMessage.getRetryMessage
 import com.tokopedia.product.manage.feature.multiedit.ui.toast.MultiEditToastMessage.getSuccessMessage
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
@@ -90,9 +82,6 @@ import com.tokopedia.product.manage.feature.quickedit.price.presentation.fragmen
 import com.tokopedia.product.manage.feature.quickedit.stock.data.model.EditStockResult
 import com.tokopedia.product.manage.feature.quickedit.stock.presentation.fragment.ProductManageQuickEditStockFragment
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
-import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity
-import com.tokopedia.product.manage.item.main.duplicate.activity.ProductDuplicateActivity
-import com.tokopedia.product.manage.item.main.edit.view.activity.ProductEditActivity
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.EXTRA_PRODUCT_NAME
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.EXTRA_THRESHOLD
@@ -149,12 +138,14 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private val productManageListAdapter by lazy { adapter as ProductManageListAdapter }
     private var defaultFilterOptions: List<FilterOption> = emptyList()
     private var itemsChecked: MutableList<ProductViewModel> = mutableListOf()
+    private var performanceMonitoring: PerformanceMonitoring? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(getLayoutRes(), container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }
@@ -220,7 +211,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             val importFromInstagramMenu = subMenu.findItem(R.id.label_view_import_from_instagram)
 
             addProductMenu.setOnMenuItemClickListener {
-                startActivity(ProductAddNameCategoryActivity.createInstance(activity))
+                RouteManager.route(requireContext(), ApplinkConst.PRODUCT_ADD)
                 true
             }
 
@@ -280,10 +271,14 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun getEmptyDataViewModel(): EmptyModel {
-        return if(showProductEmptyState()) {
-            ProductEmptyModel
-        } else {
-            SearchEmptyModel
+        return EmptyModel().apply {
+            if(showProductEmptyState()) {
+                contentRes = R.string.product_manage_list_empty_product
+                urlRes = ProductManageUrl.PRODUCT_MANAGE_LIST_EMPTY_STATE
+            } else {
+                contentRes = R.string.product_manage_list_empty_search
+                urlRes = ProductManageUrl.PRODUCT_MANAGE_SEARCH_EMPTY_STATE
+            }
         }
     }
 
@@ -365,6 +360,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             multiEditBottomSheet?.show()
             ProductManageTracking.eventBulkSettings()
         }
+    }
+
+    private fun startPerformanceMonitoring() {
+        performanceMonitoring = PerformanceMonitoring.start(MP_PRODUCT_MANAGE)
     }
 
     private fun setupDialogFeaturedProduct() {
@@ -1122,14 +1121,20 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun goToDuplicateProduct(productId: String) {
         activity?.let {
-            val intent = ProductDuplicateActivity.createInstance(it, productId)
-            startActivity(intent)
+            val uri = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
+                    .buildUpon()
+                    .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_ID, productId)
+                    .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, ApplinkConstInternalMechant.MODE_DUPLICATE_PRODUCT)
+                    .build()
+                    .toString()
+            RouteManager.route(context, uri)
         }
     }
 
     private fun goToEditProduct(productId: String) {
-        val intent = ProductEditActivity.createInstance(activity, productId)
-        startActivity(intent)
+        context?.let {
+            RouteManager.route(it, ApplinkConst.PRODUCT_EDIT, productId)
+        }
     }
 
     private fun addFeaturedProduct(productId: String) {
@@ -1397,7 +1402,12 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 is Fail -> showErrorToast()
             }
             hidePageLoading()
+            stopPerformanceMonitoring()
         }
+    }
+
+    private fun stopPerformanceMonitoring() {
+        performanceMonitoring?.stopTrace()
     }
 
     private fun observeFilterTabs() {

@@ -13,7 +13,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.shop.MyShopPaymentService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.seller.R;
 
 import org.json.JSONArray;

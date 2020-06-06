@@ -1,0 +1,19 @@
+query shopShowcases {
+  shopShowcases(withDefault: true) {
+    result {
+      id
+      name
+      count
+      type
+      highlighted
+      alias
+      uri
+      useAce
+      badge
+      aceDefaultSort
+    }
+    error {
+      message
+    }
+  }
+}

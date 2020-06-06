@@ -5,12 +5,13 @@ import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.SplashScreenActivity;
@@ -203,7 +204,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openPeluangPage(List<String> linkSegment, Uri uriData) {
         String query = uriData.getQueryParameter("q");
-        Intent intent = SellerRouter.getActivitySellingTransactionOpportunity(context, query);
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.SELLER_OPPORTUNITY);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

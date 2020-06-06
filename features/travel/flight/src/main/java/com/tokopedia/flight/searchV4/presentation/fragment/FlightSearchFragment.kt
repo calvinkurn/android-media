@@ -25,6 +25,8 @@ import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.constant.FlightErrorConstant
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.view.HorizontalProgressBar
+import com.tokopedia.flight.common.view.adapter.FlightAdapterTypeFactory
+import com.tokopedia.flight.common.view.model.EmptyResultModel
 import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.flight.detail.view.widget.FlightDetailBottomSheet
 import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
@@ -43,7 +45,6 @@ import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchActivity
 import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_IS_COMBINE_DONE
 import com.tokopedia.flight.searchV4.presentation.adapter.viewholder.EmptyResultViewHolder
 import com.tokopedia.flight.searchV4.presentation.adapter.viewholder.FlightSearchAdapterTypeFactory
-import com.tokopedia.flight.searchV4.presentation.model.EmptyResultModel
 import com.tokopedia.flight.searchV4.presentation.model.FlightJourneyModel
 import com.tokopedia.flight.searchV4.presentation.viewmodel.FlightSearchViewModel
 import com.tokopedia.sortfilter.SortFilter
@@ -626,7 +627,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         adapter.addElement(getNoFlightRouteDataModel(message))
     }
 
-    private fun getNoFlightRouteDataModel(message: String): Visitable<FlightSearchAdapterTypeFactory> {
+    private fun getNoFlightRouteDataModel(message: String): Visitable<FlightAdapterTypeFactory> {
         val emptyResultViewModel = EmptyResultModel()
         emptyResultViewModel.iconRes = com.tokopedia.globalerror.R.drawable.unify_globalerrors_404
         emptyResultViewModel.title = getString(R.string.flight_there_is_no_flight_available_title)

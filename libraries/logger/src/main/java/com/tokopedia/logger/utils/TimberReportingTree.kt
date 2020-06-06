@@ -124,7 +124,7 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
     }
 
     private fun replaceNewline(message: String): String {
-        return message.replace("\\s".toRegex(), " ")
+        return message.trim().replace("\\s+".toRegex(), " ")
     }
 
     private fun populateTagMaps(tags: List<String>?) {

@@ -395,13 +395,6 @@ class PlayViewModel @Inject constructor(
                 return@withContext getChannelInfoUseCase.executeOnBackground()
             }
 
-            launch { getTotalLikes(channel.contentId, channel.contentType, channel.likeType) }
-            launch { getIsLike(channel.contentId, channel.contentType) }
-            launch { getBadgeCart(channel.isShowCart) }
-            launch { if (channel.isShowProductTagging) getProductTagItems(channel) }
-
-            startWebSocket(channelId, channel.gcToken, channel.settings)
-
             playVideoStream(channel)
 
             val completeInfoUiModel = PlayUiMapper.createCompleteInfoModel(
@@ -418,6 +411,14 @@ class PlayViewModel @Inject constructor(
             _observableVideoStream.value = completeInfoUiModel.videoStream
             _observableEvent.value = completeInfoUiModel.event
             _observablePartnerInfo.value = getPartnerInfo(completeInfoUiModel.channelInfo)
+
+            launch { getTotalLikes(channel.contentId, channel.contentType, channel.likeType) }
+            launch { getIsLike(channel.contentId, channel.contentType) }
+            launch { getBadgeCart(channel.isShowCart) }
+            launch { if (channel.isShowProductTagging) getProductTagItems(channel) }
+
+            startWebSocket(channelId, channel.gcToken, channel.settings)
+
         }) {
             if (retryCount++ < MAX_RETRY_CHANNEL_INFO) getChannelInfoResponse(channelId)
             else if (it !is CancellationException) _observableGetChannelInfo.value = Fail(it)

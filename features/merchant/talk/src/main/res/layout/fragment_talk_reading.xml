@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/talkReadingContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:background="@android:color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/talk_reading_app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="@dimen/layout_lvl0">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/layout_lvl6"
+                app:layout_scrollFlags="scroll|enterAlways|exitUntilCollapsed">
+
+                <com.tokopedia.talk.feature.reading.presentation.widget.TalkReadingHeader
+                    android:id="@+id/talkReadingHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/readingSwipeToRefresh"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/talkReadingRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <include
+                    android:id="@+id/pageEmpty"
+                    layout="@layout/partial_talk_reading_empty"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
+        android:layout_marginBottom="@dimen/layout_lvl3"
+        app:maxImageSize="@dimen/layout_lvl3"
+        app:elevation="@dimen/layout_lvl0"
+        app:backgroundTint="@color/Green_G500"
+        app:srcCompat="@drawable/talk_reading_ic_plus" />
+
+    <include
+        android:id="@+id/pageLoading"
+        layout="@layout/partial_talk_reading_shimmering"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/pageError"
+        layout="@layout/partial_talk_connection_error"
+        android:visibility="gone" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

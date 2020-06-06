@@ -762,6 +762,10 @@ class OfficialHomeFragment :
         }
     }
 
+    override fun onClickMixLeftBannerImage(applink: String) {
+        RouteManager.route(context, applink)
+    }
+
     private fun removeLoading() {
         if (getOfficialStorePageLoadTimeCallback() != null) {
             getOfficialStorePageLoadTimeCallback()?.stopNetworkRequestPerformanceMonitoring()

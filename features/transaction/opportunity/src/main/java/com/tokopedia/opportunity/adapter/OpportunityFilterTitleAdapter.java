@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.opportunity.R;
 import com.tokopedia.opportunity.viewmodel.FilterViewModel;
 

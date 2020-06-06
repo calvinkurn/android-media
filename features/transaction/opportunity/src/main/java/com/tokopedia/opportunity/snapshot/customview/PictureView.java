@@ -14,7 +14,7 @@ import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ProductImage;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.opportunity.R;
 import com.tokopedia.opportunity.adapter.ImagePagerAdapter;
 import com.tokopedia.opportunity.snapshot.listener.SnapShotFragmentView;

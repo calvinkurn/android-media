@@ -15,7 +15,7 @@ import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ShopBadge;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.opportunity.R;
 import com.tokopedia.opportunity.snapshot.listener.SnapShotFragmentView;
 
