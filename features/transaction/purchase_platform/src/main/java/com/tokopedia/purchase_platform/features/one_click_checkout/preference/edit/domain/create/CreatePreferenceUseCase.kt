@@ -8,7 +8,7 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.preference.ed
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.domain.create.model.CreatePreferenceRequest
 import javax.inject.Inject
 
-class CreatePreferenceUseCase @Inject constructor(val graphqlUseCase: GraphqlUseCase<CreatePreferenceGqlResponse>) {
+class CreatePreferenceUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase<CreatePreferenceGqlResponse>) {
 
     fun execute(param: CreatePreferenceRequest, onSuccess: (CreatePreferenceGqlResponse) -> Unit, onError: (Throwable) -> Unit) {
         graphqlUseCase.setGraphqlQuery(QUERY)
