@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.view.bottomsheet
 import android.app.Dialog
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -165,7 +166,10 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         ivBack.setOnClickListener { dialog?.onBackPressed() }
 
         navigateToFragment(PlayEtalasePickerFragment::class.java)
-        navigateToFragment(PlayCoverTitleSetupFragment::class.java)
+
+        Handler().postDelayed({
+            navigateToFragment(PlayCoverTitleSetupFragment::class.java)
+        }, 2000)
     }
 
     private fun maxHeight(): Int = (getScreenHeight()).toInt()

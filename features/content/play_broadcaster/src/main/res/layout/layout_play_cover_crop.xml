@@ -20,10 +20,9 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivPlayCoverCropImage"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/play_cover_height"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        android:scaleType="centerCrop"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvPlayCoverCropHeaderDescription" />
@@ -32,21 +31,22 @@
         android:id="@+id/ivPlayCoverCropOverlay"
         android:layout_width="match_parent"
         android:layout_height="@dimen/play_cover_height"
+        android:focusable="false"
         app:layout_constraintBottom_toBottomOf="@+id/ivPlayCoverCropImage"
-        app:layout_constraintLeft_toLeftOf="@+id/ivPlayCoverCropImage"
-        app:layout_constraintRight_toRightOf="@+id/ivPlayCoverCropImage"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/ivPlayCoverCropImage" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl1"
         android:background="@color/play_bg_shadow"
-        app:layout_constraintBottom_toTopOf="@+id/containerPlayCoverTitleBottom"
+        app:layout_constraintBottom_toTopOf="@+id/containerPlayCoverCropBottom"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
     <LinearLayout
-        android:id="@+id/containerPlayCoverTitleBottom"
+        android:id="@+id/containerPlayCoverCropBottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -57,7 +57,7 @@
         app:layout_constraintRight_toRightOf="parent">
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btnPlayPrepareBroadcastChange"
+            android:id="@+id/btnPlayCoverCropChange"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl3"
@@ -69,7 +69,7 @@
             app:unifyButtonVariant="ghost" />
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btnPlayPrepareBroadcastNext"
+            android:id="@+id/btnPlayCoverCropNext"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl3"

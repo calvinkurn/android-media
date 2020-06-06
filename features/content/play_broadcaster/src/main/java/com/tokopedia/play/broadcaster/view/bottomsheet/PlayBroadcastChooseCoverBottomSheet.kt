@@ -45,8 +45,8 @@ class PlayBroadcastChooseCoverBottomSheet : BottomSheetUnify() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-            val imageUri = data?.getParcelableExtra<Uri>(PlayCoverCameraActivity.EXTRA_IMAGE_URI)
-            listener?.onGetCoverFromCamera(imageUri)
+            val imageAbsolutePath = data?.getStringExtra(PlayCoverCameraActivity.EXTRA_IMAGE_URI)
+            listener?.onGetCoverFromCamera(imageAbsolutePath)
             dismiss()
         }
     }
@@ -75,7 +75,9 @@ class PlayBroadcastChooseCoverBottomSheet : BottomSheetUnify() {
 
         containerPlayTakePicture.setOnClickListener {
             if (!isAllPermissionGranted()) {
-                requestPermissions(arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+                requestPermissions(arrayOf(Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE))
             } else {
                 takeCoverFromCamera()
             }
@@ -84,7 +86,8 @@ class PlayBroadcastChooseCoverBottomSheet : BottomSheetUnify() {
     }
 
     private fun isAllPermissionGranted(): Boolean = isPermissionGranted(Manifest.permission.CAMERA) &&
-            isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE) &&
+            isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE)
 
     private fun isPermissionGranted(permission: String): Boolean =
             ContextCompat.checkSelfPermission(requireContext(),
@@ -101,7 +104,7 @@ class PlayBroadcastChooseCoverBottomSheet : BottomSheetUnify() {
     }
 
     interface Listener {
-        fun onGetCoverFromCamera(imageUri: Uri?)
+        fun onGetCoverFromCamera(imagePath: String?)
     }
 
     companion object {

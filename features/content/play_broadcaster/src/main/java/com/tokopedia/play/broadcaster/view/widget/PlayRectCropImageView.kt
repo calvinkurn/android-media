@@ -26,6 +26,11 @@ class PlayRectCropImageView @JvmOverloads constructor(context: Context, attrs: A
     private var rectHeight: Int
     private var bottomDetailHeight: Int
 
+    var leftPosition: Float = 0f
+    var topPosition: Float = 0f
+    var rightPosition: Float = 0f
+    var bottomPosition: Float = 0f
+
     init {
         mTransparentPaint.color = Color.TRANSPARENT
         mTransparentPaint.strokeWidth = STROKE_WIDTH
@@ -48,17 +53,22 @@ class PlayRectCropImageView @JvmOverloads constructor(context: Context, attrs: A
 
         mPath.reset()
 
+        leftPosition = left + (((right - left).toFloat() / 2) - (rectWidth / 2))
+        topPosition = 0f
+        rightPosition = right - ((right - left) / 2) + (rectWidth / 2).toFloat()
+        bottomPosition = rectHeight.toFloat()
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            mPath.addRect(left + (((right - left).toFloat() / 2) - (rectWidth / 2)),
-                    0f,
-                    right - ((right - left).toFloat() / 2) + (rectWidth / 2).toFloat(),
-                    rectHeight.toFloat(),
+            mPath.addRect(leftPosition,
+                    topPosition,
+                    rightPosition,
+                    bottomPosition,
                     Path.Direction.CW)
         } else {
-            mPath.addRoundRect(left + (((right - left).toFloat() / 2) - (rectWidth / 2)),
-                    0f,
-                    right - ((right - left).toFloat() / 2) + (rectWidth / 2).toFloat(),
-                    rectHeight.toFloat(),
+            mPath.addRoundRect(leftPosition,
+                    topPosition,
+                    rightPosition,
+                    bottomPosition,
                     CENTER_RECT_RADIUS,
                     CENTER_RECT_RADIUS,
                     Path.Direction.CW)
@@ -67,16 +77,16 @@ class PlayRectCropImageView @JvmOverloads constructor(context: Context, attrs: A
 
         // draw transparent center rect
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            canvas.drawRect(left + (((right - left).toFloat() / 2) - (rectWidth / 2)),
-                    0f,
-                    right - ((right - left).toFloat() / 2) + (rectWidth / 2).toFloat(),
-                    rectHeight.toFloat(),
+            canvas.drawRect(leftPosition,
+                    topPosition,
+                    rightPosition,
+                    bottomPosition,
                     mTransparentPaint)
         } else {
-            canvas.drawRoundRect(left + (((right - left).toFloat() / 2) - (rectWidth / 2)),
-                    0f,
-                    right - ((right - left).toFloat() / 2) + (rectWidth / 2).toFloat(),
-                    rectHeight.toFloat(),
+            canvas.drawRoundRect(leftPosition,
+                    topPosition,
+                    rightPosition,
+                    bottomPosition,
                     CENTER_RECT_RADIUS,
                     CENTER_RECT_RADIUS,
                     mTransparentPaint)
@@ -84,16 +94,16 @@ class PlayRectCropImageView @JvmOverloads constructor(context: Context, attrs: A
 
         // draw bottom black overlay
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            canvas.drawRect(left + (((right - left).toFloat() / 2) - (rectWidth / 2)),
+            canvas.drawRect(leftPosition,
                     rectHeight.toFloat() - bottomDetailHeight,
-                    right - ((right - left).toFloat() / 2) + (rectWidth / 2).toFloat(),
-                    rectHeight.toFloat(),
+                    rightPosition,
+                    bottomPosition,
                     mBlackTransparentPaint)
         } else {
-            canvas.drawRoundRect(left + (((right - left).toFloat() / 2) - (rectWidth / 2)),
+            canvas.drawRoundRect(leftPosition,
                     rectHeight.toFloat() - bottomDetailHeight,
-                    right - ((right - left).toFloat() / 2) + (rectWidth / 2).toFloat(),
-                    rectHeight.toFloat(),
+                    rightPosition,
+                    bottomPosition,
                     CENTER_RECT_RADIUS,
                     CENTER_RECT_RADIUS,
                     mBlackTransparentPaint)

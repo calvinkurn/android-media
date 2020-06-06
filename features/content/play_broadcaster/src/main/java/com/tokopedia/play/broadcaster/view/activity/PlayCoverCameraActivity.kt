@@ -11,6 +11,8 @@ import com.otaliastudios.cameraview.CameraUtils
 import com.otaliastudios.cameraview.PictureResult
 import com.otaliastudios.cameraview.controls.Facing
 import com.otaliastudios.cameraview.controls.Flash
+import com.otaliastudios.cameraview.gesture.Gesture
+import com.otaliastudios.cameraview.gesture.GestureAction
 import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.CameraTimerEnum
@@ -63,31 +65,35 @@ class PlayCoverCameraActivity : AppCompatActivity() {
         tvPlayCameraTimer10.setOnClickListener {
             setTimerTenSecondsCapture()
         }
+        cvPlayCameraView.mapGesture(Gesture.PINCH, GestureAction.ZOOM)
+        cvPlayCameraView.mapGesture(Gesture.TAP, GestureAction.AUTO_FOCUS)
     }
 
     private fun takePicture() {
         if (timeToCapture > 0) {
             showTimerLayout()
-        }
-        val timer = Timer()
-        timer.schedule(object : TimerTask() {
-            override fun run() {
-                runOnUiThread {
-                    if (timeToCapture > 0)
-                        showTimerLayout()
-                }
-                timeToCapture--
-                if (timeToCapture <= 0) {
+            val timer = Timer()
+            timer.schedule(object : TimerTask() {
+                override fun run() {
                     runOnUiThread {
-                        hideTimerLayout()
+                        if (timeToCapture > 0)
+                            showTimerLayout()
                     }
-                    cvPlayCameraView.takePicture()
-                    timeToCapture = cameraTimerEnum.seconds
-                    timer.cancel()
-                    timer.purge()
+                    timeToCapture--
+                    if (timeToCapture <= 0) {
+                        runOnUiThread {
+                            hideTimerLayout()
+                        }
+                        cvPlayCameraView.takePicture()
+                        timeToCapture = cameraTimerEnum.seconds
+                        timer.cancel()
+                        timer.purge()
+                    }
                 }
-            }
-        }, SECONDS_IN_MILIS, SECONDS_IN_MILIS)
+            }, SECONDS_IN_MILIS, SECONDS_IN_MILIS)
+        } else {
+            cvPlayCameraView.takePicture()
+        }
     }
 
     private fun saveToFile(imageByte: ByteArray) {
@@ -110,7 +116,7 @@ class PlayCoverCameraActivity : AppCompatActivity() {
     private fun onSuccessCaptureImageFromCamera(cameraResultFile: File) {
         if (cameraResultFile.exists()) {
             val resultIntent = Intent()
-            resultIntent.putExtra(EXTRA_IMAGE_URI, Uri.fromFile(cameraResultFile))
+            resultIntent.putExtra(EXTRA_IMAGE_URI, cameraResultFile.absolutePath)
             setResult(Activity.RESULT_OK, resultIntent)
             finish()
         }
