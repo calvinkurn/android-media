@@ -205,7 +205,7 @@ class MainActivity : AppCompatActivity() {
         if (!applinkEditText.text.toString().isEmpty()) {
             RouteManager.route(this, applinkEditText.text.toString())
         } else {
-          RouteManager.route(this, "tokopedia://discovery/kejar-diskon")
+          RouteManager.route(this, "tokopedia://discovery/gajian-ekstra")
 //        RouteManager.route(this, "tokopedia://discovery/kopi-kenangan")
 //        RouteManager.route(this, "tokopedia://discovery/kawan-lama")
 //        RouteManager.route(this, "tokopedia://discovery/bebas-ongkir-6")

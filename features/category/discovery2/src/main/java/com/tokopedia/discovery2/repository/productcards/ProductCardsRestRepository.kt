@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class ProductCardsRestRepository @Inject constructor() : BaseRepository(), ProductCardsRepository {
 
-    override suspend fun getProducts(componentId: Int, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String, productComponentName: String?): ArrayList<ComponentsItem> {
+    override suspend fun  getProducts(componentId: Int, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String, productComponentName: String?): ArrayList<ComponentsItem> {
         val response = getRestData<DataResponse<DiscoveryResponse>>(GenerateUrl.getComponentUrl(pageEndPoint, componentId),
                 object : TypeToken<DataResponse<DiscoveryResponse>>() {}.type,
                 RequestType.GET,

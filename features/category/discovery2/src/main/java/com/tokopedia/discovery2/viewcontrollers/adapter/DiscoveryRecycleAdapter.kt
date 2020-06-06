@@ -22,8 +22,14 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
     }
 
     override fun submitList(list: List<ComponentsItem>?) {
-        componentList = list as ArrayList<ComponentsItem>
-        super.submitList(list)
+        list?.let {
+            if(it.isNotEmpty()) {
+                componentList.clear()
+                componentList .addAll(it)
+                super.submitList(it)
+            }
+        }
+
     }
 
     // To set the common ViewPool for Inner Recycler View to recycle views
