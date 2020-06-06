@@ -8,9 +8,11 @@ sealed class ScreenStateEvent {
 
     object ShowLoading: ScreenStateEvent()
 
-    object ShowPreparePage: ScreenStateEvent()
+    object ShowSetupPage: ScreenStateEvent()
 
-    data class ShowLivePage(val channelId: String, val ingestUrl: String = ""): ScreenStateEvent()
+    data class ShowUserInteractionPage(val channelId: String): ScreenStateEvent()
 
     data class ShowDialogError(val title: String, val message: String): ScreenStateEvent()
+
+    data class ShowSummaryPage(val channelId: String): ScreenStateEvent()
 }

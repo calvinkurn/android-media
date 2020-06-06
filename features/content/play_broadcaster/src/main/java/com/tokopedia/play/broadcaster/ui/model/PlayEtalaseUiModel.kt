@@ -5,7 +5,7 @@ package com.tokopedia.play.broadcaster.ui.model
  */
 
 data class PlayEtalaseUiModel(
-        val id: Long,
+        val id: String,
         val name: String,
         val productMap: MutableMap<Int, List<ProductContentUiModel>>,
         val totalProduct: Int,
@@ -14,6 +14,7 @@ data class PlayEtalaseUiModel(
 
     companion object {
 
-        val EMPTY = PlayEtalaseUiModel(-1, "", mutableMapOf(), 0, false)
+        fun Empty(id: String = "-1", name: String = "") =
+                PlayEtalaseUiModel(id, name, mutableMapOf(), 0, false)
     }
 }

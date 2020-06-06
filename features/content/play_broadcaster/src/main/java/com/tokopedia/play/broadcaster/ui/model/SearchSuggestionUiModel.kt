@@ -5,6 +5,6 @@ package com.tokopedia.play.broadcaster.ui.model
  */
 data class SearchSuggestionUiModel(
         val queriedText: String,
-        val suggestionText: String,
+        val suggestedText: String,
         val spannedSuggestion: CharSequence
 )

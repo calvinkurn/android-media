@@ -41,7 +41,7 @@
 
             <include
                 android:id="@+id/bottom_sheet_header"
-                layout="@layout/layout_bottom_sheet_header"
+                layout="@layout/layout_play_bottom_sheet_header"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -53,6 +53,7 @@
                 android:id="@+id/fl_fragment"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="@dimen/layout_lvl0"
+                android:background="@color/Neutral_N0"
                 app:layout_constraintBottom_toTopOf="@id/bottom_sheet_action"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -74,7 +75,7 @@
 
             <include
                 android:id="@+id/bottom_sheet_action"
-                layout="@layout/layout_bottom_sheet_action"
+                layout="@layout/layout_play_bottom_sheet_action"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"

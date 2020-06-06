@@ -1,6 +1,9 @@
 package com.tokopedia.play.broadcaster.pusher
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.view.SurfaceView
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.alivc.live.pusher.AlivcLivePushConfig
@@ -10,8 +13,8 @@ import com.alivc.live.pusher.AlivcQualityModeEnum
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
-import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherCountDownTimer
-import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherCountDownTimerListener
+import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherTimer
+import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherTimerListener
 import com.tokopedia.play.broadcaster.pusher.type.PlayPusherQualityMode
 
 
@@ -20,7 +23,7 @@ import com.tokopedia.play.broadcaster.pusher.type.PlayPusherQualityMode
  */
 class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
-    private var mCountDownTimer: PlayPusherCountDownTimer? = null
+    private var mTimer: PlayPusherTimer? = null
     private var mIngestUrl: String = ""
 
     private var mAliVcLivePusher: AlivcLivePusher? = null
@@ -65,7 +68,10 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     override fun startPreview(surfaceView: SurfaceView) {
         if (mAliVcLivePusher != null) {
             try {
-                mAliVcLivePusher?.startPreviewAysnc(surfaceView)
+                if (ActivityCompat.checkSelfPermission(builder.context, Manifest.permission.CAMERA)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    mAliVcLivePusher?.startPreviewAysnc(surfaceView)
+                }
             } catch (e: IllegalArgumentException) {
                 if (GlobalConfig.DEBUG) {
                     e.printStackTrace()
@@ -101,7 +107,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         try {
             if (mAliVcLivePusher?.isPushing == false) {
                 mAliVcLivePusher?.startPushAysnc(this.mIngestUrl)
-                mCountDownTimer?.start()
+                mTimer?.start()
             }
         } catch (e: Exception) {
             if (GlobalConfig.DEBUG) {
@@ -113,7 +119,6 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     override fun restartPush() {
         try {
             mAliVcLivePusher?.restartPushAync()
-            mCountDownTimer?.start()
         } catch (e: Exception) {
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
@@ -123,8 +128,10 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
     override fun stopPush() {
         try {
-            mAliVcLivePusher?.stopPush()
-            mCountDownTimer?.stop()
+            if (mAliVcLivePusher?.isPushing == true) {
+                mAliVcLivePusher?.stopPush()
+                mTimer?.stop()
+            }
         } catch (e: Exception) {
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
@@ -146,7 +153,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         try {
             if (mAliVcLivePusher?.isPushing == true) {
                 mAliVcLivePusher?.resumeAsync()
-                mCountDownTimer?.start()
+                mTimer?.start()
             }
         } catch (e: java.lang.IllegalStateException) {
             if (GlobalConfig.DEBUG) {
@@ -162,7 +169,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     override fun pause() {
         try {
             if (mAliVcLivePusher?.isPushing == true) {
-                mCountDownTimer?.stop()
+                mTimer?.pause()
                 mAliVcLivePusher?.pause()
             }
         } catch (e: java.lang.IllegalStateException) {
@@ -175,7 +182,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     override fun destroy() {
         try {
             if (mAliVcLivePusher?.isPushing == true) {
-                mCountDownTimer?.stop()
+                mTimer?.pause()
             }
             mAliVcLivePusher?.destroy()
         } catch (e: java.lang.IllegalStateException) {
@@ -189,8 +196,20 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     }
 
     override fun addMaxStreamDuration(millis: Long) {
-        this.mCountDownTimer = PlayPusherCountDownTimer(builder.context, millis)
-        this.mCountDownTimer?.addCallback(mCountDownTimerListener)
+        this.mTimer = PlayPusherTimer(builder.context, millis)
+        this.mTimer?.addCallback(object: PlayPusherTimerListener {
+            override fun onCountDownActive(
+                    elapsedTime: String,
+                    minutesUntilFinished: Long,
+                    secondsUntilFinished: Long
+            ) {
+                _observableInfoState.postValue(PlayPusherInfoState.Active(elapsedTime, minutesUntilFinished, secondsUntilFinished))
+            }
+
+            override fun onCountDownFinish() {
+                _observableInfoState.postValue(PlayPusherInfoState.Finish)
+            }
+        })
     }
 
     override fun getObservablePlayPusherInfoState(): LiveData<PlayPusherInfoState> {
@@ -218,22 +237,9 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         }
     }
 
-    private val mCountDownTimerListener = object: PlayPusherCountDownTimerListener {
-
-        override fun onCountDownActive(millisUntilFinished: Long) {
-            _observableInfoState.value  = PlayPusherInfoState.Active(millisUntilFinished)
-        }
-
-        override fun onCountDownFinish() {
-            stopPush()
-            _observableInfoState.value = PlayPusherInfoState.Finish
-        }
-
-    }
-
     private val mAliVcLivePushNetworkListener = object: AlivcLivePushNetworkListener {
         override fun onNetworkRecovery(pusher: AlivcLivePusher?) {
-            _observableNetworkState.value = PlayPusherNetworkState.Recover
+            _observableNetworkState.postValue(PlayPusherNetworkState.Recover)
         }
 
         override fun onSendMessage(pusher: AlivcLivePusher?) {
@@ -246,14 +252,14 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         }
 
         override fun onConnectFail(pusher: AlivcLivePusher?) {
-            _observableNetworkState.value = PlayPusherNetworkState.Loss
+            _observableNetworkState.postValue(PlayPusherNetworkState.Loss)
         }
 
         override fun onReconnectStart(pusher: AlivcLivePusher?) {
         }
 
         override fun onReconnectSucceed(pusher: AlivcLivePusher?) {
-            _observableNetworkState.value = PlayPusherNetworkState.Recover
+            _observableNetworkState.postValue(PlayPusherNetworkState.Recover)
         }
 
         override fun onPushURLAuthenticationOverdue(pusher: AlivcLivePusher?): String {
@@ -261,7 +267,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         }
 
         override fun onNetworkPoor(pusher: AlivcLivePusher?) {
-            _observableNetworkState.value = PlayPusherNetworkState.Poor
+            _observableNetworkState.postValue(PlayPusherNetworkState.Poor)
         }
 
     }

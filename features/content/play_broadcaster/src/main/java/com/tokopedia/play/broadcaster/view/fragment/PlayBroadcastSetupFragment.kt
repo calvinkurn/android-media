@@ -4,20 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
-import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayFollowerItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
+import com.tokopedia.play.broadcaster.util.doOnPreDraw
 import com.tokopedia.play.broadcaster.view.adapter.PlayFollowersAdapter
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSetupViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayPrepareBroadcastViewModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -26,12 +26,11 @@ import javax.inject.Inject
 /**
  * Created by jegul on 20/05/20
  */
-class PlayPrepareBroadcastFragment @Inject constructor(
-        private val viewModelFactory: ViewModelFactory,
-        private val fragmentFactory: FragmentFactory
+class PlayBroadcastSetupFragment @Inject constructor(
+        private val viewModelFactory: ViewModelFactory
 ) : PlayBaseBroadcastFragment() {
 
-    private lateinit var viewModel: PlayPrepareBroadcastViewModel
+    private lateinit var viewModel: PlayBroadcastSetupViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
     private lateinit var btnSetup: UnifyButton
@@ -43,14 +42,13 @@ class PlayPrepareBroadcastFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayPrepareBroadcastViewModel::class.java)
+        viewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastSetupViewModel::class.java)
         parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_play_prepare_broadcast, container, false)
+        return inflater.inflate(R.layout.fragment_play_broadcast_setup, container, false)
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -73,21 +71,23 @@ class PlayPrepareBroadcastFragment @Inject constructor(
     }
 
     private fun setupView(view: View) {
-        broadcastCoordinator.setupTitle(getString(R.string.play_status_bar_prepare_title))
+        broadcastCoordinator.setupTitle(getString(R.string.play_action_bar_prepare_title))
         btnSetup.setOnClickListener {
-             openBroadcastSetupPage()
+//             openBroadcastSetupPage()
             // TODO("for testing live")
-//            doCreateChannel()
+            doCreateChannel()
         }
 
         rvFollowers.adapter = followersAdapter
-        rvFollowers.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
-            override fun onPreDraw(): Boolean {
-                if (rvFollowers.itemDecorationCount == 0) rvFollowers.addItemDecoration(PlayFollowerItemDecoration())
-                rvFollowers.viewTreeObserver.removeOnPreDrawListener(this)
-                return true
-            }
-        })
+        rvFollowers.doOnPreDraw {
+            if (rvFollowers.itemDecorationCount == 0)
+                rvFollowers.addItemDecoration(PlayFollowerItemDecoration())
+        }
+    }
+
+    override fun onBackPressed(): Boolean {
+        showDialogWhenActionClose()
+        return true
     }
 
     private fun doCreateChannel() {
@@ -101,16 +101,32 @@ class PlayPrepareBroadcastFragment @Inject constructor(
 
     private fun openBroadcastSetupPage() {
         val setupClass = PlayBroadcastSetupBottomSheet::class.java
-        val setupFragment = fragmentFactory.instantiate(setupClass.classLoader!!, setupClass.name) as PlayBroadcastSetupBottomSheet
+        val fragmentFactory = childFragmentManager.fragmentFactory
+        val setupFragment = fragmentFactory.instantiate(requireContext().classLoader, setupClass.name) as PlayBroadcastSetupBottomSheet
         setupFragment.show(childFragmentManager)
     }
 
     private fun openBroadcastLivePage(channelInfo: ChannelInfoUiModel) {
-        broadcastCoordinator.navigateToFragment(PlayLiveBroadcastFragment::class.java,
+        broadcastCoordinator.navigateToFragment(PlayBroadcastUserInteractionFragment::class.java,
                 Bundle().apply {
-                    putString(PlayLiveBroadcastFragment.KEY_CHANNEL_ID, channelInfo.channelId)
-                    putString(PlayLiveBroadcastFragment.KEY_INGEST_URL, channelInfo.ingestUrl)
+                    putString(PlayBroadcastUserInteractionFragment.KEY_CHANNEL_ID, channelInfo.channelId)
+                    putString(PlayBroadcastUserInteractionFragment.KEY_INGEST_URL, channelInfo.ingestUrl)
                 })
+    }
+
+    private fun showDialogWhenActionClose() {
+        activity?.let {
+            DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.play_prepare_broadcast_dialog_end_title))
+                setDescription(getString(R.string.play_prepare_broadcast_dialog_end_desc))
+                setPrimaryCTAText(getString(R.string.play_prepare_broadcast_dialog_end_primary))
+                setSecondaryCTAText(getString(R.string.play_prepare_broadcast_dialog_end_secondary))
+                setPrimaryCTAClickListener { this.dismiss() }
+                setSecondaryCTAClickListener {
+                    it.finish()
+                }
+            }.show()
+        }
     }
 
     //region observe

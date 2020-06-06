@@ -32,7 +32,7 @@ object PlayBroadcastMocker {
      */
     fun getMockEtalaseList() = List(6) {
         PlayEtalaseUiModel(
-                id = it + 1L,
+                id = (it + 1L).toString(),
                 name = "Etalase ${it + 1}",
                 productMap = mutableMapOf(),
                 totalProduct = (it + 1) * 100,
@@ -63,7 +63,7 @@ object PlayBroadcastMocker {
         val fullText = "$keyword$suggestionText"
         SearchSuggestionUiModel(
                 queriedText = keyword,
-                suggestionText = suggestionText,
+                suggestedText = fullText,
                 spannedSuggestion = SpannableStringBuilder(fullText).apply {
                     setSpan(StyleSpan(Typeface.BOLD), fullText.indexOf(suggestionText), fullText.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
                 }
@@ -74,9 +74,9 @@ object PlayBroadcastMocker {
             isUserWhitelisted = true,
             isHaveOnGoingLive = false,
             isOfficial = false,
-            channelId = "",
+            channelId = "1",
             maxTaggedProduct = 15,
-            maxLiveStreamDuration = (60*1000)*30,
+            maxLiveStreamDuration = (1000*60)*6,
             countDownDuration = 10
     )
 
@@ -96,11 +96,11 @@ object PlayBroadcastMocker {
     )
 
     fun getSummary(): SummaryUiModel {
-        val infos = List(7) { SummaryUiModel.LiveInfo("", "Description $it", (it * 30).toString()) }
         val tickerContent = SummaryUiModel.TickerContent("Live Streaming Berakhir", "Waktu live streaming kamu sudah 30 menit", true)
         return SummaryUiModel(coverImage = "",
                 tickerContent = tickerContent ,
                 liveTitle = "Sneakers Hypebeast with Cashback 10%",
-                liveDuration = "28:42", liveInfos = infos, finishRedirectUrl = "")
+                liveDuration = "28:42",
+                finishRedirectUrl = "")
     }
 }

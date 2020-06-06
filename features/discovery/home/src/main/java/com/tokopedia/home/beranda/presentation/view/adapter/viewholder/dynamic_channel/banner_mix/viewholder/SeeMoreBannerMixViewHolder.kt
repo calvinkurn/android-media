@@ -22,7 +22,7 @@ class SeeMoreBannerMixViewHolder(view: View,
     private val bannerMixArrow: ImageView by lazy { view.findViewById<ImageView>(R.id.banner_mix_arrow) }
     private val container: View by lazy { view.findViewById<View>(R.id.container_banner_mix_more) }
     private val bannerBackgroundImage: ImageView by lazy { view.findViewById<ImageView>(R.id.background_banner_mix_more)}
-    private val seeMoreText: Typography by lazy { view.findViewById<Typography>(R.id.see_more)}
+    private val seeMoreText: Typography by lazy { view.findViewById<Typography>(R.id.tv_dc_mix_see_more)}
     private val cardBannerSeeMore: CardView by lazy { view.findViewById<CardView>(R.id.card_see_more_banner_mix) }
 
     override fun bind(seeMoreBannerMixDataModel: SeeMoreBannerMixDataModel) {

@@ -65,7 +65,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
     val selectedProductList: List<ProductContentUiModel>
         get() = observableSelectedProducts.value.orEmpty()
 
-    private val etalaseMap = mutableMapOf<Long, PlayEtalaseUiModel>()
+    private val etalaseMap = mutableMapOf<String, PlayEtalaseUiModel>()
     private val productsMap = mutableMapOf<Long, ProductContentUiModel>()
     private val selectedProductIdList = mutableListOf<Long>()
 
@@ -81,13 +81,12 @@ class PlayEtalasePickerViewModel @Inject constructor(
         job.cancelChildren()
     }
 
-    fun loadEtalaseProducts(etalaseId: Long, page: Int) {
+    fun loadEtalaseProducts(etalaseId: String, page: Int) {
         val currentValue = _observableSelectedEtalase.value?.currentValue
         val etalase = etalaseMap[etalaseId]
         _observableSelectedEtalase.value = PageResult.Loading(
-                if (page == 1 || currentValue == null) PlayEtalaseUiModel.EMPTY.copy(
-                        name = etalase?.name.orEmpty()
-                ) else currentValue
+                if (page == 1 || currentValue == null) PlayEtalaseUiModel.Empty(name = etalase?.name.orEmpty())
+                else currentValue
         )
 
         scope.launch {
@@ -102,7 +101,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
         updateSelectedProducts()
     }
 
-    fun loadEtalaseProductPreview(etalaseId: Long) {
+    fun loadEtalaseProductPreview(etalaseId: String) {
         scope.launch {
             fetchEtalaseProduct(etalaseId, 1)
             broadcastNewEtalaseList(etalaseMap)
@@ -113,8 +112,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
      * Search
      */
     fun loadSuggestionsFromKeyword(keyword: String) {
-        if (keyword.isEmpty()) _observableSuggestionList.value = emptyList()
-        else searchChannel.offer(keyword)
+        searchChannel.offer(keyword)
     }
 
     fun searchProductsByKeyword(keyword: String, page: Int) {
@@ -159,7 +157,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
         }
     }
 
-    private suspend fun fetchEtalaseProduct(etalaseId: Long, page: Int): PageResult<PlayEtalaseUiModel> = withContext(computationDispatcher) {
+    private suspend fun fetchEtalaseProduct(etalaseId: String, page: Int): PageResult<PlayEtalaseUiModel> = withContext(computationDispatcher) {
         val etalase = etalaseMap[etalaseId]
         return@withContext if (etalase != null) {
             val productListInMap = etalase.productMap[page]
@@ -176,32 +174,27 @@ class PlayEtalasePickerViewModel @Inject constructor(
             } else {
                 //if not yet retrieved
                 val (productList, totalData) = getEtalaseProductsById(etalaseId, page)
-                updateEtalaseMap(etalaseId, productList, page)
-                updateProductMap(productList)
-
-                val newProductMap = etalase.productMap.filterKeys { it <= page }.toMutableMap().also {
-                    it[page] = productList
+                etalase.productMap[page] = productList.map {
+                    it.copy(transitionName = "$etalaseId - ${it.id}")
                 }
+                launch { updateProductMap(productList) }
 
-                val stillHasNextPage = newProductMap.values.size < totalData
+                val stillHasNextPage = etalase.productMap.values.size < totalData
 
                 PageResult(
-                        currentValue = etalase.copy(
-                                productMap = newProductMap,
-                                stillHasProduct = stillHasNextPage
-                        ),
+                        currentValue = etalase.copy(stillHasProduct = stillHasNextPage),
                         state = ResultState.Success(stillHasNextPage)
                 )
             }
         } else {
             PageResult(
-                    currentValue = PlayEtalaseUiModel.EMPTY,
+                    currentValue = PlayEtalaseUiModel.Empty(),
                     state = ResultState.Fail(IllegalStateException("Etalase not found"))
             )
         }
     }
 
-    private suspend fun broadcastNewEtalaseList(etalaseMap: Map<Long, PlayEtalaseUiModel>) {
+    private suspend fun broadcastNewEtalaseList(etalaseMap: Map<String, PlayEtalaseUiModel>) {
         _observableEtalase.value = withContext(computationDispatcher) {
             etalaseMap.values.map { etalase ->
 
@@ -243,21 +236,17 @@ class PlayEtalasePickerViewModel @Inject constructor(
         return@withContext etalaseMap
     }
 
-    private suspend fun updateEtalaseMap(etalaseId: Long, productList: List<ProductContentUiModel>, page: Int) = withContext(computationDispatcher) {
-        etalaseMap[etalaseId]?.productMap?.put(page, productList)
-    }
-
     private suspend fun updateProductMap(newProductList: List<ProductContentUiModel>) = withContext(computationDispatcher) {
         newProductList.associateByTo(productsMap) { it.id }
     }
 
-    private suspend fun getEtalaseProductsById(etalaseId: Long, page: Int) = withContext(ioDispatcher) {
+    private suspend fun getEtalaseProductsById(etalaseId: String, page: Int) = withContext(ioDispatcher) {
         val productList = getProductsInEtalaseUseCase.apply {
             params = GetProductsInEtalaseUseCase.createParams(
                     shopId = userSession.shopId,
                     page = page,
                     perPage = PRODUCTS_PER_PAGE,
-                    etalaseId = etalaseId.toString()
+                    etalaseId = etalaseId
             )
         }.executeOnBackground()
 
@@ -273,7 +262,18 @@ class PlayEtalasePickerViewModel @Inject constructor(
     }
 
     private suspend fun getSearchSuggestions(keyword: String) = withContext(ioDispatcher) {
-        return@withContext if (keyword.isEmpty()) emptyList() else PlayBroadcastMocker.getMockSearchSuggestions(keyword)
+        return@withContext if (keyword.isEmpty()) emptyList() else {
+            val suggestionList = getProductsInEtalaseUseCase.apply {
+                params = GetProductsInEtalaseUseCase.createParams(
+                        shopId = userSession.shopId,
+                        page = 1,
+                        perPage = SEARCH_SUGGESTIONS_PER_PAGE,
+                        keyword = keyword
+                )
+            }.executeOnBackground()
+
+            PlayBroadcasterUiMapper.mapSearchSuggestionList(keyword, suggestionList)
+        }
     }
 
     private suspend fun getProductsByKeyword(keyword: String, page: Int) = withContext(ioDispatcher) {
@@ -296,5 +296,6 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
         private const val MAX_PRODUCT_IMAGE_COUNT = 4
         private const val PRODUCTS_PER_PAGE = 26
+        private const val SEARCH_SUGGESTIONS_PER_PAGE = 30
     }
 }
