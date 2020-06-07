@@ -6,14 +6,16 @@
 
     <LinearLayout
         android:id="@+id/containerPlayTakePicture"
-        android:layout_width="@dimen/play_cover_from_camera_size"
-        android:layout_height="@dimen/play_cover_from_camera_size"
+        android:layout_width="@dimen/play_cover_from_selection_size"
+        android:layout_height="@dimen/play_cover_from_selection_size"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:background="@drawable/bg_play_select_from_camera"
         android:gravity="center"
         android:orientation="vertical"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/rvPlayCoverProduct"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -25,11 +27,12 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPlayCoverProduct"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         app:layout_constraintBottom_toBottomOf="@+id/containerPlayTakePicture"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintLeft_toRightOf="@+id/containerPlayTakePicture"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/containerPlayTakePicture" />

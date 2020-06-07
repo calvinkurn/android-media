@@ -6,7 +6,9 @@ import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
+import android.text.Editable
 import android.text.InputFilter
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,8 +16,10 @@ import androidx.core.text.HtmlCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.ui.model.CoverSourceEnum
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastChooseCoverBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
+import com.tokopedia.play.broadcaster.view.widget.PlayCropImageView
 import com.yalantis.ucrop.callback.BitmapCropCallback
 import com.yalantis.ucrop.model.CropParameters
 import com.yalantis.ucrop.model.ExifInfo
@@ -31,18 +35,31 @@ import javax.inject.Inject
 /**
  * Created by furqan on 02/06/20
  */
-class PlayCoverTitleSetupFragment @Inject constructor() : PlayBaseSetupFragment(), PlayBroadcastChooseCoverBottomSheet.Listener {
+class PlayCoverTitleSetupFragment @Inject constructor()
+    : PlayBaseSetupFragment(), PlayBroadcastChooseCoverBottomSheet.Listener {
 
-    private var imageLeft: Float = 0f
-    private var imageTop: Float = 0f
-    private var imageRight: Float = 0f
-    private var imageBottom: Float = 0f
+    private var selectedImageUrlList = arrayListOf<String>()
+    private var liveTitle: String = ""
+    private var selectedCoverUri: Uri? = null
+    private var coverSource: CoverSourceEnum = CoverSourceEnum.NONE
 
     override fun getScreenName(): String = "Play Cover Title Setup"
 
     override fun onInterceptBackPressed(): Boolean = false
 
     override fun refresh() {}
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        savedInstanceState?.let {
+            selectedImageUrlList = it.getStringArrayList(EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST)
+                    ?: arrayListOf()
+            liveTitle = it.getString(EXTRA_LIVE_TITLE, "") ?: ""
+        } ?: arguments?.let {
+            selectedImageUrlList = it.getStringArrayList(EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST)
+                    ?: arrayListOf()
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_play_cover_title_setup, container, false)
@@ -54,19 +71,28 @@ class PlayCoverTitleSetupFragment @Inject constructor() : PlayBaseSetupFragment(
         setupView()
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        observeLiveData()
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         clearFindViewByIdCache()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putStringArrayList(EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST, selectedImageUrlList)
+        outState.putString(EXTRA_LIVE_TITLE, liveTitle)
+    }
+
     override fun onGetCoverFromCamera(imageUri: Uri?) {
         imageUri?.let {
+            coverSource = CoverSourceEnum.CAMERA
+            showCoverCropLayout()
+            renderCoverCropLayout(it)
+        }
+    }
+
+    override fun onGetCoverFromProduct(imageUrl: Uri?) {
+        imageUrl?.let {
+            coverSource = CoverSourceEnum.PRODUCT
             showCoverCropLayout()
             renderCoverCropLayout(it)
         }
@@ -76,28 +102,46 @@ class PlayCoverTitleSetupFragment @Inject constructor() : PlayBaseSetupFragment(
         containerChangeCover.setOnClickListener {
             onChangeCoverClicked()
         }
+        ivPlayCoverImage.setOnClickListener {
+            onChangeCoverClicked()
+        }
     }
 
     private fun setupView() {
         bottomSheetCoordinator.setupTitle(getString(R.string.play_prepare_cover_title_title))
+        bottomSheetCoordinator.showBottomAction(false)
 
         etPlayCoverTitleText.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N0))
         etPlayCoverTitleText.setHintTextColor(resources.getColor(R.color.play_white_68))
         etPlayCoverTitleText.setSingleLine(false)
+        etPlayCoverTitleText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                liveTitle = text.toString()
+                setupNextButton()
+            }
+        })
         tvPlayCoverTitleLabel.text = HtmlCompat.fromHtml(getString(R.string.play_prepare_cover_title_default_title_label),
                 HtmlCompat.FROM_HTML_MODE_LEGACY)
         etPlayCoverTitleText.hint = getString(R.string.play_prepare_cover_title_default_title_placeholder)
         etPlayCoverTitleText.filters = arrayOf(InputFilter.LengthFilter(MAX_CHARS))
-    }
 
-    private fun observeLiveData() {
+        setupNextButton()
+        setupCoverLabelText()
     }
 
     private fun onChangeCoverClicked() {
-        val changeCoverBottomSheet = PlayBroadcastChooseCoverBottomSheet.getInstance()
+        val changeCoverBottomSheet = PlayBroadcastChooseCoverBottomSheet.getInstance(selectedImageUrlList)
         changeCoverBottomSheet.listener = this
         changeCoverBottomSheet.setShowListener { changeCoverBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
         changeCoverBottomSheet.show(requireFragmentManager(), PlayBroadcastChooseCoverBottomSheet.TAG_CHOOSE_COVER)
+
+        liveTitle = etPlayCoverTitleText.text.toString()
     }
 
     private fun showCoverCropLayout() {
@@ -110,19 +154,30 @@ class PlayCoverTitleSetupFragment @Inject constructor() : PlayBaseSetupFragment(
         containerPlayCoverCropSetup.visibility = View.GONE
     }
 
+    private fun renderCoverTitleLayout(resultImageUri: Uri) {
+        selectedCoverUri = resultImageUri
+        if (liveTitle.isNotEmpty()) etPlayCoverTitleText.setText(liveTitle)
+        ivPlayCoverImage.setImageURI(selectedCoverUri)
+        setupCoverLabelText()
+        setupNextButton()
+    }
+
     private fun renderCoverCropLayout(imageUri: Uri) {
+        containerPlayCoverCropImage.removeAllViews()
+        val ivPlayCoverCropImage = PlayCropImageView(requireContext())
         ivPlayCoverCropImage.setImageUri(imageUri, null)
         ivPlayCoverCropImage.isScaleEnabled = true
         ivPlayCoverCropImage.isRotateEnabled = false
 
+        // need delay until onDraw for overlay is called to get the crop points
+        ivPlayCoverCropImage.post {
+            ivPlayCoverCropImage.layoutParams.height = resources.getDimensionPixelSize(R.dimen.play_cover_height)
+        }
         Handler().postDelayed({
             ivPlayCoverCropImage.setCropRect(ivPlayCoverCropOverlay.getCropRect())
         }, SECONDS)
 
-        imageLeft = ivPlayCoverCropImage.left.toFloat()
-        imageTop = ivPlayCoverCropImage.top.toFloat()
-        imageRight = ivPlayCoverCropImage.right.toFloat()
-        imageBottom = ivPlayCoverCropImage.bottom.toFloat()
+        containerPlayCoverCropImage.addView(ivPlayCoverCropImage)
 
         btnPlayCoverCropNext.setOnClickListener {
             ivPlayCoverCropImage.viewBitmap?.let {
@@ -138,7 +193,8 @@ class PlayCoverTitleSetupFragment @Inject constructor() : PlayBaseSetupFragment(
     }
 
     private fun onImageCropped(resultImageUri: Uri) {
-
+        hideCoverCropLayout()
+        renderCoverTitleLayout(resultImageUri)
     }
 
     /**
@@ -169,7 +225,22 @@ class PlayCoverTitleSetupFragment @Inject constructor() : PlayBaseSetupFragment(
         }
     }
 
+    private fun setupCoverLabelText() {
+        if (selectedCoverUri != null) {
+            tvPlayChangeCoverLabel.text = getString(R.string.play_prepare_cover_title_change_cover_label)
+        } else {
+            tvPlayChangeCoverLabel.text = getString(R.string.play_prepare_cover_title_add_cover_label)
+        }
+    }
+
+    private fun setupNextButton() {
+        btnPlayPrepareBroadcastNext.isEnabled = liveTitle.isNotEmpty() && selectedCoverUri != null
+    }
+
     companion object {
+        const val EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST = "EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST"
+        private const val EXTRA_LIVE_TITLE = "EXTRA_LIVE_TITLE"
+
         private const val DEFAULT_COMPRESS_QUALITY = 90
         private val DEFAULT_COMPRESS_FORMAT = Bitmap.CompressFormat.JPEG
         private const val MAX_CHARS = 38

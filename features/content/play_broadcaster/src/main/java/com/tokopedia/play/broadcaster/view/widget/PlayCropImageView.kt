@@ -9,5 +9,7 @@ import com.yalantis.ucrop.view.GestureCropImageView
  */
 class PlayCropImageView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : GestureCropImageView(context, attrs, defStyleAttr) {
+
     fun getCurrentImageCorners(): FloatArray = mCurrentImageCorners
+
 }

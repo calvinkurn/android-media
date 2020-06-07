@@ -114,6 +114,12 @@ class PlayRectCropImageOverlay @JvmOverloads constructor(context: Context, attrs
     fun getCropRect(): RectF =
             RectF(leftPosition, topPosition, rightPosition, bottomPosition)
 
+    fun getCenterX(): Float =
+            (rightPosition - leftPosition) / 2 + leftPosition
+
+    fun getCenterY(): Float =
+            (bottomPosition - topPosition) / 2 + topPosition
+
     companion object {
         private const val CENTER_RECT_RADIUS = 20f
         private const val STROKE_WIDTH = 10f

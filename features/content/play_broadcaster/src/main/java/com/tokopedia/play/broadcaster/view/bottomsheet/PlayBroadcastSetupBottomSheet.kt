@@ -3,7 +3,6 @@ package com.tokopedia.play.broadcaster.view.bottomsheet
 import android.app.Dialog
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,6 +32,7 @@ import com.tokopedia.play.broadcaster.view.partial.SelectedProductPagePartialVie
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
  * Created by jegul on 26/05/20
@@ -106,6 +106,10 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
             override fun onInventoryIconClicked() {
                 showSelectedProductPage()
             }
+
+            override fun onNextButtonClicked() {
+                showNextPage()
+            }
         })
     }
 
@@ -172,10 +176,6 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         ivBack.setOnClickListener { dialog?.onBackPressed() }
 
         navigateToFragment(PlayEtalasePickerFragment::class.java)
-
-        Handler().postDelayed({
-            navigateToFragment(PlayCoverTitleSetupFragment::class.java)
-        }, 2000)
     }
 
     private fun maxHeight(): Int = getScreenHeight()
@@ -218,6 +218,14 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
 
         selectedProductPage.setSelectedProductList(viewModel.selectedProductList)
         selectedProductPage.show()
+    }
+
+    private fun showNextPage() {
+        val productImageList: ArrayList<String> = ArrayList(viewModel.selectedProductList
+                .map { it.originalImageUrl }.toList())
+        navigateToFragment(PlayCoverTitleSetupFragment::class.java, Bundle().apply {
+            putStringArrayList(PlayCoverTitleSetupFragment.EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST, productImageList)
+        })
     }
 
     //region observe
