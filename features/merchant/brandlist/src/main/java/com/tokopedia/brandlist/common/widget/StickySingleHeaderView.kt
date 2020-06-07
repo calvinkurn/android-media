@@ -109,8 +109,8 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
 
     private fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
         if (mHeaderHeight == -1 || adapter == null || gridLayoutManager == null) return
-        val firstCompletelyVisiblePosition = gridLayoutManager?.findFirstCompletelyVisibleItemPosition() // findFirstCompletelyVisibleItemPositions (null)[0]
-        val firstVisiblePosition = gridLayoutManager?.findFirstVisibleItemPosition()  //findFirstVisibleItemPositions(null)[0]
+        val firstCompletelyVisiblePosition = gridLayoutManager?.findFirstCompletelyVisibleItemPosition()
+        val firstVisiblePosition = gridLayoutManager?.findFirstVisibleItemPosition()
         if (firstCompletelyVisiblePosition != null) {
             if (firstCompletelyVisiblePosition > -1) {
                 val _stickyPosition = 4
