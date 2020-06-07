@@ -21,12 +21,12 @@ object DeeplinkMapperOrder {
     private const val CANCELLED = "order_canceled"
     private const val ALL_ORDER = "all_order"
     private const val FILTER_STATUS_ID = "filter_status_id"
-    private const val FILTER_WAITING_PICKUP = 6
-    private const val FILTER_WAITING_AWB = 8
-    private const val FILTER_AWB_INVALID = 9
-    private const val FILTER_AWB_CHANGE = 10
-    private const val FILTER_RETUR = 11
-    private const val FILTER_COMPLAINT = 13
+    private const val FILTER_WAITING_PICKUP = "6"
+    private const val FILTER_WAITING_AWB = "8"
+    private const val FILTER_AWB_INVALID = "9"
+    private const val FILTER_AWB_CHANGE = "10"
+    private const val FILTER_RETUR = "11"
+    private const val FILTER_COMPLAINT = "13"
 
     fun getRegisteredNavigationOrder(deeplink: String): String {
         return if (deeplink.startsWithPattern(ApplinkConst.SELLER_ORDER_DETAIL)) getRegisteredNavigationOrderInternal(deeplink)

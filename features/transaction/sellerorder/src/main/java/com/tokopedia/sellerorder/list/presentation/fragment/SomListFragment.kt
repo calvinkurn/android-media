@@ -173,7 +173,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         if (arguments != null) {
             tabActive = arguments?.getString(TAB_ACTIVE).toString()
             tabStatus = arguments?.getString(TAB_STATUS).toString()
-            filterStatusId = arguments?.getInt(FILTER_STATUS_ID, 0) ?: 0
+            filterStatusId = arguments?.getString(FILTER_STATUS_ID)?.toIntOrNull() ?: 0
             isFromWidget = arguments?.getBoolean(FROM_WIDGET_TAG)
         }
         loadTicker()
