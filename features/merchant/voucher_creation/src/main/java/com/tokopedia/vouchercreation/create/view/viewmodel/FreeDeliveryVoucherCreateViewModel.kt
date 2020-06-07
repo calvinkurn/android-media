@@ -60,7 +60,13 @@ class FreeDeliveryVoucherCreateViewModel @Inject constructor(
     val freeDeliveryValidationLiveData: LiveData<Result<FreeDeliveryValidation>>
         get() = mFreeDeliveryValidationLiveData
 
-    fun refreshTextFieldValue() {
+    fun refreshTextFieldValue(isEdit: Boolean = false) {
+        if (isEdit) {
+            mIsFirstTimeDraw.value = false
+            mFreeDeliveryAmountLiveData.value?.let { amount ->
+                mVoucherImageValueLiveData.value = VoucherImageType.FreeDelivery(amount)
+            }
+        }
         mIsFirstTimeDraw.value?.let { isFirstTimeDraw ->
             if (!isFirstTimeDraw) {
                 mFreeDeliveryAmountLiveData.value?.let { amount ->

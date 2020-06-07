@@ -89,10 +89,36 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
     private val fragmentStepsHashMap by lazy {
         LinkedHashMap<VoucherCreationStepInfo, Fragment>().apply {
-            put(VoucherCreationStepInfo.STEP_ONE, MerchantVoucherTargetFragment.createInstance(::setVoucherName, ::getPromoCodePrefix, ::getVoucherReviewUiModel, isCreateNew))
-            put(VoucherCreationStepInfo.STEP_TWO, PromotionBudgetAndTypeFragment.createInstance(::setVoucherBenefit, ::getBannerVoucherUiModel, viewModel::setVoucherPreviewBitmap, ::getBannerBaseUiModel, ::onSetShopInfo, ::getVoucherReviewUiModel))
-            put(VoucherCreationStepInfo.STEP_THREE, SetVoucherPeriodFragment.createInstance(::setVoucherPeriod, ::getBannerVoucherUiModel, ::getBannerBaseUiModel, ::onSuccessGetSquareBitmap))
-            put(VoucherCreationStepInfo.STEP_FOUR, ReviewVoucherFragment.createInstance(::getVoucherReviewUiModel, ::getToken, ::getPostBaseUiModel, ::onReturnToStep, ::getBannerBitmap, ::getVoucherId, ::getPromoCodePrefix))
+            put(VoucherCreationStepInfo.STEP_ONE,
+                    MerchantVoucherTargetFragment.createInstance(
+                            ::setVoucherName,
+                            ::getPromoCodePrefix,
+                            ::getVoucherReviewUiModel,
+                            isCreateNew))
+            put(VoucherCreationStepInfo.STEP_TWO,
+                    PromotionBudgetAndTypeFragment.createInstance(
+                            ::setVoucherBenefit,
+                            ::getBannerVoucherUiModel,
+                            viewModel::setVoucherPreviewBitmap,
+                            ::getBannerBaseUiModel,
+                            ::onSetShopInfo,
+                            ::getVoucherReviewUiModel,
+                            isCreateNew))
+            put(VoucherCreationStepInfo.STEP_THREE,
+                    SetVoucherPeriodFragment.createInstance(
+                            ::setVoucherPeriod,
+                            ::getBannerVoucherUiModel,
+                            ::getBannerBaseUiModel,
+                            ::onSuccessGetSquareBitmap))
+            put(VoucherCreationStepInfo.STEP_FOUR,
+                    ReviewVoucherFragment.createInstance(
+                            ::getVoucherReviewUiModel,
+                            ::getToken,
+                            ::getPostBaseUiModel,
+                            ::onReturnToStep,
+                            ::getBannerBitmap,
+                            ::getVoucherId,
+                            ::getPromoCodePrefix))
         }
     }
 
@@ -309,7 +335,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                         createMerchantVoucherViewPager?.currentItem = VoucherCreationStep.REVIEW
                     } else if (isEditVoucher) {
                         intent?.getIntExtra(EDIT_STEP, VoucherCreationStep.REVIEW)?.let { step ->
-                            createMerchantVoucherViewPager?.currentItem = step
+                            viewModel.setStepPosition(step)
                         }
                     }
                 }

@@ -5,6 +5,8 @@ import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.Promoti
 
 class PromotionTypeInputUiModel : Visitable<PromotionTypeBudgetTypeFactory> {
 
+    var isChecked: Boolean = false
+
     override fun type(typeFactory: PromotionTypeBudgetTypeFactory): Int =
             typeFactory.type(this)
 }

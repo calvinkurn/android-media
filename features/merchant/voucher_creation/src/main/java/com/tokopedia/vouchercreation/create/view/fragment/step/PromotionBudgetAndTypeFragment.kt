@@ -2,6 +2,7 @@ package com.tokopedia.vouchercreation.create.view.fragment.step
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.os.Handler
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -46,13 +47,16 @@ class PromotionBudgetAndTypeFragment : BaseCreateMerchantVoucherFragment<Promoti
                            setVoucherBitmap: (Bitmap) -> Unit,
                            getBannerBaseUiModel: () -> BannerBaseUiModel,
                            onSetShopInfo: (String, String) -> Unit,
-                           getVoucherReviewData: () -> VoucherReviewUiModel) = PromotionBudgetAndTypeFragment().apply {
+                           getVoucherReviewData: () -> VoucherReviewUiModel,
+                           isCreateNew: Boolean) = PromotionBudgetAndTypeFragment().apply {
             this.onNextStep = onNext
             this.getVoucherUiModel = getVoucherUiModel
             this.setVoucherBitmap = setVoucherBitmap
             this.getBannerBaseUiModel = getBannerBaseUiModel
             this.onSetShopInfo = onSetShopInfo
             this.getVoucherReviewData = getVoucherReviewData
+            this.isCreateNew = isCreateNew
+            extraWidget = listOf(promotionTypeInputWidget)
         }
     }
 
@@ -73,7 +77,8 @@ class PromotionBudgetAndTypeFragment : BaseCreateMerchantVoucherFragment<Promoti
                 CreateMerchantVoucherStepsActivity.CASHBACK_UNTIL_URL
         )}
     private var onSetShopInfo: (String, String) -> Unit = { _,_ -> }
-    private var getVoucherReviewData: () -> VoucherReviewUiModel = { VoucherReviewUiModel() }
+    private var getVoucherReviewData: () -> VoucherReviewUiModel? = { null }
+    private var isCreateNew: Boolean = true
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -89,7 +94,17 @@ class PromotionBudgetAndTypeFragment : BaseCreateMerchantVoucherFragment<Promoti
     }
 
     private val promotionTypeInputWidget by lazy {
-        PromotionTypeInputUiModel()
+        PromotionTypeInputUiModel().apply {
+            if (!isCreateNew) {
+                getVoucherReviewData()?.run {
+                    isChecked = when(voucherType) {
+                        is VoucherImageType.FreeDelivery -> false
+                        is VoucherImageType.Rupiah -> true
+                        is VoucherImageType.Percentage -> true
+                    }
+                }
+            }
+        }
     }
 
     private val generalExpensesInfoBottomSheetFragment by lazy {
@@ -109,8 +124,7 @@ class PromotionBudgetAndTypeFragment : BaseCreateMerchantVoucherFragment<Promoti
 
     private var tempVoucherType: VoucherImageType = VoucherImageType.FreeDelivery(0)
 
-    override var extraWidget: List<Visitable<PromotionTypeBudgetTypeFactory>> =
-            listOf(promotionTypeInputWidget)
+    override var extraWidget: List<Visitable<PromotionTypeBudgetTypeFactory>> = listOf()
 
     override fun onResume() {
         bannerVoucherUiModel = getVoucherUiModel()
@@ -125,7 +139,15 @@ class PromotionBudgetAndTypeFragment : BaseCreateMerchantVoucherFragment<Promoti
     override fun onFinishRenderInitial() {}
 
     override fun getAdapterTypeFactory(): PromotionTypeBudgetAdapterTypeFactory =
-            PromotionTypeBudgetAdapterTypeFactory(this, onNextStep, ::onShouldChangeBannerValue)
+            PromotionTypeBudgetAdapterTypeFactory(
+                    this,
+                    onNextStep,
+                    ::onShouldChangeBannerValue,
+                    if(isCreateNew) {
+                        { null }
+                    } else {
+                        getVoucherReviewData
+                    })
 
     override fun onItemClicked(t: Visitable<CreateVoucherTypeFactory>?) {}
 
@@ -223,7 +245,7 @@ class PromotionBudgetAndTypeFragment : BaseCreateMerchantVoucherFragment<Promoti
                 is VoucherImageType.FreeDelivery -> getBannerBaseUiModel().freeDeliveryLabelUrl
                 else -> getBannerBaseUiModel().cashbackLabelUrl
             }
-            activity?.runOnUiThread {
+            Handler().post {
                 if (voucherImageType is VoucherImageType.Percentage) {
                     bannerInfo?.setPreviewInfo(voucherImageType, labelUrl, getBannerBaseUiModel().cashbackUntilLabelUrl)
                 } else {

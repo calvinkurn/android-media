@@ -26,6 +26,7 @@ import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.GeneralExpensesInfoBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeItemAdapterFactory
 import com.tokopedia.vouchercreation.create.view.uimodel.NextButtonUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.PromotionTypeInputListUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.PromotionTypeTickerUiModel
 import com.tokopedia.vouchercreation.create.view.viewmodel.FreeDeliveryVoucherCreateViewModel
@@ -37,10 +38,12 @@ class FreeDeliveryVoucherCreateFragment: BaseListFragment<Visitable<*>, Promotio
         @JvmStatic
         fun createInstance(onNextStep: (VoucherImageType, Int, Int) -> Unit,
                            onShouldChangeBannerValue: (VoucherImageType) -> Unit = {},
-                           context: Context) = FreeDeliveryVoucherCreateFragment().apply {
+                           context: Context,
+                           getVoucherReviewUiModel: () -> VoucherReviewUiModel?) = FreeDeliveryVoucherCreateFragment().apply {
             this.onNextStep = onNextStep
             this.onShouldChangeBannerValue = onShouldChangeBannerValue
             viewContext = context
+            this.getVoucherReviewUiModel = getVoucherReviewUiModel
         }
 
         private const val TICKER_INDEX_POSITION = 0
@@ -48,6 +51,7 @@ class FreeDeliveryVoucherCreateFragment: BaseListFragment<Visitable<*>, Promotio
     private var onNextStep: (VoucherImageType, Int, Int) -> Unit = { _,_,_ -> }
     private var onShouldChangeBannerValue: (VoucherImageType) -> Unit = {}
     private var viewContext = context
+    private var getVoucherReviewUiModel: () -> VoucherReviewUiModel? = { null }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -71,21 +75,40 @@ class FreeDeliveryVoucherCreateFragment: BaseListFragment<Visitable<*>, Promotio
     }
 
     private val freeDeliveryAmountTextFieldModel by lazy {
-        PromotionTypeUiListStaticDataSource.getFreeDeliveryAmountTextFieldUiModel(::onTextFieldValueChanged, ::onSetErrorMessage)
+        PromotionTypeUiListStaticDataSource.getFreeDeliveryAmountTextFieldUiModel(::onTextFieldValueChanged, ::onSetErrorMessage).apply {
+            getVoucherReviewUiModel()?.let { data ->
+                if (data.voucherType is VoucherImageType.FreeDelivery) {
+                    currentValue = data.voucherType.value
+                }
+            }
+        }
     }
     private val minimumPurchaseTextFieldModel by lazy {
-        PromotionTypeUiListStaticDataSource.getMinimumPurchaseTextFieldUiModel(::onTextFieldValueChanged, ::onSetErrorMessage, PromotionType.FreeDelivery.MinimumPurchase)
+        PromotionTypeUiListStaticDataSource.getMinimumPurchaseTextFieldUiModel(::onTextFieldValueChanged, ::onSetErrorMessage, PromotionType.FreeDelivery.MinimumPurchase).apply {
+            getVoucherReviewUiModel()?.let { data ->
+                if (data.voucherType is VoucherImageType.FreeDelivery) {
+                    currentValue = data.minPurchase
+                }
+            }
+        }
     }
     private val voucherQuotaTextFieldModel by lazy {
-        PromotionTypeUiListStaticDataSource.getVoucherQuotaTextFieldUiModel(::onTextFieldValueChanged, ::onSetErrorMessage, PromotionType.FreeDelivery.VoucherQuota)
+        PromotionTypeUiListStaticDataSource.getVoucherQuotaTextFieldUiModel(::onTextFieldValueChanged, ::onSetErrorMessage, PromotionType.FreeDelivery.VoucherQuota).apply {
+            getVoucherReviewUiModel()?.let { data ->
+                if (data.voucherType is VoucherImageType.FreeDelivery) {
+                    currentValue = data.voucherQuota
+                }
+            }
+        }
     }
 
-    private val freeDeliveryTextFieldsList =
-            listOf(
-                    freeDeliveryAmountTextFieldModel,
-                    minimumPurchaseTextFieldModel,
-                    voucherQuotaTextFieldModel
-            )
+    private val freeDeliveryTextFieldsList by lazy {
+        listOf(
+                freeDeliveryAmountTextFieldModel,
+                minimumPurchaseTextFieldModel,
+                voucherQuotaTextFieldModel
+        )
+    }
 
     private val freeDeliveryTextFieldsUiModel by lazy {
         freeDeliveryTextFieldsList.run {
@@ -147,7 +170,10 @@ class FreeDeliveryVoucherCreateFragment: BaseListFragment<Visitable<*>, Promotio
 
     override fun onResume() {
         super.onResume()
-        viewModel.refreshTextFieldValue()
+        getVoucherReviewUiModel()?.run {
+            viewModel.refreshTextFieldValue(true)
+        }
+
         // We actually don't need to notify adapter data as the data has not been changed
         // But, as we used view pager and each fragment has different height (which will cut some layout when page changes according to previous page),
         // we will notify the adapter to mimic layout refresh

@@ -19,28 +19,30 @@ class CashbackTypePickerViewHolder(itemView: View) : AbstractViewHolder<Cashback
         val LAYOUT = R.layout.mvc_voucher_type_cashback_type
     }
 
-    private val cashbackChipsList by lazy {
-        listOf(
-                CashbackTypeChipUiModel(
-                        cashbackType = CashbackType.Rupiah,
-                        isActive = true
-                ),
-                CashbackTypeChipUiModel(
-                        cashbackType = CashbackType.Percentage,
-                        isActive = false
-                )
-        )
-    }
+    private var cashbackChipsList: List<CashbackTypeChipUiModel> = listOf()
 
-    private val cashbackTypeAdapter by lazy {
-        CashbackTypeAdapter(cashbackChipsList, ::onChipSelected)
-    }
+    private var cashbackTypeAdapter: CashbackTypeAdapter? = null
 
     private var onSelectedType: (CashbackType) -> Unit = {}
 
     override fun bind(element: CashbackTypePickerUiModel) {
+        element.currentActiveType.let { type ->
+            cashbackChipsList = listOf(
+                    CashbackTypeChipUiModel(
+                            cashbackType = CashbackType.Rupiah,
+                            isActive = type is CashbackType.Rupiah
+                    ),
+                    CashbackTypeChipUiModel(
+                            cashbackType = CashbackType.Percentage,
+                            isActive = type is CashbackType.Percentage
+                    )
+            )
+            cashbackTypeAdapter = CashbackTypeAdapter(cashbackChipsList, ::onChipSelected)
+        }
         itemView.cashbackTypeRecyclerView?.run {
-            adapter = cashbackTypeAdapter
+            cashbackTypeAdapter?.run {
+                adapter = this
+            }
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         }
         onSelectedType = element.onSelectedType
@@ -53,6 +55,6 @@ class CashbackTypePickerViewHolder(itemView: View) : AbstractViewHolder<Cashback
                 onSelectedType(cashbackTypeChipUiModel.cashbackType)
             }
         }
-        cashbackTypeAdapter.notifyDataSetChanged()
+        cashbackTypeAdapter?.notifyDataSetChanged()
     }
 }

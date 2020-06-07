@@ -24,7 +24,7 @@ abstract class BaseCreateMerchantVoucherFragment<F : CreateVoucherTypeFactory, W
 
     private var bottomSheetViewArray: SparseArray<BottomSheetUnify> = SparseArray()
 
-    open var extraWidget : List<Visitable<F>> = mutableListOf()
+    open var extraWidget : List<Visitable<F>> = listOf()
 
     @LayoutRes
     open var layoutRes: Int = R.layout.fragment_base_list
