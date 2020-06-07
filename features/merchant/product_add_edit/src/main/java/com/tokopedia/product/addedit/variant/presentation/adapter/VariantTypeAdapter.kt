@@ -11,7 +11,8 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
     : RecyclerView.Adapter<VariantTypeViewHolder>(), VariantTypeViewHolder.OnVariantTypeViewHolderClickListener {
 
     interface OnVariantTypeClickListener {
-        fun onVariantTypeClicked(selectedVariantDetails: List<VariantDetail>)
+        fun onVariantTypeSelected(adapterPosition: Int, variantDetail: VariantDetail)
+        fun onVariantTypeDeselected(adapterPosition: Int)
     }
 
     private var items: List<VariantDetail> = listOf()
@@ -38,7 +39,16 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
         } else {
             enableUnselectedItem()
         }
-        clickListener.onVariantTypeClicked(getSelectedVariant())
+
+        when (state) {
+            // handle variant type selection
+            VariantTypeViewHolder.ViewHolderState.SELECTED -> {
+                clickListener.onVariantTypeSelected(position, items[position])
+            }
+            // handle variant type deselection
+            VariantTypeViewHolder.ViewHolderState.NORMAL -> clickListener.onVariantTypeDeselected(position)
+            else -> { }
+        }
     }
 
     fun setData(items: List<VariantDetail>) {
@@ -51,17 +61,15 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
         maxSelectedItems = max
     }
 
-    fun getSelectedCount(): Int {
+    fun getItem(position: Int): VariantDetail {
+        return items[position]
+    }
+
+    private fun getSelectedCount(): Int {
         return selectedItems.count { it == VariantTypeViewHolder.ViewHolderState.SELECTED }
     }
 
-    fun getSelectedVariant(): List<VariantDetail> {
-        return items.filterIndexed { index, _ ->
-            selectedItems[index] == VariantTypeViewHolder.ViewHolderState.SELECTED
-        }
-    }
-
-    fun disableUnselectedItem() {
+    private fun disableUnselectedItem() {
         selectedItems.forEachIndexed { index, viewHolderState ->
             if (viewHolderState == VariantTypeViewHolder.ViewHolderState.NORMAL) {
                 selectedItems[index] = VariantTypeViewHolder.ViewHolderState.DISABLED
