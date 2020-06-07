@@ -28,7 +28,7 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
     private var refreshSticky = false
     private var recyclerViewPaddingTop = 0
     private var currentScroll = 0
-    private var headerContainerHeight = 162
+    private val headerContainerHeight = 162
 
     constructor(context: Context?) : super(context) {}
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {}
