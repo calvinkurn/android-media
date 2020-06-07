@@ -48,25 +48,9 @@
                     android:layout_marginLeft="@dimen/layout_lvl1"
                     android:layout_marginTop="@dimen/layout_lvl1"
                     android:layout_marginRight="@dimen/layout_lvl1"
-                    android:layout_marginBottom="@dimen/layout_lvl1"/>
+                    android:layout_marginBottom="@dimen/layout_lvl1" />
 
             </androidx.cardview.widget.CardView>
-
-            <com.tokopedia.common.topupbills.widget.TopupBillsRecentTransactionWidget
-                android:id="@+id/recent_numbers"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/input_number_area"
-                android:layout_marginLeft="@dimen/spacing_lvl4"
-                android:layout_marginRight="@dimen/spacing_lvl4" />
-
-            <com.tokopedia.common.topupbills.widget.TopupBillsPromoListWidget
-                android:id="@+id/promo_widget"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/recent_numbers"
-                android:layout_marginLeft="@dimen/spacing_lvl4"
-                android:layout_marginRight="@dimen/spacing_lvl4" />
 
             <com.tokopedia.design.component.Tabs
                 android:id="@+id/tab_layout"
@@ -75,7 +59,6 @@
                 android:layout_below="@+id/input_number_area"
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 android:theme="@style/ThemeOverlay.AppCompat.Light"
-                android:visibility="gone"
                 app:tabGravity="fill"
                 app:tabIndicatorColor="@color/tkpd_main_green"
                 app:tabMode="fixed"
@@ -89,17 +72,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
                 android:layout_below="@+id/tab_layout"
-                android:background="@color/separator_voucher"
-                android:visibility="gone" />
+                android:background="@color/separator_voucher" />
 
             <com.tokopedia.design.viewpager.WrapContentViewPager
-                android:id="@+id/product_view_pager"
+                android:id="@+id/view_pager"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/separator"
                 android:layout_marginLeft="@dimen/spacing_lvl4"
                 android:layout_marginRight="@dimen/spacing_lvl4"
-                android:visibility="visible"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         </RelativeLayout>

@@ -203,6 +203,11 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         shimmeringListLayout.visibility = View.GONE
     }
 
+    override fun onDestroy() {
+        sharedModelPrepaid.flush()
+        super.onDestroy()
+    }
+
     companion object {
 
         val PRODUCT_TYPE = "product_type"
