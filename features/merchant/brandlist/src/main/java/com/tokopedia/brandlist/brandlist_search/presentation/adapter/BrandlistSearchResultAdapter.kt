@@ -24,7 +24,7 @@ class BrandlistSearchResultAdapter(
 
     private var recyclerView: RecyclerView? = null
     private var onStickySingleHeaderViewListener: OnStickySingleHeaderListener? = null
-    private var isStickyChipsShowed = false
+//    private var isStickyChipsShowed = false
 
     fun getVisitables(): MutableList<Visitable<*>> {
         return visitables
@@ -195,7 +195,7 @@ class BrandlistSearchResultAdapter(
         }
     }
 
-    override fun updateStickyStatus(isStickyShowed: Boolean) {
-        isStickyChipsShowed = isStickyShowed
-    }
+//    override fun updateStickyStatus(isStickyShowed: Boolean) {
+//        isStickyChipsShowed = isStickyShowed
+//    }
 }
