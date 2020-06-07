@@ -28,7 +28,7 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
     private var refreshSticky = false
     private var recyclerViewPaddingTop = 0
     private var currentScroll = 0
-    private var isChipSelected = false
+    private var headerContainerHeight = 162
 
     constructor(context: Context?) : super(context) {}
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {}
@@ -37,8 +37,7 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
     val containerHeight: Int
         get() {
             mHeaderContainer!!.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
-            // return mHeaderContainer?.measuredHeight ?: 0
-            return 162
+            return headerContainerHeight
         }
 
     interface OnStickySingleHeaderAdapter {
@@ -48,7 +47,7 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
         fun bindSticky(viewHolder: RecyclerView.ViewHolder?)
         fun setListener(onStickySingleHeaderViewListener: OnStickySingleHeaderListener?)
         fun updateEtalaseListViewHolderData()
-        fun updateStickyStatus(isStickyShowed: Boolean)
+//        fun updateStickyStatus(isStickyShowed: Boolean)
     }
 
     private fun initView() {
@@ -116,7 +115,7 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
         if (firstCompletelyVisiblePosition != null) {
             if (firstCompletelyVisiblePosition > -1) {
                 val _stickyPosition = 4
-                adapter?.updateStickyStatus(isStickyShowed)
+//                adapter?.updateStickyStatus(isStickyShowed)
                 if (firstCompletelyVisiblePosition >= _stickyPosition && currentScroll >= recyclerViewPaddingTop) { // make the etalase label always visible
                     if (!isStickyShowed || refreshSticky) {
                         showSticky()
@@ -137,46 +136,8 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
         }
     }
 
-
-//    private fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-//        if (mHeaderHeight == -1 || adapter == null || gridLayoutManager == null) return
-//        val firstCompletelyVisiblePosition = gridLayoutManager?.findFirstCompletelyVisibleItemPosition() //findFirstCompletelyVisibleItemPositions (null)[0]
-//        val firstVisiblePosition = gridLayoutManager?.findFirstVisibleItemPosition()  //findFirstVisibleItemPositions(null)[0]
-//        if  (firstCompletelyVisiblePosition != null) {
-//            if (firstCompletelyVisiblePosition > -1) {
-//                val _stickyPosition = 4
-//                adapter?.updateStickyStatus(isStickyShowed)
-//                if (firstCompletelyVisiblePosition >= _stickyPosition && currentScroll >= recyclerViewPaddingTop) { // make the etalase label always visible
-//                    if (!isStickyShowed || refreshSticky) {
-//                        showSticky()
-//                        mHeaderContainer?.visibility = View.VISIBLE
-//                        refreshSticky = false
-//                    }
-//                    if (firstVisiblePosition == stickyPosition) {
-//                        adapter?.updateEtalaseListViewHolderData()
-//                    }
-//                } else { // make the etalase label always gone
-//                    if (isStickyShowed || refreshSticky) {
-//                        if (!isChipSelected) {
-//                            clearHeaderView()
-//                            mHeaderContainer?.visibility = View.GONE
-//
-//                        } else {
-//                            adapter?.updateEtalaseListViewHolderData()
-//                        }
-//                        refreshSticky = false
-//                    }
-//                }
-//            }
-//        }
-//    }
-
     override val isStickyShowed: Boolean
         get() = mHeaderContainer?.let { it.childCount > 0 } ?: false
-
-    override fun setStickyChips(isNeedToSetSticcky: Boolean) {
-        isChipSelected = isNeedToSetSticcky
-    }
 
     private fun showSticky() {
         clearHeaderView()

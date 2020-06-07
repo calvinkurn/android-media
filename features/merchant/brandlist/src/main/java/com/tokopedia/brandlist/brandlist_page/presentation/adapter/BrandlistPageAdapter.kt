@@ -27,7 +27,7 @@ class BrandlistPageAdapter(
 
     private var recyclerView: RecyclerView? = null
     private var onStickySingleHeaderViewListener: OnStickySingleHeaderListener? = null
-    private var isStickyChipsShowed = false
+//    private var isStickyChipsShowed = false
 
     val spanSizeLookup: GridLayoutManager.SpanSizeLookup by lazy {
         object : GridLayoutManager.SpanSizeLookup() {
@@ -51,14 +51,9 @@ class BrandlistPageAdapter(
         return visitables
     }
 
-    fun getStickyChipsShowedStatus(): Boolean {
-        return isStickyChipsShowed
-    }
-
-    fun holdStickyPosition(isNeedToSticky: Boolean) {
-        println(isNeedToSticky)
-        onStickySingleHeaderViewListener?.setStickyChips(isNeedToSticky)
-    }
+//    fun getStickyChipsShowedStatus(): Boolean {
+//        return isStickyChipsShowed
+//    }
 
     fun refreshSticky() {
         if (onStickySingleHeaderViewListener != null) {
@@ -119,7 +114,7 @@ class BrandlistPageAdapter(
         }
     }
 
-    override fun updateStickyStatus(isStickyShowed: Boolean) {
-        isStickyChipsShowed = isStickyShowed
-    }
+//    override fun updateStickyStatus(isStickyShowed: Boolean) {
+//        isStickyChipsShowed = isStickyShowed
+//    }
 }

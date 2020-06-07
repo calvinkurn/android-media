@@ -57,17 +57,6 @@ class BrandlistPageMapper {
             }
         }
 
-//        fun mappingRemoveLoadingBrandRecomm(adapter: BrandlistPageAdapter?) {
-//            val _totalLoadingViewModel: Int = adapter?.getVisitables()?.filterIsInstance<LoadingModel>()?.size
-//                    ?: 0
-//            if (_totalLoadingViewModel > 0) {
-//                adapter?.let {
-//                    it.getVisitables().subList(ALL_BRAND_POSITION, ALL_BRAND_POSITION + 1).clear()
-//                    it.notifyItemRangeRemoved(ALL_BRAND_POSITION, _totalLoadingViewModel)
-//                }
-//            }
-//        }
-
         fun mappingBrandNotFound(
                 allBrand: OfficialStoreAllBrands,
                 isLoadMore: Boolean,
@@ -161,15 +150,6 @@ class BrandlistPageMapper {
             } else if (stateLoadBrands == LoadAllBrandState.LOAD_INITIAL_ALL_BRAND) {
                 getLoadMoreData(allBrand, listener, adapter)
             }
-
-//            adapter?.let {
-//                val _totalLoadingViewModel: Int = it.getVisitables().filterIsInstance<LoadingModel>().size ?: 0
-//                if (_totalLoadingViewModel > 0 && it.getVisitables().size > ALL_BRAND_POSITION) {
-//                    val _position = it.getVisitables().indexOf(LoadingModel())
-//                    it.getVisitables().remove(LoadingModel())
-//                    it.notifyItemRangeRemoved(_position, _totalLoadingViewModel)
-//                }
-//            }
         }
 
         private fun getLoadMoreData(allBrand: OfficialStoreAllBrands,
