@@ -132,21 +132,6 @@ class BrandlistPageFragment :
         adapter = BrandlistPageAdapter(adapterTypeFactory, this)
         recyclerView?.adapter = adapter
         recyclerView?.addItemDecoration(MarginItemDecoration(resources.getDimension(R.dimen.dp_16).toInt()))
-//        layoutManager?.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-//            override fun getSpanSize(position: Int): Int {
-//                val _visitables = adapter?.getVisitables()
-//                _visitables?.let {
-//                    if (_visitables[position].type(adapterTypeFactory) == AllBrandViewHolder.LAYOUT) {
-//
-//                    } else if () {
-//
-//                    } else {
-//                        return BRANDLIST_GRID_SPAN_COUNT
-//                    }
-//                }
-//                return BRANDLIST_GRID_SPAN_COUNT
-//            }
-//        }
         layoutManager?.spanSizeLookup = adapter?.spanSizeLookup
 
         recyclerView?.addOnScrollListener(endlessScrollListener)
@@ -439,7 +424,6 @@ class BrandlistPageFragment :
         recyclerViewLastState = recyclerViewState
         isChipSelected = true
 
-//        val _isStickyShowed = adapter?.getStickyChipsShowedStatus() ?: false
         showLoadingBrandRecom()
         adapter?.showLoading()
 

@@ -47,7 +47,6 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
         fun bindSticky(viewHolder: RecyclerView.ViewHolder?)
         fun setListener(onStickySingleHeaderViewListener: OnStickySingleHeaderListener?)
         fun updateEtalaseListViewHolderData()
-//        fun updateStickyStatus(isStickyShowed: Boolean)
     }
 
     private fun initView() {
@@ -115,7 +114,6 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
         if (firstCompletelyVisiblePosition != null) {
             if (firstCompletelyVisiblePosition > -1) {
                 val _stickyPosition = 4
-//                adapter?.updateStickyStatus(isStickyShowed)
                 if (firstCompletelyVisiblePosition >= _stickyPosition && currentScroll >= recyclerViewPaddingTop) { // make the etalase label always visible
                     if (!isStickyShowed || refreshSticky) {
                         showSticky()
