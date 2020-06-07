@@ -1,5 +1,6 @@
 package com.tokopedia.product.addedit.common.util
 
+import android.os.Handler
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
@@ -56,3 +57,36 @@ fun TextAreaUnify?.replaceTextAndRestoreCursorPosition(text: String) = this?.tex
     setText(text)
     setSelection(cursorPosition.coerceAtMost(text.length))
 }
+
+// for now, TextFieldUnify cannot edit character in the middle of string
+// to enable that, you can use this function
+fun TextFieldUnify?.enableSubstringEditing() {
+    val textFieldInput = this?.textFieldInput
+    textFieldInput?.addTextChangedListener(object : TextWatcher {
+        override fun afterTextChanged(editable: Editable) {}
+
+        override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {}
+
+        override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+            Handler().postDelayed({
+                if (start == 0 && count == 1) {
+                    // handle adding first char of sentences unify setSelection
+                    textFieldInput.setSelection(start + 1)
+                } else if (before > 0 && count == 0) {
+                    // handle removing char unify setSelection
+                    textFieldInput.setSelection(start)
+                } else if (count == 1) {
+                    // handle adding " " char unify setSelection
+                    val addedChar = charSequence?.getOrNull(start).toString()
+                    val addedCharBefore = charSequence?.getOrNull(start - 1).toString()
+
+                    if (addedChar == " " || addedCharBefore == " ") {
+                        textFieldInput.setSelection(start + 1)
+                    }
+                }
+
+            }, 1)
+        }
+    })
+}
+
