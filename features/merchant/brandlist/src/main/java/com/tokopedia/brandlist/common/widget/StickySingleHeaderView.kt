@@ -28,6 +28,7 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
     private var refreshSticky = false
     private var recyclerViewPaddingTop = 0
     private var currentScroll = 0
+    private var isChipSelected = false
 
     constructor(context: Context?) : super(context) {}
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {}
@@ -36,7 +37,8 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
     val containerHeight: Int
         get() {
             mHeaderContainer!!.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
-            return mHeaderContainer?.measuredHeight ?: 0
+            // return mHeaderContainer?.measuredHeight ?: 0
+            return 162
         }
 
     interface OnStickySingleHeaderAdapter {
@@ -102,16 +104,16 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
         mRecyclerView?.addOnScrollListener(onScrollListener)
     }
 
-    private fun convertPixelsToDp(px: Int, context: Context) : Int {
+    private fun convertPixelsToDp(px: Int, context: Context): Int {
         val result = px.toFloat() / (context.getResources().getDisplayMetrics().densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT.toFloat())
         return result.roundToInt()
     }
 
     private fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
         if (mHeaderHeight == -1 || adapter == null || gridLayoutManager == null) return
-        val firstCompletelyVisiblePosition = gridLayoutManager?.findFirstCompletelyVisibleItemPosition() //findFirstCompletelyVisibleItemPositions (null)[0]
+        val firstCompletelyVisiblePosition = gridLayoutManager?.findFirstCompletelyVisibleItemPosition() // findFirstCompletelyVisibleItemPositions (null)[0]
         val firstVisiblePosition = gridLayoutManager?.findFirstVisibleItemPosition()  //findFirstVisibleItemPositions(null)[0]
-        if  (firstCompletelyVisiblePosition != null) {
+        if (firstCompletelyVisiblePosition != null) {
             if (firstCompletelyVisiblePosition > -1) {
                 val _stickyPosition = 4
                 adapter?.updateStickyStatus(isStickyShowed)
@@ -135,8 +137,46 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
         }
     }
 
+
+//    private fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+//        if (mHeaderHeight == -1 || adapter == null || gridLayoutManager == null) return
+//        val firstCompletelyVisiblePosition = gridLayoutManager?.findFirstCompletelyVisibleItemPosition() //findFirstCompletelyVisibleItemPositions (null)[0]
+//        val firstVisiblePosition = gridLayoutManager?.findFirstVisibleItemPosition()  //findFirstVisibleItemPositions(null)[0]
+//        if  (firstCompletelyVisiblePosition != null) {
+//            if (firstCompletelyVisiblePosition > -1) {
+//                val _stickyPosition = 4
+//                adapter?.updateStickyStatus(isStickyShowed)
+//                if (firstCompletelyVisiblePosition >= _stickyPosition && currentScroll >= recyclerViewPaddingTop) { // make the etalase label always visible
+//                    if (!isStickyShowed || refreshSticky) {
+//                        showSticky()
+//                        mHeaderContainer?.visibility = View.VISIBLE
+//                        refreshSticky = false
+//                    }
+//                    if (firstVisiblePosition == stickyPosition) {
+//                        adapter?.updateEtalaseListViewHolderData()
+//                    }
+//                } else { // make the etalase label always gone
+//                    if (isStickyShowed || refreshSticky) {
+//                        if (!isChipSelected) {
+//                            clearHeaderView()
+//                            mHeaderContainer?.visibility = View.GONE
+//
+//                        } else {
+//                            adapter?.updateEtalaseListViewHolderData()
+//                        }
+//                        refreshSticky = false
+//                    }
+//                }
+//            }
+//        }
+//    }
+
     override val isStickyShowed: Boolean
         get() = mHeaderContainer?.let { it.childCount > 0 } ?: false
+
+    override fun setStickyChips(isNeedToSetSticcky: Boolean) {
+        isChipSelected = isNeedToSetSticcky
+    }
 
     private fun showSticky() {
         clearHeaderView()

@@ -440,9 +440,13 @@ class BrandlistPageFragment :
         isChipSelected = true
 
         val _isStickyShowed = adapter?.getStickyChipsShowedStatus() ?: false
-        if (_isStickyShowed) {
-            showLoadingBrandRecom()
-        }
+        adapter?.holdStickyPosition(true)
+//        if (_isStickyShowed) {
+//            showLoadingBrandRecom()
+//        }
+//        showLoadingBrandRecom()
+        BrandlistPageMapper.mappingLoadingBrandRecomm(adapter)
+        adapter?.showLoading()
 
         if (position > 0 && position < 2) {     // Load Semua Brand
             isLoadMore = false
@@ -468,7 +472,7 @@ class BrandlistPageFragment :
         }
     }
 
-    private fun showLoadingBrandRecom() {
-        BrandlistPageMapper.mappingLoadingBrandRecomm(adapter)
-    }
+//    private fun showLoadingBrandRecom() {
+//        BrandlistPageMapper.mappingLoadingBrandRecomm(adapter)
+//    }
 }

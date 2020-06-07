@@ -55,6 +55,11 @@ class BrandlistPageAdapter(
         return isStickyChipsShowed
     }
 
+    fun holdStickyPosition(isNeedToSticky: Boolean) {
+        println(isNeedToSticky)
+        onStickySingleHeaderViewListener?.setStickyChips(isNeedToSticky)
+    }
+
     fun refreshSticky() {
         if (onStickySingleHeaderViewListener != null) {
             recyclerView?.post { onStickySingleHeaderViewListener?.refreshSticky() }
