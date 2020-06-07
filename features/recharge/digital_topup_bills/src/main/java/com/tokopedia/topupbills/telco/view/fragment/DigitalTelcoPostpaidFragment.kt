@@ -8,19 +8,25 @@ import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
+import com.tokopedia.common.topupbills.view.adapter.TopupBillsProductTabAdapter
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment.InputNumberActionType
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
+import com.tokopedia.common.topupbills.widget.TopupBillsWidgetInterface
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.generateRechargeCheckoutToken
@@ -47,6 +53,9 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var enquiryViewModel: DigitalTelcoEnquiryViewModel
     private lateinit var performanceMonitoring: PerformanceMonitoring
     private lateinit var loadingShimmering: LinearLayout
+    private lateinit var viewPager: ViewPager
+    private lateinit var tabLayout: TabLayout
+    private lateinit var separator: View
 
     private var traceStop = false
     private var operatorSelected: RechargePrefix? = null
@@ -80,12 +89,13 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_digital_telco_postpaid, container, false)
         mainContainer = view.findViewById(R.id.main_container)
-        recentNumbersWidget = view.findViewById(R.id.recent_numbers)
         postpaidClientNumberWidget = view.findViewById(R.id.telco_input_number)
-        promoListWidget = view.findViewById(R.id.promo_widget)
         buyWidget = view.findViewById(R.id.buy_widget)
         tickerView = view.findViewById(R.id.ticker_view)
         loadingShimmering = view.findViewById(R.id.loading_telco_shimmering)
+        viewPager = view.findViewById(R.id.view_pager)
+        tabLayout = view.findViewById(R.id.tab_layout)
+        separator = view.findViewById(R.id.separator)
         return view
     }
 
@@ -97,6 +107,26 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         handleFocusClientNumber()
         getCatalogMenuDetail()
         getDataFromBundle(savedInstanceState)
+    }
+
+    override fun renderPromoAndRecommendation() {
+        if (listMenu.size > 0) {
+            val pagerAdapter = TopupBillsProductTabAdapter(listMenu, childFragmentManager)
+            viewPager.adapter = pagerAdapter
+            viewPager.offscreenPageLimit = listMenu.size
+            viewPager.show()
+
+            if (listMenu.size > 1) {
+                tabLayout.show()
+                separator.show()
+                tabLayout.setupWithViewPager(viewPager)
+                (viewPager.getChildAt(0) as TopupBillsWidgetInterface).toggleTitle(false)
+                (viewPager.getChildAt(1) as TopupBillsWidgetInterface).toggleTitle(false)
+            } else {
+                tabLayout.hide()
+                separator.hide()
+            }
+        }
     }
 
     override fun setupCheckoutData() {
@@ -158,11 +188,10 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             }
 
             override fun onClearAutoComplete() {
+                renderPromoAndRecommendation()
                 topupAnalytics.eventClearInputNumber()
 
                 postpaidClientNumberWidget.resetClientNumberPostpaid()
-                recentNumbersWidget.visibility = View.VISIBLE
-                promoListWidget.visibility = View.VISIBLE
                 buyWidget.setVisibilityLayout(false)
             }
 
@@ -205,11 +234,12 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private fun enquirySuccess() {
+        tabLayout.hide()
+        separator.hide()
+        viewPager.hide()
         val enquiryData = (enquiryViewModel.enquiryResult.value as Success).data
         setCheckoutPassData(enquiryData)
         postpaidClientNumberWidget.showEnquiryResultPostpaid(enquiryData)
-        recentNumbersWidget.visibility = View.GONE
-        promoListWidget.visibility = View.GONE
 
         buyWidget.setTotalPrice(enquiryData.enquiry.attributes.price)
         buyWidget.setVisibilityLayout(true)
@@ -290,13 +320,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         } else {
             loadingShimmering.visibility = View.GONE
             mainContainer.visibility = View.VISIBLE
-            recentNumbersWidget.visibility = View.VISIBLE
-            promoListWidget.visibility = View.VISIBLE
         }
-    }
-
-    override fun clickCopyOnPromoCode(promoId: Int) {
-        promoListWidget.notifyPromoItemChanges(promoId)
     }
 
     override fun setInputNumberFromContact(contactNumber: String) {

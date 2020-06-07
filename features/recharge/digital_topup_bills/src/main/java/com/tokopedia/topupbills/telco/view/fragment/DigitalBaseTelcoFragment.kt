@@ -297,8 +297,6 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     protected abstract fun onClickItemRecentNumber(topupBillsRecommendation: TopupBillsRecommendation)
 
-    protected abstract fun clickCopyOnPromoCode(promoId: Int)
-
     protected abstract fun setInputNumberFromContact(contactNumber: String)
 
     protected abstract fun onBackPressed()

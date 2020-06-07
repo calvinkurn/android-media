@@ -291,9 +291,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         telcoClientNumberWidget.setInputNumber(contactNumber)
     }
 
-    override fun clickCopyOnPromoCode(promoId: Int) {
-    }
-
     private fun getProductListData(operatorId: String) {
         sharedModelPrepaid.getCatalogProductList(GraphqlHelper.loadRawString(activity?.resources,
                 R.raw.query_catalog_product_telco), menuId, operatorId)
