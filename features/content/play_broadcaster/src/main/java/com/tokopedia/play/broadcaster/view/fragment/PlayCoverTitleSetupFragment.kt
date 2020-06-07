@@ -40,6 +40,8 @@ class PlayCoverTitleSetupFragment @Inject constructor() : PlayBaseSetupFragment(
 
     override fun getScreenName(): String = "Play Cover Title Setup"
 
+    override fun onInterceptBackPressed(): Boolean = false
+
     override fun refresh() {}
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
