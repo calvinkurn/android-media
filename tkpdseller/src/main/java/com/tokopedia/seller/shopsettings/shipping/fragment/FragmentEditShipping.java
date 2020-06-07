@@ -128,7 +128,6 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
         if (getActivity().getApplicationContext() instanceof LogisticRouter) {
             logisticRouter = (LogisticRouter) getActivity().getApplicationContext();
         }
-        observingTicker();
     }
 
     @Override
@@ -144,6 +143,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     }
 
     private void hideAllView() {
+        chargeBoTicker.setVisibility(View.GONE);
         fragmentShippingHeader.setVisibility(View.GONE);
         addressLayout.setVisibility(View.GONE);
         fragmentShipingMainLayout.setVisibility(View.GONE);
@@ -359,6 +359,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
         else if (getArguments().containsKey(RESUME_OPEN_SHOP_DATA_KEY)) {
             submitButtonCreateShop.setVisibility(View.VISIBLE);
         } else submitButtonCreateShop.setVisibility(View.GONE);
+        showTickerChargeBo();
     }
 
     @Override
@@ -535,7 +536,8 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
                     editShippingPresenter.getShopModel());
         }
     }
-    private void observingTicker(){
+    private void showTickerChargeBo(){
+        chargeBoTicker.setVisibility(View.VISIBLE);
         chargeBoTicker.setTickerTitle(getString(R.string.charge_bo_ticker_title));
         chargeBoTicker.setHtmlDescription(getString(R.string.charge_bo_ticker_content));
         chargeBoTicker.setDescriptionClickEvent(new TickerCallback() {
