@@ -314,7 +314,9 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         val pagerAdapter = TopupBillsProductTabAdapter(listProductTab, childFragmentManager)
         viewPager.adapter = pagerAdapter
         viewPager.offscreenPageLimit = 3
+
         tabLayout.show()
+        separator.show()
         tabLayout.setupWithViewPager(viewPager)
         setTabFromProductSelected()
         showProducts = true
