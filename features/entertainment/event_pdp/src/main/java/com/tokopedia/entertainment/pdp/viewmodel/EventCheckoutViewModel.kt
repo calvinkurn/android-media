@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.entertainment.pdp.data.EventProductDetailEntity
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutBody
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutResponse
+import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventCheckoutMapper.mapToCart
 import com.tokopedia.entertainment.pdp.data.pdp.EventPDPErrorEntity
 import com.tokopedia.entertainment.pdp.network_api.EventCheckoutRepository
 import com.tokopedia.entertainment.pdp.usecase.EventProductDetailUseCase
@@ -81,10 +82,12 @@ class EventCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         }
     }
 
-    fun checkCheckout( cart : Cart?) {
+    fun checkCheckout(cart: Cart?) {
         launchCatchError(block = {
             val data = withContext(dispatcher) {
-                repository.postCheckout(cart)
+                cart?.let {
+                    repository.postCheckout(mapToCart(cart))
+                }
             }
 
             if (data?.data?.status.equals(SUCCESS, true)) {

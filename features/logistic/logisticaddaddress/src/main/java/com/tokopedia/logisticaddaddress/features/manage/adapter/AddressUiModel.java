@@ -193,12 +193,12 @@ public class AddressUiModel implements Visitable<AddressTypeFactory> {
 
     public String getAddressFull() {
         return getReceiverName() + "\n" +
+                getReceiverPhone() + "\n" +
                 getAddressStreet() + "\n" +
                 getDistrictName() + ", " +
                 getCityName() + ", " +
                 getPostalCode() + "\n" +
-                getProvinceName() + "\n" +
-                getReceiverPhone();
+                getProvinceName();
     }
 
     @Override

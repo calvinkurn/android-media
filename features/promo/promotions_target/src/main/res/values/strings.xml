@@ -13,4 +13,5 @@
     <string name="t_promo_apakah_kamu_mau_klaim_kupon_ini">Apakah kamu mau klaim kupon ini?</string>
     <string name="t_promo_kupon_sudah_ada_dihalaman_keranjangmu_ya">Kupon sudah ada dihalaman keranjangmu ya</string>
     <string name="t_promo_belanja_sekarang">Belanja Sekarang</string>
+    <string name="t_promo_login_sekarang">Login Sekarang</string>
 </resources>

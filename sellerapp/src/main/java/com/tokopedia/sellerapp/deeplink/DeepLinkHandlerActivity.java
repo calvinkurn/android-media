@@ -15,8 +15,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.deeplink.CoreDeeplinkModule;
-import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.createpost.view.applink.CreatePostModule;
 import com.tokopedia.createpost.view.applink.CreatePostModuleLoader;
@@ -75,7 +73,6 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
         InboxDeeplinkModule.class,
         TrackingAppLinkModule.class,
         TopChatAppLinkModule.class,
-        CoreDeeplinkModule.class,
         SessionApplinkModule.class,
         ProductDetailApplinkModule.class,
         LoginRegisterApplinkModule.class,
@@ -106,7 +103,6 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new InboxDeeplinkModuleLoader(),
                 new TrackingAppLinkModuleLoader(),
                 new TopChatAppLinkModuleLoader(),
-                new CoreDeeplinkModuleLoader(),
                 new SessionApplinkModuleLoader(),
                 new ProductDetailApplinkModuleLoader(),
                 new LoginRegisterApplinkModuleLoader(),

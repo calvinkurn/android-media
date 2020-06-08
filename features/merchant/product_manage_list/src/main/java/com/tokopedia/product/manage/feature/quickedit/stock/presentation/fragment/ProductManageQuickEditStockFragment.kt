@@ -37,7 +37,6 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
         const val MAXIMUM_LENGTH = 7
         private const val TOGGLE_ACTIVE = "active"
         private const val TOGGLE_NOT_ACTIVE = "not active"
-        private const val SUBMIT_FLAG = true
 
         fun createInstance(context: Context, product: ProductViewModel, onFinishedListener: OnFinishedListener) : ProductManageQuickEditStockFragment {
             return ProductManageQuickEditStockFragment(onFinishedListener, product).apply{
@@ -94,7 +93,7 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
                 }
                 true
             }
-            editText.setOnFocusChangeListener { v, hasFocus ->
+            editText.setOnFocusChangeListener { _, hasFocus ->
                 if(hasFocus) {
                     activity?.let { KeyboardHandler.showSoftKeyboard(it) }
                 } else {
@@ -129,7 +128,7 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
             if(quickEditStockQuantityEditor.editText.text.isEmpty()) {
                 quickEditStockQuantityEditor.setValue(MINIMUM_STOCK)
             }
-            viewModel.updateStock(quickEditStockQuantityEditor.getValue(), SUBMIT_FLAG)
+            viewModel.updateStock(quickEditStockQuantityEditor.getValue())
             onFinishedListener.onFinishEditStock(product)
             removeObservers()
             super.dismiss()
@@ -182,7 +181,6 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
                 && quickEditStockActivateSwitch != null
                 && quickEditStockQuantityEditor != null) {
             zeroStockInfo.visibility = View.VISIBLE
-            quickEditStockActivateSwitch.isEnabled = false
             quickEditStockQuantityEditor.subtractButton.isEnabled = false
         }
     }
@@ -192,8 +190,6 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
                 && quickEditStockActivateSwitch != null
                 && quickEditStockQuantityEditor != null) {
             zeroStockInfo.visibility = View.GONE
-            quickEditStockActivateSwitch.isSelected = true
-            quickEditStockActivateSwitch.isEnabled = true
             quickEditStockQuantityEditor.addButton.isEnabled = true
             quickEditStockQuantityEditor.subtractButton.isEnabled = true
         }

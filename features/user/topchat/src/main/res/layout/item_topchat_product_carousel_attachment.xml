@@ -3,14 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginBottom="@dimen/spacing_lvl1"
-    android:background="@drawable/bg_shadow_attach_product"
-    android:orientation="vertical"
-    android:paddingStart="@dimen/dp_topchat_12"
-    android:paddingLeft="@dimen/dp_topchat_12"
-    android:paddingTop="@dimen/dp_topchat_12"
-    android:paddingEnd="@dimen/dp_topchat_12"
-    android:paddingRight="@dimen/spacing_lvl4"
-    android:paddingBottom="@dimen/dp_topchat_12">
+    android:background="@drawable/bg_shadow_attach_product">
 
     <include layout="@layout/item_topchat_product_card" />
 </androidx.constraintlayout.widget.ConstraintLayout>

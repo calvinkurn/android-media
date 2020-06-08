@@ -73,12 +73,19 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
     }
 
     private fun showHeader() {
-        val profileIndex = preference.profileIndex
-        tvCardHeader?.text = profileIndex
-        if (preference.preference.status == 2) {
-            lblMainPreference?.visible()
+        if (preference.profileRecommendation.isNullOrEmpty()) {
+            val profileIndex = preference.profileIndex
+            tvCardHeader?.text = profileIndex
+            if (preference.preference.status == 2) {
+                lblMainPreference?.visible()
+            } else {
+                lblMainPreference?.gone()
+            }
+            tvChoosePreference?.text = view.context.getString(R.string.label_choose_other_preference)
         } else {
+            tvCardHeader?.text = preference.profileRecommendation
             lblMainPreference?.gone()
+            tvChoosePreference?.text = view.context.getString(R.string.label_create_other_preference)
         }
 
         ivEditPreference?.setOnClickListener {

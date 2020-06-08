@@ -12,6 +12,8 @@ object ProductManageDataLayer {
 
     const val EVENT_NAME = "clickManageProduct"
     const val EVENT_CATEGORY = "product list page"
+    const val EVENT_NAME_EDIT_PRODUCT = "clickEditProduct"
+    const val EVENT_CATEGORY_EDIT_PRODUCT = "edit product page"
 
     const val EVENT_ACTION_CLICK_ADD = "click add product"
     const val EVENT_ACTION_CLICK_MULTIPLE = "click multiple select"
@@ -62,4 +64,9 @@ object ProductManageDataLayer {
 
     const val EVENT_ACTION_CLICK_ON_MORE_OTHERS_FILTER = CLICK_ON_MORE_OTHERS_FILTER
     const val EVENT_ACTION_CLICK_ON_MORE_OTHERS_FILTER_SAVE = "$CLICK_ON_MORE_OTHERS_FILTER - save"
+
+    const val EVENT_ACTION_CLICK_ON_PROMOTION_PAGE = "click back on promotion page"
+    const val EVENT_ACTION_CLICK_CASHBACK_VALUE = "click cashback "
+    const val EVENT_ACTION_CLICK_NO_CASHBACK_VALUE = "click no cashback"
+    const val EVENT_ACTION_CLICK_SAVE_PROMOTION = "click save promotion"
 }

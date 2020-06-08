@@ -10,6 +10,12 @@ import com.tokopedia.gm.common.domain.repository.GMCommonRepository
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.product.manage.common.draft.data.db.AddEditProductDraftDao
+import com.tokopedia.product.manage.common.draft.data.db.AddEditProductDraftDb
+import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepository
+import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepositoryImpl
+import com.tokopedia.product.manage.common.draft.data.db.source.AddEditProductDraftDataSource
+import com.tokopedia.product.manage.common.draft.domain.usecase.GetAllProductsCountDraftUseCase
 import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDB
 import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDB.Companion.getInstance
 import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDao
@@ -20,17 +26,12 @@ import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftP
 import com.tokopedia.product.manage.oldlist.constant.GQL_FEATURED_PRODUCT
 import com.tokopedia.product.manage.oldlist.constant.GQL_UPDATE_PRODUCT
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.GQL_POPUP_NAME
-import com.tokopedia.product.manage.oldlist.domain.BulkUpdateProductUseCase
-import com.tokopedia.product.manage.oldlist.domain.EditFeaturedProductUseCase
-import com.tokopedia.product.manage.oldlist.domain.EditPriceUseCase
-import com.tokopedia.product.manage.oldlist.domain.PopupManagerAddProductUseCase
+import com.tokopedia.product.manage.oldlist.domain.*
 import com.tokopedia.product.manage.oldlist.view.mapper.ProductListMapperView
-import com.tokopedia.product.manage.oldlist.view.presenter.ProductManagePresenter
-import com.tokopedia.product.manage.oldlist.view.presenter.ProductManagePresenterImpl
-import com.tokopedia.product.manage.oldlist.domain.ClearAllDraftProductUseCase
-import com.tokopedia.product.manage.oldlist.domain.FetchAllDraftProductCountUseCase
 import com.tokopedia.product.manage.oldlist.view.presenter.ProductDraftListCountPresenter
 import com.tokopedia.product.manage.oldlist.view.presenter.ProductDraftListCountPresenterImpl
+import com.tokopedia.product.manage.oldlist.view.presenter.ProductManagePresenter
+import com.tokopedia.product.manage.oldlist.view.presenter.ProductManagePresenterImpl
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
@@ -70,10 +71,15 @@ class ProductManageModule {
 
     @Provides
     internal fun providePresenterDraft(fetchAllDraftProductCountUseCase: FetchAllDraftProductCountUseCase?,
+                                       getAllProductsCountDraftUseCase: GetAllProductsCountDraftUseCase,
                                        clearAllDraftProductUseCase: ClearAllDraftProductUseCase?,
                                        updateUploadingDraftProductUseCase: UpdateUploadingDraftProductUseCase?): ProductDraftListCountPresenter {
-        return ProductDraftListCountPresenterImpl(fetchAllDraftProductCountUseCase,
-            clearAllDraftProductUseCase, updateUploadingDraftProductUseCase)
+        return ProductDraftListCountPresenterImpl(
+            fetchAllDraftProductCountUseCase,
+            getAllProductsCountDraftUseCase,
+            clearAllDraftProductUseCase,
+            updateUploadingDraftProductUseCase
+        )
     }
 
     @OldProductManageScope
@@ -203,5 +209,22 @@ class ProductManageModule {
                 context.resources,
                 com.tokopedia.shop.common.R.raw.gql_mutation_gold_manage_featured_product_v2
         )
+    }
+
+    @OldProductManageScope
+    @Provides
+    fun provideProductDraftDb(@ApplicationContext context: Context): AddEditProductDraftDb = AddEditProductDraftDb.getInstance(context)
+
+    @OldProductManageScope
+    @Provides
+    fun provideProductDraftDao(draftDb: AddEditProductDraftDb): AddEditProductDraftDao = draftDb.getDraftDao()
+
+    @OldProductManageScope
+    @Provides
+    fun provideProductDraftRepository(
+        draftDataSource: AddEditProductDraftDataSource,
+        userSession: UserSessionInterface
+    ): AddEditProductDraftRepository {
+        return AddEditProductDraftRepositoryImpl(draftDataSource, userSession)
     }
 }

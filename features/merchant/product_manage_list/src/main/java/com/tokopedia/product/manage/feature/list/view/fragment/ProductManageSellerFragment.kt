@@ -22,7 +22,7 @@ import com.tokopedia.product.manage.oldlist.view.presenter.ProductDraftListCount
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterMapper
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import kotlinx.android.synthetic.main.fragment_product_manage_seller.*
-import java.util.ArrayList
+import java.util.*
 import javax.inject.Inject
 
 class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCountView {
@@ -100,7 +100,7 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
         super.onResume()
         registerDraftReceiver()
         if (isMyServiceRunning(UploadProductService::class.java)) {
-            productDraftListCountPresenter.fetchAllDraftCount()
+            productDraftListCountPresenter.getAllDraftCount()
         } else {
             productDraftListCountPresenter.fetchAllDraftCountWithUpdateUploading()
         }
@@ -127,7 +127,7 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
         draftBroadCastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 if (intent.action == UploadProductService.ACTION_DRAFT_CHANGED) {
-                    productDraftListCountPresenter.fetchAllDraftCount()
+                    productDraftListCountPresenter.getAllDraftCount()
                 }
             }
         }

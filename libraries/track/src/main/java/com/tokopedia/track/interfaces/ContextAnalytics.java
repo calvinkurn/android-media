@@ -83,6 +83,8 @@ public abstract class ContextAnalytics implements Analytics {
 
     public String getCachedClientIDString(){return "";}
 
+    public String getIrisSessionId(){return "";}
+
     public void pushUserId(String userId){}
 
     public void eventOnline(String uid) {}
@@ -100,4 +102,8 @@ public abstract class ContextAnalytics implements Analytics {
                                     @Nullable Map<String, Object> customDimension) { }
     public String getDefferedDeeplinkPathIfExists(){return null;}
 
+
+    @Override
+    public void sendEnhanceEcommerceEvent(String eventName, Bundle value) {
+    }
 }

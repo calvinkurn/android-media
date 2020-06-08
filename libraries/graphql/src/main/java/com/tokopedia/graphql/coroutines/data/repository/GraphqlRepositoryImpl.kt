@@ -39,7 +39,7 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
                     }
                     var responseCloud: GraphqlResponseInternal? = null
                     if (!tempRequestCloud.isNullOrEmpty()) {
-                        responseCloud = getCloudResponse(requests.toMutableList(), cacheStrategy)
+                        responseCloud = getCloudResponse(tempRequestCloud.toMutableList(), cacheStrategy)
                     }
                     responseCloud?.let {
                         responseCache.originalResponse.addAll(it.originalResponse)
@@ -69,6 +69,7 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
     private fun GraphqlResponseInternal.toGraphqlResponse(requests: List<GraphqlRequest>): GraphqlResponse {
         val errors = mutableMapOf<Type, List<GraphqlError>>()
         val tempRequest = requests.regroup(indexOfEmptyCached)
+        mResults.clear()
 
         originalResponse?.forEachIndexed { index, jsonElement ->
             try {

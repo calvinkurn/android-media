@@ -1,5 +1,6 @@
 package com.tokopedia.plugin
 
+import getCommitId
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskAction
@@ -98,7 +99,8 @@ open class ScanProjectTask : DefaultTask() {
     private fun calibratingVersion() {
         try {
             projectToArtifactInfoList.forEach { artifactItem ->
-                artifactItem.value.maxCurrentVersionName = moduleLatestVersionMap[artifactItem.value.artifactId]?.versionName ?: "0.0.0"
+                artifactItem.value.maxCurrentVersionName = moduleLatestVersionMap[artifactItem.value.artifactId]?.versionName
+                    ?: "0.0.0"
                 val currentMaxVersion = artifactItem.value.maxCurrentVersionName.versionToInt(versionConfigMap).first
                 val versionSuffixString = (if (versionSuffix.isNotEmpty()) {
                     "-$versionSuffix"
@@ -106,31 +108,28 @@ open class ScanProjectTask : DefaultTask() {
                 val increasedVersionString = (currentMaxVersion + (versionConfigMap["Step"]
                     ?: 1)).toVersion(versionConfigMap) + versionSuffixString
                 artifactItem.value.increaseVersionString = increasedVersionString
+                println(artifactItem.value.projectName + currentMaxVersion + " - " + increasedVersionString)
             }
         } catch (ignored: Exception) {
 
         }
     }
 
-    fun checkCommitModuleToPublishAndUpdate(){
+    fun checkCommitModuleToPublishAndUpdate() {
         val moduleToPublishEligible = mutableSetOf<String>()
         for (key in moduleToPublishList) {
-            val currentCommitId = getCommitId(key)
+            val currentCommitId = getCommitId(project, key)
+            println("$key - $currentCommitId")
             val artifactId = projectToArtifactInfoList[key]?.artifactId ?: ""
             val commitIdInServer = moduleLatestVersionMap[artifactId]?.commidId ?: ""
             if (currentCommitId != commitIdInServer) {
                 // eligible to publish because the commit id is different
                 moduleToPublishEligible.add(key)
             } else {
-                println ("Module $key is not eligible to Publish because the commit in local and server is same.")
+                println("Module $key is not eligible to Publish because the commit in local and server is same.")
             }
         }
         moduleToPublishList = moduleToPublishEligible
-    }
-
-    fun getCommitId (projectName:String):String {
-        val gitLog = "git log -1 --pretty=format:\'%h\' ${projectName}"
-        return gitLog.runCommand(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
     }
 
     fun Int.toVersion(configMap: Map<String, Int>): String {

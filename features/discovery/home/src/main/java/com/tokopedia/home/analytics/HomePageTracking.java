@@ -6,6 +6,7 @@ import android.content.Context;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
+import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReviewResponse;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel;
@@ -13,6 +14,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemDataModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecommendationTabDataModel;
+import com.tokopedia.home_component.model.ChannelGrid;
+import com.tokopedia.home_component.model.ChannelModel;
+import com.tokopedia.home_component.model.TrackingAttributionModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.track.interfaces.ContextAnalytics;
@@ -41,6 +45,7 @@ public class HomePageTracking {
     public static final String AJUKAN_INI_ITU_CLICK = "ajukan ini itu click";
     public static final String JUAL_INI_ITU_CLICK = "jual ini itu click";
     public static final String LEGO_BANNER_3_IMAGE_CLICK = "lego banner 3 image click";
+    public static final String LEGO_BANNER_4_IMAGE_CLICK = "lego banner 4 image click";
 
     private static final String ACTION_CLICK_POINT = "click point & tier status";
 
@@ -252,7 +257,7 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventEnhancedClickDynamicIconHomePage(Context context, HomeIconItem homeIconItem, int position) {
+    public static void eventEnhancedClickDynamicIconHomePage(Context context, DynamicHomeIcon.DynamicIcon homeIconItem, int position) {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
             tracker.sendEnhanceEcommerceEvent(
@@ -313,14 +318,81 @@ public class HomePageTracking {
         }
     }
 
-    public static Map<String, Object> getEnhanceClickLegoBannerHomePage(DynamicHomeChannel.Grid grid,
-                                                                 DynamicHomeChannel.Channels channel,
-                                                                 int position) {
+    public static Map<String, Object> getEnhanceClickLegoBannerHomePage(ChannelGrid grid,
+                                                                        ChannelModel channel,
+                                                                        int position) {
+        TrackingAttributionModel trackingAttributionModel = channel.getTrackingAttributionModel();
         return DataLayer.mapOf(
                 EVENT, PROMO_CLICK,
                 EVENT_CATEGORY, CATEGORY_HOME_PAGE,
                 EVENT_ACTION, EVENT_ACTION_LEGO_BANNER_CLICK,
                 EVENT_LABEL, grid.getAttribution(),
+                CHANNEL_ID, channel.getId(),
+                ATTRIBUTION, trackingAttributionModel.getGalaxyAttribution(),
+                AFFINITY_LABEL, trackingAttributionModel.getPersona(),
+                GALAXY_CATEGORY_ID, trackingAttributionModel.getCategoryPersona(),
+                SHOP_ID, trackingAttributionModel.getBrandId(),
+                CAMPAIGN_CODE, trackingAttributionModel.getCampaignCode(),
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMO_CLICK, DataLayer.mapOf(
+                                PROMOTIONS, DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                FIELD_ID, channel.getId() + "_" + grid.getId()+ "_" + trackingAttributionModel.getPersoType()+ "_" + trackingAttributionModel.getCategoryId(),
+                                                FIELD_NAME, trackingAttributionModel.getPromoName(),
+                                                FIELD_CREATIVE, grid.getAttribution(),
+                                                FIELD_CREATIVE_URL, grid.getImageUrl(),
+                                                FIELD_POSITION, String.valueOf(position)
+                                        )
+                                )
+                        )
+                )
+        );
+    }
+
+    public static Map<String, Object> getEnhanceClickThreeLegoBannerHomePage(ChannelModel channel,
+                                                                             ChannelGrid grid,
+                                                                             int position) {
+        return DataLayer.mapOf(
+                EVENT, PROMO_CLICK,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, LEGO_BANNER_3_IMAGE_CLICK,
+                EVENT_LABEL, grid.getAttribution(),
+                CHANNEL_ID, channel.getId(),
+                ATTRIBUTION, channel.getTrackingAttributionModel().getGalaxyAttribution(),
+                AFFINITY_LABEL, channel.getTrackingAttributionModel().getPersona(),
+                GALAXY_CATEGORY_ID, channel.getTrackingAttributionModel().getCategoryPersona(),
+                SHOP_ID, channel.getTrackingAttributionModel().getBrandId(),
+                CAMPAIGN_CODE, channel.getTrackingAttributionModel().getCampaignCode(),
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMO_CLICK, DataLayer.mapOf(
+                                PROMOTIONS, DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                FIELD_ID, String.format(
+                                                        FORMAT_4_VALUE_UNDERSCORE,
+                                                        channel.getId(),
+                                                        grid.getId(),
+                                                        channel.getTrackingAttributionModel().getPersoType(),
+                                                        channel.getTrackingAttributionModel().getCategoryId()),
+                                                FIELD_NAME, channel.getTrackingAttributionModel().getPromoName(),
+                                                FIELD_CREATIVE, grid.getAttribution(),
+                                                FIELD_CREATIVE_URL, grid.getImageUrl(),
+                                                FIELD_POSITION, String.valueOf(position)
+                                        )
+                                )
+                        )
+                )
+        );
+    }
+
+    //old tracking for old dynamic lego banner
+    public static Map<String, Object> getEnhanceClickLegoBannerHomePage(DynamicHomeChannel.Grid grid,
+                                                                        DynamicHomeChannel.Channels channel,
+                                                                        int position) {
+        return DataLayer.mapOf(
+                EVENT, PROMO_CLICK,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, EVENT_ACTION_LEGO_BANNER_CLICK,
+                EVENT_LABEL, channel.getId() + " - " + channel.getHeader().getName(),
                 CHANNEL_ID, channel.getId(),
                 ATTRIBUTION, channel.getGalaxyAttribution(),
                 AFFINITY_LABEL, channel.getPersona(),
@@ -343,13 +415,13 @@ public class HomePageTracking {
     }
 
     public static Map<String, Object> getEnhanceClickThreeLegoBannerHomePage(DynamicHomeChannel.Grid grid,
-                                                                      DynamicHomeChannel.Channels channel,
-                                                                      int position) {
+                                                                             DynamicHomeChannel.Channels channel,
+                                                                             int position) {
         return DataLayer.mapOf(
                 EVENT, PROMO_CLICK,
                 EVENT_CATEGORY, CATEGORY_HOME_PAGE,
                 EVENT_ACTION, LEGO_BANNER_3_IMAGE_CLICK,
-                EVENT_LABEL, grid.getAttribution(),
+                EVENT_LABEL, channel.getId() + " - " + channel.getHeader().getName(),
                 CHANNEL_ID, channel.getId(),
                 ATTRIBUTION, channel.getGalaxyAttribution(),
                 AFFINITY_LABEL, channel.getPersona(),
@@ -368,6 +440,41 @@ public class HomePageTracking {
                                                         channel.getCategoryID()),
                                                 FIELD_NAME, channel.getPromoName(),
                                                 FIELD_CREATIVE, grid.getAttribution(),
+                                                FIELD_POSITION, String.valueOf(position)
+                                        )
+                                )
+                        )
+                )
+        );
+    }
+
+    public static Map<String, Object> getEnhanceClickFourLegoBannerHomePage(DynamicHomeChannel.Grid grid,
+                                                                             DynamicHomeChannel.Channels channel,
+                                                                             int position) {
+        return DataLayer.mapOf(
+                EVENT, PROMO_CLICK,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, LEGO_BANNER_4_IMAGE_CLICK,
+                EVENT_LABEL, channel.getId() + " - " + channel.getHeader().getName(),
+                CHANNEL_ID, channel.getId(),
+                ATTRIBUTION, channel.getGalaxyAttribution(),
+                AFFINITY_LABEL, channel.getPersona(),
+                GALAXY_CATEGORY_ID, channel.getCategoryPersona(),
+                SHOP_ID, channel.getBrandId(),
+                CAMPAIGN_CODE, channel.getCampaignCode(),
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMO_CLICK, DataLayer.mapOf(
+                                PROMOTIONS, DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                FIELD_ID, String.format(
+                                                        FORMAT_4_VALUE_UNDERSCORE,
+                                                        channel.getId(),
+                                                        grid.getId(),
+                                                        channel.getPersoType(),
+                                                        channel.getCategoryID()),
+                                                FIELD_NAME, channel.getPromoName(),
+                                                FIELD_CREATIVE, grid.getAttribution(),
+                                                FIELD_CREATIVE_URL, grid.getImageUrl(),
                                                 FIELD_POSITION, String.valueOf(position)
                                         )
                                 )
@@ -421,7 +528,7 @@ public class HomePageTracking {
         map.put(EVENT, EVENT_CLICK_HOME_PAGE);
         map.put(EVENT_CATEGORY, CATEGORY_HOME_PAGE);
         map.put(EVENT_ACTION, ACTION_CLICK_SEE_ALL_LEGO_BANNER_CHANNEL);
-        map.put(EVENT_LABEL, headerName);
+        map.put(EVENT_LABEL, channelId+" - "+headerName);
         map.put(CHANNEL_ID, channelId);
         getTracker().sendGeneralEvent(map);
     }
@@ -444,7 +551,7 @@ public class HomePageTracking {
         map.put(EVENT, EVENT_CLICK_HOME_PAGE);
         map.put(EVENT_CATEGORY, CATEGORY_HOME_PAGE);
         map.put(EVENT_ACTION, ACTION_CLICK_SEE_ALL_LEGO_THREE_IMAGE_BANNER_CHANNEL);
-        map.put(EVENT_LABEL, headerName);
+        map.put(EVENT_LABEL, channelId+" - "+headerName);
         map.put(CHANNEL_ID, channelId);
         getTracker().sendGeneralEvent(map);
     }
@@ -1264,24 +1371,24 @@ public class HomePageTracking {
         return list;
     }
 
-    public static Map<String, Object> getEnhanceClickDynamicIconHomePage(int position, HomeIconItem homeIconItem) {
+    public static Map<String, Object> getEnhanceClickDynamicIconHomePage(int position, DynamicHomeIcon.DynamicIcon homeIconItem) {
         return DataLayer.mapOf(
                 EVENT, PROMO_CLICK,
                 EVENT_CATEGORY, CATEGORY_HOME_PAGE,
                 EVENT_ACTION, EVENT_ACTION_CLICK_ON_DYNAMIC_ICON,
                 EVENT_LABEL, LABEL_EMPTY,
                 ATTRIBUTION, homeIconItem.getGalaxyAttribution(),
-                AFFINITY_LABEL, homeIconItem.getAffinityLabel(),
+                AFFINITY_LABEL, homeIconItem.getPersona(),
                 GALAXY_CATEGORY_ID, homeIconItem.getCategoryPersona(),
-                SHOP_ID, homeIconItem.getShopId(),
+                SHOP_ID, homeIconItem.getBrandId(),
                 ECOMMERCE, DataLayer.mapOf(
                         PROMO_CLICK, DataLayer.mapOf(
                                 PROMOTIONS, DataLayer.listOf(
                                         DataLayer.mapOf(
                                                 FIELD_ID, homeIconItem.getId(),
                                                 FIELD_NAME, VALUE_NAME_DYNAMIC_ICON,
-                                                FIELD_CREATIVE, homeIconItem.getBuIdentifier(),
-                                                FIELD_CREATIVE_URL, homeIconItem.getIcon(),
+                                                FIELD_CREATIVE, homeIconItem.getBu_identifier(),
+                                                FIELD_CREATIVE_URL, homeIconItem.getImageUrl(),
                                                 FIELD_POSITION, String.valueOf(position+1)
                                         )
                                 )
@@ -1310,7 +1417,7 @@ public class HomePageTracking {
         );
     }
 
-    public static Map<String, Object> getEnhanceImpressionDynamicIconHomePage(List<HomeIconItem> homeIconItem) {
+    public static Map<String, Object> getEnhanceImpressionDynamicIconHomePage(List<DynamicHomeIcon.DynamicIcon> homeIconItem) {
         List<Object> list = convertEnhanceDynamicIcon(homeIconItem);
         return DataLayer.mapOf(
                 EVENT, PROMO_VIEW,
@@ -1327,18 +1434,18 @@ public class HomePageTracking {
         );
     }
 
-    private static List<Object> convertEnhanceDynamicIcon(List<HomeIconItem> homeIconItem) {
+    private static List<Object> convertEnhanceDynamicIcon(List<DynamicHomeIcon.DynamicIcon> homeIconItem) {
         List<Object> list = new ArrayList<>();
 
         if (homeIconItem != null) {
             for (int i = 0; i < homeIconItem.size(); i++) {
-                HomeIconItem item = homeIconItem.get(i);
+                DynamicHomeIcon.DynamicIcon item = homeIconItem.get(i);
                 list.add(
                         DataLayer.mapOf(
                                 FIELD_ID, item.getId(),
                                 FIELD_NAME, VALUE_NAME_DYNAMIC_ICON,
-                                FIELD_CREATIVE, item.getBuIdentifier(),
-                                FIELD_CREATIVE_URL, item.getIcon(),
+                                FIELD_CREATIVE, item.getBu_identifier(),
+                                FIELD_CREATIVE_URL, item.getImageUrl(),
                                 FIELD_POSITION, String.valueOf(i + 1)
                         )
                 );

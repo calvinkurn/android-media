@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
@@ -301,7 +302,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     // Tambah dan ubah etalase
     override fun onEditEtalaseClicked() {
         shopPageSettingTracking?.clickAddAndEditEtalase(customDimensionShopPage)
-        RouteManager.route(activity, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ETALASE)
+        RouteManager.route(activity, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
     }
 
     // Pusat bantuan

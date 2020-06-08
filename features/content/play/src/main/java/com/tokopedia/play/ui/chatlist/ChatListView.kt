@@ -87,8 +87,12 @@ class ChatListView(
         view.hide()
     }
 
-    fun showChat(chat: PlayChatUiModel) {
+    fun showNewChat(chat: PlayChatUiModel) {
         chatAdapter.addChat(chat)
+    }
+
+    fun setChatList(chatList: List<PlayChatUiModel>) {
+        chatAdapter.setChatList(chatList)
     }
 
     fun onDestroy() {

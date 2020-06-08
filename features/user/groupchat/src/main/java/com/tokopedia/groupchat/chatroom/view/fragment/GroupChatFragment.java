@@ -174,7 +174,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 scrollToBottom();
             }
         });
-        login = view.findViewById(com.tokopedia.design.R.id.login);
+        login = view.findViewById(R.id.login);
         sprintSaleIconLayout = view.findViewById(R.id.sprintsale_icon_layout);
         sprintSaleText = view.findViewById(R.id.sprintsale_text);
         prepareView();

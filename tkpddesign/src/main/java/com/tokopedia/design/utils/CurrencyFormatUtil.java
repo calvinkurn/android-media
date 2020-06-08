@@ -6,6 +6,8 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 /**
+ * this class is already deprecated, please use CurrencyFormatUtil in libraries/utils
+ *
  * improvement from CurrencyFormatHelper
  * We can format the text without specifying the prefix (Rp/IDR/USD/etc/etc)
  *
@@ -14,7 +16,9 @@ import java.util.Locale;
  * CurrencyFormatUtil.ThousandString thousandString = CurrencyFormatUtil.getThousandSeparatorString(nonNumericString, false, editText.getSelectionStart());
  * editText.setText(thousandString.getFormattedString());
  * editText.setSelection(Math.min(editText.length(), thousandString.getSelection()));
+ *
  */
+@Deprecated
 public class CurrencyFormatUtil {
     private static final NumberFormat dotFormat = NumberFormat.getNumberInstance(new Locale("in", "id"));
     private static final NumberFormat commaFormat = NumberFormat.getNumberInstance(new Locale("en", "US"));
