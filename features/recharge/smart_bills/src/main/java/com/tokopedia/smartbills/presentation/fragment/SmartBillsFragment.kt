@@ -147,6 +147,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                             maximumPrice += bill.amount.toInt()
                         }
                     } else {
+                        hideLoading()
                         // Show empty state
                         tv_smart_bills_title.hide()
                         smart_bills_checkout_view.setVisibilityLayout(false)

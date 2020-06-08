@@ -9,24 +9,17 @@
         android:id="@+id/smart_bills_onboarding_background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scaleType="centerCrop"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:scaleType="fitXY"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_onboarding_bg" />
 
-    <ImageView
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/smart_bills_onboarding_illustration"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginLeft="@dimen/layout_lvl5"
-        android:layout_marginTop="@dimen/layout_lvl5"
-        android:layout_marginRight="@dimen/layout_lvl5"
-        android:src="@drawable/ic_smartbills_onboard"
         app:layout_constraintBottom_toBottomOf="@id/smart_bills_onboarding_background"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:remoteFileName="ic_smartbills_onboard.png" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/smart_bills_onboarding_title"
