@@ -177,6 +177,7 @@ include "features:transaction:purchase_platform"
 include "features:transaction:purchase_platform_common"
 include "features:transaction:cart"
 include "features:transaction:checkout"
+include "features:transaction:promo_checkout_marketplace"
 include "features:transaction:sellerorder"
 
 include "features:user:attachproduct"
