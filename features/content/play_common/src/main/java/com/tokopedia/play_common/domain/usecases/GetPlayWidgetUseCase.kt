@@ -116,7 +116,7 @@ class GetPlayWidgetUseCase(
                 imageUrl = "https://i.ibb.co/Wk4YrQR/imageorang.png",
                 isAutoPlay = true,
                 isAutoRefreshTimer = 10000,
-                isAutoPlayAmount = 1,
+                isAutoPlayAmount = 2,
                 isAutoRefresh = false,
                 channelList = listOf(
                         PlayBannerCarouselOverlayImageDataModel(
