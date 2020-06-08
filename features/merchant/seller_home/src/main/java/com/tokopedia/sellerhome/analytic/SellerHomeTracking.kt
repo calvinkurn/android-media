@@ -1,6 +1,6 @@
 package com.tokopedia.sellerhome.analytic
 
-import com.tokopedia.sellerhome.view.model.CarouselItemUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CarouselItemUiModel
 import com.tokopedia.track.TrackApp
 
 /**
