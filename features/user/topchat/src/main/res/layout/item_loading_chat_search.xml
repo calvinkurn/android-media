@@ -9,4 +9,8 @@
 
     <include layout="@layout/partial_item_shimmering_chat_search" />
 
+    <include layout="@layout/partial_item_shimmering_chat_search" />
+
+    <include layout="@layout/partial_item_shimmering_chat_search" />
+
 </LinearLayout>
