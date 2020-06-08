@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.inbox.pending.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.inbox.pending.data.ProductrevWaitForFeedbackResponseWrapper
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
@@ -49,11 +50,15 @@ class ProductrevWaitForFeedbackUseCase @Inject constructor(graphqlRepository: Gr
         setTypeClass(ProductrevWaitForFeedbackResponseWrapper::class.java)
     }
 
-    fun setParams(filter: String, sort: String, limit: Int, page: Int){
+    fun setParams(filter: String = "", sort: String = "", limit: Int = ReviewInboxConstants.REVIEW_INBOX_DATA_PER_PAGE, page: Int){
         setRequestParams(
                 RequestParams.create().apply {
-                    putString(PARAM_FILTER, filter)
-                    putString(PARAM_SORT, sort)
+                    if(filter.isNotBlank()) {
+                        putString(PARAM_FILTER, filter)
+                    }
+                    if(sort.isNotBlank()) {
+                        putString(PARAM_SORT, sort)
+                    }
                     putInt(PARAM_LIMIT, limit)
                     putInt(PARAM_PAGE, page)
                 }.parameters

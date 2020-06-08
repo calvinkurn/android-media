@@ -25,6 +25,7 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
                 setupStars(reputationId, productId)
             }
             showDate(timestamp.createTimeFormatted)
+            showNew(status.seen)
         }
     }
 
@@ -62,7 +63,7 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
     }
 
     private fun setupStars(reputationId: Int, productId: String) {
-        itemView.reviewStars.apply {
+        itemView.reviewPendingStars.apply {
             resetStars()
             setListener(object : AnimatedReputationView.AnimatedReputationListener {
                 override fun onClick(position: Int) {
@@ -75,5 +76,9 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
 
     private fun showDate(date: String) {
         itemView.reviewPendingDate.setTextAndCheckShow(date)
+    }
+
+    private fun showNew(seen: Boolean) {
+        itemView.reviewPendingNewIcon.showWithCondition(seen)
     }
 }
