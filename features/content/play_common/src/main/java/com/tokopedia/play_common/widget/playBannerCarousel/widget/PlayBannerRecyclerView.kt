@@ -56,8 +56,6 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
      * List of ExoPlayer (now playing)
      */
     private val videoPlayers: MutableList<ViewPlayerModel> = mutableListOf()
-//    private val videoPlayer1: ViewPlayerModel
-//    private val videoPlayer2: ViewPlayerModel
 
 
     /**
@@ -86,57 +84,6 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
                 resetVideoView(view.tag)
             }
         })
-
-        //Create the player using ExoPlayerFactory
-//        val videoPlayer1 = SimpleExoPlayer.Builder(context).build()
-//        val videoPlayer2 = SimpleExoPlayer.Builder(context).build()
-//        videoPlayer1.volume = 0f
-//        videoPlayer2.volume = 0f
-//
-//        this.videoPlayer1 = ViewPlayerModel(videoPlayer1, -1)
-//        this.videoPlayer2 = ViewPlayerModel(videoPlayer2, -1)
-//        videoPlayer1.addListener(object : Player.EventListener {
-//            override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-//                when (playbackState) {
-//                    Player.STATE_BUFFERING -> {
-//                        Log.d(this::class.simpleName, "Player 1 Buffering")
-//                    }
-//                    Player.STATE_ENDED -> {
-//                        this@PlayBannerRecyclerView.videoPlayer1.videoPlayer?.seekTo(0)
-//                    }
-//                    Player.STATE_IDLE -> { }
-//                    Player.STATE_READY -> {
-//                        Log.d(this::class.simpleName, "Player 1 Ready")
-//                        val viewHolder = this@PlayBannerRecyclerView.videoPlayer1.viewHolderParent
-//                        if(viewHolder?.tag is PlayBannerCarouselItemViewHolder){
-//                           viewHolder.thumbnail.hide()
-//                        }
-//                    }
-//                    else -> { }
-//                }
-//            }
-//        })
-//        videoPlayer2.addListener(object : Player.EventListener {
-//            override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-//                when (playbackState) {
-//                    Player.STATE_BUFFERING -> {
-//                        Log.d(this::class.simpleName, "Player 2 Buffering")
-//                    }
-//                    Player.STATE_ENDED -> {
-//                        this@PlayBannerRecyclerView.videoPlayer2.videoPlayer?.seekTo(0)
-//                    }
-//                    Player.STATE_IDLE -> { }
-//                    Player.STATE_READY -> {
-//                        Log.d(this::class.simpleName, "Player 2 Ready")
-//                        val viewHolder = this@PlayBannerRecyclerView.videoPlayer2.viewHolderParent
-//                        if(viewHolder?.tag is PlayBannerCarouselItemViewHolder){
-//                            viewHolder.thumbnail.hide()
-//                        }
-//                    }
-//                    else -> { }
-//                }
-//            }
-//        })
     }
 
     fun playVideos() {
@@ -183,17 +130,6 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
                         playVideo(videoPlayer, playPosition)
                     }
                 }
-//                if(videoPlayer1.position == playPosition || videoPlayer2.position == playPosition){
-//                    /* do nothing skip video */
-//                } else if(!targetPositions.contains(videoPlayer1.position)){
-//                    /* stop previous player if running */
-//                    removeVideoView(videoPlayer1)
-//                    playVideo(videoPlayer1, playPosition)
-//                } else if(!targetPositions.contains(videoPlayer2.position)){
-//                    /* stop previous player if running */
-//                    removeVideoView(videoPlayer2)
-//                    playVideo(videoPlayer2, playPosition)
-//                }
             }
         } catch (exception: Exception) {
             exception.printStackTrace()
@@ -262,17 +198,10 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
                     return
                 }
             }
-//            if(videoPlayer1.viewHolderParent == viewHolder){
-//                removeVideoView(videoPlayer1)
-//            } else if(videoPlayer2.viewHolderParent == viewHolder){
-//                removeVideoView(videoPlayer2)
-//            }
         }
     }
 
     fun releasePlayer() {
-//        videoPlayer1.videoPlayer?.release()
-//        videoPlayer2.videoPlayer?.release()
         for(videoPlayer in videoPlayers){
             videoPlayer.videoPlayer?.release()
         }
@@ -283,8 +212,6 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
         for(videoPlayer in videoPlayers){
             removeVideoView(videoPlayer)
         }
-//        removeVideoView(videoPlayer1)
-//        removeVideoView(videoPlayer2)
     }
 
     fun setMedia(list: List<BasePlayBannerCarouselModel>){
