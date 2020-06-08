@@ -151,9 +151,9 @@ class EditQuotaBottomSheet(parent: ViewGroup) : BottomSheetUnify() {
 
             btnMvcSaveQuota?.run {
                 setOnClickListener {
-                    val textEditQuota = this@with.editMvcQuota?.textFieldInput?.text?.toString()?.toInt()
+                    val textEditQuota = this@with.editMvcQuota?.textFieldInput?.text?.toString()?.toInt() ?: quota
                     if (textEditQuota != quota) {
-                        viewModel.changeQuotaValue(this@voucher.id, this@with.editMvcQuota?.textFieldInput?.text?.toString()?.toInt() ?: quota)
+                        viewModel.changeQuotaValue(this@voucher.id, textEditQuota)
                         isLoading = true
                         isClickable = false
                     } else {
