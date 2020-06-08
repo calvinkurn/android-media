@@ -15,6 +15,7 @@ import com.tokopedia.play_common.R
 import com.tokopedia.play_common.widget.playBannerCarousel.adapter.PlayBannerCarouselAdapter
 import com.tokopedia.play_common.widget.playBannerCarousel.event.PlayBannerCarouselViewEventListener
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
+import com.tokopedia.play_common.widget.playBannerCarousel.extension.setGradientBackground
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.showOrHideView
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.typeFactory.PlayBannerCarouselTypeImpl
@@ -122,16 +123,25 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
     private fun configureBackground(playBannerCarouselDataModel: PlayBannerCarouselDataModel) {
         if (playBannerCarouselDataModel.backgroundUrl.isNotEmpty()) {
             background_loader?.show()
-            parallax_background?.loadImage(playBannerCarouselDataModel.backgroundUrl, object : ImageHandler.ImageLoaderStateListener{
+            parallax_image?.loadImage(playBannerCarouselDataModel.imageUrl, object : ImageHandler.ImageLoaderStateListener{
                 override fun successLoad() {
+                    if(playBannerCarouselDataModel.gradients.isNotEmpty()){
+                        parallax_background?.setGradientBackground(playBannerCarouselDataModel.gradients)
+                    } else {
+                        parallax_background?.loadImage(playBannerCarouselDataModel.backgroundUrl)
+                    }
                     background_loader.hide()
                 }
 
                 override fun failedLoad() {
+                    if(playBannerCarouselDataModel.gradients.isNotEmpty()){
+                        parallax_background?.setGradientBackground(playBannerCarouselDataModel.gradients)
+                    } else {
+                        parallax_background?.loadImage(playBannerCarouselDataModel.backgroundUrl)
+                    }
                     background_loader.hide()
                 }
             })
-            parallax_image?.loadImage(playBannerCarouselDataModel.imageUrl)
         } else {
             background_loader?.hide()
         }

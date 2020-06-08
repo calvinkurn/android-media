@@ -7,7 +7,7 @@ data class PlayBannerCarouselDataModel (
         val subtitle: String = "",
         val seeMoreApplink: String = "",
         val backgroundUrl: String = "",
-        val gradients: List<String> = listOf("#"),
+        val gradients: List<String> = listOf("#ffffff"),
         val imageUrl: String = "",
         val serverTimeOffset: Long = 0L,
         val isAutoRefresh: Boolean = false,
