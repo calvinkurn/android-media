@@ -28,6 +28,7 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.partial.BottomActionPartialView
 import com.tokopedia.play.broadcaster.view.partial.SelectedProductPagePartialView
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSetupViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import java.util.*
 import javax.inject.Inject
@@ -39,6 +40,7 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         private val viewModelFactory: ViewModelFactory
 ) : BottomSheetDialogFragment(), PlayBottomSheetCoordinator {
 
+    private lateinit var parentViewModel: PlayBroadcastSetupViewModel
     private lateinit var viewModel: PlayEtalasePickerViewModel
 
     private lateinit var flFragment: FrameLayout
@@ -78,6 +80,7 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        setStyle(DialogFragment.STYLE_NORMAL, R.style.Style_FloatingBottomSheet)
+        parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastSetupViewModel::class.java)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
     }
 
@@ -104,6 +107,10 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
             override fun onInventoryIconClicked() {
                 showSelectedProductPage()
             }
+
+            override fun onNextButtonClicked() {
+                complete()
+            }
         })
     }
 
@@ -129,6 +136,11 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
 
     fun show(fragmentManager: FragmentManager) {
         show(fragmentManager, TAG)
+    }
+
+    fun complete() {
+        saveCompleteChannel()
+        dismiss()
     }
 
     private fun setupHeader() {
@@ -212,6 +224,14 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
 
         selectedProductPage.setSelectedProductList(viewModel.selectedProductList)
         selectedProductPage.show()
+    }
+
+    private fun saveCompleteChannel() {
+        parentViewModel.saveCompleteChannel(
+                productList = viewModel.selectedProductList,
+                coverUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
+                title = "Klarifikasi Tebak Siapa?"
+        )
     }
 
     //region observe

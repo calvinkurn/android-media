@@ -165,7 +165,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             PlayShareWrapper.doCopyShareLink(requireContext(), channelInfo) {
                 Toaster.make(requireView(),
                         text = getString(R.string.play_live_broadcast_share_link_copied),
-                        type = Toaster.LENGTH_LONG,
+                        duration = Toaster.LENGTH_LONG,
                         actionText =  getString(R.string.play_live_broadcast_share_link_ok))
             }
         }

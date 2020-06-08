@@ -98,6 +98,12 @@ object PlayBroadcastMocker {
             totalLike = "1234"
     )
 
+    fun getLiveStreamingInfo() = LiveStreamInfoUiModel(
+            "1234",
+            ingestUrl = "rtmp://test",
+            streamUrl = "rtmp://test"
+    )
+
     fun getSummary(): SummaryUiModel {
         val tickerContent = SummaryUiModel.TickerContent("Live Streaming Berakhir", "Waktu live streaming kamu sudah 30 menit", true)
         return SummaryUiModel(coverImage = "",
