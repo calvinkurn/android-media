@@ -14,6 +14,10 @@ import kotlinx.android.synthetic.main.layout_autocomplete_double_line_item.view.
 
 class RecentSearchDoubleLineItemViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : RecyclerView.ViewHolder(itemView) {
 
+    companion object {
+        private const val TYPE_SHOP = "shop"
+    }
+
     fun bind(item: BaseItemInitialStateSearch) {
         bindIconImage(item)
         bindIconTitle(item)
@@ -75,15 +79,12 @@ class RecentSearchDoubleLineItemViewHolder(itemView: View, private val clickList
     private fun bindListener(item: BaseItemInitialStateSearch) {
         itemView.actionShortcutButton?.setOnClickListener { _ -> clickListener.onDeleteRecentSearchItem(item.title) }
         itemView.autocompleteDoubleLineItem?.setOnClickListener { _ ->
-            AutocompleteTracking.eventClickRecentSearch(
-                    itemView.context,
-                    String.format(
-                            "value: %s - po: %s - applink: %s",
-                            item.title,
-                            (adapterPosition + 1).toString(),
-                            item.applink
+            when(item.type) {
+                TYPE_SHOP -> AutocompleteTracking.eventClickRecentShop(
+                            itemView.context,
+                            item.productId + " - keyword: " + item.title
                     )
-            )
+            }
             clickListener.onItemClicked(item.applink, item.url)
         }
     }
