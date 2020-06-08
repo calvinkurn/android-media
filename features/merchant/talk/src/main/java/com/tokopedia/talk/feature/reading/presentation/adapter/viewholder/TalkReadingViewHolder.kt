@@ -1,10 +1,8 @@
 package com.tokopedia.talk.feature.reading.presentation.adapter.viewholder
 
 import android.text.Layout
-import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.Spanned
-import android.text.style.ClickableSpan
 import android.text.style.URLSpan
 import android.view.MotionEvent
 import android.view.View
@@ -18,6 +16,7 @@ import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadi
 import com.tokopedia.talk.feature.reading.presentation.widget.ThreadListener
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_talk_reading.view.*
 
 class TalkReadingViewHolder(view: View, private val threadListener: ThreadListener) : AbstractViewHolder<TalkReadingUiModel>(view) {
@@ -59,7 +58,8 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
                 setOnClickListener {
                     threadListener.onThreadClicked(questionId)
                 }
-                content
+                setCustomMovementMethod(fun(link: String) : Boolean {return threadListener.onLinkClicked(link)})
+                HtmlLinkHelper(context, content).spannedString
             }
         }
     }
@@ -121,32 +121,7 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
             itemView.readingMessage.apply {
                 isEnabled = true
                 text = HtmlLinkHelper(context, answer).spannedString
-                setOnTouchListener(object : View.OnTouchListener {
-                    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                        val widget = v as TextView
-                        val text: Any = widget.text
-                        if (text is Spanned) {
-                            val action = event!!.action
-                            if (action == MotionEvent.ACTION_UP
-                                    || action == MotionEvent.ACTION_DOWN) {
-                                var x = event.x.toInt()
-                                var y = event.y.toInt()
-                                x -= widget.totalPaddingLeft
-                                y -= widget.totalPaddingTop
-                                x += widget.scrollX
-                                y += widget.scrollY
-                                val layout: Layout = widget.layout
-                                val line: Int = layout.getLineForVertical(y)
-                                val off: Int = layout.getOffsetForHorizontal(line, x.toFloat())
-                                val link = text.getSpans(off, off, URLSpan::class.java)
-                                if (link.isNotEmpty() && action == MotionEvent.ACTION_UP) {
-                                    return threadListener.onLinkClicked(link.first().url.toString())
-                                }
-                            }
-                        }
-                        return false
-                    }
-                })
+                setCustomMovementMethod(fun(link: String) : Boolean {return threadListener.onLinkClicked(link)})
                 setOnClickListener {
                     threadListener.onThreadClicked(questionId)
                 }
@@ -169,6 +144,35 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
         } else {
             itemView.readingMessage.hide()
         }
+    }
+
+    private fun Typography.setCustomMovementMethod(linkAction: (String) -> Boolean) {
+        setOnTouchListener(object : View.OnTouchListener {
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                val widget = v as TextView
+                val text: Any = widget.text
+                if (text is Spanned) {
+                    val action = event!!.action
+                    if (action == MotionEvent.ACTION_UP
+                            || action == MotionEvent.ACTION_DOWN) {
+                        var x = event.x.toInt()
+                        var y = event.y.toInt()
+                        x -= widget.totalPaddingLeft
+                        y -= widget.totalPaddingTop
+                        x += widget.scrollX
+                        y += widget.scrollY
+                        val layout: Layout = widget.layout
+                        val line: Int = layout.getLineForVertical(y)
+                        val off: Int = layout.getOffsetForHorizontal(line, x.toFloat())
+                        val link = text.getSpans(off, off, URLSpan::class.java)
+                        if (link.isNotEmpty() && action == MotionEvent.ACTION_UP) {
+                            return linkAction.invoke(link.first().url.toString())
+                        }
+                    }
+                }
+                return false
+            }
+        })
     }
 
     private fun showDate(date: String) {
