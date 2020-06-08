@@ -33,6 +33,7 @@ class TalkReadingHeader : BaseCustomView {
     fun bind(talkReadingHeaderModel: TalkReadingHeaderModel, onCategoryModifiedListener: OnCategoryModifiedListener, showBottomSheet: () -> Unit) {
         this.readingHeaderProductImage.loadImage(talkReadingHeaderModel.productImageUrl)
         this.readingHeaderProductName.text = talkReadingHeaderModel.productName
+        this.readingHeaderTicker.setTextDescription(context.getString(R.string.reading_ticker))
         initSortFilter(talkReadingHeaderModel, onCategoryModifiedListener, showBottomSheet)
     }
 
