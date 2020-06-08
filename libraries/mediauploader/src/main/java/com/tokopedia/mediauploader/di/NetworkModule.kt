@@ -19,7 +19,9 @@ import java.util.concurrent.TimeUnit
                 .connectTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
                 .readTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
                 .writeTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
+                .callTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
                 .addInterceptor(NetworkTimeOutInterceptor())
+                .retryOnConnectionFailure(false)
     }
 
     @Provides
