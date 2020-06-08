@@ -5,7 +5,7 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.data.model.Configuration
+import com.tokopedia.play.broadcaster.domain.model.Configuration
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.view.state.Selectable
 
@@ -76,14 +76,17 @@ object PlayBroadcastMocker {
             isOfficial = false,
             channelId = "1",
             maxTaggedProduct = 15,
-            maxLiveStreamDuration = (1000*60)*6,
+            maxLiveStreamDuration = (1000 * 60) * 6,
             countDownDuration = 10
     )
 
     fun getMockActiveChannel() = ChannelInfoUiModel(
             channelId = "1234",
+            title = "Klarififikasi Bisa Tebak Siapa?",
+            description = "Yuk gabung sekarang di Play Klarifikasi Bisa Tebak siapa?",
+            coverUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
             ingestUrl = "rtmp://test",
-            shareUrl = "tokopedia://play/2214",
+            shareUrl = "https://www.tokopedia.com/play/channels/1234",
             status = PlayChannelStatus.Active
     )
 
