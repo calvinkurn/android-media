@@ -118,6 +118,7 @@ public interface OrderListDetailContract {
 
         void assignInvoiceDataTo(Intent intent);
 
+        void
     }
 
     interface ActionInterface {
