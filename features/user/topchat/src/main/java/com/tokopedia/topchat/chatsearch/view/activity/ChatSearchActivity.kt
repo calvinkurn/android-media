@@ -44,6 +44,7 @@ class ChatSearchActivity : BaseSimpleActivity(), HasComponent<ChatSearchComponen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_search)
+        initWindowBackground()
         useLightNotificationBar()
         setupToolbar()
     }
@@ -53,6 +54,10 @@ class ChatSearchActivity : BaseSimpleActivity(), HasComponent<ChatSearchComponen
                 .builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .build()
+    }
+
+    private fun initWindowBackground() {
+        window.decorView.setBackgroundColor(Color.WHITE)
     }
 
     private fun useLightNotificationBar() {
