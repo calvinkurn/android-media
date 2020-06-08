@@ -121,7 +121,8 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                             ::onReturnToStep,
                             ::getBannerBitmap,
                             ::getVoucherId,
-                            ::getPromoCodePrefix))
+                            ::getPromoCodePrefix,
+                            isEdit))
         }
     }
 
@@ -181,6 +182,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     private var voucherId: Int? = null
 
     private var isCreateNew = false
+    private var isEdit = false
 
     private var bannerBaseUiModel =
             BannerBaseUiModel(
@@ -279,7 +281,10 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     private fun initiateVoucherPage() {
         when {
             checkIfDuplicate() -> return
-            checkIfEdit() -> return
+            checkIfEdit() -> {
+                isEdit = true
+                return
+            }
             else -> {
                 isCreateNew = true
                 viewModel.initiateVoucherPage()

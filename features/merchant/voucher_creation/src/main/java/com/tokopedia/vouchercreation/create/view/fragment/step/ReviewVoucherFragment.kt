@@ -55,7 +55,8 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                            onReturnToStep: (Int) -> Unit,
                            getBannerBitmap: () -> Bitmap?,
                            getVoucherId: () -> Int?,
-                           getPromoCodePrefix: () -> String): ReviewVoucherFragment = ReviewVoucherFragment().apply {
+                           getPromoCodePrefix: () -> String,
+                           isEdit: Boolean): ReviewVoucherFragment = ReviewVoucherFragment().apply {
             this.getVoucherReviewUiModel = getVoucherReviewUiModel
             this.getToken = getToken
             this.getPostBaseUiModel = getPostBaseUiModel
@@ -63,6 +64,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
             this.getBannerBitmap = getBannerBitmap
             this.getVoucherId = getVoucherId
             this.getPromoCodePrefix = getPromoCodePrefix
+            this.isEdit = isEdit
         }
 
         private const val VOUCHER_TIPS_INDEX = 1
@@ -83,6 +85,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     private var getBannerBitmap: () -> Bitmap? = { null }
     private var getVoucherId: () -> Int? = { null }
     private var getPromoCodePrefix: () -> String = { "" }
+    private var isEdit: Boolean = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -126,7 +129,13 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     }
 
     private val buttonUiModel by lazy {
-        FooterButtonUiModel(context?.getString(R.string.mvc_add_voucher).toBlankOrString(), "", true)
+        val res =
+                if (isEdit) {
+                    R.string.mvc_save_voucher
+                } else {
+                    R.string.mvc_add_voucher
+                }
+        FooterButtonUiModel(context?.getString(res).toBlankOrString(), "", true)
     }
 
     private var isWaitingForResult = false

@@ -219,6 +219,7 @@
     <string name="mvc_voucher_code_copied">Kode voucher sudah disalin</string>
     <string name="mvc_voucher_review">Review voucher</string>
     <string name="mvc_add_voucher">Tambah Voucher</string>
+    <string name="mvc_save_voucher">Simpan Voucher</string>
     <string name="mvc_shown_period">Periode Tampil</string>
     <string name="mvc_period">Periode</string>
     <string name="mvc_not_selected_yet">Belum dipilih</string>
