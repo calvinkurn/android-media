@@ -524,20 +524,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 }
                 REQUEST_CODE_VARIANT_DIALOG_EDIT -> {
                     viewModel.productInputModel.value?.let { productInputModel ->
-                        val variantCacheId = data.getStringExtra(EXTRA_VARIANT_PICKER_RESULT_CACHE_ID) ?: ""
-                        val cacheManager = SaveInstanceCacheManager(requireContext(), variantCacheId)
-                        if (data.hasExtra(EXTRA_PRODUCT_VARIANT_SELECTION)) {
-                            val productVariantViewModel = cacheManager.get(EXTRA_PRODUCT_VARIANT_SELECTION,
-                                    object : TypeToken<ProductVariantInputModel>() {}.type) ?: ProductVariantInputModel()
-                            viewModel.updateVariantAndOption(productVariantViewModel.productVariant,
-                                    productVariantViewModel.variantOptionParent)
-                        }
-                        if (data.hasExtra(EXTRA_PRODUCT_SIZECHART)) {
-                            val productPictureViewModel = cacheManager.get(EXTRA_PRODUCT_SIZECHART,
-                                    object : TypeToken<PictureViewModel>() {}.type, PictureViewModel())
-                            viewModel.updateSizeChart(productPictureViewModel)
-                        }
-                        showEmptyVariantState(productInputModel.variantInputModel.productSizeChart == null)
+                        //val variantCacheId = data.getStringExtra(EXTRA_VARIANT_PICKER_RESULT_CACHE_ID) ?: ""
+                        //val cacheManager = SaveInstanceCacheManager(requireContext(), variantCacheId)
+                        //val productVariantViewModel = cacheManager.get(EXTRA_PRODUCT_VARIANT_SELECTION, object : TypeToken<ProductVariantInputModel>() {}.type) ?: ProductVariantInputModel()
+                        showEmptyVariantState(productInputModel.variantInputModel.sizecharts == null)
                     }
                 }
                 SET_CASHBACK_REQUEST_CODE -> {
@@ -716,20 +706,9 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         viewModel.productInputModel.observe(this, Observer {
             showProductPhotoPreview(it)
             showProductDetailPreview(it)
-            showEmptyVariantState(viewModel.productInputModel.value?.variantInputModel?.productSizeChart == null)
+            showEmptyVariantState(viewModel.productInputModel.value?.variantInputModel?.sizecharts == null)
             if (viewModel.getDraftId() != 0L || it.productId != 0L || viewModel.getProductId().isNotBlank()) {
                 displayEditMode()
-            }
-            // TODO faisalramd remove this dummy start activity
-            context?.run {
-                val cacheManager = SaveInstanceCacheManager(this, true).apply {
-                    put(EXTRA_PRODUCT_INPUT_MODEL, it)
-                }
-                val intent = Intent(this,
-                        AddEditProductVariantActivity::class.java).apply {
-                    putExtra(EXTRA_CACHE_MANAGER_ID, cacheManager.id)
-                }
-                startActivityForResult(intent, 9999)
             }
         })
     }
@@ -980,32 +959,12 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     private fun showVariantDialog(variantList: List<ProductVariantByCatModel>) {
-        activity?.let {
-            viewModel.productInputModel.value?.let { productInputModel ->
-                val cacheManager = SaveInstanceCacheManager(it, true).apply {
-                    put(AddEditProductUploadConstant.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, variantList)
-                    put(AddEditProductUploadConstant.EXTRA_PRODUCT_VARIANT_SELECTION, productInputModel.variantInputModel)
-                    put(AddEditProductUploadConstant.EXTRA_PRODUCT_SIZECHART, productInputModel.variantInputModel.productSizeChart)
-                    put(AddEditProductUploadConstant.EXTRA_CURRENCY_TYPE, AddEditProductDescriptionFragment.TYPE_IDR)
-                    put(AddEditProductUploadConstant.EXTRA_DEFAULT_PRICE, productInputModel.detailInputModel.price)
-                    put(AddEditProductUploadConstant.EXTRA_STOCK_TYPE, viewModel.getStatusStockViewVariant())
-                    put(AddEditProductUploadConstant.EXTRA_IS_OFFICIAL_STORE, false)
-                    put(AddEditProductUploadConstant.EXTRA_DEFAULT_SKU, "")
-                    put(AddEditProductUploadConstant.EXTRA_NEED_RETAIN_IMAGE, false)
-                    put(AddEditProductUploadConstant.EXTRA_HAS_WHOLESALE, viewModel.hasWholesale)
-                    put(AddEditProductUploadConstant.EXTRA_IS_ADD, viewModel.isAdding)
-                }
-                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_VARIANT_DASHBOARD)
-                intent?.run {
-                    putExtra(EXTRA_VARIANT_RESULT_CACHE_ID, cacheManager.id)
-                    putExtra(AddEditProductUploadConstant.EXTRA_IS_USING_CACHE_MANAGER, true)
-                    putExtra(AddEditProductUploadConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV1,
-                            viewModel.hasOriginalVariantLevel)
-                    putExtra(AddEditProductUploadConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV2,
-                            viewModel.hasOriginalVariantLevel)
-                    startActivityForResult(this, REQUEST_CODE_VARIANT_DIALOG_EDIT)
-                }
+        context?.run {
+            val cacheManager = SaveInstanceCacheManager(this, true).apply {
+                put(EXTRA_PRODUCT_INPUT_MODEL, viewModel.productInputModel.value)
             }
+            val intent = AddEditProductVariantActivity.createInstance(this, cacheManager.id)
+            startActivityForResult(intent, 9999)
         }
     }
 

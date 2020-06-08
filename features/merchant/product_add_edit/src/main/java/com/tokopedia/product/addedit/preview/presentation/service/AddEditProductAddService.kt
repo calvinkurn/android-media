@@ -11,7 +11,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
-import com.tokopedia.product.addedit.description.presentation.model.ProductVariantOptionParent
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
@@ -20,6 +19,7 @@ import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
+import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -77,8 +77,8 @@ open class AddEditProductAddService : AddEditProductBaseService() {
             // (2)
             uploadProductImages(
                     filterPathOnly(detailInputModel.imageUrlOrPathList),
-                    getVariantFilePath(variantInputModel.variantOptionParent),
-                    variantInputModel.productSizeChart?.filePath ?: "")
+                    getVariantFilePath(variantInputModel.selections),
+                    variantInputModel.sizecharts.filePath)
         }
     }
 
@@ -87,17 +87,8 @@ open class AddEditProductAddService : AddEditProductBaseService() {
                 it.startsWith(AddEditProductConstants.HTTP_PREFIX)
             }
 
-    private fun getVariantFilePath(variantOptionParent: ArrayList<ProductVariantOptionParent>): List<String> {
+    private fun getVariantFilePath(variantOptionParent: List<SelectionInputModel>): List<String> {
         val imageList: ArrayList<String> = ArrayList()
-        val optionParent = variantOptionParent.firstOrNull()
-        optionParent?.apply {
-            productVariantOptionChild?.forEach { optionChild ->
-                val picture = optionChild.productPictureViewModelList?.firstOrNull()
-                picture?.apply {
-                    imageList.add(filePath)
-                }
-            }
-        }
         return imageList
     }
 

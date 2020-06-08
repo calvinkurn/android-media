@@ -12,8 +12,6 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
-import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
-import com.tokopedia.product.addedit.description.presentation.model.ProductVariantOptionParent
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
@@ -23,6 +21,8 @@ import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -46,7 +46,7 @@ class AddEditProductEditService : AddEditProductBaseService() {
     private var shipmentInputModel: ShipmentInputModel = ShipmentInputModel()
     private var descriptionInputModel: DescriptionInputModel = DescriptionInputModel()
     private var detailInputModel: DetailInputModel = DetailInputModel()
-    private var variantInputModel: ProductVariantInputModel = ProductVariantInputModel()
+    private var variantInputModel: VariantInputModel = VariantInputModel()
 
     companion object {
         fun startService(context: Context, cacheManagerId: String?) {
@@ -83,8 +83,8 @@ class AddEditProductEditService : AddEditProductBaseService() {
             // (2)
             uploadProductImages(
                     filterPathOnly(detailInputModel.imageUrlOrPathList),
-                    getVariantFilePath(variantInputModel.variantOptionParent),
-                    variantInputModel.productSizeChart?.filePath ?: "")
+                    getVariantFilePath(variantInputModel.selections),
+                    variantInputModel.sizecharts.filePath)
         }
     }
 
@@ -93,17 +93,8 @@ class AddEditProductEditService : AddEditProductBaseService() {
                 it.startsWith(HTTP_PREFIX)
             }
 
-    private fun getVariantFilePath(variantOptionParent: ArrayList<ProductVariantOptionParent>): List<String> {
+    private fun getVariantFilePath(variantOptionParent: List<SelectionInputModel>): List<String> {
         val imageList: ArrayList<String> = ArrayList()
-        val optionParent = variantOptionParent.firstOrNull()
-        optionParent?.apply {
-            productVariantOptionChild?.forEach { optionChild ->
-                val picture = optionChild.productPictureViewModelList?.firstOrNull()
-                picture?.apply {
-                    imageList.add(filePath)
-                }
-            }
-        }
         return imageList
     }
 

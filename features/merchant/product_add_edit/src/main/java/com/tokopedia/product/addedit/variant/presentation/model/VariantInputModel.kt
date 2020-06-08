@@ -1,45 +1,52 @@
 package com.tokopedia.product.addedit.variant.presentation.model
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 import java.math.BigInteger
 
+@Parcelize
 data class VariantInputModel(
-        val products: List<ProductVariant> = listOf(),
-        val selections: List<Selection> = listOf(),
-        val sizecharts: List<Picture> = listOf()
-)
+        var products: List<ProductVariantInputModel> = listOf(),
+        var selections: List<SelectionInputModel> = listOf(),
+        var sizecharts: PictureVariantInputModel = PictureVariantInputModel()
+) : Parcelable
 
-data class ProductVariant(
-        val combination: List<Int> = listOf(),
-        val pictures: List<Picture> = listOf(),
-        val price: BigInteger = 0.toBigInteger(),
-        val sku: String = "",
-        val status: String = "",
-        val stock: Int = 0
-)
+@Parcelize
+data class ProductVariantInputModel(
+        var combination: List<Int> = listOf(),
+        var pictures: List<PictureVariantInputModel> = listOf(),
+        var price: BigInteger = 0.toBigInteger(),
+        var sku: String = "",
+        var status: String = "",
+        var stock: Int = 0
+) : Parcelable
 
-data class Selection(
-        val variantId: String = "",
-        val unitID: String = "",
-        val options: List<Option> = listOf()
-)
+@Parcelize
+data class SelectionInputModel(
+        var variantId: String = "",
+        var unitID: String = "",
+        var options: List<OptionInputModel> = listOf()
+) : Parcelable
 
-data class Option(
-        val unitValueID: String = "",
-        val value: String = "",
-        val hexCode: String = ""
-)
+@Parcelize
+data class OptionInputModel(
+        var unitValueID: String = "",
+        var value: String = "",
+        var hexCode: String = ""
+) : Parcelable
 
-data class Picture(
-        val picID: String = "",
-        val description: String = "",
-        val filePath: String = "",
-        val fileName: String = "",
-        val width: Long = 0,
-        val height: Long = 0,
-        val isFromIG: String = "",
-        val urlOriginal: String = "",
-        val urlThumbnail: String = "",
-        val url300: String = "",
-        val status: Boolean = false,
-        val uploadId: String = ""
-)
+@Parcelize
+data class PictureVariantInputModel(
+        var picID: String = "",
+        var description: String = "",
+        var filePath: String = "",
+        var fileName: String = "",
+        var width: Long = 0,
+        var height: Long = 0,
+        var isFromIG: String = "",
+        var urlOriginal: String = "",
+        var urlThumbnail: String = "",
+        var url300: String = "",
+        var status: Boolean = false,
+        var uploadId: String = ""
+) : Parcelable
