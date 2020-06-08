@@ -176,7 +176,7 @@ class ImmersiveBoxComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class ImmersiveBoxComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : ImmersiveBoxComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
+    class ImmersiveBoxComponentMock(container: ViewGroup, bus: EventBusFactory, scope: CoroutineScope) : ImmersiveBoxComponent(container, bus, scope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): ImmersiveBoxView {
             return mockk(relaxed = true)
         }

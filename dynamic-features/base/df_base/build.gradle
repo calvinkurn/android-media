@@ -90,6 +90,7 @@ dependencies {
 
     //Payment
     implementation project(rootProject.ext.features.paymentSetting)
+    implementation project(rootProject.ext.features.instantDebitBca)
     //Promo
 
     //Salam

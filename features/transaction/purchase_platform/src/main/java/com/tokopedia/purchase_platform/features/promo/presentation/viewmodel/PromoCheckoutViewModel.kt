@@ -10,18 +10,18 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.purchase_platform.features.promo.data.request.CouponListRecommendationRequest
-import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest
-import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.features.promo.data.response.ClearPromoResponse
 import com.tokopedia.purchase_platform.features.promo.data.response.CouponListRecommendationResponse
 import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus.Companion.STATUS_COUPON_LIST_EMPTY
 import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus.Companion.STATUS_PHONE_NOT_VERIFIED
 import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus.Companion.STATUS_USER_BLACKLISTED
-import com.tokopedia.purchase_platform.features.promo.data.response.validate_use.ValidateUseResponse
+import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.ValidateUseResponse
 import com.tokopedia.purchase_platform.features.promo.presentation.PromoErrorException
 import com.tokopedia.purchase_platform.features.promo.presentation.analytics.PromoCheckoutAnalytics
 import com.tokopedia.purchase_platform.features.promo.presentation.mapper.PromoCheckoutUiModelMapper
-import com.tokopedia.purchase_platform.features.promo.presentation.mapper.ValidateUsePromoCheckoutMapper
+import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.ValidateUsePromoCheckoutMapper
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoEmptyStateUiModel.UiData.Companion.LABEL_BUTTON_PHONE_VERIFICATION
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoEmptyStateUiModel.UiData.Companion.LABEL_BUTTON_TRY_AGAIN
@@ -250,12 +250,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                         it.uiData.preAppliedPromoCode = preAppliedPromoCodes
                         it.uiState.hasPreAppliedPromo = tmpHasPreSelectedPromo
                         it.uiState.hasAnyPromoSelected = tmpHasPreSelectedPromo
-                        val rewardPointInfo = response.couponListRecommendation.data.rewardPointsInfo
-                        if (rewardPointInfo.gainRewardPointsTnc.tncDetails.isNotEmpty()) {
-                            it.uiData.tokopointsTncLabel = rewardPointInfo.message
-                            it.uiData.tokopointsTncTitle = rewardPointInfo.gainRewardPointsTnc.title
-                            it.uiData.tokopointsTncDetails = uiModelMapper.mapTokoPointsTncDetails(rewardPointInfo.gainRewardPointsTnc.tncDetails)
-                        }
                         _fragmentUiModel.value = it
                     }
 
