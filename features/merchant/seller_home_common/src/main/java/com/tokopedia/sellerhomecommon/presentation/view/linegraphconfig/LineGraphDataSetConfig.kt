@@ -8,12 +8,18 @@ import com.db.williamchart.util.DataSetConfiguration
  */
 
 class LineGraphDataSetConfig : DataSetConfiguration {
+
+    companion object {
+        private const val COLOR_LINE = "#03ac0e"
+        private const val COLOR_DOT = "#4fd15a"
+    }
+
     override fun lineColor(): Int {
-        return Color.parseColor("#03ac0e")
+        return Color.parseColor(COLOR_LINE)
     }
 
     override fun pointColor(): Int {
-        return Color.parseColor("#4fd15a")
+        return Color.parseColor(COLOR_DOT)
     }
 
     override fun lineThickness(): Float {

@@ -14,12 +14,16 @@ import com.db.williamchart.view.ChartView
 
 class LineGraphConfig : AnimationGraphConfiguration {
 
+    companion object {
+        private const val COLOR_LABEL = "#ae31353b"
+    }
+
     private var marginTop = 0
     private var marginRight = 0
     private var marginBottom = 0
 
     override fun labelColor(): Int {
-        return Color.parseColor("#ae31353b")
+        return Color.parseColor(COLOR_LABEL)
     }
 
     override fun axisColor(): Int {
