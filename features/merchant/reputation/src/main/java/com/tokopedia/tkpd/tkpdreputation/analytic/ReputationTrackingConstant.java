@@ -15,7 +15,6 @@ public class ReputationTrackingConstant {
     public static final String OFFICIAL_STORE_SHOP_PAGE_BUYER = "official store shop page - buyer";
     public static final String OFFICIAL_STORE_SHOP_PAGE_BRAND = "official store shop page - brand";
     public static final String PRODUCT_DETAIL_PAGE = "product detail page";
-    public static final String REVIEW_DETAIL_PAGE = "review detail page";
     public static final String REVIEW_PAGE = "ulasan page";
     public static final String SELLER_FEEDBACK_PAGE = "seller feedback page";
     public static final String FILTER_INVOICE_PAGE = "filter invoice review";

@@ -1,5 +1,6 @@
 package com.tokopedia.topads.keyword.view.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
@@ -17,7 +18,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.google.android.material.textfield.TextInputLayout;
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -75,7 +75,7 @@ public class TopAdsKeywordAddFragment extends TopAdsBaseStepperFragment<TopAdsKe
     private TextView textViewKeywordCurrentMax;
     private TextView textViewTotalKeyworGroup;
     private View buttonSave;
-    private TkpdProgressDialog progressDialog;
+    private ProgressDialog progressDialog;
 
     @Deprecated
     public static TopAdsKeywordAddFragment newInstance(String groupId,
@@ -296,10 +296,10 @@ public class TopAdsKeywordAddFragment extends TopAdsBaseStepperFragment<TopAdsKe
 
     private void showLoading() {
         if (progressDialog == null) {
-            progressDialog = new TkpdProgressDialog(getActivity(),
-                    TkpdProgressDialog.NORMAL_PROGRESS);
+            progressDialog = new ProgressDialog(getContext());
+            progressDialog.setIndeterminate(true);
         }
-        progressDialog.showDialog();
+        progressDialog.show();
     }
 
     private void onButtonAddClicked() {
