@@ -31,13 +31,12 @@ class ProfileCompletionActivity : BaseSimpleActivity(), HasComponent<ProfileComp
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.AppBarTheme)
         super.onCreate(savedInstanceState)
         initView()
     }
 
     private fun initView() {
-        supportActionBar?.setBackgroundDrawable(ColorDrawable(MethodChecker.getColor(this, R.color.white)))
+        supportActionBar?.setBackgroundDrawable(ColorDrawable(MethodChecker.getColor(this, R.color.color_white)))
         toolbar.setTitleTextColor(MethodChecker.getColor(this, R.color.grey_700))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.elevation = 10f

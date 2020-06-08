@@ -44,8 +44,6 @@ class ProfileCompletionGenderFragment : BaseDaggerFragment() {
         return parentView
     }
 
-    private val fragmentLayout: Int = R.layout.fragment_profile_completion_gender
-
     private fun initView(view: View) {
         avaMan = view.findViewById(R.id.ava_man)
         avaWoman = view.findViewById(R.id.ava_woman)

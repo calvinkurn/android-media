@@ -136,7 +136,7 @@ class ProfileCompletionDateFragment : BaseDaggerFragment() {
 
     private fun initialVar() {
         val monthsIndo = DateFormatSymbols(Locale.getDefault()).months
-        val adapter = ArrayAdapter(activity, R.layout.select_dialog_item_material, monthsIndo)
+        val adapter = ArrayAdapter(activity, androidx.appcompat.R.layout.select_dialog_item_material, monthsIndo)
         month?.setAdapter(adapter)
 
         dateObservable = date?.let { Events.text(it) }

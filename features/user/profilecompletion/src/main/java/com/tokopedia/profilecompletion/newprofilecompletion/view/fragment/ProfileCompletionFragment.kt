@@ -312,7 +312,7 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
         proceed?.isEnabled = answer
         if (answer) {
             proceed?.background?.setColorFilter(MethodChecker.getColor(activity, R.color.medium_green), PorterDuff.Mode.SRC_IN)
-            proceed?.setTextColor(MethodChecker.getColor(activity, R.color.white))
+            proceed?.setTextColor(MethodChecker.getColor(activity, R.color.color_white))
         } else {
             proceed?.background?.setColorFilter(MethodChecker.getColor(activity, R.color.grey_300), PorterDuff.Mode.SRC_IN)
             proceed?.setTextColor(MethodChecker.getColor(activity, R.color.grey_500))
