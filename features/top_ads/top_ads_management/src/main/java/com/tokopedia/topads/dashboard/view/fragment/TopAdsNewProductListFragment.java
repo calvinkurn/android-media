@@ -14,10 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
-import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.common.widget.DividerItemDecoration;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.view.activity.BaseStepperActivity;
+import com.tokopedia.topads.common.view.listener.StepperListener;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsAddProductListActivity;
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsNewProductListAdapter;
