@@ -24,9 +24,6 @@ import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepository;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
-import com.tokopedia.session.changename.data.mapper.ChangeNameMapper;
-import com.tokopedia.session.changename.data.source.ChangeNameSource;
-import com.tokopedia.session.changename.domain.usecase.ChangeNameUseCase;
 import com.tokopedia.session.data.source.CreatePasswordDataSource;
 import com.tokopedia.session.data.source.GetTokenDataSource;
 import com.tokopedia.session.data.source.MakeLoginDataSource;
@@ -288,20 +285,6 @@ public class SessionModule {
     @Provides
     UserSession provideUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
-    }
-
-    @SessionScope
-    @Provides
-    ChangeNameSource provideChangeNameSource(@Named(BEARER_SERVICE) AccountsService service,
-                                             ChangeNameMapper changeNameMapper,
-                                             GlobalCacheManager cacheManager) {
-        return new ChangeNameSource(service, changeNameMapper, cacheManager);
-    }
-
-    @SessionScope
-    @Provides
-    ChangeNameUseCase provideChangeNameUseCase(ChangeNameSource source) {
-        return new ChangeNameUseCase(source);
     }
 }
 
