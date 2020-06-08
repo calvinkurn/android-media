@@ -25,7 +25,7 @@ import com.tokopedia.managename.viewmodel.ManageNameViewModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_add_name.*
+import kotlinx.android.synthetic.main.fragment_manage_name.*
 import javax.inject.Inject
 
 /**
@@ -55,7 +55,7 @@ class AddNameFragment : BaseDaggerFragment() {
 //    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_add_name, container, false);
+        return inflater.inflate(R.layout.fragment_manage_name, container, false);
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
