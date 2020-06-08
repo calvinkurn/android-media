@@ -185,7 +185,8 @@
     <!-- id -->
     <item name="name" type="id" />
     <item name="category_id" type="id" />
-    <item name="selected_catalog" type="id" />
+    <item name="variant_detail" type="id" />
+    <item name="variant_unit_value_position" type="id" />
 
     <!-- add edit draft -->
     <string name="label_description_on_dialog">Sayang lho udah sampai di sini! Datamu akan tersimpan jika kamu kembali ke halaman sebelumnya.</string>
@@ -212,9 +213,12 @@
     <string name="label_variant_photo">Foto Varian</string>
     <string name="label_variant_sizechart">Paduan Ukuran</string>
     <string name="label_variant_sizechart_description">Tambah panduan ukuran produk dalam format JPG atau PNG.</string>
+    <string name="label_variant_choose">Pilih</string>
+    <string name="action_variant_save">Simpan</string>
+    <string name="action_variant_add">Tambah</string>
+    <string name="label_variant_custom_input_message">Tulis nama varian yang kamu inginkan.</string>
     <string name="label_variant_sizechart_edit_description">Klik gambar jika ingin ubah panduan.</string>
     <string name="action_clear_sizechart">Hapus</string>
     <string name="action_replace_sizechart">Ubah Foto</string>
     <string name="action_edit_sizechart">Edit Foto</string>
-
 </resources>
