@@ -4,15 +4,22 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.variant.data.model.UnitValue
 import com.tokopedia.product.addedit.variant.presentation.viewholder.VariantValueViewHolder
 
-class VariantValueAdapter : RecyclerView.Adapter<VariantValueViewHolder>() {
+class VariantValueAdapter(private val removeButtonClickListener: OnRemoveButtonClickListener, private val layoutPosition: Int) :
+        RecyclerView.Adapter<VariantValueViewHolder>(),
+        VariantValueViewHolder.OnRemoveButtonClickListener {
 
-    private var items: List<String> = listOf()
+    interface OnRemoveButtonClickListener {
+        fun onRemoveButtonClicked(position: Int, layoutPosition: Int)
+    }
+
+    private var items: MutableList<UnitValue> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VariantValueViewHolder {
         val rootView = LayoutInflater.from(parent.context).inflate(R.layout.item_variant_value, parent, false)
-        return VariantValueViewHolder(rootView)
+        return VariantValueViewHolder(rootView, this)
     }
 
     override fun getItemCount(): Int {
@@ -20,11 +27,23 @@ class VariantValueAdapter : RecyclerView.Adapter<VariantValueViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: VariantValueViewHolder, position: Int) {
-        holder.bindData(items[position])
+        val variantUnitValue = items[position]
+        holder.bindData(variantUnitValue.value)
     }
 
-    fun setData(items: List<String>) {
-        this.items = items
+    override fun onRemoveButtonClicked(position: Int) {
+        items.removeAt(position)
+        notifyItemRemoved(position)
+        removeButtonClickListener.onRemoveButtonClicked(position, layoutPosition)
+    }
+
+    fun setData(items: List<UnitValue>) {
+        this.items = items.toMutableList()
         notifyDataSetChanged()
+    }
+
+    fun addData(item: UnitValue) {
+        this.items.add(item)
+        notifyItemInserted(items.lastIndex)
     }
 }

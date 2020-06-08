@@ -59,7 +59,20 @@
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name=".variant.presentation.activity.AddEditProductVariantDetailActivity"
+            android:name=".imagepicker.view.activity.SizechartPickerAddProductActivity"
+            android:label="@string/action_pick_photo"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".imagepicker.view.activity.SizechartPickerEditPhotoActivity"
+            android:label="@string/action_edit_photo"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".imagepicker.view.activity.VariantPhotoPickerActivity"
+            android:label="@string/action_pick_photo"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
