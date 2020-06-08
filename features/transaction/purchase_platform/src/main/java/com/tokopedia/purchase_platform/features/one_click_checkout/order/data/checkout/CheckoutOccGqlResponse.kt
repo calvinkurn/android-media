@@ -1,7 +1,6 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.purchase_platform.features.checkout.data.model.response.checkout.PriceValidation
 
 data class CheckoutOccGqlResponse(
         @SerializedName("one_click_checkout")

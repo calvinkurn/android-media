@@ -34,8 +34,8 @@ import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.util.JsonFormatter
 import com.tokopedia.product.util.TestDispatcherProvider
 import com.tokopedia.product.warehouse.model.ProductActionSubmit
-import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult
-import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase
+import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
+import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
