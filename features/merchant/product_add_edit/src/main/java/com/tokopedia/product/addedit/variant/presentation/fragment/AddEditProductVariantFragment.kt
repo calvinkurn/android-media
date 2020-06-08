@@ -142,7 +142,6 @@ class AddEditProductVariantFragment :
         observeSizechartUrl()
         observeGetCategoryVariantCombinationResult()
         observeProductInputModel()
-        viewModel.getCategoryVariantCombination("916")
 
         cardSizechart.setOnClickListener {
             onSizechartClicked()
@@ -444,7 +443,8 @@ class AddEditProductVariantFragment :
 
     private fun observeProductInputModel() {
         viewModel.productInputModel.observe(this, Observer { productInputModel ->
-            // TODO implement productInputModel to UI
+            val categoryId = productInputModel.detailInputModel.categoryId
+            viewModel.getCategoryVariantCombination(categoryId)
         })
     }
 
@@ -493,7 +493,10 @@ class AddEditProductVariantFragment :
                     actionText = getString(R.string.title_try_again),
                     duration = Snackbar.LENGTH_INDEFINITE,
                     clickListener = View.OnClickListener {
-                        viewModel.getCategoryVariantCombination("916")
+                        val categoryId = viewModel.productInputModel.value?.detailInputModel?.categoryId
+                        categoryId?.let { id ->
+                            viewModel.getCategoryVariantCombination(id)
+                        }
                     })
         }
     }
@@ -519,10 +522,7 @@ class AddEditProductVariantFragment :
             val cacheManager = SaveInstanceCacheManager(this, true).apply {
                 put(EXTRA_PRODUCT_INPUT_MODEL, viewModel.productInputModel.value)
             }
-            val intent = Intent(this,
-                    AddEditProductVariantDetailActivity::class.java).apply {
-                putExtra(EXTRA_CACHE_MANAGER_ID, cacheManager.id)
-            }
+            val intent = AddEditProductVariantDetailActivity.createInstance(context, cacheManager.id)
             startActivityForResult(intent, REQUEST_CODE_VARIANT_DETAIL)
         }
     }
