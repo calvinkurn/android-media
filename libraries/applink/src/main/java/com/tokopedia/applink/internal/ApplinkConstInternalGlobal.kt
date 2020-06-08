@@ -454,4 +454,9 @@ object ApplinkConstInternalGlobal {
     //ManageNotificationActivity
     @JvmField
     val MANAGE_NOTIFICATION = "$INTERNAL_GLOBAL/manage-notification"
+
+    // ScreenRecorderActivity
+    // tokopedia-android-internal://global/screen-recorder
+    @JvmField
+    val SCREEN_RECORDER = "$INTERNAL_GLOBAL/screen-recorder"
 }
