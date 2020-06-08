@@ -108,7 +108,6 @@ public class TopAdsGtmTracker {
     }
 
     public void addSearchResultProductViewImpressions(Product item, int position) {
-        position += 1;
         this.dataLayerList.add(DataLayer.mapOf("name", item.getName(),
                 "id", item.getId(),
                 "price", item.getPriceFormat().replaceAll("[^0-9]", ""),
@@ -281,7 +280,6 @@ public class TopAdsGtmTracker {
     }
 
     public static void eventSearchResultProductClick(Context context, String keyword, Product item, int position, String screenName) {
-        position += 1;
         Analytics tracker = getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(

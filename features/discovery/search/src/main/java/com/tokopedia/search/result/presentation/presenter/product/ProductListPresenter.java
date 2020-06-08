@@ -532,7 +532,7 @@ final class ProductListPresenter
                     item.setDiscountPercentage(topAds.getProduct().getCampaign().getDiscountPercentage());
                     item.setLabelGroupList(mapLabelGroupList(topAds.getProduct().getLabelGroupList()));
                     item.setFreeOngkirViewModel(mapFreeOngkir(topAds.getProduct().getFreeOngkir()));
-                    item.setPosition(j);
+                    item.setPosition(j+1);
                     list.add(i, item);
                     j++;
                 }
