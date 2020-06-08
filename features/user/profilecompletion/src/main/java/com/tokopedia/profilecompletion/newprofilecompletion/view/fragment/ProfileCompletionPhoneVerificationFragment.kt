@@ -1,0 +1,71 @@
+package com.tokopedia.profilecompletion.newprofilecompletion.view.fragment
+
+import android.view.View
+import android.widget.TextView
+import android.widget.Toast
+import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.phoneverification.view.fragment.PhoneVerificationFragment
+import com.tokopedia.profilecompletion.R
+import com.tokopedia.profilecompletion.newprofilecompletion.ProfileCompletionNewConstants
+import com.tokopedia.profilecompletion.newprofilecompletion.view.util.CustomPhoneNumberUtil.transform
+import com.tokopedia.profilecompletion.newprofilecompletion.data.DisplayModel
+
+/**
+ * Created by nisie on 2/22/17.
+ */
+class ProfileCompletionPhoneVerificationFragment : PhoneVerificationFragment() {
+
+    private var profileCompletionFragment: ProfileCompletionFragment? = null
+    private var verifyButton: TextView? = null
+    private var data: DisplayModel? = null
+    private var skipFragment: TextView? = null
+
+    override fun findView(view: View) {
+        super.findView(view)
+        initView()
+    }
+
+    override fun setViewListener() {
+        super.setViewListener()
+        skipButton.visibility = View.GONE
+        skipFragment?.setOnClickListener { profileCompletionFragment?.skipView(TAG) }
+    }
+
+    private fun initView() {
+        data = profileCompletionFragment?.data
+        verifyButton = profileCompletionFragment?.view?.findViewById(R.id.proceed)
+        verifyButton?.text = resources.getString(R.string.continue_form)
+        verifyButton?.visibility = View.GONE
+        skipFragment = profileCompletionFragment?.view?.findViewById(R.id.skip)
+        skipFragment?.visibility = View.GONE
+        if (data?.phone != null) {
+            phoneNumberEditText.text = transform(data?.phone?: "")
+        } else {
+            SnackbarManager.make(activity,
+                    getString(R.string.please_fill_phone_number),
+                    Snackbar.LENGTH_LONG)
+                    .show()
+        }
+        KeyboardHandler.DropKeyboard(activity, view)
+    }
+
+    override fun onSuccessVerifyPhoneNumber() {
+        profileCompletionFragment?.userSession?.setIsMSISDNVerified(true)
+        profileCompletionFragment?.userSession?.phoneNumber = phoneNumber
+        profileCompletionFragment?.onSuccessEditProfile(ProfileCompletionNewConstants.EDIT_VERIF)
+        Toast.makeText(activity, MethodChecker.fromHtml(getString(R.string.success_verify_phone_number)), Toast.LENGTH_LONG).show()
+    }
+
+    companion object {
+        const val TAG = "verif"
+
+        fun createInstance(view: ProfileCompletionFragment?): ProfileCompletionPhoneVerificationFragment {
+            val fragment = ProfileCompletionPhoneVerificationFragment()
+            fragment.profileCompletionFragment = view
+            return fragment
+        }
+    }
+}
