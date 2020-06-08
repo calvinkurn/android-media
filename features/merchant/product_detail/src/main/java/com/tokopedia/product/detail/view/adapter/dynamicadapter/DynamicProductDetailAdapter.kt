@@ -83,6 +83,12 @@ class DynamicProductDetailAdapter(
         }
     }
 
+    fun removeQnaSection(data: ProductDiscussionMostHelpfulDataModel?) {
+        data?.let {
+            clearElement(it)
+        }
+    }
+
     fun removeGeneralInfo(data: ProductGeneralInfoDataModel?) {
         data?.let {
             clearElement(it)

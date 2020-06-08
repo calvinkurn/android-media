@@ -10,7 +10,8 @@ import com.tokopedia.brandlist.brandlist_search.presentation.fragment.BrandlistS
 
 
 class BrandlistSearchAdapterTypeFactory(
-        private val brandlistSearchFragment: BrandlistSearchFragment
+        private val brandlistSearchFragment: BrandlistSearchFragment,
+        private val searchListener: BrandlistSearchRecommendationNotFoundViewHolder.Listener
 ) : BaseAdapterTypeFactory(), BrandlistSearchTypeFactory {
 
     override fun type(brandlistSearchResultViewModel: BrandlistSearchResultViewModel): Int {
@@ -33,8 +34,12 @@ class BrandlistSearchAdapterTypeFactory(
         return BrandlistSearchShimmeringViewHolder.LAYOUT
     }
 
-    override fun type(brandlistSearchAllBrandHeaderViewModel: BrandlistSearchAllBrandLabelViewModel): Int {
-        return BrandlistSearchAllBrandLabelViewHolder.LAYOUT
+    override fun type(brandlistSearchAllBrandGroupHeaderViewModel: BrandlistSearchAllBrandGroupHeaderViewModel): Int {
+        return BrandlistSearchGroupHeaderViewHolder.LAYOUT
+    }
+
+    override fun type(brandlistSearchRecommendationNotFoundViewModel: BrandlistSearchRecommendationNotFoundViewModel): Int {
+        return BrandlistSearchRecommendationNotFoundViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -44,7 +49,8 @@ class BrandlistSearchAdapterTypeFactory(
             BrandlistSearchNotFoundViewHolder.LAYOUT -> BrandlistSearchNotFoundViewHolder(parent, brandlistSearchFragment)
             BrandlistSearchHeaderViewHolder.LAYOUT -> BrandlistSearchHeaderViewHolder(parent)
             BrandlistSearchShimmeringViewHolder.LAYOUT -> BrandlistSearchShimmeringViewHolder(parent)
-            BrandlistSearchAllBrandLabelViewHolder.LAYOUT -> BrandlistSearchAllBrandLabelViewHolder(parent)
+            BrandlistSearchGroupHeaderViewHolder.LAYOUT -> BrandlistSearchGroupHeaderViewHolder(parent)
+            BrandlistSearchRecommendationNotFoundViewHolder.LAYOUT -> BrandlistSearchRecommendationNotFoundViewHolder(parent, searchListener)
             else -> super.createViewHolder(parent, type)
         }
     }

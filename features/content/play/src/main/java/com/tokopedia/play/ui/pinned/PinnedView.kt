@@ -10,10 +10,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.view.uimodel.PinnedMessageUiModel
@@ -52,7 +52,7 @@ class PinnedView(
     }
 
     fun setPinnedMessage(pinnedMessage: PinnedMessageUiModel) {
-        llPinnedProduct.gone()
+        llPinnedProduct.hide()
 
         val partnerName = pinnedMessage.partnerName
         val spannableString = SpannableString(
@@ -71,7 +71,7 @@ class PinnedView(
         tvPinnedMessage.text = spannableString
 
         if (!pinnedMessage.applink.isNullOrEmpty()) {
-            tvPinnedAction.visible()
+            tvPinnedAction.show()
 
             if (pinnedMessageDebouncedClick == null) {
                 pinnedMessageDebouncedClick = DebouncedOnClickListener(1000L) {
@@ -80,12 +80,12 @@ class PinnedView(
             }
             tvPinnedAction.setOnClickListener(pinnedMessageDebouncedClick)
 
-        } else tvPinnedAction.gone()
+        } else tvPinnedAction.hide()
     }
     
     fun setPinnedProduct(pinnedProduct: PinnedProductUiModel) {
-        llPinnedProduct.visible()
-        tvPinnedAction.visible()
+        llPinnedProduct.show()
+        tvPinnedAction.show()
 
         if (pinnedProductDebouncedClick == null) {
             pinnedProductDebouncedClick = DebouncedOnClickListener(1000L) {

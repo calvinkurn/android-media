@@ -20,6 +20,7 @@ import rx.android.plugins.RxAndroidSchedulersHook
 import rx.observers.AssertableSubscriber
 import rx.plugins.RxJavaHooks
 import rx.schedulers.Schedulers
+import java.lang.reflect.Type
 
 object SubmitHelpTicketUseCaseTest : Spek({
 
@@ -48,11 +49,11 @@ object SubmitHelpTicketUseCaseTest : Spek({
             val successMessage = "success"
 
             Given("mock response") {
+                val result = HashMap<Type, Any>()
+                val objectType = SubmitHelpTicketGqlResponse::class.java
+                result[objectType] = SubmitHelpTicketGqlResponse(SubmitHelpTicketResponse(status = SubmitHelpTicketUseCase.STATUS_OK, data = SubmitTicketDataResponse(message = arrayListOf(successMessage))))
                 every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(
-                        mapOf(SubmitHelpTicketGqlResponse::class.java to SubmitHelpTicketGqlResponse(
-                                SubmitHelpTicketResponse(status = SubmitHelpTicketUseCase.STATUS_OK, data = SubmitTicketDataResponse(message = arrayListOf(successMessage)))
-                        )),
-                        null, false))
+                    result, null, false))
             }
 
             When("create observable") {
@@ -68,13 +69,12 @@ object SubmitHelpTicketUseCaseTest : Spek({
 
             lateinit var subscriber: AssertableSubscriber<SubmitTicketResult>
             val errorMessage = "failure"
-
             Given("mock response") {
+                val result = HashMap<Type, Any>()
+                val objectType = SubmitHelpTicketGqlResponse::class.java
+                result[objectType] = SubmitHelpTicketGqlResponse(SubmitHelpTicketResponse(status = "ERROR", errorMessages = arrayListOf(errorMessage)))
                 every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(
-                        mapOf(SubmitHelpTicketGqlResponse::class.java to SubmitHelpTicketGqlResponse(
-                                SubmitHelpTicketResponse(status = "ERROR", errorMessages = arrayListOf(errorMessage))
-                        )),
-                        null, false))
+                        result, null, false))
             }
 
             When("create observable") {

@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply from: "$rootProject.projectDir/buildconfig/dependencies/dependency-libraries.gradle"
 apply from: "$rootProject.projectDir/buildconfig/dependencies/dependencies.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: "de.mannodermaus.android-junit5"
 
 buildscript {
@@ -119,6 +120,10 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
 
     implementation project(rootProject.ext.libraries.linker)
+    implementation (project(rootProject.ext.features.sessioncommon))
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    implementation rootProject.ext.miscDependencies.rxJava
+    implementation project(rootProject.ext.libraries.applink)
 }
 
 project.ext {

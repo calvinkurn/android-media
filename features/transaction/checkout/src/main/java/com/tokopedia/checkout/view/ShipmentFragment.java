@@ -624,7 +624,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void showToastNormal(String message) {
         if (getView() != null && getActivity() != null) {
-            Toaster.make(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getActivity().getString(R.string.label_action_snackbar_close), view -> { });
+            Toaster.make(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getActivity().getString(R.string.label_action_snackbar_close), view -> {
+            });
         }
     }
 
@@ -638,7 +639,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (shipmentAdapter == null || shipmentAdapter.getItemCount() == 0) {
                 renderErrorPage(message);
             } else {
-                Toaster.make(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getActivity().getString(R.string.label_action_snackbar_close), view -> { });
+                Toaster.make(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getActivity().getString(R.string.label_action_snackbar_close), view -> {
+                });
             }
         }
     }
@@ -2838,36 +2840,52 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void checkShippingCompletion(boolean isTriggeredByPaymentButton) {
-        if (getActivity() != null && !isTradeInByDropOff()) {
+        if (getActivity() != null) {
             List<Object> shipmentDataList = shipmentAdapter.getShipmentDataList();
-            int notSelectCourierCount = 0;
-            int firstFoundPosition = 0;
-            for (int i = 0; i < shipmentDataList.size(); i++) {
-                if (shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
-                    ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(i);
-                    if (shipmentCartItemModel.getSelectedShipmentDetailData() == null || shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() == null) {
-                        if (firstFoundPosition == 0) {
-                            firstFoundPosition = i;
-                        }
-                        shipmentCartItemModel.setTriggerShippingVibrationAnimation(true);
-                        shipmentCartItemModel.setStateAllItemViewExpanded(false);
-                        shipmentCartItemModel.setShippingBorderRed(isTriggeredByPaymentButton);
-                        onNeedUpdateViewItem(i);
-                        notSelectCourierCount++;
+            if (isTradeInByDropOff()) {
+                int position = 0;
+                for (int i = 0; i < shipmentDataList.size(); i++) {
+                    if (shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
+                        position = i;
+                        break;
                     }
                 }
-            }
 
-            rvShipment.smoothScrollToPosition(firstFoundPosition);
+                rvShipment.smoothScrollToPosition(position);
 
-            if (isTriggeredByPaymentButton && notSelectCourierCount > 0) {
-                if (notSelectCourierCount == 1) {
+                if (isTriggeredByPaymentButton) {
                     showToastNormal(getActivity().getString(R.string.message_error_courier_not_selected));
-                } else {
-                    showToastNormal(String.format(getString(R.string.message_error_multiple_courier_not_selected), notSelectCourierCount));
                 }
-            }
+            } else {
+                int notSelectCourierCount = 0;
+                int firstFoundPosition = 0;
+                for (int i = 0; i < shipmentDataList.size(); i++) {
+                    if (shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
+                        ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(i);
+                        if (shipmentCartItemModel.getSelectedShipmentDetailData() == null || shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() == null) {
+                            if (firstFoundPosition == 0) {
+                                firstFoundPosition = i;
+                            }
+                            shipmentCartItemModel.setTriggerShippingVibrationAnimation(true);
+                            shipmentCartItemModel.setStateAllItemViewExpanded(false);
+                            shipmentCartItemModel.setShippingBorderRed(isTriggeredByPaymentButton);
+                            onNeedUpdateViewItem(i);
+                            notSelectCourierCount++;
+                        }
+                    }
+                }
 
+                rvShipment.smoothScrollToPosition(firstFoundPosition);
+
+                if (isTriggeredByPaymentButton && notSelectCourierCount > 0) {
+                    if (notSelectCourierCount == 1) {
+                        showToastNormal(getActivity().getString(R.string.message_error_courier_not_selected));
+                    } else {
+                        showToastNormal(String.format(getString(R.string.message_error_multiple_courier_not_selected), notSelectCourierCount));
+                    }
+                }
+
+            }
         }
     }
 
