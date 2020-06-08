@@ -34,7 +34,7 @@ class UploaderUseCase @Inject constructor(
             }
         } catch (e: SocketTimeoutException) {
             UploadResult.Error(TIMEOUT_ERROR)
-        } catch (e: Throwable) {
+        } catch (e: Exception) {
             UploadResult.Error(NETWORK_ERROR)
         }
     }
