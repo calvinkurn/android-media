@@ -229,6 +229,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         return viewModel.isEditing.value ?: false
     }
 
+    fun isDrafting(): Boolean {
+        return viewModel.getDraftId() > 0L
+    }
+
     fun dataBackPressedLoss(): Boolean {
         // when stepper page has no data, dataBackPressed is null but if stepper page has data, dataBackPressed has data too
         // dataBackPressed is a sign of activity where data is obtained
@@ -299,10 +303,12 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         loadingLayout = view.findViewById(R.id.loading_layout)
 
         addEditProductPhotoButton?.setOnClickListener {
-
             // tracking
+            val buttonTextStart: String = getString(R.string.action_start)
             if (viewModel.isEditing.value == true) {
                 ProductEditStepperTracking.trackClickChangeProductPic(shopId)
+            } else if (addEditProductPhotoButton?.text == buttonTextStart){
+                ProductAddStepperTracking.trackStart(shopId)
             }
 
             productPhotoAdapter?.run {
@@ -323,7 +329,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         }
 
         productStatusSwitch?.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isProductStatusSwitchFirstTime) {
+            if (isProductStatusSwitchFirstTime && isChecked) {
                 if (viewModel.isEditing.value == true) {
                     ProductEditStepperTracking.trackChangeProductStatus(shopId)
                 }
@@ -461,7 +467,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                             viewModel.updateProductPhotos(imagePickerResult, originalImageUrl, isEditted)
                         } else {
                             // this only executed when we came from empty stepper page (add product)
-                            ProductAddStepperTracking.trackStart(shopId)
                             val newProductInputModel = viewModel.getNewProductInputModel(imagePickerResult)
                             startAddEditProductDetailActivity(newProductInputModel, isEditing = false, isAdding = true)
                         }

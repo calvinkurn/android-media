@@ -28,10 +28,7 @@ import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.util.*
@@ -113,7 +110,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     lateinit var viewModel: AddEditProductDetailViewModel
 
     private var selectedDurationPosition: Int = UNIT_DAY
-    private var isPreOrderFirstTime = false
+    private var isPreOrderFirstTime = true
     private var countTouchPhoto = 0
 
     // product photo
@@ -330,12 +327,24 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // set input type no suggestion to prevent red underline on text
         preOrderDurationUnitField?.textFieldInput?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 
+        // pre order checked change listener
         preOrderSwitch?.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
+                // tracker
+                if (!isPreOrderFirstTime) {
+                    if (viewModel.isEditing && !viewModel.isAdding) {
+                        ProductEditMainTracking.clickPreorderButton(shopId)
+                    } else {
+                        ProductAddMainTracking.clickPreorderButton(shopId)
+                    }
+                }
+
                 preOrderInputLayout?.visibility = View.VISIBLE
             } else {
                 preOrderInputLayout?.visibility = View.GONE
             }
+
+            viewModel.isPreOrderActivated.value = isChecked
         }
 
         preOrderDurationUnitField?.apply {
@@ -472,11 +481,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 productStockInput.let { viewModel.validateProductStockInput(it) }
             }
         })
-
-        // pre order checked change listener
-        preOrderSwitch?.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.isPreOrderActivated.value = isChecked
-        }
 
         // product pre order duration text change listener
         preOrderDurationField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
@@ -672,6 +676,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onRemovePhoto(viewHolder: RecyclerView.ViewHolder) {
+        // validate when 1 photo item is removed
+        val photoCount = productPhotoAdapter?.itemCount ?: 0
+        viewModel.validateProductPhotoInput(photoCount - 1)
+
+        // tracking
         if (viewModel.isEditing && !viewModel.isAdding) {
             ProductEditMainTracking.trackRemovePhoto(shopId)
         } else {
@@ -977,17 +986,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun subscribeToPreOrderSwitchStatus() {
         viewModel.isPreOrderActivated.observe(this, Observer {
+            isPreOrderFirstTime = false
             if (it) preOrderInputLayout?.visible()
             else preOrderInputLayout?.hide()
-
-            if (isPreOrderFirstTime) {
-                if (viewModel.isEditing && !viewModel.isAdding) {
-                    ProductEditMainTracking.clickPreorderButton(shopId)
-                } else {
-                    ProductAddMainTracking.clickPreorderButton(shopId)
-                }
-            }
-            isPreOrderFirstTime = true
         })
     }
 

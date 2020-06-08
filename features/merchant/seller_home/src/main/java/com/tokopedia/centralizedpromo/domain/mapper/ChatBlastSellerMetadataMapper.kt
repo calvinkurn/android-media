@@ -8,7 +8,7 @@ import javax.inject.Inject
 class ChatBlastSellerMetadataMapper @Inject constructor() {
     fun mapDomainDataModelToUiDataModel(response: ChatBlastSellerMetadataResponse?): ChatBlastSellerMetadataUiModel {
         return response?.chatBlastSellerMetadata?.let {
-            ChatBlastSellerMetadataUiModel(it.promo.toZeroIfNull(), it.promoType.toZeroIfNull())
+            ChatBlastSellerMetadataUiModel(it.promo.toZeroIfNull(), it.promoType.toZeroIfNull(), it.url.orEmpty())
         } ?: ChatBlastSellerMetadataUiModel()
     }
 }
