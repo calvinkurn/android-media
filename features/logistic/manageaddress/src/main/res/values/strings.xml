@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">manageaddress</string>
+
+    <!--Manage Address-->
+    <string name="address_name">Rumah</string>
+    <string name="address_label">Alamat Utama</string>
+    <string name="receiver_name">Nama</string>
+    <string name="receiver_number">0821112233445</string>
+    <string name="address_detail">Detail Alamat</string>
+</resources>
