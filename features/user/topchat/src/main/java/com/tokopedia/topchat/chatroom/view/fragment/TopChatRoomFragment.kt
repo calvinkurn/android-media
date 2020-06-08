@@ -12,9 +12,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.annotation.StringRes
+import androidx.collection.ArrayMap
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import com.crashlytics.android.Crashlytics
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -53,12 +55,11 @@ import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.topchat.BuildConfig
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
@@ -68,6 +69,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.QuotationViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.StickerViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
 import com.tokopedia.topchat.chatroom.view.custom.TransactionOrderProgressLayout
@@ -100,7 +102,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         HeaderMenuListener, DualAnnouncementListener, TopChatVoucherListener,
         InvoiceThumbnailListener, QuotationViewHolder.QuotationListener,
         TransactionOrderProgressLayout.Listener, ChatMenuStickerView.StickerMenuListener,
-        StickerViewHolder.Listener {
+        StickerViewHolder.Listener, DeferredViewHolderAttachment {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -134,6 +136,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     private var composeArea: EditText? = null
     private var orderProgress: TransactionOrderProgressLayout? = null
     private var chatMenu: ChatMenuView? = null
+    private var rvLayoutManager: LinearLayoutManager? = null
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getAnalytic(): TopChatAnalytics = analytics
@@ -171,15 +174,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun onCreateViewState(view: View): BaseChatViewState {
         return TopChatViewStateImpl(
-                view,
-                this,
-                this,
-                this,
-                this,
-                this,
-                this,
-                (activity as BaseChatToolbarActivity).getToolbar(),
-                analytics
+                view, this, this, this,
+                this, this, this,
+                (activity as BaseChatToolbarActivity).getToolbar(), analytics
         )
     }
 
@@ -194,6 +191,14 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
             }
             presenter.attachView(this)
         }
+    }
+
+    override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
+        val manager = super.getRecyclerViewLayoutManager()
+        if (manager is LinearLayoutManager) {
+            rvLayoutManager = manager
+        }
+        return manager
     }
 
     override fun loadInitialData() {
@@ -288,6 +293,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
         presenter.getTemplate(getUserSession().shopId == shopId.toString())
         loadChatRoomSettings(chatRoom)
         presenter.getStickerGroupList(chatRoom)
+        presenter.loadAttachmentData(messageId.toInt(), chatRoom)
 
         fpm.stopTrace()
     }
@@ -340,6 +346,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
             checkShowLoading(it.canLoadMore)
             loadChatRoomSettings(it)
             presenter.updateMinReplyTime(it)
+            presenter.loadAttachmentData(messageId.toInt(), it)
         }
     }
 
@@ -455,39 +462,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
         return TopChatTypeFactoryImpl(
-                this,
-                this,
-                this,
-                this,
-                this,
-                this,
-                this,
-                this,
-                isUseNewCard()
+                this, this, this, this,
+                this, this, this, this,
+                this
         )
-    }
-
-    override fun isUseNewCard(): Boolean {
-        val defaultUseNewCard = true
-        return try {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewThumbnailKey) == variantNewThumbnail
-        } catch (e: Exception) {
-            e.printStackTrace()
-            logUnknownError(e)
-            defaultUseNewCard
-        }
-    }
-
-    private fun logUnknownError(exception: Exception) {
-        try {
-            if (!BuildConfig.DEBUG) Crashlytics.logException(exception)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    override fun isUseCarousel(): Boolean? {
-        return remoteConfig?.getBoolean(RemoteConfigKey.CHAT_PRODUCT_CAROUSEL, true)
     }
 
     override fun renderOrderProgress(chatOrder: ChatOrderProgress) {
@@ -496,6 +474,30 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun getChatMenuView(): ChatMenuView? {
         return getViewState().chatMenu
+    }
+
+    override fun updateAttachmentsView(attachments: ArrayMap<String, Attachment>) {
+        val firstVisible = getFirstVisibleItemPosition() ?: return
+        val lastVisible = getLastVisibleItemPosition() ?: return
+        adapter.updateAttachmentView(firstVisible, lastVisible, attachments)
+    }
+
+    private fun getFirstVisibleItemPosition(): Int? {
+        var firstVisible = rvLayoutManager?.findFirstVisibleItemPosition() ?: return null
+        val partialVisible = firstVisible - 1
+        if (adapter.dataExistAt(partialVisible)) {
+            firstVisible = partialVisible
+        }
+        return firstVisible
+    }
+
+    private fun getLastVisibleItemPosition(): Int? {
+        var lastVisible = rvLayoutManager?.findLastVisibleItemPosition() ?: return null
+        val partialVisible = lastVisible + 1
+        if (adapter.dataExistAt(partialVisible)) {
+            lastVisible = partialVisible
+        }
+        return lastVisible
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
@@ -1092,9 +1094,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
     }
 
     companion object {
-        private const val abNewThumbnailKey = "Topchat Product Thumbnail"
-        private const val variantNewThumbnail = "New Thumbnail"
-
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {
                 arguments = bundle
@@ -1112,5 +1111,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
 
     override fun getFragmentActivity(): FragmentActivity? {
         return activity
+    }
+
+    override fun getLoadedChatAttachments(): ArrayMap<String, Attachment> {
+        return presenter.attachments
     }
 }

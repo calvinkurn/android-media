@@ -12,4 +12,6 @@
 
     <string name="path_instant_debit_bca" translatable="false">/instantdebitbca</string>
     <string name="path_edit_bca_one_click" translatable="false">/editbcaoneklik</string>
+    <string name="path_thank_you_page" translatable="false">/thankyou</string>
+
 </resources>

@@ -35,8 +35,6 @@ import com.tokopedia.createpost.view.applink.CreatePostModule;
 import com.tokopedia.createpost.view.applink.CreatePostModuleLoader;
 import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModule;
 import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModuleLoader;
-import com.tokopedia.discovery.applink.DiscoveryApplinkModule;
-import com.tokopedia.discovery.applink.DiscoveryApplinkModuleLoader;
 import com.tokopedia.events.deeplink.EventsDeepLinkModule;
 import com.tokopedia.events.deeplink.EventsDeepLinkModuleLoader;
 import com.tokopedia.explore.applink.ExploreApplinkModule;
@@ -116,7 +114,6 @@ import timber.log.Timber;
         TransactionApplinkModule.class,
         ProductDetailApplinkModule.class,
         HomeApplinkModule.class,
-        DiscoveryApplinkModule.class,
         SessionApplinkModule.class,
         FeedDeeplinkModule.class,
         DigitalBrowseApplinkModule.class,
@@ -157,7 +154,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new TransactionApplinkModuleLoader(),
                     new ProductDetailApplinkModuleLoader(),
                     new HomeApplinkModuleLoader(),
-                    new DiscoveryApplinkModuleLoader(),
                     new SessionApplinkModuleLoader(),
                     new FeedDeeplinkModuleLoader(),
                     new DigitalBrowseApplinkModuleLoader(),

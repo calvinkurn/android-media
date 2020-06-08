@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/reading_image_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_36"
+        android:layout_marginEnd="@dimen/dp_36"
+        android:layout_marginTop="@dimen/layout_lvl5"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/reading_empty_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/reading_empty_title"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:gravity="center"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/reading_image_error"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/reading_empty_subtitle"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:text="@string/reading_empty_subtitle"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:textColor="@color/Neutral_N700_68"
+        app:typographyType="body_3"
+        app:layout_constraintStart_toStartOf="@id/reading_empty_title"
+        app:layout_constraintEnd_toEndOf="@id/reading_empty_title"
+        app:layout_constraintTop_toBottomOf="@id/reading_empty_title"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/readingEmptyAskButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/title_write_page"
+        android:layout_marginTop="@dimen/layout_lvl3"
+        android:layout_marginStart="@dimen/layout_lvl7"
+        android:layout_marginEnd="@dimen/layout_lvl7"
+        app:layout_constraintTop_toBottomOf="@id/reading_empty_subtitle"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

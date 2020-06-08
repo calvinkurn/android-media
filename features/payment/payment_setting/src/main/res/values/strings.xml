@@ -22,4 +22,5 @@
     <string name="payment_label_desc_dialog_verif">Untuk mengubah pengaturan verifikasi Anda harus melakukan verifikasi nomor ponsel terlebih dahulu</string>
     <string name="payment_label_continue_dialog_verif">Lanjutkan</string>
     <string name="payment_label_cancel_dialog_verif">Batal</string>
+    <string name="payment_label_coba_lagi">Coba Lagi</string>
 </resources>

@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import androidx.annotation.StringRes
+import androidx.collection.ArrayMap
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -42,6 +43,7 @@ import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
@@ -97,11 +99,13 @@ class TopChatRoomPresenter @Inject constructor(
         private var removeWishListUseCase: RemoveWishListUseCase,
         private var uploadImageUseCase: TopchatUploadImageUseCase,
         private var orderProgressUseCase: OrderProgressUseCase,
-        private val groupStickerUseCase: ChatListGroupStickerUseCase
+        private val groupStickerUseCase: ChatListGroupStickerUseCase,
+        private val chatAttachmentUseCase: ChatAttachmentUseCase
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
         TopChatContract.Presenter {
 
     var thisMessageId: String = ""
+    val attachments: ArrayMap<String, Attachment> = ArrayMap()
 
     private lateinit var webSocketUrl: String
     private lateinit var addToCardSubscriber: Subscriber<AddToCartDataModel>
@@ -223,8 +227,6 @@ class TopChatRoomPresenter @Inject constructor(
             getChatUseCase.execute(
                     GetChatUseCase.generateParam(messageId, paramBeforeReplyTime),
                     GetChatSubscriber(
-                            view?.isUseCarousel() ?: false,
-                            view?.isUseNewCard() ?: true,
                             onError,
                             onSuccessGetExistingMessage
                     )
@@ -252,8 +254,6 @@ class TopChatRoomPresenter @Inject constructor(
             getChatUseCase.execute(
                     GetChatUseCase.generateParam(messageId, paramBeforeReplyTime),
                     GetChatSubscriber(
-                            view?.isUseCarousel() ?: false,
-                            view?.isUseNewCard() ?: true,
                             onError,
                             onSuccessGetPreviousChat
                     )
@@ -548,6 +548,7 @@ class TopChatRoomPresenter @Inject constructor(
         }
         compressImageSubscription.unsubscribe()
         groupStickerUseCase.safeCancel()
+        chatAttachmentUseCase.safeCancel()
         super.detachView()
     }
 
@@ -774,6 +775,25 @@ class TopChatRoomPresenter @Inject constructor(
                 chatRoom.isSeller(), ::onLoadingStickerGroup, ::onSuccessGetStickerGroup,
                 ::onErrorGetStickerGroup
         )
+    }
+
+    override fun loadAttachmentData(msgId: Int, chatRoom: ChatroomViewModel) {
+        if (chatRoom.hasAttachment() && msgId != 0) {
+            chatAttachmentUseCase.getAttachments(
+                    msgId, chatRoom.attachmentIds, ::onSuccessGetAttachments, ::onErrorGetAttachments
+            )
+        }
+    }
+
+    private fun onSuccessGetAttachments(attachments: ArrayMap<String, Attachment>) {
+        this.attachments.putAll(attachments.toMap())
+        view?.updateAttachmentsView(this.attachments)
+    }
+
+    private fun onErrorGetAttachments(throwable: Throwable, errorAttachment: ArrayMap<String, Attachment>) {
+        this.attachments.putAll(errorAttachment.toMap())
+        view?.updateAttachmentsView(this.attachments)
+        println(throwable.message)
     }
 
     private fun onLoadingStickerGroup(response: ChatListGroupStickerResponse) {

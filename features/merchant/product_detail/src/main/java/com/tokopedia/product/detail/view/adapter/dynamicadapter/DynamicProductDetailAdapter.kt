@@ -83,6 +83,12 @@ class DynamicProductDetailAdapter(
         }
     }
 
+    fun removeQnaSection(data: ProductDiscussionMostHelpfulDataModel?) {
+        data?.let {
+            clearElement(it)
+        }
+    }
+
     fun removeGeneralInfo(data: ProductGeneralInfoDataModel?) {
         data?.let {
             clearElement(it)
@@ -130,6 +136,16 @@ class DynamicProductDetailAdapter(
             } else {
                 notifyItemChanged(indexOfNotifyMe)
             }
+        }
+    }
+
+    fun notifyDiscussion(productDiscussionMostHelpfulDataModel: ProductDiscussionMostHelpfulDataModel?) {
+        productDiscussionMostHelpfulDataModel?.let {
+            val indexOfDiscussion = list.indexOf(it)
+            if(indexOfDiscussion == -1) {
+                return
+            }
+            notifyItemChanged(indexOfDiscussion)
         }
     }
 

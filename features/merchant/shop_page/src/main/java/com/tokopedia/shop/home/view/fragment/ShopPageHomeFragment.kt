@@ -16,7 +16,8 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -34,10 +35,15 @@ import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.R
+import com.tokopedia.shop.ShopComponentInstance
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_HOME_TAB_RESULT_PLT_NETWORK_METRICS
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_HOME_TAB_RESULT_PLT_PREPARE_METRICS
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_HOME_TAB_RESULT_PLT_RENDER_METRICS
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_PAGE_HOME_TAB_RESULT_TRACE
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.ShopUtil
@@ -55,6 +61,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 import com.tokopedia.shop.home.view.model.ShopPageHomeLayoutUiModel
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
+import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHomeTabPerformanceMonitoringListener
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -130,11 +137,41 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initPltMonitoring()
         getIntentData()
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopHomeViewModel::class.java)
         customDimensionShopPage.updateCustomDimensionData(shopId, isOfficialStore, isGoldMerchant)
         staggeredGridLayoutManager = StaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
+    }
+
+    private fun initPltMonitoring() {
+        (activity as? ShopPageHomeTabPerformanceMonitoringListener)?.initShopPageHomeTabPerformanceMonitoring()
+    }
+
+
+    private fun startMonitoringPltNetworkRequest(){
+        (activity as? ShopPageHomeTabPerformanceMonitoringListener)?.let {shopPageActivity ->
+            shopPageActivity.getShopPageHomeTabLoadTimePerformanceCallback()?.let {
+                shopPageActivity.startMonitoringPltNetworkRequest(it)
+            }
+        }
+    }
+
+    private fun startMonitoringPltRenderPage() {
+        (activity as? ShopPageHomeTabPerformanceMonitoringListener)?.let {shopPageActivity ->
+            shopPageActivity.getShopPageHomeTabLoadTimePerformanceCallback()?.let {
+                shopPageActivity.startMonitoringPltRenderPage(it)
+            }
+        }
+    }
+
+    private fun stopMonitoringPltRenderPage() {
+        (activity as? ShopPageHomeTabPerformanceMonitoringListener)?.let {shopPageActivity ->
+            shopPageActivity.getShopPageHomeTabLoadTimePerformanceCallback()?.let {
+                shopPageActivity.stopMonitoringPltRenderPage(it)
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -176,6 +213,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         globalError_shopPage.hide()
         showLoading()
         shopHomeAdapter.isOwner = isOwner
+        startMonitoringPltNetworkRequest()
         viewModel?.getShopPageHomeData(shopId)
     }
 
@@ -192,6 +230,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun observeLiveData() {
         viewModel?.shopHomeLayoutData?.observe(this, Observer {
+            startMonitoringPltRenderPage()
             hideLoading()
             when (it) {
                 is Success -> {
@@ -202,6 +241,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     stopPerformanceMonitor()
                 }
             }
+            stopMonitoringPltRenderPage()
         })
 
         viewModel?.productListData?.observe(this, Observer {
@@ -329,12 +369,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     override fun getScreenName() = ""
 
     override fun initInjector() {
-        DaggerShopPageHomeComponent
-                .builder()
-                .shopPageHomeModule(ShopPageHomeModule())
-                .shopComponent(getComponent(ShopComponent::class.java))
-                .build()
-                .inject(this)
+        activity?.run {
+            DaggerShopPageHomeComponent
+                    .builder()
+                    .shopPageHomeModule(ShopPageHomeModule())
+                    .shopComponent(ShopComponentInstance.getComponent(application))
+                    .build()
+                    .inject(this@ShopPageHomeFragment)
+            }
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {

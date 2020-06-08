@@ -10,7 +10,8 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CAMERA_OCR
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CART_DIGITAL
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.DIGITAL_PRODUCT_FORM
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.GENERAL_TEMPLATE
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital.INTERNAL_SMARTCARD
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.INTERNAL_SMARTCARD_BRIZZI
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.INTERNAL_SMARTCARD_EMONEY
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_DIGITAL
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.VOUCHER_GAME
 import com.tokopedia.applink.internal.ApplinkConsInternalHome.HOME_WISHLIST
@@ -75,7 +76,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICAT
 import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICATION_BUYER
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational.INTERNAL_INBOX_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_SELLER
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder.OPPORTUNITY
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment.PAYMENT_SETTING
 import com.tokopedia.applink.internal.ApplinkConstInternalPlay.GROUPCHAT_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalPlay.GROUPCHAT_LIST
@@ -119,6 +119,7 @@ import kotlin.coroutines.CoroutineContext
 object DeeplinkDFMapper : CoroutineScope {
     // it should have the same name with the folder of dynamic feature
     private const val DF_BASE = "df_base"
+    private const val DF_RECHARGE_BRIZZI = "df_recharge_brizzi"
     private const val DF_CATEGORY_TRADE_IN = "df_category_trade_in"
     const val DF_MERCHANT_SELLER = "df_merchant_seller"
     const val DF_OPERATIONAL_CONTACT_US = "df_operational_contact_us"
@@ -157,7 +158,8 @@ object DeeplinkDFMapper : CoroutineScope {
                     it.startsWith(VOUCHER_GAME) ||
                     it.startsWith(CART_DIGITAL) || it.startsWith(DIGITAL_CART)
             }, DF_BASE, R.string.title_digital_subhomepage))
-            add(DFP({ it.startsWithPattern(INTERNAL_SMARTCARD) }, DF_BASE, R.string.title_digital_emoney))
+            add(DFP({ it.startsWithPattern(INTERNAL_SMARTCARD_EMONEY) }, DF_BASE, R.string.title_digital_emoney))
+            add(DFP({ it.startsWithPattern(INTERNAL_SMARTCARD_BRIZZI) }, DF_BASE, R.string.title_digital_emoney))
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL) }, DF_BASE, R.string.title_digital_deals))
             add(DFP({ it.startsWithPattern(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG) }, DF_BASE, R.string.title_digital_deals))
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_CATEGORY) }, DF_BASE, R.string.title_digital_deals))
@@ -197,7 +199,6 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({
                 it.startsWith(TOPADS_DASHBOARD_CUSTOMER) || it.startsWith(TOPADS_DASHBOARD_INTERNAL)
             }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.TOP_ADS_DASHBOARD }))
-            add(DFP({ it.startsWith(OPPORTUNITY) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.OPPORTUNITY }))
             add(DFP({ it.startsWith(SELLER_TRANSACTION) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.SELLER_ORDER }))
             add(DFP({ it.startsWith(MERCHANT_SHOP_SHOWCASE_LIST) }, DF_MERCHANT_SELLER, R.string.merchant_seller))
 

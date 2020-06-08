@@ -72,6 +72,7 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
             }
         }).map(response -> {
             Map<Type, List<GraphqlError>> errors = new HashMap<>();
+            mResults.clear();
 
             if (response.getOriginalResponse() != null) {
                 for (int i = 0; i < response.getOriginalResponse().size(); i++) {
