@@ -159,6 +159,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private fun getCatalogMenuDetail() {
+        onLoadingMenuDetail(true)
         getMenuDetail(TelcoComponentType.TELCO_PREPAID)
         getFavoriteNumbers(TelcoComponentType.FAV_NUMBER_PREPAID)
     }
@@ -189,6 +190,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
+        onLoadingMenuDetail(false)
         super.processMenuDetail(data)
         showOnBoarding()
     }
@@ -219,8 +221,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                         topupAnalytics.eventInputNumberContactPicker(categoryId, operatorName)
                     }
                 }
-
-                renderViewPager(selectedOperator.operator.id)
+                getDataProductList(selectedOperator.operator.id)
                 telcoClientNumberWidget.setIconOperator(selectedOperator.operator.attributes.imageUrl)
 
                 recentNumbersWidget.visibility = View.GONE
@@ -237,13 +238,38 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
+    private fun getDataProductList(operatorId: String) {
+        val mapParamRequest = mutableMapOf<String, Map<String, Any>>()
+        val mapParamPulsa = mutableMapOf<String, Any>()
+        mapParamPulsa[DigitalTelcoProductFragment.KEY_COMPONENT_ID] = TelcoComponentType.PRODUCT_PULSA
+        mapParamPulsa[DigitalTelcoProductFragment.KEY_OPERATOR_ID] = operatorId
+        mapParamRequest[TelcoComponentName.PRODUCT_PULSA] =  mapParamPulsa
+
+        val mapParamPaketData = mutableMapOf<String, Any>()
+        mapParamPaketData[DigitalTelcoProductFragment.KEY_COMPONENT_ID] = TelcoComponentType.PRODUCT_PAKET_DATA
+        mapParamPaketData[DigitalTelcoProductFragment.KEY_OPERATOR_ID] = operatorId
+        mapParamRequest[TelcoComponentName.PRODUCT_PAKET_DATA] =  mapParamPaketData
+
+        val mapParamRoaming = mutableMapOf<String, Any>()
+        mapParamRoaming[DigitalTelcoProductFragment.KEY_COMPONENT_ID] = TelcoComponentType.PRODUCT_ROAMING
+        mapParamRoaming[DigitalTelcoProductFragment.KEY_OPERATOR_ID] = operatorId
+        mapParamRequest[TelcoComponentName.PRODUCT_ROAMING] =  mapParamRoaming
+
+        sharedModel.getProductList(GraphqlHelper.loadRawString(resources, R.raw.query_product_digital_telco),
+                mapParamRequest, this::onSuccessProductList)
+    }
+
     override fun onErrorCustomData(throwable: Throwable) {
         view?.run {
             Toaster.showError(this, getErrorMessage(activity, throwable), Snackbar.LENGTH_LONG)
         }
     }
 
-    fun onLoadingMenuDetail(showLoading: Boolean) {
+    private fun onSuccessProductList() {
+        renderViewPager()
+    }
+
+    private fun onLoadingMenuDetail(showLoading: Boolean) {
         if (showLoading) {
             layoutProgressBar.visibility = View.VISIBLE
             recentNumbersWidget.visibility = View.GONE
@@ -307,17 +333,18 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         sharedModel.setPromoSelected(promoId)
     }
 
-    private fun renderViewPager(operatorId: String) {
+    override fun errorMenuDetail() {
+        onLoadingMenuDetail(false)
+    }
+
+    private fun renderViewPager() {
         val listProductTab = mutableListOf<TopupBillsTabItem>()
         listProductTab.add(TopupBillsTabItem(DigitalTelcoProductFragment.newInstance(
-                TelcoComponentType.PRODUCT_PULSA, TelcoComponentName.PRODUCT_PULSA, operatorId, operatorName,
-                TelcoProductType.PRODUCT_GRID, productId), TelcoComponentName.PRODUCT_PULSA))
+                TelcoComponentName.PRODUCT_PULSA, operatorName, productId), TelcoComponentName.PRODUCT_PULSA))
         listProductTab.add(TopupBillsTabItem(DigitalTelcoProductFragment.newInstance(
-                TelcoComponentType.PRODUCT_PAKET_DATA, TelcoComponentName.PRODUCT_PAKET_DATA, operatorId, operatorName,
-                TelcoProductType.PRODUCT_LIST, productId), TelcoComponentName.PRODUCT_PAKET_DATA))
+                TelcoComponentName.PRODUCT_PAKET_DATA, operatorName, productId), TelcoComponentName.PRODUCT_PAKET_DATA))
         listProductTab.add(TopupBillsTabItem(DigitalTelcoProductFragment.newInstance(
-                TelcoComponentType.PRODUCT_ROAMING, TelcoComponentName.PRODUCT_ROAMING, operatorId, operatorName,
-                TelcoProductType.PRODUCT_LIST, productId), TelcoComponentName.PRODUCT_ROAMING))
+                TelcoComponentName.PRODUCT_ROAMING, operatorName, productId), TelcoComponentName.PRODUCT_ROAMING))
         val pagerAdapter = TopupBillsProductTabAdapter(listProductTab, childFragmentManager)
         viewPager.adapter = pagerAdapter
         viewPager.offscreenPageLimit = 3
