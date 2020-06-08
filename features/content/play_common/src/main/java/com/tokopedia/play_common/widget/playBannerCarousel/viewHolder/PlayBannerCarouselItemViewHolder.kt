@@ -12,11 +12,11 @@ import kotlinx.android.synthetic.main.item_play_banner_carousel.view.*
 import kotlinx.android.synthetic.main.layout_viewer_badge.view.*
 
 
-class PlayBannerCarouselItemViewHolder (private val parent: View, private val listener: PlayBannerCarouselViewEventListener?): BasePlayBannerCarouselViewHolder<PlayBannerCarouselItemDataModel>(parent){
+class PlayBannerCarouselItemViewHolder (private val parent: View): BasePlayBannerCarouselViewHolder<PlayBannerCarouselItemDataModel>(parent){
 
     val playerView: PlayerView = parent.player_view
     val thumbnail: ImageView = parent.thumbnail
-    override fun bind(dataModel: PlayBannerCarouselItemDataModel) {
+    override fun bind(dataModel: PlayBannerCarouselItemDataModel, listener: PlayBannerCarouselViewEventListener?) {
         parent.tag = this
         itemView.setOnClickListener { listener?.onItemClick(dataModel, adapterPosition) }
         itemView.addOnImpressionListener(dataModel){ listener?.onItemImpress(dataModel, adapterPosition) }

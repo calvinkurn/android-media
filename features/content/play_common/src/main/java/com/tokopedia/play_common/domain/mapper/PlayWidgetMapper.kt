@@ -4,14 +4,19 @@ import com.tokopedia.play_common.domain.model.PlayWidget
 import com.tokopedia.play_common.widget.playBannerCarousel.helper.DateHelper
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselBannerDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselDataModel
-import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselEmptyDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
+import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselOverlayImageDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.typeFactory.BasePlayBannerCarouselModel
 
 object PlayWidgetMapper {
     fun mapperToPlayBannerCarouselDataModel(playWidget: PlayWidget): PlayBannerCarouselDataModel{
         val list = mutableListOf<BasePlayBannerCarouselModel>()
-        list.add(PlayBannerCarouselEmptyDataModel())
+        if(playWidget.meta.overlayImage.isNotBlank())
+        list.add(PlayBannerCarouselOverlayImageDataModel(
+                imageUrl = playWidget.meta.overlayImage,
+                applink = playWidget.meta.overlayImageApplink,
+                weblink = playWidget.meta.overlayImageWeblink
+        ))
 
         list.addAll(
                 playWidget.data.map {
@@ -45,6 +50,8 @@ object PlayWidgetMapper {
                 isAutoRefresh = playWidget.meta.isAutoRefresh,
                 isAutoRefreshTimer = playWidget.meta.autoRefreshTimer,
                 seeMoreApplink = playWidget.meta.buttonApplink,
+                imageUrl = playWidget.meta.overlayImage,
+                serverTimeOffset = playWidget.meta.serverTimeOffset,
                 channelList = list
         )
     }

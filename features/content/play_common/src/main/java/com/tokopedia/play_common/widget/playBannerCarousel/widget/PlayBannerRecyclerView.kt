@@ -128,7 +128,7 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
         })
     }
 
-    private fun playVideos() {
+    fun playVideos() {
         try{
             if(!isAutoPlay || mediaObjects.isEmpty()) return
 
@@ -246,7 +246,7 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
         resetVideoPlayer()
     }
 
-    private fun resetVideoPlayer(){
+    fun resetVideoPlayer(){
         removeVideoView(videoPlayer1)
         removeVideoView(videoPlayer2)
     }

@@ -6,7 +6,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play_common.domain.model.PlayGetWidgetEntity
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselBannerDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselDataModel
-import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselEmptyDataModel
+import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselOverlayImageDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -35,11 +35,12 @@ class GetPlayWidgetUseCase(
                 __typename... on PlayWidgetChannel{
                   ID
                   title
-                  startTime
-                  endTime
                   widgetType
                   appLink
                   webLink
+                  config{
+                    hasPromo
+                  }
                   partner {
                     ID
                     type
@@ -65,16 +66,14 @@ class GetPlayWidgetUseCase(
                     view {
                       value
                       formatted
+                      visible
                     }
                   }
                 }
                 __typename ... on PlayWidgetBanner {
                   backgroundURL
-                  title
-                  buttonColor
-                  buttonText
-                  buttonAppLink
-                  buttonWebLink
+                  appLink
+                  webLink      
                 }
               }
               meta {
@@ -83,6 +82,15 @@ class GetPlayWidgetUseCase(
                 widgetTitle
                 buttonText
                 widgetBackground
+            	autoplayAmount
+                autoplay
+                buttonApplink
+                buttonWeblink
+                overlayImage
+                overlayImageAppLink
+                overlayImageWebLink
+                gradient
+                serverTimeOffset
               }
             } 
           }
@@ -106,8 +114,14 @@ class GetPlayWidgetUseCase(
                 backgroundUrl = "https://i.ibb.co/ZdMn09S/bg1.jpg",
                 imageUrl = "https://i.ibb.co/Wk4YrQR/imageorang.png",
                 isAutoPlay = true,
+                isAutoRefreshTimer = 10000,
+                isAutoRefresh = true,
                 channelList = listOf(
-                        PlayBannerCarouselEmptyDataModel(),
+                        PlayBannerCarouselOverlayImageDataModel(
+                                applink = "",
+                                imageUrl = "",
+                                weblink = ""
+                        ),
                         PlayBannerCarouselItemDataModel(
                                 channelTitle = "Google Assistant review with me",
                                 channelCreator = "Google",

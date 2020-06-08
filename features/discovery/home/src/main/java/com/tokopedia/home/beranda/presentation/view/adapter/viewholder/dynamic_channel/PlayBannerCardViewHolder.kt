@@ -9,7 +9,9 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCarouselCardDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.event.PlayBannerCarouselViewEventListener
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselBannerDataModel
+import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
+import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselOverlayImageDataModel
 import kotlinx.android.synthetic.main.play_banner_carousel.view.*
 
 class PlayBannerCardViewHolder(
@@ -29,11 +31,13 @@ class PlayBannerCardViewHolder(
 
     override fun bind(element: PlayCarouselCardDataModel?) {
         playCarouselCardDataModel = element
+        itemView.visibility = if(element == null) View.GONE else View.VISIBLE
         element?.playBannerCarouselDataModel?.let { itemView.play_banner_carousel?.setItem(it) }
     }
 
     override fun bind(element: PlayCarouselCardDataModel?, payloads: MutableList<Any>) {
         playCarouselCardDataModel = element
+        itemView.visibility = if(element == null) View.GONE else View.VISIBLE
         element?.playBannerCarouselDataModel?.let { itemView.play_banner_carousel?.setItem(it) }
     }
 
@@ -53,11 +57,15 @@ class PlayBannerCardViewHolder(
         RouteManager.route(itemView.context, dataModel.applink)
     }
 
-    override fun onRefreshView(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
+    override fun onOverlayImageBannerClick(dataModel: PlayBannerCarouselOverlayImageDataModel) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onRefreshView(dataModel: PlayBannerCarouselDataModel) {
         playCarouselCardDataModel?.let { listener.onPlayBannerCarouselRefresh(it, adapterPosition) }
     }
 
-    override fun onExpiredView(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
-        playCarouselCardDataModel?.let { listener.onPlayBannerCarouselRefresh(it, adapterPosition) }
+    fun onDestroy(){
+        itemView.play_banner_carousel?.onDestroy()
     }
 }

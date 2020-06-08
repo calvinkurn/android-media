@@ -4,12 +4,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.play_common.widget.playBannerCarousel.event.PlayBannerCarouselViewEventListener
 import com.tokopedia.play_common.widget.playBannerCarousel.typeFactory.BasePlayBannerCarouselModel
 import com.tokopedia.play_common.widget.playBannerCarousel.typeFactory.PlayBannerCarouselTypeFactory
 import com.tokopedia.play_common.widget.playBannerCarousel.viewHolder.BasePlayBannerCarouselViewHolder
 
 class PlayBannerCarouselAdapter(
-        private val adapterTypeFactory: PlayBannerCarouselTypeFactory
+        private val adapterTypeFactory: PlayBannerCarouselTypeFactory,
+        private val listener: PlayBannerCarouselViewEventListener?
 ): RecyclerView.Adapter<BasePlayBannerCarouselViewHolder<BasePlayBannerCarouselModel>>(){
 
     private var list: List<BasePlayBannerCarouselModel> = listOf()
@@ -27,7 +29,7 @@ class PlayBannerCarouselAdapter(
     }
 
     override fun onBindViewHolder(holder: BasePlayBannerCarouselViewHolder<BasePlayBannerCarouselModel>, position: Int) {
-        holder.bind(list[position])
+        holder.bind(list[position], listener)
     }
 
     fun setItems(list: List<BasePlayBannerCarouselModel>){

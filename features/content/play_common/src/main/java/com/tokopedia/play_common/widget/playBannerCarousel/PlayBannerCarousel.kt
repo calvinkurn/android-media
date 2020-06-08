@@ -2,7 +2,6 @@ package com.tokopedia.play_common.widget.playBannerCarousel
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
@@ -21,17 +20,24 @@ import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarou
 import com.tokopedia.play_common.widget.playBannerCarousel.typeFactory.PlayBannerCarouselTypeImpl
 import kotlinx.android.synthetic.main.layout_header_play_banner.view.*
 import kotlinx.android.synthetic.main.layout_play_banner_carousel.view.*
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 import kotlin.math.abs
 
-class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : FrameLayout(context, attrs, defStyleAttr) {
+class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : FrameLayout(context, attrs, defStyleAttr), CoroutineScope {
+
     private var adapter: PlayBannerCarouselAdapter? = null
     private val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
     private val adapterTypeFactory = PlayBannerCarouselTypeImpl()
     private var listener: PlayBannerCarouselViewEventListener? = null
+    private var playBannerCarouselDataModel: PlayBannerCarouselDataModel? = null
 
     constructor(context: Context) : this(context, null, 0)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
+    private val masterJob = Job()
+    override val coroutineContext: CoroutineContext
+        get() = masterJob + Dispatchers.Main
 
     init {
         LayoutInflater.from(context).inflate(LAYOUT, this)
@@ -41,14 +47,25 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
         this.listener = listener
     }
 
+    override fun onDetachedFromWindow() {
+        recycler_view.resetVideoPlayer()
+        super.onDetachedFromWindow()
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        recycler_view.playVideos()
+    }
+
     fun onDestroy(){
         recycler_view?.releasePlayer()
     }
 
     fun setItem(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
+        this.playBannerCarouselDataModel = playBannerCarouselDataModel
         val list = playBannerCarouselDataModel.channelList
         if(adapter == null){
-            adapter = PlayBannerCarouselAdapter(adapterTypeFactory)
+            adapter = PlayBannerCarouselAdapter(adapterTypeFactory, listener)
             recycler_view?.layoutManager = linearLayoutManager
             recycler_view?.adapter = adapter
             recycler_view?.addOnScrollListener(configureParallax())
@@ -64,28 +81,42 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
         configureTitle(playBannerCarouselDataModel)
         configureSubtitle(playBannerCarouselDataModel)
         configureSeeMore(playBannerCarouselDataModel)
+        configureAutoRefresh(playBannerCarouselDataModel)
     }
 
     private fun configureTitle(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
         channel_title?.showOrHideView(playBannerCarouselDataModel.title.isNotBlank())
         channel_title?.text = playBannerCarouselDataModel.title
-        channel_title?.setTextColor(
-                if (playBannerCarouselDataModel.textColor.isNotEmpty()) Color.parseColor(playBannerCarouselDataModel.textColor)
-                else ContextCompat.getColor(context, R.color.Neutral_N700)
-        )
+        channel_title?.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700))
     }
 
     private fun configureSubtitle(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
         channel_subtitle?.showOrHideView(playBannerCarouselDataModel.subtitle.isNotBlank())
         channel_subtitle?.text = playBannerCarouselDataModel.subtitle
-        channel_subtitle?.setTextColor(
-                if (playBannerCarouselDataModel.textColor.isNotEmpty()) Color.parseColor(playBannerCarouselDataModel.textColor)
-                else ContextCompat.getColor(context, R.color.Neutral_N700)
-        )
+        channel_subtitle?.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700))
     }
 
     private fun configureSeeMore(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
         see_all_button?.showOrHideView(playBannerCarouselDataModel.seeMoreApplink.isNotBlank())
+    }
+
+    private fun autoScrollLauncher(interval: Long) = launch(coroutineContext) {
+        delay(interval)
+        intervalAutoRefreshCoroutine()
+    }
+
+    private suspend fun intervalAutoRefreshCoroutine() = withContext(Dispatchers.Main){
+        playBannerCarouselDataModel?.let {
+            recycler_view?.resetVideoPlayer()
+            listener?.onRefreshView(it)
+        }
+    }
+
+    private fun configureAutoRefresh(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
+        if(playBannerCarouselDataModel.isAutoRefresh){
+            masterJob.cancelChildren()
+            autoScrollLauncher(playBannerCarouselDataModel.isAutoRefreshTimer.toLong())
+        }
     }
 
     private fun configureBackground(playBannerCarouselDataModel: PlayBannerCarouselDataModel) {
