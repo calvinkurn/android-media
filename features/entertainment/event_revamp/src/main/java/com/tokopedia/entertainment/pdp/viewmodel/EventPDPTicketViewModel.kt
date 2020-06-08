@@ -70,7 +70,7 @@ class EventPDPTicketViewModel @Inject constructor(private val dispatcher: Corout
                     _ticketModel.value = lists
                 }
                 is Fail -> {
-                    error.value = data.throwable.toString()
+                    error.value = data.throwable.message
                 }
             }
 

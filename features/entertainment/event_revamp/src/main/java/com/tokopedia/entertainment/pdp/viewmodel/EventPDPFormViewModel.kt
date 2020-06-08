@@ -35,7 +35,7 @@ class EventPDPFormViewModel@Inject constructor(private val dispatcher: Coroutine
                 }
 
                 is Fail -> {
-                    errorMutable.value = data.throwable.toString()
+                    errorMutable.value = data.throwable.message
                 }
             }
         }

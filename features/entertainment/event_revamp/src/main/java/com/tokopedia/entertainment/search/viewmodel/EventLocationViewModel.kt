@@ -21,7 +21,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class EventLocationViewModel(private val dispatcher: CoroutineDispatcher,
+class
+EventLocationViewModel(private val dispatcher: CoroutineDispatcher,
                              private val gqlRepository: GraphqlRepository,
                              private val userSession: UserSessionInterface) : BaseViewModel(dispatcher) {
 

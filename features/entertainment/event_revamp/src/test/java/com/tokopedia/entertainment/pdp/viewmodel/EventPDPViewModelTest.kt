@@ -7,10 +7,8 @@ import com.tokopedia.entertainment.pdp.EventJsonMapper.getJson
 import com.tokopedia.entertainment.pdp.data.*
 import com.tokopedia.entertainment.pdp.data.pdp.*
 import com.tokopedia.entertainment.pdp.usecase.EventProductDetailUseCase
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.data.model.GraphqlError
-import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.travelcalendar.data.entity.TravelCalendarHoliday
 import com.tokopedia.travelcalendar.domain.TravelCalendarHolidayUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -20,7 +18,6 @@ import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import com.tokopedia.usecase.coroutines.Success
 
@@ -29,7 +26,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import java.lang.reflect.Type
 
 @RunWith(JUnit4::class)
 @ExperimentalCoroutinesApi
@@ -39,12 +35,6 @@ class EventPDPViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     lateinit var eventPDPViewModel: EventPDPViewModel
-
-    @MockK
-    lateinit var graphqlRepository: MultiRequestGraphqlUseCase
-
-    @MockK
-    lateinit var userSessionInterface: UserSessionInterface
 
     @MockK
     lateinit var eventProductDetailUseCase: EventProductDetailUseCase
@@ -63,9 +53,7 @@ class EventPDPViewModelTest {
     fun `DataPDP_NotNullData_ShowNotNullData`(){
         assertNotNull(eventProductDetailUseCase)
         assertNotNull(usecaseHoliday)
-        assertNotNull(graphqlRepository)
         assertNotNull(eventPDPViewModel)
-        assertNotNull(userSessionInterface)
     }
 
     @Test
@@ -104,9 +92,11 @@ class EventPDPViewModelTest {
         val travelHoliday = TravelCalendarHoliday(id = "123123", attribute = TravelCalendarHoliday.HolidayAttribute("2020-01-01", label = "LabelTest"))
         val travelHolidayData = TravelCalendarHoliday.HolidayData(listOf(travelHoliday))
 
+        val error = Throwable("Error PDP")
+
         coEvery {
             eventProductDetailUseCase.executeUseCase("", "", true, "")
-        } returns Fail(Throwable("Error PDP"))
+        } returns Fail(error)
 
         coEvery {
             usecaseHoliday.execute()
@@ -120,7 +110,7 @@ class EventPDPViewModelTest {
         assertNotNull(eventPDPViewModel.isError.value)
 
         assertNotNull(eventPDPViewModel.eventHoliday.value)
-        assertEquals(eventPDPViewModel.isError.value?.message, "Error PDP")
+        assertEquals(eventPDPViewModel.isError.value?.message, error.message)
     }
 
     @Test
@@ -152,9 +142,11 @@ class EventPDPViewModelTest {
     @Test
     fun `PDPandHolidayData_ShouldFailPDPandFailHoliday_FailActualResult`(){
         //given
+        val error = Throwable("Error PDP")
         coEvery {
             eventProductDetailUseCase.executeUseCase("", "", true, "")
-        } returns Fail(Throwable("Error PDP"))
+        } returns Fail(error)
+
 
         coEvery {
             usecaseHoliday.execute()
@@ -167,7 +159,7 @@ class EventPDPViewModelTest {
         assertNull(eventPDPViewModel.eventProductDetail.value)
         assertNotNull(eventPDPViewModel.isError.value)
         assert(eventPDPViewModel.eventHoliday.value == arrayListOf<Legend>())
-        assertEquals(eventPDPViewModel.isError.value?.message, "Error PDP")
+        assertEquals(eventPDPViewModel.isError.value?.message, error.message)
     }
 
 
