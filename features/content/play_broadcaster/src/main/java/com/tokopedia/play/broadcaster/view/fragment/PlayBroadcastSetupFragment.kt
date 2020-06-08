@@ -20,6 +20,7 @@ import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
 import com.tokopedia.play.broadcaster.util.doOnPreDraw
 import com.tokopedia.play.broadcaster.view.adapter.PlayFollowersAdapter
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayPrivacyPolicyBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSetupViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -43,6 +44,8 @@ class PlayBroadcastSetupFragment @Inject constructor(
     private lateinit var tvPrivacyPolicy: TextView
 
     private val followersAdapter = PlayFollowersAdapter()
+
+    private lateinit var privacyPolicyBottomSheet: PlayPrivacyPolicyBottomSheet
 
     override fun getScreenName(): String = "Play Prepare Page"
 
@@ -115,6 +118,10 @@ class PlayBroadcastSetupFragment @Inject constructor(
         )
 
         tvPrivacyPolicy.text = spannedPrivacyText
+
+        tvPrivacyPolicy.setOnClickListener {
+            openPrivacyPolicyPage()
+        }
     }
 
     private fun doCreateChannel() {
@@ -131,6 +138,19 @@ class PlayBroadcastSetupFragment @Inject constructor(
         val fragmentFactory = childFragmentManager.fragmentFactory
         val setupFragment = fragmentFactory.instantiate(requireContext().classLoader, setupClass.name) as PlayBroadcastSetupBottomSheet
         setupFragment.show(childFragmentManager)
+    }
+
+    private fun openPrivacyPolicyPage() {
+        getPrivacyPolicyBottomSheet().show(childFragmentManager)
+    }
+
+    private fun getPrivacyPolicyBottomSheet(): PlayPrivacyPolicyBottomSheet {
+        if (!::privacyPolicyBottomSheet.isInitialized) {
+            val setupClass = PlayPrivacyPolicyBottomSheet::class.java
+            val fragmentFactory = childFragmentManager.fragmentFactory
+            privacyPolicyBottomSheet = fragmentFactory.instantiate(requireContext().classLoader, setupClass.name) as PlayPrivacyPolicyBottomSheet
+        }
+        return privacyPolicyBottomSheet
     }
 
     private fun openBroadcastLivePage(channelInfo: ChannelInfoUiModel) {
