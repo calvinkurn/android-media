@@ -145,17 +145,6 @@
         <attr name="tckv_content_height" format="dimension" />
     </declare-styleable>
 
-    <declare-styleable name="BottomActionView">
-        <attr name="bav_1_display" format="boolean" />
-        <attr name="bav_2_display" format="boolean" />
-        <attr name="bav_2_icon_display" format="boolean" />
-        <attr name="bav_1_icon_display" format="boolean" />
-        <attr name="bav_icon_1" format="reference" />
-        <attr name="bav_label_1" format="reference" />
-        <attr name="bav_icon_2" format="reference" />
-        <attr name="bav_label_2" format="reference" />
-    </declare-styleable>
-
     <declare-styleable name="DecimalRangeInputView">
         <attr name="driv_label_min" format="string" />
         <attr name="driv_label_max" format="string" />

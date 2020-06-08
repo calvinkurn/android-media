@@ -72,10 +72,7 @@ class MixTopBannerViewHolder(
     }
 
     override fun setupContent(channel: DynamicHomeChannel.Channels, payloads: MutableList<Any>) {
-        super.setupContent(channel, payloads)
-        val visitables = mappingVisitablesFromChannel(channel)
-        mappingHeader(channel)
-        mappingItem(channel, visitables)
+        mappingView(channel)
     }
 
     override fun getViewHolderClassName(): String {
@@ -186,7 +183,8 @@ class MixTopBannerViewHolder(
 
         if (cta.text.isEmpty()) {
             bannerUnifyButton.visibility = View.GONE
-            return
+        }else {
+            bannerUnifyButton.visibility = View.VISIBLE
         }
         var mode = CTA_MODE_MAIN
         var type = CTA_TYPE_FILLED

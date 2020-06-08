@@ -22,7 +22,6 @@ class SellerMigrationProductBottomSheet(titles: List<String>,
                     setChild(view)
                 }
             }
-
         }
     }
 }
