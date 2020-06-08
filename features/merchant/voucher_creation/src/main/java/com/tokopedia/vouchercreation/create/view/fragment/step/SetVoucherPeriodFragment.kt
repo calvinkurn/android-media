@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
+import com.tokopedia.kotlin.extensions.convertToDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
@@ -34,12 +35,14 @@ import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMaxStartDate
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMinEndDate
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMinStartDate
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getToday
+import com.tokopedia.vouchercreation.common.utils.convertUnsafeDateTime
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.painter.VoucherPreviewPainter
 import com.tokopedia.vouchercreation.create.view.uimodel.initiation.BannerBaseUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVoucherUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel
 import com.tokopedia.vouchercreation.create.view.viewmodel.SetVoucherPeriodViewModel
 import kotlinx.android.synthetic.main.mvc_set_voucher_period_fragment.*
 import java.util.*
@@ -52,11 +55,15 @@ class SetVoucherPeriodFragment : Fragment() {
         fun createInstance(onNext: (String, String, String, String) -> Unit,
                            getVoucherBanner: () -> BannerVoucherUiModel,
                            getBannerBaseUiModel: () -> BannerBaseUiModel,
-                           onSuccessGetBannerBitmap: (Bitmap) -> Unit) = SetVoucherPeriodFragment().apply {
+                           onSuccessGetBannerBitmap: (Bitmap) -> Unit,
+                           getVoucherReviewData: () -> VoucherReviewUiModel,
+                           isCreateNew: Boolean) = SetVoucherPeriodFragment().apply {
             this.onNext = onNext
             this.getVoucherBanner = getVoucherBanner
             this.getBannerBaseUiModel = getBannerBaseUiModel
             this.onSuccessGetBannerBitmap = onSuccessGetBannerBitmap
+            this.getVoucherReviewData = getVoucherReviewData
+            this.isCreateNew = isCreateNew
         }
 
         private const val BANNER_BASE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/banner.jpg"
@@ -70,6 +77,8 @@ class SetVoucherPeriodFragment : Fragment() {
 
         private const val FULL_DAY_FORMAT = "EEE, dd MMM yyyy, HH:mm z"
         private const val DATE_OF_WEEK_FORMAT = "EEE, dd MMM yyyy"
+
+        private const val COMBINED_DATE = "dd MMM yyyy HH:mm"
     }
 
     private var onNext: (String, String, String, String) -> Unit = { _,_,_,_ -> }
@@ -88,6 +97,8 @@ class SetVoucherPeriodFragment : Fragment() {
                 CreateMerchantVoucherStepsActivity.CASHBACK_UNTIL_URL
         )}
     private var onSuccessGetBannerBitmap: (Bitmap) -> Unit = { _ -> }
+    private var getVoucherReviewData: () -> VoucherReviewUiModel? = { null }
+    private var isCreateNew: Boolean = true
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -258,7 +269,6 @@ class SetVoucherPeriodFragment : Fragment() {
             endCalendar = context?.run { getToday().apply {
                 roundingDate()
                 add(Calendar.DATE, EXTRA_WEEK)}}
-
             getMinStartDate().let { calendar ->
                 calendar.roundingDate()
                 val initialTime = calendar.time.toFormattedString(DATE_OF_WEEK_FORMAT, locale)
@@ -269,6 +279,22 @@ class SetVoucherPeriodFragment : Fragment() {
                 val initialTime = calendar.time.toFormattedString(DATE_OF_WEEK_FORMAT, locale)
                 endDateString = initialTime
                 viewModel.setEndDateCalendar(calendar)
+            }
+            getVoucherReviewData()?.let { uiModel ->
+                if (!isCreateNew) {
+                    if (uiModel.startDate.isNotEmpty() && uiModel.endDate.isNotEmpty()) {
+                        val startTime = "${uiModel.startDate} ${uiModel.startHour}"
+                        val endTime = "${uiModel.endDate} ${uiModel.endHour}"
+                        startCalendar = getGregorianDate(startTime, COMBINED_DATE)
+                        endCalendar = getGregorianDate(endTime, COMBINED_DATE)
+                        startCalendar?.run {
+                            viewModel.setStartDateCalendar(this)
+                        }
+                        endCalendar?.run {
+                            viewModel.setEndDateCalendar(this)
+                        }
+                    }
+                }
             }
         }
     }
@@ -373,4 +399,15 @@ class SetVoucherPeriodFragment : Fragment() {
         }
     }
 
+    private fun getGregorianDate(date: String): GregorianCalendar {
+        return GregorianCalendar().apply {
+            time = date.convertUnsafeDateTime()
+        }
+    }
+
+    private fun getGregorianDate(date: String, format: String): GregorianCalendar {
+        return GregorianCalendar().apply {
+            time = date.convertToDate(format)
+        }
+    }
 }

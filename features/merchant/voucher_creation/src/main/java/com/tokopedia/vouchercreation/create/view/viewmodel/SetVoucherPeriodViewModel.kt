@@ -15,7 +15,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
-import javax.inject.Named
 
 class SetVoucherPeriodViewModel @Inject constructor(
         dispatcher: CoroutineDispatcher,

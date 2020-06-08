@@ -25,6 +25,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.adapter.CreateMerchantVoucherStepsAdapter
 import com.tokopedia.vouchercreation.create.view.dialog.CreateVoucherCancelDialog
@@ -109,7 +110,9 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                             ::setVoucherPeriod,
                             ::getBannerVoucherUiModel,
                             ::getBannerBaseUiModel,
-                            ::onSuccessGetSquareBitmap))
+                            ::onSuccessGetSquareBitmap,
+                            ::getVoucherReviewUiModel,
+                            isCreateNew))
             put(VoucherCreationStepInfo.STEP_FOUR,
                     ReviewVoucherFragment.createInstance(
                             ::getVoucherReviewUiModel,
@@ -335,7 +338,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                         createMerchantVoucherViewPager?.currentItem = VoucherCreationStep.REVIEW
                     } else if (isEditVoucher) {
                         intent?.getIntExtra(EDIT_STEP, VoucherCreationStep.REVIEW)?.let { step ->
-                            viewModel.setStepPosition(step)
+                            createMerchantVoucherViewPager?.currentItem = step
                         }
                     }
                 }
@@ -358,7 +361,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     private fun checkIfDuplicate(): Boolean {
         intent?.getParcelableExtra<VoucherUiModel>(DUPLICATE_VOUCHER)?.let { voucherUiModel ->
             viewModel.initiateEditDuplicateVoucher()
-            setDuplicateEditVoucherData(voucherUiModel)
+            setDuplicateEditVoucherData(voucherUiModel, false)
             isDuplicateVoucher = true
             createMerchantVoucherHeader?.setTitle(R.string.mvc_duplicate_voucher)
             return true
@@ -372,7 +375,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                 voucherUiModel.id.let { id ->
                     return if (id != 0) {
                         viewModel.initiateEditDuplicateVoucher()
-                        setDuplicateEditVoucherData(voucherUiModel)
+                        setDuplicateEditVoucherData(voucherUiModel, true)
                         isEditVoucher = true
                         voucherId = id
                         createMerchantVoucherHeader?.setTitle(R.string.mvc_edit_voucher)
@@ -386,7 +389,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         return false
     }
 
-    private fun setDuplicateEditVoucherData(voucherUiModel: VoucherUiModel) {
+    private fun setDuplicateEditVoucherData(voucherUiModel: VoucherUiModel, isEdit: Boolean) {
         with(voucherUiModel) {
             val targetType =
                     if (isPublic) {
@@ -395,6 +398,14 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                         VoucherTargetType.PRIVATE
                     }
             setVoucherName(targetType, name, code)
+
+            if (isEdit && startTime.isNotEmpty() && finishTime.isNotEmpty()) {
+                val startDate = DateTimeUtils.convertFullDateToDateParam(startTime, DateTimeUtils.DATE_FORMAT)
+                val endDate = DateTimeUtils.convertFullDateToDateParam(finishTime, DateTimeUtils.DATE_FORMAT)
+                val startHour = DateTimeUtils.convertFullDateToDateParam(startTime, DateTimeUtils.HOUR_FORMAT)
+                val endHour = DateTimeUtils.convertFullDateToDateParam(finishTime, DateTimeUtils.HOUR_FORMAT)
+                setVoucherPeriod(startDate, endDate, startHour, endHour)
+            }
 
             val imageType = getVoucherImageType(type, discountTypeFormatted, discountAmt, discountAmtMax)
             imageType?.let { type ->

@@ -68,12 +68,12 @@ object DateTimeUtils {
         }
     }
 
-    fun String.convertFullDateToDateParam(newFormat: String): String {
+    fun convertFullDateToDateParam(date: String, newFormat: String): String {
         return try {
-            reformatDateTime(this, TIME_STAMP_FORMAT, newFormat)
+            reformatDateTime(date, TIME_STAMP_FORMAT, newFormat)
         } catch (ex: ParseException) {
             try {
-                reformatDateTime(this, TIME_STAMP_MILLISECONDS_FORMAT, newFormat)
+                reformatDateTime(date, TIME_STAMP_MILLISECONDS_FORMAT, newFormat)
             } catch (ex: ParseException) {
                 Timber.e(ex)
                 throw RuntimeException()
