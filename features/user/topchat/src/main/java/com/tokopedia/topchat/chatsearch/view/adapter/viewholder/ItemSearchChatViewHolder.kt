@@ -12,8 +12,10 @@ import com.tokopedia.topchat.chatsearch.data.SearchResult
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_chat_list.view.*
 
-class ItemSearchChatViewHolder(itemView: View?, private val listener: Listener)
-    : AbstractViewHolder<SearchResult>(itemView) {
+class ItemSearchChatViewHolder(
+        itemView: View?,
+        private val listener: Listener
+) : AbstractViewHolder<SearchResult>(itemView) {
 
     interface Listener {
         fun finishSearchActivity()
