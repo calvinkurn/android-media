@@ -160,6 +160,8 @@ class AddEditProductVariantFragment :
         }
       
         buttonSave.setOnClickListener {
+            val variantDetails = variantTypeAdapter?.getItems().orEmpty()
+            viewModel.updateVariantInputModel(variantDetails)
             startAddEditProductVariantDetailActivity()
         }
     }
