@@ -160,6 +160,8 @@ class ReviewVoucherFragment : BaseDetailFragment() {
 
     private var voucherInfoSection: InfoContainerUiModel = InfoContainerUiModel(R.string.mvc_detail_voucher_info, listOf())
 
+    private var isPromoCodeEligible = true
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_base_list, container, false)
     }
@@ -229,6 +231,23 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                         Toaster.TYPE_ERROR,
                         context?.getString(R.string.mvc_oke).toBlankOrString(),
                         View.OnClickListener { })
+            }
+            with(adapter) {
+                notifyItemChanged(data.indexOf(buttonUiModel))
+            }
+            return
+        }
+        if (!isPromoCodeEligible) {
+            view?.run {
+                Toaster.make(this,
+                        context?.getString(R.string.mvc_promo_code_alert).toBlankOrString(),
+                        Toaster.LENGTH_SHORT,
+                        Toaster.TYPE_ERROR,
+                        context?.getString(R.string.mvc_oke).toBlankOrString(),
+                        View.OnClickListener { })
+            }
+            with(adapter) {
+                notifyItemChanged(data.indexOf(buttonUiModel))
             }
             return
         }
@@ -325,6 +344,8 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                             context?.getString(R.string.mvc_review_agreement).toBlankOrString(),
                             context?.getString(R.string.mvc_review_terms).toBlankOrString())
             )
+
+            isPromoCodeEligible = true
 
             if (targetType == VoucherTargetType.PUBLIC) {
                 context?.run {
@@ -426,6 +447,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
             adapter.data.add(warningIndex, WarningTickerUiModel(PROMO_CODE_KEY))
         }
         adapter.notifyDataSetChanged()
+        isPromoCodeEligible = false
     }
 
 }

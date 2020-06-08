@@ -135,6 +135,7 @@
     <string name="mvc_promo_code_error_desc">Sepertinya kode promo ini sedang tampil di periode yang sama. Gunakan kode promo yang berbeda, ya.</string>
     <string name="mvc_promo_code_error_button">Ubah Kode Promo</string>
     <string name="mvc_promo_code_warning"><![CDATA[Gunakan kode promo lain. <a href="#"><font color="#03AC0E">Ubah Kode Promo</font></a>]]></string>
+    <string name="mvc_promo_code_alert">Ubah kode promo terlebih dulu.</string>
 
     <!-- Tips and trick -->
     <string name="mvc_tips_and_trick_private">Tips &amp; Trik Voucher Khusus</string>
