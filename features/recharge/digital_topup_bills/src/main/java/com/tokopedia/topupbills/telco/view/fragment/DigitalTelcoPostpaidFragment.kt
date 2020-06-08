@@ -8,7 +8,6 @@ import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
@@ -25,18 +24,17 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.generateRechargeCheckoutToken
-import com.tokopedia.topupbills.telco.data.RechargeCatalogPrefixSelect
 import com.tokopedia.topupbills.telco.data.RechargePrefix
-import com.tokopedia.topupbills.telco.data.TelcoCatalogPrefixSelect
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.view.activity.DigitalSearchNumberActivity
 import com.tokopedia.topupbills.telco.view.listener.ClientNumberPostpaidListener
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoEnquiryViewModel
-import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalPostpaidClientNumberWidget
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_digital_telco_postpaid.*
 
 /**
@@ -51,7 +49,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var loadingShimmering: LinearLayout
 
     private var traceStop = false
-
     private var operatorSelected: RechargePrefix? = null
         set(value) {
             field = value
@@ -59,16 +56,12 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 productId = operator.attributes.defaultProductId
             }
         }
+
     private val favNumberList = mutableListOf<TopupBillsFavNumberItem>()
-    private var operatorData: TelcoCatalogPrefixSelect =
-            TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
+
     override var menuId = TelcoComponentType.TELCO_POSTPAID
     override var categoryId = TelcoCategoryType.CATEGORY_PASCABAYAR
-
     private var inputNumberActionType = InputNumberActionType.MANUAL
-
-    //TODO remove shared model from postpaid, we dont need this again after separate the class
-    private lateinit var sharedModel: SharedProductTelcoViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,7 +70,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             enquiryViewModel = viewModelProvider.get(DigitalTelcoEnquiryViewModel::class.java)
-            sharedModel = viewModelProvider.get(SharedProductTelcoViewModel::class.java)
         }
     }
 
@@ -100,7 +92,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getInputFilterDataCollections()
+        getPrefixOperatorData()
         renderClientNumber()
         handleFocusClientNumber()
         getCatalogMenuDetail()
@@ -116,42 +108,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             inputs[TopupBillsViewModel.EXPRESS_PARAM_OPERATOR_ID] = operatorId
         }
         inputFields = inputs
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        sharedModel.promoItem.observe(this, Observer {
-            it?.run {
-                promoListWidget.notifyPromoItemChanges(this)
-            }
-        })
-        sharedModel.enquiryResult.observe(this, Observer {
-            it?.run {
-                operatorSelected?.run {
-                    checkoutPassData = DigitalCheckoutPassData.Builder()
-                            .action(DigitalCheckoutPassData.DEFAULT_ACTION)
-                            .categoryId(categoryId.toString())
-                            .clientNumber(postpaidClientNumberWidget.getInputNumber())
-                            .instantCheckout("0")
-                            .isPromo("0")
-                            .operatorId(operator.id)
-                            .productId(operator.attributes.defaultProductId.toString())
-                            .utmCampaign(categoryId.toString())
-                            .utmContent(GlobalConfig.VERSION_NAME)
-                            .idemPotencyKey(userSession.userId.generateRechargeCheckoutToken())
-                            .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
-                            .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
-                            .voucherCodeCopied("")
-                            .build()
-                }
-            }
-        })
-    }
-
-    fun getInputFilterDataCollections() {
-        customViewModel.getPrefixOperator(GraphqlHelper.loadRawString(resources,
-                R.raw.query_prefix_select_telco), menuId,
-                this::onSuccessCustomData, this::onErrorCustomData)
     }
 
     private fun getCatalogMenuDetail() {
@@ -193,7 +149,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             override fun onRenderOperator() {
                 operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty()?.let {
                     if (it) {
-                        getInputFilterDataCollections()
+                        getPrefixOperatorData()
                     } else {
                         renderProductFromCustomData()
                     }
@@ -236,17 +192,61 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             mapParam.put(KEY_CLIENT_NUMBER, postpaidClientNumberWidget.getInputNumber())
             mapParam.put(KEY_PRODUCT_ID, selectedOperator.operator.attributes.defaultProductId.toString())
 
-            enquiryViewModel.getEnquiry(GraphqlHelper.loadRawString(resources, com.tokopedia.common.topupbills.R.raw.query_enquiry_digital),
-                    mapParam, this::onSuccessEnquiry, this::onErrorEnquiry)
+            enquiryViewModel.getEnquiry(GraphqlHelper.loadRawString(resources,
+                    com.tokopedia.common.topupbills.R.raw.query_enquiry_digital), mapParam)
+
+            enquiryViewModel.enquiryResult.observe(this, Observer {
+                when (it) {
+                    is Success -> enquirySuccess()
+                    is Fail -> enquiryFailed()
+                }
+            })
         }
     }
 
-    override fun onSuccessCustomData(telcoData: TelcoCatalogPrefixSelect) {
-        this.operatorData = telcoData
-        renderProductFromCustomData()
+    private fun enquirySuccess() {
+        val enquiryData = (enquiryViewModel.enquiryResult.value as Success).data
+        setCheckoutPassData(enquiryData)
+        postpaidClientNumberWidget.showEnquiryResultPostpaid(enquiryData)
+        recentNumbersWidget.visibility = View.GONE
+        promoListWidget.visibility = View.GONE
+
+        buyWidget.setTotalPrice(enquiryData.enquiry.attributes.price)
+        buyWidget.setVisibilityLayout(true)
     }
 
-    fun renderProductFromCustomData() {
+    private fun enquiryFailed() {
+        val errorEnquiry = enquiryViewModel.enquiryResult.value as Fail
+        view?.run {
+            errorEnquiry.throwable?.let {
+                Toaster.make(this, ErrorHandler.getErrorMessage(context, it), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+            }
+        }
+    }
+
+    private fun setCheckoutPassData(telcoEnquiryData: TelcoEnquiryData) {
+        telcoEnquiryData?.run {
+            operatorSelected?.run {
+                checkoutPassData = DigitalCheckoutPassData.Builder()
+                        .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+                        .categoryId(categoryId.toString())
+                        .clientNumber(postpaidClientNumberWidget.getInputNumber())
+                        .instantCheckout("0")
+                        .isPromo("0")
+                        .operatorId(operator.id)
+                        .productId(operator.attributes.defaultProductId.toString())
+                        .utmCampaign(categoryId.toString())
+                        .utmContent(GlobalConfig.VERSION_NAME)
+                        .idemPotencyKey(userSession.userId.generateRechargeCheckoutToken())
+                        .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
+                        .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
+                        .voucherCodeCopied("")
+                        .build()
+            }
+        }
+    }
+
+    override fun renderProductFromCustomData() {
         try {
             if (postpaidClientNumberWidget.getInputNumber().isNotEmpty()) {
                 operatorSelected = this.operatorData.rechargeCatalogPrefixSelect.prefixes.single {
@@ -283,12 +283,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
-    override fun onErrorCustomData(throwable: Throwable) {
-        view?.run {
-            Toaster.showError(this, ErrorHandler.getErrorMessage(activity, throwable), Snackbar.LENGTH_LONG)
-        }
-    }
-
     override fun onLoadingMenuDetail(showLoading: Boolean) {
         if (showLoading) {
             loadingShimmering.visibility = View.VISIBLE
@@ -301,24 +295,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
-    fun onSuccessEnquiry(telcoEnquiryData: TelcoEnquiryData) {
-        sharedModel.setEnquiryResult(telcoEnquiryData)
-        postpaidClientNumberWidget.showEnquiryResultPostpaid(telcoEnquiryData)
-        recentNumbersWidget.visibility = View.GONE
-        promoListWidget.visibility = View.GONE
-
-        buyWidget.setTotalPrice(telcoEnquiryData.enquiry.attributes.price)
-        buyWidget.setVisibilityLayout(true)
-    }
-
-    fun onErrorEnquiry(throwable: Throwable) {
-        view?.run {
-            Toaster.showError(this, ErrorHandler.getErrorMessage(activity, throwable), Snackbar.LENGTH_LONG)
-        }
-    }
-
     override fun clickCopyOnPromoCode(promoId: Int) {
-        sharedModel.setPromoSelected(promoId)
+        promoListWidget.notifyPromoItemChanges(promoId)
     }
 
     override fun setInputNumberFromContact(contactNumber: String) {
@@ -364,7 +342,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     override fun showErrorCartDigital(message: String) {
         view?.run {
-            Toaster.showError(this, message, Snackbar.LENGTH_LONG)
+            Toaster.make(this, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 

@@ -9,11 +9,11 @@ import com.google.gson.annotations.SerializedName
 data class TelcoAttributesOperator(
         @SerializedName("name")
         @Expose
-        val name: String,
+        val name: String = "",
         @SerializedName("image_url")
         @Expose
-        val imageUrl: String,
+        val imageUrl: String = "",
         @SerializedName("default_product_id")
         @Expose
-        val defaultProductId: Int
+        val defaultProductId: Int = 0
 )
