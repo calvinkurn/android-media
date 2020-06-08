@@ -80,12 +80,9 @@ class RecentSearchDoubleLineItemViewHolder(itemView: View, private val clickList
         itemView.actionShortcutButton?.setOnClickListener { _ -> clickListener.onDeleteRecentSearchItem(item.title) }
         itemView.autocompleteDoubleLineItem?.setOnClickListener { _ ->
             when(item.type) {
-                TYPE_SHOP -> AutocompleteTracking.eventClickRecentShop(
-                            itemView.context,
-                            item.productId + " - keyword: " + item.title
-                    )
+                TYPE_SHOP -> clickListener.onRecentShopClicked(item)
+                else -> clickListener.onItemClicked(item.applink, item.url)
             }
-            clickListener.onItemClicked(item.applink, item.url)
         }
     }
 

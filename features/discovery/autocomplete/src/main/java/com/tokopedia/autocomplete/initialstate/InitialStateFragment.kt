@@ -162,6 +162,15 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         activity?.finish()
     }
 
+    override fun onRecentShopClicked(item: BaseItemInitialStateSearch) {
+        AutocompleteTracking.eventClickRecentShop(item.productId + " - keyword: " + item.title, presenter.getUserId())
+
+        dropKeyBoard()
+
+        val modifiedApplink = getModifiedApplink(item.applink, presenter.getSearchParameter())
+        startActivityFromAutoComplete(modifiedApplink)
+    }
+
     override fun onDeleteRecentSearchItem(keyword: String) {
         deleteRecentSearch(keyword)
     }

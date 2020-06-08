@@ -14,10 +14,13 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.BUSINESS_UNIT;
 import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.CLICK_CARI;
+import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.CURRENT_SITE;
 import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.LONG_CLICK;
 import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.LONG_PRESS;
 import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.PRODUCT_SEARCH;
+import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.SCREEN_NAME;
 import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.USER_ID;
 
 public class AutocompleteTracking {
@@ -90,6 +93,10 @@ public class AutocompleteTracking {
     private static final String LABEL_HOTLIST_CLICK = "keyword: %s - hotlist: %s - hotlist id: %s - po: %s - applink: %s";
     public static final String ACTION_CLICK_HOTLIST_SUGGESTION = "click - hotlist suggestion";
     public static final String CAMPAIGN_CODE = "campaignCode";
+
+    public static final String CURRENT_SITE_TKPD = "tokopediamarketplace";
+    public static final String BUSINESS_UNIT_SEARCH = "search";
+
 
     public static void eventClickPopularSearch(Context context, String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
@@ -211,12 +218,18 @@ public class AutocompleteTracking {
         );
     }
 
-    public static void eventClickRecentShop(Context context, String label) {
+    public static void eventClickRecentShop(String label, String userId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                EVENT_CLICK_TOP_NAV,
-                EVENTCATEGORY_TOP_NAV + " - " + EVENT_CATEGORY_INITIAL_STATE,
-                CLICK_RECENT_SHOP,
-                label
+            DataLayer.mapOf(
+                    EVENT, EVENT_CLICK_TOP_NAV,
+                    EVENT_CATEGORY, EVENTCATEGORY_TOP_NAV + " - /",
+                    EVENT_ACTION, CLICK_RECENT_SHOP,
+                    EVENT_LABEL, label,
+                    SCREEN_NAME, "/",
+                    CURRENT_SITE, CURRENT_SITE_TKPD,
+                    USER_ID, userId,
+                    BUSINESS_UNIT, BUSINESS_UNIT_SEARCH
+            )
         );
     }
 

@@ -47,6 +47,10 @@ class InitialStatePresenter @Inject constructor(
         return searchParameter
     }
 
+    fun getUserId(): String {
+        return if (userSession.isLoggedIn) userSession.userId else "0"
+    }
+
     override fun getInitialStateData() {
         initialStateUseCase.execute(
                 InitialStateUseCase.getParams(
