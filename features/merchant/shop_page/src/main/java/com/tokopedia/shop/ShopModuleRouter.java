@@ -12,4 +12,6 @@ public interface ShopModuleRouter {
 
     Fragment getReviewFragment(Activity activity, String shopId, String shopDomain);
 
+    Class getReviewFragmentClass();
+
 }
