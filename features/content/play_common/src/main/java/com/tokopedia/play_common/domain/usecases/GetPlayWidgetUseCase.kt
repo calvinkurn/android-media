@@ -112,10 +112,12 @@ class GetPlayWidgetUseCase(
                 title = "Yuk, tonton sekarang!",
                 seeMoreApplink = "https://cobacoba.com",
                 backgroundUrl = "https://i.ibb.co/ZdMn09S/bg1.jpg",
+
                 imageUrl = "https://i.ibb.co/Wk4YrQR/imageorang.png",
                 isAutoPlay = true,
                 isAutoRefreshTimer = 10000,
-                isAutoRefresh = true,
+                isAutoPlayAmount = 1,
+                isAutoRefresh = false,
                 channelList = listOf(
                         PlayBannerCarouselOverlayImageDataModel(
                                 applink = "",

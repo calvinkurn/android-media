@@ -70,7 +70,7 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
             recycler_view?.adapter = adapter
             recycler_view?.addOnScrollListener(configureParallax())
         }
-        recycler_view?.setAutoPlay(playBannerCarouselDataModel.isAutoPlay)
+        recycler_view?.setAutoPlay(playBannerCarouselDataModel.isAutoPlay, playBannerCarouselDataModel.isAutoPlayAmount)
         recycler_view?.setMedia(list)
         configureHeader(playBannerCarouselDataModel)
         configureBackground(playBannerCarouselDataModel)

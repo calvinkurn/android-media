@@ -47,6 +47,7 @@ object PlayWidgetMapper {
                 title = playWidget.meta.widgetTitle,
                 backgroundUrl = playWidget.meta.widgetBackground,
                 isAutoPlay = playWidget.meta.autoplay,
+                isAutoPlayAmount = playWidget.meta.autoplayAmount,
                 isAutoRefresh = playWidget.meta.isAutoRefresh,
                 isAutoRefreshTimer = playWidget.meta.autoRefreshTimer,
                 seeMoreApplink = playWidget.meta.buttonApplink,
