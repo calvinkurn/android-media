@@ -2,8 +2,14 @@ package com.tokopedia.sellerhome.di.module
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
-import com.tokopedia.sellerhome.domain.mapper.*
-import com.tokopedia.sellerhome.domain.usecase.*
+import com.tokopedia.sellerhome.domain.mapper.LayoutMapper
+import com.tokopedia.sellerhome.domain.mapper.NotificationMapper
+import com.tokopedia.sellerhome.domain.mapper.ShopInfoMapper
+import com.tokopedia.sellerhome.domain.usecase.GetLayoutUseCase
+import com.tokopedia.sellerhome.domain.usecase.GetNotificationUseCase
+import com.tokopedia.sellerhome.domain.usecase.GetShopInfoUseCase
+import com.tokopedia.sellerhomecommon.domain.mapper.*
+import com.tokopedia.sellerhomecommon.domain.usecase.*
 import dagger.Module
 import dagger.Provides
 

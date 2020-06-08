@@ -1,6 +1,6 @@
 package com.tokopedia.centralizedpromo.view
 
-import com.tokopedia.sellerhome.view.model.PostUiModel
+import com.tokopedia.centralizedpromo.view.model.PostUiModel
 
 object TipsAndTrickStaticData {
     fun provideStaticData(): List<PostUiModel> = listOf(

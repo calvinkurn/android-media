@@ -1,0 +1,46 @@
+package com.tokopedia.centralizedpromo.domain.model
+
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+
+data class GetPostDataResponse(
+        @SerializedName("getPostWidgetData")
+        @Expose
+        val getPostWidgetData: GetPostDataModel?
+)
+
+data class GetPostDataModel(
+        @SerializedName("data")
+        @Expose
+        val data: List<PostDataModel>?
+)
+
+data class PostDataModel(
+        @SerializedName("datakey")
+        @Expose
+        val dataKey: String?,
+        @SerializedName("list")
+        @Expose
+        val list: List<PostItemDataModel>?,
+        @SerializedName("errorMsg")
+        @Expose
+        val error: String?
+)
+
+data class PostItemDataModel(
+        @SerializedName("title")
+        @Expose
+        val title: String?,
+        @SerializedName("url")
+        @Expose
+        val url: String?,
+        @SerializedName("applink")
+        @Expose
+        val appLink: String?,
+        @SerializedName("subtitle")
+        @Expose
+        val subtitle: String?,
+        @SerializedName("featuredMediaURL")
+        @Expose
+        val featuredMediaURL: String?
+)

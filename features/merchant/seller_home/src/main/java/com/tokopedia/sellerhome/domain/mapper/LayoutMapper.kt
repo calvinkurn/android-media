@@ -1,8 +1,9 @@
 package com.tokopedia.sellerhome.domain.mapper
 
-import com.tokopedia.sellerhome.common.WidgetType
-import com.tokopedia.sellerhome.domain.model.WidgetModel
-import com.tokopedia.sellerhome.view.model.*
+import com.tokopedia.sellerhomecommon.common.WidgetType
+import com.tokopedia.sellerhomecommon.domain.mapper.TooltipMapper
+import com.tokopedia.sellerhomecommon.domain.model.WidgetModel
+import com.tokopedia.sellerhomecommon.presentation.model.*
 import javax.inject.Inject
 
 /**

@@ -84,6 +84,7 @@
 /features/merchant/variant_common/                      @tokopedia/minion-stuart
 
 /features/merchant/seller_home/                         @tokopedia/minion-stuart
+/features/merchant/seller_home_common/                  @tokopedia/minion-stuart
 /features/merchant/seller_onboarding/                   @tokopedia/minion-stuart
 /features/merchant/seller_home_drawer/                  @tokopedia/minion-stuart
 /libraries/kotlin_extensions/                           @tokopedia/minion-stuart
