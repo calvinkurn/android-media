@@ -1,5 +1,7 @@
 package com.tokopedia.product.addedit.variant.presentation.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,12 +15,19 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.imagepicker.common.util.FileUtils
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
+import com.tokopedia.product.addedit.imagepicker.view.activity.SizechartPickerAddProductActivity
+import com.tokopedia.product.addedit.imagepicker.view.activity.SizechartPickerEditPhotoActivity
+import com.tokopedia.product.addedit.imagepicker.view.activity.VariantPhotoPickerActivity
 import com.tokopedia.product.addedit.variant.data.model.Unit
 import com.tokopedia.product.addedit.variant.data.model.UnitValue
 import com.tokopedia.product.addedit.variant.data.model.VariantDetail
@@ -28,17 +37,22 @@ import com.tokopedia.product.addedit.variant.presentation.adapter.VariantTypeAda
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantValueAdapter
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.COLOUR_VARIANT_TYPE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_TYPE
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.REQUEST_CODE_SIZECHART_IMAGE
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.REQUEST_CODE_VARIANT_PHOTO_IMAGE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
+import com.tokopedia.product.addedit.variant.presentation.dialog.AddEditProductVariantSizechartDialogFragment
 import com.tokopedia.product.addedit.variant.presentation.viewmodel.AddEditProductVariantViewModel
 import com.tokopedia.product.addedit.variant.presentation.widget.CustomVariantUnitValueForm
 import com.tokopedia.product.addedit.variant.presentation.widget.VariantDetailValuesPicker
 import com.tokopedia.product.addedit.variant.presentation.widget.VariantUnitPicker
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.add_edit_product_variant_photo_layout.*
+import kotlinx.android.synthetic.main.add_edit_product_variant_sizechart_layout.*
 import kotlinx.android.synthetic.main.add_edit_product_variant_type_layout.*
 import kotlinx.android.synthetic.main.add_edit_product_variant_value_level1_layout.*
 import kotlinx.android.synthetic.main.add_edit_product_variant_value_level2_layout.*
@@ -51,7 +65,7 @@ class AddEditProductVariantFragment :
         VariantDetailValuesPicker.OnButtonSaveClickListener,
         VariantValueAdapter.OnRemoveButtonClickListener, CustomVariantUnitValueForm.OnCustomVariantUnitAddListener,
         VariantDetailValuesPicker.OnAddCustomVariantUnitValueListener,
-        VariantUnitPicker.OnVariantUnitPickListener, VariantDetailValuesPicker.OnVariantUnitPickerClickListener {
+        VariantUnitPicker.OnVariantUnitPickListener, VariantDetailValuesPicker.OnVariantUnitPickerClickListener, VariantPhotoAdapter.OnItemClickListener {
 
     companion object {
 
@@ -107,7 +121,7 @@ class AddEditProductVariantFragment :
         variantTypeAdapter = VariantTypeAdapter(this)
         variantValueAdapterLevel1 = VariantValueAdapter(this, VARIANT_VALUE_LEVEL_ONE_POSITION)
         variantValueAdapterLevel2 = VariantValueAdapter(this, VARIANT_VALUE_LEVEL_TWO_POSITION)
-        variantPhotoAdapterAdapter = VariantPhotoAdapter()
+        variantPhotoAdapterAdapter = VariantPhotoAdapter(this)
 
         recyclerViewVariantType.adapter = variantTypeAdapter
         recyclerViewVariantValueLevel1.adapter = variantValueAdapterLevel1
@@ -118,8 +132,13 @@ class AddEditProductVariantFragment :
         setRecyclerViewToFlex(recyclerViewVariantValueLevel2)
         setRecyclerViewToHorizontal(recyclerViewVariantPhoto)
 
+        observeSizechartUrl()
         observeProductData()
         viewModel.getCategoryVariantCombination("916")
+
+        cardSizechart.setOnClickListener {
+            onSizechartClicked()
+        }
 
         linkAddVariantValueLevel1.setOnClickListener {
             val variantDetail: VariantDetail = it.getTag(R.id.variant_detail) as VariantDetail
@@ -284,6 +303,10 @@ class AddEditProductVariantFragment :
         viewModel.removeSelectedVariantUnitValue(layoutPosition, position)
     }
 
+    override fun onItemClicked(position: Int) {
+        showPhotoVariantPicker()
+    }
+
     private fun resetVariantValueSection(layoutPosition: Int) {
         when (layoutPosition) {
             VARIANT_VALUE_LEVEL_ONE_POSITION -> {
@@ -291,6 +314,21 @@ class AddEditProductVariantFragment :
             }
             VARIANT_VALUE_LEVEL_TWO_POSITION -> {
                 variantValueLevel2Layout.hide()
+
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            when (requestCode) {
+                REQUEST_CODE_SIZECHART_IMAGE -> {
+                    val imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS)
+                    imageUrlOrPathList.forEach {
+                        viewModel.variantSizechartUrl.value = it
+                    }
+                }
             }
         }
     }
@@ -298,7 +336,6 @@ class AddEditProductVariantFragment :
     private fun showVariantValuePicker(variantDetail: VariantDetail, layoutPosition: Int, selectedVariantUnit: Unit?) {
 
         val selectedVariantUnitValues = viewModel.getSelectedVariantUnitValues(layoutPosition)
-
 
         variantDetail.let {
             variantValuePicker = BottomSheetUnify()
@@ -343,6 +380,37 @@ class AddEditProductVariantFragment :
         variantCustomValueInputForm?.show(this@AddEditProductVariantFragment.childFragmentManager, TAG_VARIANT_UNIT_CUSTOM_VALUE_INPUT_FORM)
     }
 
+    private fun showPhotoVariantPicker() {
+        context?.apply {
+            val intent = VariantPhotoPickerActivity.getIntent(this)
+            startActivityForResult(intent, REQUEST_CODE_VARIANT_PHOTO_IMAGE)
+        }
+    }
+
+    private fun onSizechartClicked() {
+        if (viewModel.variantSizechartUrl.value.isNullOrEmpty()) {
+            showSizechartPicker()
+        } else {
+            val fm = activity!!.supportFragmentManager
+            val dialogFragment = AddEditProductVariantSizechartDialogFragment.newInstance()
+            dialogFragment.show(fm, AddEditProductVariantSizechartDialogFragment.FRAGMENT_TAG)
+            dialogFragment.setOnImageEditListener(object :
+                    AddEditProductVariantSizechartDialogFragment.OnImageEditListener {
+                override fun clickImageEditor() {
+                    showEditorSizechartPicker()
+                }
+
+                override fun clickRemoveImage() {
+                    removeSizechart()
+                }
+
+                override fun clickChangeImagePath() {
+                    showSizechartPicker()
+                }
+            })
+        }
+    }
+
     private fun observeProductData() {
         viewModel.getCategoryVariantCombinationResult.observe(this, Observer { result ->
             when (result) {
@@ -360,6 +428,44 @@ class AddEditProductVariantFragment :
                 }
             }
         })
+    }
+
+    private fun observeSizechartUrl() {
+        viewModel.variantSizechartUrl.observe(this, Observer {
+            if (it.isEmpty()) {
+                ivSizechartAddSign.visible()
+                ivSizechartEditSign.gone()
+                ivSizechart.gone()
+                typographySizechartDescription.text = getString(R.string.label_variant_sizechart_description)
+            } else {
+                ivSizechartAddSign.gone()
+                ivSizechartEditSign.visible()
+                ivSizechart.visible()
+                typographySizechartDescription.text = getString(R.string.label_variant_sizechart_edit_description)
+            }
+            ivSizechart.setImage(it, 0F)
+        })
+    }
+
+    private fun removeSizechart() {
+        val url = viewModel.variantSizechartUrl.value.orEmpty()
+        viewModel.variantSizechartUrl.value = ""
+        FileUtils.deleteFileInTokopediaFolder(url)
+    }
+
+    private fun showSizechartPicker() {
+        context?.apply {
+            val intent = SizechartPickerAddProductActivity.getIntent(this)
+            startActivityForResult(intent, REQUEST_CODE_SIZECHART_IMAGE)
+        }
+    }
+
+    private fun showEditorSizechartPicker() {
+        val url = viewModel.variantSizechartUrl.value.orEmpty()
+        context?.apply {
+            val editorIntent = SizechartPickerEditPhotoActivity.createIntent(this, url)
+            startActivityForResult(editorIntent, REQUEST_CODE_SIZECHART_IMAGE)
+        }
     }
 
     private fun showGetCategoryVariantCombinationErrorToast(errorMessage: String) {

@@ -29,7 +29,7 @@
     <ScrollView
         android:id="@+id/scrollViewVariantUnitValues"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@id/buttonSave"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/variantUnitLayout">

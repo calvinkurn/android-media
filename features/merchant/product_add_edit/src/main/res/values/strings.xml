@@ -217,4 +217,8 @@
     <string name="action_variant_save">Simpan</string>
     <string name="action_variant_add">Tambah</string>
     <string name="label_variant_custom_input_message">Tulis nama varian yang kamu inginkan.</string>
+    <string name="label_variant_sizechart_edit_description">Klik gambar jika ingin ubah panduan.</string>
+    <string name="action_clear_sizechart">Hapus</string>
+    <string name="action_replace_sizechart">Ubah Foto</string>
+    <string name="action_edit_sizechart">Edit Foto</string>
 </resources>
