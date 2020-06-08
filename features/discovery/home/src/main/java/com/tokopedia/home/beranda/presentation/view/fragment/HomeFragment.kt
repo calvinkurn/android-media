@@ -68,9 +68,11 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.getPopular
 import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.sendPopularKeywordClickItem
 import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.sendPopularKeywordClickReload
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getAddToCartOnDynamicListCarousel
+import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getAddToCartOnDynamicListCarouselHomeComponent
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getCloseClickOnDynamicListCarousel
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getRecommendationListImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.SprintSale.getSprintSaleImpression
+import com.tokopedia.home.analytics.v2.LegoBannerTracking
 import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
 import com.tokopedia.home.analytics.v2.MixTopTracking.getMixTopViewIris
 import com.tokopedia.home.analytics.v2.MixTopTracking.mapChannelToProductTracker
@@ -104,12 +106,17 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
+import com.tokopedia.home.beranda.presentation.view.listener.DynamicLegoBannerComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.FramePerformanceIndexInterface
+import com.tokopedia.home.beranda.presentation.view.listener.HomeComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.RecommendationListCarouselComponentCallback
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.home.widget.FloatingTextButton
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
@@ -699,6 +706,25 @@ open class HomeFragment : BaseDaggerFragment(),
                         (dataMap[HomeViewModel.GRID] as DynamicHomeChannel.Grid?)!!,
                         dataMap[HomeViewModel.POSITION] as Int,
                         (dataMap[HomeViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
+                        "0",
+                        viewModel.getUserId()
+                ) as HashMap<String, Any>)
+                RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
+            }
+        })
+
+        viewModel.oneClickCheckoutHomeComponent.observe(viewLifecycleOwner, Observer { event: Event<Any> ->
+            val data = event.peekContent()
+            if (data is Throwable) { // error
+                showToaster(getString(R.string.home_error_connection), TYPE_ERROR)
+            } else {
+                val dataMap = data as Map<*, *>
+                sendEETracking(getAddToCartOnDynamicListCarouselHomeComponent(
+                        (dataMap[HomeViewModel.CHANNEL] as ChannelModel)!!,
+                        (dataMap[HomeViewModel.GRID] as ChannelGrid)!!,
+                        dataMap[HomeViewModel.POSITION] as Int,
+                        (dataMap[HomeViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
+                        "0",
                         viewModel.getUserId()
                 ) as HashMap<String, Any>)
                 RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
@@ -873,8 +899,10 @@ open class HomeFragment : BaseDaggerFragment(),
                 this,
                 homeRecyclerView?.recycledViewPool?: RecyclerView.RecycledViewPool(),
                 this,
-                this
-        )
+                this,
+                HomeComponentCallback(viewModel),
+                DynamicLegoBannerComponentCallback(context),
+                RecommendationListCarouselComponentCallback(viewModel, this))
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
                 .build()
@@ -1284,7 +1312,9 @@ open class HomeFragment : BaseDaggerFragment(),
                 if (visitable is HomeVisitable) {
                     val homeVisitable = visitable
                     if (homeVisitable.isTrackingCombined && homeVisitable.trackingDataForCombination != null) {
-                        HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(getTrackingQueueObj(), homeVisitable.getTrackingDataForCombination());
+                        getTrackingQueueObj()?.putEETracking(
+                                LegoBannerTracking.getHomeBannerImpression(homeVisitable.trackingDataForCombination) as HashMap<String, Any>
+                        )
                     } else if (!homeVisitable.isTrackingCombined && homeVisitable.trackingData != null) {
                         HomePageTracking.eventEnhancedImpressionWidgetHomePage(getTrackingQueueObj(), homeVisitable.trackingData)
                     }
@@ -1323,7 +1353,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onBuyAgainCloseChannelClick(channel: DynamicHomeChannel.Channels, position: Int) {
-        viewModel.onCloseBuyAgain(channel, position)
+        viewModel.onCloseBuyAgain(channel.id, position)
         TrackApp.getInstance().gtm.sendGeneralEvent(getCloseClickOnDynamicListCarousel(channel, viewModel.getUserId()))
     }
 

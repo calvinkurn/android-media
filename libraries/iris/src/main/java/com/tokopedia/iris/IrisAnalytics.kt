@@ -149,6 +149,10 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         isAlarmOn = isTurnOn
     }
 
+    override fun getSessionId(): String {
+        return session.getSessionId()
+    }
+
     companion object {
 
         private val lock = Any()
