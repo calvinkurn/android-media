@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.settingbank.banklist.v2.di.DaggerSettingBankComponent
 import com.tokopedia.settingbank.banklist.v2.di.SettingBankComponent
+import com.tokopedia.settingbank.banklist.v2.di.SettingBankModule
 import com.tokopedia.settingbank.banklist.v2.util.SettingBankRemoteConfig
 import com.tokopedia.settingbank.banklist.v2.view.fragment.SettingBankFragment
 
@@ -17,8 +18,9 @@ import com.tokopedia.settingbank.banklist.v2.view.fragment.SettingBankFragment
 class SettingBankActivity : BaseSimpleActivity(), HasComponent<SettingBankComponent>, SettingBankCallback {
 
     override fun getComponent(): SettingBankComponent = DaggerSettingBankComponent.builder()
-            .baseAppComponent((applicationContext as BaseMainApplication)
-                    .baseAppComponent).build()
+            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+            .settingBankModule(SettingBankModule(this))
+            .build()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,9 +44,7 @@ class SettingBankActivity : BaseSimpleActivity(), HasComponent<SettingBankCompon
         const val ADD_ACCOUNT_REQUEST_CODE = 101
         const val REQUEST_ON_DOC_UPLOAD = 102
         const val UPLOAD_DOCUMENT_MESSAGE = "UPLOAD_DOCUMENT_MESSAGE"
-        fun createIntent(context: Context): Intent {
-            return Intent(context, SettingBankActivity::class.java)
-        }
+
     }
 
     override fun getTagFragment(): String {

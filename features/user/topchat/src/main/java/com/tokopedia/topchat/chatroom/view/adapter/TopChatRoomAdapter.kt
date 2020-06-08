@@ -8,9 +8,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.data.BaseChatViewModel
+import com.tokopedia.chat_common.data.DeferredAttachment
 import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 
 /**
  * @author : Steven 02/01/19
@@ -88,6 +92,28 @@ class TopChatRoomAdapter(
         }
     }
 
+    fun updateAttachmentView(firstVisible: Int, lastVisible: Int, attachments: ArrayMap<String, Attachment>) {
+        if (firstVisible > lastVisible) return
+        if (firstVisible < 0 || lastVisible >= visitables.size) return
+        for (itemPosition in firstVisible..lastVisible) {
+            val item = visitables[itemPosition]
+            if (item is DeferredAttachment && attachments.containsKey(item.id)) {
+                val attachment = attachments[item.id] ?: continue
+                if (item.isLoading) {
+                    if (attachment is ErrorAttachment) {
+                        item.syncError()
+                    } else {
+                        item.updateData(attachment.parsedAttributes)
+                    }
+                    notifyItemChanged(itemPosition, DeferredAttachment.PAYLOAD_DEFERRED)
+                }
+            }
+            if (item is ProductCarouselUiModel) {
+                notifyItemChanged(itemPosition, DeferredAttachment.PAYLOAD_DEFERRED)
+            }
+        }
+    }
+
     private fun assignLastHeaderDate() {
         if (visitables.size <= 1) return
         val lastDateHeaderItemIndex = visitables.size - 2
@@ -101,5 +127,9 @@ class TopChatRoomAdapter(
     private fun sameDay(chatTime: Long?, previousChatTime: Long?): Boolean {
         if (context == null || chatTime == null || previousChatTime == null) return false
         return compareTime(context, chatTime, previousChatTime)
+    }
+
+    fun dataExistAt(position: Int): Boolean {
+        return visitables.getOrNull(position) != null
     }
 }
