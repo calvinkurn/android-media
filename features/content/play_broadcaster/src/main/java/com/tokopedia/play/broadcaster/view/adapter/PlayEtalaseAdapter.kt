@@ -1,8 +1,10 @@
 package com.tokopedia.play.broadcaster.view.adapter
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
-import com.tokopedia.play.broadcaster.ui.model.PlayEtalaseUiModel
+import com.tokopedia.play.broadcaster.ui.model.EtalaseContentUiModel
+import com.tokopedia.play.broadcaster.ui.model.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayEtalaseViewHolder
+import com.tokopedia.play.broadcaster.view.adapter.delegate.EtalaseLoadingAdapterDelegate
 import com.tokopedia.play.broadcaster.view.adapter.delegate.PlayEtalaseAdapterDelegate
 
 /**
@@ -10,18 +12,20 @@ import com.tokopedia.play.broadcaster.view.adapter.delegate.PlayEtalaseAdapterDe
  */
 class PlayEtalaseAdapter(
         etalaseListener: PlayEtalaseViewHolder.Listener
-) : BaseDiffUtilAdapter<PlayEtalaseUiModel>() {
+) : BaseDiffUtilAdapter<EtalaseUiModel>() {
 
     init {
         delegatesManager
                 .addDelegate(PlayEtalaseAdapterDelegate(etalaseListener))
+                .addDelegate(EtalaseLoadingAdapterDelegate())
     }
 
-    override fun areItemsTheSame(oldItem: PlayEtalaseUiModel, newItem: PlayEtalaseUiModel): Boolean {
-        return oldItem.id == newItem.id
+    override fun areItemsTheSame(oldItem: EtalaseUiModel, newItem: EtalaseUiModel): Boolean {
+        return if (oldItem is EtalaseContentUiModel && newItem is EtalaseContentUiModel) oldItem.id == newItem.id
+        else false
     }
 
-    override fun areContentsTheSame(oldItem: PlayEtalaseUiModel, newItem: PlayEtalaseUiModel): Boolean {
+    override fun areContentsTheSame(oldItem: EtalaseUiModel, newItem: EtalaseUiModel): Boolean {
         return oldItem == newItem
     }
 }

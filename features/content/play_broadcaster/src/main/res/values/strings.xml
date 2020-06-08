@@ -4,6 +4,7 @@
     <string name="play_begin_setup">Mulai Persiapannya</string>
     <string name="play_your_followers">Followers \nAnda</string>
 
+    <string name="play_etalase_picker_title">Pilih Produk</string>
     <string name="play_etalase_picker_info">Pilih produk terbaik di tokomu untuk dijadikan konten yang membuat penonton tertarik membeli.</string>
     <string name="play_etalase_search_hint">Cari etalase</string>
     <string name="play_etalase_product_amount">%d Produk</string>

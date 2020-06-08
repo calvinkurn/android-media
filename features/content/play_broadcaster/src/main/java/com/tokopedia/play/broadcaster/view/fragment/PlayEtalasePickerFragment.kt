@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
+import com.tokopedia.play.broadcaster.ui.model.EtalaseLoadingUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
 import com.tokopedia.play.broadcaster.ui.model.ResultState
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayEtalaseViewHolder
@@ -115,7 +116,7 @@ class PlayEtalasePickerFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView(view)
-        bottomSheetCoordinator.setupTitle("Select Products or Collection")
+        bottomSheetCoordinator.setupTitle(getString(R.string.play_etalase_picker_title))
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -168,6 +169,15 @@ class PlayEtalasePickerFragment @Inject constructor(
     }
 
     private fun setupEtalaseList() {
+        rvEtalase.layoutManager = GridLayoutManager(rvSearchedProducts.context, SPAN_COUNT, RecyclerView.VERTICAL, false).apply {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+
+                override fun getSpanSize(position: Int): Int {
+                    return if (etalaseAdapter.getItem(position) == EtalaseLoadingUiModel) SPAN_COUNT
+                    else 1
+                }
+            }
+        }
         rvEtalase.adapter = etalaseAdapter
         rvEtalase.addItemDecoration(PlayGridTwoItemDecoration(requireContext()))
         rvEtalase.addOnScrollListener(StopFlingScrollListener())
@@ -240,8 +250,19 @@ class PlayEtalasePickerFragment @Inject constructor(
      */
     private fun observeEtalase() {
         viewModel.observableEtalase.observe(viewLifecycleOwner, Observer {
-            etalaseAdapter.setItemsAndAnimateChanges(it)
-            startPostponedTransition()
+            when (it.state) {
+                ResultState.Loading -> {
+                    etalaseAdapter.setItemsAndAnimateChanges(listOf(EtalaseLoadingUiModel))
+                }
+                is ResultState.Success -> {
+                    etalaseAdapter.setItemsAndAnimateChanges(it.currentValue)
+                    startPostponedTransition()
+                }
+                is ResultState.Fail -> {
+
+                }
+            }
+
         })
     }
 

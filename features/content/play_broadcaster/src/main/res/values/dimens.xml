@@ -39,4 +39,6 @@
     <dimen name="play_drag_indicator_height">4dp</dimen>
     <dimen name="play_drag_indicator_width">40dp</dimen>
 
+    <dimen name="play_unify_loading_size">30dp</dimen>
+
 </resources>
