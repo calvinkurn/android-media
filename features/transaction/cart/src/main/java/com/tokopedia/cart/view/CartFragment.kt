@@ -385,6 +385,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onDestroy() {
         cartAdapter.unsubscribeSubscription()
         dPresenter.detachView()
+        showPromoButtonJob?.cancel()
         super.onDestroy()
     }
 
@@ -565,10 +566,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             showPromoButtonJob?.cancel()
             showPromoButtonJob = GlobalScope.launch(Dispatchers.Main) {
                 delay(750L)
-                llPromoCheckout.animate()
-                        .y(initialPromoButtonPosition)
-                        .setDuration(500L)
-                        .start();
+                if (llPromoCheckout != null) {
+                    llPromoCheckout.animate()
+                            .y(initialPromoButtonPosition)
+                            .setDuration(500L)
+                            .start()
+                }
             }
         }
     }
