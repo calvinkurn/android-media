@@ -271,7 +271,7 @@ class ScreenRecordService : Service(), CoroutineScope {
     private fun getOpenVideoResultPendingIntent(resultPath: String) : PendingIntent {
 
         val uri = FileProvider.getUriForFile(this,
-            BuildConfig.APPLICATION_ID + ".provider", File(resultPath))
+            "com.tokopedia.screenrecorder.provider", File(resultPath))
 
         val intent = Intent(Intent.ACTION_VIEW)
         intent.setDataAndType(uri,"video/*")
