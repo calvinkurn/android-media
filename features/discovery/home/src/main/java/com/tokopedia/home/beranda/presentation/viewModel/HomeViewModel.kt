@@ -20,7 +20,6 @@ import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
-import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.helper.Event
@@ -37,13 +36,10 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAc
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
-import com.tokopedia.topads.sdk.listener.ImpressionListener
-import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
@@ -755,8 +751,8 @@ open class HomeViewModel @Inject constructor(
 
     fun getDynamicChannelData(visitable: Visitable<*>, channelModel: ChannelModel, position: Int){
         launchCatchError(coroutineContext, block = {
-            getDynamicChannelsUseCase.setParams(channelModel.groupId ?: "")
-            val data = getDynamicChannelsUseCase.executeOnBackground()
+            getDynamicChannelsUseCase.get().setParams(channelModel.groupId ?: "")
+            val data = getDynamicChannelsUseCase.get().executeOnBackground()
             if(data.isEmpty()){
                 updateWidget(UpdateLiveDataModel(ACTION_DELETE, visitable, position))
             } else {
@@ -954,7 +950,7 @@ open class HomeViewModel @Inject constructor(
                 productName = grid.name,
                 price = grid.price
         ))
-        getAtcUseCase.createObservable(requestParams)
+        getAtcUseCase.get().createObservable(requestParams)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .subscribe (
