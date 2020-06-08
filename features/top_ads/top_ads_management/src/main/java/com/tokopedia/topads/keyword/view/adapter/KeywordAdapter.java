@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.core.base.utils.StringUtils;
+import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.topads.R;
 
 import java.util.ArrayList;

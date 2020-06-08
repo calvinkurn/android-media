@@ -16,8 +16,6 @@ sealed class FilterTabViewModel(
     data class InActive(override val count: Int): FilterTabViewModel(R.string.product_manage_filter_inactive, count, ProductStatus.INACTIVE)
     data class Violation(override val count: Int): FilterTabViewModel(R.string.product_manage_filter_banned, count, ProductStatus.VIOLATION)
 
-    data class MoreFilter(val filterCount: Int): FilterTabViewModel(R.string.product_manage_filter)
-
     override fun type(typeFactory: ProductFilterAdapterFactory): Int {
         return typeFactory.type(this)
     }

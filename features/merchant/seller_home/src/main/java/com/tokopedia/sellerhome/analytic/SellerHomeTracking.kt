@@ -168,6 +168,10 @@ object SellerHomeTracking {
         TrackingHelper.sendEnhanceEcommerceEvent(eventMap)
     }
 
+    fun sendScreen(screenName: String) {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
+    }
+
     private fun getBannerPromotions(items: List<CarouselItemUiModel>, position: Int): List<Map<String, String>> {
         return items.map {
             return@map mapOf(

@@ -2,17 +2,16 @@ package com.tokopedia.topads.dashboard.di.module;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.network.NetworkRouter;
-import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.data.interceptor.ShopAuthInterceptor;
 import com.tokopedia.topads.common.data.util.CacheApiTKPDResponseValidator;
+import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsShopApi;
 import com.tokopedia.topads.dashboard.di.qualifier.ShopWsQualifier;
 import com.tokopedia.topads.dashboard.di.scope.TopAdsScope;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -93,7 +92,7 @@ public class TopAdsShopModule {
 
     @TopAdsScope
     @Provides
-    public ShopApi provideShopApi(@ShopWsQualifier Retrofit retrofit) {
-        return retrofit.create(ShopApi.class);
+    public TopAdsShopApi provideShopApi(@ShopWsQualifier Retrofit retrofit) {
+        return retrofit.create(TopAdsShopApi.class);
     }
 }

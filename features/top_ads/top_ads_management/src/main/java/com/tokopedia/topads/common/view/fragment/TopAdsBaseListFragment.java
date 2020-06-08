@@ -24,7 +24,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
@@ -33,6 +32,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.design.text.SearchInputView;

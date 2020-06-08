@@ -3,7 +3,7 @@ package com.tokopedia.topads.dashboard.data.source.cloud;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.data.mapper.TopAdsBulkActionMapper;
 import com.tokopedia.topads.dashboard.data.mapper.TopAdsDetailProductMapper;

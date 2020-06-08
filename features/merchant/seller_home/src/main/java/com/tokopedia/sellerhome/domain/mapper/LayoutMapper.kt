@@ -38,7 +38,8 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 appLink = widget.appLink.orEmpty(),
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
-                data = null
+                data = null,
+                isLoaded = false
         )
     }
 
@@ -52,7 +53,8 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 appLink = widget.appLink.orEmpty(),
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
-                data = null
+                data = null,
+                isLoaded = false
         )
     }
 
@@ -66,7 +68,8 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 appLink = widget.appLink.orEmpty(),
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
-                data = null
+                data = null,
+                isLoaded = false
         )
     }
 
@@ -80,7 +83,8 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 appLink = widget.appLink.orEmpty(),
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
-                data = null
+                data = null,
+                isLoaded = false
         )
     }
 
@@ -94,7 +98,8 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 appLink = widget.appLink.orEmpty(),
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
-                data = null
+                data = null,
+                isLoaded = false
         )
     }
 
@@ -108,7 +113,8 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 appLink = widget.appLink.orEmpty(),
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
-                data = null
+                data = null,
+                isLoaded = false
         )
     }
 
@@ -122,7 +128,8 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 appLink = widget.appLink.orEmpty(),
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
-                data = null
+                data = null,
+                isLoaded = false
         )
     }
 }

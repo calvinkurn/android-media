@@ -284,7 +284,6 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
          * Listener for action text "Selesai" on toolbar is clicked
          */
         headerUnify?.actionTextView?.setOnClickListener {
-            tracking.addShowcaseClickFinishButton(shopId, shopType, isActionEdit)
             val showcaseName = textFieldShowcaseName?.textFieldInput?.text.toString()
             validateShowcaseName(showcaseName, true)
         }
@@ -480,10 +479,12 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
                     val responseData = it.data
                     if(responseData.success) {
                         // navigate back to origin create showcase entry point
+                        tracking.addShowcaseIsCreatedSuccessfully(shopId, shopType, true)
                         activity?.setResult(Activity.RESULT_OK)
                         activity?.finish()
                     }
                     else {
+                        tracking.addShowcaseIsCreatedSuccessfully(shopId, shopType)
                         showUnifyToaster(responseData.message)
                     }
                 }

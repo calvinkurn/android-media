@@ -6,11 +6,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.core.content.ContextCompat;
 import android.view.View;
+import android.widget.Toast;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.view.fragment.TopAdsBaseDatePickerFragment;
@@ -163,7 +164,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter, V ex
     @Override
     public void onAdEmpty() {
         hideLoading();
-        CommonUtils.UniversalToast(getActivity(), getString(R.string.error_data_not_found));
+        Toast.makeText(getActivity(), MethodChecker.fromHtml(getString(R.string.error_data_not_found)), Toast.LENGTH_LONG).show();
         getActivity().finish();
     }
 

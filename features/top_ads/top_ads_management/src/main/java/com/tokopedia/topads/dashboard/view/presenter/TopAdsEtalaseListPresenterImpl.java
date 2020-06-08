@@ -24,13 +24,13 @@ public class TopAdsEtalaseListPresenterImpl extends BaseDaggerPresenter<TopAdsEt
     }
 
     @Override
-    public void populateEtalaseList(String shopId) {
+    public void populateEtalaseList(String shopId, String userId, String deviceId) {
         if (TextUtils.isEmpty(shopId))
             return;
         getView().showLoad(true);
 
         topAdsEtalaseListUseCase.execute(
-                TopAdsEtalaseListUseCase.createRequestParams(shopId),
+                TopAdsEtalaseListUseCase.createRequestParams(shopId, userId, deviceId),
                 getShopEtalaseSubscriber()
         );
     }

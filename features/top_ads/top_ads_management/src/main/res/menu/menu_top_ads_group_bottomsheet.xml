@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:id="@+id/edit"
+        android:title="@string/label_edit"/>
+    <item
         android:id="@+id/status_active"
         android:title="@string/topads_status_active" />
     <item

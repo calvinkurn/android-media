@@ -27,7 +27,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.datePickerRange)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.tkpdseller)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.webview)

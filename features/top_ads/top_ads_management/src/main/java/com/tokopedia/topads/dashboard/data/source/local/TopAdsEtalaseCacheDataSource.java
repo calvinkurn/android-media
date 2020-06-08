@@ -1,27 +1,30 @@
 package com.tokopedia.topads.dashboard.data.source.local;
 
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.abstraction.common.utils.network.CacheUtil;
+import com.tokopedia.abstraction.constant.TkpdCache;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.topads.dashboard.data.source.TopAdsEtalaseDataSource;
 import com.tokopedia.topads.dashboard.data.model.data.Etalase;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 /**
  * Created by hendry on 2/20/17.
  */
 public class TopAdsEtalaseCacheDataSource implements TopAdsEtalaseDataSource {
+
+    private static final long EXPIRED_TIME = TimeUnit.MINUTES.toMillis(60);
     public TopAdsEtalaseCacheDataSource() {
 
     }
 
-    public Observable<List<Etalase>> getEtalaseList(String shopId) {
-        GlobalCacheManager globalCacheManager = new GlobalCacheManager();
+    public Observable<List<Etalase>> getEtalaseList(String shopId, String userId, String deviceId) {
+
         try {
-            String jsonString = globalCacheManager.getValueString(TkpdCache.ETALASE_ADD_PROD);
+            String jsonString = PersistentCacheManager.instance.getString(TkpdCache.Key.ETALASE_ADD_PROD);
             List<Etalase> etalaseList = CacheUtil.convertStringToListModel(jsonString,
                     new TypeToken<List<Etalase>>() {
                     }.getType());
@@ -43,15 +46,11 @@ public class TopAdsEtalaseCacheDataSource implements TopAdsEtalaseDataSource {
     }
 
     public static void saveEtalaseListToCache(List<Etalase> etalaseList) {
-        GlobalCacheManager manager = new GlobalCacheManager();
         String jsonString = CacheUtil.convertListModelToString(
                 etalaseList,
                 new TypeToken<List<Etalase>>() {
                 }.getType());
-        manager.setKey(TkpdCache.ETALASE_ADD_PROD);
-        manager.setValue(jsonString);
-        manager.setCacheDuration(60);
-        manager.store();
+        PersistentCacheManager.instance.put(TkpdCache.Key.ETALASE_ADD_PROD, jsonString, EXPIRED_TIME);
         /*final DatabaseWrapper database = FlowManager.getDatabase(TkpdSellerDatabase.NAME).getWritableDatabase();
         database.beginTransaction();
         try {
@@ -71,10 +70,9 @@ public class TopAdsEtalaseCacheDataSource implements TopAdsEtalaseDataSource {
     }
 
     public static boolean isCacheExpired(){
-        GlobalCacheManager globalCacheManager = new GlobalCacheManager();
         String value;
         try {
-            value = globalCacheManager.getValueString(TkpdCache.ETALASE_ADD_PROD);
+            value = PersistentCacheManager.instance.getString(TkpdCache.Key.ETALASE_ADD_PROD);
         }
         catch (RuntimeException e) {
             return true;
@@ -90,8 +88,7 @@ public class TopAdsEtalaseCacheDataSource implements TopAdsEtalaseDataSource {
     }
 
     public static void clearCache(){
-        GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-        globalCacheManager.delete(TkpdCache.ETALASE_ADD_PROD);
+        PersistentCacheManager.instance.delete(TkpdCache.Key.ETALASE_ADD_PROD);
     }
 
 

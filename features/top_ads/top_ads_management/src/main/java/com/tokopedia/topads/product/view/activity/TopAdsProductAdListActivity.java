@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.view.activity.TopAdsBaseActivity;
 import com.tokopedia.topads.common.view.fragment.TopAdsBaseListFragment;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
@@ -19,7 +20,7 @@ import com.tokopedia.topads.product.view.fragment.TopAdsProductListFragment;
 
 import java.util.ArrayList;
 
-public class TopAdsProductAdListActivity extends BaseSimpleActivity
+public class TopAdsProductAdListActivity extends TopAdsBaseActivity
         implements TopAdsBaseListFragment.OnAdListFragmentListener {
 
     private static final String TAG = "TopAdsProductAdListActi";

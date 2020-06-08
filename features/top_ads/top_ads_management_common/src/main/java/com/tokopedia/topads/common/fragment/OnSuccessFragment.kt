@@ -31,6 +31,7 @@ class OnSuccessFragment : TkpdBaseV4Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         btn_go_to_dashboard.setOnClickListener {
             val intent =RouteManager.getIntent(context,ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL)
             startActivity(intent)

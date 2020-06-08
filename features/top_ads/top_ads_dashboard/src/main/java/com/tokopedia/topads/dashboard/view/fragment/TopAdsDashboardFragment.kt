@@ -720,7 +720,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         isAutoAds = false
         groupSummaryLabelView?.visibility = View.VISIBLE
         getKeywordLabelView?.visibility = View.VISIBLE
-        button_topads_add_promo?.visibility = View.VISIBLE
+        buttonAddPromo?.visibility = View.VISIBLE
     }
 
     private fun gotoAutoTopup() {

@@ -40,6 +40,7 @@
                 tools:text="@string/app_name"/>
 
             <TextView
+                android:id="@+id/separator"
                 style="@style/TextView.Micro"
                 android:layout_marginLeft="@dimen/dp_5"
                 android:layout_marginRight="@dimen/dp_5"

@@ -121,10 +121,24 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     private fun isInputValid(): Boolean {
 
+        // by default the product photos are never empty
         val isProductPhotoError = mIsProductPhotoError.value ?: false
-        val isProductNameError = mIsProductNameInputError.value ?: false
-        val isProductPriceError = mIsProductPriceInputError.value ?: false
+
+        // mandatory fields that empty by default (adding new product)
+        val isProductNameError: Boolean
+        val isProductPriceError: Boolean
+        if (isAdding) {
+            isProductNameError = mIsProductNameInputError.value ?: !isEditing
+            isProductPriceError = mIsProductPriceInputError.value ?: !isEditing
+        } else {
+            isProductNameError = mIsProductNameInputError.value ?: false
+            isProductPriceError = mIsProductPriceInputError.value ?: false
+        }
+
+        // by default the product stock is never empty
         val isProductStockError = mIsProductStockInputError.value ?: false
+
+        // by default the product min order is never empty
         val isOrderQuantityError = mIsOrderQuantityInputError.value ?: false
 
         // if not activated; wholesale error is not countable

@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
-import com.tokopedia.seller.base.view.activity.BaseFilterActivity;
+import com.tokopedia.topads.common.view.activity.BaseFilterActivity;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsFilterGroupNameFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsFilterStatusFragment;

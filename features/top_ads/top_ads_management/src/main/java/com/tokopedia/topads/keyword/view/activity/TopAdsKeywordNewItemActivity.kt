@@ -4,15 +4,15 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.topads.TopAdsComponentInstance
-import com.tokopedia.topads.dashboard.di.component.TopAdsComponent
+import com.tokopedia.topads.common.view.activity.TopAdsBaseActivity
 import com.tokopedia.topads.keyword.domain.model.keywordadd.AddKeywordDomainModelDatum
 import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordNewItemFragment
 import com.tokopedia.topads.keyword.view.model.TopAdsKeywordNewStepperModel
 
-class TopAdsKeywordNewItemActivity : BaseSimpleActivity(), HasComponent<TopAdsComponent> {
+class TopAdsKeywordNewItemActivity : TopAdsBaseActivity(), HasComponent<BaseAppComponent> {
     private val localKeywords: MutableList<AddKeywordDomainModelDatum> = mutableListOf()
     private var maxCount = 50
     private var stepperModel: TopAdsKeywordNewStepperModel? = null
@@ -62,8 +62,8 @@ class TopAdsKeywordNewItemActivity : BaseSimpleActivity(), HasComponent<TopAdsCo
         return TopAdsKeywordNewItemFragment.newInstance(localKeywords, maxCount, stepperModel?.isPositive ?: true, stepperModel?.groupId ?: "")
     }
 
-    override fun getComponent(): TopAdsComponent {
-        return TopAdsComponentInstance.getComponent(application)
+    override fun getComponent(): BaseAppComponent? {
+        return (application as BaseMainApplication).baseAppComponent
     }
 
 }

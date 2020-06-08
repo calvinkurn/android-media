@@ -28,10 +28,7 @@ import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.util.*
@@ -352,11 +349,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         // new condition
         val newCondition = ListItemUnify(getString(R.string.label_new), "")
+        newCondition.isBold = false
         newCondition.setVariant(null, ListItemUnify.RADIO_BUTTON, null)
         newCondition.run { productConditions.add(NEW_PRODUCT_INDEX, this) }
 
         // secondhand condition
         val secondHandCondition = ListItemUnify(getString(R.string.label_secondhand), "")
+        secondHandCondition.isBold = false
         secondHandCondition.setVariant(null, ListItemUnify.RADIO_BUTTON, getString(R.string.label_secondhand))
         secondHandCondition.run { productConditions.add(USED_PRODUCT_INDEX, this) }
 
@@ -436,11 +435,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
                 val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().replace(".", "")
                 wholeSaleInputFormsAdapter?.setProductPrice(productPriceInput)
-                val wholesalePriceExist = wholeSaleInputFormsAdapter?.itemCount != 0
-                if (!wholesalePriceExist) wholeSaleInputFormsAdapter?.addNewWholeSalePriceForm()
-                if (viewModel.isAdding && viewModel.hasVariants) {
-                    showVariantWholesalePriceToast()
-                }
+                val wholesalePriceEmpty = wholeSaleInputFormsAdapter?.itemCount == 0
+                if (wholesalePriceEmpty) wholeSaleInputFormsAdapter?.addNewWholeSalePriceForm()
             }
         }
 
@@ -630,7 +626,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     productCategoryLayout?.show()
                     productCategoryRecListView?.show()
                     val selectedCategory = ArrayList<ListItemUnify>()
-                    selectedCategory.add(ListItemUnify(categoryName, ""))
+                    val selectedCategoryItemUnify = ListItemUnify(categoryName, "")
+                    selectedCategoryItemUnify.isBold = false
+                    selectedCategory.add(selectedCategoryItemUnify)
                     productCategoryRecListView?.setData(selectedCategory)
                 }
                 REQUEST_CODE_DESCRIPTION -> {
@@ -648,20 +646,34 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
         photoItemTouchHelper?.startDrag(viewHolder)
+        //countTouchPhoto is used for count how many times images hit
+        // we use this because startDrag(viewHolder) can hit tracker two times
         countTouchPhoto += 1
-        // photoItemTouchHelper?.startDrag(viewHolder) can hit tracker one time
-        // to avoid double hit tracker when dragging or touching image product, we need count how many onStartDrag func run
-        if(countTouchPhoto == 2) {
-            if (viewModel.isEditing && !viewModel.isAdding) {
-                ProductEditMainTracking.trackDragPhoto(shopId)
-            } else {
-                ProductAddMainTracking.trackDragPhoto(shopId)
+        //countTouchPhoto can increment 1 every time we come or back to this page
+        //if we back from ActivityOnResult countTouchPhoto still increment,
+        //to avoid that we have to make sure the value of countTouchPhoto must be 1
+        if(countTouchPhoto > 2) {
+            countTouchPhoto = 1
+        }
+        // tracker only hit when there are two images of product
+        if(productPhotoAdapter?.itemCount ?: 0 > 1) {
+            // to avoid double hit tracker when dragging or touching image product, we have to put if here
+            if (countTouchPhoto == 2) {
+                if (viewModel.isEditing && !viewModel.isAdding) {
+                    ProductEditMainTracking.trackDragPhoto(shopId)
+                } else {
+                    ProductAddMainTracking.trackDragPhoto(shopId)
+                }
             }
-            countTouchPhoto = 0
         }
     }
 
     override fun onRemovePhoto(viewHolder: RecyclerView.ViewHolder) {
+        // validate when 1 photo item is removed
+        val photoCount = productPhotoAdapter?.itemCount ?: 0
+        viewModel.validateProductPhotoInput(photoCount - 1)
+
+        // tracking
         if (viewModel.isEditing && !viewModel.isAdding) {
             ProductEditMainTracking.trackRemovePhoto(shopId)
         } else {
@@ -920,7 +932,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     productNameRecAdapter?.setProductNameInput(productNameInput)
                     viewModel.getProductNameRecommendation(query = productNameInput)
                 }
-                // show category recommendations to the product has no variants
+                // show category recommendations to the product that has no variants
                 if (viewModel.isAdding) viewModel.getCategoryRecommendation(productNameInput)
             } else {
                 // show empty recommendations for input with error
