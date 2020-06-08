@@ -9,24 +9,20 @@ class NetworkTimeOutInterceptor: Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
 
-        // get timeOut data
+        // get timeout data
         val timeOut = request.header(HEADER_TIMEOUT)
-
-        // replace
-        val connectTimeout = timeOut?.toInt()?: DEFAULT_TIMEOUT
-        val writeTimeout = timeOut?.toInt()?: DEFAULT_TIMEOUT
-        val readTimeout = timeOut?.toInt()?: DEFAULT_TIMEOUT
+        val requestTimeout = timeOut?.toInt()?: DEFAULT_TIMEOUT
 
         return chain
-                .withConnectTimeout(connectTimeout, TimeUnit.SECONDS)
-                .withWriteTimeout(writeTimeout, TimeUnit.SECONDS)
-                .withReadTimeout(readTimeout, TimeUnit.SECONDS)
+                .withConnectTimeout(requestTimeout, TimeUnit.SECONDS)
+                .withWriteTimeout(requestTimeout, TimeUnit.SECONDS)
+                .withReadTimeout(requestTimeout, TimeUnit.SECONDS)
                 .proceed(request)
     }
 
     companion object {
         const val HEADER_TIMEOUT = "TIME_OUT"
-        const val DEFAULT_TIMEOUT = 60
+        const val DEFAULT_TIMEOUT = 120
     }
 
 }
