@@ -1,7 +1,5 @@
 package com.tokopedia.cart.view
 
-import android.animation.Animator
-import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -15,7 +13,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.*
+import android.widget.CheckBox
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -26,7 +27,6 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.snackbar.Snackbar
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -79,24 +79,24 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant.PARAM_DEFAUL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.STATE_RED
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.RESULT_CODE_COUPON_STATE_CHANGED
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
-import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
-import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ProductDetailsItem
-import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceItemActionListener
 import com.tokopedia.purchase_platform.common.feature.insurance.request.UpdateInsuranceProductApplicationDetails
 import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartDigitalProduct
 import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartResponse
 import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartShops
-import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceItemActionListener
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ProductDetailsItem
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementActionListener
-import com.tokopedia.purchase_platform.common.utils.Utils
-import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
+import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -185,26 +185,18 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var isInsuranceEnabled = false
     private var isToolbarWithBackButton = true
     private var noAvailableItems = false
-    private var listRedPromos: List<String> = emptyList()
-    private var prevCbSelectAllIsSelected: Boolean = false
     private var cbChangeJob: Job? = null
-    private var isButtonAnimating = false
-    private var _animator: Animator? = null
-    private val ANIMATION_TYPE = "translationY"
-    private val ANIMATION_DURATION_IN_MILIS = 1000L
-    private val TRANSLATION_LENGTH = 1800f
+    private var showPromoButtonJob: Job? = null
+    private var TRANSLATION_LENGTH = 0f
     private var isKeyboardOpened = false
+    private var initialPromoButtonPosition = 0f
 
     companion object {
 
         private const val className: String = "com.tokopedia.purchase_platform.features.cart.view.CartFragment"
-        private const val LOYALTY_ACTIVITY_REQUEST_CODE = 12345
         private var FLAG_BEGIN_SHIPMENT_PROCESS = false
         private var FLAG_SHOULD_CLEAR_RECYCLERVIEW = false
         private var FLAG_IS_CART_EMPTY = false
-
-        private val SHOP_INDEX_PROMO_GLOBAL = -1
-
         private val HAS_ELEVATION = 12
         private val NO_ELEVATION = 0
         private val CART_TRACE = "mp_cart"
@@ -215,8 +207,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         private val NAVIGATION_SHIPMENT = 983
         private val ADVERTISINGID = "ADVERTISINGID"
         private val KEY_ADVERTISINGID = "KEY_ADVERTISINGID"
-        val GO_TO_DETAIL = 2
-        val GO_TO_LIST = 1
 
         @JvmStatic
         fun newInstance(bundle: Bundle?, args: String): CartFragment {
@@ -395,6 +385,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onDestroy() {
         cartAdapter.unsubscribeSubscription()
         dPresenter.detachView()
+        showPromoButtonJob?.cancel()
         super.onDestroy()
     }
 
@@ -528,31 +519,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         llPromoCheckout.gone()
                         return
                     }
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        _animator?.end()
-                        ObjectAnimator.ofFloat(llPromoCheckout, ANIMATION_TYPE, 0f).apply {
-                            duration = ANIMATION_DURATION_IN_MILIS
-                            addListener(object : Animator.AnimatorListener {
-                                override fun onAnimationRepeat(p0: Animator?) {
-                                }
 
-                                override fun onAnimationCancel(p0: Animator?) {
-                                    isButtonAnimating = false
-                                }
-
-                                override fun onAnimationStart(animation: Animator) {
-                                    isButtonAnimating = true
-                                }
-
-                                override fun onAnimationEnd(animation: Animator) {
-                                    isButtonAnimating = false
-                                }
-                            })
-                            if (!isButtonAnimating) {
-                                start()
-                            }
-                        }
-                    }
+                    handlePromoButtonVisibilityOnIdle(newState)
                 }
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -565,57 +533,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     } else {
                         enableSwipeRefresh()
                     }
-                    if (dy > 0) {
-                        ObjectAnimator.ofFloat(llPromoCheckout, ANIMATION_TYPE, TRANSLATION_LENGTH).apply {
-                            duration = ANIMATION_DURATION_IN_MILIS
-                            addListener(object : Animator.AnimatorListener {
-                                override fun onAnimationRepeat(p0: Animator?) {
-                                }
 
-                                override fun onAnimationCancel(p0: Animator?) {
-                                    isButtonAnimating = false
-                                    _animator = null
-                                }
-
-                                override fun onAnimationStart(animation: Animator) {
-                                    isButtonAnimating = true
-                                    _animator = animation
-                                }
-
-                                override fun onAnimationEnd(animation: Animator) {
-                                    isButtonAnimating = false
-                                    _animator = null
-
-                                }
-                            })
-                            if (!isButtonAnimating) {
-                                start()
-                            }
-                        }
-                    } else if (dy < 0) {
-                        ObjectAnimator.ofFloat(llPromoCheckout, ANIMATION_TYPE, 0f).apply {
-                            duration = ANIMATION_DURATION_IN_MILIS
-                            addListener(object : Animator.AnimatorListener {
-                                override fun onAnimationRepeat(p0: Animator?) {
-                                }
-
-                                override fun onAnimationCancel(p0: Animator?) {
-                                    isButtonAnimating = false
-                                }
-
-                                override fun onAnimationStart(animation: Animator) {
-                                    isButtonAnimating = true
-                                }
-
-                                override fun onAnimationEnd(animation: Animator) {
-                                    isButtonAnimating = false
-                                }
-                            })
-                            if (!isButtonAnimating) {
-                                start()
-                            }
-                        }
-                    }
+                    handlePromoButtonVisibilityOnScroll(dy)
                 }
             })
 
@@ -638,6 +557,55 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 }
             }
             addOnScrollListener(endlessRecyclerViewScrollListener)
+        }
+    }
+
+    private fun handlePromoButtonVisibilityOnIdle(newState: Int) {
+        if (newState == RecyclerView.SCROLL_STATE_IDLE && initialPromoButtonPosition > 0) {
+            // Delay after recycler view idle, then show promo button
+            showPromoButtonJob?.cancel()
+            showPromoButtonJob = GlobalScope.launch(Dispatchers.Main) {
+                delay(750L)
+                if (llPromoCheckout != null) {
+                    llPromoCheckout.animate()
+                            .y(initialPromoButtonPosition)
+                            .setDuration(500L)
+                            .start()
+                }
+            }
+        }
+    }
+
+    private fun handlePromoButtonVisibilityOnScroll(dy: Int) {
+        val valueY = llPromoCheckout.y + dy
+        TRANSLATION_LENGTH += dy
+        if (dy != 0) {
+            if (TRANSLATION_LENGTH - dy == 0f) {
+                // Initial position of View
+                initialPromoButtonPosition = llPromoCheckout.y
+            }
+
+            if (TRANSLATION_LENGTH != 0f) {
+                if (dy < 0 && valueY < initialPromoButtonPosition) {
+                    // Prevent scroll up move button exceed initial view position
+                    llPromoCheckout.animate()
+                            .y(initialPromoButtonPosition)
+                            .setDuration(0)
+                            .start();
+                } else if (valueY <= llPromoCheckout.height + initialPromoButtonPosition) {
+                    // Prevent scroll down move button too far
+                    llPromoCheckout.animate()
+                            .y(valueY)
+                            .setDuration(0)
+                            .start();
+                }
+            } else {
+                // Set to initial position if scroll up to top
+                llPromoCheckout.animate()
+                        .y(initialPromoButtonPosition)
+                        .setDuration(0)
+                        .start();
+            }
         }
     }
 
@@ -2057,7 +2025,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun showSnackbarRetry(message: String) {
         view?.let {
             Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    activity?.getString(R.string.label_action_snackbar_retry) ?: "", View.OnClickListener {
+                    activity?.getString(R.string.label_action_snackbar_retry)
+                            ?: "", View.OnClickListener {
                 dPresenter.processInitialGetCartData(getCartId(), dPresenter.getCartListData() == null, false)
             })
         }
