@@ -24,6 +24,7 @@ import androidx.annotation.Nullable;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
@@ -39,6 +40,7 @@ import com.tokopedia.seller.shopsettings.shipping.model.editshipping.ShopShippin
 import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresenter;
 import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresenterImpl;
+import com.tokopedia.seller.util.EditShippingConstant;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
 
@@ -543,7 +545,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
         chargeBoTicker.setDescriptionClickEvent(new TickerCallback() {
             @Override
             public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
-                //
+                goToChargeBoWebview();
             }
 
             @Override
@@ -551,6 +553,14 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
                 //
             }
         });
+    }
+
+    /*Using tokopedia corner until url charge bo available*/
+    private void goToChargeBoWebview() {
+        if (getActivity() != null) {
+            Intent intent = RouteManager.getIntent(getActivity(), EditShippingConstant.INSTANCE.getAPPLINK_TOKOPEDIA_CORNER());
+            getActivity().startActivity(intent);
+        }
     }
 
 }
