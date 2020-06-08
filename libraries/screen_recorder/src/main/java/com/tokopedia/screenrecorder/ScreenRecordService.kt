@@ -1,5 +1,6 @@
 package com.tokopedia.screenrecorder
 
+import android.annotation.TargetApi
 import android.app.*
 import android.content.Context
 import android.content.Intent
@@ -20,8 +21,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
-
-public class ScreenRecordService : Service(), CoroutineScope {
+@TargetApi(21)
+class ScreenRecordService : Service(), CoroutineScope {
 
     companion object {
         const val ACTION_INIT = "ACTION_INIT"
@@ -139,19 +140,19 @@ public class ScreenRecordService : Service(), CoroutineScope {
         ongoingNotifBuilder = NotificationCompat.Builder(this, LOW_PRIO_CHANNEL_ID)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setContentTitle(getString(R.string.screen_record_notif_title_recording_screen))
-            .addAction(R.drawable.ic_stop_black_24dp,
-                getString(R.string.notif_stop), buildPendingIntent(ACTION_STOP_RECORD))
-            .setSmallIcon(R.drawable.ic_stat_notify_white)
+            .addAction(R.drawable.screen_recorder_ic_stop_black_24dp,
+                getString(R.string.screen_recorder_notif_stop), buildPendingIntent(ACTION_STOP_RECORD))
+            .setSmallIcon(R.drawable.screen_recorder_ic_notify_white)
 
         val startServiceNotif = NotificationCompat.Builder(this, HIGH_PRIO_CHANNEL_ID)
             .setContentTitle(getString(R.string.screen_record_notif_title_ready_to_record))
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setContentText(getString(R.string.screen_record_notif_text_ready_to_record))
-            .addAction(R.drawable.ic_videocam_black_24dp,
-                getString(R.string.notif_record), buildPendingIntent(ACTION_START_RECORD))
-            .addAction(R.drawable.ic_close_black_24dp,
-                getString(R.string.notif_finish), buildPendingIntent(ACTION_FINISH))
-            .setSmallIcon(R.drawable.ic_stat_notify_white).build()
+            .addAction(R.drawable.screen_recorder_ic_videocam_black_24dp,
+                getString(R.string.screen_recorder_notif_record), buildPendingIntent(ACTION_START_RECORD))
+            .addAction(R.drawable.screen_recorder_ic_close_black_24dp,
+                getString(R.string.screen_recorder_notif_finish), buildPendingIntent(ACTION_FINISH))
+            .setSmallIcon(R.drawable.screen_recorder_ic_notify_white).build()
 
         startForeground(NOTIF_ID, startServiceNotif)
     }
@@ -264,7 +265,7 @@ public class ScreenRecordService : Service(), CoroutineScope {
             .setContentText(getString(R.string.screen_record_notif_text_video_create_success))
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
-            .setSmallIcon(R.drawable.ic_stat_notify_white).build()
+            .setSmallIcon(R.drawable.screen_recorder_ic_notify_white).build()
     }
 
     private fun getOpenVideoResultPendingIntent(resultPath: String) : PendingIntent {

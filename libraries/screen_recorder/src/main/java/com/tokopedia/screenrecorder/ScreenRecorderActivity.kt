@@ -1,6 +1,7 @@
 package com.tokopedia.screenrecorder
 
 import android.Manifest
+import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -12,7 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.screen_record_activity_request_permission.*
+import kotlinx.android.synthetic.main.screen_recorder_activity_screen_record.*
 
 class ScreenRecorderActivity : AppCompatActivity() {
 
@@ -29,7 +30,7 @@ class ScreenRecorderActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_screen_record)
+        setContentView(R.layout.screen_recorder_activity_screen_record)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             showFeatureNotSupported()
             finish()
@@ -84,6 +85,7 @@ class ScreenRecorderActivity : AppCompatActivity() {
         }
     }
 
+    @TargetApi(21)
     private fun requestProjectScreen() {
         val projectionManager = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
         startActivityForResult(projectionManager.createScreenCaptureIntent(), REQUEST_MEDIA_PROJECTION)

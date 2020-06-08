@@ -14,6 +14,7 @@
         android:padding="@dimen/screen_recorder_default_padding"
         android:textSize="16sp"
         android:textAlignment="center"
+        android:gravity="center"
         android:text="@string/screen_record_info_requesting_permissions"/>
 
     <Button
