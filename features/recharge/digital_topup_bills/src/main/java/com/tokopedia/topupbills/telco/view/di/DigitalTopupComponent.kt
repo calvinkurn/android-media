@@ -1,9 +1,7 @@
 package com.tokopedia.topupbills.telco.view.di
 
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
-import com.tokopedia.topupbills.telco.view.fragment.DigitalBaseTelcoFragment
-import com.tokopedia.topupbills.telco.view.fragment.DigitalSearchNumberFragment
-import com.tokopedia.topupbills.telco.view.fragment.DigitalTelcoProductFragment
+import com.tokopedia.topupbills.telco.view.fragment.*
 import dagger.Component
 
 /**
@@ -18,5 +16,9 @@ interface DigitalTopupComponent {
     fun inject(digitalTelcoProductFragment: DigitalTelcoProductFragment)
 
     fun inject(digitalSearchNumberFragment: DigitalSearchNumberFragment)
+
+    fun inject(digitalTelcoPromoFragment: DigitalTelcoPromoFragment)
+
+    fun inject(digitalTelcoRecommendationFragment: DigitalTelcoRecommendationFragment)
 
 }

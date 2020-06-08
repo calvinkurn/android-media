@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <include layout="@layout/view_digital_empty_product_list" />
+    <include layout="@layout/view_telco_digital_empty_product_list" />
 
     <include layout="@layout/layout_shimmering_product_grid" />
 

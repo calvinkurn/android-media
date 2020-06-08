@@ -253,6 +253,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     }
 
+    override fun onLoadingMenuDetail(showLoading: Boolean) {
+        //do nothing
+    }
+
     override fun onCatalogPluginDataError(error: Throwable) {
 
     }

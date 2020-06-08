@@ -1,7 +1,6 @@
 package com.tokopedia.topupbills.telco.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -12,67 +11,68 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.Dispatchers
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.lang.reflect.Type
 
-class SharedProductTelcoViewModelTest {
+class SharedTelcoViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    lateinit var sharedProductTelcoViewModel: SharedProductTelcoViewModel
+    lateinit var telcoViewModel: SharedTelcoViewModel
 
     @MockK
     lateinit var graphqlRepository: GraphqlRepository
-    lateinit var gson: Gson
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        gson = Gson()
-        sharedProductTelcoViewModel = SharedProductTelcoViewModel(graphqlRepository, Dispatchers.Unconfined)
+        telcoViewModel = SharedTelcoViewModel(graphqlRepository, Dispatchers.Unconfined)
     }
 
     @Test
-    fun getCatalogProductList_DataValid_SuccessGetData() {
+    fun getPrefixOperator_DataValid_SuccessGetData() {
         //given
-        val multiTab = gson.fromJson(gson.JsonToString("multitab.json"), TelcoCatalogProductInputMultiTab::class.java)
+        val listPrefixes = mutableListOf<RechargePrefix>()
+        listPrefixes.add(RechargePrefix(operator = TelcoOperator(attributes = TelcoAttributesOperator(name = "simpati"))))
+        val catalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect(prefixes = listPrefixes))
 
         val result = HashMap<Type, Any>()
-        result[TelcoCatalogProductInputMultiTab::class.java] = multiTab
+        result[TelcoCatalogPrefixSelect::class.java] = catalogPrefixSelect
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        sharedProductTelcoViewModel.getCatalogProductList("", 2, "1")
+        telcoViewModel.getPrefixOperator("", 2)
 
         //then
-        val actualData = sharedProductTelcoViewModel.productList.value
+        val actualData = telcoViewModel.catalogPrefixSelect.value
         assertNotNull(actualData)
         assert(actualData is Success)
-        val labelPulsa = (actualData as Success).data[0].label
-        assertEquals(multiTab.rechargeCatalogProductDataData.productInputList[0].label, labelPulsa)
+        val prefixSelect = (actualData as Success).data.rechargeCatalogPrefixSelect.prefixes
+        assertEquals(listPrefixes, prefixSelect)
     }
 
     @Test
-    fun getCatalogProductList_DataValid_FailedGetData() {
+    fun getPrefixOperator_DataValid_FailedGetData() {
         //given
         val errorGql = GraphqlError()
         errorGql.message = "Error gql"
 
         val errors = HashMap<Type, List<GraphqlError>>()
-        errors[TelcoCatalogProductInputMultiTab::class.java] = listOf(errorGql)
+        errors[TelcoCatalogPrefixSelect::class.java] = listOf(errorGql)
         val gqlResponse = GraphqlResponse(HashMap<Type, Any>(), errors, false)
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        sharedProductTelcoViewModel.getCatalogProductList("", 2, "1")
+        telcoViewModel.getPrefixOperator("", 2)
 
         //then
-        val actualData = sharedProductTelcoViewModel.productList.value
+        val actualData = telcoViewModel.catalogPrefixSelect.value
         assertNotNull(actualData)
         assert(actualData is Fail)
         val error = (actualData as Fail).throwable

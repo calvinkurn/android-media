@@ -35,7 +35,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         imgOperator = view.findViewById(R.id.img_operator)
         btnClear = view.findViewById(R.id.btn_clear_input_number)
         autoCompleteInputNumber = view.findViewById(R.id.ac_input_number)
-        btnContactPicker = view.findViewById(R.id.btn_copy_promo)
+        btnContactPicker = view.findViewById(R.id.btn_contact_picker)
         errorInputNumber = view.findViewById(R.id.error_input_number)
 
         autoCompleteInputNumber.clearFocus()

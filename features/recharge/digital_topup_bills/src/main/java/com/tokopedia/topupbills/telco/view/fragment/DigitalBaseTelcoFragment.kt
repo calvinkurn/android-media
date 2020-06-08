@@ -1,7 +1,8 @@
 package com.tokopedia.topupbills.telco.view.fragment
 
 import android.app.Activity
-import android.content.*
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.provider.ContactsContract
@@ -12,19 +13,14 @@ import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.data.*
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
-import com.tokopedia.common.topupbills.view.model.TopupBillsTrackPromo
-import com.tokopedia.common.topupbills.view.model.TopupBillsTrackRecentTransaction
+import com.tokopedia.common.topupbills.view.model.TopupBillsTabItem
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
-import com.tokopedia.common.topupbills.widget.TopupBillsPromoListWidget
-import com.tokopedia.common.topupbills.widget.TopupBillsRecentTransactionWidget
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
@@ -34,8 +30,7 @@ import com.tokopedia.topupbills.covertContactUriToContactData
 import com.tokopedia.topupbills.telco.data.RechargeCatalogPrefixSelect
 import com.tokopedia.topupbills.telco.data.TelcoCatalogPrefixSelect
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
-import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoOperatorViewModel
-import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
+import com.tokopedia.topupbills.telco.view.viewmodel.SharedTelcoViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -51,10 +46,9 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     protected lateinit var mainContainer: NestedScrollView
     protected lateinit var tickerView: Ticker
-    protected lateinit var recentNumbersWidget: TopupBillsRecentTransactionWidget
-    protected lateinit var promoListWidget: TopupBillsPromoListWidget
-    private lateinit var operatorViewModel: DigitalTelcoOperatorViewModel
+    private lateinit var viewModel: SharedTelcoViewModel
 
+    protected val listMenu = mutableListOf<TopupBillsTabItem>()
     protected var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
     override var menuId = 0
 
@@ -69,11 +63,18 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         getComponent(DigitalTopupComponent::class.java).inject(this)
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel.selectedRecentNumber.observe(this, Observer {
+            onClickItemRecentNumber(it)
+        })
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.let {
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
-            operatorViewModel = viewModelProvider.get(DigitalTelcoOperatorViewModel::class.java)
+            viewModel = viewModelProvider.get(SharedTelcoViewModel::class.java)
         }
     }
 
@@ -107,7 +108,6 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
             context?.run {
                 tickerView.addPagerView(TickerPagerAdapter(this, messages), messages)
             }
-            //TODO
             tickerView.visibility = View.VISIBLE
         } else {
             tickerView.visibility = View.GONE
@@ -193,9 +193,9 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     fun getPrefixOperatorData() {
-        operatorViewModel.getPrefixOperator(GraphqlHelper.loadRawString(resources,
+        viewModel.getPrefixOperator(GraphqlHelper.loadRawString(resources,
                 R.raw.query_prefix_select_telco), menuId)
-        operatorViewModel.catalogPrefixSelect.observe(this, Observer {
+        viewModel.catalogPrefixSelect.observe(this, Observer {
             when (it) {
                 is Success -> onSuccessCustomData()
                 is Fail -> onErrorCustomData()
@@ -204,35 +204,14 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     private fun onSuccessCustomData() {
-        this.operatorData = (operatorViewModel.catalogPrefixSelect.value as Success).data
+        this.operatorData = (viewModel.catalogPrefixSelect.value as Success).data
         renderProductFromCustomData()
     }
 
     private fun onErrorCustomData() {
-        val errorData = (operatorViewModel.catalogPrefixSelect.value as Fail).throwable
+        val errorData = (viewModel.catalogPrefixSelect.value as Fail).throwable
         view?.run {
             Toaster.make(this, ErrorHandler.getErrorMessage(context, errorData), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
-        }
-    }
-
-    private fun renderRecentTransactions(recentNumbers: List<TopupBillsRecommendation>) {
-        if (recentNumbers.isNotEmpty()) {
-            recentNumbersWidget.setListener(object : TopupBillsRecentTransactionWidget.ActionListener {
-                override fun onClickRecentNumber(topupBillsRecommendation: TopupBillsRecommendation, categoryId: Int,
-                                                 position: Int) {
-                    topupBillsRecommendation.position = position
-                    onClickItemRecentNumber(topupBillsRecommendation)
-                }
-
-                override fun onTrackImpressionRecentList(topupBillsTrackRecentList: List<TopupBillsTrackRecentTransaction>) {
-                    topupAnalytics.impressionEnhanceCommerceRecentTransaction(topupBillsTrackRecentList)
-                }
-            })
-            recentNumbersWidget.setRecentNumbers(recentNumbers)
-            //TODO
-            recentNumbersWidget.visibility = View.VISIBLE
-        } else {
-            recentNumbersWidget.visibility = View.GONE
         }
     }
 
@@ -243,47 +222,6 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         }
     }
 
-    private fun renderPromoList(promos: List<TopupBillsPromo>) {
-        if (promos.isNotEmpty()) {
-            //TODO
-            promoListWidget.visibility = View.VISIBLE
-            promoListWidget.setListener(object : TopupBillsPromoListWidget.ActionListener {
-                override fun onCopiedPromoCode(promoId: Int, voucherCode: String) {
-                    clickCopyOnPromoCode(promoId)
-                    topupAnalytics.eventClickCopyPromoCode(voucherCode, promos.indexOfFirst { it.promoCode == voucherCode })
-
-                    activity?.let {
-                        val clipboard = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                        val clip = ClipData.newPlainText(
-                                CLIP_DATA_VOUCHER_CODE_DIGITAL, voucherCode
-                        )
-                        clipboard.primaryClip = clip
-
-                        view?.run {
-                            Toaster.make(this,
-                                    getString(com.tokopedia.common.topupbills.R.string.common_topup_voucher_code_already_copied), Snackbar.LENGTH_LONG)
-                        }
-                    }
-                }
-
-                override fun onTrackImpressionPromoList(topupBillsTrackPromoList: List<TopupBillsTrackPromo>) {
-                    topupAnalytics.impressionEnhanceCommercePromoList(topupBillsTrackPromoList)
-                }
-
-                override fun onClickItemPromo(topupBillsPromo: TopupBillsPromo, position: Int) {
-                    topupAnalytics.clickEnhanceCommercePromo(topupBillsPromo, position)
-                    if (!TextUtils.isEmpty(topupBillsPromo.urlBannerPromo)) {
-                        RouteManager.route(activity, topupBillsPromo.urlBannerPromo)
-                    }
-                }
-            })
-            promoListWidget.setPromoList(promos)
-        } else {
-            //TODO
-            promoListWidget.visibility = View.GONE
-        }
-    }
-
     override fun processEnquiry(data: TopupBillsEnquiryData) {
         // do nothing
     }
@@ -291,9 +229,29 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
         super.processMenuDetail(data)
 
-        renderPromoList(data.promos)
-        renderRecentTransactions(data.recommendations)
         renderTicker(data.tickers)
+        initiateMenuTelco(data.recommendations, data.promos)
+    }
+
+    private fun initiateMenuTelco(recom: List<TopupBillsRecommendation>, promo: List<TopupBillsPromo>) {
+        listMenu.clear()
+        if (promo.isNotEmpty()) {
+            viewModel.setPromoTelco(promo)
+            listMenu.add(TopupBillsTabItem(DigitalTelcoPromoFragment.newInstance(), "Promo"))
+        }
+        if (recom.isNotEmpty()) {
+            viewModel.setRecommendationTelco(recom)
+            listMenu.add(TopupBillsTabItem(DigitalTelcoRecommendationFragment.newInstance(), "Recents"))
+        }
+
+        renderPromoAndRecommendation()
+    }
+
+    override fun onMenuDetailError(error: Throwable) {
+        super.onMenuDetailError(error)
+        view?.run {
+            Toaster.make(this, ErrorHandler.getErrorMessage(context, error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
     }
 
     override fun processFavoriteNumbers(data: TopupBillsFavNumber) {
@@ -302,11 +260,6 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     override fun onEnquiryError(error: Throwable) {
         //do nothing
-    }
-
-    override fun onMenuDetailError(error: Throwable) {
-        super.onMenuDetailError(error)
-        Toast.makeText(activity, error.message, Toast.LENGTH_SHORT).show()
     }
 
     override fun onCatalogPluginDataError(error: Throwable) {
@@ -326,6 +279,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         NetworkErrorHelper.showRedSnackbar(activity, error.message)
     }
 
+    protected abstract fun renderPromoAndRecommendation()
+
     protected abstract fun renderProductFromCustomData()
 
     protected abstract fun setupCheckoutData()
@@ -342,14 +297,12 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     protected abstract fun onClickItemRecentNumber(topupBillsRecommendation: TopupBillsRecommendation)
 
-    protected abstract fun clickCopyOnPromoCode(promoId: Int)
-
     protected abstract fun setInputNumberFromContact(contactNumber: String)
 
     protected abstract fun onBackPressed()
 
     override fun onDestroy() {
-        operatorViewModel.flush()
+        viewModel.flush()
         super.onDestroy()
     }
 
@@ -358,6 +311,5 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         const val REQUEST_CODE_CONTACT_PICKER = 78
         const val REQUEST_CODE_LOGIN = 1010
         const val REQUEST_CODE_CART_DIGITAL = 1090
-        const val CLIP_DATA_VOUCHER_CODE_DIGITAL = "digital_telco_clip_data_promo"
     }
 }

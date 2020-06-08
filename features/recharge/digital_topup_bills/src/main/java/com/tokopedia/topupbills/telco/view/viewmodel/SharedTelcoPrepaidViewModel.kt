@@ -18,14 +18,13 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
  * Created by nabillasabbaha on 20/05/19.
  */
-class SharedProductTelcoViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
+class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                       private val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
