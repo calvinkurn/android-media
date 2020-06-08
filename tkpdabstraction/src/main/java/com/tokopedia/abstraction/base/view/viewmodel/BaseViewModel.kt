@@ -1,26 +1,21 @@
 package com.tokopedia.abstraction.base.view.viewmodel
 
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.isActive
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 abstract class BaseViewModel(private val baseDispatcher: CoroutineDispatcher): ViewModel(), CoroutineScope{
-    protected val masterJob = SupervisorJob()
 
     override val coroutineContext: CoroutineContext
-        get() = baseDispatcher + masterJob
+        get() = viewModelScope.coroutineContext + baseDispatcher
 
+    /**
+     * No need to call this on onDestroy activity/fragment
+     * The job is automatically cleared
+     */
+    @Deprecated("Ne need to call this when onDestroy Activity/Fragment")
     open fun flush(){
-        if (isActive && !masterJob.isCancelled){
-            masterJob.children.map { it.cancel() }
-        }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        flush()
+        viewModelScope.coroutineContext[Job]?.cancelChildren()
     }
 }

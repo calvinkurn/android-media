@@ -755,6 +755,11 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     @Override
+    public String getIrisSessionId() {
+        return iris.getSessionId();
+    }
+
+    @Override
     public void initialize() {
         super.initialize();
     }
