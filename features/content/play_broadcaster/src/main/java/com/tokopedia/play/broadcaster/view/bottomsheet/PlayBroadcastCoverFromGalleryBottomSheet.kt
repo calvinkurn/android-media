@@ -18,12 +18,11 @@ import com.tokopedia.imagepicker.picker.gallery.model.AlbumItem
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.gallery.widget.MediaGridInset
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.bottom_sheet_play_cover_from_gallery.*
+import kotlinx.android.synthetic.main.bottom_sheet_play_cover_from_gallery.view.*
 
 /**
  * @author by furqan on 08/06/2020
@@ -57,6 +56,21 @@ class PlayBroadcastCoverFromGalleryBottomSheet : BottomSheetUnify(),
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SAVED_ALBUM_TITLE, albumTitle)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
+        if (ActivityCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED) {
+            showLoading()
+            LoaderManager.getInstance(this).initLoader(ALBUM_LOADER_ID, null, this)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        LoaderManager.getInstance(this).destroyLoader(ALBUM_LOADER_ID)
+        LoaderManager.getInstance(this).destroyLoader(MEDIA_LOADER_ID)
     }
 
     override fun isMediaValid(item: MediaItem?): Boolean = true
@@ -127,11 +141,11 @@ class PlayBroadcastCoverFromGalleryBottomSheet : BottomSheetUnify(),
     }
 
     private fun showLoading() {
-        progressPlayGallery.show()
+        mChildView.progressPlayGallery?.visibility = View.VISIBLE
     }
 
     private fun hideLoading() {
-        progressPlayGallery.hide()
+        mChildView.progressPlayGallery?.visibility = View.GONE
     }
 
     private fun onAlbumLoadedCursor(cursor: Cursor?) {
@@ -169,7 +183,7 @@ class PlayBroadcastCoverFromGalleryBottomSheet : BottomSheetUnify(),
         hideLoading()
         selectedAlbumItem = albumItem
 
-        tvPlayGalleryAlbumLabel.text = if (albumItem.isAll) DEFAULT_ALBUM_TITLE else albumItem.displayName
+        tvPlayGalleryAlbumLabel?.text = if (albumItem.isAll) DEFAULT_ALBUM_TITLE else albumItem.displayName
         if (albumItem.isAll && albumItem.isEmpty) {
             Toaster.make(mChildView,
                     getString(com.tokopedia.imagepicker.R.string.error_no_media_storage),
