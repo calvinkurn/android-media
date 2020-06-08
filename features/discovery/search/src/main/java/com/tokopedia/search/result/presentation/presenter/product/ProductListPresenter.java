@@ -532,6 +532,7 @@ final class ProductListPresenter
                     item.setDiscountPercentage(topAds.getProduct().getCampaign().getDiscountPercentage());
                     item.setLabelGroupList(mapLabelGroupList(topAds.getProduct().getLabelGroupList()));
                     item.setFreeOngkirViewModel(mapFreeOngkir(topAds.getProduct().getFreeOngkir()));
+                    item.setPosition(j);
                     list.add(i, item);
                     j++;
                 }
@@ -1350,7 +1351,7 @@ final class ProductListPresenter
 
         if (item.isTopAds()) {
             getView().sendTopAdsTrackingUrl(item.getTopadsImpressionUrl());
-            getView().sendTopAdsGTMTrackingProductImpression(item, adapterPosition);
+            getView().sendTopAdsGTMTrackingProductImpression(item);
         } else if (enableTrackingViewPort) {
             getView().sendProductImpressionTrackingEvent(item);
         }
@@ -1367,7 +1368,7 @@ final class ProductListPresenter
 
         if (item.isTopAds()) {
             getView().sendTopAdsTrackingUrl(item.getTopadsClickUrl());
-            getView().sendTopAdsGTMTrackingProductClick(item, adapterPosition);
+            getView().sendTopAdsGTMTrackingProductClick(item);
         }
         else {
             getView().sendGTMTrackingProductClick(item, adapterPosition, getUserId());

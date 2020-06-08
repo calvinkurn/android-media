@@ -148,9 +148,9 @@ public interface ProductListSectionContract {
 
         void sendTopAdsTrackingUrl(String topAdsTrackingUrl);
 
-        void sendTopAdsGTMTrackingProductImpression(ProductItemViewModel item, int adapterPosition);
+        void sendTopAdsGTMTrackingProductImpression(ProductItemViewModel item);
 
-        void sendTopAdsGTMTrackingProductClick(ProductItemViewModel item, int adapterPosition);
+        void sendTopAdsGTMTrackingProductClick(ProductItemViewModel item);
 
         void sendGTMTrackingProductClick(ProductItemViewModel item, int adapterPosition, String userId);
 
