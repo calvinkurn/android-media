@@ -8,12 +8,15 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
@@ -22,22 +25,23 @@ import com.tokopedia.review.feature.inbox.pending.data.ReviewPendingViewState
 import com.tokopedia.review.feature.inbox.pending.data.mapper.ReviewPendingMapper
 import com.tokopedia.review.feature.inbox.pending.di.DaggerReviewPendingComponent
 import com.tokopedia.review.feature.inbox.pending.di.ReviewPendingComponent
+import com.tokopedia.review.feature.inbox.pending.presentation.adapter.ReviewPendingAdapter
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.ReviewPendingAdapterTypeFactory
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendingItemListener
 import com.tokopedia.review.feature.inbox.pending.presentation.viewmodel.ReviewPendingViewModel
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.Toaster.ctaText
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_review_pending.*
 import kotlinx.android.synthetic.main.partial_review_pending_connection_error.*
+import kotlinx.android.synthetic.main.partial_review_pending_empty.*
 import javax.inject.Inject
 
 class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendingAdapterTypeFactory>(),
         ReviewPendingItemListener, HasComponent<ReviewPendingComponent> {
 
     companion object {
+        const val REVIEW_PENDING_NO_PRODUCTS_BOUGHT_IMAGE = "https://ecs7.tokopedia.net/android/others/review_inbox_no_products.png"
         fun createNewInstance() : ReviewPendingFragment {
             return ReviewPendingFragment()
         }
@@ -99,8 +103,19 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         return reviewPendingSwipeRefresh
     }
 
+    override fun createAdapterInstance(): BaseListAdapter<ReviewPendingUiModel, ReviewPendingAdapterTypeFactory> {
+        return ReviewPendingAdapter(adapterTypeFactory)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        removeObservers(viewModel.reviewList)
+        removeObservers(viewModel.reviewViewState)
+    }
+
     private fun initView() {
         setupErrorPage()
+        setupEmptyState()
     }
 
     private fun setupErrorPage() {
@@ -110,6 +125,12 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         reviewPendingConnectionErrorGoToSettingsButton.setOnClickListener {
             goToSettings()
         }
+    }
+
+    private fun setupEmptyState() {
+        reviewPendingEmptyImage.loadImage(REVIEW_PENDING_NO_PRODUCTS_BOUGHT_IMAGE)
+        reviewPendingEmptyTitle.text = getString(R.string.review_pending_no_product_empty_title)
+        reviewPendingEmptySubtitle.text = getString(R.string.review_pending_no_product_empty_content)
     }
 
     private fun showError() {
@@ -126,6 +147,14 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     private fun hideList() {
         reviewPendingSwipeRefresh.hide()
+    }
+
+    private fun showEmptyState() {
+        reviewPendingEmpty.show()
+    }
+
+    private fun hideEmptyState() {
+        reviewPendingEmpty.hide()
     }
 
     private fun showErrorToaster(errorMessage: String, ctaText: String, action: () -> Unit) {
@@ -154,6 +183,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
                 is ReviewPendingViewState.ReviewPendingInitialLoadError -> {
                     showError()
                     hideList()
+                    hideEmptyState()
                 }
                 is ReviewPendingViewState.ReviewPendingLazyLoadError -> {
                     showErrorToaster(getString(R.string.review_pending_lazy_load_network_error_toaster), getString(R.string.review_pending_lazy_load_network_error_toaster_refresh)) { getPendingReviewData(currentPage) }
@@ -161,10 +191,15 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
                 is ReviewPendingViewState.ReviewPendingLoading -> {
                     showLoading()
                     hideError()
+                    hideEmptyState()
                 }
                 is ReviewPendingViewState.ReviewPendingSuccess -> {
+                    if(it.isEmpty && it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
+                        showEmptyState()
+                    } else {
+                        showList()
+                    }
                     hideError()
-                    showList()
                 }
             }
         })
