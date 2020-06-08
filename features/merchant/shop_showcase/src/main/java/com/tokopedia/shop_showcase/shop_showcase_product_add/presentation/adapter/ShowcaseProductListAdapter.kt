@@ -91,7 +91,7 @@ class ShowcaseProductListAdapter(
                 it.productId == item.productId
             }
             if(targetedProduct != null) {
-                deletedProduct.add(targetedProduct)
+//                deletedProduct.add(targetedProduct)
                 selectedProduct.remove(targetedProduct)
             }
         }

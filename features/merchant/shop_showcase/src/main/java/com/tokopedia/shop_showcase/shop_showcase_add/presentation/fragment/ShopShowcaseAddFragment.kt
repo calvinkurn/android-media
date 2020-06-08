@@ -212,13 +212,20 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         component?.inject(this)
     }
 
-    override fun showDeleteCounter(firstDeletedItem: ShowcaseProduct) {
+    override fun setupDeleteCounter(firstDeletedItem: ShowcaseProduct) {
         ImageHandler.LoadImage(productChoosenImage, firstDeletedItem.productImageUrl)
         productCounterText?.text = context?.getString(
                 R.string.deleted_product_counter_text,
                 showcaseAddAdapter?.getDeletedProductList()?.size.toString()
         )
-        productCounter?.visible()
+    }
+
+    override fun showDeleteCounter() {
+        showcaseAddAdapter?.getDeletedProductList()?.size?.let { deletedProductSize ->
+            if(deletedProductSize > 0) {
+                productCounter?.visible()
+            }
+        }
     }
 
     override fun hideDeleteCounter() {
@@ -433,6 +440,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         chooseProductText?.gone()
         selectedProductListRecyclerView?.gone()
         headerUnify?.actionTextView?.gone()
+        hideDeleteCounter()
     }
 
     private fun hideLoader() {
@@ -443,6 +451,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         selectedProductListRecyclerView?.visible()
         textFieldShowcaseName?.visible()
         headerUnify?.actionTextView?.visible()
+        showDeleteCounter()
     }
 
     private fun setCurrentlyShowcaseData(showcaseName: String?) {

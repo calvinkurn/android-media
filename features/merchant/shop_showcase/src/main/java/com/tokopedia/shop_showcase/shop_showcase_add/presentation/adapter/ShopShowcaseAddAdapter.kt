@@ -67,9 +67,8 @@ class ShopShowcaseAddAdapter(private val context: Context, private var listener:
         appendedProductList.remove(selectedProductList[position])
         selectedProductList.removeAt(position)
         notifyDataSetChanged()
-        if(deletedProductList.size > 0) {
-            listener.showDeleteCounter(deletedProductList[0] as ShowcaseProduct)
-        }
+        listener.setupDeleteCounter(deletedProductList[0] as ShowcaseProduct)
+        listener.showDeleteCounter()
     }
 
     fun undoDeleteSelectedProduct() {
