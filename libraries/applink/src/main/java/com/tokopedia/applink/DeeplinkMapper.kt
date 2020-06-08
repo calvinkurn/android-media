@@ -306,6 +306,8 @@ object DeeplinkMapper {
             ApplinkConst.FLIGHT -> ApplinkConstInternalTravel.DASHBOARD_FLIGHT
             ApplinkConst.SALDO -> ApplinkConstInternalGlobal.SALDO_DEPOSIT
             ApplinkConst.SALDO_INTRO -> ApplinkConstInternalGlobal.SALDO_INTRO
+            ApplinkConst.DigitalInstantDebit.INSTANT_DEBIT_BCA_APPLINK -> ApplinkConstInternalGlobal.INSTANT_DEBIT_BCA_ENTRY_PATTERN
+            ApplinkConst.DigitalInstantDebit.INSTANT_DEBIT_BCA_EDITLIMIT_APPLINK -> ApplinkConstInternalGlobal.EDIT_BCA_ONE_KLICK_ENTRY_PATTERN
             ApplinkConst.AFFILIATE_EDUCATION -> ApplinkConstInternalContent.AFFILIATE_EDUCATION
             ApplinkConst.AFFILIATE_DASHBOARD -> ApplinkConstInternalContent.AFFILIATE_DASHBOARD
             ApplinkConst.AFFILIATE_EXPLORE -> ApplinkConstInternalContent.AFFILIATE_EXPLORE
