@@ -125,6 +125,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var refreshHandler: RefreshHandler? = null
     private var tabActive = ""
     private var tabStatus = ""
+    private var filterStatusIdStr = ""
     private var filterStatusId = 0
     private var isFilterApplied = false
     private var defaultStartDate = ""
@@ -150,7 +151,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 arguments = Bundle().apply {
                     putString(TAB_ACTIVE, bundle.getString(TAB_ACTIVE))
                     putString(TAB_STATUS, bundle.getString(TAB_STATUS))
-                    putInt(FILTER_STATUS_ID, bundle.getInt(FILTER_STATUS_ID))
+                    putString(FILTER_STATUS_ID, bundle.getString(FILTER_STATUS_ID))
                     putBoolean(FROM_WIDGET_TAG, bundle.getBoolean(FROM_WIDGET_TAG))
                 }
             }
@@ -173,7 +174,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         if (arguments != null) {
             tabActive = arguments?.getString(TAB_ACTIVE).toString()
             tabStatus = arguments?.getString(TAB_STATUS).toString()
-            filterStatusId = arguments?.getString(FILTER_STATUS_ID)?.toIntOrNull() ?: 0
+            filterStatusIdStr = arguments?.getString(FILTER_STATUS_ID).toString()
             isFromWidget = arguments?.getBoolean(FROM_WIDGET_TAG)
         }
         loadTicker()
