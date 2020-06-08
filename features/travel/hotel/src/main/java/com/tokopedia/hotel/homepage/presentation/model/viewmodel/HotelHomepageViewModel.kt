@@ -14,6 +14,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelDeleteRecentSearchEntity
+import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPropertyDefaultHome
 import com.tokopedia.hotel.homepage.presentation.model.HotelRecentSearchModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
@@ -38,6 +39,10 @@ class HotelHomepageViewModel @Inject constructor(
     val recentSearch: LiveData<Result<HotelRecentSearchModel>>
         get() = mutableRecentSearch
 
+    private val mutableHomepageDefaultParam = MutableLiveData<HotelPropertyDefaultHome>()
+    val homepageDefaultParam: LiveData<HotelPropertyDefaultHome>
+        get() = mutableHomepageDefaultParam
+
     private val mutableDeleteRecentSearch = MutableLiveData<Result<Boolean>>()
     val deleteRecentSearch: LiveData<Result<Boolean>>
         get() = mutableDeleteRecentSearch
@@ -46,6 +51,18 @@ class HotelHomepageViewModel @Inject constructor(
         launch {
             promoData.postValue(bannerUseCase.execute(rawQuery, TravelType.HOTEL, true))
         }
+    }
+
+    fun getDefaultHomepageParameter(rawQuery: String) {
+        launchCatchError(block = {
+            val data = withContext(dispatcher.ui()) {
+                val graphqlRequest = GraphqlRequest(rawQuery, HotelPropertyDefaultHome.Response::class.java)
+                var graphQlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
+            }.getSuccessData<HotelPropertyDefaultHome.Response>().response.data
+
+            mutableHomepageDefaultParam.postValue(data)
+        }) { }
     }
 
     fun getRecentSearch(rawQuery: String) {

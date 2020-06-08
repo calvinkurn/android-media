@@ -2,14 +2,11 @@ package com.tokopedia.talk.feature.reply.presentation.adapter.viewholder
 
 import android.graphics.Color
 import android.text.Spannable
-import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -23,7 +20,6 @@ import com.tokopedia.talk.feature.reply.presentation.widget.listeners.ThreadList
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import kotlinx.android.synthetic.main.item_talk_reply.view.*
-import kotlinx.android.synthetic.main.item_talk_reply_header.view.*
 
 class TalkReplyViewHolder(view: View,
                           private val attachedProductCardListener: AttachedProductCardListener,

@@ -2,17 +2,17 @@ package com.tokopedia.payment.setting.detail.view.presenter
 
 import android.content.res.Resources
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.payment.setting.R
+import com.tokopedia.payment.setting.detail.domain.GQLDeleteCreditCardQueryUseCase
 import com.tokopedia.payment.setting.detail.model.DataResponseDeleteCC
-import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
-import java.util.*
+import javax.inject.Inject
 
-class DetailCreditCardPresenter : BaseDaggerPresenter<DetailCreditCardContract.View>(), DetailCreditCardContract.Presenter {
+class DetailCreditCardPresenter @Inject constructor(
+        val gqlDeleteCreditCardQuery: GQLDeleteCreditCardQueryUseCase
+) : BaseDaggerPresenter<DetailCreditCardContract.View>(),
+        DetailCreditCardContract.Presenter {
 
     private val getCCListUseCase = GraphqlUseCase()
 
@@ -21,35 +21,35 @@ class DetailCreditCardPresenter : BaseDaggerPresenter<DetailCreditCardContract.V
         super.detachView()
     }
 
-    override fun deleteCreditCard(tokenId: String?, resources : Resources?) {
+    override fun deleteCreditCard(tokenId: String, resources: Resources?) {
         view.showProgressDialog()
-        val variables = HashMap<String, Any?>()
-        variables.put(TOKEN_ID, tokenId)
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.delete_credit_card_query), DataResponseDeleteCC::class.java, variables, false)
-        getCCListUseCase.clearRequest()
-        getCCListUseCase.addRequest(graphqlRequest)
-        getCCListUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
-            override fun onCompleted() {
-
-            }
-
-            override fun onError(e: Throwable) {
-                if (isViewAttached) {
-                    view.hideProgressDialog()
-                    view.onErrorDeleteCC(e, tokenId)
+        gqlDeleteCreditCardQuery.execute(tokenId, object : Subscriber<GraphqlResponse>() {
+            override fun onNext(objects: GraphqlResponse?) {
+                objects?.let {
+                    if (isViewAttached) {
+                        view.hideProgressDialog()
+                        val deleteCC = objects
+                                .getData<DataResponseDeleteCC>(DataResponseDeleteCC::class.java)
+                        view.onDeleteCCResult(deleteCC?.removeCreditCard?.isSuccess,
+                                deleteCC?.removeCreditCard?.message, tokenId)
+                    }
                 }
             }
 
-            override fun onNext(objects: GraphqlResponse) {
-                view.hideProgressDialog()
-                val deleteCC = objects.getData<DataResponseDeleteCC>(DataResponseDeleteCC::class.java)
-                view.onDeleteCCResult(deleteCC.removeCreditCard?.isSuccess, deleteCC.removeCreditCard?.message, tokenId)
+            override fun onCompleted() {
             }
+
+            override fun onError(e: Throwable?) {
+                e?.let {
+                    if (isViewAttached) {
+                        view.hideProgressDialog()
+                        view.onErrorDeleteCC(e, tokenId)
+                    }
+                }
+            }
+
         })
     }
 
-    companion object {
-        val TOKEN_ID = "tokenId"
-    }
+
 }
