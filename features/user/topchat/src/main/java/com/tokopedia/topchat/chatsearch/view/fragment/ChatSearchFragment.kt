@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatsearch.view.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
@@ -16,6 +17,7 @@ import com.tokopedia.topchat.chatsearch.di.ChatSearchComponent
 import com.tokopedia.topchat.chatsearch.view.activity.ChatSearchActivity
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactory
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactoryImpl
+import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.EmptySearchChatViewHolder
 import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.ItemSearchChatViewHolder
 import com.tokopedia.topchat.chatsearch.viewmodel.ChatSearchViewModel
 import com.tokopedia.unifycomponents.toPx
@@ -25,7 +27,8 @@ import javax.inject.Inject
  * @author : Steven 2019-08-06
  */
 class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>(),
-        ChatSearchActivity.Listener, LifecycleOwner, ItemSearchChatViewHolder.Listener {
+        ChatSearchActivity.Listener, LifecycleOwner, ItemSearchChatViewHolder.Listener,
+        EmptySearchChatViewHolder.Listener {
 
     @Inject
     lateinit var analytic: ChatSearchAnalytic
@@ -34,12 +37,23 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(ChatSearchViewModel::class.java) }
+    private var listener: ChatSearchFragmentListener? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         showRecentSearch()
         setupRecyclerView()
         setupObserver()
+    }
+
+    override fun onAttachActivity(context: Context?) {
+        if (context is ChatSearchFragmentListener) {
+            listener = context
+        }
+    }
+
+    override fun onClickChangeKeyword() {
+        listener?.onClickChangeKeyword()
     }
 
     private fun showRecentSearch() {
@@ -110,7 +124,7 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
     }
 
     override fun getAdapterTypeFactory(): ChatSearchTypeFactory {
-        return ChatSearchTypeFactoryImpl(this)
+        return ChatSearchTypeFactoryImpl(this, this)
     }
 
     override fun onItemClicked(t: Visitable<*>) {}

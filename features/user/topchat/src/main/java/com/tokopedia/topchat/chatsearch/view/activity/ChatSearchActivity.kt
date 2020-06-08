@@ -7,15 +7,16 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatsearch.di.ChatSearchComponent
 import com.tokopedia.topchat.chatsearch.di.DaggerChatSearchComponent
 import com.tokopedia.topchat.chatsearch.view.fragment.ChatSearchFragment
+import com.tokopedia.topchat.chatsearch.view.fragment.ChatSearchFragmentListener
 import kotlinx.android.synthetic.main.activity_chat_search.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,8 +28,8 @@ import kotlin.coroutines.CoroutineContext
  * @author by steven on 14/08/19.
  * For navigate: use {@link ApplinkConstInternalMarketplace.CHAT_SEARCH}
  */
-class ChatSearchActivity : BaseSimpleActivity(),
-        HasComponent<ChatSearchComponent>, CoroutineScope {
+class ChatSearchActivity : BaseSimpleActivity(), HasComponent<ChatSearchComponent>,
+        CoroutineScope, ChatSearchFragmentListener {
 
     private val textDebounce = 200L
     override val coroutineContext: CoroutineContext = Dispatchers.Main
@@ -124,5 +125,11 @@ class ChatSearchActivity : BaseSimpleActivity(),
     override fun onDestroy() {
         searchTextView?.removeTextChangedListener(textWatcher)
         super.onDestroy()
+    }
+
+    override fun onClickChangeKeyword() {
+        searchTextView?.requestFocus()
+        searchTextView?.performClick()
+        KeyboardHandler.showSoftKeyboard(this)
     }
 }

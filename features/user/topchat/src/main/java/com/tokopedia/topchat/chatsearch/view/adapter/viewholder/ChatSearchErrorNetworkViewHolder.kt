@@ -24,7 +24,7 @@ class ChatSearchErrorNetworkViewHolder(itemView: View?) : AbstractViewHolder<Err
 
     private fun bindIcon(errorNetworkModel: ErrorNetworkModel) {
         if (errorNetworkModel.iconDrawableRes != 0) {
-            ivIcon?.setImageDrawable(MethodChecker.getDrawable(itemView.context, errorNetworkModel.getIconDrawableRes()))
+            ivIcon?.setImageDrawable(MethodChecker.getDrawable(itemView.context, errorNetworkModel.iconDrawableRes))
         }
     }
 

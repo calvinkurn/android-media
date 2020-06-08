@@ -13,7 +13,8 @@ import com.tokopedia.topchat.chatsearch.data.SearchResult
 import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.*
 
 class ChatSearchTypeFactoryImpl(
-        private val listener: ItemSearchChatViewHolder.Listener
+        private val searchListener: ItemSearchChatViewHolder.Listener,
+        private val emptySearchListener: EmptySearchChatViewHolder.Listener
 ) : BaseAdapterTypeFactory(), ChatSearchTypeFactory {
 
     override fun type(searchResult: SearchResult): Int {
@@ -28,7 +29,7 @@ class ChatSearchTypeFactoryImpl(
         return ChatSearchErrorNetworkViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: EmptyModel?): Int {
+    override fun type(viewModel: EmptyModel): Int {
         return EmptySearchChatViewHolder.LAYOUT
     }
 
@@ -39,9 +40,9 @@ class ChatSearchTypeFactoryImpl(
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             ChatSearchErrorNetworkViewHolder.LAYOUT -> ChatSearchErrorNetworkViewHolder(parent)
-            ChatItemListViewHolder.LAYOUT -> ItemSearchChatViewHolder(parent, listener)
+            ChatItemListViewHolder.LAYOUT -> ItemSearchChatViewHolder(parent, searchListener)
             LoadingSearchChatViewHolder.LAYOUT -> LoadingSearchChatViewHolder(parent)
-            EmptySearchChatViewHolder.LAYOUT -> EmptySearchChatViewHolder(parent)
+            EmptySearchChatViewHolder.LAYOUT -> EmptySearchChatViewHolder(parent, emptySearchListener)
             RecentSearchChatViewHolder.LAYOUT -> RecentSearchChatViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
