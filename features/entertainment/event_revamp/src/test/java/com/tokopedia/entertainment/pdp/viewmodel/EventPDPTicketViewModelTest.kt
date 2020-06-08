@@ -92,11 +92,12 @@ class EventPDPTicketViewModelTest {
     @Test
     fun `ProductdetailTicketData_FailShowProductSuccessShowHoliday_ShowActualResult`(){
         //given
+        val error = Throwable("Error Ticket Data")
         val travelHoliday = TravelCalendarHoliday(id = "123123", attribute = TravelCalendarHoliday.HolidayAttribute("2020-01-01", label = "LabelTest"))
         val travelHolidayData = TravelCalendarHoliday.HolidayData(listOf(travelHoliday))
 
         coEvery { eventProductDetailUseCase.executeUseCase("", "", false, "") } returns
-                Fail(Throwable("Error Ticket Data"))
+                Fail(error)
         coEvery {
             usecaseHoliday.execute()
         } returns Success(travelHolidayData)
@@ -107,15 +108,16 @@ class EventPDPTicketViewModelTest {
 
         //then
         assertNull(eventPDPTicketViewModel.ticketModel.value)
-        assertEquals(eventPDPTicketViewModel.error.value,"java.lang.Throwable: Error Ticket Data")
+        assertEquals(eventPDPTicketViewModel.error.value,error.message)
         assertNotNull(eventPDPTicketViewModel.eventHoliday.value)
     }
 
     @Test
     fun `ProductdetailTicketData_FailShowProductFailShowHoliday_FailActualResult`(){
         //given
+        val error = Throwable("Error Ticket Data")
         coEvery { eventProductDetailUseCase.executeUseCase("",
-                "", false, "") } returns Fail(Throwable("Error Ticket Data"))
+                "", false, "") } returns Fail(error)
         coEvery {
             usecaseHoliday.execute()
         } returns Fail(Throwable())
@@ -126,7 +128,7 @@ class EventPDPTicketViewModelTest {
         //then
         assertNull(eventPDPTicketViewModel.ticketModel.value)
         assertNotNull(eventPDPTicketViewModel.error.value)
-        assertEquals(eventPDPTicketViewModel.error.value,"java.lang.Throwable: Error Ticket Data")
+        assertEquals(eventPDPTicketViewModel.error.value,error.message)
         assert(eventPDPTicketViewModel.eventHoliday.value == arrayListOf<Legend>())
     }
 
@@ -151,14 +153,14 @@ class EventPDPTicketViewModelTest {
     @Test
     fun `VerifyData_FailVerify_ShouldFailVerify`(){
         //given
-        coEvery { graphqlRepository.getReseponse(any(),any()) } coAnswers {throw Throwable("Error Verify") }
+        val error = Throwable("Error Verify")
+        coEvery { graphqlRepository.getReseponse(any(),any()) } coAnswers {throw error}
 
         //when
         eventPDPTicketViewModel.verify("",VerifyRequest())
 
         //then
-        val actual = eventPDPTicketViewModel.error.value
-        assert(actual.equals("Error Verify"))
+        assertEquals(eventPDPTicketViewModel.error.value,error.message)
 
     }
 }

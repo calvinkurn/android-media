@@ -86,9 +86,10 @@ class EventPDPCheckoutViewModelTest {
     @Test
     fun `Productdetaildata_FailShowProduct_FailActualResult`(){
         //given
+        val error = Throwable("Error Fail Get PDP Data")
         coEvery {
             eventProductDetailUseCase.executeUseCase("", "", true, "")
-        } returns Fail(Throwable("Error Fail Get PDP Data"))
+        } returns Fail(error)
 
         //when
         eventCheckoutViewModel.getDataProductDetail("", "", "")
@@ -96,7 +97,7 @@ class EventPDPCheckoutViewModelTest {
         //then
         Assert.assertNotNull(eventCheckoutViewModel.isError.value)
         Assert.assertNull(eventCheckoutViewModel.eventProductDetail.value)
-        Assert.assertEquals(eventCheckoutViewModel.isError.value?.message, "Error Fail Get PDP Data")
+        Assert.assertEquals(eventCheckoutViewModel.isError.value?.message, error.message)
     }
 
     @Test
@@ -120,14 +121,15 @@ class EventPDPCheckoutViewModelTest {
     @Test
     fun `CheckoutEvent_FailCheckout_ShouldFailCheckout`(){
         //given
-        coEvery { graphqlRepository.getReseponse(any(),any()) } coAnswers {throw Throwable("Error Checkout") }
+        val error = Throwable("Error Checkout")
+        coEvery { graphqlRepository.getReseponse(any(),any()) } coAnswers {throw error}
 
         //when
         eventCheckoutViewModel.checkoutEvent("",CheckoutGeneralV2Params())
 
         //then
         val actual = eventCheckoutViewModel.errorGeneralValue.value
-        assert(actual?.message.equals("Error Checkout"))
+        assert(actual?.message.equals(error.message))
 
     }
 

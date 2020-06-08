@@ -70,7 +70,8 @@ class EventPDPFormViewModelTest {
     @Test
     fun `ProductdetailFormData_FailShowProduct_FailActualResult`(){
         //given
-        coEvery { eventProductDetailUseCase.executeUseCase("", "", false, "") } returns Fail(Throwable("Error Form Data"))
+        val error = Throwable("Error Form Data")
+        coEvery { eventProductDetailUseCase.executeUseCase("", "", false, "") } returns Fail(error)
 
         //when
         eventPDPFormViewModel.getData("","","")
@@ -79,7 +80,7 @@ class EventPDPFormViewModelTest {
         assertNull(eventPDPFormViewModel.mFormData.value)
         assertNotNull(eventPDPFormViewModel.error)
 
-        assert(eventPDPFormViewModel.error.value.equals("java.lang.Throwable: Error Form Data"))
+        assert(eventPDPFormViewModel.error.value.equals(error.message))
     }
 
 }

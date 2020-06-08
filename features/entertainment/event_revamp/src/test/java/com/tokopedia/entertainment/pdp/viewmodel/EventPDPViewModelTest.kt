@@ -92,9 +92,11 @@ class EventPDPViewModelTest {
         val travelHoliday = TravelCalendarHoliday(id = "123123", attribute = TravelCalendarHoliday.HolidayAttribute("2020-01-01", label = "LabelTest"))
         val travelHolidayData = TravelCalendarHoliday.HolidayData(listOf(travelHoliday))
 
+        val error = Throwable("Error PDP")
+
         coEvery {
             eventProductDetailUseCase.executeUseCase("", "", true, "")
-        } returns Fail(Throwable("Error PDP"))
+        } returns Fail(error)
 
         coEvery {
             usecaseHoliday.execute()
@@ -108,7 +110,7 @@ class EventPDPViewModelTest {
         assertNotNull(eventPDPViewModel.isError.value)
 
         assertNotNull(eventPDPViewModel.eventHoliday.value)
-        assertEquals(eventPDPViewModel.isError.value?.message, "Error PDP")
+        assertEquals(eventPDPViewModel.isError.value?.message, error.message)
     }
 
     @Test
@@ -140,9 +142,11 @@ class EventPDPViewModelTest {
     @Test
     fun `PDPandHolidayData_ShouldFailPDPandFailHoliday_FailActualResult`(){
         //given
+        val error = Throwable("Error PDP")
         coEvery {
             eventProductDetailUseCase.executeUseCase("", "", true, "")
-        } returns Fail(Throwable("Error PDP"))
+        } returns Fail(error)
+
 
         coEvery {
             usecaseHoliday.execute()
@@ -155,7 +159,7 @@ class EventPDPViewModelTest {
         assertNull(eventPDPViewModel.eventProductDetail.value)
         assertNotNull(eventPDPViewModel.isError.value)
         assert(eventPDPViewModel.eventHoliday.value == arrayListOf<Legend>())
-        assertEquals(eventPDPViewModel.isError.value?.message, "Error PDP")
+        assertEquals(eventPDPViewModel.isError.value?.message, error.message)
     }
 
 
