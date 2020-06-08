@@ -313,6 +313,7 @@ dependencies {
     implementation project(rootProject.ext.features.purchase_platform_common)
     implementation project(rootProject.ext.features.cart)
     implementation project(rootProject.ext.features.checkout)
+    implementation project(rootProject.ext.features.promo_checkout_marketplace)
     implementation project(rootProject.ext.features.logisticcart)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.logisticaddaddress)
