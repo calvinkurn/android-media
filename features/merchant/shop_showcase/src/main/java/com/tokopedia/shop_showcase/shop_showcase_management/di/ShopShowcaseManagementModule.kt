@@ -30,13 +30,6 @@ class ShopShowcaseManagementModule {
 
     @ShopShowcaseManagementScope
     @Provides
-    @Named(GQLQueryConstant.QUERY_REORDER_SHOP_SHOWCASE)
-    fun provideQueryReorderShopShowcase(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.reorder_shop_showcase)
-    }
-
-    @ShopShowcaseManagementScope
-    @Provides
     @Named(GQLQueryConstant.QUERY_SHOP_SHOWCASE_LIST_AS_BUYER)
     fun provideQueryShopShowcaseListAsBuyer(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.get_shop_showcase_list_as_buyer)

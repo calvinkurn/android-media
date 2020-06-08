@@ -10,15 +10,20 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 import javax.inject.Named
 
-class ReorderShopShowcaseListUseCase @Inject constructor(
-        private val graphqlUseCase: MultiRequestGraphqlUseCase,
-        @Named(GQLQueryConstant.QUERY_REORDER_SHOP_SHOWCASE) val queryReorderShopShowcase: String
-): UseCase<ReorderShopShowcaseResponse>() {
+class ReorderShopShowcaseListUseCase @Inject constructor(private val graphqlUseCase: MultiRequestGraphqlUseCase): UseCase<ReorderShopShowcaseResponse>() {
 
     var params: RequestParams = RequestParams.EMPTY
 
     companion object {
         private const val IDS = "ids"
+        private const val MUTATION = "mutation reorderShopShowcase(\$ids: [String!]!) {\n" +
+                "    reorderShopShowcase(input: {\n" +
+                "        ids: \$ids\n" +
+                "    }) {\n" +
+                "        success\n" +
+                "        message\n" +
+                "    }\n" +
+                "}"
 
         fun createRequestParam(ids: List<String>): RequestParams = RequestParams.create().apply {
             putObject(IDS, ids)
@@ -26,7 +31,7 @@ class ReorderShopShowcaseListUseCase @Inject constructor(
     }
 
     override suspend fun executeOnBackground(): ReorderShopShowcaseResponse {
-        val reorderShowcase = GraphqlRequest(queryReorderShopShowcase, ReorderShopShowcaseResponse::class.java, params.parameters)
+        val reorderShowcase = GraphqlRequest(MUTATION, ReorderShopShowcaseResponse::class.java, params.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(reorderShowcase)
         val gqlResponse = graphqlUseCase.executeOnBackground()
