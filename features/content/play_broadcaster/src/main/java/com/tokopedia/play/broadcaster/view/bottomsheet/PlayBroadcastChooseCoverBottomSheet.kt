@@ -45,14 +45,6 @@ class PlayBroadcastChooseCoverBottomSheet : BottomSheetUnify() {
         initView()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (requestCode == PERMISSION_CODE) {
-            if (grantResults.isNotEmpty() && isAllPermissionGranted()) {
-                takeCoverFromCamera()
-            }
-        } else super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -100,6 +92,16 @@ class PlayBroadcastChooseCoverBottomSheet : BottomSheetUnify() {
             }
         }
 
+        containerPlayChooseFromGallery.setOnClickListener {
+            if (isAllPermissionGranted()) {
+                chooseCoverFromGallery()
+            } else {
+                requestPermissions(arrayOf(Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE))
+            }
+        }
+
         rvPlayCoverProduct.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
         rvPlayCoverProduct.setHasFixedSize(true)
         rvPlayCoverProduct.adapter = PlayCoverProductAdapter(imageUrlList, object : PlayCoverProductViewHolder.Listener {
@@ -140,6 +142,9 @@ class PlayBroadcastChooseCoverBottomSheet : BottomSheetUnify() {
         startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE)
     }
 
+    private fun chooseCoverFromGallery() {
+        listener?.onChooseFromGalleryClicked()
+    }
 
     private fun getImageUriFromBitmap(bitmap: Bitmap): Uri {
         val bytes = ByteArrayOutputStream()
@@ -152,6 +157,7 @@ class PlayBroadcastChooseCoverBottomSheet : BottomSheetUnify() {
     interface Listener {
         fun onGetCoverFromCamera(imageUri: Uri?)
         fun onGetCoverFromProduct(imageUri: Uri?)
+        fun onChooseFromGalleryClicked()
     }
 
     companion object {

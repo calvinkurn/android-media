@@ -18,6 +18,7 @@ import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.CoverSourceEnum
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastChooseCoverBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastCoverFromGalleryBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.widget.PlayCropImageView
 import com.yalantis.ucrop.callback.BitmapCropCallback
@@ -96,6 +97,13 @@ class PlayCoverTitleSetupFragment @Inject constructor()
             showCoverCropLayout()
             renderCoverCropLayout(it)
         }
+    }
+
+    override fun onChooseFromGalleryClicked() {
+        val coverFromGalleryBottomSheet = PlayBroadcastCoverFromGalleryBottomSheet()
+//        coverFromGalleryBottomSheet.listener = this
+        coverFromGalleryBottomSheet.setShowListener { coverFromGalleryBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
+        coverFromGalleryBottomSheet.show(requireFragmentManager(), PlayBroadcastChooseCoverBottomSheet.TAG_CHOOSE_COVER)
     }
 
     private fun initView() {
