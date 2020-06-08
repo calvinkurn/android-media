@@ -47,6 +47,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.design.bottomsheet.BottomSheetView
 import com.tokopedia.design.bottomsheet.BottomSheetView.BottomSheetField.BottomSheetFieldBuilder
@@ -178,6 +179,7 @@ open class HomeFragment : BaseDaggerFragment(),
         private const val REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220
         private const val DEFAULT_WALLET_APPLINK_REQUEST_CODE = 111
         private const val REQUEST_CODE_REVIEW = 999
+        private const val REQUEST_CODE_LOGIN_TOKOPOINTS = 120
         private const val VISITABLE_SIZE_WITH_DEFAULT_BANNER = 1
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
         private const val REVIEW_CLICK_AT = "rating"
@@ -1059,6 +1061,13 @@ open class HomeFragment : BaseDaggerFragment(),
                     viewModel.get().onRemoveSuggestedReview()
                 }
             }
+            REQUEST_CODE_LOGIN_TOKOPOINTS -> {
+                activity?.let {
+                    if (resultCode == Activity.RESULT_OK) {
+                        RouteManager.route(activity, ApplinkConstInternalPromo.TOKOPOINTS_HOME)
+                    }
+                }
+            }
             REQUEST_CODE_PLAY_ROOM -> if (data != null && data.hasExtra(EXTRA_TOTAL_VIEW)) viewModel.get().updateBannerTotalView(data.getStringExtra(EXTRA_TOTAL_VIEW))
         }
     }
@@ -1779,8 +1788,14 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onTokopointCheckNowClicked(applink: String) {
-        if (!TextUtils.isEmpty(applink)) {
-            RouteManager.route(context, applink)
+        activity?.let {
+            if (::userSession.isInitialized && !userSession.isLoggedIn) {
+                startActivityForResult(RouteManager.getIntent(activity, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN_TOKOPOINTS)
+                return
+            }
+            if (!TextUtils.isEmpty(applink)) {
+                RouteManager.route(activity, applink)
+            }
         }
     }
 
