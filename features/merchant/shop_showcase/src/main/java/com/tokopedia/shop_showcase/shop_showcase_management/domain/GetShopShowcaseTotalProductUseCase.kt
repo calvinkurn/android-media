@@ -13,16 +13,20 @@ import javax.inject.Inject
 import javax.inject.Named
 
 
-class GetShopShowcaseTotalProductUseCase @Inject constructor(
-        private val graphqlUseCase: MultiRequestGraphqlUseCase,
-        @Named(GQLQueryConstant.QUERY_SHOP_SHOWCASE_GET_TOTAL_PRODUCTS) val queryGetTotalProducts: String
-): UseCase<GetShopProductsResponse>() {
+class GetShopShowcaseTotalProductUseCase @Inject constructor(private val graphqlUseCase: MultiRequestGraphqlUseCase): UseCase<GetShopProductsResponse>() {
 
     var params: RequestParams = RequestParams.EMPTY
 
     companion object{
         private const val PARAM_SHOP_ID = "shopId"
         private const val PARAM_FILTER = "filter"
+        private const val MUTATION = "query getShopProduct(\$shopId: String!, \$filter: ProductListFilter!){\n" +
+                "    GetShopProduct(shopID: \$shopId, filter: \$filter){\n" +
+                "        status\n" +
+                "        errors\n" +
+                "        totalData\n" +
+                "    }\n" +
+                "}"
 
         fun createRequestParam(shopId: String, filter: Map<String, Any>): RequestParams = RequestParams.create().apply {
             putString(PARAM_SHOP_ID, shopId)
@@ -31,7 +35,7 @@ class GetShopShowcaseTotalProductUseCase @Inject constructor(
     }
 
     override suspend fun executeOnBackground(): GetShopProductsResponse {
-        val shopProductQuery = GraphqlRequest(queryGetTotalProducts, GetShopProductsResponse::class.java, params.parameters)
+        val shopProductQuery = GraphqlRequest(MUTATION, GetShopProductsResponse::class.java, params.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(shopProductQuery)
         val gqlShopProductResponse = graphqlUseCase.executeOnBackground()

@@ -12,7 +12,6 @@ object AppScreen {
 object GQLQueryConstant {
     const val QUERY_SHOP_SHOWCASE_LIST = "get_shop_showcase_list"
     const val QUERY_SHOP_SHOWCASE_LIST_AS_BUYER = "get_shop_showcase_list_as_buyer"
-    const val QUERY_SHOP_SHOWCASE_LIST_AS_SELLER = "get_shop_showcase_list_as_seller"
     const val QUERY_SHOP_SHOWCASE_GET_TOTAL_PRODUCTS = "get_shop_showcase_product"
 }
 

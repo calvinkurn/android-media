@@ -10,13 +10,32 @@ import javax.inject.Inject
 import javax.inject.Named
 
 
-class GetShopShowcaseListSellerUseCase @Inject constructor(
-        private val graphqlUseCase: MultiRequestGraphqlUseCase,
-        @Named(GQLQueryConstant.QUERY_SHOP_SHOWCASE_LIST_AS_SELLER) val queryGetShowcaseList: String
-): UseCase<ShopShowcaseListSellerResponse>() {
+class GetShopShowcaseListSellerUseCase @Inject constructor(private val graphqlUseCase: MultiRequestGraphqlUseCase): UseCase<ShopShowcaseListSellerResponse>() {
+
+    companion object {
+        private const val QUERY = "query shopShowcases {\n" +
+                "  shopShowcases(withDefault: true) {\n" +
+                "    result {\n" +
+                "      id\n" +
+                "      name\n" +
+                "      count\n" +
+                "      type\n" +
+                "      highlighted\n" +
+                "      alias\n" +
+                "      uri\n" +
+                "      useAce\n" +
+                "      badge\n" +
+                "      aceDefaultSort\n" +
+                "    }\n" +
+                "    error {\n" +
+                "      message\n" +
+                "    }\n" +
+                "  }\n" +
+                "}"
+    }
 
     override suspend fun executeOnBackground(): ShopShowcaseListSellerResponse {
-        val listShowcase = GraphqlRequest(queryGetShowcaseList, ShopShowcaseListSellerResponse::class.java)
+        val listShowcase = GraphqlRequest(QUERY, ShopShowcaseListSellerResponse::class.java)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(listShowcase)
         val gqlResponse = graphqlUseCase.executeOnBackground()
