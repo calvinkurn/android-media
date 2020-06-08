@@ -49,6 +49,7 @@ class PromoInputViewHolder(private val view: View,
             textFieldInputPromo.setFirstIcon(R.color.white)
         }
 
+        textFieldInputPromo.textFieldInput.setOnClickListener { listener.onClickPromoManualInputTextField() }
         textFieldInputPromo.textFieldInput.imeOptions = EditorInfo.IME_ACTION_DONE
         textFieldInputPromo.textFieldInput.setText(element.uiData.promoCode)
         textFieldInputPromo.textFieldInput.addTextChangedListener(object : TextWatcher {
@@ -59,7 +60,7 @@ class PromoInputViewHolder(private val view: View,
             }
 
             override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                element.uiData.promoCode = text.toString()
+                element.uiData.promoCode = text?.toString() ?: ""
                 if (text?.isNotEmpty() == true) {
                     element.uiState.isButtonSelectEnabled = true
                     buttonApplyPromo.isEnabled = true
@@ -69,6 +70,7 @@ class PromoInputViewHolder(private val view: View,
                     buttonApplyPromo.isEnabled = false
                     textFieldInputPromo.setFirstIcon(R.color.white)
                 }
+                listener.onTypePromoManualInput(text?.toString() ?: "")
             }
         })
 

@@ -56,11 +56,13 @@ import com.tokopedia.promocheckoutmarketplace.presentation.adapter.PromoCheckout
 import com.tokopedia.promocheckoutmarketplace.presentation.adapter.PromoCheckoutAdapterTypeFactory
 import com.tokopedia.promocheckoutmarketplace.presentation.compoundview.ToolbarPromoCheckout
 import com.tokopedia.promocheckoutmarketplace.presentation.compoundview.ToolbarPromoCheckoutListener
+import com.tokopedia.promocheckoutmarketplace.presentation.lastseen.presentation.PromoCheckoutLastSeenBottomsheet
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.*
 import com.tokopedia.promocheckoutmarketplace.presentation.viewmodel.*
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.coroutines.*
 import java.net.UnknownHostException
 import javax.inject.Inject
 
@@ -71,6 +73,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
     lateinit var itemDecorator: PromoCheckoutDecoration
+
+    lateinit var promoCheckoutLastSeenBottomsheet: PromoCheckoutLastSeenBottomsheet
+    private var showBottomsheetJob: Job? = null
 
     private val viewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[PromoCheckoutViewModel::class.java]
@@ -210,6 +215,11 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         observeGetCouponRecommendationResult()
         observeApplyPromoResult()
         observeClearPromoResult()
+    }
+
+    override fun onDestroy() {
+        showBottomsheetJob?.cancel()
+        super.onDestroy()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -639,6 +649,25 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     override fun onClickApplyRecommendedPromo() {
         viewModel.applyRecommendedPromo()
+    }
+
+    override fun onClickPromoManualInputTextField() {
+        view?.let {
+            if (!::promoCheckoutLastSeenBottomsheet.isInitialized) {
+                promoCheckoutLastSeenBottomsheet = PromoCheckoutLastSeenBottomsheet()
+            }
+
+            // Todo : check is show
+            showBottomsheetJob?.cancel()
+            showBottomsheetJob = GlobalScope.launch(Dispatchers.Main) {
+                delay(500L)
+                promoCheckoutLastSeenBottomsheet.show(it)
+            }
+        }
+    }
+
+    override fun onTypePromoManualInput(promoCode: String) {
+
     }
 
     override fun onClickApplyManualInputPromo(promoCode: String) {

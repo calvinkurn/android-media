@@ -6,6 +6,10 @@ interface PromoCheckoutActionListener {
 
     fun onClickApplyRecommendedPromo()
 
+    fun onClickPromoManualInputTextField()
+
+    fun onTypePromoManualInput(promoCode: String)
+
     fun onClickApplyManualInputPromo(promoCode: String)
 
     fun onCLickClearManualInputPromo()

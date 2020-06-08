@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottom_sheet_wrapper"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bottomsheet_background"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/layout_lvl2"
+    android:paddingTop="@dimen/layout_lvl2"
+    android:paddingRight="@dimen/layout_lvl2"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="@dimen/bottom_sheet_default_peek"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <RelativeLayout
+        android:id="@+id/bottom_sheet_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/bottom_sheet_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/bottom_sheet_margin_close"
+            android:src="@drawable/unify_bottomsheet_close" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/bottom_sheet_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="Promo terakhir dilihat"
+            android:textColor="@color/light_N700_96"
+            app:typographyType="heading_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/bottom_sheet_action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/bottom_sheet_margin_action"
+            android:gravity="center_horizontal"
+            android:minWidth="@dimen/spacing_lvl4"
+            android:minHeight="@dimen/spacing_lvl4"
+            android:textAlignment="center"
+            android:textColor="@color/light_G500"
+            android:visibility="gone"
+            app:typographyType="body_2" />
+
+    </RelativeLayout>
+
+</LinearLayout>
