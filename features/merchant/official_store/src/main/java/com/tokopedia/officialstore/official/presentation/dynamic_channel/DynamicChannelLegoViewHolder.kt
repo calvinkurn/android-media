@@ -14,6 +14,7 @@ import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Header
 import com.tokopedia.unifyprinciples.Typography
 
+@Deprecated("Exist for remote config")
 class DynamicChannelLegoViewHolder(
         view: View?,
         private val dcEventHandler: DynamicChannelEventHandler
@@ -43,7 +44,7 @@ class DynamicChannelLegoViewHolder(
             if (header.applink.isNotEmpty()) {
                 headerActionText.apply {
                     visibility = View.VISIBLE
-                    setOnClickListener(dcEventHandler.onClickLegoHeaderActionText(header.applink))
+                    setOnClickListener(dcEventHandler.onClickLegoHeaderActionTextListener(header.applink))
                 }
             } else {
                 headerActionText.visibility = View.GONE

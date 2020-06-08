@@ -5,6 +5,7 @@ package com.tokopedia.play.view.uimodel
  */
 data class ProductSheetUiModel(
         val title: String,
+        val partnerId: Long,
         val voucherList: List<PlayVoucherUiModel>,
         val productList: List<PlayProductUiModel>
 ) {
@@ -12,6 +13,7 @@ data class ProductSheetUiModel(
     companion object {
         fun empty() = ProductSheetUiModel(
                 title = "",
+                partnerId = 0L,
                 voucherList = emptyList(),
                 productList = emptyList()
         )

@@ -2,13 +2,12 @@ package com.tokopedia.play.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.play.util.CoroutineDispatcherProvider
+import androidx.lifecycle.ViewModel
+import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.Event
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
@@ -18,7 +17,7 @@ class PlayVideoViewModel @Inject constructor(
         dispatchers: CoroutineDispatcherProvider,
         playPreference: PlayPreference,
         userSession: UserSessionInterface
-) : BaseViewModel(dispatchers.main) {
+) : PlayBaseViewModel(dispatchers.main) {
 
     companion object {
 
@@ -32,7 +31,7 @@ class PlayVideoViewModel @Inject constructor(
     init {
         val userId = userSession.userId
         if (!userSession.isLoggedIn || !playPreference.isOneTapOnboardingShown(userId)) {
-            launch {
+            scope.launch {
                 delay(ONE_TAP_ONBOARDING_DELAY)
                 _observableOneTapOnboarding.value = Event(Unit)
 

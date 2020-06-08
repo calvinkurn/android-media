@@ -13,4 +13,15 @@ enum class PlayChannelType(val value: String) {
 
     val isVod: Boolean
         get() = this == VOD
+
+    companion object {
+        private val values = values()
+
+        fun getByValue(value: String): PlayChannelType {
+            values.forEach {
+                if (it.value.equals(value, true)) return it
+            }
+            return Unknown
+        }
+    }
 }

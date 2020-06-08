@@ -4,6 +4,7 @@ import androidx.annotation.LayoutRes
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.utils.YoutubeUtil
 import com.tokopedia.product.manage.item.video.view.listener.VideoChosenListener
@@ -27,6 +28,7 @@ class VideoViewHolder(itemView: View,
         itemView.textTitle.text = videoViewModel.snippetTitle
         itemView.textChannel.text = videoViewModel.snippetChannel
         itemView.textDuration.text = YoutubeUtil.convertYoutubeTimeFormattoHHMMSS(videoViewModel.duration)
+        itemView.textDuration.hide()
         ImageHandler.loadImageRounded2(itemView.imageThumbnail.context, itemView.imageThumbnail, videoViewModel.thumbnailUrl)
 
         itemView.setOnClickListener({
