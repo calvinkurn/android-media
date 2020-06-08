@@ -2,7 +2,7 @@ package com.tokopedia.promocheckoutmarketplace.presentation
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.promo_checkout_marketplace.R
+import com.tokopedia.promocheckoutmarketplace.R
 import com.tokopedia.purchase_platform.common.constant.ARGS_BBO_PROMO_CODES
 import com.tokopedia.purchase_platform.common.constant.ARGS_PAGE_SOURCE
 import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST

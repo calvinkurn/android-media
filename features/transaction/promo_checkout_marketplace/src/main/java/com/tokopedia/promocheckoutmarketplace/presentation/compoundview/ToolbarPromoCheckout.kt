@@ -8,7 +8,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.promo_checkout_marketplace.R
+import com.tokopedia.promocheckoutmarketplace.R
 import com.tokopedia.unifyprinciples.Typography
 
 class ToolbarPromoCheckout : Toolbar {

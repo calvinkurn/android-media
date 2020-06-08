@@ -3,7 +3,7 @@ package com.tokopedia.promocheckoutmarketplace.presentation
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.promo_checkout_marketplace.R
+import com.tokopedia.promocheckoutmarketplace.R
 import com.tokopedia.promocheckoutmarketplace.presentation.viewholder.PromoEligibilityHeaderViewHolder
 import com.tokopedia.promocheckoutmarketplace.presentation.viewholder.PromoEmptyStateViewHolder
 import com.tokopedia.promocheckoutmarketplace.presentation.viewholder.PromoListHeaderEnabledViewHolder
