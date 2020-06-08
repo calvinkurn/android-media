@@ -11,7 +11,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.common.domain.model.UpdateVoucherParam
 import com.tokopedia.vouchercreation.create.domain.model.CreateVoucherParam
-import com.tokopedia.vouchercreation.create.domain.model.MerchantPromotionCreateMvData
 import com.tokopedia.vouchercreation.create.domain.usecase.*
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -32,8 +31,8 @@ class ReviewVoucherViewModel @Inject constructor(
         private val saveBannerVoucherUseCase: SaveBannerVoucherUseCase,
         private val saveSquareVoucherUseCase: SaveSquareVoucherUseCase) : BaseViewModel(dispatcher) {
 
-    private val mCreateVoucherResponseLiveData = MutableLiveData<Result<MerchantPromotionCreateMvData>>()
-    val createVoucherResponseLiveData: LiveData<Result<MerchantPromotionCreateMvData>>
+    private val mCreateVoucherResponseLiveData = MutableLiveData<Result<Int>>()
+    val createVoucherResponseLiveData: LiveData<Result<Int>>
         get() = mCreateVoucherResponseLiveData
 
     private val mUpdateVoucherSuccessLiveData = MutableLiveData<Result<Boolean>>()

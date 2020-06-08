@@ -21,10 +21,10 @@ import com.tokopedia.vouchercreation.common.consts.VoucherUrl
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.create.domain.model.CreateVoucherParam
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
-import com.tokopedia.vouchercreation.create.domain.usecase.CreateVoucherUseCase
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.create.view.dialog.FailedCreateVoucherDialog
 import com.tokopedia.vouchercreation.create.view.dialog.LoadingDialog
+import com.tokopedia.vouchercreation.create.view.dialog.PromoCodeErrorDialog
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherTargetCardType
@@ -35,10 +35,7 @@ import com.tokopedia.vouchercreation.create.view.uimodel.initiation.PostBaseUiMo
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.PostVoucherUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel
 import com.tokopedia.vouchercreation.create.view.viewmodel.ReviewVoucherViewModel
-import com.tokopedia.vouchercreation.detail.model.DividerUiModel
-import com.tokopedia.vouchercreation.detail.model.FooterButtonUiModel
-import com.tokopedia.vouchercreation.detail.model.FooterUiModel
-import com.tokopedia.vouchercreation.detail.model.TipsUiModel
+import com.tokopedia.vouchercreation.detail.model.*
 import com.tokopedia.vouchercreation.detail.view.adapter.factory.VoucherDetailAdapterFactoryImpl
 import com.tokopedia.vouchercreation.detail.view.fragment.BaseDetailFragment
 import com.tokopedia.vouchercreation.voucherlist.view.activity.VoucherListActivity
@@ -70,6 +67,9 @@ class ReviewVoucherFragment : BaseDetailFragment() {
         private const val VOUCHER_TIPS_INDEX = 1
 
         private const val NO_PROMO_CODE_DISPLAY = "-"
+
+        private const val PROMO_CODE_ERROR_RESPONSE = "Kode voucher sudah digunakan."
+
     }
 
     private var getVoucherReviewUiModel: () -> VoucherReviewUiModel = { VoucherReviewUiModel() }
@@ -128,6 +128,12 @@ class ReviewVoucherFragment : BaseDetailFragment() {
         }
     }
 
+    private val promoCodeErrorDialog by lazy {
+        context?.run {
+            PromoCodeErrorDialog(this, ::onDialogChangePromoCode, ::onPromoCodeErrorBack)
+        }
+    }
+
     private val buttonUiModel by lazy {
         val res =
                 if (isEdit) {
@@ -151,6 +157,8 @@ class ReviewVoucherFragment : BaseDetailFragment() {
             }
             field = value
         }
+
+    private var voucherInfoSection: InfoContainerUiModel = InfoContainerUiModel(R.string.mvc_detail_voucher_info, listOf())
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_base_list, container, false)
@@ -198,6 +206,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
             VOUCHER_BENEFIT_DATA_KEY -> VoucherCreationStep.BENEFIT
             PERIOD_DATA_KEY -> VoucherCreationStep.PERIOD
             DATA_KEY_VOUCHER_PERIOD -> VoucherCreationStep.PERIOD
+            PROMO_CODE_KEY -> VoucherCreationStep.TARGET
             else -> VoucherCreationStep.REVIEW
         }
         onReturnToStep(step)
@@ -245,20 +254,20 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                 if (isWaitingForResult) {
                     when(result) {
                         is Success -> {
-                            if (result.data.status != CreateVoucherUseCase.STATUS_SUCCESS) {
-                                failedCreateVoucherDialog?.show()
-                            } else {
-                                context?.run {
-                                    val intent = RouteManager.getIntent(this, ApplinkConstInternalSellerapp.VOUCHER_LIST).apply {
-                                        putExtra(VoucherListActivity.SUCCESS_VOUCHER_ID_KEY, result.data.voucherId)
-                                    }
-                                    startActivity(intent)
-                                    activity?.finish()
+                            context?.run {
+                                val intent = RouteManager.getIntent(this, ApplinkConstInternalSellerapp.VOUCHER_LIST).apply {
+                                    putExtra(VoucherListActivity.SUCCESS_VOUCHER_ID_KEY, result.data)
                                 }
+                                startActivity(intent)
+                                activity?.finish()
                             }
                         }
                         is Fail -> {
-                            failedCreateVoucherDialog?.show()
+                            if (result.throwable.message == PROMO_CODE_ERROR_RESPONSE) {
+                                promoCodeErrorDialog?.show()
+                            } else {
+                                failedCreateVoucherDialog?.show()
+                            }
                         }
                     }
                     with(adapter) {
@@ -276,7 +285,11 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                             activity?.finish()
                         }
                         is Fail -> {
-                            failedCreateVoucherDialog?.show()
+                            if (result.throwable.message == PROMO_CODE_ERROR_RESPONSE) {
+                                promoCodeErrorDialog?.show()
+                            } else {
+                                failedCreateVoucherDialog?.show()
+                            }
                         }
                     }
                 }
@@ -294,11 +307,13 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                 getDisplayedDateString(startDate, startHour, endDate, endHour)
             }
 
+            voucherInfoSection = getVoucherInfoSection(targetType, voucherName, getPromoCodePrefix() + promoCode, true)
+
             val reviewInfoList = mutableListOf(
                     with(voucherReviewUiModel) {
                         getVoucherPreviewSection(voucherType, voucherName, shopAvatarUrl, shopName, getPromoCodePrefix() + promoCode, postDisplayedDate)
                     },
-                    getVoucherInfoSection(targetType, voucherName, getPromoCodePrefix() + promoCode, true),
+                    voucherInfoSection,
                     DividerUiModel(DividerUiModel.THIN),
                     getVoucherBenefitSection(voucherType, minPurchase, voucherQuota, true),
                     getExpenseEstimationSection(voucherType.value, voucherQuota),
@@ -398,6 +413,19 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     private fun onDialogRequestHelp() {
         failedCreateVoucherDialog?.dismiss()
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, VoucherUrl.HELP_URL)
+    }
+
+    private fun onDialogChangePromoCode() {
+        onReturnToStep(VoucherCreationStep.TARGET)
+    }
+
+    private fun onPromoCodeErrorBack() {
+        adapter.data.indexOf(voucherInfoSection).let { index ->
+            voucherInfoSection.informationList.last().isWarning = true
+            val warningIndex = index + 1
+            adapter.data.add(warningIndex, WarningTickerUiModel(PROMO_CODE_KEY))
+        }
+        adapter.notifyDataSetChanged()
     }
 
 }

@@ -131,6 +131,10 @@
     <string name="mvc_displayed_date_format">%s, %s WIB - &lt;br>%s, %s WIB</string>
     <string name="mvc_displayed_date_post_format">%s - %s</string>
     <string name="mvc_period_alert">Pilih periode tampil terlebih dulu.</string>
+    <string name="mvc_promo_code_error_title">Oops, voucher tidak dapat ditambahkan</string>
+    <string name="mvc_promo_code_error_desc">Sepertinya kode promo ini sedang tampil di periode yang sama. Gunakan kode promo yang berbeda, ya.</string>
+    <string name="mvc_promo_code_error_button">Ubah Kode Promo</string>
+    <string name="mvc_promo_code_warning"><![CDATA[Gunakan kode promo lain. <a href="#"><font color="#03AC0E">Ubah Kode Promo</font></a>]]></string>
 
     <!-- Tips and trick -->
     <string name="mvc_tips_and_trick_private">Tips &amp; Trik Voucher Khusus</string>

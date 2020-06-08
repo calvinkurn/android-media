@@ -71,6 +71,7 @@ class MerchantVoucherTargetViewModel @Inject constructor(
     fun setReloadVoucherTargetData(@VoucherTargetType targetType: Int,
                                    promoCode: String) {
         mPrivateVoucherPromoCode.value = promoCode
+        mVoucherTargetTypeLiveData.value = targetType
         mShouldReturnToInitialValue.value = targetType == VoucherTargetType.PRIVATE
         mVoucherTargetListData.value = listOf(
                 VoucherTargetItemUiModel(

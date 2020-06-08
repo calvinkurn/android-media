@@ -7,10 +7,9 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.vouchercreation.common.base.BaseGqlUseCase
 import com.tokopedia.vouchercreation.create.domain.model.CreateVoucherParam
 import com.tokopedia.vouchercreation.create.domain.model.CreateVoucherResponse
-import com.tokopedia.vouchercreation.create.domain.model.MerchantPromotionCreateMvData
 import javax.inject.Inject
 
-class CreateVoucherUseCase @Inject constructor(private val gqlRepository: GraphqlRepository): BaseGqlUseCase<MerchantPromotionCreateMvData>() {
+class CreateVoucherUseCase @Inject constructor(private val gqlRepository: GraphqlRepository): BaseGqlUseCase<Int>() {
 
     companion object {
 
@@ -39,14 +38,18 @@ class CreateVoucherUseCase @Inject constructor(private val gqlRepository: Graphq
         }
     }
 
-    override suspend fun executeOnBackground(): MerchantPromotionCreateMvData {
+    override suspend fun executeOnBackground(): Int {
         val request = GraphqlRequest(MUTATION, CreateVoucherResponse::class.java, params.parameters)
         val response = gqlRepository.getReseponse(listOf(request))
 
         val error = response.getError(CreateVoucherResponse::class.java)
         if (error.isNullOrEmpty()) {
             val data = response.getData<CreateVoucherResponse>()
-            return data.merchantPromotionCreateMv.data
+            if (data.merchantPromotionCreateMv.data.status != STATUS_SUCCESS) {
+                throw MessageErrorException(data.merchantPromotionCreateMv.message)
+            } else {
+                return data.merchantPromotionCreateMv.data.voucherId
+            }
         } else {
             throw MessageErrorException(error.joinToString(", ") {
                 it.message

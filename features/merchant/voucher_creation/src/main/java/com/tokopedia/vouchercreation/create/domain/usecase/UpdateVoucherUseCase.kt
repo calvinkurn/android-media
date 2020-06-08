@@ -47,7 +47,8 @@ class UpdateVoucherUseCase @Inject constructor(private val gqlRepository: Graphq
                 } else {
                     throw MessageErrorException(data.message)
                 }
-            }        } else {
+            }
+        } else {
             throw MessageErrorException(error.joinToString(", ") { it.message })
         }
     }

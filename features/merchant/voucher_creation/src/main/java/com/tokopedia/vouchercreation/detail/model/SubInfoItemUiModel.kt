@@ -9,5 +9,6 @@ import androidx.annotation.StringRes
 data class SubInfoItemUiModel(
         @StringRes val infoKey: Int,
         val infoValue: String,
-        val canCopy: Boolean = false
+        val canCopy: Boolean = false,
+        var isWarning: Boolean = false
 )

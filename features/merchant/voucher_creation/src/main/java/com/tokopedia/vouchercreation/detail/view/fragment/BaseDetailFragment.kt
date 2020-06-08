@@ -32,6 +32,7 @@ abstract class BaseDetailFragment : BaseListFragment<VoucherDetailUiModel, Vouch
         const val VOUCHER_BENEFIT_DATA_KEY = "voucher_benefit"
         const val PERIOD_DATA_KEY = "period"
         const val DATA_KEY_VOUCHER_PERIOD = "periodeVoucher"
+        const val PROMO_CODE_KEY = "promo_code"
 
         private const val DISPLAYED_DATE_FORMAT = "dd MMM yyyy"
         private const val RAW_DATE_FORMAT = "yyyy-MM-dd"

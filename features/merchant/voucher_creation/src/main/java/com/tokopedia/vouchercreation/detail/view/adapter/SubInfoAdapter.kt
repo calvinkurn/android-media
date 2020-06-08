@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
@@ -47,6 +48,10 @@ class SubInfoAdapter : RecyclerView.Adapter<SubInfoAdapter.SubInfoViewHolder>() 
     inner class SubInfoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(model: SubInfoItemUiModel) = with(itemView) {
+            if (model.isWarning) {
+                tvMvcInfoKey.setTextColor(context.getResColor(R.color.Red_R500))
+                tvMvcInfoValue.setTextColor(context.getResColor(R.color.Red_R500))
+            }
             tvMvcInfoKey.text = context?.getString(model.infoKey).toBlankOrString()
             tvMvcInfoValue.text = model.infoValue.parseAsHtml()
             imgMvcVoucherCopy.isVisible = model.canCopy

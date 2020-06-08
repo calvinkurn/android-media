@@ -48,6 +48,8 @@ class VoucherDetailAdapterFactoryImpl(
 
     override fun type(model: ErrorDetailUiModel): Int = ErrorDetailViewHolder.RES_LAYOUT
 
+    override fun type(model: WarningTickerUiModel): Int = WarningTickerViewHolder.RES_LAYOUT
+
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             HeaderViewHolder.RES_LAYOUT -> HeaderViewHolder(parent) {
@@ -86,7 +88,9 @@ class VoucherDetailAdapterFactoryImpl(
             ErrorDetailViewHolder.RES_LAYOUT -> ErrorDetailViewHolder(parent) {
                 voucherDetailListener.onErrorTryAgain()
             }
-
+            WarningTickerViewHolder.RES_LAYOUT -> WarningTickerViewHolder(parent) {
+                voucherDetailListener.onInfoContainerCtaClick(it)
+            }
             else -> super.createViewHolder(parent, type)
         }
     }
