@@ -75,11 +75,11 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
     }
 
     private fun observeTotalViews() {
-        parentViewModel.totalView.observe(viewLifecycleOwner, Observer(::setTotalView))
+        parentViewModel.observableTotalView.observe(viewLifecycleOwner, Observer(::setTotalView))
     }
 
     private fun observeTotalLikes() {
-        parentViewModel.totalLike.observe(viewLifecycleOwner, Observer(::setTotalLike))
+        parentViewModel.observableTotalLike.observe(viewLifecycleOwner, Observer(::setTotalLike))
     }
 
     private fun observeSummary() {
