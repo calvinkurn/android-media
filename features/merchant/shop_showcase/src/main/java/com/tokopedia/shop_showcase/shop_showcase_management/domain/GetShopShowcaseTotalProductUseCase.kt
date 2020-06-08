@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.shop_showcase.common.GQLQueryConstant
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.GetShopProductsResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
