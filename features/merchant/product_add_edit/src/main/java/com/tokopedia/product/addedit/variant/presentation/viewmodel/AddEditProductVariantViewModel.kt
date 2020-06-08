@@ -6,10 +6,13 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.data.model.GetCategoryVariantCombinationResponse
+import com.tokopedia.product.addedit.variant.data.model.Unit
 import com.tokopedia.product.addedit.variant.data.model.UnitValue
 import com.tokopedia.product.addedit.variant.data.model.VariantDetail
 import com.tokopedia.product.addedit.variant.domain.GetCategoryVariantCombinationUseCase
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
+import com.tokopedia.product.addedit.variant.presentation.model.OptionInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -76,6 +79,15 @@ class AddEditProductVariantViewModel @Inject constructor(
         selectedVariantUnitValuesMap[layoutPosition] = selectedVariantUnitValues
     }
 
+    fun updateVariantInputModel(variantDetails: List<VariantDetail>) {
+        val variantInputModel = productInputModel.value?.variantInputModel
+
+        variantInputModel?.apply {
+            this.products = emptyList()
+            this.selections = mapSelections(variantDetails)
+        }
+    }
+
     fun getSelectedVariantUnitValues(layoutPosition: Int): MutableList<UnitValue> {
         return selectedVariantUnitValuesMap[layoutPosition] ?: mutableListOf()
     }
@@ -87,6 +99,31 @@ class AddEditProductVariantViewModel @Inject constructor(
     fun removeSelectedVariantUnitValue(layoutPosition: Int, position: Int) {
         val selectedVariantUnitValues = this.selectedVariantUnitValuesMap[layoutPosition]
         selectedVariantUnitValues?.removeAt(position)
+    }
+
+    private fun mapSelections(variantDetails: List<VariantDetail>): List<SelectionInputModel> =
+            variantDetails.map {
+                SelectionInputModel(
+                        it.variantID.toString(),
+                        mapUnitId(it.units.firstOrNull()),
+                        mapOptions(it.units.firstOrNull())
+                )
+            }
+
+    private fun mapOptions(unit: Unit?): List<OptionInputModel> {
+        if (unit == null) return emptyList()
+
+        return unit.unitValues.map {
+            OptionInputModel(
+                    it.variantUnitValueID.toString(),
+                    it.value,
+                    it.hex
+            )
+        }
+    }
+
+    private fun mapUnitId(unit: Unit?): String {
+        return unit?.variantUnitID?.toString() ?: ""
     }
 
 }
