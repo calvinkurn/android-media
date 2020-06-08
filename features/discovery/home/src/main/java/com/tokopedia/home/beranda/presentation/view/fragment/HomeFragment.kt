@@ -13,7 +13,6 @@ import android.os.Handler
 import android.provider.Settings
 import android.text.TextUtils
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,6 +49,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.design.bottomsheet.BottomSheetView
 import com.tokopedia.design.bottomsheet.BottomSheetView.BottomSheetField.BottomSheetFieldBuilder
@@ -83,10 +83,10 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
-import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.helper.ViewHelper
+import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_INFLATE_HOME_FRAGMENT
 import com.tokopedia.home.beranda.listener.*
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
@@ -183,6 +183,7 @@ open class HomeFragment : BaseDaggerFragment(),
         private const val REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220
         private const val DEFAULT_WALLET_APPLINK_REQUEST_CODE = 111
         private const val REQUEST_CODE_REVIEW = 999
+        private const val REQUEST_CODE_LOGIN_TOKOPOINTS = 120
         private const val VISITABLE_SIZE_WITH_DEFAULT_BANNER = 1
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
         private const val REVIEW_CLICK_AT = "rating"
@@ -1078,6 +1079,13 @@ open class HomeFragment : BaseDaggerFragment(),
                     viewModel.onRemoveSuggestedReview()
                 }
             }
+            REQUEST_CODE_LOGIN_TOKOPOINTS -> {
+                activity?.let {
+                    if (resultCode == Activity.RESULT_OK) {
+                        RouteManager.route(activity, ApplinkConstInternalPromo.TOKOPOINTS_HOME)
+                    }
+                }
+            }
             REQUEST_CODE_PLAY_ROOM -> if (data != null && data.hasExtra(EXTRA_TOTAL_VIEW)) viewModel.updateBannerTotalView(data.getStringExtra(EXTRA_TOTAL_VIEW))
         }
     }
@@ -1793,8 +1801,14 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onTokopointCheckNowClicked(applink: String) {
-        if (!TextUtils.isEmpty(applink)) {
-            RouteManager.route(context, applink)
+        activity?.let {
+            if (::userSession.isInitialized && !userSession.isLoggedIn) {
+                startActivityForResult(RouteManager.getIntent(activity, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN_TOKOPOINTS)
+                return
+            }
+            if (!TextUtils.isEmpty(applink)) {
+                RouteManager.route(activity, applink)
+            }
         }
     }
 
