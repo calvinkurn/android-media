@@ -45,7 +45,10 @@ import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.*
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -55,6 +58,7 @@ import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.device.info.permission.ImeiPermissionAsker
@@ -114,8 +118,8 @@ import com.tokopedia.product.share.ProductShare
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.constant.Constant
-import com.tokopedia.purchase_platform.common.sharedata.ShipmentFormRequest
-import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult
+import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
+import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.referral.Constants
 import com.tokopedia.referral.ReferralAction
@@ -1471,6 +1475,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewModel.installmentData = it.productFinancingCalculationData
         if (it.latestTalk.id.isEmpty() || remoteConfig.getBoolean(ProductDetailConstant.ENABLE_NEW_DISCUSSION_REMOTE_CONFIG, true)) {
             dynamicAdapter.removeDiscussionSection(pdpHashMapUtil?.productDiscussionMap)
+        } else {
+            dynamicAdapter.removeQnaSection(pdpHashMapUtil?.productDiscussionMostHelpfulMap)
         }
 
         if (it.vouchers.isNullOrEmpty()) {
@@ -1652,10 +1658,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             val bundleData = Bundle()
             bundleData.putParcelable(AddToCartDoneBottomSheet.KEY_ADDED_PRODUCT_DATA_MODEL, addedProductDataModel)
             addToCartDoneBottomSheet.arguments = bundleData
-            addToCartDoneBottomSheet.setDismissListener {
+            addToCartDoneBottomSheet.setDismissListener(BottomSheets.BottomSheetDismissListener {
                 shouldShowCartAnimation = true
                 updateCartNotification()
-            }
+            })
             fragmentManager?.let {
                 addToCartDoneBottomSheet.show(
                         it, "TAG"

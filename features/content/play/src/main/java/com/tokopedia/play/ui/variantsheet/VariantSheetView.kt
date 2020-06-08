@@ -14,7 +14,6 @@ import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.R
@@ -28,7 +27,6 @@ import com.tokopedia.play.view.uimodel.VariantPlaceholderUiModel
 import com.tokopedia.play.view.uimodel.VariantSheetUiModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.variant_common.model.ProductVariantCommon
 import com.tokopedia.variant_common.model.VariantOptionWithAttribute
 import com.tokopedia.variant_common.util.VariantCommonMapper
@@ -229,25 +227,14 @@ class VariantSheetView(
         )
     }
 
-    internal fun showToaster(toasterType: Int, message: String = "", actionText: String?, actionListener: View.OnClickListener?) {
+    internal fun showToaster(toasterType: Int, message: String = "", actionText: String, actionListener: View.OnClickListener) {
         Toaster.toasterCustomBottomHeight = btnAction.height + toasterMargin
-
-        if (actionText != null && actionListener != null) {
-            Toaster.make(
-                    view,
-                    message,
-                    type = toasterType,
-                    actionText = actionText,
-                    clickListener = actionListener
-            )
-        } else {
-            Toaster.make(
-                    view,
-                    message,
-                    Snackbar.LENGTH_LONG,
-                    type = toasterType)
-        }
-
+        Toaster.make(
+                view,
+                message,
+                type = toasterType,
+                actionText = actionText,
+                clickListener = actionListener)
     }
 
     private fun setProduct(product: ProductLineUiModel) {
@@ -256,47 +243,47 @@ class VariantSheetView(
 
         when (product.price) {
             is DiscountedPrice -> {
-                llProductDiscount.visible()
+                llProductDiscount.show()
                 tvProductDiscount.text = view.context.getString(R.string.play_discount_percent, product.price.discountPercent)
                 tvOriginalPrice.text = product.price.originalPrice
                 tvCurrentPrice.text = product.price.discountedPrice
             }
             is OriginalPrice -> {
-                llProductDiscount.gone()
+                llProductDiscount.hide()
                 tvCurrentPrice.text = product.price.price
             }
         }
 
-        if (product.isFreeShipping) ivFreeShipping.visible()
-        else ivFreeShipping.gone()
+        if (product.isFreeShipping) ivFreeShipping.show()
+        else ivFreeShipping.hide()
     }
 
     private fun showContent(shouldShow: Boolean, withPlaceholder: Boolean) {
         if (shouldShow) {
-            btnContainer.visible()
+            btnContainer.show()
 
             if (withPlaceholder) {
-                phProductVariant.visible()
-                phBtnAction.visible()
+                phProductVariant.show()
+                phBtnAction.show()
 
-                clProductVariant.gone()
-                btnAction.gone()
+                clProductVariant.hide()
+                btnAction.hide()
             }
             else {
-                phProductVariant.gone()
-                phBtnAction.gone()
+                phProductVariant.hide()
+                phBtnAction.hide()
 
-                clProductVariant.visible()
-                btnAction.visible()
+                clProductVariant.show()
+                btnAction.show()
             }
 
-            globalError.gone()
+            globalError.hide()
         } else {
-            clProductVariant.gone()
-            phProductVariant.gone()
-            btnContainer.gone()
+            clProductVariant.hide()
+            phProductVariant.hide()
+            btnContainer.hide()
 
-            globalError.visible()
+            globalError.show()
         }
     }
 
