@@ -107,7 +107,7 @@ public class AutocompleteTracking {
         );
     }
 
-    public static void eventClickRecentSearch(Context context, String label) {
+    public static void eventClickRecentSearch(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_SEARCH,
                 EVENTCATEGORY_TOP_NAV,

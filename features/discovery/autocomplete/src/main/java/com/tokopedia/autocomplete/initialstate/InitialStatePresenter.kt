@@ -47,7 +47,7 @@ class InitialStatePresenter @Inject constructor(
         return searchParameter
     }
 
-    fun getUserId(): String {
+    private fun getUserId(): String {
         return if (userSession.isLoggedIn) userSession.userId else "0"
     }
 
@@ -321,6 +321,37 @@ class InitialStatePresenter @Inject constructor(
                 view.deleteRecentSearch(listVistable)
             }
         }
+    }
+
+    override fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int) {
+        trackEventItemClicked(item, adapterPosition)
+
+        view?.dropKeyBoard()
+        view?.route(item.applink, searchParameter)
+        view?.finish()
+    }
+
+    private fun trackEventItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int) {
+        when(item.type) {
+            TYPE_SHOP -> view?.trackEventClickRecentShop(getRecentShopLabelForTracking(item), getUserId())
+            else -> view?.trackEventClickRecentSearch(
+                    getItemEventLabelForTracking(item, adapterPosition),
+                    adapterPosition
+            )
+        }
+    }
+
+    private fun getRecentShopLabelForTracking(item: BaseItemInitialStateSearch): String {
+        return item.productId + " - keyword: " + item.title
+    }
+
+    private fun getItemEventLabelForTracking(item: BaseItemInitialStateSearch, adapterPosition: Int): String {
+       return String.format(
+                "value: %s - po: %s - applink: %s",
+                item.title,
+                (adapterPosition + 1).toString(),
+                item.applink
+        )
     }
 
     override fun detachView() {

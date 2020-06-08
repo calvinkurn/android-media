@@ -9,5 +9,5 @@ interface InitialStateItemClickListener {
 
     fun onItemClicked(applink: String, webUrl: String)
 
-    fun onRecentShopClicked(item: BaseItemInitialStateSearch)
+    fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int)
 }
