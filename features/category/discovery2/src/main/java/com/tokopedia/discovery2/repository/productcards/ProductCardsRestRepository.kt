@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class ProductCardsRestRepository @Inject constructor() : BaseRepository(), ProductCardsRepository {
 
-    override suspend fun  getProducts(componentId: Int, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String, productComponentName: String?): ArrayList<ComponentsItem> {
+    override suspend fun  getProducts(componentId: String, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String, productComponentName: String?): ArrayList<ComponentsItem> {
         val response = getRestData<DataResponse<DiscoveryResponse>>(GenerateUrl.getComponentUrl(pageEndPoint, componentId),
                 object : TypeToken<DataResponse<DiscoveryResponse>>() {}.type,
                 RequestType.GET,
@@ -28,14 +28,5 @@ class ProductCardsRestRepository @Inject constructor() : BaseRepository(), Produ
             else -> DiscoveryDataMapper().mapListToComponentList(componentData, "product_card_revamp_item", null)
 
         }
-
-//        return if(isHorizontal)
-//            DiscoveryDataMapper().mapListToComponentList(response.data.component?.data , "product_card_horizontal_item", null)
-//        else
-//            DiscoveryDataMapper().mapListToComponentList(response.data.component?.data , "product_card_item", null)
-//        return if(isHorizontal)
-//            DiscoveryDataMapper().mapListToComponentList(response.data.component?.data , "product_card_horizontal_item", null, "carousel")
-//        else
-//            DiscoveryDataMapper().mapListToComponentList(response.data.component?.data , "product_card_item", null, "product_card_revamp")
     }
 }

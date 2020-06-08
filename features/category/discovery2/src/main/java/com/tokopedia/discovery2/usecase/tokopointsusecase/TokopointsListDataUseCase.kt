@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class TokopointsListDataUseCase @Inject constructor(private val tokopointsRepository: TokopointsRepository) {
 
-    suspend fun getTokopointsDataUseCase(componentId: Int, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String): ArrayList<ComponentsItem> {
+    suspend fun getTokopointsDataUseCase(componentId: String, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String): ArrayList<ComponentsItem> {
         return tokopointsRepository.getTokopointsData(componentId, queryParamterMap, pageEndPoint)
     }
 }

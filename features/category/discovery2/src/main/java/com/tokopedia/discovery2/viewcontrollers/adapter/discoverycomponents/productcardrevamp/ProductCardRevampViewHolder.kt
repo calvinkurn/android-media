@@ -17,26 +17,21 @@ class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment
     private lateinit var mProductRevampComponentViewModel: ProductCardRevampViewModel
     private var addChildAdapterCallback: AddChildAdapterCallback = (fragment as AddChildAdapterCallback)
 
-    init {
-        addShimmer()
-    }
-
-    private fun addShimmer() {
-        val list: ArrayList<ComponentsItem> = ArrayList()
-        for (i in 1..10) {
-            list.add(ComponentsItem(name = "shimmer_product_card"))
-        }
-    }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         mProductRevampComponentViewModel = discoveryBaseViewModel as ProductCardRevampViewModel
         setUpDataObserver(fragment.viewLifecycleOwner)
-        mProductRevampComponentViewModel.fetchProductsData((fragment as DiscoveryFragment).pageEndPoint)
     }
 
     private fun setUpDataObserver(lifecycleOwner: LifecycleOwner) {
         mProductRevampComponentViewModel.getProductCarouselItemsListData().observe(lifecycleOwner, Observer { item ->
             addChildAdapterCallback.notifyMergeAdapter()
+        })
+        mProductRevampComponentViewModel.getSyncPageLiveData().observe(lifecycleOwner, Observer { needResync ->
+            if (needResync) {
+                (fragment as DiscoveryFragment).resync()
+            }
+
         })
     }
 

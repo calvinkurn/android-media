@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter
 
+import android.util.Log
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
@@ -8,7 +9,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryListViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.DiscoveryHomeFactory
@@ -21,16 +21,7 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
         private var noOfObject = 0
     }
 
-    override fun submitList(list: List<ComponentsItem>?) {
-        list?.let {
-            if(it.isNotEmpty()) {
-                componentList.clear()
-                componentList .addAll(it)
-                super.submitList(it)
-            }
-        }
 
-    }
 
     // To set the common ViewPool for Inner Recycler View to recycle views
     private val viewPool = RecyclerView.RecycledViewPool()
@@ -43,11 +34,12 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder {
 //        Timber.d("Inflate view holder ${count.incrementAndGet()}")
         val viewHolder: AbstractViewHolder = DiscoveryHomeFactory.createViewHolder(parent, viewType, fragment) as AbstractViewHolder
-        viewHolder.getInnerRecycleView()?.setRecycledViewPool(viewPool)
         return viewHolder
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder, position: Int) {
+        if(componentList.size <= position)  //tmp code need this handling to handle multithread enviorment
+            return
         setViewSpanType(holder)
         holder.bindView(viewHolderListModel.getViewHolderModel(
                 DiscoveryHomeFactory.createViewModel(getItemViewType(position)), componentList[position], position), parentComponent)
@@ -55,28 +47,33 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
 
 
     override fun getItemViewType(position: Int): Int {
+        Log.e("getItemViewType","holder 0" + " "+position)
+        if(componentList.size <= position)
+            return 0
         val id = DiscoveryHomeFactory.getComponentId(componentList[position].name)
         return id ?: 0
     }
 
     override fun getItemId(position: Int): Long {
-        if (!componentList.isNullOrEmpty() && !componentList[position].data.isNullOrEmpty()) {
+        if ( !componentList.isNullOrEmpty() && componentList.size > position && !componentList[position].data.isNullOrEmpty()) {
             return componentList[position].data?.get(0)?.productId?.toLong()!!
         }
         return super.getItemId(position)
     }
 
-    fun addDataList(dataList: ArrayList<ComponentsItem>?) {
+    fun addDataList(dataList: List<ComponentsItem>) {
+        Log.e("AddDataList","datalist 0"+dataList.size)
         if (dataList != null) {
             componentList.clear()
             viewHolderListModel.clearList()
             componentList.addAll(dataList)
         }
+
         submitList(dataList)
     }
 
     fun setDataList(dataList: ArrayList<ComponentsItem>?) {
-        addDataList(dataList)
+        addDataList(dataList as List<ComponentsItem>)
     }
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder) {
@@ -105,7 +102,7 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
 
     class ComponentsDiffCallBacks : DiffUtil.ItemCallback<ComponentsItem>() {
         override fun areItemsTheSame(oldItem: ComponentsItem, newItem: ComponentsItem): Boolean {
-            return oldItem.id == newItem.id
+            return oldItem === newItem
         }
 
         override fun areContentsTheSame(oldItem: ComponentsItem, newItem: ComponentsItem): Boolean {

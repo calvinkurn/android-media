@@ -14,9 +14,8 @@ import javax.inject.Inject
 class DiscoveryDataGQLRepository @Inject constructor(val getGQLString: (Int) -> String) : BaseRepository(), DiscoveryPageRepository {
     lateinit var userSession: UserSession
     override suspend fun getDiscoveryPageData(pageIdentifier: String): DiscoveryResponse {
-        DiscoveryPageRepository.discoveryResponseData =  (getGQLData(getGQLString(R.raw.query_discovery_data),
+        return (getGQLData(getGQLString(R.raw.query_discovery_data),
                 DataResponse::class.java, mapOf("identifier" to pageIdentifier, "version" to "3.78", "device" to "Android"), "discoveryPageInfo") as DataResponse).data
-       return DiscoveryPageRepository.discoveryResponseData
 
     }
 }

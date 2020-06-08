@@ -42,4 +42,9 @@ data class ComponentsItem(
         var constraintRatio: String? = null
 ) {
     var componentsItem: List<ComponentsItem>? = null
+    var needPagination: Boolean = false
+    var noOfPagesLoaded = 0
+    var componentsPerPage = 20
+    lateinit var pageEndPoint: String
+    lateinit var parentComponentId: String
 }

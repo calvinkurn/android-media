@@ -31,15 +31,16 @@ class DiscoveryDataMapper {
             return list
         }
 
-        fun mapTabsListToComponentList(itemList: List<DataItem>, subComponentName: String = "", position: Int): ArrayList<ComponentsItem> {
+        fun mapTabsListToComponentList(component: ComponentsItem, subComponentName: String = "", position: Int): ArrayList<ComponentsItem> {
             val list = ArrayList<ComponentsItem>()
             var isSelectedFound = false
-            itemList.forEachIndexed { index, it ->
+            component.data?.forEachIndexed { index, it ->
                 if (it.isSelected) {
                     isSelectedFound = true
                 }
                 val componentsItem = ComponentsItem()
                 componentsItem.name = subComponentName
+                componentsItem.pageEndPoint = component.pageEndPoint
                 it.positionForParentItem = position
                 val dataItem = mutableListOf<DataItem>()
                 dataItem.add(it)

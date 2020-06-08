@@ -15,7 +15,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.analytics.DiscoveryAnalytics
-import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
@@ -23,7 +22,6 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.END_POINT
 import com.tokopedia.discovery2.viewcontrollers.adapter.AddChildAdapterCallback
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
-import com.tokopedia.discovery2.viewcontrollers.adapter.mergeAdapter.MergeAdapters
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.globalerror.GlobalError
@@ -124,12 +122,15 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback {
         setUpObserver()
     }
 
+    fun resync() {
+        discoveryViewModel.getDiscoveryData()
+    }
     private fun setUpObserver() {
         discoveryViewModel.getDiscoveryResponseList().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     it.data?.let {
-                        discoveryAdapter.submitList(it)
+                        discoveryAdapter.addDataList(it)
                     }
 
 
@@ -277,6 +278,8 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback {
         getDiscoveryAnalytics().trackEventImpressionProductCard()
         trackingQueue.sendAll()
     }
+
+
 
     fun isDefaultTabDataFetched(): Boolean {
         return defaultTabDataFetched

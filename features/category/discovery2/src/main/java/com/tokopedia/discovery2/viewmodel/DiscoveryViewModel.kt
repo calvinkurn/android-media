@@ -134,4 +134,9 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         super.doOnPause()
         trackingQueue.sendAll()
     }
+
+    override fun doOnDestroy() {
+        super.doOnDestroy()
+        discoveryDataUseCase.clearPage(pageIdentifier)
+    }
 }

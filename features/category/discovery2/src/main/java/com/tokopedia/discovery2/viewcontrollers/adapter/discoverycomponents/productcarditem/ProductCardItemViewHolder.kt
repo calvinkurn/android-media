@@ -28,7 +28,7 @@ import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.Toaster
 
 
-class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView) {
+class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView,fragment.viewLifecycleOwner) {
 
     private var productImage: ImageUnify = itemView.findViewById(R.id.imageProduct)
     private var topadsImage: ImageView = itemView.findViewById(R.id.imageTopAds)
@@ -54,7 +54,6 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     private var notifyMeView: TextView = itemView.findViewById(R.id.textViewNotifyMe)
 
     private lateinit var productCardItemViewModel: ProductCardItemViewModel
-    private var lifecycleOwner: LifecycleOwner = fragment.viewLifecycleOwner
     private var productCardName = ""
     private var context: Context? = fragment.activity
 
@@ -74,47 +73,54 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         }
     }
 
-    override fun onViewAttachedToWindow() {
-        super.onViewAttachedToWindow()
-        setUpObserver()
+
+    override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
+        super.removeObservers(lifecycleOwner)
+        lifecycleOwner?.let {
+            if (productCardItemViewModel.getDataItemValue().hasObservers()) {
+                productCardItemViewModel.getDataItemValue().removeObservers(it)
+            }
+            productCardItemViewModel.getShopBadge().removeObservers(it)
+            productCardItemViewModel.notifyMeCurrentStatus().removeObservers(it)
+            productCardItemViewModel.showNotifyToastMessage().removeObservers(it)
+
+
+            }
     }
 
-    override fun onViewDetachedToWindow() {
-        if (productCardItemViewModel.getDataItemValue().hasObservers()) {
-            productCardItemViewModel.getDataItemValue().removeObservers(lifecycleOwner)
-        }
-    }
-
-    private fun setUpObserver() {
+    override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
+        super.setUpObservers(lifecycleOwner)
         productCardName = productCardItemViewModel.getComponentName()
+        lifecycleOwner?.let { lifecycleOwner ->
+            productCardItemViewModel.getDataItemValue().observe(lifecycleOwner, Observer {
+                populateData(it)
+            })
 
-        productCardItemViewModel.getDataItemValue().observe(lifecycleOwner, Observer {
-            populateData(it)
-        })
-
-        productCardItemViewModel.getShopBadge().observe(lifecycleOwner, Observer {
-            when (it) {
-                OFFICIAL_STORE -> shopBadge.setImageResource(R.drawable.discovery_official_store_icon)
-                GOLD_MERCHANT -> shopBadge.setImageResource(R.drawable.discovery_gold_merchant_icon)
-                else -> shopBadge.hide()
-            }
-        })
-
-        productCardItemViewModel.getShowLoginData().observe(lifecycleOwner, Observer { showLogin ->
-            context?.let {
-                if (showLogin) {
-                    it.startActivity(RouteManager.getIntent(it, ApplinkConst.LOGIN))
+            productCardItemViewModel.getShopBadge().observe(lifecycleOwner, Observer {
+                when (it) {
+                    OFFICIAL_STORE -> shopBadge.setImageResource(R.drawable.discovery_official_store_icon)
+                    GOLD_MERCHANT -> shopBadge.setImageResource(R.drawable.discovery_gold_merchant_icon)
+                    else -> shopBadge.hide()
                 }
-            }
-        })
+            })
 
-        productCardItemViewModel.notifyMeCurrentStatus().observe(lifecycleOwner, Observer { status ->
-            updateNotifyMeState(status)
-        })
+            productCardItemViewModel.getShowLoginData().observe(lifecycleOwner, Observer { showLogin ->
+                context?.let {
+                    if (showLogin) {
+                        it.startActivity(RouteManager.getIntent(it, ApplinkConst.LOGIN))
+                    }
+                }
+            })
 
-        productCardItemViewModel.showNotifyToastMessage().observe(lifecycleOwner, Observer { message ->
-            showNotifyResultToast(message)
-        })
+            productCardItemViewModel.notifyMeCurrentStatus().observe(lifecycleOwner, Observer { status ->
+                updateNotifyMeState(status)
+            })
+
+            productCardItemViewModel.showNotifyToastMessage().observe(lifecycleOwner, Observer { message ->
+                showNotifyResultToast(message)
+            })
+        }
+
     }
 
 

@@ -8,7 +8,7 @@ data class PageInfo(
         val path: String? = "",
 
         @SerializedName("Name")
-        val name: String? = "",
+        var name: String? = "",
 
         @SerializedName("Type")
         val type: String? = "",

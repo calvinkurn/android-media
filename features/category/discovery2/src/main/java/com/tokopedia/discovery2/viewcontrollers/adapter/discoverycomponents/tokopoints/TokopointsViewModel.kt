@@ -8,7 +8,6 @@ import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.tokopointsusecase.TokopointsListDataUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -18,7 +17,7 @@ import kotlin.coroutines.CoroutineContext
 private const val RPC_PAGE_NUMBER_KEY = "rpc_page_number"
 private const val RPC_PAGE_SIZE = "rpc_page_size"
 
-class TokopointsViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class TokopointsViewModel(val application: Application, val component: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val tokopointsComponentData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val tokopointsList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     @Inject
@@ -32,7 +31,7 @@ class TokopointsViewModel(val application: Application, components: ComponentsIt
 
     init {
         initDaggerInject()
-        tokopointsComponentData.value = components
+        tokopointsComponentData.value = component
     }
 
     override fun initDaggerInject() {
@@ -48,7 +47,7 @@ class TokopointsViewModel(val application: Application, components: ComponentsIt
     fun fetchTokopointsListData(pageEndPoint: String) {
         if(tokopointsList.value.isNullOrEmpty()) {
             launchCatchError(block = {
-                tokopointsList.value = tokopointsListDataUseCase.getTokopointsDataUseCase(tokopointsComponentData.value?.id.toIntOrZero(), getQueryParameterMap(), pageEndPoint)
+                tokopointsList.value = tokopointsListDataUseCase.getTokopointsDataUseCase(component.id, getQueryParameterMap(), pageEndPoint)
             }, onError = {
                 it.printStackTrace()
             })

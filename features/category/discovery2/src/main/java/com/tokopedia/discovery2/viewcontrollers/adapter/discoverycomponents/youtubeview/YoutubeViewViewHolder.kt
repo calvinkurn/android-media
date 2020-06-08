@@ -59,9 +59,5 @@ class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) : Ab
         return "<html><body><iframe width=100% height=100% src=\"https://www.youtube.com/embed/$videoId\" frameborder=\"0\"></iframe></body></html>"
     }
 
-    override fun onViewDetachedToWindow() {
-        super.onViewDetachedToWindow()
 
-
-    }
 }

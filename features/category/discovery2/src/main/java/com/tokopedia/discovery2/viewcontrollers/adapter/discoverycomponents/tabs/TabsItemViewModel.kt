@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs
 
 import android.app.Application
+import android.util.Log
 import android.widget.ImageView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,20 +14,22 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
-class TabsItemViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class TabsItemViewModel(val application: Application, var components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
 
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val imageLoaded: MutableLiveData<Boolean> = MutableLiveData()
 
-    init {
-        componentData.value = components
-    }
+
 
     fun getComponentLiveData(): LiveData<ComponentsItem> {
         return componentData
     }
 
+    override fun onAttachToViewHolder() {
+        super.onAttachToViewHolder()
+        componentData.value = components
+    }
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 

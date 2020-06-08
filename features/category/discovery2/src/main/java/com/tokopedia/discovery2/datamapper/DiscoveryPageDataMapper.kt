@@ -3,26 +3,40 @@ package com.tokopedia.discovery2.datamapper
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DiscoveryResponse
+import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 
-val componentMap: MutableMap<String, ComponentsItem> = HashMap()
+
+val discoveryPageData: MutableMap<String, DiscoveryResponse> = HashMap()
+
 fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse): DiscoveryPageData {
+    discoveryResponse.pageInfo.name = discoveryResponse.title.toUpperCase()
     val discoveryPageData = DiscoveryPageData(discoveryResponse.pageInfo, discoveryResponse.title)
-    discoveryResponse.components.filter {
-        componentMap[it.id] = it
+    discoveryResponse.componentMap = HashMap()
+    discoveryPageData.components = getDiscvoeryComponentList(discoveryResponse.pageInfo, discoveryResponse.components.filter {
+        discoveryPageData.pageInfo.identifier?.let { identifier ->
+            it.pageEndPoint = identifier
+        }
+        discoveryResponse.componentMap[it.id] = it
         it.renderByDefault
-    }
-    discoveryPageData.components = getDiscvoeryComponentList(discoveryResponse.components)
+    })
     return discoveryPageData
 }
 
-fun getDiscvoeryComponentList(components: List<ComponentsItem>): List<ComponentsItem> {
+fun getDiscvoeryComponentList(pageInfo: PageInfo, components: List<ComponentsItem>): List<ComponentsItem> {
     var listComponents: ArrayList<ComponentsItem> = ArrayList()
     for ((position, component) in components.withIndex()) {
         listComponents.add(component)
         if (component.name == "tabs") {
-            component.data?.let {
-                component.componentsItem = DiscoveryDataMapper.mapTabsListToComponentList(it, ComponentNames.TabsItem.componentName, position)
+            component.data?.let { it ->
+                if (component.componentsItem.isNullOrEmpty()) {
+                    component.componentsItem = DiscoveryDataMapper.mapTabsListToComponentList(component, ComponentNames.TabsItem.componentName, position)
+                } else {
+                    //For List Adapter need to update list object
+                    //Trade off between page redraw or list copy
+                    //TODO try to improve this logic
+                    component.componentsItem = component.componentsItem?.map { cmpt -> cmpt.copy() }
+                }
             }
             var selectedTab: ComponentsItem? = null
             component.componentsItem?.forEach {
@@ -37,7 +51,7 @@ fun getDiscvoeryComponentList(components: List<ComponentsItem>): List<Components
                         if (!targetComponentIdList.isNullOrEmpty()) {
                             val componentsItem: ArrayList<ComponentsItem> = ArrayList()
                             targetComponentIdList.forEach { componentId ->
-                                componentMap[componentId]?.let { component ->
+                                getComponent(componentId, pageInfo.identifier!!)?.let { component ->
                                     componentsItem.add(component)
                                 }
                             }
@@ -47,18 +61,26 @@ fun getDiscvoeryComponentList(components: List<ComponentsItem>): List<Components
                 }
             }
             selectedTab?.componentsItem?.let {
-                listComponents.addAll(getDiscvoeryComponentList(it))
+                listComponents.addAll(getDiscvoeryComponentList(pageInfo, it))
             }
-        } else if (component.name == "product_card_revamp") {
-            if (component.componentsItem.isNullOrEmpty()) {
+        } else if (component.name == "product_card_revamp" || component.name == "product_card_sprint_sale") {
+            if (component.componentsItem.isNullOrEmpty() && component.noOfPagesLoaded == 0) {
+                component.needPagination = true
                 listComponents.addAll(List(10) { ComponentsItem(name = "shimmer_product_card") })
-            }else{
+            } else {
                 component.componentsItem?.let {
-                    listComponents.addAll(getDiscvoeryComponentList(it))
+                    listComponents.addAll(getDiscvoeryComponentList(pageInfo, it))
                 }
             }
         }
 
     }
     return listComponents
+}
+
+
+fun getComponent(componentId: String, pageName: String): ComponentsItem? {
+    discoveryPageData[pageName].let {
+        return it?.componentMap?.get(componentId)
+    }
 }
