@@ -11,11 +11,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.util.event.EventObserver
 import com.tokopedia.play.broadcaster.view.adapter.TrafficMetricReportAdapter
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
@@ -58,7 +59,6 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
 
     private fun setUpView() {
         broadcastCoordinator.showActionBar(false)
-
         rv_play_summary_live_information.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         rv_play_summary_live_information.removeItemDecorations()
         rv_play_summary_live_information.adapter = trafficMetricReportAdapter
@@ -68,24 +68,29 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        observeChannelInfo()
+        observeLiveInfoState()
         observeTotalViews()
         observeTotalLikes()
-        observeSummary()
         observeLiveTrafficMetrics()
     }
 
+    private fun observeLiveInfoState()  {
+        parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, EventObserver {
+            if (it is PlayPusherInfoState.Finish) {  }
+        })
+    }
+
+    private fun observeChannelInfo() {
+        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner, Observer (::renderTitleAndCover))
+    }
+
     private fun observeTotalViews() {
-        parentViewModel.totalView.observe(viewLifecycleOwner, Observer(::setTotalView))
+        parentViewModel.observableTotalView.observe(viewLifecycleOwner, Observer(::setTotalView))
     }
 
     private fun observeTotalLikes() {
-        parentViewModel.totalLike.observe(viewLifecycleOwner, Observer(::setTotalLike))
-    }
-
-    private fun observeSummary() {
-        viewModel.observableSummary.observe(viewLifecycleOwner, Observer {
-            renderView(it)
-        })
+        parentViewModel.observableTotalLike.observe(viewLifecycleOwner, Observer(::setTotalLike))
     }
 
     private fun observeLiveTrafficMetrics() {
@@ -109,25 +114,27 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
         }
     }
 
-    private fun renderView(summaryUiModel: SummaryUiModel) {
-        tv_play_summary_live_title.text = summaryUiModel.liveTitle
+    private fun renderTitleAndCover(channelInfoUiModel: ChannelInfoUiModel) {
+        tv_play_summary_live_title.text = channelInfoUiModel.title
+        iv_play_summary_cover.loadImage(channelInfoUiModel.coverUrl)
+        entranceAnimation(view)
+    }
 
-        if (summaryUiModel.tickerContent.showTicker) {
-            ticker_live_summary.show()
-            ticker_live_summary.tickerTitle = summaryUiModel.tickerContent.tickerTitle
-            ticker_live_summary.setHtmlDescription(summaryUiModel.tickerContent.tickerDescription)
-        } else ticker_live_summary.hide()
+    private fun renderDuration(duration: String) {
+        tv_play_summary_live_duration.text = duration
+    }
 
-        iv_play_summary_cover.loadImage(summaryUiModel.coverImage)
+    private fun renderTicker(title: String, description: String) {
+        ticker_live_summary.show()
+        ticker_live_summary.tickerTitle = title
+        ticker_live_summary.setHtmlDescription(description)
+    }
 
-        tv_play_summary_live_duration.text = summaryUiModel.liveDuration
-
+    private fun setUpFinishButton() {
         btn_play_summary_finish.setOnClickListener {
             //put action here
-            RouteManager.route(requireContext(), summaryUiModel.finishRedirectUrl)
+            RouteManager.route(requireContext(), "")
         }
-
-        entranceAnimation(view)
     }
 
     private fun renderTrafficMetrics(trafficMetricUiModels: List<TrafficMetricUiModel>) {
