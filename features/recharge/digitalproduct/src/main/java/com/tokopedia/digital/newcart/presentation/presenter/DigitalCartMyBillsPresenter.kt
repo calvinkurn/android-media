@@ -4,6 +4,7 @@ import com.tokopedia.common_digital.cart.constant.DigitalCartCrossSellingType
 import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.FintechProductCheckout
 import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase
+import com.tokopedia.common_digital.cart.domain.usecase.DigitalGetCartUseCase
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter
@@ -16,6 +17,7 @@ import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
 class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: DigitalAddToCartUseCase?,
+                                                      digitalGetCartUseCase: DigitalGetCartUseCase?,
                                                       digitalAnalytics: DigitalAnalytics?,
                                                       rechargeAnalytics: RechargeAnalytics?,
                                                       cartDigitalInteractor: ICartDigitalInteractor?,
@@ -23,6 +25,7 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
                                                       digitalCheckoutUseCase: DigitalCheckoutUseCase?,
                                                       digitalInstantCheckoutUseCase: DigitalInstantCheckoutUseCase?) :
         DigitalBaseCartPresenter<DigitalCartMyBillsContract.View>(digitalAddToCartUseCase,
+                digitalGetCartUseCase,
                 digitalAnalytics,
                 rechargeAnalytics,
                 cartDigitalInteractor,

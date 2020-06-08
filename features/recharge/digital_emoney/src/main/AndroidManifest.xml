@@ -6,14 +6,10 @@
     <!-- add library brizzi and force it to use minSdkVersion same as Tokopedia -->
     <uses-sdk tools:overrideLibrary="id.co.bri.sdk.brizzi"/>
 
-    <application
-        tools:replace="android:label"
-        android:allowBackup="true"
-        android:label="@string/app_name_emoney"
-        android:supportsRtl="true">
+    <application>
 
         <activity
-            android:name=".view.activity.EmoneyCheckBalanceNFCActivity"
+            android:name=".view.activity.NfcCheckBalanceActivity"
             android:label="@string/emoney_toolbar_title_etoll_check_balance"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"

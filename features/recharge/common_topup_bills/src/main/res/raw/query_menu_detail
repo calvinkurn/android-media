@@ -46,5 +46,6 @@ query catalogMenuDetail($menuID: Int!){
       promo_code
       app_link
     }
+    express_checkout
   }
 }

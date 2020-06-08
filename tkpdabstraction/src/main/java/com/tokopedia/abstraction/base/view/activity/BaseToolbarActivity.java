@@ -46,8 +46,12 @@ abstract class BaseToolbarActivity extends BaseActivity {
 
     private void setupActionBarHomeIndicatorIcon() {
         if (getSupportActionBar() != null && isShowCloseButton()) {
-            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, com.tokopedia.resources.common.R.drawable.ic_system_close_default));
+            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, getCloseButton()));
         }
+    }
+
+    protected int getCloseButton() {
+        return  com.tokopedia.resources.common.R.drawable.ic_system_close_default;
     }
 
     protected boolean isShowCloseButton() {

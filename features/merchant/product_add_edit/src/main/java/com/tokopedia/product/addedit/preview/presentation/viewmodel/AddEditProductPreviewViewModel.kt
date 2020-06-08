@@ -8,20 +8,24 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.product.addedit.common.constant.ProductStatus
+import com.tokopedia.product.addedit.common.coroutine.CoroutineDispatchers
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
-import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
-import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.description.presentation.model.*
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
+import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.draft.domain.usecase.GetProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapDraftToProductInputModel
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.domain.GetProductUseCase
 import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TYPE_ACTIVE
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TYPE_ACTIVE_LIMITED
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TYPE_WAREHOUSE
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
@@ -40,8 +44,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
         private val resourceProvider: ResourceProvider,
         private val getProductDraftUseCase: GetProductDraftUseCase,
         private val saveProductDraftUseCase: SaveProductDraftUseCase,
-        dispatcher: CoroutineDispatcher
-) : BaseViewModel(dispatcher) {
+        dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.main) {
 
     private val productId = MutableLiveData<String>()
     private val detailInputModel = MutableLiveData<DetailInputModel>()
@@ -56,7 +60,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
     // observing the product id, and will execute the use case when product id is changed
     private val mGetProductResult = MediatorLiveData<Result<Product>>().apply {
         addSource(productId) {
-            if (!productId.value.isNullOrBlank()) loadProductData(it)
+            if (!productId.value.isNullOrBlank()) getProductData(it)
         }
     }
     val getProductResult: LiveData<Result<Product>> get() = mGetProductResult
@@ -81,7 +85,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     private val mProductVariantList = MutableLiveData<Result<List<ProductVariantByCatModel>>>()
     val productVariantList: LiveData<Result<List<ProductVariantByCatModel>>> get() = mProductVariantList
-    val productVariantListData get() = mProductVariantList.value.let {
+    val productVariantListData: List<ProductVariantByCatModel>? get() = mProductVariantList.value.let {
         when(it) {
             is Success -> it.data
             else -> null
@@ -91,13 +95,21 @@ class AddEditProductPreviewViewModel @Inject constructor(
     private val mGetProductDraftResult = MutableLiveData<Result<ProductDraft>>()
     val getProductDraftResult: LiveData<Result<ProductDraft>> get() = mGetProductDraftResult
 
-    val isAdding: Boolean get() = getDraftId() == 0L && getProductId().isBlank()
+    private val mIsLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = mIsLoading
+
+    val isAdding: Boolean get() = getProductId().isBlank()
 
     var isDuplicate: Boolean = false
 
     private var draftId = ""
 
     var productDomain: Product = Product()
+
+    var hasOriginalVariantLevel: Boolean = false // indicating whether you can clear variant or not
+
+    val hasWholesale: Boolean
+        get() = productInputModel.value?.detailInputModel?.wholesaleList?.isNotEmpty() ?: false
 
     private val saveProductDraftResultMutableLiveData = MutableLiveData<Result<Long>>()
     val saveProductDraftResultLiveData: LiveData<Result<Long>> get() = saveProductDraftResultMutableLiveData
@@ -112,7 +124,16 @@ class AddEditProductPreviewViewModel @Inject constructor(
                         if (!isDuplicate) {
                             productInputModel.productId = it.data.productID.toLongOrZero()
                         }
+
+                        // decrement wholesale min order by one because of > symbol
+                        val initialWholeSaleList =  productInputModel.detailInputModel.wholesaleList
+                        val actualWholeSaleList = decrementWholeSaleMinOrder(initialWholeSaleList)
+
+                        // reassign wholesale information with the actual wholesale values
+                        productInputModel.detailInputModel.wholesaleList = actualWholeSaleList
+
                         getVariantList(productInputModel.detailInputModel.categoryId)
+                        hasOriginalVariantLevel = checkOriginalVariantLevel(productInputModel)
                         productInputModel
                     }
                     is Fail -> ProductInputModel()
@@ -120,20 +141,23 @@ class AddEditProductPreviewViewModel @Inject constructor(
             }
             addSource(detailInputModel) {
                 getVariantList(it.categoryId)
-                productInputModel.value = productInputModel.value?.apply { this.detailInputModel = it }
+                productInputModel.value?.let { productInputModel ->
+                    productInputModel.detailInputModel = it
+                    this@AddEditProductPreviewViewModel.productInputModel.value = productInputModel
+                }
             }
             addSource(getProductDraftResult) {
                 productInputModel.value = when(it) {
                     is Success -> {
                         val productInputModel = mapDraftToProductInputModel(it.data)
                         getVariantList(productInputModel.detailInputModel.categoryId)
+                        hasOriginalVariantLevel = checkOriginalVariantLevel(productInputModel)
                         productInputModel
                     }
                     is Fail -> ProductInputModel()
                 }
             }
             addSource(productAddResult) {
-                getVariantList(it.detailInputModel.categoryId)
                 productInputModel.value = it
             }
         }
@@ -176,19 +200,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
         this.mImageUrlOrPathList.value = imageUrlOrPathList
     }
 
-    fun updateDetailInputModel(detailInputModel: DetailInputModel) {
-        this.detailInputModel.value = detailInputModel
-        productInputModel.value?.let { it.detailInputModel = detailInputModel }
-    }
-
-    fun updateDescriptionInputModel(descriptionInputModel: DescriptionInputModel) {
-        productInputModel.value?.descriptionInputModel = descriptionInputModel
-    }
-
-    fun updateVariantInputModel(variantInputModel: ProductVariantInputModel) {
-        productInputModel.value?.variantInputModel = variantInputModel
-    }
-
     fun updateVariantAndOption(productVariant: ArrayList<ProductVariantCombinationViewModel>,
                                variantOptionParent: ArrayList<ProductVariantOptionParent>) {
         productInputModel.value?.variantInputModel?.productVariant =
@@ -201,12 +212,12 @@ class AddEditProductPreviewViewModel @Inject constructor(
         productInputModel.value?.variantInputModel?.productSizeChart = productSizeChart
     }
 
-    fun updateShipmentInputModel(shipmentInputModel: ShipmentInputModel) {
-        productInputModel.value?.shipmentInputModel = shipmentInputModel
-    }
-
     fun updateProductStatus(isActive: Boolean) {
-        productInputModel.value?.detailInputModel?.status = if (isActive) 1 else 0
+        val newStatus = if (isActive) ProductStatus.STATUS_ACTIVE else ProductStatus.STATUS_INACTIVE
+        productInputModel.value?.detailInputModel?.status = newStatus
+        productInputModel.value?.variantInputModel?.productVariant?.forEach {
+            it.st = newStatus
+        }
     }
 
     fun getNewProductInputModel(imageUrlOrPathList: ArrayList<String>): ProductInputModel {
@@ -214,29 +225,29 @@ class AddEditProductPreviewViewModel @Inject constructor(
         return ProductInputModel().apply { this.detailInputModel = detailInputModel }
     }
 
-    private fun loadProductData(productId: String) {
-        getProduct(productId)
-    }
-
-    private fun getProduct(productId: String) {
+    fun getProductData(productId: String) {
+        mIsLoading.value = true
         launchCatchError(block = {
             val data = withContext(Dispatchers.IO) {
                 getProductUseCase.params = GetProductUseCase.createRequestParams(productId)
                 getProductUseCase.executeOnBackground()
             }
             mGetProductResult.value = Success(data)
+            mIsLoading.value = false
         }, onError = {
             mGetProductResult.value = Fail(it)
         })
     }
 
     fun getVariantList(categoryId: String) {
+        mIsLoading.value = true
         launchCatchError(block = {
             mProductVariantList.value = Success(withContext(Dispatchers.IO) {
                 getProductVariantUseCase.params =
                         GetProductVariantUseCase.createRequestParams(categoryId)
                 getProductVariantUseCase.executeOnBackground()
             })
+            mIsLoading.value = false
         }, onError = {
             mProductVariantList.value = Fail(it)
         })
@@ -284,9 +295,24 @@ class AddEditProductPreviewViewModel @Inject constructor(
         return errorMessage
     }
 
-    fun validateProductInput(): String {
-        val detailInputModel = productInputModel.value?.detailInputModel ?: DetailInputModel()
-        return validateProductInput(detailInputModel)
+    fun incrementWholeSaleMinOrder(wholesaleList: List<WholeSaleInputModel>) : List<WholeSaleInputModel> {
+        wholesaleList.forEach { wholesaleInputModel ->
+            // recalculate wholesale min order because of > symbol
+            val oldValue = wholesaleInputModel.quantity.toBigInteger()
+            val newValue = oldValue + 1.toBigInteger()
+            wholesaleInputModel.quantity = newValue.toString()
+        }
+        return wholesaleList
+    }
+
+    fun decrementWholeSaleMinOrder(wholesaleList: List<WholeSaleInputModel>) : List<WholeSaleInputModel> {
+        wholesaleList.forEach { wholesaleInputModel ->
+            // recalculate wholesale min order because of > symbol
+            val oldValue = wholesaleInputModel.quantity.toBigInteger()
+            val newValue = oldValue - 1.toBigInteger()
+            wholesaleInputModel.quantity = newValue.toString()
+        }
+        return wholesaleList
     }
 
     private fun mapProductVariant(productVariant: ArrayList<ProductVariantCombinationViewModel>,
@@ -321,6 +347,31 @@ class AddEditProductPreviewViewModel @Inject constructor(
             }
         }
         return null
+    }
+
+    fun getStatusStockViewVariant(): Int {
+        val isActive: Boolean = productInputModel.value?.detailInputModel?.status == 1
+        val stockCount: Int = productInputModel.value?.detailInputModel?.stock ?: 0
+        return if (!isActive) {
+            TYPE_WAREHOUSE
+        } else if (isActive && stockCount > 0) {
+            TYPE_ACTIVE_LIMITED
+        } else {
+            TYPE_ACTIVE
+        }
+    }
+
+    // disable removing variant when in edit mode and if product have a variant
+    fun checkOriginalVariantLevel(inputModel: ProductInputModel): Boolean {
+        val variantInputModel  = inputModel.variantInputModel
+        variantInputModel.apply {
+            if (isEditing.value == true) {
+                if (productVariant.size > 0) {
+                    return variantOptionParent.getOrNull(0) != null
+                }
+            }
+        }
+        return false
     }
 
 }

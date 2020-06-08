@@ -29,8 +29,6 @@ public interface AccountHomeRouter {
 
     AccountHomeInjection getAccountHomeInjection();
 
-    Fragment getFavoriteFragment();
-
     String getStringRemoteConfig(String key, String defaultValue);
 
     boolean getBooleanRemoteConfig(String key, boolean defaultValue);

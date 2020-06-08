@@ -13,11 +13,11 @@ interface DanaInstanLoanContractor {
     interface View : CustomerView {
         fun getAppContext(): Context?
 
-        fun getActivityContext(): Context?
+        fun getContext(): Context?
 
         fun onSuccessLoanProfileStatus(status: UserProfileLoanEntity)
 
-        fun setUserOnGoingLoanStatus(status: Boolean, loanId: Int)
+        fun setUserOnGoingLoanStatus(loanId: Int)
 
         fun onErrorLoanProfileStatus(onErrorLoanProfileStatus: String)
 
@@ -48,11 +48,10 @@ interface DanaInstanLoanContractor {
 
     interface Presenter : CustomerPresenter<View> {
 
-        fun isUserLoggedIn(): Boolean
-        fun initialize()
-
         fun getLoanProfileStatus()
-
         fun startDataCollection()
+
+        fun isViewAttached(): Boolean
+        fun getView(): View
     }
 }

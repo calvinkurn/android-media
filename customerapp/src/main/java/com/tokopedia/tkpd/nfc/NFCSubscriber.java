@@ -22,7 +22,7 @@ public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
         if (intent != null &&
                 (intent.getAction() == NfcAdapter.ACTION_TAG_DISCOVERED ||
                         intent.getAction() == NfcAdapter.ACTION_TECH_DISCOVERED)) {
-            Intent newIntent = RouteManager.getIntent(context, ApplinkConsInternalDigital.SMARTCARD, DigitalExtraParam.EXTRA_NFC);
+            Intent newIntent = RouteManager.getIntent(context, ApplinkConsInternalDigital.INTERNAL_SMARTCARD, DigitalExtraParam.EXTRA_NFC);
             newIntent.putExtras(intent.getExtras());
             newIntent.setAction(intent.getAction());
             context.startActivity(newIntent);

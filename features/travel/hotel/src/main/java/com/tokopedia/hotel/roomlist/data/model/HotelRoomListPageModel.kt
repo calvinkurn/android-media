@@ -8,7 +8,7 @@ import android.os.Parcelable
  */
 
 data class HotelRoomListPageModel(
-        var propertyId: Int = 0,
+        var propertyId: Long = 0,
         var propertyName: String = "",
         var checkIn: String = "",
         var checkInDateFmt: String = "",
@@ -21,7 +21,7 @@ data class HotelRoomListPageModel(
         var destinationName: String = ""
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-            parcel.readInt(),
+            parcel.readLong(),
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
@@ -34,7 +34,7 @@ data class HotelRoomListPageModel(
             parcel.readString())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(propertyId)
+        parcel.writeLong(propertyId)
         parcel.writeString(propertyName)
         parcel.writeString(checkIn)
         parcel.writeString(checkInDateFmt)

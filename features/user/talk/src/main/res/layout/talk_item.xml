@@ -120,7 +120,7 @@
         android:visibility="gone"
         tools:itemCount="1"
         tools:listitem="@layout/talk_product_attachment"
-        tools:visibility="gone"/>
+        tools:visibility="visible"/>
 
     <Space
         android:layout_width="match_parent"

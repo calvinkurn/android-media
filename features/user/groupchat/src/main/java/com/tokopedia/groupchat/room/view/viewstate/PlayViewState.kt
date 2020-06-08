@@ -44,7 +44,7 @@ interface PlayViewState {
     fun onReceiveGamificationNotif(model: GroupChatPointsViewModel)
     fun onBackgroundUpdated(it: BackgroundViewModel)
     fun getDurationWatchVideo(): String?
-    fun onErrorGetInfo(it: String)
+    fun onErrorGetInfo(globalError: Int)
     fun onReceiveOverlayMessageFromWebsocket(it: ChannelInfoViewModel)
     fun onReceiveCloseOverlayMessageFromWebsocket()
     fun onShowOverlayCTAFromDynamicButton(it: DynamicButton)

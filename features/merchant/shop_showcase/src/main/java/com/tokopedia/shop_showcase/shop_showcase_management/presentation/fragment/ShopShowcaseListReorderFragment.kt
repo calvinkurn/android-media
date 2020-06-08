@@ -132,6 +132,11 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
         observeReorderShopShowcase()
     }
 
+    override fun onDestroy() {
+        viewModel.reoderShopShowcaseResponse.removeObservers(this)
+        super.onDestroy()
+    }
+
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
         itemTouchHelper!!.startDrag(viewHolder)
     }

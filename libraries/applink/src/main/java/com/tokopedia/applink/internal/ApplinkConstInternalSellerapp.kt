@@ -61,6 +61,11 @@ object ApplinkConstInternalSellerapp {
     @JvmField
     val MENU_SETTING = "$INTERNAL_SELLERAPP/menu-setting"
 
+    //SellerSeamlessLoginFragment
+    @JvmField
+    val SEAMLESS_CHOOSE_ACCOUNT = "$INTERNAL_SELLERAPP/login-seamless-choose-account"
+
+
     //CreateMerchantVoucherStepsActivity
     @JvmField
     val CREATE_VOUCHER = "$INTERNAL_SELLERAPP/create-voucher"

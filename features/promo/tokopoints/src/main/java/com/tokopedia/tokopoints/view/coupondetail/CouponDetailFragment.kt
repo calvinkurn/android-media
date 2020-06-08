@@ -5,13 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
-
-import com.google.android.material.snackbar.Snackbar
-
-import androidx.fragment.app.Fragment
-import androidx.core.content.ContextCompat
-import androidx.appcompat.app.AlertDialog
-
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -21,53 +14,51 @@ import android.webkit.WebView
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity
-import com.tokopedia.tokopoints.view.contract.CouponDetailContract
 import com.tokopedia.tokopoints.view.customview.SwipeCardView
 import com.tokopedia.tokopoints.view.fragment.CloseableBottomSheetFragment
-import com.tokopedia.tokopoints.view.fragment.ValidateMerchantPinFragment
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.model.CouponSwipeDetail
 import com.tokopedia.tokopoints.view.model.CouponSwipeUpdate
 import com.tokopedia.tokopoints.view.model.CouponValueEntity
 import com.tokopedia.tokopoints.view.util.*
-import com.tokopedia.unifyprinciples.Typography
-
-import java.util.Locale
-import java.util.concurrent.TimeUnit
-
-import javax.inject.Inject
-
-import rx.Observable
-import rx.Subscriber
-import rx.Subscription
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
-
 import com.tokopedia.tokopoints.view.util.CommonConstant.COUPON_MIME_TYPE
 import com.tokopedia.tokopoints.view.util.CommonConstant.UTF_ENCODING
+import com.tokopedia.tokopoints.view.validatePin.ValidateMerchantPinFragment
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.tp_content_coupon_detail.*
 import kotlinx.android.synthetic.main.tp_fragment_coupon_detail.*
 import kotlinx.android.synthetic.main.tp_layout_coupon_detail_button.*
 import kotlinx.android.synthetic.main.tp_layout_swipe_coupon_code.*
 import kotlinx.android.synthetic.main.tp_layput_container_swipe.*
+import rx.Observable
+import rx.Subscriber
+import rx.Subscription
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
+import java.util.*
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 
 class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, View.OnClickListener {
@@ -674,11 +665,13 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         bundle.putString(CommonConstant.EXTRA_PIN_INFO, pinInfo)
         bundle.putString(CommonConstant.EXTRA_COUPON_ID, code)
         val fragment = ValidateMerchantPinFragment.newInstance(bundle)
-        fragment.setmValidatePinCallBack { couponSwipeUpdate ->
-            mBottomSheetFragment?.dismiss()
-            card_swipe?.couponCode = couponSwipeUpdate.partnerCode
-            showBarCodeView(couponSwipeUpdate.note, "", "")
-        }
+        fragment.setmValidatePinCallBack(object : ValidateMerchantPinFragment.ValidatePinCallBack {
+            override fun onSuccess(couponSwipeUpdate: CouponSwipeUpdate?) {
+                card_swipe?.couponCode = couponSwipeUpdate?.partnerCode
+                showBarCodeView(couponSwipeUpdate?.note, "", "")
+                mBottomSheetFragment?.dismiss()
+            }
+        })
         mBottomSheetFragment = CloseableBottomSheetFragment.newInstance(fragment, true,
                 getString(R.string.tp_masukan_pin), CloseableBottomSheetFragment.STATE_FULL,
                 object : CloseableBottomSheetFragment.ClosableCallback {
@@ -700,7 +693,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
             REQUEST_CODE_VERIFICATION_PHONE -> {
                 when (resultCode) {
                     Activity.RESULT_OK -> {
-                        phoneVerificationState=true
+                        phoneVerificationState = true
                         mPresenter.redeemCoupon(mCode, mCTA)
                     }
                     Activity.RESULT_CANCELED -> {
@@ -711,22 +704,22 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         }
     }
 
-        companion object {
-            val AB_TESTING_CTA_VARIANT_A = "CTA Phone Verify 2"
-            val AB_TEST_PHONE_VERIFICATION_KEY = "CTA Phone Verify 2"
-            private val REQUEST_CODE_VERIFICATION_PHONE = 301
-            private val CONTAINER_LOADER = 0
-            private val CONTAINER_DATA = 1
-            private val CONTAINER_ERROR = 2
-            private val CONTAINER_SWIPE = 1
+    companion object {
+        val AB_TESTING_CTA_VARIANT_A = "CTA Phone Verify 2"
+        val AB_TEST_PHONE_VERIFICATION_KEY = "CTA Phone Verify 2"
+        private val REQUEST_CODE_VERIFICATION_PHONE = 301
+        private val CONTAINER_LOADER = 0
+        private val CONTAINER_DATA = 1
+        private val CONTAINER_ERROR = 2
+        private val CONTAINER_SWIPE = 1
 
 
-            fun newInstance(extras: Bundle): Fragment {
-                val fragment = CouponDetailFragment()
-                fragment.arguments = extras
-                return fragment
-            }
+        fun newInstance(extras: Bundle): Fragment {
+            val fragment = CouponDetailFragment()
+            fragment.arguments = extras
+            return fragment
         }
-
     }
+
+}
 

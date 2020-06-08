@@ -65,17 +65,17 @@ class MoneyInCheckoutViewModelTest {
 
     @Test
     fun getPickupScheduleOption(){
-        coEvery { moneyInPickupScheduleUseCase.getPickupScheduleOption() } returns scheduleOptionsResult
+        coEvery { moneyInPickupScheduleUseCase.getPickupScheduleOption(any()) } returns scheduleOptionsResult
 
         moneyInCheckoutViewModel.getPickupScheduleOption()
 
-        assertEquals(moneyInCheckoutViewModel.getPickupScheduleOptionLiveData().value, Success(scheduleOptionsResult.getPickupScheduleOption))
+        assertEquals(moneyInCheckoutViewModel.getPickupScheduleOptionLiveData().value, Success(scheduleOptionsResult.getPickupScheduleOption!!))
     }
 
 
     @Test
     fun getPickupScheduleOptionException(){
-        coEvery { moneyInPickupScheduleUseCase.getPickupScheduleOption() } throws Exception("Schedule Options Exception")
+        coEvery { moneyInPickupScheduleUseCase.getPickupScheduleOption(any()) } throws Exception("Schedule Options Exception")
 
         moneyInCheckoutViewModel.getPickupScheduleOption()
 
@@ -88,7 +88,7 @@ class MoneyInCheckoutViewModelTest {
 
     @Test
     fun getCourierRates(){
-        coEvery { moneyInCourierRatesUseCase.getCourierRates(any()) } returns courierResult
+        coEvery { moneyInCourierRatesUseCase.getCourierRates(any(), any()) } returns courierResult
 
         moneyInCheckoutViewModel.getCourierRates(anyString())
 
@@ -98,7 +98,7 @@ class MoneyInCheckoutViewModelTest {
 
     @Test
     fun getCourierRatesException(){
-        coEvery { moneyInCourierRatesUseCase.getCourierRates(any()) } throws Exception("Couriers Exception")
+        coEvery { moneyInCourierRatesUseCase.getCourierRates(any(), any()) } throws Exception("Couriers Exception")
 
         moneyInCheckoutViewModel.getCourierRates(anyString())
 
@@ -112,7 +112,7 @@ class MoneyInCheckoutViewModelTest {
     @Test
     fun makeCheckoutMutation(){
         coEvery { moneyInCheckoutUseCase.createRequestParams(any(),any(),any(),any(),any()) } returns HashMap()
-        coEvery { moneyInCheckoutUseCase.makeCheckoutMutation(any()) } returns checkoutResult
+        coEvery { moneyInCheckoutUseCase.makeCheckoutMutation(any(), any()) } returns checkoutResult
         coEvery { checkoutResult.checkoutGeneral.data.success } returns SUCCESS
 
         moneyInCheckoutViewModel.makeCheckoutMutation("",0,0,0,0)
@@ -131,7 +131,7 @@ class MoneyInCheckoutViewModelTest {
     @Test
     fun makeCheckoutMutationException(){
         coEvery { moneyInCheckoutUseCase.createRequestParams(any(),any(),any(),any(),any()) } returns HashMap()
-        coEvery { moneyInCheckoutUseCase.makeCheckoutMutation(any()) } throws Exception("CheckoutResult Exception")
+        coEvery { moneyInCheckoutUseCase.makeCheckoutMutation(any(), any()) } throws Exception("CheckoutResult Exception")
 
         moneyInCheckoutViewModel.makeCheckoutMutation("",0,0,0,0)
 

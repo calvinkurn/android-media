@@ -80,7 +80,7 @@ fun Fragment.sellerMenu(): List<SaleNotificationViewBean> {
     )
 
     item.id = PENJUALAN
-    item.title = getString(R.string.penjualan)
+    item.title = context?.getString(R.string.penjualan)
     item.childs = itemChild
     menus.add(item)
     return menus

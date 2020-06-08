@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.data.model
 
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
+import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionResponse
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.data.model.checkouttype.CART_TYPE_DEFAULT
 import com.tokopedia.product.detail.data.model.checkouttype.CART_TYPE_EXPRESS

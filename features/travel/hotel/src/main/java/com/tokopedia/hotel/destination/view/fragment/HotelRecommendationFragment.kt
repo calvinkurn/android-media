@@ -236,7 +236,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
     override fun onItemClicked(recentSearch: RecentSearch) {
         val intent = Intent()
         intent.putExtra(HOTEL_DESTINATION_NAME, recentSearch.property.value)
-        intent.putExtra(HOTEL_DESTINATION_ID, recentSearch.property.id.toInt())
+        intent.putExtra(HOTEL_DESTINATION_ID, recentSearch.property.id.toLong())
         intent.putExtra(HOTEL_DESTINATION_TYPE, recentSearch.property.type)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()

@@ -9,5 +9,11 @@
     <color name="green_tab">#03ac0e</color>
     <color name="text_light_grey">#7031353b</color>
     <color name="toolbar_title">#f531353b</color>
+    <color name="category_selected_title">#42B549</color>
+    <color name="category_unselected_title">#9B9B9B</color>
+    <color name="category_background">#BFF3F4F5</color>
+    <color name="category_border">#EBEBEB</color>
+    <color name="category_border_1">#E5E7E9</color>
+    <color name="category_border_color">#F3F4F5</color>
 
 </resources>

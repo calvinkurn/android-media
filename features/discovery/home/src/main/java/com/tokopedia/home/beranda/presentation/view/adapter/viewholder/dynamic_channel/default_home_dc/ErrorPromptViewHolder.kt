@@ -3,17 +3,13 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 import android.graphics.Typeface.BOLD
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import androidx.annotation.LayoutRes
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.countdown.CountDownView
-import com.tokopedia.design.utils.StripedUnderlineUtil
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.glide.loadImage
@@ -25,10 +21,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
  */
 
 class ErrorPromptViewHolder(val view: View,
-                            val homeCategoryListener: HomeCategoryListener,
-                            countDownListener: CountDownView.CountDownListener) :
+                            val homeCategoryListener: HomeCategoryListener) :
         DynamicChannelViewHolder(
-                view, homeCategoryListener, countDownListener
+                view, homeCategoryListener
         ) {
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
 

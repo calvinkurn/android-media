@@ -2,29 +2,11 @@ apply plugin: 'com.android.application'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.hansel.preprocessor'
+apply from: '../tools/set_debug_tools.gradle'
 
 kapt {
     correctErrorTypes = true
     generateStubs = false
-}
-
-def getDpiId(String density) {
-    def DPI_ID = ['null': 0, 'mdpi': 1, 'hdpi': 2, 'xhdpi': 3, 'xxhdpi': 4]
-    if (density != null)
-        return DPI_ID.get(density);
-    return 0;
-}
-def getAbiId(String abi) {
-    def ABI_ID = ['null': 0, 'armeabi-v7a': 10, 'x86': 20]
-    if (abi != null)
-        return ABI_ID.get(abi);
-    return 0;
-}
-def generateBuildId(String density, String abi) {
-    return getAbiId(abi) + getDpiId(density);
-}
-def getAPKArchiveFolder(variant) {
-    return "/Android/launching-android/" + "V" + variant.mergedFlavor.versionCode;
 }
 def allowSplit() {
     return gradle.startParameter.taskNames.contains("assembleLiveRelease") &&
@@ -36,22 +18,11 @@ def allowDistribution() {
     }
     return "false";
 }
-def allowProguard() {
-    return project.hasProperty('tkpdBuildType')
-}
 def getTkpdVersionCode() {
     return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : project.defaultVersionCode;
 }
 def getTkpdVersionName() {
     return project.hasProperty('versionName') ? versionName : project.defaultVersionName;
-}
-def renameAPKFile(variant, density, versionCode) {
-    def fileName = variant.name.toUpperCase()
-    fileName += "-" + variant.mergedFlavor.versionName;
-    fileName += "-V" + versionCode;
-    fileName += "-" + density;
-    fileName += ".apk";
-    return fileName;
 }
 buildscript {
     repositories {
@@ -73,8 +44,8 @@ android {
     }
 
     project.ext {
-        defaultVersionCode = 299600000;
-        defaultVersionName = "3.60";
+        defaultVersionCode = 299700000;
+        defaultVersionName = "3.70";
         react = [
                 nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
         ]
@@ -155,50 +126,30 @@ android {
     }
 }
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-
     implementation rootProject.ext.miscDependencies.multiDex
-
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.applink)
-
-    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
-
-    implementation rootProject.ext.supportLibDependencies.supportV4
-    implementation rootProject.ext.supportLibDependencies.appCompactV7
-
     implementation (project(rootProject.ext.features.sessioncommon))
-
     implementation (project(rootProject.ext.libraries.remoteConfig))
-
-    implementation rootProject.ext.networkDependencies.okHttp
-    implementation rootProject.ext.networkDependencies.loggingInterceptor
 
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
-    implementation rootProject.ext.miscDependencies.dagger
-    kapt rootProject.ext.miscDependencies.daggerCompiler
-
-    implementation rootProject.ext.networkDependencies.retrofit
-    implementation rootProject.ext.networkDependencies.converterGson
-    implementation rootProject.ext.networkDependencies.adapterRxJava
-    implementation rootProject.ext.networkDependencies.okHttp
-    implementation rootProject.ext.networkDependencies.loggingInterceptor
-
     implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
+    implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
+    implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icon
@@ -207,11 +158,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.base
 
     implementation rootProject.ext.firebase.core
-    implementation (rootProject.ext.debugToolsDependencies.chuck) {
-        exclude group: 'com.squareup.okhttp3'
-        exclude group: 'com.squareup.okio'
-        exclude group: 'com.android.support'
-    }
+    implementation rootProject.ext.debugToolsDependencies.chuck
     androidTestImplementation(rootProject.ext.testDependencies.espressoContrib, {
         exclude group: 'com.android.support', module: 'appcompat'
         exclude group: 'com.android.support', module: 'support-v4'
@@ -226,10 +173,6 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
-	implementation project(rootProject.ext.features.productDetail)
-	implementation project(rootProject.ext.features.topchat)
-	implementation project(rootProject.ext.libraries.core_legacy)
-
 }
 
 repositories {

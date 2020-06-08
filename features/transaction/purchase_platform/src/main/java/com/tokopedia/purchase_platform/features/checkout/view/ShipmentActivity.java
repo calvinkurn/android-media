@@ -96,6 +96,7 @@ public class ShipmentActivity extends BaseCheckoutActivity {
     public void onBackPressed() {
         checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickBackArrow();
         if (shipmentFragment != null) {
+            shipmentFragment.releaseBookingIfAny();
             setResult(shipmentFragment.getResultCode());
             finish();
         } else {

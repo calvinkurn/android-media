@@ -1,0 +1,30 @@
+mutation GamiCrack($campaignSlug:String!,$uniqueCode:String!){
+  gamiCrack(campaignSlug:$campaignSlug,uniqueCode:$uniqueCode) {
+    resultStatus {
+      code
+      message
+      reason
+    }
+    imageUrl
+    benefitText
+    benefits {
+      text
+      color
+      size
+      benefitType
+      imageURL
+      dummyCode
+      referenceID
+      isAutoApply
+      autoApplyMsg
+      isBigPrize
+    }
+    actionButton {
+      text
+      url
+      applink
+      type
+      backgroundColor
+    }
+  }
+}

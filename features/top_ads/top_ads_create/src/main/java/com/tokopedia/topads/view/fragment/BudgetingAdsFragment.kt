@@ -50,6 +50,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     companion object {
         private const val MAX_BID = "max"
         private const val MIN_BID = "min"
+        private const val FACTOR = 50
         fun createInstance(): Fragment {
             val fragment = BudgetingAdsFragment()
             val args = Bundle()
@@ -61,7 +62,8 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(BudgetingAdsViewModel::class.java)
-        bidInfoAdapter = BidInfoAdapter(BidInfoAdapterTypeFactoryImpl(stepperModel!!.selectedKeywords, stepperModel!!.selectedSuggestBid, this::onClickCloseButton, this::onEdit, this::actionEnable))
+        val initialSuggestionBid = stepperModel?.selectedSuggestBid!!.toMutableList()
+        bidInfoAdapter = BidInfoAdapter(BidInfoAdapterTypeFactoryImpl(stepperModel!!.selectedKeywords, stepperModel!!.selectedSuggestBid, initialSuggestionBid, this::onClickCloseButton, this::onEdit, this::actionEnable))
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
     }
@@ -204,6 +206,11 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
                     result > maxBid -> {
                         isEnable = false
                         setMessageErrorField(getString(R.string.max_bid_error), maxBid, true)
+                    }
+
+                    result % FACTOR != 0 ->{
+                        isEnable = false
+                        setMessageErrorField(getString(R.string.error_multiple_50),FACTOR ,true)
                     }
                     else -> {
                         isEnable = true

@@ -36,7 +36,7 @@ class FirebaseMessagingManagerImpl @Inject constructor(
         get() = coroutineContextProvider.Main + SupervisorJob() + coroutineExceptionHandler
 
     override fun onNewToken(newToken: String?) {
-        if (newToken == null || !isNewToken(newToken)) return
+        if (!userSession.isLoggedIn || newToken == null || !isNewToken(newToken)) return
         launch(coroutineContextProvider.IO) {
             updateTokenOnServer(newToken)
         }
@@ -64,6 +64,10 @@ class FirebaseMessagingManagerImpl @Inject constructor(
 
             if (sameTokenWithPrefToken(currentFcmToken)) {
                 listener.onSuccess()
+                return@addOnCompleteListener
+            }
+
+            if (!userSession.isLoggedIn) {
                 return@addOnCompleteListener
             }
 

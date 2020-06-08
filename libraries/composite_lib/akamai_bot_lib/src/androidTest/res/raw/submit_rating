@@ -1,0 +1,8 @@
+mutation SubmitRatingCSAT($commentID: String!, $rating: Int!, $reason: String!) {
+   chipSubmitRatingCSAT(commentID: $commentID, rating: $rating, reason: $reason) {
+     data {
+       isSuccess
+     }
+     messageError
+   }
+ }

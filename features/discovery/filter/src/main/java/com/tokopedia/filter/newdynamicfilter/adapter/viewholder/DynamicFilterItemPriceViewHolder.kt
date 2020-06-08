@@ -176,9 +176,14 @@ class DynamicFilterItemPriceViewHolder(itemView: View, private val dynamicFilter
             dynamicFilterView.onPriceSliderPressed(minValue, maxValue)
         }
 
-        override fun onValueEditedFromTextInput(minValue: Int, maxValue: Int) {
+        override fun onMinValueEditedFromTextInput(minValue: Int) {
             refreshPricePills()
-            dynamicFilterView.onPriceEditedFromTextInput(minValue, maxValue)
+            dynamicFilterView.onMinPriceEditedFromTextInput(minValue)
+        }
+
+        override fun onMaxValueEditedFromTextInput(maxValue: Int) {
+            refreshPricePills()
+            dynamicFilterView.onMaxPriceEditedFromTextInput(maxValue)
         }
     }
 

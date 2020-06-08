@@ -25,7 +25,19 @@
         <activity
             android:name=".view.activity.EventSearchActivity"
             android:label="Events"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" >
+<!--            <intent-filter android:autoVerify="true">-->
+<!--                <action android:name="android.intent.action.VIEW" />-->
+
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+
+<!--                <data-->
+<!--                    android:host="@string/host_event"-->
+<!--                    android:path="@string/path_event_search"-->
+<!--                    android:scheme="@string/internal_scheme" />-->
+<!--            </intent-filter>-->
+        </activity>
         <activity
             android:name=".view.activity.SeatSelectionActivity"
             android:label="@string/event_seat_selection_title"
@@ -33,7 +45,19 @@
         <activity
             android:name=".view.activity.EventFavouriteActivity"
             android:label="Favorit Saya"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" >
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_event"
+                    android:path="@string/path_event_favorite"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".view.activity.EventFilterActivity"
             android:screenOrientation="portrait" />

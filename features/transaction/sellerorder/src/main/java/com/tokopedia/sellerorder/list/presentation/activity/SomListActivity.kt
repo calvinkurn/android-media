@@ -52,6 +52,7 @@ class SomListActivity: BaseSimpleActivity(), HasComponent<SomListComponent> {
     }
 
     private fun onChatClicked() {
+        (fragment as SomListFragment).onChatIconClicked()
         RouteManager.route(this, ApplinkConst.TOPCHAT_IDLESS)
     }
 

@@ -53,7 +53,9 @@ class OfficialHomeMapper {
                         DynamicChannelIdentifiers.LAYOUT_BANNER_CAROUSEL,
                         DynamicChannelIdentifiers.LAYOUT_SPRINT_LEGO,
                         DynamicChannelIdentifiers.LAYOUT_6_IMAGE,
-                        DynamicChannelIdentifiers.LAYOUT_LEGO_3_IMAGE
+                        DynamicChannelIdentifiers.LAYOUT_LEGO_3_IMAGE,
+                        DynamicChannelIdentifiers.LAYOUT_MIX_LEFT,
+                        DynamicChannelIdentifiers.LAYOUT_MIX_TOP
                 )
                 val views = mutableListOf<Visitable<OfficialHomeAdapterTypeFactory>>()
 

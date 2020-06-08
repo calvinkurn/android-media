@@ -4,24 +4,50 @@ import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.source.BehindLiveWindowException
 import com.google.android.exoplayer2.upstream.HttpDataSource
 import java.net.ConnectException
+import java.net.HttpURLConnection
+import java.net.UnknownHostException
 
 /**
  * Created by jegul on 03/02/20
  */
-object ExoPlaybackExceptionHelper {
+class ExoPlaybackExceptionParser {
 
-    fun isBehindLiveWindow(e: ExoPlaybackException) = isExceptionOfClass(e, BehindLiveWindowException::class.java)
-    fun isInvalidResponseCode(e: ExoPlaybackException) = isExceptionOfClass(e, HttpDataSource.InvalidResponseCodeException::class.java)
-    fun isConnectException(e: ExoPlaybackException) = isExceptionOfClass(e, ConnectException::class.java)
+    private val knownCauses = arrayOf(
+            BehindLiveWindowException::class.java,
+            HttpDataSource.InvalidResponseCodeException::class.java,
+            ConnectException::class.java,
+            UnknownHostException::class.java
+    )
 
-    private fun <T>isExceptionOfClass(e: ExoPlaybackException, clazz: Class<T>): Boolean {
-        if (e.type != ExoPlaybackException.TYPE_SOURCE) return false
+    fun parse(e: ExoPlaybackException): ExceptionWrapper {
+        if (e.type != ExoPlaybackException.TYPE_SOURCE) return ExceptionWrapper.UnknownException
 
         var cause: Throwable? = e.sourceException
         while (cause != null) {
-            if (cause::class.java == clazz) return true
+            if (cause::class.java in knownCauses) return ExceptionWrapper.KnownException(cause)
             cause = cause.cause
         }
-        return false
+        return ExceptionWrapper.UnknownException
     }
+
+    sealed class ExceptionWrapper {
+        data class KnownException(val e: Throwable) : ExceptionWrapper()
+        object UnknownException : ExceptionWrapper()
+
+        companion object {
+            private val blackListExceptionList = intArrayOf(HttpURLConnection.HTTP_NOT_FOUND, HttpURLConnection.HTTP_GONE, 416)
+        }
+
+        val isBehindLiveWindowException
+            get() = this is KnownException && e is BehindLiveWindowException
+        val isInvalidResponseCodeException
+            get() = this is KnownException && e is HttpDataSource.InvalidResponseCodeException && e.responseCode !in blackListExceptionList
+        val isBlackListedException
+            get() = this is KnownException && e is HttpDataSource.InvalidResponseCodeException && e.responseCode in blackListExceptionList
+        val isConnectException
+            get() = this is KnownException && e is ConnectException
+        val isUnknownHostException
+            get() = this is KnownException && e is UnknownHostException
+    }
+
 }

@@ -20,14 +20,14 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
+import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.createupdateresponse.CreateStockReminderResponse
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.createupdateresponse.UpdateStockReminderResponse
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.getresponse.GetStockReminderResponse
 import com.tokopedia.product.manage.feature.stockreminder.di.DaggerStockReminderComponent
 import com.tokopedia.product.manage.feature.stockreminder.view.viewmodel.StockReminderViewModel
-import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.EXTRA_PRODUCT_NAME
-import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.EXTRA_THRESHOLD
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_PRODUCT_NAME
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_THRESHOLD
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -182,7 +182,9 @@ class StockReminderFragment: BaseDaggerFragment() {
     }
 
     private fun showLoading() {
-        ImageHandler.loadGif(ivLoadingStockReminder, R.drawable.ic_loading_indeterminate, R.drawable.ic_loading_indeterminate)
+        ImageHandler.loadGif(ivLoadingStockReminder,
+                com.tokopedia.resources.common.R.drawable.ic_loading_indeterminate,
+                com.tokopedia.resources.common.R.drawable.ic_loading_indeterminate)
         loadingStockReminder.visibility = View.VISIBLE
         cardSaveBtn.visibility = View.GONE
     }

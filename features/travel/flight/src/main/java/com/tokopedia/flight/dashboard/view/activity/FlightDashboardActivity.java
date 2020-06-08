@@ -44,7 +44,11 @@ public class FlightDashboardActivity extends BaseFlightActivity implements HasCo
                     getIntent().getData().toString()
             );
         } else {
-            return FlightDashboardFragment.getInstance(getIntent().getData().toString());
+            if (getIntent().getData() != null) {
+                return FlightDashboardFragment.getInstance(getIntent().getData().toString());
+            } else {
+                return FlightDashboardFragment.getInstance("");
+            }
         }
     }
 

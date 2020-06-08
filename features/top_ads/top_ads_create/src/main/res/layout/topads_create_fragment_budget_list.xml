@@ -146,7 +146,7 @@
             android:layout_height="@dimen/dp_6"
             android:layout_above="@+id/btn_submit"
             android:layout_marginBottom="@dimen/dp_8"
-            android:background="@drawable/topads_create_bg_shader_gray"
+            android:background="@drawable/topads_bg_shader_gray"
             app:layout_constraintTop_toBottomOf="@+id/tip_btn"
             tools:layout_editor_absoluteX="6dp" />
 

@@ -107,9 +107,7 @@ public class PromoListPresenter implements IPromoListPresenter {
                     "name", "promo list - P" + String.valueOf(page) + " - " + categoryName,
                     "creative", promoData.getThumbnailImage(),
                     "position", String.valueOf(i + 1),
-                    "promo_id", "0",
-                    "promo_code", promoData.isMultiplePromo() ? promoData.getPromoCodeList() : promoData.getPromoCode())
-            );
+                    "promo_id", "0"));
         }
 
         promoTrackingUtil.eventImpressionPromoList(view.getActivityContext(), dataLayerSinglePromoCodeList, "");

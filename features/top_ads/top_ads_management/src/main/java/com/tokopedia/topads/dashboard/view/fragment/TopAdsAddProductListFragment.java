@@ -17,17 +17,14 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tkpd.library.utils.image.ImageHandler;
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.base.list.seller.common.util.ItemType;
 import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
 import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
-import com.tokopedia.core.base.data.executor.JobExecutor;
-import com.tokopedia.core.base.presentation.UIThread;
-import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.common.utils.DefaultErrorSubscriber;
 import com.tokopedia.seller.common.utils.MenuTintUtils;
 import com.tokopedia.seller.common.utils.NetworkStatus;
@@ -47,6 +44,7 @@ import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsRetryDataBin
 import com.tokopedia.topads.dashboard.view.listener.AdapterSelectionListener;
 import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsAddProductListPresenter;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -274,7 +272,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                 }
             }
         };
-        topAdsProductListAdapter.setImageHandler(new ImageHandler(getActivity()));
+        topAdsProductListAdapter.setImageHandler(new ImageHandler());
         topAdsProductListAdapter.setListener(this);
         if (isFirstTime) {
             layoutManager = new LinearLayoutManager(getActivity());
@@ -300,8 +298,8 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
 
     private void inject() {
         //[START] This is for dependent component
-        TopAdsManagementService topAdsSearchProductService = new TopAdsManagementService(new SessionHandler(getActivity()));
-        SessionHandler sessionHandler = new SessionHandler(getActivity());
+        TopAdsManagementService topAdsSearchProductService = new TopAdsManagementService(new UserSession(getActivity()));
+        UserSession sessionHandler = new UserSession(getActivity());
         SearchProductEOFMapper searchProductMapper = new SearchProductEOFMapper();
         CloudTopAdsSearchProductDataSource cloudTopAdsSeachProductDataSource = new CloudTopAdsSearchProductDataSource(
                 getActivity(),
@@ -353,10 +351,10 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         searchView.setQueryHint(getString(R.string.search_product));
         SearchView.SearchAutoComplete mSearchSrcTextView =
                 (SearchView.SearchAutoComplete)
-                        searchView.findViewById(com.tokopedia.core.R.id.search_src_text);
-        mSearchSrcTextView.setTextColor(getResources().getColor(com.tokopedia.core.R.color.black_70));
+                        searchView.findViewById(androidx.appcompat.R.id.search_src_text);
+        mSearchSrcTextView.setTextColor(getResources().getColor(com.tokopedia.design.R.color.black_70));
         mSearchSrcTextView.setHintTextColor(
-                getResources().getColor(com.tokopedia.core.R.color.black_70)
+                getResources().getColor(com.tokopedia.design.R.color.black_70)
         );
 
         updateOptionMenuColor(menu);

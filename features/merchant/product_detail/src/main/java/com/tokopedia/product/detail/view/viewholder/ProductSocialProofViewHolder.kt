@@ -21,17 +21,17 @@ class ProductSocialProofViewHolder(val view: View, private val listener: Dynamic
         val LAYOUT = R.layout.item_dynamic_pdp_social_proof
     }
 
-    private lateinit var productStatsView: PartialProductStatisticView
-    private lateinit var attributeInfoView: PartialAttributeInfoView
+    private var productStatsView: PartialProductStatisticView? = null
+    private var attributeInfoView: PartialAttributeInfoView? = null
 
     override fun bind(element: ProductSocialProofDataModel) {
         val stats = element.stats ?: Stats()
         val txStats = element.txStats ?: TxStatsDynamicPdp()
-        if (!::productStatsView.isInitialized) {
+        if (productStatsView == null) {
             productStatsView = PartialProductStatisticView.build(view.base_rating_talk_courier)
         }
 
-        if (!::attributeInfoView.isInitialized) {
+        if (attributeInfoView == null) {
             attributeInfoView = PartialAttributeInfoView.build(view.base_attribute)
         }
 
@@ -39,16 +39,15 @@ class ProductSocialProofViewHolder(val view: View, private val listener: Dynamic
             listener.onImpressComponent(getComponentTrackData(element))
         }
 
-
         element.rating?.run {
-            productStatsView.renderRatingNew(this.toString())
+            productStatsView?.renderRatingNew(this.toString())
         }
-        attributeInfoView.renderWishlistCount(element.wishListCount)
+        attributeInfoView?.renderWishlistCount(element.wishListCount)
 
-        productStatsView.renderData(stats.countReview, stats.countTalk, listener::onReviewClick, listener::onDiscussionClicked, getComponentTrackData(element))
-        attributeInfoView.renderDataDynamicPdp(stats.countView, txStats)
+        productStatsView?.renderData(stats.countReview, stats.countTalk, listener::onReviewClick, listener::onDiscussionClicked, getComponentTrackData(element))
+        attributeInfoView?.renderDataDynamicPdp(stats.countView, txStats, element.isSocialProofPv)
 
-        productStatsView.renderClickShipping {
+        productStatsView?.renderClickShipping {
             listener.onShipmentSocialProofClicked(getComponentTrackData(element))
         }
     }

@@ -8,6 +8,7 @@ import androidx.appcompat.widget.Toolbar
 import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
@@ -27,6 +28,8 @@ import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.view.adapter.QuickReplyAdapter
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.QuickReplyListener
 import com.tokopedia.chatbot.view.customview.ReasonBottomSheet
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.user.session.UserSessionInterface
 
 /**
@@ -218,6 +221,20 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     override fun getInterlocutorName(headerName: CharSequence): CharSequence  = headerName
+
+    override fun showErrorWebSocket(isWebSocketError: Boolean) {
+        val title = notifier.findViewById<TextView>(R.id.title)
+        val action = notifier.findViewById<View>(R.id.action)
+        if (isWebSocketError) {
+            notifier.show()
+            title.setText(com.tokopedia.chat_common.R.string.error_no_connection_retrying);
+            action.show()
+
+        } else {
+            action.hide()
+            notifier.hide()
+        }
+    }
 
     override fun getRecyclerViewId(): Int {
         return R.id.recycler_view

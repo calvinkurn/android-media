@@ -26,7 +26,6 @@ object DeepLinkChecker {
     const val CATALOG = 2
     const val PRODUCT = 3
     const val SHOP = 4
-    const val TOPPICKS = 5
     const val HOT_LIST = 6
     const val CATEGORY = 7
     const val HOME = 8

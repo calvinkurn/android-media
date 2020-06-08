@@ -5,16 +5,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
+import com.tokopedia.play.view.uimodel.CartUiModel
 import com.tokopedia.play.view.uimodel.PartnerInfoUiModel
 import com.tokopedia.unifyprinciples.Typography
 
@@ -30,13 +30,13 @@ class ToolbarView(
             LayoutInflater.from(container.context).inflate(R.layout.view_toolbar, container, true)
                     .findViewById(R.id.cl_toolbar)
 
-    private val liveBadge = view.findViewById<View>(R.id.live_badge)
-    private val tvChannelName = view.findViewById<Typography>(R.id.tv_stream_name)
     private val tvPartnerName = view.findViewById<Typography>(R.id.tv_partner_name)
     private val tvFollow = view.findViewById<Typography>(R.id.tv_follow)
     private val clPartner = view.findViewById<ConstraintLayout>(R.id.cl_partner)
     private val groupFollowable = view.findViewById<Group>(R.id.group_followable)
     private val ivMore = view.findViewById<ImageView>(R.id.iv_more)
+    private val rlCart = view.findViewById<RelativeLayout>(R.id.rl_cart)
+    private val tvBadgeCart = view.findViewById<TextView>(R.id.tv_badge_cart)
 
     init {
         view.findViewById<ImageView>(R.id.iv_back)
@@ -46,6 +46,10 @@ class ToolbarView(
 
         ivMore.setOnClickListener {
             listener.onMoreButtonClicked(this)
+        }
+
+        rlCart.setOnClickListener {
+            listener.onCartButtonClicked(this)
         }
     }
 
@@ -58,14 +62,6 @@ class ToolbarView(
 
     override fun hide() {
         view.hide()
-    }
-
-    internal fun setLiveBadgeVisibility(isLive: Boolean) {
-        if (isLive) liveBadge.visible() else liveBadge.gone()
-    }
-
-    internal fun setTitle(title: String) {
-        tvChannelName.text = title
     }
 
     internal fun hideActionMore() {
@@ -89,7 +85,7 @@ class ToolbarView(
             }
         }
 
-        if (partnerInfo.type == PartnerType.ADMIN || partnerInfo.name.isEmpty() || partnerInfo.name.isBlank()) clPartner.gone()
+        if (partnerInfo.name.isEmpty() || partnerInfo.name.isBlank()) clPartner.gone()
         else {
             clPartner.visible()
             if (!partnerInfo.isFollowable) groupFollowable.gone()
@@ -108,10 +104,21 @@ class ToolbarView(
         )
     }
 
+    fun setCartInfo(cartUiModel: CartUiModel) {
+        if (cartUiModel.isShow) rlCart.visible() else rlCart.invisible()
+        if (cartUiModel.count > 0) {
+            tvBadgeCart.visible()
+            tvBadgeCart.text =  if (cartUiModel.count > 99) container.context.getString(R.string.play_mock_cart) else cartUiModel.count.toString()
+        } else {
+            tvBadgeCart.invisible()
+        }
+    }
+
     interface Listener {
         fun onBackButtonClicked(view: ToolbarView)
         fun onMoreButtonClicked(view: ToolbarView)
         fun onFollowButtonClicked(view: ToolbarView, partnerId: Long, action: PartnerFollowAction)
         fun onPartnerNameClicked(view: ToolbarView, partnerId: Long, type: PartnerType)
+        fun onCartButtonClicked(view: ToolbarView)
     }
 }

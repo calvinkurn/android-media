@@ -6,5 +6,5 @@ internal interface SimilarProductItemListener {
 
     fun onItemClicked(similarProductItem: Product, adapterPosition: Int)
 
-    fun onItemWishlistClicked(productId: String, isWishlisted: Boolean)
+    fun onThreeDotsClicked(similarProductItem: Product, adapterPosition: Int)
 }

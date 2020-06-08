@@ -20,7 +20,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
-import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.utils.MenuTintUtils;
 
@@ -73,7 +73,7 @@ abstract class BaseToolbarActivity extends BaseActivity {
 
     @DrawableRes
     protected int closeButtonDrawable() {
-        return R.drawable.ic_filter_detail_close;
+        return R.drawable.ic_filter_detail_close_seller;
     }
 
     protected int getThemeActivity() {

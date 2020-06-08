@@ -1,17 +1,19 @@
 package com.tokopedia.home.util
 
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
-import androidx.annotation.ColorRes
-import androidx.annotation.DimenRes
-import androidx.core.content.ContextCompat
 import android.view.Gravity
 import android.view.View
 import android.view.View.LAYER_TYPE_SOFTWARE
+import androidx.annotation.ColorRes
+import androidx.annotation.DimenRes
+import androidx.core.content.ContextCompat
 
 
 /**
@@ -77,5 +79,19 @@ object ViewUtils {
 
         return drawable
 
+    }
+}
+
+fun View.setGradientBackground(colorArray: ArrayList<String>) {
+    if (colorArray.size > 1) {
+        val colors = IntArray(colorArray.size)
+        for (i in 0 until colorArray.size) {
+            colors[i] = Color.parseColor(colorArray[i])
+        }
+        val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
+        gradient.cornerRadius = 0f
+        this.background = gradient
+    } else {
+        this.setBackgroundColor(Color.parseColor(colorArray[0]))
     }
 }

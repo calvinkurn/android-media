@@ -108,7 +108,7 @@ class TradeInHomeViewModelTest {
     @Test
     fun processMessageException() {
         coEvery { tradeInHomeViewModel.getDiagnosticData(androidIntent) } returns deviceDiagnostics
-        coEvery { processMessageUseCase.processMessage(any(), any()) } throws Exception("check warningmessage value is called when exception thrown in Process Message")
+        coEvery { processMessageUseCase.processMessage(any(), any(), any()) } throws Exception("check warningmessage value is called when exception thrown in Process Message")
         every { deviceDiagnostics.imei } returns "3"
 
         tradeInHomeViewModel.processMessage(androidIntent)
@@ -120,7 +120,7 @@ class TradeInHomeViewModelTest {
     @Test
     fun processMessage() {
         coEvery { tradeInHomeViewModel.getDiagnosticData(androidIntent) } returns deviceDiagnostics
-        coEvery { processMessageUseCase.processMessage(any(), any()) } returns response
+        coEvery { processMessageUseCase.processMessage(any(), any(), any()) } returns response
         every { deviceDiagnostics.imei } returns "3"
 
         tradeInHomeViewModel.processMessage(androidIntent)
@@ -185,7 +185,7 @@ class TradeInHomeViewModelTest {
         val jsonObject = JSONObject()
         val modelId = 2
         val userId = "3"
-        coEvery { checkMoneyInUseCase.checkMoneyIn(any(), any(), any()) } throws Exception("check warningmessage value is called when exception thrown in checkMoneyIn")
+        coEvery { checkMoneyInUseCase.checkMoneyIn(any(), any(), any(), any()) } throws Exception("check warningmessage value is called when exception thrown in checkMoneyIn")
         coEvery { userSession.userId } returns userId
 
         tradeInHomeViewModel.checkMoneyIn(modelId, jsonObject)
@@ -201,7 +201,7 @@ class TradeInHomeViewModelTest {
         val userId = "3"
         val usedPrice = 4
         tradeInHomeViewModel.tradeInType = 2
-        coEvery { checkMoneyInUseCase.checkMoneyIn(any(), any(), any()) } returns moneyInResponse
+        coEvery { checkMoneyInUseCase.checkMoneyIn(any(), any(), any(), any()) } returns moneyInResponse
 
         /**Not Eligible Case**/
         coEvery { moneyInResponse?.response?.isEligible } returns false
@@ -240,7 +240,7 @@ class TradeInHomeViewModelTest {
         tradeInHomeViewModel.tradeInType = 2
         tradeInHomeViewModel.tradeInParams.usedPrice = 0
         coEvery { userSession.userId } returns "3"
-        coEvery { checkMoneyInUseCase.checkMoneyIn(any(), any(), any()) } returns moneyInResponse
+        coEvery { checkMoneyInUseCase.checkMoneyIn(any(), any(), any(), any()) } returns moneyInResponse
 
         tradeInHomeViewModel.onFinished(jsonObject)
 

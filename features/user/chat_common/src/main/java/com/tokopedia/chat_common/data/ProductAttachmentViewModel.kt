@@ -49,6 +49,21 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
     var remainingStock: Int = 1
     var status: Int = 0
     var wishList: Boolean = false
+    var images: List<String> = emptyList()
+        get() {
+            return if (field.isNotEmpty()) {
+                field
+            } else {
+                listOf(productImage)
+            }
+        }
+
+    val hasDiscount: Boolean
+        get() {
+            return priceBefore.isNotEmpty() && dropPercentage.isNotEmpty()
+        }
+
+    val stringBlastId: String get() = blastId.toString()
 
     constructor(messageId: String, fromUid: String, from: String,
                 fromRole: String, attachmentId: String, attachmentType: String,
@@ -87,7 +102,7 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
             canShowFooter: Boolean, blastId: Int, productPriceInt: Int, category: String,
             variants: List<AttachmentVariant>, dropPercentage: String, priceBefore: String, shopId: Int,
             freeShipping: FreeShipping, categoryId: Int, playStoreData: PlayStoreData,
-            minOrder: Int, remainingStock: Int, status: Int, wishList: Boolean
+            minOrder: Int, remainingStock: Int, status: Int, wishList: Boolean, images: List<String>
     ) : super(
             messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime,
             "", isRead, false, isSender, message
@@ -116,6 +131,7 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
             setupVariantsField()
         }
         this.wishList = wishList
+        this.images = images
     }
 
     /**
@@ -249,6 +265,10 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
         return "click buy on bottom sheet"
     }
 
+    fun hasVariant(): Boolean {
+        return variants.isNotEmpty()
+    }
+
     fun doesNotHaveVariant(): Boolean {
         return variants.isEmpty()
     }
@@ -262,7 +282,7 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
     }
 
     fun hasEmptyStock(): Boolean {
-        return status == 0
+        return status == statusDeleted || status == statusWarehouse
     }
 
     fun isWishListed(): Boolean {
@@ -277,4 +297,9 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
         return productId.toString()
     }
 
+    companion object {
+        const val statusDeleted = 0
+        const val statusActive = 1
+        const val statusWarehouse = 3
+    }
 }

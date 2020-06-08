@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.home.favorite.data;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.TopAdsShop;
@@ -40,56 +39,6 @@ public class FavoriteDataRepositoryTest {
         favoriteDataRepository = new FavoriteDataRepository(favoriteFactory);
         TKPDMapParam<String, Object> stringObjectHashMap = new TKPDMapParam<>();
         given(requestParams.getParameters()).willReturn(stringObjectHashMap);
-    }
-
-    @Test
-    public void testGetWishlist() throws Exception {
-
-        //given
-        Observable<DomainWishlist> mockDomainWishlistObservable
-                = Observable.just(new DomainWishlist());
-        given(favoriteDataRepository.getWishlist(requestParams.getParameters()))
-                .willReturn(mockDomainWishlistObservable);
-
-        //when
-        TestSubscriber<DomainWishlist> subscriber = new TestSubscriber<>();
-        favoriteDataRepository.getWishlist(requestParams.getParameters()).subscribe(subscriber);
-
-        //then
-        subscriber.awaitTerminalEvent();
-        subscriber.assertNoErrors();
-
-        List<DomainWishlist> listOfDomainWishlist = subscriber.getOnNextEvents();
-        DomainWishlist domainWishlist = listOfDomainWishlist.get(0);
-
-        assertNotNull(domainWishlist);
-        verify(favoriteFactory).getWishlist(requestParams.getParameters());
-
-    }
-
-    @Test
-    public void test_getFreshWishlist_notNull() throws Exception {
-
-        Observable<DomainWishlist> mockDomainWishlistObservable
-                = Observable.just(new DomainWishlist());
-
-        given(favoriteFactory.getFreshWishlist(requestParams.getParameters()))
-                .willReturn(mockDomainWishlistObservable);
-
-        TestSubscriber<DomainWishlist> subscriber = new TestSubscriber<>();
-        favoriteDataRepository
-                .getFreshWishlist(requestParams.getParameters())
-                .subscribe(subscriber);
-
-        subscriber.awaitTerminalEvent();
-        subscriber.assertNoErrors();
-
-        List<DomainWishlist> listOfDomainWishlist = subscriber.getOnNextEvents();
-        DomainWishlist domainWishlist = listOfDomainWishlist.get(0);
-
-        assertNotNull(domainWishlist);
-        verify(favoriteFactory).getFreshWishlist(requestParams.getParameters());
-
     }
 
     @Test

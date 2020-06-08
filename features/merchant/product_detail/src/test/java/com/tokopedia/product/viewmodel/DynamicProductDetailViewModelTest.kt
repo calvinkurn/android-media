@@ -6,6 +6,9 @@ import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.ErrorReporterModel
 import com.tokopedia.atc_common.domain.model.response.ErrorReporterTextModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
+import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
@@ -16,10 +19,13 @@ import com.tokopedia.product.detail.estimasiongkir.data.model.v3.SummaryText
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
+import com.tokopedia.product.util.JsonFormatter
 import com.tokopedia.product.util.TestDispatcherProvider
 import com.tokopedia.product.warehouse.model.ProductActionSubmit
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult
 import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase
+import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
+import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCore
@@ -49,6 +55,11 @@ import rx.Observable
 @ExperimentalCoroutinesApi
 class DynamicProductDetailViewModelTest {
 
+    companion object {
+        const val RECOM_WIDGET_WITH_ONE_TOPADS_JSON = "json/recom_widget_with_one_topads.json"
+        const val RECOM_WIDGET_WITH_ZERO_TOPADS_JSON = "json/recom_widget_with_zero_topads.json"
+    }
+
     @RelaxedMockK
     lateinit var userSessionInterface: UserSessionInterface
     @RelaxedMockK
@@ -62,7 +73,7 @@ class DynamicProductDetailViewModelTest {
     @RelaxedMockK
     lateinit var getProductInfoP2GeneralUseCase: GetProductInfoP2GeneralUseCase
     @RelaxedMockK
-    lateinit var getProductInfoP3UseCase: GetProductInfoP3UseCase
+    lateinit var getProductInfoP3RateEstimateUseCase: GetProductInfoP3RateEstimateUseCase
     @RelaxedMockK
     lateinit var toggleFavoriteUseCase: ToggleFavoriteUseCase
     @RelaxedMockK
@@ -81,6 +92,18 @@ class DynamicProductDetailViewModelTest {
     lateinit var submitHelpTicketUseCase: SubmitHelpTicketUseCase
     @RelaxedMockK
     lateinit var updateCartCounterUseCase: UpdateCartCounterUseCase
+    @RelaxedMockK
+    lateinit var addToCartUseCase: AddToCartUseCase
+    @RelaxedMockK
+    lateinit var addToCartOcsUseCase: AddToCartOcsUseCase
+    @RelaxedMockK
+    lateinit var addToCartOccUseCase: AddToCartOccUseCase
+    @RelaxedMockK
+    lateinit var getCartTypeUseCase: GetCartTypeUseCase
+    @RelaxedMockK
+    lateinit var toggleNotifyMeUseCase: ToggleNotifyMeUseCase
+    @RelaxedMockK
+    lateinit var sendTopAdsUseCase: SendTopAdsUseCase
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -91,8 +114,8 @@ class DynamicProductDetailViewModelTest {
     }
 
     private val viewModel by lazy {
-        DynamicProductDetailViewModel(TestDispatcherProvider(), stickyLoginUseCase, getPdpLayoutUseCase, getProductInfoP2ShopUseCase, getProductInfoP2LoginUseCase, getProductInfoP2GeneralUseCase, getProductInfoP3UseCase, toggleFavoriteUseCase, removeWishlistUseCase, addWishListUseCase, getRecommendationUseCase,
-                moveProductToWarehouseUseCase, moveProductToEtalaseUseCase, trackAffiliateUseCase, submitHelpTicketUseCase, updateCartCounterUseCase, userSessionInterface)
+        DynamicProductDetailViewModel(TestDispatcherProvider(), stickyLoginUseCase, getPdpLayoutUseCase, getProductInfoP2ShopUseCase, getProductInfoP2LoginUseCase, getProductInfoP2GeneralUseCase, getProductInfoP3RateEstimateUseCase, toggleFavoriteUseCase, removeWishlistUseCase, addWishListUseCase, getRecommendationUseCase,
+                moveProductToWarehouseUseCase, moveProductToEtalaseUseCase, trackAffiliateUseCase, submitHelpTicketUseCase, updateCartCounterUseCase, addToCartUseCase, addToCartOcsUseCase, addToCartOccUseCase, getCartTypeUseCase, toggleNotifyMeUseCase, sendTopAdsUseCase, userSessionInterface)
     }
 
     /**
@@ -105,7 +128,7 @@ class DynamicProductDetailViewModelTest {
             userSessionInterface.shopId
         } returns shopId
 
-        val isShopOwner = viewModel.isShopOwner(shopId.toInt())
+        val isShopOwner = viewModel.isShopOwner()
 
         Assert.assertTrue(isShopOwner)
     }
@@ -118,9 +141,182 @@ class DynamicProductDetailViewModelTest {
             userSessionInterface.shopId
         } returns anotherShopId
 
-        val isShopOwner = viewModel.isShopOwner(shopId.toInt())
+        val isShopOwner = viewModel.isShopOwner()
 
         Assert.assertFalse(isShopOwner)
+    }
+
+    /**
+     * Recommendation Top Ads
+     */
+    @Test
+    fun `click recom product with zero top ads`() {
+        var topAdsClickUrl = ""
+        val slotUrl = slot<String>()
+        val asdData = JsonFormatter.createMockGraphqlSuccessResponse(RECOM_WIDGET_WITH_ZERO_TOPADS_JSON, RecomendationEntity::class.java)
+        val mockRecomData = asdData.productRecommendationWidget?.data!!
+        val recomWidget = RecommendationEntityMapper.mappingToRecommendationModel(mockRecomData)
+
+        //Top Ads Counter
+        var numberOfTopAdsClicked = 0
+
+        var listOfProductIdIsTopads = recomWidget.first().recommendationItemList.filter {
+            it.isTopAds
+        }.map {
+            it.productId
+        }
+
+        //Mock Click TopAds
+        recomWidget.first().recommendationItemList.forEach {
+            every {
+                sendTopAdsUseCase.executeOnBackground(capture(slotUrl))
+            } answers {
+                topAdsClickUrl = slotUrl.captured
+            }
+
+            if (it.isTopAds) {
+                numberOfTopAdsClicked++
+                viewModel.sendTopAds(it.clickUrl)
+                print(it.clickUrl)
+                verify {
+                    viewModel.sendTopAds(it.clickUrl)
+                }
+                Assert.assertTrue(it.productId in listOfProductIdIsTopads)
+                Assert.assertTrue(topAdsClickUrl == it.clickUrl)
+            }
+
+            verify(inverse = true) {
+                viewModel.sendTopAds(it.clickUrl)
+            }
+        }
+        Assert.assertTrue(0 == numberOfTopAdsClicked)
+    }
+
+    @Test
+    fun `click recom product with one top ads`() {
+        var topAdsClickUrl = ""
+        val slotUrl = slot<String>()
+        val asdData = JsonFormatter.createMockGraphqlSuccessResponse(RECOM_WIDGET_WITH_ONE_TOPADS_JSON, RecomendationEntity::class.java)
+        val mockRecomData = asdData.productRecommendationWidget?.data!!
+        val recomWidget = RecommendationEntityMapper.mappingToRecommendationModel(mockRecomData)
+
+        //Top Ads Counter
+        var numberOfTopAdsClicked = 0
+        val numberOfTopAdsClickedMock = recomWidget.first().recommendationItemList.count {
+            it.isTopAds
+        }
+
+        var listOfProductIdIsTopads = recomWidget.first().recommendationItemList.filter {
+            it.isTopAds
+        }.map {
+            it.productId
+        }
+
+        //Mock Click TopAds
+        recomWidget.first().recommendationItemList.forEach {
+            every {
+                sendTopAdsUseCase.executeOnBackground(capture(slotUrl))
+            } answers {
+                topAdsClickUrl = slotUrl.captured
+            }
+
+            if (it.isTopAds) {
+                numberOfTopAdsClicked++
+                viewModel.sendTopAds(it.clickUrl)
+                print(it.clickUrl)
+                verify {
+                    viewModel.sendTopAds(it.clickUrl)
+                }
+                Assert.assertTrue(it.productId in listOfProductIdIsTopads)
+                Assert.assertTrue(topAdsClickUrl == it.clickUrl)
+            }
+        }
+        Assert.assertTrue(numberOfTopAdsClickedMock == numberOfTopAdsClicked)
+    }
+
+    @Test
+    fun `impress recom product with zero top ads`() {
+        var topAdsClickUrl = ""
+        val slotUrl = slot<String>()
+        val asdData = JsonFormatter.createMockGraphqlSuccessResponse(RECOM_WIDGET_WITH_ZERO_TOPADS_JSON, RecomendationEntity::class.java)
+        val mockRecomData = asdData.productRecommendationWidget?.data!!
+        val recomWidget = RecommendationEntityMapper.mappingToRecommendationModel(mockRecomData)
+
+        //Top Ads Counter
+        var numberOfTopAdsClicked = 0
+
+        var listOfProductIdIsTopads = recomWidget.first().recommendationItemList.filter {
+            it.isTopAds
+        }.map {
+            it.productId
+        }
+
+        //Mock Click TopAds
+        recomWidget.first().recommendationItemList.forEach {
+            every {
+                sendTopAdsUseCase.executeOnBackground(capture(slotUrl))
+            } answers {
+                topAdsClickUrl = slotUrl.captured
+            }
+
+            if (it.isTopAds) {
+                numberOfTopAdsClicked++
+                viewModel.sendTopAds(it.trackerImageUrl)
+                verify {
+                    viewModel.sendTopAds(it.trackerImageUrl)
+                }
+                Assert.assertTrue(it.productId in listOfProductIdIsTopads)
+                Assert.assertTrue(topAdsClickUrl == it.trackerImageUrl)
+            }
+
+            verify(inverse = true) {
+                viewModel.sendTopAds(it.trackerImageUrl)
+            }
+        }
+        Assert.assertTrue(0 == numberOfTopAdsClicked)
+    }
+
+    @Test
+    fun `impress recom with one top ads`() {
+        var topAdsClickUrl = ""
+        val slotUrl = slot<String>()
+        val asdData = JsonFormatter.createMockGraphqlSuccessResponse(RECOM_WIDGET_WITH_ONE_TOPADS_JSON, RecomendationEntity::class.java)
+        val mockRecomData = asdData.productRecommendationWidget?.data!!
+        val recomWidget = RecommendationEntityMapper.mappingToRecommendationModel(mockRecomData)
+
+        //Top Ads Counter
+        var numberOfTopAds = 0
+        val numberOfTopAdsMock = recomWidget.first().recommendationItemList.count {
+            it.isTopAds
+        }
+
+        var listOfProductIdIsTopads = recomWidget.first().recommendationItemList.filter {
+            it.isTopAds
+        }.map {
+            it.productId
+        }
+
+        //Mock Click TopAds
+        recomWidget.first().recommendationItemList.forEach {
+            every {
+                sendTopAdsUseCase.executeOnBackground(capture(slotUrl))
+            } answers {
+                topAdsClickUrl = slotUrl.captured
+            }
+
+            if (it.isTopAds) {
+                numberOfTopAds++
+                viewModel.sendTopAds(it.trackerImageUrl)
+
+                verify {
+                    viewModel.sendTopAds(it.trackerImageUrl)
+                }
+
+                Assert.assertTrue(it.productId in listOfProductIdIsTopads)
+                Assert.assertTrue(topAdsClickUrl == it.trackerImageUrl)
+            }
+        }
+        Assert.assertTrue(numberOfTopAdsMock == numberOfTopAds)
     }
 
     /**
@@ -164,7 +360,7 @@ class DynamicProductDetailViewModelTest {
         } returns dataP2General
 
         coEvery {
-            getProductInfoP3UseCase.executeOnBackground()
+            getProductInfoP3RateEstimateUseCase.executeOnBackground()
         } returns dataP3
 
         viewModel.getProductP1(productParams)
@@ -201,12 +397,11 @@ class DynamicProductDetailViewModelTest {
 
         //P3
         coVerify {
-            getProductInfoP3UseCase.executeOnBackground()
+            getProductInfoP3RateEstimateUseCase.executeOnBackground()
         }
-        Assert.assertNotNull(viewModel.productInfoP3resp.value)
-        Assert.assertNotNull(viewModel.productInfoP3resp.value?.rateEstSummarizeText)
-        Assert.assertNotNull(viewModel.productInfoP3resp.value?.ratesModel)
-        Assert.assertEquals(viewModel.productInfoP3resp.value?.userCod, anyBoolean())
+        Assert.assertNotNull(viewModel.productInfoP3RateEstimate.value)
+        Assert.assertNotNull(viewModel.productInfoP3RateEstimate.value?.rateEstSummarizeText)
+        Assert.assertEquals(viewModel.productInfoP3RateEstimate.value?.userCod, anyBoolean())
     }
 
     @Test
@@ -239,7 +434,7 @@ class DynamicProductDetailViewModelTest {
 
         //P3
         coVerify(inverse = true) {
-            getProductInfoP3UseCase.executeOnBackground()
+            getProductInfoP3RateEstimateUseCase.executeOnBackground()
         }
     }
 
@@ -277,7 +472,7 @@ class DynamicProductDetailViewModelTest {
         } returns dataP2General
 
         coEvery {
-            getProductInfoP3UseCase.executeOnBackground()
+            getProductInfoP3RateEstimateUseCase.executeOnBackground()
         } returns dataP3
 
         viewModel.getProductP1(productParams)
@@ -311,7 +506,7 @@ class DynamicProductDetailViewModelTest {
         //P3
         //Make sure not called
         coVerify(inverse = true) {
-            getProductInfoP3UseCase.executeOnBackground()
+            getProductInfoP3RateEstimateUseCase.executeOnBackground()
         }
 
         Assert.assertTrue((viewModel.productLayout.value as Success).data.none {
@@ -708,7 +903,7 @@ class DynamicProductDetailViewModelTest {
         }
 
         verify {
-            getProductInfoP3UseCase.cancelJobs()
+            getProductInfoP3RateEstimateUseCase.cancelJobs()
         }
 
         verify {

@@ -152,7 +152,7 @@ public class QuickFilterViewHolder extends AbstractViewHolder<QuickFilterViewMod
 
             setBackgroundResource(option);
 
-            quickFilterText.setOnClickListener(new View.OnClickListener() {
+            itemContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (quickFilterListener != null) {

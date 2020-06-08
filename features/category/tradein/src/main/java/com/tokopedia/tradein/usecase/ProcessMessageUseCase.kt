@@ -1,7 +1,6 @@
 package com.tokopedia.tradein.usecase
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import android.content.res.Resources
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.tradein.R
@@ -11,12 +10,10 @@ import com.tokopedia.tradein.model.DeviceDiagInputResponse
 import com.tokopedia.tradein.model.DeviceDiagnostics
 import com.tokopedia.tradein.repository.TradeInRepository
 import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_OFFLINE
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 import javax.inject.Inject
 
 class ProcessMessageUseCase @Inject constructor(
-        @ApplicationContext private val context: Context,
         private val repository: TradeInRepository)  {
 
     private var tradeInType: Int = TRADEIN_OFFLINE
@@ -49,12 +46,12 @@ class ProcessMessageUseCase @Inject constructor(
         return variables
     }
 
-    private fun getQuery(): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_insert_device_diag)
+    private fun getQuery(resources : Resources?): String {
+        return GraphqlHelper.loadRawString(resources, R.raw.gql_insert_device_diag)
     }
 
-    suspend fun processMessage(tradeInParams: TradeInParams, diagnostics: DeviceDiagnostics): DeviceDiagInputResponse{
+    suspend fun processMessage(resources : Resources?, tradeInParams: TradeInParams, diagnostics: DeviceDiagnostics): DeviceDiagInputResponse{
         val variables = createRequestParams(tradeInParams, diagnostics)
-        return repository.getGQLData(getQuery(), DeviceDiagInputResponse::class.java, variables) as DeviceDiagInputResponse
+        return repository.getGQLData(getQuery(resources), DeviceDiagInputResponse::class.java, variables) as DeviceDiagInputResponse
     }
 }

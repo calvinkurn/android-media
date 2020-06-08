@@ -341,8 +341,10 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-        val saldoDetailsComponent = SaldoDetailsComponentInstance.getComponent(activity!!.application)
-        saldoDetailsComponent!!.inject(this)
+        activity?.let{
+            val saldoDetailsComponent = SaldoDetailsComponentInstance.getComponent(it)
+            saldoDetailsComponent.inject(this)
+        }
 
         if (context is AppCompatActivity) {
             val viewModelProvider = ViewModelProviders.of(context as AppCompatActivity, viewModelFactory)

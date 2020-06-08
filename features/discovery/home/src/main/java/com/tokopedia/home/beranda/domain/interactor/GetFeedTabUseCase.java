@@ -8,7 +8,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.data.mapper.FeedTabMapper;
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedTabGqlResponse;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecommendationTabDataModel;
 import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -18,7 +18,7 @@ import java.util.List;
 import rx.Observable;
 import rx.functions.Func1;
 
-public class GetFeedTabUseCase extends UseCase<List<FeedTabModel>> {
+public class GetFeedTabUseCase extends UseCase<List<RecommendationTabDataModel>> {
 
     private Context context;
     private GraphqlUseCase graphqlUseCase;
@@ -33,7 +33,7 @@ public class GetFeedTabUseCase extends UseCase<List<FeedTabModel>> {
     }
 
     @Override
-    public Observable<List<FeedTabModel>> createObservable(RequestParams requestParams) {
+    public Observable<List<RecommendationTabDataModel>> createObservable(RequestParams requestParams) {
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
         R.raw.gql_home_feed_tab), HomeFeedTabGqlResponse.class, requestParams.getParameters());
 
@@ -44,7 +44,7 @@ public class GetFeedTabUseCase extends UseCase<List<FeedTabModel>> {
                 .map(checkForNull());
     }
 
-    private Func1<List<FeedTabModel>, List<FeedTabModel>> checkForNull() {
+    private Func1<List<RecommendationTabDataModel>, List<RecommendationTabDataModel>> checkForNull() {
         return responseMap -> {
             NullCheckerKt.throwIfNull(responseMap, GetFeedTabUseCase.class);
             return responseMap;

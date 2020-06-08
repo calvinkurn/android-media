@@ -19,4 +19,8 @@ data class ProductInputModel (
         var productId: Long = 0L,
         var completionPercent: Int = 0,
         var draftId: Long = 0L
-) : Parcelable
+) : Parcelable {
+    companion object {
+        val TAG: String get() = ProductInputModel::class.java.simpleName
+    }
+}

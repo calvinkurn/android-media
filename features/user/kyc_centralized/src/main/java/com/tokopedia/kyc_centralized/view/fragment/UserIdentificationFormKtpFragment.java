@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.imagepicker.common.util.FileUtils;
 import com.tokopedia.kyc_centralized.R;
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity;
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity;
@@ -95,6 +96,7 @@ public class UserIdentificationFormKtpFragment extends
 
     @Override
     public void trackOnBackPressed() {
+        FileUtils.deleteFileInTokopediaFolder(stepperModel.getKtpFile());
         analytics.eventClickBackKtpPage();
     }
 }

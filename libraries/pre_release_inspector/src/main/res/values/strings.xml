@@ -1,0 +1,23 @@
+<resources>
+    <string name="view_inspector_dialog_title">Pre-Release Inspector (PRI)</string>
+    <string name="view_inspector_empty_result_text">No Result</string>
+    <string name="view_inspector_search_input_hint">Search…</string>
+    <string name="view_inspector_config_item_apply_button_text">Apply</string>
+
+    <string name="view_inspector_hint_config_width">Width (dp)</string>
+    <string name="view_inspector_hint_config_height">Height (dp)</string>
+    <string name="view_inspector_hint_config_margin_left">Margin Left (dp)</string>
+    <string name="view_inspector_hint_config_margin_top">Margin Top (dp)</string>
+    <string name="view_inspector_hint_config_margin_right">Margin Right (dp)</string>
+    <string name="view_inspector_hint_config_margin_bottom">Margin Bottom (dp)</string>
+    <string name="view_inspector_hint_config_padding_left">Padding Left (dp)</string>
+    <string name="view_inspector_hint_config_padding_top">Padding Top (dp)</string>
+    <string name="view_inspector_hint_config_padding_right">Padding Right (dp)</string>
+    <string name="view_inspector_hint_config_padding_bottom">Padding Bottom (dp)</string>
+    <string name="view_inspector_hint_config_background_color">BackgroundColor (example: #FFFFFF)</string>
+    <string name="view_inspector_hint_config_text">Text</string>
+    <string name="view_inspector_hint_config_text_color">TextColor (example: #FFFFFF)</string>
+    <string name="view_inspector_hint_config_text_size">TextSize (sp)</string>
+
+    <string name="view_inspector_close_dialog_after_apply_checkbox_text">Close dialog after apply</string>
+</resources>

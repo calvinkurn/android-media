@@ -125,12 +125,12 @@
             app:flexWrap="wrap">
 
             <com.tokopedia.unifyprinciples.Typography
-                android:layout_marginRight="@dimen/dp_4"
-                android:layout_marginEnd="@dimen/dp_4"
                 android:id="@+id/tv_item_count_and_weight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/layout_policy"
+                android:layout_marginEnd="@dimen/dp_4"
+                android:layout_marginRight="@dimen/dp_4"
                 android:layout_toEndOf="@id/iv_product_card"
                 android:layout_toRightOf="@id/iv_product_card"
                 app:typographyType="body_2"
@@ -202,6 +202,14 @@
 
     </LinearLayout>
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/product_ticker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:closeButtonVisibility="gone"
+        app:tickerShapeType="loose"
+        app:tickerType="warning" />
+
     <RelativeLayout
         android:id="@+id/rlayout_purchase_protection"
         android:layout_width="match_parent"
@@ -226,7 +234,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dp_4"
                 android:button="@drawable/ic_cart_check_box"
-                android:enabled="false"/>
+                android:enabled="false" />
 
         </RelativeLayout>
 

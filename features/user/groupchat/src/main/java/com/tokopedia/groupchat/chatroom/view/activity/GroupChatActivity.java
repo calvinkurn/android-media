@@ -55,6 +55,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.card.ToolTipUtils;
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.globalerror.GlobalError;
 import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.channel.view.activity.ChannelActivity;
 import com.tokopedia.groupchat.channel.view.model.ChannelViewModel;
@@ -1516,14 +1517,12 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private void setChannelNotFoundView(int visibility) {
         if (findViewById(R.id.card_retry) != null) {
-            findViewById(R.id.card_retry).setVisibility(visibility);
-            findViewById(R.id.card_retry).findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String adsLink = "tokopedia://webview?url=https://tokopedia.link/playfreezestate";
-                    openSponsor(adsLink);
-                    finish();
-                }
+            GlobalError globalError = findViewById(R.id.card_retry);
+            globalError.setVisibility(visibility);
+            globalError.getErrorAction().setOnClickListener(v -> {
+                String adsLink = "tokopedia://webview?url=https://tokopedia.link/playfreezestate";
+                openSponsor(adsLink);
+                finish();
             });
         }
     }

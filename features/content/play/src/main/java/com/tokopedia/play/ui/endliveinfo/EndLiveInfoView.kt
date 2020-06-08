@@ -5,15 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
-import com.tokopedia.play.ui.stats.StatsView
+import com.tokopedia.play.view.uimodel.TotalLikeUiModel
+import com.tokopedia.play.view.uimodel.TotalViewUiModel
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by jegul on 14/01/20
@@ -27,19 +27,14 @@ class EndLiveInfoView(
             LayoutInflater.from(container.context).inflate(R.layout.view_end_live_info, container, true)
                     .findViewById(R.id.cl_play_live_ended)
 
-    private val clPlayLiveEnded = view as ConstraintLayout
     private val txtLiveEndedTitle = view.findViewById<TextView>(R.id.txt_live_ended_title)
     private val txtLiveEndedBody = view.findViewById<TextView>(R.id.txt_live_ended_body)
     private val btnLiveEndedAction = view.findViewById<UnifyButton>(R.id.btn_live_ended_action)
-
-    internal val statsView = StatsView(clPlayLiveEnded)
+    private val tvTotalViews = view.findViewById<Typography>(R.id.tv_total_views)
+    private val tvTotalLikes = view.findViewById<Typography>(R.id.tv_total_likes)
 
     private val resources: Resources
         get() = view.resources
-
-    init {
-        layoutStats(statsView.containerId)
-    }
 
     override val containerId: Int = view.id
 
@@ -60,19 +55,13 @@ class EndLiveInfoView(
         }
     }
 
-    private fun layoutStats(@IdRes statsComponentId: Int) {
-        val constraintSet = ConstraintSet()
-        constraintSet.clone(clPlayLiveEnded)
+    internal fun setTotalViews(totalView: TotalViewUiModel) {
+        tvTotalViews.text = totalView.totalView
+    }
 
-        constraintSet.apply {
-            connect(statsComponentId, ConstraintSet.TOP, txtLiveEndedBody.id, ConstraintSet.BOTTOM, resources.getDimensionPixelOffset(R.dimen.dp_16))
-            connect(statsComponentId, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-            connect(statsComponentId, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
-            connect(statsComponentId, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
-
-            connect(txtLiveEndedBody.id, ConstraintSet.BOTTOM, statsComponentId, ConstraintSet.BOTTOM)
-        }
-        constraintSet.applyTo(clPlayLiveEnded)
+    internal fun setTotalLikes(totalLikes: TotalLikeUiModel) {
+        tvTotalLikes.text = view.context.resources.getQuantityString(R.plurals.play_likes,
+                totalLikes.totalLike, totalLikes.totalLikeFormatted)
     }
 
     interface Listener {

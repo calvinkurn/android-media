@@ -6,15 +6,15 @@ import com.google.gson.annotations.SerializedName
 data class ParamLocation(
         @SerializedName("cityID")
         @Expose
-        var cityID: Int = 0,
+        var cityID: Long = 0,
 
         @SerializedName("districtID")
         @Expose
-        var districtID: Int = 0,
+        var districtID: Long = 0,
 
         @SerializedName("regionID")
         @Expose
-        var regionID: Int = 0,
+        var regionID: Long = 0,
 
         @SerializedName("latitude")
         @Expose

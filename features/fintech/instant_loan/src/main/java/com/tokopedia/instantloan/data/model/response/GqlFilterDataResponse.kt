@@ -6,7 +6,6 @@ data class GqlFilterDataResponse(
 
         @SerializedName("le_getfilter")
         var gqlFilterData: GqlFilterData
-
 )
 
 data class GqlFilterData(
@@ -20,9 +19,6 @@ data class GqlFilterData(
 
 
 data class GqlLoanAmountResponse(
-        @SerializedName("Step")
-        var step: String,
-
         @SerializedName("Label")
         var label: String,
 

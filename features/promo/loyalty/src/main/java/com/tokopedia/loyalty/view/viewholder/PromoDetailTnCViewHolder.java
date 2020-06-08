@@ -30,7 +30,7 @@ public class PromoDetailTnCViewHolder extends RecyclerView.ViewHolder {
                                     OnAdapterActionListener adapterActionListener) {
         super(itemView);
 
-        this.webView = itemView.findViewById(com.tokopedia.abstraction.R.id.webview);
+        this.webView = itemView.findViewById(R.id.webview);
         this.adapterActionListener = adapterActionListener;
     }
 

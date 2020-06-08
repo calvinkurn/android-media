@@ -5,7 +5,6 @@ import android.text.TextUtils;
 
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
-import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
@@ -26,6 +25,7 @@ import static com.tokopedia.search.analytics.SearchTrackingConstant.EVENT_ACTION
 import static com.tokopedia.search.analytics.SearchTrackingConstant.EVENT_CATEGORY;
 import static com.tokopedia.search.analytics.SearchTrackingConstant.EVENT_LABEL;
 import static com.tokopedia.search.analytics.SearchTrackingConstant.IS_RESULT_FOUND;
+import static com.tokopedia.search.analytics.SearchTrackingConstant.RELATED_KEYWORD;
 import static com.tokopedia.search.analytics.SearchTrackingConstant.USER_ID;
 import com.tokopedia.iris.util.ConstantKt;
 
@@ -252,6 +252,15 @@ public class SearchTracking {
                 "search result",
                 "click - related keyword",
                 String.format("%s - %s", currentKeyword, relatedKeyword)
+        ));
+    }
+
+    public static void eventClickSuggestedSearch(String currentKeyword, String suggestion) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                SearchEventTracking.Event.SEARCH_RESULT,
+                SearchEventTracking.Category.SEARCH_RESULT,
+                SearchEventTracking.Action.CLICK_FUZZY_KEYWORDS_SUGGESTION,
+                String.format("%s - %s", currentKeyword, suggestion)
         ));
     }
 
@@ -629,22 +638,14 @@ public class SearchTracking {
                 EVENT, SearchEventTracking.Event.CLICK_SEARCH,
                 EVENT_CATEGORY, SearchEventTracking.Category.EVENT_TOP_NAV,
                 EVENT_ACTION, SearchEventTracking.Action.GENERAL_SEARCH,
-                EVENT_LABEL, getGTMEventSearchAttemptLabel(generalSearchTrackingModel),
+                EVENT_LABEL, generalSearchTrackingModel.getEventLabel(),
                 IS_RESULT_FOUND, generalSearchTrackingModel.isResultFound(),
-                CATEGORY_ID_MAPPING, new JSONArray(Arrays.asList(generalSearchTrackingModel.getCategory().keySet().toArray())),
-                CATEGORY_NAME_MAPPING, new JSONArray(generalSearchTrackingModel.getCategory().values())
+                CATEGORY_ID_MAPPING, generalSearchTrackingModel.getCategoryIdMapping(),
+                CATEGORY_NAME_MAPPING, generalSearchTrackingModel.getCategoryNameMapping(),
+                RELATED_KEYWORD, generalSearchTrackingModel.getRelatedKeyword()
         );
 
         TrackApp.getInstance().getGTM().sendGeneralEvent(value);
-    }
-
-    private static String getGTMEventSearchAttemptLabel(GeneralSearchTrackingModel generalSearchTrackingModel) {
-        return String.format(
-                SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
-                generalSearchTrackingModel.getKeyword(),
-                generalSearchTrackingModel.getTreatment(),
-                generalSearchTrackingModel.getResponse()
-        );
     }
 
     public static void trackEventImpressionShopRecommendation(List<Object> shopItem, String keyword) {
@@ -745,12 +746,12 @@ public class SearchTracking {
         );
     }
 
-    public static void trackImpressionInspirationCarousel(String keyword, List<Object> shopItemProductList) {
+    public static void trackImpressionInspirationCarousel(String type, String keyword, List<Object> shopItemProductList) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
                         EVENT_CATEGORY,  SearchEventTracking.Category.SEARCH_RESULT,
                         EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_INSPIRATION_CAROUSEL_PRODUCT,
-                        EVENT_LABEL, keyword,
+                        EVENT_LABEL, type + " - " + keyword,
                         ECOMMERCE, DataLayer.mapOf(
                                 "currencyCode", "IDR",
                                 "impressions", DataLayer.listOf(
@@ -760,23 +761,24 @@ public class SearchTracking {
         );
     }
 
-    public static void trackEventClickInspirationCarouselOptionSeeAll(String keywordBefore, String keywordAfter) {
+    public static void trackEventClickInspirationCarouselOptionSeeAll(String type, String keywordBefore, String keywordAfter) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, SearchEventTracking.Event.SEARCH_RESULT,
                         EVENT_CATEGORY,  SearchEventTracking.Category.SEARCH_RESULT,
                         EVENT_ACTION, SearchEventTracking.Action.CLICK_INSPIRATION_CAROUSEL_SEARCH,
-                        EVENT_LABEL, keywordBefore + " - " + keywordAfter
+                        EVENT_LABEL, type + " - " + keywordBefore + " - " + keywordAfter
                 )
         );
     }
 
-    public static void trackEventClickInspirationCarouselOptionProduct(String keyword,
+    public static void trackEventClickInspirationCarouselOptionProduct(String type,
+                                                                       String keyword,
                                                                        List<Object> products) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
                         EVENT_CATEGORY,  SearchEventTracking.Category.SEARCH_RESULT,
                         EVENT_ACTION, SearchEventTracking.Action.CLICK_INSPIRATION_CAROUSEL_PRODUCT,
-                        EVENT_LABEL, keyword,
+                        EVENT_LABEL, type + " - " + keyword,
                         ECOMMERCE, DataLayer.mapOf("click",
                                 DataLayer.mapOf("actionField",
                                         DataLayer.mapOf("list", "/search - carousel"),

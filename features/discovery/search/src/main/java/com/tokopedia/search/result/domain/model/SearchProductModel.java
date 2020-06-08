@@ -375,25 +375,25 @@ public class SearchProductModel {
 
         @SerializedName("currentKeyword")
         @Expose
-        private String currentKeyword;
+        private String currentKeyword = "";
         @SerializedName("suggestion")
         @Expose
-        private String suggestion;
+        private String suggestion = "";
         @SerializedName("suggestionCount")
         @Expose
-        private int suggestionCount;
+        private int suggestionCount = 0;
         @SerializedName("instead")
         @Expose
-        private String instead;
+        private String instead = "";
         @SerializedName("insteadCount")
         @Expose
-        private int insteadCount;
+        private int insteadCount = 0;
         @SerializedName("text")
         @Expose
-        private String text;
+        private String text = "";
         @SerializedName("query")
         @Expose
-        private String query;
+        private String query = "";
 
         public String getCurrentKeyword() {
             return currentKeyword;
@@ -495,6 +495,9 @@ public class SearchProductModel {
         @SerializedName("is_featured")
         @Expose
         private int isFeatured;
+        @SerializedName("rating_average")
+        @Expose
+        private String ratingAverage = "";
         @SerializedName("rating")
         @Expose
         private int rating;
@@ -534,6 +537,9 @@ public class SearchProductModel {
         @SerializedName("free_ongkir")
         @Expose
         private FreeOngkir freeOngkir = new FreeOngkir();
+        @SerializedName("booster_list")
+        @Expose
+        private String boosterList = "";
 
         public String getId() {
             return id;
@@ -615,6 +621,10 @@ public class SearchProductModel {
             return isFeatured;
         }
 
+        public String getRatingAverage() {
+            return ratingAverage;
+        }
+
         public int getRating() {
             return rating;
         }
@@ -677,6 +687,10 @@ public class SearchProductModel {
 
         public FreeOngkir getFreeOngkir() {
             return freeOngkir;
+        }
+
+        public String getBoosterList() {
+            return boosterList;
         }
     }
 

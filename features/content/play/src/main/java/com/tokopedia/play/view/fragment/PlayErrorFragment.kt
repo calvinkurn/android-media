@@ -15,10 +15,12 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.play.ERR_STATE_GLOBAL
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytics
 import com.tokopedia.play.di.DaggerPlayComponent
+import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.GlobalErrorCodeWrapper
@@ -71,13 +73,14 @@ class PlayErrorFragment: BaseDaggerFragment(), CoroutineScope {
                 .baseAppComponent(
                         (requireContext().applicationContext as BaseMainApplication).baseAppComponent
                 )
+                .playModule(PlayModule(requireContext()))
                 .build()
                 .inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        playViewModel = ViewModelProvider(parentFragment!!, viewModelFactory).get(PlayViewModel::class.java)
+        playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
         channelId  = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
     }
 
@@ -101,7 +104,7 @@ class PlayErrorFragment: BaseDaggerFragment(), CoroutineScope {
         container = view.findViewById(R.id.container_global_error)
         globalError = view.findViewById(R.id.global_error)
         context?.let {
-            globalError.errorTitle.setTextColor(ContextCompat.getColor(it, R.color.Neutral_N0))
+            globalError.errorTitle.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
             globalError.errorDescription.setTextColor(ContextCompat.getColor(it, R.color.play_error_text_color))
         }
 
@@ -125,9 +128,6 @@ class PlayErrorFragment: BaseDaggerFragment(), CoroutineScope {
     private fun showGlobalError(throwable: Throwable) {
         throwable.message?.let {
             when(GlobalErrorCodeWrapper.wrap(it)) {
-                is GlobalErrorCodeWrapper.Unknown -> {
-                    return
-                }
                 is GlobalErrorCodeWrapper.NotFound -> {
                     globalError.setType(GlobalError.PAGE_NOT_FOUND)
                     globalError.setActionClickListener {
@@ -142,14 +142,15 @@ class PlayErrorFragment: BaseDaggerFragment(), CoroutineScope {
                         playViewModel.getChannelInfo(channelId)
                     }
                 }
-                is GlobalErrorCodeWrapper.ServerError -> {
+                is GlobalErrorCodeWrapper.ServerError,
+                is GlobalErrorCodeWrapper.Unknown -> {
                     globalError.setType(GlobalError.SERVER_ERROR)
                     globalError.setActionClickListener {
                         playViewModel.getChannelInfo(channelId)
                     }
                 }
             }
-            PlayAnalytics.errorState(channelId, globalError.errorDescription.text.toString(), playViewModel.isLive)
+            PlayAnalytics.errorState(channelId, "$ERR_STATE_GLOBAL: ${globalError.errorDescription.text}", playViewModel.channelType)
             container.visible()
         }
     }

@@ -11,11 +11,11 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.response.ResponseKeywordSuggestion
-import com.tokopedia.topads.internal.ParamObject.GROUP_ID
+import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_ID
 import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordItemViewModel
 import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordViewModel
-import com.tokopedia.topads.internal.ParamObject.PRODUCT_IDS
-import com.tokopedia.topads.internal.ParamObject.SHOP_id
+import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT_IDS
+import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_id
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher

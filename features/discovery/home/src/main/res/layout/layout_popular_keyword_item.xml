@@ -14,8 +14,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <com.tokopedia.design.image.SquareImageView
+        <com.tokopedia.circular_view_pager.presentation.widgets.shimmeringImageView.ShimmeringImageView
             android:id="@+id/iv_product"
             android:layout_width="@dimen/dp_64"
             android:layout_height="@dimen/dp_64"

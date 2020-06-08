@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.product.detail.R
@@ -21,15 +22,13 @@ class ProductMerchantVoucherViewHolder(val view: View, val listener: DynamicProd
 
     override fun bind(element: ProductMerchantVoucherDataModel?) {
         if (element?.shouldRenderInitialData != false) {
-            element?.shouldRenderInitialData = false
-            view.loading_voucher.show()
-            element?.let {
-
+            element?.voucherData?.let {
+                view.merchantVoucherListWidget.setData(it)
+                view.voucher_separator.showWithCondition(it.isNotEmpty())
                 view.addOnImpressionListener(element.impressHolder) {
                     listener.onImpressComponent(getComponentTrackData(element))
                 }
 
-                view.loading_voucher.hide()
                 view.merchantVoucherListWidget.setOnMerchantVoucherListWidgetListener(object : MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener {
                     override val isOwner: Boolean
                         get() = listener.isOwner()
@@ -46,9 +45,11 @@ class ProductMerchantVoucherViewHolder(val view: View, val listener: DynamicProd
                         listener.onSeeAllMerchantVoucherClick(getComponentTrackData(element))
                     }
 
+                    override fun onVoucherItemImpressed(merchantVoucherViewModel: MerchantVoucherViewModel, voucherPosition: Int) {}
                 })
-
-                view.merchantVoucherListWidget.setData(it.voucherData)
+                if (it.isNotEmpty()) {
+                    element.shouldRenderInitialData = false
+                }
             }
         }
     }

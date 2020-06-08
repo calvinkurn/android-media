@@ -10,12 +10,12 @@ data class Variant (
 
         @SerializedName("selections")
         @Expose
-        var selections: List<Selection> = emptyList(),
+        var selections: List<Selection>? = emptyList(),
         @SerializedName("products")
         @Expose
-        var products: List<Product> = emptyList(),
+        var products: List<Product>? = emptyList(),
         @SerializedName("sizeChart")
         @Expose
-        var sizeChart: List<Picture> = emptyList()
+        var sizeChart: List<Picture>? = emptyList()
 
 ) : Parcelable

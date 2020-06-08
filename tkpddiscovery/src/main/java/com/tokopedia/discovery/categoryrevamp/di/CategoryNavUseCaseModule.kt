@@ -153,4 +153,8 @@ class CategoryNavUseCaseModule {
         return BaseRepository()
     }
 
+    @CategoryNavScope
+    @Provides
+    fun provideSendTopAdsUseCase() = SendTopAdsUseCase()
+
 }

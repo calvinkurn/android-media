@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.product.manage.item.R
+import com.tokopedia.product.manage.item.common.util.BaseTextPickerDialogFragment
 import com.tokopedia.product.manage.item.utils.YoutubeUtil
 
 class ProductAddVideoDialogFragment : BaseTextPickerDialogFragment() {

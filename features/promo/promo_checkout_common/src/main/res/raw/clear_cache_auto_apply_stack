@@ -1,7 +1,8 @@
 mutation {
  clearCacheAutoApplyStack(
     serviceID: "#serviceId",
-    promoCode: #promoCode) {
+    promoCode: #promoCode,
+    isOCC: #isOCC) {
         Success
         ticker_message
  }

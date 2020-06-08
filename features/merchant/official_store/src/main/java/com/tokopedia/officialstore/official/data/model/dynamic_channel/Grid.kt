@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.productcard.ProductCardModel
 
 data class Grid(
         @Expose @SerializedName("freeOngkir") val freeOngkir: FreeOngkir?,
@@ -19,7 +20,9 @@ data class Grid(
         @Expose @SerializedName("attribution") val attribution: String,
         @Expose @SerializedName("productClickUrl") val productClickUrl: String,
         @Expose @SerializedName("impression") val impression: String,
-        @Expose @SerializedName("cashback") val cashback: String
+        @Expose @SerializedName("cashback") val cashback: String,
+        @Expose @SerializedName("discountPercentage") val discountPercentage: String,
+        @Expose @SerializedName("labelGroup") val labelGroup: List<ProductCardModel.LabelGroup> = listOf()
 ) : Parcelable {
 
     private constructor(parcel: Parcel) : this(
@@ -36,7 +39,11 @@ data class Grid(
             attribution = parcel.readString() ?: "",
             productClickUrl = parcel.readString() ?: "",
             impression = parcel.readString() ?: "",
-            cashback = parcel.readString() ?: ""
+            cashback = parcel.readString() ?: "",
+            discountPercentage = parcel.readString() ?: "",
+            labelGroup = arrayListOf<ProductCardModel.LabelGroup>().apply {
+                parcel.readList(this, ProductCardModel.LabelGroup::class.java.classLoader)
+            }
     )
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
@@ -55,6 +62,8 @@ data class Grid(
             writeString(productClickUrl)
             writeString(impression)
             writeString(cashback)
+            writeString(discountPercentage)
+            writeList(labelGroup)
         }
     }
 

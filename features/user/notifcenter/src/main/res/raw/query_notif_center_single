@@ -1,18 +1,23 @@
-query ($notifId: String, $notifLang: String) {
-  notifcenter_singleList(notif_id: $notifId, notif_center_lang: $notifLang) {
+query notifcenter_singleList($notifId: String) {
+  notifcenter_singleList(notif_id: $notifId) {
     paging {
       has_next
       has_prev
     }
     list {
-      template_key
       notif_id
       user_id
       shop_id
+      section_id
       section_key
+      section_icon
       subsection_key
+      template_key
       title
       short_description
+      short_description_html
+      is_longer_content
+      button_text
       content
       type_of_user
       create_time
@@ -21,20 +26,68 @@ query ($notifId: String, $notifLang: String) {
       update_time_unix
       status
       read_status
+      type_link
+      show_bottomsheet
+      type_bottomsheet
       data_notification {
         app_link
         desktop_link
         info_thumbnail_url
         mobile_link
+        checkout_url
       }
+      product_data {
+        product_id
+        name
+        url
+        image_url
+        price
+        price_fmt
+        currency
+        price_idr
+        is_buyable
+        is_topads
+        is_wishlist
+        rating
+        count_review
+        labels {
+            title
+            color
+        }
+        campaign {
+            active
+            original_price
+            original_price_fmt
+            discount_percentage
+            discount_price
+            discount_price_fmt
+        }
+        variant {
+            value
+            identifier
+            hex
+        }
+        shop {
+            id
+            name
+            location
+            free_shipping_icon
+            badges {
+                title
+                image_url
+            }
+        }
+      }
+      total_product
     }
-    section_list {
-      id
-      key
-      subsection_list {
-        key
-        text
-      }
+    options {
+      longer_content
+    }
+    user_info {
+      user_id
+      shop_id
+      email
+      fullname
     }
   }
 }

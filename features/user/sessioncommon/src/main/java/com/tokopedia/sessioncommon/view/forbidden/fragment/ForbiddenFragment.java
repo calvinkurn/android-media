@@ -11,8 +11,9 @@ import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.sessioncommon.R;
-import com.tokopedia.sessioncommon.view.forbidden.activity.ServiceActivity;
 import com.tokopedia.unifycomponents.UnifyButton;
 
 /**
@@ -47,7 +48,8 @@ public class ForbiddenFragment extends TkpdBaseV4Fragment {
         title.setText(MethodChecker.fromHtml(getString(R.string.forbidden_title)));
         desc.setText(MethodChecker.fromHtml(getString(R.string.forbidden_msg)));
 
-        desc.setOnClickListener(v -> ServiceActivity.startActivity(getActivity(), URL));
+        desc.setOnClickListener(v ->
+                        RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, URL));
 
         btnRetry.setOnClickListener(v -> getActivity().finish());
 

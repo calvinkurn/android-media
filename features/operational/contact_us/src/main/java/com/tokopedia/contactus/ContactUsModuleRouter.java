@@ -21,10 +21,6 @@ public interface ContactUsModuleRouter {
 
     Intent getHelpUsIntent(Context context);
 
-    Intent getWebviewActivityWithIntent(Context context, String url, String title);
-
-    Intent getWebviewActivityWithIntent(Context context, String url);
-
     void actionNavigateByApplinksUrl(Activity activity, String s, Bundle bundle);
 
     Intent getTopProfileIntent(Context context, String loginID);

@@ -111,4 +111,9 @@
     <string name="title_done">Selesai</string>
     <string name="title_skip">Lewati</string>
     <string name="drawer_title_statistic">Statistik</string>
+    <string name="hidden_trial_title">Tokomu sedang mengikuti program beriklan GRATIS untuk tingkatkan kunjungan ke tokomu</string>
+    <string name="hidden_trial_desc1">Produk dan tokomu akan diiklankan gratis hingga [01.Jan.2020]</string>
+    <string name="hidden_trial_desc2">Jangkau lebih banyak pembeli dengan beriklan di berbagai halaman strategis.</string>
+    <string name="hidden_trial_desc3">Tokopedia akan memilih produk dan biaya iklan yang tepat dengan Iklan Otomatis.</string>
+
 </resources>

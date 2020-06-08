@@ -282,7 +282,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.size == 1 && requestCode == DOWNLOAD_REQUEST_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                Toast.makeText(activity, getString(R.string.storage_permission_enabled_needed), Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, getString(R.string.mvc_storage_permission_enabled_needed), Toast.LENGTH_LONG).show()
             } else {
                 downloadImagesAction()
                 downloadImagesAction = {}

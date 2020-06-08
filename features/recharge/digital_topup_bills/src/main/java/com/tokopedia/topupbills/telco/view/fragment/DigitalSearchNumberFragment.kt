@@ -17,7 +17,7 @@ import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.DigitalTopupAnalytics
 import com.tokopedia.topupbills.covertContactUriToContactData
-import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
+import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
 import kotlinx.android.synthetic.main.fragment_search_number_telco.*
 import java.util.*
 import javax.inject.Inject
@@ -31,10 +31,7 @@ class DigitalSearchNumberFragment : TopupBillsSearchNumberFragment() {
 
 
     override fun initInjector() {
-        activity?.let {
-            val digitalTopupComponent = DigitalTopupInstance.getComponent(it.application)
-            digitalTopupComponent.inject(this)
-        }
+        getComponent(DigitalTopupComponent::class.java).inject(this)
     }
 
     override fun getScreenName(): String? {

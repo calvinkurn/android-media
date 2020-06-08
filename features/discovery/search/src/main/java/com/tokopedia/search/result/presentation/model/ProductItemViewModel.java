@@ -24,6 +24,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private String imageUrl;
     private String imageUrl700;
     private int rating;
+    private String ratingString;
     private int countReview;
     private int countCourier;
     private String price;
@@ -54,6 +55,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private boolean isShopPowerBadge;
     private boolean isShopOfficialStore;
     private FreeOngkirViewModel freeOngkirViewModel = new FreeOngkirViewModel();
+    private String boosterList = "";
 
     public boolean isTopAds() {
         return isTopAds;
@@ -235,6 +237,14 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         this.rating = rating;
     }
 
+    public String getRatingString() {
+        return ratingString;
+    }
+
+    public void setRatingString(String ratingString) {
+        this.ratingString = ratingString;
+    }
+
     public int getCountReview() {
         return countReview;
     }
@@ -347,6 +357,14 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         return freeOngkirViewModel;
     }
 
+    public void setBoosterList(String boosterList) {
+        this.boosterList = boosterList;
+    }
+
+    public String getBoosterList() {
+        return this.boosterList;
+    }
+
     public ProductItemViewModel() {
     }
 
@@ -371,7 +389,8 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
                 "dimension83", isFreeOngkirActive() ? "bebas ongkir" : "none / other",
                 "dimension87", "search result",
                 "dimension88", "search - product",
-                "dimension90", searchRef
+                "dimension90", searchRef,
+                "dimension96", getBoosterList()
         );
     }
 
@@ -395,6 +414,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         dest.writeString(this.productName);
         dest.writeString(this.imageUrl);
         dest.writeString(this.imageUrl700);
+        dest.writeString(this.ratingString);
         dest.writeInt(this.rating);
         dest.writeInt(this.countReview);
         dest.writeInt(this.countCourier);
@@ -434,6 +454,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         this.productName = in.readString();
         this.imageUrl = in.readString();
         this.imageUrl700 = in.readString();
+        this.ratingString = in.readString();
         this.rating = in.readInt();
         this.countReview = in.readInt();
         this.countCourier = in.readInt();

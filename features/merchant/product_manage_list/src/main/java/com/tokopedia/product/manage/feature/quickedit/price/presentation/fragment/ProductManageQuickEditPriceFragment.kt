@@ -2,8 +2,10 @@ package com.tokopedia.product.manage.feature.quickedit.price.presentation.fragme
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
+import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -12,7 +14,9 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
-import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
+import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
+import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_PRICE_LENGTH
+import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProductConstant.MINIMUM_PRICE
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.CurrencyIdrTextWatcher
@@ -22,10 +26,6 @@ class ProductManageQuickEditPriceFragment(private val onFinishedListener: OnFini
                                           private var product: ProductViewModel) : BottomSheetUnify() {
 
     companion object {
-
-        private const val MAX_PRICE = 100000000
-        private const val MIN_PRICE = 100
-        private const val MAXIMUM_STRING_LENGTH = 11
         fun createInstance(context: Context, product: ProductViewModel, onFinishedListener: OnFinishedListener) : ProductManageQuickEditPriceFragment {
             return ProductManageQuickEditPriceFragment(onFinishedListener, product).apply{
                 val view = View.inflate(context, R.layout.fragment_quick_edit_price,null)
@@ -46,13 +46,12 @@ class ProductManageQuickEditPriceFragment(private val onFinishedListener: OnFini
             quickEditPriceTextField.prependText(it.resources.getString(R.string.product_manage_quick_edit_currency))
         }
         quickEditPriceTextField.apply {
-            textFieldInput.filters = arrayOf(InputFilter.LengthFilter(MAXIMUM_STRING_LENGTH))
+            textFieldInput.filters = arrayOf(InputFilter.LengthFilter(MAXIMUM_PRICE_LENGTH))
             textFieldInput.setText(CurrencyFormatHelper.removeCurrencyPrefix(CurrencyFormatHelper.convertToRupiah(currentPrice)))
             setFirstIcon(com.tokopedia.unifyicon.R.drawable.ic_system_action_close_normal_24)
             setInputType(InputType.TYPE_CLASS_NUMBER)
             getFirstIcon().setOnClickListener {
                 quickEditPriceTextField.textFieldInput.text.clear()
-                hideError()
             }
             textFieldInput.setOnEditorActionListener { _, actionId, _ ->
                 if(actionId == EditorInfo.IME_ACTION_DONE){
@@ -64,6 +63,25 @@ class ProductManageQuickEditPriceFragment(private val onFinishedListener: OnFini
             }
             val idrTextWatcher = CurrencyIdrTextWatcher(this.textFieldInput)
             textFieldInput.addTextChangedListener(idrTextWatcher)
+            textFieldInput.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                }
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    val input = textFieldInput.text.toString()
+                    val price = CurrencyFormatHelper.convertRupiahToInt(input)
+
+                    if(price < MINIMUM_PRICE) {
+                        showErrorPriceTooLow()
+                    } else {
+                        hideError()
+                    }
+                }
+
+            })
             setOnFocusChangeListener { v, hasFocus ->
                 if (hasFocus) {
                     activity.let {
@@ -84,23 +102,13 @@ class ProductManageQuickEditPriceFragment(private val onFinishedListener: OnFini
     }
 
     private fun isPriceTooLow(): Boolean {
-        if(product.price.toIntOrZero() < MIN_PRICE) return true
-        return false
-    }
-
-    private fun isPriceTooHigh(): Boolean {
-        if(product.price.toIntOrZero() > MAX_PRICE) return true
+        if(product.price.toIntOrZero() < MINIMUM_PRICE) return true
         return false
     }
 
     private fun showErrorPriceTooLow() {
         quickEditPriceTextField.setError(true)
         context?.getString(R.string.product_manage_quick_edit_min_price_error)?.let { quickEditPriceTextField.setMessage(it) }
-    }
-
-    private fun showErrorPriceTooHigh() {
-        quickEditPriceTextField.setError(true)
-        context?.getString(R.string.product_manage_quick_edit_max_price_error)?.let { quickEditPriceTextField.setMessage(it) }
     }
 
     private fun hideError() {
@@ -113,10 +121,6 @@ class ProductManageQuickEditPriceFragment(private val onFinishedListener: OnFini
         when {
             isPriceTooLow() -> {
                 showErrorPriceTooLow()
-                return
-            }
-            isPriceTooHigh() -> {
-                showErrorPriceTooHigh()
                 return
             }
             else -> {

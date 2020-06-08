@@ -70,7 +70,6 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     private static final int REQUEST_CODE_OTP = 1001;
 
     public static final int OTP_TYPE_CHECKOUT_DIGITAL = 16;
-    public static final String MODE_SMS = "sms";
 
     protected CartDigitalInfoData cartDigitalInfoData;
     protected CheckoutDataParameter.Builder checkoutDataParameterBuilder;
@@ -226,6 +225,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void onInputPriceByUserFilled(long paymentAmount) {
+        checkoutHolderView.renderCheckout(paymentAmount);
         checkoutDataParameterBuilder.transactionAmount(paymentAmount);
     }
 
@@ -247,15 +247,19 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
                 Objects.requireNonNull(cartDigitalInfoData.getAttributes()).isCouponActive()
         );
         intent.putExtra("EXTRA_PROMO_DIGITAL_MODEL", getPromoDigitalModel());
-        startActivityForResult(intent, ConstantKt.getREQUST_CODE_PROMO_LIST());
+        startActivityForResult(intent, ConstantKt.getREQUEST_CODE_PROMO_LIST());
     }
 
     private PromoDigitalModel getPromoDigitalModel() {
+        Long price = cartDigitalInfoData.getAttributes() != null ? cartDigitalInfoData.getAttributes().getPricePlain() : 0;
+        if(inputPriceHolderView.getVisibility() == View.VISIBLE){
+            price = inputPriceHolderView.getPriceInput();
+        }
         return new PromoDigitalModel(
                 Integer.parseInt(Objects.requireNonNull(cartPassData.getCategoryId())),
                 getProductId(),
                 cartPassData.getClientNumber() != null ? cartPassData.getClientNumber() : "",
-                cartDigitalInfoData.getAttributes() != null ? cartDigitalInfoData.getAttributes().getPricePlain() : 0
+                price
         );
     }
 
@@ -281,7 +285,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
                 intent.putExtra("EXTRA_COUPON_ACTIVE",
                         Objects.requireNonNull(cartDigitalInfoData.getAttributes()).isCouponActive()
                 );
-                requestCode = ConstantKt.getREQUST_CODE_PROMO_LIST();
+                requestCode = ConstantKt.getREQUEST_CODE_PROMO_LIST();
             } else {
                 intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_DETAIL_DIGITAL);
                 intent.putExtra("EXTRA_IS_USE", true);
@@ -312,7 +316,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if ((requestCode == ConstantKt.getREQUST_CODE_PROMO_LIST() || requestCode == ConstantKt.getREQUEST_CODE_PROMO_DETAIL()) && resultCode == Activity.RESULT_OK) {
+        if ((requestCode == ConstantKt.getREQUEST_CODE_PROMO_LIST() || requestCode == ConstantKt.getREQUEST_CODE_PROMO_DETAIL()) && resultCode == Activity.RESULT_OK) {
             if (data.hasExtra(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA())) {
                 promoData = data.getParcelableExtra(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA());
                 // Check between apply promo code or cancel promo from promo detail
@@ -461,8 +465,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber);
         bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "");
         bundle.putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_CHECKOUT_DIGITAL);
-        bundle.putString(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, MODE_SMS);
-        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false);
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true);
 
         intent.putExtras(bundle);
         startActivityForResult(intent, REQUEST_CODE_OTP);

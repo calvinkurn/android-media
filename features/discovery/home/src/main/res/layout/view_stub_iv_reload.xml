@@ -3,9 +3,6 @@
     android:id="@+id/iv_reload"
     android:layout_width="@dimen/dp_20"
     android:layout_height="@dimen/dp_20"
-    android:src="@drawable/ic_reload"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
+    app:srcCompat="@drawable/ic_reload"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto" />

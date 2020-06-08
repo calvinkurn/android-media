@@ -4,10 +4,10 @@ import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
+import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayChannelType
-import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
-import com.tokopedia.play_common.state.TokopediaPlayVideoState
+import com.tokopedia.play_common.state.PlayVideoState
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
@@ -18,13 +18,12 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.*
 
 /**
  * Created by jegul on 30/01/20
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class OverlayVideoComponentTest {
 
     private lateinit var component: OverlayVideoComponent
@@ -33,7 +32,9 @@ class OverlayVideoComponentTest {
     private val testDispatcher = TestCoroutineDispatcher()
     private val coroutineScope = CoroutineScope(testDispatcher)
 
-    @Before
+    private val modelBuilder = ModelBuilder()
+
+    @BeforeEach
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         every { owner.lifecycle } returns mockk(relaxed = true)
@@ -41,61 +42,83 @@ class OverlayVideoComponentTest {
         component = OverlayVideoComponentMock(mockk(relaxed = true), EventBusFactory.get(owner), coroutineScope)
     }
 
-    @After
+    @AfterEach
     fun tearDown() {
         Dispatchers.resetMain()
     }
 
-    @Test
-    fun `test on VOD is playing`() = runBlockingTest(testDispatcher) {
-        val mockVideoProp = VideoPropertyUiModel(
-                type = PlayChannelType.VOD,
-                state = TokopediaPlayVideoState.Playing
-        )
+    @Nested
+    @DisplayName("Given channel is vod")
+    inner class GivenChannelVOD {
 
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
+        private val mockChannelType = PlayChannelType.VOD
 
-        verify { component.uiView.hide() }
-        confirmVerified(component.uiView)
+        @Test
+        fun `when video has ended, then overlay should be shown`() = runBlockingTest(testDispatcher) {
+            val mockVideoProp = modelBuilder.buildVideoPropertyUiModel(
+                    state = PlayVideoState.Ended
+            )
+
+            val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                    channelType = mockChannelType
+            )
+
+            EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp, mockStateHelper))
+            verify { component.uiView.show() }
+            confirmVerified(component.uiView)
+        }
+
+        @Test
+        fun `when video has not ended, then overlay should be hidden`() = runBlockingTest(testDispatcher) {
+            val mockVideoProp = modelBuilder.buildVideoPropertyUiModel(
+                    state = PlayVideoState.Playing
+            )
+
+            val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                    channelType = mockChannelType
+            )
+
+            EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp, mockStateHelper))
+            verify { component.uiView.hide() }
+            confirmVerified(component.uiView)
+        }
     }
 
-    @Test
-    fun `test on VOD has ended`() = runBlockingTest(testDispatcher) {
-        val mockVideoProp = VideoPropertyUiModel(
-                type = PlayChannelType.VOD,
-                state = TokopediaPlayVideoState.Ended
-        )
+    @Nested
+    @DisplayName("Given channel is live")
+    inner class GivenChannelLive {
 
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
+        private val mockChannelType = PlayChannelType.Live
 
-        verify { component.uiView.show() }
-        confirmVerified(component.uiView)
-    }
+        @Test
+        fun `when video has ended, then overlay should be shown`() = runBlockingTest(testDispatcher) {
+            val mockVideoProp = modelBuilder.buildVideoPropertyUiModel(
+                    state = PlayVideoState.Ended
+            )
 
-    @Test
-    fun `test on Live is playing`() = runBlockingTest(testDispatcher) {
-        val mockVideoProp = VideoPropertyUiModel(
-                type = PlayChannelType.Live,
-                state = TokopediaPlayVideoState.Playing
-        )
+            val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                    channelType = mockChannelType
+            )
 
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
+            EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp, mockStateHelper))
+            verify { component.uiView.hide() }
+            confirmVerified(component.uiView)
+        }
 
-        verify { component.uiView.hide() }
-        confirmVerified(component.uiView)
-    }
+        @Test
+        fun `when video has not ended, then overlay should be hidden`() = runBlockingTest(testDispatcher) {
+            val mockVideoProp = modelBuilder.buildVideoPropertyUiModel(
+                    state = PlayVideoState.Playing
+            )
 
-    @Test
-    fun `test on Live has ended`() = runBlockingTest(testDispatcher) {
-        val mockVideoProp = VideoPropertyUiModel(
-                type = PlayChannelType.Live,
-                state = TokopediaPlayVideoState.Ended
-        )
+            val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                    channelType = mockChannelType
+            )
 
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
-
-        verify { component.uiView.hide() }
-        confirmVerified(component.uiView)
+            EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp, mockStateHelper))
+            verify { component.uiView.hide() }
+            confirmVerified(component.uiView)
+        }
     }
 
     class OverlayVideoComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : OverlayVideoComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {

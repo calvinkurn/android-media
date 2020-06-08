@@ -4,7 +4,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase.Companion.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST
 import com.tokopedia.similarsearch.SimilarSearchViewModel
-import com.tokopedia.similarsearch.getsimilarproducts.GetSimilarProductsUseCase
+import com.tokopedia.similarsearch.getsimilarproducts.model.SimilarProductModel
 import com.tokopedia.similarsearch.testutils.InstantTaskExecutorRuleSpek
 import com.tokopedia.similarsearch.testutils.TestException
 import com.tokopedia.similarsearch.testutils.shouldBe
@@ -14,6 +14,7 @@ import com.tokopedia.similarsearch.viewmodel.testinstance.getAddToCartFailedMode
 import com.tokopedia.similarsearch.viewmodel.testinstance.getAddToCartSuccessModel
 import com.tokopedia.similarsearch.viewmodel.testinstance.getSimilarProductModelCommon
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.slot
@@ -44,7 +45,7 @@ internal class HandleViewClickBuy: Spek({
             }
 
             Given("view already created and has similar search data") {
-                val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
+                val getSimilarProductsUseCase by memoized<UseCase<SimilarProductModel>>()
                 getSimilarProductsUseCase.stubExecute().returns(similarProductModelCommon)
                 similarSearchViewModel.onViewCreated()
             }
@@ -99,7 +100,7 @@ internal class HandleViewClickBuy: Spek({
             }
 
             Given("view already created and has similar search data") {
-                val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
+                val getSimilarProductsUseCase by memoized<UseCase<SimilarProductModel>>()
                 getSimilarProductsUseCase.stubExecute().returns(similarProductModelCommon)
                 similarSearchViewModel.onViewCreated()
             }
@@ -176,7 +177,7 @@ internal class HandleViewClickBuy: Spek({
             }
 
             Given("view already created and has similar search data") {
-                val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
+                val getSimilarProductsUseCase by memoized<UseCase<SimilarProductModel>>()
                 getSimilarProductsUseCase.stubExecute().returns(similarProductModelCommon)
                 similarSearchViewModel.onViewCreated()
             }
@@ -256,7 +257,7 @@ internal class HandleViewClickBuy: Spek({
             }
 
             Given("view already created and has similar search data") {
-                val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
+                val getSimilarProductsUseCase by memoized<UseCase<SimilarProductModel>>()
                 getSimilarProductsUseCase.stubExecute().returns(similarProductModelCommon)
                 similarSearchViewModel.onViewCreated()
             }

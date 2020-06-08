@@ -1,7 +1,6 @@
 package com.tokopedia.iris
 
-import android.content.Context
-import com.tokopedia.iris.data.db.mapper.ConfigurationMapper
+import android.os.Bundle
 import com.tokopedia.iris.model.Configuration
 
 /**
@@ -30,6 +29,8 @@ interface Iris {
      *
      */
     fun saveEvent(map: Map<String, Any>)
+
+    fun saveEvent(bundle: Bundle)
 
     /**
      * direct send event to server

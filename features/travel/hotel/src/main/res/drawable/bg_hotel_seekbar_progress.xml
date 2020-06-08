@@ -4,14 +4,14 @@
     <item
         android:id="@android:id/background">
         <shape>
-            <solid android:color="@color/grey_300"/>
+            <solid android:color="@color/Neutral_N75"/>
         </shape>
     </item>
     <item
         android:id="@android:id/secondaryProgress">
         <clip>
             <shape>
-                <solid android:color="@color/tkpd_main_green"/>
+                <solid android:color="@color/light_G300"/>
             </shape>
         </clip>
     </item>
@@ -19,7 +19,7 @@
         android:id="@android:id/progress">
         <clip>
             <shape>
-                <solid android:color="@color/tkpd_main_green"/>
+                <solid android:color="@color/light_G300"/>
             </shape>
         </clip>
     </item>

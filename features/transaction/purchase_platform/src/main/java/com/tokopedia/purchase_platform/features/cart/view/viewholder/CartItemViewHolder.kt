@@ -16,16 +16,14 @@ import com.google.android.flexbox.FlexboxLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.common.utils.NoteTextWatcher
+import com.tokopedia.purchase_platform.common.utils.*
 import com.tokopedia.purchase_platform.common.utils.NoteTextWatcher.TEXTWATCHER_NOTE_DEBOUNCE_TIME
-import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher
 import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher.TEXTWATCHER_QUANTITY_DEBOUNCE_TIME
-import com.tokopedia.purchase_platform.common.utils.QuantityWrapper
-import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.features.cart.view.adapter.CartItemAdapter
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.coroutines.*
 import org.apache.commons.lang3.StringUtils
 import rx.Observable
 import rx.Subscriber
@@ -92,10 +90,13 @@ class CartItemViewHolder constructor(itemView: View,
     private var cartItemHolderData: CartItemHolderData? = null
     private var quantityTextwatcherListener: QuantityTextWatcher.QuantityTextwatcherListener? = null
     private var noteTextwatcherListener: NoteTextWatcher.NoteTextwatcherListener? = null
+    private var checkboxWatcherListener: CheckboxWatcher.CheckboxWatcherListener? = null
     private var parentPosition: Int = 0
     private var dataSize: Int = 0
     private var quantityDebounceSubscription: Subscription? = null
     private var noteDebounceSubscription: Subscription? = null
+    private var cbChangeJob: Job? = null
+    private var prevShopIsChecked: Boolean? = null
 
     init {
         context = itemView.context
@@ -164,7 +165,9 @@ class CartItemViewHolder constructor(itemView: View,
     }
 
     private fun initTextWatcherDebouncer(compositeSubscription: CompositeSubscription) {
-        quantityDebounceSubscription = Observable.create(Observable.OnSubscribe<QuantityWrapper> { subscriber -> quantityTextwatcherListener = QuantityTextWatcher.QuantityTextwatcherListener { quantity -> subscriber.onNext(quantity) } }).debounce(TEXTWATCHER_QUANTITY_DEBOUNCE_TIME.toLong(), TimeUnit.MILLISECONDS)
+        quantityDebounceSubscription = Observable.create(Observable.OnSubscribe<QuantityWrapper> { subscriber ->
+            quantityTextwatcherListener = QuantityTextWatcher.QuantityTextwatcherListener { quantity -> subscriber.onNext(quantity) } })
+                .debounce(TEXTWATCHER_QUANTITY_DEBOUNCE_TIME.toLong(), TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Subscriber<QuantityWrapper>() {
@@ -221,12 +224,24 @@ class CartItemViewHolder constructor(itemView: View,
     private fun renderSelection(data: CartItemHolderData, parentPosition: Int) {
         cbSelectItem.isEnabled = data.cartItemData?.isError == false
         cbSelectItem.isChecked = data.cartItemData?.isError == false && data.isSelected
+
+        var prevIsChecked: Boolean = cbSelectItem.isChecked
         cbSelectItem.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (data.cartItemData?.isError == false) {
-                data.isSelected = isChecked
-                if (adapterPosition != RecyclerView.NO_POSITION) {
-                    actionListener?.onCartItemCheckChanged(adapterPosition, parentPosition, data.isSelected)
-                    viewHolderListener?.onNeedToRefreshAllShop()
+            if (isChecked != prevIsChecked)  {
+                prevIsChecked = isChecked
+
+                cbChangeJob?.cancel()
+                cbChangeJob = GlobalScope.launch(Dispatchers.Main) {
+                    delay(500L)
+                    if (isChecked == prevIsChecked && isChecked != data.isSelected) {
+                        if (data.cartItemData?.isError == false) {
+                            data.isSelected = isChecked
+                            if (adapterPosition != RecyclerView.NO_POSITION) {
+                                actionListener?.onCartItemCheckChanged(adapterPosition, parentPosition, data.isSelected)
+                                viewHolderListener?.onNeedToRefreshAllShop()
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -741,6 +756,7 @@ class CartItemViewHolder constructor(itemView: View,
             cartItemHolderData!!.cartItemData!!.updatedData!!.quantity = qty
             validateWithAvailableQuantity(cartItemHolderData!!, qty)
             if (needToUpdateView) {
+                actionListener?.onCartItemQuantityChangedThenHitUpdateCartAndValidateUse()
                 handleRefreshType(cartItemHolderData!!, viewHolderListener, parentPosition)
             }
         }

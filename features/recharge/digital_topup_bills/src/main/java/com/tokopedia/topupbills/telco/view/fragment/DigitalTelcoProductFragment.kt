@@ -1,16 +1,16 @@
 package com.tokopedia.topupbills.telco.view.fragment
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -19,7 +19,7 @@ import com.tokopedia.topupbills.common.DigitalTopupAnalytics
 import com.tokopedia.topupbills.telco.data.TelcoProductComponentData
 import com.tokopedia.topupbills.telco.data.TelcoProductDataCollection
 import com.tokopedia.topupbills.telco.view.bottomsheet.DigitalProductBottomSheet
-import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
+import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
 import com.tokopedia.topupbills.telco.view.model.DigitalTrackProductTelco
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoProductViewModel
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
@@ -41,7 +41,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     private lateinit var selectedOperatorName: String
 
     private var titleProduct: String = ""
-    private var selectedProductId: String = ""
+    private var selectedProductId: Int = 0
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -71,10 +71,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-        activity?.let {
-            val digitalTopupComponent = DigitalTopupInstance.getComponent(it.application)
-            digitalTopupComponent.inject(this)
-        }
+        getComponent(DigitalTopupComponent::class.java).inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -95,7 +92,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             val productType = it.getInt(PRODUCT_TYPE)
             val operatorId = it.getString(OPERATOR_ID)
             val componentId = it.getInt(COMPONENT_TYPE)
-            selectedProductId = it.getString(SELECTED_PRODUCT_ID)
+            selectedProductId = it.getInt(SELECTED_PRODUCT_ID)
             selectedOperatorName = it.getString(OPERATOR_NAME)
 
             var mapParam = HashMap<String, kotlin.Any>()
@@ -139,9 +136,9 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         emptyStateProductView.visibility = View.GONE
         telcoTelcoProductView.visibility = View.VISIBLE
         var position = -1
-        if (selectedProductId.isNotEmpty()) {
-            for (i in 0 until productData.rechargeProductData.productDataCollections.size) {
-                if (productData.rechargeProductData.productDataCollections[i].product.id == selectedProductId) {
+        if (selectedProductId > 0) {
+            for (i in productData.rechargeProductData.productDataCollections.indices) {
+                if (productData.rechargeProductData.productDataCollections[i].product.id == selectedProductId.toString()) {
                     productData.rechargeProductData.productDataCollections[i].product.attributes.selected = true
                     position = i
                 }
@@ -183,14 +180,14 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
         fun newInstance(componentType: Int, componentName: String, operatorId: String,
                         operatorName: String, productType: Int,
-                        selectedProductId: String): Fragment {
+                        selectedProductId: Int): Fragment {
             val fragment = DigitalTelcoProductFragment()
             val bundle = Bundle()
             bundle.putInt(PRODUCT_TYPE, productType)
             bundle.putInt(COMPONENT_TYPE, componentType)
             bundle.putString(OPERATOR_ID, operatorId)
             bundle.putString(COMPONENT_NAME, componentName)
-            bundle.putString(SELECTED_PRODUCT_ID, selectedProductId)
+            bundle.putInt(SELECTED_PRODUCT_ID, selectedProductId)
             bundle.putString(OPERATOR_NAME, operatorName)
             fragment.arguments = bundle
             return fragment

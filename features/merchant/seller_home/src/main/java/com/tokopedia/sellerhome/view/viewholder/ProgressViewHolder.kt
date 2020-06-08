@@ -2,7 +2,6 @@ package com.tokopedia.sellerhome.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerhome.R
@@ -42,7 +41,6 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
 
     private fun onLoading() {
         showLoadingState()
-        listener.getProgressData()
     }
 
     private fun onError(element: ProgressWidgetUiModel) {

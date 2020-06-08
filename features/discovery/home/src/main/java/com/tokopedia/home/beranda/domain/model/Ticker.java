@@ -128,9 +128,8 @@ public class Ticker {
             this.id = id;
         }
 
-        public Spanned getMessage() {
-            String str = message.replaceAll("<p>(.*?)</p>", "$1");
-            return MethodChecker.fromHtml(str);
+        public String getMessage() {
+            return message;
         }
 
         public String getMessage2() {

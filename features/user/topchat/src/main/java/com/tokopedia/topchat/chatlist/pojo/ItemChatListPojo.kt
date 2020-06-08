@@ -25,6 +25,13 @@ data class ItemChatListPojo(
         @Expose
         var messageKey: String = ""
 ) : Visitable<ChatListTypeFactory>{
+    val tag: String get() = attributes?.contact?.tag ?: ""
+    val lastReplyTimeStr: String get() = attributes?.lastReplyTimeStr ?: ""
+    val lastReplyMessage: String get() = attributes?.lastReplyMessage ?: ""
+    val thumbnail: String get() = attributes?.contact?.thumbnail ?: ""
+    val name: String get() = attributes?.contact?.contactName ?: ""
+    val isPinned: Boolean get() = attributes?.pinStatus == 1
+    val totalUnread: String get() = attributes?.unreadReply?.toString() ?: ""
 
     override fun type(typeFactory: ChatListTypeFactory): Int {
         return typeFactory.type(this)

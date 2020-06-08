@@ -5,5 +5,5 @@ import com.google.gson.annotations.SerializedName
 
 data class LayoutType(
         @SerializedName("type")
-        val type: String
+        val type: String = ""
 )

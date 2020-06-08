@@ -42,7 +42,7 @@
                 app:layout_constraintLeft_toRightOf="@id/close_button"
                 app:layout_constraintTop_toTopOf="@id/close_button"
                 app:layout_constraintBottom_toBottomOf="@id/close_button"
-                android:text="@string/tradein_terms_and_conditions"
+                android:text="@string/tradein_check_imei"
                 />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -96,23 +96,21 @@
                 app:typographyType="body_2"
                 app:typographyWeight="reguler" />
 
-            <ImageView
+            <com.tkpd.remoteresourcerequest.view.DeferredImageView
                 android:id="@+id/point_1_img"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8"
-                android:paddingTop="@dimen/dp_24"
-                android:paddingBottom="@dimen/dp_24"
-                android:scaleType="centerCrop"
+                android:layout_height="@dimen/dp_200"
+                android:layout_marginTop="@dimen/dp_16"
+                android:scaleType="fitCenter"
                 app:layout_constraintDimensionRatio="H,3:4"
                 app:layout_constraintTop_toBottomOf="@id/point_1_txt"
-                app:srcCompat="@drawable/tradein_help_one" />
+                app:remoteFileName="tradein_help_one.png" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/point_2_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_16"
                 android:lineSpacingExtra="6sp"
                 android:text="@string/tradein_imei_label_2"
                 android:textColor="@color/clr_f531353b"
@@ -126,7 +124,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_10"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_16"
                 android:lineSpacingExtra="6sp"
                 android:text="@string/tradein_imei_txt_2"
                 android:textColor="@color/clr_f531353b"
@@ -136,23 +134,21 @@
                 app:typographyType="body_2"
                 app:typographyWeight="reguler" />
 
-            <ImageView
+            <com.tkpd.remoteresourcerequest.view.DeferredImageView
                 android:id="@+id/point_2_img"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8"
-                android:paddingTop="@dimen/dp_24"
-                android:paddingBottom="@dimen/dp_32"
-                android:scaleType="centerCrop"
+                android:layout_height="@dimen/dp_200"
+                android:layout_marginTop="@dimen/dp_16"
+                android:scaleType="fitCenter"
                 app:layout_constraintDimensionRatio="H,3:4"
                 app:layout_constraintTop_toBottomOf="@id/point_2_txt"
-                app:srcCompat="@drawable/tradein_help_two" />
+                app:remoteFileName="tradein_help_two.png"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/point_3_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_16"
                 android:lineSpacingExtra="6sp"
                 android:text="@string/tradein_imei_label_3"
                 android:textColor="@color/clr_f531353b"
@@ -166,7 +162,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_10"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_16"
                 android:lineSpacingExtra="6sp"
                 android:text="@string/tradein_imei_txt_3"
                 android:textColor="@color/clr_f531353b"
@@ -176,23 +172,21 @@
                 app:typographyType="body_2"
                 app:typographyWeight="reguler" />
 
-            <ImageView
+            <com.tkpd.remoteresourcerequest.view.DeferredImageView
                 android:id="@+id/point_3_img"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8"
-                android:paddingTop="@dimen/dp_28"
-                android:paddingBottom="@dimen/dp_32"
-                android:scaleType="centerCrop"
+                android:layout_height="@dimen/dp_200"
+                android:layout_marginTop="@dimen/dp_16"
+                android:scaleType="fitCenter"
                 app:layout_constraintDimensionRatio="H,3:4"
                 app:layout_constraintTop_toBottomOf="@id/point_3_txt"
-                app:srcCompat="@drawable/tradein_help_three" />
+                app:remoteFileName="tradein_help_three.png"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/point_4_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_16"
                 android:lineSpacingExtra="6sp"
                 android:text="@string/tradein_imei_label_4"
                 android:textColor="@color/clr_f531353b"
@@ -206,7 +200,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_10"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_16"
                 android:lineSpacingExtra="6sp"
                 android:text="@string/tradein_imei_txt_4"
                 android:textColor="@color/clr_f531353b"
@@ -216,17 +210,19 @@
                 app:typographyType="body_2"
                 app:typographyWeight="reguler" />
 
-            <ImageView
+            <com.tkpd.remoteresourcerequest.view.DeferredImageView
                 android:id="@+id/point_4_img"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginLeft="@dimen/dp_32"
                 android:layout_marginRight="@dimen/dp_32"
                 android:layout_marginBottom="@dimen/dp_24"
+                android:paddingLeft="@dimen/dp_8"
+                android:paddingRight="@dimen/dp_8"
                 app:layout_constraintTop_toBottomOf="@id/point_4_txt"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:srcCompat="@drawable/tradein_help_four" />
+                app:remoteFileName="tradein_help_four.png"/>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

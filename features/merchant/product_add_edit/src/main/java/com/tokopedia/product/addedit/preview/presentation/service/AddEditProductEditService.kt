@@ -6,7 +6,9 @@ import android.content.Context
 import android.content.Intent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
@@ -18,6 +20,7 @@ import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCas
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductEditUseCase
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import kotlinx.coroutines.Dispatchers
@@ -46,26 +49,25 @@ class AddEditProductEditService : AddEditProductBaseService() {
     private var variantInputModel: ProductVariantInputModel = ProductVariantInputModel()
 
     companion object {
-        private const val EXTRA_PRODUCT_INPUT_MODEL = "EXTRA_PRODUCT_INPUT_MODEL"
-
-        fun startService(context: Context,
-                         productInputModel: ProductInputModel) {
+        fun startService(context: Context, cacheManagerId: String?) {
             val work = Intent(context, AddEditProductBaseService::class.java).apply {
-                putExtra(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
+                putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
             }
             enqueueWork(context, AddEditProductEditService::class.java, JOB_ID, work)
         }
     }
 
     override fun onHandleWork(intent: Intent) {
-        productInputModel = intent.getParcelableExtra(EXTRA_PRODUCT_INPUT_MODEL)
+        val cacheManagerId = intent.getStringExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID) ?: ""
+        SaveInstanceCacheManager(this, cacheManagerId).run {
+            productInputModel =  get(AddEditProductPreviewConstants.EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
+        }
         productInputModel.let {
             shipmentInputModel = it.shipmentInputModel
             descriptionInputModel = it.descriptionInputModel
             detailInputModel = it.detailInputModel
             variantInputModel = it.variantInputModel
         }
-
         // (1)
         saveProductToDraft()
     }
@@ -157,9 +159,11 @@ class AddEditProductEditService : AddEditProductBaseService() {
             clearProductDraft()
             delay(NOTIFICATION_CHANGE_DELAY)
             setUploadProductDataSuccess()
-        }, onError = {
+        }, onError = { throwable ->
             delay(NOTIFICATION_CHANGE_DELAY)
-            it.message?.let { errorMessage -> setUploadProductDataError(errorMessage) }
+            setUploadProductDataError(getErrorMessage(throwable))
+
+            logError(productEditUseCase.params, throwable)
         })
     }
 

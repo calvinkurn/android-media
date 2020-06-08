@@ -25,7 +25,7 @@ public class NFCHandlerActivity extends AppCompatActivity {
 
     private void handleIntent(Intent intent) {
         if (intent != null) {
-            Intent newIntent = RouteManager.getIntent(this, ApplinkConsInternalDigital.SMARTCARD, DigitalExtraParam.EXTRA_NFC);
+            Intent newIntent = RouteManager.getIntent(this, ApplinkConsInternalDigital.INTERNAL_SMARTCARD, DigitalExtraParam.EXTRA_NFC);
             newIntent.putExtras(intent.getExtras());
             newIntent.setAction(intent.getAction());
             startActivity(newIntent);

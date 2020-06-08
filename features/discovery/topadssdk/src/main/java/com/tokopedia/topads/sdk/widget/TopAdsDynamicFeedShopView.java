@@ -1,14 +1,14 @@
 package com.tokopedia.topads.sdk.widget;
 
 import android.content.Context;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.topads.sdk.R;
-import com.tokopedia.topads.sdk.domain.interactor.OpenTopAdsUseCase;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
@@ -25,7 +25,6 @@ public class TopAdsDynamicFeedShopView extends LinearLayout implements LocalAdsC
     private RecyclerView recommendationRv;
     private DynamicFeedShopAdapter adapter;
     private TopAdsItemClickListener itemClickListener;
-    private OpenTopAdsUseCase openTopAdsUseCase;
 
     public TopAdsDynamicFeedShopView(Context context) {
         super(context);
@@ -44,12 +43,12 @@ public class TopAdsDynamicFeedShopView extends LinearLayout implements LocalAdsC
 
     private void inflateView(Context context) {
         inflate(context, R.layout.layout_dynamic_feed_shop, this);
-        openTopAdsUseCase = new OpenTopAdsUseCase(context);
         adapter = new DynamicFeedShopAdapter(this);
-
         recommendationRv = findViewById(R.id.recommendationRv);
         recommendationRv.setAdapter(adapter);
-        ((DefaultItemAnimator) recommendationRv.getItemAnimator()).setSupportsChangeAnimations(false);
+        if (recommendationRv.getItemAnimator() != null) {
+            ((DefaultItemAnimator) recommendationRv.getItemAnimator()).setSupportsChangeAnimations(false);
+        }
     }
 
     public void bind(List<Data> dataList) {
@@ -80,14 +79,12 @@ public class TopAdsDynamicFeedShopView extends LinearLayout implements LocalAdsC
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        openTopAdsUseCase.unsubscribe();
     }
 
     @Override
     public void onShopItemClicked(int position, Data data) {
         Shop shop = data.getShop();
         itemClickListener.onShopItemClicked(position, shop);
-        openTopAdsUseCase.execute(data.getShopClickUrl());
     }
 
     @Override
@@ -103,5 +100,9 @@ public class TopAdsDynamicFeedShopView extends LinearLayout implements LocalAdsC
     @Override
     public void onAddWishLish(int position, Data data) {
 
+    }
+
+    public void setImpressionListener(DynamicFeedShopAdapter.TopAdsShopImpressionListener impressionListener) {
+        adapter.setItemImpressionListener(impressionListener);
     }
 }

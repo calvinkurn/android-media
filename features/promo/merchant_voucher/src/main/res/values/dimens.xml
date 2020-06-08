@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="merchant_voucher_width">270dp</dimen>
+    <dimen name="merchant_voucher_width">180dp</dimen>
     <dimen name="dp_150">150dp</dimen>
     <dimen name="dp_153">153dp</dimen>
     <dimen name="dp_200">200dp</dimen>

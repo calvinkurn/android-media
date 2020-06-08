@@ -40,6 +40,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalTravel;
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling;
 import com.tokopedia.common.travel.utils.TrackingCrossSellUtil;
 import com.tokopedia.common.travel.widget.TravelCrossSellWidget;
@@ -50,7 +51,6 @@ import com.tokopedia.flight.bookingV2.presentation.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationActivity;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationListActivity;
 import com.tokopedia.flight.common.di.component.FlightComponent;
-import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderContract;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderPresenter;
@@ -499,7 +499,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getActivity());
         Intent homeIntent = RouteManager.getIntent(getContext(), ApplinkConst.HOME);
         taskStackBuilder.addNextIntent(homeIntent);
-        taskStackBuilder.addNextIntent(FlightDashboardActivity.getCallingIntent(getActivity()));
+        taskStackBuilder.addNextIntent(RouteManager.getIntent(getContext(), ApplinkConstInternalTravel.DASHBOARD_FLIGHT));
         taskStackBuilder.startActivities();
     }
 

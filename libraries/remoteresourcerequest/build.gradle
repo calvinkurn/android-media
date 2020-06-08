@@ -83,3 +83,12 @@ dependencies {
 
 }
 
+
+project.ext {
+    artifactId = 'remote-resource-request'
+    groupId = 'com.tokopedia.library'
+    versionName = "0.0.2"
+    artifactName = "remoteresourcerequest-release"
+}
+
+apply from: '../../publish_local.gradle'

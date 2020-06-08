@@ -2,6 +2,7 @@ package com.tokopedia.hotel.search.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -14,15 +15,13 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class HotelSearchResultViewModel @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
-        dispatcher: CoroutineDispatcher)
-    : BaseViewModel(dispatcher) {
+        private val dispatcher: TravelDispatcherProvider)
+    : BaseViewModel(dispatcher.io()) {
 
     val searchParam: SearchParam = SearchParam()
     var selectedSort: Sort = Sort()
@@ -34,14 +33,21 @@ class HotelSearchResultViewModel @Inject constructor(
 
     var isFilter = false
 
-    fun initSearchParam(destinationID: Int, type: String, latitude: Float, longitude: Float,
+    fun initSearchParam(destinationID: Long, type: String, latitude: Float, longitude: Float,
                         checkIn: String, checkOut: String, totalRoom: Int, totalAdult: Int) {
-        if (type == TYPE_CITY)
+        if (type == TYPE_CITY){
             searchParam.location.cityID = destinationID
+            searchParam.location.districtID = 0
+            searchParam.location.regionID = 0
+        }
         else if (type == TYPE_DISTRICT) {
             searchParam.location.districtID = destinationID
+            searchParam.location.cityID = 0
+            searchParam.location.regionID = 0
         } else {
             searchParam.location.regionID = destinationID
+            searchParam.location.cityID = 0
+            searchParam.location.districtID = 0
         }
         searchParam.location.latitude = latitude
         searchParam.location.longitude = longitude
@@ -61,10 +67,10 @@ class HotelSearchResultViewModel @Inject constructor(
             val params = mapOf(PARAM_SEARCH_PROPERTY to searchParam)
             val graphqlRequest = GraphqlRequest(searchQuery, PropertySearch.Response::class.java, params)
 
-            val response = withContext(Dispatchers.IO) { graphqlRepository.getReseponse(listOf(graphqlRequest)) }
-            liveSearchResult.value = Success(response.getSuccessData<PropertySearch.Response>().response)
+            val response = withContext(dispatcher.ui()) { graphqlRepository.getReseponse(listOf(graphqlRequest)) }
+            liveSearchResult.postValue(Success(response.getSuccessData<PropertySearch.Response>().response))
         }) {
-            liveSearchResult.value = Fail(it)
+            liveSearchResult.postValue(Fail(it))
         }
     }
 

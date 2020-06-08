@@ -50,6 +50,4 @@ data class GqlLendingCategoryData(
             return arrayOfNulls(size)
         }
     }
-
-
 }

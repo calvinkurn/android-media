@@ -2,10 +2,12 @@ package com.tokopedia.webview
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.track.TrackApp
+import com.tokopedia.webview.ext.decode
+import com.tokopedia.webview.ext.encodeOnce
+import timber.log.Timber
 import java.net.URLDecoder
 
 /**
@@ -58,7 +60,7 @@ object WebViewHelper {
      */
      @JvmStatic
     fun appendGAClientIdAsQueryParam(url: String?, context: Context): String? {
-        Log.d("WebviewHelper before URL" , url)
+        Timber.d("WebviewHelper before $url")
         var returnURl = url
 
         if (url?.contains("ta.tokopedia.com") == true)
@@ -93,7 +95,7 @@ object WebViewHelper {
             }
         }
 
-        Log.d("WebviewHelper updated URL" , returnURl)
+        Timber.d("WebviewHelper after $returnURl")
         return returnURl
     }
 
@@ -114,5 +116,119 @@ object WebViewHelper {
         }
 
         return newUri.build().toString()
+    }
+
+    /**
+     * This function is to get the url from the Uri
+     * Example:
+     * Input: tokopedia://webview?url=http://www.tokopedia.com/help
+     * Output:http://www.tokopedia.com/help
+     *
+     * Input: tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fhelp%2F
+     * Output:http://www.tokopedia.com/help
+     *
+     * Input: tokopedia://webview?url=https://js.tokopedia.com?url=http://www.tokopedia.com/help
+     * Output:https://js.tokopedia.com?url=https%3A%2F%2Fwww.tokopedia.com%2Fhelp%2F
+     *
+     * Input: tokopedia://webview?url=https://js.tokopedia.com?url=http://www.tokopedia.com/help?id=4&target=5&title=3
+     * Output:https://js.tokopedia.com?target=5&title=3&url=http%3A%2F%2Fwww.tokopedia.com%2Fhelp%3Fid%3D4%26target%3D5%26title%3D3
+     */
+    fun getEncodedUrlCheckSecondUrl(intentUri: Uri, defaultUrl: String): String {
+        val query = intentUri.query
+        return if (query != null && query.contains("$KEY_URL=")) {
+            var url = query.substringAfter("$KEY_URL=").decode()
+            url = url.normalizeSymbol()
+            return getEncodedurl(url)
+        } else {
+            defaultUrl
+        }
+    }
+
+    /**
+     * make &url= or ?url= to be encoded
+     */
+    private fun getEncodedurl(url: String): String {
+        val url2 = getUrlParam(url)
+        return if (url2.isNullOrEmpty()) {
+            url
+        } else {
+            val url2BeforeAnd = url2.substringBefore("&")
+            val uriFromUrl = Uri.parse(url.replaceFirst("$KEY_URL=$url2BeforeAnd", "").normalizeDoubleSymbol())
+            uriFromUrl.buildUpon()
+                .appendQueryParameter(KEY_URL, url2.encodeOnce())
+                .build().toString()
+        }
+    }
+
+    /**
+     * get substring after &url= or ?url=
+     * Example:
+     * Input: tokopedia://webview?url=http://www.tokopedia.com/help
+     * Output:http://www.tokopedia.com/help
+     * return null if not found
+     */
+    private fun getUrlParam(url: String): String? {
+        val delimiterLength = "&$KEY_URL=".length
+        var indexKeyUrl = url.indexOf("&$KEY_URL=")
+        if (indexKeyUrl < 0) {
+            indexKeyUrl = url.indexOf("?$KEY_URL=")
+        }
+        if (indexKeyUrl < 0) {
+            return null
+        }
+        return url.substring(indexKeyUrl + delimiterLength, url.length).normalizeSymbol()
+    }
+
+    /**
+     * Validate the & and ? symbol
+     * Example input/output
+     * https://www.tokopedia.com/events/hiburan
+     * https://www.tokopedia.com/events/hiburan
+     *
+     * https://www.tokopedia.com/events/hiburan?parama=a&paramb=b
+     * https://www.tokopedia.com/events/hiburan?parama=a&paramb=b
+     *
+     * https://www.tokopedia.com/events/hiburan&utm_source=7teOvA
+     * https://www.tokopedia.com/events/hiburan
+     */
+    private fun String.normalizeSymbol(): String {
+        val indexAnd = indexOf("&")
+        return if (indexAnd == -1) {
+            this
+        } else {
+            val urlBeforeAnd = substringBefore("&", "")
+            val indexQuestion = urlBeforeAnd.indexOf("?")
+            if (indexQuestion == -1) {
+                urlBeforeAnd
+            } else {
+                this
+            }
+        }
+    }
+
+    /**
+     * trim invalid &
+     * Example:
+     * https://www.tokopedia.com/help?&a=b
+     * https://www.tokopedia.com/help?a=b
+     *
+     * https://www.tokopedia.com/help?a=b&&c=d
+     * https://www.tokopedia.com/help?a=b&c=d
+     *
+     * https://www.tokopedia.com/help?a=b?&c=d
+     * https://www.tokopedia.com/help?a=b&c=d
+     */
+    private fun String.normalizeDoubleSymbol(): String {
+        var url = replace("&&", "&")
+        val indexQuestionAnd = url.indexOf("?&")
+        if (indexQuestionAnd > -1) {
+            val indexQuestion = url.indexOf("?")
+            if (indexQuestion == indexQuestionAnd) {
+                url = url.replaceFirst("?&", "?")
+            } else {
+                url = url.replaceFirst("?&", "&")
+            }
+        }
+        return url
     }
 }

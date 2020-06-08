@@ -25,8 +25,6 @@ public class GetInitialDataPageUsecaseTest {
     @Mock
     private GetFavoriteShopUsecase getFavoriteShopUsecase;
     @Mock
-    private GetWishlistUtil getWishlistUtil;
-    @Mock
     private RequestParams mockRequestParams;
     @Mock
     private GetTopAdsShopUseCase getTopAdsShopUseCase;
@@ -44,7 +42,6 @@ public class GetInitialDataPageUsecaseTest {
                 threadExecutor,
                 postExecutionThread,
                 getFavoriteShopUsecase,
-                getWishlistUtil,
                 getTopAdsShopUseCase);
 
     }

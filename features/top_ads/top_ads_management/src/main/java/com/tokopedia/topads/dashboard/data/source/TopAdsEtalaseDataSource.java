@@ -11,5 +11,5 @@ import rx.Observable;
  */
 
 public interface TopAdsEtalaseDataSource {
-    Observable<List<Etalase>> getEtalaseList(String shopId);
+    Observable<List<Etalase>> getEtalaseList(String shopId, String userId, String deviceId);
 }

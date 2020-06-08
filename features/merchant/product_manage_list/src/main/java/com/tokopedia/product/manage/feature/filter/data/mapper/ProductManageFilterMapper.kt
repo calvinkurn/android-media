@@ -90,6 +90,22 @@ class ProductManageFilterMapper {
             return FilterOptionWrapper(sortOption, filterOptions, isShown, selectedFilterCount)
         }
 
+        fun countSelectedFilter(filterOptions: List<FilterOption>): Int {
+            var selectedFilterCount = 0
+            filterOptions.forEach {
+                when(it) {
+                    is FilterOption.FilterByMenu -> {
+                        selectedFilterCount =+ it.menuIds.count()
+                    }
+                    is FilterOption.FilterByCategory -> {
+                        selectedFilterCount =+ it.categoryIds.count()
+                    }
+                    else -> selectedFilterCount++
+                }
+            }
+            return selectedFilterCount
+        }
+
         fun mapFilterOptionWrapperToSelectedSort(filterOptionWrapper: FilterOptionWrapper): FilterDataUiModel? {
             filterOptionWrapper.sortOption?.let {
                 return FilterDataUiModel(id = it.id.name,

@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
@@ -111,7 +112,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment() {
         somConfirmRequestPickupViewModel.processReqPickupResult.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    processReqPickupResponse = it.data.data.mpLogisticRequestPickup
+                    processReqPickupResponse = it.data.mpLogisticRequestPickup
                     activity?.setResult(Activity.RESULT_OK, Intent().apply {
                         putExtra(RESULT_PROCESS_REQ_PICKUP, processReqPickupResponse)
                     })
@@ -160,6 +161,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment() {
         }
 
         btn_req_pickup?.setOnClickListener {
+            SomAnalytics.eventClickRequestPickupPopup()
             processReqPickup()
             observingProcessReqPickup()
         }

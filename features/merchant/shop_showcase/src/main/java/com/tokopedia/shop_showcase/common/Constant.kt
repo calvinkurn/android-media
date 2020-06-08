@@ -33,7 +33,7 @@ object ShopShowcaseListParam {
     const val EXTRA_IS_MY_SHOP = "IS_MY_SHOP"
     const val EXTRA_SHOP_TYPE = "EXTRA_SHOP_TYPE"
     const val EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE = "EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE"
-//    const val EXTRA_TOTAL_PRODUCT = "EXTRA_TOTAL_PRODUCT"
+    const val EXTRA_IS_NEED_TO_RELOAD_DATA = "EXTRA_IS_NEED_TO_RELOAD_DATA"
 }
 
 object ShopShowcaseEditParam {
@@ -56,6 +56,12 @@ object ShopType {
     const val REGULAR = "REGULAR"
     const val GOLD_MERCHANT = "GOLD_MERCHANT"
     const val OFFICIAL_STORE = "OFFICIAL_STORE"
+}
+
+object PageType {
+    const val ADD_SHOWCASE_PAGE = "ADD_SHOWCASE_PAGE"
+    const val ADD_SHOWCASE_FROM_SHOWCASE_LIST = "ADD_SHOWCASE_FROM_SHOWCASE_LIST"
+    const val REORDER_SHOWCASE_PAGE = "REORDER_SHOWCASE_PAGE"
 }
 
 const val TOTAL_GENERATED_ID: Int = 10

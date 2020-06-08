@@ -31,10 +31,9 @@ class ProcessMessageUseCaseTest {
     var rule = InstantTaskExecutorRule()
 
     val tradeInRepository: TradeInRepository = mockk(relaxed = true)
-    val context: Context = mockk()
     val resources: Resources = mockk()
 
-    var processMessageUseCase = spyk(ProcessMessageUseCase(context, tradeInRepository))
+    var processMessageUseCase = spyk(ProcessMessageUseCase(tradeInRepository))
 
     @RelaxedMockK
     lateinit var deviceDiagnostics: DeviceDiagnostics
@@ -105,10 +104,9 @@ class ProcessMessageUseCaseTest {
         runBlocking {
             mockkStatic(GraphqlHelper::class)
             every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-            every { context.resources } returns resources
             coEvery { tradeInRepository.getGQLData(any(), DeviceDiagInputResponse::class.java, any())} returns deviceDiagInputResponse
 
-            processMessageUseCase.processMessage(tradeInParams, deviceDiagnostics)
+            processMessageUseCase.processMessage(resources, tradeInParams, deviceDiagnostics)
 
             coVerify { tradeInRepository.getGQLData(any(), DeviceDiagInputResponse::class.java, any()) }
         }

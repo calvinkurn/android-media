@@ -24,11 +24,6 @@
             android:label="@string/flash_sale_term_and_condition"
             android:theme="@style/Theme.White" />
 
-        <activity
-            android:name=".view.activity.FlashsaleWebViewActivity"
-            android:label="@string/fm_flash_sale"
-            android:theme="@style/Theme.White" />
-
     </application>
 
 </manifest>

@@ -21,14 +21,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/color_subtitle_setting_profile"
-                android:textSize="14sp" />
+                android:textSize="@dimen/fontSize_lvl3" />
 
             <com.tokopedia.unifycomponents.Label
                 android:id="@+id/verified"
                 android:layout_width="86dp"
                 android:layout_height="20dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                android:layout_marginLeft="@dimen/spacing_lvl3"
                 android:layout_toEndOf="@id/subtitleFilled"
                 android:layout_toRightOf="@id/subtitleFilled"
                 android:gravity="center"
@@ -42,9 +42,9 @@
             android:id="@+id/valueFilled"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="@dimen/spacing_lvl2"
             android:textColor="@color/color_subtitle_value_setting_profile"
-            android:textSize="16sp"
+            android:textSize="@dimen/fontSize_lvl4"
             android:visibility="gone"/>
     </LinearLayout>
 
@@ -54,9 +54,9 @@
         android:layout_height="match_parent"
         android:text="@string/change_setting_profile"
         android:textColor="@color/color_change_setting_profile"
-        android:paddingLeft="10dp"
-        android:paddingStart="10dp"
-        android:textSize="14sp"
+        android:paddingLeft="@dimen/spacing_lvl3"
+        android:paddingStart="@dimen/spacing_lvl3"
+        android:textSize="@dimen/fontSize_lvl3"
         android:textStyle="bold"
         android:visibility="gone"
         android:gravity="bottom" />

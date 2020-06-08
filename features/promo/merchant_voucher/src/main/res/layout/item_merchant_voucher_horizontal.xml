@@ -3,7 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/merchantVoucherView"
     android:layout_width="@dimen/merchant_voucher_width"
-    android:padding="@dimen/dp_10"
+    android:paddingLeft="@dimen/dp_10"
+    android:paddingRight="@dimen/dp_10"
+    android:paddingTop="@dimen/dp_12"
+    android:paddingBottom="@dimen/dp_12"
     app:vchElevation="@dimen/dp_10"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_gravity="center" />

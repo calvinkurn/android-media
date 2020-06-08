@@ -5,8 +5,8 @@ import com.tokopedia.search.result.presentation.model.EmptySearchProfileViewMode
 import com.tokopedia.search.result.presentation.model.ProfileRecommendationTitleViewModel
 import com.tokopedia.search.result.presentation.model.ProfileViewModel
 import com.tokopedia.search.result.presentation.presenter.profile.testinstance.searchProfileModelEmptyResultWithRecommendation
-import com.tokopedia.search.result.shop.presentation.viewmodel.shouldBeInstanceOf
 import com.tokopedia.search.shouldBe
+import com.tokopedia.search.shouldBeInstanceOf
 
 fun List<Visitable<*>>?.shouldOnlyHaveEmptyResult() {
     this ?: throw AssertionError("List is null")

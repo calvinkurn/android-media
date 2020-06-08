@@ -5,6 +5,11 @@ package com.tokopedia.travelhomepage.homepage.analytics
  */
 object TravelHomepageTrackingCategoryConstant {
     const val TRAVEL_HOMEPAGE_CATEGORY = "digital - subhomepage - travel&entertainment"
+    const val CURRENT_SITE = "currentSite"
+    const val TOKOPEDIA_DIGITAL_SUBHOMEPAGE = "tokopediadigitalSubhomepage"
+    const val BUSINESS_UNIT = "businessUnit"
+    const val TRAVEL_ENTERTAINMENT = "travel & entertainment"
+    const val SUBHOMEPAGE_CATEGORY_NAME = "subhomepage"
 }
 
 object TravelHomepageTrackingActionConstant {
@@ -19,6 +24,16 @@ object TravelHomepageTrackingActionConstant {
     const val DEALS_CLICK = "click on widget deals"
     const val DEALS_CLICK_ALL = "click view all on widget deals"
     const val POPULAR_DESTINATION_CLICK = "click on dynamic banner"
+    const val POPULAR_DESTINATION_IMPRESSION = "impression on popular destination widget"
+    const val SQUARE_PRODUCT_CARD_IMPRESSION = "impression on square product card widget"
+    const val SQUARE_PRODUCT_CARD_CLICK = "click on square product card widget"
+    const val SQUARE_PRODUCT_CARD_CLICK_SEE_ALL = "click on view all square product card widget"
+    const val LEGO_BANNER_IMPRESSION = "impression on lego banner widget"
+    const val LEGO_BANNER_CLICK = "click on lego banner widget"
+    const val PRODUCT_CARD_IMPRESSION = "impression on product card widget"
+    const val PRODUCT_CARD_CLICK = "click on product card widget"
+    const val PRODUCT_CARD_CLICK_SEE_ALL = "click on view all product card widget"
+
 }
 
 object TravelHomepageTrackingLabelConstant {
@@ -29,7 +44,9 @@ object TravelHomepageTrackingEventNameConstant {
     const val PROMO_VIEW = "promoView"
     const val PROMO_CLICK = "promoClick"
     const val CLICK_HOMEPAGE = "clickHomepage"
+    const val PRODUCT_VIEW = "productView"
     const val PRODUCT_CLICK = "productClick"
+    const val CLICK_EVENT = "clickEvent"
 }
 
 object TravelHomepageTrackingEEConstant {
@@ -41,7 +58,11 @@ object TravelHomepageTrackingEEConstant {
     const val PRICE = "price"
     const val BRAND = "brand"
     const val CATEGORY = "category"
+    const val LIST = "list"
     const val VARIANT = "variant"
+    const val CURRENCY_CODE = "currencyCode"
+    const val IDR_DEFAULT_CURRENCY = "IDR"
+    const val IMPRESSIONS = "impressions"
 
     const val CREATIVE_PREFIX = "DG_SUBHOME_"
 

@@ -6,8 +6,9 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
@@ -21,8 +22,17 @@ import com.tokopedia.shop.open.shop_open_revamp.presentation.view.fragment.ShopO
 import com.tokopedia.shop.open.shop_open_revamp.presentation.view.fragment.ShopOpenRevampInputShopFragment.Companion.FIRST_FRAGMENT_TAG
 import com.tokopedia.shop.open.shop_open_revamp.presentation.view.fragment.ShopOpenRevampQuisionerFragment
 import com.tokopedia.shop.open.shop_open_revamp.presentation.view.fragment.ShopOpenRevampSplashScreenFragment
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 
 class ShopOpenRevampActivity : BaseActivity(), FragmentNavigationInterface {
+
+    private val userSession: UserSessionInterface by lazy {
+        UserSession(this)
+    }
+    private var isNeedLocation = false
+    private var bundle: Bundle? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,13 +40,17 @@ class ShopOpenRevampActivity : BaseActivity(), FragmentNavigationInterface {
         setupFirstFragment()
         setupStatusBar()
 
-        if (intent.extras != null) {
-            val isNeedLocation = intent.getBooleanExtra(ApplinkConstInternalMarketplace.PARAM_IS_NEED_LOC, false)
-            if (isNeedLocation) {
-                val fragmentQuisionerPage = ShopOpenRevampQuisionerFragment()
-                fragmentQuisionerPage.arguments = intent.extras
-                navigateToOtherFragment(fragmentQuisionerPage, FIRST_FRAGMENT_TAG)
-            }
+        intent.extras?.let {
+            isNeedLocation = intent.getBooleanExtra(ApplinkConstInternalMarketplace.PARAM_IS_NEED_LOC, false)
+            bundle = it
+        }
+
+        if (userSession.hasShop() && isNeedLocation) {
+            val fragmentQuisionerPage = ShopOpenRevampQuisionerFragment()
+            fragmentQuisionerPage.arguments = bundle
+            navigateToOtherFragment(fragmentQuisionerPage, FIRST_FRAGMENT_TAG)
+        } else if (userSession.hasShop() && !isNeedLocation) {
+            RouteManager.route(this, ApplinkConst.SHOP, userSession.shopId)
         }
     }
 

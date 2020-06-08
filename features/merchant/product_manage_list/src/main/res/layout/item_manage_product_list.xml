@@ -226,24 +226,6 @@
         tools:visibility="gone"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btnEditVariant"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/layout_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl3"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:text="@string/product_manage_menu_edit_variant"
-        android:visibility="gone"
-        app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintLeft_toRightOf="@id/btnEditStock"
-        app:layout_constraintRight_toLeftOf="@id/btnMoreOptions"
-        app:layout_constraintTop_toTopOf="@id/btnMoreOptions"
-        app:layout_constraintBottom_toBottomOf="@id/btnMoreOptions"
-        app:unifyButtonSize="small"
-        app:unifyButtonType="alternate"
-        app:unifyButtonVariant="ghost"
-        tools:visibility="visible"/>
-
-    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnContactCS"
         android:layout_width="0dp"
         android:layout_height="@dimen/layout_lvl4"

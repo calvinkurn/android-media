@@ -97,6 +97,15 @@
     <string name="sh_coachmark_desc_on_going_promo">Lebih mudah memantau perkembangan status promosi aktif dan selesai di tokomu di sini.</string>
     <string name="sh_coachmark_title_promo_creation">Pilihan promosi</string>
     <string name="sh_coachmark_desc_promo_creation">Temukan beragam pilihan promosi yang sesuai kebutuhan tokomu.</string>
+    <string name="centralized_promo_broadcast_chat_extra_free_quota">%1$d kuota gratis</string>
+    <string name="centralized_promo_promo_creation_topads_title">TopAds</string>
+    <string name="centralized_promo_promo_creation_topads_description">Iklankan produkmu untuk menjangkau lebih banyak pembeli</string>
+    <string name="centralized_promo_promo_creation_broadcast_chat_title">Broadcast Chat</string>
+    <string name="centralized_promo_promo_creation_broadcast_chat_description">Tingkatkan penjualan dengan kirim pesan promosi ke pembeli</string>
+    <string name="centralized_promo_promo_creation_merchant_voucher_title">Voucher Toko</string>
+    <string name="centralized_promo_promo_creation_merchant_voucher_description">Gunakan voucher toko yang sesuai target pembeli tokomu</string>
+
+    <!-- First merchant voucher -->
     <string name="centralized_promo_bottomsheet_title">Yuk, buat Voucher Toko pertamamu!</string>
     <string name="centralized_promo_bottomsheet_detail">Dapatkan keuntungannya!</string>
     <string name="centralized_promo_bottomsheet_next">Buat Voucher</string>

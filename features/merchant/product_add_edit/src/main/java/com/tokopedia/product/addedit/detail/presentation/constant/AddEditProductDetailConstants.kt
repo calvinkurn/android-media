@@ -11,9 +11,7 @@ class AddEditProductDetailConstants {
         const val REQUEST_CODE_DETAIL_EDIT = 3
         const val REQUEST_CODE_DESCRIPTION_EDIT = 4
         const val REQUEST_CODE_SHIPMENT_EDIT = 5
-        const val REQUEST_CODE_VARIANT_EDIT = 6
-        const val REQUEST_CODE_VARIANT_DIALOG_EDIT = 7
-        const val EXTRA_CATEGORY_ID = "CATEGORY_ID"
+        const val REQUEST_CODE_VARIANT_DIALOG_EDIT = 6
         const val CATEGORY_RESULT_ID = "CATEGORY_RESULT_ID"
         const val CATEGORY_RESULT_FULL_NAME = "CATEGORY_RESULT_FULL_NAME"
         const val UNIT_DAY = 0
@@ -28,7 +26,7 @@ class AddEditProductDetailConstants {
         const val MIN_PRODUCT_PRICE_LIMIT = 100
         const val MIN_PRODUCT_STOCK_LIMIT = 1
         const val MAX_PRODUCT_STOCK_LIMIT = 999999
-        const val MIN_ORDER_QUANTITY = 1
+        const val MIN_MIN_ORDER_QUANTITY = 1
         const val MIN_PREORDER_DURATION = 1
         const val MAX_PREORDER_DAYS = 90
         const val MAX_PREORDER_WEEKS = 13

@@ -4,27 +4,28 @@ import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.play.component.EventBusFactory
+import com.tokopedia.play.extensions.isAnyHidden
+import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
+import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayChannelType
-import com.tokopedia.play.view.type.PlayRoomEvent
-import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
-import com.tokopedia.play.view.uimodel.VideoStreamUiModel
-import com.tokopedia.play_common.state.TokopediaPlayVideoState
-import io.mockk.*
+import io.mockk.confirmVerified
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.*
 
 /**
  * Created by jegul on 31/01/20
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class VideoControlComponentTest {
 
     private lateinit var component: VideoControlComponent
@@ -33,7 +34,9 @@ class VideoControlComponentTest {
     private val testDispatcher = TestCoroutineDispatcher()
     private val coroutineScope = CoroutineScope(testDispatcher)
 
-    @Before
+    private val modelBuilder = ModelBuilder()
+
+    @BeforeEach
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         every { owner.lifecycle } returns mockk(relaxed = true)
@@ -41,67 +44,13 @@ class VideoControlComponentTest {
         component = VideoControlComponentMock(mockk(relaxed = true), EventBusFactory.get(owner), coroutineScope)
     }
 
-    @After
+    @AfterEach
     fun tearDown() {
         Dispatchers.resetMain()
     }
 
     @Test
-    fun `test when video property changed to Live`() = runBlockingTest(testDispatcher) {
-        val mockVideoProp = VideoPropertyUiModel(
-                type = PlayChannelType.Live,
-                state = TokopediaPlayVideoState.Playing
-        )
-
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
-
-        verify { component.uiView.hide() }
-        confirmVerified(component.uiView)
-    }
-
-    @Test
-    fun `test when video property changed to VOD`() = runBlockingTest(testDispatcher) {
-        val mockVideoProp = VideoPropertyUiModel(
-                type = PlayChannelType.VOD,
-                state = TokopediaPlayVideoState.Playing
-        )
-
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
-
-        verify { component.uiView.show() }
-        confirmVerified(component.uiView)
-    }
-
-    @Test
-    fun `test when video stream is changed to live`() = runBlockingTest(testDispatcher) {
-        val mockVideoStream = VideoStreamUiModel(
-                uriString = "",
-                channelType = PlayChannelType.Live,
-                isActive = true
-        )
-
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoStreamChanged(mockVideoStream))
-
-        verify { component.uiView.hide() }
-        confirmVerified(component.uiView)
-    }
-
-    @Test
-    fun `test when video stream is changed to VOD`() = runBlockingTest(testDispatcher) {
-        val mockVideoStream = VideoStreamUiModel(
-                uriString = "",
-                channelType = PlayChannelType.VOD,
-                isActive = true
-        )
-
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoStreamChanged(mockVideoStream))
-
-        verify { component.uiView.show() }
-        confirmVerified(component.uiView)
-    }
-
-    @Test
-    fun `test when should set video`() = runBlockingTest(testDispatcher) {
+    fun `when new video is set, then video should update video`() = runBlockingTest(testDispatcher) {
         val mockExoPlayer = mockk<ExoPlayer>()
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetVideo(mockExoPlayer))
@@ -111,15 +60,187 @@ class VideoControlComponentTest {
     }
 
     @Test
-    fun `test when channel is freeze`() = runBlockingTest(testDispatcher) {
-        val mockPlayRoomEvent = PlayRoomEvent.Freeze("", "", "", "")
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockPlayRoomEvent))
+    fun `when channel is frozen, then video should be hidden and released`() = runBlockingTest(testDispatcher) {
+        val mockFreeze = modelBuilder.buildPlayRoomFreezeEvent()
 
-        verifyAll {
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockFreeze))
+        verify {
             component.uiView.hide()
             component.uiView.setPlayer(null)
         }
         confirmVerified(component.uiView)
+    }
+
+    @Test
+    fun `when user is banned, then video should be hidden and released`() = runBlockingTest(testDispatcher) {
+        val mockFreeze = modelBuilder.buildPlayRoomBannedEvent()
+
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockFreeze))
+        verify {
+            component.uiView.hide()
+            component.uiView.setPlayer(null)
+        }
+        confirmVerified(component.uiView)
+    }
+
+    @Nested
+    @DisplayName("Given channel is VOD")
+    inner class GivenChannelVOD {
+
+        val mockChannelType = PlayChannelType.VOD
+
+        @Test
+        fun `when keyboard is shown, then video control should be hidden`() = runBlockingTest(testDispatcher) {
+            val mockBottomInsets = modelBuilder.buildBottomInsetsMap(
+                    keyboardState = modelBuilder.buildBottomInsetsState(isShown = true)
+            )
+
+            val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                    channelType = mockChannelType,
+                    bottomInsets = mockBottomInsets
+            )
+
+            EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(mockBottomInsets, mockBottomInsets.isAnyShown, mockBottomInsets.isAnyHidden, mockStateHelper))
+            verify { component.uiView.hide() }
+            confirmVerified(component.uiView)
+        }
+
+        @Test
+        fun `when keyboard is hidden, then video control should be hidden`() = runBlockingTest(testDispatcher) {
+            val mockBottomInsets = modelBuilder.buildBottomInsetsMap(
+                    keyboardState = modelBuilder.buildBottomInsetsState(isShown = false)
+            )
+
+            val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                    channelType = mockChannelType,
+                    bottomInsets = mockBottomInsets
+            )
+
+            EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(mockBottomInsets, mockBottomInsets.isAnyShown, mockBottomInsets.isAnyHidden, mockStateHelper))
+            verify { component.uiView.show() }
+            confirmVerified(component.uiView)
+        }
+    }
+
+    @Nested
+    @DisplayName("Given channel is Live")
+    inner class GivenChannelLive {
+
+        val mockChannelType = PlayChannelType.Live
+
+        @Test
+        fun `when keyboard is shown, then video control should be hidden`() = runBlockingTest(testDispatcher) {
+            val mockBottomInsets = modelBuilder.buildBottomInsetsMap(
+                    keyboardState = modelBuilder.buildBottomInsetsState(isShown = true)
+            )
+
+            val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                    channelType = mockChannelType,
+                    bottomInsets = mockBottomInsets
+            )
+
+            EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(mockBottomInsets, mockBottomInsets.isAnyShown, mockBottomInsets.isAnyHidden, mockStateHelper))
+            verify { component.uiView.hide() }
+            confirmVerified(component.uiView)
+        }
+
+        @Test
+        fun `when keyboard is hidden, then video control should be hidden`() = runBlockingTest(testDispatcher) {
+            val mockBottomInsets = modelBuilder.buildBottomInsetsMap(
+                    keyboardState = modelBuilder.buildBottomInsetsState(isShown = false)
+            )
+
+            val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                    channelType = mockChannelType,
+                    bottomInsets = mockBottomInsets
+            )
+
+            EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(mockBottomInsets, mockBottomInsets.isAnyShown, mockBottomInsets.isAnyHidden, mockStateHelper))
+            verify { component.uiView.hide() }
+            confirmVerified(component.uiView)
+        }
+    }
+
+    @Nested
+    @DisplayName("Given keyboard is shown")
+    inner class GivenKeyboardShown {
+
+        val mockBottomInsets = modelBuilder.buildBottomInsetsMap(
+                keyboardState = modelBuilder.buildBottomInsetsState(isShown = true)
+        )
+
+        @Test
+        fun `when channel is changed to vod, then video control should be hidden`() = runBlockingTest(testDispatcher) {
+            val mockVideoStream = modelBuilder.buildVideoStreamUiModel(
+                    channelType = PlayChannelType.VOD
+            )
+
+            val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                    channelType = mockVideoStream.channelType,
+                    bottomInsets = mockBottomInsets
+            )
+
+            EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoStreamChanged(mockVideoStream, mockStateHelper))
+            verify { component.uiView.hide() }
+            confirmVerified(component.uiView)
+        }
+
+        @Test
+        fun `when channel is changed to live, then video control should be hidden`() = runBlockingTest(testDispatcher) {
+            val mockVideoStream = modelBuilder.buildVideoStreamUiModel(
+                    channelType = PlayChannelType.Live
+            )
+
+            val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                    channelType = mockVideoStream.channelType,
+                    bottomInsets = mockBottomInsets
+            )
+
+            EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoStreamChanged(mockVideoStream, mockStateHelper))
+            verify { component.uiView.hide() }
+            confirmVerified(component.uiView)
+        }
+    }
+
+    @Nested
+    @DisplayName("Given keyboard is hidden")
+    inner class GivenKeyboardHidden {
+
+        val mockBottomInsets = modelBuilder.buildBottomInsetsMap(
+                keyboardState = modelBuilder.buildBottomInsetsState(isShown = false)
+        )
+
+        @Test
+        fun `when channel is changed to vod, then video control should be shown`() = runBlockingTest(testDispatcher) {
+            val mockVideoStream = modelBuilder.buildVideoStreamUiModel(
+                    channelType = PlayChannelType.VOD
+            )
+
+            val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                    channelType = mockVideoStream.channelType,
+                    bottomInsets = mockBottomInsets
+            )
+
+            EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoStreamChanged(mockVideoStream, mockStateHelper))
+            verify { component.uiView.show() }
+            confirmVerified(component.uiView)
+        }
+
+        @Test
+        fun `when channel is changed to live, then video control should be hidden`() = runBlockingTest(testDispatcher) {
+            val mockVideoStream = modelBuilder.buildVideoStreamUiModel(
+                    channelType = PlayChannelType.Live
+            )
+
+            val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                    channelType = mockVideoStream.channelType,
+                    bottomInsets = mockBottomInsets
+            )
+
+            EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoStreamChanged(mockVideoStream, mockStateHelper))
+            verify { component.uiView.hide() }
+            confirmVerified(component.uiView)
+        }
     }
 
     class VideoControlComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : VideoControlComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {

@@ -2,12 +2,12 @@ package com.tokopedia.home.beranda.listener
 
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import kotlinx.coroutines.CoroutineScope
-import kotlin.coroutines.CoroutineContext
 
 import java.util.HashMap
 
@@ -33,6 +33,8 @@ interface HomeCategoryListener {
 
     val homeMainToolbarHeight: Int
 
+    val userId: String
+
     fun onSectionItemClicked(actionLink: String)
 
     fun onCloseTicker()
@@ -40,6 +42,10 @@ interface HomeCategoryListener {
     fun onPromoClick(position: Int, slidesModel: BannerSlidesModel)
 
     fun openShop()
+
+    fun onOpenPlayChannelList(appLink: String)
+
+    fun sendIrisTrackerHashMap(tracker: HashMap<String, Any>)
 
     fun onOpenPlayActivity(root: android.view.View, channelId: String?)
 
@@ -81,6 +87,8 @@ interface HomeCategoryListener {
 
     fun onCloseGeolocationView()
 
+    fun sendEETracking(data: HashMap<String, Any>)
+
     fun putEEToTrackingQueue(data: HashMap<String, Any>)
 
     fun putEEToIris(data: HashMap<String, Any>)
@@ -88,4 +96,16 @@ interface HomeCategoryListener {
     fun getWindowWidth(): Int
 
     fun refreshHomeData()
+
+    fun getTabBusinessWidget(position: Int)
+
+    fun getBusinessUnit(tabId: Int, position: Int)
+
+    fun getPlayChannel(position: Int)
+
+    fun updateExpiredChannel(dynamicChannelDataModel: DynamicChannelDataModel, position: Int)
+
+    fun onBuyAgainOneClickCheckOutClick(grid: DynamicHomeChannel.Grid, channel: DynamicHomeChannel.Channels, position: Int)
+
+    fun onBuyAgainCloseChannelClick(channel: DynamicHomeChannel.Channels, position: Int)
 }

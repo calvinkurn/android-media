@@ -30,7 +30,7 @@
                 <RelativeLayout
                     android:layout_width="90dp"
                     android:layout_height="90dp"
-                    android:layout_marginTop="@dimen/dp_15"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
                     android:layout_centerHorizontal="true">
 
                     <ImageView
@@ -46,10 +46,10 @@
                         android:layout_alignParentRight="true"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentBottom="true"
-                        android:padding="@dimen/dp_4"
-                        android:layout_margin="@dimen/dp_2"
+                        android:padding="@dimen/spacing_lvl2"
+                        android:layout_margin="@dimen/spacing_lvl1"
                         app:srcCompat="@drawable/ic_edit_pencil_photo"
-                        android:elevation="@dimen/dp_2"
+                        android:elevation="@dimen/spacing_lvl1"
                         android:background="@drawable/rounded_bg_icon_with_shadow"/>
                 </RelativeLayout>
             </RelativeLayout>
@@ -58,47 +58,47 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/dp_19"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingRight="@dimen/dp_16"
+                android:paddingBottom="@dimen/spacing_lvl4"
+                android:paddingLeft="@dimen/spacing_lvl4"
+                android:paddingRight="@dimen/spacing_lvl4"
                 app:layout_constraintTop_toBottomOf="@+id/headerContainer">
 
                 <com.tokopedia.profilecompletion.settingprofile.view.widget.CustomFieldSettingProfile
                     android:id="@+id/name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_24"/>
+                    android:layout_marginTop="@dimen/spacing_lvl5"/>
 
                 <com.tokopedia.profilecompletion.settingprofile.view.widget.CustomFieldSettingProfile
                     android:id="@+id/bod"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_24"/>
+                    android:layout_marginTop="@dimen/spacing_lvl5"/>
 
                 <com.tokopedia.profilecompletion.settingprofile.view.widget.CustomFieldSettingProfile
                     android:id="@+id/gender"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_24"/>
+                    android:layout_marginTop="@dimen/spacing_lvl5"/>
 
                 <com.tokopedia.profilecompletion.settingprofile.view.widget.CustomFieldSettingProfile
                     android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_24"/>
+                    android:layout_marginTop="@dimen/spacing_lvl5"/>
 
                 <com.tokopedia.profilecompletion.settingprofile.view.widget.CustomFieldSettingProfile
                     android:id="@+id/phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_24"/>
+                    android:layout_marginTop="@dimen/spacing_lvl5"/>
 
                 <com.tokopedia.unifycomponents.ticker.Ticker
                     android:id="@+id/ticker_phone_verification"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="visible"
-                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/spacing_lvl3"
                     app:closeButtonVisibility="gone"
                     android:layout_gravity="center_vertical"
                     app:tickerType="warning"

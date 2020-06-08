@@ -7,7 +7,7 @@
         android:id="@+id/cl_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:background="@color/black"
+        tools:background="@color/Neutral_N600"
         >
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -19,69 +19,77 @@
             app:srcCompat="@drawable/ic_play_back_white"
             />
 
-        <include
-            android:id="@+id/live_badge"
-            layout="@layout/layout_live_badge"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_20"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/iv_back"
-            app:layout_constraintStart_toEndOf="@id/iv_back"
-            app:layout_constraintTop_toTopOf="@id/iv_back" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_stream_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_4"
-            android:layout_marginEnd="@dimen/dp_22"
-            android:layout_marginRight="@dimen/dp_22"
-            android:ellipsize="end"
-            android:lineHeight="@dimen/sp_20"
-            android:maxLines="1"
-            android:textColor="@color/Neutral_N0"
-            app:layout_constraintBottom_toBottomOf="@id/live_badge"
-            app:layout_constraintEnd_toStartOf="@id/iv_more"
-            app:layout_constraintStart_toEndOf="@id/live_badge"
-            app:layout_constraintTop_toTopOf="@id/live_badge"
-            app:layout_goneMarginLeft="@dimen/dp_16"
-            app:layout_goneMarginStart="@dimen/dp_16"
-            app:typographyType="heading_5"
-            app:typographyWeight="bold"
-            tools:text="@string/play_mock_stream_name"
-            />
-
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_more"
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
             android:layout_marginEnd="@dimen/dp_2"
             android:layout_marginRight="@dimen/dp_2"
-            app:layout_constraintBottom_toBottomOf="@id/tv_stream_name"
+            app:layout_constraintBottom_toBottomOf="@id/iv_back"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tv_stream_name"
+            app:layout_constraintTop_toTopOf="@id/iv_back"
             app:srcCompat="@drawable/ic_play_more_white"
+            android:visibility="invisible"
             />
+
+        <RelativeLayout
+            android:id="@+id/rl_cart"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:layout_marginEnd="@dimen/play_cart_margin"
+            android:layout_marginRight="@dimen/play_cart_margin"
+            app:layout_constraintBottom_toBottomOf="@id/iv_back"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/iv_back"
+            android:visibility="invisible">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="@dimen/layout_lvl3"
+                android:layout_height="@dimen/layout_lvl3"
+                app:srcCompat="@drawable/ic_cart_grayscale_20"
+                android:tint="@color/white"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                />
+
+            <TextView
+                android:id="@+id/tv_badge_cart"
+                android:layout_width="@dimen/play_cart_badge_size"
+                android:layout_height="@dimen/play_cart_badge_size"
+                android:background="@drawable/shape_play_cart_dots"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:gravity="center"
+                android:textSize="@dimen/fontSize_lvl10"
+                android:textStyle="bold"
+                android:textColor="@color/Neutral_N0"
+                android:visibility="invisible"
+                tools:text="99"/>
+
+        </RelativeLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_partner"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:layout_constraintStart_toStartOf="@id/live_badge"
-            app:layout_constraintTop_toBottomOf="@id/tv_stream_name"
+            android:layout_marginStart="@dimen/play_toolbar_back_button_margin"
+            android:layout_marginEnd="@dimen/play_toolbar_back_button_margin"
+            app:layout_constraintStart_toEndOf="@id/iv_back"
+            app:layout_constraintTop_toTopOf="@id/iv_back"
+            app:layout_constraintBottom_toBottomOf="@id/iv_back"
+            app:layout_constraintEnd_toStartOf="@id/iv_more"
             app:layout_goneMarginLeft="@dimen/dp_16"
             app:layout_goneMarginStart="@dimen/dp_16"
+            tools:visibility="visible"
             >
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_partner_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/dp_10"
                 android:textColor="@color/Neutral_N0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -100,7 +108,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/tv_partner_name"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.75"
                 />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -109,11 +116,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginLeft="@dimen/dp_8"
-                android:paddingTop="@dimen/dp_10"
                 android:textColor="@color/Neutral_N0"
                 app:layout_constraintStart_toEndOf="@id/v_separator"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="heading_6"
+                app:typographyType="body_3"
                 app:typographyWeight="bold"
                 tools:text="@string/play_follow"
                 />
@@ -122,7 +128,8 @@
                 android:id="@+id/group_followable"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:constraint_referenced_ids="v_separator, tv_follow"
+                app:constraint_referenced_ids="v_separator,tv_follow"
+                tools:visibility="gone"
                 />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

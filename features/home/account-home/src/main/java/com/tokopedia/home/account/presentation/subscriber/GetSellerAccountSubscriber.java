@@ -1,5 +1,6 @@
 package com.tokopedia.home.account.presentation.subscriber;
 
+import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.presentation.SellerAccount;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
 
@@ -27,5 +28,10 @@ public class GetSellerAccountSubscriber extends BaseAccountSubscriber<SellerView
     public void onNext(SellerViewModel model) {
         view.loadSellerData(model);
         view.hideLoading();
+    }
+
+    @Override
+    String getErrorCode() {
+        return AccountConstants.ErrorCodes.ERROR_CODE_SELLER_ACCOUNT;
     }
 }

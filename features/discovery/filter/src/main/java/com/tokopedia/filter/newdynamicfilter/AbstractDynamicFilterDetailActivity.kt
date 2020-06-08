@@ -191,12 +191,25 @@ abstract class AbstractDynamicFilterDetailActivity<T : RecyclerView.Adapter<*>> 
 
     override fun onItemCheckedChanged(option: Option, isChecked: Boolean) {
         option.inputState = isChecked.toString()
+        refreshOptionList(option)
         hideKeyboard()
         if (isUsingTracking) {
             trackingData?.let {
                 FilterTracking.eventFilterJourney(it, pageTitle, option.name,
                         true, isChecked, option.isAnnotation)
             }
+        }
+    }
+
+    private fun refreshOptionList(option: Option) {
+        if (option.isTypeRadio) {
+            optionList.forEach {
+                if (it.uniqueId != option.uniqueId) {
+                    it.inputState = false.toString()
+                }
+            }
+
+            abstractDynamicFilterAdapter.notifyDataSetChanged()
         }
     }
 

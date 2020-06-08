@@ -20,7 +20,6 @@ class KeywordListAdapter(val typeFactory: KeywordListAdapterTypeFactory) : Recyc
     private var remains: MutableList<KeywordViewModel> = mutableListOf()
     var favoured: MutableList<KeywordItemViewModel> = mutableListOf()
     var manualKeywords: MutableList<KeywordItemViewModel> = mutableListOf()
-    var ind: Int = 0
     private var SELECTED_KEYWORD = " Kata Kunci Pilihan"
     private var RECOMMENDED = "Rekomendasi"
 
@@ -42,8 +41,8 @@ class KeywordListAdapter(val typeFactory: KeywordListAdapterTypeFactory) : Recyc
     }
 
     fun getSelectedItems(): List<KeywordItemViewModel> {
-        var selected = mutableListOf<KeywordItemViewModel>()
-        items.forEachIndexed { _, model ->
+        val selected = mutableListOf<KeywordItemViewModel>()
+        items.forEach { model ->
             if ((model is KeywordItemViewModel) && model.isChecked) {
                 selected.add(model)
             }
@@ -52,26 +51,37 @@ class KeywordListAdapter(val typeFactory: KeywordListAdapterTypeFactory) : Recyc
     }
 
     fun addNewKeyword(it: KeywordItemViewModel): Boolean {
-        if (items.size != 0 && items[0] is KeywordEmptyViewModel) {
+        if (items.size == 0) {
+            items.add(0, KeywordGroupViewModel(SELECTED_KEYWORD))
+        }
+        if (items[0] is KeywordEmptyViewModel) {
             items.clear()
             items.add(0, KeywordGroupViewModel(SELECTED_KEYWORD))
         } else if (items.size != 0 && items[0] is KeywordGroupViewModel && (items[0] as KeywordGroupViewModel).title != SELECTED_KEYWORD) {
             items.add(0, KeywordGroupViewModel(SELECTED_KEYWORD))
         }
-        favoured.forEachIndexed lit@{ index, _ ->
+        favoured.forEachIndexed { index, _ ->
             if (favoured[index].data.keyword == it.data.keyword) {
                 return true
-                ind = index
-                return@lit
             }
         }
-        if (ind != 0)
-            items.remove(favoured[ind])
+        var index = 0
+        items.forEachIndexed { ind, item ->
+            if (item is KeywordItemViewModel) {
+                if (item.data.keyword == it.data.keyword) {
+                    index = ind
+                }
+            }
+        }
+        if (index != 0) {
+            items.removeAt(index)
+        } else
+            manualKeywords.add(it)
+
         items.removeAll(favoured)
         favoured.add(it)
         items.addAll(1, favoured)
         it.isChecked = true
-        manualKeywords.add(it)
         notifyDataSetChanged()
         return false
     }
@@ -88,7 +98,7 @@ class KeywordListAdapter(val typeFactory: KeywordListAdapterTypeFactory) : Recyc
         items.clear()
         items.add(0, KeywordGroupViewModel(SELECTED_KEYWORD))
         items.addAll(favoured)
-        if(remains.size!=0) {
+        if (remains.size != 0) {
             items.add(KeywordGroupViewModel(RECOMMENDED))
             items.addAll(remains)
         }

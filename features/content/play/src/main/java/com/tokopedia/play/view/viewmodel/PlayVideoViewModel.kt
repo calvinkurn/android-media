@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.play.util.CoroutineDispatcherProvider
@@ -25,7 +26,8 @@ class PlayVideoViewModel @Inject constructor(
     }
 
     private val _observableOneTapOnboarding = MutableLiveData<Event<Unit>>()
-    val observableOneTapOnboarding = _observableOneTapOnboarding
+    val observableOneTapOnboarding: LiveData<Event<Unit>>
+        get() = _observableOneTapOnboarding
 
     init {
         val userId = userSession.userId

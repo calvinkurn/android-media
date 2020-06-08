@@ -8,8 +8,10 @@ import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class InstantLoanAuthInterceptor @Inject
-constructor(@ApplicationContext context: Context, networkRouter: NetworkRouter, userSessionInterface: UserSessionInterface) : TkpdAuthInterceptor(context, networkRouter, userSessionInterface) {
+class InstantLoanAuthInterceptor @Inject constructor(@ApplicationContext context: Context,
+                                                     networkRouter: NetworkRouter,
+                                                     userSessionInterface: UserSessionInterface) :
+        TkpdAuthInterceptor(context, networkRouter, userSessionInterface) {
 
     override fun getHeaderMap(path: String, strParam: String,
                               method: String, authKey: String,
@@ -23,7 +25,7 @@ constructor(@ApplicationContext context: Context, networkRouter: NetworkRouter, 
     }
 
     companion object {
-        private val PARAM_AUTHORIZATION = "Authorization"
-        private val PARAM_BEARER = "Bearer"
+        private const val PARAM_AUTHORIZATION = "Authorization"
+        private const val PARAM_BEARER = "Bearer"
     }
 }

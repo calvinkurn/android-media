@@ -15,7 +15,9 @@
         <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/layout_lvl2"
+            android:clipToPadding="false"/>
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 

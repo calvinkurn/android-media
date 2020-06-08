@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Neutral_N0"
+    android:padding="@dimen/spacing_lvl4">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/seller_seamless_loader"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
+        android:layout_gravity="center"
+        android:visibility="visible" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/seller_seamless_main_view"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/seller_seamless_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/seller_direct_login"
+            android:textColor="@color/Neutral_N700"
+            app:layout_constraintBottom_toTopOf="@+id/typography"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.110"
+            app:typographyType="heading_2"
+            app:typographyWeight="bold" />
+
+        <include
+            android:id="@+id/include"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            layout="@layout/item_account_with_shop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/seller_seamless_title" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/seller_seamless_positive_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl6"
+            android:text="@string/button_direct_login"
+            app:unifyButtonSize="medium"
+            app:layout_constraintEnd_toEndOf="@+id/include"
+            app:layout_constraintStart_toStartOf="@+id/include"
+            app:layout_constraintTop_toBottomOf="@+id/include" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/seller_seamless_negative_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:text="@string/button_use_another_acc"
+            app:unifyButtonSize="medium"
+            app:layout_constraintEnd_toEndOf="@+id/seller_seamless_positive_btn"
+            app:layout_constraintStart_toStartOf="@+id/seller_seamless_positive_btn"
+            app:layout_constraintTop_toBottomOf="@+id/seller_seamless_positive_btn"
+            app:unifyButtonVariant="text" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/typography"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:gravity="bottom|center"
+            android:text="@string/seamless_footer_text"
+            android:textSize="@dimen/fontSize_lvl3"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

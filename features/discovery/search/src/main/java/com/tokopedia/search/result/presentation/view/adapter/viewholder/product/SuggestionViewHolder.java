@@ -37,7 +37,7 @@ public class SuggestionViewHolder extends AbstractViewHolder<SuggestionViewModel
             suggestionText.setText(Html.fromHtml(element.getSuggestionText()));
             suggestionText.setOnClickListener(v -> {
                 if (suggestionListener != null && !TextUtils.isEmpty(element.getSuggestedQuery())) {
-                    suggestionListener.onSuggestionClicked(element.getSuggestedQuery());
+                    suggestionListener.onSuggestionClicked(element);
                 }
             });
             itemView.setVisibility(View.VISIBLE);

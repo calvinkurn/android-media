@@ -1,6 +1,7 @@
 package com.tokopedia.talk.producttalk.view.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.talk.producttalk.view.data.ChatBannerUiModel
 
 
 /**
@@ -18,8 +19,16 @@ data class ProductTalkViewModel(
         var productUrl: String = "",
         var productPrice: String = "",
         var shopId: Int = 0,
-        var shopName : String = "",
-        var shopAvatar : String = ""
+        var shopName: String = "",
+        var shopAvatar: String = ""
 ) {
+
+    fun addChatTicker() {
+        val chatBanner = ChatBannerUiModel(
+                productId.toString(), productImage, productName,
+                productPrice, productUrl, shopId.toString(), shopName
+        )
+        listThread.add(0, chatBanner)
+    }
 
 }

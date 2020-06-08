@@ -9,7 +9,7 @@ import com.tokopedia.dynamicfeatures.service.DFDownloader.KEY_SHARED_PREF_MODULE
 import com.tokopedia.dynamicfeatures.service.DFDownloader.SHARED_PREF_NAME
 
 object DFQueue {
-    lateinit var sharedPreferences: SharedPreferences
+    private lateinit var sharedPreferences: SharedPreferences
 
     private fun getSharedPref(context: Context): SharedPreferences {
         if (!::sharedPreferences.isInitialized) {
@@ -121,7 +121,7 @@ object DFQueue {
                 val indexAppendFind = moduleListToAppendList.indexOf(item.first)
                 if (indexAppendFind > -1) {
                     moduleListToAppend?.get(indexAppendFind)?.let {
-                        if (it.second < DFRemoteConfig().getConfig(context).downloadInBackgroundMaxRetry) {
+                        if (it.second <= DFRemoteConfig.getConfig(context).downloadInBackgroundMaxRetry) {
                             finalList.add(it)
                         }
                     }
@@ -147,7 +147,7 @@ object DFQueue {
             moduleListToDownload.distinct().map { Pair(it, 1) }
         } else {
             combineList(moduleListToDownload.distinct(), queueList,
-                    DFRemoteConfig().getConfig(context).downloadInBackgroundMaxRetry)
+                    DFRemoteConfig.getConfig(context).downloadInBackgroundMaxRetry)
         }
         putDFModuleList(context, list)
     }

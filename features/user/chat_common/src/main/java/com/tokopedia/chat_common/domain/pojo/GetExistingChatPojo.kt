@@ -2,6 +2,7 @@ package com.tokopedia.chat_common.domain.pojo
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.chat_common.data.AttachmentType
 
 /**
  * @author by nisie on 10/12/18.
@@ -13,6 +14,9 @@ data class GetExistingChatPojo(
 )
 
 data class ChatReplies(
+        @Expose
+        @SerializedName("minReplyTime")
+        val minReplyTime: String = "0",
         @Expose
         @SerializedName("contacts")
         val contacts: List<Contact> = ArrayList(),
@@ -142,7 +146,15 @@ data class Reply(
         @Expose
         @SerializedName("blastId")
         val blastId: Int = 0
-)
+) {
+        fun isMultipleProductAttachment(nextItem: Reply?): Boolean {
+                return isProductAttachment() && nextItem != null && nextItem.isProductAttachment()
+        }
+
+        fun isProductAttachment(): Boolean {
+                return attachment?.type.toString() == AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT
+        }
+}
 
 data class Attachment(
         @Expose

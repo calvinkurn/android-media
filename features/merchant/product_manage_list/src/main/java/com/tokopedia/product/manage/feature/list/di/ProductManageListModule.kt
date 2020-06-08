@@ -14,26 +14,15 @@ import com.tokopedia.product.manage.common.draft.data.db.AddEditProductDraftDb
 import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepository
 import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepositoryImpl
 import com.tokopedia.product.manage.common.draft.data.db.source.AddEditProductDraftDataSource
-import com.tokopedia.product.manage.common.draft.domain.usecase.GetAllProductsCountDraftUseCase
-import com.tokopedia.product.manage.feature.filter.domain.GetProductListMetaUseCase
 import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
-import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
-import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
-import com.tokopedia.product.manage.feature.quickedit.stock.domain.EditStockUseCase
 import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDB
 import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDao
 import com.tokopedia.product.manage.item.main.draft.data.repository.ProductDraftRepositoryImpl
 import com.tokopedia.product.manage.item.main.draft.data.source.ProductDraftDataSource
 import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepository
-import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftProductUseCase
-import com.tokopedia.product.manage.oldlist.constant.GQL_FEATURED_PRODUCT
-import com.tokopedia.product.manage.oldlist.constant.GQL_UPDATE_PRODUCT
-import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant
-import com.tokopedia.product.manage.oldlist.di.OldProductManageScope
-import com.tokopedia.product.manage.oldlist.domain.ClearAllDraftProductUseCase
-import com.tokopedia.product.manage.oldlist.domain.FetchAllDraftProductCountUseCase
-import com.tokopedia.product.manage.oldlist.view.presenter.ProductDraftListCountPresenter
-import com.tokopedia.product.manage.oldlist.view.presenter.ProductDraftListCountPresenterImpl
+import com.tokopedia.product.manage.feature.list.constant.GQL_FEATURED_PRODUCT
+import com.tokopedia.product.manage.feature.list.constant.GQL_UPDATE_PRODUCT
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant
@@ -50,21 +39,6 @@ import javax.inject.Named
 @ProductManageListScope
 @Module(includes = [ProductManageNetworkModule::class, ViewModelModule::class])
 class ProductManageListModule {
-
-    @Provides
-    @ProductManageListScope
-    fun providePresenterDraft(
-            fetchAllDraftProductCountUseCase: FetchAllDraftProductCountUseCase,
-            getAllProductsCountDraftUseCase: GetAllProductsCountDraftUseCase,
-            clearAllDraftProductUseCase: ClearAllDraftProductUseCase,
-            updateUploadingDraftProductUseCase: UpdateUploadingDraftProductUseCase
-    ): ProductDraftListCountPresenter {
-        return ProductDraftListCountPresenterImpl(
-                fetchAllDraftProductCountUseCase,
-                getAllProductsCountDraftUseCase,
-                clearAllDraftProductUseCase,
-                updateUploadingDraftProductUseCase)
-    }
 
     @Provides
     @ProductManageListScope

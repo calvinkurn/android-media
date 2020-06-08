@@ -18,6 +18,7 @@ class TalkAnalytics @Inject constructor() {
     private val CATEGORY_INBOX_TALK: String = "inbox - talk"
     private val CATEGORY_SHOP_PAGE: String = "shop page"
     private val CATEGORY_PDP: String = "product detail page"
+    private val CATEGORY_PRODUCT_TALK: String = "product talk"
 
     private val ACTION_CREATE_NEW_TALK: String = "click - kirim to create new talk"
     private val ACTION_REPLY_TALK: String = "click - kirim to reply talk"
@@ -36,7 +37,7 @@ class TalkAnalytics @Inject constructor() {
         } else {
             val data = mapOf(
                     TrackAppUtils.EVENT to EVENT_CLICK_PDP,
-                    TrackAppUtils.EVENT_CATEGORY to CATEGORY_INBOX_TALK,
+                    TrackAppUtils.EVENT_CATEGORY to CATEGORY_PRODUCT_TALK,
                     TrackAppUtils.EVENT_ACTION to ACTION_REPLY_TALK,
                     TrackAppUtils.EVENT_LABEL to talkId,
                     KEY_PRODUCT_ID to productId
@@ -241,7 +242,7 @@ class TalkAnalytics @Inject constructor() {
     fun trackClickSendNewTalk(productId: String) {
         val data = mapOf(
                 TrackAppUtils.EVENT to EVENT_CLICK_PDP,
-                TrackAppUtils.EVENT_CATEGORY to CATEGORY_INBOX_TALK,
+                TrackAppUtils.EVENT_CATEGORY to CATEGORY_PRODUCT_TALK,
                 TrackAppUtils.EVENT_ACTION to ACTION_CREATE_NEW_TALK,
                 TrackAppUtils.EVENT_LABEL to "",
                 KEY_PRODUCT_ID to productId

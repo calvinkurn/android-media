@@ -27,15 +27,15 @@ class EnhancedECommerceRecomProductCartMapData {
     val VALUE_BEBAS_ONGKIR = "bebas ongkir"
 
     fun setProductName(name: String) {
-        Product[KEY_NAME] = if (!TextUtils.isEmpty(name)) name else DEFAULT_VALUE_NONE_OTHER
+        Product[KEY_NAME] = if (name.isNotBlank()) name else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setProductID(id: String) {
-        Product[KEY_ID] = if (!TextUtils.isEmpty(id)) id else DEFAULT_VALUE_NONE_OTHER
+        Product[KEY_ID] = if (id.isNotBlank()) id else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setPrice(price: String) {
-        Product[KEY_PRICE] = if (!TextUtils.isEmpty(price)) price else DEFAULT_VALUE_NONE_OTHER
+        Product[KEY_PRICE] = if (price.isNotBlank()) price else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setQty(qty: Int) {
@@ -43,15 +43,15 @@ class EnhancedECommerceRecomProductCartMapData {
     }
 
     fun setCategory(category: String) {
-        Product[KEY_CAT] = if (!TextUtils.isEmpty(category)) category else DEFAULT_VALUE_NONE_OTHER
+        Product[KEY_CAT] = if (category.isNotBlank()) category else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setDimension83(data: String) {
-        Product[KEY_DIMENSION_83] = if (!TextUtils.isEmpty(data)) data else DEFAULT_VALUE_NONE_OTHER
+        Product[KEY_DIMENSION_83] = if (data.isNotBlank()) data else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setDimension40(data: String) {
-        Product[KEY_DIMENSION_40] = if (!TextUtils.isEmpty(data)) data else DEFAULT_VALUE_NONE_OTHER
+        Product[KEY_DIMENSION_40] = if (data.isNotBlank()) data else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setBrand(brand: String?) {
@@ -67,15 +67,15 @@ class EnhancedECommerceRecomProductCartMapData {
     }
 
     fun setShopId(shopId: String) {
-        Product[KEY_SHOP_ID] = if (!TextUtils.isEmpty(shopId)) shopId else DEFAULT_VALUE_NONE_OTHER
+        Product[KEY_SHOP_ID] = if (shopId.isNotBlank()) shopId else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setShopType(shopType: String) {
-        Product[KEY_SHOP_TYPE] = if (!TextUtils.isEmpty(shopType)) shopType else DEFAULT_VALUE_NONE_OTHER
+        Product[KEY_SHOP_TYPE] = if (shopType.isNotBlank()) shopType else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setShopName(shopName: String) {
-        Product[KEY_SHOP_NAME] = if (!TextUtils.isEmpty(shopName)) shopName else DEFAULT_VALUE_NONE_OTHER
+        Product[KEY_SHOP_NAME] = if (shopName.isNotBlank()) shopName else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setCategoryId(categoryId: String?) {
@@ -83,7 +83,7 @@ class EnhancedECommerceRecomProductCartMapData {
     }
 
     fun setDimension45(cartId: String) {
-        Product[KEY_DIMENSION_45] = if (!TextUtils.isEmpty(cartId)) cartId else DEFAULT_VALUE_NONE_OTHER
+        Product[KEY_DIMENSION_45] = if (cartId.isNotBlank()) cartId else DEFAULT_VALUE_NONE_OTHER
     }
 
     fun setDimension53(isDiscountPrice: Boolean) {

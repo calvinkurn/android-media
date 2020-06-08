@@ -38,6 +38,9 @@ public class Attributes {
     @SerializedName("ip_address")
     @Expose
     private String ipAddress;
+    @SerializedName("request_id")
+    @Expose
+    private String requestId;
 
     public Attributes(FlightSearchApiRequestModel flightSearchApiRequestModel) {
         this.departure = flightSearchApiRequestModel.getDepAirport();
@@ -49,6 +52,7 @@ public class Attributes {
         this._class = flightSearchApiRequestModel.getClassID();
         this.excludedAirlines = flightSearchApiRequestModel.getAirlines();
         this.ipAddress = flightSearchApiRequestModel.getIpAddress();
+        this.requestId = flightSearchApiRequestModel.getRequestId();
     }
 
     public void setDeparture(String departure) {
@@ -74,4 +78,5 @@ public class Attributes {
     public String getDate() {
         return date;
     }
+
 }

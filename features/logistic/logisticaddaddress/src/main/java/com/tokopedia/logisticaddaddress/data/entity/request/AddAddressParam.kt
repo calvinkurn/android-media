@@ -12,6 +12,7 @@ data class AddAddressParam(
         val district: String,
         val latitude: String,
         val longitude: String,
+        var is_ana_positive: String,
         var checksum: String = "",
         var feature: String? = null
 ) {
@@ -26,6 +27,7 @@ data class AddAddressParam(
             "city" to city,
             "district" to district,
             "latitude" to latitude,
-            "longitude" to longitude
+            "longitude" to longitude,
+            "is_ana_positive" to is_ana_positive
     )
 }

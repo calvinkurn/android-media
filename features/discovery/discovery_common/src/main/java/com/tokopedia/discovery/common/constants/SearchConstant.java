@@ -9,6 +9,9 @@ public interface SearchConstant {
     String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
 
     String SEARCH_RESULT_TRACE = "search_result_trace";
+    String SEARCH_RESULT_PLT_PREPARE_METRICS = "search_result_plt_prepare_metrics";
+    String SEARCH_RESULT_PLT_NETWORK_METRICS = "search_result_plt_network_metrics";
+    String SEARCH_RESULT_PLT_RENDER_METRICS = "search_result_plt_render_metrics";
 
     String SEARCH_VIEW_MODEL_FACTORY = "search_view_model_factory";
 
@@ -140,5 +143,11 @@ public interface SearchConstant {
         String KEY_ADVERTISING_ID = "KEY_ADVERTISINGID";
         String ADVERTISING_LOCAL_CACHE = "ADVERTISING_LOCAL_CACHE";
         String APP_CLIENT_ID = "appClientId";
+    }
+
+    interface ABTestRemoteConfigKey {
+        String AB_TEST_KEY_COMMA_VS_FULL_STAR = "Comma vs Full Star";
+        String AB_TEST_VARIANT_FULL_STAR = "Full Star";
+        String AB_TEST_VARIANT_COMMA_STAR = "Comma Star";
     }
 }

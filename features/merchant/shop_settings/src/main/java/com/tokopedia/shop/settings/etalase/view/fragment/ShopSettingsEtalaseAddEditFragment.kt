@@ -92,6 +92,11 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
         getEtalaseList()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detachView()
+    }
+
     fun saveAddEditEtalase() {
         if (isValid) {
             etalase.name = edit_text_title.text.toString().trim()
@@ -191,11 +196,11 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
     }
 
     override fun showLoading() {
-        progress_bar.visibility = View.VISIBLE
+        progress_bar?.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
-        progress_bar.visibility = View.GONE
+        progress_bar?.visibility = View.GONE
     }
 
 }

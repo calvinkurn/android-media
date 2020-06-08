@@ -32,10 +32,17 @@ query FeedDetail($userID: Int!, $detailID: String!, $pageDetail: Int!, $limitDet
           id
           name
           price
+          price_original
+          price_original_int
           image
           wholesale {
             __typename
             qty_min_fmt
+          }
+          tags {
+            linkType
+            text
+            type
           }
           freereturns
           preorder
@@ -44,6 +51,7 @@ query FeedDetail($userID: Int!, $detailID: String!, $pageDetail: Int!, $limitDet
           productLink
           wishlist
           rating
+          countReview
         }
         status_activity
       }

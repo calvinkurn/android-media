@@ -38,6 +38,7 @@ import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
@@ -262,9 +263,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         lihat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(((UnifiedOrderListRouter) getActivity()
-                        .getApplication()).getWebviewActivityWithIntent(getContext(),
-                        invoice.invoiceUrl()));
+                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, invoice.invoiceUrl());
             }
         });
     }
@@ -400,13 +399,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                     }
                     RouteManager.route(getActivity(), newUri);
                 } else if (uri != null && !uri.equals("")) {
-                    try {
-                        startActivity(((UnifiedOrderListRouter) getActivity().getApplication())
-                                .getWebviewActivityWithIntent(getContext(), URLEncoder.encode(
-                                        uri, ORDER_LIST_URL_ENCODING)));
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
+                    RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, uri);
                 }
             }
         };

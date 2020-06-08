@@ -77,7 +77,7 @@ class GetProductManageFilterOptionsUseCase @Inject constructor(
     private suspend fun executeCategoriesUseCaseAsync(): Deferred<CategoriesResponse> {
         return withContext(Dispatchers.IO) {
             async {
-                getCategoryListUseCase.setParams(params.getString(PARAM_SHOP_ID,""))
+                getCategoryListUseCase.setParams(params.getString(PARAM_FILTER,""))
                 getCategoryListUseCase.executeOnBackground()
             }
         }

@@ -1,30 +1,26 @@
 package com.tokopedia.purchase_platform.features.cart.domain.usecase
 
+import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.domain.schedulers.ExecutorSchedulers
-import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.purchase_platform.features.cart.data.model.request.RemoveCartRequest
 import com.tokopedia.purchase_platform.features.cart.data.model.response.deletecart.DeleteCartGqlResponse
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.DeleteCartData
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
-import java.util.*
 import javax.inject.Inject
 
 /**
  * Created by Irfan Khoirul on 2019-12-26.
  */
 
-class DeleteCartUseCase @Inject constructor(private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
-                                            private val updaterCartCounterUseCase: UpdateCartCounterUseCase,
+class DeleteCartUseCase @Inject constructor(private val updaterCartCounterUseCase: UpdateCartCounterUseCase,
                                             private val graphqlUseCase: GraphqlUseCase,
                                             private val schedulers: ExecutorSchedulers) : UseCase<DeleteCartData>() {
 
     companion object {
-        const val PARAM_TO_BE_REMOVED_PROMO_CODES = "PARAM_TO_BE_REMOVED_PROMO_CODES"
         const val PARAM_REMOVE_CART_REQUEST = "PARAM_REMOVE_CART_REQUEST"
 
         private const val PARAM_KEY_LANG = "lang"
@@ -48,7 +44,6 @@ class DeleteCartUseCase @Inject constructor(private val clearCacheAutoApplyStack
 
     override fun createObservable(requestParams: RequestParams?): Observable<DeleteCartData> {
         val paramDelete = requestParams?.getObject(PARAM_REMOVE_CART_REQUEST) as RemoveCartRequest
-        val toBeDeletedPromoCode = requestParams.getObject(PARAM_TO_BE_REMOVED_PROMO_CODES) as ArrayList<String>
 
         val variables = mapOf(
                 PARAM_KEY_LANG to PARAM_VALUE_ID,
@@ -66,31 +61,24 @@ class DeleteCartUseCase @Inject constructor(private val clearCacheAutoApplyStack
                             .map {
                                 val deleteCartGqlResponse = it.getData<DeleteCartGqlResponse>(DeleteCartGqlResponse::class.java)
                                 val deleteCartData = DeleteCartData()
-                                deleteCartData.isSuccess = deleteCartGqlResponse.deleteCartDataResponse.status == "OK"
-                                deleteCartData.message = if (deleteCartGqlResponse.deleteCartDataResponse.status == "OK") {
-                                    if (deleteCartGqlResponse.deleteCartDataResponse.data?.message?.isNotEmpty() == true) {
-                                        deleteCartGqlResponse.deleteCartDataResponse.data.message[0]
+                                if (deleteCartGqlResponse != null) {
+                                    deleteCartData.isSuccess = deleteCartGqlResponse.deleteCartDataResponse.status == "OK"
+                                    deleteCartData.message = if (deleteCartGqlResponse.deleteCartDataResponse.status == "OK") {
+                                        if (deleteCartGqlResponse.deleteCartDataResponse.data?.message?.isNotEmpty() == true) {
+                                            deleteCartGqlResponse.deleteCartDataResponse.data.message[0]
+                                        } else {
+                                            ""
+                                        }
                                     } else {
-                                        ""
-                                    }
-                                } else {
-                                    if (deleteCartGqlResponse.deleteCartDataResponse.errorMessage.isNotEmpty()) {
-                                        deleteCartGqlResponse.deleteCartDataResponse.errorMessage[0]
-                                    } else {
-                                        ""
+                                        if (deleteCartGqlResponse.deleteCartDataResponse.errorMessage.isNotEmpty()) {
+                                            deleteCartGqlResponse.deleteCartDataResponse.errorMessage[0]
+                                        } else {
+                                            ""
+                                        }
                                     }
                                 }
                                 deleteCartData
                             }
-                }
-                .flatMap { deleteCartData ->
-                    if (toBeDeletedPromoCode.isEmpty()) {
-                        Observable.just(deleteCartData)
-                    } else {
-                        clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, toBeDeletedPromoCode)
-                        clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
-                                .map { deleteCartData }
-                    }
                 }.flatMap { deleteCartData ->
                     updaterCartCounterUseCase.createObservable(RequestParams.create())
                             .map {

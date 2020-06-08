@@ -22,6 +22,8 @@
     <string name="path_af_education" translatable="false">/education</string>
     <string name="path_af_explore" translatable="false">/explore</string>
 
+    <string name="applink_title_play" translatable="false">Play</string>
+
     <string name="host_play" translatable="false">play</string>
     <string name="path_play_detail" translatable="false">/.*\</string>
 

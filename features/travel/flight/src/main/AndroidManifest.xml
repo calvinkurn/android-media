@@ -3,9 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.flight">
 
-    <application
-        tools:replace="android:label"
-        android:label="@string/app_name">
+    <application>
         <activity
             android:name=".dashboard.view.activity.FlightDashboardActivity"
             android:label="@string/flight_dashboard_toolbar_title"
@@ -163,11 +161,6 @@
         <activity
             android:name=".cancellation.view.activity.FlightCancellationChooseReasonActivity"
             android:label="@string/flight_cancellation_reason_title"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-        <activity
-            android:name=".bookingV2.presentation.activity.FlightInsuranceWebviewActivity"
-            android:label="@string/flight_insurance_webview_toolbar_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
         <activity

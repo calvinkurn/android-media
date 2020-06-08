@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="complete_pin_image_200">200dp</dimen>
+
+    <dimen name="guideline_1">1dp</dimen>
+</resources>

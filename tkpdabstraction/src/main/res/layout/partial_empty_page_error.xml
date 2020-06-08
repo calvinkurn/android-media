@@ -20,31 +20,41 @@
         android:layout_marginBottom="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_5"
         android:gravity="center_horizontal"
-        app:srcCompat="@drawable/ic_empty_page_error_cloud_"
+        app:srcCompat="@drawable/unify_globalerrors_connection"
         tools:ignore="ContentDescription" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/message_retry"
-        style="@style/TextView.Title.BlackSecondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_margin="@dimen/dp_5"
         android:gravity="center"
         android:text="@string/msg_network_error_1"
         android:textColor="@color/black"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:typographyType="body_1"
+        app:typographyWeight="reguler"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/sub_message_retry"
-        style="@style/TextView.Micro.BlackSecondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_margin="@dimen/dp_5"
         android:gravity="center"
         android:text="@string/msg_network_error_2"
         android:textColor="@color/grey_400"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"/>
 
-    <Button
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/button_retry"
-        style="@style/Button.Submit.Green"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_40"
-        android:text="@string/title_try_again" />
+        android:text="@string/title_try_again"
+        app:unifyButtonVariant="filled"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main" />
 
 </LinearLayout>

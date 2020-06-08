@@ -18,7 +18,8 @@ interface DynamicFilterView {
     fun onPriceSliderRelease(minValue: Int, maxValue: Int)
     fun onPriceSliderPressed(minValue: Int, maxValue: Int)
 
-    fun onPriceEditedFromTextInput(minValue: Int, maxValue: Int)
+    fun onMinPriceEditedFromTextInput(minValue: Int)
+    fun onMaxPriceEditedFromTextInput(maxValue: Int)
 
     fun getFilterValue(key: String): String
     fun getFilterViewState(uniqueId: String): Boolean

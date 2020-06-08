@@ -1,25 +1,18 @@
 package com.tokopedia.common_digital.cart.view.activity
 
+import android.annotation.TargetApi
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.net.http.SslError
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.KeyEvent
 import android.view.View
-import android.webkit.ConsoleMessage
-import android.webkit.SslErrorHandler
-import android.webkit.WebChromeClient
-import android.webkit.WebResourceError
-import android.webkit.WebResourceRequest
-import android.webkit.WebResourceResponse
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import android.widget.ProgressBar
 import android.widget.Toast
-
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.webview.TkpdWebView
@@ -30,7 +23,7 @@ import com.tokopedia.common_digital.common.DigitalRouter
 import com.tokopedia.common_digital.common.di.DaggerDigitalCommonComponent
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.user.session.UserSession
-
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -177,9 +170,12 @@ class InstantCheckoutActivity : BaseSimpleActivity() {
             if (progressBar != null) progressBar!!.visibility = View.GONE
         }
 
+
+        @TargetApi(android.os.Build.VERSION_CODES.M)
         override fun onReceivedError(view: WebView, request: WebResourceRequest,
                                      error: WebResourceError) {
             super.onReceivedError(view, request, error)
+            Timber.w("P1#WEBVIEW_ERROR#'${request.url}';error_code=${error.errorCode};desc='${error.description}'")
         }
 
         override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {

@@ -7,8 +7,9 @@ import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
 import android.util.AttributeSet
 import android.widget.FrameLayout
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.text.style.WebViewURLSpan
-import com.tokopedia.topads.common.TopAdsWebViewActivity
 import com.tokopedia.topads.freeclaim.R
 import kotlinx.android.synthetic.main.widget_ticker_free_claim.view.*
 
@@ -39,7 +40,7 @@ class TopAdsWidgetFreeClaim @JvmOverloads constructor(
             val urlSpan = WebViewURLSpan( it.url).apply {
                 listener = object : WebViewURLSpan.OnClickListener {
                     override fun onClick(url: String) {
-                        context.startActivity(TopAdsWebViewActivity.createIntent(context, url))
+                        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url)
                     }
 
                     override fun showUnderline() = false

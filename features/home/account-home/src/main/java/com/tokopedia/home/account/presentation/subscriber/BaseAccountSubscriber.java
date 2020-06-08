@@ -23,16 +23,18 @@ public abstract class BaseAccountSubscriber<T> extends Subscriber<T> {
         if (GlobalConfig.isAllowDebuggingTools()) {
             e.printStackTrace();
         }
-        showErrorMessage(e);
+        showErrorMessage(e, getErrorCode());
         view.hideLoading();
     }
 
-    protected void showErrorMessage(Throwable e) {
+    protected void showErrorMessage(Throwable e, String errorCode) {
         if(e instanceof UnknownHostException
                 || e instanceof SocketTimeoutException) {
             view.showErrorNoConnection();
         } else {
-            view.showError(e);
+            view.showError(e, errorCode);
         }
     }
+
+    abstract String getErrorCode();
 }

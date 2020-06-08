@@ -43,7 +43,6 @@ class TrackingMapper {
             val item = tracking[i]
             if (!item.event.isBlank() && (item.event.contains("event"))) {
                 val eventObject = JSONObject(item.event)
-                logCertainItems(eventObject)
                 event.put(eventObject)
                 val nextItem: Tracking? = try {
                     tracking[i+1]
@@ -65,27 +64,6 @@ class TrackingMapper {
         }
         result.put("data", data)
         return result.toString()
-    }
-
-    private fun logCertainItems(item:JSONObject?){
-        try {
-            if (item?.has("event_ga") == true &&
-                item.has("eventCategory") && item.has("eventAction")) {
-                val itemEvent = item.getString("event_ga")
-                val itemCat = item.getString("eventCategory")
-                val itemAct = item.getString("eventAction")
-                if ("clickTopNav" == itemEvent &&
-                    itemCat?.startsWith("top nav") == true &&
-                    "click search box" == itemAct) {
-                    Timber.w("P1#IRIS_COLLECT#IRISSEND_CLICKSEARCHBOX")
-                } else if ("clickPDP" == itemEvent && "product detail page" == itemCat &&
-                    "click - tambah ke keranjang" == itemAct) {
-                    Timber.w("P1#IRIS_COLLECT#IRISSEND_PDP_ATC")
-                }
-            }
-        }catch (e:Exception) {
-            Timber.e("P1#IRIS#logIrisAnalyticsSend %s", e.toString())
-        }
     }
 
     companion object {

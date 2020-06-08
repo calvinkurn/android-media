@@ -53,7 +53,6 @@
         </activity>
         <activity android:theme="@style/Theme.White" android:label="@string/screentitle_tkpd_pay_setting" android:name="com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity" android:screenOrientation="portrait"/>
         <activity android:theme="@style/Theme.White" android:label="@string/app_name" android:name="com.tokopedia.home.account.presentation.activity.SettingWebViewActivity" android:screenOrientation="portrait"/>
-        <activity android:theme="@style/Theme.White" android:label="@string/title_favorite_page" android:name="com.tokopedia.home.account.presentation.activity.FavoriteShopsActivity" android:screenOrientation="portrait"/>
         <activity android:theme="@style/Theme.White" android:name="com.tokopedia.home.account.presentation.activity.PushNotificationCheckerActivity" android:screenOrientation="portrait">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW"/>

@@ -29,6 +29,7 @@
     <dimen name="chatcommon_3dp">3dp</dimen>
     <dimen name="chatcommon_9dp">9dp</dimen>
     <dimen name="chatcommon_22dp">22dp</dimen>
+    <dimen name="chatcommon_26dp">26dp</dimen>
     <dimen name="chatcommon_60dp">60dp</dimen>
 
 </resources>

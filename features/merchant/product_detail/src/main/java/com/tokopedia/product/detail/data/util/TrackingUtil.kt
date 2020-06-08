@@ -77,6 +77,13 @@ object TrackingUtil {
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
+    fun addComponentOvoTracker(mapEvent: MutableMap<String, Any>, productId: String, userId: String) {
+        mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productId
+        mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
+        mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId != "0").toString()
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+    }
+
     fun removeCurrencyPrice(priceFormatted: String): String {
         return try {
             priceFormatted.replace("[^\\d]".toRegex(), "")

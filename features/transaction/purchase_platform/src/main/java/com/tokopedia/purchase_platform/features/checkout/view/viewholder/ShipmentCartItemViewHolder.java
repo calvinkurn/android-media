@@ -19,6 +19,7 @@ import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.utils.WeightFormatterUtil;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
+import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;
 
 /**
@@ -56,6 +57,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     private TextView tvErrorShipmentItemTitle;
     private TextView tvErrorShipmentItemDescription;
     private ImageView imgFreeShipping;
+    private Ticker productTicker;
 
     public ShipmentCartItemViewHolder(View itemView) {
         super(itemView);
@@ -84,6 +86,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         tvErrorShipmentItemTitle = itemView.findViewById(R.id.tv_error_shipment_item_title);
         tvErrorShipmentItemDescription = itemView.findViewById(R.id.tv_error_shipment_item_description);
         imgFreeShipping = itemView.findViewById(R.id.img_free_shipping);
+        productTicker = itemView.findViewById(R.id.product_ticker);
     }
 
     public void bindViewHolder(CartItemModel cartItem, ShipmentItemListener listener) {
@@ -109,6 +112,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         renderProductPropertyCashback(cartItem);
         renderProductPropertiesLayout(cartItem);
         renderProductPropertiesFreeShipping(cartItem);
+        renderProductTicker(cartItem);
     }
 
     private void renderProductPrice(CartItemModel cartItem) {
@@ -197,6 +201,13 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         } else {
             imgFreeShipping.setVisibility(View.GONE);
         }
+    }
+
+    private void renderProductTicker(CartItemModel cartItemModel) {
+        if (cartItemModel.isShowTicker() && !TextUtils.isEmpty(cartItemModel.getTickerMessage())) {
+            productTicker.setVisibility(View.VISIBLE);
+            productTicker.setTextDescription(cartItemModel.getTickerMessage());
+        } else productTicker.setVisibility(View.GONE);
     }
 
     private void showShipmentWarning(CartItemModel cartItemModel) {

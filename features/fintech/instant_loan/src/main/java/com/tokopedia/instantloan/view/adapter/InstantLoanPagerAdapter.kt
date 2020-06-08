@@ -11,10 +11,6 @@ import com.tokopedia.instantloan.view.ui.InstantLoanItem
 
 import java.util.ArrayList
 
-/**
- * Created by sachinbansal on 6/12/18.
- */
-
 class InstantLoanPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
     private var searchSectionItemList: List<InstantLoanItem> = ArrayList()
@@ -50,14 +46,12 @@ class InstantLoanPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
         }
 
         if (position != mCurrentPosition) {
-            val fragment = any  as Fragment
+            val fragment = any as Fragment
             val pager = container as HeightWrappingViewPager?
-            if (fragment != null && fragment.view != null) {
+            if (fragment.view != null) {
                 mCurrentPosition = position
                 pager!!.onPageChanged(fragment.view!!)
             }
         }
     }
-
-
 }

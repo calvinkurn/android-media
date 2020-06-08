@@ -9,9 +9,10 @@ import com.tokopedia.instantloan.di.module.InstantLoanModule
 
 object InstantLoanComponentInstance {
 
-    var instantLoanComponent: InstantLoanComponent? = null
+    private var instantLoanComponent: InstantLoanComponent? = null
 
-    @JvmStatic fun get(application: Application): InstantLoanComponent? {
+    @JvmStatic
+    fun get(application: Application): InstantLoanComponent? {
         if (instantLoanComponent == null) {
             instantLoanComponent = DaggerInstantLoanComponent.builder()
                     .baseAppComponent((application as BaseMainApplication).baseAppComponent)

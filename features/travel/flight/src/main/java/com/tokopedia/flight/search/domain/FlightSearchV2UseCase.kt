@@ -1,8 +1,8 @@
 package com.tokopedia.flight.search.domain
 
 import com.tokopedia.flight.search.data.api.single.response.Meta
-import com.tokopedia.flight.search.presentation.model.FlightSearchApiRequestModel
 import com.tokopedia.flight.search.data.repository.FlightSearchRepository
+import com.tokopedia.flight.search.presentation.model.FlightSearchApiRequestModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchMetaViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -54,7 +54,8 @@ class FlightSearchV2UseCase @Inject constructor(
                     maxRetry,
                     0,
                     0,
-                    airlines
+                    airlines,
+                    requestId
             )
         }
     }

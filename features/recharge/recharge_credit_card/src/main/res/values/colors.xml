@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="cc_next_grey">#5131353b</color>
+    <color name="cc_separator">#e0e0e0</color>
+    <color name="cc_transparent">#aeffffff</color>
+</resources>

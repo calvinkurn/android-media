@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.common_wallet.balance.data.CacheUtil
-import com.tokopedia.common_wallet.di.CommonWalletModule
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.home.beranda.common.HomeDispatcherProvider
@@ -22,7 +21,7 @@ import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
+import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -32,10 +31,8 @@ import dagger.Provides
 @Module(includes = [
     HomeDataSourceModule::class,
     HomeDatabaseModule::class,
-    HomePresenterModule::class,
     HomeMapperModule::class,
-    HomeUseCaseModule::class,
-    TopAdsWishlistModule::class
+    HomeUseCaseModule::class
 ])
 class HomeModule {
 
@@ -62,6 +59,10 @@ class HomeModule {
             homeRemoteDataSource,
             homeDefaultDataSource,
             geolocationRemoteDataSource)
+
+    @HomeScope
+    @Provides
+    fun provideExecutors(): SmartExecutors = SmartExecutors()
 
     @HomeScope
     @Provides

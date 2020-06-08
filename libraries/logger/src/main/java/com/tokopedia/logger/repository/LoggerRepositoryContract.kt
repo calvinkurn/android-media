@@ -9,8 +9,10 @@ interface LoggerRepositoryContract {
     suspend fun getHighPostPrio(entries: Int): List<Logger>
     suspend fun getLowPostPrio(entries: Int): List<Logger>
     suspend fun deleteEntry(timeStamp: Long)
+    suspend fun deleteEntries(loggers: List<Logger>)
     suspend fun deleteExpiredData(timeStamp: Long)
-    suspend fun sendLogToServer(serverSeverity: Int, TOKEN: Array<String>, logger: Logger, secretKey: SecretKey): Int
+    suspend fun sendLogToServer(serverSeverity: Int, TOKEN: Array<String>, logger: Logger): Int
+    suspend fun sendScalyrLogToServer(logs: List<Logger>): Int
     suspend fun deleteExpiredHighPrio(timeStamp: Long)
     suspend fun deleteExpiredLowPrio(timeStamp: Long)
 }

@@ -28,6 +28,9 @@ class GetCartListDataSubscriber(val view: ICartListView?,
 
     override fun onNext(cartListData: CartListData) {
         view?.let {
+            presenter?.setLastApplyValid()
+            presenter?.setValidateUseLastResponse(null)
+            presenter?.setUpdateCartAndValidateUseLastResponse(null)
             if (!initialLoad) {
                 it.hideProgressLoading()
             }

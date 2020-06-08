@@ -1,112 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    tools:gravity="end"
+    tools:ignore="UselessParent">
 
-    <include layout="@layout/item_chatcommon_chat_header" />
-
-    <RelativeLayout
-        android:id="@+id/rl_container"
-        android:layout_width="match_parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_chat_bubble"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:gravity="end"
-        tools:ignore="UselessParent">
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl1"
+        android:background="@drawable/bg_shadow_attach_product"
+        android:minWidth="@dimen/chat_width"
+        android:paddingStart="@dimen/dp_topchat_12"
+        android:paddingLeft="@dimen/dp_topchat_12"
+        android:paddingTop="@dimen/dp_topchat_12"
+        android:paddingEnd="@dimen/dp_topchat_18"
+        android:paddingRight="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/dp_topchat_12">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cl_chat_bubble"
+        <ImageView
+            android:id="@+id/iv_thumbnail"
+            android:layout_width="@dimen/dp_topchat_50"
+            android:layout_height="@dimen/dp_topchat_50"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@tools:sample/avatars[0]" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/tv_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
-            android:layout_marginBottom="@dimen/spacing_lvl1"
-            android:background="@drawable/bg_shadow_attach_product"
-            android:minWidth="@dimen/chat_width"
-            android:paddingStart="@dimen/dp_topchat_12"
-            android:paddingLeft="@dimen/dp_topchat_12"
-            android:paddingTop="@dimen/dp_topchat_12"
-            android:paddingEnd="@dimen/dp_topchat_18"
-            android:paddingRight="@dimen/spacing_lvl4"
-            android:paddingBottom="@dimen/dp_topchat_12">
+            android:layout_marginStart="@dimen/dp_topchat_12"
+            android:layout_marginLeft="@dimen/dp_topchat_12"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:layout_marginRight="@dimen/spacing_lvl3"
+            android:maxLines="1"
+            android:paddingStart="@dimen/spacing_lvl3"
+            android:paddingEnd="@dimen/spacing_lvl3"
+            android:textSize="@dimen/fontSize_lvl1"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+            app:layout_constraintTop_toTopOf="@+id/iv_thumbnail"
+            tools:labelType="general_light_red"
+            tools:text="Pesanan Dibatalkan" />
 
-            <ImageView
-                android:id="@+id/iv_thumbnail"
-                android:layout_width="@dimen/dp_topchat_50"
-                android:layout_height="@dimen/dp_topchat_50"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:srcCompat="@tools:sample/avatars[0]" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_invoice_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_topchat_12"
+            android:layout_marginLeft="@dimen/dp_topchat_12"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:maxLines="1"
+            android:textColor="@color/black_70"
+            app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+            app:layout_constraintTop_toBottomOf="@+id/tv_status"
+            app:typographyType="heading_6"
+            tools:text="INV/20190212/XIX/II/271200396" />
 
-            <com.tokopedia.unifycomponents.Label
-                android:id="@+id/tv_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_topchat_12"
-                android:layout_marginLeft="@dimen/dp_topchat_12"
-                android:layout_marginEnd="@dimen/spacing_lvl3"
-                android:layout_marginRight="@dimen/spacing_lvl3"
-                android:maxLines="1"
-                android:paddingStart="@dimen/spacing_lvl3"
-                android:paddingEnd="@dimen/spacing_lvl3"
-                android:textSize="@dimen/fontSize_lvl1"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
-                app:layout_constraintTop_toTopOf="@+id/iv_thumbnail"
-                tools:labelType="general_light_red"
-                tools:text="Pesanan Dibatalkan" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_topchat_12"
+            android:layout_marginLeft="@dimen/dp_topchat_12"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:gravity="top"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:textColor="@color/orange_red"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+            app:layout_constraintTop_toBottomOf="@+id/tv_invoice_id"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="Rp 25.500" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_invoice_id"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_topchat_12"
-                android:layout_marginLeft="@dimen/dp_topchat_12"
-                android:layout_marginTop="@dimen/spacing_lvl2"
-                android:maxLines="1"
-                android:textColor="@color/black_70"
-                app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
-                app:layout_constraintTop_toBottomOf="@+id/tv_status"
-                app:typographyType="heading_6"
-                tools:text="INV/20190212/XIX/II/271200396" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_topchat_12"
+            android:layout_marginLeft="@dimen/dp_topchat_12"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:gravity="end"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+            app:layout_constraintTop_toBottomOf="@+id/tv_price">
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_price"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_topchat_12"
-                android:layout_marginLeft="@dimen/dp_topchat_12"
-                android:layout_marginTop="@dimen/spacing_lvl2"
-                android:gravity="top"
-                android:includeFontPadding="false"
-                android:maxLines="1"
-                android:textColor="@color/orange_red"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
-                app:layout_constraintTop_toBottomOf="@+id/tv_invoice_id"
-                app:typographyType="body_2"
-                app:typographyWeight="bold"
-                tools:text="Rp 25.500" />
+            <include layout="@layout/item_chatcommon_chat_read_status_attachment" />
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_topchat_12"
-                android:layout_marginLeft="@dimen/dp_topchat_12"
-                android:layout_marginTop="@dimen/spacing_lvl2"
-                android:gravity="end"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
-                app:layout_constraintTop_toBottomOf="@+id/tv_price">
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <include layout="@layout/item_chatcommon_chat_read_status_attachment" />
-
-            </LinearLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </RelativeLayout>
-</LinearLayout>
+</RelativeLayout>

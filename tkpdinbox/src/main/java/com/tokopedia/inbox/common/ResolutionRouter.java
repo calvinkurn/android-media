@@ -10,6 +10,4 @@ public interface ResolutionRouter {
 
     Intent getApplinkIntent(Context context, String applink);
 
-    Intent getSellerWebViewIntent(Context context, String webviewUrl);
-
 }

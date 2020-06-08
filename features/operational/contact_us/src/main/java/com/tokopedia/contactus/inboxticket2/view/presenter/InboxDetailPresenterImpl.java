@@ -187,10 +187,11 @@ public class InboxDetailPresenterImpl
         } else if (item.getItemId() == android.R.id.home) {
             if (mView.isSearchMode()) {
                 mView.toggleSearch(View.GONE);
-                if (mTicketDetail.isShowRating()) {
+                if (mTicketDetail!= null && mTicketDetail.isShowRating()) {
                     mView.toggleTextToolbar(View.GONE);
-                } else if (mTicketDetail.getStatus().equalsIgnoreCase(getUtils().CLOSED)
-                        && !mTicketDetail.isShowRating()) {
+                } else if (mTicketDetail != null &&
+                        mTicketDetail.getStatus().equalsIgnoreCase(getUtils().CLOSED) &&
+                        !mTicketDetail.isShowRating()) {
                     mView.showIssueClosed();
                 } else {
                     mView.toggleTextToolbar(View.VISIBLE);

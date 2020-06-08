@@ -18,7 +18,6 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -27,7 +26,6 @@ import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
-import com.tokopedia.tokopoints.view.contract.CatalogListingContract
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
 import com.tokopedia.tokopoints.view.customview.ServerErrorView
 import com.tokopedia.tokopoints.view.fragment.FiltersBottomSheet
@@ -47,9 +45,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     private var mPagerSortType: ViewPager? = null
     private var mTabSortType: TabLayout? = null
     private var mTextPoints: TextView? = null
-    private var mTextMembershipValueBottom: TextView? = null
     private var mTextPointsBottom: TextView? = null
-    private var mImgEggBottom: ImageView? = null
     private var mViewPagerAdapter: CatalogSortTypePagerAdapter? = null
     private var mTvFlashTimer: TextView? = null
     private var mTvFlashTimerLabel: TextView? = null
@@ -207,9 +203,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
 
     override fun onSuccessPoints(rewardStr: String, rewardValue: Int, membership: String, eggUrl: String) {
         if (!rewardStr.isEmpty()) mTextPoints!!.text = rewardStr
-        if (!membership.isEmpty()) mTextMembershipValueBottom!!.text = membership
         mTextPointsBottom!!.text = CurrencyFormatUtil.convertPriceValue(rewardValue.toDouble(), false)
-        if (!eggUrl.isEmpty()) ImageHandler.loadImageCircle2(activityContext, mImgEggBottom, eggUrl)
         isPointsAvailable = true
         mAppBarHeader!!.addOnOffsetChangedListener(offsetChangedListenerAppBarElevation)
     }
@@ -387,9 +381,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         mTextPoints = view.findViewById(R.id.text_point_value)
         bottomViewMembership = view.findViewById(R.id.bottom_view_membership)
         mContainerPointDetail = view.findViewById(R.id.container_point_detail)
-        mTextMembershipValueBottom = view.findViewById(R.id.text_loyalty_value_bottom)
         mTextPointsBottom = view.findViewById(R.id.text_my_points_value_bottom)
-        mImgEggBottom = view.findViewById(R.id.img_loyalty_stack_bottom)
         mAppBarHeader = view.findViewById(R.id.app_bar_header)
         if (arguments != null && arguments!!.getInt(CommonConstant.EXTRA_COUPON_COUNT) <= 0) {
             view.findViewById<View>(R.id.text_my_coupon).visibility = View.GONE
@@ -437,7 +429,8 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         if (subCategory.timerLabel != null) {
             mTvFlashTimerLabel!!.text = subCategory.timerLabel
         }
-        /*This section is exclusively for handling flash-sale timer*/mProgressFlash!!.max = CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S.toInt()
+        /*This section is exclusively for handling flash-sale timer*/
+        mProgressFlash!!.max = CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S.toInt()
         mFlashTimer = object : CountDownTimer(subCategory.timeRemainingSeconds * 1000, 1000) {
             override fun onTick(l: Long) {
                 subCategory.timeRemainingSeconds = l / 1000

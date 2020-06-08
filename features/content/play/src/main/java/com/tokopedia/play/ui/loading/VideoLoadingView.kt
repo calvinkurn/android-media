@@ -8,6 +8,7 @@ import com.bumptech.glide.Glide
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
+import com.tokopedia.resources.common.R as commonResourceR
 import com.tokopedia.play.component.UIView
 
 /**
@@ -29,7 +30,7 @@ class VideoLoadingView(
         if (ivLoading.drawable == null) {
             Glide.with(ivLoading.context)
                     .asGif()
-                    .load(R.drawable.ic_play_loading)
+                    .load(commonResourceR.drawable.ic_loading_indeterminate)
                     .into(ivLoading)
         }
         view.show()

@@ -1,0 +1,27 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.recharge_credit_card">
+
+    <application>
+        <activity
+            android:name=".RechargeCCActivity"
+            android:label="@string/cc_title_toolbar"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateHidden">
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_recharge"
+                    android:path="@string/path_cc_native"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+    </application>
+
+</manifest>
