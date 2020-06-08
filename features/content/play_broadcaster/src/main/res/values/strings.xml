@@ -60,6 +60,8 @@
     <string name="play_live_broadcast_dialog_end_timeout_title">Live streaming selesai</string>
     <string name="play_live_broadcast_dialog_end_timeout_desc">Yay, kamu telah berhasil melakukan live streaming. Ayo lihat hasil siaranmu!</string>
     <string name="play_live_broadcast_dialog_end_timeout_primary">Lihat Laporan</string>
+    <string name="play_live_broadcast_share_link_copied">Link disalin!</string>
+    <string name="play_live_broadcast_share_link_ok">Oke</string>
 
     <string name="play_summary_title">Laporan Live Streaming</string>
     <string name="play_summary_button_finish">Selesai</string>

@@ -82,8 +82,11 @@ object PlayBroadcastMocker {
 
     fun getMockActiveChannel() = ChannelInfoUiModel(
             channelId = "1234",
+            title = "Klarififikasi Bisa Tebak Siapa?",
+            description = "Yuk gabung sekarang di Play Klarifikasi Bisa Tebak siapa?",
+            coverUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
             ingestUrl = "rtmp://test",
-            shareUrl = "tokopedia://play/2214",
+            shareUrl = "https://www.tokopedia.com/play/channels/1234",
             status = PlayChannelStatus.Active
     )
 

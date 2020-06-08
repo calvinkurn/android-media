@@ -35,11 +35,11 @@ class PlayBroadcastViewModel  @Inject constructor(
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + dispatcher)
 
-    val channelInfo: LiveData<ChannelInfoUiModel>
+    val observableChannelInfo: LiveData<ChannelInfoUiModel>
         get() = _observableChannelInfo
-    val totalView: LiveData<TotalViewUiModel>
+    val observableTotalView: LiveData<TotalViewUiModel>
         get() = _observableTotalView
-    val totalLike: LiveData<TotalLikeUiModel>
+    val observableTotalLike: LiveData<TotalLikeUiModel>
         get() = _observableTotalLike
     val observableScreenStateEvent: LiveData<Event<ScreenStateEvent>>
         get() = _observableScreenStateEvent
@@ -49,6 +49,9 @@ class PlayBroadcastViewModel  @Inject constructor(
         get() = _observableLiveNetworkState
     val observablePermissionState: LiveData<PlayPermissionState>
         get() = _observablePermissionState
+
+    val channelInfo: ChannelInfoUiModel?
+        get() = _observableChannelInfo.value
 
     private val _observableChannelInfo = MutableLiveData<ChannelInfoUiModel>()
     private val _observableTotalView = MutableLiveData<TotalViewUiModel>()

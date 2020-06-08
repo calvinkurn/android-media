@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Observer
@@ -16,9 +17,11 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
+import com.tokopedia.play.broadcaster.util.PlayShareWrapper
 import com.tokopedia.play.broadcaster.util.event.EventObserver
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
@@ -37,6 +40,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private lateinit var tvTimeCounterEnd: AppCompatTextView
     private lateinit var tvTotalView: Typography
     private lateinit var tvTotalLike: Typography
+    private lateinit var ivShareLink: AppCompatImageView
 
     override fun getScreenName(): String = "Play Broadcast Interaction"
 
@@ -70,11 +74,14 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         tvTimeCounterEnd = view.findViewById(R.id.tv_time_counter_end)
         tvTotalView = view.findViewById(R.id.tv_total_views)
         tvTotalLike = view.findViewById(R.id.tv_total_likes)
+        ivShareLink = view.findViewById(R.id.iv_share_link)
     }
 
     private fun setupView() {
         broadcastCoordinator.setupTitle("")
         broadcastCoordinator.setupCloseButton(getString(R.string.play_action_bar_end))
+
+        ivShareLink.setOnClickListener{ doCopyShareLink() }
     }
 
     private fun setupContent() {
@@ -96,7 +103,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             minutesUntilFinished: Long,
             secondsUntilFinished: Long
     ) {
-        if (shouldShowWhenFiveTwoMinutesLeft(minutesUntilFinished, secondsUntilFinished)) {
+        if (shouldShowWhenFiveOrTwoMinutesLeft(minutesUntilFinished, secondsUntilFinished)) {
             tvTimeCounterEnd.show()
             tvTimeCounter.invisible()
         } else {
@@ -107,8 +114,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         tvTimeCounter.text = elapsedTime
     }
 
-    private fun shouldShowWhenFiveTwoMinutesLeft(minutesUntilFinished: Long,
-                                                 secondsUntilFinished: Long): Boolean =
+    private fun shouldShowWhenFiveOrTwoMinutesLeft(minutesUntilFinished: Long,
+                                                   secondsUntilFinished: Long): Boolean =
             (minutesUntilFinished == 2L || minutesUntilFinished == 5L) && secondsUntilFinished in 0..3
 
     private fun setTotalView(totalView: TotalViewUiModel) {
@@ -153,6 +160,17 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
 
+    private fun doCopyShareLink() {
+        parentViewModel.channelInfo?.let { channelInfo ->
+            PlayShareWrapper.doCopyShareLink(requireContext(), channelInfo) {
+                Toaster.make(requireView(),
+                        text = getString(R.string.play_live_broadcast_share_link_copied),
+                        type = Toaster.LENGTH_LONG,
+                        actionText =  getString(R.string.play_live_broadcast_share_link_ok))
+            }
+        }
+    }
+
     private fun doEndStreaming() {
         parentViewModel.stopPushBroadcast()
         navigateToSummary()
@@ -187,11 +205,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 //    }
 
     private fun observeTotalViews() {
-        parentViewModel.totalView.observe(viewLifecycleOwner, Observer(::setTotalView))
+        parentViewModel.observableTotalView.observe(viewLifecycleOwner, Observer(::setTotalView))
     }
 
     private fun observeTotalLikes() {
-        parentViewModel.totalLike.observe(viewLifecycleOwner, Observer(::setTotalLike))
+        parentViewModel.observableTotalLike.observe(viewLifecycleOwner, Observer(::setTotalLike))
     }
     //endregion
 
