@@ -15,15 +15,16 @@ import kotlin.coroutines.CoroutineContext
 
 private const val TOKOPOINTS_DETAIL_APPLINK = "tokopedia://tokopoints/tukar-detail/"
 
-class TokopointsItemViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class TokopointsItemViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val dataItem: MutableLiveData<DataItem> = MutableLiveData()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
-    init {
+
+    override fun onAttachToViewHolder() {
+        super.onAttachToViewHolder()
         dataItem.value = components.data?.get(0)
     }
-
     fun getDataItemValue(): LiveData<DataItem> = dataItem
 
     override fun initDaggerInject() {

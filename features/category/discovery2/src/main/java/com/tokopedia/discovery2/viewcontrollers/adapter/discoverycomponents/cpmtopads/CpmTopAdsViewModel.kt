@@ -41,15 +41,19 @@ class CpmTopAdsViewModel(val application: Application, private val components: C
         initDaggerInject()
     }
 
+    override fun onAttachToViewHolder() {
+        super.onAttachToViewHolder()
+        fetchCpmTopAdsData()
+    }
     fun fetchCpmTopAdsData() {
         launchCatchError(block = {
             withContext(Dispatchers.IO){
-                val data = components.data?.get(0)?.paramsMobile?.let { cpmTopAdsUseCase.getCpmTopAdsData(it) }
+                val data = components.data?.get(0)?.paramsMobile?.let { cpmTopAdsUseCase.getCpmTopAdsData(components.id,components.pageEndPoint) }
                 if (data!=null){
-                    cpmTopAdsList.postValue(Success(data.componentList))
-                    promotedText.postValue(Success(data.promotedText))
-                    brandName.postValue(Success(data.brandName))
-                    imageUrl.postValue(Success(data.imageUrl))
+                    cpmTopAdsList.postValue(Success(components.cpmData?.componentList as ArrayList<ComponentsItem>))
+                    promotedText.postValue(Success(components.cpmData?.promotedText as String))
+                    brandName.postValue(Success(components.cpmData?.brandName as String))
+                    imageUrl.postValue(Success(components.cpmData?.imageUrl as String))
                 }
             }
 

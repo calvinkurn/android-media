@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.data
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 
 data class ComponentsItem(
 
@@ -47,4 +48,5 @@ data class ComponentsItem(
     var componentsPerPage = 20
     lateinit var pageEndPoint: String
     lateinit var parentComponentId: String
+    var cpmData: DiscoveryDataMapper.CpmTopAdsData? = null
 }

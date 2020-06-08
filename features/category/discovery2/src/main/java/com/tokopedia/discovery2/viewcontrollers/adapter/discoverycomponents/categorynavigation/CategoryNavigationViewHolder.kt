@@ -55,7 +55,6 @@ class CategoryNavigationViewHolder(itemView: View, private val fragment: Fragmen
             }
         })
 
-        categoryNavigationViewModel.getCategoryNavigationData()
         categoryNavigationViewModel.getListData().observe(fragment.viewLifecycleOwner, Observer { item ->
             when (item) {
                 is Success -> {

@@ -1,13 +1,22 @@
 package com.tokopedia.discovery2.usecase
 
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRepository
 import javax.inject.Inject
 
 class CategoryNavigationUseCase @Inject constructor(private val categoryNavigationRepository: CategoryNavigationRepository) {
 
-    suspend fun getCategoryNavigationData(categoryDetailUrl: String): ArrayList<ComponentsItem> {
-       return categoryNavigationRepository.getCategoryNavigationData(categoryDetailUrl)
+    suspend fun getCategoryNavigationData(componentId: String,pageIdentifier:String): Boolean {
+       val component =  getComponent(componentId,pageIdentifier)
+        if (component?.noOfPagesLoaded == 1)
+            return false
+        component?.let { cmp ->
+            cmp.componentsItem = component.data?.get(0)?.categoryDetailUrl?.let { categoryNavigationRepository.getCategoryNavigationData(it) }
+            cmp.noOfPagesLoaded = 1
+            return true
+        }
+       return false
     }
 
 }

@@ -10,7 +10,7 @@ import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 val discoveryPageData: MutableMap<String, DiscoveryResponse> = HashMap()
 
 fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse): DiscoveryPageData {
-    discoveryResponse.pageInfo.name = discoveryResponse.title.toUpperCase()
+    discoveryResponse.pageInfo.name = discoveryResponse.title
     val discoveryPageData = DiscoveryPageData(discoveryResponse.pageInfo, discoveryResponse.title)
     discoveryResponse.componentMap = HashMap()
     discoveryPageData.components = getDiscvoeryComponentList(discoveryResponse.pageInfo, discoveryResponse.components.filter {
