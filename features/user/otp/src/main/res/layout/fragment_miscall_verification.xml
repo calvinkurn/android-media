@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:paddingBottom="@dimen/spacing_lvl4">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/img_miscall_verification"
+                android:layout_width="@dimen/img_miscall_verification_width"
+                android:layout_height="@dimen/img_miscall_verification_height"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/spacing_lvl4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:unify_image_type="rect" />
+
+            <com.tokopedia.pin.PinUnify
+                android:id="@+id/pin"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl8"
+                android:layout_marginTop="@dimen/spacing_lvl6"
+                android:layout_marginEnd="@dimen/spacing_lvl8"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/img_miscall_verification"
+                app:pin_count="4"
+                app:pin_primary_action_text="@string/button_verify"
+                app:pin_title="@string/cotp_miscall_verification_title"
+                app:pin_type="shown"
+                tools:pin_message="Tidak menerima missed call? \n Missed call ulang atau gunakan metode verifikasi lain"
+                tools:pin_prefix="000-00" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
+        android:layout_centerInParent="true"
+        android:visibility="visible"
+        tools:visibility="gone" />
+
+</RelativeLayout>

@@ -19,6 +19,11 @@ import timber.log.Timber;
 
 public class OTPAnalytics {
 
+    @Inject
+    public OTPAnalytics() {
+
+    }
+
     public static class Screen {
         public static final String SCREEN_COTP_SMS = "Input OTP sms";
         public static final String SCREEN_COTP_CALL = "Input OTP call";
@@ -61,11 +66,6 @@ public class OTPAnalytics {
         private static final String CLICK = "click";
         private static final String SUCCESS = "success";
         private static final String FAILED = "failed - ";
-    }
-
-    @Inject
-    public OTPAnalytics() {
-
     }
 
     public void sendScreen(Activity activity, String screenName) {

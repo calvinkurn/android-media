@@ -12,13 +12,14 @@ import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Label.LABEL_
 import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Label.LABEL_SUCCESS
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import javax.inject.Inject
 
 /**
  * Created by Ade Fulki on 2019-10-23.
  * ade.hadian@tokopedia.com
  */
 
-class TrackingValidatorUtil{
+class TrackingValidatorUtil @Inject constructor(){
 
     fun trackClickActivationButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(

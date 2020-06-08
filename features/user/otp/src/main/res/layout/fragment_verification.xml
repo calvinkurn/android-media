@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Neutral_N0">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/method_icon"
+            android:layout_width="@dimen/layout_lvl6"
+            android:layout_height="@dimen/layout_lvl6"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/spacing_lvl7"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_image_type="rect" />
+
+        <com.tokopedia.pin.PinUnify
+            android:id="@+id/pin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl8"
+            android:layout_marginTop="@dimen/spacing_lvl6"
+            android:layout_marginEnd="@dimen/spacing_lvl8"
+            app:has_clear_button="true"
+            app:is_disabled="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/method_icon"
+            app:pin_count="6"
+            app:pin_primary_action_text="@string/button_verify"
+            app:pin_title="@string/enter_verification_code"
+            app:pin_type="shown"
+            tools:pin_description="Kode verifikasi telah dikirimkan melalui SMS ke xxxx-xxxx-xxxxx"
+            tools:pin_message="Tidak menerima kode? \n Kirim ulang atau gunakan metode verifikasi lain" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
+        android:layout_centerInParent="true"
+        android:visibility="visible"
+        tools:visibility="gone" />
+
+</RelativeLayout>

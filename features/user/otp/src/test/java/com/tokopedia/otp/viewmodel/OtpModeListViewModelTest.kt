@@ -1,10 +1,10 @@
 package com.tokopedia.otp.viewmodel
 
 import com.tokopedia.otp.ext.InstantRunExecutorSpek
-import com.tokopedia.otp.validator.data.OtpModeListPojo
-import com.tokopedia.otp.validator.data.OtpParams
-import com.tokopedia.otp.validator.domain.usecase.OtpModeListUseCase
-import com.tokopedia.otp.validator.viewmodel.OtpModeListViewModel
+import com.tokopedia.otp.verification.domain.data.OtpModeListPojo
+import com.tokopedia.otp.verification.data.OtpData
+import com.tokopedia.otp.verification.domain.usecase.VerificationMethodUseCase
+import com.tokopedia.otp.verification.viewmodel.OtpModeListViewModel
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -13,7 +13,6 @@ import org.junit.platform.runner.JUnitPlatform
 import org.junit.runner.RunWith
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
-import stubExecuteOnBackground
 
 @RunWith(JUnitPlatform::class)
 class OtpModeListViewModelTest : Spek({
@@ -21,7 +20,7 @@ class OtpModeListViewModelTest : Spek({
     InstantRunExecutorSpek(this)
 
     Feature("OtpModeListViewModel") {
-        val otpModeListUseCase = mockk<OtpModeListUseCase>(relaxed = true)
+        val otpModeListUseCase = mockk<VerificationMethodUseCase>(relaxed = true)
         val dispatcher = Dispatchers.Unconfined
 
         val otpModeListViewModel = OtpModeListViewModel(
@@ -37,7 +36,7 @@ class OtpModeListViewModelTest : Spek({
             }
 
             When("get otp mode list") {
-                val params = OtpParams()
+                val params = OtpData()
                 otpModeListViewModel.getMethodList(params)
             }
 
@@ -55,7 +54,7 @@ class OtpModeListViewModelTest : Spek({
             }
 
             When("get otp mode list") {
-                val params = OtpParams()
+                val params = OtpData()
                 otpModeListViewModel.getMethodList(params)
             }
 

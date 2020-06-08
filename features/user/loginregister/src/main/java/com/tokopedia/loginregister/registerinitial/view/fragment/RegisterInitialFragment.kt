@@ -63,8 +63,7 @@ import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialView
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
-import com.tokopedia.otp.cotp.view.activity.VerificationActivity
+import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
@@ -698,8 +697,11 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun onGoToSecurityQuestion(email: String) {
-        val intent = VerificationActivity.getShowChooseVerificationMethodIntent(
-                activity, RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION, "", email)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OtpConstant.OtpType.SECURITY_QUESTION)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
         startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
     }
 
@@ -735,17 +737,16 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     private fun goToVerificationPhoneRegister(phone: String) {
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
 
-        val intent = VerificationActivity.getShowChooseVerificationMethodIntent(
-                activity,
-                RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER,
-                phone,
-                ""
-        )
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OtpConstant.OtpType.REGISTER_PHONE_NUMBER)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
         startActivityForResult(intent, REQUEST_VERIFY_PHONE_REGISTER_PHONE)
     }
 
     private fun goToOtpValidator(email: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.OTP_VALIDATOR)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_REGISTER)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
@@ -753,7 +754,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun goToPendingOtpValidator(email: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.OTP_VALIDATOR)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_ACTIVATE)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
@@ -1027,8 +1028,11 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
 
         activity?.let {
-            val intent = VerificationActivity.getShowChooseVerificationMethodIntent(it,
-                    RequestOtpUseCase.OTP_TYPE_LOGIN_PHONE_NUMBER, phoneNumber, "")
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OtpConstant.OtpType.LOGIN_PHONE_NUMBER)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
             startActivityForResult(intent, REQUEST_VERIFY_PHONE_TOKOCASH)
         }
     }

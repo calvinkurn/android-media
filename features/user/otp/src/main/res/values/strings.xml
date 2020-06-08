@@ -17,7 +17,7 @@
     <string name="dialog_cancel">BATAL</string>
     <string name="error_wrong_otp">Kode yang Anda masukkan salah</string>
     <string name="not_received_code">Tidak menerima kode?</string>
-    <string name="resend">Kirim ulang</string>
+
     <string name="or_small">atau</string>
     <string name="or_small_with_space">atau</string>
 
@@ -62,7 +62,7 @@
     <string name="title_activity_activation">Aktivasi Akun</string>
     <string name="validation_title">Masukkan Kode Aktivasi</string>
     <string name="title_validation_otp">Aktivasi</string>
-    <string name="validation_resend_email">Tidak menerima kode? Kirim ulang</string>
+
     <string name="validation_text"><![CDATA[Kode verifikasi telah dikirimkan melalui email ke <b>{email}</b>.]]></string>
     <string name="param_email_validation_text">{email}</string>
     <string name="message_resend_email"><![CDATA[Apakah anda ingin kirim ulang email ke <b>%s</b>]]></string>
@@ -74,4 +74,13 @@
     <string name="job_was_cancelled">Job was cancelled</string>
     <string name="no_network_connection">Tidak ada koneksi, periksa koneksi internet anda</string>
     <string name="validator_coundown_text"><![CDATA[Mohon tunggu dalam <b>%d detik</b> untuk kirim ulang.]]></string>
+
+
+
+    <string name="validation_resend_email">Tidak menerima kode? kirim ulang %s</string>
+    <string name="or_with_other_method">\n atau gunakan metode verifikasi lain</string>
+    <string name="with_other_method">gunakan metode verifikasi lain</string>
+    <string name="resend">kirim ulang</string>
+    <string name="verification_coundown_text"><![CDATA[Mohon tunggu dalam <b>%d detik</b> untuk kirim ulang.]]></string>
+    <string name="miscall_verification_coundown_text"><![CDATA[Mohon tunggu dalam <b>%d detik</b> untuk kirim miscall ulang.]]></string>
 </resources>

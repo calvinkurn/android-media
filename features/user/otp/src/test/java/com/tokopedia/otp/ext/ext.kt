@@ -1,9 +1,9 @@
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.otp.validator.domain.usecase.ValidatorUseCase
+import com.tokopedia.otp.verification.domain.usecase.VerificationUseCase
 import io.mockk.MockKStubScope
 import io.mockk.coEvery
 
-inline fun ValidatorUseCase<*>.stubExecuteOnBackground(): MockKStubScope<Any, Any> {
+inline fun VerificationUseCase<*>.stubExecuteOnBackground(): MockKStubScope<Any, Any> {
     val it = this
     return coEvery { it.executeOnBackground() }
 }

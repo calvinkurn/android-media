@@ -82,8 +82,7 @@ import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifications.CMPushNotificationManager
-import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
-import com.tokopedia.otp.cotp.view.activity.VerificationActivity
+import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.ErrorHandlerSession
@@ -823,8 +822,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
         analytics.trackLoginPhoneNumber()
         activity?.let {
-            val intent = VerificationActivity.getShowChooseVerificationMethodIntent(it,
-                    RequestOtpUseCase.OTP_TYPE_LOGIN_PHONE_NUMBER, phoneNumber, "")
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OtpConstant.OtpType.LOGIN_PHONE_NUMBER)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
             startActivityForResult(intent, REQUEST_LOGIN_PHONE)
         }
 
@@ -834,12 +836,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
 
         activity?.let {
-            val intent = VerificationActivity.getShowChooseVerificationMethodIntent(
-                    it,
-                    RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER,
-                    phoneNumber,
-                    ""
-            )
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OtpConstant.OtpType.REGISTER_PHONE_NUMBER)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
             startActivityForResult(intent, REQUEST_REGISTER_PHONE)
         }
     }
@@ -995,8 +996,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     override fun onGoToSecurityQuestion(email: String): () -> Unit {
         return {
-            val intent = VerificationActivity.getShowChooseVerificationMethodIntent(
-                    activity, RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION, "", email)
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OtpConstant.OtpType.SECURITY_QUESTION)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
             startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
         }
     }
