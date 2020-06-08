@@ -7,6 +7,7 @@ import com.tokopedia.mediauploader.data.state.ProgressCallback
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.util.UploadValidatorUtil.getFileExtension
 import com.tokopedia.usecase.RequestParams
+import okhttp3.internal.http2.StreamResetException
 import java.io.File
 import java.net.SocketTimeoutException
 import javax.inject.Inject
@@ -33,6 +34,8 @@ class UploaderUseCase @Inject constructor(
                 postMedia(fileToUpload, sourcePolicy, sourceId)
             }
         } catch (e: SocketTimeoutException) {
+            UploadResult.Error(TIMEOUT_ERROR)
+        } catch (e: StreamResetException) {
             UploadResult.Error(TIMEOUT_ERROR)
         } catch (e: Exception) {
             UploadResult.Error(NETWORK_ERROR)
