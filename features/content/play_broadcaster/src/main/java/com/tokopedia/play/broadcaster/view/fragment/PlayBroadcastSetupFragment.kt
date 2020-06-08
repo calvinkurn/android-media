@@ -1,13 +1,18 @@
 package com.tokopedia.play.broadcaster.view.fragment
 
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayFollowerItemDecoration
@@ -35,6 +40,7 @@ class PlayBroadcastSetupFragment @Inject constructor(
 
     private lateinit var btnSetup: UnifyButton
     private lateinit var rvFollowers: RecyclerView
+    private lateinit var tvPrivacyPolicy: TextView
 
     private val followersAdapter = PlayFollowersAdapter()
 
@@ -67,6 +73,7 @@ class PlayBroadcastSetupFragment @Inject constructor(
         with (view) {
             btnSetup = findViewById(R.id.btn_setup)
             rvFollowers = findViewById(R.id.rv_followers)
+            tvPrivacyPolicy = findViewById(R.id.tv_privacy_policy)
         }
     }
 
@@ -83,11 +90,31 @@ class PlayBroadcastSetupFragment @Inject constructor(
             if (rvFollowers.itemDecorationCount == 0)
                 rvFollowers.addItemDecoration(PlayFollowerItemDecoration())
         }
+
+        setupPrivacyPolicy()
     }
 
     override fun onBackPressed(): Boolean {
         showDialogWhenActionClose()
         return true
+    }
+
+    private fun setupPrivacyPolicy() {
+        val privacyPolicyText = getString(R.string.play_privacy_policy)
+        val fullPrivacyPolicyText = getString(
+                R.string.play_privacy_policy_full,
+                btnSetup.text,
+                privacyPolicyText
+        )
+        val privacyPolicyIndex = fullPrivacyPolicyText.indexOf(privacyPolicyText)
+        val spannedPrivacyText = SpannableString(fullPrivacyPolicyText)
+        spannedPrivacyText.setSpan(
+                ForegroundColorSpan(
+                        MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.dark_G500)
+                ), privacyPolicyIndex, privacyPolicyIndex + privacyPolicyText.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+        )
+
+        tvPrivacyPolicy.text = spannedPrivacyText
     }
 
     private fun doCreateChannel() {
