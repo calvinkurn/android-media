@@ -15,8 +15,6 @@ import dagger.Component;
 @Component(modules = SessionModule.class, dependencies = AppComponent.class)
 public interface SessionComponent {
 
-    void inject(CreatePasswordFragment createPasswordFragment);
-
     void inject(AddNameRegisterPhoneFragment addNameFragment);
 
     GetUserInfoUseCase getUserInfoUseCase();
