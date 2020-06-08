@@ -77,4 +77,7 @@
     <string name="play_summary_atc">Ditambahkan Ke Keranjang</string>
     <string name="play_summary_purchased_product">Produk Dibeli</string>
     <string name="play_summary_new_followers">Pelanggan Baru</string>
+
+    <string name="play_privacy_policy_full">Dengan menekan tombol %s, saya menyetujui %s live streaming.</string>
+    <string name="play_privacy_policy">Syarat &amp; Ketentuan</string>
 </resources>
