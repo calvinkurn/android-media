@@ -40,10 +40,9 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastSummaryViewModel::class.java)
         parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
-        arguments?.let {
+        arguments?.let { it ->
             it.getString(KEY_CHANNEL_ID)?.let {channelId ->
                 parentViewModel.getChannel(channelId)
-                viewModel.getLiveTrafficMetrics(channelId)
             }
         }
     }
@@ -62,6 +61,8 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
         rv_play_summary_live_information.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         rv_play_summary_live_information.removeItemDecorations()
         rv_play_summary_live_information.adapter = trafficMetricReportAdapter
+        renderDuration()
+        setUpFinishButton()
     }
 
     override fun getScreenName(): String = ""
@@ -69,20 +70,16 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         observeChannelInfo()
-        observeLiveInfoState()
         observeTotalViews()
         observeTotalLikes()
         observeLiveTrafficMetrics()
     }
 
-    private fun observeLiveInfoState()  {
-        parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, EventObserver {
-            if (it is PlayPusherInfoState.Finish) {  }
-        })
-    }
-
     private fun observeChannelInfo() {
-        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner, Observer (::renderTitleAndCover))
+        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner, Observer {
+            viewModel.getLiveTrafficMetrics(it.channelId)
+            renderTitleAndCover(it)
+        })
     }
 
     private fun observeTotalViews() {
@@ -120,8 +117,10 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
         entranceAnimation(view)
     }
 
-    private fun renderDuration(duration: String) {
-        tv_play_summary_live_duration.text = duration
+    private fun renderDuration() {
+        arguments?.let { it ->
+            it.getString(KEY_LIVE_DURATION)?.let { duration -> tv_play_summary_live_duration.text = duration }
+        }
     }
 
     private fun renderTicker(title: String, description: String) {
@@ -134,6 +133,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
         btn_play_summary_finish.setOnClickListener {
             //put action here
             RouteManager.route(requireContext(), "")
+            activity?.finish()
         }
     }
 
@@ -172,5 +172,6 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
 
     companion object {
         const val KEY_CHANNEL_ID = "key_channel_id"
+        const val KEY_LIVE_DURATION = "key_live_duration"
     }
 }
