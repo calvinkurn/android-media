@@ -155,11 +155,12 @@ public abstract class RoomDB extends RoomDatabase {
     private static final Migration MIGRATION_6_7 = new Migration(6, 7) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
-            database.execSQL("ALTER TABLE `BaseNotificationModel` ADD COLUMN `transId` TEXT");
-            database.execSQL("ALTER TABLE `BaseNotificationModel` ADD COLUMN `userTransId` TEXT");
-            database.execSQL("ALTER TABLE `BaseNotificationModel` ADD COLUMN `userId` TEXT");
-            database.execSQL("ALTER TABLE `BaseNotificationModel` ADD COLUMN `shopId` TEXT");
-            database.execSQL("ALTER TABLE `BaseNotificationModel` ADD COLUMN `notifcenterBlastId` TEXT");
+            database.execSQL("ALTER TABLE `BaseNotificationModel` " +
+                    "ADD COLUMN `transId` TEXT, " +
+                    "ADD COLUMN `userTransId` TEXT, " +
+                    "ADD COLUMN `userId` TEXT, " +
+                    "ADD COLUMN `shopId` TEXT, " +
+                    "ADD COLUMN `notifcenterBlastId` TEXT");
         }
     };
 

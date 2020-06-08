@@ -28,7 +28,7 @@ android {
         release {
             ext.enableHansel = !project.hasProperty('hanselDisableRelease')
             minifyEnabled false
-            debuggable = true
+            debuggable = isDebugable(project).toBoolean()
             //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             proguardFiles 'proguard-rules.pro'
         }

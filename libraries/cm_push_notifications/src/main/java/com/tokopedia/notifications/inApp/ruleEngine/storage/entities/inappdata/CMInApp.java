@@ -96,10 +96,8 @@ public class CMInApp {
 
     @ColumnInfo(name = "is_test")
     private boolean isTest;
-    @Expose
     @ColumnInfo(name = "perst_on")
     private boolean persistentToggle = true;
-    @Expose
     @ColumnInfo(name = "is_interacted")
     private boolean isInteracted = false;
 

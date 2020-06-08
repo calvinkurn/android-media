@@ -45,7 +45,8 @@ class CMPushNotificationManager : CoroutineScope {
         get() = (applicationContext as CMRouter).getBooleanRemoteConfig("app_cm_push_enable", false) || BuildConfig.DEBUG
 
     private val isInAppEnable: Boolean
-        get() = true
+        get() = (applicationContext as CMRouter).getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_INAPP_ENABLE,
+                false) || BuildConfig.DEBUG
 
     val cmPushEndTimeInterval: Long
         get() = (applicationContext as CMRouter).getLongRemoteConfig(CMConstant.RemoteKeys.KEY_CM_PUSH_END_TIME_INTERVAL,
@@ -72,7 +73,7 @@ class CMPushNotificationManager : CoroutineScope {
         try {
 
             if (::applicationContext.isInitialized && token != null && isForegroundTokenUpdateEnabled) {
-                Log.d("FCMTOKEN","token: $token")
+                Timber.d("token: $token")
                 if (TextUtils.isEmpty(token)) {
                     return
                 }
