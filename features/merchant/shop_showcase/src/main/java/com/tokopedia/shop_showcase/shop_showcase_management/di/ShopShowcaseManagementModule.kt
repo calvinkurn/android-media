@@ -21,18 +21,4 @@ class ShopShowcaseManagementModule {
         return UserSession(context)
     }
 
-    @ShopShowcaseManagementScope
-    @Provides
-    @Named(GQLQueryConstant.QUERY_SHOP_SHOWCASE_LIST)
-    fun provideQueryShopShowcaseListData(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.get_shop_showcase_list)
-    }
-
-    @ShopShowcaseManagementScope
-    @Provides
-    @Named(GQLQueryConstant.QUERY_SHOP_SHOWCASE_LIST_AS_BUYER)
-    fun provideQueryShopShowcaseListAsBuyer(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.get_shop_showcase_list_as_buyer)
-    }
-
 }
