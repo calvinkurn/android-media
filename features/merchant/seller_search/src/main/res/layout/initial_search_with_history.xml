@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvLatestSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/latest_search_label"
+        android:textAllCaps="true"
+        app:typographyWeight="bold"
+        app:typographyType="body_3"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/clrLatestSearch"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvClearAll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/clear_all_label"
+        app:typographyWeight="bold"
+        app:typographyType="body_3"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/clrClearAll"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvInitialHistory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        android:paddingStart="@dimen/spacing_lvl3"
+        android:paddingLeft="@dimen/spacing_lvl3"
+        android:paddingRight="@dimen/spacing_lvl3"
+        android:paddingEnd="@dimen/spacing_lvl3"
+        app:layout_constraintTop_toBottomOf="@id/tvLatestSearch"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:listitem="@layout/item_initial_search_with_history"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
