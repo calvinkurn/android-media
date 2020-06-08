@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:transitionGroup="true"
@@ -58,6 +59,22 @@
         app:layout_constraintEnd_toEndOf="@id/psb_search"
         app:layout_constraintStart_toStartOf="@id/psb_search"
         app:layout_constraintTop_toBottomOf="@id/psb_search"
+        />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/error_product_not_found"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:layout_marginEnd="@dimen/play_dp_12"
+        android:layout_marginRight="@dimen/play_dp_12"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/psb_search"
+        app:layout_constraintStart_toStartOf="@id/psb_search"
+        app:layout_constraintTop_toBottomOf="@id/psb_search"
+        tools:visibility="visible"
         />
 
     <androidx.recyclerview.widget.RecyclerView

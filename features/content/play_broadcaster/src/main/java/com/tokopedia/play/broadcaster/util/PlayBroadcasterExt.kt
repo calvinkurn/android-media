@@ -5,6 +5,9 @@ import android.view.ViewTreeObserver
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.ViewCompat
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.play.broadcaster.R
 
 /**
  * Created by jegul on 26/05/20
@@ -40,3 +43,10 @@ internal var View.compatTransitionName: String?
     set(value) {
         ViewCompat.setTransitionName(this, value)
     }
+
+internal fun GlobalError.productNotFoundState() {
+    errorIllustration.setImageResource(com.tokopedia.resources.common.R.drawable.ic_empty_search_wishlist)
+    errorTitle.text = context.getString(R.string.play_product_not_found_title)
+    errorDescription.text = context.getString(R.string.play_product_not_found_desc)
+    errorAction.gone()
+}
