@@ -66,6 +66,10 @@ class PlaySearchBar : ConstraintLayout {
         etSearch.onEditorAction(EditorInfo.IME_ACTION_SEARCH)
     }
 
+    fun cancel() {
+        tvCancel.performClick()
+    }
+
     private fun setupView(view: View) {
         etSearch.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
