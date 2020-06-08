@@ -14,7 +14,6 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -58,8 +57,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mapviewer.activity.MapViewerActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_about.view.*
 import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_facilities.view.*
 import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_how_to_go_there.view.*

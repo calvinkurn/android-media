@@ -25,10 +25,7 @@ import com.tokopedia.design.touchhelper.SimpleItemTouchHelperCallback
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
-import com.tokopedia.shop_showcase.common.ShopShowcaseFragmentNavigation
-import com.tokopedia.shop_showcase.common.ShopShowcaseListParam
-import com.tokopedia.shop_showcase.common.ShopShowcaseReorderListener
-import com.tokopedia.shop_showcase.common.TOTAL_GENERATED_ID
+import com.tokopedia.shop_showcase.common.*
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseItem
 import com.tokopedia.shop_showcase.shop_showcase_management.di.DaggerShopShowcaseManagementComponent
 import com.tokopedia.shop_showcase.shop_showcase_management.di.ShopShowcaseManagementComponent
@@ -78,7 +75,7 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
         return activity?.run {
             DaggerShopShowcaseManagementComponent
                     .builder()
-                    .shopShowcaseManagementModule(ShopShowcaseManagementModule())
+                    .shopShowcaseManagementModule(ShopShowcaseManagementModule(this))
                     .shopShowcaseComponent(ShopShowcaseInstance.getComponent(application))
                     .build()
         }
@@ -171,7 +168,7 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
         val shopShowcaseList = ArrayList<String>()
         shopShowcaseListReorderAdapter?._showcaseList?.let {
             for (shopShowcaseModel in it) {
-                if (shopShowcaseModel.id.toInt() > TOTAL_GENERATED_ID) {
+                if (shopShowcaseModel.type != ShowcaseType.GENERATED) {
                     shopShowcaseList.add(shopShowcaseModel.id)
                 }
             }
