@@ -10,6 +10,9 @@ import com.tokopedia.entertainment.pdp.data.checkout.*
 import com.tokopedia.entertainment.pdp.network_api.EventCheckoutRepository
 import com.tokopedia.entertainment.pdp.usecase.EventProductDetailUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlError
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.promocheckout.common.domain.model.event.*
 import com.tokopedia.travelcalendar.domain.TravelCalendarHolidayUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -18,11 +21,13 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
+import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.Dispatchers
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.lang.reflect.Type
 
 class EventPDPCheckoutViewModelTest {
 
@@ -32,7 +37,7 @@ class EventPDPCheckoutViewModelTest {
     lateinit var eventCheckoutViewModel: EventCheckoutViewModel
 
     @MockK
-    lateinit var graphqlRepository: MultiRequestGraphqlUseCase
+    lateinit var graphqlRepository: GraphqlRepository
 
     @MockK
     lateinit var userSessionInterface: UserSessionInterface
@@ -43,14 +48,11 @@ class EventPDPCheckoutViewModelTest {
     @MockK
     lateinit var usecaseHoliday: TravelCalendarHolidayUseCase
 
-    @MockK
-    lateinit var repository: EventCheckoutRepository
-
 
     @Before
     fun setUp(){
         MockKAnnotations.init(this)
-        eventCheckoutViewModel = EventCheckoutViewModel(Dispatchers.Unconfined, eventProductDetailUseCase, repository)
+        eventCheckoutViewModel = EventCheckoutViewModel(Dispatchers.Unconfined, eventProductDetailUseCase, graphqlRepository)
     }
 
     @Test
@@ -84,9 +86,10 @@ class EventPDPCheckoutViewModelTest {
     @Test
     fun `Productdetaildata_FailShowProduct_FailActualResult`(){
         //given
+        val error = Throwable("Error Fail Get PDP Data")
         coEvery {
             eventProductDetailUseCase.executeUseCase("", "", true, "")
-        } returns Fail(Throwable("Error Fail Get PDP Data"))
+        } returns Fail(error)
 
         //when
         eventCheckoutViewModel.getDataProductDetail("", "", "")
@@ -94,123 +97,40 @@ class EventPDPCheckoutViewModelTest {
         //then
         Assert.assertNotNull(eventCheckoutViewModel.isError.value)
         Assert.assertNull(eventCheckoutViewModel.eventProductDetail.value)
-        Assert.assertEquals(eventCheckoutViewModel.isError.value?.message, "Error Fail Get PDP Data")
+        Assert.assertEquals(eventCheckoutViewModel.isError.value?.message, error.message)
     }
 
     @Test
-    fun `VerifyCart_SuccessVerifyCart_ShowActualResult`(){
-        //given
-        val cartItemlist = mutableListOf<CartItemVerify>()
-        val cartItemVerify = CartItemVerify(ConfigurationVerify(12345), productId = 144, productName = "PRODUCTNAME144")
-        var cartItem = CartItem(title = "CART_TEST", quantity = 100,price = 155)
-        val dataCart = Cart(cartItems = listOf(cartItem))
-        val eventVerifyResponse = EventVerifyResponse("CONFIG123", Data(dataCart, Status(result = "SUCCESS")), status = "SUCCESS")
+    fun `CheckoutEvent_SuccessCheckout_ShouldSuccessCheckout`(){
 
-        cartItemlist.add(cartItemVerify)
+        val checkoutMock = Gson().fromJson(getJson("checkout_mock.json"), EventCheckoutResponse::class.java)
 
-        val eventVerifyBody = EventVerifyBody(cartItemlist.toList(), "DEVICE_TEST", "TEST123")
+        val result = HashMap<Type, Any>()
+        result[EventCheckoutResponse::class.java] = checkoutMock
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { repository.postVerify(eventCheckoutViewModel.createMapParam(true), eventVerifyBody)} returns eventVerifyResponse
+        coEvery { graphqlRepository.getReseponse(any(),any()) } returns gqlResponse
 
-        //when
-        eventCheckoutViewModel.checkVerify(true, eventVerifyBody)
+        eventCheckoutViewModel.checkoutEvent("", CheckoutGeneralV2Params())
 
-        //then
-        Assert.assertNull(eventCheckoutViewModel.errorValue.value)
-
-        Assert.assertNotNull(eventCheckoutViewModel.eventVerifyResponse.value)
-        Assert.assertEquals(eventCheckoutViewModel.eventVerifyResponse.value, eventVerifyResponse)
-    }
-
-    @Test
-    fun `CheckoutCart_SuccessCheckoutCart_ShowActualResult`(){
-        //given
-        var cartItem = CartItem(title = "CART_TEST", quantity = 100,price = 155)
-        val dataCart = Cart(cartItems = listOf(cartItem))
-        val eventcheckoutResponse = EventCheckoutResponse(serverProcessTime = "10000", status = "success", config = Any(), data = DataPayment(status = "success"))
-
-        coEvery { repository.postCheckout(dataCart)} returns eventcheckoutResponse
-
-        //when
-        eventCheckoutViewModel.checkCheckout(dataCart)
-
-        //then
-        Assert.assertNull(eventCheckoutViewModel.errorValue.value)
-
-        Assert.assertNotNull(eventCheckoutViewModel.eventCheckoutResponse.value)
-        Assert.assertEquals(eventCheckoutViewModel.eventCheckoutResponse.value, eventcheckoutResponse)
-        Assert.assertNull(eventCheckoutViewModel.errorGeneralValue.value)
-    }
-
-    @Test
-    fun `VerifyCart_FailedVerifyCart_FailedActualResult`(){
-        //given
-        val error_msg = "ERROR123"
-        val cartItemlist = mutableListOf<CartItemVerify>()
-        val cartItemVerify = CartItemVerify(ConfigurationVerify(12345), productId = 144, productName = "PRODUCTNAME144")
-        var cartItem = CartItem(title = "CART_TEST", quantity = 100,price = 155)
-        val dataCart = Cart(cartItems = listOf(cartItem), error = error_msg)
-        val eventVerifyResponse = EventVerifyResponse("CONFIG123", Data(dataCart, Status(result = "FAIL")), status = "SUCCESS")
-
-        cartItemlist.add(cartItemVerify)
-
-        val eventVerifyBody = EventVerifyBody(cartItemlist.toList(), "DEVICE_TEST", "TEST123")
-
-        coEvery { repository.postVerify(eventCheckoutViewModel.createMapParam(true), eventVerifyBody)} returns eventVerifyResponse
-
-        //when
-        eventCheckoutViewModel.checkVerify(true, eventVerifyBody)
-
-
-        //then
-        Assert.assertNotNull(eventCheckoutViewModel.errorValue.value)
-
-        Assert.assertNull(eventCheckoutViewModel.eventVerifyResponse.value)
-        Assert.assertEquals(error_msg, eventVerifyResponse.data.cart.error)
-    }
-
-    @Test
-    fun `CheckoutCart_FailCheckoutCart_FailActualResult`(){
-        //given
-        val error_msg = "ERROR144"
-        var cartItem = CartItem(title = "CART_TEST", quantity = 100,price = 155)
-        val dataCart = Cart(cartItems = listOf(cartItem))
-        val eventcheckoutResponse = EventCheckoutResponse(serverProcessTime = "10000", status = "error", config = Any(), data = DataPayment(status = "error", error = error_msg))
-
-        coEvery { repository.postCheckout(dataCart) } returns eventcheckoutResponse
-
-        //when
-        eventCheckoutViewModel.checkCheckout(dataCart)
-
-        //then
-        Assert.assertNotNull(eventCheckoutViewModel.errorValue.value)
-
-        Assert.assertNull(eventCheckoutViewModel.eventCheckoutResponse.value)
-        Assert.assertEquals(error_msg, eventCheckoutViewModel.errorValue.value)
+        val actual = eventCheckoutViewModel.eventCheckoutResponse.value
+        assertEquals(actual, checkoutMock)
     }
 
 
     @Test
-    fun `CheckoutVerifyBookMapper_FalseCheckoutBookMapper_ShowFalse`(){
+    fun `CheckoutEvent_FailCheckout_ShouldFailCheckout`(){
         //given
-        val book = false
+        val error = Throwable("Error Checkout")
+        coEvery { graphqlRepository.getReseponse(any(),any()) } coAnswers {throw error}
 
         //when
-        var result = eventCheckoutViewModel.createMapParam(book)
+        eventCheckoutViewModel.checkoutEvent("",CheckoutGeneralV2Params())
 
         //then
-        assert(!result.get("book")!!)
+        val actual = eventCheckoutViewModel.errorGeneralValue.value
+        assert(actual?.message.equals(error.message))
+
     }
 
-    @Test
-    fun `CheckoutVerifyBookMapper_TrueCheckoutBookMapper_ShowTrue`(){
-        //given
-        val book = true
-
-        //when
-        var result = eventCheckoutViewModel.createMapParam(book)
-
-        //then
-        assert(result.get("book")!!)
-    }
 }

@@ -4,19 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.entertainment.pdp.data.EventProductDetailEntity
-import com.tokopedia.entertainment.pdp.data.checkout.Checkout
 import com.tokopedia.entertainment.pdp.data.checkout.CheckoutGeneralV2Params
-import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutBody
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutResponse
 import com.tokopedia.entertainment.pdp.data.pdp.EventPDPErrorEntity
-import com.tokopedia.entertainment.pdp.network_api.EventCheckoutRepository
 import com.tokopedia.entertainment.pdp.usecase.EventProductDetailUseCase
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.promocheckout.common.domain.model.event.Cart
-import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyBody
-import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
@@ -77,21 +71,8 @@ class EventCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         }
     }
 
-    fun createMapParam(book: Boolean): HashMap<String, Boolean> {
-        val mapParam = HashMap<String, Boolean>()
-        mapParam[BOOK] = book
-        return mapParam
-    }
-
 
     companion object {
-        const val SUCCESS = "success"
-        const val FAILURE = "failure"
-
-        const val BOOK = "book"
         const val PARAM = "params"
-
-        private const val ERROR_DEFAULT = "Terjadi kesalahan, silakan ulangi beberapa saat lagi"
-
     }
 }

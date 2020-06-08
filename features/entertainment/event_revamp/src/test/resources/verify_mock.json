@@ -1,0 +1,73 @@
+{
+    "event_verify": {
+      "error": "",
+      "error_description": "",
+      "status": "0",
+      "metadata": {
+        "product_ids": [
+          "23163"
+        ],
+        "product_names": [
+          "Test-huda"
+        ],
+        "provider_ids": [
+          "3"
+        ],
+        "item_ids": [
+          "4401"
+        ],
+        "category_name": "event",
+        "quantity": 1,
+        "total_price": 25000,
+        "item_map": [
+          {
+            "id": "4401",
+            "name": "Jadwal Kita punya",
+            "product_id": "23163",
+            "category_id": "1",
+            "child_category_ids": "",
+            "provider_id": "3",
+            "product_name": "Test-huda",
+            "package_name": "",
+            "end_time": "1704041940",
+            "start_time": "2019-11-06 20:13:20",
+            "price": 25000,
+            "quantity": 1,
+            "total_price": 25000,
+            "location_name": "",
+            "location_desc": "",
+            "product_app_url": "tokopedia://events/",
+            "web_app_url": "https://staging.tokopedia.com/events/detail/",
+            "product_image": "",
+            "flag_id": "0",
+            "package_id": "0",
+            "order_trace_id": "98c2d66a-ecc4-4d10-6310-3b8ffa2571c3",
+            "error": "",
+            "email": "muhammad.arifin+02@tokopedia.com",
+            "mobile": "08992715130",
+            "schedule_timestamp": "1589389200",
+            "description": "Ini deskripsi ya",
+            "provider_ticket_id": "tp:pandoraalsutwd",
+            "provider_schedule_id": "tp",
+            "base_price": "25000",
+            "commission": 0,
+            "commission_type": "",
+            "currency_price": 0,
+            "passenger_forms": [],
+            "invoice_item_id": "544369",
+            "provider_order_id": "",
+            "provider_invoice_code": "",
+            "provider_package_id": "",
+            "invoice_id": "549970",
+            "invoice_status": "BOOKED",
+            "payment_type": "-",
+            "buttons": []
+          }
+        ],
+        "error": "",
+        "order_title": "Test-huda",
+        "order_subTitle": "Jadwal Kita punya",
+        "buttons": []
+      }
+    }
+  }
