@@ -758,10 +758,10 @@ public class ProductListFragment
     }
 
     @Override
-    public void onProductImpressed(ProductItemViewModel item, int adapterPosition) {
+    public void onProductImpressed(ProductItemViewModel item) {
         if (presenter == null) return;
 
-        presenter.onProductImpressed(item, adapterPosition);
+        presenter.onProductImpressed(item);
     }
 
     @Override

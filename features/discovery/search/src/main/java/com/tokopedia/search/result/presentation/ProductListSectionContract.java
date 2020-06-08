@@ -205,7 +205,7 @@ public interface ProductListSectionContract {
 
         void handleWishlistAction(ProductCardOptionsModel productCardOptionsModel);
 
-        void onProductImpressed(ProductItemViewModel item, int adapterPosition);
+        void onProductImpressed(ProductItemViewModel item);
 
         void onProductClick(ProductItemViewModel item, int adapterPosition);
 
