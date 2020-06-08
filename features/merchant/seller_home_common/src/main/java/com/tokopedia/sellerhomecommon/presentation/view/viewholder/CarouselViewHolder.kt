@@ -39,7 +39,6 @@ class CarouselViewHolder(
 
     private fun observeState(element: CarouselWidgetUiModel) {
         val data = element.data
-        println("is data null : ${null == data}")
         when {
             null == data -> setOnLoadingState()
             data.error.isNotBlank() -> {
