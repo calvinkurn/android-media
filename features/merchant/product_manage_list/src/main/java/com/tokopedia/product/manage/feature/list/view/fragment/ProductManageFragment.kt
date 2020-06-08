@@ -956,7 +956,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             val errorMessage = getString(R.string.product_manage_desc_product_on_supervision, product.title)
             NetworkErrorHelper.showSnackbar(activity, errorMessage)
         } else {
-            productManageBottomSheet?.show(product)
+            val isPowerMerchantOrOfficialStore = viewModel.isPowerMerchant() || isOfficialStore
+            productManageBottomSheet?.show(product, isPowerMerchantOrOfficialStore)
         }
     }
 
