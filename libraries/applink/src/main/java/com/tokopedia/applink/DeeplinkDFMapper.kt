@@ -56,6 +56,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OQR_PIN_URL_ENT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OVO_PAY_WITH_QR_ENTRY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_DEPOSIT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_INTRO
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SCREEN_RECORDER
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_BANK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_PROFILE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM
@@ -121,6 +122,7 @@ object DeeplinkDFMapper : CoroutineScope {
     private const val DF_CATEGORY_TRADE_IN = "df_category_trade_in"
     const val DF_MERCHANT_SELLER = "df_merchant_seller"
     const val DF_OPERATIONAL_CONTACT_US = "df_operational_contact_us"
+    const val DF_OPERATIONAL_SCREEN_RECORDER = "df_operational_screen_recorder"
     const val DF_SALAM_UMRAH = "df_salam_umrah"
     private const val DF_USER_LIVENESS = "df_user_liveness"
     const val DF_USER_SETTINGS = "df_user_settings"
@@ -206,6 +208,7 @@ object DeeplinkDFMapper : CoroutineScope {
                     it.startsWith(INTERNAL_INBOX_LIST)
             }, DF_OPERATIONAL_CONTACT_US, R.string.applink_title_contact_us, { DFWebviewFallbackUrl.OPERATIONAL_CONTACT_US }))
             add(DFP({ it.startsWith(CHAT_BOT) }, DF_OPERATIONAL_CONTACT_US, R.string.title_applink_chatbot, { DFWebviewFallbackUrl.OPERATIONAL_CHAT_BOT }))
+            add(DFP({ it.startsWith(SCREEN_RECORDER) }, DF_OPERATIONAL_SCREEN_RECORDER, R.string.title_applink_screen_recorder))
 
             // Payment
             add(DFP({ it.startsWith(PAYMENT_SETTING) }, DF_BASE, R.string.payment_settings_title))

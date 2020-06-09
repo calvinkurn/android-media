@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.screenrecorder">
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
@@ -12,9 +13,11 @@
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.tokopedia.screenrecorder.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
+            android:exported="true"
+            android:grantUriPermissions="true"
+            tools:replace="android:authorities">
             <meta-data
+                tools:replace="android:resource"
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/screen_recorder_provider_paths"/>
         </provider>
