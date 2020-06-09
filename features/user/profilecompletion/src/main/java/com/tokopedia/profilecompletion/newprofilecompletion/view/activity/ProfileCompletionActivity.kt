@@ -43,7 +43,7 @@ class ProfileCompletionActivity : BaseSimpleActivity(), HasComponent<ProfileComp
         }
         toolbar.setPadding(toolbar.paddingLeft, toolbar.paddingTop, 30, toolbar.paddingBottom)
 
-        val upArrow = ContextCompat.getDrawable(this, R.drawable.ic_action_back)
+        val upArrow = ContextCompat.getDrawable(this, R.drawable.profilecompletion_ic_action_back)
         if (upArrow != null) {
             upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP)
             supportActionBar?.setHomeAsUpIndicator(upArrow)
