@@ -10,22 +10,23 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.promocheckoutmarketplace.data.request.CouponListRecommendationRequest
-import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
-import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.promocheckoutmarketplace.data.response.ClearPromoResponse
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendationResponse
 import com.tokopedia.promocheckoutmarketplace.data.response.GetPromoSuggestionResponse
 import com.tokopedia.promocheckoutmarketplace.data.response.ResultStatus.Companion.STATUS_COUPON_LIST_EMPTY
 import com.tokopedia.promocheckoutmarketplace.data.response.ResultStatus.Companion.STATUS_PHONE_NOT_VERIFIED
 import com.tokopedia.promocheckoutmarketplace.data.response.ResultStatus.Companion.STATUS_USER_BLACKLISTED
-import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.ValidateUseResponse
+import com.tokopedia.promocheckoutmarketplace.presentation.MOCK_RESPONSE_PROMO_LAST_SEEN
 import com.tokopedia.promocheckoutmarketplace.presentation.PromoErrorException
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics
 import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutUiModelMapper
-import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.ValidateUsePromoCheckoutMapper
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.*
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEmptyStateUiModel.UiData.Companion.LABEL_BUTTON_PHONE_VERIFICATION
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEmptyStateUiModel.UiData.Companion.LABEL_BUTTON_TRY_AGAIN
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.ValidateUseResponse
+import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.ValidateUsePromoCheckoutMapper
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -1327,12 +1328,13 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
             // Get response
             val response = withContext(Dispatchers.IO) {
-                val request = GraphqlRequest(query, GetPromoSuggestionResponse::class.java)
-                graphqlRepository.getReseponse(listOf(request))
-                        .getSuccessData<GetPromoSuggestionResponse>()
+                Gson().fromJson(MOCK_RESPONSE_PROMO_LAST_SEEN, GetPromoSuggestionResponse::class.java)
+//                val request = GraphqlRequest(query, GetPromoSuggestionResponse::class.java)
+//                graphqlRepository.getReseponse(listOf(request))
+//                        .getSuccessData<GetPromoSuggestionResponse>()
             }
 
-            if (response.promoHistory.isNotEmpty()) {
+            if (response.promoSuggestion.promoHistory.isNotEmpty()) {
                 // Remove promo code on validate use params after clear promo success
                 getPromoLastSeenResponse.value?.let {
                     it.state = GetPromoLastSeenAction.ACTION_SHOW

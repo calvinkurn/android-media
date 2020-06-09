@@ -172,7 +172,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
         return PromoLastSeenUiModel(
                 uiData = PromoLastSeenUiModel.UiData().apply {
                     promoLastSeenItemUiModelList = ArrayList()
-                    response.promoHistory.forEach {
+                    response.promoSuggestion.promoHistory.forEach {
                         val promoLastSeenItemUiModel = PromoLastSeenItemUiModel(
                                 uiData = PromoLastSeenItemUiModel.UiData().apply {
                                     promoCode = it.promoCode
