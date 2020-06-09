@@ -165,7 +165,7 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
     @Override
     public void renderEmptyResultGetPromoDataList() {
         globalError.getErrorIllustration().setImageResource(R.drawable.loyalty_no_promo);
-        handleErrorEmptyState(getString(R.string.loyalty_no_promo), getString(R.string.loyalty_still_save_without_promo));
+        handleErrorEmptyState(getString(R.string.loyalty_no_promo), getString(R.string.loyalty_still_save_without_promo), true);
     }
 
     @Override
@@ -176,7 +176,7 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
     @Override
     public void renderErrorNoConnectionGetPromoDataList(String message) {
         globalError.setType(GlobalError.Companion.getNO_CONNECTION());
-        handleErrorEmptyState(null, null);
+        handleErrorEmptyState(null, null, false);
     }
 
     @Override
@@ -197,7 +197,7 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
     @Override
     public void renderErrorTimeoutConnectionGetPromoDataListt(String message) {
         globalError.setType(GlobalError.Companion.getSERVER_ERROR());
-        handleErrorEmptyState(null, null);
+        handleErrorEmptyState(null, null, false);
     }
 
     @Override
@@ -323,7 +323,7 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
         rvPromoList.addOnScrollListener(recyclerViewScrollListener);
         rvPromoList.setAdapter(adapter);
 
-        globalError.getErrorAction().setOnClickListener(v->{
+        globalError.getErrorAction().setOnClickListener(v -> {
             refreshHandler.startRefresh();
         });
     }
@@ -474,20 +474,22 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
 
     }
 
-    private void handleErrorEmptyState(String title, String subtitle) {
+    private void handleErrorEmptyState(String title, String subtitle, boolean hideTryAgain) {
         if (refreshHandler.isRefreshing()) refreshHandler.finishRefresh();
         adapter.clearDataList();
         if (!TextUtils.isEmpty(title)) {
             globalError.getErrorTitle().setText(title);
         }
 
+        globalError.getErrorAction().setVisibility(hideTryAgain ? View.GONE : View.VISIBLE);
+
         if (!TextUtils.isEmpty(title)) {
             globalError.getErrorDescription().setText(subtitle);
         }
-        if(!isConnectedToInternet()){
+        if (!isConnectedToInternet()) {
             globalError.setType(GlobalError.Companion.getNO_CONNECTION());
             btnOpenSettings.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             btnOpenSettings.setVisibility(View.GONE);
         }
 
@@ -509,7 +511,7 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
 
 
     private boolean isConnectedToInternet() {
-        if (getContext()!= null) {
+        if (getContext() != null) {
             return DeviceConnectionInfo.isConnectCellular(getContext()) || DeviceConnectionInfo.isConnectWifi(getContext());
         }
         return false;
