@@ -54,7 +54,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
         tabsViewModel.getSyncPageLiveData().observe(fragment.viewLifecycleOwner, Observer { needResync ->
             if (needResync) {
                 tabsRecyclerViewAdapter.notifyDataSetChanged()
-                (fragment as DiscoveryFragment).resync()
+                (fragment as DiscoveryFragment).reSync()
             }
         })
     }

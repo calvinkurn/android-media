@@ -137,6 +137,10 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     override fun doOnDestroy() {
         super.doOnDestroy()
+        clearPageData()
+    }
+
+    fun clearPageData(){
         discoveryDataUseCase.clearPage(pageIdentifier)
     }
 }
