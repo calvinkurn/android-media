@@ -62,6 +62,7 @@ query getShopInfo($shopIds: [Int!]!, $fields: [String!]!, $shopDomain: String, $
                 shopStatus
                 statusMessage
                 statusTitle
+                isIdle
             }
             bbInfo {
                 bbName

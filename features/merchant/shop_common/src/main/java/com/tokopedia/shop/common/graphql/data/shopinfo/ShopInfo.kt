@@ -128,7 +128,11 @@ data class ShopInfo(
 
         @SerializedName("statusTitle")
         @Expose
-        val statusTitle: String = ""
+        val statusTitle: String = "",
+
+        @SerializedName("isIdle")
+        @Expose
+        val isIdle: Boolean = false
     )
 
     data class FavoriteData(

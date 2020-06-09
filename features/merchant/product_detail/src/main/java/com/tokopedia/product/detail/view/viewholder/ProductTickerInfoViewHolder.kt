@@ -24,7 +24,9 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
 
     override fun bind(element: ProductTickerInfoDataModel) {
         with(view) {
-            if (element.statusInfo != null && element.statusInfo?.shopStatus != 1) {
+            if (element.statusInfo != null && element.statusInfo?.shopStatus != 1 && element.statusInfo?.isIdle == false) {
+                setupShopInfoTicker(element.statusInfo, element.closedInfo)
+            } else if (element.statusInfo != null && element.statusInfo?.isIdle == true) {
                 setupShopInfoTicker(element.statusInfo, element.closedInfo)
             } else if (element.generalTickerInfo.isNotEmpty()) {
                 setupGeneralTicker(element.generalTickerInfo)
@@ -32,13 +34,18 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
                 shop_ticker_info.hide()
                 general_ticker_info.hide()
             }
-
         }
     }
 
     private fun setupShopInfoTicker(statusInfo: ShopInfo.StatusInfo?, closedInfo: ShopInfo.ClosedInfo?) = with(view) {
         shop_ticker_info.show()
         when (statusInfo?.shopStatus) {
+            ProductShopStatusTypeDef.OPEN -> {
+                if(statusInfo.isIdle){
+                    renderShopTicker(statusInfo.statusTitle ?: "", statusInfo.statusMessage
+                            ?: "", null)
+                }
+            }
             ProductShopStatusTypeDef.CLOSED -> {
                 val processedMessage = view.context.getString(R.string.ticker_desc_shop_close, closedInfo?.closeUntil)
                 renderShopTicker(view.context.getString(R.string.ticker_title_shop_close), processedMessage, listener::onTickerShopClicked)
@@ -81,7 +88,7 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
             val tickerViewPager = TickerPagerAdapter(view.context, tickerData)
 
             general_ticker_info.addPagerView(tickerViewPager, tickerData)
-            tickerViewPager.setDescriptionClickEvent(object : TickerCallback{
+            tickerViewPager.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     listener.onTickerGeneralClicked(linkUrl.toString())
                 }
