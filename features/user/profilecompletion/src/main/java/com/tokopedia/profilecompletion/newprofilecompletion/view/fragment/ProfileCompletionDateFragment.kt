@@ -37,14 +37,14 @@ import javax.inject.Inject
  */
 class ProfileCompletionDateFragment : BaseDaggerFragment() {
 
-    private var month: AutoCompleteTextView? = null
-    private var actvContainer: View? = null
-    private var year: TextInputEditText? = null
-    private var date: TextInputEditText? = null
+    private var actxtMonth: AutoCompleteTextView? = null
+    private var actxtContainer: View? = null
+    private var actxtYear: TextInputEditText? = null
+    private var actxtDate: TextInputEditText? = null
     private var profileCompletionFragment: ProfileCompletionFragment? = null
-    private var proceed: View? = null
-    private var skip: View? = null
-    private var progress: View? = null
+    private var txtProceed: View? = null
+    private var txtSkip: View? = null
+    private var progressBar: View? = null
     private var position = 0
     private var dateObservable: Observable<String>? = null
     private var yearObservable: Observable<String>? = null
@@ -71,38 +71,38 @@ class ProfileCompletionDateFragment : BaseDaggerFragment() {
     }
 
     private fun initView(view: View) {
-        date = view.findViewById(R.id.date)
-        month = view.findViewById(R.id.month)
-        year = view.findViewById(R.id.year)
-        actvContainer = view.findViewById(R.id.autoCompleteTextViewContainer)
-        proceed = profileCompletionFragment?.view?.findViewById(R.id.proceed)
-        skip = profileCompletionFragment?.view?.findViewById(R.id.skip)
-        progress = profileCompletionFragment?.view?.findViewById(R.id.progress)
-        proceed?.isEnabled = false
+        actxtDate = view.findViewById(R.id.date)
+        actxtMonth = view.findViewById(R.id.month)
+        actxtYear = view.findViewById(R.id.year)
+        actxtContainer = view.findViewById(R.id.autoCompleteTextViewContainer)
+        txtProceed = profileCompletionFragment?.view?.findViewById(R.id.txt_proceed)
+        txtSkip = profileCompletionFragment?.view?.findViewById(R.id.txt_skip)
+        progressBar = profileCompletionFragment?.view?.findViewById(R.id.progress_bar)
+        txtProceed?.isEnabled = false
         profileCompletionFragment?.canProceed(false)
 
         val drawable = MethodChecker.getDrawable(activity, R.drawable.profilecompletion_chevron_thin_down)
         drawable.setColorFilter(MethodChecker.getColor(activity, R.color.warm_grey), PorterDuff.Mode.SRC_IN)
         val size = drawable.intrinsicWidth * 0.3
         drawable.setBounds(0, 0, size.toInt(), size.toInt())
-        month?.setCompoundDrawables(null, null, drawable, null)
+        actxtMonth?.setCompoundDrawables(null, null, drawable, null)
     }
 
     private fun setViewListener() {
-        actvContainer?.setOnClickListener {
-            month?.showDropDown()
+        actxtContainer?.setOnClickListener {
+            actxtMonth?.showDropDown()
             KeyboardHandler.DropKeyboard(activity, view)
         }
-        month?.setOnClickListener {
-            month?.showDropDown()
+        actxtMonth?.setOnClickListener {
+            actxtMonth?.showDropDown()
             KeyboardHandler.DropKeyboard(activity, view)
         }
-        month?.onItemClickListener = AdapterView.OnItemClickListener { parent, view, pos, rowId ->
+        actxtMonth?.onItemClickListener = AdapterView.OnItemClickListener { parent, view, pos, rowId ->
             position = pos + 1
         }
-        proceed?.setOnClickListener {
-            val dateString = date?.text.toString()
-            val yearString = year?.text.toString()
+        txtProceed?.setOnClickListener {
+            val dateString = actxtDate?.text.toString()
+            val yearString = actxtYear?.text.toString()
 
             if(dateString.isNotEmpty() && yearString.isNotEmpty()) {
                 selectedDate = formatDateParam(yearString.toInt(), position, dateString.toInt())
@@ -114,18 +114,18 @@ class ProfileCompletionDateFragment : BaseDaggerFragment() {
                 profileCompletionFragment?.onFailedEditProfile(getString(R.string.invalid_date))
             }
         }
-        skip?.setOnClickListener {
+        txtSkip?.setOnClickListener {
             profileCompletionFragment?.skipView(TAG)
         }
-        year?.addTextChangedListener(object : TextWatcher {
+        actxtYear?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
                 if (charSequence.length == 4) {
                     val theYear = charSequence.toString().toInt()
                     if (theYear < YEAR_MIN) {
-                        year!!.setText(YEAR_MIN.toString())
+                        actxtYear!!.setText(YEAR_MIN.toString())
                     } else if (theYear > YEAR_MAX) {
-                        year!!.setText(YEAR_MAX.toString())
+                        actxtYear!!.setText(YEAR_MAX.toString())
                     }
                 }
             }
@@ -137,11 +137,11 @@ class ProfileCompletionDateFragment : BaseDaggerFragment() {
     private fun initialVar() {
         val monthsIndo = DateFormatSymbols(Locale.getDefault()).months
         val adapter = ArrayAdapter(activity, androidx.appcompat.R.layout.select_dialog_item_material, monthsIndo)
-        month?.setAdapter(adapter)
+        actxtMonth?.setAdapter(adapter)
 
-        dateObservable = date?.let { ProfileCompletionEvents.text(it) }
-        yearObservable = year?.let { ProfileCompletionEvents.text(it) }
-        monthObservable = month?.let { ProfileCompletionEvents.select(it) }
+        dateObservable = actxtDate?.let { ProfileCompletionEvents.text(it) }
+        yearObservable = actxtYear?.let { ProfileCompletionEvents.text(it) }
+        monthObservable = actxtMonth?.let { ProfileCompletionEvents.select(it) }
 
         val dateMapper = dateObservable?.map { text -> text.trim { it <= ' ' } != "" }
         val yearMapper = yearObservable?.map { text -> text.trim { it <= ' ' } != "" }
@@ -158,7 +158,7 @@ class ProfileCompletionDateFragment : BaseDaggerFragment() {
             obj: Throwable -> obj.printStackTrace()
         }
 
-        allField.subscribe(proceed?.let { ProfileCompletionProperties.enabledFrom(it) }, onError)
+        allField.subscribe(txtProceed?.let { ProfileCompletionProperties.enabledFrom(it) }, onError)
         allField.subscribe(Action1 { aBoolean -> profileCompletionFragment?.canProceed(aBoolean) }, onError)
     }
 

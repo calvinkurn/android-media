@@ -10,11 +10,11 @@
     android:padding="10dp">
 
     <ImageView
-        android:id="@+id/radioGroup"
+        android:id="@+id/rg_gender"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:srcCompat="@drawable/akun_terverifikasi"/>
+        app:srcCompat="@drawable/profilecompletion_akun_terverifikasi"/>
 
     <androidx.legacy.widget.Space
         android:layout_width="0dp"
@@ -60,7 +60,7 @@
         />
 
     <TextView
-        android:id="@+id/done"
+        android:id="@+id/txt_done"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/medium_green"

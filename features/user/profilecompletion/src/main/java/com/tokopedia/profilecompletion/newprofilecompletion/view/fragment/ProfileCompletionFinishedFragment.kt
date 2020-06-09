@@ -17,7 +17,7 @@ import com.tokopedia.user.session.UserSessionInterface
  */
 class ProfileCompletionFinishedFragment : BaseDaggerFragment() {
 
-    private var finish: View? = null
+    private var txtDone: View? = null
     private var userSession: UserSessionInterface? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -28,11 +28,11 @@ class ProfileCompletionFinishedFragment : BaseDaggerFragment() {
     }
 
     private fun initView(view: View) {
-        finish = view.findViewById(R.id.done)
+        txtDone = view.findViewById(R.id.txt_done)
     }
 
     private fun setViewListener() {
-        finish?.setOnClickListener {
+        txtDone?.setOnClickListener {
             if (context != null) {
                 userSession = UserSession(context)
                 val intent = RouteManager.getIntent(

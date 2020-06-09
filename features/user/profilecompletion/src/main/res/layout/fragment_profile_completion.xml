@@ -15,7 +15,7 @@
         tools:visibility="gone"/>
 
     <LinearLayout
-        android:id="@+id/layout_main"
+        android:id="@+id/content_new_profile_completion"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/dp_20ium_prof_comp"

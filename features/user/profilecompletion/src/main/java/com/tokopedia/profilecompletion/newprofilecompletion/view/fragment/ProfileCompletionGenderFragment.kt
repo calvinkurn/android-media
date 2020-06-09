@@ -24,12 +24,12 @@ import javax.inject.Inject
 class ProfileCompletionGenderFragment : BaseDaggerFragment() {
 
     private var profileCompletionFragment: ProfileCompletionFragment? = null
-    private var proceed: View? = null
-    private var radioGroup: RadioGroup? = null
-    private var avaWoman: View? = null
-    private var avaMan: View? = null
-    private var skip: View? = null
-    private var progress: View? = null
+    private var txtProceed: View? = null
+    private var rgGender: RadioGroup? = null
+    private var rbWoman: View? = null
+    private var rbMan: View? = null
+    private var txtSkip: View? = null
+    private var progressBar: View? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -45,25 +45,25 @@ class ProfileCompletionGenderFragment : BaseDaggerFragment() {
     }
 
     private fun initView(view: View) {
-        avaMan = view.findViewById(R.id.ava_man)
-        avaWoman = view.findViewById(R.id.ava_woman)
-        radioGroup = view.findViewById(R.id.radioGroup)
-        proceed = profileCompletionFragment?.view?.findViewById(R.id.proceed)
-        skip = profileCompletionFragment?.view?.findViewById(R.id.skip)
-        progress = profileCompletionFragment?.view?.findViewById(R.id.progress)
+        rbMan = view.findViewById(R.id.rb_man)
+        rbWoman = view.findViewById(R.id.rb_woman)
+        rgGender = view.findViewById(R.id.rg_gender)
+        txtProceed = profileCompletionFragment?.view?.findViewById(R.id.txt_proceed)
+        txtSkip = profileCompletionFragment?.view?.findViewById(R.id.txt_skip)
+        progressBar = profileCompletionFragment?.view?.findViewById(R.id.progress_bar)
         profileCompletionFragment?.canProceed(false)
     }
 
     private fun setViewListener() {
-        radioGroup?.setOnCheckedChangeListener { radioGroup, i ->
+        rgGender?.setOnCheckedChangeListener { radioGroup, i ->
             profileCompletionFragment?.canProceed(true)
         }
-        proceed?.setOnClickListener {
-            val selected = radioGroup?.findViewById<View>(radioGroup?.checkedRadioButtonId?: 0)
-            var idx = radioGroup?.indexOfChild(selected)
-            if (selected === avaMan) {
+        txtProceed?.setOnClickListener {
+            val selected = rgGender?.findViewById<View>(rgGender?.checkedRadioButtonId?: 0)
+            var idx = rgGender?.indexOfChild(selected)
+            if (selected === rbMan) {
                 idx = ProfileCompletionNewConstants.MALE
-            } else if (selected === avaWoman) {
+            } else if (selected === rbWoman) {
                 idx = ProfileCompletionNewConstants.FEMALE
             }
             idx?.let {
@@ -75,7 +75,7 @@ class ProfileCompletionGenderFragment : BaseDaggerFragment() {
                 }
             }
         }
-        skip?.setOnClickListener { profileCompletionFragment?.skipView(TAG) }
+        txtSkip?.setOnClickListener { profileCompletionFragment?.skipView(TAG) }
     }
 
     private fun initialObserver() {

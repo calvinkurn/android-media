@@ -20,7 +20,7 @@
             android:layout_alignParentLeft="true"/>
 
         <TextView
-            android:id="@+id/percentText"
+            android:id="@+id/txt_percent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_size_11"
@@ -38,7 +38,7 @@
         android:layout_height="@dimen/dp_5mall_prof_comp" />
 
     <ProgressBar
-        android:id="@+id/ProgressBar"
+        android:id="@+id/progressbar_top"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

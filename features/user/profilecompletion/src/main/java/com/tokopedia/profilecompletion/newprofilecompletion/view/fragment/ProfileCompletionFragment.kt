@@ -48,14 +48,14 @@ import javax.inject.Inject
  */
 class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContract.View {
 
-    var progressBar: ProgressBar? = null
-    var viewPager: ViewPager? = null
-    var percentText: TextView? = null
-    var proceed: TextView? = null
-    var progress: View? = null
-    var main: View? = null
+    private var progressBarTop: ProgressBar? = null
+    private var viewPager: ViewPager? = null
+    private var txtPercent: TextView? = null
+    private var txtProceed: TextView? = null
+    var progressBar: View? = null
+    var content: View? = null
     var loading: View? = null
-    var transaction: FragmentTransaction? = null
+    var fragmentTransaction: FragmentTransaction? = null
 
     @Inject
     lateinit var currentUserSession: UserSessionInterface
@@ -142,7 +142,7 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
 
     private fun onErrorGetStatusPin(throwable: Throwable) {
         loading?.visibility = View.GONE
-        main?.visibility = View.GONE
+        content?.visibility = View.GONE
         NetworkErrorHelper.showEmptyState(activity, view, throwable.message, retryAction)
     }
 
@@ -164,14 +164,14 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
     }
 
     private fun initView(view: View) {
-        progress = view.findViewById(R.id.progress)
-        progressBar = view.findViewById(R.id.ProgressBar)
+        progressBar = view.findViewById(R.id.progress_bar)
+        progressBarTop = view.findViewById(R.id.progressbar_top)
         viewPager = view.findViewById(R.id.viewpager)
-        percentText = view.findViewById(R.id.percentText)
+        txtPercent = view.findViewById(R.id.txt_percent)
         viewPager = view.findViewById(R.id.viewpager)
-        proceed = view.findViewById(R.id.proceed)
-        skip = view.findViewById(R.id.skip)
-        main = view.findViewById(R.id.layout_main)
+        txtProceed = view.findViewById(R.id.txt_proceed)
+        skip = view.findViewById(R.id.txt_skip)
+        content = view.findViewById(R.id.content_new_profile_completion)
         loading = view.findViewById(R.id.loading_layout)
     }
 
@@ -181,9 +181,9 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
     }
 
     private fun initialVar() {
-        animationProfileCompletion = progressBar?.let { ProfileCompletionProgressBarAnimation(it) }
+        animationProfileCompletion = progressBarTop?.let { ProfileCompletionProgressBarAnimation(it) }
         filled = "filled"
-        pair = Pair(R.anim.slide_in_right, R.anim.slide_out_left)
+        pair = Pair(R.anim.profilecompletion_slide_in_right, R.anim.profilecompletion_slide_out_left)
         retryAction = NetworkErrorHelper.RetryClickedListener {
             loading?.visibility = View.VISIBLE
             context?.let { userInfoViewModel.getUserProfileInfo(it) }
@@ -193,7 +193,7 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
 
     override fun onErrorGetUserInfo(string: String?) {
         loading?.visibility = View.GONE
-        main?.visibility = View.GONE
+        content?.visibility = View.GONE
         NetworkErrorHelper.showEmptyState(activity, view, string, retryAction)
     }
 
@@ -201,9 +201,9 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
         currentData?.completion = newValue
         animationProfileCompletion?.setValue(oldValue, newValue)
         animationProfileCompletion?.duration = 500
-        progressBar?.startAnimation(animationProfileCompletion)
-        progressBar?.progress = currentData?.completion?: 0
-        percentText?.text = String.format("%s%%", progressBar?.progress.toString())
+        progressBarTop?.startAnimation(animationProfileCompletion)
+        progressBarTop?.progress = currentData?.completion?: 0
+        txtPercent?.text = String.format("%s%%", progressBarTop?.progress.toString())
 
         val colors = resources.getIntArray(R.array.green_indicator)
         var indexColor = (newValue - 50) / 10
@@ -223,24 +223,24 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
     private fun loadFragment(profileCompletionDataView: ProfileCompletionDataView, pair: Pair<Int, Int>?) {
         KeyboardHandler.DropKeyboard(activity, view)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            transaction = childFragmentManager.beginTransaction()
+            fragmentTransaction = childFragmentManager.beginTransaction()
         }
-        pair?.let { transaction?.setCustomAnimations(pair.first, pair.second) }
+        pair?.let { fragmentTransaction?.setCustomAnimations(pair.first, pair.second) }
         chooseFragment(profileCompletionDataView)
     }
 
     private fun chooseFragment(profileCompletionDataView: ProfileCompletionDataView) {
         if (checkingIsEmpty(profileCompletionDataView.gender.toString())) {
             val genderFragment = ProfileCompletionGenderFragment.createInstance(this)
-            transaction?.replace(R.id.fragment_container, genderFragment, ProfileCompletionGenderFragment.TAG)?.commit()
+            fragmentTransaction?.replace(R.id.fragment_container, genderFragment, ProfileCompletionGenderFragment.TAG)?.commit()
 
         } else if (checkingIsEmpty(profileCompletionDataView.bday)) {
             val dateFragment = ProfileCompletionDateFragment.createInstance(this)
-            transaction?.replace(R.id.fragment_container, dateFragment, ProfileCompletionDateFragment.TAG)?.commit()
+            fragmentTransaction?.replace(R.id.fragment_container, dateFragment, ProfileCompletionDateFragment.TAG)?.commit()
 
         } else if (!profileCompletionDataView.isPhoneVerified) {
             val verifCompletionFragment = ProfileCompletionPhoneVerificationFragment.createInstance(this)
-            transaction?.replace(R.id.fragment_container, verifCompletionFragment, ProfileCompletionPhoneVerificationFragment.TAG)?.commit()
+            fragmentTransaction?.replace(R.id.fragment_container, verifCompletionFragment, ProfileCompletionPhoneVerificationFragment.TAG)?.commit()
 
         } else if (profileCompletionDataView.completion == 100) {
             (activity as ProfileCompletionActivity?)?.onFinishedForm()
@@ -295,27 +295,27 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
     }
 
     private fun setViewEnabled() {
-        progress?.visibility = View.GONE
-        proceed?.visibility = View.VISIBLE
+        progressBar?.visibility = View.GONE
+        txtProceed?.visibility = View.VISIBLE
         canProceed(true)
-        proceed?.text = getString(R.string.continue_form)
+        txtProceed?.text = getString(R.string.continue_form)
         skip?.isEnabled = true
     }
 
     override fun disableView() {
-        progress?.visibility = View.VISIBLE
-        proceed?.visibility = View.GONE
+        progressBar?.visibility = View.VISIBLE
+        txtProceed?.visibility = View.GONE
         skip?.isEnabled = false
     }
 
     override fun canProceed(answer: Boolean) {
-        proceed?.isEnabled = answer
+        txtProceed?.isEnabled = answer
         if (answer) {
-            proceed?.background?.setColorFilter(MethodChecker.getColor(activity, R.color.medium_green), PorterDuff.Mode.SRC_IN)
-            proceed?.setTextColor(MethodChecker.getColor(activity, R.color.color_white))
+            txtProceed?.background?.setColorFilter(MethodChecker.getColor(activity, R.color.medium_green), PorterDuff.Mode.SRC_IN)
+            txtProceed?.setTextColor(MethodChecker.getColor(activity, R.color.color_white))
         } else {
-            proceed?.background?.setColorFilter(MethodChecker.getColor(activity, R.color.grey_300), PorterDuff.Mode.SRC_IN)
-            proceed?.setTextColor(MethodChecker.getColor(activity, R.color.grey_500))
+            txtProceed?.background?.setColorFilter(MethodChecker.getColor(activity, R.color.grey_300), PorterDuff.Mode.SRC_IN)
+            txtProceed?.setTextColor(MethodChecker.getColor(activity, R.color.grey_500))
         }
     }
 
@@ -354,7 +354,7 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
     }
 
     override fun onGetUserInfo(profileCompletionDataView: ProfileCompletionDataView?) {
-        main?.visibility = View.VISIBLE
+        content?.visibility = View.VISIBLE
         currentData = profileCompletionDataView
         currentData?.completion?.let { updateProgressBar(0, it) }
         loading?.visibility = View.GONE

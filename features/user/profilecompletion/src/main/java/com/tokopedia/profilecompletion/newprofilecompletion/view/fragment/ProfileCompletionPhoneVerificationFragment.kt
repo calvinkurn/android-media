@@ -21,7 +21,7 @@ class ProfileCompletionPhoneVerificationFragment : PhoneVerificationFragment() {
     private var profileCompletionFragment: ProfileCompletionFragment? = null
     private var verifyButton: TextView? = null
     private var data: ProfileCompletionDataView? = null
-    private var skipFragment: TextView? = null
+    private var txtSkip: TextView? = null
 
     override fun findView(view: View) {
         super.findView(view)
@@ -31,16 +31,16 @@ class ProfileCompletionPhoneVerificationFragment : PhoneVerificationFragment() {
     override fun setViewListener() {
         super.setViewListener()
         skipButton.visibility = View.GONE
-        skipFragment?.setOnClickListener { profileCompletionFragment?.skipView(TAG) }
+        txtSkip?.setOnClickListener { profileCompletionFragment?.skipView(TAG) }
     }
 
     private fun initView() {
         data = profileCompletionFragment?.data
-        verifyButton = profileCompletionFragment?.view?.findViewById(R.id.proceed)
+        verifyButton = profileCompletionFragment?.view?.findViewById(R.id.txt_proceed)
         verifyButton?.text = resources.getString(R.string.continue_form)
         verifyButton?.visibility = View.GONE
-        skipFragment = profileCompletionFragment?.view?.findViewById(R.id.skip)
-        skipFragment?.visibility = View.GONE
+        txtSkip = profileCompletionFragment?.view?.findViewById(R.id.txt_skip)
+        txtSkip?.visibility = View.GONE
         if (data?.phone != null) {
             phoneNumberEditText.text = transform(data?.phone?: "")
         } else {

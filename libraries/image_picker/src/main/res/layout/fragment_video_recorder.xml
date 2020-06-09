@@ -94,7 +94,7 @@
                 </FrameLayout>
 
                 <ProgressBar
-                    android:id="@+id/progress"
+                    android:id="@+id/progress_bar"
                     style="@style/ProgressBar.Tokopedia"
                     android:layout_width="@dimen/dp_80"
                     android:layout_height="@dimen/dp_80"

@@ -8,7 +8,7 @@ import android.widget.ProgressBar
  * Created by stevenfredian on 6/19/17.
  */
 class ProfileCompletionProgressBarAnimation(private val progressBar: ProgressBar) : Animation() {
-    private val max: Int
+    private val max: Int = progressBar.max
     private var from = 0f
     private var to = 0f
     fun setValue(from: Int, to: Int) {
@@ -22,7 +22,4 @@ class ProfileCompletionProgressBarAnimation(private val progressBar: ProgressBar
         progressBar.progress = value.toInt()
     }
 
-    init {
-        max = progressBar.max
-    }
 }
