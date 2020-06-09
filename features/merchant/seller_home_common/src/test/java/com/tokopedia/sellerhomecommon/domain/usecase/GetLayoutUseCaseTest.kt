@@ -1,10 +1,10 @@
-package com.tokopedia.sellerhome.domain.usecase
+package com.tokopedia.sellerhomecommon.domain.usecase
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.sellerhome.domain.mapper.LayoutMapper
-import com.tokopedia.sellerhome.domain.model.GetLayoutResponse
-import com.tokopedia.sellerhome.utils.TestHelper
+import com.tokopedia.sellerhomecommon.domain.mapper.LayoutMapper
+import com.tokopedia.sellerhomecommon.domain.model.GetLayoutResponse
+import com.tokopedia.sellerhomecommon.utils.TestHelper
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -19,7 +19,7 @@ import org.junit.rules.ExpectedException
 import org.mockito.ArgumentMatchers.anyString
 
 /**
- * Created By @ilhamsuaib on 2020-02-24
+ * Created By @ilhamsuaib on 09/06/20
  */
 
 @ExperimentalCoroutinesApi
@@ -40,7 +40,7 @@ class GetLayoutUseCaseTest {
         GetLayoutUseCase(gqlRepository, mapper)
     }
 
-    private val params = GetLayoutUseCase.getRequestParams(anyString())
+    private val params = GetLayoutUseCase.getRequestParams(anyString(), anyString())
 
     @Before
     fun setUp() {

@@ -1,13 +1,12 @@
-package com.tokopedia.sellerhome.domain.mapper
+package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.sellerhomecommon.common.WidgetType
-import com.tokopedia.sellerhomecommon.domain.mapper.TooltipMapper
 import com.tokopedia.sellerhomecommon.domain.model.WidgetModel
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import javax.inject.Inject
 
 /**
- * Created By @ilhamsuaib on 2020-02-05
+ * Created By @ilhamsuaib on 09/06/20
  */
 
 class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper) {

@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhome.domain.usecase
+package com.tokopedia.sellerhomecommon.domain.usecase
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -6,13 +6,13 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.sellerhome.domain.mapper.LayoutMapper
-import com.tokopedia.sellerhome.domain.model.GetLayoutResponse
+import com.tokopedia.sellerhomecommon.domain.mapper.LayoutMapper
+import com.tokopedia.sellerhomecommon.domain.model.GetLayoutResponse
 import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
 import com.tokopedia.usecase.RequestParams
 
 /**
- * Created By @ilhamsuaib on 2020-01-15
+ * Created By @ilhamsuaib on 09/06/20
  */
 
 class GetLayoutUseCase(
@@ -36,33 +36,37 @@ class GetLayoutUseCase(
 
     companion object {
 
-        private const val SHOP_ID = "shopID"
+        private const val KEY_SHOP_ID = "shopID"
+        private const val KEY_PAGE = "page"
 
-        fun getRequestParams(shopId: String): RequestParams = RequestParams.create().apply {
-            putInt(SHOP_ID, shopId.toIntOrZero())
+        fun getRequestParams(shopId: String, pageName: String): RequestParams = RequestParams.create().apply {
+            putInt(KEY_SHOP_ID, shopId.toIntOrZero())
+            putString(KEY_PAGE, pageName)
         }
 
-        const val QUERY = "query GetSellerDashboardLayout(\$shopID: Int!) {\n" +
-                "  GetSellerDashboardLayout(shopID: \$shopID) {\n" +
-                "    widget {\n" +
-                "      widgetType\n" +
-                "      title\n" +
-                "      subtitle\n" +
-                "      tooltip {\n" +
-                "        title\n" +
-                "        content\n" +
-                "        show\n" +
-                "        list {\n" +
-                "          title\n" +
-                "          description\n" +
-                "        }\n" +
-                "      }\n" +
-                "      url\n" +
-                "      applink\n" +
-                "      dataKey\n" +
-                "      ctaText\n" +
-                "    }\n" +
-                "  }\n" +
-                "}\n"
+        private const val QUERY = """
+            query (${'$'}shopID: Int!, ${'$'}page: String!) {
+              GetSellerDashboardPageLayout(shopID: ${'$'}shopID, page: ${'$'}page) {
+                widget {
+                  widgetType
+                  title
+                  subtitle
+                  tooltip {
+                    title
+                    content
+                    show
+                    list {
+                      title
+                      description
+                    }
+                  }
+                  url
+                  applink
+                  dataKey
+                  ctaText
+                }
+              }
+            }
+        """
     }
 }
