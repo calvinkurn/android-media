@@ -38,7 +38,6 @@ import com.tokopedia.shop.search.di.component.DaggerShopSearchProductComponent
 import com.tokopedia.shop.search.di.module.ShopSearchProductModule
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_KEYWORD
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_SHOP_ATTRIBUTION
-import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_SHOP_INFO_CACHE_MANAGER_ID
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_SHOP_REF
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_SORT_ID
 import com.tokopedia.shop.search.view.adapter.ShopSearchProductAdapterTypeFactory
@@ -62,17 +61,26 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
 
     companion object {
         private const val REQUEST_CODE_SORT = 103
-        private const val KEY_SHOP_INFO_CACHE_MANAGER_SAVED_INSTANCE_STATE_ID = "keyShopInfoCacheManagerSavedInstanceStateId"
+        private const val KEY_SHOP_ID = "SHOP_ID"
+        private const val KEY_SHOP_NAME = "SHOP_NAME"
+        private const val KEY_IS_OFFICIAL = "IS_OFFICIAL"
+        private const val KEY_IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT"
 
         fun createInstance(
+                shopId: String,
+                shopName: String,
+                isOfficial: Boolean,
+                isGoldMerchant: Boolean,
                 keyword: String,
-                shopInfoCacheManagerId: String,
                 shopAttribution: String,
                 shopRef: String
         ): Fragment {
             return ShopSearchProductFragment().apply {
                 val bundleData = Bundle()
-                bundleData.putString(KEY_SHOP_INFO_CACHE_MANAGER_ID, shopInfoCacheManagerId)
+                bundleData.putString(KEY_SHOP_ID, shopId)
+                bundleData.putString(KEY_SHOP_NAME, shopName)
+                bundleData.putBoolean(KEY_IS_OFFICIAL, isOfficial)
+                bundleData.putBoolean(KEY_IS_GOLD_MERCHANT, isGoldMerchant)
                 bundleData.putString(KEY_SHOP_ATTRIBUTION, shopAttribution)
                 bundleData.putString(KEY_KEYWORD, keyword)
                 bundleData.putString(KEY_SHOP_REF, shopRef)
@@ -81,13 +89,16 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
         }
 
         fun createInstance(
+                shopId: String,
+                shopName: String,
+                isOfficial: Boolean,
+                isGoldMerchant: Boolean,
                 keyword: String,
-                shopInfoCacheManagerId: String,
                 shopAttribution: String,
                 sortId: String,
                 shopRef: String
         ): Fragment {
-            return createInstance(keyword,shopInfoCacheManagerId,shopAttribution,shopRef).apply {
+            return createInstance(shopId, shopName, isOfficial, isGoldMerchant, keyword, shopAttribution, shopRef).apply {
                 val bundleData = arguments
                 bundleData?.apply {
                     putString(KEY_SORT_ID, sortId)
@@ -105,12 +116,10 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private val shopId: String
-        get() = shopInfo?.shopCore?.shopID ?: ""
-    private val isOfficial: Boolean
-        get() = shopInfo?.goldOS?.isOfficial == 1
-    private val isGold: Boolean
-        get() = shopInfo?.goldOS?.isGold == 1
+    private var shopId: String = ""
+    private var shopName: String = ""
+    private var isOfficial: Boolean = false
+    private var isGold: Boolean = false
     private val customDimensionShopPage: CustomDimensionShopPage by lazy {
         CustomDimensionShopPage.create(shopId, isOfficial, isGold)
     }
@@ -119,30 +128,24 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
 
     private val isMyShop: Boolean
         get() = if (::viewModel.isInitialized) {
-            shopInfo?.shopCore?.shopID?.let { viewModel.isMyShop(it) } ?: false
+            viewModel.isMyShop(shopId)
         } else false
 
     private val remoteConfig by lazy {
         FirebaseRemoteConfigImpl(context)
     }
-
-    private var shopInfoCacheManagerId: String = ""
     private var shopAttribution: String = ""
-
-    private var shopInfo: ShopInfo? = null
-
     private var searchQuery = ""
     private var sortValue: String? = ""
     private var shopRef: String = ""
-
     private var viewFragment: View? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         initViewModel()
-        getArgumentsData(savedInstanceState)
-        getShopInfoFromCacheManager()
+        getArgumentsData()
+        customDimensionShopPage.updateCustomDimensionData(shopId, isOfficial, isGold)
     }
 
     override fun onCreateView(
@@ -156,7 +159,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewFragment = view
-            initViewNew(view)
+        initViewNew(view)
         observeShopSearchProductResult()
     }
 
@@ -171,16 +174,6 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
         viewModel.shopSearchProductResult.removeObservers(this)
         searchInputView.setListener(null)
         super.onDestroy()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        shopInfo?.run {
-            outState.putString(
-                    KEY_SHOP_INFO_CACHE_MANAGER_SAVED_INSTANCE_STATE_ID,
-                    saveShopInfoModelToCacheManager(this)
-            )
-        }
-        super.onSaveInstanceState(outState)
     }
 
     override fun loadData(page: Int) {}
@@ -260,7 +253,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
         adapter.clearAllElements()
         if (searchQuery.isNotEmpty()) {
             populateFixedSearchResult()
-            viewModel.getSearchShopProduct(shopInfo?.shopCore?.shopID.orEmpty(), searchQuery)
+            viewModel.getSearchShopProduct(shopId, searchQuery)
         }
     }
 
@@ -277,19 +270,17 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     }
 
     private fun redirectToShopProductListPage() {
-        shopInfo?.run {
-            val intent = ShopProductListActivity.createIntent(
-                    context,
-                    shopCore.shopID,
-                    searchQuery,
-                    "",
-                    shopAttribution,
-                    sortValue,
-                    shopRef
-            )
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            startActivity(intent)
-        }
+        val intent = ShopProductListActivity.createIntent(
+                context,
+                shopId,
+                searchQuery,
+                "",
+                shopAttribution,
+                sortValue,
+                shopRef
+        )
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        startActivity(intent)
     }
 
     private fun redirectToProductDetailPage(appLink: String) {
@@ -368,7 +359,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
         with(editTextSearchProduct) {
             hint = getString(
                     R.string.shop_product_search_hint_2,
-                    MethodChecker.fromHtml(shopInfo?.shopCore?.name.orEmpty()).toString()
+                    MethodChecker.fromHtml(shopName).toString()
             )
             addTextChangedListener(getSearchTextWatcher())
             setOnEditorActionListener(getSearchEditorActionListener())
@@ -457,28 +448,12 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
         }
     }
 
-    private fun getShopInfoFromCacheManager() {
-        shopInfo = context?.run {
-            SaveInstanceCacheManager(this, shopInfoCacheManagerId).run {
-                get(ShopInfo.TAG, ShopInfo::class.java)
-            }
-        }
-        customDimensionShopPage.updateCustomDimensionData(shopId, isOfficial, isGold)
-    }
-
-    private fun saveShopInfoModelToCacheManager(shopInfo: ShopInfo): String? {
-        return context?.run {
-            val cacheManager = SaveInstanceCacheManager(this, true)
-            cacheManager.put(ShopInfo.TAG, shopInfo, TimeUnit.DAYS.toMillis(7))
-            cacheManager.id
-        }
-    }
-
-    private fun getArgumentsData(savedInstanceState: Bundle?) {
+    private fun getArgumentsData() {
         arguments?.run {
-            shopInfoCacheManagerId = savedInstanceState?.run {
-                getString(KEY_SHOP_INFO_CACHE_MANAGER_SAVED_INSTANCE_STATE_ID).orEmpty()
-            } ?: getString(KEY_SHOP_INFO_CACHE_MANAGER_ID).orEmpty()
+            shopId = getString(KEY_SHOP_ID).orEmpty()
+            shopName = getString(KEY_SHOP_NAME).orEmpty()
+            isOfficial = getBoolean(KEY_IS_OFFICIAL, false)
+            isGold = getBoolean(KEY_IS_GOLD_MERCHANT, false)
             shopAttribution = getString(KEY_SHOP_ATTRIBUTION).orEmpty()
             searchQuery = getString(KEY_KEYWORD).orEmpty()
             sortValue = getString(KEY_SORT_ID).orEmpty()

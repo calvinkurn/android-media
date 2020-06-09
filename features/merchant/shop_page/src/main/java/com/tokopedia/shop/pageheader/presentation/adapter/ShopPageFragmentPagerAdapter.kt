@@ -91,7 +91,7 @@ internal class ShopPageFragmentPagerAdapter(
     fun getFragmentPosition(classType: Class<*>): Int {
         var fragmentPosition = 0
         listShopPageTabModel.forEachIndexed { index, shopPageTabModel ->
-            if(shopPageTabModel.tabFragment::class == classType){
+            if(shopPageTabModel.tabFragment::class.java == classType){
                 fragmentPosition = index
             }
         }
