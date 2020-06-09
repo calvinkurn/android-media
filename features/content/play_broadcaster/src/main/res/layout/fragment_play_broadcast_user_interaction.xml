@@ -38,7 +38,7 @@
         app:layout_constraintTop_toTopOf="@+id/tv_time_counter" />
 
     <include
-        layout="@layout/view_stats_info"
+        layout="@layout/layout_play_stats_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"

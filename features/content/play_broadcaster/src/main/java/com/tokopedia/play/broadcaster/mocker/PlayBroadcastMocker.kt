@@ -106,15 +106,6 @@ object PlayBroadcastMocker {
             streamUrl = "rtmp://test"
     )
 
-    fun getSummary(): SummaryUiModel {
-        val tickerContent = SummaryUiModel.TickerContent("Live Streaming Berakhir", "Waktu live streaming kamu sudah 30 menit", true)
-        return SummaryUiModel(coverImage = "",
-                tickerContent = tickerContent ,
-                liveTitle = "Sneakers Hypebeast with Cashback 10%",
-                liveDuration = "28:42",
-                finishRedirectUrl = "")
-    }
-
     fun getMockChat(): PlayChatUiModel {
         val name = listOf("Aku", "Kamu", "Dia", "Mereka").random()
         return PlayChatUiModel(

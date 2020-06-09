@@ -191,7 +191,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun navigateToSummary() {
-        broadcastCoordinator.navigateToFragment(PlayBroadcastSummaryFragment::class.java)
+        broadcastCoordinator.navigateToFragment(PlayBroadcastSummaryFragment::class.java, Bundle().apply {
+            putString(PlayBroadcastSummaryFragment.KEY_LIVE_DURATION, tvTimeCounter.text.toString())
+        })
     }
 
     //region observe

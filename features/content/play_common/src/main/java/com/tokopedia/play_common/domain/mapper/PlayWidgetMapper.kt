@@ -2,16 +2,18 @@ package com.tokopedia.play_common.domain.mapper
 
 import com.tokopedia.play_common.domain.model.PlayWidget
 import com.tokopedia.play_common.widget.playBannerCarousel.helper.DateHelper
-import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselBannerDataModel
-import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselDataModel
-import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselEmptyDataModel
-import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
+import com.tokopedia.play_common.widget.playBannerCarousel.model.*
 import com.tokopedia.play_common.widget.playBannerCarousel.typeFactory.BasePlayBannerCarouselModel
 
 object PlayWidgetMapper {
     fun mapperToPlayBannerCarouselDataModel(playWidget: PlayWidget): PlayBannerCarouselDataModel{
         val list = mutableListOf<BasePlayBannerCarouselModel>()
-        list.add(PlayBannerCarouselEmptyDataModel())
+        if(playWidget.meta.overlayImage.isNotBlank())
+        list.add(PlayBannerCarouselOverlayImageDataModel(
+                imageUrl = playWidget.meta.overlayImage,
+                applink = playWidget.meta.overlayImageApplink,
+                weblink = playWidget.meta.overlayImageWeblink
+        ))
 
         list.addAll(
                 playWidget.data.map {
@@ -20,14 +22,19 @@ object PlayWidgetMapper {
                     } else {
                         PlayBannerCarouselItemDataModel(
                                 channelTitle = it.title,
-                                isAutoPlay = playWidget.meta.autoplay,
                                 applink = it.appLink,
                                 channelCreator = it.partner.name,
                                 countView = it.stats.view.formatted,
                                 endTime = DateHelper.getExpiredTime(it.endTime),
                                 isLive = it.video.isLive,
                                 isShowTotalView = it.video.isShowTotalView,
-                                promoUrl = "",
+                                isPromo = it.config.hasPromo,
+                                widgetType = when(it.widgetType){
+                                    "VOD" -> PlayBannerWidgetType.VOD
+                                    "UPCOMING" -> PlayBannerWidgetType.UPCOMING
+                                    "LIVE" -> PlayBannerWidgetType.LIVE
+                                    else -> PlayBannerWidgetType.NONE
+                                },
                                 serverTime = 0,
                                 startTime = DateHelper.getExpiredTime(it.startTime),
                                 videoUrl = it.video.streamSource,
@@ -42,9 +49,13 @@ object PlayWidgetMapper {
         return PlayBannerCarouselDataModel(
                 title = playWidget.meta.widgetTitle,
                 backgroundUrl = playWidget.meta.widgetBackground,
+                isAutoPlay = playWidget.meta.autoplay,
+                isAutoPlayAmount = playWidget.meta.autoplayAmount,
                 isAutoRefresh = playWidget.meta.isAutoRefresh,
                 isAutoRefreshTimer = playWidget.meta.autoRefreshTimer,
                 seeMoreApplink = playWidget.meta.buttonApplink,
+                imageUrl = playWidget.meta.overlayImage,
+                serverTimeOffset = playWidget.meta.serverTimeOffset,
                 channelList = list
         )
     }
