@@ -19,6 +19,7 @@
         android:layout_marginStart="@dimen/dp_12" />
 
     <com.tokopedia.unifycomponents.SearchBarUnify
+        android:id="@+id/searchBarView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl2"
