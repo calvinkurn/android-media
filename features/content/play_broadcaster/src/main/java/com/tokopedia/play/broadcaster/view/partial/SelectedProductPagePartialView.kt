@@ -20,12 +20,12 @@ import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
 class SelectedProductPagePartialView(
         private val container: ViewGroup,
         listener: Listener
-) {
+) : PartialView(container, R.id.cl_selected_product) {
 
     val isShown: Boolean
         get() = bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED
 
-    private val clSelectedProduct: ConstraintLayout = container.findViewById(R.id.cl_selected_product)
+    private val clSelectedProduct: ConstraintLayout = rootView as ConstraintLayout
     private val vDragArea: View = container.findViewById(R.id.v_drag_area)
     private val tvSelectedProductTitle: TextView = container.findViewById(R.id.tv_selected_product_title)
     private val rvSelectedProduct: RecyclerView = container.findViewById(R.id.rv_selected_product)

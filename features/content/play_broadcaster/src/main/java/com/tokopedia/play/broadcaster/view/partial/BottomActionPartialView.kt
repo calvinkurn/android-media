@@ -17,9 +17,8 @@ import com.tokopedia.unifycomponents.UnifyButton
 class BottomActionPartialView(
         container: ViewGroup,
         listener: Listener
-) {
+) : PartialView(container, R.id.bottom_sheet_action) {
 
-    private val rootView: ViewGroup = container.findViewById(R.id.bottom_sheet_action)
     private val ivInventory: ImageView = container.findViewById(R.id.iv_inventory)
     private val btnAction: UnifyButton = container.findViewById(R.id.btn_action)
     private val tvBadgeCount: TextView = container.findViewById(R.id.tv_badge_count)
@@ -55,7 +54,7 @@ class BottomActionPartialView(
 
     private fun onBottomActionTransition() {
         TransitionManager.beginDelayedTransition(
-                rootView,
+                rootView as ViewGroup,
                 ScaleTransition()
                         .addTarget(tvBadgeCount)
                         .setDuration(300)

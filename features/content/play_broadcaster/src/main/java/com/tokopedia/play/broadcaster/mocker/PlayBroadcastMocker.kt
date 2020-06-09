@@ -8,6 +8,8 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.domain.model.Configuration
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.view.state.Selectable
+import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import kotlin.random.Random
 
 /**
  * Created by jegul on 20/05/20
@@ -103,4 +105,15 @@ object PlayBroadcastMocker {
             ingestUrl = "rtmp://test",
             streamUrl = "rtmp://test"
     )
+
+    fun getMockChat(): PlayChatUiModel {
+        val name = listOf("Aku", "Kamu", "Dia", "Mereka").random()
+        return PlayChatUiModel(
+                messageId = System.currentTimeMillis().toString(),
+                userId = Random.nextInt().toString(),
+                name = name,
+                message = listOf(":pepecry", ":pepelmao", ":lul").random(),
+                isSelfMessage = false
+        )
+    }
 }

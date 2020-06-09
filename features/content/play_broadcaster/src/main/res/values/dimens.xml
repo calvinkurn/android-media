@@ -42,4 +42,5 @@
 
     <dimen name="play_unify_loading_size">30dp</dimen>
 
+    <dimen name="play_seller_chat_max_height">270dp</dimen>
 </resources>

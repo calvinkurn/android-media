@@ -2,8 +2,8 @@ package com.tokopedia.play_common.widget.playBannerCarousel.event
 
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselBannerDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselDataModel
-import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselOverlayImageDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
+import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselOverlayImageDataModel
 
 interface PlayBannerCarouselViewEventListener{
     fun onItemClick(dataModel: PlayBannerCarouselItemDataModel, position: Int)

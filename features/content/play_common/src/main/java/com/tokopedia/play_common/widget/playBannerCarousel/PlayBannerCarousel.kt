@@ -23,7 +23,6 @@ import com.tokopedia.play_common.widget.playBannerCarousel.extension.showOrHideV
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.typeFactory.PlayBannerCarouselTypeImpl
 import com.tokopedia.play_common.widget.playBannerCarousel.widget.PlayBannerRecyclerView
-import kotlinx.android.synthetic.main.layout_play_banner_carousel.view.*
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.abs
