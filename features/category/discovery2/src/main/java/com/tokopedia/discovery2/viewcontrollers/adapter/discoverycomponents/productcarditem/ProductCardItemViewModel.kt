@@ -26,26 +26,23 @@ import kotlin.coroutines.CoroutineContext
 class ProductCardItemViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
     private val dataItem: MutableLiveData<DataItem> = MutableLiveData()
-    private val shopBadge: MutableLiveData<Int> = MutableLiveData()
     private val stockWordData: StockWording = StockWording()
     private lateinit var context: Context
     private var productData: DataItem? = null
     private val showLoginLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private val notifyMeCurrentStatus: MutableLiveData<Boolean> = MutableLiveData()
     private val showNotifyToast: MutableLiveData<Triple<Boolean, String?, Int?>> = MutableLiveData()
+    private val OFFICIAL_STORE = 1
+    private val GOLD_MERCHANT = 2
+    private val EMPTY = 0
+    private val SOURCE = "discovery"
+    private val REGISTER = "REGISTER"
+    private val UNREGISTER = "UNREGISTER"
+    private val ERROR_MESSAGE = "Terjadi kesalahan, coba lagi nanti."
 
     @Inject
     lateinit var campaignNotifyUserCase: CampaignNotifyUserCase
 
-    companion object {
-        const val OFFICIAL_STORE = 1
-        const val GOLD_MERCHANT = 2
-        const val EMPTY = 0
-        const val SOURCE = "discovery"
-        const val REGISTER = "REGISTER"
-        const val UNREGISTER = "UNREGISTER"
-        const val ERROR_MESSAGE = "Terjadi kesalahan, coba lagi nanti."
-    }
 
     init {
         components.data?.let {
@@ -62,6 +59,7 @@ class ProductCardItemViewModel(val application: Application, private val compone
     fun getShowLoginData(): LiveData<Boolean> = showLoginLiveData
     fun notifyMeCurrentStatus(): LiveData<Boolean> = notifyMeCurrentStatus
     fun showNotifyToastMessage(): LiveData<Triple<Boolean, String?, Int?>> = showNotifyToast
+
     fun setContext(context: Context) {
         this.context = context
     }
@@ -87,18 +85,13 @@ class ProductCardItemViewModel(val application: Application, private val compone
         return dataItem
     }
 
-    fun getShopBadge(): LiveData<Int> {
-        shopBadge.value = chooseShopBadge()
-        return shopBadge
-    }
 
-    private fun chooseShopBadge(): Int {
-        val data = components.data?.get(0)
-        return if (data?.goldMerchant == true && data.officialStore == true) {
+    fun chooseShopBadge(): Int {
+        return if (productData?.goldMerchant == true && productData?.officialStore == true) {
             OFFICIAL_STORE
-        } else if (data?.goldMerchant == true) {
+        } else if (productData?.goldMerchant == true) {
             GOLD_MERCHANT
-        } else if (data?.officialStore == true) {
+        } else if (productData?.officialStore == true) {
             OFFICIAL_STORE
         } else {
             EMPTY

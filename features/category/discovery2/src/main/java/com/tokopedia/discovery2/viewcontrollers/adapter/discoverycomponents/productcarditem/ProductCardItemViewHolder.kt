@@ -17,8 +17,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel.Companion.GOLD_MERCHANT
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel.Companion.OFFICIAL_STORE
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.*
@@ -28,7 +26,7 @@ import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.Toaster
 
 
-class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView,fragment.viewLifecycleOwner) {
+class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
     private var productImage: ImageUnify = itemView.findViewById(R.id.imageProduct)
     private var topadsImage: ImageView = itemView.findViewById(R.id.imageTopAds)
@@ -46,6 +44,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     private var productCardView: CardView = itemView.findViewById(R.id.cardViewProductCard)
     private var stockPercentageProgress: ProgressBarUnify = itemView.findViewById(R.id.stockPercentageProgress)
     private var linearLayoutImageRating: LinearLayout = itemView.findViewById(R.id.linearLayoutImageRating)
+    private var shopUI: LinearLayout = itemView.findViewById(R.id.shopUI)
 
     private var pdpViewImage: ImageView = itemView.findViewById(R.id.imageViewProductView)
     private var pdpViewCount: TextView = itemView.findViewById(R.id.textViewProductViewCount)
@@ -56,6 +55,8 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     private lateinit var productCardItemViewModel: ProductCardItemViewModel
     private var productCardName = ""
     private var context: Context? = fragment.activity
+    private val OFFICIAL_STORE = 1
+    private val GOLD_MERCHANT = 2
 
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
@@ -73,35 +74,12 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         }
     }
 
-
-    override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
-        super.removeObservers(lifecycleOwner)
-        lifecycleOwner?.let {
-            if (productCardItemViewModel.getDataItemValue().hasObservers()) {
-                productCardItemViewModel.getDataItemValue().removeObservers(it)
-            }
-            productCardItemViewModel.getShopBadge().removeObservers(it)
-            productCardItemViewModel.notifyMeCurrentStatus().removeObservers(it)
-            productCardItemViewModel.showNotifyToastMessage().removeObservers(it)
-
-
-            }
-    }
-
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         productCardName = productCardItemViewModel.getComponentName()
         lifecycleOwner?.let { lifecycleOwner ->
             productCardItemViewModel.getDataItemValue().observe(lifecycleOwner, Observer {
                 populateData(it)
-            })
-
-            productCardItemViewModel.getShopBadge().observe(lifecycleOwner, Observer {
-                when (it) {
-                    OFFICIAL_STORE -> shopBadge.setImageResource(R.drawable.discovery_official_store_icon)
-                    GOLD_MERCHANT -> shopBadge.setImageResource(R.drawable.discovery_gold_merchant_icon)
-                    else -> shopBadge.hide()
-                }
             })
 
             productCardItemViewModel.getShowLoginData().observe(lifecycleOwner, Observer { showLogin ->
@@ -120,7 +98,16 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
                 showNotifyResultToast(message)
             })
         }
+    }
 
+    override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
+        super.removeObservers(lifecycleOwner)
+        lifecycleOwner?.let {
+            productCardItemViewModel.getDataItemValue().removeObservers(it)
+            productCardItemViewModel.notifyMeCurrentStatus().removeObservers(it)
+            productCardItemViewModel.showNotifyToastMessage().removeObservers(it)
+            productCardItemViewModel.getShowLoginData().removeObservers(it)
+        }
     }
 
 
@@ -139,17 +126,31 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         }
         setLabelDiscount(dataItem.discountPercentage.toString())
         textViewShopName.setTextAndCheckShow(dataItem.shopName)
-        setRating(dataItem.rating.toIntOrZero())
-        setTextViewReviewCount(dataItem.countReview.toIntOrZero())
+        setRating(dataItem)
         setCashbackLabel(dataItem.cashback)
-        textViewShopLocation.setTextAndCheckShow(dataItem.shopLocation)
         setShopIcon(dataItem.shopLogo)
         setProductImage(dataItem.imageUrlMobile)
         setTopads(dataItem.isTopads)
+        showShopUI(dataItem)
         showFreeOngKir(dataItem)
         setPDPView(dataItem)
         showInterestedView(dataItem)
         showNotifyMe(dataItem)
+    }
+
+    private fun showShopUI(dataItem: DataItem) {
+        if (!dataItem.shopLocation.isNullOrEmpty()) {
+            shopUI.show()
+            shopBadge.show()
+            textViewShopLocation.setTextAndCheckShow(dataItem.shopLocation)
+            when (productCardItemViewModel.chooseShopBadge()) {
+                OFFICIAL_STORE -> shopBadge.setImageResource(R.drawable.discovery_official_store_icon)
+                GOLD_MERCHANT -> shopBadge.setImageResource(R.drawable.discovery_gold_merchant_icon)
+                else -> shopBadge.hide()
+            }
+        } else {
+            shopUI.hide()
+        }
     }
 
     private fun showNotifyMe(dataItem: DataItem) {
@@ -195,7 +196,6 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         val pdpCount = productCardItemViewModel.getPDPViewCount(dataItem)
         if (pdpCount.isNotEmpty()) {
             pdpViewImage.show()
-            pdpViewCount.show()
             pdpViewCount.setTextAndCheckShow(pdpCount)
         } else {
             pdpViewImage.hide()
@@ -221,7 +221,6 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         val stockWording = productCardItemViewModel.getStockWord(dataItem)
         stockTitle.hide()
         if (!stockWording.title.isNullOrEmpty() && productCardName != "product_card_revamp_item" && productCardName != "product_card_carousel_item") {
-            stockTitle.show()
             stockTitle.setTextAndCheckShow(stockWording.title)
             stockTitle.setTextColor(Color.parseColor(stockWording.color))
         }
@@ -231,7 +230,6 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         val interestCount = productCardItemViewModel.getInterestedCount(dataItem)
         interestedView.hide()
         if (interestCount.isNotEmpty()) {
-            interestedView.show()
             interestedView.setTextAndCheckShow(interestCount)
         }
     }
@@ -264,21 +262,27 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         }
     }
 
-    private fun setTextViewReviewCount(reviewCount: Int?) {
-        if (reviewCount != 0) {
-            textViewReviewCount.show()
-            textViewReviewCount.text = String.format("%s", "($reviewCount)")
-        }
-
-    }
-
-    private fun setRating(rating: Int?) {
-        if (rating != null && rating <= 5) {
+    private fun setRating(dataItem: DataItem) {
+        val rating = dataItem.rating.toIntOrZero()
+        if (rating in 1..5) {
             for (r in 0 until rating) {
                 linearLayoutImageRating.show()
                 (linearLayoutImageRating.getChildAt(r) as ImageView).setImageResource(R.drawable.product_card_ic_rating_active)
             }
+            setTextViewReviewCount(dataItem.countReview.toIntOrZero())
+        } else {
+            linearLayoutImageRating.hide()
         }
+    }
+
+    private fun setTextViewReviewCount(reviewCount: Int?) {
+        if (reviewCount != 0) {
+            textViewReviewCount.show()
+            textViewReviewCount.text = String.format("%s", "($reviewCount)")
+        } else {
+            textViewReviewCount.hide()
+        }
+
     }
 
     private fun setSlashedPrice(discountedPrice: String?) {
@@ -308,7 +312,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     private fun showNotifyResultToast(toastData: Triple<Boolean, String?, Int?>) {
         if (!toastData.first && !toastData.second.isNullOrEmpty()) {
             Toaster.make(itemView.rootView, toastData.second!!, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
-            removeProductItem(toastData.third)
+//            removeProductItem(toastData.third)
         } else if (!toastData.second.isNullOrEmpty()) {
             Toaster.make(itemView.rootView, toastData.second!!, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
         }

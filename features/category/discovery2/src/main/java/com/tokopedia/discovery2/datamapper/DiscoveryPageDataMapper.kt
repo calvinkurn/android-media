@@ -96,9 +96,17 @@ fun getDiscvoeryComponentList(pageInfo: PageInfo, components: List<ComponentsIte
                 component.getComponentsItem()?.let {
                     listComponents.addAll(getDiscvoeryComponentList(pageInfo, it))
                 }
+                if (component.getComponentsItem()?.size?.rem(component.componentsPerPage) == 0) {
+                    listComponents.add(ComponentsItem(name = "load_more").apply {
+                        pageEndPoint = component.pageEndPoint
+                        parentComponentId = component.id
+                        id = "load_more_data"
+                        discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
+
+                    })
+                }
             }
         }
-
     }
     return listComponents
 }

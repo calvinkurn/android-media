@@ -43,8 +43,6 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         tabsViewModel = discoveryBaseViewModel as TabsViewModel
-
-
     }
 
 
@@ -58,7 +56,6 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
                 tabsRecyclerViewAdapter.notifyDataSetChanged()
                 (fragment as DiscoveryFragment).resync()
             }
-
         })
     }
 
