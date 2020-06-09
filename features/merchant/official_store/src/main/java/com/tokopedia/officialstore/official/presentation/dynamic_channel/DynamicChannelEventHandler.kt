@@ -2,13 +2,19 @@ package com.tokopedia.officialstore.official.presentation.dynamic_channel
 
 import android.view.View
 import com.tokopedia.design.countdown.CountDownView
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Cta
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
 
 interface DynamicChannelEventHandler : CountDownView.CountDownListener {
     // Lego layout event handlers
-    fun onClickLegoHeaderActionText(applink: String): View.OnClickListener
+    fun onClickLegoHeaderActionText(applink: String)
+    fun onClickLegoImage(channelModel: ChannelModel, position: Int)
+    fun legoImpression(channelModel: ChannelModel)
+
+    // Old lego layout event handlers - deprecated - exist for remote config
+    fun onClickLegoHeaderActionTextListener(applink: String): View.OnClickListener
     fun onClickLegoImage(channelData: Channel, position: Int): View.OnClickListener
     fun legoImpression(channelData: Channel)
 
@@ -31,5 +37,7 @@ interface DynamicChannelEventHandler : CountDownView.CountDownListener {
     fun onClickMixTopBannerItem(applink: String)
     fun onClickMixTopBannerCtaButton(cta: Cta, channelId: String, applink: String)
 
-    fun onClickMixLeftBannerImage(applink: String)
+    fun onClickMixLeftBannerImage(channel: Channel, position: Int)
+    fun onMixLeftBannerImpressed(channel: Channel, position: Int)
+
 }

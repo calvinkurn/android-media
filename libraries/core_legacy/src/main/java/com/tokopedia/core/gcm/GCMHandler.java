@@ -89,12 +89,14 @@ public class GCMHandler {
         int result = googleAPI.isGooglePlayServicesAvailable(activity);
         if (result != ConnectionResult.SUCCESS) {
             if (googleAPI.isUserResolvableError(result)) {
-                googleAPI.getErrorDialog(activity, result,
+                if(!activity.isFinishing()){
+                    googleAPI.getErrorDialog(activity, result,
                         PLAY_SERVICES_RESOLUTION_REQUEST, dialog -> {
                             Timber.w("P2#PLAY_SERVICE_ERROR#User Have Problems with Google Play Service | " + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
                                     + Build.BRAND + " | "+Build.DEVICE+" | "+Build.PRODUCT+ " | "+Build.MODEL
                                     + " | "+Build.TAGS);
                         }).show();
+                }
             }
 
             return false;

@@ -28,12 +28,18 @@ import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNaviga
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationReputation
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationShopReview
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.isShopReview
+import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerAwbChange
+import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerAwbInvalid
+import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerComplaint
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationOrder
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.promo.getRegisteredNavigationTokopoints
 import com.tokopedia.applink.recommendation.getRegisteredNavigationRecommendation
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerDelivered
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerHistory
+import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerRetur
+import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerWaitingAwb
+import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerWaitingPickup
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrah
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahOrderDetail
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahShop
@@ -141,8 +147,16 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.SELLER_NEW_ORDER, true) -> getSomNewOrderAppLink()
                     deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_READY_TO_SHIP, true) -> getSomReadyToShipAppLink()
                     deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_DELIVERED, true) -> getRegisteredNavigationMainAppSellerDelivered()
+                    deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_WAITING_PICKUP, true) -> getRegisteredNavigationMainAppSellerWaitingPickup()
+                    deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_WAITING_AWB, true) -> getRegisteredNavigationMainAppSellerWaitingAwb()
+                    deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_AWB_INVALID, true) -> getRegisteredNavigationMainAppSellerAwbInvalid()
+                    deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_AWB_CHANGE, true) -> getRegisteredNavigationMainAppSellerAwbChange()
+                    deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_RETUR, true) -> getRegisteredNavigationMainAppSellerRetur()
+                    deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_COMPLAINT, true) -> getRegisteredNavigationMainAppSellerComplaint()
                     deeplink.startsWith(ApplinkConst.SELLER_HISTORY, true) -> getRegisteredNavigationMainAppSellerHistory()
                     deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_SHIPPED) -> getSomShippedAppLink()
+                    deeplink.startsWith(ApplinkConst.SELLER_SHIPMENT, true) -> getSomReadyToShipAppLink()
+                    deeplink.startsWith(ApplinkConst.SELLER_STATUS, true) -> getSomShippedAppLink()
                     GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.SELLER_NEW_ORDER, true) -> AppLinkMapperSellerHome.getSomNewOrderAppLink()
                     GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.SELLER_SHIPMENT, true) -> AppLinkMapperSellerHome.getSomReadyToShipAppLink()
                     deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_FINISHED, true) -> AppLinkMapperSellerHome.getSomDoneAppLink()
@@ -306,6 +320,8 @@ object DeeplinkMapper {
             ApplinkConst.FLIGHT -> ApplinkConstInternalTravel.DASHBOARD_FLIGHT
             ApplinkConst.SALDO -> ApplinkConstInternalGlobal.SALDO_DEPOSIT
             ApplinkConst.SALDO_INTRO -> ApplinkConstInternalGlobal.SALDO_INTRO
+            ApplinkConst.DigitalInstantDebit.INSTANT_DEBIT_BCA_APPLINK -> ApplinkConstInternalGlobal.INSTANT_DEBIT_BCA_ENTRY_PATTERN
+            ApplinkConst.DigitalInstantDebit.INSTANT_DEBIT_BCA_EDITLIMIT_APPLINK -> ApplinkConstInternalGlobal.EDIT_BCA_ONE_KLICK_ENTRY_PATTERN
             ApplinkConst.AFFILIATE_EDUCATION -> ApplinkConstInternalContent.AFFILIATE_EDUCATION
             ApplinkConst.AFFILIATE_DASHBOARD -> ApplinkConstInternalContent.AFFILIATE_DASHBOARD
             ApplinkConst.AFFILIATE_EXPLORE -> ApplinkConstInternalContent.AFFILIATE_EXPLORE

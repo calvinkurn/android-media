@@ -347,7 +347,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         categorySectionPagerAdapter = com.tokopedia.categorylevels.adapters.CategoryNavigationPagerAdapter(supportFragmentManager)
         categorySectionPagerAdapter?.setData(categorySectionItemList)
         pager.adapter = categorySectionPagerAdapter
-        tabs.setupWithViewPager(pager)
+        tabs.tabLayout.setupWithViewPager(pager)
         setActiveTab()
     }
 
