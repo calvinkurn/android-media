@@ -14,6 +14,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.promoli
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.promocheckoutmarketplace.data.response.ClearPromoResponse
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendationResponse
+import com.tokopedia.promocheckoutmarketplace.data.response.GetPromoSuggestionResponse
 import com.tokopedia.promocheckoutmarketplace.data.response.ResultStatus.Companion.STATUS_COUPON_LIST_EMPTY
 import com.tokopedia.promocheckoutmarketplace.data.response.ResultStatus.Companion.STATUS_PHONE_NOT_VERIFIED
 import com.tokopedia.promocheckoutmarketplace.data.response.ResultStatus.Companion.STATUS_USER_BLACKLISTED
@@ -77,6 +78,11 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     val tmpListUiModel: LiveData<Action<Map<Visitable<*>, List<Visitable<*>>>>>
         get() = _tmpListUiModel
 
+    // Promo Last Seen UI Model
+    private val _promoLastSeenUiModel = MutableLiveData<PromoLastSeenUiModel>()
+    val promoLastSeenUiModel: LiveData<PromoLastSeenUiModel>
+        get() = _promoLastSeenUiModel
+
     // Live data to notify UI state after hit clear promo API
     private val _clearPromoResponse = MutableLiveData<ClearPromoResponseAction>()
     val clearPromoResponse: LiveData<ClearPromoResponseAction>
@@ -92,7 +98,11 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     val getCouponRecommendationResponse: LiveData<GetCouponRecommendationAction>
         get() = _getCouponRecommendationResponse
 
-    // Page source : CART, CHECKOUT
+    private val _getPromoLastSeenResponse = MutableLiveData<GetPromoLastSeenAction>()
+    val getPromoLastSeenResponse: LiveData<GetPromoLastSeenAction>
+        get() = _getPromoLastSeenResponse
+
+    // Page source : CART, CHECKOUT, OCC
     private fun getPageSource(): Int {
         return fragmentUiModel.value?.uiData?.pageSource ?: 0
     }
@@ -1302,6 +1312,39 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 "promo_id" to "",
                 "promo_code" to ""
         )
+    }
+
+    fun loadPromoLastSeen(query: String) {
+        launch { getPromoLastSeen(query) }
+    }
+
+    private suspend fun getPromoLastSeen(query: String) {
+        launchCatchError(block = {
+            // Initialize response action state
+            if (getPromoLastSeenResponse.value == null) {
+                _getPromoLastSeenResponse.value = GetPromoLastSeenAction()
+            }
+
+            // Get response
+            val response = withContext(Dispatchers.IO) {
+                val request = GraphqlRequest(query, GetPromoSuggestionResponse::class.java)
+                graphqlRepository.getReseponse(listOf(request))
+                        .getSuccessData<GetPromoSuggestionResponse>()
+            }
+
+            if (response.promoHistory.isNotEmpty()) {
+                // Remove promo code on validate use params after clear promo success
+                getPromoLastSeenResponse.value?.let {
+                    it.state = GetPromoLastSeenAction.ACTION_SHOW
+                    it.data = uiModelMapper.mapPromoLastSeenResponse(response)
+                    _getPromoLastSeenResponse.value = it
+                }
+            } else {
+                throw PromoErrorException()
+            }
+        }) { throwable ->
+
+        }
     }
 
     fun sendAnalyticsPromoPageLoaded() {

@@ -22,5 +22,6 @@
     <string name="label_subtitle_promo_selected">Promo dipilih</string>
     <string name="label_subtitle_only_one_promo">Hanya bisa pilih 1</string>
     <string name="label_promo_show_detail">Lihat Detail</string>
+    <string name="label_promo_last_seen_title">Promo terakhir dilihat</string>
 
 </resources>

@@ -167,4 +167,21 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
             }
         }
     }
+
+    fun mapPromoLastSeenResponse(response: GetPromoSuggestionResponse): PromoLastSeenUiModel {
+        return PromoLastSeenUiModel(
+                uiData = PromoLastSeenUiModel.UiData().apply {
+                    promoLastSeenItemUiModelList = ArrayList()
+                    response.promoHistory.forEach {
+                        val promoLastSeenItemUiModel = PromoLastSeenItemUiModel(
+                                uiData = PromoLastSeenItemUiModel.UiData().apply {
+                                    promoCode = it.promoCode
+                                    promoTitle = it.promoContent.promoTitle
+                                }
+                        )
+                        (promoLastSeenItemUiModelList as ArrayList<PromoLastSeenItemUiModel>).add(promoLastSeenItemUiModel)
+                    }
+                }
+        )
+    }
 }

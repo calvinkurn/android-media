@@ -1,6 +1,7 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.viewmodel
 
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoLastSeenUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 
@@ -36,5 +37,14 @@ data class GetCouponRecommendationAction(
     companion object {
         val ACTION_CLEAR_DATA = 1
         val ACTION_SHOW_TOAST_ERROR = 2
+    }
+}
+
+data class GetPromoLastSeenAction(
+        var state: Int = 0,
+        var data: PromoLastSeenUiModel? = null
+) {
+    companion object {
+        val ACTION_SHOW = 1
     }
 }

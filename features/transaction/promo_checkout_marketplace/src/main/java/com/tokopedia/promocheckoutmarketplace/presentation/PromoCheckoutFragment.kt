@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -23,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -74,8 +76,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     @Inject
     lateinit var itemDecorator: PromoCheckoutDecoration
 
-    lateinit var promoCheckoutLastSeenBottomsheet: PromoCheckoutLastSeenBottomsheet
-    private var showBottomsheetJob: Job? = null
+    private var promoCheckoutLastSeenBottomsheet: BottomSheetBehavior<LinearLayout>? = null
+//    private var showBottomsheetJob: Job? = null
 
     private val viewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[PromoCheckoutViewModel::class.java]
@@ -218,7 +220,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     override fun onDestroy() {
-        showBottomsheetJob?.cancel()
+//        showBottomsheetJob?.cancel()
         super.onDestroy()
     }
 
@@ -653,16 +655,20 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     override fun onClickPromoManualInputTextField() {
         view?.let {
-            if (!::promoCheckoutLastSeenBottomsheet.isInitialized) {
-                promoCheckoutLastSeenBottomsheet = PromoCheckoutLastSeenBottomsheet()
+            val viewTarget: LinearLayout = it.findViewById(R.id.bottom_sheet_promo_last_seen)
+            if (promoCheckoutLastSeenBottomsheet == null) {
+                promoCheckoutLastSeenBottomsheet = BottomSheetBehavior.from(viewTarget)
+                promoCheckoutLastSeenBottomsheet?.state = BottomSheetBehavior.STATE_EXPANDED
             }
+            val query = GraphqlHelper.loadRawString(it.resources, R.raw.promo_suggestion_query)
+            viewModel.loadPromoLastSeen(query)
 
             // Todo : check is show
-            showBottomsheetJob?.cancel()
-            showBottomsheetJob = GlobalScope.launch(Dispatchers.Main) {
-                delay(500L)
-                promoCheckoutLastSeenBottomsheet.show(it)
-            }
+//            showBottomsheetJob?.cancel()
+//            showBottomsheetJob = GlobalScope.launch(Dispatchers.Main) {
+//                delay(500L)
+//                promoCheckoutLastSeenBottomsheet.show(it)
+//            }
         }
     }
 
