@@ -10,18 +10,6 @@
 
     <application>
 
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="com.tokopedia.screenrecorder.provider"
-            android:exported="true"
-            android:grantUriPermissions="true"
-            tools:replace="android:authorities">
-            <meta-data
-                tools:replace="android:resource"
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/screen_recorder_provider_paths"/>
-        </provider>
-
         <service android:name=".ScreenRecordService" android:enabled="true" android:exported="true"
             android:process=":ScreenRecorder"/>
 

@@ -137,14 +137,14 @@ class ScreenRecordService : Service(), CoroutineScope {
         createNotificationChannel()
 
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        ongoingNotifBuilder = NotificationCompat.Builder(this, LOW_PRIO_CHANNEL_ID)
+        ongoingNotifBuilder = NotificationCompat.Builder(applicationContext, LOW_PRIO_CHANNEL_ID)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setContentTitle(getString(R.string.screen_record_notif_title_recording_screen))
             .addAction(R.drawable.screen_recorder_ic_stop_black_24dp,
                 getString(R.string.screen_recorder_notif_stop), buildPendingIntent(ACTION_STOP_RECORD))
             .setSmallIcon(R.drawable.screen_recorder_ic_notify_white)
 
-        val startServiceNotif = NotificationCompat.Builder(this, HIGH_PRIO_CHANNEL_ID)
+        val startServiceNotif = NotificationCompat.Builder(applicationContext, HIGH_PRIO_CHANNEL_ID)
             .setContentTitle(getString(R.string.screen_record_notif_title_ready_to_record))
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setContentText(getString(R.string.screen_record_notif_text_ready_to_record))
@@ -158,9 +158,9 @@ class ScreenRecordService : Service(), CoroutineScope {
     }
 
     private fun buildPendingIntent(action: String): PendingIntent? {
-        val i = Intent(this, javaClass)
+        val i = Intent(applicationContext, javaClass)
         i.action = action
-        return PendingIntent.getService(this, 0, i, 0)
+        return PendingIntent.getService(applicationContext, 0, i, 0)
     }
 
     private fun startRecord() {
@@ -259,7 +259,7 @@ class ScreenRecordService : Service(), CoroutineScope {
     }
 
     private fun buildFinishNotification(pendingIntent: PendingIntent) : Notification {
-        return NotificationCompat.Builder(this, HIGH_PRIO_CHANNEL_ID)
+        return NotificationCompat.Builder(applicationContext, HIGH_PRIO_CHANNEL_ID)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentTitle(getString(R.string.screen_record_notif_title_video_create_success))
             .setContentText(getString(R.string.screen_record_notif_text_video_create_success))
@@ -270,14 +270,14 @@ class ScreenRecordService : Service(), CoroutineScope {
 
     private fun getOpenVideoResultPendingIntent(resultPath: String) : PendingIntent {
 
-        val uri = FileProvider.getUriForFile(this,
-            "com.tokopedia.screenrecorder.provider", File(resultPath))
+        val uri = FileProvider.getUriForFile(applicationContext,
+            applicationContext.packageName + ".provider", File(resultPath))
 
         val intent = Intent(Intent.ACTION_VIEW)
         intent.setDataAndType(uri,"video/*")
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
-        return PendingIntent.getActivity(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        return PendingIntent.getActivity(applicationContext, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
     override fun onBind(intent: Intent): IBinder? {
