@@ -2,13 +2,15 @@ package com.tokopedia.play_common.widget.playBannerCarousel
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -16,44 +18,82 @@ import com.tokopedia.play_common.R
 import com.tokopedia.play_common.widget.playBannerCarousel.adapter.PlayBannerCarouselAdapter
 import com.tokopedia.play_common.widget.playBannerCarousel.event.PlayBannerCarouselViewEventListener
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
+import com.tokopedia.play_common.widget.playBannerCarousel.extension.setGradientBackground
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.showOrHideView
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.typeFactory.PlayBannerCarouselTypeImpl
-import kotlinx.android.synthetic.main.layout_header_play_banner.view.*
+import com.tokopedia.play_common.widget.playBannerCarousel.widget.PlayBannerRecyclerView
 import kotlinx.android.synthetic.main.layout_play_banner_carousel.view.*
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 import kotlin.math.abs
 
-class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : FrameLayout(context, attrs, defStyleAttr) {
+class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : FrameLayout(context, attrs, defStyleAttr), CoroutineScope {
+
+    private val recyclerView: PlayBannerRecyclerView
+    private val channelTitle: TextView
+    private val channelSubtitle: TextView
+    private val seeAllButton: TextView
+    private val backgroundLoader: LoaderImageView
+    private val parallaxBackground: AppCompatImageView
+    private val parallaxImage: AppCompatImageView
+    private val parallaxView: FrameLayout
+
+
     private var adapter: PlayBannerCarouselAdapter? = null
     private val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
     private val adapterTypeFactory = PlayBannerCarouselTypeImpl()
     private var listener: PlayBannerCarouselViewEventListener? = null
+    private var playBannerCarouselDataModel: PlayBannerCarouselDataModel? = null
 
     constructor(context: Context) : this(context, null, 0)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
+    private val masterJob = Job()
+    override val coroutineContext: CoroutineContext
+        get() = masterJob + Dispatchers.Main
 
     init {
-        LayoutInflater.from(context).inflate(LAYOUT, this)
+        val view = LayoutInflater.from(context).inflate(LAYOUT, this)
+        recyclerView = view.findViewById(R.id.recycler_view)
+        channelTitle = view.findViewById(R.id.channel_title)
+        channelSubtitle = view.findViewById(R.id.channel_subtitle)
+        seeAllButton = view.findViewById(R.id.see_all_button)
+        backgroundLoader = view.findViewById(R.id.background_loader)
+        parallaxBackground = view.findViewById(R.id.parallax_background)
+        parallaxImage = view.findViewById(R.id.parallax_image)
+        parallaxView = view.findViewById(R.id.parallax_view)
     }
 
     fun setListener(listener: PlayBannerCarouselViewEventListener){
         this.listener = listener
     }
 
+    override fun onDetachedFromWindow() {
+        recyclerView.resetVideoPlayer()
+        super.onDetachedFromWindow()
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        recyclerView.playVideos()
+    }
+
     fun onDestroy(){
-        recycler_view?.releasePlayer()
+        recyclerView.releasePlayer()
     }
 
     fun setItem(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
+        this.playBannerCarouselDataModel = playBannerCarouselDataModel
         val list = playBannerCarouselDataModel.channelList
         if(adapter == null){
-            recycler_view?.setMedia(list)
-            adapter = PlayBannerCarouselAdapter(adapterTypeFactory)
-            recycler_view?.layoutManager = linearLayoutManager
-            recycler_view?.adapter = adapter
-            recycler_view?.addOnScrollListener(configureParallax())
+            adapter = PlayBannerCarouselAdapter(adapterTypeFactory, listener)
+            recyclerView.layoutManager = linearLayoutManager
+            recyclerView.adapter = adapter
+            recyclerView.addOnScrollListener(configureParallax())
         }
+        recyclerView.setAutoPlay(playBannerCarouselDataModel.isAutoPlay, playBannerCarouselDataModel.isAutoPlayAmount)
+        recyclerView.setMedia(list)
         configureHeader(playBannerCarouselDataModel)
         configureBackground(playBannerCarouselDataModel)
         adapter?.setItems(list)
@@ -63,45 +103,68 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
         configureTitle(playBannerCarouselDataModel)
         configureSubtitle(playBannerCarouselDataModel)
         configureSeeMore(playBannerCarouselDataModel)
+        configureAutoRefresh(playBannerCarouselDataModel)
     }
 
     private fun configureTitle(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
-        channel_title?.showOrHideView(playBannerCarouselDataModel.title.isNotBlank())
-        channel_title?.text = playBannerCarouselDataModel.title
-        channel_title?.setTextColor(
-                if (playBannerCarouselDataModel.textColor.isNotEmpty()) Color.parseColor(playBannerCarouselDataModel.textColor)
-                else ContextCompat.getColor(context, R.color.Neutral_N700)
-        )
+        channelTitle.showOrHideView(playBannerCarouselDataModel.title.isNotBlank())
+        channelTitle.text = playBannerCarouselDataModel.title
+        channelTitle.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700))
     }
 
     private fun configureSubtitle(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
-        channel_subtitle?.showOrHideView(playBannerCarouselDataModel.subtitle.isNotBlank())
-        channel_subtitle?.text = playBannerCarouselDataModel.subtitle
-        channel_subtitle?.setTextColor(
-                if (playBannerCarouselDataModel.textColor.isNotEmpty()) Color.parseColor(playBannerCarouselDataModel.textColor)
-                else ContextCompat.getColor(context, R.color.Neutral_N700)
-        )
+        channelSubtitle.showOrHideView(playBannerCarouselDataModel.subtitle.isNotBlank())
+        channelSubtitle.text = playBannerCarouselDataModel.subtitle
+        channelSubtitle.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700))
     }
 
     private fun configureSeeMore(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
-        see_all_button?.showOrHideView(playBannerCarouselDataModel.seeMoreApplink.isNotBlank())
+        seeAllButton.showOrHideView(playBannerCarouselDataModel.seeMoreApplink.isNotBlank())
+    }
+
+    private fun autoScrollLauncher(interval: Long) = launch(coroutineContext) {
+        delay(interval)
+        intervalAutoRefreshCoroutine()
+    }
+
+    private suspend fun intervalAutoRefreshCoroutine() = withContext(Dispatchers.Main){
+        playBannerCarouselDataModel?.let {
+            recyclerView.resetVideoPlayer()
+            listener?.onRefreshView(it)
+        }
+    }
+
+    private fun configureAutoRefresh(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
+        if(playBannerCarouselDataModel.isAutoRefresh){
+            masterJob.cancelChildren()
+            autoScrollLauncher(playBannerCarouselDataModel.isAutoRefreshTimer.toLong())
+        }
     }
 
     private fun configureBackground(playBannerCarouselDataModel: PlayBannerCarouselDataModel) {
         if (playBannerCarouselDataModel.backgroundUrl.isNotEmpty()) {
-            background_loader?.show()
-            parallax_background?.loadImage(playBannerCarouselDataModel.backgroundUrl, object : ImageHandler.ImageLoaderStateListener{
+            backgroundLoader.show()
+            parallaxImage.loadImage(playBannerCarouselDataModel.imageUrl, object : ImageHandler.ImageLoaderStateListener{
                 override fun successLoad() {
-                    background_loader.hide()
+                    if(playBannerCarouselDataModel.gradients.isNotEmpty()){
+                        parallaxBackground.setGradientBackground(playBannerCarouselDataModel.gradients)
+                    } else {
+                        parallaxBackground.loadImage(playBannerCarouselDataModel.backgroundUrl)
+                    }
+                    backgroundLoader.hide()
                 }
 
                 override fun failedLoad() {
-                    background_loader.hide()
+                    if(playBannerCarouselDataModel.gradients.isNotEmpty()){
+                        parallaxBackground.setGradientBackground(playBannerCarouselDataModel.gradients)
+                    } else {
+                        parallaxBackground.loadImage(playBannerCarouselDataModel.backgroundUrl)
+                    }
+                    backgroundLoader.hide()
                 }
             })
-            parallax_image?.loadImage(playBannerCarouselDataModel.imageUrl)
         } else {
-            background_loader?.hide()
+            backgroundLoader.hide()
         }
     }
 
@@ -115,12 +178,12 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
                     firstView?.let {
                         val distanceFromLeft = it.left
                         val translateX = distanceFromLeft * 0.2f
-                        parallax_view?.translationX = translateX
+                        parallaxView.translationX = translateX
 
                         if (distanceFromLeft <= 0) {
                             val itemSize = it.width.toFloat()
                             val alpha = (abs(distanceFromLeft).toFloat() / itemSize * 0.80f)
-                            parallax_image?.alpha = 1 - alpha
+                            parallaxImage.alpha = 1 - alpha
                         }
                     }
                 }

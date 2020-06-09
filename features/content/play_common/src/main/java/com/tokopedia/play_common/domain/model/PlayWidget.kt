@@ -20,5 +20,10 @@ data class Meta (
     @SerializedName("autoplayAmount") val autoplayAmount : Int,
     @SerializedName("autoplay") val autoplay : Boolean,
     @SerializedName("buttonApplink") val buttonApplink : String,
-    @SerializedName("buttonWeblink") val buttonWeblink : String
+    @SerializedName("buttonWeblink") val buttonWeblink : String,
+    @SerializedName("overlayImage") val overlayImage : String,
+    @SerializedName("overlayImageApplink") val overlayImageApplink : String,
+    @SerializedName("overlayImageWeblink") val overlayImageWeblink : String,
+    @SerializedName("gradient") val gradient : List<String> = listOf("#ffffff"),
+    @SerializedName("serverTimeOffset") val serverTimeOffset : Long
 )
