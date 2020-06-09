@@ -32,6 +32,10 @@ class ClaimCouponViewModel(val application: Application, val components: Compone
         return componentList
     }
 
+    override fun onAttachToViewHolder() {
+        super.onAttachToViewHolder()
+        getClickCouponData()
+    }
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -43,10 +47,10 @@ class ClaimCouponViewModel(val application: Application, val components: Compone
                 .inject(this)
     }
 
-    fun getClickCouponData(endPoint: String) {
+    fun getClickCouponData() {
         launchCatchError(block = {
-            val data = claimCouponUseCase.getClickCouponData(GenerateUrl.getClaimCouponUrl(endPoint, components.id.toString()))
-            componentList.postValue(data)
+            if (claimCouponUseCase.getClickCouponData(components.id, components.pageEndPoint))
+                componentList.postValue(components.getComponentsItem() as ArrayList<ComponentsItem>)
         }, onError = {
         })
     }

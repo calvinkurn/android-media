@@ -1,22 +1,23 @@
 package com.tokopedia.discovery2.usecase
 
-import com.tokopedia.discovery2.data.DiscoveryResponse
+import com.tokopedia.discovery2.datamapper.DiscoveryPageData
+import com.tokopedia.discovery2.datamapper.discoveryPageData
+import com.tokopedia.discovery2.datamapper.mapDiscoveryResponseToPageData
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
 import javax.inject.Inject
 
 class DiscoveryDataUseCase @Inject constructor(private val discoveryPageRepository: DiscoveryPageRepository) {
 
-    suspend fun getDiscoveryPageDataUseCase(pageIdentifier: String): DiscoveryResponse {
-        val discoveryResponseData = discoveryPageRepository.getDiscoveryPageData(pageIdentifier).copy()
-        discoveryResponseData.components
-        return removeComponents(discoveryResponseData)
+    suspend fun getDiscoveryPageDataUseCase(pageIdentifier: String): DiscoveryPageData {
+        return mapDiscoveryResponseToPageData(discoveryPageData[pageIdentifier]?.let {
+            it
+        }?: discoveryPageRepository.getDiscoveryPageData(pageIdentifier).apply {
+            discoveryPageData[pageIdentifier] = this
+            componentMap = HashMap()
+        })
     }
 
-    private fun removeComponents(discoveryPageData: DiscoveryResponse): DiscoveryResponse {
-        if (!discoveryPageData.components.isNullOrEmpty()) {
-            val componentsList = discoveryPageData.components!!.filter { it.renderByDefault }
-            discoveryPageData.components = componentsList.toMutableList()
-        }
-        return discoveryPageData
+    fun clearPage(pageIdentifier: String) {
+        discoveryPageData.remove(pageIdentifier)
     }
 }

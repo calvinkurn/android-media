@@ -15,7 +15,7 @@ class GenerateUrl {
         fun getClaimCouponUrl(endPoint1: String,endPoint2: String) = String.format("$claimCouponUrl%s/%s", endPoint1,endPoint2)
         fun getClaimCoupon(couponCode: String)  = String.format("$claimCoupon%s", couponCode)
 
-        fun getComponentUrl(pageEndPoint: String, componentId: Int) = String.format("$componentURL%s%s","${pageEndPoint}/" , componentId)
+        fun getComponentUrl(pageEndPoint: String, componentId: String) = String.format("$componentURL%s%s","${pageEndPoint}/" , componentId)
     }
 
 

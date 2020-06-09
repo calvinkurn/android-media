@@ -37,12 +37,26 @@ enum class ComponentNames(val componentName: String) {
     DynamicCategory("dynamic_category"),
     DynamicCategoryItem("dynamic_category_item"),
     FlashSaleTimer("flash_sale_timer"),
-    ProductCardRevamp("product_card_revamp"),
-    ProductCardCarousel("product_card_carousel"),
-    PrductCardSprintSaleCarousel("product_card_sprint_sale_carousel"),
-    ProductCardItem("product_card_item"),
     TimerSprintSale("timer_sprint_sale"),
-    ProductCardHorizontalItem("product_card_horizontal_item"),
     ShimmerProductCard("shimmer_product_card"),
-    Shimmer("shimmer")
+    Shimmer("shimmer"),
+
+    // Product Card Revamp
+    ProductCardRevamp("product_card_revamp"),
+    ProductCardRevampItem("product_card_revamp_item"),
+
+    // Product Card Horizontal Carousel
+    ProductCardCarousel("product_card_carousel"),
+    ProductCardCarouselItem("product_card_carousel_item"),
+
+    // Product Card Sprint Sale
+    ProductCardSprintSale("product_card_sprint_sale"),
+    ProductCardSprintSaleItem("product_card_sprint_sale_item"),
+
+    // Product Card Horizontal Sprint Sale
+    ProductCardSprintSaleCarousel("product_card_sprint_sale_carousel"),
+    ProductCardSprintSaleCarouselItem("product_card_sprint_sale_carousel_item"),
+
+
+
 }

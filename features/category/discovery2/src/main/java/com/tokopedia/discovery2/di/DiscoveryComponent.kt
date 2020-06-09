@@ -4,11 +4,13 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cpmtopads.CpmTopAdsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewModel
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsprintsalecarousel.ProductCardSprintSaleCarouselViewModel
@@ -30,4 +32,6 @@ interface DiscoveryComponent {
     fun inject(categoryNavigationViewModel: CategoryNavigationViewModel)
     fun inject(claimCouponViewModel: ClaimCouponViewModel)
     fun inject(claimCouponItemViewModel: ClaimCouponItemViewModel)
+    fun inject(productCardItemViewModel: ProductCardItemViewModel)
+    fun inject(chipsFilterViewModel: ChipsFilterViewModel)
 }

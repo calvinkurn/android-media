@@ -1,14 +1,17 @@
 package com.tokopedia.discovery2.data
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.discovery2.datamapper.discoveryPageData
+import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 
-data class ComponentsItem (
+data class ComponentsItem(
 
         @SerializedName("render_by_default")
         val renderByDefault: Boolean = false,
 
         @SerializedName("data")
         var data: List<DataItem>? = null,
+
 
         @SerializedName("ab_modulo")
         val abModulo: String? = "",
@@ -20,7 +23,7 @@ data class ComponentsItem (
         val abDefault: Boolean = false,
 
         @SerializedName("id")
-        val id: String = "",
+        var id: String = "",
 
         @SerializedName("is_ab")
         val isAb: Boolean = false,
@@ -39,4 +42,27 @@ data class ComponentsItem (
         var shimmerWidth: Int = 0,
 
         var constraintRatio: String? = null
-)
+) {
+    private var componentsItem: List<ComponentsItem>? = null
+    var needPagination: Boolean = false
+    var noOfPagesLoaded = 0
+    var componentsPerPage = 20
+    var pageEndPoint: String = ""
+    var parentComponentId: String = ""
+    var cpmData: DiscoveryDataMapper.CpmTopAdsData? = null
+    var chipSelectionData:DataItem? = null
+    var chipSelectionChange = false
+
+    fun setComponentsItem(listComponents:List<ComponentsItem>?) {
+        listComponents?.forEach {
+            it.parentComponentId = this.id
+            it.pageEndPoint = this.pageEndPoint
+            discoveryPageData[this.pageEndPoint]?.componentMap?.set(it.id, it)
+        }
+        componentsItem = listComponents
+
+    }
+    fun getComponentsItem(): List<ComponentsItem>? {
+        return componentsItem
+    }
+}

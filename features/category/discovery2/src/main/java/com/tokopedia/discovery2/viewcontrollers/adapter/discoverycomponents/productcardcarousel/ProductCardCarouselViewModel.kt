@@ -1,29 +1,27 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel
 
 import android.app.Application
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
-import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardCarouselUseCase
+import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-private const val RPC_ROWS = "rpc_Rows"
-private const val RPC_START = "rpc_Start"
-private const val PRODUCT_PER_PAGE = 20
-private const val START_POINT = 0
-class ProductCardCarouselViewModel(val application: Application, components: ComponentsItem, val position:Int) : DiscoveryBaseViewModel(), CoroutineScope {
+
+class ProductCardCarouselViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val productCarouselComponentData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val productCarouselList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
+
     @Inject
-    lateinit var productCardCarouselUseCase: ProductCardCarouselUseCase
+    lateinit var productCardsUseCase: ProductCardsUseCase
 
 
     override val coroutineContext: CoroutineContext
@@ -32,7 +30,6 @@ class ProductCardCarouselViewModel(val application: Application, components: Com
 
     init {
         initDaggerInject()
-        productCarouselComponentData.value = components
     }
 
     override fun initDaggerInject() {
@@ -42,23 +39,27 @@ class ProductCardCarouselViewModel(val application: Application, components: Com
                 .inject(this)
     }
 
-
-    fun getProductCarouselItemsListData() = productCarouselList
-
-    fun fetchProductCarouselData(pageEndPoint: String) {
-        if(productCarouselList.value.isNullOrEmpty()) {
-            launchCatchError(block = {
-                productCarouselList.value = productCardCarouselUseCase.getProductCardCarouselUseCase(productCarouselComponentData.value?.id.toIntOrZero(), getQueryParameterMap(), pageEndPoint, isHorizontal = true)
-            }, onError = {
-                it.printStackTrace()
-            })
+    override fun onAttachToViewHolder() {
+        super.onAttachToViewHolder()
+        productCarouselComponentData.value = components
+        components.getComponentsItem()?.let {
+            productCarouselList.value = components.getComponentsItem() as ArrayList<ComponentsItem>?
         }
+        fetchProductCarouselData()
     }
 
-    private fun getQueryParameterMap(): MutableMap<String, Any> {
-        val queryParameterMap = mutableMapOf<String, Any>()
-        queryParameterMap[RPC_ROWS] = PRODUCT_PER_PAGE.toString()
-        queryParameterMap[RPC_START] = START_POINT.toString()
-        return queryParameterMap
+    fun getProductCarouselItemsListData(): LiveData<ArrayList<ComponentsItem>> = productCarouselList
+
+    private fun fetchProductCarouselData() {
+        launchCatchError(block = {
+            if(productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)) {
+                productCarouselList.value = components.getComponentsItem() as ArrayList<ComponentsItem>?
+                syncData.value = true
+            }
+        }, onError = {
+            it.printStackTrace()
+        })
     }
+
+
 }

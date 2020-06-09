@@ -44,7 +44,7 @@ class ClaimCouponViewHolder(itemView: View, private val fragment: Fragment) : Ab
         } else
             addShimmer(false)
         recyclerView.layoutManager = GridLayoutManager(itemView.context, spanCount, GridLayoutManager.VERTICAL, false)
-        claimCouponViewModel.getClickCouponData((fragment as DiscoveryFragment).pageEndPoint)
+        fragment as DiscoveryFragment
         claimCouponViewModel.getComponentList().observe(fragment.viewLifecycleOwner, Observer { item ->
             fragment.getDiscoveryAnalytics().trackEventImpressionCoupon(item)
             discoveryRecycleAdapter.setDataList(item)

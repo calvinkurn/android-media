@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class TokopointsRestRepository @Inject constructor() : BaseRepository(), TokopointsRepository {
 
-    override suspend fun getTokopointsData(componentId: Int, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String): ArrayList<ComponentsItem> {
+    override suspend fun getTokopointsData(componentId: String, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String): ArrayList<ComponentsItem> {
 
         val response = getRestData<DataResponse<DiscoveryResponse>>(GenerateUrl.getComponentUrl(pageEndPoint, componentId),
                 object : TypeToken<DataResponse<DiscoveryResponse>>() {}.type,

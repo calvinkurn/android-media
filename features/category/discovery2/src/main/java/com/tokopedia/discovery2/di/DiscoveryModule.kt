@@ -4,6 +4,8 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.basemvvm.repository.BaseRepository
+import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeGQLRepository
+import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeRepo
 import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponGQLRepository
 import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponRestRepository
 import com.tokopedia.discovery2.repository.claimCoupon.IClaimCouponGqlRepository
@@ -12,6 +14,7 @@ import com.tokopedia.discovery2.repository.cpmtopads.CpmTopAdsGQLRepository
 import com.tokopedia.discovery2.repository.cpmtopads.CpmTopAdsRepository
 import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatGqlRepository
 import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatRepository
+import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryDataGQLRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRestRepository
 import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRepository
@@ -95,8 +98,11 @@ class DiscoveryModule {
     @DiscoveryScope
     @Provides
     fun provideDiscoveryPageRepository(@ApplicationContext context: Context): DiscoveryPageRepository {
-        return DiscoveryPageRestRepository()
+        return DiscoveryDataGQLRepository(provideGetStringMethod(context))
+//            return DiscoveryPageRestRepository()
     }
+
+
 
 
 
@@ -109,4 +115,10 @@ class DiscoveryModule {
     @DiscoveryScope
     @Provides
     fun providesTrackingQueue(@ApplicationContext context: Context): TrackingQueue = TrackingQueue(context)
+
+    @DiscoveryScope
+    @Provides
+    fun provideCampaignSubscribeGQLRepository(@ApplicationContext context: Context): CampaignSubscribeRepo {
+        return CampaignSubscribeGQLRepository(provideGetStringMethod(context))
+    }
 }

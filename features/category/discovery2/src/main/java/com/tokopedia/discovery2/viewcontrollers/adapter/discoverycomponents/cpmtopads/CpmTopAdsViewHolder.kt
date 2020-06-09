@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +17,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.usecase.coroutines.Success
 
-class CpmTopAdsViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
+class CpmTopAdsViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView,fragment.viewLifecycleOwner) {
 
     private val recyclerView: RecyclerView = itemView.findViewById(R.id.discovery_cpm_topads_rv)
     private val promotedText: TextView = itemView.findViewById(R.id.discovery_cpm_promoted_text)
@@ -35,8 +36,6 @@ class CpmTopAdsViewHolder(itemView: View, private val fragment: Fragment) : Abst
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         cpmTopAdsViewModel = discoveryBaseViewModel as CpmTopAdsViewModel
         addShimmer()
-        cpmTopAdsViewModel.fetchCpmTopAdsData()
-        setUpObserver()
     }
 
     private fun addShimmer() {
@@ -48,7 +47,8 @@ class CpmTopAdsViewHolder(itemView: View, private val fragment: Fragment) : Abst
         discoveryRecycleAdapter.setDataList(list)
     }
 
-    private fun setUpObserver() {
+    override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
+        super.setUpObservers(lifecycleOwner)
         cpmTopAdsViewModel.getCpmTopAdsList().observe(fragment.viewLifecycleOwner, Observer { item ->
             when (item) {
                 is Success -> {

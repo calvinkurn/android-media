@@ -16,11 +16,12 @@ class DiscoveryDataMapper {
 
         val discoveryDataMapper: DiscoveryDataMapper by lazy { DiscoveryDataMapper() }
 
-        fun mapListToComponentList(itemList: List<DataItem>, subComponentName: String = "", parentComponentName: String?, position: Int): ArrayList<ComponentsItem> {
+        fun  mapListToComponentList(itemList: List<DataItem>, subComponentName: String = "", parentComponentName: String?, position: Int): ArrayList<ComponentsItem> {
             val list = ArrayList<ComponentsItem>()
-            itemList.forEach {
+            itemList.forEachIndexed {index, it ->
                 val componentsItem = ComponentsItem()
                 componentsItem.name = subComponentName
+                componentsItem.id = "Chips_$index"
                 it.parentComponentName = parentComponentName
                 it.positionForParentItem = position
                 val dataItem = mutableListOf<DataItem>()
@@ -31,19 +32,21 @@ class DiscoveryDataMapper {
             return list
         }
 
-        fun mapTabsListToComponentList(itemList: List<DataItem>, subComponentName: String = "", position: Int): ArrayList<ComponentsItem> {
+        fun mapTabsListToComponentList(component: ComponentsItem, subComponentName: String = "", position: Int): ArrayList<ComponentsItem> {
             val list = ArrayList<ComponentsItem>()
             var isSelectedFound = false
-            itemList.forEach {
+            component.data?.forEachIndexed { index, it ->
                 if (it.isSelected) {
                     isSelectedFound = true
                 }
                 val componentsItem = ComponentsItem()
                 componentsItem.name = subComponentName
+                componentsItem.pageEndPoint = component.pageEndPoint
                 it.positionForParentItem = position
                 val dataItem = mutableListOf<DataItem>()
                 dataItem.add(it)
                 componentsItem.data = dataItem
+                componentsItem.id = "tab_item_$index"
                 list.add(componentsItem)
             }
             if (!isSelectedFound) {
@@ -109,13 +112,14 @@ class DiscoveryDataMapper {
         return list
     }
 
-    fun mapListToComponentList(itemList: List<DataItem>?, subComponentName: String = "", properties: Properties?): ArrayList<ComponentsItem> {
+    fun mapListToComponentList(itemList: List<DataItem>?, subComponentName: String = "", properties: Properties?, typeProductCard: String = ""): ArrayList<ComponentsItem> {
         val list = ArrayList<ComponentsItem>()
         itemList?.forEach {
             val componentsItem = ComponentsItem()
             componentsItem.name = subComponentName
             componentsItem.properties = properties
             val dataItem = mutableListOf<DataItem>()
+            it.typeProductCard = typeProductCard
             dataItem.add(it)
             componentsItem.data = dataItem
             list.add(componentsItem)

@@ -12,36 +12,29 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
 
-class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
+class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView,fragment.viewLifecycleOwner) {
 
-    private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
     private lateinit var mProductRevampComponentViewModel: ProductCardRevampViewModel
     private var addChildAdapterCallback: AddChildAdapterCallback = (fragment as AddChildAdapterCallback)
 
-    init {
-        addChildAdapterCallback.addChildAdapter(mDiscoveryRecycleAdapter)
-        addShimmer()
-    }
-
-    private fun addShimmer() {
-        val list: ArrayList<ComponentsItem> = ArrayList()
-        for (i in 1..10) {
-            list.add(ComponentsItem(name = "shimmer_product_card"))
-        }
-        mDiscoveryRecycleAdapter.setDataList(list)
-    }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         mProductRevampComponentViewModel = discoveryBaseViewModel as ProductCardRevampViewModel
-        setUpDataObserver(fragment.viewLifecycleOwner)
-        mProductRevampComponentViewModel.fetchProductCarouselData((fragment as DiscoveryFragment).pageEndPoint)
     }
 
-    private fun setUpDataObserver(lifecycleOwner: LifecycleOwner) {
-        mProductRevampComponentViewModel.getProductCarouselItemsListData().observe(lifecycleOwner, Observer { item ->
-            mDiscoveryRecycleAdapter.setDataList(item)
-            addChildAdapterCallback.notifyMergeAdapter()
+    override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
+        lifecycleOwner?.let {
+            mProductRevampComponentViewModel.getProductCarouselItemsListData().observe(it, Observer { item ->
+                addChildAdapterCallback.notifyMergeAdapter()
+            })
+            mProductRevampComponentViewModel.getSyncPageLiveData().observe(it, Observer { needResync ->
+                if (needResync) {
+                    (fragment as DiscoveryFragment).resync()
+                }
 
-        })
+            })
+        }
+
     }
+
 }

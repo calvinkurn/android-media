@@ -38,13 +38,17 @@ class CategoryNavigationViewModel(val application: Application, private val comp
         initDaggerInject()
     }
 
+    override fun onAttachToViewHolder() {
+        super.onAttachToViewHolder()
+        getCategoryNavigationData()
+    }
     fun getCategoryNavigationData() {
         launchCatchError(
                 block = {
                     withContext(Dispatchers.IO) {
-                        val dataList = categoryNavigationUseCase.getCategoryNavigationData(components.data?.getOrElse(0) { DataItem() }?.categoryDetailUrl
-                                ?: "")
-                        listData.postValue(Success(dataList))
+                        if(categoryNavigationUseCase.getCategoryNavigationData(components.id,components.pageEndPoint))  {
+                            listData.postValue(Success(components.getComponentsItem() as ArrayList<ComponentsItem>))
+                        }
                     }
                 },
                 onError = {
