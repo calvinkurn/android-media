@@ -52,7 +52,7 @@ class SalamWidgetViewHolder(
 
                     }
 
-                    listener.onContentClickListener(salamWidget.appLink)
+                    listener.onSalamWidgetClickListener(salamWidget.appLink)
 
 
                 }
@@ -73,6 +73,6 @@ class SalamWidgetViewHolder(
     }
 
     interface SalamWidgetListener {
-        fun onContentClickListener(applink: String)
+        fun onSalamWidgetClickListener(applink: String)
     }
 }

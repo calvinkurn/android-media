@@ -100,6 +100,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder.PopularKeywordListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.RechargeRecommendationViewHolder.RechargeRecommendationListener
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.SalamWidgetViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
@@ -171,7 +172,8 @@ open class HomeFragment : BaseDaggerFragment(),
         HomeReviewListener,
         PopularKeywordListener,
         FramePerformanceIndexInterface,
-        RechargeRecommendationListener {
+        RechargeRecommendationListener,
+        SalamWidgetViewHolder.SalamWidgetListener {
 
     companion object {
         private const val TOKOPOINTS_NOTIFICATION_TYPE = "drawer"
@@ -881,6 +883,7 @@ open class HomeFragment : BaseDaggerFragment(),
                 this,
                 this,
                 homeRecyclerView?.recycledViewPool?: RecyclerView.RecycledViewPool(),
+                this,
                 this,
                 this,
                 HomeComponentCallback(viewModel.get()),
@@ -1925,6 +1928,10 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onContentClickListener(applink: String) {
+        RouteManager.route(context, applink)
+    }
+
+    override fun onSalamWidgetClickListener(applink: String) {
         RouteManager.route(context, applink)
     }
 
