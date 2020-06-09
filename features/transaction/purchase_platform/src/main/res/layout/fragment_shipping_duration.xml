@@ -6,11 +6,11 @@
     android:layout_height="match_parent"
     android:enabled="false">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white"
-            android:orientation="vertical">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical">
 
         <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/ticker_info"
@@ -23,17 +23,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:tickerShapeType="loose"
-            app:tickerType="announcement"/>
+            app:tickerType="announcement" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/shipping_duration_rv"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="@dimen/dp_8"
             app:layout_constraintBottom_toTopOf="@+id/bottom_layout_shipping"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ticker_info" />
+            app:layout_constraintTop_toBottomOf="@+id/ticker_info" />
 
         <FrameLayout
             android:id="@+id/bottom_layout_shipping"
@@ -67,17 +66,17 @@
             android:visibility="gone"
             app:constraint_referenced_ids="ticker_info,shipping_duration_rv,bottom_layout_shipping" />
 
-            <com.tokopedia.globalerror.GlobalError
-                android:id="@+id/global_error"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <com.tokopedia.globalerror.GlobalError
+            android:id="@+id/global_error"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

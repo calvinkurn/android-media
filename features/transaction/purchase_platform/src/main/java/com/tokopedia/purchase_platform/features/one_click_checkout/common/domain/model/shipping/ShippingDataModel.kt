@@ -23,3 +23,7 @@ data class TextsModel(
         var textNotes: String? = null,
         var textsServiceDesc: String = ""
 )
+
+data class LogisticPromoInfo(
+        val imageUrl: String = ""
+) : ServicesItem()

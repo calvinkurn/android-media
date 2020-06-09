@@ -9,20 +9,29 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shipping.LogisticPromoInfo
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shipping.ServicesItem
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shipping.ServicesItemModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shipping.ServicesItemModelNoPrice
 import com.tokopedia.unifyprinciples.Typography
 
-class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : RecyclerView.Adapter<ShippingDurationItemAdapter.ShippingDurationViewHolder>(){
+class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var shippingDurationList = mutableListOf<ServicesItem>()
+
+    companion object {
+        private const val SHIPPING_DURATION_VIEW_TYPE = 1
+        private const val LOGISTIC_PROMO_INFO_VIEW_TYPE = 2
+    }
 
     interface OnShippingMenuSelected {
         fun onSelect(selection: Int)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShippingDurationViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        if (viewType == LOGISTIC_PROMO_INFO_VIEW_TYPE) {
+            return LogisticPromoInfoViewHolder(parent.inflateLayout(R.layout.item_logistic_promo_info))
+        }
         return ShippingDurationViewHolder(parent.inflateLayout(R.layout.item_shipping_duration))
     }
 
@@ -30,12 +39,21 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
         return shippingDurationList.size
     }
 
-    override fun onBindViewHolder(holder: ShippingDurationViewHolder, position: Int) {
+    override fun getItemViewType(position: Int): Int {
+        if (shippingDurationList[position] is LogisticPromoInfo) {
+            return LOGISTIC_PROMO_INFO_VIEW_TYPE
+        }
+        return SHIPPING_DURATION_VIEW_TYPE
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val servicesItem = shippingDurationList[position]
         if (servicesItem is ServicesItemModelNoPrice) {
-            holder.bind(servicesItem)
+            (holder as ShippingDurationViewHolder).bind(servicesItem)
         } else if (servicesItem is ServicesItemModel) {
-            holder.bind(servicesItem)
+            (holder as ShippingDurationViewHolder).bind(servicesItem)
+        } else if (servicesItem is LogisticPromoInfo) {
+            (holder as LogisticPromoInfoViewHolder).bind(servicesItem)
         }
     }
 
