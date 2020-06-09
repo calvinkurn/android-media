@@ -126,7 +126,6 @@ import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
-import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
@@ -141,8 +140,6 @@ import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
-import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
-import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment;
 import com.tokopedia.tkpd.utils.DeferredResourceInitializer;
@@ -189,7 +186,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TkpdCoreRouter,
         SellerModuleRouter,
         ReactApplication,
-        ReputationRouter,
         AbstractionRouter,
         LogisticRouter,
         ApplinkRouter,
@@ -434,12 +430,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private Intent getInboxReputationIntent(Context context) {
-        return TkpdReputationInternalRouter.getInboxReputationActivityIntent(context);
-    }
-
-    @Override
-    public Fragment getReputationHistoryFragment() {
-        return SellerReputationFragment.createInstance();
+        return RouteManager.getIntent(context, ApplinkConst.REPUTATION);
     }
 
     @Override
@@ -866,34 +857,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public boolean isAllowLogOnChuckInterceptorNotification() {
         LocalCacheHandler cache = new LocalCacheHandler(this, DeveloperOptionActivity.CHUCK_ENABLED);
         return cache.getBoolean(DeveloperOptionActivity.IS_CHUCK_ENABLED, false);
-    }
-
-    @Override
-    public void showAppFeedbackRatingDialog(
-            FragmentManager manager,
-            Context context,
-            BottomSheets.BottomSheetDismissListener dismissListener
-    ) {
-        AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
-        rating.setDialogDismissListener(dismissListener);
-        rating.showDialog(manager, context);
-    }
-
-    @Override
-    public void showSimpleAppRatingDialog(Activity activity) {
-        //this code needs to be improved in the future
-        try {
-            boolean hasShownInAppReviewBefore = getInAppReviewHasShownBefore();
-            boolean enableInAppReview = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE, false);
-
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M && enableInAppReview && !hasShownInAppReviewBefore) {
-                launchInAppReview(activity);
-            } else {
-                SimpleAppRatingDialog.show(activity);
-            }
-        } catch (Exception e) {
-
-        }
     }
 
     private boolean getInAppReviewHasShownBefore() {
