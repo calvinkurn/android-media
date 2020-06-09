@@ -176,6 +176,8 @@ include "features:transaction:atc_common"
 include "features:transaction:buyerorder"
 include "features:transaction:purchase_platform"
 include "features:transaction:purchase_platform_common"
+include "features:transaction:cart"
+include "features:transaction:checkout"
 include "features:transaction:sellerorder"
 
 include "features:user:attachproduct"
