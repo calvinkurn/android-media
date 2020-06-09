@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.CoverSourceEnum
@@ -36,7 +37,7 @@ import javax.inject.Inject
 /**
  * Created by furqan on 02/06/20
  */
-class PlayCoverTitleSetupFragment @Inject constructor()
+class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFactory: ViewModelFactory)
     : PlayBaseSetupFragment(), PlayBroadcastChooseCoverBottomSheet.Listener,
         PlayBroadcastCoverFromGalleryBottomSheet.Listener {
 

@@ -111,7 +111,7 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
             }
 
             override fun onNextButtonClicked() {
-                complete()
+                showCoverTitlePage()
             }
         })
     }
@@ -236,7 +236,7 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         )
     }
 
-    private fun showNextPage() {
+    private fun showCoverTitlePage() {
         val productImageList: ArrayList<String> = ArrayList(viewModel.selectedProductList
                 .map { it.originalImageUrl }.toList())
         navigateToFragment(PlayCoverTitleSetupFragment::class.java, Bundle().apply {
