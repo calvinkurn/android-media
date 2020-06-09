@@ -3,9 +3,8 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 android.sourceSets {
-    androidTest.java.srcDirs += "src/androidTest/kotlin"
-    debug.java.srcDirs += "src/debug/kotlin"
     main.java.srcDirs += "src/main/kotlin"
+    debug.java.srcDirs += "src/debug/kotlin"
     test.java.srcDirs += "src/test/kotlin"
     androidTest.java.srcDirs += "src/androidTest/kotlin"
 }
