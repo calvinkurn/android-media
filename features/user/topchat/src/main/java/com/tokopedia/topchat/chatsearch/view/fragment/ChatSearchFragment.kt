@@ -2,7 +2,9 @@ package com.tokopedia.topchat.chatsearch.view.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -11,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatsearch.analytic.ChatSearchAnalytic
 import com.tokopedia.topchat.chatsearch.data.RecentSearch
 import com.tokopedia.topchat.chatsearch.di.ChatSearchComponent
@@ -38,6 +41,12 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(ChatSearchViewModel::class.java) }
     private var listener: ChatSearchFragmentListener? = null
+
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_chat_search, container, false)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
