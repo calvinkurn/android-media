@@ -78,7 +78,8 @@ class ProductVariantStockViewHolder(
     }
 
     private fun addStockEditorTextChangedListener(variant: ProductVariant) {
-        itemView.quantityEditorStock.apply {
+        val quantityEditor = itemView.quantityEditorStock
+        quantityEditor.apply {
             editText.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(editor: Editable?) {
                     val input = editor.toString()
@@ -87,6 +88,7 @@ class ProductVariantStockViewHolder(
                     } else {
                         MINIMUM_STOCK
                     }
+                    toggleQuantityEditorBtn(stock)
                     listener.onStockChanged(variant.id, stock)
                 }
 
@@ -136,6 +138,16 @@ class ProductVariantStockViewHolder(
                     editText.setText(stock.getNumberFormatted())
                 }
             }
+        }
+    }
+
+    private fun toggleQuantityEditorBtn(stock: Int) {
+        val enableAddBtn = stock < MAXIMUM_STOCK
+        val enableSubtractBtn = stock > MINIMUM_STOCK
+
+        itemView.quantityEditorStock.apply {
+            addButton.isEnabled = enableAddBtn
+            subtractButton.isEnabled = enableSubtractBtn
         }
     }
 
