@@ -14,7 +14,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan"
-            android:launchMode="singleTop">
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -39,7 +39,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize"
-            android:launchMode="singleTop">
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -57,6 +57,6 @@
             android:name=".detail.view.activity.VoucherDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:launchMode="singleTop" />
+            android:launchMode="singleTask" />
     </application>
 </manifest>
