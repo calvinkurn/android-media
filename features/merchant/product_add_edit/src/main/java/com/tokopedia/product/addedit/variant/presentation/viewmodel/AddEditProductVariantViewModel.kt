@@ -13,6 +13,7 @@ import com.tokopedia.product.addedit.variant.data.model.VariantDetail
 import com.tokopedia.product.addedit.variant.domain.GetCategoryVariantCombinationUseCase
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.model.OptionInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.PictureVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -42,7 +43,7 @@ class AddEditProductVariantViewModel @Inject constructor(
         get() = mGetCategoryVariantCombinationResult
 
     var productInputModel = MutableLiveData<ProductInputModel>()
-    var variantSizechartUrl = MutableLiveData<String>("")
+    var variantSizechart = MutableLiveData<PictureVariantInputModel>(PictureVariantInputModel())
 
     fun getCategoryVariantCombination(categoryId: String) {
         launchCatchError(block = {
@@ -91,7 +92,14 @@ class AddEditProductVariantViewModel @Inject constructor(
         variantInputModel?.apply {
             this.products = mapProducts()
             this.selections = mapSelections(variantDetailsSelected)
+            this.sizecharts = variantSizechart.value ?: PictureVariantInputModel()
         }
+    }
+
+    fun updateSizechart(url: String) {
+        val newSizechart = PictureVariantInputModel()
+        newSizechart.filePath = url
+        variantSizechart.value = newSizechart
     }
 
     fun getSelectedVariantUnitValues(layoutPosition: Int): MutableList<UnitValue> {
