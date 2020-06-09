@@ -31,7 +31,6 @@ ext {
     roomVersion = '2.2.1'
     multiDexVersion = '2.0.0'
     twitter4JVersion = '4.0.7'
-    guavaVersion = '20.0'
     constraintLayoutVersion = '2.0.0-beta3'
     materialVersion = '1.0.0'
 
@@ -238,7 +237,6 @@ ext {
             coroutineCore         : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion",
             coroutineAndroid      : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion",
             coroutineTest         : "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutineVersion",
-            guava                 : "com.google.guava:guava:$guavaVersion",
             guava24               : 'com.google.guava:guava:24.1-jre',
             incap                 : "net.ltgt.gradle.incap:incap:0.2",
             incapProcessor        : "net.ltgt.gradle.incap:incap-processor:0.2",

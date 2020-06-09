@@ -44,7 +44,7 @@ dependencies {
 
     testImplementation files("${System.getProperty('java.home')}/lib/rt.jar")
     testImplementation rootProject.ext.tkpdInternalLibDependencies.analyticProcessor
-    testImplementation 'com.google.guava:guava:24.1-jre'
+    testImplementation rootProject.ext.miscDependencies.guava24
     testImplementation 'com.google.truth:truth:0.30'
     testImplementation 'com.google.testing.compile:compile-testing:0.10'
     testImplementation 'org.codehaus.groovy:groovy-all:2.4.15'
