@@ -50,6 +50,7 @@ import com.tokopedia.talk_old.R
 import com.tokopedia.talk_old.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_talk_reading.pageError
 import kotlinx.android.synthetic.main.fragment_talk_reading.pageLoading
@@ -350,11 +351,11 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
             adjustToasterHeight()
         }
         view?.let {
+            this.toaster = Toaster.build(it, successMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.talk_ok))
             toaster?.let { toaster ->
                 if(toaster.isShownOrQueued) {
                     return
                 }
-                this.toaster = Toaster.build(it, successMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.talk_ok))
                 toaster.show()
             }
         }
@@ -365,11 +366,11 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
             adjustToasterHeight()
         }
         view?.let {
+            this.toaster = Toaster.build(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_ok))
             toaster?.let { toaster ->
                 if(toaster.isShownOrQueued) {
                     return
                 }
-                this.toaster = Toaster.build(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_ok))
                 toaster.show()
             }
         }
@@ -434,8 +435,13 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         showPageLoading()
     }
 
-    private fun onFailCreateComment() {
-        showErrorToaster(getString(R.string.reply_toaster_network_error), resources.getBoolean(R.bool.reply_adjust_toaster_height))
+    private fun onFailCreateComment(errorMessage: String?) {
+        val newErrorMessage = if(errorMessage.isNullOrEmpty()) {
+            getString(R.string.reply_toaster_network_error)
+        } else {
+            errorMessage
+        }
+        showErrorToaster(newErrorMessage, resources.getBoolean(R.bool.reply_adjust_toaster_height))
     }
 
     private fun adjustToasterHeight() {
@@ -516,7 +522,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         viewModel.createNewCommentResult.observe(this, Observer {
             when(it) {
                 is Success -> onSuccessCreateComment()
-                else -> onFailCreateComment()
+                is Fail -> onFailCreateComment(it.throwable.message)
             }
         })
     }
