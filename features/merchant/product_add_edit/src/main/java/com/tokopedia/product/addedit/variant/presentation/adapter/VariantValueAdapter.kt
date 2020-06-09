@@ -46,4 +46,8 @@ class VariantValueAdapter(private val removeButtonClickListener: OnRemoveButtonC
         this.items.add(item)
         notifyItemInserted(items.lastIndex)
     }
+
+    fun getDataList(): List<UnitValue> {
+        return items
+    }
 }

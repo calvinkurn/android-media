@@ -90,7 +90,10 @@ class GetProductMapper @Inject constructor() {
             selections.map {
                 SelectionInputModel(
                         it.variantId,
+                        it.variantName,
                         it.unitID,
+                        it.unitName,
+                        it.identifier,
                         mapProductVariantOptions(it.options)
                 )
             }
