@@ -47,6 +47,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val parentRecycledViewPool: RecyclerView.RecycledViewPool,
                          private val popularKeywordListener: PopularKeywordViewHolder.PopularKeywordListener,
                          private val rechargeRecommendationListener: RechargeRecommendationViewHolder.RechargeRecommendationListener,
+                         private val salamWidgetListener: SalamWidgetViewHolder.SalamWidgetListener,
                          private val homeComponentListener: HomeComponentListener,
                          private val legoListener: DynamicLegoBannerListener,
                          private val recommendationListCarouselListener: RecommendationListCarouselListener
@@ -153,6 +154,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
 
     override fun type(rechargeRecommendationViewModel: RechargeRecommendationViewModel): Int {
         return RechargeRecommendationViewHolder.LAYOUT
+    }
+
+    override fun type(salamWidgetDataModel: SalamWidgetDataModel): Int {
+        return SalamWidgetViewHolder.LAYOUT
     }
 
     //Home-Component
@@ -286,6 +291,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             MixTopBannerViewHolder.LAYOUT -> viewHolder = MixTopBannerViewHolder(view, listener)
             ProductHighlightViewHolder.LAYOUT -> viewHolder = ProductHighlightViewHolder(view, listener)
             RechargeRecommendationViewHolder.LAYOUT -> viewHolder = RechargeRecommendationViewHolder(view, rechargeRecommendationListener, listener)
+            SalamWidgetViewHolder.LAYOUT -> viewHolder = SalamWidgetViewHolder(view,salamWidgetListener,listener)
             CategoryWidgetViewHolder.LAYOUT -> viewHolder = CategoryWidgetViewHolder(view, listener)
             DynamicLegoBannerViewHolder.LAYOUT -> viewHolder =
                     DynamicLegoBannerViewHolder(

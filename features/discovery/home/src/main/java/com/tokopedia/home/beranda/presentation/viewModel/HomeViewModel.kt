@@ -22,6 +22,7 @@ import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
+import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
 import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.helper.RateLimiter
 import com.tokopedia.home.beranda.helper.Result
@@ -84,6 +85,7 @@ open class HomeViewModel @Inject constructor(
         private val injectCouponTimeBasedUseCase: Lazy<InjectCouponTimeBasedUseCase>,
         private val getRechargeRecommendationUseCase: Lazy<GetRechargeRecommendationUseCase>,
         private val declineRechargeRecommendationUseCase: Lazy<DeclineRechargeRecommendationUseCase>,
+        private val getSalamWidgetUseCase: Lazy<GetSalamWidgetUseCase>,
         private val homeDispatcher: Lazy<HomeDispatcherProvider>
 ) : BaseCoRoutineScope(homeDispatcher.get().io()){
 
@@ -185,6 +187,7 @@ open class HomeViewModel @Inject constructor(
     private var buWidgetJob: Job? = null
     private var getRechargeRecommendationJob: Job? = null
     private var declineRechargeRecommendationJob: Job? = null
+    private var getSalamWidgetJob: Job? = null
     private var injectCouponTimeBasedJob: Job? = null
     private var jobChannel: Job? = null
     private var channel : Channel<UpdateLiveDataModel>? = null
@@ -514,12 +517,38 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
+    private fun insertSalamWidget(data: SalamWidget) {
+        if (data.salamWidget.appLink.isNotEmpty()) {
+            _homeLiveData.value?.list?.run {
+                val findSalamWidgetModel = find { visitable -> visitable is SalamWidgetDataModel }
+                val indexOfSalamWidgetModel = indexOf(findSalamWidgetModel)
+                if (indexOfSalamWidgetModel > -1 && findSalamWidgetModel is SalamWidgetDataModel) {
+                    val newFindSalamWidgetModel = findSalamWidgetModel.copy(
+                            salamWidget = data
+                    )
+                    launch { channel?.send(UpdateLiveDataModel(ACTION_UPDATE, newFindSalamWidgetModel, indexOfSalamWidgetModel)) }
+                }
+            }
+        } else {
+            removeSalamWidget()
+        }
+    }
+
     private fun removeRechargeRecommendation() {
         val findRechargeRecommendationViewModel =
                 _homeLiveData.value?.list?.find { visitable -> visitable is RechargeRecommendationViewModel }
                         ?: return
         if (findRechargeRecommendationViewModel is RechargeRecommendationViewModel) {
             launch { channel?.send(UpdateLiveDataModel(ACTION_DELETE, findRechargeRecommendationViewModel)) }
+        }
+    }
+
+    private fun removeSalamWidget() {
+        val findSalamWidgetModel =
+                _homeLiveData.value?.list?.find { visitable -> visitable is SalamWidgetDataModel }
+                        ?: return
+        if (findSalamWidgetModel is SalamWidgetDataModel) {
+            launch { channel?.send(UpdateLiveDataModel(ACTION_DELETE, findSalamWidgetModel)) }
         }
     }
 
@@ -641,6 +670,7 @@ open class HomeViewModel @Inject constructor(
                     getPlayBanner()
                     getPopularKeyword()
                     getRechargeRecommendation()
+                    getSalamWidget()
                     _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>() ?: listOf()))
                 } else {
                     if (homeDataModel?.list?.size?:0 > 1) {
@@ -785,9 +815,27 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
+    private fun getSalamWidget(){
+        if(getSalamWidgetJob?.isActive == true) return
+        if(!isSalamWidgetModelAvailable()) return
+
+        getSalamWidgetJob = launchCatchError(coroutineContext, block = {
+            val data = getSalamWidgetUseCase.get().executeOnBackground()
+            insertSalamWidget(data)
+        }){
+            removeSalamWidget()
+        }
+    }
+
     private fun isRechargeModelAvailable(): Boolean {
         return _homeLiveData.value?.list?.find {
             visitable -> visitable is RechargeRecommendationViewModel
+        } != null
+    }
+
+    private fun isSalamWidgetModelAvailable(): Boolean {
+        return _homeLiveData.value?.list?.find {
+            visitable -> visitable is SalamWidgetDataModel
         } != null
     }
 

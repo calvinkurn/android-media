@@ -244,6 +244,7 @@ class HomeVisitableFactoryImpl(
                         channel
                 ) }
                 DynamicHomeChannel.Channels.LAYOUT_RECHARGE_RECOMMENDATION -> { createRechargeRecommendationWidget() }
+                DynamicHomeChannel.Channels.LAYOUT_SALAM_WIDGET -> { createSalamWidget() }
                 DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET -> {
                     createDynamicChannel(
                             channel,
@@ -468,6 +469,10 @@ class HomeVisitableFactoryImpl(
 
     private fun createRechargeRecommendationWidget() {
         if (!isCache) visitableList.add(RechargeRecommendationViewModel())
+    }
+
+    private fun createSalamWidget() {
+        if (!isCache) visitableList.add(SalamWidgetDataModel())
     }
 
     override fun build(): List<Visitable<*>> = visitableList
