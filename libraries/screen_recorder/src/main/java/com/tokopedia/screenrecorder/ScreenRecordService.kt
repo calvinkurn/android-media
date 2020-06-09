@@ -139,20 +139,20 @@ class ScreenRecordService : Service(), CoroutineScope {
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         ongoingNotifBuilder = NotificationCompat.Builder(applicationContext, LOW_PRIO_CHANNEL_ID)
             .setPriority(NotificationCompat.PRIORITY_LOW)
-            .setContentTitle(getString(R.string.screen_record_notif_title_recording_screen))
-            .addAction(R.drawable.screen_recorder_ic_stop_black_24dp,
-                getString(R.string.screen_recorder_notif_stop), buildPendingIntent(ACTION_STOP_RECORD))
-            .setSmallIcon(R.drawable.screen_recorder_ic_notify_white)
+            .setContentTitle(getString(com.tokopedia.screenrecorder.R.string.screen_record_notif_title_recording_screen))
+            .addAction(com.tokopedia.screenrecorder.R.drawable.screen_recorder_ic_stop_black_24dp,
+                getString(com.tokopedia.screenrecorder.R.string.screen_recorder_notif_stop), buildPendingIntent(ACTION_STOP_RECORD))
+            .setSmallIcon(com.tokopedia.screenrecorder.R.drawable.screen_recorder_ic_notify_white)
 
         val startServiceNotif = NotificationCompat.Builder(applicationContext, HIGH_PRIO_CHANNEL_ID)
-            .setContentTitle(getString(R.string.screen_record_notif_title_ready_to_record))
+            .setContentTitle(getString(com.tokopedia.screenrecorder.R.string.screen_record_notif_title_ready_to_record))
             .setPriority(NotificationCompat.PRIORITY_MAX)
-            .setContentText(getString(R.string.screen_record_notif_text_ready_to_record))
-            .addAction(R.drawable.screen_recorder_ic_videocam_black_24dp,
-                getString(R.string.screen_recorder_notif_record), buildPendingIntent(ACTION_START_RECORD))
-            .addAction(R.drawable.screen_recorder_ic_close_black_24dp,
-                getString(R.string.screen_recorder_notif_finish), buildPendingIntent(ACTION_FINISH))
-            .setSmallIcon(R.drawable.screen_recorder_ic_notify_white).build()
+            .setContentText(getString(com.tokopedia.screenrecorder.R.string.screen_record_notif_text_ready_to_record))
+            .addAction(com.tokopedia.screenrecorder.R.drawable.screen_recorder_ic_videocam_black_24dp,
+                getString(com.tokopedia.screenrecorder.R.string.screen_recorder_notif_record), buildPendingIntent(ACTION_START_RECORD))
+            .addAction(com.tokopedia.screenrecorder.R.drawable.screen_recorder_ic_close_black_24dp,
+                getString(com.tokopedia.screenrecorder.R.string.screen_recorder_notif_finish), buildPendingIntent(ACTION_FINISH))
+            .setSmallIcon(com.tokopedia.screenrecorder.R.drawable.screen_recorder_ic_notify_white).build()
 
         startForeground(NOTIF_ID, startServiceNotif)
     }
@@ -261,11 +261,11 @@ class ScreenRecordService : Service(), CoroutineScope {
     private fun buildFinishNotification(pendingIntent: PendingIntent) : Notification {
         return NotificationCompat.Builder(applicationContext, HIGH_PRIO_CHANNEL_ID)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setContentTitle(getString(R.string.screen_record_notif_title_video_create_success))
-            .setContentText(getString(R.string.screen_record_notif_text_video_create_success))
+            .setContentTitle(getString(com.tokopedia.screenrecorder.R.string.screen_record_notif_title_video_create_success))
+            .setContentText(getString(com.tokopedia.screenrecorder.R.string.screen_record_notif_text_video_create_success))
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
-            .setSmallIcon(R.drawable.screen_recorder_ic_notify_white).build()
+            .setSmallIcon(com.tokopedia.screenrecorder.R.drawable.screen_recorder_ic_notify_white).build()
     }
 
     private fun getOpenVideoResultPendingIntent(resultPath: String) : PendingIntent {
