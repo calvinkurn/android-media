@@ -776,7 +776,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         val title: String
         val description: String
         return if (shopInfo != null && isOwner) {
-            if (selectedEtalaseId == ALL_ETALASE_ID) {
+            if (selectedEtalaseId == ALL_ETALASE_ID || selectedEtalaseId.isEmpty()) {
                 if (shopInfo != null) {
                     shopPageTracking?.impressionZeroProduct(CustomDimensionShopPage.create(shopInfo?.shopCore?.shopID
                             ?: "",
@@ -1035,7 +1035,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         hideLoading()
         if (productList.isEmpty()) {
             shopProductAdapter.clearAllNonDataElement()
-            if (isOwner && selectedEtalaseId == ALL_ETALASE_ID) {
+            if (isOwner && (selectedEtalaseId == ALL_ETALASE_ID || selectedEtalaseId.isEmpty())) {
                 shopProductAdapter.addSellerAddProductDataModel()
             }
             shopProductAdapter.addEmptyDataModel(emptyDataViewModel)
@@ -1043,7 +1043,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             if (isLoadingNewProductData) {
                 shopProductAdapter.clearAllNonDataElement()
                 shopProductAdapter.clearProductList()
-                if (isOwner && selectedEtalaseId == ALL_ETALASE_ID) {
+                if (isOwner && (selectedEtalaseId == ALL_ETALASE_ID || selectedEtalaseId.isEmpty())) {
                     shopProductAdapter.addSellerAddProductDataModel()
                 }
                 endlessRecyclerViewScrollListener.resetState()
