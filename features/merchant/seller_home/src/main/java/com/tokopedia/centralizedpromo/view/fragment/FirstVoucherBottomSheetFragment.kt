@@ -12,11 +12,11 @@ import com.tokopedia.sellerhome.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.centralized_promo_first_voucher_bottomsheet_layout.*
 
-class FirstVoucherBottomSheetFragment(context: Context) : BottomSheetUnify() {
+class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
 
     companion object {
         @JvmStatic
-        fun createInstance(context: Context) = FirstVoucherBottomSheetFragment(context).apply {
+        fun createInstance(context: Context) = FirstVoucherBottomSheetFragment().apply {
             val view = View.inflate(context, R.layout.centralized_promo_first_voucher_bottomsheet_layout, null)
             setChild(view)
             setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
@@ -39,8 +39,7 @@ class FirstVoucherBottomSheetFragment(context: Context) : BottomSheetUnify() {
         }
 
         firstVoucherButton?.setOnClickListener {
-            //Should be CREATE_VOUCHER, but will change to LIST for bugbash purpose
-            RouteManager.route(context, ApplinkConstInternalSellerapp.VOUCHER_LIST)
+            RouteManager.route(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER)
             this.dismiss()
         }
     }

@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.create.view.fragment.step
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -70,6 +71,8 @@ class ReviewVoucherFragment : BaseDetailFragment() {
 
         private const val PROMO_CODE_ERROR_RESPONSE = "Kode voucher sudah digunakan."
 
+        private const val IS_MVC_FIRST_TIME = "is_mvc_first_time"
+        private const val VOUCHER_CREATION = "voucher_creation"
     }
 
     private var getVoucherReviewUiModel: () -> VoucherReviewUiModel = { VoucherReviewUiModel() }
@@ -142,6 +145,10 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                     R.string.mvc_add_voucher
                 }
         FooterButtonUiModel(context?.getString(res).toBlankOrString(), "", true)
+    }
+
+    private val sharedPref by lazy {
+        context?.getSharedPreferences(VOUCHER_CREATION, Context.MODE_PRIVATE)
     }
 
     private var isWaitingForResult = false
@@ -278,6 +285,11 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                                     putExtra(VoucherListActivity.SUCCESS_VOUCHER_ID_KEY, result.data)
                                 }
                                 startActivity(intent)
+                                sharedPref?.run {
+                                    if (getBoolean(IS_MVC_FIRST_TIME, true)) {
+                                        edit().putBoolean(IS_MVC_FIRST_TIME, false).apply()
+                                    }
+                                }
                                 activity?.finish()
                             }
                         }
