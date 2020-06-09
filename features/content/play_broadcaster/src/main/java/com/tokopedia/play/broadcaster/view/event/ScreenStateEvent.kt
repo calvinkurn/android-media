@@ -8,6 +8,8 @@ sealed class ScreenStateEvent {
 
     object ShowLoading: ScreenStateEvent()
 
+    object ShowCountDown: ScreenStateEvent()
+
     object ShowSetupPage: ScreenStateEvent()
 
     data class ShowUserInteractionPage(val channelId: String): ScreenStateEvent()

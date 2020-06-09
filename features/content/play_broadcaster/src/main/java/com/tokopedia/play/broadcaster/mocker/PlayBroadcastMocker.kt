@@ -97,4 +97,10 @@ object PlayBroadcastMocker {
     fun getMockTotalLike() = TotalLikeUiModel(
             totalLike = "1234"
     )
+
+    fun getLiveStreamingInfo() = LiveStreamInfoUiModel(
+            "1234",
+            ingestUrl = "rtmp://test",
+            streamUrl = "rtmp://test"
+    )
 }

@@ -3,6 +3,7 @@
     <string name="play_auto_share_title">Otomatis dibagikan ke:</string>
     <string name="play_begin_setup">Mulai Persiapannya</string>
     <string name="play_your_followers">Followers \nAnda</string>
+    <string name="play_start_streaming">Mulai Live Streaming</string>
 
     <string name="play_etalase_picker_title">Pilih Produk</string>
     <string name="play_etalase_picker_info">Pilih produk terbaik di tokomu untuk dijadikan konten yang membuat penonton tertarik membeli.</string>
@@ -16,6 +17,7 @@
     <string name="play_product_not_found_desc">Coba kata kunci lain untuk menemukan produk yang kamu inginkan</string>
 
     <string name="play_action_bar_prepare_title">Buat Live Streaming</string>
+    <string name="play_action_bar_prepare_final_title">Ayo cek lagi info di bawah\n ini sebelum mulai!</string>
     <string name="play_action_bar_end">Akhiri</string>
 
     <string name="play_permit_title">Aktifkan kamera &amp; mikrofon</string>
