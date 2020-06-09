@@ -11,7 +11,10 @@ import androidx.core.app.ActivityCompat
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.imagepicker.picker.album.AlbumAdapter
 import com.tokopedia.imagepicker.picker.gallery.adapter.AlbumMediaAdapter
 import com.tokopedia.imagepicker.picker.gallery.loader.AlbumLoader
 import com.tokopedia.imagepicker.picker.gallery.loader.AlbumMediaLoader
@@ -31,13 +34,16 @@ import java.io.File
  */
 class PlayBroadcastCoverFromGalleryBottomSheet : BottomSheetUnify(),
         AlbumMediaAdapter.OnMediaClickListener,
+        AlbumAdapter.OnAlbumAdapterListener,
         LoaderManager.LoaderCallbacks<Cursor> {
 
     lateinit var listener: Listener
 
     private lateinit var mChildView: View
     private lateinit var albumMediaAdapter: AlbumMediaAdapter
+    private lateinit var albumAdapter: AlbumAdapter
 
+    private var currentViewState = MEDIA_VIEW
     private var albumTitle: String = DEFAULT_ALBUM_TITLE
     private var selectedAlbumItem: AlbumItem? = null
     private var selectedAlbumPosition: Int = 0
@@ -67,6 +73,8 @@ class PlayBroadcastCoverFromGalleryBottomSheet : BottomSheetUnify(),
         val permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
         if (ActivityCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED) {
             showLoading()
+            hideMediaLayout()
+            hideAlbumLayout()
             LoaderManager.getInstance(this).initLoader(ALBUM_LOADER_ID, null, this)
         }
     }
@@ -100,6 +108,13 @@ class PlayBroadcastCoverFromGalleryBottomSheet : BottomSheetUnify(),
         }
     }
 
+    override fun onAlbumClicked(albumItem: AlbumItem?, position: Int) {
+        selectedAlbumItem = albumItem
+        selectedAlbumPosition = position
+        currentViewState = MEDIA_VIEW
+        LoaderManager.getInstance(this).restartLoader(ALBUM_LOADER_ID, null, this)
+    }
+
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
         val permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
         return if (ActivityCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED) {
@@ -114,7 +129,6 @@ class PlayBroadcastCoverFromGalleryBottomSheet : BottomSheetUnify(),
     }
 
     override fun onLoadFinished(loader: Loader<Cursor>, data: Cursor?) {
-        hideLoading()
         when (loader.id) {
             ALBUM_LOADER_ID -> onAlbumLoadedCursor(data)
             MEDIA_LOADER_ID -> albumMediaAdapter.swapCursor(data)
@@ -141,6 +155,7 @@ class PlayBroadcastCoverFromGalleryBottomSheet : BottomSheetUnify(),
 
         albumMediaAdapter = AlbumMediaAdapter(false,
                 arrayListOf(), this)
+        albumAdapter = AlbumAdapter(requireContext(), this, GalleryType.IMAGE_ONLY)
     }
 
     private fun initView() {
@@ -157,20 +172,49 @@ class PlayBroadcastCoverFromGalleryBottomSheet : BottomSheetUnify(),
                 false))
         rvPlayGallery.adapter = albumMediaAdapter
 
+        rvPlayAlbum.setHasFixedSize(true)
+        rvPlayAlbum.layoutManager = LinearLayoutManager(requireContext(),
+                RecyclerView.VERTICAL, false)
+        rvPlayAlbum.adapter = albumAdapter
+
+        containerPlayGalleryHeader.setOnClickListener {
+            hideMediaLayout()
+            showAlbumLayout()
+        }
+
         showLoading()
+        hideMediaLayout()
+        hideAlbumLayout()
     }
 
     private fun showLoading() {
         mChildView.containerPlayLoading?.visibility = View.VISIBLE
-        mChildView.rvPlayGallery?.visibility = View.GONE
     }
 
     private fun hideLoading() {
         mChildView.containerPlayLoading?.visibility = View.GONE
+    }
+
+    private fun showMediaLayout() {
+        mChildView.containerPlayGalleryHeader?.visibility = View.VISIBLE
         mChildView.rvPlayGallery?.visibility = View.VISIBLE
     }
 
+    private fun hideMediaLayout() {
+        mChildView.containerPlayGalleryHeader?.visibility = View.GONE
+        mChildView.rvPlayGallery?.visibility = View.GONE
+    }
+
+    private fun showAlbumLayout() {
+        mChildView.rvPlayAlbum?.visibility = View.VISIBLE
+    }
+
+    private fun hideAlbumLayout() {
+        mChildView.rvPlayAlbum?.visibility = View.GONE
+    }
+
     private fun onAlbumLoadedCursor(cursor: Cursor?) {
+        albumAdapter.swapCursor(cursor)
         cursor?.let {
             if (it.count > 0) {
                 Handler().post {
@@ -203,11 +247,13 @@ class PlayBroadcastCoverFromGalleryBottomSheet : BottomSheetUnify(),
 
     private fun selectAlbum(albumItem: AlbumItem) {
         hideLoading()
+        showMediaLayout()
+        hideAlbumLayout()
         selectedAlbumItem = albumItem
 
         tvPlayGalleryAlbumLabel?.text = if (albumItem.isAll) DEFAULT_ALBUM_TITLE else albumItem.displayName
         if (albumItem.isAll && albumItem.isEmpty) {
-            Toaster.make(mChildView,
+            Toaster.make(mChildView.rootView,
                     getString(com.tokopedia.imagepicker.R.string.error_no_media_storage),
                     Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
         } else {
@@ -253,6 +299,9 @@ class PlayBroadcastCoverFromGalleryBottomSheet : BottomSheetUnify(),
 
         private const val ALBUM_LOADER_ID = 1
         private const val MEDIA_LOADER_ID = 2
+
+        private const val ALBUM_VIEW = 1
+        private const val MEDIA_VIEW = 2
 
         private const val DEFAULT_ALBUM_TITLE = "Semua media"
         private const val DEFAULT_GALLERY_SPAN_COUNT = 4
