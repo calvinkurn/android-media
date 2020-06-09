@@ -11,10 +11,10 @@ import com.google.gson.annotations.SerializedName
 class TelcoProduct(
         @SerializedName("id")
         @Expose
-        val id: String,
+        val id: String = "",
         @SerializedName("attributes")
         @Expose
-        val attributes: TelcoAttributesProduct)
+        val attributes: TelcoAttributesProduct = TelcoAttributesProduct())
     : Parcelable {
 
     constructor(parcel: Parcel) : this(
