@@ -65,7 +65,7 @@ class DigitalHomePageTypeFactory(val onItemBindListener: OnItemBindListener,
     }
 
     fun type(dualIconsModel: RechargeHomepageDualIconsModel): Int {
-        return RechargeHomepageDualIconsViewHolder.LAYOUT
+        return RechargeHomepageTrustMarkViewHolder.LAYOUT
     }
 
     fun type(urgencyWidgetModel: RechargeHomepageUrgencyWidgetModel): Int {
