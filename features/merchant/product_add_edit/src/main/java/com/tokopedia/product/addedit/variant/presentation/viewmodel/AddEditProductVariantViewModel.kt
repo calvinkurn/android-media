@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.variant.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -24,17 +25,54 @@ class AddEditProductVariantViewModel @Inject constructor(
         private val getCategoryVariantCombinationUseCase: GetCategoryVariantCombinationUseCase
 ) : BaseViewModel(coroutineDispatcher) {
 
+    var clickedVariantPhotoItemPosition: Int? = null
+
+    var isSingleVariantTypeIsSelected = false
+
     private var variantValuesLayoutMap: TreeMap<Int, Int> = TreeMap()
 
     private var selectedVariantUnitValuesMap: HashMap<Int, MutableList<UnitValue>> = HashMap()
 
     private var selectedVariantDetailValues: HashMap<Int, VariantDetail> = HashMap()
 
+    private val mSelectedVariantUnitValuesLevel1 = MutableLiveData<List<UnitValue>>()
+    val selectedVariantUnitValuesLevel1: LiveData<List<UnitValue>> get() = mSelectedVariantUnitValuesLevel1
+
+    private val mSelectedVariantUnitValuesLevel2 = MutableLiveData<List<UnitValue>>()
+    val selectedVariantUnitValues2: LiveData<List<UnitValue>> get() = mSelectedVariantUnitValuesLevel2
+
     private val mGetCategoryVariantCombinationResult = MutableLiveData<Result<GetCategoryVariantCombinationResponse>>()
     val getCategoryVariantCombinationResult: LiveData<Result<GetCategoryVariantCombinationResponse>>
         get() = mGetCategoryVariantCombinationResult
 
     var variantSizechartUrl = MutableLiveData<String>("")
+
+    private val mIsInputValid = MediatorLiveData<Boolean>().apply {
+
+        addSource(mSelectedVariantUnitValuesLevel1) {
+            val isVariantUnitValuesLevel1Empty = mSelectedVariantUnitValuesLevel1.value?.isEmpty()
+                    ?: true
+            val isVariantUnitValuesLevel2Empty = mSelectedVariantUnitValuesLevel2.value?.isEmpty()
+                    ?: true
+            this.value = isInputValid(isVariantUnitValuesLevel1Empty, isVariantUnitValuesLevel2Empty, isSingleVariantTypeIsSelected)
+        }
+        addSource(mSelectedVariantUnitValuesLevel2) {
+            val isVariantUnitValuesLevel1Empty = mSelectedVariantUnitValuesLevel1.value?.isEmpty()
+                    ?: true
+            val isVariantUnitValuesLevel2Empty = mSelectedVariantUnitValuesLevel2.value?.isEmpty()
+                    ?: true
+            this.value = isInputValid(isVariantUnitValuesLevel1Empty, isVariantUnitValuesLevel2Empty, isSingleVariantTypeIsSelected)
+        }
+    }
+    val isInputValid: LiveData<Boolean> get() = mIsInputValid
+
+    private fun isInputValid(isVariantUnitValuesLevel1Empty: Boolean, isVariantUnitValuesLevel2Empty: Boolean, isSingleVariantTypeIsSelected: Boolean): Boolean {
+
+        if (isSingleVariantTypeIsSelected && !isVariantUnitValuesLevel1Empty) return true
+        if (isSingleVariantTypeIsSelected && !isVariantUnitValuesLevel2Empty) return true
+
+        return !isVariantUnitValuesLevel1Empty && !isVariantUnitValuesLevel2Empty
+    }
 
     fun getCategoryVariantCombination(categoryId: String) {
         launchCatchError(block = {
@@ -72,6 +110,14 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     fun updateSelectedVariantUnitValuesMap(layoutPosition: Int, selectedVariantUnitValues: MutableList<UnitValue>) {
         selectedVariantUnitValuesMap[layoutPosition] = selectedVariantUnitValues
+    }
+
+    fun updateSelectedVariantUnitValuesLevel1(selectedVariantUnitValues: List<UnitValue>) {
+        mSelectedVariantUnitValuesLevel1.value = selectedVariantUnitValues
+    }
+
+    fun updateSelectedVariantUnitValuesLevel2(selectedVariantUnitValues: List<UnitValue>) {
+        mSelectedVariantUnitValuesLevel2.value = selectedVariantUnitValues
     }
 
     fun getSelectedVariantUnitValues(layoutPosition: Int): MutableList<UnitValue> {

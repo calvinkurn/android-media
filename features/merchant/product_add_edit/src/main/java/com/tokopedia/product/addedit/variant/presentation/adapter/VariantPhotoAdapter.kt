@@ -4,12 +4,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.variant.data.model.UnitValue
+import com.tokopedia.product.addedit.variant.presentation.model.VariantPhoto
 import com.tokopedia.product.addedit.variant.presentation.viewholder.VariantPhotoViewHolder
 
-class VariantPhotoAdapter(private val onItemClickedListener: OnItemClickListener) : RecyclerView.Adapter<VariantPhotoViewHolder>(), VariantPhotoViewHolder.OnItemClickListener {
+class VariantPhotoAdapter(private val onItemClickedListener: OnItemClickListener) :
+        RecyclerView.Adapter<VariantPhotoViewHolder>(), VariantPhotoViewHolder.OnItemClickListener {
 
-    private var items: MutableList<UnitValue> = mutableListOf()
+    private var items: MutableList<VariantPhoto> = mutableListOf()
 
     interface OnItemClickListener {
         fun onItemClicked(position: Int)
@@ -25,18 +26,23 @@ class VariantPhotoAdapter(private val onItemClickedListener: OnItemClickListener
     }
 
     override fun onBindViewHolder(holder: VariantPhotoViewHolder, position: Int) {
-        val variantUnitValue = items[position]
-        holder.bindData(variantUnitValue.value)
+        val variantPhoto = items[position]
+        holder.bindData(variantPhoto)
     }
 
-    fun setData(items: List<UnitValue>) {
+    fun setData(items: List<VariantPhoto>) {
         this.items = items.toMutableList()
         notifyDataSetChanged()
     }
 
-    fun addData(item: UnitValue) {
+    fun addData(item: VariantPhoto) {
         this.items.add(item)
-        notifyItemInserted(items.lastIndex)
+        notifyDataSetChanged()
+    }
+
+    fun updateImageData(imageUrlOrPath: String, position: Int) {
+        this.items[position].imageUrlOrPath = imageUrlOrPath
+        notifyItemChanged(position)
     }
 
     override fun onItemClicked(position: Int) {

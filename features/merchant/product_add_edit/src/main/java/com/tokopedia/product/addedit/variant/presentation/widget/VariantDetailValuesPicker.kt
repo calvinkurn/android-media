@@ -53,7 +53,6 @@ class VariantDetailValuesPicker(context: Context?) : LinearLayout(context) {
 
     fun setSelectedVariantUnit(selectedVariantUnit: Unit) {
         this.selectedVariantUnit = selectedVariantUnit
-
     }
 
     fun setOnButtonSaveClickListener(onButtonSaveClickListener: OnButtonSaveClickListener) {
@@ -111,7 +110,6 @@ class VariantDetailValuesPicker(context: Context?) : LinearLayout(context) {
 
         val addCustomValueTitle = context.getString(R.string.action_variant_add) + " " + unitName
         val addCustomValueButton = ListItemUnify(addCustomValueTitle, "")
-        addCustomValueButton.listTitle?.setTextColor(ContextCompat.getColor(context, R.color.Green_G500))
         variantUnitData.add(addCustomValueButton)
 
         listUnifyVariantUnitValues.setData(variantUnitData)
@@ -147,6 +145,9 @@ class VariantDetailValuesPicker(context: Context?) : LinearLayout(context) {
                         else selectedVariantUnitValues.remove(selectedVariantUnitValue)
                         configureSaveButton(selectedVariantUnitValues)
                     }
+                } else {
+                    listItemUnify.isBold = false
+                    listItemUnify.listTitle?.setTextColor(ContextCompat.getColor(context, R.color.Green_G500))
                 }
             }
         }
