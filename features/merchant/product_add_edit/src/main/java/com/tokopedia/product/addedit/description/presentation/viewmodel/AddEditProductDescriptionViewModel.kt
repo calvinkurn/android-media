@@ -13,6 +13,7 @@ import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
 import com.tokopedia.product.addedit.description.presentation.model.*
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -34,10 +35,6 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     var variantCountList: ArrayList<Int> = arrayListOf(0, 0)
     var variantNameList: ArrayList<String> = arrayListOf("", "")
     var productInputModel: ProductInputModel = ProductInputModel()
-        set(value) {
-            field = value
-            setVariantNamesAndCount()
-        }
     var isEditMode: Boolean = false
     var isAddMode: Boolean = false
     val categoryId: String get() {
@@ -46,7 +43,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     val descriptionInputModel: DescriptionInputModel get() {
         return productInputModel.descriptionInputModel
     }
-    val variantInputModel: ProductVariantInputModel get() {
+    val variantInputModel: VariantInputModel get() {
         return productInputModel.variantInputModel
     }
     val hasWholesale: Boolean get() {
@@ -145,18 +142,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
                         variantOptionParent: ArrayList<ProductVariantOptionParent>,
                         productPictureViewModel: PictureViewModel?) {
         productInputModel.variantInputModel.let {
-            if (productVariant.isNotEmpty()) {
-                it.variantOptionParent = mapVariantOption(variantOptionParent)
-                it.productVariant = mapProductVariant(productVariant, variantOptionParent)
-                it.productSizeChart = productPictureViewModel
-                setVariantNamesAndCount(productVariant, variantOptionParent)
-            } else {
-                it.variantOptionParent.clear()
-                it.productVariant.clear()
-                it.productSizeChart = null
-                variantCountList.fill(0)
-                variantNameList.fill("")
-            }
+
         }
     }
 
@@ -207,27 +193,6 @@ class AddEditProductDescriptionViewModel @Inject constructor(
 
         setVariantCountLevel1(productVariant)
         setVariantCountLevel2(productVariant)
-    }
-
-    private fun setVariantNamesAndCount() {
-        // get variant count
-        val level1Options: ArrayList<Int> = arrayListOf()
-        val level2Options: ArrayList<Int> = arrayListOf()
-        variantInputModel.productVariant.forEach { productVariant ->
-            val level1Option = productVariant.opt.getOrNull(0)
-            val level2Option = productVariant.opt.getOrNull(1)
-            level1Option?.run { level1Options.add(this) }
-            level2Option?.run { level2Options.add(this) }
-        }
-        variantCountList[0] = level1Options.distinct().size
-        variantCountList[1] = level2Options.distinct().size
-
-        // get variant names
-        variantInputModel.variantOptionParent.forEachIndexed { index, optionParent ->
-            if (index < 2) {
-                variantNameList[index] = optionParent.name ?: ""
-            }
-        }
     }
 
     private fun setVariantCountLevel1(productVariant: ArrayList<ProductVariantCombinationViewModel>) {
@@ -293,17 +258,6 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         } else {
             TYPE_ACTIVE
         }
-    }
-
-    // disable removing variant when in edit mode and if product have a variant
-    fun checkOriginalVariantLevel(): Boolean {
-        // you must compare isEditMode and isAddMode to obtain actual editing status
-        if (isEditMode && !isAddMode) {
-            if (variantInputModel.productVariant.size > 0) {
-                return variantInputModel.variantOptionParent.getOrNull(0) != null
-            }
-        }
-        return false
     }
 
     companion object {

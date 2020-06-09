@@ -10,6 +10,7 @@ import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputMode
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.preview.data.model.params.add.*
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import javax.inject.Inject
 
 /**
@@ -46,7 +47,7 @@ class AddProductInputMapper @Inject constructor() {
                         detailInputModel: DetailInputModel,
                         descriptionInputModel: DescriptionInputModel,
                         shipmentInputModel: ShipmentInputModel,
-                        variantInputModel: ProductVariantInputModel): ProductAddParam {
+                        variantInputModel: VariantInputModel): ProductAddParam {
 
         return ProductAddParam(
                 detailInputModel.productName,
@@ -69,7 +70,7 @@ class AddProductInputMapper @Inject constructor() {
                 mapPreorderParam(detailInputModel.preorder),
                 mapWholesaleParam(detailInputModel.wholesaleList),
                 mapVideoParam(descriptionInputModel.videoLinkList),
-                mapVariantParam(variantInputModel, sizeChartUploadId, variantOptionUploadId)
+                null
 
         )
     }

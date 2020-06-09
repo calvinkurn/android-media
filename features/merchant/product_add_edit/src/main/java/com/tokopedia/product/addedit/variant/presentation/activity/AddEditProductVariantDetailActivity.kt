@@ -3,7 +3,6 @@ package com.tokopedia.product.addedit.variant.presentation.activity
 import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
@@ -11,19 +10,19 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.variant.di.AddEditProductVariantComponent
 import com.tokopedia.product.addedit.variant.di.AddEditProductVariantModule
 import com.tokopedia.product.addedit.variant.di.DaggerAddEditProductVariantComponent
-import com.tokopedia.product.addedit.variant.presentation.fragment.AddEditProductVariantFragment
+import com.tokopedia.product.addedit.variant.presentation.fragment.AddEditProductVariantDetailFragment
 
-class AddEditProductVariantActivity: BaseSimpleActivity(), HasComponent<AddEditProductVariantComponent> {
+class AddEditProductVariantDetailActivity: BaseSimpleActivity(), HasComponent<AddEditProductVariantComponent> {
 
     companion object {
         fun createInstance(context: Context?, cacheManagerId: String?): Intent =
-                Intent(context, AddEditProductVariantActivity::class.java)
+                Intent(context, AddEditProductVariantDetailActivity::class.java)
                         .putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
     }
 
     override fun getNewFragment(): Fragment {
         val cacheManagerId = intent?.getStringExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID).orEmpty()
-        return AddEditProductVariantFragment.createInstance(cacheManagerId)
+        return AddEditProductVariantDetailFragment.createInstance(cacheManagerId)
     }
 
     override fun getComponent(): AddEditProductVariantComponent {
@@ -36,7 +35,7 @@ class AddEditProductVariantActivity: BaseSimpleActivity(), HasComponent<AddEditP
 
     override fun onBackPressed() {
         val f = fragment
-        if (f != null && f is AddEditProductVariantFragment) {
+        if (f != null && f is AddEditProductVariantDetailFragment) {
             f.onBackPressed()
         }
     }

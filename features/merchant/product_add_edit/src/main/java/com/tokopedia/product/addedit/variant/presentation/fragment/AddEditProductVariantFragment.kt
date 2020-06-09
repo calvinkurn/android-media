@@ -23,21 +23,25 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
 import com.tokopedia.product.addedit.imagepicker.view.activity.SizechartPickerAddProductActivity
 import com.tokopedia.product.addedit.imagepicker.view.activity.SizechartPickerEditPhotoActivity
 import com.tokopedia.product.addedit.imagepicker.view.activity.VariantPhotoPickerActivity
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
+import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.data.model.Unit
 import com.tokopedia.product.addedit.variant.data.model.UnitValue
 import com.tokopedia.product.addedit.variant.data.model.VariantDetail
 import com.tokopedia.product.addedit.variant.di.AddEditProductVariantComponent
+import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProductVariantDetailActivity
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantPhotoAdapter
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantTypeAdapter
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantValueAdapter
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.COLOUR_VARIANT_TYPE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_TYPE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.REQUEST_CODE_SIZECHART_IMAGE
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.REQUEST_CODE_VARIANT_DETAIL
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.REQUEST_CODE_VARIANT_PHOTO_IMAGE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
@@ -69,7 +73,6 @@ class AddEditProductVariantFragment :
         VariantUnitPicker.OnVariantUnitPickListener, VariantDetailValuesPicker.OnVariantUnitPickerClickListener, VariantPhotoAdapter.OnItemClickListener {
 
     companion object {
-
         private const val TAG_VARIANT_UNIT_PICKER = "VARIANT_UNIT_PICKER"
         private const val TAG_VARIANT_UNIT_VALUE_PICKER = "VARIANT_UNIT_VALUE_PICKER"
         private const val TAG_VARIANT_UNIT_CUSTOM_VALUE_INPUT_FORM = "VARIANT_UNIT_CUSTOM_VALUE_INPUT_FORM"
@@ -77,7 +80,7 @@ class AddEditProductVariantFragment :
         fun createInstance(cacheManagerId: String?): Fragment {
             return AddEditProductVariantFragment().apply {
                 arguments = Bundle().apply {
-                    putString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
+                    putString(EXTRA_CACHE_MANAGER_ID, cacheManagerId)
                 }
             }
         }
@@ -105,10 +108,14 @@ class AddEditProductVariantFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID)
+
+        val cacheManagerId = arguments?.getString(EXTRA_CACHE_MANAGER_ID)
         val saveInstanceCacheManager = SaveInstanceCacheManager(requireContext(), cacheManagerId)
 
-        cacheManagerId?.run {}
+        cacheManagerId?.run {
+            viewModel.productInputModel.value = saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL,
+                    ProductInputModel::class.java) ?: ProductInputModel()
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -133,6 +140,11 @@ class AddEditProductVariantFragment :
         setRecyclerViewToFlex(recyclerViewVariantValueLevel2)
         setRecyclerViewToHorizontal(recyclerViewVariantPhoto)
 
+        observeSizechartUrl()
+        observeGetCategoryVariantCombinationResult()
+        observeProductInputModel()
+        observeInputStatus()
+
         cardSizechart.setOnClickListener {
             onSizechartClicked()
         }
@@ -148,12 +160,10 @@ class AddEditProductVariantFragment :
             if (variantDetail.units.isEmpty()) showVariantCustomInputForm(VARIANT_VALUE_LEVEL_ONE_POSITION, variantDetail.variantID, variantDetail.name)
             showVariantValuePicker(variantDetail, VARIANT_VALUE_LEVEL_TWO_POSITION, null)
         }
-
-        observeSizechartUrl()
-        observeProductData()
-        observeInputStatus()
-
-        viewModel.getCategoryVariantCombination("2860")
+      
+        buttonSave.setOnClickListener {
+            startAddEditProductVariantDetailActivity()
+        }
     }
 
     override fun onVariantTypeSelected(adapterPosition: Int, variantDetail: VariantDetail) {
@@ -444,7 +454,7 @@ class AddEditProductVariantFragment :
         }
     }
 
-    private fun observeProductData() {
+    private fun observeGetCategoryVariantCombinationResult() {
         viewModel.getCategoryVariantCombinationResult.observe(this, Observer { result ->
             when (result) {
                 is Success -> {
@@ -460,6 +470,13 @@ class AddEditProductVariantFragment :
                     }
                 }
             }
+        })
+    }
+
+    private fun observeProductInputModel() {
+        viewModel.productInputModel.observe(this, Observer { productInputModel ->
+            val categoryId = productInputModel.detailInputModel.categoryId
+            viewModel.getCategoryVariantCombination(categoryId)
         })
     }
 
@@ -514,7 +531,10 @@ class AddEditProductVariantFragment :
                     actionText = getString(R.string.title_try_again),
                     duration = Snackbar.LENGTH_INDEFINITE,
                     clickListener = View.OnClickListener {
-                        viewModel.getCategoryVariantCombination("916")
+                        val categoryId = viewModel.productInputModel.value?.detailInputModel?.categoryId
+                        categoryId?.let { id ->
+                            viewModel.getCategoryVariantCombination(id)
+                        }
                     })
         }
     }
@@ -532,6 +552,16 @@ class AddEditProductVariantFragment :
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             addItemDecoration(HorizontalItemDecoration(resources.getDimensionPixelSize(R.dimen.spacing_lvl3)))
+        }
+    }
+
+    private fun startAddEditProductVariantDetailActivity() {
+        context?.run {
+            val cacheManager = SaveInstanceCacheManager(this, true).apply {
+                put(EXTRA_PRODUCT_INPUT_MODEL, viewModel.productInputModel.value)
+            }
+            val intent = AddEditProductVariantDetailActivity.createInstance(context, cacheManager.id)
+            startActivityForResult(intent, REQUEST_CODE_VARIANT_DETAIL)
         }
     }
 

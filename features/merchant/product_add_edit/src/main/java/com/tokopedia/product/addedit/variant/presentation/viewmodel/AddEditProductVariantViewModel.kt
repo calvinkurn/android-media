@@ -5,6 +5,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.data.model.GetCategoryVariantCombinationResponse
 import com.tokopedia.product.addedit.variant.data.model.UnitValue
 import com.tokopedia.product.addedit.variant.data.model.VariantDetail
@@ -45,6 +46,7 @@ class AddEditProductVariantViewModel @Inject constructor(
     val getCategoryVariantCombinationResult: LiveData<Result<GetCategoryVariantCombinationResponse>>
         get() = mGetCategoryVariantCombinationResult
 
+    var productInputModel = MutableLiveData<ProductInputModel>()
     var variantSizechartUrl = MutableLiveData<String>("")
 
     private val mIsInputValid = MediatorLiveData<Boolean>().apply {
