@@ -12,6 +12,7 @@ import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewMode
 import com.tokopedia.autocomplete.initialstate.recentsearch.convertRecentSearchToVisitableList
 import com.tokopedia.autocomplete.initialstate.recentview.ReecentViewTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentview.convertRecentViewSearchToVisitableList
+import com.tokopedia.autocomplete.util.getShopIdFromApplink
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -342,7 +343,7 @@ class InitialStatePresenter @Inject constructor(
     }
 
     private fun getRecentShopLabelForTracking(item: BaseItemInitialStateSearch): String {
-        return item.productId + " - keyword: " + item.title
+        return getShopIdFromApplink(item.applink) + " - keyword: " + item.title
     }
 
     private fun getItemEventLabelForTracking(item: BaseItemInitialStateSearch, adapterPosition: Int): String {
