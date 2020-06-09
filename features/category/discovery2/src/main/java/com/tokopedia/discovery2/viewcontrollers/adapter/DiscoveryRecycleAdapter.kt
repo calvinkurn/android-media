@@ -21,20 +21,15 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
         private var noOfObject = 0
     }
 
-
-
     // To set the common ViewPool for Inner Recycler View to recycle views
     private val viewPool = RecyclerView.RecycledViewPool()
-//    private val count: AtomicInteger = AtomicInteger(0)
 
     private var componentList: ArrayList<ComponentsItem> = ArrayList()
     private var viewHolderListModel = ViewModelProviders.of(fragment).get((DiscoveryListViewModel::class.java.canonicalName
             ?: "") + noOfObject++, DiscoveryListViewModel::class.java)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder {
-//        Timber.d("Inflate view holder ${count.incrementAndGet()}")
-        val viewHolder: AbstractViewHolder = DiscoveryHomeFactory.createViewHolder(parent, viewType, fragment) as AbstractViewHolder
-        return viewHolder
+        return DiscoveryHomeFactory.createViewHolder(parent, viewType, fragment) as AbstractViewHolder
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder, position: Int) {

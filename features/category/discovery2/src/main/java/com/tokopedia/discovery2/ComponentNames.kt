@@ -40,6 +40,7 @@ enum class ComponentNames(val componentName: String) {
     TimerSprintSale("timer_sprint_sale"),
     ShimmerProductCard("shimmer_product_card"),
     Shimmer("shimmer"),
+    LoadMore("load_more"),
 
     // Product Card Revamp
     ProductCardRevamp("product_card_revamp"),

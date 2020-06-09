@@ -7,8 +7,9 @@ import javax.inject.Inject
 
 class ProductCardsUseCase @Inject constructor(private val productCardsRepository: ProductCardsRepository) {
     companion object {
-        private const val RPC_PAGE_NUMBER_KEY = "rpc_page_number"
-        private const val RPC_PAGE_SIZE = "rpc_page_size"
+        private const val RPC_ROWS = "rpc_Rows"
+        private const val RPC_START = "rpc_Start"
+        private const val PRODUCT_PER_PAGE = 20
     }
 
     suspend fun loadFirstPageComponents(componentId: String, pageEndPoint: String): Boolean {
@@ -16,7 +17,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         if (component?.noOfPagesLoaded == 1)
             return false
         component?.let { component ->
-            component?.componentsItem = productCardsRepository.getProducts(componentId, getQueryParameterMap(1, component.componentsPerPage), pageEndPoint, component.name)
+            component?.componentsItem = productCardsRepository.getProducts(componentId, getQueryParameterMap(0, component.componentsPerPage), pageEndPoint, component.name)
             component?.noOfPagesLoaded = 1
             return true
         }
@@ -24,14 +25,23 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         return false
     }
 
-    suspend fun getProductCardsUseCase(componentId: String, queryParameterMap: MutableMap<String, Any>, pageEndPoint: String, productComponentName: String?): ArrayList<ComponentsItem> {
-        return productCardsRepository.getProducts(componentId, queryParameterMap, pageEndPoint, productComponentName)
+    suspend fun getProductCardsUseCase(componentId: String, pageEndPoint: String): Boolean {
+        var component = getComponent(componentId, pageEndPoint)
+        var parentComponent = component?.parentComponentId?.let { getComponent(it, pageEndPoint) }
+
+        parentComponent?.let { component ->
+            var size = component.componentsItem?.size
+            (component?.componentsItem as ArrayList<ComponentsItem>).addAll(productCardsRepository.getProducts(componentId, getQueryParameterMap(size
+                    ?: 0, component.componentsPerPage), pageEndPoint, component.name))
+            return true
+        }
+        return false
     }
 
-    private fun getQueryParameterMap(pageNum: Int, productPerPage: Int?): MutableMap<String, Any> {
+    private fun getQueryParameterMap(pageStart: Int, productPerPage: Int?): MutableMap<String, Any> {
         val queryParameterMap = mutableMapOf<String, Any>()
-        queryParameterMap[RPC_PAGE_NUMBER_KEY] = pageNum.toString()
-        queryParameterMap[RPC_PAGE_SIZE] = productPerPage.toString()
+        queryParameterMap[RPC_ROWS] = PRODUCT_PER_PAGE.toString()
+        queryParameterMap[RPC_START] = pageStart.toString()
         return queryParameterMap
     }
 }
