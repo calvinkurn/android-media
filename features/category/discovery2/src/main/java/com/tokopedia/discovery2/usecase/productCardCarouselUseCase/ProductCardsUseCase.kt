@@ -29,10 +29,10 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         var component = getComponent(componentId, pageEndPoint)
         var parentComponent = component?.parentComponentId?.let { getComponent(it, pageEndPoint) }
 
-        parentComponent?.let { component ->
-            var size = component.componentsItem?.size
-            (component?.componentsItem as ArrayList<ComponentsItem>).addAll(productCardsRepository.getProducts(componentId, getQueryParameterMap(size
-                    ?: 0, component.componentsPerPage), pageEndPoint, component.name))
+        parentComponent?.let { component1 ->
+            var size = component1.componentsItem?.size
+            (component1?.componentsItem as ArrayList<ComponentsItem>).addAll(productCardsRepository.getProducts(component1.id, getQueryParameterMap(size
+                    ?: 0, component1.componentsPerPage), pageEndPoint, component1.name))
             return true
         }
         return false

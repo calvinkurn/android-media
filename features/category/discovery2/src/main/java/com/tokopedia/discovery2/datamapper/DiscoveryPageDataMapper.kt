@@ -86,22 +86,6 @@ fun getDiscvoeryComponentList(pageInfo: PageInfo, components: List<ComponentsIte
     return listComponents
 }
 
-//else if (component.name == "product_card_revamp" || component.name == "product_card_sprint_sale") {
-//    if (component.componentsItem.isNullOrEmpty() && component.noOfPagesLoaded == 0) {
-//        component.needPagination = true
-//        listComponents.addAll(List(10) { ComponentsItem(name = "shimmer_product_card") })
-//    } else if (component.componentsItem?.size?.rem(component.componentsPerPage) == 0) {
-//        component.componentsItem?.let {
-//            listComponents.addAll(getDiscvoeryComponentList(pageInfo, it))
-//            listComponents.add(ComponentsItem(name = "load_more"))
-//        }
-//    } else {
-//        component.componentsItem?.let {
-//            listComponents.addAll(getDiscvoeryComponentList(pageInfo, it))
-//        }
-//    }
-//}
-
 
 fun getComponent(componentId: String, pageName: String): ComponentsItem? {
     discoveryPageData[pageName].let {
