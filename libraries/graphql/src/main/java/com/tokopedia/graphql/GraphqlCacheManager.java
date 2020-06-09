@@ -44,11 +44,11 @@ public class GraphqlCacheManager {
         return this;
     }
 
-    public long getCacheDuration(int duration) {
+    public long getCacheDuration(final int duration) {
         return System.currentTimeMillis() / 1000L + (duration * 1000);
     }
 
-    public void store() {
+    public void  store() {
         GraphqlDatabaseModel simpleDB = new GraphqlDatabaseModel();
         simpleDB.key = Key;
         simpleDB.value = Value;
@@ -60,7 +60,7 @@ public class GraphqlCacheManager {
 
     }
 
-    public void save(String key, String value, long durationInMiliSeconds) {
+    public void save(final String key, final String value, final long durationInMiliSeconds) {
         GraphqlDatabaseModel simpleDB = new GraphqlDatabaseModel();
         simpleDB.key = key;
         simpleDB.value = value;
@@ -68,13 +68,13 @@ public class GraphqlCacheManager {
         databaseDao.insertSingle(simpleDB);
     }
 
-    public void delete(String key) {
+    public void delete(final String key) {
         GraphqlDatabaseModel simpleDB = new GraphqlDatabaseModel();
         simpleDB.key = key;
         databaseDao.delete(simpleDB);
     }
 
-    public String get(String key) {
+    public String get(final String key) {
         long currentTime = System.currentTimeMillis();
         GraphqlDatabaseModel cache = databaseDao.getGraphqlModel(key, currentTime);
         deleteExpiredRecord(currentTime);
@@ -85,7 +85,7 @@ public class GraphqlCacheManager {
         }
     }
 
-    public void deleteExpiredRecord(Long currentTime){
+    public void deleteExpiredRecord(final Long currentTime){
         try {
             if (currentTime - lastDeleteExpired > periodOfExpirationDeletion) {
                 databaseDao.deleteExpiredRows(currentTime);
