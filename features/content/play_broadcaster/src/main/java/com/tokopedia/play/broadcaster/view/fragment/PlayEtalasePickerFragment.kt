@@ -15,17 +15,20 @@ import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
+import com.tokopedia.play.broadcaster.ui.model.EtalaseLoadingUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
 import com.tokopedia.play.broadcaster.ui.model.ResultState
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayEtalaseViewHolder
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 import com.tokopedia.play.broadcaster.ui.viewholder.SearchSuggestionViewHolder
 import com.tokopedia.play.broadcaster.util.doOnPreDraw
+import com.tokopedia.play.broadcaster.util.productNotFoundState
 import com.tokopedia.play.broadcaster.util.scroll.EndlessRecyclerViewScrollListener
 import com.tokopedia.play.broadcaster.util.scroll.StopFlingScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.PlayEtalaseAdapter
@@ -52,6 +55,7 @@ class PlayEtalasePickerFragment @Inject constructor(
     private lateinit var rvEtalase: RecyclerView
     private lateinit var rvSearchedProducts: RecyclerView
     private lateinit var rvSuggestions: RecyclerView
+    private lateinit var errorProductNotFound: GlobalError
 
     private val etalaseAdapter = PlayEtalaseAdapter(object : PlayEtalaseViewHolder.Listener {
         override fun onEtalaseClicked(etalaseId: String, sharedElements: List<View>) {
@@ -115,7 +119,7 @@ class PlayEtalasePickerFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView(view)
-        bottomSheetCoordinator.setupTitle("Select Products or Collection")
+        bottomSheetCoordinator.setupTitle(getString(R.string.play_etalase_picker_title))
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -138,6 +142,7 @@ class PlayEtalasePickerFragment @Inject constructor(
             rvEtalase = findViewById(R.id.rv_etalase)
             rvSearchedProducts = findViewById(R.id.rv_searched_products)
             rvSuggestions = findViewById(R.id.rv_suggestions)
+            errorProductNotFound = findViewById(R.id.error_product_not_found)
         }
     }
 
@@ -158,9 +163,12 @@ class PlayEtalasePickerFragment @Inject constructor(
             }
 
             override fun onSearchButtonClicked(view: PlaySearchBar, keyword: String) {
-                shouldSearchProductWithKeyword(keyword)
+                if (keyword.isNotEmpty()) shouldSearchProductWithKeyword(keyword)
+                else psbSearch.cancel()
             }
         })
+
+        errorProductNotFound.productNotFoundState()
 
         setupEtalaseList()
         setupSearchList()
@@ -168,6 +176,15 @@ class PlayEtalasePickerFragment @Inject constructor(
     }
 
     private fun setupEtalaseList() {
+        rvEtalase.layoutManager = GridLayoutManager(rvSearchedProducts.context, SPAN_COUNT, RecyclerView.VERTICAL, false).apply {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+
+                override fun getSpanSize(position: Int): Int {
+                    return if (etalaseAdapter.getItem(position) == EtalaseLoadingUiModel) SPAN_COUNT
+                    else 1
+                }
+            }
+        }
         rvEtalase.adapter = etalaseAdapter
         rvEtalase.addItemDecoration(PlayGridTwoItemDecoration(requireContext()))
         rvEtalase.addOnScrollListener(StopFlingScrollListener())
@@ -203,6 +220,7 @@ class PlayEtalasePickerFragment @Inject constructor(
 
         rvEtalase.gone()
         rvSearchedProducts.gone()
+        errorProductNotFound.gone()
 
         rvSuggestions.visible()
 
@@ -219,6 +237,7 @@ class PlayEtalasePickerFragment @Inject constructor(
             rvEtalase.gone()
         } else {
             rvSearchedProducts.gone()
+            errorProductNotFound.gone()
             rvEtalase.visible()
         }
 
@@ -240,8 +259,19 @@ class PlayEtalasePickerFragment @Inject constructor(
      */
     private fun observeEtalase() {
         viewModel.observableEtalase.observe(viewLifecycleOwner, Observer {
-            etalaseAdapter.setItemsAndAnimateChanges(it)
-            startPostponedTransition()
+            when (it.state) {
+                ResultState.Loading -> {
+                    etalaseAdapter.setItemsAndAnimateChanges(listOf(EtalaseLoadingUiModel))
+                }
+                is ResultState.Success -> {
+                    etalaseAdapter.setItemsAndAnimateChanges(it.currentValue)
+                    startPostponedTransition()
+                }
+                is ResultState.Fail -> {
+                    startPostponedTransition()
+                }
+            }
+
         })
     }
 
@@ -251,11 +281,22 @@ class PlayEtalasePickerFragment @Inject constructor(
                 is ResultState.Success -> {
                     searchProductsAdapter.setItemsAndAnimateChanges(it.currentValue)
 
-                    scrollListener.setHasNextPage(it.state.hasNextPage)
+                    if (it.currentValue.isEmpty()) {
+                        errorProductNotFound.visible()
+                        rvSearchedProducts.gone()
+                        scrollListener.setHasNextPage(false)
+                    } else {
+                        errorProductNotFound.gone()
+                        rvSearchedProducts.visible()
+                        scrollListener.setHasNextPage(it.state.hasNextPage)
+                    }
                     scrollListener.updateState(true)
                 }
                 ResultState.Loading -> {
-                    searchProductsAdapter.setItemsAndAnimateChanges(it.currentValue + ProductLoadingUiModel)
+                    if (it.currentValue.isEmpty()) {
+                        searchProductsAdapter.setItems(listOf(ProductLoadingUiModel))
+                        searchProductsAdapter.notifyDataSetChanged()
+                    } else searchProductsAdapter.setItemsAndAnimateChanges(it.currentValue + ProductLoadingUiModel)
                 }
                 is ResultState.Fail -> {
                     searchProductsAdapter.setItemsAndAnimateChanges(it.currentValue)

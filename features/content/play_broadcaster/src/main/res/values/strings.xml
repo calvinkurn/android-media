@@ -3,7 +3,9 @@
     <string name="play_auto_share_title">Otomatis dibagikan ke:</string>
     <string name="play_begin_setup">Mulai Persiapannya</string>
     <string name="play_your_followers">Followers \nAnda</string>
+    <string name="play_start_streaming">Mulai Live Streaming</string>
 
+    <string name="play_etalase_picker_title">Pilih Produk</string>
     <string name="play_etalase_picker_info">Pilih produk terbaik di tokomu untuk dijadikan konten yang membuat penonton tertarik membeli.</string>
     <string name="play_etalase_search_hint">Cari etalase</string>
     <string name="play_etalase_product_amount">%d Produk</string>
@@ -11,8 +13,11 @@
     <string name="play_product_stock_amount">Stok: %d</string>
     <string name="play_product_select_max_info">Pilih maks. %d produk</string>
     <string name="play_empty_stock">Stok Habis</string>
+    <string name="play_product_not_found_title">Oops, produk nggak ditemukan</string>
+    <string name="play_product_not_found_desc">Coba kata kunci lain untuk menemukan produk yang kamu inginkan</string>
 
     <string name="play_action_bar_prepare_title">Buat Live Streaming</string>
+    <string name="play_action_bar_prepare_final_title">Ayo cek lagi info di bawah\n ini sebelum mulai!</string>
     <string name="play_action_bar_end">Akhiri</string>
 
     <string name="play_permit_title">Aktifkan kamera &amp; mikrofon</string>
@@ -79,6 +84,8 @@
     <string name="play_live_broadcast_dialog_end_timeout_title">Live streaming selesai</string>
     <string name="play_live_broadcast_dialog_end_timeout_desc">Yay, kamu telah berhasil melakukan live streaming. Ayo lihat hasil siaranmu!</string>
     <string name="play_live_broadcast_dialog_end_timeout_primary">Lihat Laporan</string>
+    <string name="play_live_broadcast_share_link_copied">Link disalin!</string>
+    <string name="play_live_broadcast_share_link_ok">Oke</string>
 
     <string name="play_summary_title">Laporan Live Streaming</string>
     <string name="play_summary_button_finish">Selesai</string>
@@ -89,4 +96,7 @@
     <string name="play_summary_atc">Ditambahkan Ke Keranjang</string>
     <string name="play_summary_purchased_product">Produk Dibeli</string>
     <string name="play_summary_new_followers">Pelanggan Baru</string>
+
+    <string name="play_privacy_policy_full">Dengan menekan tombol %s, saya menyetujui %s live streaming.</string>
+    <string name="play_privacy_policy">Syarat &amp; Ketentuan</string>
 </resources>

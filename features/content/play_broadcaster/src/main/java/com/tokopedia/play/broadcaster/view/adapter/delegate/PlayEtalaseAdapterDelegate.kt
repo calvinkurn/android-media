@@ -3,7 +3,8 @@ package com.tokopedia.play.broadcaster.view.adapter.delegate
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
-import com.tokopedia.play.broadcaster.ui.model.PlayEtalaseUiModel
+import com.tokopedia.play.broadcaster.ui.model.EtalaseContentUiModel
+import com.tokopedia.play.broadcaster.ui.model.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayEtalaseViewHolder
 
 /**
@@ -11,9 +12,9 @@ import com.tokopedia.play.broadcaster.ui.viewholder.PlayEtalaseViewHolder
  */
 class PlayEtalaseAdapterDelegate(
         private val listener: PlayEtalaseViewHolder.Listener
-) : TypedAdapterDelegate<PlayEtalaseUiModel, PlayEtalaseUiModel, PlayEtalaseViewHolder>(PlayEtalaseViewHolder.LAYOUT) {
+) : TypedAdapterDelegate<EtalaseContentUiModel, EtalaseUiModel, PlayEtalaseViewHolder>(PlayEtalaseViewHolder.LAYOUT) {
 
-    override fun onBindViewHolder(item: PlayEtalaseUiModel, holder: PlayEtalaseViewHolder) {
+    override fun onBindViewHolder(item: EtalaseContentUiModel, holder: PlayEtalaseViewHolder) {
         holder.bind(item)
     }
 

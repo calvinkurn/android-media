@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.data.model
+package com.tokopedia.play.broadcaster.domain.model
 
 import com.google.gson.annotations.SerializedName
 

@@ -6,6 +6,9 @@ package com.tokopedia.play.broadcaster.ui.model
  */
 data class ChannelInfoUiModel(
         val channelId: String,
+        val title: String,
+        val description: String,
+        val coverUrl: String,
         val shareUrl: String,
         val ingestUrl: String,
         val status: PlayChannelStatus

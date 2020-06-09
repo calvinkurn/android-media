@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:background="@color/Neutral_N700_68"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -59,6 +58,32 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:unifyButtonSize="large"
+        />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_top_action_bottom_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="btn_setup, tv_share_title"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_privacy_policy"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:background="@drawable/bg_play_privacy_policy"
+        android:paddingStart="@dimen/play_dp_12"
+        android:paddingTop="@dimen/spacing_lvl3"
+        android:paddingEnd="@dimen/play_dp_12"
+        android:paddingBottom="@dimen/spacing_lvl3"
+        android:textColor="@color/dark_N700_68"
+        app:layout_constraintBottom_toTopOf="@id/barrier_top_action_bottom_info"
+        app:layout_constraintEnd_toEndOf="@id/btn_setup"
+        app:layout_constraintStart_toStartOf="@id/tv_share_title"
+        app:typographyType="body_3"
+        tools:text="blab bla bla"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

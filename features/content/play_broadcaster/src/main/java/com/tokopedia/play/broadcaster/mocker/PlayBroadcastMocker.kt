@@ -5,9 +5,11 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.data.model.Configuration
+import com.tokopedia.play.broadcaster.domain.model.Configuration
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.view.state.Selectable
+import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import kotlin.random.Random
 
 /**
  * Created by jegul on 20/05/20
@@ -31,7 +33,7 @@ object PlayBroadcastMocker {
      * Etalase
      */
     fun getMockEtalaseList() = List(6) {
-        PlayEtalaseUiModel(
+        EtalaseContentUiModel(
                 id = (it + 1L).toString(),
                 name = "Etalase ${it + 1}",
                 productMap = mutableMapOf(),
@@ -88,8 +90,11 @@ object PlayBroadcastMocker {
 
     fun getMockActiveChannel() = ChannelInfoUiModel(
             channelId = "1234",
+            title = "Klarififikasi Bisa Tebak Siapa?",
+            description = "Yuk gabung sekarang di Play Klarifikasi Bisa Tebak siapa?",
+            coverUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
             ingestUrl = "rtmp://test",
-            shareUrl = "tokopedia://play/2214",
+            shareUrl = "https://www.tokopedia.com/play/channels/1234",
             status = PlayChannelStatus.Active
     )
 
@@ -101,6 +106,23 @@ object PlayBroadcastMocker {
             totalLike = "1234"
     )
 
+    fun getLiveStreamingInfo() = LiveStreamInfoUiModel(
+            "1234",
+            ingestUrl = "rtmp://test",
+            streamUrl = "rtmp://test"
+    )
+
+    fun getMockChat(): PlayChatUiModel {
+        val name = listOf("Aku", "Kamu", "Dia", "Mereka").random()
+        return PlayChatUiModel(
+                messageId = System.currentTimeMillis().toString(),
+                userId = Random.nextInt().toString(),
+                name = name,
+                message = listOf(":pepecry", ":pepelmao", ":lul").random(),
+                isSelfMessage = false
+        )
+    }
+
     fun getSummary(): SummaryUiModel {
         val tickerContent = SummaryUiModel.TickerContent("Live Streaming Berakhir", "Waktu live streaming kamu sudah 30 menit", true)
         return SummaryUiModel(coverImage = "",
@@ -109,4 +131,5 @@ object PlayBroadcastMocker {
                 liveDuration = "28:42",
                 finishRedirectUrl = "")
     }
+
 }

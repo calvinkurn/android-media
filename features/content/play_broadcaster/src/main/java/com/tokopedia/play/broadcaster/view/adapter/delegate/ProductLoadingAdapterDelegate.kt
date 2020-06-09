@@ -5,17 +5,17 @@ import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductUiModel
-import com.tokopedia.play.broadcaster.ui.viewholder.ProductLoadingViewHolder
+import com.tokopedia.play.broadcaster.ui.viewholder.PlayListLoadingViewHolder
 
 /**
  * Created by jegul on 03/06/20
  */
-class ProductLoadingAdapterDelegate : TypedAdapterDelegate<ProductLoadingUiModel, ProductUiModel, ProductLoadingViewHolder>(ProductLoadingViewHolder.LAYOUT) {
+class ProductLoadingAdapterDelegate : TypedAdapterDelegate<ProductLoadingUiModel, ProductUiModel, PlayListLoadingViewHolder>(PlayListLoadingViewHolder.LAYOUT) {
 
-    override fun onBindViewHolder(item: ProductLoadingUiModel, holder: ProductLoadingViewHolder) {
+    override fun onBindViewHolder(item: ProductLoadingUiModel, holder: PlayListLoadingViewHolder) {
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, basicView: View): ProductLoadingViewHolder {
-        return ProductLoadingViewHolder(basicView)
+    override fun onCreateViewHolder(parent: ViewGroup, basicView: View): PlayListLoadingViewHolder {
+        return PlayListLoadingViewHolder(basicView)
     }
 }

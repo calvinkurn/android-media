@@ -159,10 +159,10 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
     }
 
     override fun addDynamicChannelVisitable(): HomeVisitableFactory {
+        visitableList.add(PlayCarouselCardDataModel())
         homeData?.dynamicHomeChannel?.channels?.forEachIndexed { index, channel ->
             val position = index+1
             setDynamicChannelPromoName(position, channel)
-
             when (channel.layout) {
                 DynamicHomeChannel.Channels.LAYOUT_TOPADS -> createDynamicTopAds(channel)
                 DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT -> {
@@ -245,13 +245,6 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface?) 
     }
 
     private fun createPlayWidget(channel: DynamicHomeChannel.Channels) {
-        if (!isCache) {
-            val playBanner = mappingPlayChannel(channel, HashMap(), isCache)
-            if (!visitableList.contains(playBanner)) visitableList.add(playBanner)
-        }
-    }
-
-    private fun createMixTopWidget(channel: DynamicHomeChannel.Channels) {
         if (!isCache) {
             val playBanner = mappingPlayChannel(channel, HashMap(), isCache)
             if (!visitableList.contains(playBanner)) visitableList.add(playBanner)

@@ -1,7 +1,6 @@
-package com.tokopedia.play.broadcaster.util.event
+package com.tokopedia.play_common.util.event
 
 import androidx.lifecycle.Observer
-
 
 /**
  * Created by mzennis on 28/05/20.

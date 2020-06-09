@@ -3,15 +3,9 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.play.broadcaster.data.model.BroadcasterReportLiveSummaries
 import com.tokopedia.play.broadcaster.dispatcher.PlayBroadcastDispatcher
 import com.tokopedia.play.broadcaster.domain.usecase.GetLiveStatisticsUseCase
-import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.ui.mapper.PlaySummaryUiMapper
-import com.tokopedia.play.broadcaster.ui.model.SummaryUiModel
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -29,16 +23,11 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + dispatcher)
 
-    private val _observableSummary = MutableLiveData<SummaryUiModel>()
-    val observableSummary: LiveData<SummaryUiModel>
-        get() = _observableSummary
-
     private val _observableTrafficMetrics = MutableLiveData<List<TrafficMetricUiModel>>()
     val observableTrafficMetricsUiModel: LiveData<List<TrafficMetricUiModel>>
         get() = _observableTrafficMetrics
 
     init {
-        _observableSummary.value = PlayBroadcastMocker.getSummary()
         _observableTrafficMetrics.value = listOf()
     }
 

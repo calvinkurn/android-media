@@ -30,7 +30,7 @@ class PlayRequestPermissionView : ConstraintLayout {
     private val ivClose: AppCompatImageView
 
     init {
-        val view = View.inflate(context, R.layout.view_request_permission, this)
+        val view = View.inflate(context, R.layout.view_play_request_permission, this)
         tvCheckCamera = view.findViewById(R.id.tv_permit_check_camera)
         tvCheckMic = view.findViewById(R.id.tv_permit_check_mic)
         ivClose = view.findViewById(R.id.iv_permit_close)
