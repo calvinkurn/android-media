@@ -71,9 +71,11 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getRec
 import com.tokopedia.home.analytics.HomePageTrackingV2.SprintSale.getSprintSaleImpression
 import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
 import com.tokopedia.home.analytics.v2.LegoBannerTracking
+import com.tokopedia.home.analytics.v2.MixLeftComponentTracking
 import com.tokopedia.home.analytics.v2.MixTopTracking.getMixTopViewIris
 import com.tokopedia.home.analytics.v2.MixTopTracking.mapChannelToProductTracker
 import com.tokopedia.home.analytics.v2.ProductHighlightTracking.getProductHighlightImpression
+import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMapper.mapHomeChannelToComponent
 import com.tokopedia.home.beranda.di.BerandaComponent
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -103,10 +105,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
-import com.tokopedia.home.beranda.presentation.view.listener.DynamicLegoBannerComponentCallback
-import com.tokopedia.home.beranda.presentation.view.listener.FramePerformanceIndexInterface
-import com.tokopedia.home.beranda.presentation.view.listener.HomeComponentCallback
-import com.tokopedia.home.beranda.presentation.view.listener.RecommendationListCarouselComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.*
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
@@ -127,6 +126,7 @@ import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEgg
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_USE_GLOBAL_COMPONENT
 import com.tokopedia.searchbar.HomeMainToolbar
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo.TickerDetail
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -885,7 +885,8 @@ open class HomeFragment : BaseDaggerFragment(),
                 this,
                 HomeComponentCallback(viewModel.get()),
                 DynamicLegoBannerComponentCallback(context),
-                RecommendationListCarouselComponentCallback(viewModel.get(), this))
+                RecommendationListCarouselComponentCallback(viewModel.get(), this),
+                MixLeftComponentCallback(this))
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
                 .build()
@@ -1369,7 +1370,7 @@ open class HomeFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun openApplink(applink: String, trackingAttribution: String) {
+    override fun openApplink(applink: String, trackingAttribution: String) {
         var applink = applink
         if (!TextUtils.isEmpty(applink)) {
             applink = appendTrackerAttributionIfNeeded(applink, trackingAttribution)
@@ -1886,7 +1887,13 @@ open class HomeFragment : BaseDaggerFragment(),
                 )
             }
             DynamicChannelViewHolder.TYPE_MIX_TOP -> putEEToIris(getMixTopViewIris(mapChannelToProductTracker(channel), channel.header.name, channel.id, position.toString()) as HashMap<String, Any>)
-            DynamicChannelViewHolder.TYPE_MIX_LEFT -> putEEToIris(getMixLeftIrisProductView(channel) as HashMap<String, Any>)
+            DynamicChannelViewHolder.TYPE_MIX_LEFT -> {
+                if (remoteConfig.getBoolean(HOME_USE_GLOBAL_COMPONENT)) {
+                    putEEToIris(MixLeftComponentTracking.getMixLeftIrisProductView(mapHomeChannelToComponent(channel, position))as HashMap<String, Any>)
+                } else {
+                    putEEToIris(getMixLeftIrisProductView(channel) as HashMap<String, Any>)
+                }
+            }
             DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST -> putEEToIris(getRecommendationListImpression(channel, true, viewModel.get().getUserId()) as HashMap<String, Any>)
             DynamicChannelViewHolder.TYPE_PRODUCT_HIGHLIGHT -> putEEToIris(getProductHighlightImpression(
                     channel, true

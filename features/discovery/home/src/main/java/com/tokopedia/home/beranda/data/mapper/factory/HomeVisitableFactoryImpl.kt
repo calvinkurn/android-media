@@ -24,6 +24,7 @@ import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
 import com.tokopedia.home.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_USE_GLOBAL_COMPONENT
@@ -229,9 +230,16 @@ class HomeVisitableFactoryImpl(
                         )
                     }
                 }
-                DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {createDynamicChannel(
-                        channel = channel
-                )}
+                DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {
+//                    if (remoteConfig.getBoolean(HOME_USE_GLOBAL_COMPONENT)) {
+                        createMixLeftComponent(channel, position, isCache)
+//                    } else {
+//                        createDynamicChannel(
+//                                channel = channel,
+//                                trackingData = HomePageTrackingV2.RecommendationList.getRecommendationListImpression(channel,  userId = userSessionInterface?.userId ?: "")
+//                        )
+//                    }
+                }
                 DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> {
                     createDynamicChannel(
                             channel = channel,
@@ -298,6 +306,14 @@ class HomeVisitableFactoryImpl(
                 channel,
                 isCache,
                 verticalPosition
+        ))
+        context?.let { HomeTrackingUtils.homeDiscoveryWidgetImpression(it,
+                visitableList.size, channel) }
+    }
+
+    private fun createMixLeftComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
+        visitableList.add(mappingMixLeftComponent(
+                channel, isCache, verticalPosition
         ))
         context?.let { HomeTrackingUtils.homeDiscoveryWidgetImpression(it,
                 visitableList.size, channel) }
@@ -428,6 +444,15 @@ class HomeVisitableFactoryImpl(
                     HomePageTrackingV2.RecommendationList.getRecommendationListImpression(channel,  userId = userSessionInterface?.userId ?: "") as java.util.HashMap<String, Any>
             )
         }
+        return viewModel
+    }
+
+    private fun mappingMixLeftComponent(channel: DynamicHomeChannel.Channels,
+                                        isCache: Boolean,
+                                        verticalPosition: Int): Visitable<*> {
+        val viewModel = MixLeftDataModel(
+                DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
+        )
         return viewModel
     }
 

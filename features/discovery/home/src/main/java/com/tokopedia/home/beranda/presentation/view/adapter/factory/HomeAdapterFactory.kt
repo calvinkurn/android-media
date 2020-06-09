@@ -29,10 +29,13 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendation
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.listener.HomeComponentListener
+import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.home_component.listener.RecommendationListCarouselListener
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
+import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
 import com.tokopedia.home_component.viewholders.RecommendationListCarouselViewHolder
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import java.util.*
 
@@ -49,7 +52,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val rechargeRecommendationListener: RechargeRecommendationViewHolder.RechargeRecommendationListener,
                          private val homeComponentListener: HomeComponentListener,
                          private val legoListener: DynamicLegoBannerListener,
-                         private val recommendationListCarouselListener: RecommendationListCarouselListener
+                         private val recommendationListCarouselListener: RecommendationListCarouselListener,
+                         private val mixLeftComponentListener: MixLeftComponentListener
 ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory{
@@ -163,6 +167,12 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
     override fun type(recommendationListCarouselDataModel: RecommendationListCarouselDataModel): Int {
         return RecommendationListCarouselViewHolder.LAYOUT
     }
+
+    override fun type(mixLeftDataModel: MixLeftDataModel): Int {
+        return MixLeftComponentViewHolder.LAYOUT
+    }
+
+    //end of Home-Component section
 
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
@@ -297,6 +307,12 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                     RecommendationListCarouselViewHolder(
                             view,
                             recommendationListCarouselListener,
+                            parentRecycledViewPool
+                    )
+            MixLeftComponentViewHolder.LAYOUT -> viewHolder =
+                    MixLeftComponentViewHolder(
+                            view,
+                            mixLeftComponentListener,
                             parentRecycledViewPool
                     )
             else -> viewHolder = super.createViewHolder(view, type)
