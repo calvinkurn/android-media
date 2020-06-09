@@ -8,7 +8,7 @@ import kotlinx.android.parcel.Parcelize
  */
 
 @Parcelize
-data class DisplayModel (
+data class ProfileCompletionDataView (
         var gender: Int = 0,
         var phone: String = "",
         var bday: String = "",

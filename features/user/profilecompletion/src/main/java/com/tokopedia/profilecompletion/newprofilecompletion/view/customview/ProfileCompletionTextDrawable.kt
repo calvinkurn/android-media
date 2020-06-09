@@ -46,12 +46,12 @@ import android.util.TypedValue
  * [setBounds()][.setBounds] to provide the Drawable
  * size based on the Path constraints.
  */
-class TextDrawable(context: Context) : Drawable() {
+class ProfileCompletionTextDrawable(context: Context) : Drawable() {
     /* Resources for scaling values to the given device */
     private val mResources: Resources = context.resources
 
     /* Paint to hold most drawing primitives for the text */
-    private val mTextPaint: TextPaint
+    private val mTextPaint: TextPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
 
     /* Layout is used to measure and draw the text */
     private var mTextLayout: StaticLayout? = null
@@ -347,7 +347,6 @@ class TextDrawable(context: Context) : Drawable() {
         //Used to load and scale resource items
         //Definition of this drawables size
         //Paint to use for the text
-        mTextPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
         mTextPaint.density = mResources.displayMetrics.density
         mTextPaint.isDither = true
         var textSize = 15

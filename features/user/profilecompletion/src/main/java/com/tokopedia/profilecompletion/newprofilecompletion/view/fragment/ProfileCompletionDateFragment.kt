@@ -21,8 +21,8 @@ import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addbod.viewmodel.AddBodViewModel
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.newprofilecompletion.ProfileCompletionNewConstants
-import com.tokopedia.profilecompletion.newprofilecompletion.view.util.Events
-import com.tokopedia.profilecompletion.newprofilecompletion.view.util.Properties
+import com.tokopedia.profilecompletion.newprofilecompletion.view.util.ProfileCompletionEvents
+import com.tokopedia.profilecompletion.newprofilecompletion.view.util.ProfileCompletionProperties
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import rx.Observable
@@ -81,7 +81,7 @@ class ProfileCompletionDateFragment : BaseDaggerFragment() {
         proceed?.isEnabled = false
         profileCompletionFragment?.canProceed(false)
 
-        val drawable = MethodChecker.getDrawable(activity, R.drawable.chevron_thin_down)
+        val drawable = MethodChecker.getDrawable(activity, R.drawable.profilecompletion_chevron_thin_down)
         drawable.setColorFilter(MethodChecker.getColor(activity, R.color.warm_grey), PorterDuff.Mode.SRC_IN)
         val size = drawable.intrinsicWidth * 0.3
         drawable.setBounds(0, 0, size.toInt(), size.toInt())
@@ -139,9 +139,9 @@ class ProfileCompletionDateFragment : BaseDaggerFragment() {
         val adapter = ArrayAdapter(activity, androidx.appcompat.R.layout.select_dialog_item_material, monthsIndo)
         month?.setAdapter(adapter)
 
-        dateObservable = date?.let { Events.text(it) }
-        yearObservable = year?.let { Events.text(it) }
-        monthObservable = month?.let { Events.select(it) }
+        dateObservable = date?.let { ProfileCompletionEvents.text(it) }
+        yearObservable = year?.let { ProfileCompletionEvents.text(it) }
+        monthObservable = month?.let { ProfileCompletionEvents.select(it) }
 
         val dateMapper = dateObservable?.map { text -> text.trim { it <= ' ' } != "" }
         val yearMapper = yearObservable?.map { text -> text.trim { it <= ' ' } != "" }
@@ -158,7 +158,7 @@ class ProfileCompletionDateFragment : BaseDaggerFragment() {
             obj: Throwable -> obj.printStackTrace()
         }
 
-        allField.subscribe(proceed?.let { Properties.enabledFrom(it) }, onError)
+        allField.subscribe(proceed?.let { ProfileCompletionProperties.enabledFrom(it) }, onError)
         allField.subscribe(Action1 { aBoolean -> profileCompletionFragment?.canProceed(aBoolean) }, onError)
     }
 

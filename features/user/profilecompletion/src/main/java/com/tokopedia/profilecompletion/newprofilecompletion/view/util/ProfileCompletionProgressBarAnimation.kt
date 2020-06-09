@@ -7,7 +7,7 @@ import android.widget.ProgressBar
 /**
  * Created by stevenfredian on 6/19/17.
  */
-class ProgressBarAnimation(private val progressBar: ProgressBar) : Animation() {
+class ProfileCompletionProgressBarAnimation(private val progressBar: ProgressBar) : Animation() {
     private val max: Int
     private var from = 0f
     private var to = 0f

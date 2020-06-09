@@ -3,7 +3,7 @@ package com.tokopedia.profilecompletion.newprofilecompletion.view.util
 /**
  * @author  by stevenfredian on 10/27/16.
  */
-object CustomPhoneNumberUtil {
+object ProfileCompletionCustomPhoneNumberUtil {
     @JvmStatic
     fun transform(phoneRawString: String): String {
         var phoneRaw = checkStart(phoneRawString)

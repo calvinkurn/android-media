@@ -10,7 +10,7 @@ import rx.functions.Action1
  * Created by stevenfredian on 7/13/17.
  * see Properties on abstraction
  */
-object Properties {
+object ProfileCompletionProperties {
     /**
      * Updates the *enabled* property of a view for each event received.
      */

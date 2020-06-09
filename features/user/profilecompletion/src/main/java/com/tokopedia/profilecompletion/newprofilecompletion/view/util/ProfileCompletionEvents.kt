@@ -17,7 +17,7 @@ import rx.subjects.PublishSubject
 /**
  * Use @EventsWatcher on abstraction
  */
-object Events {
+object ProfileCompletionEvents {
     /*
      * Creates a subject that emits events for the current text and each text change event
      */

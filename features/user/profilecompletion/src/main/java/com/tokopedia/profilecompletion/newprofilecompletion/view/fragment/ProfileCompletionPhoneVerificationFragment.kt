@@ -10,8 +10,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.phoneverification.view.fragment.PhoneVerificationFragment
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.newprofilecompletion.ProfileCompletionNewConstants
-import com.tokopedia.profilecompletion.newprofilecompletion.view.util.CustomPhoneNumberUtil.transform
-import com.tokopedia.profilecompletion.newprofilecompletion.data.DisplayModel
+import com.tokopedia.profilecompletion.newprofilecompletion.view.util.ProfileCompletionCustomPhoneNumberUtil.transform
+import com.tokopedia.profilecompletion.newprofilecompletion.data.ProfileCompletionDataView
 
 /**
  * Created by nisie on 2/22/17.
@@ -20,7 +20,7 @@ class ProfileCompletionPhoneVerificationFragment : PhoneVerificationFragment() {
 
     private var profileCompletionFragment: ProfileCompletionFragment? = null
     private var verifyButton: TextView? = null
-    private var data: DisplayModel? = null
+    private var data: ProfileCompletionDataView? = null
     private var skipFragment: TextView? = null
 
     override fun findView(view: View) {

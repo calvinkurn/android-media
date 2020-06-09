@@ -33,9 +33,9 @@ import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.newprofilecompletion.ProfileCompletionNewConstants
 import com.tokopedia.profilecompletion.newprofilecompletion.view.activity.ProfileCompletionActivity
 import com.tokopedia.profilecompletion.newprofilecompletion.view.listener.ProfileCompletionContract
-import com.tokopedia.profilecompletion.newprofilecompletion.view.util.ProgressBarAnimation
-import com.tokopedia.profilecompletion.newprofilecompletion.data.DisplayModel
-import com.tokopedia.profilecompletion.newprofilecompletion.view.customview.TextDrawable
+import com.tokopedia.profilecompletion.newprofilecompletion.view.util.ProfileCompletionProgressBarAnimation
+import com.tokopedia.profilecompletion.newprofilecompletion.data.ProfileCompletionDataView
+import com.tokopedia.profilecompletion.newprofilecompletion.view.customview.ProfileCompletionTextDrawable
 import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileInfoViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -66,9 +66,9 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
     private val userInfoViewModel by lazy { viewModelProvider.get(ProfileInfoViewModel::class.java) }
 
     private var pinViewModel: AddChangePinViewModel? = null
-    private var animation: ProgressBarAnimation? = null
+    private var animationProfileCompletion: ProfileCompletionProgressBarAnimation? = null
 
-    private var currentData: DisplayModel? = null
+    private var currentData: ProfileCompletionDataView? = null
 
     private var filled: String = ""
     private var skip: View? = null
@@ -112,7 +112,7 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
         userInfoViewModel.userProfileInfo.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
-                    val displayModel = DisplayModel()
+                    val displayModel = ProfileCompletionDataView()
                     displayModel.bday = it.data.birthDay
                     displayModel.completion = it.data.completionScore
                     displayModel.gender = it.data.gender
@@ -146,9 +146,9 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
         NetworkErrorHelper.showEmptyState(activity, view, throwable.message, retryAction)
     }
 
-    private val draw: TextDrawable?
+    private val draw: ProfileCompletionTextDrawable?
         get() {
-            val drawable = context?.let { TextDrawable(it) }
+            val drawable = context?.let { ProfileCompletionTextDrawable(it) }
             drawable?.text = resources.getString(R.string.skip_form)
             drawable?.setTextColor(R.color.grey_700)
             return drawable
@@ -181,7 +181,7 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
     }
 
     private fun initialVar() {
-        animation = progressBar?.let { ProgressBarAnimation(it) }
+        animationProfileCompletion = progressBar?.let { ProfileCompletionProgressBarAnimation(it) }
         filled = "filled"
         pair = Pair(R.anim.slide_in_right, R.anim.slide_out_left)
         retryAction = NetworkErrorHelper.RetryClickedListener {
@@ -199,9 +199,9 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
 
     private fun updateProgressBar(oldValue: Int, newValue: Int) {
         currentData?.completion = newValue
-        animation?.setValue(oldValue, newValue)
-        animation?.duration = 500
-        progressBar?.startAnimation(animation)
+        animationProfileCompletion?.setValue(oldValue, newValue)
+        animationProfileCompletion?.duration = 500
+        progressBar?.startAnimation(animationProfileCompletion)
         progressBar?.progress = currentData?.completion?: 0
         percentText?.text = String.format("%s%%", progressBar?.progress.toString())
 
@@ -211,7 +211,7 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
             indexColor = 0
         }
         val shape = activity?.let {
-            ContextCompat.getDrawable(it, R.drawable.horizontal_progressbar)
+            ContextCompat.getDrawable(it, R.drawable.profilecompletion_horizontal_progressbar)
         } as LayerDrawable?
 
         val runningBar = (shape?.findDrawableByLayerId(R.id.progress_col) as ScaleDrawable).drawable as GradientDrawable
@@ -220,29 +220,29 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
         runningBar.mutate()
     }
 
-    private fun loadFragment(displayModel: DisplayModel, pair: Pair<Int, Int>?) {
+    private fun loadFragment(profileCompletionDataView: ProfileCompletionDataView, pair: Pair<Int, Int>?) {
         KeyboardHandler.DropKeyboard(activity, view)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             transaction = childFragmentManager.beginTransaction()
         }
         pair?.let { transaction?.setCustomAnimations(pair.first, pair.second) }
-        chooseFragment(displayModel)
+        chooseFragment(profileCompletionDataView)
     }
 
-    private fun chooseFragment(displayModel: DisplayModel) {
-        if (checkingIsEmpty(displayModel.gender.toString())) {
+    private fun chooseFragment(profileCompletionDataView: ProfileCompletionDataView) {
+        if (checkingIsEmpty(profileCompletionDataView.gender.toString())) {
             val genderFragment = ProfileCompletionGenderFragment.createInstance(this)
             transaction?.replace(R.id.fragment_container, genderFragment, ProfileCompletionGenderFragment.TAG)?.commit()
 
-        } else if (checkingIsEmpty(displayModel.bday)) {
+        } else if (checkingIsEmpty(profileCompletionDataView.bday)) {
             val dateFragment = ProfileCompletionDateFragment.createInstance(this)
             transaction?.replace(R.id.fragment_container, dateFragment, ProfileCompletionDateFragment.TAG)?.commit()
 
-        } else if (!displayModel.isPhoneVerified) {
+        } else if (!profileCompletionDataView.isPhoneVerified) {
             val verifCompletionFragment = ProfileCompletionPhoneVerificationFragment.createInstance(this)
             transaction?.replace(R.id.fragment_container, verifCompletionFragment, ProfileCompletionPhoneVerificationFragment.TAG)?.commit()
 
-        } else if (displayModel.completion == 100) {
+        } else if (profileCompletionDataView.completion == 100) {
             (activity as ProfileCompletionActivity?)?.onFinishedForm()
 
         } else {
@@ -353,15 +353,15 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
         }
     }
 
-    override fun onGetUserInfo(displayModel: DisplayModel?) {
+    override fun onGetUserInfo(profileCompletionDataView: ProfileCompletionDataView?) {
         main?.visibility = View.VISIBLE
-        currentData = displayModel
+        currentData = profileCompletionDataView
         currentData?.completion?.let { updateProgressBar(0, it) }
         loading?.visibility = View.GONE
-        displayModel?.let { loadFragment(it, Pair(0, 0)) }
+        profileCompletionDataView?.let { loadFragment(it, Pair(0, 0)) }
     }
 
-    override val data: DisplayModel?
+    override val data: ProfileCompletionDataView?
         get() = currentData
 
     override fun getScreenName(): String = ""
