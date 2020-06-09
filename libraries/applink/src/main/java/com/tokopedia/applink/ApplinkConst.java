@@ -373,6 +373,8 @@ public interface ApplinkConst {
         String FLASHSALE_MANAGEMENT = "sellerapp://flashsale/management";
         String WEBVIEW = "sellerapp://webview";
         String VOUCHER_LIST = "sellerapp://voucher-list";
+        String VOUCHER_ACTIVE = "sellerapp://voucher-list/active";
+        String VOUCHER_HISTORY = "sellerapp://voucher-list/history";
         String CREATE_VOUCHER = "sellerapp://create-voucher";
     }
 

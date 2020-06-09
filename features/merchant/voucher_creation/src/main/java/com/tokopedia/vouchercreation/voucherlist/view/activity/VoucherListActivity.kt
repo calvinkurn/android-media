@@ -1,5 +1,7 @@
 package com.tokopedia.vouchercreation.voucherlist.view.activity
 
+import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -17,7 +19,19 @@ import com.tokopedia.vouchercreation.voucherlist.view.fragment.VoucherListFragme
 class VoucherListActivity : BaseActivity(), VoucherListFragment.Listener {
 
     companion object {
+        @JvmStatic
+        fun createInstance(context: Context,
+                           isActive: Boolean): Intent =
+                Intent(context, VoucherListActivity::class.java).apply {
+                    putExtra(IS_ACTIVE, isActive)
+                }
+
         const val SUCCESS_VOUCHER_ID_KEY = "success_voucher_id"
+
+        private const val IS_ACTIVE = "is_active"
+
+        const val ACTIVE = "active"
+        const val HISTORY = "history"
     }
 
     private var isSuccessDialogAlreadyShowed = false
@@ -30,8 +44,26 @@ class VoucherListActivity : BaseActivity(), VoucherListFragment.Listener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mvc_voucher_list)
 
-        showFragment(getFragment(true))
         setWhiteStatusBar()
+
+        var isActive = true
+
+        intent?.data?.lastPathSegment?.let { status ->
+            if (status.isNotEmpty()) {
+                isActive =
+                        when(status) {
+                            ACTIVE -> true
+                            HISTORY -> false
+                            else -> true
+                        }
+            }
+        }
+
+        intent?.extras?.getBoolean(IS_ACTIVE, true)?.let {
+            isActive = it
+        }
+
+        showFragment(getFragment(isActive))
     }
 
     override fun onBackPressed() {

@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.Toaster
@@ -281,7 +280,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                     when(result) {
                         is Success -> {
                             context?.run {
-                                val intent = RouteManager.getIntent(this, ApplinkConstInternalSellerapp.VOUCHER_LIST).apply {
+                                val intent = VoucherListActivity.createInstance(this, true).apply {
                                     putExtra(VoucherListActivity.SUCCESS_VOUCHER_ID_KEY, result.data)
                                 }
                                 startActivity(intent)
@@ -312,7 +311,10 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                 if (isWaitingForResult) {
                     when(result) {
                         is Success -> {
-                            RouteManager.route(context, ApplinkConstInternalSellerapp.VOUCHER_LIST)
+                            context?.run {
+                                val intent = VoucherListActivity.createInstance(this, true)
+                                startActivity(intent)
+                            }
                             activity?.finish()
                         }
                         is Fail -> {
