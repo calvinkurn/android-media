@@ -379,7 +379,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
             getParcelableExtra<VoucherUiModel>(EDIT_VOUCHER)?.let { voucherUiModel ->
                 voucherUiModel.id.let { id ->
                     return if (id != 0) {
-                        viewModel.initiateEditDuplicateVoucher()
+                        viewModel.initiateEditDuplicateVoucher(true)
                         setDuplicateEditVoucherData(voucherUiModel, true)
                         isEditVoucher = true
                         voucherId = id

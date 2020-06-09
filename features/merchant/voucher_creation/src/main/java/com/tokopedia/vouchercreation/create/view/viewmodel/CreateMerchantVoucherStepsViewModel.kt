@@ -20,7 +20,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Named
 
 class CreateMerchantVoucherStepsViewModel @Inject constructor(
         dispatcher: CoroutineDispatcher,
@@ -93,7 +92,7 @@ class CreateMerchantVoucherStepsViewModel @Inject constructor(
         launchCatchError(
                 block = {
                     mInitiateVoucherLiveData.value = Success(withContext(Dispatchers.IO) {
-                        getInitiateVoucher()
+                        getInitiateVoucher(false)
                     })
                 },
                 onError = {
@@ -102,12 +101,12 @@ class CreateMerchantVoucherStepsViewModel @Inject constructor(
         )
     }
 
-    fun initiateEditDuplicateVoucher() {
+    fun initiateEditDuplicateVoucher(isUpdate: Boolean = false) {
         launchCatchError(
                 block = {
                     withContext(Dispatchers.IO) {
                         val shopInfo = async { getBasicInfo() }
-                        val initiateVoucher = async { getInitiateVoucher() }
+                        val initiateVoucher = async { getInitiateVoucher(isUpdate) }
                         shopInfo.await().let { shopInfoModel ->
                             initiateVoucher.await().let { initiateVoucherUiModel ->
                                 mBasicShopInfoLiveData.postValue(Success(shopInfoModel))
@@ -128,6 +127,9 @@ class CreateMerchantVoucherStepsViewModel @Inject constructor(
         return basicShopInfoUseCase.executeOnBackground()
     }
 
-    private suspend fun getInitiateVoucher(): InitiateVoucherUiModel = initiateVoucherUseCase.executeOnBackground()
+    private suspend fun getInitiateVoucher(isUpdate: Boolean): InitiateVoucherUiModel {
+        initiateVoucherUseCase.params = InitiateVoucherUseCase.createRequestParam(isUpdate)
+        return initiateVoucherUseCase.executeOnBackground()
+    }
 
 }

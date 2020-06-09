@@ -5,6 +5,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.vouchercreation.common.base.BaseGqlUseCase
+import com.tokopedia.vouchercreation.common.consts.InitiateAction
 import com.tokopedia.vouchercreation.create.domain.model.InitiateVoucherResponse
 import com.tokopedia.vouchercreation.create.view.uimodel.initiation.InitiateVoucherUiModel
 import javax.inject.Inject
@@ -12,8 +13,8 @@ import javax.inject.Inject
 class InitiateVoucherUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) : BaseGqlUseCase<InitiateVoucherUiModel>() {
 
     companion object {
-        const val QUERY = "query InitiateVoucher{\n" +
-                "\tgetInitiateVoucherPage{\n" +
+        const val QUERY = "query InitiateVoucher(\$action: String){\n" +
+                "\tgetInitiateVoucherPage(Action: \$action){\n" +
                 "\t\theader{\n" +
                 "          process_time\n" +
                 "          messages\n" +
@@ -36,10 +37,23 @@ class InitiateVoucherUseCase @Inject constructor(private val gqlRepository: Grap
                 "        }\n" +
                 "    }\n" +
                 "}"
+
+        private const val ACTION_KEY = "action"
+
+        @JvmStatic
+        fun createRequestParam(isUpdate: Boolean): RequestParams = RequestParams.create().apply {
+            val action =
+                    if (isUpdate) {
+                        InitiateAction.UPDATE
+                    } else {
+                        InitiateAction.CREATE
+                    }
+            putString(ACTION_KEY, action)
+        }
     }
 
     override suspend fun executeOnBackground(): InitiateVoucherUiModel {
-        val request = GraphqlRequest(QUERY, InitiateVoucherResponse::class.java, RequestParams.EMPTY.parameters)
+        val request = GraphqlRequest(QUERY, InitiateVoucherResponse::class.java, params.parameters)
         val response = gqlRepository.getReseponse(listOf(request))
 
         val error = response.getError(InitiateVoucherResponse::class.java)

@@ -12,7 +12,7 @@ class GetTokenUseCase @Inject constructor(private val gqlRepository: GraphqlRepo
 
     companion object {
         const val QUERY = "query GetToken{\n" +
-                "\tgetInitiateVoucherPage{\n" +
+                "\tgetInitiateVoucherPage(Action: \"update\"){\n" +
                 "\t\theader{\n" +
                 "          process_time\n" +
                 "          messages\n" +
