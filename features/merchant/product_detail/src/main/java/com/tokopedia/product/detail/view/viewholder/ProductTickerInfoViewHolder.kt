@@ -81,13 +81,13 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
             val tickerViewPager = TickerPagerAdapter(view.context, tickerData)
 
             general_ticker_info.addPagerView(tickerViewPager, tickerData)
-
-            general_ticker_info.setDescriptionClickEvent(object : TickerCallback {
+            tickerViewPager.setDescriptionClickEvent(object : TickerCallback{
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     listener.onTickerGeneralClicked(linkUrl.toString())
                 }
 
-                override fun onDismiss() {}
+                override fun onDismiss() {
+                }
 
             })
         }
