@@ -2,6 +2,10 @@ package com.tokopedia.vouchercreation.create.view.painter
 
 import android.content.Context
 import android.graphics.*
+import android.os.Build
+import android.text.Layout
+import android.text.StaticLayout
+import android.text.TextPaint
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -28,6 +32,8 @@ class VoucherPreviewPainter(private val context: Context,
     companion object {
         private const val ASTERISK = "*"
         private const val PERCENT = "%"
+
+        private const val MAX_PROMO_NAME_LINES = 2
     }
 
     @Retention(AnnotationRetention.SOURCE)
@@ -71,7 +77,7 @@ class VoucherPreviewPainter(private val context: Context,
         }
     }
     private val promoNamePaint by lazy {
-        Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.WHITE
             textSize = 40f
             typeface = Typeface.DEFAULT_BOLD
@@ -101,7 +107,8 @@ class VoucherPreviewPainter(private val context: Context,
     private val shopNameX = (bitmapWidth * 0.048f)
     private val shopNameY = (bitmapHeight * 0.72f)
     private val promoNameX = (bitmapWidth * 0.42f)
-    private val promoNameY = (bitmapHeight * 0.4f)
+    private val promoNameY = (bitmapHeight * 0.3f)
+    private val promoNameWidth = (bitmapWidth * 0.28).toInt()
     private val shopAvatarSize = (bitmapWidth * 0.113).toInt()
     private val middleX = (bitmapWidth * 0.82f)
     private val labelHeight = (bitmapHeight * 0.12).toInt()
@@ -146,7 +153,22 @@ class VoucherPreviewPainter(private val context: Context,
                 canvas.drawBitmap(it, null, bannerRect, voucherBannerPaint)
             }
             canvas.drawText(shopName, shopNameX, shopNameY, shopNamePaint)
-            canvas.drawText(promoName, promoNameX, promoNameY, promoNamePaint)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val staticLayout = StaticLayout.Builder.obtain(promoName, 0, promoName.length, promoNamePaint, promoNameWidth).apply {
+                    setAlignment(Layout.Alignment.ALIGN_NORMAL)
+                    setMaxLines(MAX_PROMO_NAME_LINES)
+                }.build()
+                canvas.translate(promoNameX, promoNameY)
+                staticLayout.draw(canvas)
+            } else {
+                val staticLayout = StaticLayout(promoName, promoNamePaint, promoNameWidth, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false)
+                canvas.translate(promoNameX, promoNameY)
+                staticLayout.draw(canvas)
+            }
+
+            canvas.translate(-promoNameX, -promoNameY)
+
             Glide.with(context)
                     .asBitmap()
                     .load(shopAvatar)
