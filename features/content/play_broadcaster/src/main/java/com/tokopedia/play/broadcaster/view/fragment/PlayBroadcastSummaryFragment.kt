@@ -130,7 +130,6 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
     private fun setUpFinishButton() {
         btn_play_summary_finish.setOnClickListener {
             //put action here
-            RouteManager.route(requireContext(), "")
             activity?.finish()
         }
     }
