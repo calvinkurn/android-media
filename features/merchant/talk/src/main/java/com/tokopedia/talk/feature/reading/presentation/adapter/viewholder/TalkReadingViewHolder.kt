@@ -58,7 +58,6 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
                 setOnClickListener {
                     threadListener.onThreadClicked(questionId)
                 }
-                setCustomMovementMethod(fun(link: String) : Boolean {return threadListener.onLinkClicked(link)})
                 HtmlLinkHelper(context, content).spannedString
             }
         }
