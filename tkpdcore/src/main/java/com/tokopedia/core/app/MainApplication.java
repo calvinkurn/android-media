@@ -179,7 +179,9 @@ public abstract class MainApplication extends MainRouterApplication{
     @NotNull
     private Boolean initBranch(){
         LinkerManager.initLinkerManager(getApplicationContext());
-
+        if(remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ADDGAIDTO_BRANCH, false)){
+            LinkerManager.getInstance().setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
+        }
         if(userSession.isLoggedIn()) {
             UserData userData = new UserData();
             userData.setUserId(userSession.getUserId());

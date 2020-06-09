@@ -446,4 +446,8 @@
         <key>android_mainapp_enable_seller_migration</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>android_addgaid_to_branch</key>
+        <value>false</value>
+    </entry>
 </defaultsMap>
