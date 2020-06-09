@@ -98,4 +98,13 @@
     <string name="power_merchant_success_description">Tingkatkan penjualan tokomu dengan mengakses fitur-fitur andalan **Power Merchant!**</string>
     <string name="power_merchant_bottom_sheet_score_title">Yaah, Power Merchant sementara tidak aktif</string>
     <string name="power_merchant_bottom_sheet_score_description">Skor performa tokomu kurang dari 65. Segera tingkatkan performa toko untuk kembali menggunakan fitur-fitur Power Merchant.</string>
+
+    <string name="power_merchant_free_shipping_eligible_title">Tokomu memenuhi syarat untuk Bebas Ongkir!</string>
+    <string name="power_merchant_free_shipping_not_eligible_title">Pelajari tentang Bebas Ongkir</string>
+    <string name="power_merchant_free_shipping_activate">Aktifkan Bebas Ongkir</string>
+    <string name="power_merchant_free_shipping_transition_title">Segera! Bebas Ongkir akan berubah</string>
+    <string name="power_merchant_free_shipping_transition_description">Per 1 Juli 2020, skema baru akan diterapkan.</string>
+    <string name="power_merchant_free_shipping_description"><![CDATA[Buat pembeli lebih tertarik &amp; tingkatkan penjualanmu]]></string>
+    <string name="power_merchant_free_shipping_active_description">Cek penggunaan Bebas Ongkir-mu</string>
+    <string name="power_merchant_free_shipping_title">Bebas Ongkir aktif</string>
 </resources>
