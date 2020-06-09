@@ -337,12 +337,19 @@ class ReviewVoucherFragment : BaseDetailFragment() {
             } else {
                 getDisplayedDateString(startDate, startHour, endDate, endHour)
             }
+            val displayedPromoCode =
+                    if (promoCode.isBlank()) {
+                        promoCode
+                    } else {
+                        getPromoCodePrefix() + promoCode
+                    }
 
-            voucherInfoSection = getVoucherInfoSection(targetType, voucherName, getPromoCodePrefix() + promoCode, true)
+            voucherInfoSection = getVoucherInfoSection(targetType, voucherName, displayedPromoCode, true)
 
             val reviewInfoList = mutableListOf(
                     with(voucherReviewUiModel) {
-                        getVoucherPreviewSection(voucherType, voucherName, shopAvatarUrl, shopName, getPromoCodePrefix() + promoCode, postDisplayedDate)
+
+                        getVoucherPreviewSection(voucherType, voucherName, shopAvatarUrl, shopName, displayedPromoCode, postDisplayedDate)
                     },
                     voucherInfoSection,
                     DividerUiModel(DividerUiModel.THIN),
