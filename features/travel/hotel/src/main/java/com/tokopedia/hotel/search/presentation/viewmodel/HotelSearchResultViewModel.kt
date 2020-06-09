@@ -52,12 +52,18 @@ class HotelSearchResultViewModel @Inject constructor(
                 }
             }
 
+            // when user search by coordinate
+            if (hotelSearchModel.searchType == HotelTypeEnum.COORDINATE.value) {
+                location.latitude = hotelSearchModel.lat
+                location.longitude = hotelSearchModel.long
+            }
+
             checkIn = hotelSearchModel.checkIn
             checkOut = hotelSearchModel.checkOut
             room = hotelSearchModel.room
             guest.adult = hotelSearchModel.adult
-            location.latitude = hotelSearchModel.lat
-            location.longitude = hotelSearchModel.long
+            location.searchType = hotelSearchModel.searchType
+            location.searchId = hotelSearchModel.searchId
 
             //Default param
             sort.popularity = true
