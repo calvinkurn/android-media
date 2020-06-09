@@ -9,4 +9,14 @@ import com.tokopedia.home_component.model.ChannelModel
 interface MixLeftComponentListener {
     fun onImageBannerImpressed(channelModel: ChannelModel, position: Int)
     fun onImageBannerClicked(channelModel: ChannelModel, position: Int, applink: String)
+
+    //product card click and impression
+    fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, position: Int)
+    fun onProductCardClicked(channel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String)
+
+    //for see more card click
+    fun onSeeMoreCardClicked(channel: ChannelModel, applink: String)
+
+    //for empty card clicked
+    fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int)
 }

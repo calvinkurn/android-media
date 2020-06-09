@@ -81,26 +81,20 @@ class MixLeftComponentViewHolder (itemView: View,
 
     override fun onProductCardImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
         //because we have empty value at beginning of list, we need to reduce pos by 1
-        val itemPos = position - 1
-
-//        homeCategoryListener.getTrackingQueueObj()?.putEETracking(
-//                HomePageTrackingV2.MixLeft.getMixLeftProductView(channelModel, channelGrid, itemPos) as HashMap<String, Any>)
+        mixLeftComponentListener.onProductCardImpressed(channelModel, channelGrid, position - 1)
     }
 
     override fun onProductCardClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
         //because we have empty value at beginning of list, we need to reduce pos by 1
-//        RouteManager.route(itemView.context, applink)
-//        HomePageTrackingV2.MixLeft.sendMixLeftProductClick(channel, grid, position - 1)
+        mixLeftComponentListener.onProductCardClicked(channelModel, channelGrid, position, applink)
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
-//        RouteManager.route(itemView.context, applink)
-//        HomePageTrackingV2.MixLeft.sendMixLeftSeeAllCardClick(channel, homeCategoryListener.userId)
+        mixLeftComponentListener.onSeeMoreCardClicked(channel, applink)
     }
 
     override fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int) {
-//        HomePageTrackingV2.MixLeft.sendMixLeftBannerClick(element.channel, element.parentPosition)
-//        RouteManager.route(itemView.context, url)
+        mixLeftComponentListener.onEmptyCardClicked(channel, applink, parentPos)
     }
 
 //    override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
