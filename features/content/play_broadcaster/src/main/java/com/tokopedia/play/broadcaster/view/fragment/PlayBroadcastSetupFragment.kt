@@ -16,7 +16,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayFollowerItemDecoration
-import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
+import com.tokopedia.play.broadcaster.ui.model.ChannelSetupUiModel
+import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
 import com.tokopedia.play.broadcaster.util.doOnPreDraw
 import com.tokopedia.play.broadcaster.view.adapter.PlayFollowersAdapter
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
@@ -24,6 +25,7 @@ import com.tokopedia.play.broadcaster.view.bottomsheet.PlayPrivacyPolicyBottomSh
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSetupViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -69,6 +71,7 @@ class PlayBroadcastSetupFragment @Inject constructor(
         super.onActivityCreated(savedInstanceState)
 
         observeFollowers()
+        observeSetupChannel()
         observeCreateChannel()
     }
 
@@ -83,9 +86,7 @@ class PlayBroadcastSetupFragment @Inject constructor(
     private fun setupView(view: View) {
         broadcastCoordinator.setupTitle(getString(R.string.play_action_bar_prepare_title))
         btnSetup.setOnClickListener {
-//             openBroadcastSetupPage()
-            // TODO("for testing live")
-            doCreateChannel()
+             openBroadcastSetupPage()
         }
 
         rvFollowers.adapter = followersAdapter
@@ -98,8 +99,11 @@ class PlayBroadcastSetupFragment @Inject constructor(
     }
 
     override fun onBackPressed(): Boolean {
-        showDialogWhenActionClose()
-        return true
+        if (completeViewAppears()) {
+            showDialogWhenActionClose()
+            return true
+        }
+        return false
     }
 
     private fun setupPrivacyPolicy() {
@@ -124,15 +128,6 @@ class PlayBroadcastSetupFragment @Inject constructor(
         }
     }
 
-    private fun doCreateChannel() {
-        viewModel.createChannel(
-                shopId = 0,
-                productIds = emptyArray(),
-                coverUrl = "",
-                title = ""
-        )
-    }
-
     private fun openBroadcastSetupPage() {
         val setupClass = PlayBroadcastSetupBottomSheet::class.java
         val fragmentFactory = childFragmentManager.fragmentFactory
@@ -153,13 +148,24 @@ class PlayBroadcastSetupFragment @Inject constructor(
         return privacyPolicyBottomSheet
     }
 
-    private fun openBroadcastLivePage(channelInfo: ChannelInfoUiModel) {
+    private fun openBroadcastLivePage(liveStreamInfo: LiveStreamInfoUiModel) {
         broadcastCoordinator.navigateToFragment(PlayBroadcastUserInteractionFragment::class.java,
                 Bundle().apply {
-                    putString(PlayBroadcastUserInteractionFragment.KEY_CHANNEL_ID, channelInfo.channelId)
-                    putString(PlayBroadcastUserInteractionFragment.KEY_INGEST_URL, channelInfo.ingestUrl)
+                    putString(PlayBroadcastUserInteractionFragment.KEY_CHANNEL_ID, liveStreamInfo.channelId)
+                    putString(PlayBroadcastUserInteractionFragment.KEY_INGEST_URL, liveStreamInfo.ingestUrl)
                 })
     }
+
+    private fun setupCompleteView(channelSetupUiModel: ChannelSetupUiModel) {
+        broadcastCoordinator.setupTitle(getString(R.string.play_action_bar_prepare_final_title))
+        btnSetup.text = getString(R.string.play_start_streaming)
+        btnSetup.setOnClickListener {
+            viewModel.createChannel()
+        }
+    }
+
+    private fun completeViewAppears(): Boolean =
+            viewModel.observableSetupChannel.value != null
 
     private fun showDialogWhenActionClose() {
         activity?.let {
@@ -176,6 +182,12 @@ class PlayBroadcastSetupFragment @Inject constructor(
         }
     }
 
+    private fun showToaster(message: String, toasterType: Int) {
+        Toaster.make(requireView(),
+                text = message,
+                type = toasterType)
+    }
+
     //region observe
     /**
      * Observe
@@ -187,16 +199,15 @@ class PlayBroadcastSetupFragment @Inject constructor(
         })
     }
 
+    private fun observeSetupChannel() {
+        viewModel.observableSetupChannel.observe(viewLifecycleOwner, Observer(this::setupCompleteView))
+    }
+
     private fun observeCreateChannel() {
         viewModel.observableCreateChannel.observe(viewLifecycleOwner, Observer {
             when(it) {
-                is Success -> {
-                    // TODO("handle: count down")
-                    openBroadcastLivePage(it.data)
-                }
-                is Fail -> {
-                    // TODO(handle: show toaster error)
-                }
+                is Success ->  openBroadcastLivePage(it.data)
+                is Fail -> showToaster(it.throwable.localizedMessage, Toaster.TYPE_ERROR)
             }
         })
     }

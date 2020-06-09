@@ -24,7 +24,7 @@ class CreateChannelUseCase @Inject constructor(
                     description: ${'$'}description,
                     authorID: ${'$'}authorId,
                     authorType: ${'$'}authorType, 
-                status: ${'$'}status
+                    status: ${'$'}status
               }){
                 channelID
               }

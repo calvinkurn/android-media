@@ -26,6 +26,7 @@ class BottomActionPartialView(
 
     init {
         ivInventory.setOnClickListener { listener.onInventoryIconClicked() }
+        btnAction.setOnClickListener { listener.onNextButtonClicked() }
     }
 
     fun setupBottomActionWithProducts(productList: List<ProductContentUiModel>) {
@@ -64,5 +65,7 @@ class BottomActionPartialView(
     interface Listener {
 
         fun onInventoryIconClicked()
+
+        fun onNextButtonClicked()
     }
 }

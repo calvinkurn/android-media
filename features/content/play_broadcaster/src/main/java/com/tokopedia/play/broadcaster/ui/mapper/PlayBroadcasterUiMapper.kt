@@ -4,9 +4,11 @@ import android.graphics.Typeface
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
+import com.tokopedia.play.broadcaster.domain.model.CreateLiveStreamChannelResponse
 import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
 import com.tokopedia.play.broadcaster.type.EtalaseType
 import com.tokopedia.play.broadcaster.ui.model.EtalaseContentUiModel
+import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.SearchSuggestionUiModel
 import com.tokopedia.play.broadcaster.view.state.SelectableState
@@ -37,7 +39,8 @@ object PlayBroadcasterUiMapper {
                 id = it.productId.toLong(),
                 name = it.name,
                 imageUrl = it.primaryImage.resize300,
-                stock = it.stock,
+//                stock = it.stock,
+                stock = 2, // TODO("for testing only")
                 isSelectedHandler = isSelectedHandler,
                 isSelectable = isSelectableHandler
         )
@@ -59,4 +62,10 @@ object PlayBroadcasterUiMapper {
                 }
         )
     }
+
+    fun mapLiveStream(channelId: String, media: CreateLiveStreamChannelResponse.GetMedia) =
+            LiveStreamInfoUiModel(
+                    channelId = channelId,
+                    ingestUrl = media.ingestUrl,
+                    streamUrl = media.streamUrl)
 }

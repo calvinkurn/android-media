@@ -113,6 +113,10 @@ class PlayBroadcastViewModel  @Inject constructor(
         // TODO("update channel status")
     }
 
+    fun startLiveStreaming() {
+        _observableScreenStateEvent.value = Event(ScreenStateEvent.ShowCountDown)
+    }
+
     fun startPushBroadcast(ingestUrl: String) {
         scope.launch {
             if (ingestUrl.isNotEmpty()) {
