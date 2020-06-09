@@ -1,9 +1,9 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.order.domain.mapper
 
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.PromoCheckoutErrorDefault
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.*
-import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.PromoSAFResponse
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSAFResponse
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.*
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderPromo
 
 object LastApplyMapper {
@@ -14,7 +14,7 @@ object LastApplyMapper {
         if (lastApply?.data != null) {
             val lastApplyUiModel = LastApplyUiModel()
             // set codes
-            val codes = lastApply.data.codes ?: emptyList()
+            val codes = lastApply.data?.codes ?: emptyList()
             val mappedCodes = ArrayList<String>()
             for (code in codes) {
                 if (code != null) {
@@ -24,19 +24,20 @@ object LastApplyMapper {
             lastApplyUiModel.codes = mappedCodes
             // set voucher orders
             val listVoucherOrdersUiModel = ArrayList<LastApplyVoucherOrdersItemUiModel>()
-            if (lastApply.data.voucherOrders != null) {
-                for (i in lastApply.data.voucherOrders.indices) {
+            if (lastApply.data?.voucherOrders != null) {
+                val voucherOrders = lastApply.data?.voucherOrders ?: emptyList()
+                for (i in voucherOrders.indices) {
                     val lastApplyVoucherOrdersItemUiModel = LastApplyVoucherOrdersItemUiModel()
-                    val voucherOrdersItem = lastApply.data.voucherOrders[i]
+                    val voucherOrdersItem = lastApply.data?.voucherOrders?.get(i)
                     if (voucherOrdersItem != null) {
                         val (_, code, uniqueId, _, _, _, _, message) = voucherOrdersItem
                         if (code != null && uniqueId != null && message?.color != null && message.state != null && message.text != null) {
                             lastApplyVoucherOrdersItemUiModel.code = code
                             lastApplyVoucherOrdersItemUiModel.uniqueId = uniqueId
                             val lastApplyMessageInfoUiModel = LastApplyMessageUiModel()
-                            lastApplyMessageInfoUiModel.color = message.color
-                            lastApplyMessageInfoUiModel.state = message.state
-                            lastApplyMessageInfoUiModel.text = message.text
+                            lastApplyMessageInfoUiModel.color = message.color ?: ""
+                            lastApplyMessageInfoUiModel.state = message.state ?: ""
+                            lastApplyMessageInfoUiModel.text = message.text ?: ""
                             lastApplyVoucherOrdersItemUiModel.message = lastApplyMessageInfoUiModel
                             listVoucherOrdersUiModel.add(lastApplyVoucherOrdersItemUiModel)
                         }
@@ -45,7 +46,7 @@ object LastApplyMapper {
                 lastApplyUiModel.voucherOrders = listVoucherOrdersUiModel
             }
             // set additional info
-            val responseAdditionalInfo = lastApply.data.additionalInfo
+            val responseAdditionalInfo = lastApply.data?.additionalInfo
             if (responseAdditionalInfo != null) {
                 val responseCartEmptyInfo = responseAdditionalInfo.cartEmptyInfo
                 val errorDetail = responseAdditionalInfo.errorDetail
@@ -53,20 +54,20 @@ object LastApplyMapper {
                 val lastApplyAdditionalInfoUiModel = LastApplyAdditionalInfoUiModel()
                 val lastApplyEmptyCartInfoUiModel = LastApplyEmptyCartInfoUiModel()
                 if (responseCartEmptyInfo?.detail != null && responseCartEmptyInfo.imageUrl != null && responseCartEmptyInfo.message != null) {
-                    lastApplyEmptyCartInfoUiModel.detail = responseCartEmptyInfo.detail
-                    lastApplyEmptyCartInfoUiModel.imgUrl = responseCartEmptyInfo.imageUrl
-                    lastApplyEmptyCartInfoUiModel.message = responseCartEmptyInfo.message
+                    lastApplyEmptyCartInfoUiModel.detail = responseCartEmptyInfo.detail ?: ""
+                    lastApplyEmptyCartInfoUiModel.imgUrl = responseCartEmptyInfo.imageUrl ?: ""
+                    lastApplyEmptyCartInfoUiModel.message = responseCartEmptyInfo.message ?: ""
                 }
                 lastApplyAdditionalInfoUiModel.emptyCartInfo = lastApplyEmptyCartInfoUiModel
                 val lastApplyErrorDetailUiModel = LastApplyErrorDetailUiModel()
                 if (errorDetail?.message != null) {
-                    lastApplyErrorDetailUiModel.message = errorDetail.message
+                    lastApplyErrorDetailUiModel.message = errorDetail.message ?: ""
                 }
                 lastApplyAdditionalInfoUiModel.errorDetail = lastApplyErrorDetailUiModel
                 val lastApplyMessageInfoUiModel = LastApplyMessageInfoUiModel()
                 if (messageInfo?.detail != null && messageInfo.message != null) {
-                    lastApplyMessageInfoUiModel.detail = messageInfo.detail
-                    lastApplyMessageInfoUiModel.message = messageInfo.message
+                    lastApplyMessageInfoUiModel.detail = messageInfo.detail ?: ""
+                    lastApplyMessageInfoUiModel.message = messageInfo.message ?: ""
                 }
                 lastApplyAdditionalInfoUiModel.messageInfo = lastApplyMessageInfoUiModel
                 lastApplyAdditionalInfoUiModel.messageInfo = lastApplyMessageInfoUiModel
@@ -90,26 +91,27 @@ object LastApplyMapper {
                 lastApplyUiModel.additionalInfo = lastApplyAdditionalInfoUiModel
             }
             // set message
-            if (lastApply.data.message != null) {
-                val lastApplyMessage = lastApply.data.message
+            if (lastApply.data?.message != null) {
+                val lastApplyMessage = lastApply.data?.message
                 val lastApplyMessageUiModel = LastApplyMessageUiModel()
-                if (lastApplyMessage.text != null && lastApplyMessage.state != null && lastApplyMessage.color != null) {
-                    lastApplyMessageUiModel.text = lastApplyMessage.text
-                    lastApplyMessageUiModel.state = lastApplyMessage.state
-                    lastApplyMessageUiModel.color = lastApplyMessage.color
+                if (lastApplyMessage?.text != null && lastApplyMessage.state != null && lastApplyMessage.color != null) {
+                    lastApplyMessageUiModel.text = lastApplyMessage.text ?: ""
+                    lastApplyMessageUiModel.state = lastApplyMessage.state ?: ""
+                    lastApplyMessageUiModel.color = lastApplyMessage.color ?: ""
                 }
                 lastApplyUiModel.message = lastApplyMessageUiModel
                 val listRedStates = ArrayList<String>()
-                if (lastApply.data.message.state != null) {
-                    if (lastApply.data.message.state.equals(CheckoutConstant.STATE_RED, ignoreCase = true)) {
+                if (lastApply.data?.message?.state != null) {
+                    if (lastApply.data?.message?.state.equals(CheckoutConstant.STATE_RED, ignoreCase = true)) {
                         for (code in mappedCodes) {
                             listRedStates.add(code)
                         }
                     }
-                    if (lastApply.data.voucherOrders != null) {
-                        for (voucherOrdersItem in lastApply.data.voucherOrders) {
+                    if (lastApply.data?.voucherOrders != null) {
+                        val voucherOrders = lastApply.data?.voucherOrders ?: emptyList()
+                        for (voucherOrdersItem in voucherOrders) {
                             if (voucherOrdersItem?.message?.state.equals(CheckoutConstant.STATE_RED, ignoreCase = true) && voucherOrdersItem?.code != null) {
-                                listRedStates.add(voucherOrdersItem.code)
+                                listRedStates.add(voucherOrdersItem.code ?: "")
                             }
                         }
                     }
@@ -120,8 +122,9 @@ object LastApplyMapper {
             for (i in mappedCodes.indices) {
                 listAllPromoCodes.add(mappedCodes[i])
             }
-            if (lastApply.data.voucherOrders != null) {
-                for (voucherOrdersItem in lastApply.data.voucherOrders) {
+            if (lastApply.data?.voucherOrders != null) {
+                val voucherOrders = lastApply.data?.voucherOrders ?: emptyList()
+                for (voucherOrdersItem in voucherOrders) {
                     val element = voucherOrdersItem?.code
                     if (element != null) {
                         listAllPromoCodes.add(element)
@@ -132,10 +135,10 @@ object LastApplyMapper {
             orderPromo.lastApply = lastApplyUiModel
         }
 
-        if (promo?.errorDefault != null && promo.errorDefault.title?.isEmpty() != true && promo.errorDefault.description?.isEmpty() != true) {
+        if (promo?.errorDefault != null && promo.errorDefault?.title?.isEmpty() != true && promo.errorDefault?.description?.isEmpty() != true) {
             val promoCheckoutErrorDefault = PromoCheckoutErrorDefault()
-            promoCheckoutErrorDefault.title = promo.errorDefault.title ?: ""
-            promoCheckoutErrorDefault.desc = promo.errorDefault.description ?: ""
+            promoCheckoutErrorDefault.title = promo.errorDefault?.title ?: ""
+            promoCheckoutErrorDefault.desc = promo.errorDefault?.description ?: ""
             orderPromo.promoErrorDefault = promoCheckoutErrorDefault
         }
         return orderPromo

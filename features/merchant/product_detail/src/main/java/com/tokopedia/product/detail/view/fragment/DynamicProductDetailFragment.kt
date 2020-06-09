@@ -118,8 +118,8 @@ import com.tokopedia.product.share.ProductShare
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.constant.Constant
-import com.tokopedia.purchase_platform.common.sharedata.ShipmentFormRequest
-import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult
+import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
+import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.referral.Constants
 import com.tokopedia.referral.ReferralAction
@@ -1475,6 +1475,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewModel.installmentData = it.productFinancingCalculationData
         if (it.latestTalk.id.isEmpty() || remoteConfig.getBoolean(ProductDetailConstant.ENABLE_NEW_DISCUSSION_REMOTE_CONFIG, true)) {
             dynamicAdapter.removeDiscussionSection(pdpHashMapUtil?.productDiscussionMap)
+        } else {
+            dynamicAdapter.removeQnaSection(pdpHashMapUtil?.productDiscussionMostHelpfulMap)
         }
 
         if (it.vouchers.isNullOrEmpty()) {
