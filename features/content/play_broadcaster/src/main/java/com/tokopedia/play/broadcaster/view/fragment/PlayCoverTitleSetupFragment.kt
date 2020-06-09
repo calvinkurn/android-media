@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
+import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.imagepicker.common.util.ImageUtils
@@ -21,6 +22,7 @@ import com.tokopedia.play.broadcaster.ui.model.CoverSourceEnum
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastChooseCoverBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastCoverFromGalleryBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastCoverTitleViewModel
 import com.tokopedia.play.broadcaster.view.widget.PlayCropImageView
 import com.yalantis.ucrop.callback.BitmapCropCallback
 import com.yalantis.ucrop.model.CropParameters
@@ -32,6 +34,7 @@ import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.fragment_play_cover_title_setup.*
 import kotlinx.android.synthetic.main.layout_play_cover_crop.*
 import kotlinx.android.synthetic.main.layout_play_cover_title_setup.*
+import java.io.File
 import javax.inject.Inject
 
 /**
@@ -40,6 +43,8 @@ import javax.inject.Inject
 class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFactory: ViewModelFactory)
     : PlayBaseSetupFragment(), PlayBroadcastChooseCoverBottomSheet.Listener,
         PlayBroadcastCoverFromGalleryBottomSheet.Listener {
+
+    private lateinit var viewModel: PlayBroadcastCoverTitleViewModel
 
     private var selectedImageUrlList = arrayListOf<String>()
     private var liveTitle: String = ""
@@ -62,6 +67,8 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
             selectedImageUrlList = it.getStringArrayList(EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST)
                     ?: arrayListOf()
         }
+        viewModel = ViewModelProviders.of(requireParentFragment(), viewModelFactory)
+                .get(PlayBroadcastCoverTitleViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -122,6 +129,9 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
         }
         ivPlayCoverImage.setOnClickListener {
             onChangeCoverClicked()
+        }
+        btnPlayPrepareBroadcastNext.setOnClickListener {
+            onFinishCoverTitleSetup()
         }
     }
 
@@ -268,6 +278,12 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
 
     private fun setupNextButton() {
         btnPlayPrepareBroadcastNext.isEnabled = liveTitle.isNotEmpty() && selectedCoverUri != null
+    }
+
+    private fun onFinishCoverTitleSetup() {
+        if (::viewModel.isInitialized && selectedCoverUri != null) {
+            viewModel.uploadCover(File(selectedCoverUri?.path).absolutePath)
+        }
     }
 
     companion object {
