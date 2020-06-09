@@ -131,4 +131,10 @@ interface DynamicProductDetailListener {
      * ProductMediaViewHolder
      */
     fun onImageReviewMediaClicked(componentTrackDataModel: ComponentTrackDataModel)
+
+    /**
+     * ProductTickerViewHolder
+     */
+    fun onTickerGeneralClicked(url:String)
+    fun onTickerShopClicked()
 }

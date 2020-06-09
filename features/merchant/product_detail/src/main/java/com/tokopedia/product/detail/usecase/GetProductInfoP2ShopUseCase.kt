@@ -8,9 +8,12 @@ import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionPa
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionResponse
 import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.data.model.TradeinResponse
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
+import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.variant_common.model.VariantMultiOriginResponse
@@ -61,6 +64,9 @@ class GetProductInfoP2ShopUseCase @Inject constructor(private val rawQueries: Ma
                 ProductDetailCommonConstant.PARAM_SHOP_FIELDS to ProductDetailCommonConstant.DEFAULT_SHOP_FIELDS)
         val shopRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP], ShopInfo.Response::class.java, shopParams)
 
+        val tickerParams = mapOf(StickyLoginConstant.PARAMS_PAGE to StickyLoginConstant.Page.PDP.toString())
+        val tickerRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_TICKER], StickyLoginTickerPojo.TickerResponse::class.java, tickerParams)
+
         /*
          * Since GraphqlRepository doesn't support caching Pojo parameter,
          * it has to create map instead of passing object itself
@@ -86,7 +92,7 @@ class GetProductInfoP2ShopUseCase @Inject constructor(private val rawQueries: Ma
         val pdpTradeinRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_TRADE_IN],
                 TradeinResponse::class.java, pdpTradeinParam)
 
-        val requests = mutableListOf(shopRequest, pdpTradeinRequest, getCartTypeRequest, warehouseRequest)
+        val requests = mutableListOf(shopRequest, pdpTradeinRequest, getCartTypeRequest, warehouseRequest, tickerRequest)
 
         try {
             val gqlResponse = graphqlRepository.getReseponse(requests, CacheStrategyUtil.getCacheStrategy(forceRefresh))
@@ -108,6 +114,11 @@ class GetProductInfoP2ShopUseCase @Inject constructor(private val rawQueries: Ma
 
             if (gqlResponse.getError(CartRedirectionResponse::class.java)?.isNotEmpty() != true) {
                 p2Shop.cartRedirectionResponse = gqlResponse.getData<CartRedirectionResponse>(CartRedirectionResponse::class.java)
+            }
+
+            if (gqlResponse.getError(StickyLoginTickerPojo.TickerResponse::class.java)?.isNotEmpty() != true) {
+                val tickerData = gqlResponse.getData<StickyLoginTickerPojo.TickerResponse>(StickyLoginTickerPojo.TickerResponse::class.java)
+                p2Shop.tickerInfo = DynamicProductDetailMapper.getTickerInfoData(tickerData)
             }
         } catch (t: Throwable) {
             Timber.d(t)

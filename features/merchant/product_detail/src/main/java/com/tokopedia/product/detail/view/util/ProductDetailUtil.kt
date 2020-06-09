@@ -3,11 +3,17 @@ package com.tokopedia.product.detail.view.util
 import android.content.Context
 import android.graphics.Typeface
 import android.text.Spannable
-import android.text.SpannableStringBuilder
+import android.text.SpannableString
 import android.text.Spanned
+import android.text.TextPaint
+import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
+import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.toFormattedString
+import com.tokopedia.product.detail.R
 import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -31,25 +37,39 @@ object ProductDetailUtil {
     }
 }
 
-fun String.boldTextWithGiven(context: Context, textToBold: String): SpannableStringBuilder {
-    val builder = SpannableStringBuilder()
+fun String.linkTextWithGiven(context: Context, vararg textToBold: Pair<String, () -> Unit>): SpannableString {
+    val builder = SpannableString(this)
 
     if (this.isNotEmpty() || this.isNotBlank()) {
-        val rawText = this.toLowerCase(Locale.getDefault())
-        val rawTextToBold = textToBold.toLowerCase(Locale.getDefault())
-        val startIndex = rawText.indexOf(rawTextToBold)
-        val endIndex = startIndex + rawTextToBold.length
-        val typographyBoldTypeFace = getTypeface(context, "RobotoBold.ttf")
+        for (it in textToBold) {
+            if (it.first.isEmpty()) continue
 
-        if (startIndex < 0 || endIndex < 0) {
-            return builder.append(this)
-        } else {
-            builder.append(this)
-            builder.setSpan(StyleSpan(Typeface.BOLD), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            builder.setSpan(CustomTypeSpan(typographyBoldTypeFace), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            val rawText = this.toLowerCase(Locale.getDefault())
+            val rawTextToBold = it.first.toLowerCase(Locale.getDefault())
+
+            val startIndex = rawText.indexOf(rawTextToBold)
+            val endIndex = startIndex + rawTextToBold.length
+
+            val typographyBoldTypeFace = getTypeface(context, "RobotoBold.ttf")
+
+            if (startIndex < 0 || endIndex < 0) {
+                continue
+            } else {
+                builder.setSpan(StyleSpan(Typeface.BOLD), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                builder.setSpan(CustomTypeSpan(typographyBoldTypeFace), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                builder.setSpan(object : ClickableSpan() {
+                    override fun onClick(widget: View) {
+                        it.second.invoke()
+                    }
+
+                    override fun updateDrawState(ds: TextPaint) {
+                        super.updateDrawState(ds)
+                        ds.isUnderlineText = false
+                        ds.color = MethodChecker.getColor(context, R.color.green_500)
+                    }
+                }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
         }
-    } else {
-        builder.append(this)
     }
 
     return builder
@@ -86,6 +106,10 @@ fun <T : Any> Result<T>.doSuccessOrFail(success: (Success<T>) -> Unit, fail: (Fa
             fail.invoke(this.throwable)
         }
     }
+}
+
+fun String.goToWebView(context: Context){
+    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, this))
 }
 
 fun <T : Any> T.asSuccess(): Success<T> = Success(this)

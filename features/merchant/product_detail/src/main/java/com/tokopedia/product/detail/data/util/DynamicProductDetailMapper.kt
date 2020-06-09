@@ -4,6 +4,8 @@ import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionPa
 import com.tokopedia.product.detail.common.data.model.pdplayout.*
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.variant.VariantDataModel
+import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
+import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.variant_common.model.ProductVariantCommon
 
 object DynamicProductDetailMapper {
@@ -74,6 +76,9 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.MEDIA -> {
                     listOfComponent.add(ProductMediaDataModel(type = component.type, name = component.componentName))
+                }
+                ProductDetailConstant.TICKER_INFO -> {
+                    listOfComponent.add(ProductTickerInfoDataModel(type = component.type, name = component.componentName))
                 }
             }
         }
@@ -195,5 +200,16 @@ object DynamicProductDetailMapper {
         fallbackUrl = fallbackUrl.replace("www.", "m.")
         fallbackUrl += "report/"
         return fallbackUrl
+    }
+
+    /**
+     * Ticker is used for show general message like : corona, shipping delay,  etc
+     * since we are using the same GQL as sticky login, we don't want sticky login item so we remove this
+     * LAYOUT_FLOATING should be sticky login
+     */
+    fun getTickerInfoData(tickerData: StickyLoginTickerPojo.TickerResponse): List<StickyLoginTickerPojo.TickerDetail> {
+        return tickerData.response.tickers.filter {
+            it.layout != StickyLoginConstant.LAYOUT_FLOATING
+        }
     }
 }

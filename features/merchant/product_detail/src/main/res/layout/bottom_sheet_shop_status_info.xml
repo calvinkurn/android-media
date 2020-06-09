@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/dp_16"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_24">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/message_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Neutral_N700"
+        app:typographyType="body_2"
+        tools:text="Jangan khawatir, semua order yang masuk akan kami proses. Buka setiap hari jam 10 pagi ya gays. Okkee" />
+
+    <View
+        android:id="@+id/divider_bs"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/grey_300"
+        android:layout_marginTop="@dimen/dp_16"
+        android:visibility="visible"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/info_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        app:typographyType="body_2"
+        tools:text="Chat penjual atau akses Pusat Bantuan jika kamu ada transaksi bermasalah."/>
+</LinearLayout>

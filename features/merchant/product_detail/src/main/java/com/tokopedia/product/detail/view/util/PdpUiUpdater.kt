@@ -96,6 +96,9 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     val mediaMap: ProductMediaDataModel?
         get() = mapOfData[ProductDetailConstant.MEDIA] as? ProductMediaDataModel
 
+    val tickerInfoMap: ProductTickerInfoDataModel?
+        get() = mapOfData[ProductDetailConstant.TICKER_INFO] as? ProductTickerInfoDataModel
+
     val listProductRecomMap: List<ProductRecommendationDataModel>? = mapOfData.filterKeys {
         it == ProductDetailConstant.PDP_1 || it == ProductDetailConstant.PDP_2
                 || it == ProductDetailConstant.PDP_3 || it == ProductDetailConstant.PDP_4
@@ -222,6 +225,12 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             snapShotMap?.run {
                 nearestWarehouseDataModel = ProductSnapshotDataModel.NearestWarehouseDataModel(multiOriginNearestWarehouse.warehouseInfo.id,
                         multiOriginNearestWarehouse.price, multiOriginNearestWarehouse.stockWording)
+            }
+
+            tickerInfoMap?.run {
+                generalTickerInfo = it.tickerInfo
+                statusInfo = it.shopInfo?.statusInfo
+                closedInfo = it.shopInfo?.closedInfo
             }
 
             mediaMap?.run {

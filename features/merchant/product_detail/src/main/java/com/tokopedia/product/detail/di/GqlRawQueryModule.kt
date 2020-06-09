@@ -210,6 +210,13 @@ class GqlRawQueryModule {
     @ProductDetailScope
     @Provides
     @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_TICKER)
+    fun provideQueryTicker(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_sticky_login_query)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
     @StringKey(RawQueryKeyConstant.QUERY_RECOMMEN_PRODUCT)
     fun provideRecommendationProduct(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_recommendation_widget)
@@ -249,7 +256,6 @@ class GqlRawQueryModule {
     @StringKey(RawQueryKeyConstant.QUERY_GET_CART_TYPE)
     fun provideGetCartType(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_cart_type)
-
 
     @ProductDetailScope
     @Provides

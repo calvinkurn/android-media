@@ -92,25 +92,7 @@ class DynamicProductDetailAdapter(
         }
     }
 
-    fun removeDiscussionSection(data: ProductDiscussionDataModel?) {
-        data?.let {
-            clearElement(it)
-        }
-    }
-
-    fun removeGeneralInfo(data: ProductGeneralInfoDataModel?) {
-        data?.let {
-            clearElement(it)
-        }
-    }
-
-    fun removeMostHelpfulReviewSection(data: ProductMostHelpfulReviewDataModel?) {
-        data?.let {
-            clearElement(it)
-        }
-    }
-
-    fun removeMerchantVoucherSection(data: ProductMerchantVoucherDataModel?) {
+    fun <T : DynamicPdpDataModel> removeComponentSection(data: T?) {
         data?.let {
             clearElement(it)
         }

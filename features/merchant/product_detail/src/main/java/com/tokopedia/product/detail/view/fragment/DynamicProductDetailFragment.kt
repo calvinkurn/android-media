@@ -100,6 +100,7 @@ import com.tokopedia.product.detail.view.activity.*
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.DynamicProductDetailAdapter
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
 import com.tokopedia.product.detail.view.bottomsheet.OvoFlashDealsBottomSheet
+import com.tokopedia.product.detail.view.bottomsheet.ShopStatusInfoBottomSheet
 import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActionView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.PdpUiUpdater
@@ -807,10 +808,28 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     /**
+     * ProductTickerViewHolder
+     */
+    override fun onTickerGeneralClicked(url: String) {
+        if (url.isEmpty()) return
+        if (activity != null && RouteManager.isSupportApplink(activity, url)) {
+            goToApplink(url)
+        } else {
+            openWebViewUrl(url)
+        }
+    }
+
+    override fun onTickerShopClicked() {
+        val shopStatusBottomSheet = ShopStatusInfoBottomSheet(viewModel.shopInfo?.statusInfo ?: ShopInfo.StatusInfo(), viewModel.getDynamicProductInfoP1?.basic?.shopID ?: "")
+        fragmentManager?.let {
+            shopStatusBottomSheet.show(it, "pdp_shop_status")
+        }
+    }
+
+    /**
      * ProductMerchantVoucherViewHolder
      */
     override fun isOwner(): Boolean = viewModel.isShopOwner()
-
 
     override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int, dataTrackDataModel: ComponentTrackDataModel) {
         activity?.let {
@@ -1448,13 +1467,18 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 ?: ValidateTradeInResponse()
 
         if (!tradeinResponse.isEligible) {
-            dynamicAdapter.removeGeneralInfo(pdpUiUpdater?.productTradeinMap)
+            dynamicAdapter.removeComponentSection(pdpUiUpdater?.productTradeinMap)
         } else {
             pdpUiUpdater?.updateDataTradein(context, tradeinResponse)
         }
 
         pdpUiUpdater?.updateFulfillmentData(context, viewModel.selectedMultiOrigin.warehouseInfo.isFulfillment)
         pdpUiUpdater?.updateDataP2Shop(it)
+
+        if (pdpUiUpdater?.tickerInfoMap?.shouldRemoveComponent() == true) {
+            dynamicAdapter.removeComponentSection(pdpUiUpdater?.tickerInfoMap)
+        }
+
         adapter.notifyDataSetChanged()
     }
 
@@ -1512,11 +1536,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun onSuccessGetDataP2General(it: ProductInfoP2General) {
         viewModel.installmentData = it.productFinancingCalculationData
         if (it.latestTalk.id.isEmpty() || remoteConfig.getBoolean(ProductDetailConstant.ENABLE_NEW_DISCUSSION_REMOTE_CONFIG, true)) {
-            dynamicAdapter.removeDiscussionSection(pdpUiUpdater?.productDiscussionMap)
+            dynamicAdapter.removeComponentSection(pdpUiUpdater?.productDiscussionMap)
         }
 
         if (it.vouchers.isNullOrEmpty()) {
-            dynamicAdapter.removeMerchantVoucherSection(pdpUiUpdater?.productMerchantVoucherMap)
+            dynamicAdapter.removeComponentSection(pdpUiUpdater?.productMerchantVoucherMap)
         } else {
             if (!viewModel.isUserSessionActive || !isOwner()) {
                 DynamicProductDetailTracking.Impression.eventImpressionMerchantVoucherUse(
@@ -1526,22 +1550,22 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
 
         if (it.helpfulReviews.isEmpty() && it.rating.totalRating == 0) {
-            dynamicAdapter.removeMostHelpfulReviewSection(pdpUiUpdater?.productMostHelpfulMap)
+            dynamicAdapter.removeComponentSection(pdpUiUpdater?.productMostHelpfulMap)
         }
 
         if (!it.shopCommitment.isNowActive) {
-            dynamicAdapter.removeGeneralInfo(pdpUiUpdater?.orderPriorityMap)
+            dynamicAdapter.removeComponentSection(pdpUiUpdater?.orderPriorityMap)
         }
 
         if (it.productPurchaseProtectionInfo.ppItemDetailPage?.isProtectionAvailable == false) {
-            dynamicAdapter.removeGeneralInfo(pdpUiUpdater?.productProtectionMap)
+            dynamicAdapter.removeComponentSection(pdpUiUpdater?.productProtectionMap)
         }
 
         it.productFinancingRecommendationData.let { financingData ->
             if (financingData.response.data.partnerCode.isNotBlank()) {
                 pdpUiUpdater?.updateDataInstallment(context, financingData, viewModel.getDynamicProductInfoP1?.data?.isOS == true)
             } else {
-                dynamicAdapter.removeGeneralInfo(pdpUiUpdater?.productInstallmentInfoMap)
+                dynamicAdapter.removeComponentSection(pdpUiUpdater?.productInstallmentInfoMap)
             }
         }
 
@@ -1566,7 +1590,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
         pdpUiUpdater?.productShipingInfoMap?.let { productShippingInfoMap ->
             if (it.ratesModel?.getServicesSize() == 0) {
-                dynamicAdapter.removeGeneralInfo(productShippingInfoMap)
+                 dynamicAdapter.removeComponentSection(productShippingInfoMap)
             } else {
                 pdpUiUpdater?.updateDataP3(context, it)
             }
@@ -2416,13 +2440,17 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     selectedProductId
             )
 
-            val webViewUrl = String.format(
-                    "%s?titlebar=false&url=%s",
-                    ApplinkConst.WEBVIEW,
-                    urlApplyLeasingWithProductId
-            )
-            RouteManager.route(context, webViewUrl)
+            openWebViewUrl(urlApplyLeasingWithProductId)
         }
+    }
+
+    private fun openWebViewUrl(url:String){
+        val webViewUrl = String.format(
+                "%s?titlebar=false&url=%s",
+                ApplinkConst.WEBVIEW,
+                url
+        )
+        RouteManager.route(context, webViewUrl)
     }
 
     private fun gotoShopDetail(componentTrackDataModel: ComponentTrackDataModel) {
