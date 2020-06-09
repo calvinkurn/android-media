@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 
 data class GetLayoutResponse(
         @Expose
-        @SerializedName("GetSellerDashboardLayout")
+        @SerializedName("GetSellerDashboardPageLayout")
         val layout: GetSellerDashboardLayout?
 )
 

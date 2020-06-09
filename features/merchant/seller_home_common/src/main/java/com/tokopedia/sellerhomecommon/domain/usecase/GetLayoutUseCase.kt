@@ -44,7 +44,7 @@ class GetLayoutUseCase(
             putString(KEY_PAGE, pageName)
         }
 
-        private const val QUERY = """
+        private val QUERY = """
             query (${'$'}shopID: Int!, ${'$'}page: String!) {
               GetSellerDashboardPageLayout(shopID: ${'$'}shopID, page: ${'$'}page) {
                 widget {
@@ -67,6 +67,6 @@ class GetLayoutUseCase(
                 }
               }
             }
-        """
+        """.trimIndent()
     }
 }
