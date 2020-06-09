@@ -13,19 +13,17 @@ import com.tokopedia.one.click.checkout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.one.click.checkout.order.data.GetOccCartGqlResponse
 import com.tokopedia.one.click.checkout.order.data.UpdateCartOccGqlResponse
 import com.tokopedia.one.click.checkout.order.data.checkout.CheckoutOccGqlResponse
-import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
 import com.tokopedia.purchase_platform.common.feature.editaddress.di.PeopleAddressNetworkModule
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 @OrderSummaryPageScope
-@Module(includes = [
-    PeopleAddressNetworkModule::class,
-    PurchasePlatformNetworkModule::class,
-    PurchasePlatformBaseModule::class]
+@Module(includes = [PeopleAddressNetworkModule::class, PurchasePlatformNetworkModule::class]
 )
 class OrderSummaryPageModule {
 
@@ -65,5 +63,11 @@ class OrderSummaryPageModule {
     @Provides
     fun provideOrderSummaryAnalytics(): OrderSummaryAnalytics {
         return OrderSummaryAnalytics()
+    }
+
+    @OrderSummaryPageScope
+    @Provides
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
     }
 }
