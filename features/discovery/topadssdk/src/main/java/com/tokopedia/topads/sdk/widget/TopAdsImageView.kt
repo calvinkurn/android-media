@@ -2,21 +2,25 @@ package com.tokopedia.topads.sdk.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent
 import com.tokopedia.topads.sdk.di.TopAdsComponent
-import com.tokopedia.topads.sdk.listener.ImpressionListener
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewResponse
+import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.topads.sdk.viewmodel.TopAdsImageViewViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class TopAdsImageView : AppCompatImageView, HasComponent<TopAdsComponent> {
@@ -26,17 +30,19 @@ class TopAdsImageView : AppCompatImageView, HasComponent<TopAdsComponent> {
 
     private lateinit var topAdsImageViewViewModel: TopAdsImageViewViewModel
 
-    private lateinit var topAdsImageViewClickListener:TopAdsImageViewClickListener
-    private lateinit var topadsImageViewImpressionListener: TopAdsImageViewImpressionListener
+    private var topAdsImageViewClickListener: TopAdsImageViewClickListener? = null
+    private var topadsImageViewImpressionListener: TopAdsImageViewImpressionListener? = null
+    private var topAdsImageVieWApiResponseListener: TopAdsImageVieWApiResponseListener? = null
 
     constructor(context: Context) : super(context) {
         init()
     }
 
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs){
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         init()
     }
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr){
+
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         init()
     }
 
@@ -49,34 +55,59 @@ class TopAdsImageView : AppCompatImageView, HasComponent<TopAdsComponent> {
 
     }
 
-    fun setTopAdsImageViewClick(listener: TopAdsImageViewClickListener ){
+    fun setTopAdsImageViewClick(listener: TopAdsImageViewClickListener) {
         topAdsImageViewClickListener = listener
     }
 
-    fun setTopAdsImageViewImpression(listener: TopAdsImageViewImpressionListener){
+    fun setTopAdsImageViewImpression(listener: TopAdsImageViewImpressionListener) {
         topadsImageViewImpressionListener = listener
     }
 
 
-    fun renderImage(query:String) {
-        topAdsImageViewViewModel.renderImage(query)
-        ImageHandler.LoadImageResize(context,
-                this,
-                "https://ecs7.tokopedia.net/img/cache/100-square/shops-1/2020/2/9/7732831/7732831_e649a20b-611f-4d5f-ab0c-68ec6fbb1b2f.png",
-                400,
-                200
-        )
-        topadsImageViewImpressionListener.onTopAdsImageViewImpression("viewUrl")
-        this.setOnClickListener {
-            topAdsImageViewClickListener.onTopAdsImageViewClicked("applink")
+    fun getImageData(query: String, source: String, pageToken: String, adsCount: Int, dimens: String) {
+        val queryParams = topAdsImageViewViewModel.getQueryParams(source, pageToken, adsCount, dimens)
+        topAdsImageViewViewModel.getImageData(query, queryParams)
+
+        topAdsImageViewViewModel.getResponse().observe(context as AppCompatActivity, Observer {
+            when (it) {
+                is Success -> {
+                    topAdsImageVieWApiResponseListener?.onImageViewResponse(it.data.data?.get(0)?.banner?.images,"")
+                }
+                is Fail -> {
+                    topAdsImageVieWApiResponseListener?.onError(it.throwable)
+                }
+            }
+
+        })
+    }
+
+    override fun getComponent(): TopAdsComponent {
+        return DaggerTopAdsComponent.builder()
+                .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+    }
+
+    fun setApiResponseListener(listener: TopAdsImageVieWApiResponseListener) {
+        topAdsImageVieWApiResponseListener = listener
+    }
+
+    fun loadImage(imageUrl: TopAdsImageViewResponse.Data.Banner.Image?) {
+        if (!imageUrl?.fullEcs.isNullOrEmpty()) {
+            ImageHandler.LoadImageResize(context,
+                    this,
+                    imageUrl?.fullEcs,
+                    400,
+                    200
+            )
+            topadsImageViewImpressionListener?.onTopAdsImageViewImpression(imageUrl?.fullEcs ?: "")
+            this.setOnClickListener {
+                topAdsImageViewClickListener?.onTopAdsImageViewClicked("applink")
+            }
+        } else {
+            this.hide()
         }
 
     }
 
-    override fun getComponent(): TopAdsComponent {
-       return DaggerTopAdsComponent.builder()
-                .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-    }
 
 }

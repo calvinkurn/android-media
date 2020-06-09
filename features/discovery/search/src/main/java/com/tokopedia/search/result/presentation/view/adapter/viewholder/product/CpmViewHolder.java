@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product;
 
+import android.content.Intent;
 import android.view.View;
 
 import androidx.annotation.LayoutRes;
@@ -7,6 +8,7 @@ import androidx.annotation.LayoutRes;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.model.CpmViewModel;
+import com.tokopedia.search.result.presentation.view.activity.TopAdsImageViewTester;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
@@ -26,6 +28,7 @@ public class CpmViewHolder extends AbstractViewHolder<CpmViewModel> {
         adsBannerView.setTopAdsBannerClickListener((position, applink, data) -> {
             if (bannerAdsListener != null) {
                 bannerAdsListener.onBannerAdsClicked(position, applink, data);
+                itemView.getContext().startActivity(new Intent(itemView.getContext(), TopAdsImageViewTester.class));
             }
         });
         adsBannerView.setTopAdsImpressionListener(new TopAdsItemImpressionListener() {
