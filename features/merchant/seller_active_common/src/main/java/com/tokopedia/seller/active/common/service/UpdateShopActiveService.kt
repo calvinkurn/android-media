@@ -16,7 +16,6 @@ class UpdateShopActiveService: JobIntentService(), CoroutineScope  {
 
     companion object {
         private const val JOB_ID = 223194556
-
         fun startService(context: Context) {
             val work = Intent(context, UpdateShopActiveService::class.java)
             enqueueWork(context, UpdateShopActiveService::class.java, JOB_ID, work)
