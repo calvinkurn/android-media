@@ -171,10 +171,12 @@ class PlayCoverTitleSetupFragment @Inject constructor()
         containerPlayCoverCropSetup.visibility = View.GONE
     }
 
-    private fun renderCoverTitleLayout(resultImageUri: Uri) {
-        selectedCoverUri = resultImageUri
-        if (liveTitle.isNotEmpty()) etPlayCoverTitleText.setText(liveTitle)
-        ivPlayCoverImage.setImageURI(selectedCoverUri)
+    private fun renderCoverTitleLayout(resultImageUri: Uri?) {
+        resultImageUri?.let {
+            selectedCoverUri = resultImageUri
+            if (liveTitle.isNotEmpty()) etPlayCoverTitleText.setText(liveTitle)
+            ivPlayCoverImage.setImageURI(selectedCoverUri)
+        }
         setupCoverLabelText()
         setupNextButton()
     }
@@ -206,6 +208,19 @@ class PlayCoverTitleSetupFragment @Inject constructor()
                         ivPlayCoverCropImage.exifInfo,
                         it)
             }
+        }
+        btnPlayCoverCropChange.setOnClickListener {
+            containerPlayCoverCropImage.removeAllViews()
+            onCancelCropImage()
+        }
+    }
+
+    private fun onCancelCropImage() {
+        hideCoverCropLayout()
+        renderCoverTitleLayout(null)
+        when (coverSource) {
+            CoverSourceEnum.GALLERY -> onChooseFromGalleryClicked()
+            else -> onChangeCoverClicked()
         }
     }
 
