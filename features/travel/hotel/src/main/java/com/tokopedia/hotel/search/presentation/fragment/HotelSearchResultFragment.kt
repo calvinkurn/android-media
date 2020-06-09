@@ -71,7 +71,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             val hotelSearchModel = it.getParcelable(ARG_HOTEL_SEARCH_MODEL) ?: HotelSearchModel()
             searchResultviewModel.initSearchParam(hotelSearchModel)
             searchDestinationName = hotelSearchModel.name
-            if (hotelSearchModel.searchType.isNotEmpty()) hotelSearchModel.searchType else hotelSearchModel.type
+            searchDestinationType = if (hotelSearchModel.searchType.isNotEmpty()) hotelSearchModel.searchType else hotelSearchModel.type
         }
     }
 
