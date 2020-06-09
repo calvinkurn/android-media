@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
@@ -51,6 +52,7 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback, SwipeRe
     private lateinit var discoveryAdapter: DiscoveryRecycleAdapter
     private val analytics: DiscoveryAnalytics by lazy { DiscoveryAnalytics(trackingQueue = trackingQueue, pagePath = discoveryViewModel.pagePath, pageType = discoveryViewModel.pageType) }
     private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var mProgressBar: ProgressBar
     var pageEndPoint = ""
 
     @Inject
@@ -102,6 +104,8 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback, SwipeRe
         view.findViewById<ImageView>(R.id.iv_back).setOnClickListener { activity?.onBackPressed() }
         recyclerView = view.findViewById(R.id.discovery_recyclerView)
         mSwipeRefreshLayout = view.findViewById(R.id.swiperefresh)
+        mProgressBar = view.findViewById(R.id.progressBar)
+        mProgressBar.visibility = View.VISIBLE
         mSwipeRefreshLayout.setOnRefreshListener(this)
     }
 
@@ -110,7 +114,7 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback, SwipeRe
         discoveryViewModel = (activity as DiscoveryActivity).getViewModel()
         /** Future Improvement : Please don't remove any commented code from this file. Need to work on this **/
 //        mDiscoveryViewModel = ViewModelProviders.of(requireActivity()).get((activity as BaseViewModelActivity<DiscoveryViewModel>).getViewModelType())
-        
+
         recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         discoveryAdapter = DiscoveryRecycleAdapter(this)
         recyclerView.adapter = discoveryAdapter
@@ -133,8 +137,7 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback, SwipeRe
                     it.data?.let {
                         discoveryAdapter.addDataList(it)
                     }
-
-
+                    mProgressBar.visibility = View.GONE
                 }
             }
         })
@@ -147,7 +150,6 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback, SwipeRe
                         setAnimationOnScroll()
                     }
                 }
-
                 is Fail -> {
                     mDiscoveryFab.hide()
                 }
@@ -283,6 +285,6 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback, SwipeRe
         discoveryAdapter.clearListViewModel()
         discoveryViewModel.clearPageData()
         discoveryViewModel.getDiscoveryData()
-        mSwipeRefreshLayout.isRefreshing = false;
+        mSwipeRefreshLayout.isRefreshing = false
     }
 }

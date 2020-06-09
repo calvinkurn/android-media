@@ -19,7 +19,7 @@ class LoadMoreViewHolder(itemView: View, private val fragment: Fragment) : Abstr
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {
             loadMoreViewModel.syncData.observe(lifecycleOwner, Observer {
-                (fragment as DiscoveryFragment).resync()
+                (fragment as DiscoveryFragment).reSync()
             })
         }
 
