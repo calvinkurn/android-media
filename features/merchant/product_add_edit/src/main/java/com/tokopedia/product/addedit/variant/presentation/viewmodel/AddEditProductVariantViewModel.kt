@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE_STRING
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.data.model.GetCategoryVariantCombinationResponse
 import com.tokopedia.product.addedit.variant.data.model.Unit
@@ -93,24 +94,6 @@ class AddEditProductVariantViewModel @Inject constructor(
         }
     }
 
-    private fun mapProducts(): List<ProductVariantInputModel> {
-        val result: MutableList<ProductVariantInputModel> = mutableListOf()
-        /*val combinationIndices = variantValuesLayoutMap.map { it.key }
-        selectedVariantUnitValuesMap.forEach {
-            it.value.forEachIndexed { index, unitValue ->
-                val level1Index = combinationIndices[it.key]
-                val level2Index = combinationIndices[index]
-                result.add(
-                        ProductVariantInputModel(
-                                combination = listOf(level1Index, level2Index),
-                                status = STATUS_ACTIVE_STRING
-                        )
-                )
-            }
-        }*/
-        return result
-    }
-
     fun getSelectedVariantUnitValues(layoutPosition: Int): MutableList<UnitValue> {
         return selectedVariantUnitValuesMap[layoutPosition] ?: mutableListOf()
     }
@@ -160,4 +143,18 @@ class AddEditProductVariantViewModel @Inject constructor(
                 )
             }
 
+    private fun mapProducts(): List<ProductVariantInputModel> {
+        val result: MutableList<ProductVariantInputModel> = mutableListOf()
+        selectedVariantUnitValuesMap.forEach {
+            it.value.forEachIndexed { index, unitValue ->
+                result.add(
+                        ProductVariantInputModel(
+                                combination = listOf(it.key, index),
+                                status = STATUS_ACTIVE_STRING
+                        )
+                )
+            }
+        }
+        return result
+    }
 }
