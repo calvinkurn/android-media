@@ -191,7 +191,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // set detail and variant input model
         cacheManagerId?.run {
             viewModel.productInputModel = saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
-            viewModel.hasVariants = viewModel.productInputModel.variantInputModel.productVariant.isNotEmpty()
+            viewModel.hasVariants = viewModel.productInputModel.variantInputModel.products.isNotEmpty()
             var pictureIndex = 0
             viewModel.productPhotoPaths = viewModel.productInputModel.detailInputModel.imageUrlOrPathList.map { urlOrPath ->
                 if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) viewModel.productInputModel.detailInputModel.pictureList[pictureIndex++].urlThumbnail
@@ -400,8 +400,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         })
 
         // product price text change listener
-        if (viewModel.productInputModel.variantInputModel.variantOptionParent.isNotEmpty() &&
-                viewModel.productInputModel.variantInputModel.productVariant.isNotEmpty()) {
+        if (viewModel.productInputModel.variantInputModel.selections.isNotEmpty() &&
+                viewModel.productInputModel.variantInputModel.products.isNotEmpty()) {
             productPriceField?.textFieldInput?.isEnabled = false
             productPriceEditIcon?.visible()
             productPriceEditIcon?.setOnClickListener { showEditAllVariantPriceBottomSheet() }
@@ -1347,8 +1347,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         val variantInputModel = viewModel.productInputModel.variantInputModel
         if (viewModel.shouldUpdateVariant) {
-            variantInputModel.productVariant.forEach {
-                it.priceVar = productPriceField.getTextBigIntegerOrZero().toDouble()
+            variantInputModel.products.forEach {
+                it.price = productPriceField.getTextBigIntegerOrZero()
             }
             viewModel.shouldUpdateVariant = false
         }

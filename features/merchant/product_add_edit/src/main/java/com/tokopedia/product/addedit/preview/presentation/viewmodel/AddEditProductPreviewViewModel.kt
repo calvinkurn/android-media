@@ -13,7 +13,6 @@ import com.tokopedia.product.addedit.common.coroutine.CoroutineDispatchers
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
-import com.tokopedia.product.addedit.description.presentation.model.*
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
@@ -21,18 +20,16 @@ import com.tokopedia.product.addedit.draft.domain.usecase.GetProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapDraftToProductInputModel
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
-import com.tokopedia.product.addedit.preview.domain.GetProductUseCase
 import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
+import com.tokopedia.product.addedit.preview.domain.usecase.GetProductUseCase
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TYPE_ACTIVE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TYPE_ACTIVE_LIMITED
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TYPE_WAREHOUSE
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
-import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -133,7 +130,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
                         productInputModel.detailInputModel.wholesaleList = actualWholeSaleList
 
                         getVariantList(productInputModel.detailInputModel.categoryId)
-                        hasOriginalVariantLevel = checkOriginalVariantLevel(productInputModel)
                         productInputModel
                     }
                     is Fail -> ProductInputModel()
@@ -151,7 +147,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
                     is Success -> {
                         val productInputModel = mapDraftToProductInputModel(it.data)
                         getVariantList(productInputModel.detailInputModel.categoryId)
-                        hasOriginalVariantLevel = checkOriginalVariantLevel(productInputModel)
                         productInputModel
                     }
                     is Fail -> ProductInputModel()
@@ -200,23 +195,11 @@ class AddEditProductPreviewViewModel @Inject constructor(
         this.mImageUrlOrPathList.value = imageUrlOrPathList
     }
 
-    fun updateVariantAndOption(productVariant: ArrayList<ProductVariantCombinationViewModel>,
-                               variantOptionParent: ArrayList<ProductVariantOptionParent>) {
-        productInputModel.value?.variantInputModel?.productVariant =
-                mapProductVariant(productVariant, variantOptionParent)
-        productInputModel.value?.variantInputModel?.variantOptionParent =
-                mapVariantOption(variantOptionParent)
-    }
-
-    fun updateSizeChart(productSizeChart: PictureViewModel?) {
-        productInputModel.value?.variantInputModel?.productSizeChart = productSizeChart
-    }
-
     fun updateProductStatus(isActive: Boolean) {
         val newStatus = if (isActive) ProductStatus.STATUS_ACTIVE else ProductStatus.STATUS_INACTIVE
         productInputModel.value?.detailInputModel?.status = newStatus
-        productInputModel.value?.variantInputModel?.productVariant?.forEach {
-            it.st = newStatus
+        productInputModel.value?.variantInputModel?.products?.forEach {
+            it.status = if (isActive) ProductStatus.STATUS_ACTIVE_STRING else ProductStatus.STATUS_INACTIVE_STRING
         }
     }
 
@@ -315,40 +298,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
         return wholesaleList
     }
 
-    private fun mapProductVariant(productVariant: ArrayList<ProductVariantCombinationViewModel>,
-                                  variantOptionParent: ArrayList<ProductVariantOptionParent>
-    ): ArrayList<ProductVariantCombinationViewModel> {
-        productVariant.forEach { variant ->
-            val options: ArrayList<Int> = ArrayList()
-            val level1Id = getVariantOptionIndex(variant.level1String, variantOptionParent)
-            val level2Id = getVariantOptionIndex(variant.level2String, variantOptionParent)
-            level1Id?.let { options.add(it) }
-            level2Id?.let { options.add(it) }
-            variant.opt = options
-        }
-        return productVariant
-    }
-
-    private fun mapVariantOption(variantOptionParent: ArrayList<ProductVariantOptionParent>):
-            ArrayList<ProductVariantOptionParent> = variantOptionParent.map {
-        it.productVariantOptionChild?.forEachIndexed { index, productVariantOptionChild ->
-            productVariantOptionChild.pvo = index + 1
-        }
-        it
-    } as ArrayList<ProductVariantOptionParent>
-
-    private fun getVariantOptionIndex(variantValue: String?,
-                                      variantOptionParent: List<ProductVariantOptionParent>): Int? {
-        variantOptionParent.forEach { productVariantOptionParent ->
-            productVariantOptionParent.productVariantOptionChild?.let {
-                it.forEachIndexed { outputIndex, optionChild ->
-                    if (optionChild.value == variantValue) return outputIndex + 1
-                }
-            }
-        }
-        return null
-    }
-
     fun getStatusStockViewVariant(): Int {
         val isActive: Boolean = productInputModel.value?.detailInputModel?.status == 1
         val stockCount: Int = productInputModel.value?.detailInputModel?.stock ?: 0
@@ -359,19 +308,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
         } else {
             TYPE_ACTIVE
         }
-    }
-
-    // disable removing variant when in edit mode and if product have a variant
-    fun checkOriginalVariantLevel(inputModel: ProductInputModel): Boolean {
-        val variantInputModel  = inputModel.variantInputModel
-        variantInputModel.apply {
-            if (isEditing.value == true) {
-                if (productVariant.size > 0) {
-                    return variantOptionParent.getOrNull(0) != null
-                }
-            }
-        }
-        return false
     }
 
 }

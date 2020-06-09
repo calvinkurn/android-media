@@ -15,28 +15,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_CURRENCY_TYPE
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DEFAULT_PRICE
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DEFAULT_SKU
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_HAS_ORIGINAL_VARIANT_LV1
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_HAS_ORIGINAL_VARIANT_LV2
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_HAS_WHOLESALE
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_IS_ADD
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_IS_OFFICIAL_STORE
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_IS_USING_CACHE_MANAGER
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_NEED_RETAIN_IMAGE
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_PRODUCT_SIZECHART
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_PRODUCT_VARIANT_SELECTION
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_STOCK_TYPE
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_PICKER_RESULT_CACHE_ID
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_RESULT_CACHE_ID
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.setText
@@ -59,6 +44,7 @@ import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
 import com.tokopedia.product.addedit.tracking.ProductAddDescriptionTracking
 import com.tokopedia.product.addedit.tracking.ProductEditDescriptionTracking
+import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProductVariantActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -79,7 +65,6 @@ class AddEditProductDescriptionFragment:
         const val MAX_VIDEOS = 3
         const val MAX_DESCRIPTION_CHAR = 2000
         const val REQUEST_CODE_VARIANT = 0
-        const val TYPE_IDR = 1
         const val REQUEST_CODE_DESCRIPTION = 0x03
         const val VIDEO_REQUEST_DELAY = 250L
 
@@ -525,28 +510,12 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun showVariantDialog(variants: List<ProductVariantByCatModel>) {
-        activity?.let {
-            val cacheManager = SaveInstanceCacheManager(it, true).apply {
-                put(EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, variants)
-                put(EXTRA_PRODUCT_VARIANT_SELECTION, descriptionViewModel.variantInputModel)
-                put(EXTRA_PRODUCT_SIZECHART, descriptionViewModel.variantInputModel.productSizeChart)
-                put(EXTRA_CURRENCY_TYPE, TYPE_IDR)
-                put(EXTRA_DEFAULT_PRICE, descriptionViewModel.productInputModel.detailInputModel.price)
-                put(EXTRA_STOCK_TYPE, descriptionViewModel.getStatusStockViewVariant())
-                put(EXTRA_IS_OFFICIAL_STORE, false)
-                put(EXTRA_DEFAULT_SKU, "")
-                put(EXTRA_NEED_RETAIN_IMAGE, false)
-                put(EXTRA_HAS_WHOLESALE, descriptionViewModel.hasWholesale)
-                put(EXTRA_IS_ADD, !descriptionViewModel.isEditMode || descriptionViewModel.isAddMode)
+        context?.run {
+            val cacheManager = SaveInstanceCacheManager(this, true).apply {
+                put(EXTRA_PRODUCT_INPUT_MODEL, descriptionViewModel.productInputModel)
             }
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_VARIANT_DASHBOARD)
-            intent?.run {
-                putExtra(EXTRA_VARIANT_RESULT_CACHE_ID, cacheManager.id)
-                putExtra(EXTRA_IS_USING_CACHE_MANAGER, true)
-                putExtra(EXTRA_HAS_ORIGINAL_VARIANT_LV1, descriptionViewModel.checkOriginalVariantLevel())
-                putExtra(EXTRA_HAS_ORIGINAL_VARIANT_LV2, descriptionViewModel.checkOriginalVariantLevel())
-                startActivityForResult(this, REQUEST_CODE_VARIANT)
-            }
+            val intent = AddEditProductVariantActivity.createInstance(this, cacheManager.id)
+            startActivityForResult(intent, 9999)
         }
     }
 
