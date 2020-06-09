@@ -223,7 +223,7 @@ class ScreenRecordService : Service(), CoroutineScope {
     private fun writeResultToGallery() : String {
 
         val movieDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)
-        val outputFile = File(movieDir,"${getAppName()}/${getOutputFileName()}_${getTimestamp()}.mp4")
+        val outputFile = File(movieDir,"${getOutputPathName()}/${getOutputFileName()}_${getTimestamp()}.mp4")
 
         val srcFile = File(internalStoragePath + FILENAME_RESULT)
         srcFile.copyTo(target = outputFile)
@@ -233,8 +233,8 @@ class ScreenRecordService : Service(), CoroutineScope {
         return outputFile.absolutePath
     }
 
-    private fun getAppName() : String {
-        return resources.getString(R.string.app_name)
+    private fun getOutputPathName() : String {
+        return "Tokopedia"
     }
 
     private fun getTimestamp(): String {
