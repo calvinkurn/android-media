@@ -12,6 +12,7 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageTextType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
@@ -94,13 +95,14 @@ class VoucherPreviewPainter(private val context: Context,
     }
     private val bitmapWidth = bitmap.width
     private val bitmapHeight = bitmap.height
-    private val shopAvatarX = (bitmapWidth * 0.07).toInt()
-    private val shopAvatarY = (bitmapHeight * 0.22).toInt()
+    private val shopAvatarX = (bitmapWidth * 0.05).toInt()
+    private val shopAvatarY = (bitmapHeight * 0.163).toInt()
+    private val shopAvatarRadius = (bitmapWidth * 0.6).toInt()
     private val shopNameX = (bitmapWidth * 0.048f)
     private val shopNameY = (bitmapHeight * 0.72f)
     private val promoNameX = (bitmapWidth * 0.42f)
     private val promoNameY = (bitmapHeight * 0.4f)
-    private val shopAvatarSize = (bitmapWidth * 0.075).toInt()
+    private val shopAvatarSize = (bitmapWidth * 0.113).toInt()
     private val middleX = (bitmapWidth * 0.82f)
     private val labelHeight = (bitmapHeight * 0.12).toInt()
     private val topLabelY = (bitmapHeight * 0.1).toInt()
@@ -126,7 +128,7 @@ class VoucherPreviewPainter(private val context: Context,
                             val bitmapRect = Rect().apply {
                                 set(shopAvatarX, shopAvatarY, shopAvatarX + shopAvatarSize, shopAvatarY + shopAvatarSize)
                             }
-                            canvas.drawBitmap(resource, null, bitmapRect, shopAvatarPaint)
+                            canvas.drawBitmap(ImageHandler.getRoundedCornerBitmap(resource, shopAvatarRadius), null, bitmapRect, shopAvatarPaint)
                             onSuccessGetBitmap(bitmap)
                             return false
                         }
@@ -157,7 +159,7 @@ class VoucherPreviewPainter(private val context: Context,
                             val bitmapRect = Rect().apply {
                                 set(shopAvatarX, shopAvatarY, shopAvatarX + shopAvatarSize, shopAvatarY + shopAvatarSize)
                             }
-                            canvas.drawBitmap(resource, null, bitmapRect, shopAvatarPaint)
+                            canvas.drawBitmap(ImageHandler.getRoundedCornerBitmap(resource, shopAvatarRadius), null, bitmapRect, shopAvatarPaint)
                             drawVoucherValue(uiModel)
                             return false
                         }

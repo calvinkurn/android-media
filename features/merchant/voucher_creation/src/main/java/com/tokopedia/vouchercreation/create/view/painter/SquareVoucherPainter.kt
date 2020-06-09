@@ -12,6 +12,7 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.vouchercreation.create.view.enums.PostImageTextType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
@@ -27,9 +28,10 @@ class SquareVoucherPainter(private val context: Context,
         private const val INITIAL_X = 0.15f
         private const val SHOP_NAME_Y = 0.25f
         private const val PROMO_NAME_Y = 0.425f
-        private const val SHOP_AVATAR_X = 0.675f
-        private const val SHOP_AVATAR_Y = 0.155f
-        private const val SHOP_AVATAR_SIZE = 0.18f
+        private const val SHOP_AVATAR_X = 0.665f
+        private const val SHOP_AVATAR_Y = 0.145f
+        private const val SHOP_AVATAR_SIZE = 0.2f
+        private const val SHOP_AVATAR_RADIUS = 0.6f
         private const val LABEL_Y = 0.5f
         private const val LABEL_HEIGHT = 0.06f
         private const val VALUE_Y = 0.62f
@@ -124,6 +126,7 @@ class SquareVoucherPainter(private val context: Context,
     private val shopNameY = bitmapHeight * SHOP_NAME_Y
     private val shopAvatarX = (bitmapWidth * SHOP_AVATAR_X).toInt()
     private val shopAvatarY = (bitmapHeight * SHOP_AVATAR_Y).toInt()
+    private val shopAvatarRadius = (bitmapWidth * SHOP_AVATAR_RADIUS).toInt()
     private val shopAvatarSize = (bitmapWidth * SHOP_AVATAR_SIZE).toInt()
     private val promoNameX = bitmapWidth * INITIAL_X
     private val promoNameY = bitmapHeight * PROMO_NAME_Y
@@ -170,7 +173,7 @@ class SquareVoucherPainter(private val context: Context,
                         val bitmapRect = Rect().apply {
                             set(shopAvatarX, shopAvatarY, shopAvatarX + shopAvatarSize, shopAvatarY + shopAvatarSize)
                         }
-                        drawBitmap(resource, null, bitmapRect, shopAvatarPaint)
+                        drawBitmap(ImageHandler.getRoundedCornerBitmap(resource, shopAvatarRadius), null, bitmapRect, shopAvatarPaint)
                         return false
                     }
                 })
