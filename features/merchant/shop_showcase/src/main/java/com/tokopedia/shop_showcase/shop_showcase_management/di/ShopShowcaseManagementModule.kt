@@ -13,7 +13,10 @@ import javax.inject.Named
 
 @Module(includes = [ShopShowcaseManagementViewModelModule::class])
 @ShopShowcaseManagementScope
-class ShopShowcaseManagementModule {
+class ShopShowcaseManagementModule(val context: Context) {
+
+    @Provides
+    fun provideShopShowcaseManagementContext() = context
 
     @ShopShowcaseManagementScope
     @Provides
@@ -24,42 +27,42 @@ class ShopShowcaseManagementModule {
     @ShopShowcaseManagementScope
     @Provides
     @Named(GQLQueryConstant.QUERY_SHOP_SHOWCASE_LIST)
-    fun provideQueryShopShowcaseListData(@ApplicationContext context: Context): String {
+    fun provideQueryShopShowcaseListData(): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.get_shop_showcase_list)
     }
 
     @ShopShowcaseManagementScope
     @Provides
     @Named(GQLQueryConstant.QUERY_DELETE_SINGLE_SHOP_SHOWCASE)
-    fun provideQueryDeleteShopShowcaseData(@ApplicationContext context: Context): String {
+    fun provideQueryDeleteShopShowcaseData(): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.delete_shop_showcase)
     }
 
     @ShopShowcaseManagementScope
     @Provides
     @Named(GQLQueryConstant.QUERY_REORDER_SHOP_SHOWCASE)
-    fun provideQueryReorderShopShowcase(@ApplicationContext context: Context): String {
+    fun provideQueryReorderShopShowcase(): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.reorder_shop_showcase)
     }
 
     @ShopShowcaseManagementScope
     @Provides
     @Named(GQLQueryConstant.QUERY_SHOP_SHOWCASE_LIST_AS_BUYER)
-    fun provideQueryShopShowcaseListAsBuyer(@ApplicationContext context: Context): String {
+    fun provideQueryShopShowcaseListAsBuyer(): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.get_shop_showcase_list_as_buyer)
     }
 
     @ShopShowcaseManagementScope
     @Provides
     @Named(GQLQueryConstant.QUERY_SHOP_SHOWCASE_LIST_AS_SELLER)
-    fun provideQueryShopShowcaseListAsSeller(@ApplicationContext context: Context): String {
+    fun provideQueryShopShowcaseListAsSeller(): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.get_shop_showcase_list_as_seller)
     }
 
     @ShopShowcaseManagementScope
     @Provides
     @Named(GQLQueryConstant.QUERY_SHOP_SHOWCASE_GET_TOTAL_PRODUCTS)
-    fun provideQueryShopShowcaseGetTotalProduct(@ApplicationContext context: Context): String {
+    fun provideQueryShopShowcaseGetTotalProduct(): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.get_shop_showcase_product)
     }
 

@@ -5,7 +5,8 @@ import com.tokopedia.talk.feature.reply.data.model.discussion.Answer
 import com.tokopedia.talk.feature.reply.presentation.adapter.factory.TalkReplyAdapterTypeFactory
 
 class TalkReplyUiModel(
-        val answer: Answer = Answer()
+        val answer: Answer = Answer(),
+        val shopId: String = ""
 ) : Visitable<TalkReplyAdapterTypeFactory> {
 
     override fun type(typeFactory: TalkReplyAdapterTypeFactory): Int {

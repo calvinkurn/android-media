@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model
 
-import com.tokopedia.purchase_platform.features.checkout.data.model.response.checkout.PriceValidation
-import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata
+import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout.PriceValidation
 import java.util.ArrayList
 
 sealed class OccState<out T: Any> {

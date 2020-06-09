@@ -21,13 +21,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import rx.Observer
+import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 
 class ShippingDurationViewModel @Inject constructor(val useCase: GetShippingDurationUseCase,
                                                     val useCaseRates: GetRatesUseCase,
                                                     val mapper: ShippingDurationModelMapper,
                                                     val mapperPrice: ShippingDurationModelWithPriceMapper,
-                                                    dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher){
+                                                    dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     var selectedId = -1
     private var shippingDurationModel: ShippingListModel? = null
@@ -36,7 +37,9 @@ class ShippingDurationViewModel @Inject constructor(val useCase: GetShippingDura
     val shippingDuration: LiveData<OccState<ShippingListModel>>
         get() = _shippingDuration
 
-    fun getShippingDuration(){
+    private val compositeSubscription = CompositeSubscription()
+
+    fun getShippingDuration() {
         _shippingDuration.value = OccState.Loading
         useCase.execute(onSuccess = {
             logicSelection(mapTomodel(it))
@@ -48,10 +51,10 @@ class ShippingDurationViewModel @Inject constructor(val useCase: GetShippingDura
 
     fun logicSelection(shippingDurationModel: ShippingListModel) {
         launch {
-            withContext(Dispatchers.Default){
+            withContext(Dispatchers.Default) {
                 val shippingList = shippingDurationModel.services
-                for (item in shippingList){
-                    if(item is ServicesItemModelNoPrice) {
+                for (item in shippingList) {
+                    if (item is ServicesItemModelNoPrice) {
                         item.isSelected = item.serviceId == selectedId
                     } else if (item is ServicesItemModel) {
                         item.isSelected = item.servicesId == selectedId
@@ -68,16 +71,16 @@ class ShippingDurationViewModel @Inject constructor(val useCase: GetShippingDura
         return mapper.convertToDomainModel(responses)
     }
 
-    fun consumeGetShippingDurationFail(){
+    fun consumeGetShippingDurationFail() {
         val value = _shippingDuration.value
-        if(value is OccState.Fail){
+        if (value is OccState.Fail) {
             _shippingDuration.value = value.copy(isConsumed = true)
         }
     }
 
-    fun setSelectedShipping(shippingId: Int){
+    fun setSelectedShipping(shippingId: Int) {
         val shippingModel = shippingDurationModel
-        if(shippingModel != null && _shippingDuration.value is OccState.Success) {
+        if (shippingModel != null && _shippingDuration.value is OccState.Success) {
             selectedId = shippingId
             logicSelection(shippingModel)
         }
@@ -85,25 +88,27 @@ class ShippingDurationViewModel @Inject constructor(val useCase: GetShippingDura
 
 
     /*With Price*/
-    fun getRates(listShopShipment: ArrayList<ShopShipment>?, shippingParam: ShippingParam?){
+    fun getRates(listShopShipment: ArrayList<ShopShipment>?, shippingParam: ShippingParam?) {
         _shippingDuration.value = OccState.Loading
         val ratesParamBuilder = shippingParam?.let { listShopShipment?.let { list -> RatesParam.Builder(list, it) } }
         val ratesParam = ratesParamBuilder?.build()
         ratesParam?.occ = "1"
         ratesParam?.let {
-            useCaseRates.execute(it)
-                .subscribe(object : Observer<ShippingRecommendationData> {
-                    override fun onError(e: Throwable?) {
-                        _shippingDuration.value = OccState.Fail(false, e, "")
-                    }
+            compositeSubscription.add(
+                    useCaseRates.execute(it)
+                            .subscribe(object : Observer<ShippingRecommendationData> {
+                                override fun onError(e: Throwable?) {
+                                    _shippingDuration.value = OccState.Fail(false, e, "")
+                                }
 
-                    override fun onNext(shippingRecomendationData: ShippingRecommendationData) {
-                        logicSelection(mapTomodelPrice(shippingRecomendationData))
-                    }
+                                override fun onNext(shippingRecomendationData: ShippingRecommendationData) {
+                                    logicSelection(mapTomodelPrice(shippingRecomendationData))
+                                }
 
-                    override fun onCompleted() {
-                    }
-                })
+                                override fun onCompleted() {
+                                }
+                            })
+            )
         }
     }
 
@@ -111,6 +116,10 @@ class ShippingDurationViewModel @Inject constructor(val useCase: GetShippingDura
         return mapperPrice.convertToDomainModelWithPrice(responses)
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        compositeSubscription.clear()
+    }
 }
 
 
