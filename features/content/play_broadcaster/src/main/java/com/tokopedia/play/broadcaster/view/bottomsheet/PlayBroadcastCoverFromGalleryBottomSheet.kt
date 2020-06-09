@@ -90,7 +90,7 @@ class PlayBroadcastCoverFromGalleryBottomSheet : BottomSheetUnify(),
                 else -> Loader<Cursor>(requireContext())
             }
         } else {
-            Loader<Cursor>(requireContext())
+            Loader(requireContext())
         }
     }
 
@@ -114,8 +114,7 @@ class PlayBroadcastCoverFromGalleryBottomSheet : BottomSheetUnify(),
     private fun initBottomSheet() {
         showCloseIcon = false
         showKnob = true
-        isFullpage = false
-        isDragable = true
+        isFullpage = true
         isHideable = true
 
         mChildView = View.inflate(requireContext(), R.layout.bottom_sheet_play_cover_from_gallery, null)
@@ -138,14 +137,18 @@ class PlayBroadcastCoverFromGalleryBottomSheet : BottomSheetUnify(),
                 resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1),
                 false))
         rvPlayGallery.adapter = albumMediaAdapter
+
+        showLoading()
     }
 
     private fun showLoading() {
-        mChildView.progressPlayGallery?.visibility = View.VISIBLE
+        mChildView.containerPlayLoading?.visibility = View.VISIBLE
+        mChildView.rvPlayGallery?.visibility = View.GONE
     }
 
     private fun hideLoading() {
-        mChildView.progressPlayGallery?.visibility = View.GONE
+        mChildView.containerPlayLoading?.visibility = View.GONE
+        mChildView.rvPlayGallery?.visibility = View.VISIBLE
     }
 
     private fun onAlbumLoadedCursor(cursor: Cursor?) {
