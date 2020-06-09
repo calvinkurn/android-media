@@ -52,7 +52,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
         activity?.let {
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
-            productViewModel = viewModelProvider.get(DigitalTelcoProductViewModel::class.java)
+            productViewModel = ViewModelProviders.of(this, viewModelFactory).get(DigitalTelcoProductViewModel::class.java)
             sharedModel = viewModelProvider.get(SharedProductTelcoViewModel::class.java)
         }
     }
