@@ -43,19 +43,19 @@ class ReviewPendingViewModel @Inject constructor(
     }
 
     private fun updateUI(gqlResponse: Result<ProductrevWaitForFeedbackResponse>) : ReviewPendingViewState {
-        return when(gqlResponse) {
+        when(gqlResponse) {
             is Success -> {
                 with(gqlResponse.data) {
-                    ReviewPendingViewState.ReviewPendingSuccess(list.isEmpty(), page)
+                    return ReviewPendingViewState.ReviewPendingSuccess(list.isEmpty(), page)
                 }
             }
             is Fail -> {
                 gqlResponse.throwable.message?.let {
                     if(it != ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE.toString()) {
-                        ReviewPendingViewState.ReviewPendingLazyLoadError
+                        return ReviewPendingViewState.ReviewPendingLazyLoadError
                     }
                 }
-                ReviewPendingViewState.ReviewPendingInitialLoadError
+                return ReviewPendingViewState.ReviewPendingInitialLoadError
             }
         }
     }

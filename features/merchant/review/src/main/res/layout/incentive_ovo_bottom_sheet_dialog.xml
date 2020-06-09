@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:maxWidth="@dimen/max_width_incentive_ovo_subtitle"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginTop="@dimen/dp_12"
             android:gravity="center"
             app:typographyType="body_1"
             app:typographyWeight="reguler"
