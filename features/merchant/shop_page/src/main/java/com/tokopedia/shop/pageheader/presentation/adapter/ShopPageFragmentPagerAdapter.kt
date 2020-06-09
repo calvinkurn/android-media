@@ -100,7 +100,7 @@ internal class ShopPageFragmentPagerAdapter(
 
     fun isFragmentObjectExists(classType: Class<*>): Boolean {
         return listShopPageTabModel.firstOrNull {
-            it.tabFragment::class == classType
+            it.tabFragment::class.java == classType
         } != null
     }
 }

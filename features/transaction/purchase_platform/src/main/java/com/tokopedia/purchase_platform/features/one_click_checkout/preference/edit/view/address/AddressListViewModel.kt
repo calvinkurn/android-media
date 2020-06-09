@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.logisticdata.data.entity.address.Token
-import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.domain.model.AddressListModel
-import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.domain.usecase.GetAddressCornerUseCase
+import com.tokopedia.purchase_platform.common.feature.addresslist.GetAddressCornerUseCase
+import com.tokopedia.purchase_platform.common.feature.addresslist.domain.model.AddressListModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
