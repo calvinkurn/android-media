@@ -47,7 +47,7 @@ class CategoryNavigationViewModel(val application: Application, private val comp
                 block = {
                     withContext(Dispatchers.IO) {
                         if(categoryNavigationUseCase.getCategoryNavigationData(components.id,components.pageEndPoint))  {
-                            listData.postValue(Success(components.componentsItem as ArrayList<ComponentsItem>))
+                            listData.postValue(Success(components.getComponentsItem() as ArrayList<ComponentsItem>))
                         }
                     }
                 },

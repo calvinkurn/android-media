@@ -13,6 +13,7 @@ class DiscoveryDataUseCase @Inject constructor(private val discoveryPageReposito
             it
         }?: discoveryPageRepository.getDiscoveryPageData(pageIdentifier).apply {
             discoveryPageData[pageIdentifier] = this
+            componentMap = HashMap()
         })
     }
 

@@ -42,8 +42,8 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         productCarouselComponentData.value = components
-        components.componentsItem?.let {
-            productCarouselList.value = components.componentsItem as ArrayList<ComponentsItem>?
+        components.getComponentsItem()?.let {
+            productCarouselList.value = components.getComponentsItem() as ArrayList<ComponentsItem>?
         }
         fetchProductCarouselData()
     }
@@ -53,7 +53,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     private fun fetchProductCarouselData() {
         launchCatchError(block = {
             if(productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)) {
-                productCarouselList.value = components.componentsItem as ArrayList<ComponentsItem>?
+                productCarouselList.value = components.getComponentsItem() as ArrayList<ComponentsItem>?
                 syncData.value = true
             }
         }, onError = {

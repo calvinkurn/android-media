@@ -12,7 +12,7 @@ class CategoryNavigationUseCase @Inject constructor(private val categoryNavigati
         if (component?.noOfPagesLoaded == 1)
             return false
         component?.let { cmp ->
-            cmp.componentsItem = component.data?.get(0)?.categoryDetailUrl?.let { categoryNavigationRepository.getCategoryNavigationData(it) }
+            component.data?.get(0)?.categoryDetailUrl?.let { categoryNavigationRepository.getCategoryNavigationData(it) }?.let { cmp.setComponentsItem(it) }
             cmp.noOfPagesLoaded = 1
             return true
         }

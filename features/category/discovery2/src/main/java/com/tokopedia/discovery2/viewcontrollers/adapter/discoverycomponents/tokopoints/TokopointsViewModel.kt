@@ -45,7 +45,7 @@ class TokopointsViewModel(val application: Application, val component: Component
         if(tokopointsList.value.isNullOrEmpty()) {
             launchCatchError(block = {
                 if(tokopointsListDataUseCase.getTokopointsDataUseCase(component.id, pageEndPoint)) {
-                    tokopointsList.value = component.componentsItem as ArrayList<ComponentsItem>?
+                    tokopointsList.value = component.getComponentsItem() as ArrayList<ComponentsItem>?
                 }
             }, onError = {
                 it.printStackTrace()
