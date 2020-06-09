@@ -37,7 +37,8 @@ import javax.inject.Inject
  * Created by furqan on 02/06/20
  */
 class PlayCoverTitleSetupFragment @Inject constructor()
-    : PlayBaseSetupFragment(), PlayBroadcastChooseCoverBottomSheet.Listener {
+    : PlayBaseSetupFragment(), PlayBroadcastChooseCoverBottomSheet.Listener,
+        PlayBroadcastCoverFromGalleryBottomSheet.Listener {
 
     private var selectedImageUrlList = arrayListOf<String>()
     private var liveTitle: String = ""
@@ -91,8 +92,8 @@ class PlayCoverTitleSetupFragment @Inject constructor()
         }
     }
 
-    override fun onGetCoverFromProduct(imageUrl: Uri?) {
-        imageUrl?.let {
+    override fun onGetCoverFromProduct(imageUri: Uri?) {
+        imageUri?.let {
             coverSource = CoverSourceEnum.PRODUCT
             showCoverCropLayout()
             renderCoverCropLayout(it)
@@ -101,9 +102,17 @@ class PlayCoverTitleSetupFragment @Inject constructor()
 
     override fun onChooseFromGalleryClicked() {
         val coverFromGalleryBottomSheet = PlayBroadcastCoverFromGalleryBottomSheet()
-//        coverFromGalleryBottomSheet.listener = this
+        coverFromGalleryBottomSheet.listener = this
         coverFromGalleryBottomSheet.setShowListener { coverFromGalleryBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
         coverFromGalleryBottomSheet.show(requireFragmentManager(), PlayBroadcastChooseCoverBottomSheet.TAG_CHOOSE_COVER)
+    }
+
+    override fun onGetCoverFromGallery(imageUri: Uri?) {
+        imageUri?.let {
+            coverSource = CoverSourceEnum.GALLERY
+            showCoverCropLayout()
+            renderCoverCropLayout(it)
+        }
     }
 
     private fun initView() {

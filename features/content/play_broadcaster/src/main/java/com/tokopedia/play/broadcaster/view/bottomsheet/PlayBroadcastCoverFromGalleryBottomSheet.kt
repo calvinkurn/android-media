@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.view.bottomsheet
 import android.Manifest
 import android.content.pm.PackageManager
 import android.database.Cursor
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
@@ -23,6 +24,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.bottom_sheet_play_cover_from_gallery.*
 import kotlinx.android.synthetic.main.bottom_sheet_play_cover_from_gallery.view.*
+import java.io.File
 
 /**
  * @author by furqan on 08/06/2020
@@ -31,12 +33,14 @@ class PlayBroadcastCoverFromGalleryBottomSheet : BottomSheetUnify(),
         AlbumMediaAdapter.OnMediaClickListener,
         LoaderManager.LoaderCallbacks<Cursor> {
 
+    lateinit var listener: Listener
+
     private lateinit var mChildView: View
+    private lateinit var albumMediaAdapter: AlbumMediaAdapter
 
     private var albumTitle: String = DEFAULT_ALBUM_TITLE
     private var selectedAlbumItem: AlbumItem? = null
     private var selectedAlbumPosition: Int = 0
-    private lateinit var albumMediaAdapter: AlbumMediaAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,12 +77,27 @@ class PlayBroadcastCoverFromGalleryBottomSheet : BottomSheetUnify(),
         LoaderManager.getInstance(this).destroyLoader(MEDIA_LOADER_ID)
     }
 
+    /**
+     * Because the error toaster is different with in Image Picker Adapter (old error)
+     * so we don't use this method validation, so it is always return true
+     */
     override fun isMediaValid(item: MediaItem?): Boolean = true
 
-    override fun canAddMoreMedia(): Boolean = false
+    /**
+     * Because it is not multiple selection, so can add more media always return true
+     */
+    override fun canAddMoreMedia(): Boolean = true
 
+    /**
+     * Our own validation runs here
+     */
     override fun onMediaClick(item: MediaItem?, checked: Boolean, adapterPosition: Int) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        item?.let {
+            if (isMediaPassValidation(it)) {
+                listener.onGetCoverFromGallery(it.contentUri)
+                dismiss()
+            }
+        }
     }
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
@@ -196,6 +215,39 @@ class PlayBroadcastCoverFromGalleryBottomSheet : BottomSheetUnify(),
         }
     }
 
+    private fun isMediaPassValidation(mediaItem: MediaItem): Boolean {
+        // check if file exists
+        val file = File(mediaItem.realPath)
+        if (!file.exists()) {
+            showError(getString(R.string.play_prepare_cover_gallery_error_not_found_label))
+            return false
+        }
+
+        // check image resolution
+        if ((file.length() / BYTES_IN_KB) > MAXIMUM_COVER_SIZE) {
+            showError(getString(R.string.play_prepare_cover_gallery_error_size_label, MAXIMUM_COVER_SIZE / BYTES_IN_KB))
+            return false
+        }
+        if (mediaItem.width < MINIMUM_COVER_WIDTH || mediaItem.height < MINIMUM_COVER_HEIGHT) {
+            showError(getString(R.string.play_prepare_cover_gallery_error_pixel_label, MINIMUM_COVER_WIDTH, MINIMUM_COVER_HEIGHT))
+            return false
+        }
+
+        return true
+    }
+
+    private fun showError(errorMessage: String) {
+        Toaster.make(mChildView.rootView,
+                errorMessage,
+                Toaster.LENGTH_INDEFINITE,
+                Toaster.TYPE_ERROR,
+                getString(R.string.play_ok))
+    }
+
+    interface Listener {
+        fun onGetCoverFromGallery(imageUri: Uri?)
+    }
+
     companion object {
         private const val SAVED_ALBUM_TITLE = "SAVED_ALBUM_TITLE"
 
@@ -204,5 +256,9 @@ class PlayBroadcastCoverFromGalleryBottomSheet : BottomSheetUnify(),
 
         private const val DEFAULT_ALBUM_TITLE = "Semua media"
         private const val DEFAULT_GALLERY_SPAN_COUNT = 4
+        private const val MINIMUM_COVER_WIDTH = 168
+        private const val MINIMUM_COVER_HEIGHT = 298
+        private const val MAXIMUM_COVER_SIZE = 5120
+        private const val BYTES_IN_KB = 1024
     }
 }

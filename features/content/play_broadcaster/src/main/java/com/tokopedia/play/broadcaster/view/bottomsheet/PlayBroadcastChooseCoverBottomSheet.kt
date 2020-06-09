@@ -144,6 +144,7 @@ class PlayBroadcastChooseCoverBottomSheet : BottomSheetUnify() {
 
     private fun chooseCoverFromGallery() {
         listener?.onChooseFromGalleryClicked()
+        dismiss()
     }
 
     private fun getImageUriFromBitmap(bitmap: Bitmap): Uri {
