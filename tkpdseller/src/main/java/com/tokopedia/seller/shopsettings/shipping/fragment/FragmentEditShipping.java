@@ -29,8 +29,10 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.shopsettings.shipping.analytics.EditShippingAnalytics;
 import com.tokopedia.seller.shopsettings.shipping.customview.CourierView;
 import com.tokopedia.seller.shopsettings.shipping.customview.ShippingAddressLayout;
 import com.tokopedia.seller.shopsettings.shipping.customview.ShippingHeaderLayout;
@@ -40,7 +42,7 @@ import com.tokopedia.seller.shopsettings.shipping.model.editshipping.ShopShippin
 import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresenter;
 import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresenterImpl;
-import com.tokopedia.seller.util.EditShippingConstant;
+import com.tokopedia.seller.shopsettings.shipping.data.EditShippingConstant;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
 
@@ -538,27 +540,30 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
                     editShippingPresenter.getShopModel());
         }
     }
-    private void showTickerChargeBo(){
-        chargeBoTicker.setVisibility(View.VISIBLE);
-        chargeBoTicker.setTickerTitle(getString(R.string.charge_bo_ticker_title));
-        chargeBoTicker.setHtmlDescription(getString(R.string.charge_bo_ticker_content));
-        chargeBoTicker.setDescriptionClickEvent(new TickerCallback() {
-            @Override
-            public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
-                goToChargeBoWebview();
-            }
 
-            @Override
-            public void onDismiss() {
-                //
-            }
-        });
+    private void showTickerChargeBo(){
+        if(((LogisticRouter) getActivity().getApplicationContext()).getBooleanRemoteConfig(RemoteConfigKey.ENABLE_TICKER_CHARGE_BO, true)) {
+            chargeBoTicker.setVisibility(View.VISIBLE);
+            chargeBoTicker.setTickerTitle(getString(R.string.charge_bo_ticker_title));
+            chargeBoTicker.setHtmlDescription(getString(R.string.charge_bo_ticker_content));
+            chargeBoTicker.setDescriptionClickEvent(new TickerCallback() {
+                @Override
+                public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
+                    EditShippingAnalytics.INSTANCE.eventClickonTickerShippingEditor();
+                    goToChargeBoWebview();
+                }
+
+                @Override
+                public void onDismiss() {
+                    //no-op
+                }
+            });
+        }
     }
 
-    /*Using tokopedia corner until url charge bo available*/
     private void goToChargeBoWebview() {
         if (getActivity() != null) {
-            Intent intent = RouteManager.getIntent(getActivity(), EditShippingConstant.INSTANCE.getAPPLINK_TOKOPEDIA_CORNER());
+            Intent intent = RouteManager.getIntent(getActivity(), EditShippingConstant.INSTANCE.getAPPLINK_BEBAS_ONGKIR());
             getActivity().startActivity(intent);
         }
     }
