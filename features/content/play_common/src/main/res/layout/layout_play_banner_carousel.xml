@@ -42,15 +42,16 @@
             android:layout_marginLeft="-40dp"
             android:layout_marginRight="-40dp">
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/parallax_background"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"/>
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/parallax_image"
                 android:layout_marginLeft="@dimen/spacing_lvl8"
+                android:layout_marginStart="@dimen/spacing_lvl8"
                 android:layout_height="match_parent"
                 android:layout_width="@dimen/play_banner_item_carousel_width"
                 android:scaleType="fitCenter"/>

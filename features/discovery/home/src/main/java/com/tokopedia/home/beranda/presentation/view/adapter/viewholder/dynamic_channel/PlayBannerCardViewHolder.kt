@@ -49,8 +49,8 @@ class PlayBannerCardViewHolder(
         // tracker imprpession
     }
 
-    override fun onPromoBadgeClick(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
-        RouteManager.route(itemView.context, dataModel.promoUrl)
+    override fun onReminderClick(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
+
     }
 
     override fun onSeeMoreClick(dataModel: PlayBannerCarouselBannerDataModel, position: Int) {

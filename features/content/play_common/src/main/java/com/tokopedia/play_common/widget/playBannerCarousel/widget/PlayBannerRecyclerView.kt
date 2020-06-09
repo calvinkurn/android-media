@@ -91,43 +91,44 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
             if(!isAutoPlay || mediaObjects.isEmpty()) return
 
             val targetPositions: MutableList<Int> = mutableListOf()
-                var startPosition: Int = (Objects.requireNonNull(
-                        layoutManager) as LinearLayoutManager).findFirstVisibleItemPosition()
-                var endPosition: Int = (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+            var startPosition: Int = (Objects.requireNonNull(
+                    layoutManager) as LinearLayoutManager).findFirstVisibleItemPosition()
+            var endPosition: Int = (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
 
-                // if first position is not play card (empty / another view holder), set startPosition + 1
-                if(mediaObjects[startPosition] !is PlayBannerCarouselItemDataModel){
-                    if(startPosition != endPosition){
-                        startPosition++
-                    }
+            // if first position is not play card (empty / another view holder), set startPosition + 1
+            if(mediaObjects[startPosition] !is PlayBannerCarouselItemDataModel){
+                if(startPosition != endPosition){
+                    startPosition++
                 }
+            }
 
-                // if end position is see more card, set end position - 1
-                if(mediaObjects[endPosition] !is PlayBannerCarouselItemDataModel){
-                    endPosition--
-                }
+            // if end position is see more card, set end position - 1
+            if(mediaObjects[endPosition] !is PlayBannerCarouselItemDataModel){
+                endPosition--
+            }
 
-                // something is wrong. return.
-                if (startPosition < 0 || endPosition < 0) {
-                    return
-                }
+            // something is wrong. return.
+            if (startPosition < 0 || endPosition < 0) {
+                return
+            }
 
-                // if there is more than 2 list-item on the screen
-                // check percentage view visible < 49% will take the second item and third item
-                // else will take first item and second item
-                for(i in startPosition .. endPosition){
-                    if(getVisibleVideoSurfaceWidth(i) > 0) targetPositions.add(i)
-                    if(targetPositions.size == videoPlayers.size) break
-                }
+            // if there is more than 2 list-item on the screen
+            // check percentage view visible < 49% will take the second item and third item
+            // else will take first item and second item
+            for(i in startPosition .. endPosition){
+                if(getVisibleVideoSurfaceWidth(i) > 0) targetPositions.add(i)
+                if(targetPositions.size == videoPlayers.size) break
+            }
 
             for (i in 0 until targetPositions.size){
-                val playPosition = targetPositions[i]
                 for (videoPlayer in videoPlayers){
-                    if(videoPlayer.position == playPosition){
-                        /* do nothing skip video */
-                    } else if(!targetPositions.contains(videoPlayer.position)){
+                    val playPosition = targetPositions[i]
+                    if(targetPositions.contains(videoPlayer.position)){
+                        /* do nothing */
+                    } else {
                         removeVideoView(videoPlayer)
                         playVideo(videoPlayer, playPosition)
+                        break
                     }
                 }
             }

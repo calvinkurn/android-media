@@ -5,9 +5,12 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -19,13 +22,23 @@ import com.tokopedia.play_common.widget.playBannerCarousel.extension.setGradient
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.showOrHideView
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.typeFactory.PlayBannerCarouselTypeImpl
-import kotlinx.android.synthetic.main.layout_header_play_banner.view.*
+import com.tokopedia.play_common.widget.playBannerCarousel.widget.PlayBannerRecyclerView
 import kotlinx.android.synthetic.main.layout_play_banner_carousel.view.*
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.abs
 
 class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : FrameLayout(context, attrs, defStyleAttr), CoroutineScope {
+
+    private val recyclerView: PlayBannerRecyclerView
+    private val channelTitle: TextView
+    private val channelSubtitle: TextView
+    private val seeAllButton: TextView
+    private val backgroundLoader: LoaderImageView
+    private val parallaxBackground: AppCompatImageView
+    private val parallaxImage: AppCompatImageView
+    private val parallaxView: FrameLayout
+
 
     private var adapter: PlayBannerCarouselAdapter? = null
     private val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -41,7 +54,15 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
         get() = masterJob + Dispatchers.Main
 
     init {
-        LayoutInflater.from(context).inflate(LAYOUT, this)
+        val view = LayoutInflater.from(context).inflate(LAYOUT, this)
+        recyclerView = view.findViewById(R.id.recycler_view)
+        channelTitle = view.findViewById(R.id.channel_title)
+        channelSubtitle = view.findViewById(R.id.channel_subtitle)
+        seeAllButton = view.findViewById(R.id.see_all_button)
+        backgroundLoader = view.findViewById(R.id.background_loader)
+        parallaxBackground = view.findViewById(R.id.parallax_background)
+        parallaxImage = view.findViewById(R.id.parallax_image)
+        parallaxView = view.findViewById(R.id.parallax_view)
     }
 
     fun setListener(listener: PlayBannerCarouselViewEventListener){
@@ -49,17 +70,17 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
     }
 
     override fun onDetachedFromWindow() {
-        recycler_view.resetVideoPlayer()
+        recyclerView.resetVideoPlayer()
         super.onDetachedFromWindow()
     }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        recycler_view.playVideos()
+        recyclerView.playVideos()
     }
 
     fun onDestroy(){
-        recycler_view?.releasePlayer()
+        recyclerView.releasePlayer()
     }
 
     fun setItem(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
@@ -67,12 +88,12 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
         val list = playBannerCarouselDataModel.channelList
         if(adapter == null){
             adapter = PlayBannerCarouselAdapter(adapterTypeFactory, listener)
-            recycler_view?.layoutManager = linearLayoutManager
-            recycler_view?.adapter = adapter
-            recycler_view?.addOnScrollListener(configureParallax())
+            recyclerView.layoutManager = linearLayoutManager
+            recyclerView.adapter = adapter
+            recyclerView.addOnScrollListener(configureParallax())
         }
-        recycler_view?.setAutoPlay(playBannerCarouselDataModel.isAutoPlay, playBannerCarouselDataModel.isAutoPlayAmount)
-        recycler_view?.setMedia(list)
+        recyclerView.setAutoPlay(playBannerCarouselDataModel.isAutoPlay, playBannerCarouselDataModel.isAutoPlayAmount)
+        recyclerView.setMedia(list)
         configureHeader(playBannerCarouselDataModel)
         configureBackground(playBannerCarouselDataModel)
         adapter?.setItems(list)
@@ -86,19 +107,19 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
     }
 
     private fun configureTitle(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
-        channel_title?.showOrHideView(playBannerCarouselDataModel.title.isNotBlank())
-        channel_title?.text = playBannerCarouselDataModel.title
-        channel_title?.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700))
+        channelTitle.showOrHideView(playBannerCarouselDataModel.title.isNotBlank())
+        channelTitle.text = playBannerCarouselDataModel.title
+        channelTitle.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700))
     }
 
     private fun configureSubtitle(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
-        channel_subtitle?.showOrHideView(playBannerCarouselDataModel.subtitle.isNotBlank())
-        channel_subtitle?.text = playBannerCarouselDataModel.subtitle
-        channel_subtitle?.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700))
+        channelSubtitle.showOrHideView(playBannerCarouselDataModel.subtitle.isNotBlank())
+        channelSubtitle.text = playBannerCarouselDataModel.subtitle
+        channelSubtitle.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700))
     }
 
     private fun configureSeeMore(playBannerCarouselDataModel: PlayBannerCarouselDataModel){
-        see_all_button?.showOrHideView(playBannerCarouselDataModel.seeMoreApplink.isNotBlank())
+        seeAllButton.showOrHideView(playBannerCarouselDataModel.seeMoreApplink.isNotBlank())
     }
 
     private fun autoScrollLauncher(interval: Long) = launch(coroutineContext) {
@@ -108,7 +129,7 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
 
     private suspend fun intervalAutoRefreshCoroutine() = withContext(Dispatchers.Main){
         playBannerCarouselDataModel?.let {
-            recycler_view?.resetVideoPlayer()
+            recyclerView.resetVideoPlayer()
             listener?.onRefreshView(it)
         }
     }
@@ -122,28 +143,28 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
 
     private fun configureBackground(playBannerCarouselDataModel: PlayBannerCarouselDataModel) {
         if (playBannerCarouselDataModel.backgroundUrl.isNotEmpty()) {
-            background_loader?.show()
-            parallax_image?.loadImage(playBannerCarouselDataModel.imageUrl, object : ImageHandler.ImageLoaderStateListener{
+            backgroundLoader.show()
+            parallaxImage.loadImage(playBannerCarouselDataModel.imageUrl, object : ImageHandler.ImageLoaderStateListener{
                 override fun successLoad() {
                     if(playBannerCarouselDataModel.gradients.isNotEmpty()){
-                        parallax_background?.setGradientBackground(playBannerCarouselDataModel.gradients)
+                        parallaxBackground.setGradientBackground(playBannerCarouselDataModel.gradients)
                     } else {
-                        parallax_background?.loadImage(playBannerCarouselDataModel.backgroundUrl)
+                        parallaxBackground.loadImage(playBannerCarouselDataModel.backgroundUrl)
                     }
-                    background_loader.hide()
+                    backgroundLoader.hide()
                 }
 
                 override fun failedLoad() {
                     if(playBannerCarouselDataModel.gradients.isNotEmpty()){
-                        parallax_background?.setGradientBackground(playBannerCarouselDataModel.gradients)
+                        parallaxBackground.setGradientBackground(playBannerCarouselDataModel.gradients)
                     } else {
-                        parallax_background?.loadImage(playBannerCarouselDataModel.backgroundUrl)
+                        parallaxBackground.loadImage(playBannerCarouselDataModel.backgroundUrl)
                     }
-                    background_loader.hide()
+                    backgroundLoader.hide()
                 }
             })
         } else {
-            background_loader?.hide()
+            backgroundLoader.hide()
         }
     }
 
@@ -157,12 +178,12 @@ class PlayBannerCarousel(context: Context, attrs: AttributeSet?, defStyleAttr: I
                     firstView?.let {
                         val distanceFromLeft = it.left
                         val translateX = distanceFromLeft * 0.2f
-                        parallax_view?.translationX = translateX
+                        parallaxView.translationX = translateX
 
                         if (distanceFromLeft <= 0) {
                             val itemSize = it.width.toFloat()
                             val alpha = (abs(distanceFromLeft).toFloat() / itemSize * 0.80f)
-                            parallax_image?.alpha = 1 - alpha
+                            parallaxImage.alpha = 1 - alpha
                         }
                     }
                 }
