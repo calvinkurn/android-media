@@ -24,8 +24,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -49,6 +47,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.design.bottomsheet.BottomSheetView
 import com.tokopedia.design.bottomsheet.BottomSheetView.BottomSheetField.BottomSheetFieldBuilder
@@ -71,6 +70,7 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getClo
 import com.tokopedia.home.analytics.HomePageTrackingV2.RecommendationList.getRecommendationListImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.SprintSale.getSprintSaleImpression
 import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
+import com.tokopedia.home.analytics.v2.LegoBannerTracking
 import com.tokopedia.home.analytics.v2.MixTopTracking.getMixTopViewIris
 import com.tokopedia.home.analytics.v2.MixTopTracking.mapChannelToProductTracker
 import com.tokopedia.home.analytics.v2.ProductHighlightTracking.getProductHighlightImpression
@@ -80,10 +80,10 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
-import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.helper.ViewHelper
+import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_INFLATE_HOME_FRAGMENT
 import com.tokopedia.home.beranda.listener.*
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
@@ -103,7 +103,10 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
+import com.tokopedia.home.beranda.presentation.view.listener.DynamicLegoBannerComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.FramePerformanceIndexInterface
+import com.tokopedia.home.beranda.presentation.view.listener.HomeComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.RecommendationListCarouselComponentCallback
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
@@ -176,6 +179,7 @@ open class HomeFragment : BaseDaggerFragment(),
         private const val REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220
         private const val DEFAULT_WALLET_APPLINK_REQUEST_CODE = 111
         private const val REQUEST_CODE_REVIEW = 999
+        private const val REQUEST_CODE_LOGIN_TOKOPOINTS = 120
         private const val VISITABLE_SIZE_WITH_DEFAULT_BANNER = 1
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
         private const val REVIEW_CLICK_AT = "rating"
@@ -878,8 +882,10 @@ open class HomeFragment : BaseDaggerFragment(),
                 this,
                 homeRecyclerView?.recycledViewPool?: RecyclerView.RecycledViewPool(),
                 this,
-                this
-        )
+                this,
+                HomeComponentCallback(viewModel.get()),
+                DynamicLegoBannerComponentCallback(context),
+                RecommendationListCarouselComponentCallback(viewModel.get(), this))
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
                 .build()
@@ -1053,6 +1059,13 @@ open class HomeFragment : BaseDaggerFragment(),
                 adapter?.notifyDataSetChanged()
                 if (resultCode == Activity.RESULT_OK) {
                     viewModel.get().onRemoveSuggestedReview()
+                }
+            }
+            REQUEST_CODE_LOGIN_TOKOPOINTS -> {
+                activity?.let {
+                    if (resultCode == Activity.RESULT_OK) {
+                        RouteManager.route(activity, ApplinkConstInternalPromo.TOKOPOINTS_HOME)
+                    }
                 }
             }
             REQUEST_CODE_PLAY_ROOM -> if (data != null && data.hasExtra(EXTRA_TOTAL_VIEW)) viewModel.get().updateBannerTotalView(data.getStringExtra(EXTRA_TOTAL_VIEW))
@@ -1294,7 +1307,9 @@ open class HomeFragment : BaseDaggerFragment(),
                 if (visitable is HomeVisitable) {
                     val homeVisitable = visitable
                     if (homeVisitable.isTrackingCombined && homeVisitable.trackingDataForCombination != null) {
-                        HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(getTrackingQueueObj(), homeVisitable.getTrackingDataForCombination());
+                        getTrackingQueueObj()?.putEETracking(
+                                LegoBannerTracking.getHomeBannerImpression(homeVisitable.trackingDataForCombination) as HashMap<String, Any>
+                        )
                     } else if (!homeVisitable.isTrackingCombined && homeVisitable.trackingData != null) {
                         HomePageTracking.eventEnhancedImpressionWidgetHomePage(getTrackingQueueObj(), homeVisitable.trackingData)
                     }
@@ -1333,7 +1348,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onBuyAgainCloseChannelClick(channel: DynamicHomeChannel.Channels, position: Int) {
-        viewModel.get().onCloseBuyAgain(channel, position)
+        viewModel.get().onCloseBuyAgain(channel.id, position)
         TrackApp.getInstance().gtm.sendGeneralEvent(getCloseClickOnDynamicListCarousel(channel, viewModel.get().getUserId()))
     }
 
@@ -1392,7 +1407,11 @@ open class HomeFragment : BaseDaggerFragment(),
         if (!TextUtils.isEmpty(url) && context != null) {
             val intent = RouteManager.getIntent(context, ApplinkConst.PROMO)
             intent.putExtra(EXTRA_URL, url)
-            startActivity(intent)
+            try {
+                startActivity(intent)
+            } catch (exception: ActivityNotFoundException) {
+                exception.printStackTrace()
+            }
         }
     }
 
@@ -1769,8 +1788,14 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onTokopointCheckNowClicked(applink: String) {
-        if (!TextUtils.isEmpty(applink)) {
-            RouteManager.route(context, applink)
+        activity?.let {
+            if (::userSession.isInitialized && !userSession.isLoggedIn) {
+                startActivityForResult(RouteManager.getIntent(activity, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN_TOKOPOINTS)
+                return
+            }
+            if (!TextUtils.isEmpty(applink)) {
+                RouteManager.route(activity, applink)
+            }
         }
     }
 

@@ -10,18 +10,15 @@ import rx.Observable
 import javax.inject.Inject
 
 class TopAdsLogLocalRepository @Inject
-internal constructor(private val topAdsLogDBSource: TopAdsLogDBSource,
-                     private val topAdsLogMapper: TopAdsLogMapper,
+constructor(private val topAdsLogDBSource: TopAdsLogDBSource,
                      private val topAdsVerificationNetworkSource: TopAdsVerificationNetworkSource) : TopAdsLogRepository {
 
     override fun removeAll(): Observable<Boolean> {
         return topAdsLogDBSource.deleteAll()
     }
 
-    override fun get(parameters: RequestParams): Observable<List<Visitable<*>>> {
+    override fun get(parameters: RequestParams): Observable<List<TopAdsLogDB>> {
         return topAdsLogDBSource.getData(parameters.parameters)
                 .flatMap<List<TopAdsLogDB>>({ logDbList -> topAdsVerificationNetworkSource.appendVerificationStatus(logDbList)})
-                .flatMapIterable { topAdsLogDBS -> topAdsLogDBS }
-                .flatMap<Visitable<*>>(topAdsLogMapper).toList()
     }
 }

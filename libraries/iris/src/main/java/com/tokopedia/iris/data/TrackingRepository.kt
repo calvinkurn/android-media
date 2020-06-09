@@ -15,6 +15,8 @@ import com.tokopedia.iris.util.*
 import com.tokopedia.iris.worker.IrisService
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -30,6 +32,7 @@ class TrackingRepository(
 ) {
 
     private val cache: Cache = Cache(context)
+    private val userSession: UserSessionInterface = UserSession(context)
     private val trackingDao: TrackingDao = IrisDb.getInstance(context).trackingDao()
     private var firebaseRemoteConfig: RemoteConfig? = null
 
@@ -52,7 +55,7 @@ class TrackingRepository(
                           eventName: String?, eventCategory: String?, eventAction: String?) =
         withContext(Dispatchers.IO) {
             try {
-                val tracking = Tracking(data, session.getUserId(), session.getDeviceId(),
+                val tracking = Tracking(data, userSession.userId, userSession.deviceId,
                     Calendar.getInstance().timeInMillis, GlobalConfig.VERSION_NAME)
                 trackingDao.insert(tracking)
                 IrisLogger.getInstance(context).putSaveIrisEvent(tracking.toString())
@@ -95,7 +98,8 @@ class TrackingRepository(
     }
 
     suspend fun sendSingleEvent(data: String, session: Session): Boolean {
-        val dataRequest = TrackingMapper().transformSingleEvent(data, session.getSessionId(), session.getUserId(), session.getDeviceId())
+        val dataRequest = TrackingMapper().transformSingleEvent(data, session.getSessionId(),
+            userSession.userId, userSession.deviceId)
         val requestBody = ApiService.parse(dataRequest)
         val response = apiService.sendSingleEventAsync(requestBody)
         val isSuccessFul = response.isSuccessful
