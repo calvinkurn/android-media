@@ -310,7 +310,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
 
-    fun initHomePageFlows():Boolean{
+    protected open fun initHomePageFlows():Boolean{
         initInjectorHome()
         return true
     }
