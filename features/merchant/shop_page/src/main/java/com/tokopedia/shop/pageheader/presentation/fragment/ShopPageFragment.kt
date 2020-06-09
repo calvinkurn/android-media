@@ -285,7 +285,7 @@ class ShopPageFragment :
                     errorMessage,
                     Toaster.LENGTH_LONG,
                     Toaster.TYPE_ERROR,
-                    getString(R.string.retry),
+                    getString(R.string.shop_page_retry),
                     View.OnClickListener {
                         getShopPageHeaderContentData()
                     })
