@@ -6,9 +6,10 @@ import android.util.AttributeSet
 import android.view.Gravity
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.transition.Slide
 
-class SingleProductAttachmentContainer : LinearLayout {
+class SingleProductAttachmentContainer : ConstraintLayout {
 
     private val widthMultiplier = 0.83
 
@@ -33,7 +34,7 @@ class SingleProductAttachmentContainer : LinearLayout {
     }
 
     private fun setLayoutGravity(@Slide.GravityFlag gravity: Int) {
-        (layoutParams as LayoutParams).apply {
+        (layoutParams as LinearLayout.LayoutParams).apply {
             this.gravity = gravity
         }
     }

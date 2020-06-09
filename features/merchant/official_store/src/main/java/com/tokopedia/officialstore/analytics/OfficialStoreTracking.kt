@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Banner
@@ -362,19 +364,49 @@ class OfficialStoreTracking(context: Context) {
         ) as HashMap<String, Any>)
     }
 
-    fun dynamicChannelImageClick(categoryName: String, headerName: String, position: String, gridData: Grid, channelData: Channel) {
+    fun dynamicChannelHomeComponentClick(categoryName: String, headerName: String, position: String, channelGrid: ChannelGrid, channelModel: ChannelModel) {
         val ecommerceBody = DataLayer.mapOf(
                 "promoClick", DataLayer.mapOf(
                     "promotions", DataLayer.listOf(DataLayer.mapOf(
-                        "id", gridData.id.toString(10),
+                        "id", channelGrid.id,
                         "name", "/official-store/$categoryName - dynamic channel - $headerName",
                         "position", position,
-                        "creative", gridData.attribution,
-                        "creative_url", gridData.applink,
+                        "creative", channelGrid.attribution,
+                        "creative_url", channelGrid.applink,
                         "promo_id", null,
                         "promo_code", null
                 ))
             )
+        )
+
+        val trackingAttributionModel = channelModel.trackingAttributionModel
+        tracker.sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                EVENT, "promoClick",
+                EVENT_CATEGORY, "os microsite - $categoryName",
+                EVENT_ACTION, "dynamic channel - click",
+                EVENT_LABEL, "click dynamic channel - $headerName",
+                ATTRIBUTION, trackingAttributionModel.galaxyAttribution,
+                AFFINITY_LABEL, trackingAttributionModel.persona,
+                CATEGORY_ID, trackingAttributionModel.categoryPersona,
+                SHOP_ID, trackingAttributionModel.brandId,
+                CAMPAIGN_CODE, trackingAttributionModel.categoryId,
+                ECOMMERCE, ecommerceBody
+        ))
+    }
+
+    fun dynamicChannelImageClick(categoryName: String, headerName: String, position: String, gridData: Grid, channelData: Channel) {
+        val ecommerceBody = DataLayer.mapOf(
+                "promoClick", DataLayer.mapOf(
+                "promotions", DataLayer.listOf(DataLayer.mapOf(
+                "id", gridData.id.toString(10),
+                "name", "/official-store/$categoryName - dynamic channel - $headerName",
+                "position", position,
+                "creative", gridData.attribution,
+                "creative_url", gridData.applink,
+                "promo_id", null,
+                "promo_code", null
+        ))
+        )
         )
 
         tracker.sendEnhanceEcommerceEvent(DataLayer.mapOf(
@@ -405,6 +437,23 @@ class OfficialStoreTracking(context: Context) {
                         "promotions", promotionBody
                 )
             )
+        ) as HashMap<String, Any>)
+    }
+
+    fun dynamicChannelHomeComponentImpression(categoryName: String, channelModel: ChannelModel) {
+        val headerName = channelModel.channelHeader.name ?: ""
+        val promotionBody = getHomeComponentImpressionPromotion(categoryName, channelModel, "dynamic channel", headerName)
+
+        trackingQueue.putEETracking(DataLayer.mapOf(
+                EVENT, "promoView",
+                EVENT_CATEGORY, "os microsite - $categoryName",
+                EVENT_ACTION, "dynamic channel - impression",
+                EVENT_LABEL, "impression of dynamic channel - $headerName",
+                ECOMMERCE, DataLayer.mapOf(
+                "promoView", DataLayer.mapOf(
+                "promotions", promotionBody
+        )
+        )
         ) as HashMap<String, Any>)
     }
 
@@ -565,6 +614,25 @@ class OfficialStoreTracking(context: Context) {
             grid?.run {
                 promotionBody.add(DataLayer.mapOf(
                         "id", id.toString(10),
+                        "name", "/official-store/$categoryName - $channelType - $headerName",
+                        "position", (index + 1).toString(10),
+                        "creative", attribution,
+                        "creative_url", applink,
+                        "promo_id", null,
+                        "promo_code", null
+                ))
+            }
+        }
+        return promotionBody
+    }
+
+    private fun getHomeComponentImpressionPromotion(categoryName: String, channelModel: ChannelModel,
+                                                     channelType: String, headerName: String): List<Any> {
+        val promotionBody: MutableList<Any> = DataLayer.listOf()
+        channelModel.channelGrids?.forEachIndexed { index, grid ->
+            grid?.run {
+                promotionBody.add(DataLayer.mapOf(
+                        "id", id,
                         "name", "/official-store/$categoryName - $channelType - $headerName",
                         "position", (index + 1).toString(10),
                         "creative", attribution,

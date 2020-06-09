@@ -7,7 +7,7 @@ import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.ui.toolbar.interaction.PlayToolbarInteractionEvent
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
-import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -20,22 +20,22 @@ import kotlinx.coroutines.launch
 open class ToolbarComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
-        coroutineScope: CoroutineScope,
+        private val scope: CoroutineScope,
         dispatchers: CoroutineDispatcherProvider
-) : UIComponent<PlayToolbarInteractionEvent>, ToolbarView.Listener, CoroutineScope by coroutineScope {
+) : UIComponent<PlayToolbarInteractionEvent>, ToolbarView.Listener {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val uiView = initView(container)
 
     init {
-        launch(dispatchers.immediate) {
+        scope.launch(dispatchers.immediate) {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            ScreenStateEvent.Init -> uiView.show()
+                            is ScreenStateEvent.Init -> uiView.show()
                             is ScreenStateEvent.SetPartnerInfo ->
                                 uiView.setPartnerInfo(it.partnerInfo)
-                            is ScreenStateEvent.BottomInsetsChanged -> if (it.isAnyShown) uiView.hide() else uiView.show()
+                            is ScreenStateEvent.BottomInsetsChanged -> if (!it.isAnyShown) uiView.show() else uiView.hide()
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze || it.event.isBanned) uiView.show()
                             is ScreenStateEvent.OnNoMoreAction -> uiView.hideActionMore()
                             is ScreenStateEvent.FollowPartner -> uiView.setFollowStatus(it.shouldFollow)
@@ -54,31 +54,31 @@ open class ToolbarComponent(
     }
 
     override fun onBackButtonClicked(view: ToolbarView) {
-        launch {
+        scope.launch {
             bus.emit(PlayToolbarInteractionEvent::class.java, PlayToolbarInteractionEvent.BackButtonClicked)
         }
     }
 
     override fun onMoreButtonClicked(view: ToolbarView) {
-        launch {
+        scope.launch {
             bus.emit(PlayToolbarInteractionEvent::class.java, PlayToolbarInteractionEvent.MoreButtonClicked)
         }
     }
 
     override fun onFollowButtonClicked(view: ToolbarView, partnerId: Long, action: PartnerFollowAction) {
-        launch {
+        scope.launch {
             bus.emit(PlayToolbarInteractionEvent::class.java, PlayToolbarInteractionEvent.FollowButtonClicked(partnerId, action))
         }
     }
 
     override fun onPartnerNameClicked(view: ToolbarView, partnerId: Long, type: PartnerType) {
-        launch {
+        scope.launch {
             bus.emit(PlayToolbarInteractionEvent::class.java, PlayToolbarInteractionEvent.PartnerNameClicked(partnerId, type))
         }
     }
 
     override fun onCartButtonClicked(view: ToolbarView) {
-        launch {
+        scope.launch {
             bus.emit(PlayToolbarInteractionEvent::class.java, PlayToolbarInteractionEvent.CartButtonClicked)
         }
     }

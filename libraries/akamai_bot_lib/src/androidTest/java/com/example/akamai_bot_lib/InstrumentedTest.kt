@@ -7,7 +7,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.akamai_bot_lib.test.R
 import com.tokopedia.akamai_bot_lib.getAny
-import com.tokopedia.akamai_bot_lib.interceptor.registeredGqlFunctions
+import com.tokopedia.akamai_bot_lib.registeredGqlFunctions
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.lang.reflect.Field
