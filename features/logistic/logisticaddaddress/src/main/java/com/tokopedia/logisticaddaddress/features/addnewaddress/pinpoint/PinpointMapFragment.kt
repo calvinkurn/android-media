@@ -130,6 +130,11 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                 permissionCheckerHelper = PermissionCheckerHelper()
             }
         }
+
+        private const val ADDRESS_KONSLET = "tokopedia_konslet.png"
+        private const val ADDRESS_OUT_OF_INDONESIA = "tokopedia_out_of_indonesia.png"
+        private const val ADDRESS_INVALID = "ic_invalid_location.png"
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -423,7 +428,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
         invalid_title?.text = getString(R.string.not_found_location)
         invalid_desc?.text = getString(R.string.not_found_location_desc)
-        invalid_img?.setImageResource(R.drawable.tokopedia_konslet)
+        invalid_img?.loadRemoteImageDrawable(ADDRESS_KONSLET)
         invalid_button?.visibility = View.GONE
 
         invalid_ic_search_btn?.setOnClickListener {
@@ -473,7 +478,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
         invalid_title?.text = getString(R.string.out_of_indonesia_title)
         invalid_desc?.text = getString(R.string.out_of_indonesia_desc)
-        invalid_img?.loadRemoteImageDrawable("tokopedia_out_of_indonesia.png")
+        invalid_img?.loadRemoteImageDrawable(ADDRESS_OUT_OF_INDONESIA)
         invalid_button?.visibility = View.GONE
 
         invalid_ic_search_btn?.setOnClickListener {
@@ -488,7 +493,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
         invalid_title?.text = getString(R.string.undetected_title)
         invalid_desc?.text = getString(R.string.undetected_desc)
-        invalid_img?.setImageResource(R.drawable.tokopedia_konslet)
+        invalid_img?.loadRemoteImageDrawable(ADDRESS_KONSLET)
         invalid_button?.visibility = View.GONE
 
         invalid_ic_search_btn?.setOnClickListener {
@@ -503,7 +508,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
         invalid_title?.text = getString(R.string.invalid_title)
         invalid_desc?.text = getString(R.string.invalid_desc)
-        invalid_img?.setImageResource(R.drawable.ic_invalid_location)
+        invalid_img?.loadRemoteImageDrawable(ADDRESS_INVALID)
         invalid_button?.apply {
             visibility = View.VISIBLE
             setOnClickListener {
@@ -523,7 +528,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
         invalid_title?.text = getString(R.string.invalid_title)
         invalid_desc?.text = getString(R.string.invalid_desc)
-        invalid_img?.setImageResource(R.drawable.ic_invalid_location)
+        invalid_img?.loadRemoteImageDrawable(ADDRESS_INVALID)
         invalid_button?.apply {
             visibility = View.VISIBLE
             setOnClickListener {
