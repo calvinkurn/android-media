@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.data
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.discovery2.datamapper.discoveryPageData
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 
 data class ComponentsItem(
@@ -42,11 +43,26 @@ data class ComponentsItem(
 
         var constraintRatio: String? = null
 ) {
-    var componentsItem: List<ComponentsItem>? = null
+    private var componentsItem: List<ComponentsItem>? = null
     var needPagination: Boolean = false
     var noOfPagesLoaded = 0
     var componentsPerPage = 20
-    lateinit var pageEndPoint: String
-    lateinit var parentComponentId: String
+    var pageEndPoint: String = ""
+    var parentComponentId: String = ""
     var cpmData: DiscoveryDataMapper.CpmTopAdsData? = null
+    var chipSelectionData:DataItem? = null
+    var chipSelectionChange = false
+
+    fun setComponentsItem(listComponents:List<ComponentsItem>?) {
+        listComponents?.forEach {
+            it.parentComponentId = this.id
+            it.pageEndPoint = this.pageEndPoint
+            discoveryPageData[this.pageEndPoint]?.componentMap?.set(it.id, it)
+        }
+        componentsItem = listComponents
+
+    }
+    fun getComponentsItem(): List<ComponentsItem>? {
+        return componentsItem
+    }
 }

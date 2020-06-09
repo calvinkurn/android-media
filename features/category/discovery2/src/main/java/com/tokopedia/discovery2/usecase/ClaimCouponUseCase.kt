@@ -13,7 +13,7 @@ class ClaimCouponUseCase @Inject constructor(val claimCouponRepository: IClaimCo
         if (component?.noOfPagesLoaded == 1)
             return false
         component?.let { cmp ->
-            cmp.componentsItem = claimCouponRepository.getClickCouponData(GenerateUrl.getClaimCouponUrl(pageIdentifier, componentId))
+            cmp.setComponentsItem(claimCouponRepository.getClickCouponData(GenerateUrl.getClaimCouponUrl(pageIdentifier, componentId)))
 
             cmp.noOfPagesLoaded = 1
             return true

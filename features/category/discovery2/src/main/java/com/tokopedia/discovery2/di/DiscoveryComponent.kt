@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponViewModel
@@ -33,5 +34,6 @@ interface DiscoveryComponent {
     fun inject(claimCouponViewModel: ClaimCouponViewModel)
     fun inject(claimCouponItemViewModel: ClaimCouponItemViewModel)
     fun inject(productCardItemViewModel: ProductCardItemViewModel)
+    fun inject(chipsFilterViewModel: ChipsFilterViewModel)
     fun inject(loadMoreViewModel: LoadMoreViewModel)
 }

@@ -16,7 +16,7 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
-        components.componentsItem?.let {
+        components.getComponentsItem()?.let {
             listData.value = it as ArrayList<ComponentsItem>
         }
         updateSelectedTabValue(null)
@@ -42,11 +42,11 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
 
     private fun updateSelectedTabValue(id: String?) {
         val selectedID = id ?: getSelectedId(components)
-        components.componentsItem?.forEach { components ->
+        components.getComponentsItem()?.forEach { components ->
             components.data?.get(0)?.let { dataItem ->
                 dataItem.isSelected = components.id == selectedID
                 if (dataItem.isSelected) {
-                    selectedTabComponentsItem.value = components.componentsItem as ArrayList<ComponentsItem>?
+                    selectedTabComponentsItem.value = components.getComponentsItem() as ArrayList<ComponentsItem>?
                 }
 
             }
@@ -55,12 +55,12 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
 
     private fun getSelectedId(components: ComponentsItem): String {
         var selectedID: String? = null
-        for (it in components.componentsItem!!) {
+        for (it in components.getComponentsItem()!!) {
             if (it.data?.get(0)?.isSelected!!) {
                 selectedID = it.id
             }
         }
-        return selectedID ?: components.componentsItem?.get(0)?.id.toString()
+        return selectedID ?: components.getComponentsItem()?.get(0)?.id.toString()
     }
 
 }

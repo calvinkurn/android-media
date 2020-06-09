@@ -12,7 +12,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
 
-class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
+class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView,fragment.viewLifecycleOwner) {
 
     private lateinit var mProductRevampComponentViewModel: ProductCardRevampViewModel
     private var addChildAdapterCallback: AddChildAdapterCallback = (fragment as AddChildAdapterCallback)
@@ -20,19 +20,21 @@ class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         mProductRevampComponentViewModel = discoveryBaseViewModel as ProductCardRevampViewModel
-        setUpDataObserver(fragment.viewLifecycleOwner)
     }
 
-    private fun setUpDataObserver(lifecycleOwner: LifecycleOwner) {
-        mProductRevampComponentViewModel.getProductCarouselItemsListData().observe(lifecycleOwner, Observer { item ->
-            addChildAdapterCallback.notifyMergeAdapter()
-        })
-        mProductRevampComponentViewModel.getSyncPageLiveData().observe(lifecycleOwner, Observer { needResync ->
-            if (needResync) {
-                (fragment as DiscoveryFragment).resync()
-            }
+    override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
+        lifecycleOwner?.let {
+            mProductRevampComponentViewModel.getProductCarouselItemsListData().observe(it, Observer { item ->
+                addChildAdapterCallback.notifyMergeAdapter()
+            })
+            mProductRevampComponentViewModel.getSyncPageLiveData().observe(it, Observer { needResync ->
+                if (needResync) {
+                    (fragment as DiscoveryFragment).resync()
+                }
 
-        })
+            })
+        }
+
     }
 
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.usecase.productCardCarouselUseCase
 
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
 import javax.inject.Inject
@@ -10,6 +11,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         private const val RPC_ROWS = "rpc_Rows"
         private const val RPC_START = "rpc_Start"
         private const val PRODUCT_PER_PAGE = 20
+        private const val RPC_FILTER_KEU = "rpc_"
     }
 
     suspend fun loadFirstPageComponents(componentId: String, pageEndPoint: String): Boolean {
@@ -17,7 +19,8 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         if (component?.noOfPagesLoaded == 1)
             return false
         component?.let { component ->
-            component?.componentsItem = productCardsRepository.getProducts(componentId, getQueryParameterMap(0, component.componentsPerPage), pageEndPoint, component.name)
+            val parentComponentsItem = getComponent(component.parentComponentId,pageEndPoint)
+            component?.setComponentsItem(productCardsRepository.getProducts(componentId, getQueryParameterMap(0, component.componentsPerPage,parentComponentsItem?.chipSelectionData), pageEndPoint, component.name))
             component?.noOfPagesLoaded = 1
             return true
         }
@@ -30,18 +33,22 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         var parentComponent = component?.parentComponentId?.let { getComponent(it, pageEndPoint) }
 
         parentComponent?.let { component1 ->
-            var size = component1.componentsItem?.size
-            (component1?.componentsItem as ArrayList<ComponentsItem>).addAll(productCardsRepository.getProducts(component1.id, getQueryParameterMap(size
-                    ?: 0, component1.componentsPerPage), pageEndPoint, component1.name))
+            val parentComponentsItem = getComponent(component1.parentComponentId,pageEndPoint)
+            var size = component1.getComponentsItem()?.size
+            (component1?.getComponentsItem() as ArrayList<ComponentsItem>).addAll(productCardsRepository.getProducts(component1.id, getQueryParameterMap(size
+                    ?: 0, component1.componentsPerPage, parentComponentsItem?.chipSelectionData),pageEndPoint, component1.name))
             return true
         }
         return false
     }
 
-    private fun getQueryParameterMap(pageStart: Int, productPerPage: Int?): MutableMap<String, Any> {
+    private fun getQueryParameterMap(pageStart: Int, productPerPage: Int?,chipSelectionData:DataItem?): MutableMap<String, Any> {
         val queryParameterMap = mutableMapOf<String, Any>()
         queryParameterMap[RPC_ROWS] = PRODUCT_PER_PAGE.toString()
         queryParameterMap[RPC_START] = pageStart.toString()
+        chipSelectionData?.let {
+            queryParameterMap[RPC_FILTER_KEU+it.key] = it.value.toString()
+        }
         return queryParameterMap
     }
 }
