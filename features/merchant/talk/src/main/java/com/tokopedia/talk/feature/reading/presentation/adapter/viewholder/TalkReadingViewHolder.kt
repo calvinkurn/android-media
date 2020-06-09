@@ -8,7 +8,9 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.TextView
+import androidx.core.text.HtmlCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
@@ -19,7 +21,8 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_talk_reading.view.*
 
-class TalkReadingViewHolder(view: View, private val threadListener: ThreadListener) : AbstractViewHolder<TalkReadingUiModel>(view) {
+class
+TalkReadingViewHolder(view: View, private val threadListener: ThreadListener) : AbstractViewHolder<TalkReadingUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_talk_reading
@@ -58,7 +61,7 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
                 setOnClickListener {
                     threadListener.onThreadClicked(questionId)
                 }
-                HtmlLinkHelper(context, content).spannedString
+                HtmlCompat.fromHtml(content, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
             }
         }
     }
