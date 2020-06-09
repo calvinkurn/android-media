@@ -80,7 +80,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         tvTotalLike = view.findViewById(R.id.tv_total_likes)
         ivShareLink = view.findViewById(R.id.iv_share_link)
 
-        chatListView = ChatListPartialView(view as ViewGroup, R.id.cl_chat_list)
+        chatListView = ChatListPartialView(view as ViewGroup)
     }
 
     private fun setupView() {

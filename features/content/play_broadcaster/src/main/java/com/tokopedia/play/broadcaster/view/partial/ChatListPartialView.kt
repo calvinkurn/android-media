@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.view.partial
 
 import android.view.ViewGroup
-import androidx.annotation.IdRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -17,9 +16,8 @@ import timber.log.Timber
  * Created by jegul on 09/06/20
  */
 class ChatListPartialView(
-        container: ViewGroup,
-        @IdRes chatListViewId: Int
-) : PartialView(container, chatListViewId) {
+        container: ViewGroup
+) : PartialView(container, R.id.cl_chat_list) {
 
     private val chatAdapter = ChatListAdapter()
 
