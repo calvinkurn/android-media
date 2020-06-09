@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Neutral_N50"
+    android:padding="@dimen/spacing_lvl3">
+
+    <ImageView
+        android:id="@+id/imageFreeShipping"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl3"
+        app:layout_constraintBottom_toBottomOf="@id/textDescription"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/textTitle"
+        app:layout_constraintTop_toTopOf="@id/textTitle"
+        app:srcCompat="@drawable/ic_free_shipping"
+        tools:ignore="ContentDescription" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:text="@string/power_merchant_free_shipping_title"
+        android:textColor="@color/light_N700_96"
+        app:layout_constraintLeft_toRightOf="@id/imageFreeShipping"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_6"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:text="@string/power_merchant_free_shipping_active_description"
+        android:textColor="@color/light_N700_68"
+        app:layout_constraintLeft_toLeftOf="@id/textTitle"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textTitle"
+        app:typographyType="small"
+        tools:text="Buat pembeli lebih tertarik &amp; tingkatkan penjualanmu" />
+</androidx.constraintlayout.widget.ConstraintLayout>
