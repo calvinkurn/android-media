@@ -56,6 +56,7 @@ import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomShippedApp
 object DeeplinkMapper {
 
     val TOKOPOINTS = "tokopoints"
+
     /**
      * Get registered deeplink navigation in manifest
      * In conventional term, convert deeplink (http or tokopedia) to applink (tokopedia:// or tokopedia-android-internal://)
@@ -103,10 +104,10 @@ object DeeplinkMapper {
                     deeplink.startsWithPattern(ApplinkConst.PRODUCT_EDIT) -> DeepLinkMapperProductManage.getEditProductInternalAppLink(deeplink)
                     deeplink.startsWith(ApplinkConst.PRODUCT_MANAGE) -> DeepLinkMapperProductManage.getProductListInternalAppLink(deeplink)
                     GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME) ->
-                       ApplinkConstInternalSellerapp.SELLER_HOME
+                        ApplinkConstInternalSellerapp.SELLER_HOME
                     deeplink.startsWith(ApplinkConst.PRODUCT_CREATE_REVIEW, true) -> getRegisteredNavigationProductReview(deeplink)
                     deeplink.startsWith(ApplinkConst.REPUTATION, true) -> getRegisteredNavigationReputation(deeplink)
-                    deeplink.startsWith(ApplinkConst.TOKOPOINTS) -> getRegisteredNavigationTokopoints(context, deeplink)
+                    deeplink.startsWith(ApplinkConst.TOKOPOINTS) || deeplink.startsWith(ApplinkConst.TOKOPEDIA_REWARD) -> getRegisteredNavigationTokopoints(context, deeplink)
                     deeplink.startsWith(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE) -> getRegisteredNavigationRecommendation(deeplink)
                     deeplink.startsWith(ApplinkConst.CHAT_BOT, true) ->
                         getChatbotDeeplink(deeplink)
@@ -117,7 +118,7 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.OQR_PIN_URL_ENTRY_LINK) ->
                         getRegisteredNavigationForFintech(deeplink)
                     deeplink.startsWith(ApplinkConst.LAYANAN_FINANSIAL) ->
-                         getRegisteredNavigationForLayanan(deeplink)
+                        getRegisteredNavigationForLayanan(deeplink)
                     deeplink.startsWith(ApplinkConst.SALAM_UMRAH, true) ->
                         getRegisteredNavigationSalamUmrah(deeplink, context)
                     deeplink.startsWith(ApplinkConst.SALAM_UMRAH_ORDER_DETAIL, true) ->
@@ -135,7 +136,7 @@ object DeeplinkMapper {
                     isShopReview(deeplink) -> getRegisteredNavigationShopReview(deeplink)
                     deeplink.startsWith(ApplinkConst.TOPCHAT_IDLESS) -> getRegisteredNavigationTopChat(deeplink)
                     deeplink.startsWith(ApplinkConst.TALK, true) -> getRegisteredNavigationTalk(deeplink)
-                    deeplink.startsWith(ApplinkConst.EVENTS,true) -> getRegisteredNavigationEvents(deeplink, context)
+                    deeplink.startsWith(ApplinkConst.EVENTS, true) -> getRegisteredNavigationEvents(deeplink, context)
                     isProductTalkDeeplink(deeplink) -> getRegisteredNavigationProductTalk(deeplink)
                     isShopTalkDeeplink(deeplink) -> getRegisteredNavigationShopTalk(deeplink)
                     deeplink.startsWith(ApplinkConst.SELLER_NEW_ORDER, true) -> getSomNewOrderAppLink()
@@ -174,7 +175,7 @@ object DeeplinkMapper {
                 tempDeeplink = createAppendDeeplinkWithQuery(tempDeeplink, query)
                 tempDeeplink
             }
-            deeplink.startsWith(DeeplinkConstant.SCHEME_SELLERAPP, true) -> getRegisteredNavigationFromSellerapp(context,deeplink)
+            deeplink.startsWith(DeeplinkConstant.SCHEME_SELLERAPP, true) -> getRegisteredNavigationFromSellerapp(context, deeplink)
             deeplink.startsWith(ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST) -> DeepLinkMapperProductManage.getProductListInternalAppLink(deeplink)
             deeplink.startsWith(ApplinkConstInternalGlobal.TOPCHAT) -> AppLinkMapperSellerHome.getTopChatAppLink()
             deeplink.startsWith(ApplinkConstInternalOrder.NEW_ORDER) -> getSomNewOrderAppLink()
@@ -191,7 +192,9 @@ object DeeplinkMapper {
         val path = uri?.lastPathSegment ?: ""
         return if (path.isNotEmpty()) {
             UriUtil.buildUri(ApplinkConstInternalMarketplace.ORDER_HISTORY, path)
-        } else { "" }
+        } else {
+            ""
+        }
     }
 
     private fun isProductTalkDeeplink(deeplink: String): Boolean {
