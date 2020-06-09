@@ -435,6 +435,10 @@
         <value>true</value>
     </entry>
     <entry>
+        <key>android_async_home_view_model_creation</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>excluded_amp</key>
         <value>stories</value>
     </entry>
