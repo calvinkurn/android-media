@@ -52,10 +52,10 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
     }
 
     /*
-    * akamai wrapper for generating a sensor data
-    * the hash will be passing into header of
-    * X-acf-sensor-data;
-    * */
+     * akamai wrapper for generating a sensor data
+     * the hash will be passing into header of
+     * X-acf-sensor-data;
+     * */
     private Observable<Response<JsonArray>> getResponse(List<GraphqlRequest> requests) {
         CYFMonitor.setLogLevel(CYFMonitor.INFO);
         if (isAkamai(requests.get(0).getQuery())) {
@@ -92,22 +92,27 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                 }).doOnNext(graphqlResponseInternal -> {
                     //Handling backend cache
                     Map<String, BackendCache> caches = CacheHelper.parseCacheHeaders(graphqlResponseInternal.getBeCache());
-                    if (caches == null || caches.isEmpty()) {
-                        return;
-                    }
+                    if (caches != null && !caches.isEmpty()) {
+                        int size = requests.size();
+                        for (int i = 0; i < size; i++) {
+                            GraphqlRequest request = requests.get(i);
+                            if (request == null || request.isNoCache() || caches.get(request.getMd5()) == null) {
+                                continue;
+                            }
 
-                    int size = requests.size();
-                    for (int i = 0; i < size; i++) {
+                            BackendCache cache = caches.get(request.getMd5());
 
-                        if (requests.get(i) == null || requests.get(i).isNoCache() || caches.get(requests.get(i).getMd5()) == null) {
-                            continue;
-                        }
+                            JsonElement rawResp = graphqlResponseInternal.getOriginalResponse().get(i);
+                            if (rawResp == null
+                                    || rawResp.getAsJsonObject() == null
+                                    || rawResp.getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA) == null) {
+                                continue;
+                            }
 
-                        //TODO need to save response of individual query
-                        BackendCache cache = caches.get(requests.get(i).getMd5());
-                        JsonElement object = graphqlResponseInternal.getOriginalResponse().get(i).getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA);
-                        if (object != null && cache != null) {
-                            mCacheManager.save(requests.get(i).cacheKey(), object.toString(), cache.getMaxAge() * 1000);
+                            JsonElement childResp = rawResp.getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA);
+                            if (childResp != null) {
+                                mCacheManager.save(request.cacheKey(), childResp.toString(), cache.getMaxAge() * 1000);
+                            }
                         }
                     }
 

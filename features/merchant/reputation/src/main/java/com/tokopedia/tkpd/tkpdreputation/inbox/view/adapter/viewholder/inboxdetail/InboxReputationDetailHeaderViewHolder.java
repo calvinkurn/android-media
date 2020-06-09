@@ -32,8 +32,6 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback;
 
 import org.jetbrains.annotations.NotNull;
 
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
 
 /**
  * @author by nisie on 8/19/17.
@@ -327,17 +325,8 @@ public class InboxReputationDetailHeaderViewHolder extends
                 @Override
                 public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
                     BottomSheetUnify bottomSheet = new IncentiveOvoBottomSheet(productRevIncentiveOvoDomain, ReputationTrackingConstant.INVOICE);
-                    bottomSheet.setFullpage(true);
                     if(fragmentManager != null) {
                         bottomSheet.show(fragmentManager,IncentiveOvoBottomSheet.Companion.getTAG());
-                        bottomSheet.setCloseClickListener(new Function1<View, Unit>() {
-                            @Override
-                            public Unit invoke(View view) {
-                                reputationTracking.onClickDismissIncentiveOvoBottomSheetTracker(ReputationTrackingConstant.INVOICE);
-                                bottomSheet.dismiss();
-                                return Unit.INSTANCE;
-                            }
-                        });
                     }
                     reputationTracking.onClickReadSkIncentiveOvoTracker(title, ReputationTrackingConstant.INVOICE);
                 }

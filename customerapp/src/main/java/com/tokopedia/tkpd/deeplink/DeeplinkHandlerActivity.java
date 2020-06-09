@@ -51,8 +51,6 @@ import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
-import com.tokopedia.instantdebitbca.data.view.applink.InstantDebitBcaApplinkModule;
-import com.tokopedia.instantdebitbca.data.view.applink.InstantDebitBcaApplinkModuleLoader;
 import com.tokopedia.interestpick.applink.InterestPickApplinkModule;
 import com.tokopedia.interestpick.applink.InterestPickApplinkModuleLoader;
 import com.tokopedia.kol.applink.KolApplinkModule;
@@ -96,8 +94,12 @@ import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
 import com.tokopedia.utils.uri.DeeplinkUtils;
+import com.tokopedia.weaver.WeaveInterface;
+import com.tokopedia.weaver.Weaver;
 import com.tokopedia.webview.WebViewApplinkModule;
 import com.tokopedia.webview.WebViewApplinkModuleLoader;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -118,7 +120,6 @@ import timber.log.Timber;
         HomeApplinkModule.class,
         SessionApplinkModule.class,
         FeedDeeplinkModule.class,
-        InstantDebitBcaApplinkModule.class,
         DigitalBrowseApplinkModule.class,
         EventsDeepLinkModule.class,
         OvoUpgradeDeeplinkModule.class,
@@ -159,7 +160,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new HomeApplinkModuleLoader(),
                     new SessionApplinkModuleLoader(),
                     new FeedDeeplinkModuleLoader(),
-                    new InstantDebitBcaApplinkModuleLoader(),
                     new DigitalBrowseApplinkModuleLoader(),
                     new EventsDeepLinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader(),
@@ -232,10 +232,19 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
     }
 
     public static void createApplinkDelegateInBackground(){
-        Observable.fromCallable(() -> {
-            getApplinkDelegateInstance();
-            return true;
-        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe();
+        WeaveInterface appLinkDelegateWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return getAppLinkDelegate();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineNow(appLinkDelegateWeave);
+    }
+
+    private static boolean getAppLinkDelegate(){
+        getApplinkDelegateInstance();
+        return true;
     }
 
     @Override

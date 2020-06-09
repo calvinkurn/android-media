@@ -21,7 +21,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -110,6 +109,7 @@ class ShopPageFragment :
         private const val CART_LOCAL_CACHE_NAME = "CART"
         private const val TOTAL_CART_CACHE_KEY = "CACHE_TOTAL_CART"
         private const val PATH_HOME = "home"
+        private const val PATH_REVIEW = "review"
         private const val QUERY_SHOP_REF = "shop_ref"
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
 
@@ -149,6 +149,7 @@ class ShopPageFragment :
     private val intentData: Intent = Intent()
     private var isFirstLoading: Boolean = false
     private var shouldOverrideTabToHome: Boolean = false
+    private var shouldOverrideTabToReview: Boolean = false
     private var listShopPageTabModel = listOf<ShopPageTabModel>()
     private val customDimensionShopPage: CustomDimensionShopPage by lazy {
         CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
@@ -325,6 +326,9 @@ class ShopPageFragment :
                     }
                     if (lastPathSegment.orEmpty() == PATH_HOME) {
                         shouldOverrideTabToHome = true
+                    }
+                    if (lastPathSegment.orEmpty() == PATH_REVIEW) {
+                        shouldOverrideTabToReview = true
                     }
                     shopRef = getQueryParameter(QUERY_SHOP_REF) ?: ""
                     shopAttribution = getQueryParameter(QUERY_SHOP_ATTRIBUTION) ?: ""
@@ -608,6 +612,13 @@ class ShopPageFragment :
                 viewPagerAdapter.getFragmentPosition(HomeProductFragment::class.java)
             }else{
                 viewPagerAdapter.getFragmentPosition(ShopPageHomeFragment::class.java)
+            }
+        }
+        if(shouldOverrideTabToReview){
+            selectedPosition = if(viewPagerAdapter.isFragmentObjectExists((activity?.application as ShopModuleRouter).reviewFragmentClass)){
+                viewPagerAdapter.getFragmentPosition((activity?.application as ShopModuleRouter).reviewFragmentClass)
+            } else {
+                selectedPosition
             }
         }
         tabLayout?.apply {

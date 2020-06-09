@@ -18,7 +18,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
             app:tickerType="announcement" />
 
         <com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim
