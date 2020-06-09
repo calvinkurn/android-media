@@ -73,7 +73,6 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
             this.callback = callback;
             sd = new ShakeDetector();
             sensorManager = (SensorManager)mContext.getSystemService(SENSOR_SERVICE);
-            initRemoteConfig();
         }
 
     }
@@ -91,17 +90,20 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
         isNotificationOn = false;
     }
 
-    private void initRemoteConfig() {
-        remoteConfig = new FirebaseRemoteConfigImpl(mContext);
+    private RemoteConfig getRemoteConfig() {
+        if(remoteConfig == null){
+            remoteConfig = new FirebaseRemoteConfigImpl(mContext);
+        }
+        return remoteConfig;
     }
 
     private boolean isShakeShakeEnable() {
-        return remoteConfig.getBoolean(FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY,true) && isNotificationOn;
+        return getRemoteConfig().getBoolean(FIREBASE_SHAKE_SHAKE_REMOTE_CONFIG_KEY,true) && isNotificationOn;
 
     }
 
     private boolean isAudioShakeEnable() {
-        return remoteConfig.getBoolean(FIREBASE_SHAKE_SHAKE_AUDIO_REMOTE_CONFIG_KEY,false);
+        return getRemoteConfig().getBoolean(FIREBASE_SHAKE_SHAKE_AUDIO_REMOTE_CONFIG_KEY,false);
 
     }
 

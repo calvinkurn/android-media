@@ -237,11 +237,27 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initFirebase();
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
+        performLibraryInitialisation();
+        DeeplinkHandlerActivity.createApplinkDelegateInBackground();
+        initResourceDownloadManager();
+    }
+
+    private void performLibraryInitialisation(){
+        WeaveInterface initWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return initLibraries();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineNow(initWeave);
+    }
+
+    private boolean initLibraries(){
         initCMPushNotification();
         initIris();
         initTetraDebugger();
-        DeeplinkHandlerActivity.createApplinkDelegateInBackground();
-        initResourceDownloadManager();
+        return true;
     }
 
     private void initialiseHansel(){
@@ -270,7 +286,19 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private void initIris() {
         mIris = IrisAnalytics.Companion.getInstance(this);
+        WeaveInterface irisInitializeWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return executeIrisInitialize();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineNow(irisInitializeWeave);
+    }
+
+    private boolean executeIrisInitialize(){
         mIris.initialize();
+        return true;
     }
 
     private void initTetraDebugger() {
@@ -931,8 +959,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private void initCMPushNotification() {
-        CMPushNotificationManager.getInstance().init(this);
-        refreshFCMTokenFromBackgroundToCM(FCMCacheManager.getRegistrationId(this), false);
+        CMPushNotificationManager.getInstance().init(ConsumerRouterApplication.this);
+        refreshFCMTokenFromBackgroundToCM(FCMCacheManager.getRegistrationId(ConsumerRouterApplication.this), false);
     }
 
     @Override
