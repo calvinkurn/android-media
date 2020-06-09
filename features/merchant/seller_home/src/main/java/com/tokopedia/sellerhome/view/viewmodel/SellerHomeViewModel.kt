@@ -6,7 +6,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerhome.domain.model.GetShopStatusResponse
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
-import com.tokopedia.sellerhome.domain.usecase.GetLayoutUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetStatusShopUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetTickerUseCase
@@ -45,6 +44,7 @@ class SellerHomeViewModel @Inject constructor(
 
     companion object {
         private const val DATE_FORMAT = "dd-MM-yyyy"
+        private const val SELLER_HOME_PAGE_NAME = "seller-home"
     }
 
     private val shopId: String by lazy { userSession.shopId }
@@ -104,7 +104,7 @@ class SellerHomeViewModel @Inject constructor(
     fun getWidgetLayout() {
         launchCatchError(block = {
             _widgetLayout.value = Success(withContext(Dispatchers.IO) {
-                getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId)
+                getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, SELLER_HOME_PAGE_NAME)
                 return@withContext getLayoutUseCase.executeOnBackground()
             })
         }, onError = {
