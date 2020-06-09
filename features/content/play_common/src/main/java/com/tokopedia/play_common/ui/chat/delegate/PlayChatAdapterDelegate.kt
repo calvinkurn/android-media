@@ -9,13 +9,15 @@ import com.tokopedia.play_common.ui.chat.viewholder.PlayChatViewHolder
 /**
  * Created by jegul on 09/06/20
  */
-class PlayChatAdapterDelegate : TypedAdapterDelegate<PlayChatUiModel, PlayChatUiModel, PlayChatViewHolder>(PlayChatViewHolder.LAYOUT) {
+class PlayChatAdapterDelegate(
+        val typographyType: Int
+) : TypedAdapterDelegate<PlayChatUiModel, PlayChatUiModel, PlayChatViewHolder>(PlayChatViewHolder.LAYOUT) {
 
     override fun onBindViewHolder(item: PlayChatUiModel, holder: PlayChatViewHolder) {
         holder.bind(item)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): PlayChatViewHolder {
-        return PlayChatViewHolder(basicView)
+        return PlayChatViewHolder(basicView, typographyType)
     }
 }

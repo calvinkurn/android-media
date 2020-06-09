@@ -18,13 +18,14 @@ import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
 import com.tokopedia.play.broadcaster.util.PlayShareWrapper
-import com.tokopedia.play.broadcaster.util.event.EventObserver
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
+import com.tokopedia.play.broadcaster.view.partial.ChatListPartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
-
 
 /**
  * Created by mzennis on 25/05/20.
@@ -41,6 +42,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private lateinit var tvTotalView: Typography
     private lateinit var tvTotalLike: Typography
     private lateinit var ivShareLink: AppCompatImageView
+
+    private lateinit var chatListView: ChatListPartialView
 
     override fun getScreenName(): String = "Play Broadcast Interaction"
 
@@ -67,6 +70,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeCountDownDuration()
         observeTotalViews()
         observeTotalLikes()
+        observeChatList()
     }
 
     private fun initView(view: View) {
@@ -75,6 +79,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         tvTotalView = view.findViewById(R.id.tv_total_views)
         tvTotalLike = view.findViewById(R.id.tv_total_likes)
         ivShareLink = view.findViewById(R.id.iv_share_link)
+
+        chatListView = ChatListPartialView(view as ViewGroup, R.id.cl_chat_list)
     }
 
     private fun setupView() {
@@ -124,6 +130,14 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun setTotalLike(totalLike: TotalLikeUiModel) {
         tvTotalLike.text = totalLike.totalLike
+    }
+
+    private fun setChatList(chatList: List<PlayChatUiModel>) {
+        chatListView.setChatList(chatList)
+    }
+
+    private fun setNewChat(chat: PlayChatUiModel) {
+        chatListView.showNewChat(chat)
     }
 
     private fun showDialogWhenActionClose() {
@@ -185,7 +199,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
      * Observe
      */
     private fun observeCountDownDuration() {
-        parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, EventObserver{
+        parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, EventObserver {
             when (it) {
                 is PlayPusherInfoState.Active -> {
                     setCountDownTimer(it.elapsedTime, it.minutesUntilFinished, it.secondsUntilFinished)
@@ -210,6 +224,17 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun observeTotalLikes() {
         parentViewModel.observableTotalLike.observe(viewLifecycleOwner, Observer(::setTotalLike))
+    }
+
+    private fun observeChatList() {
+        parentViewModel.observableChatList.observe(viewLifecycleOwner, object : Observer<List<PlayChatUiModel>> {
+            override fun onChanged(chatList: List<PlayChatUiModel>) {
+                setChatList(chatList)
+                parentViewModel.observableChatList.removeObserver(this)
+            }
+        })
+
+        parentViewModel.observableNewChat.observe(viewLifecycleOwner, EventObserver(::setNewChat))
     }
     //endregion
 

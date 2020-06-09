@@ -14,10 +14,11 @@ import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
-import com.tokopedia.play.broadcaster.util.event.Event
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionUtil
 import com.tokopedia.play.broadcaster.view.event.ScreenStateEvent
+import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import com.tokopedia.play_common.util.event.Event
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -29,11 +30,12 @@ import javax.inject.Named
 class PlayBroadcastViewModel  @Inject constructor(
         private val playPusher: PlayPusher,
         private val permissionUtil: PlayPermissionUtil,
-        @Named(PlayBroadcastDispatcher.MAIN) private val dispatcher: CoroutineDispatcher
+        @Named(PlayBroadcastDispatcher.MAIN) private val mainDispatcher: CoroutineDispatcher,
+        @Named(PlayBroadcastDispatcher.IO) private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     private val job: Job = SupervisorJob()
-    private val scope = CoroutineScope(job + dispatcher)
+    private val scope = CoroutineScope(job + mainDispatcher)
 
     val observableChannelInfo: LiveData<ChannelInfoUiModel>
         get() = _observableChannelInfo
@@ -49,6 +51,10 @@ class PlayBroadcastViewModel  @Inject constructor(
         get() = _observableLiveNetworkState
     val observablePermissionState: LiveData<PlayPermissionState>
         get() = _observablePermissionState
+    val observableChatList: LiveData<out List<PlayChatUiModel>>
+        get() = _observableChatList
+    val observableNewChat: LiveData<Event<PlayChatUiModel>>
+        get() = _observableNewChat
 
     val channelInfo: ChannelInfoUiModel?
         get() = _observableChannelInfo.value
@@ -57,6 +63,12 @@ class PlayBroadcastViewModel  @Inject constructor(
     private val _observableTotalView = MutableLiveData<TotalViewUiModel>()
     private val _observableTotalLike = MutableLiveData<TotalLikeUiModel>()
     private val _observableScreenStateEvent = MutableLiveData<Event<ScreenStateEvent>>()
+    private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
+    private val _observableNewChat = MediatorLiveData<Event<PlayChatUiModel>>().apply {
+        addSource(_observableChatList) { chatList ->
+            chatList.lastOrNull()?.let { value = Event(it) }
+        }
+    }
     private val _observableLiveNetworkState = MediatorLiveData<Event<PlayPusherNetworkState>>().apply {
         addSource(playPusher.getObservablePlayPusherNetworkState()) {
             value = Event(it)
@@ -78,6 +90,8 @@ class PlayBroadcastViewModel  @Inject constructor(
                 Manifest.permission.CAMERA,
                 Manifest.permission.RECORD_AUDIO))
         playPusher.create()
+
+        mockChatList()
     }
 
     fun getConfiguration() {
@@ -134,17 +148,37 @@ class PlayBroadcastViewModel  @Inject constructor(
         }
     }
 
-    private fun startWebSocket(channelInfo: ChannelInfoUiModel) {
-        scope.launch {
-            // TODO("connect socket")
-        }
-    }
-
     fun getPlayPusher(): PlayPusher {
         return playPusher
     }
 
     fun getPermissionUtil(): PlayPermissionUtil {
         return permissionUtil
+    }
+
+    private fun startWebSocket(channelInfo: ChannelInfoUiModel) {
+        scope.launch {
+            // TODO("connect socket")
+        }
+    }
+
+    private suspend fun onRetrievedNewChat(newChat: PlayChatUiModel) = withContext(mainDispatcher) {
+        val currentChatList = _observableChatList.value ?: mutableListOf()
+        currentChatList.add(newChat)
+        _observableChatList.value = currentChatList
+    }
+
+    /**
+     *
+     */
+    private fun mockChatList() {
+        scope.launch(ioDispatcher) {
+            while(scope.isActive) {
+                delay(1000)
+                onRetrievedNewChat(
+                    PlayBroadcastMocker.getMockChat()
+                )
+            }
+        }
     }
 }

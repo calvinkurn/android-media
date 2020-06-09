@@ -4,20 +4,23 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.view.View
-import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.play_common.R
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.unifyprinciples.R
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by jegul on 09/06/20
  */
 class PlayChatViewHolder(
-        itemView: View
+        itemView: View,
+        typographyType: Int
 ) : BaseViewHolder(itemView) {
 
-    private val tvChat = itemView.findViewById<TextView>(R.id.tv_chat)
+    private val tvChat = itemView.findViewById<Typography>(R.id.tv_chat).apply {
+        setType(typographyType)
+    }
 
     override fun onViewRecycled() {
         super.onViewRecycled()

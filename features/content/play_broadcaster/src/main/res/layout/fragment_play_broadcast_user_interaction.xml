@@ -44,7 +44,18 @@
         android:layout_marginTop="@dimen/spacing_lvl3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_time_counter" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_time_counter"
+        />
+
+    <include
+        layout="@layout/layout_chat_list"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/play_seller_chat_max_height"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toTopOf="@id/iv_product_tag"
+        app:layout_constraintEnd_toStartOf="@id/iv_share_link"
+        app:layout_constraintStart_toStartOf="parent"
+        />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_product_tag"
