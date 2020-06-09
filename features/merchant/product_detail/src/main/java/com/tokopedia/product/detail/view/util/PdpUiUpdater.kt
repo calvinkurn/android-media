@@ -120,7 +120,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             mediaMap?.run {
                 shouldRenderImageVariant = true
                 listOfMedia = DynamicProductDetailMapper.convertMediaToDataModel(it.data.media.toMutableList())
-                basicStatus = it.basic.status
             }
 
             notifyMeMap?.run {
@@ -231,12 +230,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 generalTickerInfo = it.tickerInfo
                 statusInfo = it.shopInfo?.statusInfo
                 closedInfo = it.shopInfo?.closedInfo
-            }
-
-            mediaMap?.run {
-                statusTitle = it.shopInfo?.statusInfo?.statusTitle ?: ""
-                statusMessage = it.shopInfo?.statusInfo?.statusMessage ?: ""
-                shopStatus = it.shopInfo?.statusInfo?.shopStatus ?: 1
             }
 
             productInfoMap?.run {

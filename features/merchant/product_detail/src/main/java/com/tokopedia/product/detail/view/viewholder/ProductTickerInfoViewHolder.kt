@@ -1,6 +1,5 @@
 package com.tokopedia.product.detail.view.viewholder
 
-import android.text.SpannableStringBuilder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
@@ -42,25 +41,30 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
         when (statusInfo?.shopStatus) {
             ProductShopStatusTypeDef.CLOSED -> {
                 val processedMessage = view.context.getString(R.string.ticker_desc_shop_close, closedInfo?.closeUntil)
-                renderShopTicker(view.context.getString(R.string.ticker_title_shop_close), processedMessage)
+                renderShopTicker(view.context.getString(R.string.ticker_title_shop_close), processedMessage, listener::onTickerShopClicked)
             }
             ProductShopStatusTypeDef.MODERATED -> {
                 val processedMessage = view.context.getString(R.string.ticker_desc_shop_moderated)
-                renderShopTicker(context.getString(R.string.ticker_title_shop_moderated), processedMessage)
+                renderShopTicker(context.getString(R.string.ticker_title_shop_moderated), processedMessage, listener::onTickerShopClicked)
+            }
+            ProductShopStatusTypeDef.MODERATED_PERMANENTLY -> {
+                val processedMessage = view.context.getString(R.string.ticker_desc_shop_moderated)
+                renderShopTicker(statusInfo.statusTitle, processedMessage, listener::onTickerShopClicked)
             }
             else -> {
-                renderShopTicker(statusInfo?.statusTitle ?: "", statusInfo?.statusMessage ?: "")
+                renderShopTicker(statusInfo?.statusTitle ?: "", statusInfo?.statusMessage
+                        ?: "", null)
             }
 
         }
     }
 
-    private fun renderShopTicker(statusTitle: String, statusMessage: String) = with(view) {
+    private fun renderShopTicker(statusTitle: String, statusMessage: String, tickerClicked: (() -> Unit?)?) = with(view) {
         shop_ticker_info.setHtmlDescription(statusMessage)
         shop_ticker_info.tickerTitle = statusTitle
-        shop_ticker_info.setDescriptionClickEvent(object : TickerCallback{
+        shop_ticker_info.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                listener.onTickerShopClicked()
+                tickerClicked?.invoke()
             }
 
             override fun onDismiss() {
@@ -78,10 +82,13 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
 
             general_ticker_info.addPagerView(tickerViewPager, tickerData)
 
-            tickerViewPager.setPagerDescriptionClickEvent(object : TickerPagerCallback {
-                override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+            general_ticker_info.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     listener.onTickerGeneralClicked(linkUrl.toString())
                 }
+
+                override fun onDismiss() {}
+
             })
         }
     }

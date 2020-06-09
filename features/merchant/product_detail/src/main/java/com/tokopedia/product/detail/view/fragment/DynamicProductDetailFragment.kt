@@ -823,9 +823,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun onTickerShopClicked() {
-        val shopStatusBottomSheet = ShopStatusInfoBottomSheet(viewModel.shopInfo?.statusInfo ?: ShopInfo.StatusInfo(), viewModel.getDynamicProductInfoP1?.basic?.shopID ?: "")
-        fragmentManager?.let {
-            shopStatusBottomSheet.show(it, "pdp_shop_status")
+        activity?.let {
+            ShopStatusInfoBottomSheet.showShopStatusBottomSheet(it, viewModel.shopInfo?.statusInfo
+                    ?: ShopInfo.StatusInfo(), viewModel.getDynamicProductInfoP1?.basic?.shopID
+                    ?: "")
         }
     }
 
