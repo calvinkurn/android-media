@@ -198,7 +198,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
         bottomLayout = view?.findViewById(R.id.bottom_layout_address)
         emptyStateLayout = view?.findViewById(R.id.empty_state_order_list)
         textSearchError = view?.findViewById(R.id.text_search_error)
-        globalErrorLayout = view?.findViewById(R.id.layout_global_error)
+        globalErrorLayout = view?.findViewById(R.id.global_error)
 
         ImageHandler.LoadImage(iv_empty_state, EMPTY_STATE_PICT_URL)
     }

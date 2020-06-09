@@ -72,4 +72,7 @@
     <string name="ticker_label_text">Perkiraan tiba dihitung sejak pesanan dikirim</string>
     <string name="logistic_promo_info_title">Bebas Ongkir</string>
     <string name="logistic_promo_info_desc">Bebas Ongkir tidak bisa disimpan sebagai pilihan pengiriman, tapi bisa digunakan saat Beli Langsung.</string>
+
+    <string name="min_order_x">Jumlah minimum %1$d</string>
+    <string name="max_order_x">Jumlah maksimum %1$d</string>
 </resources>
