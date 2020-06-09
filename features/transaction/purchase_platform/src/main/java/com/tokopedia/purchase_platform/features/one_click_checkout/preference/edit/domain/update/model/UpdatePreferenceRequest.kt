@@ -12,5 +12,9 @@ data class UpdatePreferenceRequest (
         @SerializedName("gateway_code")
         val gatewayCode: String,
         @SerializedName("metadata")
-        val metadata: String? = null
+        val metadata: String,
+        @SerializedName("is_default_profile_checked")
+        val isDefaultProfileChecked: Boolean,
+        @SerializedName("from_flow")
+        val fromFlow: Int
 )

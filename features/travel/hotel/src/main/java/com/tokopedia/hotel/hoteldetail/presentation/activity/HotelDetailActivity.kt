@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.HotelComponentInstance
+import com.tokopedia.hotel.common.data.HotelSourceEnum
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.hoteldetail.di.DaggerHotelDetailComponent
@@ -74,7 +75,8 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
 
     override fun getNewFragment(): Fragment =
             HotelDetailFragment.getInstance(checkInDate, checkOutDate, propertyId, roomCount,
-                    adultCount, destinationType, destinationName, isDirectPayment, showRoom)
+                    adultCount, destinationType, destinationName, isDirectPayment, showRoom,
+            intent.getStringExtra(EXTRA_SOURCE) ?: HotelSourceEnum.SEARCHRESULT.value)
 
     override fun getComponent(): HotelDetailComponent =
             DaggerHotelDetailComponent.builder()
@@ -93,6 +95,7 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
         const val EXTRA_DESTINATION_TYPE = "EXTRA_DESTINATION_TYPE"
         const val EXTRA_DESTINATION_NAME = "EXTRA_DESTINATION_NAME"
         const val EXTRA_IS_DIRECT_PAYMENT = "EXTRA_IS_DIRECT_PAYMENT"
+        const val EXTRA_SOURCE = "EXTRA_SOURCE"
 
         const val PARAM_CHECK_IN = "check_in"
         const val PARAM_CHECK_OUT = "check_out"
@@ -103,7 +106,8 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
         const val PDP_SCREEN_NAME = "/hotel/pdp"
 
         fun getCallingIntent(context: Context, checkInDate: String, checkOutDate: String, propertyId: Long, roomCount: Int,
-                             adultCount: Int, destinationType: String, destinationName: String, isDirectPayment: Boolean = true): Intent =
+                             adultCount: Int, destinationType: String, destinationName: String, isDirectPayment: Boolean = true,
+        source: String = HotelSourceEnum.SEARCHRESULT.value): Intent =
                 Intent(context, HotelDetailActivity::class.java)
                         .putExtra(EXTRA_CHECK_IN_DATE, checkInDate)
                         .putExtra(EXTRA_CHECK_OUT_DATE, checkOutDate)
@@ -113,6 +117,7 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
                         .putExtra(EXTRA_DESTINATION_TYPE, destinationType)
                         .putExtra(EXTRA_DESTINATION_NAME, destinationName)
                         .putExtra(EXTRA_IS_DIRECT_PAYMENT, isDirectPayment)
+                        .putExtra(EXTRA_SOURCE, source)
 
     }
 }

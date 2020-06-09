@@ -11,14 +11,17 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyHeaderModel
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnKebabClickedListener
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyHeaderListener
+import com.tokopedia.talk.feature.reply.presentation.widget.listeners.ThreadListener
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_talk_reply_header.view.*
 
 class TalkReplyHeaderViewHolder(view: View,
                                 private val onKebabClickedListener: OnKebabClickedListener,
-                                private val talkReplyHeaderListener: TalkReplyHeaderListener) :
+                                private val talkReplyHeaderListener: TalkReplyHeaderListener,
+                                private val threadListener: ThreadListener) :
         AbstractViewHolder<TalkReplyHeaderModel>(view) {
 
     companion object {
@@ -33,32 +36,36 @@ class TalkReplyHeaderViewHolder(view: View,
             itemView.apply {
                 replyHeaderDate.text = date
                 replyHeaderTNC.text = HtmlLinkHelper(context, getString(R.string.reply_header_tnc)).spannedString
-                replyHeaderTNC.movementMethod = object : LinkMovementMethod() {
-                    override fun onTouchEvent(widget: TextView, buffer: Spannable, event: MotionEvent): Boolean {
-                        val action = event.action
+                replyHeaderTNC.setCustomMovementMethod { talkReplyHeaderListener.onTermsAndConditionsClicked() }
+            }
+        }
+    }
 
-                        if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_DOWN) {
-                            var x = event.x
-                            var y = event.y.toInt()
+    private fun Typography.setCustomMovementMethod(linkAction: (String) -> Boolean) {
+        this.movementMethod = object : LinkMovementMethod() {
+            override fun onTouchEvent(widget: TextView, buffer: Spannable, event: MotionEvent): Boolean {
+                val action = event.action
 
-                            x -= widget.totalPaddingLeft
-                            y -= widget.totalPaddingTop
+                if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_DOWN) {
+                    var x = event.x
+                    var y = event.y.toInt()
 
-                            x += widget.scrollX
-                            y += widget.scrollY
+                    x -= widget.totalPaddingLeft
+                    y -= widget.totalPaddingTop
 
-                            val layout = widget.layout
-                            val line = layout.getLineForVertical(y)
-                            val off = layout.getOffsetForHorizontal(line, x)
+                    x += widget.scrollX
+                    y += widget.scrollY
 
-                            val link = buffer.getSpans(off, off, URLSpan::class.java)
-                            if (link.isNotEmpty() && action == MotionEvent.ACTION_UP) {
-                                return talkReplyHeaderListener.onTermsAndConditionsClicked()
-                            }
-                        }
-                        return super.onTouchEvent(widget, buffer, event);
+                    val layout = widget.layout
+                    val line = layout.getLineForVertical(y)
+                    val off = layout.getOffsetForHorizontal(line, x)
+
+                    val link = buffer.getSpans(off, off, URLSpan::class.java)
+                    if (link.isNotEmpty() && action == MotionEvent.ACTION_UP) {
+                        return linkAction.invoke(link.first().url.toString())
                     }
                 }
+                return super.onTouchEvent(widget, buffer, event);
             }
         }
     }
@@ -70,7 +77,8 @@ class TalkReplyHeaderViewHolder(view: View,
                 isEnabled = false
                 return
             }
-            text = question
+            text = HtmlLinkHelper(context, question).spannedString
+            setCustomMovementMethod(fun(link: String) : Boolean { return threadListener.onUrlClicked(link) })
         }
     }
 

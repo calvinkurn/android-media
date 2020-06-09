@@ -28,6 +28,9 @@ data class Channel(
         @SerializedName("cover_url")
         val coverUrl: String = "",
 
+        @SerializedName("background_url") // TODO("check response API")
+        val backgroundUrl: String = "",
+
         @SerializedName("start_time")
         val startTime: Long = 0L,
 
