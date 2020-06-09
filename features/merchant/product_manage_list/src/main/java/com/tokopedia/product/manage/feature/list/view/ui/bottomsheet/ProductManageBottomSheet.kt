@@ -44,7 +44,7 @@ class ProductManageBottomSheet(
         setChild(itemView)
     }
     
-    private fun createProductManageMenu(product: ProductViewModel): List<ProductMenuViewModel> {
+    private fun createProductManageMenu(product: ProductViewModel, isPowerMerchantOrOfficialStore: Boolean): List<ProductMenuViewModel> {
         val menuList = mutableListOf(
             Preview(product),
             Duplicate(product),
@@ -58,7 +58,7 @@ class ProductManageBottomSheet(
 
         menuList.add(SetCashBack(product))
 
-        if(product.isFeatured == true) {
+        if(product.isFeatured == true && isPowerMerchantOrOfficialStore) {
             menuList.add(RemoveFeaturedProduct(product))
         } else {
             if(product.isActive()) {
@@ -69,8 +69,8 @@ class ProductManageBottomSheet(
         return menuList
     }
 
-    fun show(product: ProductViewModel) {
-        val menu = createProductManageMenu(product)
+    fun show(product: ProductViewModel, isPowerMerchantOrOfficialStore: Boolean) {
+        val menu = createProductManageMenu(product, isPowerMerchantOrOfficialStore)
 
         menuAdapter?.clearAllElements()
         menuAdapter?.addElement(menu)
