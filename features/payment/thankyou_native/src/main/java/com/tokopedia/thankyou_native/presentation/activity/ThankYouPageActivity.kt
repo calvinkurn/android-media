@@ -154,6 +154,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
                     it.onBackPressed()
                 }
                 else -> {
+                    true
                     /*launchInAppReview(this, object: Callback {
                         override fun onCompleted() {
                             gotoHomePage()
