@@ -8,12 +8,15 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
@@ -27,6 +30,7 @@ import com.tokopedia.seller.ProductEditItemComponentInstance;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftSaveBulkComponent;
 import com.tokopedia.seller.product.draft.di.module.ProductDraftSaveBulkModule;
+import com.tokopedia.seller.product.draft.utils.ImageDownloadHelper;
 import com.tokopedia.seller.product.draft.view.fragment.ProductDraftListFragment;
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftSaveBulkView;
 import com.tokopedia.seller.product.draft.view.model.InstagramMediaModel;
@@ -201,8 +205,7 @@ public class ProductDraftListActivity extends BaseSimpleActivity
                 startActivity(ProductDraftAddActivity.Companion.createInstance(this, draftProductIdList.get(0)));
             }
         } else {
-            CommonUtils.UniversalToast(this, getString(R.string.product_draft_instagram_save_success,
-                    draftProductIdList.size()));
+            Toast.makeText(this, MethodChecker.fromHtml(getString(R.string.product_draft_instagram_save_success, draftProductIdList.size())), Toast.LENGTH_LONG).show();
             ProductDraftListFragment productDraftListFragment = (ProductDraftListFragment) getSupportFragmentManager().findFragmentByTag(TAG);
             if (productDraftListFragment != null) {
                 productDraftListFragment.resetPageAndSearch();
