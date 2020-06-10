@@ -14,10 +14,10 @@ class PlayPusherTimer(val context: Context,
                       private var liveStreamDuration: Long,
                       private var callback: PlayPusherTimerListener) {
 
+    var timeoutList: List<Timeout> = Timeout.Default()
+
     private var countDownTimer: CountDownTimer? = null
-
     private var lastMillis: Long = liveStreamDuration
-
     private var sharedPreferences: SharedPreferences? = PreferenceManager.getDefaultSharedPreferences(context)
 
     fun start() {
@@ -43,11 +43,9 @@ class PlayPusherTimer(val context: Context,
     private fun onCountDownTimerActive(millisUntilFinished: Long) {
         lastMillis = millisUntilFinished
 
-        when {
-            fiveMinutesLeft(millisUntilFinished) -> callback.onCountDownAlmostFinish(FIVE_MINUTES)
-            twoMinutesLeft(millisUntilFinished) -> callback.onCountDownAlmostFinish(TWO_MINUTES)
-            else -> callback.onCountDownActive(millisToMinuteSecond(millisUntilFinished))
-        }
+        val timeout = timeoutList.firstOrNull { millisUntilFinished in it.minMillis..it.maxMillis }
+        if (timeout != null) callback.onCountDownAlmostFinish(timeout.minute)
+        else callback.onCountDownActive(millisToMinuteSecond(millisUntilFinished))
     }
 
     private fun onCountDownTimerFinish() {
@@ -86,12 +84,6 @@ class PlayPusherTimer(val context: Context,
         }
     }
 
-    private fun twoMinutesLeft(millisUntilFinished: Long): Boolean =
-            millisUntilFinished in 119_600..121_000
-
-    private fun fiveMinutesLeft(millisUntilFinished: Long): Boolean =
-            millisUntilFinished in 296_000..301_000
-
     private fun millisToMinuteSecond(millis: Long) = String.format("%02d:%02d",
             millisToMinute(millis),
             millisToSecond(millis)
@@ -104,8 +96,6 @@ class PlayPusherTimer(val context: Context,
     companion object {
         const val DEFAULT_MAX_LIVE_STREAM_DURATION = 1800000L
         const val DEFAULT_INTERVAL = 1000L
-        const val FIVE_MINUTES = 5L
-        const val TWO_MINUTES = 2L
         const val PLAY_TIMER_LAST_STATE = "play_broadcast_timer_last_state"
     }
 }
