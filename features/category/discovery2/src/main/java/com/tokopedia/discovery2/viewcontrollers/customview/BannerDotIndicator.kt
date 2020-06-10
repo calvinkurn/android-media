@@ -49,6 +49,9 @@ class BannerDotIndicator(private val radius: Int, private val indicatorItemPaddi
         val adapter = parent.adapter ?: return
 
         val itemCount = adapter.itemCount
+        if(itemCount<=1) {
+            return
+        }
         val indicatorPosY = parent.height - indicatorPadding * 1.5f
         drawInactiveDots(c, indicatorPadding.toFloat(), indicatorPosY, itemCount)
         val activePosition: Int = when (parent.layoutManager) {
