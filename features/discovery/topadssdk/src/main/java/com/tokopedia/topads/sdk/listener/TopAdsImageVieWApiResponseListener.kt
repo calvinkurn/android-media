@@ -1,10 +1,10 @@
 package com.tokopedia.topads.sdk.listener
 
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewResponse
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 
 interface TopAdsImageVieWApiResponseListener {
 
-    fun onImageViewResponse(imageList: List<TopAdsImageViewResponse.Data.Banner.Image?>?, pageToken :String)
+    fun onImageViewResponse(imageDataList: ArrayList<TopAdsImageViewModel>)
 
     fun onError(t:Throwable)
 

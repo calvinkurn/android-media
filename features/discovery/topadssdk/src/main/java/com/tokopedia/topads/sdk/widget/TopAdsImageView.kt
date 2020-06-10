@@ -14,10 +14,11 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent
 import com.tokopedia.topads.sdk.di.TopAdsComponent
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewResponse
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
+import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.topads.sdk.viewmodel.TopAdsImageViewViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -33,6 +34,7 @@ class TopAdsImageView : AppCompatImageView, HasComponent<TopAdsComponent> {
     private var topAdsImageViewClickListener: TopAdsImageViewClickListener? = null
     private var topadsImageViewImpressionListener: TopAdsImageViewImpressionListener? = null
     private var topAdsImageVieWApiResponseListener: TopAdsImageVieWApiResponseListener? = null
+    private val className: String = "com.tokopedia.topads.sdk.widget.TopAdsImageView"
 
     constructor(context: Context) : super(context) {
         init()
@@ -55,23 +57,39 @@ class TopAdsImageView : AppCompatImageView, HasComponent<TopAdsComponent> {
 
     }
 
+    /**
+     * Use this function to get callback when user click on view
+     * @param listener pass implementation of listener
+     * */
     fun setTopAdsImageViewClick(listener: TopAdsImageViewClickListener) {
         topAdsImageViewClickListener = listener
     }
 
+    /**
+     * Use this function to get callback when view is visible on screen
+     * @param listener pass implementation of listener
+     * */
     fun setTopAdsImageViewImpression(listener: TopAdsImageViewImpressionListener) {
         topadsImageViewImpressionListener = listener
     }
 
 
-    fun getImageData(query: String, source: String, pageToken: String, adsCount: Int, dimens: String) {
-        val queryParams = topAdsImageViewViewModel.getQueryParams(source, pageToken, adsCount, dimens)
+    /**
+     * @param query Search term query to look for ads. Example: leather shoes
+     * @param source Page source that do the request. Example: search, fav_product
+     * @param pageToken Use in pagination, pass empty in case of first page
+     * @param adsCount Use this parameter, To tell number of ads on page required
+     * @param dimens Use this parameter to provide dimen id
+     * @param depId Required in case of category and intermediate page else optional
+     * */
+    fun getImageData(query: String, source: String, pageToken: String, adsCount: Int, dimens: String, depId: String = "") {
+        val queryParams = topAdsImageViewViewModel.getQueryParams(source, pageToken, adsCount, dimens, depId)
         topAdsImageViewViewModel.getImageData(query, queryParams)
 
         topAdsImageViewViewModel.getResponse().observe(context as AppCompatActivity, Observer {
             when (it) {
                 is Success -> {
-                    topAdsImageVieWApiResponseListener?.onImageViewResponse(it.data.data?.get(0)?.banner?.images,"")
+                    topAdsImageVieWApiResponseListener?.onImageViewResponse(it.data)
                 }
                 is Fail -> {
                     topAdsImageVieWApiResponseListener?.onError(it.throwable)
@@ -87,21 +105,31 @@ class TopAdsImageView : AppCompatImageView, HasComponent<TopAdsComponent> {
                 .build()
     }
 
+    /**
+     * Use this function to get callbacks of response and error
+     * @param listener pass implementation of listener
+     * */
     fun setApiResponseListener(listener: TopAdsImageVieWApiResponseListener) {
         topAdsImageVieWApiResponseListener = listener
     }
 
-    fun loadImage(imageUrl: TopAdsImageViewResponse.Data.Banner.Image?) {
-        if (!imageUrl?.fullEcs.isNullOrEmpty()) {
+    /**
+     * Use this function to load the ads by passing parameter, also handle tracking of clicks and impression
+     * If imageUrl is null or empty view will hide itself
+     * @param imageData The object of TopAdsViewModel
+     * */
+    fun loadImage(imageData: TopAdsImageViewModel) {
+        if (!imageData.imageUrl.isNullOrEmpty()) {
             ImageHandler.LoadImageResize(context,
                     this,
-                    imageUrl?.fullEcs,
-                    400,
-                    200
+                    imageData.imageUrl,
+                    imageData.imageWidth,
+                    imageData.imageHeight
             )
-            topadsImageViewImpressionListener?.onTopAdsImageViewImpression(imageUrl?.fullEcs ?: "")
+            topadsImageViewImpressionListener?.onTopAdsImageViewImpression(imageData.adViewUrl ?: "")
             this.setOnClickListener {
-                topAdsImageViewClickListener?.onTopAdsImageViewClicked("applink")
+                topAdsImageViewClickListener?.onTopAdsImageViewClicked(imageData.applink)
+                ImpresionTask(className).execute(imageData.adClickUrl)
             }
         } else {
             this.hide()

@@ -9,8 +9,8 @@
 
     <com.tokopedia.topads.sdk.widget.TopAdsImageView
         android:id="@+id/ads_banner"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_200"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,7 +19,7 @@
     <com.tokopedia.topads.sdk.widget.TopAdsImageView
         android:id="@+id/ads_banner2"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_200"
+        android:layout_height="wrap_content"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

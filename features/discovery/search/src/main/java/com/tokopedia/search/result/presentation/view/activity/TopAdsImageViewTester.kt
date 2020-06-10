@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.search.R
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewResponse
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
@@ -22,14 +22,14 @@ class TopAdsImageViewTester : AppCompatActivity() {
         adsBannerView = findViewById(R.id.ads_banner)
         adsBannerView2 = findViewById(R.id.ads_banner2)
 
-        adsBannerView.getImageData("","category","",1,"dimens")
+        adsBannerView.getImageData("query","search","pageToken",2,"dimens")
 
 
         adsBannerView.setApiResponseListener(object : TopAdsImageVieWApiResponseListener {
 
-            override fun onImageViewResponse(imageList: List<TopAdsImageViewResponse.Data.Banner.Image?>?, pageToken:String) {
-                adsBannerView.loadImage(imageList?.get(0))
-                adsBannerView2.loadImage(imageList?.get(1))
+            override fun onImageViewResponse(imageDataList: ArrayList<TopAdsImageViewModel>) {
+                adsBannerView.loadImage(imageDataList[0])
+                adsBannerView2.loadImage(imageDataList[1])
             }
 
             override fun onError(t: Throwable) {
