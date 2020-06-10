@@ -29,10 +29,7 @@ import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.GeneralExp
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeItemAdapterFactory
 import com.tokopedia.vouchercreation.create.view.uimodel.NextButtonUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel
-import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.CashbackPercentageInfoUiModel
-import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.CashbackTypePickerUiModel
-import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.PromotionTypeInputListUiModel
-import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.PromotionTypeTickerUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.*
 import com.tokopedia.vouchercreation.create.view.viewmodel.CashbackVoucherCreateViewModel
 import javax.inject.Inject
 
@@ -81,8 +78,19 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
         viewModelProvider.get(CashbackVoucherCreateViewModel::class.java)
     }
 
-    private val promoDescTickerModel by lazy {
-        PromotionTypeTickerUiModel(R.string.mvc_create_promo_type_cashback_ticker, ::onDismissTicker)
+    private val voucherTitleUiModel by lazy {
+        VoucherTitleUiModel(context?.getString(R.string.mvc_create_cashback).toBlankOrString())
+    }
+
+    // Commented temporary because of product requirement
+//    private val promoDescTickerModel by lazy {
+//        PromotionTypeTickerUiModel(R.string.mvc_create_promo_type_cashback_ticker, ::onDismissTicker)
+//    }
+
+    private val unavailableTickerUiModel by lazy {
+        UnavailableTickerUiModel {
+            onDismissTicker()
+        }
     }
 
     private val cashbackTypePickerModel by lazy {
@@ -189,7 +197,8 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
 
     private val topSectionUiModelList by lazy {
         listOf(
-                promoDescTickerModel,
+                voucherTitleUiModel,
+                unavailableTickerUiModel,
                 cashbackTypePickerModel
         )
     }
@@ -428,7 +437,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
     }
 
     private fun onDismissTicker() {
-        adapter.data.remove(promoDescTickerModel)
+        adapter.data.remove(unavailableTickerUiModel)
         adapter.notifyItemRemoved(TICKER_INDEX_POSITION)
     }
 

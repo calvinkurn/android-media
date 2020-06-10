@@ -23,10 +23,18 @@
 
     </FrameLayout>
 
+    <FrameLayout
+        android:id="@+id/cashbackFragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/bannerFrame"
+        android:clipToPadding="false"/>
+
+    <!-- will set height to 0dp as the recycler view is temporarily disabled -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:paddingBottom="?android:attr/actionBarSize"
         android:layout_below="@id/bannerFrame"
         android:clipToPadding="false"

@@ -10,13 +10,9 @@ import com.tokopedia.vouchercreation.common.view.promotionexpense.PromotionExpen
 import com.tokopedia.vouchercreation.common.view.textfield.vouchertype.VoucherTextFieldUiModel
 import com.tokopedia.vouchercreation.common.view.textfield.vouchertype.VoucherTextFieldViewHolder
 import com.tokopedia.vouchercreation.create.view.typefactory.CreateVoucherTypeFactory
-import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.CashbackTypePickerUiModel
-import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.PromotionTypeInputListUiModel
-import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.PromotionTypeTickerUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.*
 import com.tokopedia.vouchercreation.create.view.viewholder.NextButtonViewHolder
-import com.tokopedia.vouchercreation.create.view.viewholder.vouchertype.item.CashbackTypePickerViewHolder
-import com.tokopedia.vouchercreation.create.view.viewholder.vouchertype.item.PromotionTypeInputListViewHolder
-import com.tokopedia.vouchercreation.create.view.viewholder.vouchertype.item.PromotionTypeTickerViewHolder
+import com.tokopedia.vouchercreation.create.view.viewholder.vouchertype.item.*
 
 class PromotionTypeItemAdapterFactory : BaseAdapterTypeFactory(), PromotionTypeItemTypeFactory, VoucherCommonTypeFactory, CreateVoucherTypeFactory {
 
@@ -28,6 +24,8 @@ class PromotionTypeItemAdapterFactory : BaseAdapterTypeFactory(), PromotionTypeI
             CashbackTypePickerViewHolder.LAYOUT -> CashbackTypePickerViewHolder(parent)
             NextButtonViewHolder.LAYOUT -> NextButtonViewHolder(parent)
             PromotionTypeInputListViewHolder.LAYOUT -> PromotionTypeInputListViewHolder(parent)
+            UnavailableTickerViewHolder.LAYOUT -> UnavailableTickerViewHolder(parent)
+            VoucherTitleViewHolder.LAYOUT -> VoucherTitleViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -37,4 +35,6 @@ class PromotionTypeItemAdapterFactory : BaseAdapterTypeFactory(), PromotionTypeI
     override fun type(promotionExpenseEstimationUiModel: PromotionExpenseEstimationUiModel): Int = PromotionExpenseEstimationViewHolder.LAYOUT
     override fun type(cashbackTypePickerUiModel: CashbackTypePickerUiModel): Int = CashbackTypePickerViewHolder.LAYOUT
     override fun type(promotionTypeInputListUiModel: PromotionTypeInputListUiModel): Int = PromotionTypeInputListViewHolder.LAYOUT
+    override fun type(unavailableTickerUiModel: UnavailableTickerUiModel): Int = UnavailableTickerViewHolder.LAYOUT
+    override fun type(voucherTitleUiModel: VoucherTitleUiModel): Int = VoucherTitleViewHolder.LAYOUT
 }

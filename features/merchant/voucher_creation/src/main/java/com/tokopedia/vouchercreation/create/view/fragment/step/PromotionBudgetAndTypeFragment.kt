@@ -2,7 +2,9 @@ package com.tokopedia.vouchercreation.create.view.fragment.step
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.os.Bundle
 import android.os.Handler
+import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -26,6 +28,7 @@ import com.tokopedia.vouchercreation.create.view.enums.CreateVoucherBottomSheetT
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.fragment.BaseCreateMerchantVoucherFragment
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.GeneralExpensesInfoBottomSheetFragment
+import com.tokopedia.vouchercreation.create.view.fragment.vouchertype.CashbackVoucherCreateFragment
 import com.tokopedia.vouchercreation.create.view.painter.VoucherPreviewPainter
 import com.tokopedia.vouchercreation.create.view.typefactory.CreateVoucherTypeFactory
 import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeBudgetAdapterTypeFactory
@@ -56,7 +59,7 @@ class PromotionBudgetAndTypeFragment : BaseCreateMerchantVoucherFragment<Promoti
             this.onSetShopInfo = onSetShopInfo
             this.getVoucherReviewData = getVoucherReviewData
             this.isCreateNew = isCreateNew
-            extraWidget = listOf(promotionTypeInputWidget)
+//            extraWidget = listOf(promotionTypeInputWidget)
         }
     }
 
@@ -113,6 +116,10 @@ class PromotionBudgetAndTypeFragment : BaseCreateMerchantVoucherFragment<Promoti
         }
     }
 
+    private val cashbackVoucherCreateFragment by lazy {
+        context?.let { CashbackVoucherCreateFragment.createInstance(onNextStep, ::onShouldChangeBannerValue, it, getVoucherReviewData) }
+    }
+
     private var bannerVoucherUiModel: BannerVoucherUiModel = getVoucherUiModel()
 
     private var painter: VoucherPreviewPainter? = null
@@ -122,7 +129,7 @@ class PromotionBudgetAndTypeFragment : BaseCreateMerchantVoucherFragment<Promoti
     private var isWaitingForShopInfo = false
     private var isReadyToDraw = false
 
-    private var tempVoucherType: VoucherImageType = VoucherImageType.FreeDelivery(0)
+    private var tempVoucherType: VoucherImageType = VoucherImageType.Rupiah(0)
 
     override var extraWidget: List<Visitable<PromotionTypeBudgetTypeFactory>> = listOf()
 
@@ -130,6 +137,16 @@ class PromotionBudgetAndTypeFragment : BaseCreateMerchantVoucherFragment<Promoti
         bannerVoucherUiModel = getVoucherUiModel()
         bannerInfo?.setPromoName(bannerVoucherUiModel.promoName)
         super.onResume()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val fragmentTransaction = fragmentManager?.beginTransaction()?.apply {
+            cashbackVoucherCreateFragment?.let {
+                add(R.id.cashbackFragmentContainer, it, CashbackVoucherCreateFragment::javaClass.name)
+            }
+        }
+        fragmentTransaction?.commitAllowingStateLoss()
     }
 
     override fun onDismissBottomSheet(bottomSheetType: CreateVoucherBottomSheetType) {}

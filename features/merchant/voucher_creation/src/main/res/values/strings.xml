@@ -116,6 +116,8 @@
     <string name="mvc_create_promo_type_bottomsheet_discount_value">&#62; Rp%s</string>
     <string name="mvc_create_promo_type_bottomsheet_desc">Pastikan potongan harga &lt;b>lebih besar dari Rp%s&lt;/b> untuk menarik lebih banyak calon pembeli.</string>
     <string name="mvc_create_promo_type_bottomsheet_change_now">Ubah Sekarang</string>
+    <string name="mvc_create_cashback">Buat Voucher Toko Cashback</string>
+    <string name="mvc_unavailable_ticker">Untuk Voucher Toko Gratis Ongkir saat ini hanya tersedia di desktop</string>
 
     <!-- Step 3 -->
     <string name="mvc_start_date_title">Pilih Tanggal Mulai</string>
