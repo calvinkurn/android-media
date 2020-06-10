@@ -1,12 +1,8 @@
 package com.tokopedia.inappreview
 
 import android.app.Activity
-import android.os.Build
-import com.google.android.play.core.inappreview.InAppReviewInfo
-import com.google.android.play.core.inappreview.InAppReviewManager
-import com.google.android.play.core.inappreview.InAppReviewManagerFactory
-import com.google.android.play.core.tasks.OnCompleteListener
-import com.google.android.play.core.tasks.Task
+import com.google.android.play.core.review.ReviewManager
+import com.google.android.play.core.review.ReviewManagerFactory
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.inappreview.CACHE_IN_APP_REVIEW
 import com.tokopedia.inappreview.CACHE_KEY_HAS_SHOWN_BEFORE
@@ -28,20 +24,16 @@ fun launchInAppReview(activity: Activity, callback: Callback? = null) : Boolean 
         val hasShownInAppReviewBefore: Boolean = getInAppReviewHasShownBefore(activity)
         val enableInAppReview: Boolean = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE, false)
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M && enableInAppReview && !hasShownInAppReviewBefore) {
-            val inAppReviewManager: InAppReviewManager = InAppReviewManagerFactory.create(activity)
-            inAppReviewManager.requestInAppReviewFlow().addOnCompleteListener(object : OnCompleteListener<InAppReviewInfo?> {
-                override fun onComplete(request: Task<InAppReviewInfo?>) {
-                    if (request.isSuccessful()) {
-                        inAppReviewManager.launchInAppReviewFlow(activity, request.getResult()).addOnCompleteListener(object : OnCompleteListener<Int?> {
-                            override fun onComplete(task: Task<Int?>) {
-                                setInAppReviewHasShownBefore(activity)
-                                callback?.onCompleted()
-                            }
-                        })
+        if (enableInAppReview && !hasShownInAppReviewBefore) {
+            val inAppReviewManager: ReviewManager = ReviewManagerFactory.create(activity)
+            inAppReviewManager.requestReviewFlow().addOnCompleteListener { request ->
+                if (request.isSuccessful()) {
+                    inAppReviewManager.launchReviewFlow(activity, request.getResult()).addOnCompleteListener {
+                        setInAppReviewHasShownBefore(activity)
+                        callback?.onCompleted()
                     }
                 }
-            })
+            }
             return true
         } else {
             return false
