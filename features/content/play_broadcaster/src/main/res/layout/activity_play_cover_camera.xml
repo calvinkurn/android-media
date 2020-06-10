@@ -16,7 +16,8 @@
         app:cameraFlash="off"
         app:cameraPictureFormat="jpeg"
         app:cameraPlaySounds="true"
-        app:cameraUseDeviceOrientation="false" />
+        app:cameraUseDeviceOrientation="false"
+        app:cameraWhiteBalance="auto" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/btnPlayCameraCancel"

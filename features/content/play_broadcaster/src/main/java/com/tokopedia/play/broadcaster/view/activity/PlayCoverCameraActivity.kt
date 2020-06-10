@@ -34,12 +34,27 @@ class PlayCoverCameraActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_cover_camera)
+        initView()
+    }
+
+    override fun onResume() {
+        super.onResume()
         if (isCameraPermissionGranted()) {
-            cvPlayCameraView.setLifecycleOwner(this)
-            initView()
+            cvPlayCameraView.open()
         } else {
             requestCameraPermission()
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        cvPlayCameraView.close()
+    }
+
+    override fun onDestroy() {
+        cvPlayCameraView.close()
+        cvPlayCameraView.destroy()
+        super.onDestroy()
     }
 
     private fun initView() {
