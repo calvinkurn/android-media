@@ -23,7 +23,7 @@
         android:maxLines="1"
         android:textColor="@color/default_black_text"
         android:text="@string/centralized_promo_bottomsheet_detail"
-        android:layout_marginTop="@dimen/centralized_promo_first_voucher_bottomsheet_detail_margin_top"
+        android:layout_marginTop="@dimen/layout_lvl2"
         app:layout_constraintTop_toBottomOf="@id/firstVoucherBottomSheetTitle"
         app:typographyType="body_2"/>
 
@@ -34,14 +34,24 @@
         android:layout_marginTop="@dimen/centralized_promo_first_voucher_bottomsheet_recyclerview_margin_top"
         app:layout_constraintTop_toBottomOf="@id/firstVoucherBottomSheetDetail"/>
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/firstVoucherTicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tickerShapeType="loose"
+        app:tickerType="information"
+        app:descriptionText="@string/centralized_promo_bottomsheet_free_delivery_info"
+        app:layout_constraintTop_toBottomOf="@id/firstVoucherRecyclerView"/>
+
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/firstVoucherButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl3"
         android:text="@string/centralized_promo_bottomsheet_next"
         app:unifyButtonVariant="filled"
-        app:unifyButtonSize="medium"
+        app:unifyButtonSize="large"
         app:unifyButtonType="main"
-        app:layout_constraintTop_toBottomOf="@id/firstVoucherRecyclerView"/>
+        app:layout_constraintTop_toBottomOf="@id/firstVoucherTicker"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

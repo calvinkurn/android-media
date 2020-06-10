@@ -88,9 +88,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
 //    }
 
     private val unavailableTickerUiModel by lazy {
-        UnavailableTickerUiModel {
-            onDismissTicker()
-        }
+        UnavailableTickerUiModel {}
     }
 
     private val cashbackTypePickerModel by lazy {
