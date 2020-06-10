@@ -48,19 +48,38 @@ class DigitalHomePageTypeFactory(val onItemBindListener: OnItemBindListener,
         return DigitalHomePageRecommendationViewHolder.LAYOUT
     }
 
-    override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
-        when (type) {
-            DigitalHomePageBannerViewHolder.LAYOUT -> return DigitalHomePageBannerViewHolder(parent, onItemBindListener)
-            DigitalHomePageCategoryViewHolder.LAYOUT -> return DigitalHomePageCategoryViewHolder(parent, onItemBindListener)
-            DigitalHomePageTransactionViewHolder.LAYOUT -> return DigitalHomePageTransactionViewHolder(parent, transactionListener)
-            DigitalHomePageFavoriteViewHolder.LAYOUT -> return DigitalHomePageFavoriteViewHolder(parent, onItemBindListener)
-            DigitalHomePageTrustMarkViewHolder.LAYOUT -> return DigitalHomePageTrustMarkViewHolder(parent, onItemBindListener)
-            DigitalHomePageNewUserZoneViewHolder.LAYOUT -> return DigitalHomePageNewUserZoneViewHolder(parent, onItemBindListener)
-            DigitalHomePageSpotlightViewHolder.LAYOUT -> return DigitalHomePageSpotlightViewHolder(parent, onItemBindListener)
-            DigitalHomePageSubscriptionViewHolder.LAYOUT -> return DigitalHomePageSubscriptionViewHolder(parent, onItemBindListener)
-            DigitalHomePageRecommendationViewHolder.LAYOUT -> return DigitalHomePageRecommendationViewHolder(parent, onItemBindListener)
+    fun type(section: RechargeHomepageSections.Section): Int {
+        // Map section based on template
+        // TODO: Finish the rest of the sections and add them to the list
+        with (RechargeHomepageSections.Companion) {
+            return when (section.template) {
+//                SECTION_TOP_BANNER ->
+//                SECTION_TOP_BANNER_EMPTY ->
+                SECTION_TOP_ICONS -> RechargeHomepageFavoriteViewHolder.LAYOUT
+                SECTION_DYNAMIC_ICONS -> RechargeHomepageCategoryViewHolder.LAYOUT
+                SECTION_DUAL_ICONS -> RechargeHomepageTrustMarkViewHolder.LAYOUT
+//                SECTION_URGENCY_WIDGET ->
+//                SECTION_VIDEO_HIGHLIGHT ->
+//                SECTION_VIDEO_HIGHLIGHTS ->
+//                SECTION_SINGLE_BANNER ->
+//                SECTION_COUNTDOWN_SINGLE_BANNER ->
+//                SECTION_DUAL_BANNERS ->
+//                SECTION_LEGO_BANNERS ->
+//                SECTION_PRODUCT_CARD_ROW ->
+//                SECTION_COUNTDOWN_PRODUCT_BANNER ->
+                else -> 0
+            }
         }
-        return super.createViewHolder(parent, type)
+    }
+
+    override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
+        return when (type) {
+            // TODO: Finish the rest of viewholders and add them to the list
+            RechargeHomepageFavoriteViewHolder.LAYOUT -> RechargeHomepageFavoriteViewHolder(parent, onItemBindListener)
+            RechargeHomepageCategoryViewHolder.LAYOUT -> RechargeHomepageCategoryViewHolder(parent, onItemBindListener)
+            RechargeHomepageTrustMarkViewHolder.LAYOUT -> RechargeHomepageTrustMarkViewHolder(parent, onItemBindListener)
+            else -> super.createViewHolder(parent, type)
+        }
     }
 
 }

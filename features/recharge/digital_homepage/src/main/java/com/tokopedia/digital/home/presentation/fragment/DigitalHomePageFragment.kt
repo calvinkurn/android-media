@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -25,32 +24,23 @@ import com.tokopedia.digital.home.APPLINK_HOME_FAV_LIST
 import com.tokopedia.digital.home.APPLINK_HOME_MYBILLS
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.di.DigitalHomePageComponent
-import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.QUERY_BANNER
-import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.QUERY_CATEGORY
-import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.QUERY_RECOMMENDATION
-import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.QUERY_SECTIONS
 import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
 import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
-import com.tokopedia.digital.home.model.DigitalHomePageItemModel
 import com.tokopedia.digital.home.model.DigitalHomePageSectionModel
-import com.tokopedia.digital.home.presentation.Util.DigitalHomePageCategoryDataMapper
+import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.Util.DigitalHomeTrackingUtil
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.BANNER_IMPRESSION
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.BEHAVIORAL_CATEGORY_IMPRESSION
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.DYNAMIC_ICON_IMPRESSION
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.NEW_USER_IMPRESSION
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SPOTLIGHT_IMPRESSION
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SUBHOME_WIDGET_IMPRESSION
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SUBSCRIPTION_GUIDE_CLICK
 import com.tokopedia.digital.home.presentation.activity.DigitalHomePageSearchActivity
 import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageTypeFactory
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageTransactionViewHolder
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.layout_digital_home.*
 import javax.inject.Inject
 
-class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, DigitalHomePageTypeFactory>(),
+class DigitalHomePageFragment : BaseListFragment<RechargeHomepageSections.Section, DigitalHomePageTypeFactory>(),
         OnItemBindListener,
         DigitalHomePageTransactionViewHolder.TransactionListener,
         SearchInputView.FocusChangeListener {
@@ -172,41 +162,24 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel.digitalHomePageList.observe(this, Observer {
-            clearAllData()
-            it?.run {
-                DigitalHomePageCategoryDataMapper.mapCategoryData(this[DigitalHomePageViewModel.CATEGORY_SECTION_ORDER])?.let { categoryData ->
-                    trackingUtil.eventCategoryImpression(categoryData)
+        viewModel.rechargeHomepageSections.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    renderList(it.data.sections)
                 }
-                val list = this.filter { item -> !item.isEmpty }
-                renderList(list)
-            }
-        })
-
-        viewModel.isAllError.observe(this, Observer {
-            it?.let { isAllError ->
-                if (isAllError) NetworkErrorHelper.showEmptyState(context, view?.rootView) { loadInitialData() }
+                is Fail -> {
+                    showGetListError(it.throwable)
+                }
             }
         })
     }
 
     override fun loadData(page: Int) {
-
-    }
-
-    override fun loadInitialData() {
-        isLoadingInitialData = true
-        adapter.clearAllElements()
-        showLoading()
-
-        val queryList = mapOf(
-                QUERY_BANNER to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_banner),
-                QUERY_CATEGORY to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_category),
-                QUERY_SECTIONS to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_section),
-                QUERY_RECOMMENDATION to GraphqlHelper.loadRawString(resources, com.tokopedia.common_digital.R.raw.digital_recommendation_list)
+        viewModel.getRechargeHomepageSections(
+                GraphqlHelper.loadRawString(resources, R.raw.query_recharge_home_dynamic),
+                viewModel.createRechargeHomepageSectionsParams(false),
+                swipeToRefresh?.isRefreshing ?: false
         )
-        viewModel.initialize(queryList)
-        viewModel.getData(swipeToRefresh?.isRefreshing ?: false)
     }
 
     override fun onCategoryItemClicked(element: DigitalHomePageCategoryModel.Submenu?, position: Int) {
@@ -254,11 +227,23 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         trackingUtil.eventRecommendationImpression(elements)
     }
 
+    override fun onRechargeCategoryItemClicked(element: RechargeHomepageSections.Item, position: Int) {
+
+    }
+
+    override fun onRechargeSectionItemClicked(element: RechargeHomepageSections.Item, position: Int, sectionType: String) {
+
+    }
+
+    override fun onRechargeSectionItemImpression(elements: List<RechargeHomepageSections.Item>, sectionType: String) {
+
+    }
+
     override fun getAdapterTypeFactory(): DigitalHomePageTypeFactory {
         return DigitalHomePageTypeFactory(this, this)
     }
 
-    override fun onItemClicked(t: DigitalHomePageItemModel?) {
+    override fun onItemClicked(t: RechargeHomepageSections.Section) {
         // do nothing
     }
 
@@ -296,15 +281,6 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
 
     companion object {
         val TOOLBAR_TRANSITION_RANGE = com.tokopedia.design.R.dimen.dp_8
-
-        val initialImpressionTrackingConst = mapOf(
-                DYNAMIC_ICON_IMPRESSION to true,
-                BANNER_IMPRESSION to true,
-                BEHAVIORAL_CATEGORY_IMPRESSION to true,
-                NEW_USER_IMPRESSION to true,
-                SPOTLIGHT_IMPRESSION to true,
-                SUBHOME_WIDGET_IMPRESSION to true
-        )
 
         fun getInstance() = DigitalHomePageFragment()
     }
