@@ -50,6 +50,7 @@ class DigitalHomePageTypeFactory(val onItemBindListener: OnItemBindListener,
 
     fun type(section: RechargeHomepageSections.Section): Int {
         // Map section based on template
+        // TODO: Finish the rest of the sections and add them to the list
         with (RechargeHomepageSections.Companion) {
             return when (section.template) {
 //                SECTION_TOP_BANNER ->
@@ -73,16 +74,7 @@ class DigitalHomePageTypeFactory(val onItemBindListener: OnItemBindListener,
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-//            DigitalHomePageBannerViewHolder.LAYOUT -> DigitalHomePageBannerViewHolder(parent, onItemBindListener)
-//            DigitalHomePageCategoryViewHolder.LAYOUT -> DigitalHomePageCategoryViewHolder(parent, onItemBindListener)
-//            DigitalHomePageTransactionViewHolder.LAYOUT -> DigitalHomePageTransactionViewHolder(parent, transactionListener)
-//            DigitalHomePageFavoriteViewHolder.LAYOUT -> DigitalHomePageFavoriteViewHolder(parent, onItemBindListener)
-//            DigitalHomePageTrustMarkViewHolder.LAYOUT -> DigitalHomePageTrustMarkViewHolder(parent, onItemBindListener)
-//            DigitalHomePageNewUserZoneViewHolder.LAYOUT -> DigitalHomePageNewUserZoneViewHolder(parent, onItemBindListener)
-//            DigitalHomePageSpotlightViewHolder.LAYOUT -> DigitalHomePageSpotlightViewHolder(parent, onItemBindListener)
-//            DigitalHomePageSubscriptionViewHolder.LAYOUT -> DigitalHomePageSubscriptionViewHolder(parent, onItemBindListener)
-//            DigitalHomePageRecommendationViewHolder.LAYOUT -> DigitalHomePageRecommendationViewHolder(parent, onItemBindListener)
-
+            // TODO: Finish the rest of viewholders and add them to the list
             RechargeHomepageFavoriteViewHolder.LAYOUT -> RechargeHomepageFavoriteViewHolder(parent, onItemBindListener)
             RechargeHomepageCategoryViewHolder.LAYOUT -> RechargeHomepageCategoryViewHolder(parent, onItemBindListener)
             RechargeHomepageTrustMarkViewHolder.LAYOUT -> RechargeHomepageTrustMarkViewHolder(parent, onItemBindListener)

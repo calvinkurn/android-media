@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -25,19 +24,11 @@ import com.tokopedia.digital.home.APPLINK_HOME_FAV_LIST
 import com.tokopedia.digital.home.APPLINK_HOME_MYBILLS
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.di.DigitalHomePageComponent
-import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.QUERY_BANNER
-import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.QUERY_CATEGORY
-import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.QUERY_RECOMMENDATION
-import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.QUERY_SECTIONS
-import com.tokopedia.digital.home.model.*
-import com.tokopedia.digital.home.presentation.Util.DigitalHomePageCategoryDataMapper
+import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
+import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
+import com.tokopedia.digital.home.model.DigitalHomePageSectionModel
+import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.Util.DigitalHomeTrackingUtil
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.BANNER_IMPRESSION
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.BEHAVIORAL_CATEGORY_IMPRESSION
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.DYNAMIC_ICON_IMPRESSION
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.NEW_USER_IMPRESSION
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SPOTLIGHT_IMPRESSION
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SUBHOME_WIDGET_IMPRESSION
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SUBSCRIPTION_GUIDE_CLICK
 import com.tokopedia.digital.home.presentation.activity.DigitalHomePageSearchActivity
 import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageTypeFactory
@@ -171,23 +162,6 @@ class DigitalHomePageFragment : BaseListFragment<RechargeHomepageSections.Sectio
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel.digitalHomePageList.observe(this, Observer {
-//            clearAllData()
-//            it?.run {
-//                DigitalHomePageCategoryDataMapper.mapCategoryData(this[DigitalHomePageViewModel.CATEGORY_SECTION_ORDER])?.let { categoryData ->
-//                    trackingUtil.eventCategoryImpression(categoryData)
-//                }
-//                val list = this.filter { item -> !item.isEmpty }
-//                renderList(list)
-//            }
-        })
-
-        viewModel.isAllError.observe(this, Observer {
-            it?.let { isAllError ->
-                if (isAllError) NetworkErrorHelper.showEmptyState(context, view?.rootView) { loadInitialData() }
-            }
-        })
-
         viewModel.rechargeHomepageSections.observe(this, Observer {
             when (it) {
                 is Success -> {
@@ -207,27 +181,6 @@ class DigitalHomePageFragment : BaseListFragment<RechargeHomepageSections.Sectio
                 swipeToRefresh?.isRefreshing ?: false
         )
     }
-
-//    override fun loadInitialData() {
-//        isLoadingInitialData = true
-//        adapter.clearAllElements()
-//        showLoading()
-//
-////        val queryList = mapOf(
-////                QUERY_BANNER to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_banner),
-////                QUERY_CATEGORY to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_category),
-////                QUERY_SECTIONS to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_section),
-////                QUERY_RECOMMENDATION to GraphqlHelper.loadRawString(resources, com.tokopedia.common_digital.R.raw.digital_recommendation_list)
-////        )
-////        viewModel.initialize(queryList)
-////        viewModel.getData(swipeToRefresh?.isRefreshing ?: false)
-//
-//        viewModel.getRechargeHomepageSections(
-//                GraphqlHelper.loadRawString(resources, R.raw.query_recharge_home_dynamic),
-//                viewModel.createRechargeHomepageSectionsParams(false),
-//                swipeToRefresh?.isRefreshing ?: false
-//        )
-//    }
 
     override fun onCategoryItemClicked(element: DigitalHomePageCategoryModel.Submenu?, position: Int) {
         trackingUtil.eventCategoryClick(element, position)
@@ -328,15 +281,6 @@ class DigitalHomePageFragment : BaseListFragment<RechargeHomepageSections.Sectio
 
     companion object {
         val TOOLBAR_TRANSITION_RANGE = com.tokopedia.design.R.dimen.dp_8
-
-        val initialImpressionTrackingConst = mapOf(
-                DYNAMIC_ICON_IMPRESSION to true,
-                BANNER_IMPRESSION to true,
-                BEHAVIORAL_CATEGORY_IMPRESSION to true,
-                NEW_USER_IMPRESSION to true,
-                SPOTLIGHT_IMPRESSION to true,
-                SUBHOME_WIDGET_IMPRESSION to true
-        )
 
         fun getInstance() = DigitalHomePageFragment()
     }

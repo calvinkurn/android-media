@@ -2,7 +2,6 @@ package com.tokopedia.digital.home.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.digital.home.domain.DigitalHomePageUseCase
 import com.tokopedia.digital.home.domain.SearchCategoryHomePageUseCase
 import com.tokopedia.digital.home.presentation.Util.DigitalHomePageDispatchersProvider
 import com.tokopedia.digital.home.presentation.Util.DigitalHomeTrackingUtil
@@ -13,8 +12,6 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 
 @Module
 class DigitalHomePageModule {
@@ -33,11 +30,6 @@ class DigitalHomePageModule {
     @DigitalHomePageScope
     @Provides
     fun provideDispatcher(): DigitalHomePageDispatchersProvider = DigitalHomePageDispatchersProvider()
-
-    @DigitalHomePageScope
-    @Provides
-    fun provideDigitalHomePageUseCase(multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase): DigitalHomePageUseCase =
-            DigitalHomePageUseCase(multiRequestGraphqlUseCase)
 
     @DigitalHomePageScope
     @Provides
