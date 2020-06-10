@@ -54,9 +54,8 @@ class ProfileCompletionPhoneVerificationFragment : PhoneVerificationFragment() {
 
     override fun onSuccessVerifyPhoneNumber() {
         profileCompletionFragment?.userSession?.setIsMSISDNVerified(true)
-        profileCompletionFragment?.userSession?.phoneNumber = phoneNumber
         profileCompletionFragment?.onSuccessEditProfile(ProfileCompletionNewConstants.EDIT_VERIF)
-        Toast.makeText(activity, MethodChecker.fromHtml(getString(R.string.success_verify_phone_number)), Toast.LENGTH_LONG).show()
+        Toast.makeText(activity, MethodChecker.fromHtml(getString(com.tokopedia.phoneverification.R.string.success_verify_phone_number)), Toast.LENGTH_LONG).show()
     }
 
     companion object {
