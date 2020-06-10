@@ -11,7 +11,8 @@ import android.text.style.StyleSpan
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
-import android.widget.RelativeLayout
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.transition.Fade
@@ -19,15 +20,13 @@ import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 
 /**
  * Created by jegul on 10/06/20
  */
-class PlayMetricsView : RelativeLayout {
+class PlayMetricsView : LinearLayout {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -37,13 +36,12 @@ class PlayMetricsView : RelativeLayout {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
     private var currentIndex = -1
-    private val textViewList = mutableListOf<TextView>()
+    private val textViewList: List<TextView>
 
     init {
         gravity = Gravity.BOTTOM
-        val view = View.inflate(context, R.layout.item_play_metrics, this)
-        textViewList.add(view.findViewById(R.id.tv_metric_1))
-        textViewList.add(view.findViewById(R.id.tv_metric_2))
+        orientation = VERTICAL
+        textViewList = List(2) { getTextViewInstance() }
     }
 
     fun show(metric: PlayMetricUiModel) {
@@ -70,8 +68,8 @@ class PlayMetricsView : RelativeLayout {
 
         TransitionManager.beginDelayedTransition(this, transitionSet)
 
-        currentView?.gone()
-        nextView.visible()
+        removeView(currentView)
+        addView(nextView)
 
         currentIndex = nextIndex
     }
@@ -88,5 +86,11 @@ class PlayMetricsView : RelativeLayout {
         spannedText.setSpan(StyleSpan(Typeface.BOLD), secondSentenceFirstIndex, secondSentenceLastIndex, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
 
         return spannedText
+    }
+
+    private fun getTextViewInstance(): TextView {
+        val view = View.inflate(context, R.layout.item_play_metrics, null) as TextView
+        view.layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        return view
     }
 }

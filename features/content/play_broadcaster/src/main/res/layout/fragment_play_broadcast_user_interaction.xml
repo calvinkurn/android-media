@@ -49,7 +49,7 @@
     <com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
         android:id="@+id/pmv_metrics"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="60dp"
+        android:layout_height="@dimen/play_metrics_height"
         app:layout_constraintStart_toStartOf="@id/chat_list"
         app:layout_constraintEnd_toEndOf="@id/chat_list"
         app:layout_constraintBottom_toTopOf="@id/chat_list"
