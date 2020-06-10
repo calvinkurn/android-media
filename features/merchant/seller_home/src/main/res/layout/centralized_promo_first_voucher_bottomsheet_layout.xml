@@ -41,6 +41,7 @@
         app:tickerShapeType="loose"
         app:tickerType="information"
         app:descriptionText="@string/centralized_promo_bottomsheet_free_delivery_info"
+        app:closeButtonVisibility="gone"
         app:layout_constraintTop_toBottomOf="@id/firstVoucherRecyclerView"/>
 
     <com.tokopedia.unifycomponents.UnifyButton

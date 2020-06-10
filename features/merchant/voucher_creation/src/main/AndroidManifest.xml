@@ -27,7 +27,11 @@
                     android:scheme="@string/internal_scheme" />
                 <data
                     android:host="@string/host_sellerapp"
-                    android:path="@string/path_voucher_list_status"
+                    android:path="@string/path_voucher_list_active"
+                    android:scheme="@string/internal_scheme" />
+                <data
+                    android:host="@string/host_sellerapp"
+                    android:path="@string/path_voucher_list_history"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

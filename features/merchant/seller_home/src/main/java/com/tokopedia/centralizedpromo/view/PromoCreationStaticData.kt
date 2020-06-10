@@ -30,8 +30,8 @@ object PromoCreationStaticData {
                                 String.format("%s?url=%s", ApplinkConst.WEBVIEW, BROADCAST_CHAT_URL)
                         ),
                         PromoCreationUiModel(
-                                R.drawable.ic_voucher_toko,
-                                getString(R.string.centralized_promo_promo_creation_merchant_voucher_title),
+                                R.drawable.ic_voucher_cashback,
+                                getString(R.string.centralized_promo_promo_creation_merchant_voucher_cashback_title),
                                 getString(R.string.centralized_promo_promo_creation_merchant_voucher_description),
                                 "",
                                 ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_VOUCHER
