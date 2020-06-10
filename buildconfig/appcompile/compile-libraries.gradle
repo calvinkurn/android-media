@@ -25,6 +25,7 @@ include "libraries:fingerprint"
 include "libraries:image_picker"
 include "libraries:image_preview"
 include 'libraries:imageuploader'
+include "libraries:in_app_review"
 include "libraries:inappupdate"
 include "libraries:smart_recycler_diffutil_helper"
 include "libraries:kotlin_extensions"

@@ -52,6 +52,7 @@ ext {
             imagePicker             : ":libraries:image_picker",
             imagePreview            : ":libraries:image_preview",
             imageuploader           : ":libraries:imageuploader",
+            inappreview             : ":libraries:in_app_review",
             inappupdate             : ":libraries:inappupdate",
             instrumentation_test    : ":libraries:instrumentation_test",
             iris                    : ":libraries:iris",

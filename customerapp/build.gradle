@@ -405,6 +405,7 @@ dependencies {
     implementation project(rootProject.ext.features.hotlist)
     implementation project(rootProject.ext.features.exploreCategory)
     implementation project(rootProject.ext.libraries.inappupdate)
+    implementation project(rootProject.ext.libraries.inappreview)
     implementation project(rootProject.ext.libraries.youtubeutil)
     implementation project(rootProject.ext.features.tokopointsNotification)
     implementation project(rootProject.ext.libraries.collapsingTabLayout)
