@@ -36,6 +36,7 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAc
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
@@ -443,7 +444,8 @@ open class HomeViewModel @Inject constructor(
     }
 
     fun onCloseBuyAgain(channelId: String, position: Int){
-        val dynamicChannelDataModel = _homeLiveData.value?.list?.find { visitable -> visitable is DynamicChannelDataModel && visitable.channel?.id == channelId }
+        val dynamicChannelDataModel = _homeLiveData.value?.list?.find { visitable ->
+            (visitable is DynamicChannelDataModel || visitable is RecommendationListCarouselDataModel) && visitable.channel?.id == channelId }
         if (dynamicChannelDataModel is DynamicChannelDataModel){
             launchCatchError(coroutineContext, block = {
                 closeChannelUseCase.get().setParams(channelId)
