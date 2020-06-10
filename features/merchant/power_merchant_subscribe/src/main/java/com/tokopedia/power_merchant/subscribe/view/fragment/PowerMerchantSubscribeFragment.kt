@@ -90,6 +90,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        observeGetFreeShippingDetail()
         observeGetPmStatusInfo()
         observeViewState()
 
@@ -152,6 +153,14 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     private fun showEmptyState(throwable: Throwable) {
         NetworkErrorHelper.showEmptyState(context, view, ErrorHandler.getErrorMessage(context, throwable)) {
             refreshData()
+        }
+    }
+
+    private fun observeGetFreeShippingDetail() {
+        observe(viewModel.getPmFreeShippingStatusResult) {
+            when(it) {
+                is Success -> freeShippingLayout.show(it.data)
+            }
         }
     }
 
@@ -227,6 +236,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
             showRegistrationView(powerMerchantStatus)
         } else {
             showMembershipView(powerMerchantStatus)
+            viewModel.getFreeShippingStatus()
         }
 
         showCTAButton(powerMerchantStatus)
@@ -237,6 +247,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
             onClickRegister(powerMerchantStatus)
         }
         featureLayout.show(powerMerchantStatus)
+        freeShippingLayout.show()
         registrationLayout.hide()
         benefitLayout.hide()
     }
@@ -245,6 +256,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         registrationLayout.show(powerMerchantStatus, powerMerchantTracking)
         featureLayout.show(powerMerchantStatus)
         benefitLayout.show(powerMerchantTracking)
+        freeShippingLayout.hide()
         membershipLayout.hide()
     }
 
