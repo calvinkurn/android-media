@@ -29,12 +29,11 @@ import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
+import com.tokopedia.inappreview.InAppReviewHelperKt;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Arrays;
-
-import static com.tokopedia.inappreview.InAppReviewHelperKt.launchInAppReview;
 
 
 public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<ReactNativeThankYouPageFragment> implements ReputationRouter {
@@ -170,7 +169,7 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     public void onBackPressed() {
         FragmentManager manager = getSupportFragmentManager();
         if (isDigital()) {
-            if (!launchInAppReview(this, this::closeThankyouPage)) {
+            if (!InAppReviewHelperKt.launchInAppReview(this, this::closeThankyouPage)) {
                 AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
                 rating.setDialogDismissListener(this::closeThankyouPage);
                 rating.showDialog(manager, this);
