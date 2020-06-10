@@ -7,5 +7,7 @@ data class Contact(
         @SerializedName("data")
         val searchResults: List<SearchResult> = listOf(),
         @SerializedName("hasNext")
-        val hasNext: Boolean = false
+        val hasNext: Boolean = false,
+        @SerializedName("count")
+        val count: String = ""
 )

@@ -66,6 +66,7 @@ class GetSearchQueryUseCase @Inject constructor(
               ) {
                 contact{
                   hasNext
+                  count
                   data {
                     contact {
                       id
