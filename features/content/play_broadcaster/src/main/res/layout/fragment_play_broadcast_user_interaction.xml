@@ -32,10 +32,9 @@
         android:textStyle="bold"
         android:visibility="invisible"
         app:drawableLeftCompat="@drawable/ic_play_clock_white"
-        app:layout_constraintBottom_toTopOf="@+id/include"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_time_counter" />
+        app:layout_constraintBottom_toBottomOf="@+id/tv_time_counter" />
 
     <include
         layout="@layout/layout_play_stats_info"
