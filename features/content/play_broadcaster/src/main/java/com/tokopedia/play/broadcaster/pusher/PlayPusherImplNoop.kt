@@ -22,7 +22,7 @@ class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
     private var isPushing: Boolean = false
 
     override fun create() {
-        _observableInfoState.value = PlayPusherInfoState.Error
+        _observableInfoState.postValue(PlayPusherInfoState.Error)
     }
 
     override fun startPreview(surfaceView: SurfaceView) {
@@ -70,23 +70,18 @@ class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
     }
 
     override fun addMaxStreamDuration(millis: Long) {
-        this.mTimer = PlayPusherTimer(builder.context, millis)
-        this.mTimer?.addCallback(object: PlayPusherTimerListener {
-            override fun onCountDownActive(
-                    elapsedTime: String,
-                    minutesUntilFinished: Long,
-                    secondsUntilFinished: Long
-            ) {
-                _observableInfoState.value  = PlayPusherInfoState.Active(
-                        elapsedTime,
-                        minutesUntilFinished,
-                        secondsUntilFinished
-                )
+        this.mTimer = PlayPusherTimer(builder.context, millis, object: PlayPusherTimerListener {
+            override fun onCountDownActive(timeLeft: String) {
+                _observableInfoState.postValue(PlayPusherInfoState.Active(timeLeft))
+            }
+
+            override fun onCountDownAlmostFinish(minutesUntilFinished: Long) {
+                _observableInfoState.postValue(PlayPusherInfoState.AlmostFinish(minutesUntilFinished))
             }
 
             override fun onCountDownFinish() {
                 stopPush()
-                _observableInfoState.value = PlayPusherInfoState.Finish
+                _observableInfoState.postValue(PlayPusherInfoState.Finish)
             }
         })
     }

@@ -78,7 +78,7 @@ object PlayBroadcastMocker {
             isOfficial = false,
             channelId = "1",
             maxTaggedProduct = 15,
-            maxLiveStreamDuration = (1000 * 60) * 6,
+            maxLiveStreamDuration = (5 * 60 * 1000) + ( 5 * 1000), // 05:05
             countDownDuration = 10
     )
 
