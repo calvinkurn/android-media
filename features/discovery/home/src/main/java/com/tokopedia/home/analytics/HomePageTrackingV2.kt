@@ -362,7 +362,7 @@ object HomePageTrackingV2 : BaseTracking() {
                                 categoryId = channel.trackingAttributionModel.categoryId,
                                 isTopAds = grid.isTopads,
                                 quantity = quantity,
-                                cartId = cartId,
+                                cartId = cartId
                         )
                 ),
                 list = String.format(
