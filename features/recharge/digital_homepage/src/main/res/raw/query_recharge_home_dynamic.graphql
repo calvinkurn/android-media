@@ -12,13 +12,13 @@ query rechargeGetDynamicPage($enablePersonalize: Boolean) {
         web_link
         text_link
         media_url
-        //template
-        //button_type
-        //label_1
-        //label_2
-        //label_3
-        //server_date
-        //due_date
+        template
+        button_type
+        label_1
+        label_2
+        label_3
+        server_date
+        due_date
       }
     }
   }

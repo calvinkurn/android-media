@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
-import com.tokopedia.digital.home.model.RechargeHomepageDualIconsModel
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.adapter.adapter.RechargeItemTrustMarkAdapter
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
@@ -14,9 +13,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.layout_digital_home_trustmark.view.*
 
 class RechargeHomepageTrustMarkViewHolder(itemView: View?, val onItemBindListener: OnItemBindListener) :
-        AbstractViewHolder<RechargeHomepageDualIconsModel>(itemView) {
+        AbstractViewHolder<RechargeHomepageSections.Section>(itemView) {
 
-    override fun bind(element: RechargeHomepageDualIconsModel) {
+    override fun bind(element: RechargeHomepageSections.Section) {
         with (itemView) {
             if (element.items.isEmpty()) {
                 digital_homepage_trust_mark_container.hide()

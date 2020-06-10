@@ -49,7 +49,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.layout_digital_home.*
 import javax.inject.Inject
 
-class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, DigitalHomePageTypeFactory>(),
+class DigitalHomePageFragment : BaseListFragment<RechargeHomepageSections.Section, DigitalHomePageTypeFactory>(),
         OnItemBindListener,
         DigitalHomePageTransactionViewHolder.TransactionListener,
         SearchInputView.FocusChangeListener {
@@ -172,14 +172,14 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         super.onActivityCreated(savedInstanceState)
 
         viewModel.digitalHomePageList.observe(this, Observer {
-            clearAllData()
-            it?.run {
-                DigitalHomePageCategoryDataMapper.mapCategoryData(this[DigitalHomePageViewModel.CATEGORY_SECTION_ORDER])?.let { categoryData ->
-                    trackingUtil.eventCategoryImpression(categoryData)
-                }
-                val list = this.filter { item -> !item.isEmpty }
-                renderList(list)
-            }
+//            clearAllData()
+//            it?.run {
+//                DigitalHomePageCategoryDataMapper.mapCategoryData(this[DigitalHomePageViewModel.CATEGORY_SECTION_ORDER])?.let { categoryData ->
+//                    trackingUtil.eventCategoryImpression(categoryData)
+//                }
+//                val list = this.filter { item -> !item.isEmpty }
+//                renderList(list)
+//            }
         })
 
         viewModel.isAllError.observe(this, Observer {
@@ -191,7 +191,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         viewModel.rechargeHomepageSections.observe(this, Observer {
             when (it) {
                 is Success -> {
-
+                    renderList(it.data.sections)
                 }
                 is Fail -> {
                     showGetListError(it.throwable)
@@ -201,29 +201,33 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     }
 
     override fun loadData(page: Int) {
-
-    }
-
-    override fun loadInitialData() {
-        isLoadingInitialData = true
-        adapter.clearAllElements()
-        showLoading()
-
-        val queryList = mapOf(
-                QUERY_BANNER to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_banner),
-                QUERY_CATEGORY to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_category),
-                QUERY_SECTIONS to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_section),
-                QUERY_RECOMMENDATION to GraphqlHelper.loadRawString(resources, com.tokopedia.common_digital.R.raw.digital_recommendation_list)
-        )
-        viewModel.initialize(queryList)
-//        viewModel.getData(swipeToRefresh?.isRefreshing ?: false)
-
         viewModel.getRechargeHomepageSections(
-                GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_section),
+                GraphqlHelper.loadRawString(resources, R.raw.query_recharge_home_dynamic),
                 viewModel.createRechargeHomepageSectionsParams(false),
                 swipeToRefresh?.isRefreshing ?: false
         )
     }
+
+//    override fun loadInitialData() {
+//        isLoadingInitialData = true
+//        adapter.clearAllElements()
+//        showLoading()
+//
+////        val queryList = mapOf(
+////                QUERY_BANNER to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_banner),
+////                QUERY_CATEGORY to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_category),
+////                QUERY_SECTIONS to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_section),
+////                QUERY_RECOMMENDATION to GraphqlHelper.loadRawString(resources, com.tokopedia.common_digital.R.raw.digital_recommendation_list)
+////        )
+////        viewModel.initialize(queryList)
+////        viewModel.getData(swipeToRefresh?.isRefreshing ?: false)
+//
+//        viewModel.getRechargeHomepageSections(
+//                GraphqlHelper.loadRawString(resources, R.raw.query_recharge_home_dynamic),
+//                viewModel.createRechargeHomepageSectionsParams(false),
+//                swipeToRefresh?.isRefreshing ?: false
+//        )
+//    }
 
     override fun onCategoryItemClicked(element: DigitalHomePageCategoryModel.Submenu?, position: Int) {
         trackingUtil.eventCategoryClick(element, position)
@@ -271,22 +275,22 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     }
 
     override fun onRechargeCategoryItemClicked(element: RechargeHomepageSections.Item, position: Int) {
-        TODO("Not yet implemented")
+
     }
 
     override fun onRechargeSectionItemClicked(element: RechargeHomepageSections.Item, position: Int, sectionType: String) {
-        TODO("Not yet implemented")
+
     }
 
     override fun onRechargeSectionItemImpression(elements: List<RechargeHomepageSections.Item>, sectionType: String) {
-        TODO("Not yet implemented")
+
     }
 
     override fun getAdapterTypeFactory(): DigitalHomePageTypeFactory {
         return DigitalHomePageTypeFactory(this, this)
     }
 
-    override fun onItemClicked(t: DigitalHomePageItemModel?) {
+    override fun onItemClicked(t: RechargeHomepageSections.Section) {
         // do nothing
     }
 

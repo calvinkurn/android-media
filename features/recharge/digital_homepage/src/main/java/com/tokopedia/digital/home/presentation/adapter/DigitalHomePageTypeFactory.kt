@@ -48,75 +48,44 @@ class DigitalHomePageTypeFactory(val onItemBindListener: OnItemBindListener,
         return DigitalHomePageRecommendationViewHolder.LAYOUT
     }
 
-    fun type(topBannerModel: RechargeHomepageTopBannerModel): Int {
-        return RechargeHomepageTopBannerViewHolder.LAYOUT
-    }
-
-    fun type(topIconsModel: RechargeHomepageTopBannerEmptyModel): Int {
-        return RechargeHomepageTopBannerViewHolder.LAYOUT_EMPTY
-    }
-
-    fun type(topIconsModel: RechargeHomepageTopIconsModel): Int {
-        return RechargeHomepageFavoriteViewHolder.LAYOUT
-    }
-
-    fun type(dynamicIconsModel: RechargeHomepageDynamicIconsModel): Int {
-        return RechargeHomepageCategoryViewHolder.LAYOUT
-    }
-
-    fun type(dualIconsModel: RechargeHomepageDualIconsModel): Int {
-        return RechargeHomepageTrustMarkViewHolder.LAYOUT
-    }
-
-    fun type(urgencyWidgetModel: RechargeHomepageUrgencyWidgetModel): Int {
-        return RechargeHomepageUrgencyWidgetViewHolder.LAYOUT
-    }
-
-    fun type(videoHighlightModel: RechargeHomepageVideoHighlightModel): Int {
-        return RechargeHomepageVideoHighlightViewHolder.LAYOUT
-    }
-
-    fun type(videoHighlightsModel: RechargeHomepageVideoHighlightsModel): Int {
-        return RechargeHomepageVideoHighlightsViewHolder.LAYOUT
-    }
-
-    fun type(singleBannerModel: RechargeHomepageSingleBannerModel): Int {
-        return RechargeHomepageSingleBannerViewHolder.LAYOUT
-    }
-
-    fun type(countdownSingleBannerModel: RechargeHomepageCountdownSingleBannerModel): Int {
-        return RechargeHomepageSingleViewHolder.LAYOUT_COUNTDOWN
-    }
-
-    fun type(dualBannersModel: RechargeHomepageDualBannersModel): Int {
-        return RechargeHomepageDualBannersViewHolder.LAYOUT
-    }
-
-    fun type(legoBannersModel: RechargeHomepageLegoBannersModel): Int {
-        return RechargeHomepageLegoBannersViewHolder.LAYOUT
-    }
-
-    fun type(productCardRowModel: RechargeHomepageProductCardRowModel): Int {
-        return RechargeHomepageProductCardRowViewHolder.LAYOUT
-    }
-
-    fun type(countdownProductBannerModel: RechargeHomepageCountdownProductBannerModel): Int {
-        return RechargeHomepageCountdownProductBannerViewHolder.LAYOUT
+    fun type(section: RechargeHomepageSections.Section): Int {
+        // Map section based on template
+        with (RechargeHomepageSections.Companion) {
+            return when (section.template) {
+//                SECTION_TOP_BANNER ->
+//                SECTION_TOP_BANNER_EMPTY ->
+                SECTION_TOP_ICONS -> RechargeHomepageFavoriteViewHolder.LAYOUT
+                SECTION_DYNAMIC_ICONS -> RechargeHomepageCategoryViewHolder.LAYOUT
+                SECTION_DUAL_ICONS -> RechargeHomepageTrustMarkViewHolder.LAYOUT
+//                SECTION_URGENCY_WIDGET ->
+//                SECTION_VIDEO_HIGHLIGHT ->
+//                SECTION_VIDEO_HIGHLIGHTS ->
+//                SECTION_SINGLE_BANNER ->
+//                SECTION_COUNTDOWN_SINGLE_BANNER ->
+//                SECTION_DUAL_BANNERS ->
+//                SECTION_LEGO_BANNERS ->
+//                SECTION_PRODUCT_CARD_ROW ->
+//                SECTION_COUNTDOWN_PRODUCT_BANNER ->
+                else -> 0
+            }
+        }
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            DigitalHomePageBannerViewHolder.LAYOUT -> DigitalHomePageBannerViewHolder(parent, onItemBindListener)
-            DigitalHomePageCategoryViewHolder.LAYOUT -> DigitalHomePageCategoryViewHolder(parent, onItemBindListener)
-            DigitalHomePageTransactionViewHolder.LAYOUT -> DigitalHomePageTransactionViewHolder(parent, transactionListener)
-            DigitalHomePageFavoriteViewHolder.LAYOUT -> DigitalHomePageFavoriteViewHolder(parent, onItemBindListener)
-            DigitalHomePageTrustMarkViewHolder.LAYOUT -> DigitalHomePageTrustMarkViewHolder(parent, onItemBindListener)
-            DigitalHomePageNewUserZoneViewHolder.LAYOUT -> DigitalHomePageNewUserZoneViewHolder(parent, onItemBindListener)
-            DigitalHomePageSpotlightViewHolder.LAYOUT -> DigitalHomePageSpotlightViewHolder(parent, onItemBindListener)
-            DigitalHomePageSubscriptionViewHolder.LAYOUT -> DigitalHomePageSubscriptionViewHolder(parent, onItemBindListener)
-            DigitalHomePageRecommendationViewHolder.LAYOUT -> DigitalHomePageRecommendationViewHolder(parent, onItemBindListener)
+//            DigitalHomePageBannerViewHolder.LAYOUT -> DigitalHomePageBannerViewHolder(parent, onItemBindListener)
+//            DigitalHomePageCategoryViewHolder.LAYOUT -> DigitalHomePageCategoryViewHolder(parent, onItemBindListener)
+//            DigitalHomePageTransactionViewHolder.LAYOUT -> DigitalHomePageTransactionViewHolder(parent, transactionListener)
+//            DigitalHomePageFavoriteViewHolder.LAYOUT -> DigitalHomePageFavoriteViewHolder(parent, onItemBindListener)
+//            DigitalHomePageTrustMarkViewHolder.LAYOUT -> DigitalHomePageTrustMarkViewHolder(parent, onItemBindListener)
+//            DigitalHomePageNewUserZoneViewHolder.LAYOUT -> DigitalHomePageNewUserZoneViewHolder(parent, onItemBindListener)
+//            DigitalHomePageSpotlightViewHolder.LAYOUT -> DigitalHomePageSpotlightViewHolder(parent, onItemBindListener)
+//            DigitalHomePageSubscriptionViewHolder.LAYOUT -> DigitalHomePageSubscriptionViewHolder(parent, onItemBindListener)
+//            DigitalHomePageRecommendationViewHolder.LAYOUT -> DigitalHomePageRecommendationViewHolder(parent, onItemBindListener)
 
+            RechargeHomepageFavoriteViewHolder.LAYOUT -> RechargeHomepageFavoriteViewHolder(parent, onItemBindListener)
             RechargeHomepageCategoryViewHolder.LAYOUT -> RechargeHomepageCategoryViewHolder(parent, onItemBindListener)
+            RechargeHomepageTrustMarkViewHolder.LAYOUT -> RechargeHomepageTrustMarkViewHolder(parent, onItemBindListener)
             else -> super.createViewHolder(parent, type)
         }
     }

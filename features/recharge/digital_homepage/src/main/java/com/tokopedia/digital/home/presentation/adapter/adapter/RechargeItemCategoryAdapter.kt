@@ -28,7 +28,7 @@ class RechargeItemCategoryAdapter(val items: List<RechargeHomepageSections.Item>
 
     class DigitalItemSubmenuCategoryViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
         fun bind(element: RechargeHomepageSections.Item, onItemBindListener: OnItemBindListener) {
-            itemView.category_image.loadImage(element.mediaUrl?:"")
+            itemView.category_image.loadImage(element.mediaUrl)
             itemView.category_name.text = element.title
             itemView.setOnClickListener {
                 onItemBindListener.onRechargeCategoryItemClicked(element, adapterPosition + 1)

@@ -25,6 +25,7 @@
     </androidx.cardview.widget.CardView>
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:visibility="gone"
         android:id="@+id/digital_homepage_trust_mark_shimmering"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_32"
