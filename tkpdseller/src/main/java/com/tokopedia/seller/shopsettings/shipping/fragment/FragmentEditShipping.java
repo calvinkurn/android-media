@@ -42,7 +42,7 @@ import com.tokopedia.seller.shopsettings.shipping.model.editshipping.ShopShippin
 import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresenter;
 import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresenterImpl;
-import com.tokopedia.seller.shopsettings.shipping.data.EditShippingConstant;
+import com.tokopedia.seller.shopsettings.shipping.data.EditShippingUrl;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
 
@@ -563,7 +563,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
 
     private void goToChargeBoWebview() {
         if (getActivity() != null) {
-            Intent intent = RouteManager.getIntent(getActivity(), EditShippingConstant.INSTANCE.getAPPLINK_BEBAS_ONGKIR());
+            Intent intent = RouteManager.getIntent(getActivity(), EditShippingUrl.INSTANCE.getAPPLINK_BEBAS_ONGKIR());
             getActivity().startActivity(intent);
         }
     }
