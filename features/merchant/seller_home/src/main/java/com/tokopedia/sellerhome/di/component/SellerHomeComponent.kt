@@ -2,6 +2,7 @@ package com.tokopedia.sellerhome.di.component
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.centralizedpromo.view.fragment.CentralizedPromoFragment
+import com.tokopedia.centralizedpromo.view.fragment.FirstVoucherBottomSheetFragment
 import com.tokopedia.sellerhome.di.module.SellerHomeModule
 import com.tokopedia.sellerhome.di.module.SellerHomeUseCaseModule
 import com.tokopedia.sellerhome.di.module.SellerHomeViewModelModule
@@ -38,4 +39,5 @@ interface SellerHomeComponent {
 
     fun inject(sellerHomeFragment: OtherMenuFragment)
     fun inject(sellerHomeFragment: CentralizedPromoFragment)
+    fun inject(firstVoucherBottomSheetFragment: FirstVoucherBottomSheetFragment)
 }

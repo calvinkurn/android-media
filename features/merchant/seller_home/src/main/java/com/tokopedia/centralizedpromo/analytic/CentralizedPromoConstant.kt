@@ -16,4 +16,9 @@ object CentralizedPromoConstant {
     // TIPS & TRICK
     const val EVENT_ACTION_EDUCATION_IMPRESSION = "impression education"
     const val EVENT_ACTION_EDUCATION_CLICK = "click education"
+
+    // MVC
+    const val EVENT_ACTION_MVC_IMPRESSION = "impression detail submission mvc"
+    const val EVENT_ACTION_MVC_CLICK_CLOSE = "click detail submission mvc - close"
+    const val EVENT_ACTION_MVC_CLICK_CREATE = "click detail submission mvc - create"
 }

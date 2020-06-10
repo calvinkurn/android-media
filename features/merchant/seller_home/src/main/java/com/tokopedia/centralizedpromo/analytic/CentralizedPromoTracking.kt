@@ -2,6 +2,9 @@ package com.tokopedia.centralizedpromo.analytic
 
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_EDUCATION_CLICK
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_EDUCATION_IMPRESSION
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_MVC_CLICK_CLOSE
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_MVC_CLICK_CREATE
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_MVC_IMPRESSION
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_ON_GOING_CLICK
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_ON_GOING_IMPRESSION
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_PROMO_CREATION_CLICK
@@ -11,9 +14,15 @@ import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_NA
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_NAME_IMPRESSION
 import com.tokopedia.sellerhome.analytic.TrackingConstant
 import com.tokopedia.sellerhome.analytic.TrackingConstant.ADS_PROMOTION
+import com.tokopedia.sellerhome.analytic.TrackingConstant.BUSINESS_UNIT
+import com.tokopedia.sellerhome.analytic.TrackingConstant.CURRENT_SITE
+import com.tokopedia.sellerhome.analytic.TrackingConstant.EVENT
+import com.tokopedia.sellerhome.analytic.TrackingConstant.IS_LOGGED_IN_STATUS
 import com.tokopedia.sellerhome.analytic.TrackingConstant.OPEN_SCREEN
 import com.tokopedia.sellerhome.analytic.TrackingConstant.PHYSICAL_GOODS
+import com.tokopedia.sellerhome.analytic.TrackingConstant.SCREEN_NAME
 import com.tokopedia.sellerhome.analytic.TrackingConstant.TOKOPEDIA_SELLER
+import com.tokopedia.sellerhome.analytic.TrackingConstant.USER_ID
 import com.tokopedia.track.TrackApp
 
 // Doc : https://docs.google.com/spreadsheets/d/1d6OCqZyVOMsYrEChc-xwj1Ta_5G9bvCKIzOFw4kq4BA
@@ -108,13 +117,47 @@ object CentralizedPromoTracking {
     fun sendOpenScreenEvent(isLoggedIn: Boolean,
                             userId: String) {
         val data = mapOf(
-                TrackingConstant.EVENT to OPEN_SCREEN,
-                TrackingConstant.SCREEN_NAME to ADS_PROMOTION,
-                TrackingConstant.IS_LOGGED_IN_STATUS to isLoggedIn,
-                TrackingConstant.CURRENT_SITE to TOKOPEDIA_SELLER,
-                TrackingConstant.USER_ID to userId,
-                TrackingConstant.BUSINESS_UNIT to PHYSICAL_GOODS
+                EVENT to OPEN_SCREEN,
+                SCREEN_NAME to ADS_PROMOTION,
+                IS_LOGGED_IN_STATUS to isLoggedIn,
+                CURRENT_SITE to TOKOPEDIA_SELLER,
+                USER_ID to userId,
+                BUSINESS_UNIT to PHYSICAL_GOODS
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun sendFirstVoucherBottomSheetImpression(userId: String) {
+        val data = createMap(
+                event = EVENT_NAME_IMPRESSION,
+                category = EVENT_CATEGORY_ADS_AND_PROMO,
+                action = EVENT_ACTION_MVC_IMPRESSION,
+                label = ""
+        ).plus(mapOf(
+                SCREEN_NAME to ADS_PROMOTION,
+                CURRENT_SITE to TOKOPEDIA_SELLER,
+                USER_ID to userId,
+                BUSINESS_UNIT to PHYSICAL_GOODS
+        ))
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun sendFirstVoucherBottomSheetClick(userId: String,
+                                         isClose: Boolean) {
+        val data = createMap(
+                event = EVENT_NAME_CLICK,
+                category = EVENT_CATEGORY_ADS_AND_PROMO,
+                action =
+                    if (isClose) {
+                        EVENT_ACTION_MVC_CLICK_CLOSE
+                    } else {
+                        EVENT_ACTION_MVC_CLICK_CREATE
+                    },
+                label = ""
+        ).plus(mapOf(
+                SCREEN_NAME to ADS_PROMOTION,
+                CURRENT_SITE to TOKOPEDIA_SELLER,
+                USER_ID to userId
+        ))
     }
 }
