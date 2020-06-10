@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.helper
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 
 fun <T> List<T>?.copy(): List<T>{
     return if(this != null) ArrayList(this)
@@ -13,11 +14,11 @@ fun <X, Y> LiveData<X>.map(func: (source: X) -> Y) = Transformations.map(this, f
 
 fun <X, Y> LiveData<X>.switchMap(func: (source: X?) -> LiveData<Y>) = Transformations.switchMap(this, func)
 
-fun <T> List<T>.safeRemove(item: T): List<T>{
+fun List<HomeVisitable>.safeRemove(item: HomeVisitable): List<HomeVisitable>{
     val newMutableList = this.toMutableList()
     val mutableIterator = newMutableList.iterator()
     for (e in mutableIterator) {
-        if(e == item){
+        if(e.equalsWith(item)){
             mutableIterator.remove()
             break
         }
