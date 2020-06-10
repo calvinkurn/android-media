@@ -20,10 +20,8 @@ import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
-import com.tokopedia.review.common.data.Fail
-import com.tokopedia.review.common.data.LoadingView
-import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
+import com.tokopedia.review.feature.inbox.pending.data.ReviewPendingViewState
 import com.tokopedia.review.feature.inbox.pending.data.mapper.ReviewPendingMapper
 import com.tokopedia.review.feature.inbox.pending.di.DaggerReviewPendingComponent
 import com.tokopedia.review.feature.inbox.pending.di.ReviewPendingComponent
@@ -33,6 +31,7 @@ import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.R
 import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendingItemListener
 import com.tokopedia.review.feature.inbox.pending.presentation.viewmodel.ReviewPendingViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_review_pending.*
 import kotlinx.android.synthetic.main.partial_review_pending_connection_error.*
 import kotlinx.android.synthetic.main.partial_review_pending_empty.*
@@ -97,6 +96,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         initView()
         showLoading()
         observeReviewList()
+        observeReviewViewState()
     }
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
@@ -110,6 +110,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     override fun onDestroy() {
         super.onDestroy()
         removeObservers(viewModel.reviewList)
+        removeObservers(viewModel.reviewViewState)
     }
 
     private fun initView() {
@@ -168,38 +169,43 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         viewModel.reviewList.observe(this, Observer {
             when(it) {
                 is Success -> {
-                    if(it.data.list.isEmpty() && it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
-                        showEmptyState()
-                    } else {
-                        renderReviewData(ReviewPendingMapper.mapProductRevWaitForFeedbackResponseToReviewPendingUiModel(
-                                it.data.list
-                        ), it.data.hasNext)
-                    }
-                    hideError()
+                    renderReviewData(ReviewPendingMapper.mapProductRevWaitForFeedbackResponseToReviewPendingUiModel(
+                            it.data.list
+                    ), it.data.hasNext)
                 }
-                is LoadingView -> {
-                    showLoading()
+            }
+        })
+    }
+
+    private fun observeReviewViewState() {
+        viewModel.reviewViewState.observe(this, Observer {
+            when(it) {
+                is ReviewPendingViewState.ReviewPendingInitialLoadError -> {
+                    showError()
                     hideList()
+                    hideEmptyState()
+                }
+                is ReviewPendingViewState.ReviewPendingLazyLoadError -> {
+                    showErrorToaster(getString(R.string.review_pending_lazy_load_network_error_toaster), getString(R.string.review_pending_lazy_load_network_error_toaster_refresh)) { getPendingReviewData(currentPage) }
+                }
+                is ReviewPendingViewState.ReviewPendingLoading -> {
+                    showLoading()
                     hideError()
                     hideEmptyState()
                 }
-                is Fail -> {
-                    if(it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
-                        showError()
-                        hideEmptyState()
-                        hideList()
+                is ReviewPendingViewState.ReviewPendingSuccess -> {
+                    if(it.isEmpty && it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
+                        showEmptyState()
                     } else {
-                        showErrorToaster(getString(R.string.review_pending_lazy_load_network_error_toaster), getString(R.string.review_pending_lazy_load_network_error_toaster_refresh)) { getPendingReviewData(currentPage) }
+                        showList()
                     }
+                    hideError()
                 }
             }
         })
     }
 
     private fun renderReviewData(reviewData: List<ReviewPendingUiModel>, hasNextPage: Int) {
-        hideEmptyState()
-        hideError()
-        showList()
         renderList(reviewData, hasNextPage == 1)
     }
 
