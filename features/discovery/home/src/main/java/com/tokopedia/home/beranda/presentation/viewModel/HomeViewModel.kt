@@ -339,12 +339,15 @@ open class HomeViewModel @Inject constructor(
     private fun evaluateGeolocationComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
         homeDataModel?.let {
             if (!isNeedShowGeoLocation) {
-                val findGeolocationModel =
-                        homeDataModel.list.find { visitable -> visitable is GeoLocationPromptDataModel }
                 val currentList = homeDataModel.list.toMutableList()
-
                 currentList.let {
-                    it.remove(findGeolocationModel)
+                    val mutableIterator = currentList.iterator()
+                    for (e in mutableIterator) {
+                        if(e is GeoLocationPromptDataModel){
+                            mutableIterator.remove()
+                            break
+                        }
+                    }
                     return homeDataModel.copy(list = it)
                 }
             }
@@ -423,7 +426,13 @@ open class HomeViewModel @Inject constructor(
             val currentList = it.list.toMutableList()
             currentList.let { list->
                 if (findReviewViewModel is ReviewDataModel) {
-                    list.remove(findReviewViewModel)
+                    val mutableIterator = list.iterator()
+                    for (e in mutableIterator) {
+                        if(e is ReviewDataModel){
+                            mutableIterator.remove()
+                            break
+                        }
+                    }
                     return it.copy(
                             list = list
                     )
@@ -589,9 +598,13 @@ open class HomeViewModel @Inject constructor(
                 homeDataModel.copy(list = currentList)
             } else {
                 val visitableMutableList: MutableList<Visitable<*>> = homeDataModel.list.toMutableList()
-                val findRetryModel = homeDataModel.list.find { visitable -> visitable is HomeRetryModel
+                val mutableIterator = visitableMutableList.iterator()
+                for (e in mutableIterator) {
+                    if(e is HomeRetryModel){
+                        mutableIterator.remove()
+                        break
+                    }
                 }
-                visitableMutableList.remove(findRetryModel)
                 if (!homeDataModel.isCache) {
                     visitableMutableList.add(HomeLoadingMoreModel())
                     getFeedTabData()
