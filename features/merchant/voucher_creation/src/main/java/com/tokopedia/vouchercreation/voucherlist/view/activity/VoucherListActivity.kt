@@ -48,6 +48,10 @@ class VoucherListActivity : BaseActivity(), VoucherListFragment.Listener {
 
         var isActive = true
 
+        intent?.extras?.getBoolean(IS_ACTIVE, true)?.let {
+            isActive = it
+        }
+
         intent?.data?.lastPathSegment?.let { status ->
             if (status.isNotEmpty()) {
                 isActive =
@@ -57,10 +61,6 @@ class VoucherListActivity : BaseActivity(), VoucherListFragment.Listener {
                             else -> true
                         }
             }
-        }
-
-        intent?.extras?.getBoolean(IS_ACTIVE, true)?.let {
-            isActive = it
         }
 
         showFragment(getFragment(isActive))
