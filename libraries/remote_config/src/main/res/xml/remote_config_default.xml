@@ -446,4 +446,8 @@
         <key>android_mainapp_enable_seller_migration</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>app_enable_branch_utm_support</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>
