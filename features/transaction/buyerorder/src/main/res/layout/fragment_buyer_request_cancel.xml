@@ -4,11 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginStart="@dimen/dp_16"
-    android:layout_marginRight="@dimen/dp_16"
-    android:layout_marginEnd="@dimen/dp_16">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/label_store_name"
@@ -18,7 +14,11 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:text="@string/store_name_placeholder"
         android:textColor="@color/Neutral_N700_96"
-        android:layout_marginTop="@dimen/dp_16"/>
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/label_invoice"
@@ -28,16 +28,24 @@
         app:layout_constraintTop_toBottomOf="@id/label_store_name"
         android:layout_marginTop="@dimen/dp_4"
         tools:text="@string/invoice_placeholder"
-        android:textColor="@color/black_38"/>
+        android:textColor="@color/black_38"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"/>
     
     <View
-        android:id="@+id/divider"
+        android:id="@+id/divider_1"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/label_invoice"
         android:layout_marginTop="@dimen/dp_12"
-        android:background="@color/Neutral_N75"/>
+        android:background="@color/Neutral_N75"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"/>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_product_img"
@@ -46,7 +54,12 @@
         app:cardCornerRadius="6dp"
         app:cardElevation="@dimen/dp_0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider">
+        app:layout_constraintTop_toBottomOf="@id/divider_1"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16">
 
         <ImageView
             android:id="@+id/iv_product"
@@ -60,15 +73,17 @@
         android:id="@+id/label_product_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/divider"
+        app:layout_constraintTop_toBottomOf="@id/divider_1"
         app:layout_constraintStart_toEndOf="@id/cv_product_img"
         app:typographyWeight="bold"
         android:textColor="@color/Neutral_N700_96"
         tools:text="@string/product_name_placeholder"
         android:layout_marginLeft="@dimen/dp_12"
-        android:layout_marginStart="@dimen/dp_12"/>
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_16"/>
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/label_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@id/cv_product_img"
@@ -79,5 +94,44 @@
         app:typographyWeight="bold"
         android:layout_marginLeft="@dimen/dp_12"
         android:layout_marginStart="@dimen/dp_12"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/label_see_all_products"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/label_price"
+        app:layout_constraintStart_toEndOf="@id/cv_product_img"
+        android:layout_marginTop="@dimen/dp_8"
+        android:visibility="gone"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_12"
+        android:textColor="@color/Green_G500"
+        app:typographyWeight="reguler"
+        app:typographyType="body_3"
+        tools:visibility="visible"
+        tools:text="@string/see_all_placeholder"/>
+
+    <View
+        android:id="@+id/divider_2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:background="@color/Neutral_N50"
+        app:layout_constraintTop_toBottomOf="@id/label_see_all_products"
+        android:layout_marginTop="@dimen/dp_16"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/label_ask_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/divider_2"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="@string/ask_1_placeholder"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
