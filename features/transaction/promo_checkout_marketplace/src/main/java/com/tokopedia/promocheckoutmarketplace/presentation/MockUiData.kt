@@ -825,6 +825,91 @@ val MOCK_RESPONSE_PROMO_LAST_SEEN = """
                 "Description": "Let's Mukbang Gratis Ongkir 10,000, with min purchase 100,000"
               }
             }
+    ,
+            {
+              "PromoCode": "MUKBANG10K",
+              "PromoContent": {
+                "ID": 431383,
+                "Name": "Let's Mukbang Gratis Ongkir 10,000",
+                "Public": true,
+                "Status": 1,
+                "BaseCode": "MUKBANG10K",
+                "IsBackdoor": false,
+                "PromoType": 2,
+                "PromoTitle": "Let's Mukbang Gratis Ongkir 10,000",
+                "Description": "Let's Mukbang Gratis Ongkir 10,000, with min purchase 100,000"
+              }
+            },
+            {
+              "PromoCode": "MUKBANG10K",
+              "PromoContent": {
+                "ID": 431383,
+                "Name": "Let's Mukbang Gratis Ongkir 10,000",
+                "Public": true,
+                "Status": 1,
+                "BaseCode": "MUKBANG10K",
+                "IsBackdoor": false,
+                "PromoType": 2,
+                "PromoTitle": "Let's Mukbang Gratis Ongkir 10,000",
+                "Description": "Let's Mukbang Gratis Ongkir 10,000, with min purchase 100,000"
+              }
+            },
+            {
+              "PromoCode": "MUKBANG10K",
+              "PromoContent": {
+                "ID": 431383,
+                "Name": "Let's Mukbang Gratis Ongkir 10,000",
+                "Public": true,
+                "Status": 1,
+                "BaseCode": "MUKBANG10K",
+                "IsBackdoor": false,
+                "PromoType": 2,
+                "PromoTitle": "Let's Mukbang Gratis Ongkir 10,000",
+                "Description": "Let's Mukbang Gratis Ongkir 10,000, with min purchase 100,000"
+              }
+            },
+            {
+              "PromoCode": "MUKBANG10K",
+              "PromoContent": {
+                "ID": 431383,
+                "Name": "Let's Mukbang Gratis Ongkir 10,000",
+                "Public": true,
+                "Status": 1,
+                "BaseCode": "MUKBANG10K",
+                "IsBackdoor": false,
+                "PromoType": 2,
+                "PromoTitle": "Let's Mukbang Gratis Ongkir 10,000",
+                "Description": "Let's Mukbang Gratis Ongkir 10,000, with min purchase 100,000"
+              }
+            },
+            {
+              "PromoCode": "MUKBANG10K",
+              "PromoContent": {
+                "ID": 431383,
+                "Name": "Let's Mukbang Gratis Ongkir 10,000",
+                "Public": true,
+                "Status": 1,
+                "BaseCode": "MUKBANG10K",
+                "IsBackdoor": false,
+                "PromoType": 2,
+                "PromoTitle": "Let's Mukbang Gratis Ongkir 10,000",
+                "Description": "Let's Mukbang Gratis Ongkir 10,000, with min purchase 100,000"
+              }
+            },
+            {
+              "PromoCode": "MUKBANG10K",
+              "PromoContent": {
+                "ID": 431383,
+                "Name": "Let's Mukbang Gratis Ongkir 10,000",
+                "Public": true,
+                "Status": 1,
+                "BaseCode": "MUKBANG10K",
+                "IsBackdoor": false,
+                "PromoType": 2,
+                "PromoTitle": "Let's Mukbang Gratis Ongkir 10,000",
+                "Description": "Let's Mukbang Gratis Ongkir 10,000, with min purchase 100,000"
+              }
+            }
           ]
         }
       }

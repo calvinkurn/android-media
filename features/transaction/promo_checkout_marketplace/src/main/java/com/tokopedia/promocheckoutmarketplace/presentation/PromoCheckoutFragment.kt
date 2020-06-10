@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,6 +56,7 @@ import com.tokopedia.promocheckoutmarketplace.data.response.ResultStatus.Compani
 import com.tokopedia.promocheckoutmarketplace.di.DaggerPromoCheckoutMarketplaceComponent
 import com.tokopedia.promocheckoutmarketplace.presentation.adapter.PromoCheckoutAdapter
 import com.tokopedia.promocheckoutmarketplace.presentation.adapter.PromoCheckoutAdapterTypeFactory
+import com.tokopedia.promocheckoutmarketplace.presentation.adapter.PromoLastSeenAdapter
 import com.tokopedia.promocheckoutmarketplace.presentation.compoundview.ToolbarPromoCheckout
 import com.tokopedia.promocheckoutmarketplace.presentation.compoundview.ToolbarPromoCheckoutListener
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.*
@@ -74,7 +76,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     @Inject
     lateinit var itemDecorator: PromoCheckoutDecoration
 
-    private var promoCheckoutLastSeenBottomsheet: BottomSheetBehavior<LinearLayout>? = null
+    private var promoCheckoutLastSeenBottomsheet: BottomSheetBehavior<FrameLayout>? = null
     private var showBottomsheetJob: Job? = null
 
     private val viewModel by lazy {
@@ -107,8 +109,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     private val buttonApplyNoPromo by lazy { view?.findViewById<UnifyButton>(R.id.button_apply_no_promo) }
 
     // Bottomsheet promo last seen section
-    private val bottomsheetPromoLastSeenContainer by lazy { view?.findViewById<LinearLayout>(R.id.bottom_sheet_promo_last_seen) }
+    private val bottomsheetPromoLastSeenContainer by lazy { view?.findViewById<FrameLayout>(R.id.bottom_sheet_promo_last_seen) }
     private val bottomsheetCloseButton by lazy { view?.findViewById<ImageView>(R.id.bottom_sheet_close) }
+    private val rvPromoLastSeen by lazy { view?.findViewById<RecyclerView>(R.id.rv_promo_last_seen) }
 
     companion object {
         const val REQUEST_CODE_PHONE_VERIFICATION = 9999
@@ -471,23 +474,35 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         viewModel.getPromoLastSeenResponse.observe(this, Observer {
             when {
                 it.state == GetPromoLastSeenAction.ACTION_SHOW -> {
-                    showPromoCheckoutLastSeenBottomsheet()
+                    showPromoCheckoutLastSeenBottomsheet(it.data)
                 }
             }
         })
     }
 
-    private fun showPromoCheckoutLastSeenBottomsheet() {
+    private fun showPromoCheckoutLastSeenBottomsheet(data: PromoLastSeenUiModel?) {
         showBottomsheetJob?.cancel()
         showBottomsheetJob = GlobalScope.launch(Dispatchers.Main) {
             delay(500L)
-            bottomsheetPromoLastSeenContainer?.show()
-            promoCheckoutLastSeenBottomsheet?.state = BottomSheetBehavior.STATE_EXPANDED
+            data?.let {
+                initializePromoLastSeen(it.uiData.promoLastSeenItemUiModelList)
+                bottomsheetPromoLastSeenContainer?.show()
+                promoCheckoutLastSeenBottomsheet?.state = BottomSheetBehavior.STATE_COLLAPSED
+            }
         }
     }
 
     private fun hidePromoCheckoutLastSeenBottomsheet() {
         promoCheckoutLastSeenBottomsheet?.state = BottomSheetBehavior.STATE_HIDDEN
+    }
+
+    private fun initializePromoLastSeen(dataList: List<PromoLastSeenItemUiModel>) {
+        rvPromoLastSeen?.apply {
+            layoutManager = LinearLayoutManager(activity)
+            adapter = PromoLastSeenAdapter()
+            (adapter as PromoLastSeenAdapter).data = ArrayList(dataList)
+            (adapter as PromoLastSeenAdapter).notifyDataSetChanged()
+        }
     }
 
     private fun renderFragmentState(fragmentUiModel: FragmentUiModel) {
@@ -670,7 +685,11 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             if (viewModel.fragmentUiModel.value?.uiState?.hasFailedToLoad == false && viewModel.hasDifferentPreAppliedState()) {
                 showSavePromoDialog()
             } else {
-                activity?.finish()
+                if (promoCheckoutLastSeenBottomsheet != null && promoCheckoutLastSeenBottomsheet?.state != BottomSheetBehavior.STATE_HIDDEN) {
+                    hidePromoCheckoutLastSeenBottomsheet()
+                } else {
+                    activity?.finish()
+                }
             }
         } else {
             activity?.finish()
@@ -696,7 +715,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 val query = GraphqlHelper.loadRawString(it.resources, R.raw.promo_suggestion_query)
                 viewModel.loadPromoLastSeen(query)
             } else {
-                showPromoCheckoutLastSeenBottomsheet()
+                showPromoCheckoutLastSeenBottomsheet(viewModel.promoLastSeenUiModel.value)
             }
         }
     }
