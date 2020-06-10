@@ -22,14 +22,8 @@ abstract class BaseValidationUseCase<T : Validation> (private val gqlRepository:
         val error = response.getError(VoucherValidationPartialResponse::class.java)
         if (error.isNullOrEmpty()) {
             val validationPartialResponse: VoucherValidationPartialResponse = response.getData()
-            if (validationPartialResponse.response.header.errorCode.isNullOrEmpty()) {
-                val validationPartial = validationPartialResponse.response.validationPartialErrorData.validationPartial
-                return validationPartial.convertToUiModel()
-            } else {
-                val errorMessage = validationPartialResponse.response.header.messages.first()
-                throw MessageErrorException(errorMessage)
-            }
-
+            val validationPartial = validationPartialResponse.response.validationPartialErrorData.validationPartial
+            return validationPartial.convertToUiModel()
         } else {
             throw MessageErrorException(error.first().toString())
         }
