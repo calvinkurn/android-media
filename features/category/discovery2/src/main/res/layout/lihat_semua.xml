@@ -5,7 +5,9 @@
     android:id="@+id/parent_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/dp_12">
+    android:paddingTop="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_6"
+    android:paddingHorizontal="@dimen/dp_12">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title_tv"

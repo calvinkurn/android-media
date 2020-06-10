@@ -248,9 +248,10 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     }
 
     private fun setTopads(topads: Boolean?) {
-        topadsTextView.hide()
-        if (topads!!) {
+        if (topads == true) {
             topadsTextView.show()
+        }else{
+            topadsTextView.hide()
         }
     }
 
