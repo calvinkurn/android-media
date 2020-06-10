@@ -712,7 +712,7 @@ open class HomeFragment : BaseDaggerFragment(),
                         (dataMap[HomeViewModel.GRID] as DynamicHomeChannel.Grid?)!!,
                         dataMap[HomeViewModel.POSITION] as Int,
                         (dataMap[HomeViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
-                        "",
+                        "0",
                         viewModel.get().getUserId()
                 ) as HashMap<String, Any>)
                 RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
@@ -730,7 +730,7 @@ open class HomeFragment : BaseDaggerFragment(),
                         (dataMap[HomeViewModel.GRID] as ChannelGrid)!!,
                         dataMap[HomeViewModel.POSITION] as Int,
                         (dataMap[HomeViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
-                        "",
+                        "0",
                         viewModel.get().getUserId()
                 ) as HashMap<String, Any>)
                 RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
