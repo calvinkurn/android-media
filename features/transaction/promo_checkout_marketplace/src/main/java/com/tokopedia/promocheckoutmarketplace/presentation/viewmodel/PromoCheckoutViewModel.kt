@@ -1349,6 +1349,16 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
+    fun setPromoInputFromLastApply(promoCode: String) {
+        promoInputUiModel.value?.let {
+            it.uiState.isValidLastSeenPromo = true
+            it.uiData.validLastSeenPromoCode = promoCode
+            it.uiData.promoCode = promoCode
+
+            _tmpUiModel.value = Update(it)
+        }
+    }
+
     fun sendAnalyticsPromoPageLoaded() {
         val enabledPromotions = mutableListOf<Map<String, String>>()
         val disabledPromotions = mutableListOf<Map<String, String>>()

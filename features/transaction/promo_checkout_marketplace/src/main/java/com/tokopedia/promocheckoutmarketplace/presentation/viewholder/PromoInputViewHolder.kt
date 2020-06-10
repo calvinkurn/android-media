@@ -60,6 +60,9 @@ class PromoInputViewHolder(private val view: View,
             }
 
             override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if (element.uiState.isValidLastSeenPromo) {
+                    element.uiState.isValidLastSeenPromo = text.toString() == element.uiData.validLastSeenPromoCode
+                }
                 element.uiData.promoCode = text?.toString() ?: ""
                 if (text?.isNotEmpty() == true) {
                     element.uiState.isButtonSelectEnabled = true

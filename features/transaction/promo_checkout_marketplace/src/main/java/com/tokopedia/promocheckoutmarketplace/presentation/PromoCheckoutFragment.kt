@@ -20,6 +20,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -69,7 +70,7 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 
 class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapterTypeFactory>(),
-        PromoCheckoutActionListener, ToolbarPromoCheckoutListener {
+        PromoCheckoutActionListener, PromoCheckoutLastSeenListener, ToolbarPromoCheckoutListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -111,6 +112,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     // Bottomsheet promo last seen section
     private val bottomsheetPromoLastSeenContainer by lazy { view?.findViewById<FrameLayout>(R.id.bottom_sheet_promo_last_seen) }
     private val bottomsheetCloseButton by lazy { view?.findViewById<ImageView>(R.id.bottom_sheet_close) }
+    private val bottomSheetTitle by lazy { view?.findViewById<Typography>(R.id.bottom_sheet_title) }
     private val rvPromoLastSeen by lazy { view?.findViewById<RecyclerView>(R.id.rv_promo_last_seen) }
 
     companion object {
@@ -191,6 +193,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 hidePromoCheckoutLastSeenBottomsheet()
             }
         }
+
+        bottomSheetTitle?.setOnClickListener {  }
 
         activity?.let {
             swipeRefreshLayout?.setColorSchemeColors(ContextCompat.getColor(it, R.color.tkpd_main_green))
@@ -485,6 +489,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         showBottomsheetJob = GlobalScope.launch(Dispatchers.Main) {
             delay(500L)
             data?.let {
+                snapToPromoInput()
                 initializePromoLastSeen(it.uiData.promoLastSeenItemUiModelList)
                 bottomsheetPromoLastSeenContainer?.show()
                 promoCheckoutLastSeenBottomsheet?.state = BottomSheetBehavior.STATE_COLLAPSED
@@ -499,10 +504,29 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     private fun initializePromoLastSeen(dataList: List<PromoLastSeenItemUiModel>) {
         rvPromoLastSeen?.apply {
             layoutManager = LinearLayoutManager(activity)
-            adapter = PromoLastSeenAdapter()
+            adapter = PromoLastSeenAdapter(this@PromoCheckoutFragment)
             (adapter as PromoLastSeenAdapter).data = ArrayList(dataList)
             (adapter as PromoLastSeenAdapter).notifyDataSetChanged()
         }
+    }
+
+    private fun snapToPromoInput() {
+        recyclerView.layoutManager?.let { layoutManager ->
+            val linearSmoothScroller = object : LinearSmoothScroller(recyclerView.context) {
+                override fun getVerticalSnapPreference(): Int {
+                    return SNAP_TO_START
+                }
+            }
+            viewModel.promoInputUiModel.value?.let { promoInputUiModel ->
+                linearSmoothScroller.targetPosition = adapter.data.indexOf(promoInputUiModel)
+                layoutManager.startSmoothScroll(linearSmoothScroller)
+            }
+        }
+    }
+
+    override fun onClickItem(model: PromoLastSeenItemUiModel) {
+        viewModel.setPromoInputFromLastApply(model.uiData.promoCode)
+        hidePromoCheckoutLastSeenBottomsheet()
     }
 
     private fun renderFragmentState(fragmentUiModel: FragmentUiModel) {
