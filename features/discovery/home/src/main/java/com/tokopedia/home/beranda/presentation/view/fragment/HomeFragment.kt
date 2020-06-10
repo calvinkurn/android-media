@@ -1076,9 +1076,11 @@ open class HomeFragment : BaseDaggerFragment(),
         adapter?.resetImpressionHomeBanner()
         resetFeedState()
         removeNetworkError()
-        getHomeViewModel().getSearchHint(isFirstInstall())
-        getHomeViewModel().refreshHomeData()
-        stickyContent
+        if(::viewModel.isInitialized) {
+            getHomeViewModel().getSearchHint(isFirstInstall())
+            getHomeViewModel().refreshHomeData()
+            stickyContent
+        }
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
         }
@@ -1092,8 +1094,10 @@ open class HomeFragment : BaseDaggerFragment(),
         resetFeedState()
         removeNetworkError()
         homeRecyclerView?.isEnabled = false
-        getHomeViewModel().refresh(isFirstInstall())
-        stickyContent
+        if(::viewModel.isInitialized) {
+            getHomeViewModel().refresh(isFirstInstall())
+            stickyContent
+        }
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
         }
