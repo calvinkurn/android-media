@@ -98,25 +98,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         return true
     }
 
-    private fun setCountDownTimer(
-            elapsedTime: String,
-            minutesUntilFinished: Long,
-            secondsUntilFinished: Long
-    ) {
-        if (shouldShowWhenFiveOrTwoMinutesLeft(minutesUntilFinished, secondsUntilFinished)) {
-            tvTimeCounterEnd.show()
-            tvTimeCounter.invisible()
-        } else {
-            tvTimeCounterEnd.invisible()
-            tvTimeCounter.show()
-        }
+    private fun setCountDownTimer(timeLeft: String = "", minutesUntilFinished: Long = 0L, almostDone: Boolean = false) {
+        tvTimeCounter.visibility = if (almostDone) View.INVISIBLE else View.VISIBLE
+        tvTimeCounterEnd.visibility = if (almostDone) View.VISIBLE else View.INVISIBLE
+        tvTimeCounter.text = timeLeft
         tvTimeCounterEnd.text = getString(R.string.play_live_broadcast_time_left, minutesUntilFinished)
-        tvTimeCounter.text = elapsedTime
     }
-
-    private fun shouldShowWhenFiveOrTwoMinutesLeft(minutesUntilFinished: Long,
-                                                   secondsUntilFinished: Long): Boolean =
-            (minutesUntilFinished == 2L || minutesUntilFinished == 5L) && secondsUntilFinished in 0..3
 
     private fun setTotalView(totalView: TotalViewUiModel) {
         tvTotalView.text = totalView.totalView
@@ -190,7 +177,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, EventObserver{
             when (it) {
                 is PlayPusherInfoState.Active -> {
-                    setCountDownTimer(it.elapsedTime, it.minutesUntilFinished, it.secondsUntilFinished)
+                    setCountDownTimer(it.timeLeft)
+                }
+                is PlayPusherInfoState.AlmostFinish -> {
+                    setCountDownTimer(
+                            minutesUntilFinished = it.minutesUntilFinished,
+                            almostDone = true
+                    )
                 }
                 is PlayPusherInfoState.Finish -> {
                     parentViewModel.stopPushBroadcast()
