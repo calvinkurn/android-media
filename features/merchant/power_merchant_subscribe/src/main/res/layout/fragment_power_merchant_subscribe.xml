@@ -30,6 +30,12 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone"/>
 
+            <com.tokopedia.power_merchant.subscribe.view.ui.PowerMerchantFreeShippingView
+                android:id="@+id/freeShippingLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl5"/>
+
             <com.tokopedia.power_merchant.subscribe.view.ui.PowerMerchantFeatureView
                 android:id="@+id/featureLayout"
                 android:layout_width="match_parent"
