@@ -1,15 +1,13 @@
 package com.tokopedia.review.feature.inbox.pending
 
 import android.accounts.NetworkErrorException
+import com.tokopedia.review.common.data.Fail
+import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.inbox.pending.data.ProductrevWaitForFeedbackResponse
 import com.tokopedia.review.feature.inbox.pending.data.ProductrevWaitForFeedbackResponseWrapper
-import com.tokopedia.review.feature.inbox.pending.data.ReviewPendingViewState
 import com.tokopedia.review.utils.verifyErrorEquals
 import com.tokopedia.review.utils.verifySuccessEquals
-import com.tokopedia.review.utils.verifyValueEquals
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
 import org.junit.Test
@@ -26,12 +24,10 @@ class ReviewPendingViewModelTest : ReviewPendingViewModelTestFixture() {
 
         viewModel.getReviewData(page)
 
-        val expectedResponse = Success(response.productrevWaitForFeedbackWaitForFeedback)
-        val expectedUI = ReviewPendingViewState.ReviewPendingSuccess(true, page)
+        val expectedResponse = Success(response.productrevWaitForFeedbackWaitForFeedback, page)
 
         verifyGetReviewUseCaseExecuted()
         verifyReviewListEquals(expectedResponse)
-        verifyViewStateEquals(expectedUI)
     }
 
     @Test
@@ -43,11 +39,8 @@ class ReviewPendingViewModelTest : ReviewPendingViewModelTestFixture() {
 
         viewModel.getReviewData(page)
 
-        val expectedUI = ReviewPendingViewState.ReviewPendingInitialLoadError
-
         verifyGetReviewUseCaseExecuted()
-        verifyReviewListErrorEquals(Fail(Throwable(page.toString())))
-        verifyViewStateEquals(expectedUI)
+        verifyReviewListErrorEquals(Fail(exception, page))
     }
 
     @Test
@@ -59,22 +52,15 @@ class ReviewPendingViewModelTest : ReviewPendingViewModelTestFixture() {
 
         viewModel.getReviewData(page)
 
-        val expectedUI = ReviewPendingViewState.ReviewPendingLazyLoadError
-
         verifyGetReviewUseCaseExecuted()
-        verifyReviewListErrorEquals(Fail(Throwable(page.toString())))
-        verifyViewStateEquals(expectedUI)
-    }
-
-    private fun verifyViewStateEquals(viewState: ReviewPendingViewState) {
-        viewModel.reviewViewState.verifyValueEquals(viewState)
+        verifyReviewListErrorEquals(Fail(exception, page))
     }
 
     private fun verifyReviewListEquals(response: Success<ProductrevWaitForFeedbackResponse>) {
         viewModel.reviewList.verifySuccessEquals(response)
     }
 
-    private fun verifyReviewListErrorEquals(error: Fail) {
+    private fun verifyReviewListErrorEquals(error: Fail<Any>) {
         viewModel.reviewList.verifyErrorEquals(error)
     }
 
