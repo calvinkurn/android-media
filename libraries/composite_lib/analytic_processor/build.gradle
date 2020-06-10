@@ -13,7 +13,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinReflection
     implementation rootProject.ext.miscDependencies.javaPoet
     implementation files("${System.getProperty('java.home')}/../lib/tools.jar")
-    implementation rootProject.ext.miscDependencies.guava24
+    kapt rootProject.ext.miscDependencies.guava24
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticAnnotation
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticParam
 
