@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--Travel & Hotel-->
+    <string name="df_title_travel">Travel</string>
     <string name="title_hotel_travel">Hotel</string>
     <string name="hotel_app_name">Hotel</string>
     <string name="hotel_order_detail_title">Detail Pesanan</string>
@@ -176,6 +177,8 @@
     <string name="setting_notif_app_name">Setting Notif</string>
 
     <!-- Payment-Setting-->
+    <string name="df_payment_instant_debit_bca">Instant Debit BCA</string>
+    <string name="instant_debit_bca_title">Tambah Kartu BCA</string>
     <string name="payment_setting_app_name">payment_setting</string>
     <string name="payment_title_list_card">Pengaturan Kartu Kredit</string>
     <string name="payment_label_credit_card">Kartu Kredit</string>
@@ -194,15 +197,6 @@
     <string name="filter_expand_activity">Expand</string>
     <string name="product_manage_set_cashback">Cashback</string>
     <string name="product_manage_etalase_picker_title">Pindah Etalase</string>
-
-    <!-- Dynamic feature for opportunity-->
-    <string name="opportunity_name">Opportunity</string>
-    <string name="title_opportunity">Peluang</string>
-    <string name="title_opportunity_detail">Peluang</string>
-    <string name="title_activity_snapshot_opportunity">Snapshot</string>
-    <string name="title_take_opportunity">Ambil Peluang</string>
-    <string name="title_sort_opportunity">Urutkan</string>
-    <string name="title_filter_opportunity">Filter</string>
 
     <!-- Dynamic feature for manage Seller Order Management-->
     <string name="title_seller_order">Seller Order Management</string>
@@ -232,8 +226,8 @@
     <string name="title_upload_user_identification_common">Upload Foto</string>
 
     <!-- Dynamic feature for user talk-->
-    <string name="write_new_talk">Tulis Diskusi Baru</string>
-    <string name="title_product_discussion">Diskusi Produk</string>
+    <string name="write_new_talk">Kirim Pertanyaan</string>
+    <string name="title_product_discussion">Q&amp;A</string>
     <string name="title_report_talk">Laporkan</string>
 
     <string name="sbank_title_add_bank_account">Tambah Rekening</string>
@@ -262,5 +256,6 @@
 
     <!--Promo-->
     <string name="title_gamification_df">Gamification</string>
+    <string name="title_tokopoints_df">Tokopoints</string>
 
 </resources>

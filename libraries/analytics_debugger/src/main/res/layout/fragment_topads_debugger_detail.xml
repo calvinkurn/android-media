@@ -64,5 +64,13 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/fullResponseText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TextView"
+            android:textColor="@color/topads_item_url"
+            android:textSize="12sp"/>
+
     </LinearLayout>
 </ScrollView>

@@ -62,7 +62,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_16"
         app:coundDownBackgroud="@drawable/home_background_countdown_white"
         app:countDownTxtColor="@color/grey_560"
         app:countDownSparatorColor="@color/white"

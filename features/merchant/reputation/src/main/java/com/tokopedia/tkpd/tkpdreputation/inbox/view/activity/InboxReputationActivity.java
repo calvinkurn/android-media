@@ -25,6 +25,7 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTrackingConstant;
 import com.tokopedia.tkpd.tkpdreputation.constant.Constant;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.SectionsPagerAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFragment;
@@ -103,7 +104,7 @@ public class InboxReputationActivity extends BaseTabActivity implements HasCompo
                 super.onTabSelected(tab);
                 reputationTracking.onTabReviewSelectedTracker(tab.getPosition());
                 if(tickerTitle != null) {
-                    reputationTracking.onSuccessGetIncentiveOvoTracker(tickerTitle);
+                    reputationTracking.onSuccessGetIncentiveOvoTracker(tickerTitle, ReputationTrackingConstant.WAITING_REVIEWED);
                 }
             }
         });

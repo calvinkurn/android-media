@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.product.detail.R
-import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase
+import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
@@ -99,6 +99,13 @@ class GqlRawQueryModule {
     @StringKey(RawQueryKeyConstant.QUERY_GET_LATEST_TALK)
     fun provideRawGetLatestTalk(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_product_latest_talk)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_DISCUSSION_MOST_HELPFUL)
+    fun provideRawDiscussionMostHelpful(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_talk_discussion_most_helpful)
 
     @ProductDetailScope
     @Provides

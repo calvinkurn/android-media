@@ -1,7 +1,6 @@
 package com.tokopedia.core.app;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
@@ -19,7 +18,6 @@ import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.toolargetool.TooLargeTool;
 import com.tokopedia.core2.BuildConfig;
 import com.tokopedia.linker.LinkerConstants;
@@ -41,12 +39,8 @@ import io.fabric.sdk.android.Fabric;
 public abstract class MainApplication extends MainRouterApplication{
 
     public static final int DATABASE_VERSION = 7;
-    private static final String TAG = "MainApplication";
     public static String PACKAGE_NAME;
     public static MainApplication instance;
-    private static Boolean isResetNotification = false;
-    private static Boolean isResetCart = false;
-    private static Boolean isResetTickerState = true;
     private LocationUtils locationUtils;
     private DaggerAppComponent.Builder daggerBuilder;
     private AppComponent appComponent;
@@ -75,11 +69,6 @@ public abstract class MainApplication extends MainRouterApplication{
         MultiDex.install(MainApplication.this);
     }
 
-    public static Boolean resetCartStatus(Boolean status) {
-        isResetCart = status;
-        return isResetCart;
-    }
-
     public static int getCurrentVersion(Context context) {
         PackageInfo pInfo = null;
         try {
@@ -102,14 +91,11 @@ public abstract class MainApplication extends MainRouterApplication{
         userSession = new UserSession(this);
         initCrashlytics();
         PACKAGE_NAME = getPackageName();
-        isResetTickerState = true;
 
         daggerBuilder = DaggerAppComponent.builder()
                 .appModule(new AppModule(this));
         getApplicationComponent().inject(this);
 
-        locationUtils = new LocationUtils(this);
-        locationUtils.initLocationBackground();
         initBranch();
         NotificationUtils.setNotificationChannel(this);
         if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
@@ -132,6 +118,8 @@ public abstract class MainApplication extends MainRouterApplication{
 
     @NotNull
     private Boolean executeInBackground(){
+        locationUtils = new LocationUtils(MainApplication.this);
+        locationUtils.initLocationBackground();
         TooLargeTool.startLogging(MainApplication.this);
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
             upgradeSecurityProvider();
@@ -155,7 +143,9 @@ public abstract class MainApplication extends MainRouterApplication{
     @Override
     public void onTerminate() {
         super.onTerminate();
-        locationUtils.deInitLocationBackground();
+        if(locationUtils != null) {
+            locationUtils.deInitLocationBackground();
+        }
     }
 
     private void init() {
@@ -190,7 +180,7 @@ public abstract class MainApplication extends MainRouterApplication{
 
     @NotNull
     private Boolean initBranch(){
-        LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
+        LinkerManager.initLinkerManager(getApplicationContext());
 
         if(userSession.isLoggedIn()) {
             UserData userData = new UserData();
@@ -210,20 +200,5 @@ public abstract class MainApplication extends MainRouterApplication{
     @Override
     public Class<?> getInboxResCenterActivityClassReal() {
         return InboxRouter.getInboxResCenterActivityClass();
-    }
-
-    @Override
-    public Intent getActivitySellingTransactionShippingStatusReal(Context mContext) {
-        return SellerRouter.getActivitySellingTransactionShippingStatus(mContext);
-    }
-
-    @Override
-    public Class getSellingActivityClassReal() {
-        return SellerRouter.getSellingActivityClass();
-    }
-
-    @Override
-    public Intent getActivitySellingTransactionListReal(Context mContext) {
-        return SellerRouter.getActivitySellingTransactionList(mContext);
     }
 }

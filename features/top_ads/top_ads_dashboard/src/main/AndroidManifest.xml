@@ -66,7 +66,13 @@
         <activity
             android:name="com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAutoTopUpActivity"
             android:label="@string/title_top_ads_auto_topup"
-            android:theme="@style/Theme.White"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".view.activity.TopAdsPaymentCreditActivity"
+            android:label="@string/title_top_ads_add_credit"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
     </application>
 </manifest>

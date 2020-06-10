@@ -88,20 +88,20 @@ class StatsInfoComponentTest {
     }
 
     @Test
-    fun `when channel is frozen, then stats info should be hidden`() = runBlockingTest(testDispatcher) {
+    fun `when channel is frozen, then stats info should be shown`() = runBlockingTest(testDispatcher) {
         val mockFreeze = modelBuilder.buildPlayRoomFreezeEvent()
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockFreeze))
-        verify { component.uiView.hide() }
+        verify { component.uiView.show() }
         confirmVerified(component.uiView)
     }
 
     @Test
-    fun `when user is banned, then stats info should be hidden`() = runBlockingTest(testDispatcher) {
+    fun `when user is banned, then stats info should be shown`() = runBlockingTest(testDispatcher) {
         val mockBanned = modelBuilder.buildPlayRoomBannedEvent()
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockBanned))
-        verify { component.uiView.hide() }
+        verify { component.uiView.show() }
         confirmVerified(component.uiView)
     }
 
@@ -216,7 +216,7 @@ class StatsInfoComponentTest {
         }
     }
 
-    class StatsInfoComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : StatsInfoComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
+    class StatsInfoComponentMock(container: ViewGroup, bus: EventBusFactory, scope: CoroutineScope) : StatsInfoComponent(container, bus, scope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): StatsInfoView {
             return mockk(relaxed = true)
         }

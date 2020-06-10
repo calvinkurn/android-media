@@ -18,15 +18,9 @@ import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiMode
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_CHECKOUT
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_OCC
-import com.tokopedia.purchase_platform.common.data.model.param.EditAddressParam
-import com.tokopedia.purchase_platform.features.checkout.data.model.response.checkout.Message
-import com.tokopedia.purchase_platform.features.checkout.data.model.response.checkout.PriceValidation
-import com.tokopedia.purchase_platform.features.checkout.domain.mapper.LastApplyUiMapper
-import com.tokopedia.purchase_platform.features.checkout.domain.usecase.EditAddressUseCase
-import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata
-import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata.Companion.TYPE_ICON_GLOBAL
-import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata.Companion.TYPE_ICON_OFFICIAL_STORE
-import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata.Companion.TYPE_ICON_POWER_MERCHANT
+import com.tokopedia.purchase_platform.common.feature.editaddress.domain.param.EditAddressParam
+import com.tokopedia.purchase_platform.common.feature.editaddress.domain.usecase.EditAddressUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.STATUS_OK
@@ -45,15 +39,19 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.order.domain.
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.domain.UpdateCartOccUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.ErrorCheckoutBottomSheet
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.*
-import com.tokopedia.purchase_platform.features.promo.data.request.Order
-import com.tokopedia.purchase_platform.features.promo.data.request.ProductDetail
-import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest
-import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.OrdersItem
-import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ProductDetailsItem
-import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
-import com.tokopedia.purchase_platform.features.promo.domain.usecase.ValidateUsePromoRevampUseCase
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoUiModel
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ProductDetailsItem
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
+import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata.Companion.TYPE_ICON_GLOBAL
+import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata.Companion.TYPE_ICON_OFFICIAL_STORE
+import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata.Companion.TYPE_ICON_POWER_MERCHANT
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
@@ -97,7 +95,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
     private var hasSentViewOspEe = false
 
-    fun getOccCart(isFullRefresh: Boolean = true) {
+    fun getOccCart(isFullRefresh: Boolean, source: String) {
         globalEvent.value = OccGlobalEvent.Normal
         getOccCartUseCase.execute({ orderData: OrderData ->
             orderProduct = orderData.cart.product
@@ -105,9 +103,9 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             kero = orderData.cart.kero
             val preference = orderData.preference
             _orderPreference = if (isFullRefresh || _orderPreference == null) {
-                OrderPreference(orderData.profileIndex, preference)
+                OrderPreference(onboarding = orderData.onboarding, profileRecommendation = orderData.profileRecommendation, profileIndex = orderData.profileIndex, preference = preference)
             } else {
-                _orderPreference?.copy(profileIndex = orderData.profileIndex, preference = preference)
+                _orderPreference?.copy(onboarding = orderData.onboarding, profileRecommendation = orderData.profileRecommendation, profileIndex = orderData.profileIndex, preference = preference)
             }
             orderPreference.value = OccState.FirstLoad(_orderPreference!!)
             validateUsePromoRevampUiModel = null
@@ -122,7 +120,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         }, { throwable: Throwable ->
             _orderPreference = null
             orderPreference.value = OccState.Fail(false, throwable, "")
-        })
+        }, getOccCartUseCase.createRequestParams(source))
     }
 
     fun updateProduct(product: OrderProduct, shouldReloadRates: Boolean = true) {
@@ -1481,6 +1479,14 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             }
         }
         return ""
+    }
+
+    fun consumeForceShowOnboarding() {
+        val onboarding = _orderPreference?.onboarding
+        if (onboarding?.isForceShowCoachMark == true) {
+            _orderPreference = _orderPreference?.copy(onboarding = onboarding.copy(isForceShowCoachMark = false))
+            orderPreference.value = OccState.Success(_orderPreference!!)
+        }
     }
 
     companion object {

@@ -7,9 +7,9 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.logisticcart.domain.executor.MainScheduler
 import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
-import com.tokopedia.purchase_platform.common.di.PeopleAddressNetworkModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
+import com.tokopedia.purchase_platform.common.feature.editaddress.di.PeopleAddressNetworkModule
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.GetPreferenceListUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.mapper.PreferenceListModelMapper
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.analytics.OrderSummaryAnalytics

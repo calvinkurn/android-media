@@ -27,6 +27,7 @@ class TopAdsDebuggerDetailFragment : TkpdBaseV4Fragment() {
         urlText.text = viewModel?.url
         statusText.text = viewModel?.eventStatus
         statusText.setTextColor(getTopAdsStatusColor(context, viewModel?.eventStatus))
+        fullResponseText.text = viewModel?.fullResponse
     }
 
     override fun getScreenName(): String {

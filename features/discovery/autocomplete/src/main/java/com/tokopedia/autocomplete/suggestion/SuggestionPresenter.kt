@@ -5,6 +5,8 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.autocomplete.suggestion.doubleline.convertSuggestionItemToDoubleLineVisitableList
 import com.tokopedia.autocomplete.suggestion.singleline.convertSuggestionItemToSingleLineVisitableList
 import com.tokopedia.autocomplete.suggestion.title.convertToTitleHeader
+import com.tokopedia.autocomplete.util.getProfileIdFromApplink
+import com.tokopedia.autocomplete.util.getShopIdFromApplink
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -26,19 +28,26 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
 
     private var listVisitable = mutableListOf<Visitable<*>>()
 
+    private var isTyping = false
+
+    fun setIsTyping(isTyping: Boolean) {
+        this.isTyping = isTyping
+    }
+
     override fun search(searchParameter: SearchParameter) {
         this.querySearch = searchParameter.getSearchQuery()
 
         getSuggestionUseCase.execute(
-                createGetSuggestionParams(searchParameter),
+                createGetSuggestionParams(searchParameter, isTyping),
                 createGetSuggestionSubscriber()
         )
     }
 
-    private fun createGetSuggestionParams(searchParameter: SearchParameter) = SuggestionUseCase.getParams(
+    private fun createGetSuggestionParams(searchParameter: SearchParameter, isTyping: Boolean) = SuggestionUseCase.getParams(
         searchParameter.getSearchParameterMap(),
         userSession.deviceId,
-        userSession.userId
+        userSession.userId,
+        isTyping
     )
 
     private fun createGetSuggestionSubscriber(): Subscriber<SuggestionData> = object : Subscriber<SuggestionData>() {
@@ -199,27 +208,6 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
         )
     }
 
-    private fun getShopIdFromApplink(applink: String): String {
-        return applink.substringWithPrefixAndSuffix("tokopedia://shop/", "?")
-    }
-
-    private fun String.substringWithPrefixAndSuffix(prefix: String, suffix: String): String {
-        val suffixIndex = indexOf(suffix)
-
-        val startIndex = prefix.length
-        val endIndex = if (suffixIndex == -1) length else suffixIndex
-
-        return try {
-            if (startsWith(prefix)) {
-                substring(startIndex, endIndex)
-            } else {
-                ""
-            }
-        } catch (e: Exception) {
-            ""
-        }
-    }
-
     private fun getProfileEventLabelForTracking(item: BaseSuggestionViewModel): String {
         return String.format(
                 "keyword: %s - profile: %s - profile id: %s - po: %s",
@@ -228,10 +216,6 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
                 getProfileIdFromApplink(item.applink),
                 item.position.toString()
         )
-    }
-
-    private fun getProfileIdFromApplink(applink: String): String {
-        return applink.substringWithPrefixAndSuffix("tokopedia://people/", "?")
     }
 
     override fun detachView() {

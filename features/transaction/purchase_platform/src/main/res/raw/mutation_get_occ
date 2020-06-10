@@ -1,5 +1,5 @@
-query get_occ_cart_page {
-  get_occ_cart_page {
+query get_occ_cart_page($source: String) {
+  get_occ_cart_page(source: $source) {
     error_message
     status
     data {
@@ -18,6 +18,25 @@ query get_occ_cart_page {
         ErrorProductAvailableStockDetail
         ErrorProductMaxQuantity
         ErrorProductMinQuantity
+      }
+      occ_main_onboarding {
+        force_show_coachmark
+        show_onboarding_ticker
+        onboarding_ticker {
+            title
+            message
+            image
+            show_coachmark_link_text
+            coachmark_link_text
+        }
+        onboarding_coachmark {
+            skip_button_text
+            detail {
+                step
+                title
+                message
+            }
+        }
       }
       kero_token
       kero_unix_time
@@ -263,6 +282,7 @@ query get_occ_cart_page {
         }
       }
       profile_index_wording
+      profile_recommendation_wording
       profile {
         has_preference
         is_changed_profile

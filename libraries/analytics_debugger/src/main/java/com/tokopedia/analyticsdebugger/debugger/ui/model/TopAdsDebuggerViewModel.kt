@@ -12,7 +12,8 @@ data class TopAdsDebuggerViewModel(var id: Long = 0,
                                    var eventType: String? = null,
                                    var sourceName: String? = null,
                                    var eventStatus: String? = null,
-                                   var timestamp: String? = null) : Visitable<TopAdsDebuggerTypeFactory>, Parcelable {
+                                   var timestamp: String? = null,
+                                   var fullResponse: String? = "") : Visitable<TopAdsDebuggerTypeFactory>, Parcelable {
 
     override fun type(typeFactory: TopAdsDebuggerTypeFactory): Int {
         return typeFactory.type(this)

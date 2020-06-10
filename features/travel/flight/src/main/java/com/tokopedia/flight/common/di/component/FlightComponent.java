@@ -22,6 +22,8 @@ import com.tokopedia.flight.search.data.db.FlightComboDao;
 import com.tokopedia.flight.search.data.db.FlightJourneyDao;
 import com.tokopedia.flight.search.data.db.FlightRouteDao;
 import com.tokopedia.flight.search.data.db.FlightSearchRoomDb;
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Component;
@@ -66,6 +68,10 @@ public interface FlightComponent {
     Resources resources();
 
     FlightGetOrderUseCase flightGetOrderUseCase();
+
+    GraphqlRepository graphqlRepository();
+
+    MultiRequestGraphqlUseCase multiRequestGraphqlUseCase();
 
     TravelDispatcherProvider dispatcherProvider();
 
