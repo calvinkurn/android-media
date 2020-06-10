@@ -22,7 +22,10 @@ import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
-import com.tokopedia.home.beranda.helper.*
+import com.tokopedia.home.beranda.helper.Event
+import com.tokopedia.home.beranda.helper.RateLimiter
+import com.tokopedia.home.beranda.helper.Result
+import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
@@ -336,12 +339,15 @@ open class HomeViewModel @Inject constructor(
     private fun evaluateGeolocationComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
         homeDataModel?.let {
             if (!isNeedShowGeoLocation) {
-                val findGeolocationModel =
-                        homeDataModel.list.find { visitable -> visitable is GeoLocationPromptDataModel }
                 val currentList = homeDataModel.list.toMutableList()
-                val mutableIterator = currentList.iterator()
                 currentList.let {
-                    it.safeRemove(findGeolocationModel)
+                    val mutableIterator = currentList.iterator()
+                    for (e in mutableIterator) {
+                        if(e is GeoLocationPromptDataModel){
+                            mutableIterator.remove()
+                            break
+                        }
+                    }
                     return homeDataModel.copy(list = it)
                 }
             }
@@ -420,7 +426,13 @@ open class HomeViewModel @Inject constructor(
             val currentList = it.list.toMutableList()
             currentList.let { list->
                 if (findReviewViewModel is ReviewDataModel) {
-                    list.safeRemove(findReviewViewModel)
+                    val mutableIterator = list.iterator()
+                    for (e in mutableIterator) {
+                        if(e is ReviewDataModel){
+                            mutableIterator.remove()
+                            break
+                        }
+                    }
                     return it.copy(
                             list = list
                     )
@@ -586,9 +598,13 @@ open class HomeViewModel @Inject constructor(
                 homeDataModel.copy(list = currentList)
             } else {
                 val visitableMutableList: MutableList<Visitable<*>> = homeDataModel.list.toMutableList()
-                val findRetryModel = homeDataModel.list.find { visitable -> visitable is HomeRetryModel
+                val mutableIterator = visitableMutableList.iterator()
+                for (e in mutableIterator) {
+                    if(e is HomeRetryModel){
+                        mutableIterator.remove()
+                        break
+                    }
                 }
-                visitableMutableList.safeRemove(findRetryModel)
                 if (!homeDataModel.isCache) {
                     visitableMutableList.add(HomeLoadingMoreModel())
                     getFeedTabData()
@@ -1070,7 +1086,7 @@ open class HomeViewModel @Inject constructor(
                                     }
                                 }
                             }
-                            ACTION_DELETE -> newList.safeRemove(homeVisitable)
+                            ACTION_DELETE -> newList.remove(homeVisitable)
                         }
                         _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
                     }
