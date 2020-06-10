@@ -257,28 +257,20 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     }
 
     private fun setLabelDiscount(text: String) {
-                    labelDiscount.hide()
-
-
-//        if (text.isEmpty() || text == "0") {
-//            labelDiscount.hide()
-//        } else {
-//            labelDiscount.show()
-//            labelDiscount.text = String.format("%s", "$text%")
-//        }
+        if (text.isEmpty() || text == "0") {
+            labelDiscount.hide()
+        } else {
+            labelDiscount.show()
+            labelDiscount.text = String.format("%s", "$text%")
+        }
     }
 
     private fun setSlashedPrice(discountedPrice: String?) {
-        textViewSlashedPrice.show()
-
-//        textViewSlashedPrice.let {
-//            it.setTextAndCheckShow(discountedPrice)
-//            it.paintFlags = it.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-//        }
+        textViewSlashedPrice.let {
+            it.setTextAndCheckShow(discountedPrice)
+            it.paintFlags = it.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        }
     }
-
-
-
 
     //    private fun setCashbackLabel(cashback: String?) {
 //        labelCashbackPromo.hide()
@@ -299,6 +291,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         } else {
             imageViewRating.hide()
             textViewRatingCount.hide()
+            textViewReviewCount.hide()
         }
     }
 
@@ -306,10 +299,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         if (reviewCount != 0) {
             textViewReviewCount.show()
             textViewReviewCount.text = String.format("%s", "($reviewCount)")
-        } else {
-            textViewReviewCount.hide()
         }
-
     }
 
     private fun handleUIClick(view: View) {
