@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/iv_logistic_promo_info"
-        android:layout_width="@dimen/dp_64"
-        android:layout_height="@dimen/dp_16"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_10"
         android:alpha="0.5"
         app:layout_constraintStart_toStartOf="parent"
