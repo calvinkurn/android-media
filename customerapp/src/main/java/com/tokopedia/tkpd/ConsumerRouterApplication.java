@@ -80,7 +80,7 @@ import com.tokopedia.home.account.di.AccountHomeInjection;
 import com.tokopedia.home.account.di.AccountHomeInjectionImpl;
 import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
-import com.tokopedia.inappreview.InAppReviewHelperKt;
+import com.tokopedia.inappreview.InAppReviewHelper;
 import com.tokopedia.inbox.common.ResolutionRouter;
 import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.iris.Iris;
@@ -908,7 +908,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void showSimpleAppRatingDialog(Activity activity) {
-        if(!InAppReviewHelperKt.launchInAppReview(activity)) {
+        if(!InAppReviewHelper.launchInAppReview(activity)) {
             SimpleAppRatingDialog.show(activity);
         }
     }

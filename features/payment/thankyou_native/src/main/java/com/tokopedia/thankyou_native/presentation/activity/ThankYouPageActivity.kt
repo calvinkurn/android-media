@@ -8,8 +8,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.header.HeaderUnify
-//import com.tokopedia.inappreview.Callback
-//import com.tokopedia.inappreview.launchInAppReview
+import com.tokopedia.inappreview.InAppReviewHelper
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.data.mapper.*
@@ -154,14 +153,11 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
                     it.onBackPressed()
                 }
                 else -> {
-                    gotoHomePage()
-                    finish()
-                    true
-                    /*launchInAppReview(this, object: Callback {
+                    InAppReviewHelper.launchInAppReview(this, object: InAppReviewHelper.Callback {
                         override fun onCompleted() {
                             gotoHomePage()
                         }
-                    })*/
+                    })
                 }
             }
 

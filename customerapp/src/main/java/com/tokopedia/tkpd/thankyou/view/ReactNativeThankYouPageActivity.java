@@ -18,6 +18,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common_wallet.balance.data.CacheUtil;
 import com.tokopedia.design.component.BottomSheets;
+import com.tokopedia.inappreview.InAppReviewHelper;
 import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -29,7 +30,6 @@ import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
-import com.tokopedia.inappreview.InAppReviewHelperKt;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -169,7 +169,7 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     public void onBackPressed() {
         FragmentManager manager = getSupportFragmentManager();
         if (isDigital()) {
-            if (!InAppReviewHelperKt.launchInAppReview(this, this::closeThankyouPage)) {
+            if (!InAppReviewHelper.launchInAppReview(this, this::closeThankyouPage)) {
                 AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
                 rating.setDialogDismissListener(this::closeThankyouPage);
                 rating.showDialog(manager, this);
