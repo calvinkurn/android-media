@@ -9,7 +9,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.image.RoundedCornerImageView
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.one.click.checkout.R
@@ -20,6 +19,7 @@ import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class OrderProductCard(private val view: View, private val listener: OrderProductCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) {
 

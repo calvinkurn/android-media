@@ -5,7 +5,6 @@ import android.graphics.Paint
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheet
@@ -26,6 +25,7 @@ import com.tokopedia.one.click.checkout.order.view.model.OrderPreference
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class OrderPreferenceCard(private val view: View, private val listener: OrderPreferenceCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) {
 
@@ -108,14 +108,14 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         tvShippingDuration?.text = serviceDur
 
         if (shipping == null) {
-            tvShippingDuration?.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
+            tvShippingDuration?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
             tickerShippingPromo?.gone()
             tvShippingPrice?.gone()
         } else {
             if (shipping.serviceErrorMessage == null || shipping.serviceErrorMessage.isBlank()) {
                 if (!shipping.isServicePickerEnable) {
                     tvShippingDuration?.text = "Durasi ${shipping.serviceDuration} - ${shipping.shipperName}"
-                    tvShippingDuration?.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
+                    tvShippingDuration?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
                     tvShippingDuration?.setOnClickListener { }
                     tvShippingPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice
                             ?: 0, false)
@@ -166,7 +166,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                 } else {
                     tvShippingName?.text = "Pengiriman"
                     tvShippingDuration?.text = shipping.serviceName
-                    tvShippingDuration?.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_down_grey_20dp, 0)
+                    tvShippingDuration?.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_down_grey_20dp, 0)
                     tvShippingDuration?.setOnClickListener {
                         listener.chooseDuration()
                     }
@@ -220,7 +220,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                 if (!shipping.isServicePickerEnable) {
                     tvShippingCourierLbl?.gone()
                     tvShippingCourier?.gone()
-                    tvShippingDuration?.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
+                    tvShippingDuration?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
                     tvShippingPrice?.gone()
                     tvShippingSlashPrice?.gone()
                     tvShippingMessage?.text = shipping.serviceErrorMessage

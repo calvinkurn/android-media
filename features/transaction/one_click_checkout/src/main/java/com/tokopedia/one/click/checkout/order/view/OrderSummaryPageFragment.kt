@@ -35,7 +35,6 @@ import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.design.component.Tooltip
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
@@ -48,9 +47,6 @@ import com.tokopedia.logisticdata.data.constant.LogisticConstant
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.one.click.checkout.R
-import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
-import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
-import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.one.click.checkout.common.data.model.response.preference.Address
 import com.tokopedia.one.click.checkout.common.domain.model.OccGlobalEvent
 import com.tokopedia.one.click.checkout.common.domain.model.OccState
@@ -67,6 +63,9 @@ import com.tokopedia.one.click.checkout.order.view.card.OrderPreferenceCard
 import com.tokopedia.one.click.checkout.order.view.card.OrderProductCard
 import com.tokopedia.one.click.checkout.order.view.model.*
 import com.tokopedia.one.click.checkout.preference.edit.view.PreferenceEditActivity
+import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
+import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
+import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -79,6 +78,7 @@ import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException

@@ -2,7 +2,6 @@ package com.tokopedia.one.click.checkout.order.view.bottomsheet
 
 import android.annotation.SuppressLint
 import android.view.View
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.one.click.checkout.R
@@ -10,6 +9,7 @@ import com.tokopedia.one.click.checkout.order.view.OrderSummaryPageFragment
 import com.tokopedia.one.click.checkout.order.view.model.OrderCost
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.android.synthetic.main.bottom_sheet_order_price_summary.view.*
 
 class OrderPriceSummaryBottomSheet {
