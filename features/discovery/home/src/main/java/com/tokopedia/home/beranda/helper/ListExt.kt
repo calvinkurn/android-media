@@ -12,3 +12,14 @@ fun <T> List<T>?.copy(): List<T>{
 fun <X, Y> LiveData<X>.map(func: (source: X) -> Y) = Transformations.map(this, func)
 
 fun <X, Y> LiveData<X>.switchMap(func: (source: X?) -> LiveData<Y>) = Transformations.switchMap(this, func)
+
+fun <T> List<T>.safeRemove(item: T): List<T>{
+    val newMutableList = this.toMutableList()
+    val mutableIterator = newMutableList.iterator()
+    for (e in mutableIterator) {
+        if(e == item){
+            mutableIterator.remove()
+        }
+    }
+    return newMutableList
+}

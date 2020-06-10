@@ -22,10 +22,7 @@ import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
-import com.tokopedia.home.beranda.helper.Event
-import com.tokopedia.home.beranda.helper.RateLimiter
-import com.tokopedia.home.beranda.helper.Result
-import com.tokopedia.home.beranda.helper.copy
+import com.tokopedia.home.beranda.helper.*
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
@@ -342,9 +339,9 @@ open class HomeViewModel @Inject constructor(
                 val findGeolocationModel =
                         homeDataModel.list.find { visitable -> visitable is GeoLocationPromptDataModel }
                 val currentList = homeDataModel.list.toMutableList()
-
+                val mutableIterator = currentList.iterator()
                 currentList.let {
-                    it.remove(findGeolocationModel)
+                    it.safeRemove(findGeolocationModel)
                     return homeDataModel.copy(list = it)
                 }
             }
@@ -423,7 +420,7 @@ open class HomeViewModel @Inject constructor(
             val currentList = it.list.toMutableList()
             currentList.let { list->
                 if (findReviewViewModel is ReviewDataModel) {
-                    list.remove(findReviewViewModel)
+                    list.safeRemove(findReviewViewModel)
                     return it.copy(
                             list = list
                     )
@@ -591,7 +588,7 @@ open class HomeViewModel @Inject constructor(
                 val visitableMutableList: MutableList<Visitable<*>> = homeDataModel.list.toMutableList()
                 val findRetryModel = homeDataModel.list.find { visitable -> visitable is HomeRetryModel
                 }
-                visitableMutableList.remove(findRetryModel)
+                visitableMutableList.safeRemove(findRetryModel)
                 if (!homeDataModel.isCache) {
                     visitableMutableList.add(HomeLoadingMoreModel())
                     getFeedTabData()
@@ -1073,7 +1070,7 @@ open class HomeViewModel @Inject constructor(
                                     }
                                 }
                             }
-                            ACTION_DELETE -> newList.remove(homeVisitable)
+                            ACTION_DELETE -> newList.safeRemove(homeVisitable)
                         }
                         _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
                     }
