@@ -23,6 +23,5 @@ abstract class ReviewPendingViewModelTestFixture {
     fun setup() {
         MockKAnnotations.init(this)
         viewModel = ReviewPendingViewModel(TestCoroutineDispatchers, productrevWaitForFeedbackUseCase)
-        viewModel.reviewViewState.observeForever{}
     }
 }
