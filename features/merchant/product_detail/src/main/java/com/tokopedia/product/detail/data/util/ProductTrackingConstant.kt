@@ -31,6 +31,7 @@ object ProductTrackingConstant {
         const val KEY_BUSINESS_UNIT = "businessUnit"
         const val KEY_CURRENT_SITE = "currentSite"
         const val KEY_SCREEN_NAME = "screenName"
+        const val KEY_TICKER_TYPE = "tickerType"
 
         const val KEY_USER_ID_VARIANT = "userId"
 
@@ -142,6 +143,7 @@ object ProductTrackingConstant {
         const val CLICK_WHOLESALE = "click - info harga grosir"
         const val CLICK_REVIEW_IMAGE_MEDIA = "click - foto dari pembeli on product image"
         const val CLICK_SHOP_INFO_MINI = "click - shop info mini"
+        const val CLICK_TICKER = "click - selengkapnya on component ticker"
 
         const val CLICK_REQUEST_PERMISSION_IMEI = "click - beli then show popup"
         const val CLICK_ACCEPT_PERMISSION = "click -  berikan akses on bottomsheet"

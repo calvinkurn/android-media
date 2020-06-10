@@ -813,8 +813,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     /**
      * ProductTickerViewHolder
      */
-    override fun onTickerGeneralClicked(url: String) {
+    override fun onTickerGeneralClicked(tickerTitle: String, tickerType: Int, url: String, componentTrackDataModel: ComponentTrackDataModel?) {
         if (url.isEmpty()) return
+        trackOnTickerClicked(tickerTitle, tickerType, componentTrackDataModel)
         if (activity != null && RouteManager.isSupportApplink(activity, url)) {
             goToApplink(url)
         } else {
@@ -822,8 +823,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    override fun onTickerShopClicked() {
+    override fun onTickerShopClicked(tickerTitle: String, tickerType: Int, componentTrackDataModel: ComponentTrackDataModel?) {
         activity?.let {
+            trackOnTickerClicked(tickerTitle, tickerType, componentTrackDataModel)
             ShopStatusInfoBottomSheet.showShopStatusBottomSheet(it, viewModel.shopInfo?.statusInfo
                     ?: ShopInfo.StatusInfo(), viewModel.getDynamicProductInfoP1?.basic?.shopID
                     ?: "")
@@ -2874,6 +2876,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewModel.getDynamicProductInfoP1?.let {
             DynamicProductDetailTracking.Click.eventNotifyMe(it, componentTrackDataModel, notifyMe)
         }
+    }
+
+    private fun trackOnTickerClicked(tickerTitle: String, tickerType: Int, componentTrackDataModel: ComponentTrackDataModel?) {
+        DynamicProductDetailTracking.Click.eventClickTicker(tickerTitle, tickerType, viewModel.getDynamicProductInfoP1 , componentTrackDataModel, viewModel.userId)
     }
 
     private fun showImeiPermissionBottomSheet() {
