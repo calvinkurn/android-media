@@ -10,6 +10,10 @@ import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_CA
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_NAME_CLICK
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_NAME_IMPRESSION
 import com.tokopedia.sellerhome.analytic.TrackingConstant
+import com.tokopedia.sellerhome.analytic.TrackingConstant.ADS_PROMOTION
+import com.tokopedia.sellerhome.analytic.TrackingConstant.OPEN_SCREEN
+import com.tokopedia.sellerhome.analytic.TrackingConstant.PHYSICAL_GOODS
+import com.tokopedia.sellerhome.analytic.TrackingConstant.TOKOPEDIA_SELLER
 import com.tokopedia.track.TrackApp
 
 // Doc : https://docs.google.com/spreadsheets/d/1d6OCqZyVOMsYrEChc-xwj1Ta_5G9bvCKIzOFw4kq4BA
@@ -98,6 +102,19 @@ object CentralizedPromoTracking {
                 label = ""
         )
 
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun sendOpenScreenEvent(isLoggedIn: Boolean,
+                            userId: String) {
+        val data = mapOf(
+                TrackingConstant.EVENT to OPEN_SCREEN,
+                TrackingConstant.SCREEN_NAME to ADS_PROMOTION,
+                TrackingConstant.IS_LOGGED_IN_STATUS to isLoggedIn,
+                TrackingConstant.CURRENT_SITE to TOKOPEDIA_SELLER,
+                TrackingConstant.USER_ID to userId,
+                TrackingConstant.BUSINESS_UNIT to PHYSICAL_GOODS
+        )
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 }
