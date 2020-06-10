@@ -43,10 +43,11 @@ class PmSubscribeViewModel @Inject constructor(
     private val _getPmStatusInfoResult = MutableLiveData<Result<PowerMerchantStatus>>()
     private val _getPmFreeShippingStatusResult = MutableLiveData<Result<PowerMerchantFreeShippingStatus>>()
 
-    fun getPmStatusInfo(shopId: String){
+    fun getPmStatusInfo(){
         showLoading()
 
         launchCatchError(block = {
+            val shopId = userSession.shopId
             val powerMerchantStatus = withContext(dispatchers.io) {
                 val params = GetPowerMerchantStatusUseCase.createRequestParams(shopId)
                 getPowerMerchantStatusUseCase.getData(params)

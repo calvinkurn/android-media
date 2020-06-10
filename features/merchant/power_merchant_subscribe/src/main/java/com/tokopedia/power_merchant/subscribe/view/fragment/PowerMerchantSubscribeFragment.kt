@@ -95,7 +95,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         observeViewState()
 
         if (remoteConfig.getBoolean(ANDROID_PM_F1_ENABLED, false)) {
-            viewModel.getPmStatusInfo(userSessionInterface.shopId)
+            viewModel.getPmStatusInfo()
         } else {
             activity?.let {
                 if (userSessionInterface.isGoldMerchant) {
@@ -118,7 +118,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     }
 
     private fun refreshData() {
-        viewModel.getPmStatusInfo(userSessionInterface.shopId)
+        viewModel.getPmStatusInfo()
     }
 
     private fun showLoading() {
