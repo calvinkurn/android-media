@@ -94,7 +94,7 @@ class MixTopBannerViewHolder(
                 MixTopTracking.getMixTopView(
                         listOf(grid),
                         channel.header.name,
-                        position.toString()
+                        (position+1).toString()
                 ) as HashMap<String, Any>)
     }
 
@@ -103,7 +103,7 @@ class MixTopBannerViewHolder(
                 listOf(MixTopTracking.mapGridToProductTracker(grid, channel.id, position, channel.persoType, channel.categoryID)),
                 channel.header.name,
                 channel.id,
-                adapterPosition.toString(),
+                (position+1).toString(),
                 channel.campaignCode
         ) as HashMap<String, Any>)
         homeCategoryListener.onDynamicChannelClicked(grid.applink)
