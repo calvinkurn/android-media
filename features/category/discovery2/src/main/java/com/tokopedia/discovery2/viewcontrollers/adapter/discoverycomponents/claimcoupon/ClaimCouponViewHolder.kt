@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cla
 
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +14,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
-class ClaimCouponViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
+class ClaimCouponViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView,fragment.viewLifecycleOwner) {
 
 
     private val recyclerView: RecyclerView = itemView.findViewById(R.id.claim_coupon_rv)
@@ -44,12 +45,21 @@ class ClaimCouponViewHolder(itemView: View, private val fragment: Fragment) : Ab
         } else
             addShimmer(false)
         recyclerView.layoutManager = GridLayoutManager(itemView.context, spanCount, GridLayoutManager.VERTICAL, false)
-        fragment as DiscoveryFragment
+
+    }
+
+    override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
+        super.setUpObservers(lifecycleOwner)
         claimCouponViewModel.getComponentList().observe(fragment.viewLifecycleOwner, Observer { item ->
+            fragment as DiscoveryFragment
             fragment.getDiscoveryAnalytics().trackEventImpressionCoupon(item)
             discoveryRecycleAdapter.setDataList(item)
         })
+    }
 
+    override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
+        super.removeObservers(lifecycleOwner)
+        lifecycleOwner?.let { claimCouponViewModel.getComponentList().removeObservers(it) }
     }
 
 }
