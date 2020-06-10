@@ -47,6 +47,7 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preference_edit)
         initViews()
+        component.inject(this)
     }
 
     private fun initViews() {
