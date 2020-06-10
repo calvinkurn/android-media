@@ -450,4 +450,8 @@
         <key>android_addgaid_to_branch</key>
         <value>false</value>
     </entry>
+    <entry>
+        <key>app_enable_branch_utm_support</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>
