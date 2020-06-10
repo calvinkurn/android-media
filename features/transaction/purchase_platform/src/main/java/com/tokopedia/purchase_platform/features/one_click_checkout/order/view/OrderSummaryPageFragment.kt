@@ -509,9 +509,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
             val coachMark = CoachMarkBuilder().build()
             coachMark.enableSkip = true
-            if (onboarding.onboardingCoachMark.skipButtonText.isNotEmpty()) {
-                coachMark.setSkipText(onboarding.onboardingCoachMark.skipButtonText)
-            }
+            // temporary removed due to coachmark crash (downgraded)
+            //if (onboarding.onboardingCoachMark.skipButtonText.isNotEmpty()) {
+            //    coachMark.setSkipText(onboarding.onboardingCoachMark.skipButtonText)
+            //}
             coachMark.overlayOnClickListener = ({
                 //do nothing
             })
