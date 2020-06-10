@@ -32,8 +32,9 @@ public class ImpresionTask extends AsyncTask<String, Void, String> {
         taskAlert = ImpressionTaskAlert.getInstance(className);
     }
 
-    public ImpresionTask(UserSessionInterface userSession) {
+    public ImpresionTask(String className, UserSessionInterface userSession) {
         this.userSession = userSession;
+        taskAlert = ImpressionTaskAlert.getInstance(className);
     }
 
     @Override

@@ -2859,6 +2859,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun sendATCTrackingURL(clickurl: String) {
         var url = "$clickurl&click_source=ATC_direct_click";
-        ImpresionTask(userSession).execute(url);
+        activity?.let { ImpresionTask(it::class.qualifiedName, userSession).execute(url) }
     }
 }
