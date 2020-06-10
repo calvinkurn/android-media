@@ -8,8 +8,8 @@ internal object GetShopFreeShippingStatus {
     val QUERY = """
         query EligibleServiceShop($userID: Int!, $shopIDs: [Int!]!){
             EligibleServiceShop(input: {
-                "userID": $userID,
-                "shopIDs": $shopIDs
+                userID: $userID,
+                shopIDs: $shopIDs
             }) {
                 shops{
                     shopID
