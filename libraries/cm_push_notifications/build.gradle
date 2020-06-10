@@ -57,9 +57,7 @@ dependencies {
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
 
 
-    implementation (rootProject.ext.miscDependencies.workManager) {
-        exclude group: 'com.google.guava', module: 'listenablefuture'
-    }
+    implementation rootProject.ext.miscDependencies.workManager
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.kotlinTest
