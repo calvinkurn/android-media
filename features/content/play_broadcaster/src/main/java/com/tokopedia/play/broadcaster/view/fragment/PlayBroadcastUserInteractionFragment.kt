@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
+import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
 import com.tokopedia.play.broadcaster.util.PlayShareWrapper
@@ -71,6 +72,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeTotalViews()
         observeTotalLikes()
         observeChatList()
+        observeMetrics()
     }
 
     private fun initView(view: View) {
@@ -126,6 +128,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun setNewChat(chat: PlayChatUiModel) {
         chatListView.showNewChat(chat)
+    }
+
+    private fun setNewMetric(metric: PlayMetricUiModel) {
+        pmvMetrics.show(metric)
     }
 
     private fun showDialogWhenActionClose() {
@@ -231,6 +237,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         })
 
         parentViewModel.observableNewChat.observe(viewLifecycleOwner, EventObserver(::setNewChat))
+    }
+
+    private fun observeMetrics() {
+        parentViewModel.observableNewMetric.observe(viewLifecycleOwner, EventObserver(::setNewMetric))
     }
     //endregion
 
