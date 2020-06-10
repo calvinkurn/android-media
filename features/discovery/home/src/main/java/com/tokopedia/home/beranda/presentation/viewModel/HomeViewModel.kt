@@ -445,8 +445,12 @@ open class HomeViewModel @Inject constructor(
 
     fun onCloseBuyAgain(channelId: String, position: Int){
         val dynamicChannelDataModel = _homeLiveData.value?.list?.find { visitable ->
-            (visitable is DynamicChannelDataModel || visitable is RecommendationListCarouselDataModel) && visitable.channel?.id == channelId }
-        if (dynamicChannelDataModel is DynamicChannelDataModel){
+            visitable is DynamicChannelDataModel && visitable.channel?.id == channelId }
+        val recommendationListHomeComponentModel = _homeLiveData.value?.list?.find {
+            visitable ->  visitable is RecommendationListCarouselDataModel && visitable.channelModel.id == channelId
+        }
+
+        if (dynamicChannelDataModel != null && dynamicChannelDataModel is DynamicChannelDataModel){
             launchCatchError(coroutineContext, block = {
                 closeChannelUseCase.get().setParams(channelId)
                 val closeChannel = closeChannelUseCase.get().executeOnBackground()
@@ -459,7 +463,21 @@ open class HomeViewModel @Inject constructor(
                 it.printStackTrace()
                 _errorEventLiveData.postValue(Event(it.message ?: ""))
             }
+        }
 
+        if (recommendationListHomeComponentModel != null && recommendationListHomeComponentModel is RecommendationListCarouselDataModel){
+            launchCatchError(coroutineContext, block = {
+                closeChannelUseCase.get().setParams(channelId)
+                val closeChannel = closeChannelUseCase.get().executeOnBackground()
+                if(closeChannel.success){
+                    updateWidget(UpdateLiveDataModel(ACTION_DELETE, recommendationListHomeComponentModel, position))
+                } else {
+                    _errorEventLiveData.postValue(Event(""))
+                }
+            }){
+                it.printStackTrace()
+                _errorEventLiveData.postValue(Event(it.message ?: ""))
+            }
         }
     }
 
