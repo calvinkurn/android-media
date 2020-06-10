@@ -91,8 +91,8 @@
         android:layout_marginEnd="@dimen/spacing_lvl2"
         android:layout_marginRight="@dimen/spacing_lvl2"
         android:textColor="@color/Neutral_N700_96"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvMvcTotalSpending"
+        app:layout_constraintEnd_toStartOf="@id/tvMvcPromoTotalQuota"
+        app:layout_constraintBottom_toBottomOf="@id/tvMvcTotalSpending"
         app:typographyType="heading_3"
         tools:text="30" />
 
@@ -104,8 +104,7 @@
         android:layout_marginLeft="@dimen/spacing_lvl2"
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintBottom_toBottomOf="@+id/tvMvcPromoUsedQuota"
-        app:layout_constraintStart_toEndOf="@+id/tvMvcPromoUsedQuota"
-        app:layout_constraintTop_toTopOf="@+id/tvMvcPromoUsedQuota"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintVertical_bias="0.8"
         app:typographyType="body_3"
         tools:text="/120" />
