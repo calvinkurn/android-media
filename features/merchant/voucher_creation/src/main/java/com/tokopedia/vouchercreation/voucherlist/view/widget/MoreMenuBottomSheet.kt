@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.voucherlist.model.ui.MoreMenuUiModel
 import com.tokopedia.vouchercreation.voucherlist.model.ui.MoreMenuUiModel.*
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
@@ -50,21 +51,39 @@ class MoreMenuBottomSheet(
     }
 
     fun show(isActiveVoucher: Boolean, fm: FragmentManager) {
-        val getMenuItem = if (isActiveVoucher) {
-            if (voucher?.isOngoingPromo() == true) {
-                getOngoingVoucherMenu()
-            } else {
-                getPendingVoucherMenu()
-            }
-        } else {
-            getVoucherHistoryMoreMenu()
+        voucher?.type?.let { type ->
+            val getMenuItem =
+                    when(type) {
+                        VoucherTypeConst.FREE_ONGKIR -> {
+                            if (isActiveVoucher) {
+                                if (voucher?.isOngoingPromo() == true) {
+                                    getFreeShippingOngoingMenu()
+                                } else {
+                                    getFreeShippingUpcomingMenu()
+                                }
+                            } else {
+                                getFreeShippingHistoryMenu()
+                            }
+                        }
+                        else -> {
+                            if (isActiveVoucher) {
+                                if (voucher?.isOngoingPromo() == true) {
+                                    getOngoingVoucherMenu()
+                                } else {
+                                    getPendingVoucherMenu()
+                                }
+                            } else {
+                                getVoucherHistoryMoreMenu()
+                            }
+                        }
+                    }
+
+            menuAdapter?.clearAllElements()
+            menuAdapter?.addElement(getMenuItem)
+
+            setTitle(voucher?.name.orEmpty())
+            show(fm, TAG)
         }
-
-        menuAdapter?.clearAllElements()
-        menuAdapter?.addElement(getMenuItem)
-
-        setTitle(voucher?.name.orEmpty())
-        show(fm, TAG)
     }
 
     private fun getItemDecoration() = object : RecyclerView.ItemDecoration() {
@@ -110,4 +129,27 @@ class MoreMenuBottomSheet(
         menuItems.add(StopVoucher(parent.context.getString(R.string.mvc_stop), R.drawable.ic_mvc_cancel))
         return menuItems
     }
+
+    private fun getFreeShippingHistoryMenu(): List<MoreMenuUiModel> =
+            listOf(
+                    InformationTicker,
+                    ViewDetail(parent.context.getString(R.string.mvc_view_detail), R.drawable.ic_mvc_detail)
+            )
+
+    private fun getFreeShippingUpcomingMenu(): List<MoreMenuUiModel> =
+            listOf(
+                    InformationTicker,
+                    ViewDetail(parent.context.getString(R.string.mvc_view_detail), R.drawable.ic_mvc_detail),
+                    DownloadVoucher(parent.context.getString(R.string.mvc_download), R.drawable.ic_mvc_download),
+                    CancelVoucher(parent.context.getString(R.string.mvc_cancel), R.drawable.ic_mvc_cancel)
+            )
+
+    private fun getFreeShippingOngoingMenu(): List<MoreMenuUiModel> =
+            listOf(
+                    InformationTicker,
+                    ViewDetail(parent.context.getString(R.string.mvc_view_detail), R.drawable.ic_mvc_detail),
+                    ShareVoucher(parent.context.getString(R.string.mvc_share), R.drawable.ic_mvc_share),
+                    DownloadVoucher(parent.context.getString(R.string.mvc_download), R.drawable.ic_mvc_download),
+                    StopVoucher(parent.context.getString(R.string.mvc_stop), R.drawable.ic_mvc_cancel)
+            )
 }

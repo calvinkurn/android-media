@@ -67,4 +67,6 @@ sealed class MoreMenuUiModel(
     ) : MoreMenuUiModel(title, icon)
 
     object ItemDivider : MoreMenuUiModel()
+
+    object InformationTicker : MoreMenuUiModel()
 }
