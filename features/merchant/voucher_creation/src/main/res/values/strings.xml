@@ -28,12 +28,13 @@
     <string name="mvc_create_step_desc_promo_type">Jenis dan budget promosi</string>
     <string name="mvc_create_step_desc_voucher_period">Periode voucher</string>
     <string name="mvc_create_step_desc_voucher_review">Review voucher</string>
+    <string name="mvc_create_step_desc_cashback">Cashback</string>
 
     <!--Prompt back-->
     <string name="mvc_create_prompt_back_title">Yakin mau batalkan tambah voucher?</string>
-    <string name="mvc_create_prompt_back_desc">Voucher toko dapat bantu meningkatkan performa kamu, loh.</string>
-    <string name="mvc_review_change_confirmation_title">Kamu ingin mengubah detail voucher?</string>
-    <string name="mvc_review_change_confirmation_detail">Kamu dapat langsung mengubah detail voucher  dari halaman ini. Periksa kembali sebelum menambahkan voucher.</string>
+    <string name="mvc_create_prompt_back_desc">Voucher toko cashback dapat bantu meningkatkan performa kamu, loh.</string>
+    <string name="mvc_review_change_confirmation_title">Kamu ingin mengubah detail voucher toko cashback?</string>
+    <string name="mvc_review_change_confirmation_detail">Kamu dapat langsung mengubah detail voucher dari halaman ini. Periksa kembali sebelum menambahkan voucher.</string>
     <string name="mvc_review_back_redirect">Untuk batalkan pembuatan voucher klik di sini</string>
     <string name="mvc_review_back_redirect_clickable">di sini</string>
 
@@ -84,6 +85,8 @@
     <string name="mvc_create_tips_desc_max_estimation_1">Biaya promosi akan terhitung setelah pembeli menggunakan voucher toko dalam pembelian.</string>
     <string name="mvc_create_tips_desc_max_estimation_2">Pengeluaran akan otomatis dipotong dari hasil penjualanmu.</string>
     <string name="mvc_create_tips_desc_max_estimation_3">Kamu tidak perlu bayar di muka.</string>
+    <string name="mvc_tips_title_cashback_benefit">KEGUNAAN VOUCHER TOKO CASHBACK</string>
+    <string name="mvc_tips_desc_cashback">Gunakan Voucher cashback agar tokomu  mendapatkan <b>lebih banyak pelanggan</b>, namun tetap ingin mempertahankan citra brand toko dan harga barang.</string>
 
     <!--Step 2-->
     <string name="mvc_create_tips_calculation">Cara perhitungan estimasi pengeluaran</string>
