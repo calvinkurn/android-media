@@ -40,9 +40,9 @@ object TrackingUtil {
 
     fun getTickerTypeInfoString(tickerType:Int) : String {
         return when(tickerType){
-            Ticker.TYPE_INFORMATION -> info
-            Ticker.TYPE_WARNING -> warning
-            else -> other
+            Ticker.TYPE_INFORMATION -> "info"
+            Ticker.TYPE_WARNING -> "warning"
+            else -> "other"
         }
     }
 
