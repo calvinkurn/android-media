@@ -123,4 +123,14 @@ object PlayBroadcastMocker {
         )
     }
 
+    fun getMockMetric(): PlayMetricUiModel {
+        val firstSentence = "${Random.nextInt(1, 10)} Penonton"
+        val secondSentence = listOf("Bergabung", "Mengunjungi tokomu", "Melihat produkmu").random()
+        val fullSentence = "$firstSentence $secondSentence"
+        return PlayMetricUiModel(
+                firstSentence = firstSentence,
+                secondSentence = secondSentence,
+                fullSentence = fullSentence
+        )
+    }
 }

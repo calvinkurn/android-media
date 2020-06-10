@@ -11,13 +11,13 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
+import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
 import com.tokopedia.play.broadcaster.util.PlayShareWrapper
+import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.ChatListPartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -42,6 +42,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private lateinit var tvTotalView: Typography
     private lateinit var tvTotalLike: Typography
     private lateinit var ivShareLink: AppCompatImageView
+    private lateinit var pmvMetrics: PlayMetricsView
 
     private lateinit var chatListView: ChatListPartialView
 
@@ -71,6 +72,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeTotalViews()
         observeTotalLikes()
         observeChatList()
+        observeMetrics()
     }
 
     private fun initView(view: View) {
@@ -79,6 +81,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         tvTotalView = view.findViewById(R.id.tv_total_views)
         tvTotalLike = view.findViewById(R.id.tv_total_likes)
         ivShareLink = view.findViewById(R.id.iv_share_link)
+        pmvMetrics = view.findViewById(R.id.pmv_metrics)
 
         chatListView = ChatListPartialView(view as ViewGroup)
     }
@@ -125,6 +128,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun setNewChat(chat: PlayChatUiModel) {
         chatListView.showNewChat(chat)
+    }
+
+    private fun setNewMetric(metric: PlayMetricUiModel) {
+        pmvMetrics.show(metric)
     }
 
     private fun showDialogWhenActionClose() {
@@ -230,6 +237,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         })
 
         parentViewModel.observableNewChat.observe(viewLifecycleOwner, EventObserver(::setNewChat))
+    }
+
+    private fun observeMetrics() {
+        parentViewModel.observableNewMetric.observe(viewLifecycleOwner, EventObserver(::setNewMetric))
     }
     //endregion
 
