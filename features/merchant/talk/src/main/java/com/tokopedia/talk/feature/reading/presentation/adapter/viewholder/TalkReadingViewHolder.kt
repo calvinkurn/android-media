@@ -20,8 +20,7 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_talk_reading.view.*
 
-class
-TalkReadingViewHolder(view: View, private val threadListener: ThreadListener) : AbstractViewHolder<TalkReadingUiModel>(view) {
+class TalkReadingViewHolder(view: View, private val threadListener: ThreadListener) : AbstractViewHolder<TalkReadingUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_talk_reading
