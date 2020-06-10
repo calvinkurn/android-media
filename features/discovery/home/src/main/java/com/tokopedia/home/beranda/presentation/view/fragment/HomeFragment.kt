@@ -193,6 +193,7 @@ open class HomeFragment : BaseDaggerFragment(),
         private const val SEE_ALL_CARD = "android_mainapp_home_see_all_card_config"
         private const val REQUEST_CODE_PLAY_ROOM = 256
         private const val PERFORMANCE_PAGE_NAME_HOME = "home"
+        private var lock = Object()
         var HIDE_TICKER = false
         private var HIDE_GEO = false
         private const val SOURCE_ACCOUNT = "account"
@@ -275,12 +276,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        val homeInitWeave = object:WeaveInterface{
-            override fun execute(): Any {
-                return initHomePageFlows()
-            }
-        }
-        Weaver.executeWeaveCoRoutineWithFirebase(homeInitWeave, RemoteConfigKey.ENABLE_ASYNC_HOME_VIEW_MODEL_CREATION, context.applicationContext)
+        initHomePageFlows()
         mainParentStatusBarListener = context as MainParentStatusBarListener
         homePerformanceMonitoringListener = castContextToHomePerformanceMonitoring(context)
         requestStatusBarDark()
@@ -369,7 +365,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     fun initInjectorHome() {
-        synchronized(this@HomeFragment) {
+        synchronized(lock) {
             if (activity != null) {
                 if (component == null) {
                     component = initBuilderComponent().build()
