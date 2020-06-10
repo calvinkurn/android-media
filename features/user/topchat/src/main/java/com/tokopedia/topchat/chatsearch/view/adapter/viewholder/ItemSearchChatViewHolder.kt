@@ -17,6 +17,11 @@ class ItemSearchChatViewHolder(
         private val listener: Listener
 ) : AbstractViewHolder<SearchResult>(itemView) {
 
+    private var counter: Typography? = itemView?.findViewById(R.id.unread_counter)
+    private var username: Typography? = itemView?.findViewById(R.id.user_name)
+    private var message: Typography? = itemView?.findViewById(R.id.message)
+    private var time: Typography? = itemView?.findViewById(R.id.time)
+
     interface Listener {
         fun finishSearchActivity()
     }
@@ -32,7 +37,7 @@ class ItemSearchChatViewHolder(
     }
 
     private fun hideUnusedElement() {
-        itemView.unread_counter?.hide()
+        counter?.hide()
     }
 
     private fun bindUserImageProfile(element: SearchResult) {
@@ -40,16 +45,20 @@ class ItemSearchChatViewHolder(
     }
 
     private fun bindUserName(element: SearchResult) {
-        itemView.user_name?.text = MethodChecker.fromHtml(element.userName)
-        itemView.user_name?.setWeight(Typography.REGULAR)
+        username?.text = MethodChecker.fromHtml(element.userName)
+        username?.setWeight(Typography.REGULAR)
     }
 
     private fun bindLastMessage(element: SearchResult) {
-        itemView.message?.text = element.lastMessage
+        if (element.lastMessage.isEmpty()) {
+            message?.hide()
+        } else {
+            message?.text = element.lastMessage
+        }
     }
 
     private fun bindTimeStamp(element: SearchResult) {
-        itemView.time?.hide()
+        time?.hide()
     }
 
     private fun bindClick(element: SearchResult) {
