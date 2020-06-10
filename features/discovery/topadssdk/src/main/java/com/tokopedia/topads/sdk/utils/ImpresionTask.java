@@ -41,13 +41,13 @@ public class ImpresionTask extends AsyncTask<String, Void, String> {
     protected String doInBackground(String... params) {
         String url = params[0];
         if(url!=null) {
-            try {
-                taskAlert.track(url);
-                HttpRequest request = new HttpRequest.HttpRequestBuilder()
+            taskAlert.track(url);
+            HttpRequest request = new HttpRequest.HttpRequestBuilder()
                     .setBaseUrl(url)
                     .addHeader(KEY_SESSION_ID, (userSession != null) ? userSession.getDeviceId() :"")
                     .setMethod(HttpMethod.GET)
                     .build();
+            try {
                 return RawHttpRequestExecutor.newInstance(request).executeAsGetRequest();
             } catch (IOException | RuntimeException e) {
                 e.printStackTrace();
