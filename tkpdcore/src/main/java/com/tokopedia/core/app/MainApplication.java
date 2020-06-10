@@ -177,7 +177,7 @@ public abstract class MainApplication extends MainRouterApplication{
         this.appComponent = appComponent;
     }
 
-    //this method needs to be called from here in case of migration get it tested from CM te
+    //this method needs to be called from here in case of migration get it tested from CM team
     @NotNull
     private Boolean initBranch(){
         LinkerManager.initLinkerManager(getApplicationContext());
