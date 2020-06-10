@@ -16,6 +16,7 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayCoverProductViewHolder
 import com.tokopedia.play.broadcaster.view.activity.PlayCoverCameraActivity
 import com.tokopedia.play.broadcaster.view.adapter.PlayCoverProductAdapter
+import com.tokopedia.play.broadcaster.view.fragment.PlayCoverCameraFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.bottom_sheet_play_choose_cover.*
@@ -49,7 +50,7 @@ class PlayBroadcastChooseCoverBottomSheet : BottomSheetUnify() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-            val imageUri = data?.getParcelableExtra<Uri>(PlayCoverCameraActivity.EXTRA_IMAGE_URI)
+            val imageUri = data?.getParcelableExtra<Uri>(PlayCoverCameraFragment.EXTRA_IMAGE_URI)
             listener?.onGetCoverFromCamera(imageUri)
             dismiss()
         }
@@ -133,8 +134,7 @@ class PlayBroadcastChooseCoverBottomSheet : BottomSheetUnify() {
                     permission) == PackageManager.PERMISSION_GRANTED
 
     private fun requestPermissions(permissionsArray: Array<String>) {
-        requestPermissions(permissionsArray,
-                PERMISSION_CODE)
+        requestPermissions(permissionsArray, PERMISSION_CODE)
     }
 
     private fun takeCoverFromCamera() {

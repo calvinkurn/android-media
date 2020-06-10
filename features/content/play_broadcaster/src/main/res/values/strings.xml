@@ -29,6 +29,7 @@
     <string name="play_next">Lanjutkan</string>
     <string name="play_ok">Oke</string>
     <string name="play_cancel">Cancel</string>
+    <string name="play_change">Ganti</string>
 
     <string name="play_selected_products">Produk Dipilih (%d)</string>
 
@@ -55,7 +56,7 @@
     <string name="play_prepare_cover_choose_from_gallery">Pilih dari galeri foto</string>
     <string name="play_prepare_cover_title_add_cover_label">Tambah Cover</string>
     <string name="play_prepare_cover_title_change_cover_label">Ganti Cover</string>
-    <string name="play_prepare_cover_gallery_error_pixel_label">Oops, file foto minimal harus %dx%d piksel</string>
+    <string name="play_prepare_cover_gallery_error_pixel_label">Oops, file foto minimal harus %1$dx%2$d piksel</string>
     <string name="play_prepare_cover_gallery_error_size_label">Oops, file foto maksimal harus %d MB</string>
     <string name="play_prepare_cover_gallery_error_not_found_label">Oops, file foto tidak ditemukan</string>
 
@@ -66,8 +67,6 @@
     <string name="play_camera_timer_10_label">10s</string>
     <string name="play_camera_get_ready_label">Siap-siap, ya!</string>
 
-    <string name="play_prepare_broadcast_label_next">Lanjutkan</string>
-    <string name="play_prepare_broadcast_label_change">Ganti</string>
     <string name="play_prepare_broadcast_label_save">Simpan</string>
 
     <string name="play_prepare_broadcast_dialog_end_title">Eh, kamu mau ke mana?</string>

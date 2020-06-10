@@ -1,11 +1,15 @@
 package com.tokopedia.play.broadcaster.view.activity
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraUtils
 import com.otaliastudios.cameraview.PictureResult
@@ -30,8 +34,12 @@ class PlayCoverCameraActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_cover_camera)
-        cvPlayCameraView.setLifecycleOwner(this)
-        initView()
+        if (isCameraPermissionGranted()) {
+            cvPlayCameraView.setLifecycleOwner(this)
+            initView()
+        } else {
+            requestCameraPermission()
+        }
     }
 
     private fun initView() {
@@ -179,9 +187,20 @@ class PlayCoverCameraActivity : AppCompatActivity() {
         containerPlayCameraTimer.visibility = View.GONE
     }
 
+    private fun requestCameraPermission() {
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA),
+                PERMISSION_CODE)
+    }
+
+    private fun isCameraPermissionGranted() =
+            ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+
     companion object {
         const val EXTRA_IMAGE_URI = "EXTRA_IMAGE_URI"
         private const val SECONDS_IN_MILIS: Long = 1000
+
+        private const val PERMISSION_CODE = 1010
     }
 
 }

@@ -55,10 +55,10 @@
             app:srcCompat="@drawable/ic_play_action_camera_white" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvPlayChangeCoverLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:id="@+id/tvPlayChangeCoverLabel"
             android:text="@string/play_prepare_cover_title_add_cover_label"
             android:textColor="@color/play_white_96"
             app:typographyType="body_1"
@@ -123,7 +123,7 @@
             android:layout_marginBottom="@dimen/spacing_lvl3"
             android:layout_weight="1"
             android:enabled="false"
-            android:text="@string/play_prepare_broadcast_label_next" />
+            android:text="@string/play_next" />
 
     </LinearLayout>
 

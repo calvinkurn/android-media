@@ -65,7 +65,7 @@
             android:layout_marginRight="@dimen/spacing_lvl3"
             android:layout_marginBottom="@dimen/spacing_lvl3"
             android:layout_weight="1"
-            android:text="@string/play_prepare_broadcast_label_change"
+            android:text="@string/play_change"
             app:unifyButtonType="alternate"
             app:unifyButtonVariant="ghost" />
 
@@ -76,7 +76,7 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginBottom="@dimen/spacing_lvl3"
             android:layout_weight="1"
-            android:text="@string/play_prepare_broadcast_label_next" />
+            android:text="@string/play_next" />
 
     </LinearLayout>
 

@@ -40,8 +40,7 @@ object PlayBroadcasterUiMapper {
                 name = it.name,
                 imageUrl = it.primaryImage.resize300,
                 originalImageUrl = it.primaryImage.original,
-//                stock = it.stock,
-                stock = 2, // TODO("for testing only")
+                stock = it.stock,
                 isSelectedHandler = isSelectedHandler,
                 isSelectable = isSelectableHandler
         )
