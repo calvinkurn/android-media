@@ -334,10 +334,8 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         // track switch status on click
         productStatusSwitch?.setOnClickListener {
             val isChecked = productStatusSwitch?.isChecked
-            if (isChecked == true) {
-                if (viewModel.isEditing.value == true) {
-                    ProductEditStepperTracking.trackChangeProductStatus(shopId)
-                }
+            if (isChecked == true && viewModel.isEditing.value == true) {
+                ProductEditStepperTracking.trackChangeProductStatus(shopId)
             }
         }
 
