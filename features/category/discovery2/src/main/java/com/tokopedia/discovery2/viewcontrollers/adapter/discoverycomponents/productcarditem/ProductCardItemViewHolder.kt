@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.view.View
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
@@ -21,7 +20,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.Toaster
 
@@ -29,28 +27,27 @@ import com.tokopedia.unifycomponents.Toaster
 class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
     private var productImage: ImageUnify = itemView.findViewById(R.id.imageProduct)
-    private var topadsImage: ImageView = itemView.findViewById(R.id.imageTopAds)
+    private var topadsTextView: TextView = itemView.findViewById(R.id.textViewTopAds)
     private var productName: TextView = itemView.findViewById(R.id.textViewProductName)
     private var labelDiscount: TextView = itemView.findViewById(R.id.labelDiscount)
     private var textViewSlashedPrice: TextView = itemView.findViewById(R.id.textViewSlashedPrice)
     private var textViewPrice: TextView = itemView.findViewById(R.id.textViewPrice)
-    private var textViewShopName: TextView = itemView.findViewById(R.id.textViewShopName)
-    private var textViewReviewCount: TextView = itemView.findViewById(R.id.textViewReviewCount)
     private var textViewShopLocation: TextView = itemView.findViewById(R.id.textViewShopLocation)
-    private var labelCashbackPromo: Label = itemView.findViewById(R.id.labelCashBack)
-    private var shopImage: ImageView = itemView.findViewById(R.id.imageShop)
+
+    //    private var labelCashbackPromo: Label = itemView.findViewById(R.id.labelCashBack)
     private var shopBadge: ImageView = itemView.findViewById(R.id.imageViewShopBadge)
     private var imageFreeOngkirPromo: ImageView = itemView.findViewById(R.id.imageFreeOngkirPromo)
     private var productCardView: CardView = itemView.findViewById(R.id.cardViewProductCard)
     private var stockPercentageProgress: ProgressBarUnify = itemView.findViewById(R.id.stockPercentageProgress)
-    private var linearLayoutImageRating: LinearLayout = itemView.findViewById(R.id.linearLayoutImageRating)
-    private var shopUI: LinearLayout = itemView.findViewById(R.id.shopUI)
-
-    private var pdpViewImage: ImageView = itemView.findViewById(R.id.imageViewProductView)
+    private var pdpViewImage: ImageView = itemView.findViewById(R.id.imageViewProductViewCount)
     private var pdpViewCount: TextView = itemView.findViewById(R.id.textViewProductViewCount)
     private var stockTitle: TextView = itemView.findViewById(R.id.stockText)
     private var interestedView: TextView = itemView.findViewById(R.id.textViewProductInterestedView)
     private var notifyMeView: TextView = itemView.findViewById(R.id.textViewNotifyMe)
+    private var imageViewRating: ImageView = itemView.findViewById(R.id.imageViewRating)
+    private var textViewRatingCount: TextView = itemView.findViewById(R.id.textViewRatingCount)
+    private var textViewReviewCount: TextView = itemView.findViewById(R.id.textViewReviewCount)
+    private var stokHabisLabel: TextView = itemView.findViewById(R.id.labelStock)
 
     private lateinit var productCardItemViewModel: ProductCardItemViewModel
     private var productCardName = ""
@@ -125,10 +122,8 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             setStockProgress(dataItem)
         }
         setLabelDiscount(dataItem.discountPercentage.toString())
-        textViewShopName.setTextAndCheckShow(dataItem.shopName)
         setRating(dataItem)
-        setCashbackLabel(dataItem.cashback)
-        setShopIcon(dataItem.shopLogo)
+//        setCashbackLabel(dataItem.cashback)
         setProductImage(dataItem.imageUrlMobile)
         setTopads(dataItem.isTopads)
         showShopUI(dataItem)
@@ -136,20 +131,36 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         setPDPView(dataItem)
         showInterestedView(dataItem)
         showNotifyMe(dataItem)
+        showStokHabis(dataItem.stock)
+    }
+
+    private fun showStokHabis(productStok: String?) {
+        if (productStok.toIntOrZero() > 0) {
+            stokHabisLabel.hide()
+        } else {
+            stokHabisLabel.hide()
+        }
     }
 
     private fun showShopUI(dataItem: DataItem) {
-        if (!dataItem.shopLocation.isNullOrEmpty()) {
-            shopUI.show()
-            shopBadge.show()
-            textViewShopLocation.setTextAndCheckShow(dataItem.shopLocation)
-            when (productCardItemViewModel.chooseShopBadge()) {
-                OFFICIAL_STORE -> shopBadge.setImageResource(R.drawable.discovery_official_store_icon)
-                GOLD_MERCHANT -> shopBadge.setImageResource(R.drawable.discovery_gold_merchant_icon)
-                else -> shopBadge.hide()
+
+        when (productCardItemViewModel.chooseShopBadge()) {
+            OFFICIAL_STORE -> {
+                shopBadge.show()
+                shopBadge.setImageResource(R.drawable.discovery_official_store_icon)
             }
+            GOLD_MERCHANT -> {
+                shopBadge.show()
+                shopBadge.setImageResource(R.drawable.discovery_gold_merchant_icon)
+            }
+            else -> shopBadge.hide()
+        }
+        if (!dataItem.shopLocation.isNullOrEmpty()) {
+            textViewShopLocation.setTextAndCheckShow(dataItem.shopLocation)
+        } else if (!dataItem.shopName.isNullOrEmpty()) {
+            textViewShopLocation.setTextAndCheckShow(dataItem.shopName)
         } else {
-            shopUI.hide()
+            textViewShopLocation.hide()
         }
     }
 
@@ -235,9 +246,9 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     }
 
     private fun setTopads(topads: Boolean?) {
-        topadsImage.hide()
+        topadsTextView.hide()
         if (topads!!) {
-            topadsImage.show()
+            topadsTextView.show()
         }
     }
 
@@ -245,33 +256,49 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         productImage.loadImage(imageUrlMobile ?: "")
     }
 
-    private fun setShopIcon(shopLogo: String?) {
-        if (!shopLogo.isNullOrEmpty()) {
-            ImageHandler.loadImageCircle2(itemView.context, shopImage, shopLogo)
-        }
+    private fun setLabelDiscount(text: String) {
+                    labelDiscount.hide()
+
+
+//        if (text.isEmpty() || text == "0") {
+//            labelDiscount.hide()
+//        } else {
+//            labelDiscount.show()
+//            labelDiscount.text = String.format("%s", "$text%")
+//        }
     }
 
-    private fun setCashbackLabel(cashback: String?) {
-        labelCashbackPromo.hide()
-        if (!cashback.isNullOrEmpty()) {
-            labelCashbackPromo.let {
-                it.show()
-                it.text = String.format("%s", "Cashback $cashback%")
-                it.setLabelType(Label.GENERAL_LIGHT_GREEN)
-            }
-        }
+    private fun setSlashedPrice(discountedPrice: String?) {
+        textViewSlashedPrice.show()
+
+//        textViewSlashedPrice.let {
+//            it.setTextAndCheckShow(discountedPrice)
+//            it.paintFlags = it.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+//        }
     }
+
+
+
+
+    //    private fun setCashbackLabel(cashback: String?) {
+//        labelCashbackPromo.hide()
+//        if (!cashback.isNullOrEmpty()) {
+//            labelCashbackPromo.let {
+//                it.show()
+//                it.text = String.format("%s", "Cashback $cashback%")
+//                it.setLabelType(Label.GENERAL_LIGHT_GREEN)
+//            }
+//        }
+//    }
 
     private fun setRating(dataItem: DataItem) {
-        val rating = dataItem.rating.toIntOrZero()
-        if (rating in 1..5) {
-            for (r in 0 until rating) {
-                linearLayoutImageRating.show()
-                (linearLayoutImageRating.getChildAt(r) as ImageView).setImageResource(R.drawable.product_card_ic_rating_active)
-            }
+        if (dataItem.rating.toIntOrZero() > 0) {
+            imageViewRating.show()
+            textViewRatingCount.setTextAndCheckShow(dataItem.rating)
             setTextViewReviewCount(dataItem.countReview.toIntOrZero())
         } else {
-            linearLayoutImageRating.hide()
+            imageViewRating.hide()
+            textViewRatingCount.hide()
         }
     }
 
@@ -283,23 +310,6 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             textViewReviewCount.hide()
         }
 
-    }
-
-    private fun setSlashedPrice(discountedPrice: String?) {
-        textViewSlashedPrice.let {
-            it.setTextAndCheckShow(discountedPrice)
-            it.paintFlags = it.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-        }
-    }
-
-
-    private fun setLabelDiscount(text: String) {
-        if (text.isEmpty() || text == "0") {
-            labelDiscount.hide()
-        } else {
-            labelDiscount.show()
-            labelDiscount.text = String.format("%s", "$text%")
-        }
     }
 
     private fun handleUIClick(view: View) {
