@@ -29,7 +29,7 @@ import com.tokopedia.gamification.di.ActivityContextModule
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.giftbox.data.di.GAMI_GIFT_DAILY_TRACE_PAGE
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
-import com.tokopedia.gamification.giftbox.data.di.component.DaggerPltComponent
+import com.tokopedia.gamification.giftbox.data.di.modules.PltModule
 import com.tokopedia.gamification.giftbox.data.entities.*
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.ACTIVE
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.DEFAULT
@@ -70,7 +70,6 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     var isReminderSet = false
     var reminder: Reminder? = null
     var gameRemindMeCheck: GameRemindMeCheck? = null
-    @Inject
     lateinit var pltPerf: PageLoadTimePerformanceInterface
 
     @TokenUserState
@@ -99,9 +98,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     }
 
     private fun setupPlt() {
-        val pltComponent = DaggerPltComponent.builder()
-                .build()
-        pltComponent.inject(this)
+        pltPerf = PltModule().providePerfInterface()
         pltPerf.startMonitoring(GAMI_GIFT_DAILY_TRACE_PAGE)
         pltPerf.startPreparePagePerformanceMonitoring()
     }
@@ -780,6 +777,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     }
 
 }
+
 @Retention(AnnotationRetention.SOURCE)
 @StringDef(ACTIVE, EMPTY, DEFAULT)
 annotation class TokenUserState {

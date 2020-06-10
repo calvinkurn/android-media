@@ -5,13 +5,9 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.gamification.giftbox.data.di.GAMI_GIFT_DAILY_PLT_NETWORK_METRICS
 import com.tokopedia.gamification.giftbox.data.di.GAMI_GIFT_DAILY_PLT_PREPARE_METRICS
 import com.tokopedia.gamification.giftbox.data.di.GAMI_GIFT_DAILY_PLT_RENDER_METRICS
-import dagger.Module
-import dagger.Provides
 
-@Module
 class PltModule {
 
-    @Provides
     fun providePerfInterface(): PageLoadTimePerformanceInterface {
         return PageLoadTimePerformanceCallback(
                 GAMI_GIFT_DAILY_PLT_PREPARE_METRICS,
