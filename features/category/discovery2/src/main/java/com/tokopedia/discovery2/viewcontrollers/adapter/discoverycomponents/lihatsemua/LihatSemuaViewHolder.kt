@@ -14,14 +14,9 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
 
     private lateinit var lihatSemuaViewModel: LihatSemuaViewModel
-    private var lihatTextView: TextView
-    private var lihatTitleTextView: TextView
+    private var lihatTextView: TextView = itemView.findViewById(R.id.lihat_semua_tv)
+    private var lihatTitleTextView: TextView = itemView.findViewById(R.id.title_tv)
 
-
-    init {
-        lihatTextView = itemView.findViewById(R.id.lihat_semua_tv)
-        lihatTitleTextView = itemView.findViewById(R.id.title_tv)
-    }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         lihatSemuaViewModel = discoveryBaseViewModel as LihatSemuaViewModel
@@ -39,7 +34,7 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
 
     private fun onClick(data: DataItem) {
         (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackLihatSemuaClick(data.name)
-        RouteManager.route(fragment.activity?.applicationContext, data.btnApplink)
+        lihatSemuaViewModel.navigate(itemView.context, data.btnApplink)
     }
 
 }
