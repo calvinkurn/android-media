@@ -68,13 +68,14 @@ object Constants {
     const val ACTION_DELETE = "delete"
     const val PUBLISHED = "published"
     const val POSTIVE_PHRASE = "positive_phrase"
-    const val POSITIVE_SPECIFIC = "positive_specific"
+    const val POSITIVE_SPECIFIC = "positive_exact"
     const val NEGATIVE_PHRASE = "negative_phrase"
-    const val NEGATIVE_SPECIFIC = "negative_specific"
+    const val NEGATIVE_SPECIFIC = "negative_exact"
     const val ACTIVE = "active"
     const val KEYWORD_SOURCE ="es"
     const val INPUT = "input"
     const val DEBOUNCE_CONST:Long = 200
+    const val MULTIPLY_CONST = 50
 
     var locale = Locale("in", "ID")
 
