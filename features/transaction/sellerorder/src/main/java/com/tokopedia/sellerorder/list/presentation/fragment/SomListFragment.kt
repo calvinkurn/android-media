@@ -581,6 +581,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         refreshHandler?.finishRefresh()
         empty_state_order_list?.visibility = View.GONE
         order_list_rv?.visibility = View.VISIBLE
+        quick_filter.visibility = View.VISIBLE
 
         if (!onLoadMore) {
             somListItemAdapter.addList(orderList.orders)
@@ -605,6 +606,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private fun renderFilterEmpty(title: String, desc: String) {
         refreshHandler?.finishRefresh()
         order_list_rv.visibility = View.GONE
+        quick_filter.visibility = View.GONE
         empty_state_order_list.visibility = View.VISIBLE
         title_empty?.text = title
         desc_empty?.text = desc
@@ -615,6 +617,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private fun renderErrorOrderList(title: String, desc: String) {
         refreshHandler?.finishRefresh()
         order_list_rv.visibility = View.GONE
+        quick_filter.visibility = View.GONE
         empty_state_order_list.visibility = View.VISIBLE
         title_empty?.text = title
         desc_empty?.text = desc
@@ -631,6 +634,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private fun renderEmptyOrderList() {
         refreshHandler?.finishRefresh()
         order_list_rv.visibility = View.GONE
+        quick_filter.visibility = View.GONE
         empty_state_order_list.visibility = View.VISIBLE
         title_empty?.text = getString(R.string.empty_peluang_title)
 
