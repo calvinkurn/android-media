@@ -104,6 +104,10 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         }
     }
 
+    fun selectProductItem(itemProduct: TelcoProduct) {
+        adapter.selectItemProduct(itemProduct)
+    }
+
     fun notifyProductItemChanges(productId: String) {
         if (::adapter.isInitialized) {
             adapter.resetProductListSelected(productId)

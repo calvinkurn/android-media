@@ -44,4 +44,14 @@ Bonus 1GB Kuota Midnight (00:01-6:59) + 1GB Kuota Midnight RAFI + 3GB Videomax" 
         app:typographyType="heading_5"
         tools:text="Rp 40.000" />
 
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/button_select_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pilih"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:unifyButtonVariant="filled"
+        app:unifyButtonSize="large"
+        app:unifyButtonType="main"/>
+
 </LinearLayout>

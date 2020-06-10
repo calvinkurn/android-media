@@ -1,6 +1,7 @@
 package com.tokopedia.topupbills.telco.view.di
 
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
+import com.tokopedia.topupbills.telco.view.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.view.fragment.*
 import dagger.Component
 
@@ -20,5 +21,7 @@ interface DigitalTopupComponent {
     fun inject(digitalTelcoPromoFragment: DigitalTelcoPromoFragment)
 
     fun inject(digitalTelcoRecommendationFragment: DigitalTelcoRecommendationFragment)
+
+    fun inject(baseTelcoActivity: BaseTelcoActivity)
 
 }

@@ -33,6 +33,24 @@ class DigitalProductAdapter(private val productList: List<TelcoProduct>, private
         }
     }
 
+    fun selectItemProduct(itemProduct: TelcoProduct) {
+        if (itemProduct.attributes.status != BaseTelcoProductViewHolder.PRODUCT_STATUS_OUT_OF_STOCK) {
+            var idxItem = 0
+
+            for (i in productList.indices) {
+                if (productList[i].attributes.selected) {
+                    productList[i].attributes.selected = false
+                    listener.notifyItemChanged(i)
+                }
+                if (productList[i].id == itemProduct.id) {
+                    idxItem = i
+                }
+            }
+            itemProduct.attributes.selected = true
+            listener.notifyItemChanged(idxItem)
+        }
+    }
+
     override fun onBindViewHolder(holder: BaseTelcoProductViewHolder, position: Int) {
         when (holder) {
             is TelcoProductGridViewHolder -> holder.bindView(productList, productList[position])
