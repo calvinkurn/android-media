@@ -15,7 +15,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class AccountHolderNameViewModel @Inject constructor(@ApplicationContext private val context: Context,
+class AccountHolderNameViewModel @Inject constructor(private val context: Context,
                                                      dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 

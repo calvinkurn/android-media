@@ -31,8 +31,8 @@ import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.variant.ProductDetailVariantResponse
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
-import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceRecommendationGqlResponse
-import com.tokopedia.purchase_platform.common.insurance.utils.INSURANCE_RECOMMENDATION_PARAM_GQL
+import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceRecommendationGqlResponse
+import com.tokopedia.purchase_platform.common.feature.insurance.INSURANCE_RECOMMENDATION_PARAM_GQL
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher

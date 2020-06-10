@@ -154,7 +154,7 @@ class QuickReplyComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class QuickReplyComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : QuickReplyComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
+    class QuickReplyComponentMock(container: ViewGroup, bus: EventBusFactory, scope: CoroutineScope) : QuickReplyComponent(container, bus, scope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): QuickReplyView {
             return mockk(relaxed = true)
         }
