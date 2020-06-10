@@ -62,6 +62,7 @@ import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.contract.PlayFragmentContract
+import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.layout.interaction.PlayInteractionLayoutManager
@@ -81,13 +82,8 @@ import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -157,6 +153,9 @@ class PlayUserInteractionFragment :
 
     private val orientationListener: PlayOrientationListener
         get() = requireParentFragment() as PlayOrientationListener
+
+    private val playNavigation: PlayNavigation
+        get() = requireActivity() as PlayNavigation
 
     private var systemUiVisibility: Int
         get() = requireActivity().window.decorView.systemUiVisibility
@@ -852,7 +851,7 @@ class PlayUserInteractionFragment :
     }
 
     private fun doLeaveRoom() {
-        activity?.onBackPressed()
+        playNavigation.onBackPressed(isSystemBack = false)
     }
 
     private fun showToast(text: String) {
