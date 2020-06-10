@@ -8,12 +8,9 @@ class SmartBillsAdapter(adapterFactory: SmartBillsAdapterFactory,
                         checkableListener: OnCheckableAdapterListener<RechargeBills>):
         BaseListCheckableAdapter<RechargeBills, SmartBillsAdapterFactory>(adapterFactory, checkableListener) {
 
-    fun renderEmptyState(title: String, description: String) {
+    fun renderEmptyState() {
         clearAllElements()
-        val emptyModel = EmptyModel()
-        emptyModel.title = title
-        emptyModel.description = description
-        addElement(emptyModel)
+        addElement(EmptyModel())
     }
 
     fun toggleAllItems(value: Boolean) {

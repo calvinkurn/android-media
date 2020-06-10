@@ -16,6 +16,9 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -151,9 +154,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                         // Show empty state
                         tv_smart_bills_title.hide()
                         smart_bills_checkout_view.setVisibilityLayout(false)
-                        adapter.renderEmptyState(
-                                getString(R.string.smart_bills_empty_state_title),
-                                getString(R.string.smart_bills_empty_state_description))
+                        adapter.renderEmptyState()
                     }
                 }
                 is Fail -> {
@@ -246,6 +247,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                     }
                 })
 
+                // Reset toggle all items checkbox
+                cb_smart_bills_select_all.isChecked = false
                 // Setup toggle all items listener
                 cb_smart_bills_select_all.setOnClickListener {
                     toggleAllItems(cb_smart_bills_select_all.isChecked)
