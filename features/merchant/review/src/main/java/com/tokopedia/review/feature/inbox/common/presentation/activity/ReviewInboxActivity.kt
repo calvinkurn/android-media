@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
+import com.tokopedia.review.feature.inbox.container.presentation.fragment.ReviewInboxContainerFragment
 import com.tokopedia.review.feature.inbox.pending.presentation.fragment.ReviewPendingFragment
 
 class ReviewInboxActivity : BaseSimpleActivity() {
@@ -14,7 +15,7 @@ class ReviewInboxActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment? {
-        return ReviewPendingFragment.createNewInstance()
+        return ReviewInboxContainerFragment.createNewInstance()
     }
 
     private fun setUpToolBar() {

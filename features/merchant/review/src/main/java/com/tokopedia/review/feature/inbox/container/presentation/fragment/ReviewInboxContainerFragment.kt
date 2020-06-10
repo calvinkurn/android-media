@@ -10,14 +10,23 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
+import com.tokopedia.review.feature.inbox.container.data.ReviewInboxTabs
 import com.tokopedia.review.feature.inbox.container.di.DaggerReviewInboxContainerComponent
 import com.tokopedia.review.feature.inbox.container.di.ReviewInboxContainerComponent
+import com.tokopedia.review.feature.inbox.container.presentation.adapter.ReviewInboxContainerAdapter
 import com.tokopedia.review.feature.inbox.container.presentation.viewmodel.ReviewInboxContainerViewModel
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_review_inbox_container.*
 import javax.inject.Inject
 
-class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewInboxContainerComponent>{
+class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewInboxContainerComponent> {
+
+    companion object {
+        fun createNewInstance() : ReviewInboxContainerFragment{
+            return ReviewInboxContainerFragment()
+        }
+    }
 
     @Inject
     lateinit var viewModel: ReviewInboxContainerViewModel
@@ -46,10 +55,8 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView()
         observeReviewTabs()
-//        viewModel.getReviewTabs()
-        addTabs()
+        viewModel.getTabCounter()
     }
 
     override fun onDestroy() {
@@ -57,25 +64,35 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
         removeObservers(viewModel.reviewTabs)
     }
 
-    private fun initView() {
-        reviewInboxTabs.getUnifyTabLayout().setupWithViewPager(reviewInboxViewPager)
+    private fun setupViewPager() {
+        reviewInboxViewPager.adapter = viewModel.reviewTabs.value?.let { ReviewInboxContainerAdapter(it,this) }
     }
 
     private fun observeReviewTabs() {
-        viewModel.reviewTabs.observe(this, Observer {
-            when(it) {
-                is Success -> {
-                    it.data.tabs.forEach {
-                        // do stuff
+        viewModel.reviewTabs.observe(this, Observer { tabs ->
+            tabs.forEach { tab ->
+                when(tab) {
+                    is ReviewInboxTabs.ReviewInboxPending -> {
+                        if(tab.counter.isNotBlank()) {
+                            reviewInboxTabs.addNewTab(getString(R.string.review_pending_tab_title, tab.counter))
+                        } else {
+                            reviewInboxTabs.addNewTab(getString(R.string.review_pending_tab_title_no_count))
+                        }
+                    }
+                    is ReviewInboxTabs.ReviewInboxHistory -> {
+                        if(tab.counter.isNotBlank()) {
+                            reviewInboxTabs.addNewTab(getString(R.string.review_history_tab_title, tab.counter))
+                        } else {
+                            reviewInboxTabs.addNewTab(getString(R.string.review_history_tab_title_no_count))
+                        }
+                    }
+                    is ReviewInboxTabs.ReviewInboxSeller -> {
+                        reviewInboxTabs.addNewTab(getString(R.string.review_seller_tab))
                     }
                 }
             }
+            setupViewPager()
         })
-    }
-
-    private fun addTabs() {
-        reviewInboxTabs.addNewTab(getString(R.string.review_pending_tab_title))
-        reviewInboxTabs.addNewTab(getString(R.string.review_history_tab_title))
     }
 
 }

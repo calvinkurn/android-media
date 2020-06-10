@@ -30,6 +30,7 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.viewPager2
 
     implementation rootProject.ext.networkDependencies.glide
 
