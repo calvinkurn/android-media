@@ -233,19 +233,6 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
             smartBillsAnalytics.userId = userSession.userId
 
             context?.let { context ->
-//                if (::sharedPrefs.isInitialized) {
-//                    // Navigate to onboarding if it's the first time
-//                    if (!sharedPrefs.getBoolean(SMART_BILLS_VISITED_ONBOARDING, false)) {
-//                        //TODO: Put onboarding tracking here
-//                        sharedPrefs.edit().putBoolean(SMART_BILLS_VISITED_ONBOARDING, true).apply()
-//
-//                        startActivityForResult(Intent(context,
-//                                SmartBillsOnboardingActivity::class.java),
-//                                REQUEST_CODE_SMART_BILLS_ONBOARDING
-//                        )
-//                    }
-//                }
-
                 // Setup ticker
                 ticker_smart_bills.setTextDescription(String.format(getString(R.string.smart_bills_ticker), LANGGANAN_URL))
                 ticker_smart_bills.setDescriptionClickEvent(object : TickerCallback {
@@ -310,15 +297,6 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                 viewModel.createStatementMonthsParams(1),
                 swipeToRefresh?.isRefreshing ?: false
         )
-//        val calendarInstance = Calendar.getInstance()
-//        viewModel.getStatementBills(
-//                GraphqlHelper.loadRawString(resources, R.raw.query_recharge_statement_bills),
-//                viewModel.createStatementBillsParams(
-//                        calendarInstance.get(Calendar.MONTH),
-//                        calendarInstance.get(Calendar.YEAR)
-//                ),
-//                swipeToRefresh?.isRefreshing ?: false
-//        )
     }
 
     override fun getRecyclerViewResourceId(): Int {
