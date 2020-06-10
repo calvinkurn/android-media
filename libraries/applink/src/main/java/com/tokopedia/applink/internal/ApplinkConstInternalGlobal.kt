@@ -377,6 +377,15 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val OQR_PIN_URL_ENTRY_PATTERN = "$INTERNAL_GLOBAL/ovoqrthanks/{transfer_id}/"
 
+    // InstantDebitBcaActivity
+    // tokopedia-android-internal://global/instantdebitbca?callbackUrl={callbackUrl}
+    @JvmField
+    val INSTANT_DEBIT_BCA_ENTRY_PATTERN = "$INTERNAL_GLOBAL/instantdebitbca"
+
+    // BcaEditLimitActivity
+    // tokopedia-android-internal://global/editbcaoneklik?callbackUrl={callbackUrl}&xcoid={xcoid}
+    @JvmField
+    val EDIT_BCA_ONE_KLICK_ENTRY_PATTERN = "$INTERNAL_GLOBAL/editbcaoneklik"
 
     @JvmField
     val PARAM_ACCOUNT_ID = "account_id"

@@ -182,7 +182,7 @@
 /features/home/account-home/                        	@tokopedia/minion-kevin
 /features/user/loginfingerprint/                        @tokopedia/minion-kevin
 
-/features/operational/contact_us        				@tokopedia/minion-darth
+/features/operational/contact_us        				@tokopedia/minion-skywalker
 
 /features/fintech/common_wallet         				@tokopedia/minion-solo
 /features/fintech/instant_loan          				@tokopedia/minion-solo
@@ -273,6 +273,9 @@
 /libraries/imagepreviewslider                           @tokopedia/core-team
 /libraries/blockcanary                                  @tokopedia/core-team
 /libraries/annotation_proc_central                      @tokopedia/core-team
+
+/dynamic-features/                                      @tokopedia/core-team
+/dynamic-features-sellerapp/                            @tokopedia/core-team
 
 /tkpddiscovery/                                        	@tokopedia/core-team
 /tkpdsession/                                       	@tokopedia/core-team

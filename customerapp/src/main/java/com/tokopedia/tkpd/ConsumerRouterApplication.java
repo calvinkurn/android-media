@@ -130,6 +130,7 @@ import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
+import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -232,11 +233,27 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initFirebase();
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
+        performLibraryInitialisation();
+        DeeplinkHandlerActivity.createApplinkDelegateInBackground();
+        initResourceDownloadManager();
+    }
+
+    private void performLibraryInitialisation(){
+        WeaveInterface initWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return initLibraries();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineNow(initWeave);
+    }
+
+    private boolean initLibraries(){
         initCMPushNotification();
         initIris();
         initTetraDebugger();
-        DeeplinkHandlerActivity.createApplinkDelegateInBackground();
-        initResourceDownloadManager();
+        return true;
     }
 
     private void initialiseHansel(){
@@ -265,7 +282,19 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private void initIris() {
         mIris = IrisAnalytics.Companion.getInstance(this);
+        WeaveInterface irisInitializeWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return executeIrisInitialize();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineNow(irisInitializeWeave);
+    }
+
+    private boolean executeIrisInitialize(){
         mIris.initialize();
+        return true;
     }
 
     private void initTetraDebugger() {
@@ -435,7 +464,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getOrderHistoryIntent(Context context, String orderId) {
-        return RouteManager.getIntent(context, ApplinkConst.ORDER_TRACKING, orderId);
+        return OrderHistoryActivity.createInstance(context, orderId, 1);
     }
 
     @Override
@@ -588,6 +617,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Fragment getReviewFragment(Activity activity, String shopId, String shopDomain) {
         return ReviewShopFragment.createInstance(shopId, shopDomain);
+    }
+
+    @Override
+    public Class getReviewFragmentClass() {
+        return ReviewShopFragment.class;
     }
 
     @Override
@@ -888,8 +922,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private void initCMPushNotification() {
-        CMPushNotificationManager.getInstance().init(this);
-        refreshFCMTokenFromBackgroundToCM(FCMCacheManager.getRegistrationId(this), false);
+        CMPushNotificationManager.getInstance().init(ConsumerRouterApplication.this);
+        refreshFCMTokenFromBackgroundToCM(FCMCacheManager.getRegistrationId(ConsumerRouterApplication.this), false);
     }
 
     @Override

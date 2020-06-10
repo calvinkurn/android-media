@@ -67,4 +67,34 @@ object DeeplinkMapperOrder {
         val param = mapOf(QUERY_TAB_ACTIVE to ALL_ORDER)
         return UriUtil.buildUriAppendParam(ApplinkConstInternalOrder.HISTORY, param)
     }
+
+    fun getRegisteredNavigationMainAppSellerWaitingPickup(): String {
+        val param = mapOf(QUERY_TAB_ACTIVE to "")
+        return UriUtil.buildUriAppendParam(ApplinkConstInternalOrder.WAITING_PICKUP, param)
+    }
+
+    fun getRegisteredNavigationMainAppSellerWaitingAwb(): String {
+        val param = mapOf(QUERY_TAB_ACTIVE to "")
+        return UriUtil.buildUriAppendParam(ApplinkConstInternalOrder.WAITING_AWB, param)
+    }
+
+    fun getRegisteredNavigationMainAppSellerAwbInvalid(): String {
+        val param = mapOf(QUERY_TAB_ACTIVE to "")
+        return UriUtil.buildUriAppendParam(ApplinkConstInternalOrder.AWB_INVALID, param)
+    }
+
+    fun getRegisteredNavigationMainAppSellerAwbChange(): String {
+        val param = mapOf(QUERY_TAB_ACTIVE to "")
+        return UriUtil.buildUriAppendParam(ApplinkConstInternalOrder.AWB_CHANGE, param)
+    }
+
+    fun getRegisteredNavigationMainAppSellerRetur(): String {
+        val param = mapOf(QUERY_TAB_ACTIVE to "")
+        return UriUtil.buildUriAppendParam(ApplinkConstInternalOrder.RETUR, param)
+    }
+
+    fun getRegisteredNavigationMainAppSellerComplaint(): String {
+        val param = mapOf(QUERY_TAB_ACTIVE to "")
+        return UriUtil.buildUriAppendParam(ApplinkConstInternalOrder.COMPLAINT, param)
+    }
 }
