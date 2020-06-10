@@ -105,7 +105,7 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback, SwipeRe
         recyclerView = view.findViewById(R.id.discovery_recyclerView)
         mSwipeRefreshLayout = view.findViewById(R.id.swiperefresh)
         mProgressBar = view.findViewById(R.id.progressBar)
-        mProgressBar.visibility = View.VISIBLE
+        mProgressBar.show()
         mSwipeRefreshLayout.setOnRefreshListener(this)
     }
 
@@ -137,7 +137,7 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback, SwipeRe
                     it.data?.let {
                         discoveryAdapter.addDataList(it)
                     }
-                    mProgressBar.visibility = View.GONE
+                    mProgressBar.hide()
                 }
             }
         })
@@ -164,9 +164,10 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback, SwipeRe
                 }
 
                 is Fail -> {
-                    typographyHeader.text = getString(R.string.discovery)
+                    typographyHeader.text = ""
                     ivSearch.hide()
                     ivShare.hide()
+                    mProgressBar.hide()
 
                     if (it.throwable is UnknownHostException
                             || it.throwable is SocketTimeoutException) {

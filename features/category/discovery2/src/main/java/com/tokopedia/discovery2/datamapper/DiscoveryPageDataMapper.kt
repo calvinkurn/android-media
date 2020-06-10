@@ -10,8 +10,7 @@ import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 val discoveryPageData: MutableMap<String, DiscoveryResponse> = HashMap()
 
 fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse): DiscoveryPageData {
-    discoveryResponse.pageInfo.name = discoveryResponse.title
-    val discoveryPageData = DiscoveryPageData(discoveryResponse.pageInfo, discoveryResponse.title)
+    val discoveryPageData = DiscoveryPageData(discoveryResponse.pageInfo)
     discoveryPageData.components = getDiscvoeryComponentList(discoveryResponse.pageInfo, discoveryResponse.components.filter {
         discoveryPageData.pageInfo.identifier?.let { identifier ->
             it.pageEndPoint = identifier
