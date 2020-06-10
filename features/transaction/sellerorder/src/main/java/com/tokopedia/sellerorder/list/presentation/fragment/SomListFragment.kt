@@ -581,7 +581,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         refreshHandler?.finishRefresh()
         empty_state_order_list?.visibility = View.GONE
         order_list_rv?.visibility = View.VISIBLE
-        quick_filter.visibility = View.VISIBLE
+        quick_filter?.visibility = View.VISIBLE
 
         if (!onLoadMore) {
             somListItemAdapter.addList(orderList.orders)
