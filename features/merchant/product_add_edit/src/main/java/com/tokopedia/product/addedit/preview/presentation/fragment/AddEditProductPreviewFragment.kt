@@ -114,7 +114,6 @@ import javax.inject.Inject
 
 class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHolder.OnPhotoChangeListener {
 
-    private var isProductStatusSwitchFirstTime = false
     private var countTouchPhoto = 0
     private var dataBackPressed: Int? = null
 
@@ -328,14 +327,18 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             }
         }
 
-        productStatusSwitch?.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isProductStatusSwitchFirstTime && isChecked) {
+        productStatusSwitch?.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.updateProductStatus(isChecked)
+        }
+
+        // track switch status on click
+        productStatusSwitch?.setOnClickListener {
+            val isChecked = productStatusSwitch?.isChecked
+            if (isChecked == true) {
                 if (viewModel.isEditing.value == true) {
                     ProductEditStepperTracking.trackChangeProductStatus(shopId)
                 }
             }
-            isProductStatusSwitchFirstTime = true
-            viewModel.updateProductStatus(isChecked)
         }
 
         doneButton?.setOnClickListener {
