@@ -10,18 +10,17 @@ import io.mockk.*
 import org.junit.Test
 import rx.Subscriber
 
-private const val topAdsResponseCodeFirstPage = "searchproduct/topads/response-code-top-ads-first-page.json"
-private const val topAdsResponseCodeLoadMore = "searchproduct/topads/response-code-top-ads-load-more.json"
+private const val topAdsResponseFirstPage = "searchproduct/topads/response-top-ads-first-page.json"
+private const val topAdsResponseLoadMore = "searchproduct/topads/response-top-ads-load-more.json"
 
 internal class SearchProductTopAdsPositionTest: ProductListPresenterTestFixtures() {
 
     private val capturedVisitableListFirstPage = slot<List<Visitable<*>>>()
     private val capturedVisitableListLoadMore = slot<List<Visitable<*>>>()
-    private var topAdsCount = 1
 
     @Test
     fun `Test TopAds position in first page is correct`() {
-        val searchProductModel = topAdsResponseCodeFirstPage.jsonToObject<SearchProductModel>()
+        val searchProductModel = topAdsResponseFirstPage.jsonToObject<SearchProductModel>()
         val searchParameter : Map<String, Any> = mutableMapOf<String, Any>().also {
             it[SearchApiConst.Q] = "samsung"
             it[SearchApiConst.START] = "0"
@@ -34,7 +33,10 @@ internal class SearchProductTopAdsPositionTest: ProductListPresenterTestFixtures
         `When Load Data`(searchParameter)
 
         `Then verify setProductList is called`()
-        `Then verify position is correct`()
+
+        val visitableList = mutableListOf<Visitable<*>>()
+        visitableList.addAll(capturedVisitableListFirstPage.captured)
+        `Then verify position is correct`(visitableList)
     }
 
     private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {
@@ -53,12 +55,14 @@ internal class SearchProductTopAdsPositionTest: ProductListPresenterTestFixtures
         }
     }
 
-    private fun `Then verify position is correct`() {
-        val visitableList = capturedVisitableListFirstPage.captured
+    private fun `Then verify position is correct`(list: MutableList<Visitable<*>>) {
+        var topAdsCount = 1
 
-        visitableList.forEach {
+        list.forEach {
             if (it is ProductItemViewModel && it.isTopAds) {
-                assert(topAdsCount == it.position)
+                assert(topAdsCount == it.position) {
+                    "Assertion failed, TopAds Position : ${it.position}, Actual Position : $topAdsCount"
+                }
                 topAdsCount++
             }
         }
@@ -66,8 +70,8 @@ internal class SearchProductTopAdsPositionTest: ProductListPresenterTestFixtures
 
     @Test
     fun `Test TopAds position in load more is correct`() {
-        val searchProductModelFirstPage = topAdsResponseCodeFirstPage.jsonToObject<SearchProductModel>()
-        val searchProductModelLoadMore = topAdsResponseCodeLoadMore.jsonToObject<SearchProductModel>()
+        val searchProductModelFirstPage = topAdsResponseFirstPage.jsonToObject<SearchProductModel>()
+        val searchProductModelLoadMore = topAdsResponseLoadMore.jsonToObject<SearchProductModel>()
         val searchParameter : Map<String, Any> = mutableMapOf<String, Any>().also {
             it[SearchApiConst.Q] = "samsung"
             it[SearchApiConst.START] = "0"
@@ -83,7 +87,12 @@ internal class SearchProductTopAdsPositionTest: ProductListPresenterTestFixtures
         `When Product List Presenter Load More Data`(loadMoreSearchParameter)
 
         `Then verify addProductList is called`()
-        `Then verify position is correct for loadMore`()
+
+
+        val visitableList = mutableListOf<Visitable<*>>()
+        visitableList.addAll(capturedVisitableListFirstPage.captured)
+        visitableList.addAll(capturedVisitableListLoadMore.captured)
+        `Then verify position is correct`(visitableList)
     }
 
     private fun `Given Search Product Load More API will return SearchProductModel`(searchProductModel: SearchProductModel) {
@@ -111,23 +120,6 @@ internal class SearchProductTopAdsPositionTest: ProductListPresenterTestFixtures
         verify {
             productListView.setProductList(capture(capturedVisitableListFirstPage))
             productListView.addProductList(capture(capturedVisitableListLoadMore))
-        }
-    }
-
-    private fun `Then verify position is correct for loadMore`() {
-        val visitableListFirstPage = capturedVisitableListFirstPage.captured
-        val visitableListLoadMore = capturedVisitableListLoadMore.captured
-
-        visitableListFirstPage.forEach {
-            if (it is ProductItemViewModel && it.isTopAds) {
-                topAdsCount++
-            }
-        }
-        visitableListLoadMore.forEach {
-            if (it is ProductItemViewModel && it.isTopAds) {
-                assert(topAdsCount == it.position)
-                topAdsCount++
-            }
         }
     }
 }
