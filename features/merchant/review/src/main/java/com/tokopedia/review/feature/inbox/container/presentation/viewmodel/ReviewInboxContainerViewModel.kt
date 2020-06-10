@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.reputation.common.data.model.ProductrevReviewTabCounterList
+import com.tokopedia.reputation.common.data.source.cloud.model.ProductrevReviewTabCount
 import com.tokopedia.reputation.common.domain.usecase.ProductrevReviewTabCounterUseCase
 import com.tokopedia.review.common.coroutine.CoroutineDispatchers
 import com.tokopedia.review.feature.inbox.container.data.ReviewInboxTabs
@@ -22,7 +22,7 @@ class ReviewInboxContainerViewModel @Inject constructor(
         private val productrevReviewTabCounterUseCase: ProductrevReviewTabCounterUseCase
 ) : BaseViewModel(dispatchers.io){
 
-    private val _reviewTabs = MutableLiveData<Result<ProductrevReviewTabCounterList>>()
+    private val _reviewTabs = MutableLiveData<Result<ProductrevReviewTabCount>>()
     val reviewTabs: LiveData<List<ReviewInboxTabs>> = Transformations.map(_reviewTabs) {
         updateCounters(it)
     }
@@ -34,27 +34,26 @@ class ReviewInboxContainerViewModel @Inject constructor(
             val response = withContext(dispatchers.io) {
                 productrevReviewTabCounterUseCase.executeOnBackground()
             }
-            _reviewTabs.postValue(Success(response.productrevReviewTabCounterList))
+            _reviewTabs.postValue(Success(response.productrevReviewTabCount))
         }) {
             _reviewTabs.postValue(Fail(it))
         }
     }
 
-    private fun updateCounters(tabCounters: Result<ProductrevReviewTabCounterList>): List<ReviewInboxTabs> {
+    private fun updateCounters(tabCount: Result<ProductrevReviewTabCount>): List<ReviewInboxTabs> {
         val result = mutableListOf<ReviewInboxTabs>()
-        when(tabCounters) {
+        when(tabCount) {
             is Success -> {
-                with(tabCounters.data.tabs) {
-                    result.add(ReviewInboxTabs.ReviewInboxPending(this.first().count.toString()))
-                    result.add(ReviewInboxTabs.ReviewInboxHistory(this.last().count.toString()))
+                with(tabCount.data.count) {
+                    result.add(ReviewInboxTabs.ReviewInboxPending(this.toString()))
                 }
             }
             is Fail -> {
                 result.add(ReviewInboxTabs.ReviewInboxPending())
-                result.add(ReviewInboxTabs.ReviewInboxHistory())
             }
         }
         if(isShopOwner) {
+            result.add(ReviewInboxTabs.ReviewInboxHistory)
             result.add(ReviewInboxTabs.ReviewInboxSeller)
         }
         return result

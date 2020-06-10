@@ -15,8 +15,6 @@ import com.tokopedia.review.feature.inbox.container.di.DaggerReviewInboxContaine
 import com.tokopedia.review.feature.inbox.container.di.ReviewInboxContainerComponent
 import com.tokopedia.review.feature.inbox.container.presentation.adapter.ReviewInboxContainerAdapter
 import com.tokopedia.review.feature.inbox.container.presentation.viewmodel.ReviewInboxContainerViewModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_review_inbox_container.*
 import javax.inject.Inject
 
@@ -80,14 +78,10 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
                         }
                     }
                     is ReviewInboxTabs.ReviewInboxHistory -> {
-                        if(tab.counter.isNotBlank()) {
-                            reviewInboxTabs.addNewTab(getString(R.string.review_history_tab_title, tab.counter))
-                        } else {
-                            reviewInboxTabs.addNewTab(getString(R.string.review_history_tab_title_no_count))
-                        }
+                        reviewInboxTabs.addNewTab(getString(R.string.review_history_tab_title))
                     }
                     is ReviewInboxTabs.ReviewInboxSeller -> {
-                        reviewInboxTabs.addNewTab(getString(R.string.review_seller_tab))
+                        reviewInboxTabs.addNewTab(getString(R.string.review_seller_tab_title))
                     }
                 }
             }
