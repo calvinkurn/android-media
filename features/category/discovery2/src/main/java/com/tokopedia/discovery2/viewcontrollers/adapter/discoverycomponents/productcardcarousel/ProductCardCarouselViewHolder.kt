@@ -24,7 +24,6 @@ class ProductCardCarouselViewHolder(itemView: View, private val fragment: Fragme
     init {
         linearLayoutManager.initialPrefetchItemCount = 4
         mProductCarouselRecyclerView.layoutManager = linearLayoutManager
-        linearLayoutManager.recycleChildrenOnDetach = true
         mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
         mDiscoveryRecycleAdapter.setHasStableIds(true)
         mProductCarouselRecyclerView.adapter = mDiscoveryRecycleAdapter
@@ -35,11 +34,6 @@ class ProductCardCarouselViewHolder(itemView: View, private val fragment: Fragme
         addShimmer()
     }
 
-    override fun onViewAttachedToWindow() {
-        super.onViewAttachedToWindow()
-        mDiscoveryRecycleAdapter.notifyDataSetChanged()
-
-    }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)

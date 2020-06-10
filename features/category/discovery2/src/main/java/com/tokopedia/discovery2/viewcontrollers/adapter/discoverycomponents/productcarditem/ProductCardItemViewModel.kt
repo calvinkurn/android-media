@@ -45,16 +45,21 @@ class ProductCardItemViewModel(val application: Application, private val compone
 
 
     init {
-        components.data?.let {
-            if (!it.isNullOrEmpty()) {
-                productData = it[0]
-            }
-        }
+
         initDaggerInject()
     }
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
+
+    override fun onAttachToViewHolder() {
+        super.onAttachToViewHolder()
+        components.data?.let {
+            if (!it.isNullOrEmpty()) {
+                productData = it[0]
+            }
+        }
+    }
 
     fun getShowLoginData(): LiveData<Boolean> = showLoginLiveData
     fun notifyMeCurrentStatus(): LiveData<Boolean> = notifyMeCurrentStatus

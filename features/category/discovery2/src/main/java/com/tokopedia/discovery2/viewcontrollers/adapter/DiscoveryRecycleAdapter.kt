@@ -42,7 +42,6 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
 
 
     override fun getItemViewType(position: Int): Int {
-        Log.e("getItemViewType","holder 0" + " "+position)
         if(componentList.size <= position)
             return 0
         val id = DiscoveryHomeFactory.getComponentId(componentList[position].name)
@@ -57,7 +56,6 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
     }
 
     fun addDataList(dataList: List<ComponentsItem>) {
-        Log.e("AddDataList","datalist 0"+dataList.size)
         if (dataList != null) {
             componentList.clear()
             viewHolderListModel.clearList()
