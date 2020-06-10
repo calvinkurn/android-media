@@ -73,7 +73,10 @@ class ShopOpenRevampViewModel @Inject constructor(
         }
 
         currentShopName = shopName
+        validateShopName(shopName)
+    }
 
+    fun validateShopName(shopName: String) {
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 delay(DELAY_TIMER)
@@ -88,7 +91,7 @@ class ShopOpenRevampViewModel @Inject constructor(
                     _checkShopNameResponse.postValue(Success(validateShopNameResult))
                 }
             }
-         }) {
+        }) {
             _checkShopNameResponse.value = Fail(it)
         }
     }
@@ -222,7 +225,10 @@ class ShopOpenRevampViewModel @Inject constructor(
         }
 
         currentShopDomain = domain
+        validateDomainName(domain)
+    }
 
+    fun validateDomainName(domain: String){
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 delay(DELAY_TIMER)

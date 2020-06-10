@@ -69,11 +69,10 @@ class ShopOpenRevampViewModelTest  {
         coEvery {
             validateDomainShopNameUseCase.executeOnBackground()
         } returns ValidateShopDomainNameResult()
-        viewModel.checkShopName(anyString())
-        verify {
-            ShopOpenRevampValidateDomainShopNameUseCase
-                    .createRequestParams(anyString())
-        }
+        val shopName: String = anyString()
+        viewModel.validateShopName(shopName)
+
+        validateDomainShopNameUseCase.params = ShopOpenRevampValidateDomainShopNameUseCase.createRequestParams(shopName)
         Assert.assertTrue(validateDomainShopNameUseCase.params.parameters.isNotEmpty())
         coVerify {
             validateDomainShopNameUseCase.executeOnBackground()
@@ -82,16 +81,16 @@ class ShopOpenRevampViewModelTest  {
     }
 
     @Test
-    fun `given shop and domain name validation when shop name and domain name is not empty`() {
+    fun `given domain name validation when domain name is not empty`() {
         mockkObject(ShopOpenRevampValidateDomainShopNameUseCase)
         coEvery {
             validateDomainShopNameUseCase.executeOnBackground()
         } returns ValidateShopDomainNameResult()
-        viewModel.checkDomainName(anyString())
-        verify {
-            ShopOpenRevampValidateDomainShopNameUseCase
-                    .createRequestParam(anyString())
-        }
+        val domainName: String = anyString()
+        viewModel.validateDomainName(domainName)
+
+        validateDomainShopNameUseCase.params = ShopOpenRevampValidateDomainShopNameUseCase.createRequestParam(domainName)
+
         Assert.assertTrue(validateDomainShopNameUseCase.params.parameters.isNotEmpty())
         coVerify {
             validateDomainShopNameUseCase.executeOnBackground()
