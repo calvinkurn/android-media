@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
@@ -48,6 +49,8 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     private var textViewRatingCount: TextView = itemView.findViewById(R.id.textViewRatingCount)
     private var textViewReviewCount: TextView = itemView.findViewById(R.id.textViewReviewCount)
     private var stokHabisLabel: TextView = itemView.findViewById(R.id.labelStock)
+    private var discountLinerLayout: LinearLayout = itemView.findViewById(R.id.discountLinerLayout)
+    private var shopBadgeLinerLayout: LinearLayout = itemView.findViewById(R.id.shopBadgeLinerLayout)
 
     private lateinit var productCardItemViewModel: ProductCardItemViewModel
     private var productCardName = ""
@@ -126,7 +129,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
 //        setCashbackLabel(dataItem.cashback)
         setProductImage(dataItem.imageUrlMobile)
         setTopads(dataItem.isTopads)
-        showShopUI(dataItem)
+        showShopBadgeUI(dataItem)
         showFreeOngKir(dataItem)
         setPDPView(dataItem)
         showInterestedView(dataItem)
@@ -142,8 +145,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         }
     }
 
-    private fun showShopUI(dataItem: DataItem) {
-
+    private fun showShopBadgeUI(dataItem: DataItem) {
         when (productCardItemViewModel.chooseShopBadge()) {
             OFFICIAL_STORE -> {
                 shopBadge.show()
@@ -266,9 +268,11 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     }
 
     private fun setSlashedPrice(discountedPrice: String?) {
-        textViewSlashedPrice.let {
-            it.setTextAndCheckShow(discountedPrice)
-            it.paintFlags = it.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        if(discountedPrice.isNullOrEmpty()){
+            textViewSlashedPrice.setTextAndCheckShow(discountedPrice)
+            textViewSlashedPrice.paintFlags = textViewSlashedPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        }else{
+            textViewSlashedPrice.hide()
         }
     }
 
