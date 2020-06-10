@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.view.fragment
 
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
@@ -203,9 +204,9 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
         ivPlayCoverCropImage.post {
             ivPlayCoverCropImage.layoutParams.height = resources.getDimensionPixelSize(R.dimen.play_cover_height)
         }
-        ivPlayCoverCropOverlay.post {
+        Handler().postDelayed({
             ivPlayCoverCropImage.setCropRect(ivPlayCoverCropOverlay.getCropRect())
-        }
+        }, SECONDS)
 
         containerPlayCoverCropImage.addView(ivPlayCoverCropImage)
 
@@ -274,5 +275,6 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
         const val EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST = "EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST"
         private const val EXTRA_LIVE_TITLE = "EXTRA_LIVE_TITLE"
         private const val MAX_CHARS = 38
+        private const val SECONDS: Long = 1000
     }
 }
