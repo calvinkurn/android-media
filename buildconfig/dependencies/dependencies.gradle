@@ -175,7 +175,6 @@ ext {
     ]
 
     viewDependencies = [
-            ahBottomNavigation: "com.aurelhubert:ahbottomnavigation:1.4.0",
             expandableTextview: "at.blogc:expandabletextview:1.0.5",
     ]
 
@@ -254,7 +253,7 @@ ext {
             workManager           : "android.arch.work:work-runtime-ktx:$workManagerVersion",
             stfalconImageViewer   : "com.github.stfalcon:stfalcon-imageviewer:$stfalconVersion",
             liveness              : "ai.advance.liveness:guardian_core_v1.6@aar",
-            javaxInject           :  "javax.inject:javax.inject:1",
+            javaxInject           : "javax.inject:javax.inject:1",
             slice                 : "androidx.slice:slice-builders-ktx:$sliceVersion"
     ]
 
@@ -304,7 +303,6 @@ ext {
 
     debugToolsDependencies = [
             stetho          : "com.facebook.stetho:stetho:1.4.2",
-            stethoOkHttp    : "com.facebook.stetho:stetho-okhttp3:1.4.2",
             chuck           : "com.github.ChuckerTeam.Chucker:library:$chuckerVersion",
             chuckNoOp       : "com.github.ChuckerTeam.Chucker:library-no-op:$chuckerVersion",
             timber          : "com.jakewharton.timber:timber:4.7.1",
