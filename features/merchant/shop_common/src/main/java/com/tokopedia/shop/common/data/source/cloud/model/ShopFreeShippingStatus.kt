@@ -20,10 +20,14 @@ class ShopFreeShippingStatus(
         @SerializedName("statusEligible")
         val statusEligible: Boolean,
         @SerializedName("statusSellerApproval")
-        val statusSellerApproval: Boolean
+        val statusSellerApproval: Int
     ) {
+        object SellerApproval {
+            const val APPROVED = 3
+        }
+
         fun isEligible(): Boolean {
-            return statusEligible && statusSellerApproval
+            return statusEligible && statusSellerApproval == SellerApproval.APPROVED
         }
     }
 }
