@@ -295,6 +295,9 @@ class PlayBroadcastCoverFromGalleryBottomSheet : BottomSheetUnify(),
     }
 
     companion object {
+        const val MINIMUM_COVER_WIDTH = 168
+        const val MINIMUM_COVER_HEIGHT = 298
+
         private const val SAVED_ALBUM_TITLE = "SAVED_ALBUM_TITLE"
 
         private const val ALBUM_LOADER_ID = 1
@@ -305,8 +308,6 @@ class PlayBroadcastCoverFromGalleryBottomSheet : BottomSheetUnify(),
 
         private const val DEFAULT_ALBUM_TITLE = "Semua media"
         private const val DEFAULT_GALLERY_SPAN_COUNT = 4
-        private const val MINIMUM_COVER_WIDTH = 168
-        private const val MINIMUM_COVER_HEIGHT = 298
         private const val MAXIMUM_COVER_SIZE = 5120
         private const val BYTES_IN_KB = 1024
     }

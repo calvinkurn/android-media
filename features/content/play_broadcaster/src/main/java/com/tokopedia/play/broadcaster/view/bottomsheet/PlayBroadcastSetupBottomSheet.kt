@@ -132,6 +132,12 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         tvTitle.text = title
     }
 
+    override fun saveCoverAndTitle(coverUrl: String, liveTitle: String) {
+        viewModel.coverImageUrl = coverUrl
+        viewModel.liveTitle = liveTitle
+        complete()
+    }
+
     override fun showBottomAction(shouldShow: Boolean) {
         if (shouldShow) bottomActionView.show() else bottomActionView.hide()
     }
@@ -231,8 +237,8 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
     private fun saveCompleteChannel() {
         parentViewModel.saveCompleteChannel(
                 productList = viewModel.selectedProductList,
-                coverUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
-                title = "Klarifikasi Tebak Siapa?"
+                coverUrl = viewModel.coverImageUrl,
+                title = viewModel.liveTitle
         )
     }
 

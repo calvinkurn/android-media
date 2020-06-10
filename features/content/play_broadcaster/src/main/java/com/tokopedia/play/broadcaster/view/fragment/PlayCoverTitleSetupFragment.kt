@@ -1,9 +1,6 @@
 package com.tokopedia.play.broadcaster.view.fragment
 
-import android.graphics.Bitmap
-import android.graphics.RectF
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
@@ -13,10 +10,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.CoverSourceEnum
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastChooseCoverBottomSheet
@@ -25,10 +22,6 @@ import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastCoverTitleViewModel
 import com.tokopedia.play.broadcaster.view.widget.PlayCropImageView
 import com.yalantis.ucrop.callback.BitmapCropCallback
-import com.yalantis.ucrop.model.CropParameters
-import com.yalantis.ucrop.model.ExifInfo
-import com.yalantis.ucrop.model.ImageState
-import com.yalantis.ucrop.task.BitmapCropTask
 import com.yalantis.ucrop.util.RectUtils
 import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.fragment_play_cover_title_setup.*
@@ -79,6 +72,16 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
         super.onViewCreated(view, savedInstanceState)
         initView()
         setupView()
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        viewModel.imageEcsLink.observe(viewLifecycleOwner, Observer {
+            if (it.isNotEmpty() && liveTitle.isNotEmpty()) {
+                bottomSheetCoordinator.saveCoverAndTitle(it, liveTitle)
+            }
+        })
     }
 
     override fun onDestroyView() {
@@ -168,8 +171,6 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
         changeCoverBottomSheet.listener = this
         changeCoverBottomSheet.setShowListener { changeCoverBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
         changeCoverBottomSheet.show(requireFragmentManager(), PlayBroadcastChooseCoverBottomSheet.TAG_CHOOSE_COVER)
-
-        liveTitle = etPlayCoverTitleText.text.toString()
     }
 
     private fun showCoverCropLayout() {
@@ -210,14 +211,26 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
         containerPlayCoverCropImage.addView(ivPlayCoverCropImage)
 
         btnPlayCoverCropNext.setOnClickListener {
-            ivPlayCoverCropImage.viewBitmap?.let {
-                cropImage(ivPlayCoverCropImage.imageInputPath,
-                        ivPlayCoverCropOverlay.getCropRect(),
-                        RectUtils.trapToRect(ivPlayCoverCropImage.getCurrentImageCorners()),
-                        ivPlayCoverCropImage.currentScale,
-                        ivPlayCoverCropImage.currentAngle,
-                        ivPlayCoverCropImage.exifInfo,
-                        it)
+            context?.let { context ->
+                ivPlayCoverCropImage.viewBitmap?.let {
+                    viewModel.cropImage(context,
+                            ivPlayCoverCropImage.imageInputPath,
+                            ivPlayCoverCropOverlay.getCropRect(),
+                            RectUtils.trapToRect(ivPlayCoverCropImage.getCurrentImageCorners()),
+                            ivPlayCoverCropImage.currentScale,
+                            ivPlayCoverCropImage.currentAngle,
+                            ivPlayCoverCropImage.exifInfo,
+                            it, object : BitmapCropCallback {
+                        override fun onBitmapCropped(resultUri: Uri, offsetX: Int, offsetY: Int, imageWidth: Int, imageHeight: Int) {
+                            val finalResultUri = viewModel.validateImageMinSize(resultUri)
+                            onImageCropped(finalResultUri)
+                        }
+
+                        override fun onCropFailure(t: Throwable) {
+                            t.printStackTrace()
+                        }
+                    })
+                }
             }
         }
         btnPlayCoverCropChange.setOnClickListener {
@@ -238,34 +251,6 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
     private fun onImageCropped(resultImageUri: Uri) {
         hideCoverCropLayout()
         renderCoverTitleLayout(resultImageUri)
-    }
-
-    /**
-     * The Crop Task already runs in background, so we don't need to use View Model
-     */
-    private fun cropImage(imagePath: String, cropRect: RectF, currentImageRect: RectF,
-                          currentScale: Float, currentAngle: Float, exifInfo: ExifInfo,
-                          viewBitmap: Bitmap) {
-
-        val isPng = ImageUtils.isPng(imagePath)
-        val imageOutputDirectory = ImageUtils.getTokopediaPhotoPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, isPng)
-        val imageState = ImageState(cropRect, currentImageRect,
-                currentScale, currentAngle)
-        val cropParams = CropParameters(ImageUtils.DEF_WIDTH, ImageUtils.DEF_HEIGHT,
-                DEFAULT_COMPRESS_FORMAT, DEFAULT_COMPRESS_QUALITY,
-                imagePath, imageOutputDirectory.absolutePath, exifInfo)
-
-        context?.let {
-            BitmapCropTask(it, viewBitmap, imageState, cropParams, object : BitmapCropCallback {
-                override fun onBitmapCropped(resultUri: Uri, offsetX: Int, offsetY: Int, imageWidth: Int, imageHeight: Int) {
-                    onImageCropped(resultUri)
-                }
-
-                override fun onCropFailure(t: Throwable) {
-                    t.printStackTrace()
-                }
-            }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-        }
     }
 
     private fun setupCoverLabelText() {
@@ -289,9 +274,6 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
     companion object {
         const val EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST = "EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST"
         private const val EXTRA_LIVE_TITLE = "EXTRA_LIVE_TITLE"
-
-        private const val DEFAULT_COMPRESS_QUALITY = 90
-        private val DEFAULT_COMPRESS_FORMAT = Bitmap.CompressFormat.JPEG
         private const val MAX_CHARS = 38
         private const val SECONDS: Long = 1000
     }

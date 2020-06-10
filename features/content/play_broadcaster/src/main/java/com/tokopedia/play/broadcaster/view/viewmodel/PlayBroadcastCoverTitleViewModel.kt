@@ -1,15 +1,29 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
-import android.util.Log
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.RectF
+import android.net.Uri
+import android.os.AsyncTask
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.model.PlayCoverUploadEntity
 import com.tokopedia.play.broadcaster.dispatcher.PlayBroadcastDispatcher
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastCoverFromGalleryBottomSheet.Companion.MINIMUM_COVER_HEIGHT
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastCoverFromGalleryBottomSheet.Companion.MINIMUM_COVER_WIDTH
 import com.tokopedia.user.session.UserSessionInterface
+import com.yalantis.ucrop.callback.BitmapCropCallback
+import com.yalantis.ucrop.model.CropParameters
+import com.yalantis.ucrop.model.ExifInfo
+import com.yalantis.ucrop.model.ImageState
+import com.yalantis.ucrop.task.BitmapCropTask
 import kotlinx.coroutines.CoroutineDispatcher
 import okhttp3.MediaType
 import okhttp3.RequestBody
+import java.io.File
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -24,11 +38,13 @@ class PlayBroadcastCoverTitleViewModel @Inject constructor(
         private val userSession: UserSessionInterface)
     : BaseViewModel(dispatcher) {
 
+    val imageEcsLink = MutableLiveData<String>()
+
     fun uploadCover(imagePath: String) {
         launchCatchError(ioDispatcher, block = {
             val params = hashMapOf<String, RequestBody>()
             params[PARAM_WEB_SERVICE] = RequestBody.create(MediaType.parse(TEXT_PLAIN), DEFAULT_WEB_SERVICE)
-            params[PARAM_RESOLUTION] = RequestBody.create(MediaType.parse(TEXT_PLAIN), RESOLUTION_500)
+            params[PARAM_RESOLUTION] = RequestBody.create(MediaType.parse(TEXT_PLAIN), RESOLUTION_700)
             params[PARAM_ID] = RequestBody.create(MediaType.parse(TEXT_PLAIN),
                     "${userSession.userId}${UUID.randomUUID()}${System.currentTimeMillis()}")
 
@@ -43,14 +59,63 @@ class PlayBroadcastCoverTitleViewModel @Inject constructor(
                     .dataResultImageUpload
 
             var url = dataUploadedImage.data.picSrc
-            Log.d("ImageUpload", url)
             if (url.contains(DEFAULT_RESOLUTION)) {
-                url = url.replaceFirst(DEFAULT_RESOLUTION, RESOLUTION_500)
-                Log.d("ImageUpload", url)
+                url = url.replaceFirst(DEFAULT_RESOLUTION, RESOLUTION_700)
             }
+            imageEcsLink.postValue(url)
         }) {
             it.printStackTrace()
         }
+    }
+
+    /**
+     * The Crop Task already runs in background, so we don't need to use coroutine
+     */
+    fun cropImage(context: Context, imagePath: String, cropRect: RectF,
+                  currentImageRect: RectF, currentScale: Float, currentAngle: Float,
+                  exifInfo: ExifInfo, viewBitmap: Bitmap, callback: BitmapCropCallback) {
+        val isPng = ImageUtils.isPng(imagePath)
+        val imageOutputDirectory = ImageUtils.getTokopediaPhotoPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, isPng)
+        val imageState = ImageState(cropRect, currentImageRect,
+                currentScale, currentAngle)
+        val cropParams = CropParameters(ImageUtils.DEF_WIDTH, ImageUtils.DEF_HEIGHT,
+                DEFAULT_COMPRESS_FORMAT, DEFAULT_COMPRESS_QUALITY,
+                imagePath, imageOutputDirectory.absolutePath, exifInfo)
+
+        BitmapCropTask(context, viewBitmap, imageState, cropParams, callback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+    }
+
+    /**
+     * Make sure new image won't be smaller than required minimum size
+     */
+    fun validateImageMinSize(imageUri: Uri): Uri {
+        val imageFile = File(imageUri.path)
+        val isPng = ImageUtils.isPng(imageFile.absolutePath)
+        val imageBitmap = ImageUtils.getBitmapFromPath(imageFile.absolutePath, ImageUtils.DEF_WIDTH,
+                ImageUtils.DEF_HEIGHT, false)
+        var newBitmap: Bitmap? = null
+        var newImageFile: File? = null
+        try {
+            if (imageBitmap.width < MINIMUM_COVER_WIDTH || imageBitmap.height < MINIMUM_COVER_HEIGHT) {
+                newBitmap = Bitmap.createScaledBitmap(imageBitmap, MINIMUM_COVER_WIDTH, MINIMUM_COVER_HEIGHT, false)
+            }
+            newBitmap?.let {
+                newImageFile = ImageUtils.writeImageToTkpdPath(
+                        ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA,
+                        it, isPng)
+            }
+        } catch (t: Throwable) {
+            t.printStackTrace()
+        } finally {
+            imageBitmap.recycle()
+            newBitmap?.recycle()
+            System.gc()
+        }
+
+        return newImageFile?.let {
+            imageFile.delete()
+            Uri.fromFile(it)
+        } ?: imageUri
     }
 
     companion object {
@@ -62,7 +127,10 @@ class PlayBroadcastCoverTitleViewModel @Inject constructor(
         private const val DEFAULT_UPLOAD_PATH = "/upload/attachment"
         private const val DEFAULT_UPLOAD_TYPE = "fileToUpload\"; filename=\"image.jpg"
         private const val TEXT_PLAIN = "text/plain"
-        private const val RESOLUTION_500 = "500"
+        private const val RESOLUTION_700 = "700"
+
+        private const val DEFAULT_COMPRESS_QUALITY = 90
+        private val DEFAULT_COMPRESS_FORMAT = Bitmap.CompressFormat.JPEG
     }
 
 }

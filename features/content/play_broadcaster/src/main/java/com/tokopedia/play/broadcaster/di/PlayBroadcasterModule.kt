@@ -69,16 +69,15 @@ class PlayBroadcasterModule(val mContext: Context) {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
 
-    @Provides
     @PlayBroadcasterScope
-    fun provideUploadImageUseCase(@ImageUploaderQualifier uploadImageRepository: UploadImageRepository,
-                                  @ImageUploaderQualifier generateHostRepository: GenerateHostRepository,
-                                  @ImageUploaderQualifier gson: Gson,
-                                  @ImageUploaderQualifier userSession: UserSessionInterface,
-                                  @ImageUploaderQualifier imageUploaderUtils: ImageUploaderUtils)
-            : UploadImageUseCase<PlayCoverUploadEntity> {
-        return UploadImageUseCase(uploadImageRepository, generateHostRepository, gson, userSession,
-                PlayCoverUploadEntity::class.java, imageUploaderUtils)
+    @Provides
+    fun provideUploadImageUseCase(
+            @ImageUploaderQualifier uploadImageRepository: UploadImageRepository,
+            @ImageUploaderQualifier generateHostRepository: GenerateHostRepository,
+            @ImageUploaderQualifier gson: Gson,
+            @ImageUploaderQualifier userSession: UserSessionInterface,
+            @ImageUploaderQualifier imageUploaderUtils: ImageUploaderUtils): UploadImageUseCase<PlayCoverUploadEntity> {
+        return UploadImageUseCase(uploadImageRepository, generateHostRepository, gson, userSession, PlayCoverUploadEntity::class.java, imageUploaderUtils)
     }
 
 }
