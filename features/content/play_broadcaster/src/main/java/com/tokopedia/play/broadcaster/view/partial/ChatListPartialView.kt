@@ -17,7 +17,7 @@ import timber.log.Timber
  */
 class ChatListPartialView(
         container: ViewGroup
-) : PartialView(container, R.id.cl_chat_list) {
+) : PartialView(container, R.id.chat_list) {
 
     private val chatAdapter = ChatListAdapter()
 
