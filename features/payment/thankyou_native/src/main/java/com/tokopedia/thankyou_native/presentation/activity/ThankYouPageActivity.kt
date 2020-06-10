@@ -16,7 +16,8 @@ import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.fragment.*
 import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCallback
-import com.tokopedia.inappreview.*
+import com.tokopedia.inappreview.launchInAppReview
+import com.tokopedia.inappreview.Callback
 import kotlinx.android.synthetic.main.thank_activity_thank_you.*
 import javax.inject.Inject
 
