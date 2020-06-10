@@ -13,8 +13,9 @@ import androidx.fragment.app.DialogFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
+import com.tokopedia.product.manage.feature.list.view.model.PriceViewModel
+import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_PRICE_LENGTH
 import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProductConstant.MINIMUM_PRICE
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -38,7 +39,7 @@ class ProductManageQuickEditPriceFragment(private val onFinishedListener: OnFini
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        product.price?.let { initView(it) }
+        product.minPrice?.price?.let { initView(it) }
     }
 
     private fun initView(currentPrice: String) {
@@ -55,7 +56,8 @@ class ProductManageQuickEditPriceFragment(private val onFinishedListener: OnFini
             }
             textFieldInput.setOnEditorActionListener { _, actionId, _ ->
                 if(actionId == EditorInfo.IME_ACTION_DONE){
-                    product = product.copy(price = textFieldInput.text.toString())
+                    val editedPrice = PriceViewModel(textFieldInput.text.toString(), product.minPrice?.priceFormatted)
+                    product = product.copy(minPrice = editedPrice)
                     val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(textFieldInput.windowToken, 0)
                 }
@@ -102,7 +104,7 @@ class ProductManageQuickEditPriceFragment(private val onFinishedListener: OnFini
     }
 
     private fun isPriceTooLow(): Boolean {
-        if(product.price.toIntOrZero() < MINIMUM_PRICE) return true
+        if(product.minPrice?.price.toIntOrZero() < MINIMUM_PRICE) return true
         return false
     }
 
@@ -117,7 +119,7 @@ class ProductManageQuickEditPriceFragment(private val onFinishedListener: OnFini
     }
 
     private fun isPriceValid() {
-        product = product.copy(price = CurrencyFormatHelper.convertRupiahToInt(quickEditPriceTextField.textFieldInput.text.toString()).toString())
+        product = product.copy(minPrice = product.minPrice?.copy(price = CurrencyFormatHelper.convertRupiahToInt(quickEditPriceTextField.textFieldInput.text.toString()).toString()))
         when {
             isPriceTooLow() -> {
                 showErrorPriceTooLow()
