@@ -347,12 +347,7 @@ class InitialStatePresenter @Inject constructor(
     }
 
     private fun getItemEventLabelForTracking(item: BaseItemInitialStateSearch, adapterPosition: Int): String {
-       return String.format(
-                "value: %s - po: %s - applink: %s",
-                item.title,
-                (adapterPosition + 1).toString(),
-                item.applink
-        )
+        return "value: ${item.title} - po: ${adapterPosition +1} - applink: ${item.applink}"
     }
 
     override fun detachView() {
