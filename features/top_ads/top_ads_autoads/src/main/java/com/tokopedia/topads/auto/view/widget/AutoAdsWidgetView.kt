@@ -32,6 +32,8 @@ import com.tokopedia.topads.auto.view.factory.AutoAdsWidgetViewModelFactory
 import com.tokopedia.topads.auto.view.fragment.DailyBudgetFragment
 import com.tokopedia.topads.auto.view.viewmodel.AutoAdsWidgetViewModel
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -193,10 +195,16 @@ class AutoAdsWidgetView : CardView {
     }
 
     private fun openAutoAdsRouteActivityLink() {
-        if (AppUtil.isSellerInstalled(context)) {
-            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_AUTOADS)
-        } else {
-            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, TopAdsCommonConstant.URL_ONECLICKPROMO))
+        when {
+            AppUtil.isSellerInstalled(context) -> {
+                RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_AUTOADS)
+            }
+            TokopediaUrl.getInstance().TYPE == Env.LIVE -> {
+                RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, TopAdsCommonConstant.URL_ONECLICKPROMO))
+            }
+            else -> {
+                RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, TopAdsCommonConstant.URL_ONECLICKPROMO_STAGING))
+            }
         }
     }
 

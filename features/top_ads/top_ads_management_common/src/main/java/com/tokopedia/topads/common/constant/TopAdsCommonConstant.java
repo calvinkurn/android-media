@@ -25,5 +25,6 @@ public class TopAdsCommonConstant {
 
     public static final int MAX_DATE_RANGE = 60;
 
+    public static final String URL_ONECLICKPROMO_STAGING = "https://ta-staging.tokopedia.com/v2/manage/oneclickpromo";
     public static final String URL_ONECLICKPROMO = "https://ta.tokopedia.com/v2/manage/oneclickpromo";
 }
