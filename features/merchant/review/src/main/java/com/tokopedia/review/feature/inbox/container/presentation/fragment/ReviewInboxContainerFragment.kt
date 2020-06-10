@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.removeObservers
@@ -54,6 +55,7 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeReviewTabs()
+        setupTabLayout()
         viewModel.getTabCounter()
     }
 
@@ -64,6 +66,10 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
 
     private fun setupViewPager() {
         reviewInboxViewPager.adapter = viewModel.reviewTabs.value?.let { ReviewInboxContainerAdapter(it,this) }
+    }
+
+    private fun setupTabLayout() {
+        reviewInboxTabs.customTabMode = TabLayout.MODE_SCROLLABLE
     }
 
     private fun observeReviewTabs() {

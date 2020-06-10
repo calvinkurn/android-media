@@ -52,8 +52,8 @@ class ReviewInboxContainerViewModel @Inject constructor(
                 result.add(ReviewInboxTabs.ReviewInboxPending())
             }
         }
+        result.add(ReviewInboxTabs.ReviewInboxHistory)
         if(isShopOwner) {
-            result.add(ReviewInboxTabs.ReviewInboxHistory)
             result.add(ReviewInboxTabs.ReviewInboxSeller)
         }
         return result

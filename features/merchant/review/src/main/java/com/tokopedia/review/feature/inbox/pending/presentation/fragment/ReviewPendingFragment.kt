@@ -112,6 +112,10 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         removeObservers(viewModel.reviewList)
     }
 
+    override fun getDefaultInitialPage(): Int {
+        return ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE
+    }
+
     private fun initView() {
         setupErrorPage()
         setupEmptyState()
@@ -157,7 +161,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     }
 
     private fun showErrorToaster(errorMessage: String, ctaText: String, action: () -> Unit) {
-        view?.let { Toaster.build(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText, View.OnClickListener { action() }) }
+        view?.let { Toaster.build(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText, View.OnClickListener { action() }).show() }
     }
 
     private fun getPendingReviewData(page: Int) {
