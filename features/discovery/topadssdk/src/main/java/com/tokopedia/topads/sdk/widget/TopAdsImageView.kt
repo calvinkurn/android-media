@@ -74,7 +74,7 @@ class TopAdsImageView : AppCompatImageView, HasComponent<TopAdsComponent> {
     }
 
 
-    /**
+    /** Use this function to hit the api according to parameters, and handle response in callbacks
      * @param query Search term query to look for ads. Example: leather shoes
      * @param source Page source that do the request. Example: search, fav_product
      * @param pageToken Use in pagination, pass empty in case of first page
