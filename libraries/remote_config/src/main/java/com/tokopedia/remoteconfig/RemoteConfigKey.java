@@ -224,5 +224,4 @@ public class RemoteConfigKey {
     public static final String ENABLE_ONE_CLICK_CHECKOUT = "android_mainapp_enable_one_click_checkout";
 
     public static final String ENABLE_AMPLIFICATION = "app_push_amplification_enabled";
-    public static final String MAINAPP_ADDGAIDTO_BRANCH = "android_addgaid_to_branch";
 }
