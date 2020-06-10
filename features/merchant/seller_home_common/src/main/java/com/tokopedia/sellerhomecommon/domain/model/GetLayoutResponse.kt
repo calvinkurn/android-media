@@ -1,13 +1,15 @@
-package com.tokopedia.sellerhome.domain.model
-
+package com.tokopedia.sellerhomecommon.domain.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.sellerhomecommon.domain.model.WidgetModel
+
+/**
+ * Created By @ilhamsuaib on 09/06/20
+ */
 
 data class GetLayoutResponse(
         @Expose
-        @SerializedName("GetSellerDashboardLayout")
+        @SerializedName("GetSellerDashboardPageLayout")
         val layout: GetSellerDashboardLayout?
 )
 

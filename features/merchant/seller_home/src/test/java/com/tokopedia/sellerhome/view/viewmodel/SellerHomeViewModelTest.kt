@@ -6,7 +6,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.sellerhome.domain.model.GetShopStatusResponse
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
-import com.tokopedia.sellerhome.domain.usecase.GetLayoutUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetStatusShopUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetTickerUseCase
@@ -160,8 +159,9 @@ class SellerHomeViewModelTest {
     fun `get widget layout should success`() {
         val layoutList: List<BaseWidgetUiModel<*>> = emptyList()
         val shopId = "123456"
+        val page = "seller-home"
 
-        getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId)
+        getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
 
         every {
             userSession.shopId
@@ -188,8 +188,9 @@ class SellerHomeViewModelTest {
     fun `get widget layout should failed`() {
         val throwable = MessageErrorException("error message")
         val shopId = "123456"
+        val page = "seller-home"
 
-        getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId)
+        getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
 
         every {
             userSession.shopId
