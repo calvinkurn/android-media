@@ -41,19 +41,21 @@ data class ComponentsItem(
 
         var shimmerWidth: Int = 0,
 
-        var constraintRatio: String? = null
-) {
-    private var componentsItem: List<ComponentsItem>? = null
-    var needPagination: Boolean = false
-    var noOfPagesLoaded = 0
-    var componentsPerPage = 20
-    var pageEndPoint: String = ""
-    var parentComponentId: String = ""
-    var cpmData: DiscoveryDataMapper.CpmTopAdsData? = null
-    var chipSelectionData:DataItem? = null
-    var chipSelectionChange = false
+        var constraintRatio: String? = null,
 
-    fun setComponentsItem(listComponents:List<ComponentsItem>?) {
+
+        var needPagination: Boolean = false,
+        var noOfPagesLoaded: Int = 0,
+        var componentsPerPage: Int = 20,
+        var pageEndPoint: String = "",
+        var parentComponentId: String = "",
+        var cpmData: DiscoveryDataMapper.CpmTopAdsData? = null,
+        var chipSelectionData: DataItem? = null,
+        var chipSelectionChange: Boolean = false) {
+
+    private var componentsItem: List<ComponentsItem>? = null
+
+    fun setComponentsItem(listComponents: List<ComponentsItem>?) {
         listComponents?.forEach {
             it.parentComponentId = this.id
             it.pageEndPoint = this.pageEndPoint
@@ -62,7 +64,12 @@ data class ComponentsItem(
         componentsItem = listComponents
 
     }
+
     fun getComponentsItem(): List<ComponentsItem>? {
         return componentsItem
     }
+
 }
+
+
+
