@@ -33,10 +33,7 @@ internal class SearchProductTopAdsPositionTest: ProductListPresenterTestFixtures
         `When Load Data`(searchParameter)
 
         `Then verify setProductList is called`()
-
-        val visitableList = mutableListOf<Visitable<*>>()
-        visitableList.addAll(capturedVisitableListFirstPage.captured)
-        `Then verify position is correct`(visitableList)
+        `Then verify position is correct`(capturedVisitableListFirstPage.captured)
     }
 
     private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {
@@ -55,13 +52,13 @@ internal class SearchProductTopAdsPositionTest: ProductListPresenterTestFixtures
         }
     }
 
-    private fun `Then verify position is correct`(list: MutableList<Visitable<*>>) {
+    private fun `Then verify position is correct`(list: List<Visitable<*>>) {
         var topAdsCount = 1
 
         list.forEach {
             if (it is ProductItemViewModel && it.isTopAds) {
                 assert(topAdsCount == it.position) {
-                    "Assertion failed, TopAds Position : ${it.position}, Actual Position : $topAdsCount"
+                    "Assertion failed, TopAds Position : ${it.position}, Expected Position : $topAdsCount"
                 }
                 topAdsCount++
             }
@@ -87,12 +84,7 @@ internal class SearchProductTopAdsPositionTest: ProductListPresenterTestFixtures
         `When Product List Presenter Load More Data`(loadMoreSearchParameter)
 
         `Then verify addProductList is called`()
-
-
-        val visitableList = mutableListOf<Visitable<*>>()
-        visitableList.addAll(capturedVisitableListFirstPage.captured)
-        visitableList.addAll(capturedVisitableListLoadMore.captured)
-        `Then verify position is correct`(visitableList)
+        `Then verify position is correct`(capturedVisitableListFirstPage.captured + capturedVisitableListLoadMore.captured)
     }
 
     private fun `Given Search Product Load More API will return SearchProductModel`(searchProductModel: SearchProductModel) {
