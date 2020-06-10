@@ -19,6 +19,7 @@ fun <T> List<T>.safeRemove(item: T): List<T>{
     for (e in mutableIterator) {
         if(e == item){
             mutableIterator.remove()
+            break
         }
     }
     return newMutableList
