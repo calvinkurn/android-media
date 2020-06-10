@@ -38,4 +38,6 @@ interface VoucherDetailAdapterFactory {
     fun type(model: ErrorDetailUiModel): Int
 
     fun type(model: WarningTickerUiModel): Int
+
+    fun type(model: InformationDetailTickerUiModel): Int
 }

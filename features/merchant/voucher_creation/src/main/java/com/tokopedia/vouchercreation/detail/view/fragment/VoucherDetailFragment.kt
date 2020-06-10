@@ -26,6 +26,7 @@ import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.TipsTrickBottomSheet
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
+import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
@@ -284,6 +285,15 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
                                 null
                             }))
 
+            if (type == VoucherTypeConst.FREE_ONGKIR) {
+                voucherDetailInfoList.add(0,
+                        when(status) {
+                            VoucherStatusConst.NOT_STARTED -> InformationDetailTickerUiModel(true)
+                            VoucherStatusConst.ONGOING -> InformationDetailTickerUiModel(true)
+                            else -> InformationDetailTickerUiModel(false)
+                        })
+            }
+
             if (status == VoucherStatusConst.ONGOING) {
                 voucherDetailInfoList.addAll(listOf(
                         UsageProgressUiModel(type, quota, remainingQuota, bookedQuota),
@@ -306,17 +316,18 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
                         } else {
                             VoucherTargetType.PRIVATE
                         }
+                val voucherInfoHasCta = voucherUiModel.status == VoucherStatusConst.NOT_STARTED && voucherUiModel.type != VoucherTypeConst.FREE_ONGKIR
                 addAll(listOf(
                         DividerUiModel(DividerUiModel.THICK),
-                        getVoucherInfoSection(voucherTargetType, name, code, voucherUiModel.status == VoucherStatusConst.NOT_STARTED),
+                        getVoucherInfoSection(voucherTargetType, name, code, voucherInfoHasCta),
                         DividerUiModel(DividerUiModel.THIN)
                 ))
                 getVoucherImageType(type, discountTypeFormatted, discountAmt, discountAmtMax)?.let { imageType ->
-                    add(getVoucherBenefitSection(imageType, minimumAmt, quota, voucherUiModel.status == VoucherStatusConst.NOT_STARTED))
+                    add(getVoucherBenefitSection(imageType, minimumAmt, quota, voucherInfoHasCta))
                 }
                 addAll(listOf(
                         DividerUiModel(DividerUiModel.THIN),
-                        getPeriodSection(fullDisplayedDate, voucherUiModel.status == VoucherStatusConst.NOT_STARTED),
+                        getPeriodSection(fullDisplayedDate, voucherInfoHasCta),
                         DividerUiModel(DividerUiModel.THICK)
                 ))
                 getButtonUiModel(status)?.let { button ->
