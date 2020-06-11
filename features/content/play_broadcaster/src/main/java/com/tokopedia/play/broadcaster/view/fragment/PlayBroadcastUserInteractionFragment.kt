@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -19,13 +18,14 @@ import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
 import com.tokopedia.play.broadcaster.util.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
+import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
+import com.tokopedia.play.broadcaster.view.custom.PlayTimerView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.ChatListPartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 /**
@@ -37,10 +37,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
-    private lateinit var tvTimeCounter: Typography
-    private lateinit var tvTimeCounterEnd: AppCompatTextView
-    private lateinit var tvTotalView: Typography
-    private lateinit var tvTotalLike: Typography
+    private lateinit var viewTimer: PlayTimerView
+    private lateinit var viewStatInfo: PlayStatInfoView
     private lateinit var ivShareLink: AppCompatImageView
     private lateinit var ivProductTag: AppCompatImageView
     private lateinit var pmvMetrics: PlayMetricsView
@@ -69,7 +67,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-//        observeChannelInfo() // TODO("double check")
         observeCountDownDuration()
         observeTotalViews()
         observeTotalLikes()
@@ -79,10 +76,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun initView(view: View) {
-        tvTimeCounter = view.findViewById(R.id.tv_time_counter)
-        tvTimeCounterEnd = view.findViewById(R.id.tv_time_counter_end)
-        tvTotalView = view.findViewById(R.id.tv_total_views)
-        tvTotalLike = view.findViewById(R.id.tv_total_likes)
+        viewTimer = view.findViewById(R.id.view_timer)
+        viewStatInfo = view.findViewById(R.id.view_stat_info)
         ivShareLink = view.findViewById(R.id.iv_share_link)
         ivProductTag = view.findViewById(R.id.iv_product_tag)
         pmvMetrics = view.findViewById(R.id.pmv_metrics)
@@ -113,19 +108,20 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         return true
     }
 
-    private fun setCountDownTimer(timeLeft: String = "", minutesUntilFinished: Long = 0L, almostDone: Boolean = false) {
-        tvTimeCounter.visibility = if (almostDone) View.INVISIBLE else View.VISIBLE
-        tvTimeCounterEnd.visibility = if (almostDone) View.VISIBLE else View.INVISIBLE
-        tvTimeCounter.text = timeLeft
-        tvTimeCounterEnd.text = getString(R.string.play_live_broadcast_time_left, minutesUntilFinished)
+    private fun showTimeLeft(timeLeft: String) {
+        viewTimer.showTimeLeft(timeLeft)
+    }
+
+    private fun showTimeRunOut(minutesUntilFinished: Long) {
+        viewTimer.showTimeRunOut(minutesUntilFinished)
     }
 
     private fun setTotalView(totalView: TotalViewUiModel) {
-        tvTotalView.text = totalView.totalView
+        viewStatInfo.setTotalView(totalView)
     }
 
     private fun setTotalLike(totalLike: TotalLikeUiModel) {
-        tvTotalLike.text = totalLike.totalLike
+        viewStatInfo.setTotalLike(totalLike)
     }
 
     private fun setChatList(chatList: List<PlayChatUiModel>) {
@@ -205,10 +201,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun doCopyShareLink() {
         parentViewModel.channelInfo?.let { channelInfo ->
             PlayShareWrapper.doCopyShareLink(requireContext(), channelInfo) {
-                Toaster.make(requireView(),
-                        text = getString(R.string.play_live_broadcast_share_link_copied),
-                        duration = Toaster.LENGTH_LONG,
-                        actionText =  getString(R.string.play_ok))
+                showToast(message = getString(R.string.play_live_broadcast_share_link_copied),
+                        type = Toaster.TYPE_NORMAL,
+                        actionLabel = getString(R.string.play_ok))
             }
         }
     }
@@ -224,7 +219,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun navigateToSummary() {
         broadcastCoordinator.navigateToFragment(PlayBroadcastSummaryFragment::class.java, Bundle().apply {
-            putString(PlayBroadcastSummaryFragment.KEY_LIVE_DURATION, tvTimeCounter.text.toString())
+//            putString(PlayBroadcastSummaryFragment.KEY_LIVE_DURATION, tvTimeCounter.text.toString())
         })
     }
 
@@ -236,13 +231,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, EventObserver {
             when (it) {
                 is PlayPusherInfoState.Active -> {
-                    setCountDownTimer(it.timeLeft)
+                    showTimeLeft(it.timeLeft)
                 }
                 is PlayPusherInfoState.AlmostFinish -> {
-                    setCountDownTimer(
-                            minutesUntilFinished = it.minutesUntilFinished,
-                            almostDone = true
-                    )
+                    showTimeRunOut(it.minutesUntilFinished)
                 }
                 is PlayPusherInfoState.Finish -> {
                     parentViewModel.stopPushBroadcast()
@@ -251,12 +243,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
         })
     }
-
-//    private fun observeChannelInfo() {
-//        parentViewModel.channelInfo.observe(viewLifecycleOwner, Observer {
-//            parentViewModel.startPushBroadcast(ingestUrl = it.ingestUrl)
-//        })
-//    }
 
     private fun observeTotalViews() {
         parentViewModel.observableTotalView.observe(viewLifecycleOwner, Observer(::setTotalView))
