@@ -46,10 +46,17 @@ abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter
     lateinit var analytics: WithdrawAnalytics
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
+    private val saldoWithdrawalViewModel: SaldoWithdrawalViewModel? by lazy(LazyThreadSafetyMode.NONE) {
+        parentFragment?.let {
+            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory.get())
+            viewModelProvider.get(SaldoWithdrawalViewModel::class.java)
+        } ?: run {
+            null
+        }
+    }
 
-    private lateinit var bankAccountListViewModel: BankAccountListViewModel
     private lateinit var bankAccountAdapter: BankAccountAdapter
 
     private var balance: Long = 0L
@@ -60,19 +67,6 @@ abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter
 
     override fun initInjector() {
         getComponent(WithdrawComponent::class.java).inject(this)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initViewModels()
-    }
-
-    private fun initViewModels() {
-        var viewModelProvider: ViewModelProvider
-        parentFragment?.let {
-            viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
-            bankAccountListViewModel = viewModelProvider.get(BankAccountListViewModel::class.java)
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -106,7 +100,7 @@ abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter
                                              withdrawalAmount: Long)
 
     private fun observeBaseViewModel() {
-        bankAccountListViewModel.bankListResponseMutableData.observe(this, Observer {
+        saldoWithdrawalViewModel?.bankListResponseMutableData?.observe(this, Observer {
             when (it) {
                 is Success -> {
                     updateBankAccountAdapter(it.data)

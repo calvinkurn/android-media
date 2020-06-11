@@ -5,10 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.withdraw.saldowithdrawal.di.scope.WithdrawScope
-import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.BankAccountListViewModel
-import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.RekeningPremiumViewModel
-import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.SubmitWithdrawalViewModel
-import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.ValidatePopUpViewModel
+import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.*
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -21,8 +18,8 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(BankAccountListViewModel::class)
-    internal abstract fun bankAccountListViewModel(viewModel: BankAccountListViewModel): ViewModel
+    @ViewModelKey(SaldoWithdrawalViewModel::class)
+    internal abstract fun saldoWithdrawalViewModel(viewModel: SaldoWithdrawalViewModel): ViewModel
 
 
     @Binds

@@ -36,6 +36,10 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.header
+    implementation rootProject.ext.unifyDependencies.carousel
+
+
+    implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 

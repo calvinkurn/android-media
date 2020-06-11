@@ -3,8 +3,8 @@ package com.tokopedia.withdraw.saldowithdrawal.presentation.fragment
 import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.text.Html
 import android.text.SpannableString
 import android.text.Spanned
@@ -21,7 +21,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.network.URLGenerator
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -39,30 +38,26 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.withdraw.R
 import com.tokopedia.withdraw.saldowithdrawal.WithdrawAnalytics
 import com.tokopedia.withdraw.saldowithdrawal.constant.WithdrawConstant
-import com.tokopedia.withdraw.helper.WithdrawalCache
 import com.tokopedia.withdraw.saldowithdrawal.di.component.WithdrawComponent
 import com.tokopedia.withdraw.saldowithdrawal.domain.exception.SubmitWithdrawalException
-import com.tokopedia.withdraw.saldowithdrawal.domain.model.BankAccount
-import com.tokopedia.withdraw.saldowithdrawal.domain.model.SubmitWithdrawalResponse
-import com.tokopedia.withdraw.saldowithdrawal.domain.model.WithdrawalRequest
-import com.tokopedia.withdraw.saldowithdrawal.domain.model.CheckEligible
-import com.tokopedia.withdraw.saldowithdrawal.domain.model.CopyWriting
-import com.tokopedia.withdraw.saldowithdrawal.domain.model.ValidatePopUpData
-import com.tokopedia.withdraw.saldowithdrawal.domain.model.ValidatePopUpWithdrawal
+import com.tokopedia.withdraw.saldowithdrawal.domain.model.*
 import com.tokopedia.withdraw.saldowithdrawal.presentation.activity.WithdrawActivity
 import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.SaldoWithdrawalPagerAdapter
-import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.BankAccountListViewModel
-import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.RekeningPremiumViewModel
+import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.SaldoWithdrawalViewModel
 import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.SubmitWithdrawalViewModel
 import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.ValidatePopUpViewModel
 import kotlinx.android.synthetic.main.swd_fragment_saldo_withdrawal.*
-import kotlinx.android.synthetic.main.swd_layout_premium_account.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class SaldoWithdrawalFragment : BaseDaggerFragment() {
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+
+    private val viewModelProvider: ViewModelProvider by lazy(LazyThreadSafetyMode.NONE) {
+        ViewModelProviders.of(this, viewModelFactory.get())
+    }
 
     @Inject
     lateinit var userSession: UserSession
@@ -81,10 +76,12 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
     private lateinit var checkEligible: CheckEligible
     private lateinit var saldoWithdrawalPagerAdapter: SaldoWithdrawalPagerAdapter
 
-    private lateinit var bankAccountListViewModel: BankAccountListViewModel
-    private lateinit var rekeningPremiumViewModel: RekeningPremiumViewModel
     private lateinit var validatePopUpViewModel: ValidatePopUpViewModel
     private lateinit var submitWithdrawalViewModel: SubmitWithdrawalViewModel
+
+    private val saldoWithdrawalViewModel: SaldoWithdrawalViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        viewModelProvider.get(SaldoWithdrawalViewModel::class.java)
+    }
 
 
     private lateinit var validatePopUpAlertDialog: AlertDialog
@@ -110,9 +107,6 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
     }
 
     private fun initViewModels() {
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-        bankAccountListViewModel = viewModelProvider.get(BankAccountListViewModel::class.java)
-        rekeningPremiumViewModel = viewModelProvider.get(RekeningPremiumViewModel::class.java)
         validatePopUpViewModel = viewModelProvider.get(ValidatePopUpViewModel::class.java)
         submitWithdrawalViewModel = viewModelProvider.get(SubmitWithdrawalViewModel::class.java)
     }
@@ -127,28 +121,32 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
         loadingLayout.setOnClickListener { }
         loadingLayout.visible()
         observeViewModel()
+        saldoWithdrawalViewModel.getRekeningBannerDataList()
     }
 
     private fun observeViewModel() {
-        bankAccountListViewModel.bankListResponseMutableData.observe(this, Observer {
+        saldoWithdrawalViewModel.bannerListLiveData.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    addBannerToUI(it.data)
+                    showUIComponent()
+                    saldoWithdrawalViewModel.getBankList()
+                }
+                is Fail -> {
+                    handleGlobalError(it.throwable)
+                }
+            }
+        })
+
+        saldoWithdrawalViewModel.bankListResponseMutableData.observe(this, Observer {
             when (it) {
                 is Success -> {
                     if (!userSession.isMsisdnVerified) {
                         showMustVerify()
                     }
                 }
-            }
-        })
-
-        rekeningPremiumViewModel.rekeningPremiumMutableData.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    checkEligible = it.data
-                    inflateRekeningPremiumWidget()
-                    showUIComponent()
-                }
                 is Fail -> {
-                    handleGlobalError(it.throwable)
+                    //todo handle no bank list Loaded
                 }
             }
         })
@@ -178,6 +176,40 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
         })
     }
 
+    private fun addBannerToUI(data: ArrayList<BannerData>) {
+        if (data.isNotEmpty()) {
+            withdrawalRekeningCarouselView.visible()
+            withdrawalRekeningCarouselView.apply {
+                activeIndex = 0
+                autoplay = false
+                slideToShow = 1.1f
+                centerMode = true
+                indicatorWrapper.gone()
+                addItems(R.layout.swd_widget_banner_item, data as ArrayList<Any>, ::carouselItemListener)
+            }
+
+        }
+    }
+
+    private fun carouselItemListener(view: View, data: Any) {
+        val img: ImageUnify = view.findViewById(R.id.imageUnifyBackground)
+        val tvBannerTitle : TextView = view.findViewById(R.id.tvBannerTitle)
+        val tvBannerDescriptionOne : TextView = view.findViewById(R.id.tvBannerDescriptionOne)
+        val tvBannerDescriptionTwo : TextView = view.findViewById(R.id.tvBannerDescriptionTwo)
+        val bannerTextGroup : Group = view.findViewById(R.id.bannerTextGroup)
+        val bannerData = data as BannerData
+        if (bannerData.status == 2){
+            bannerTextGroup.visible()
+            tvBannerTitle.text = bannerData.title
+            tvBannerDescriptionOne.text = bannerData.text1
+            tvBannerDescriptionTwo.text = bannerData.text2
+            img.setImageUrl(bannerData.bgURL)
+        }else{
+            bannerTextGroup.gone()
+            img.setImageUrl(bannerData.imgURL)
+        }
+    }
+
     private fun handleThrowable(throwable: Throwable) {
         val errorMessage = when (throwable) {
             is SubmitWithdrawalException -> throwable.errorMessage
@@ -196,25 +228,6 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
         loadingLayout.gone()
         showSellerBlockedTicker()
         initializeViewPager()
-    }
-
-    private fun inflateRekeningPremiumWidget() {
-        if (!::checkEligible.isInitialized)
-            return
-        val rekeningData = checkEligible.data
-        val isClicked = withdrawalCache.isRekeningPremiumWidgetClicked(context)
-        if (rekeningData.isPowerMerchant) {
-            val copyWriting = rekeningData.copyWriting
-            copyWriting.let {
-                layoutRekeningWidget.visibility = View.VISIBLE
-                if (!isClicked)
-                    tv_baru_tag.visibility = View.VISIBLE
-                tv_rekeningTitle.text = copyWriting.title
-                tv_briProgramDescription.text = Html.fromHtml(copyWriting.subtitle)
-                tv_briProgramButton.text = copyWriting.cta
-                tv_briProgramButton.setOnClickListener { onRekeningWidgetClick() }
-            }
-        }
     }
 
     private fun showErrorToaster(message: String) {
@@ -237,71 +250,15 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
     private fun retryToLoadData() {
         swdGlobalError.gone()
         loadingLayout.visible()
-        rekeningPremiumViewModel.loadRekeningPremiumData()
-        bankAccountListViewModel.loadBankAccountList()
-    }
-
-    private fun onRekeningWidgetClick() {
-        if (!::checkEligible.isInitialized)
-            return
-        when (checkEligible.data.statusInt) {
-            REKENING_ACCOUNT_APPROVED_IN -> {
-                openBottomSheetForRekeningProgram(checkEligible.data.isIsPowerWD,
-                        checkEligible.data.copyWriting)
-            }
-            else -> openRekeningAccountWebLink(checkEligible.data.copyWriting.url)
-        }
-        analytics.eventOnPremiumProgramWidgetClick()
-    }
-
-    private fun openBottomSheetForRekeningProgram(isRegisterForProgram: Boolean,
-                                                  copyWriting: CopyWriting) {
-        /*val briProgramBottomSheet = CloseableBottomSheetDialog
-                .createInstanceRounded(activity);
-        val view = layoutInflater.inflate(R.layout.swd_program_tarik_saldo,
-                null, true)
-        if (isRegisterForProgram) {
-            (view.findViewById<View>(R.id.tv_wdProgramTitle) as TextView)
-                    .text = getString(R.string.swd_rekening_premium)
-            (view.findViewById<View>(R.id.tv_wdProgramDescription) as TextView)
-                    .text = getString(R.string.swd_rekening_premium_description)
-            (view.findViewById<View>(R.id.wdProgramContinue) as TextView)
-                    .text = getString(R.string.swd_rekening_premium_btn)
-            analytics.eventClickInfo()
-        } else {
-            (view.findViewById<View>(R.id.tv_wdProgramTitle) as TextView)
-                    .text = getString(R.string.swd_rekening_premium)
-            (view.findViewById<View>(R.id.tv_wdProgramDescription) as TextView)
-                    .text = getString(R.string.swd_program_tarik_saldo_description)
-            (view.findViewById<View>(R.id.wdProgramContinue) as TextView)
-                    .text = getString(R.string.swd_program_tarik_btn)
-            analytics.eventClickJoinNow()
-        }
-
-        view.findViewById<View>(R.id.wdProgramContinue).setOnClickListener {
-            withdrawalCache.saveRekeningPremiumWidgetClicked(context)
-            briProgramBottomSheet.dismiss()
-            openRekeningAccountWebLink(copyWriting.url)
-        }
-
-        briProgramBottomSheet.setContentView(view)
-        briProgramBottomSheet.show()*/
-    }
-
-    private fun openRekeningAccountWebLink(url: String?) {
-        url?.let {
-            val resultGenerateUrl = URLGenerator.generateURLSessionLogin(
-                    Uri.encode(url), userSession.deviceId, userSession.userId)
-            RouteManager.route(context, resultGenerateUrl)
-            analytics.eventClickGotoDashboard()
-        }
+        saldoWithdrawalViewModel.getRekeningBannerDataList()
     }
 
     private fun showMustVerify() {
         AlertDialog.Builder(activity!!)
                 .setTitle(activity!!.getString(R.string.swd_alert_not_verified_yet_title))
                 .setMessage(activity!!.getString(R.string.swd_alert_not_verified_yet_body))
-                .setPositiveButton(activity!!.getString(R.string.swd_alert_not_verified_yet_positive)) { dialog: DialogInterface?, which: Int ->
+                .setPositiveButton(activity!!.getString(R.string.swd_alert_not_verified_yet_positive))
+                { dialog: DialogInterface?, which: Int ->
                     if (activity != null) {
                         val intent = RouteManager.getIntent(context,
                                 ApplinkConstInternalGlobal.SETTING_PROFILE)
@@ -380,8 +337,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
         when (requestCode) {
             BANK_SETTING_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    if (::bankAccountListViewModel.isInitialized)
-                        bankAccountListViewModel.loadBankAccountList()
+                    saldoWithdrawalViewModel.getBankList()
                     showToaster(getString(R.string.swd_bank_added_success))
                 }
             }
@@ -532,3 +488,92 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
 
     }
 }
+
+
+/*private fun inflateRekeningPremiumWidget() {
+    if (!::checkEligible.isInitialized)
+        return
+    val rekeningData = checkEligible.data
+    val isClicked = withdrawalCache.isRekeningPremiumWidgetClicked(context)
+    if (rekeningData.isPowerMerchant) {
+        val copyWriting = rekeningData.copyWriting
+        copyWriting.let {
+            layoutRekeningWidget.visibility = View.VISIBLE
+            if (!isClicked)
+                tv_baru_tag.visibility = View.VISIBLE
+            tv_rekeningTitle.text = copyWriting.title
+            tv_briProgramDescription.text = Html.fromHtml(copyWriting.subtitle)
+            tv_briProgramButton.text = copyWriting.cta
+            tv_briProgramButton.setOnClickListener { onRekeningWidgetClick() }
+        }
+    }
+}*/
+
+/*rekeningPremiumViewModel.rekeningPremiumMutableData.observe(this, Observer {
+    when (it) {
+        is Success -> {
+            checkEligible = it.data
+            inflateRekeningPremiumWidget()
+
+        }
+        is Fail -> {
+        }
+    }
+})
+*/
+
+/* private fun onRekeningWidgetClick() {
+     if (!::checkEligible.isInitialized)
+         return
+     when (checkEligible.data.statusInt) {
+         REKENING_ACCOUNT_APPROVED_IN -> {
+             openBottomSheetForRekeningProgram(checkEligible.data.isIsPowerWD,
+                     checkEligible.data.copyWriting)
+         }
+         else -> openRekeningAccountWebLink(checkEligible.data.copyWriting.url)
+     }
+     analytics.eventOnPremiumProgramWidgetClick()
+ }*/
+
+/*  private fun openBottomSheetForRekeningProgram(isRegisterForProgram: Boolean,
+                                                copyWriting: CopyWriting) {
+      *//*val briProgramBottomSheet = CloseableBottomSheetDialog
+                .createInstanceRounded(activity);
+        val view = layoutInflater.inflate(R.layout.swd_program_tarik_saldo,
+                null, true)
+        if (isRegisterForProgram) {
+            (view.findViewById<View>(R.id.tv_wdProgramTitle) as TextView)
+                    .text = getString(R.string.swd_rekening_premium)
+            (view.findViewById<View>(R.id.tv_wdProgramDescription) as TextView)
+                    .text = getString(R.string.swd_rekening_premium_description)
+            (view.findViewById<View>(R.id.wdProgramContinue) as TextView)
+                    .text = getString(R.string.swd_rekening_premium_btn)
+            analytics.eventClickInfo()
+        } else {
+            (view.findViewById<View>(R.id.tv_wdProgramTitle) as TextView)
+                    .text = getString(R.string.swd_rekening_premium)
+            (view.findViewById<View>(R.id.tv_wdProgramDescription) as TextView)
+                    .text = getString(R.string.swd_program_tarik_saldo_description)
+            (view.findViewById<View>(R.id.wdProgramContinue) as TextView)
+                    .text = getString(R.string.swd_program_tarik_btn)
+            analytics.eventClickJoinNow()
+        }
+
+        view.findViewById<View>(R.id.wdProgramContinue).setOnClickListener {
+            withdrawalCache.saveRekeningPremiumWidgetClicked(context)
+            briProgramBottomSheet.dismiss()
+            openRekeningAccountWebLink(copyWriting.url)
+        }
+
+        briProgramBottomSheet.setContentView(view)
+        briProgramBottomSheet.show()*//*
+    }*/
+/*
+    private fun openRekeningAccountWebLink(url: String?) {
+        url?.let {
+            val resultGenerateUrl = URLGenerator.generateURLSessionLogin(
+                    Uri.encode(url), userSession.deviceId, userSession.userId)
+            RouteManager.route(context, resultGenerateUrl)
+            analytics.eventClickGotoDashboard()
+        }
+    }*/

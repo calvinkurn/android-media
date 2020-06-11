@@ -8,6 +8,7 @@ import com.tokopedia.withdraw.saldowithdrawal.domain.helper.WithdrawalDomainCons
 import com.tokopedia.withdraw.saldowithdrawal.domain.helper.WithdrawalDomainConstant.GQL_QUERY_GET_REKENING_PREMIUM
 import com.tokopedia.withdraw.saldowithdrawal.domain.helper.WithdrawalDomainConstant.GQL_QUERY_SUBMIT_WITHDRAWAL
 import com.tokopedia.withdraw.saldowithdrawal.domain.helper.WithdrawalDomainConstant.GQL_QUERY_VALIDATE_POP_UP_WITHDRAWAL
+import com.tokopedia.withdraw.saldowithdrawal.domain.helper.WithdrawalDomainConstant.GQL_QUERY_WITHDRAWAL_BANNER
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -21,6 +22,11 @@ class GqlQueryModule {
             GraphqlHelper.loadRawString(context.resources, R.raw.swd_query_get_bank_data)
 
     @Provides
+    @Named(GQL_QUERY_WITHDRAWAL_BANNER)
+    fun provideGetRekeningBannerQuery(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.swd_query_get_rekening_banner)
+
+    @Provides
     @Named(GQL_QUERY_GET_REKENING_PREMIUM)
     fun provideGetRekeningPremiumData(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.swd_query_check_premium_account)
@@ -29,6 +35,7 @@ class GqlQueryModule {
     @Named(GQL_QUERY_VALIDATE_POP_UP_WITHDRAWAL)
     fun provideValidatePopUpWithdrawal(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.swd_query_popup)
+
     @Provides
     @Named(GQL_QUERY_SUBMIT_WITHDRAWAL)
     fun provideSubmitWithdrawalQuery(@ApplicationContext context: Context): String =
