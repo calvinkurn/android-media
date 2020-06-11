@@ -111,7 +111,7 @@ class ChatSearchActivity : BaseSimpleActivity(), HasComponent<ChatSearchComponen
 
     private fun assignBackButtonClick() {
         ivBack?.setOnClickListener {
-            finish()
+            onBackPressed()
         }
     }
 
