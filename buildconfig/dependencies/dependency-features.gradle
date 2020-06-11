@@ -152,6 +152,7 @@ ext {
             csat_rating                       : ":features:operational:csat_rating",
 
             commonPayment                   : ":features:payment:common_payment",
+            thankYouNative                  : ":features:payment:thankyou_native",
             payment                         : ":features:payment:payment",
             paymentSetting                  : ":features:payment:payment_setting",
             pms                             : ":features:payment:pms",
@@ -161,7 +162,6 @@ ext {
 
             gamification                    : ":features:promo:gamification",
             merchantVoucher                 : ":features:promo:merchant_voucher",
-            seamlesslogin                   : ":features:user:seamless_login",
             tokopoints                      : ":features:promo:tokopoints",
             tokopointsNotification          : ":features:promo:tokopoints_notification",
             promoCheckout                   : ":features:promo:promo_checkout",
@@ -215,6 +215,7 @@ ext {
             updateinactivephone             : ":features:user:updateinactivephone",
             userIdentification              : ":features:user:user_identification",
             seamlesslogin                   : ":features:user:seamless_login",
+            managename                      : ":features:user:managename",
             stickyLogin                     : ":features:user:stickylogin",
             userIdentificationCommon        : ":features:user:user_identification_common",
             kyccentralized                  : ":features:user:kyc_centralized",
@@ -222,7 +223,6 @@ ext {
             liveness                        : ":features:user:liveness",
             fcm_common                      : ":features:fcm_common",
             tkpdcore                        : ":tkpdcore",
-            tkpddiscovery                   : ":tkpddiscovery",
             tkpdinbox                       : ":tkpdinbox",
             tkpdseller                      : ":tkpdseller",
             tkpdsession                     : ":tkpdsession",

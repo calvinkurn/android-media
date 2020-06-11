@@ -159,6 +159,7 @@
 /features/user/loginregister/                   		@tokopedia/minion-kevin
 /features/user/sessioncommon/                   		@tokopedia/minion-kevin
 /features/user/loginphone/                      		@tokopedia/minion-kevin
+/features/user/managename/                      		@tokopedia/minion-kevin
 /features/user/notifcenter/                     		@tokopedia/minion-kevin
 /features/user/attachproduct/                   		@tokopedia/minion-kevin
 /features/user/changephonenumber                		@tokopedia/minion-kevin
@@ -205,6 +206,7 @@
 /features/payment/common_payment                        @tokopedia/minion-yoda
 /features/digital/instant_debit_bca                     @tokopedia/minion-yoda
 /features/fintech/wallet                				@tokopedia/minion-yoda
+/features/payment/thankyou_native                		@tokopedia/minion-yoda
 
 
 /libraries/adapter_delegate/							@tokopedia/core-team

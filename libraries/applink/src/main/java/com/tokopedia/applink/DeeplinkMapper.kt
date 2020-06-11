@@ -298,6 +298,7 @@ object DeeplinkMapper {
             ApplinkConst.SETTING_NOTIFICATION -> ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
             ApplinkConst.GROUPCHAT_LIST -> ApplinkConstInternalPlay.GROUPCHAT_LIST
             ApplinkConst.KYC -> ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
+            ApplinkConst.ADD_NAME_PROFILE -> ApplinkConstInternalGlobal.MANAGE_NAME
             ApplinkConst.KYC_NO_PARAM -> ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO_BASE
             ApplinkConst.KYC_FORM_NO_PARAM -> ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM_BASE
             ApplinkConst.SETTING_BANK -> ApplinkConstInternalGlobal.SETTING_BANK
@@ -322,6 +323,7 @@ object DeeplinkMapper {
             ApplinkConst.BUYER_INFO -> ApplinkConstInternalMarketplace.NOTIFICATION_BUYER_INFO
             ApplinkConst.CHANGE_PASSWORD -> return ApplinkConstInternalGlobal.CHANGE_PASSWORD
             ApplinkConst.HAS_PASSWORD -> return ApplinkConstInternalGlobal.HAS_PASSWORD
+            ApplinkConst.THANK_YOU_PAGE_NATIVE -> ApplinkConstInternalPayment.PAYMENT_THANK_YOU_PAGE
             else -> ""
         }
         if (mappedDeeplink.isNotEmpty()) {
