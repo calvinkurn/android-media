@@ -1,75 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingTop="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_16"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="@dimen/spacing_lvl4">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSpecialOffer"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Blue_B500"
+        app:typographyType="body_3"
+        android:visibility="visible"
+        android:paddingTop="@dimen/spacing_lvl1"
+        android:paddingBottom="@dimen/spacing_lvl1"
+        android:paddingStart="@dimen/spacing_lvl2"
+        android:paddingEnd="@dimen/spacing_lvl2"
+        android:background="@drawable/swd_special_offer"
+        android:text="@string/swd_special_offer"/>
 
     <ImageView
-        android:id="@+id/radio"
-        android:layout_width="@dimen/dp_22"
-        android:layout_height="@dimen/dp_22"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:src="@drawable/swd_radio_button_default" />
+        android:id="@+id/ivBankSelector"
+        android:layout_width="@dimen/swd_radio_button"
+        android:layout_height="@dimen/swd_radio_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/swd_radio_button_default" />
+
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/bank_name"
+        android:id="@+id/tvBankName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:enabled="false"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@+id/radio"
-        android:layout_alignParentStart="true"
-        android:layout_toStartOf="@+id/radio"
-        android:textColor="@color/grey_796"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constrainedWidth="true"
+        app:layout_goneMarginRight="@dimen/spacing_lvl4"
+        app:layout_goneMarginEnd="@dimen/spacing_lvl4"
+        app:layout_goneMarginTop="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="@id/ivPowerMerchant"
+        app:layout_constraintEnd_toStartOf="@+id/ivPowerMerchant"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/ivPowerMerchant"
         app:typographyType="body_3"
-        tools:text="PT BANK CENTRAL ASIA TBK" />
+        tools:text="PT Bank Bank Bank Bank BankBankBankBankBank BankBankBankBankBankBankBankBankBankBank" />
+
+
+    <ImageView
+        android:id="@+id/ivPowerMerchant"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:visibility="visible"
+        app:layout_constraintEnd_toStartOf="@id/ivBankSelector"
+        app:layout_constraintStart_toEndOf="@+id/tvBankName"
+        app:layout_constraintTop_toBottomOf="@id/tvSpecialOffer"
+        app:srcCompat="@drawable/swd_ic_power_merchant" />
+
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/bank_acc_name"
-        android:layout_width="wrap_content"
+        android:id="@+id/tvBankAccountHolderName"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/bank_name"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_4"
-        android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@+id/radio"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
         android:ellipsize="marquee"
         android:lineSpacingExtra="@dimen/sp_4"
         android:singleLine="true"
+        android:textColor="@color/Neutral_N700_68"
+        app:layout_constraintEnd_toEndOf="@id/tvBankName"
+        app:layout_constraintStart_toStartOf="@id/tvBankName"
+        app:layout_constraintTop_toBottomOf="@+id/tvBankName"
         app:typographyType="body_3"
-        android:textColor="@color/grey_button_compat"
-        android:textSize="@dimen/sp_12"
         tools:text="5678908730 • Alexandra " />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAdminFee"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/bank_acc_name"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_4"
-        android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@+id/radio"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
         android:ellipsize="marquee"
         android:lineSpacingExtra="@dimen/sp_4"
         android:singleLine="true"
+        android:textColor="@color/Neutral_N700_68"
+        app:layout_constraintEnd_toEndOf="@id/tvBankName"
+        app:layout_constraintStart_toStartOf="@id/tvBankName"
+        app:layout_constraintTop_toBottomOf="@id/tvBankAccountHolderName"
         app:typographyType="body_3"
-        android:textColor="@color/black_40"
-        android:textSize="@dimen/sp_12"
-        tools:text="5678908730 • Alexandra " />
+        tools:text="Admin Fee " />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/dividerUnify"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/swp_half_dp"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:background="@color/Neutral_N50"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvAdminFee" />
 
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

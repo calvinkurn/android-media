@@ -1,27 +1,28 @@
 package com.tokopedia.withdraw.saldowithdrawal.presentation.fragment
 
-//import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import android.content.Context
 import android.os.Bundle
 import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.utils.text.currency.*
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
+import com.tokopedia.utils.text.currency.NumberTextWatcher
+import com.tokopedia.utils.text.currency.StringUtils
+import com.tokopedia.webview.TkpdWebView
 import com.tokopedia.withdraw.R
 import com.tokopedia.withdraw.saldowithdrawal.WithdrawAnalytics
 import com.tokopedia.withdraw.saldowithdrawal.constant.BuyerSaldoWithdrawal
@@ -30,13 +31,10 @@ import com.tokopedia.withdraw.saldowithdrawal.constant.SellerSaldoWithdrawal
 import com.tokopedia.withdraw.saldowithdrawal.constant.WithdrawConstant
 import com.tokopedia.withdraw.saldowithdrawal.di.component.WithdrawComponent
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.BankAccount
-import com.tokopedia.withdraw.saldowithdrawal.helper.CurrencyTextWatcher
 import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.BankAccountAdapter
-import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.decoration.SpaceItemDecoration
 import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.layoutmanager.NonScrollableLinerLayoutManager
-import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.BankAccountListViewModel
+import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.SaldoWithdrawalViewModel
 import kotlinx.android.synthetic.main.swd_fragment_base_withdrawal.*
-import kotlinx.android.synthetic.main.swd_success_page.view.*
 import javax.inject.Inject
 
 abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter.BankAdapterListener {
@@ -91,14 +89,11 @@ abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter
             setCurrencyTextWatcherToSaldoInput()
             withdrawalButton.isEnabled = false
             tvCopyAllSaldoAmount.setOnClickListener { copyAllBalanceToWithdrawalAmount() }
-            tv_info.text = createTermsAndConditionSpannable()
-            tv_info.movementMethod = LinkMovementMethod.getInstance()
-            if (::bankAccountListViewModel.isInitialized)
-                observeBaseViewModel()
-            observeBaseViewModel()
-            //addTextWatcherToUpdateWithdrawalState()
-            // if (savedInstanceState == null)
-            //   tfWithdrawal.textFieldInput.setText("0")
+            context?.let {
+                tvTermsAndCondition.text = createTermsAndConditionSpannable(it)
+            }
+            tvTermsAndCondition.movementMethod = LinkMovementMethod.getInstance()
+            saldoWithdrawalViewModel?.let { observeBaseViewModel() }
         }
     }
 
@@ -123,19 +118,9 @@ abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter
         })
     }
 
-    fun changeHintTextColor(@ColorRes hintColor: Int,
-                            @ColorRes underLineColor: Int, hintText: String) {
-        if(underLineColor == R.color.swd_hint_red){
-            tfWithdrawal.setError(true)
-            tfWithdrawal.setMessage(hintText)
-        }else {
-            tfWithdrawal.setError(false)
-            tfWithdrawal.setMessage(hintText)
-        }
-        /*tfWithdrawal.background.mutate().setColorFilter(resources.getColor(underLineColor),
-                PorterDuff.Mode.SRC_ATOP)
-        saldoWithdrawHint.setTextColor(resources.getColor(hintColor))
-        saldoWithdrawHint.text = hintText*/
+    fun changeHint(isError: Boolean, hintText: String) {
+        tfWithdrawal.setError(isError)
+        tfWithdrawal.setMessage(hintText)
     }
 
     fun updateWithdrawalButton(canWithdraw: Boolean) {
@@ -164,7 +149,7 @@ abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter
     }
 
     private fun showBlankState() {
-        editable_group.visibility = View.GONE
+        editable_group.gone()
         ivLockButton.gone()
         emptyGroup.visibility = View.VISIBLE
         val message = when (accountBalanceType) {
@@ -180,8 +165,6 @@ abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter
             recyclerBankList.layoutManager = NonScrollableLinerLayoutManager(context!!)
             bankAccountAdapter = BankAccountAdapter(analytics, this)
             recyclerBankList.adapter = bankAccountAdapter
-            val itemDecoration = SpaceItemDecoration(MethodChecker.getDrawable(it, R.drawable.swd_divider))
-            recyclerBankList.addItemDecoration(itemDecoration)
         }
     }
 
@@ -218,13 +201,13 @@ abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter
         analytics.eventClickWithdrawalAll();
     }
 
-    private fun createTermsAndConditionSpannable(): SpannableStringBuilder? {
+    private fun createTermsAndConditionSpannable(context: Context): SpannableStringBuilder? {
         val originalText = getString(R.string.swd_tnc_full_text)
         val readMoreText = getString(R.string.swd_tnc_clickable_text)
         val spannableString = SpannableString(readMoreText)
         val startIndex = 0
         val endIndex = spannableString.length
-        val color = this.resources.getColor(R.color.tkpd_main_green)
+        val color = ContextCompat.getColor(context, R.color.Green_G500)
         spannableString.setSpan(color, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannableString.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
@@ -242,18 +225,16 @@ abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter
     }
 
     private fun openTermsAndConditionBottomSheet() {
-        /*val bottomSheet = CloseableBottomSheetDialog
-                .createInstanceRounded(activity)
-        val view = layoutInflater.inflate(R.layout.swd_layout_withdraw_tnc,
-                null, true)
-        val webView: TkpdWebView = view.findViewById(R.id.swd_tnc_webview)
-        val closeBtn = view.findViewById<ImageView>(R.id.close_button)
-        val titleView: Typography = view.findViewById(R.id.title_closeable)
-        webView.loadAuthUrl(WithdrawConstant.WEB_TNC_URL, userSession)
-        closeBtn.setOnClickListener { bottomSheet.dismiss() }
-        titleView.text = getString(R.string.swd_tnc_title)
-        bottomSheet.setCustomContentView(view, getString(R.string.swd_tnc_title), false)
-        bottomSheet.show()*/
+        activity?.let {
+            val bottomSheetUnify = BottomSheetUnify()
+            val view = layoutInflater.inflate(R.layout.swd_layout_withdraw_tnc,
+                    null, true)
+            val webView: TkpdWebView = view.findViewById(R.id.swd_tnc_webview)
+            webView.loadAuthUrl(WithdrawConstant.WEB_TNC_URL, userSession)
+            bottomSheetUnify.setChild(view)
+            bottomSheetUnify.show(it.supportFragmentManager, "")
+        }
+
     }
 
     fun lockWithdrawal(isLocked: Boolean) {
@@ -316,23 +297,4 @@ abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter
     }
 
 }
-
-
-/*override fun onNumberChanged(number: Double) {
-            super.onNumberChanged(number)
-            var input = number.toInt()
-            if (input < stepperModel?.finalBidPerClick!! * MULTIPLIER
-                    && daily_budget.isVisible) {
-                daily_budget.setError(true)
-                daily_budget.setMessage(String.format(getString(R.string.daily_budget_error), suggestion))
-                btn_submit.isEnabled = false
-            } else {
-                stepperModel?.dailyBudget = input
-                btn_submit.isEnabled = true
-                daily_budget.setMessage("")
-                daily_budget.setError(false)
-
-            }
-        }*/
-
 

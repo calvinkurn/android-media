@@ -23,36 +23,35 @@ class BuyerSaldoWithdrawalFragment : WithdrawalBaseFragment() {
                 0L -> {
                     val minStr = getString(R.string.swd_rp,
                             CurrencyFormatHelper.convertToRupiah(bankAccount.minAmount.toString()))
-                    changeHintTextColor(R.color.grey_button_compat, R.color.tkpd_main_green,
+                    changeHint(false,
                             String.format(getString(R.string.swd_min_saldo_withdraw_hint), minStr))
                 }
                 !in 1L..buyerSaldoBalance -> {
-                    changeHintTextColor(R.color.swd_hint_red, R.color.swd_hint_red,
-                            getString(R.string.saldo_exceeding_withdraw_balance))
+                    changeHint(true,
+                            getString(R.string.swd_saldo_exceeding_withdraw_balance))
                 }
 
                 in 1L until bankAccount.minAmount -> {
                     val minStr = getString(R.string.swd_rp,
                             CurrencyFormatHelper.convertToRupiah(bankAccount.minAmount.toString()))
-                    changeHintTextColor(R.color.swd_hint_red, R.color.swd_hint_red,
+                    changeHint(true,
                             String.format(getString(R.string.swd_min_saldo_withdraw_hint), minStr))
                 }
                 in bankAccount.minAmount..bankAccount.maxAmount -> {
                     val minStr= getString(R.string.swd_rp,
                             CurrencyFormatHelper.convertToRupiah(bankAccount.minAmount.toString()))
-                    changeHintTextColor(R.color.grey_button_compat, R.color.tkpd_main_green,
+                    changeHint(false,
                             String.format(getString(R.string.swd_min_saldo_withdraw_hint), minStr))
                 }
                 else -> {
                     val maxStr = getString(R.string.swd_rp,
                             CurrencyFormatHelper.convertToRupiah(bankAccount.maxAmount.toString()))
-                    changeHintTextColor(R.color.swd_hint_red, R.color.swd_hint_red,
+                    changeHint(true,
                             String.format(getString(R.string.swd_max_saldo_withdraw_hint), maxStr))
                 }
             }
         } ?: run {
-            changeHintTextColor(R.color.grey_button_compat,
-                    R.color.swd_hint_red, getString(R.string.swd_has_no_bank))
+            changeHint(true, getString(R.string.swd_has_no_bank))
         }
     }
 

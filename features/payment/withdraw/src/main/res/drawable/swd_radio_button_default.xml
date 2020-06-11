@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item> <!--Your outer blue border shape-->
+    <item>
         <shape android:shape="oval">
-            <solid android:color="@android:color/white" />
+            <solid android:color="@color/Neutral_N0" />
 
             <size
-                android:width="@dimen/dp_25"
-                android:height="@dimen/dp_25" />
+                android:width="@dimen/swd_radio_button"
+                android:height="@dimen/swd_radio_button" />
 
             <stroke
                 android:width="2dp"
-                android:color="@color/grey_400" />
+                android:color="@color/light_N200" />
         </shape>
     </item>
 </layer-list>

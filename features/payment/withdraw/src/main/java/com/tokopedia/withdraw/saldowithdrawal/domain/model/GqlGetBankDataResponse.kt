@@ -55,7 +55,7 @@ data class BankAccount(
 
         @SerializedName("status")
         @Expose
-        var status: Long = 0,
+        var status: Int = 0,
 
         @SerializedName("isVerifiedAccount")
         @Expose
@@ -82,7 +82,7 @@ data class BankAccount(
             parcel.readLong(),
             parcel.readLong(),
             parcel.readLong(),
-            parcel.readLong(),
+            parcel.readInt(),
             parcel.readLong(),
             parcel.readString(),
             parcel.readInt(),
@@ -98,7 +98,7 @@ data class BankAccount(
         parcel.writeLong(minAmount)
         parcel.writeLong(maxAmount)
         parcel.writeLong(adminFee)
-        parcel.writeLong(status)
+        parcel.writeInt(status)
         parcel.writeLong(isVerifiedAccount)
         parcel.writeString(bankImageUrl)
         parcel.writeInt(isDefaultBank)

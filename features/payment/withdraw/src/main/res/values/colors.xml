@@ -2,6 +2,5 @@
 <resources>
     <color name="swd_grey">#888888</color>
     <color name="swd_hint_red">#d6001c</color>
-    <color name="swd_grey_100">#dbdee2</color>
     <color name="swd_lock_tint">#abadb1</color>
 </resources>

@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+<!--
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -32,6 +33,7 @@
             android:textStyle="normal"
             app:typographyType="heading_4" />
     </LinearLayout>
+-->
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"

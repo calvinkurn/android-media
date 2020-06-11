@@ -16,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -30,6 +31,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -67,9 +69,6 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var analytics: WithdrawAnalytics
-
-    @Inject
-    lateinit var withdrawalCache: WithdrawalCache
 
     private lateinit var withdrawalRequest: WithdrawalRequest
 
@@ -304,7 +303,8 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
                 .setMessage(activity!!.getString(R.string.swd_alert_not_verified_yet_body))
                 .setPositiveButton(activity!!.getString(R.string.swd_alert_not_verified_yet_positive)) { dialog: DialogInterface?, which: Int ->
                     if (activity != null) {
-                        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.SETTING_PROFILE)
+                        val intent = RouteManager.getIntent(context,
+                                ApplinkConstInternalGlobal.SETTING_PROFILE)
                         startActivity(intent)
                         activity!!.finish()
                     }

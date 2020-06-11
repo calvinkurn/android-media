@@ -4,7 +4,7 @@
 
     <string name="swd_title_action_withdraw">Tarik Saldo</string>
     <string name="swd_rp">Rp%s</string>
-    <string name="swd_choose_bank_account">Pilih Rekening Tujuan</string>
+    <string name="swd_choose_bank_account">Rekening Tujuan</string>
     <string name="swd_has_no_bank">Anda belum memiliki rekening bank yang terdaftar di Tokopedia</string>
     <string name="swd_title_add_account_bank">Tambah Rekening</string>
     <string name="swd_title_set_account_bank">Atur Rekening</string>
@@ -28,7 +28,7 @@
 
     <string name="swd_tnc_clickable_text">ketentuan penarikan saldo.</string>
     <string name="swd_tnc_title">Ketentuan penarikan saldo</string>
-    <string name="saldo_exceeding_withdraw_balance">Nominal melebihi saldo milikmu</string>
+    <string name="swd_saldo_exceeding_withdraw_balance">Nominal melebihi saldo milikmu</string>
     <string name="swd_continue_pull">Lanjut Tarik</string>
     <string name="swd_back">Kembali</string>
     <string name="swd_max_saldo_withdraw_hint">Maks. penarikan saldo %s</string>
@@ -58,5 +58,7 @@
     <string name="swd_refund_empty_msg">Kamu tidak punya Saldo Refund untuk ditarik</string>
     <string name="swd_admin_fee_msg">Dikenai biaya admin %s</string>
     <string name="swd_penghasilan_empty_msg">Kamu tidak punya Saldo Penghasilan untuk ditarik</string>
+    <string name="swd_account_number_name">"%1$s • %2$s"</string>
+    <string name="swd_special_offer">Penawaran Khusus</string>
 
 </resources>

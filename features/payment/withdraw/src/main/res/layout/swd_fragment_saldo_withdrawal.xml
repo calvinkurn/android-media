@@ -15,15 +15,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <include
-        android:id="@+id/layoutRekeningWidget"
-        layout="@layout/swd_layout_premium_account"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <com.tokopedia.carousel.CarouselUnify
+        android:id="@+id/withdrawalRekeningCarouselView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:visibility="gone"
+        app:layout_constraintDimensionRatio="h,4:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tickerLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/tickerLayout"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.TabsUnify
         android:id="@+id/tabSaldoWithdrawal"
@@ -33,7 +34,7 @@
         android:paddingBottom="@dimen/dp_0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layoutRekeningWidget"
+        app:layout_constraintTop_toBottomOf="@+id/withdrawalRekeningCarouselView"
         app:tabIndicatorColor="@color/tkpd_main_green"
         app:tabMode="fixed"
         app:tabSelectedTextColor="@color/tkpd_main_green"
@@ -61,16 +62,37 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 
-
-    <include
+    <RelativeLayout
         android:id="@+id/loadingLayout"
-        layout="@layout/loading_layout"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="@dimen/spacing_lvl8"
+            android:layout_height="@dimen/spacing_lvl8"
+            android:layout_centerInParent="true"
+            app:loader_corner_radius="3dp"
+            app:loader_type="circular" />
+    </RelativeLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    <!--
+        <include
+            android:id="@+id/withdrawalRekeningCarouselView"
+            layout="@layout/swd_layout_premium_account"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tickerLayout" />-->

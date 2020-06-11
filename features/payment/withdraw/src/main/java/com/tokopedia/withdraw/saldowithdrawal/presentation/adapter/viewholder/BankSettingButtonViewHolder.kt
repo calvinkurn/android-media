@@ -12,22 +12,24 @@ import kotlinx.android.synthetic.main.swd_item_add_bank.view.*
 
 class BankSettingButtonViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-    init {
-        itemView.findViewById<TextView>(R.id.text)
-                .setCompoundDrawablesWithIntrinsicBounds(MethodChecker
-                        .getDrawable(itemView.context, R.drawable.swd_ic_add_round),
-                        null, null, null);
-    }
-
-    private val tvSettingTitle: TextView = itemView.text
+    private val tvBankAccountSettingTitle: TextView = itemView.tvBankAccountSettingTitle
 
     fun bindData(numberOfAccount: Int, openAddBankAccount: () -> Unit,
                  openBankAccountSetting: () -> Unit) {
         val context: Context = itemView.context
-        tvSettingTitle.text = when (numberOfAccount) {
-            in 0..2 -> context.getString(R.string.swd_title_add_account_bank)
-            3 -> context.getString(R.string.swd_title_set_account_bank)
-            else -> context.getString(R.string.swd_title_set_rekening_utama)
+        when (numberOfAccount) {
+            in addBankAccountRange -> {
+                tvBankAccountSettingTitle.setCompoundDrawablesWithIntrinsicBounds(MethodChecker
+                        .getDrawable(itemView.context, R.drawable.swd_add_bank),
+                        null, null, null);
+                tvBankAccountSettingTitle.text = context.getString(R.string.swd_title_add_account_bank)
+            }
+            else -> {
+                tvBankAccountSettingTitle.setCompoundDrawablesWithIntrinsicBounds(MethodChecker
+                        .getDrawable(itemView.context, R.drawable.swd_ic_edit),
+                        null, null, null);
+                tvBankAccountSettingTitle.text = context.getString(R.string.swd_title_set_account_bank)
+            }
         }
         itemView.setOnClickListener {
             if (numberOfAccount < 3)
@@ -39,6 +41,7 @@ class BankSettingButtonViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     companion object {
         val LAYOUT_ID = R.layout.swd_item_add_bank
+        val addBankAccountRange = 0..2
 
         fun getViewHolder(inflater: LayoutInflater, parent: ViewGroup) = BankSettingButtonViewHolder(
                 inflater.inflate(LAYOUT_ID, parent, false)
