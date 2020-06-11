@@ -5,10 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
-import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 
@@ -45,13 +45,13 @@ class PlayButtonView(
 
     fun showPlayButton() {
         ivPlay.setImageResource(com.tokopedia.play_common.R.drawable.ic_play_play_round)
-        tvWatchAgain.gone()
+        tvWatchAgain.hide()
         show()
     }
 
     fun showRepeatButton() {
         ivPlay.setImageResource(R.drawable.ic_play_repeat_round)
-        tvWatchAgain.visible()
+        tvWatchAgain.show()
         show()
     }
 

@@ -450,9 +450,8 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun showErrorToaster() {
         Toaster.toasterCustomCtaWidth = TOASTER_CTA_WIDTH
-        view?.let { Toaster.make(talkReadingContainer, getString(R.string.reading_connection_error_toaster_message), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_retry), View.OnClickListener {
-            loadData(currentPage)
-        }) }
+        view?.let {
+            Toaster.build(talkReadingContainer, getString(R.string.reading_connection_error_toaster_message), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_retry), View.OnClickListener { loadData(currentPage) }). show() }
     }
 
     private fun updateSortHeader(sortOption: SortOption) {

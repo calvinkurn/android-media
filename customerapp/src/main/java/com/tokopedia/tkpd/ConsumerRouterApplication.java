@@ -118,7 +118,7 @@ import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.purchase_platform.common.constant.CartConstant;
-import com.tokopedia.purchase_platform.features.cart.view.CartFragment;
+import com.tokopedia.cart.view.CartFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -834,7 +834,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         AppWidgetUtil.sendBroadcastToAppWidget(activity);
         refreshFCMTokenFromForegroundToCM();
 
-        mIris.setUserId("");
         setTetraUserId("");
     }
 

@@ -79,9 +79,24 @@ class ProductSheetComponentTest {
     }
 
     @Test
-    fun `when the data is successfully retrieved, then product list should be shown`() = runBlockingTest(testDispatcher) {
+    fun `given data is successfully retrieved, when product list is empty, then empty state should be shown`() = runBlockingTest(testDispatcher) {
         val mockResult = modelBuilder.buildPlayResultSuccess(
                 modelBuilder.buildProductSheetUiModel()
+        )
+
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetProductSheet(mockResult))
+        verify {
+            component.uiView.showEmpty(mockResult.data.partnerId)
+        }
+        confirmVerified(component.uiView)
+    }
+
+    @Test
+    fun `given data is successfully retrieved, when product list is not empty, then product list should be shown`() = runBlockingTest(testDispatcher) {
+        val mockResult = modelBuilder.buildPlayResultSuccess(
+                modelBuilder.buildProductSheetUiModel(
+                        productList = listOf(modelBuilder.buildProductLineUiModel())
+                )
         )
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetProductSheet(mockResult))
@@ -121,7 +136,7 @@ class ProductSheetComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class ProductSheetComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : ProductSheetComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
+    class ProductSheetComponentMock(container: ViewGroup, bus: EventBusFactory, scope: CoroutineScope) : ProductSheetComponent(container, bus, scope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): ProductSheetView {
             return mockk(relaxed = true)
         }

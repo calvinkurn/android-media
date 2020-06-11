@@ -3,13 +3,20 @@ package com.tokopedia.chat_common.data
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.domain.pojo.productattachment.FreeShipping
 import com.tokopedia.chat_common.domain.pojo.productattachment.PlayStoreData
+import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 import java.util.*
 
 /**
  * @author by nisie on 5/14/18.
  */
-open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> {
+open class ProductAttachmentViewModel : SendableViewModel,
+        Visitable<BaseChatTypeFactory>,
+        DeferredAttachment {
+
+    override var isLoading: Boolean = true
+    override var isError: Boolean = false
+    override val id: String get() = attachmentId
 
     var productId: Int = 0
         private set
@@ -64,6 +71,39 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
         }
 
     val stringBlastId: String get() = blastId.toString()
+
+    override fun updateData(attribute: Any?) {
+        if (attribute is ProductAttachmentAttributes) {
+            productId = attribute.productId
+            productName = attribute.productProfile.name
+            productPrice = attribute.productProfile.price
+            productUrl = attribute.productProfile.url
+            productImage = attribute.productProfile.imageUrl
+            priceInt = attribute.productProfile.priceInt
+            category = attribute.productProfile.category
+            variants = attribute.productProfile.variant ?: emptyList()
+            dropPercentage = attribute.productProfile.dropPercentage
+            priceBefore = attribute.productProfile.priceBefore
+            shopId = attribute.productProfile.shopId
+            freeShipping = attribute.productProfile.freeShipping
+            categoryId = attribute.productProfile.categoryId
+            playStoreData = attribute.productProfile.playStoreData
+            minOrder = attribute.productProfile.minOrder
+            remainingStock = attribute.productProfile.remainingStock
+            status = attribute.productProfile.status
+            wishList = attribute.productProfile.wishList
+            images = attribute.productProfile.images
+            if (variants.isNotEmpty()) {
+                setupVariantsField()
+            }
+            this.isLoading = false
+        }
+    }
+
+    override fun syncError() {
+        this.isLoading = false
+        this.isError = true
+    }
 
     constructor(messageId: String, fromUid: String, from: String,
                 fromRole: String, attachmentId: String, attachmentType: String,
@@ -295,6 +335,11 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
 
     fun getIdString(): String {
         return productId.toString()
+    }
+
+    override fun finishLoading() {
+        this.isLoading = false
+        this.isError = false
     }
 
     companion object {

@@ -17,8 +17,6 @@ buildscript {
 
 dependencies {
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.core_legacy)
-    implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.tkpdabstraction)

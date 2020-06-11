@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model
 
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.PromoCheckoutErrorDefault
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 
 data class OrderPromo(
         var lastApply: LastApplyUiModel? = null,

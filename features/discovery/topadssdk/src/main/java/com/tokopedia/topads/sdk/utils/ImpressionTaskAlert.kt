@@ -13,28 +13,31 @@ class ImpressionTaskAlert(private val className: String) {
     private val VIEWS = "views"
     private val CLICKS = "clicks"
     private val TOPADS_TRACKING = "TOPADS_TRACKING"
+    private val TOPADS_HOST = "ta.tokopedia.com"
 
     private fun checkImpression(uri: Uri) {
         val currentTime = System.currentTimeMillis()
         val timeSpan = currentTime - lastImpression
         if (timeSpan < impressionTreshold && !uri.toString().contains(VIEWS)) {
-            Timber.w("P2#$TOPADS_TRACKING#'Alert anomaly impression';class='$className';diff_time=" + timeSpan)
+            Timber.w("P2#$TOPADS_TRACKING#impression;host=${uri.host};class='$className';diff_time=$timeSpan")
         } else if (timeSpan < impressionTreshold && uri.toString().contains(CLICKS)) {
-            Timber.w("P2#$TOPADS_TRACKING#'Alert anomaly click';class='$className';diff_time=" + timeSpan)
+            Timber.w("P2#$TOPADS_TRACKING#click;host=${uri.host};class='$className';diff_time=$timeSpan")
         }
         lastImpression = currentTime
     }
 
     private fun checkParam(uri: Uri) {
         if (uri.getQueryParameter(SID).isNullOrBlank()){
-            Timber.w("P2#$TOPADS_TRACKING#'Url is not contain sid';class='$className'")
+            Timber.w("P2#$TOPADS_TRACKING#no_sid;host=${uri.host};class='$className'")
         }
     }
 
     fun track(url: String) {
         var uri = Uri.parse(url)
-        checkImpression(uri)
-        checkParam(uri)
+        if(uri.host.equals(TOPADS_HOST)) {
+            checkImpression(uri)
+            checkParam(uri)
+        }
     }
 
     companion object {

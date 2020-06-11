@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.atc_common.domain.model.response.DataModel
-import com.tokopedia.design.button.BottomActionView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
@@ -43,6 +42,8 @@ import com.tokopedia.notifcenter.presentation.viewmodel.NotificationUpdateViewMo
 import com.tokopedia.notifcenter.util.isSingleItem
 import com.tokopedia.notifcenter.util.viewModelProvider
 import com.tokopedia.notifcenter.widget.ChipFilterItemDivider
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import kotlinx.android.synthetic.main.fragment_notification_update.*
 import javax.inject.Inject
 
@@ -50,9 +51,12 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
         NotificationUpdateContract.View,
         NotificationLongerTextDialog.LongerContentListener {
 
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject lateinit var presenter: NotificationUpdatePresenter
-    @Inject lateinit var analytics: NotificationUpdateAnalytics
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var presenter: NotificationUpdatePresenter
+    @Inject
+    lateinit var analytics: NotificationUpdateAnalytics
 
     private lateinit var viewModel: NotificationUpdateViewModel
 
@@ -104,9 +108,16 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
         initLoadPresenter()
         initObservable()
 
-        bottomFilterView()?.setButton1OnClickListener {
-            analytics.trackMarkAllAsRead(markAllReadCounter.toString())
-            presenter.markAllReadNotificationUpdate(::onSuccessMarkAllRead)
+        //setup floatingButtonUnify
+        val markReadStr = context?.getString(R.string.mark_all_as_read) ?: "Tandai semua dibaca"
+        bottomFilterView()?.let {
+            val markReadItem = arrayListOf(
+                    FloatingButtonItem(markReadStr, false) {
+                        analytics.trackMarkAllAsRead(markAllReadCounter.toString())
+                        presenter.markAllReadNotificationUpdate(::onSuccessMarkAllRead)
+                    }
+            )
+            it.addItem(markReadItem)
         }
 
         lstFilter?.adapter = filterAdapter
@@ -282,7 +293,7 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? = view?.findViewById(R.id.swipeToRefresh)
 
-    override fun bottomFilterView(): BottomActionView? = view?.findViewById(R.id.filterBtn)
+    override fun bottomFilterView(): FloatingButtonUnify? = view?.findViewById(R.id.filterBtn)
 
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
 

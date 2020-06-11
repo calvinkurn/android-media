@@ -1,0 +1,125 @@
+[{
+  "data": {
+    "shopInfoByID": {
+      "result": [{
+        "shopCore": {
+          "shopID": "1154916",
+          "description": "Online Shop Tokopedia Open : Senin - Sabtu (10.30 - 18.00).Toko Ps Enterprise Mangga 2 Open : Senin - Minggu (10.30 - 18.00).",
+          "domain": "psegameshop",
+          "name": "Psegameshop",
+          "tagLine": "Kini Pse ( Psegameshop.com ) hadir di Tokopedia.",
+          "url": "https://www.tokopedia.com/psegameshop"
+        },
+        "freeOngkir": {
+          "isActive": false,
+          "imgURL": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+        },
+        "closedInfo": {
+          "closedNote": "",
+          "reason": "Mohon maaf atas ketidaknyamanan yang Anda alami. Dengan berat hati toko Anda harus kami tutup karena adanya indikasi pelanggaran Syarat dan Ketentuan Tokopedia. Silahkan periksa kotak pesan Anda untuk penjelasan lebih lanjut. \u003cbr\u003e Demi kenyamanan dan keamanan bertransaksi di Tokopedia, kami himbau agar Anda dapat memperhatikan dan memahami dengan baik seluruh Syarat dan Ketentuan Transaksi Penjualan (Poin D) di \u003ca href='https://www.tokopedia.com/terms.pl#sell'\u003ehttps://www.tokopedia.com/terms.pl#sell\u003c/a\u003e. \u003cbr\u003eTerima kasih,\u003cbr\u003eTim Tokopedia",
+          "until": ""
+        },
+        "createInfo": {
+          "openSince": "May 2016"
+        },
+        "shopAssets": {
+          "avatar": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2020/2/1/1154916/1154916_8027b126-a4f5-40d4-8ac5-0bd58cfa2e22.jpg",
+          "cover": "https://ecs7-p.tokopedia.net/img/cache/1190/shops-1/2020/2/7/9544841/9544841_87bed2f1-d41c-4fca-b16e-e1476653ddfd"
+        },
+        "shipmentInfo": [{
+          "isAvailable": 1,
+          "code": "jne",
+          "shipmentID": "1",
+          "image": "https://ecs7.tokopedia.net/img/kurir-jne.png",
+          "name": "JNE",
+          "product": [{
+            "isAvailable": 1,
+            "productName": "Reguler",
+            "shipProdID": "1",
+            "uiHidden": false
+          }, {
+            "isAvailable": 1,
+            "productName": "OKE",
+            "shipProdID": "2",
+            "uiHidden": false
+          }, {
+            "isAvailable": 1,
+            "productName": "YES",
+            "shipProdID": "6",
+            "uiHidden": false
+          }, {
+            "isAvailable": 1,
+            "productName": "JNE Trucking",
+            "shipProdID": "22",
+            "uiHidden": false
+          }],
+          "isPickup": 0,
+          "maxAddFee": 0,
+          "awbStatus": 1
+        }, {
+          "isAvailable": 1,
+          "code": "jnt",
+          "shipmentID": "14",
+          "image": "https://ecs7.tokopedia.net/img/kurir-jnt.png",
+          "name": "J\u0026T",
+          "product": [{
+            "isAvailable": 1,
+            "productName": "Reguler",
+            "shipProdID": "27",
+            "uiHidden": false
+          }],
+          "isPickup": 0,
+          "maxAddFee": 0,
+          "awbStatus": 1
+        }],
+        "shopLastActive": "1591237901",
+        "location": "Jakarta Utara",
+        "isAllowManage": 0,
+        "goldOS": {
+          "isGold": 1,
+          "isGoldBadge": 1,
+          "isOfficial": 0
+        },
+        "favoriteData": {
+          "totalFavorite": 24771,
+          "alreadyFavorited": 0
+        },
+        "statusInfo": {
+          "shopStatus": 1,
+          "statusMessage": "",
+          "statusTitle": ""
+        },
+        "bbInfo": [],
+        "topContent": {
+          "topURL": "https://ws.tokopedia.com/ssi/shop-static/psegameshop/_apps/top"
+        },
+        "address": [],
+        "shopHomeType": "none"
+      }]
+    }
+  }
+}, {
+  "data": {
+    "reputation_shops": [{
+      "badge": "https://ecs7.tokopedia.net/img/repsys/diamond-1.gif",
+      "badge_hd": "https://ecs7.tokopedia.net/img/repsys/diamond-1-hd.gif",
+      "score": "89.278",
+      "score_map": "16"
+    }]
+  }
+}, {
+  "data": {
+    "feed_check_whitelist": {
+      "__typename": "FeedCheckWhitelist",
+      "iswhitelist": true,
+      "url": "https://m.tokopedia.com/content/new?image=",
+      "title": "",
+      "title_identifier": "",
+      "description": "",
+      "post_success": "Create Post Success",
+      "image_url": "",
+      "authors": [],
+      "error": ""
+    }
+  }
+}]
