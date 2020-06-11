@@ -3,51 +3,14 @@
   "mode": "subset",
   "query": [
     {
-      "items": [
-        {
-          "dimension83": "{{.*}}",
-          "item_id": "{{.*}}",
-          "dimension96": "{{.*}}",
-          "price": "{{\\d*.\\d*}}",
-          "dimension40": "{{.*}}",
-          "dimension84": "{{.*}}",
-          "index": "{{\\d*}}",
-          "item_name": "{{.*}}",
-          "item_brand": "{{.*}}",
-          "item_variant": "{{.*}}",
-          "item_category": "{{.*}}"
-        }
-      ],
       "eventCategory": "homepage",
       "event": "view_item_list",
       "eventAction": "impression on product dynamic channel left carousel",
-      "item_list": "{{.*}}",
-      "eventLabel": "{{.*}}",
-      "channelId": "{{.*}}"
     },
     {
-      "items": [
-        {
-          "dimension83": "{{.*}}",
-          "item_id": "{{.*}}",
-          "dimension96": "{{.*}}",
-          "price": "{{\\d*.\\d*}}",
-          "dimension40": "{{.*}}",
-          "dimension84": "{{.*}}",
-          "index": "{{\\d*}}",
-          "item_name": "{{.*}}",
-          "item_brand": "{{.*}}",
-          "item_variant": "{{.*}}",
-          "item_category": "{{.*}}"
-        }
-      ],
       "eventCategory": "homepage",
       "event": "select_content",
       "eventAction": "click on product dynamic channel left carousel",
-      "item_list": "{{.*}}",
-      "eventLabel": "{{.*}}",
-      "channelId": "{{.*}}",
-      "campaignCode": "{{{.*}}}"
     },
     {
       "eventCategory": "homepage",
