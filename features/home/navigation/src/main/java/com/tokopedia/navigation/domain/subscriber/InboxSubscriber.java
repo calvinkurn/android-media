@@ -36,8 +36,14 @@ public class InboxSubscriber extends Subscriber<NotificationEntity> {
 
     @Override
     public void onNext(NotificationEntity notificationEntity) {
-        if (notificationEntity != null)
-            this.inboxView.onRenderNotifInbox(notificationEntity.getNotifications());
+        if (notificationEntity != null) {
+            int reviewCount = notificationEntity.getReviewCounter().getCount();
+            if(reviewCount == 0) {
+                this.inboxView.onRenderNotifInbox(notificationEntity.getNotifications(), "");
+            } else {
+                this.inboxView.onRenderNotifInbox(notificationEntity.getNotifications(), String.valueOf(reviewCount));
+            }
+        }
     }
 
     private void handleErrorinitCartList(Throwable e) {

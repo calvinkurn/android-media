@@ -399,10 +399,10 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     @Override
-    public void onRenderNotifInbox(NotificationsModel entity) {
+    public void onRenderNotifInbox(NotificationsModel entity, String reviewCount) {
         emptyLayout.setVisibility(View.GONE);
         swipeRefreshLayout.setVisibility(View.VISIBLE);
-        adapter.updateValue(entity);
+        adapter.updateValue(entity, reviewCount);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.tokopedia.navigation.data.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.navigation.domain.model.ProductrevInboxReviewCounter;
 import com.tokopedia.navigation_common.model.FeedModel;
 import com.tokopedia.navigation_common.model.HomeFlagModel;
 import com.tokopedia.navigation_common.model.NotifcenterUnread;
@@ -33,6 +34,10 @@ public class NotificationEntity {
     @Expose
     private HomeFlagModel homeFlag = new HomeFlagModel();
 
+    @SerializedName("productrevInboxReviewCounter")
+    @Expose
+    private ProductrevInboxReviewCounter reviewCounter = new ProductrevInboxReviewCounter();
+
     public NotificationsModel getNotifications() {
         return notifications;
     }
@@ -56,4 +61,6 @@ public class NotificationEntity {
     public HomeFlagModel getHomeFlag() {
         return homeFlag;
     }
+
+    public ProductrevInboxReviewCounter getReviewCounter() { return reviewCounter; }
 }
