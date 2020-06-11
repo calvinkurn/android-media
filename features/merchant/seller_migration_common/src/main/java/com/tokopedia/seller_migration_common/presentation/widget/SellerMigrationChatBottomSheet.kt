@@ -1,6 +1,7 @@
 package com.tokopedia.seller_migration_common.presentation.widget
 
 import android.content.Context
+import android.os.Bundle
 import android.view.View
 import com.tokopedia.seller_migration_common.R
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
@@ -28,7 +29,12 @@ class SellerMigrationChatBottomSheet(titles: List<String>,
         }
     }
 
-    private val userId = UserSession(context).userId
+    private var userId = ""
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        userId = UserSession(context).userId
+    }
 
     override fun trackGoToSellerApp() {
         SellerMigrationTracking.eventGoToSellerApp(this.userId, SellerMigrationTrackingConstants.EVENT_CLICK_GO_TO_SELLER_APP_CHAT)

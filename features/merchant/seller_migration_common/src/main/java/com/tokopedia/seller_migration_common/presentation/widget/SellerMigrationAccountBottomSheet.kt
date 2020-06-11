@@ -33,10 +33,11 @@ class SellerMigrationAccountBottomSheet : BottomSheetUnify() {
             }
         }
     }
-    private val userId = UserSession(context).userId
+    private var userId = ""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        userId = UserSession(context).userId
         setupPadding()
         sellerMigrationAccountBottomSheetImage.loadImage(SellerMigrationConstants.SELLER_MIGRATION_ACCOUNT_IMAGE_LINK)
         sellerMigrationBottomSheetContent.text = context?.let { HtmlLinkHelper(it, getString(R.string.seller_migration_account_home_bottom_sheet_content)).spannedString }
