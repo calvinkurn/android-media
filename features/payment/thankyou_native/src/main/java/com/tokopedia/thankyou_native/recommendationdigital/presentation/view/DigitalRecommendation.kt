@@ -1,4 +1,4 @@
-package com.tokopedia.thankyou_native.recommendation.presentation.view
+package com.tokopedia.thankyou_native.recommendationdigital.presentation.view
 
 import android.content.Context
 import android.content.Intent
@@ -29,14 +29,16 @@ import com.tokopedia.thankyou_native.recommendation.model.MarketPlaceRecommendat
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.DigitakRecommendationAdapter
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.decorator.ProductCardDefaultDecorator
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.listener.MarketPlaceRecommendationViewListener
+import com.tokopedia.thankyou_native.recommendation.presentation.view.IDigitalRecommendationView
 import com.tokopedia.thankyou_native.recommendation.presentation.viewmodel.MarketPlaceRecommendationViewModel
+import com.tokopedia.thankyou_native.recommendationdigital.presentation.adapter.DigitalRecommendationAdapter
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.thank_pdp_recommendation.view.*
 import javax.inject.Inject
 
-class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
+class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
 
 
     private lateinit var fragment: BaseDaggerFragment
@@ -57,7 +59,7 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
         viewModelProvider[MarketPlaceRecommendationViewModel::class.java]
     }
 
-    private lateinit var adapter: DigitakRecommendationAdapter
+    private lateinit var adapter: DigitalRecommendationAdapter
 
     var listener: MarketPlaceRecommendationViewListener? = null
 
@@ -144,7 +146,7 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL,
                 false)
-        adapter = DigitakRecommendationAdapter(marketPlaceRecommendationModelList, blankSpaceConfig, listener)
+        adapter = DigitalRecommendationAdapter(marketPlaceRecommendationModelList, blankSpaceConfig, listener)
         recyclerView.adapter = adapter
         recyclerView.addItemDecoration(ProductCardDefaultDecorator())
     }
@@ -172,7 +174,7 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
             }
 
             override fun onWishListedSuccessfully(message: String) {
-                this@MarketPlaceRecommendation.onWishListedSuccessfully(message)
+                this@DigitalRecommendation.onWishListedSuccessfully(message)
             }
 
             override fun onRemoveFromWishList(message: String) {
@@ -180,7 +182,7 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
             }
 
             override fun onShowError(throwable: Throwable?) {
-                this@MarketPlaceRecommendation.onShowError(throwable)
+                this@DigitalRecommendation.onShowError(throwable)
             }
 
             override fun onRecommendationItemDisplayed(recommendationItem: RecommendationItem,
