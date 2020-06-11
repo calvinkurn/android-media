@@ -7,7 +7,6 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +36,6 @@ import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.DaggerPromoListFragmentComponent;
 import com.tokopedia.loyalty.di.component.PromoListFragmentComponent;
 import com.tokopedia.loyalty.di.module.PromoListFragmentModule;
-import com.tokopedia.loyalty.view.LoyaltyGlobalErrorKt;
 import com.tokopedia.loyalty.view.activity.PromoDetailActivity;
 import com.tokopedia.loyalty.view.adapter.PromoListAdapter;
 import com.tokopedia.loyalty.view.data.PromoData;
@@ -81,7 +79,6 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
     private View containerList;
     private ViewFlipper viewFlipper;
     private GlobalError globalError;
-    private View btnOpenSettings;
 
     @Inject
     IPromoListPresenter dPresenter;
@@ -133,7 +130,6 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
         containerList = view.findViewById(R.id.container_list);
         viewFlipper = view.findViewById(R.id.view_flipper);
         globalError = view.findViewById(R.id.global_error);
-        btnOpenSettings = LoyaltyGlobalErrorKt.addButton(globalError, getString(R.string.loyalty_open_settings));
         initView(view);
         return view;
     }
@@ -369,14 +365,6 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
 
         quickSingleFilterView.actionSelect(indexAutoSelectCategoryFilter);
 
-        btnOpenSettings.setOnClickListener(v -> {
-            try {
-                Intent intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
-                v.getContext().startActivity(intent);
-            } catch (Exception ex) {
-                //Do nothing
-            }
-        });
     }
 
     private List<QuickFilterItem> setQuickFilterItems(List<PromoSubMenuData> promoSubMenuDataList) {
@@ -474,23 +462,23 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
 
     }
 
-    private void handleErrorEmptyState(String title, String subtitle, boolean hideTryAgain) {
+    private void handleErrorEmptyState(String title, String subtitle, boolean hideAllActionButton) {
         if (refreshHandler.isRefreshing()) refreshHandler.finishRefresh();
         adapter.clearDataList();
         if (!TextUtils.isEmpty(title)) {
             globalError.getErrorTitle().setText(title);
         }
 
-        globalError.getErrorAction().setVisibility(hideTryAgain ? View.GONE : View.VISIBLE);
-
         if (!TextUtils.isEmpty(title)) {
             globalError.getErrorDescription().setText(subtitle);
         }
         if (!isConnectedToInternet()) {
             globalError.setType(GlobalError.Companion.getNO_CONNECTION());
-            btnOpenSettings.setVisibility(View.VISIBLE);
-        } else {
-            btnOpenSettings.setVisibility(View.GONE);
+        }
+
+        if (hideAllActionButton) {
+            globalError.getErrorAction().setVisibility(View.GONE);
+            globalError.getErrorSecondaryAction().setVisibility(View.GONE);
         }
 
         viewFlipper.setDisplayedChild(CONTAINER_ERROR);

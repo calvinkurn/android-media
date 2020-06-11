@@ -5,7 +5,7 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -25,7 +25,6 @@ import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.DaggerPromoListActivityComponent;
 import com.tokopedia.loyalty.di.component.PromoListActivityComponent;
 import com.tokopedia.loyalty.di.module.PromoListActivityModule;
-import com.tokopedia.loyalty.view.LoyaltyGlobalErrorKt;
 import com.tokopedia.loyalty.view.adapter.PromoPagerAdapter;
 import com.tokopedia.loyalty.view.compoundview.MenuPromoTab;
 import com.tokopedia.loyalty.view.data.PromoMenuData;
@@ -59,7 +58,6 @@ public class PromoListActivity extends BaseActivity implements IPromoListActivit
     private Toolbar toolbar;
     private AppCompatImageView shimmerImageBack;
     private GlobalError globalError;
-    private View btnOpenSettings;
 
     private String autoSelectedMenuId;
     private String autoSelectedCategoryId;
@@ -144,7 +142,6 @@ public class PromoListActivity extends BaseActivity implements IPromoListActivit
         shimmerImageBack = findViewById(R.id.shimmer_back);
         toolbar = (Toolbar) findViewById(com.tokopedia.abstraction.R.id.toolbar);
         globalError = findViewById(R.id.global_error);
-        btnOpenSettings = LoyaltyGlobalErrorKt.addButton(globalError, getString(R.string.loyalty_open_settings));
 
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -156,15 +153,6 @@ public class PromoListActivity extends BaseActivity implements IPromoListActivit
 
         globalError.getErrorAction().setOnClickListener(v -> {
             dPresenter.processGetPromoMenu();
-        });
-
-        btnOpenSettings.setOnClickListener(v -> {
-            try {
-                Intent intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
-                v.getContext().startActivity(intent);
-            } catch (Exception ex) {
-                //Do nothing
-            }
         });
     }
 
@@ -193,16 +181,22 @@ public class PromoListActivity extends BaseActivity implements IPromoListActivit
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
 
-        int indexMenuAutoSelected = Integer.parseInt(autoSelectedMenuId);
+        int indexMenuAutoSelected = 0;
+        if (!TextUtils.isEmpty(autoSelectedMenuId)) {
+            indexMenuAutoSelected = Integer.parseInt(autoSelectedMenuId);
+        }
+
 
         for (int i = 0; i < promoMenuDataList.size(); i++) {
             MenuPromoTab menuPromoTab = new MenuPromoTab(this);
             menuPromoTab.renderData(promoMenuDataList.get(i));
             tabLayout.getTabAt(i).setCustomView(menuPromoTab);
 
-            String menuId = promoMenuDataList.get(i).getMenuId();
-            if (menuId.equalsIgnoreCase(autoSelectedMenuId)) {
-                indexMenuAutoSelected = i;
+            if (!TextUtils.isEmpty(autoSelectedMenuId)) {
+                String menuId = promoMenuDataList.get(i).getMenuId();
+                if (menuId.equalsIgnoreCase(autoSelectedMenuId)) {
+                    indexMenuAutoSelected = i;
+                }
             }
         }
 
@@ -349,9 +343,6 @@ public class PromoListActivity extends BaseActivity implements IPromoListActivit
     private void handlerError() {
         if (!isConnectedToInternet()) {
             globalError.setType(GlobalError.Companion.getNO_CONNECTION());
-            btnOpenSettings.setVisibility(View.VISIBLE);
-        } else {
-            btnOpenSettings.setVisibility(View.GONE);
         }
 
         viewPager.setVisibility(View.GONE);
