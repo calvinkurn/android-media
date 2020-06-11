@@ -275,6 +275,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private var pageLoadTimeCallback: PageLoadTimePerformanceInterface? = null
     private var isOnRecylerViewLayoutAdded = false
     private var fragmentCreatedForFirstTime = false
+    private var lock = Object()
 
 
     override fun onAttach(context: Context) {
@@ -711,25 +712,6 @@ open class HomeFragment : BaseDaggerFragment(),
                         (dataMap[HomeViewModel.GRID] as DynamicHomeChannel.Grid?)!!,
                         dataMap[HomeViewModel.POSITION] as Int,
                         (dataMap[HomeViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
-                        "0",
-                        getHomeViewModel().getUserId()
-                ) as HashMap<String, Any>)
-                RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
-            }
-        })
-
-        viewModel.get().oneClickCheckoutHomeComponent.observe(viewLifecycleOwner, Observer { event: Event<Any> ->
-            val data = event.peekContent()
-            if (data is Throwable) { // error
-                showToaster(getString(R.string.home_error_connection), TYPE_ERROR)
-            } else {
-                val dataMap = data as Map<*, *>
-                sendEETracking(HomePageTrackingV2.RecommendationList.getAddToCartOnDynamicListCarouselHomeComponent(
-                        (dataMap[HomeViewModel.CHANNEL] as ChannelModel)!!,
-                        (dataMap[HomeViewModel.GRID] as ChannelGrid)!!,
-                        dataMap[HomeViewModel.POSITION] as Int,
-                        (dataMap[HomeViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
-                        "0",
                         getHomeViewModel().getUserId()
                 ) as HashMap<String, Any>)
                 RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
@@ -1098,7 +1080,7 @@ open class HomeFragment : BaseDaggerFragment(),
         adapter?.resetImpressionHomeBanner()
         resetFeedState()
         removeNetworkError()
-        if(::viewModel.isInitialized) {
+        if (this::viewModel.isInitialized) {
             getHomeViewModel().getSearchHint(isFirstInstall())
             getHomeViewModel().refreshHomeData()
             stickyContent
@@ -1954,12 +1936,14 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onDetach() {
-        getHomeViewModel().onCleared()
+        if(this::viewModel.isInitialized){
+            this.viewModel.get().onCleared()
+        }
         super.onDetach()
     }
 
-    private fun getHomeViewModel() : HomeViewModel{
-        if(!::viewModel.isInitialized){
+    fun getHomeViewModel(): HomeViewModel{
+        if(!this::viewModel.isInitialized){
             initInjectorHome()
         }
         return viewModel.get()
