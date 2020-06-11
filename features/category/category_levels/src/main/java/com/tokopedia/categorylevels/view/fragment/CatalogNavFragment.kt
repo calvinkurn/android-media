@@ -273,7 +273,13 @@ class CatalogNavFragment : BaseBannedProductFragment(),
         catalog_recyclerview.requestLayout()
     }
 
-    data class AceFilterInput(var pmin: String, var pmax: String, var sc: String)
+    data class AceFilterInput(
+            @field:SerializedName("pmin")
+            var pmin: String,
+            @field:SerializedName("pmax")
+            var pmax: String,
+            @field:SerializedName("sc")
+            var sc: String)
 
     override fun onSwipeToRefresh() {
         reloadData()
