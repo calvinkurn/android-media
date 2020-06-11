@@ -149,7 +149,7 @@ class SellerHomeViewModel @Inject constructor(
         launchCatchError(block = {
             _progressWidgetData.value = Success(withContext(Dispatchers.IO) {
                 val today = DateTimeUtil.format(Date().time, DATE_FORMAT)
-                getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(userSession.shopId, today, dataKeys)
+                getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(today, dataKeys)
                 return@withContext getProgressDataUseCase.executeOnBackground()
             })
         }, onError = {

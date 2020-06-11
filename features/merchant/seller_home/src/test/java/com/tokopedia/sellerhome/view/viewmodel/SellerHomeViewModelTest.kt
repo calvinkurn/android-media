@@ -367,16 +367,11 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get progress widget data then returns success result`() {
-        val shopId = "124456"
         val dateStr = "02-02-2020"
         val dataKeys = listOf("x", "y", "z")
         val progressDataList = listOf(ProgressDataUiModel(), ProgressDataUiModel(), ProgressDataUiModel())
 
-        getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(shopId, dateStr, dataKeys)
-
-        every {
-            userSession.shopId
-        } returns shopId
+        getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(dateStr, dataKeys)
 
         coEvery {
             getProgressDataUseCase.executeOnBackground()
@@ -395,16 +390,11 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get progress widget data then returns failed result`() {
-        val shopId = "124456"
         val dateStr = "02-02-2020"
         val dataKeys = listOf("x", "y", "z")
         val throwable = MessageErrorException("error")
 
-        getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(shopId, dateStr, dataKeys)
-
-        every {
-            userSession.shopId
-        } returns shopId
+        getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(dateStr, dataKeys)
 
         coEvery {
             getProgressDataUseCase.executeOnBackground()
