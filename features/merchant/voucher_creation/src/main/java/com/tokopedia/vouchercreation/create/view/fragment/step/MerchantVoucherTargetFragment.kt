@@ -82,7 +82,7 @@ class MerchantVoucherTargetFragment : BaseCreateMerchantVoucherFragment<VoucherT
     }
 
     private val voucherDisplayBottomSheetFragment by lazy {
-        VoucherDisplayBottomSheetFragment.createInstance(context, ::getClickedVoucherDisplayType)
+        VoucherDisplayBottomSheetFragment.createInstance(context, ::getClickedVoucherDisplayType, userSession.userId)
     }
 
     private var alertMinimumMessage = ""
