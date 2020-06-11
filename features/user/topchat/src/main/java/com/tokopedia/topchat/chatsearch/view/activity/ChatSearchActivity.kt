@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatsearch.data.SearchResult
 import com.tokopedia.topchat.chatsearch.di.ChatSearchComponent
 import com.tokopedia.topchat.chatsearch.di.DaggerChatSearchComponent
 import com.tokopedia.topchat.chatsearch.view.fragment.ChatSearchFragment
@@ -64,9 +65,9 @@ class ChatSearchActivity : BaseSimpleActivity(), HasComponent<ChatSearchComponen
         txtToolbarTittle = findViewById(R.id.txt_toolbar_tittle)
     }
 
-    override fun onClickContactLoadMore(query: String) {
+    override fun onClickContactLoadMore(query: String, firstPageContacts: List<SearchResult>) {
         KeyboardHandler.hideSoftKeyboard(this)
-        val loadMoreContactDetail = ContactLoadMoreChatFragment.create(query)
+        val loadMoreContactDetail = ContactLoadMoreChatFragment.create(query, firstPageContacts)
         supportFragmentManager.beginTransaction()
                 .addToBackStack(null)
                 .replace(parentViewResourceID, loadMoreContactDetail, "ContactLoadMoreChatFragment")

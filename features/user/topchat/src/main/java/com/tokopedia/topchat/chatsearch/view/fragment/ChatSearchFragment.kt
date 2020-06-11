@@ -71,7 +71,7 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
     }
 
     override fun onClickContactLoadMore() {
-        listener?.onClickContactLoadMore(viewModel.query)
+        listener?.onClickContactLoadMore(viewModel.query, viewModel.firstContactSearchResults)
     }
 
     override fun onClickChangeKeyword() {
