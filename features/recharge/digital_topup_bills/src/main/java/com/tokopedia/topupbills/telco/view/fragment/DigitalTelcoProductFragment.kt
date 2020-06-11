@@ -28,6 +28,7 @@ import com.tokopedia.topupbills.telco.view.viewmodel.SharedTelcoPrepaidViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalTelcoProductWidget
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
@@ -52,6 +53,8 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
     lateinit var topupAnalytics: DigitalTopupAnalytics
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -112,7 +115,8 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                 sharedModelPrepaid.setProductCatalogSelected(itemProduct)
                 sharedModelPrepaid.setShowTotalPrice(true)
                 if (::selectedOperatorName.isInitialized) {
-                    topupAnalytics.clickEnhanceCommerceProduct(itemProduct, position, selectedOperatorName)
+                    topupAnalytics.clickEnhanceCommerceProduct(itemProduct, position, selectedOperatorName,
+                            userSession.userId)
                 }
             }
 
@@ -133,6 +137,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                                 itemProduct.attributes.selected = true
                                 sharedModelPrepaid.setProductCatalogSelected(itemProduct)
                                 telcoTelcoProductView.selectProductItem(itemProduct)
+                                topupAnalytics.impressionPickProductDetail(itemProduct, selectedOperatorName, userSession.userId)
                             }
                         }
                     })
@@ -142,7 +147,8 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             }
 
             override fun onTrackImpressionProductsList(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>) {
-                topupAnalytics.impressionEnhanceCommerceProduct(digitalTrackProductTelcoList)
+                topupAnalytics.impressionEnhanceCommerceProduct(digitalTrackProductTelcoList, selectedOperatorName,
+                        userSession.userId)
             }
         })
     }

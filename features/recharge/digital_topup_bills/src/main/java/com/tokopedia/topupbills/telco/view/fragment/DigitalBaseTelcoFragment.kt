@@ -29,6 +29,7 @@ import com.tokopedia.topupbills.common.DigitalTopupAnalytics
 import com.tokopedia.topupbills.covertContactUriToContactData
 import com.tokopedia.topupbills.telco.data.RechargeCatalogPrefixSelect
 import com.tokopedia.topupbills.telco.data.TelcoCatalogPrefixSelect
+import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedTelcoViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -237,11 +238,11 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         listMenu.clear()
         if (promo.isNotEmpty()) {
             viewModel.setPromoTelco(promo)
-            listMenu.add(TopupBillsTabItem(DigitalTelcoPromoFragment.newInstance(), "Promo"))
+            listMenu.add(TopupBillsTabItem(DigitalTelcoPromoFragment.newInstance(), TelcoComponentName.PROMO))
         }
         if (recom.isNotEmpty()) {
             viewModel.setRecommendationTelco(recom)
-            listMenu.add(TopupBillsTabItem(DigitalTelcoRecommendationFragment.newInstance(), "Recents"))
+            listMenu.add(TopupBillsTabItem(DigitalTelcoRecommendationFragment.newInstance(), TelcoComponentName.PROMO))
         }
 
         renderPromoAndRecommendation()

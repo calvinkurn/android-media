@@ -18,6 +18,6 @@ public @interface TelcoComponentName {
     String PRODUCT_PULSA = "Pulsa";
     String PRODUCT_ROAMING = "Roaming";
     String PRODUCT_PAKET_DATA = "Paket Data";
-    String TELCO_PREPAID = "Prabayar";
-    String TELCO_POSTPAID = "Pascabayar";
+    String PROMO = "Promo";
+    String RECENTS = "Recents";
 }

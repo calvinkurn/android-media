@@ -217,6 +217,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     fun getEnquiryNumber() {
         operatorSelected?.let { selectedOperator ->
+            topupAnalytics.eventClickCheckEnquiry(categoryName, operatorName, userSession.userId)
             var mapParam = HashMap<String, Any>()
             mapParam.put(KEY_CLIENT_NUMBER, postpaidClientNumberWidget.getInputNumber())
             mapParam.put(KEY_PRODUCT_ID, selectedOperator.operator.attributes.defaultProductId.toString())

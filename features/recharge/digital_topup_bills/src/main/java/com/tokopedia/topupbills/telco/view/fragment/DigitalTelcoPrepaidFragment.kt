@@ -36,6 +36,7 @@ import com.tokopedia.showcase.ShowCaseDialog
 import com.tokopedia.showcase.ShowCaseObject
 import com.tokopedia.showcase.ShowCasePreference
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.common.DigitalTopupEventTracking
 import com.tokopedia.topupbills.generateRechargeCheckoutToken
 import com.tokopedia.topupbills.telco.data.RechargePrefix
 import com.tokopedia.topupbills.telco.data.TelcoCatalogPrefixSelect
@@ -341,9 +342,19 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             override fun onPageSelected(pos: Int) {
                 if (listProductTab.size == 3) {
                     topupAnalytics.eventClickTelcoPrepaidCategory(listProductTab[pos].title)
+                } else {
+                   setTrackingOnTabMenu(listMenu[pos].title)
                 }
             }
         })
+    }
+
+    private fun setTrackingOnTabMenu(title: String) {
+        var action = DigitalTopupEventTracking.Action.CLICK_TAB_PROMO
+        if (title == TelcoComponentName.RECENTS) {
+            action = DigitalTopupEventTracking.Action.CLICK_TAB_RECENT
+        }
+        topupAnalytics.eventClickTabMenuTelco(categoryName, userSession.userId, action)
     }
 
     private fun setTabFromProductSelected() {
