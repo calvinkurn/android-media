@@ -5,7 +5,6 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.account.AccountConstants;
@@ -16,6 +15,7 @@ import com.tokopedia.home.account.data.model.PremiumAccountResponse;
 import com.tokopedia.home.account.data.model.ShopInfoLocation;
 import com.tokopedia.home.account.presentation.viewmodel.AddProductViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.LabelledMenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
@@ -213,6 +213,14 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         menuList.setSectionTrack(context.getString(R.string.title_menu_other_features));
         items.add(menuList);
 
+        items.add(createLabelledMenuList(
+                context.getString(R.string.title_menu_voucher_toko),
+                "Khusus aplikasi Tokopedia Seller",
+                context.getString(R.string.label_menu_voucher_toko),
+                "",
+                PENJUAL,
+                context.getString(R.string.title_menu_other_features)));
+
         ParcelableViewModel menuItem = getRekeningPremiumAccountMenu(accountModel);
         if(menuItem != null)
         items.add(menuItem);
@@ -374,6 +382,18 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         menuGridItems.add(gridItem);
 
         return menuGridItems;
+    }
+
+    private LabelledMenuListViewModel createLabelledMenuList(String title, String label, String description, String appLink, String titleTrack, String sectionTrack) {
+        LabelledMenuListViewModel menuList = new LabelledMenuListViewModel();
+        menuList.setMenu(title);
+        menuList.setLabel(label);
+        menuList.setMenuDescription(description);
+        menuList.setApplink(appLink);
+        menuList.setTitleTrack(titleTrack);
+        menuList.setSectionTrack(sectionTrack);
+
+        return menuList;
     }
 
     private ParcelableViewModel getSellerResolutionMenu(AccountModel accountModel) {

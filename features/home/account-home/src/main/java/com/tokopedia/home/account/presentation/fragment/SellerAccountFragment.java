@@ -26,12 +26,14 @@ import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.adapter.seller.SellerAccountAdapter;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.util.AccountHomeErrorHandler;
+import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationAccountBottomSheet;
+import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationPromoBottomSheet;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.unifycomponents.BottomSheetUnify;
 import com.tokopedia.unifycomponents.ticker.Ticker;
@@ -45,7 +47,6 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import kotlin.Unit;
-import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function2;
 
 import static com.tokopedia.seller_migration_common.SellerMigrationRemoteConfigKt.getSellerMigrationDate;
@@ -66,6 +67,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     private SellerAccountAdapter adapter;
     private PerformanceMonitoring fpmSeller;
     private Ticker migrationTicker;
+    private SellerMigrationPromoBottomSheet sellerMigrationPromoBottomSheet;
 
     @Inject
     SellerAccount.Presenter presenter;
@@ -251,6 +253,13 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     }
 
     @Override
+    public void onMenuListClicked(MenuListViewModel item) {
+        sendTracking(item.getTitleTrack(), item.getSectionTrack(), item.getMenu());
+        if (item.getMenu().equalsIgnoreCase(getString(R.string.title_menu_voucher_toko))) {
+            showSellerMigrationPromoBottomSheet();
+        }
+    }
+    @Override
     public void onProductRecommendationClicked(@NotNull RecommendationItem product, int adapterPosition, String widgetTitle) {
 
     }
@@ -301,4 +310,12 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
             sellerMigrationBottomSheet.show(getChildFragmentManager(), "");
         }
     }
+
+    private void showSellerMigrationPromoBottomSheet() {
+        if (sellerMigrationPromoBottomSheet == null) {
+            sellerMigrationPromoBottomSheet = SellerMigrationPromoBottomSheet.Companion.createNewInstance(requireContext());
+        }
+        sellerMigrationPromoBottomSheet.show(getChildFragmentManager(), "");
+    }
+
 }
