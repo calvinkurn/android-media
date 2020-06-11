@@ -49,8 +49,6 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     private var textViewRatingCount: TextView = itemView.findViewById(R.id.textViewRatingCount)
     private var textViewReviewCount: TextView = itemView.findViewById(R.id.textViewReviewCount)
     private var stokHabisLabel: TextView = itemView.findViewById(R.id.labelStock)
-    private var discountLinerLayout: LinearLayout = itemView.findViewById(R.id.discountLinerLayout)
-    private var shopBadgeLinerLayout: LinearLayout = itemView.findViewById(R.id.shopBadgeLinerLayout)
 
     private lateinit var productCardItemViewModel: ProductCardItemViewModel
     private var productCardName = ""
@@ -250,7 +248,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     private fun setTopads(topads: Boolean?) {
         if (topads == true) {
             topadsTextView.show()
-        }else{
+        } else {
             topadsTextView.hide()
         }
     }
@@ -269,10 +267,10 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     }
 
     private fun setSlashedPrice(discountedPrice: String?) {
-        if(discountedPrice.isNullOrEmpty()){
+        if (!discountedPrice.isNullOrEmpty()) {
             textViewSlashedPrice.setTextAndCheckShow(discountedPrice)
             textViewSlashedPrice.paintFlags = textViewSlashedPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-        }else{
+        } else {
             textViewSlashedPrice.hide()
         }
     }
