@@ -83,7 +83,7 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
             tabs.forEach { tab ->
                 when(tab) {
                     is ReviewInboxTabs.ReviewInboxPending -> {
-                        if(tab.counter.isNotBlank() || tab.counter.toIntOrZero() != 0) {
+                        if(tab.counter.isNotBlank() && tab.counter.toIntOrZero() != 0) {
                             tabTitles.add(getString(R.string.review_pending_tab_title, tab.counter))
                         } else {
                             tabTitles.add(getString(R.string.review_pending_tab_title_no_count))
