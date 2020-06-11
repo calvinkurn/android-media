@@ -1,10 +1,11 @@
 package com.tokopedia.topchat.chatsearch.viewmodel
 
 import androidx.lifecycle.Observer
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.topchat.InstantTaskExecutorRuleSpek
 import com.tokopedia.topchat.chatsearch.data.GetChatSearchResponse
-import com.tokopedia.topchat.chatsearch.data.SearchResult
 import com.tokopedia.topchat.chatsearch.usecase.GetSearchQueryUseCase
+import com.tokopedia.topchat.chatsearch.view.uimodel.ContactLoadMoreUiModel
 import io.mockk.*
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +27,7 @@ object ChatSearchViewModelTest : Spek({
         val triggerSearchObserver by memoized { mockk<Observer<String>>(relaxed = true) }
         val emptyQueryObserver by memoized { mockk<Observer<Boolean>>(relaxed = true) }
         val errorMessageObserver by memoized { mockk<Observer<Throwable>>(relaxed = true) }
-        val searchResultObserver by memoized { mockk<Observer<List<SearchResult>>>(relaxed = true) }
+        val searchResultObserver by memoized { mockk<Observer<List<Visitable<*>>>>(relaxed = true) }
         val getSearchQueryUseCase by memoized { mockk<GetSearchQueryUseCase>(relaxed = true) }
         val viewModel by memoized { ChatSearchViewModel(Dispatchers.Unconfined, getSearchQueryUseCase) }
 
@@ -53,8 +54,8 @@ object ChatSearchViewModelTest : Spek({
             Given("New query") {
                 viewModel.searchResult.observeForever(searchResultObserver)
                 every { getSearchQueryUseCase.doSearch(any(), any(), any(), any()) } answers {
-                    val onSuccess = firstArg<(GetChatSearchResponse) -> Unit>()
-                    onSuccess.invoke(exGetChatSearchResponse)
+                    val onSuccess = firstArg<(GetChatSearchResponse, ContactLoadMoreUiModel?) -> Unit>()
+                    onSuccess.invoke(exGetChatSearchResponse, null)
                 }
             }
 
