@@ -33,18 +33,18 @@ class InitialSearchViewModel @Inject constructor(
     val insertSuccessSearch: LiveData<Result<RegisterSearchUiModel>>
         get() = _insertSuccessSearch
 
-    private val _getSearchSeller = MutableLiveData<Result<SellerSearchUiModel>>()
-    val getSellerSearch: LiveData<Result<SellerSearchUiModel>>
+    private val _getSearchSeller = MutableLiveData<Result<List<SellerSearchUiModel>>>()
+    val getSellerSearch: LiveData<Result<List<SellerSearchUiModel>>>
         get() = _getSearchSeller
 
     private var shopId = ""
     private var keyword = ""
 
-    fun getSellerSearch(keyword: String, lang: String = "id", section: String = "", shopId: String) {
+    fun getSellerSearch(keyword: String, lang: String = "id", section: String, shopId: String) {
         launchCatchError(block = {
             val responseGetSellerSearch = withContext(dispatcherProvider.io()) {
                 getSellerSearchUseCase.params = GetSellerSearchUseCase.createParams(
-                        keyword, lang, shopId)
+                        keyword, lang, shopId, section)
                 GlobalSearchSellerMapper.mapToSellerSearchUiModel(getSellerSearchUseCase.executeOnBackground())
             }
             _getSearchSeller.postValue(Success(responseGetSellerSearch))

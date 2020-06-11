@@ -40,14 +40,16 @@ class GetSellerSearchUseCase @Inject constructor(
                       ref_id
                     }
                   }
+                  count
+                  filters
                 }
               }
             }
         """.trimIndent()
 
         @JvmStatic
-        fun createParams(keyword: String, lang: String, shopId: String): Map<String, Any> =
-                mapOf(KEYWORD to keyword, LANG to lang, SHOP_ID to shopId, SHOP_ID to shopId)
+        fun createParams(keyword: String, lang: String, shopId: String, section: String): Map<String, Any> =
+                mapOf(KEYWORD to keyword, LANG to lang, SHOP_ID to shopId, SHOP_ID to shopId, SECTION to section)
     }
 
     var params = mapOf<String, Any>()
