@@ -1,24 +1,23 @@
 {
+  "readme": "Mix Left component on home; impression, click, and click lihat semua",
+  "mode": "subset",
   "query": [
     {
-      "ecommerce": {
-          "currency code" : "IDR",
-          "impreessions" : [
-          {
-            "dimension83": "{{.*}}",
-            "item_id": "{{.*}}",
-            "dimension96": "{{.*}}",
-            "price": "{{\\d*.\\d*}}",
-            "dimension40": "{{.*}}",
-            "dimension84": "{{.*}}",
-            "index": "{{.*}}",
-            "item_name": "{{.*}}",
-            "item_brand": "{{.*}}",
-            "item_variant": "{{.*}}",
-            "category": "{{.*}}"
-          }
-        ]
-      },
+      "items": [
+        {
+          "dimension83": "{{.*}}",
+          "item_id": "{{.*}}",
+          "dimension96": "{{.*}}",
+          "price": "{{\\d*.\\d*}}",
+          "dimension40": "{{.*}}",
+          "dimension84": "{{.*}}",
+          "index": "{{.*}}",
+          "item_name": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_variant": "{{.*}}",
+          "category": "{{.*}}"
+        }
+      ],
       "eventCategory": "homepage",
       "event": "view_item_list",
       "eventAction": "impression on product dynamic channel left carousel",
@@ -27,24 +26,21 @@
       "channelId": "{{\\d*}}"
     },
     {
-      "ecommerce": {
-        "currency code" : "IDR",
-        "impreessions" : [
-          {
-            "dimension83": "{{.*}}",
-            "item_id": "{{.*}}",
-            "dimension96": "{{.*}}",
-            "price": "{{\\d*.\\d*}}",
-            "dimension40": "{{.*}}",
-            "dimension84": "{{.*}}",
-            "index": "{{.*}}",
-            "item_name": "{{.*}}",
-            "item_brand": "{{.*}}",
-            "item_variant": "{{.*}}",
-            "category": "{{.*}}"
-          }
-        ]
-      },
+      "items": [
+        {
+          "dimension83": "{{.*}}",
+          "item_id": "{{.*}}",
+          "dimension96": "{{.*}}",
+          "price": "{{\\d*.\\d*}}",
+          "dimension40": "{{.*}}",
+          "dimension84": "{{.*}}",
+          "index": "{{.*}}",
+          "item_name": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_variant": "{{.*}}",
+          "category": "{{.*}}"
+        }
+      ],
       "eventCategory": "homepage",
       "event": "select_content",
       "eventAction": "click on product dynamic channel left carousel",
