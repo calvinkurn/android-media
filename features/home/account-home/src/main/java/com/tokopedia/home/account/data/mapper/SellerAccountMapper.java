@@ -215,8 +215,8 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
 
         items.add(createLabelledMenuList(
                 context.getString(R.string.title_menu_voucher_toko),
-                "Khusus aplikasi Tokopedia Seller",
                 context.getString(R.string.label_menu_voucher_toko),
+                context.getString(R.string.description_menu_voucher_toko),
                 "",
                 PENJUAL,
                 context.getString(R.string.title_menu_other_features)));

@@ -33,7 +33,7 @@ import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationAccountBottomSheet;
-import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationPromoBottomSheet;
+import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationVoucherTokoBottomSheet;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.unifycomponents.BottomSheetUnify;
 import com.tokopedia.unifycomponents.ticker.Ticker;
@@ -67,7 +67,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     private SellerAccountAdapter adapter;
     private PerformanceMonitoring fpmSeller;
     private Ticker migrationTicker;
-    private SellerMigrationPromoBottomSheet sellerMigrationPromoBottomSheet;
+    private SellerMigrationVoucherTokoBottomSheet sellerMigrationVoucherTokoBottomSheet;
 
     @Inject
     SellerAccount.Presenter presenter;
@@ -256,7 +256,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     public void onMenuListClicked(MenuListViewModel item) {
         sendTracking(item.getTitleTrack(), item.getSectionTrack(), item.getMenu());
         if (item.getMenu().equalsIgnoreCase(getString(R.string.title_menu_voucher_toko))) {
-            showSellerMigrationPromoBottomSheet();
+            showSellerMigrationVoucherTokoBottomSheet();
         }
     }
     @Override
@@ -311,11 +311,13 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         }
     }
 
-    private void showSellerMigrationPromoBottomSheet() {
-        if (sellerMigrationPromoBottomSheet == null) {
-            sellerMigrationPromoBottomSheet = SellerMigrationPromoBottomSheet.Companion.createNewInstance(requireContext());
+    private void showSellerMigrationVoucherTokoBottomSheet() {
+        if (getContext() != null) {
+            if (sellerMigrationVoucherTokoBottomSheet == null) {
+                sellerMigrationVoucherTokoBottomSheet = SellerMigrationVoucherTokoBottomSheet.Companion.createNewInstance(getContext());
+            }
+            sellerMigrationVoucherTokoBottomSheet.show(getChildFragmentManager(), "");
         }
-        sellerMigrationPromoBottomSheet.show(getChildFragmentManager(), "");
     }
 
 }
