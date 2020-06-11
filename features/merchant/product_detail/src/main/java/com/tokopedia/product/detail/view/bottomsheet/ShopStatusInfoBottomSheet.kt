@@ -4,27 +4,35 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.constant.ProductShopStatusTypeDef
 import com.tokopedia.product.detail.data.util.ShopStatusLinkMovementMethod
 import com.tokopedia.product.detail.view.util.goToWebView
-import com.tokopedia.product.detail.view.widget.CheckImeiBottomSheet
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 
 /**
  * Created by Yehezkiel on 08/06/20
  */
-class ShopStatusInfoBottomSheet(val mActivity: FragmentActivity, private val statusInfo: ShopInfo.StatusInfo) : BottomSheetUnify() {
+class ShopStatusInfoBottomSheet(val mActivity: FragmentActivity, private val statusInfo: ShopInfo.StatusInfo, private val closedInfo: ShopInfo.ClosedInfo, private val isShopOwner: Boolean) : BottomSheetUnify() {
 
     private var parentView: View? = null
     private var messageText: Typography? = null
+    private var messageCloseNote: Typography? = null
+    private var btnRequestOpen: UnifyButton? = null
 
     companion object {
-        fun showShopStatusBottomSheet(context: FragmentActivity, statusInfo: ShopInfo.StatusInfo, shopId: String) {
-            ShopStatusInfoBottomSheet(context, statusInfo).showDialog()
+        fun showShopStatusBottomSheet(context: FragmentActivity, statusInfo: ShopInfo.StatusInfo, closedInfo: ShopInfo.ClosedInfo, isShopOwner: Boolean) {
+            ShopStatusInfoBottomSheet(context, statusInfo, closedInfo, isShopOwner).showDialog()
         }
     }
 
@@ -34,20 +42,43 @@ class ShopStatusInfoBottomSheet(val mActivity: FragmentActivity, private val sta
     }
 
     private fun initView() {
-        if (statusInfo.shopStatus == ProductShopStatusTypeDef.CLOSED) {
-            setTitle(context?.getString(R.string.bs_title_shop_closed) ?: "")
-        } else {
-            setTitle(context?.getString(R.string.bs_title_shop_moderated) ?: "")
-        }
-
         parentView = View.inflate(requireContext(), R.layout.bottom_sheet_shop_status_info, null)
         messageText = parentView?.findViewById(R.id.message_status)
+        messageCloseNote = parentView?.findViewById(R.id.message_close_note)
+        btnRequestOpen = parentView?.findViewById(R.id.btn_request_open_shop)
+
+        when (statusInfo.shopStatus) {
+            ProductShopStatusTypeDef.CLOSED -> {
+                btnRequestOpen?.hide()
+                messageCloseNote?.show()
+                setTitle(context?.getString(R.string.bs_title_shop_closed) ?: "")
+            }
+            ProductShopStatusTypeDef.MODERATED -> {
+                showBtnRequest()
+                messageCloseNote?.hide()
+                setTitle(context?.getString(R.string.bs_title_shop_moderated) ?: "")
+            }
+            ProductShopStatusTypeDef.MODERATED_PERMANENTLY -> {
+                showBtnRequest()
+                messageCloseNote?.hide()
+                setTitle(context?.getString(R.string.bs_title_shop_moderated_permanent) ?: "")
+            }
+            else -> {
+                btnRequestOpen?.hide()
+                messageCloseNote?.hide()
+            }
+        }
 
 
         context?.let {
-            messageText?.text = MethodChecker.fromHtml(statusInfo.statusMessage)
+            messageText?.text = HtmlLinkHelper(it, statusInfo.statusMessage).spannedString
+            messageCloseNote?.text = MethodChecker.fromHtml(closedInfo.note)
             messageText?.movementMethod = ShopStatusLinkMovementMethod {
                 goToWebView(it)
+            }
+            btnRequestOpen?.text = it.getString(R.string.bs_btn_title)
+            btnRequestOpen?.setOnClickListener {
+                goToContactUs()
             }
         }
 
@@ -60,9 +91,19 @@ class ShopStatusInfoBottomSheet(val mActivity: FragmentActivity, private val sta
         }
     }
 
+    private fun goToContactUs() {
+        mActivity.let {
+            RouteManager.route(it, ApplinkConst.CONTACT_US_NATIVE)
+        }
+    }
+
+    private fun showBtnRequest(){
+        btnRequestOpen?.showWithCondition(isShopOwner)
+    }
+
     fun showDialog() {
-        mActivity.supportFragmentManager?.run {
-            show(this, CheckImeiBottomSheet.TAG)
+        mActivity.supportFragmentManager.run {
+            show(this, "bs_shop_status")
         }
     }
 }

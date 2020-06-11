@@ -827,8 +827,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         activity?.let {
             trackOnTickerClicked(tickerTitle, tickerType, componentTrackDataModel)
             ShopStatusInfoBottomSheet.showShopStatusBottomSheet(it, viewModel.shopInfo?.statusInfo
-                    ?: ShopInfo.StatusInfo(), viewModel.getDynamicProductInfoP1?.basic?.shopID
-                    ?: "")
+                    ?: ShopInfo.StatusInfo(), viewModel.shopInfo?.closedInfo ?: ShopInfo.ClosedInfo(), viewModel.isShopOwner())
         }
     }
 

@@ -86,7 +86,7 @@ infix fun String?.toDate(format: String): String {
 
         return if (isLongFormat) {
             val date = Date(it.toLong() * 1000)
-            date.toFormattedString(format)
+            date.toFormattedString(format, Locale("id", "ID"))
         } else {
             this
         }

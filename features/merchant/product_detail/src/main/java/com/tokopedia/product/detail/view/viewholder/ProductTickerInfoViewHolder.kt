@@ -1,15 +1,16 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
+import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.constant.ProductShopStatusTypeDef
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductShopInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.util.toDate
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.unifycomponents.ticker.*
@@ -48,24 +49,29 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
         when (statusInfo?.shopStatus) {
             ProductShopStatusTypeDef.OPEN -> {
                 if (statusInfo.isIdle) {
-                    renderShopTicker(statusInfo.statusTitle, statusInfo.statusMessage, null)
+                    val statusMessage = getStringRes(R.string.ticker_desc_shop_idle)
+                    val statusTitle = getStringRes(R.string.ticker_title_shop_idle)
+                    renderShopTicker(statusTitle, statusMessage, null)
                 }
             }
             ProductShopStatusTypeDef.CLOSED -> {
-                val processedMessage = view.context.getString(R.string.ticker_desc_shop_close, closedInfo?.closeUntil)
-                renderShopTicker(view.context.getString(R.string.ticker_title_shop_close), processedMessage, listener::onTickerShopClicked)
+                val openDate = closedInfo?.closeDetail?.openDateUnix.toDate("EEEE, MMM yyyy")
+                val statusMessage = view.context.getString(R.string.ticker_desc_shop_close, openDate)
+                val statusTitle = getStringRes(R.string.ticker_title_shop_close)
+                renderShopTicker(statusTitle, statusMessage, listener::onTickerShopClicked)
             }
-            ProductShopStatusTypeDef.MODERATED -> {
-                val processedMessage = view.context.getString(R.string.ticker_desc_shop_moderated)
-                renderShopTicker(context.getString(R.string.ticker_title_shop_moderated), processedMessage, listener::onTickerShopClicked)
+            ProductShopStatusTypeDef.MODERATED_PERMANENTLY , ProductShopStatusTypeDef.MODERATED -> {
+                val statusMessage = if (listener.isOwner()) getStringRes(R.string.ticker_desc_shop_moderated_seller) else getStringRes(R.string.ticker_desc_shop_moderated_buyer)
+                val statusTitle = if (listener.isOwner()) getStringRes(R.string.ticker_title_shop_moderated_seller) else getStringRes(R.string.ticker_title_shop_moderated_buyer)
+                renderShopTicker(statusTitle, statusMessage, listener::onTickerShopClicked)
             }
-            ProductShopStatusTypeDef.MODERATED_PERMANENTLY -> {
-                val processedMessage = view.context.getString(R.string.ticker_desc_shop_moderated)
-                renderShopTicker(statusInfo.statusTitle, processedMessage, listener::onTickerShopClicked)
+            ProductShopStatusTypeDef.INCUBATED -> {
+                val processedMessage = getStringRes(R.string.ticker_desc_shop_incubated)
+                val titleMessage = getStringRes(R.string.ticker_title_shop_incubated)
+                renderShopTicker(titleMessage, processedMessage, null)
             }
             else -> {
-                renderShopTicker(statusInfo?.statusTitle ?: "", statusInfo?.statusMessage
-                        ?: "", null)
+                renderShopTicker(statusInfo?.statusTitle ?: "", statusInfo?.statusMessage ?: "", null)
             }
         }
     }
@@ -98,5 +104,9 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
                 override fun onDismiss() {}
             })
         }
+    }
+
+    private fun getStringRes(@StringRes value: Int): String = with(view) {
+        return context.getString(value)
     }
 }

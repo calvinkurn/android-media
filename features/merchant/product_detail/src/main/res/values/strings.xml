@@ -256,12 +256,20 @@
     <!--Ticker-->
     <string name="ticker_desc_shop_close">Tenang, kamu bisa kembali belanja di toko ini mulai %1s. &lt;a href="#"&gt;Selengkapnya.&lt;/a&gt;</string>
     <string name="ticker_title_shop_close">Toko sedang tutup</string>
-    <string name="ticker_title_shop_moderated">Toko sedang dimoderasi</string>
-    <string name="ticker_desc_shop_moderated">Toko ini tidak bisa menerima pesanan karena belum memenuhi &lt;a href="#"&gt;Syarat &amp; Ketentuan Tokpedia.&lt;/a&gt;</string>
+    <string name="ticker_title_shop_moderated_buyer">Toko sedang tidak terima pesanan</string>
+    <string name="ticker_title_shop_moderated_seller">Toko kamu sedang dimoderasi</string>
+    <string name="ticker_desc_shop_moderated_seller">Untuk sementara, kamu tidak bisa menerima pesanan hingga moderasi berakhir. &lt;a href="#"&gt;Selengkapnya.&lt;/a&gt;</string>
+    <string name="ticker_desc_shop_moderated_buyer">Saat ini toko sedang dalam pengawasan. Coba Wishlist atau cari barang dari toko lain.</string>
+    <string name="ticker_title_shop_incubated">Segera hadir di Official Store</string>
+    <string name="ticker_desc_shop_incubated">Tunggu, ya! Sebentar lagi kamu bisa belanja di toko ini. Wishlist barangnya dulu, yuk.</string>
+    <string name="ticker_title_shop_idle">Toko tidak aktif > 30 hari</string>
+    <string name="ticker_desc_shop_idle">Demi keamanan kamu, jangan bertransaksi dulu di toko ini sampai toko aktif kembali.</string>
 
     <!--Bottom Sheet-->
     <string name="bs_title_shop_closed">Keterangan toko tutup</string>
-    <string name="bs_title_shop_moderated">Keterangan toko moderasi</string>
+    <string name="bs_title_shop_moderated">Tentang Moderasi</string>
+    <string name="bs_title_shop_moderated_permanent">Tentang Tutup Permanen</string>
     <string name="bs_desc_info_shop_closed">Chat penjual atau akses Pusat Bantuan jika kamu ada transaksi bermasalah.</string>
+    <string name="bs_btn_title">Ajukan Buka Toko</string>
 
 </resources>
