@@ -171,13 +171,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <include layout="@layout/partial_new_shop_page_seller_play_widget"
-        android:layout_marginStart="@dimen/spacing_lvl2"
-        android:layout_marginEnd="@dimen/spacing_lvl2"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        android:layout_marginBottom="@dimen/spacing_lvl2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+    <include layout="@layout/partial_new_shop_page_seller_play_widget"/>
 
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/tickerShopStatus"

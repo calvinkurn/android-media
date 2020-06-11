@@ -14,15 +14,18 @@ import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.WidgetName.VOUCHER
 import com.tokopedia.shop.home.view.adapter.viewholder.*
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopPageHomePlayCarouselListener
 import com.tokopedia.shop.home.view.listener.ShopPageHomeProductClickListener
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
+import com.tokopedia.shop.home.view.model.ShopHomePlayCarouselUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 
 class ShopHomeAdapterTypeFactory(
         private val listener: ShopHomeDisplayWidgetListener,
         private val onMerchantVoucherListWidgetListener: ShopHomeVoucherViewHolder.ShopHomeVoucherViewHolderListener,
-        private val shopPageHomeProductClickListener: ShopPageHomeProductClickListener
+        private val shopPageHomeProductClickListener: ShopPageHomeProductClickListener,
+        private val shopPageHomePlayCarouselListener: ShopPageHomePlayCarouselListener
 ) : BaseAdapterTypeFactory(), TypeFactoryShopHome {
     var adapter: ShopHomeAdapter? = null
     private var previousViewHolder: AbstractViewHolder<*>? = null
@@ -41,6 +44,10 @@ class ShopHomeAdapterTypeFactory(
 
     override fun type(shopHomeProductEtalaseTitleUiModel: ShopHomeProductEtalaseTitleUiModel): Int {
         return ShopHomeProductEtalaseTitleViewHolder.LAYOUT
+    }
+
+    override fun type(shopHomePlayCarouselUiModel: ShopHomePlayCarouselUiModel): Int {
+        return ShopHomePlayCarouselViewHolder.LAYOUT
     }
 
     override fun type(shopHomeProductViewModel: ShopHomeProductViewModel): Int {
@@ -87,6 +94,9 @@ class ShopHomeAdapterTypeFactory(
             }
             ShopHomeLoadingShimmerViewHolder.LAYOUT -> {
                 ShopHomeLoadingShimmerViewHolder(parent)
+            }
+            ShopHomePlayCarouselViewHolder.LAYOUT -> {
+                ShopHomePlayCarouselViewHolder(parent, shopPageHomePlayCarouselListener)
             }
 
             else -> return super.createViewHolder(parent, type)

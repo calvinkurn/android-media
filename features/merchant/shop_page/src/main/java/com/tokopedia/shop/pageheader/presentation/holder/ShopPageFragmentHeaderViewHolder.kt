@@ -22,6 +22,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.partial_new_shop_page_header.view.*
+import kotlinx.android.synthetic.main.partial_new_shop_page_seller_play_widget.view.*
 
 class ShopPageFragmentHeaderViewHolder(private val view: View, private val listener: ShopPageFragmentViewHolderListener,
                                        private val shopPageTracking: ShopPageTrackingBuyer?,
@@ -36,6 +37,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         view.shop_page_main_profile_name.text = MethodChecker.fromHtml(shopInfo.shopCore.name).toString()
         view.shop_page_main_profile_follower.setOnClickListener { listener.onFollowerTextClicked(isShopFavourited) }
         view.shop_page_main_profile_location.text = shopInfo.location
+        view.play_seller_widget_container.visibility = if(isMyShop) View.VISIBLE else View.GONE
         ImageHandler.loadImageCircle2(view.context, view.shop_page_main_profile_image, shopInfo.shopAssets.avatar)
         if (isMyShop) {
             view.shop_page_main_profile_background.setOnClickListener {
