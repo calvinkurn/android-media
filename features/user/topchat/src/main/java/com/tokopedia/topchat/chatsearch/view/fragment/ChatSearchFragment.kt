@@ -41,6 +41,7 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(ChatSearchViewModel::class.java) }
     private var listener: ChatSearchFragmentListener? = null
+    private var alreadyLoaded = false
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
 
@@ -49,10 +50,17 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        showRecentSearch()
-        setupRecyclerView()
-        setupObserver()
+        if (savedInstanceState == null && !alreadyLoaded) {
+            super.onViewCreated(view, savedInstanceState)
+            showRecentSearch()
+            setupRecyclerView()
+            setupObserver()
+            alreadyLoaded = true
+        } else {
+            setupRecyclerView()
+            isLoadingInitialData = true
+            setupObserver()
+        }
     }
 
     override fun onAttachActivity(context: Context?) {
@@ -73,17 +81,20 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
     private fun setupRecyclerView() {
         view?.findViewById<VerticalRecyclerView>(recyclerViewResourceId)?.apply {
             clearItemDecoration()
+            enableLoadMore()
+            adapter = this@ChatSearchFragment.adapter
+            layoutManager = recyclerViewLayoutManager
             overScrollMode = RecyclerView.OVER_SCROLL_NEVER
             clipToPadding = false
         }
     }
 
     private fun setupObserver() {
-        observeSearchResult()
         observeLoadInitialData()
         observeEmptyQuery()
         observeErrorSearch()
         observeSearchTriggered()
+        observeSearchResult()
     }
 
     private fun observeSearchResult() {

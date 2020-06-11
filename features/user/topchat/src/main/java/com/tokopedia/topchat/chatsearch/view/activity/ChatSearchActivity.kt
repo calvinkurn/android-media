@@ -7,7 +7,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -18,6 +17,7 @@ import com.tokopedia.topchat.chatsearch.di.ChatSearchComponent
 import com.tokopedia.topchat.chatsearch.di.DaggerChatSearchComponent
 import com.tokopedia.topchat.chatsearch.view.fragment.ChatSearchFragment
 import com.tokopedia.topchat.chatsearch.view.fragment.ChatSearchFragmentListener
+import com.tokopedia.topchat.chatsearch.view.fragment.ContactLoadMoreChatFragment
 import kotlinx.android.synthetic.main.activity_chat_search.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -51,7 +51,11 @@ class ChatSearchActivity : BaseSimpleActivity(), HasComponent<ChatSearchComponen
     }
 
     override fun onClickContactLoadMore() {
-        Toast.makeText(this, "load more", Toast.LENGTH_SHORT).show()
+        val loadMoreContactDetail = ContactLoadMoreChatFragment.create()
+        supportFragmentManager.beginTransaction()
+                .addToBackStack(null)
+                .replace(parentViewResourceID, loadMoreContactDetail, "ContactLoadMoreChatFragment")
+                .commit()
     }
 
     override fun getComponent(): ChatSearchComponent {
