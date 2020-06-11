@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -15,13 +16,14 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
-import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.di.DaggerStatisticComponent
 import com.tokopedia.statistic.presentation.view.viewmodel.StatisticViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_stc_statistic.view.*
 import javax.inject.Inject
@@ -68,6 +70,11 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         setupView()
 
         observeWidgetLayoutLiveData()
+        observeWidgetData(mViewModel.cardWidgetData, WidgetType.CARD)
+        observeWidgetData(mViewModel.lineGraphWidgetData, WidgetType.LINE_GRAPH)
+        observeWidgetData(mViewModel.progressWidgetData, WidgetType.PROGRESS)
+        observeWidgetData(mViewModel.postListWidgetData, WidgetType.POST_LIST)
+        observeWidgetData(mViewModel.carouselWidgetData, WidgetType.CAROUSEL)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -107,11 +114,50 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     override fun removeWidget(position: Int, widget: BaseWidgetUiModel<*>) {
-
+        recyclerView.post {
+            adapter.data.remove(widget)
+            adapter.notifyItemRemoved(position)
+            widgetHasMap[widget.widgetType]?.remove(widget)
+        }
     }
 
     override fun setOnErrorWidget(position: Int, widget: BaseWidgetUiModel<*>) {
+        showErrorToaster()
+    }
 
+    override fun getCardData() {
+        if (hasLoadCardData) return
+        hasLoadCardData = true
+        val dataKeys = Utils.getWidgetDataKeys<CardWidgetUiModel>(adapter.data)
+        mViewModel.getCardWidgetData(dataKeys)
+    }
+
+    override fun getLineGraphData() {
+        if (hasLoadLineGraphData) return
+        hasLoadLineGraphData = true
+        val dataKeys = Utils.getWidgetDataKeys<LineGraphWidgetUiModel>(adapter.data)
+        mViewModel.getLineGraphWidgetData(dataKeys)
+    }
+
+    override fun getProgressData() {
+        if (hasLoadProgressData) return
+        hasLoadProgressData = true
+        val dataKeys = Utils.getWidgetDataKeys<ProgressWidgetUiModel>(adapter.data)
+        mViewModel.getProgressWidgetData(dataKeys)
+    }
+
+    override fun getPostData() {
+        if (hasLoadPostData) return
+        hasLoadPostData = true
+        val dataKeys = Utils.getWidgetDataKeys<PostListWidgetUiModel>(adapter.data)
+        mViewModel.getPostWidgetData(dataKeys)
+    }
+
+    override fun getCarouselData() {
+        if (hasLoadCarouselData) return
+        hasLoadCarouselData = true
+        val dataKeys = Utils.getWidgetDataKeys<CarouselWidgetUiModel>(adapter.data)
+        mViewModel.getCarouselWidgetData(dataKeys)
     }
 
     private fun setupView() = view?.run {
@@ -153,6 +199,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun setOnSuccessGetLayout(widgets: List<BaseWidgetUiModel<*>>) {
+        if (widgets.isEmpty()) {
+            setNoWidgetFound()
+            return
+        }
         recyclerView.visible()
         view?.globalErrorStc?.gone()
 
@@ -169,6 +219,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
 
         renderWidgetOrGetWidgetDataFirst(widgets)
+    }
+
+    private fun setNoWidgetFound() {
+
     }
 
     /**
@@ -290,6 +344,36 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
     }
 
+    private inline fun <reified D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> Throwable.setOnErrorWidgetState(widgetType: String) {
+        val message = this.message.orEmpty()
+        widgetHasMap[widgetType]?.forEach { widget ->
+            if (widget is W) {
+                widget.data = D::class.java.newInstance().apply {
+                    error = message
+                }
+                notifyWidgetChanged(widget)
+            }
+        }
+        showErrorToaster()
+    }
+
+    private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> List<D>.setOnSuccessWidgetState(widgetType: String) {
+        widgetHasMap[widgetType]?.forEachIndexed { i, widget ->
+            if (widget is W && widget.dataKey == this[i].dataKey) {
+                widget.data = this[i]
+                notifyWidgetChanged(widget)
+            }
+        }
+    }
+
+    private fun notifyWidgetChanged(widget: BaseWidgetUiModel<*>) {
+        val widgetPosition = adapter.data.indexOf(widget)
+        if (widgetPosition > -1) {
+            adapter.notifyItemChanged(widgetPosition)
+            view?.swipeRefreshStc?.isRefreshing = false
+        }
+    }
+
     private fun observeWidgetLayoutLiveData() {
         mViewModel.widgetLayout.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
@@ -301,5 +385,16 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
         setProgressBarVisibility(true)
         mViewModel.getWidgetLayout()
+    }
+
+    private inline fun <reified D : BaseDataUiModel> observeWidgetData(liveData: LiveData<Result<List<D>>>, type: String) {
+        liveData.observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is Success -> result.data.setOnSuccessWidgetState(type)
+                is Fail -> {
+                    result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
+                }
+            }
+        })
     }
 }
