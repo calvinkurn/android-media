@@ -14,7 +14,10 @@ import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.navigat
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.order.OrderSearchViewHolder
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.product.ProductSearchViewHolder
 
-class InitialSearchAdapterTypeFactory: BaseAdapterTypeFactory(), TypeFactoryInitialSearchViewHolder {
+class InitialSearchAdapterTypeFactory(private val historySearchListener: HistorySearchListener,
+                                private val orderSearchListener: OrderSearchListener,
+                                private val productSearchListener: ProductSearchListener,
+                                private val navigationSearchListener: NavigationSearchListener): BaseAdapterTypeFactory(), TypeFactoryInitialSearchViewHolder {
 
     override fun type(sellerSearchUiModel: SellerSearchUiModel): Int {
         return when(sellerSearchUiModel.id) {
@@ -32,10 +35,10 @@ class InitialSearchAdapterTypeFactory: BaseAdapterTypeFactory(), TypeFactoryInit
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when(type) {
-            HistorySearchViewHolder.LAYOUT_RES -> HistorySearchViewHolder(parent)
-            OrderSearchViewHolder.LAYOUT_RES -> OrderSearchViewHolder(parent)
-            ProductSearchViewHolder.LAYOUT_RES -> ProductSearchViewHolder(parent)
-            NavigationSearchViewHolder.LAYOUT_RES -> NavigationSearchViewHolder(parent)
+            HistorySearchViewHolder.LAYOUT_RES -> HistorySearchViewHolder(parent, historySearchListener)
+            OrderSearchViewHolder.LAYOUT_RES -> OrderSearchViewHolder(parent, orderSearchListener)
+            ProductSearchViewHolder.LAYOUT_RES -> ProductSearchViewHolder(parent, productSearchListener)
+            NavigationSearchViewHolder.LAYOUT_RES -> NavigationSearchViewHolder(parent, navigationSearchListener)
             else ->  super.createViewHolder(parent, type)
         }
     }

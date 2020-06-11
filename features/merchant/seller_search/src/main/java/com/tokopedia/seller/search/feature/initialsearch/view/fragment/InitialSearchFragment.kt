@@ -8,11 +8,21 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 
 import com.tokopedia.seller.search.R
+import com.tokopedia.seller.search.feature.initialsearch.view.adapter.SearchSellerAdapter
+import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.*
 import com.tokopedia.seller.search.feature.initialsearch.view.viewmodel.InitialSearchViewModel
 
-class InitialSearchFragment : BaseDaggerFragment() {
+class InitialSearchFragment: BaseDaggerFragment(), HistorySearchListener, OrderSearchListener, ProductSearchListener, NavigationSearchListener {
 
     private var viewModel: InitialSearchViewModel? = null
+
+    private val adapterTypeFactory by lazy {
+        InitialSearchAdapterTypeFactory(this, this, this, this )
+    }
+
+    private val searchSellerAdapter by lazy {
+        SearchSellerAdapter(adapterTypeFactory)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -26,6 +36,30 @@ class InitialSearchFragment : BaseDaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(InitialSearchViewModel::class.java)
+    }
+
+    override fun onClearSearchItem(keyword: String) {
+
+    }
+
+    override fun onClearAllSearch() {
+
+    }
+
+    override fun onHistoryItemClicked(appUrl: String) {
+
+    }
+
+    override fun onNavigationItemClicked(appUrl: String) {
+
+    }
+
+    override fun onOrderItemClicked(appUrl: String) {
+
+    }
+
+    override fun onProductItemClicked(appUrl: String) {
+
     }
 
 }

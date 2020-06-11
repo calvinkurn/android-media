@@ -8,16 +8,18 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.feature.initialsearch.view.model.sellersearch.SellerSearchUiModel
+import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.OrderSearchListener
 import kotlinx.android.synthetic.main.search_result_order.view.*
 
-class OrderSearchViewHolder(view: View): AbstractViewHolder<SellerSearchUiModel>(view) {
+class OrderSearchViewHolder(view: View,
+                            private val orderSearchListener: OrderSearchListener): AbstractViewHolder<SellerSearchUiModel>(view) {
 
     companion object {
         @LayoutRes
         val LAYOUT_RES = R.layout.search_result_order
     }
 
-    private val adapterOrder by lazy { ItemOrderSearchAdapter() }
+    private val adapterOrder by lazy { ItemOrderSearchAdapter(orderSearchListener) }
 
     override fun bind(element: SellerSearchUiModel) {
         with(itemView) {
