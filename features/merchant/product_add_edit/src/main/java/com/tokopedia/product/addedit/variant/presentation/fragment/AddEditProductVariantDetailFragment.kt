@@ -12,6 +12,7 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.di.AddEditProductVariantComponent
+import com.tokopedia.product.addedit.variant.presentation.dialog.MultipleVariantEditSelectBottomSheet
 import com.tokopedia.product.addedit.variant.presentation.viewmodel.AddEditProductVariantDetailViewModel
 import javax.inject.Inject
 
@@ -58,7 +59,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
+        val multipleVariantEditSelectBottomSheet = MultipleVariantEditSelectBottomSheet()
+        multipleVariantEditSelectBottomSheet.show(fragmentManager!!, null)
     }
 
     fun onBackPressed() {
