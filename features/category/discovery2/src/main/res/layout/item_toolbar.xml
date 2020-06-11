@@ -27,7 +27,6 @@
         android:maxLines="1"
         android:paddingStart="@dimen/dp_12"
         android:paddingEnd="@dimen/dp_12"
-        android:text="@string/discovery"
         android:textColor="@color/clr_f531353b"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/iv_back"

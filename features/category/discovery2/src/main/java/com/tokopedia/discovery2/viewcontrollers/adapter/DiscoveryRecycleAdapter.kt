@@ -1,6 +1,5 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter
 
-import android.util.Log
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
@@ -33,7 +32,7 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder, position: Int) {
-        if(componentList.size <= position)  //tmp code need this handling to handle multithread enviorment
+        if (componentList.size <= position)  //tmp code need this handling to handle multithread enviorment
             return
         setViewSpanType(holder)
         holder.bindView(viewHolderListModel.getViewHolderModel(
@@ -42,25 +41,23 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
 
 
     override fun getItemViewType(position: Int): Int {
-        if(componentList.size <= position)
+        if (componentList.size <= position)
             return 0
         val id = DiscoveryHomeFactory.getComponentId(componentList[position].name)
         return id ?: 0
     }
 
     override fun getItemId(position: Int): Long {
-        if ( !componentList.isNullOrEmpty() && componentList.size > position && !componentList[position].data.isNullOrEmpty()) {
+        if (!componentList.isNullOrEmpty() && componentList.size > position && !componentList[position].data.isNullOrEmpty()) {
             return componentList[position].data?.get(0)?.productId?.toLong()!!
         }
         return super.getItemId(position)
     }
 
     fun addDataList(dataList: List<ComponentsItem>) {
-        if (dataList != null) {
-            componentList.clear()
-            viewHolderListModel.clearList()
-            componentList.addAll(dataList)
-        }
+        componentList.clear()
+        clearListViewModel()
+        componentList.addAll(dataList)
 
         submitList(dataList)
     }
@@ -83,24 +80,25 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
 
         val layoutParams = holder.itemView.layoutParams
         if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
-            layoutParams.isFullSpan= when (holder) {
-                is ProductCardItemViewHolder ->  false
+            layoutParams.isFullSpan = when (holder) {
+                is ProductCardItemViewHolder -> false
                 else -> true
             }
         }
 
     }
+    fun clearListViewModel() {
+        viewHolderListModel.clearList()
+    }
 }
 
 
-    class ComponentsDiffCallBacks : DiffUtil.ItemCallback<ComponentsItem>() {
-        override fun areItemsTheSame(oldItem: ComponentsItem, newItem: ComponentsItem): Boolean {
-            return oldItem === newItem
-        }
-
-        override fun areContentsTheSame(oldItem: ComponentsItem, newItem: ComponentsItem): Boolean {
-            return newItem == oldItem
-        }
-
-
+class ComponentsDiffCallBacks : DiffUtil.ItemCallback<ComponentsItem>() {
+    override fun areItemsTheSame(oldItem: ComponentsItem, newItem: ComponentsItem): Boolean {
+        return oldItem === newItem
     }
+
+    override fun areContentsTheSame(oldItem: ComponentsItem, newItem: ComponentsItem): Boolean {
+        return newItem == oldItem
+    }
+}

@@ -12,7 +12,7 @@ data class DiscoveryResponse(
 
 
         @SerializedName("page_info")
-        val pageInfo: PageInfo,
+        var pageInfo: PageInfo,
 
         @SerializedName("title")
         val title: String

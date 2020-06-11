@@ -19,8 +19,8 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         if (component?.noOfPagesLoaded == 1)
             return false
         component?.let { component ->
-            val parentComponentsItem = getComponent(component.parentComponentId,pageEndPoint)
-            component?.setComponentsItem(productCardsRepository.getProducts(componentId, getQueryParameterMap(0, component.componentsPerPage,parentComponentsItem?.chipSelectionData), pageEndPoint, component.name))
+            val parentComponentsItem = getComponent(component.parentComponentId, pageEndPoint)
+            component?.setComponentsItem(productCardsRepository.getProducts(componentId, getQueryParameterMap(0, component.componentsPerPage, parentComponentsItem?.chipSelectionData), pageEndPoint, component.name))
             component?.noOfPagesLoaded = 1
             return true
         }
@@ -33,21 +33,21 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         var parentComponent = component?.parentComponentId?.let { getComponent(it, pageEndPoint) }
 
         parentComponent?.let { component1 ->
-            val parentComponentsItem = getComponent(component1.parentComponentId,pageEndPoint)
+            val parentComponentsItem = getComponent(component1.parentComponentId, pageEndPoint)
             var size = component1.getComponentsItem()?.size
             (component1?.getComponentsItem() as ArrayList<ComponentsItem>).addAll(productCardsRepository.getProducts(component1.id, getQueryParameterMap(size
-                    ?: 0, component1.componentsPerPage, parentComponentsItem?.chipSelectionData),pageEndPoint, component1.name))
+                    ?: 0, component1.componentsPerPage, parentComponentsItem?.chipSelectionData), pageEndPoint, component1.name))
             return true
         }
         return false
     }
 
-    private fun getQueryParameterMap(pageStart: Int, productPerPage: Int?,chipSelectionData:DataItem?): MutableMap<String, Any> {
+    private fun getQueryParameterMap(pageStart: Int, productPerPage: Int?, chipSelectionData: DataItem?): MutableMap<String, Any> {
         val queryParameterMap = mutableMapOf<String, Any>()
         queryParameterMap[RPC_ROWS] = PRODUCT_PER_PAGE.toString()
         queryParameterMap[RPC_START] = pageStart.toString()
         chipSelectionData?.let {
-            queryParameterMap[RPC_FILTER_KEU+it.key] = it.value.toString()
+            queryParameterMap[RPC_FILTER_KEU + it.key] = it.value.toString()
         }
         return queryParameterMap
     }

@@ -2,7 +2,6 @@ package com.tokopedia.discovery2.datamapper
 
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
@@ -11,8 +10,7 @@ import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 val discoveryPageData: MutableMap<String, DiscoveryResponse> = HashMap()
 
 fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse): DiscoveryPageData {
-    discoveryResponse.pageInfo.name = discoveryResponse.title
-    val discoveryPageData = DiscoveryPageData(discoveryResponse.pageInfo, discoveryResponse.title)
+    val discoveryPageData = DiscoveryPageData(discoveryResponse.pageInfo)
     val discoveryDataMapper = DiscoveryPageDataMapper(discoveryResponse.pageInfo)
     discoveryPageData.components = discoveryDataMapper.getDiscvoeryComponentList(discoveryResponse.components.filter {
         discoveryPageData.pageInfo.identifier?.let { identifier ->

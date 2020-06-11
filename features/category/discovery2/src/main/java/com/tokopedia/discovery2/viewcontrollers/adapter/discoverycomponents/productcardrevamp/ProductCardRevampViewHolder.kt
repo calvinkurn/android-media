@@ -4,10 +4,8 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.AddChildAdapterCallback
-import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
@@ -25,7 +23,7 @@ class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment
         lifecycleOwner?.let {
             mProductRevampComponentViewModel.getSyncPageLiveData().observe(it, Observer { needResync ->
                 if (needResync) {
-                    (fragment as DiscoveryFragment).resync()
+                    (fragment as DiscoveryFragment).reSync()
                 }
 
             })

@@ -33,6 +33,14 @@
         android:visibility="gone"
         tools:visbility="visible" />
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_10"
+        android:visibility="gone"
+        android:layout_gravity="center" />
+
     <include
         android:id="@+id/item_discovery_fragment_view"
         layout="@layout/item_discovery_fragment_view"
