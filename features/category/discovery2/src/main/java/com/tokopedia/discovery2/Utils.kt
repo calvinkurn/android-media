@@ -44,21 +44,21 @@ class Utils {
         fun getCountView(countView: Double, notifyMeText: String = ""): String {
             if (countView >= SERIBU && countView < SEJUTA) {
                 val rbCount = countView / SERIBU
-                return if (checkForPrice(rbCount)) {
+                return if (checkCommaEligibility(rbCount)) {
                     "${rbCount.toInt()} rb orang $notifyMeText"
                 } else {
                     "${"%.1f".format(rbCount).replace('.', ',')} rb orang $notifyMeText"
                 }
             } else if (countView >= SEJUTA && countView < SEMILIAR) {
                 val jtCount = countView / SEJUTA
-                return if (checkForPrice(jtCount)) {
+                return if (checkCommaEligibility(jtCount)) {
                     "${jtCount.toInt()} jt orang $notifyMeText"
                 } else {
                     "${"%.1f".format(jtCount).replace('.', ',')} jt orang $notifyMeText"
                 }
             } else if (countView >= SEMILIAR) {
                 val MCount = countView / SEMILIAR
-                return if (checkForPrice(MCount)) {
+                return if (checkCommaEligibility(MCount)) {
                     "${MCount.toInt()} M orang $notifyMeText"
                 } else {
                     "${"%.1f".format(MCount).replace('.', ',')} M orang $notifyMeText"
@@ -67,8 +67,8 @@ class Utils {
             return ""
         }
 
-        private fun checkForPrice(currentViewCount: Double): Boolean {
-            return currentViewCount % 1 < VIEW_LIMIT
+        private fun checkCommaEligibility(currentViewCount: Double): Boolean {
+            return currentViewCount.rem(1) < VIEW_LIMIT
         }
     }
 }
