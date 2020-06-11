@@ -4,23 +4,6 @@ apply plugin: 'io.hansel.preprocessor.module'
 
 android {
 
-    flavorDimensions "tier", "client"
-    productFlavors {
-        prod {
-            dimension "client"
-            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
-        }
-        live {
-            dimension "tier"
-        }
-        staging {
-            dimension "tier"
-        }
-        dev {
-            dimension "client"
-        }
-    }
-
     sourceSets.each {
         it.java.srcDirs += "src/$it.name/kotlin"
     }
@@ -37,7 +20,13 @@ android {
 
     defaultConfig {
         multiDexEnabled true
-        testInstrumentationRunner "com.tokopedia.test.application.environment.MockInstrumentationTestRunner"
+        defaultConfig {
+            if (project.hasProperty("mockTest")) {
+                testInstrumentationRunner "com.tokopedia.test.application.environment.MockInstrumentationTestRunner"
+            } else {
+                testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+            }
+        }
     }
 }
 
