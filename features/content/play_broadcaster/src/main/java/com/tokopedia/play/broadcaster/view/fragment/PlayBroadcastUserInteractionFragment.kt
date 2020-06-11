@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -19,16 +18,15 @@ import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
 import com.tokopedia.play.broadcaster.util.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
+import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
+import com.tokopedia.play.broadcaster.view.custom.PlayTimerView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.ChatListPartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
-import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
-import com.tokopedia.play.broadcaster.view.custom.PlayTimerView
 
 /**
  * Created by mzennis on 25/05/20.
@@ -203,10 +201,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun doCopyShareLink() {
         parentViewModel.channelInfo?.let { channelInfo ->
             PlayShareWrapper.doCopyShareLink(requireContext(), channelInfo) {
-                Toaster.make(requireView(),
-                        text = getString(R.string.play_live_broadcast_share_link_copied),
-                        duration = Toaster.LENGTH_LONG,
-                        actionText =  getString(R.string.play_ok))
+                showToast(message = getString(R.string.play_live_broadcast_share_link_copied),
+                        type = Toaster.TYPE_NORMAL,
+                        actionLabel = getString(R.string.play_ok))
             }
         }
     }
