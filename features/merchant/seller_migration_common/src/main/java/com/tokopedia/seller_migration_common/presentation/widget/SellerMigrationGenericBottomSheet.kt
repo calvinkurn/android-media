@@ -24,6 +24,14 @@ class SellerMigrationGenericBottomSheet : SellerMigrationBottomSheet() {
         }
     }
 
+    override fun trackGoToSellerApp() {
+        // No Op
+    }
+
+    override fun trackGoToPlayStore() {
+        // No Op
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()

@@ -99,6 +99,7 @@ import com.tokopedia.product.manage.oldlist.view.model.ProductManageViewModel
 import com.tokopedia.product.manage.oldlist.view.presenter.ProductManagePresenter
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.widget.SellerMigrationProductBottomSheet
 import com.tokopedia.topads.common.data.model.DataDeposit
@@ -1113,6 +1114,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                 setHtmlDescription(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_product_manage_ticker_content))
                 setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        SellerMigrationTracking.eventOnClickProductTicker(userSession.userId)
                         openSellerMigrationBottomSheet()
                     }
 
