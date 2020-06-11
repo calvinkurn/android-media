@@ -20,10 +20,10 @@ import com.tokopedia.topchat.chatsearch.di.ChatSearchComponent
 import com.tokopedia.topchat.chatsearch.view.activity.ChatSearchActivity
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactory
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactoryImpl
+import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.ContactLoadMoreViewHolder
 import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.EmptySearchChatViewHolder
 import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.ItemSearchChatViewHolder
 import com.tokopedia.topchat.chatsearch.viewmodel.ChatSearchViewModel
-import com.tokopedia.unifycomponents.toPx
 import javax.inject.Inject
 
 /**
@@ -31,7 +31,7 @@ import javax.inject.Inject
  */
 class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>(),
         ChatSearchActivity.Listener, LifecycleOwner, ItemSearchChatViewHolder.Listener,
-        EmptySearchChatViewHolder.Listener {
+        EmptySearchChatViewHolder.Listener, ContactLoadMoreViewHolder.Listener {
 
     @Inject
     lateinit var analytic: ChatSearchAnalytic
@@ -132,7 +132,7 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
     }
 
     override fun getAdapterTypeFactory(): ChatSearchTypeFactory {
-        return ChatSearchTypeFactoryImpl(this, this)
+        return ChatSearchTypeFactoryImpl(this, this, this)
     }
 
     override fun onItemClicked(t: Visitable<*>) {}
@@ -145,6 +145,10 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
 
     override fun finishSearchActivity() {
         activity?.finish()
+    }
+
+    override fun onClickContactLoadMore() {
+        listener?.onClickContactLoadMore()
     }
 
     companion object {

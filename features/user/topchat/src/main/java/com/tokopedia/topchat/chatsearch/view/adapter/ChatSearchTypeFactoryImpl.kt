@@ -15,7 +15,8 @@ import com.tokopedia.topchat.chatsearch.view.uimodel.ContactLoadMoreUiModel
 
 class ChatSearchTypeFactoryImpl(
         private val searchListener: ItemSearchChatViewHolder.Listener? = null,
-        private val emptySearchListener: EmptySearchChatViewHolder.Listener? = null
+        private val emptySearchListener: EmptySearchChatViewHolder.Listener? = null,
+        private val contactLoadMoreListener: ContactLoadMoreViewHolder.Listener? = null
 ) : BaseAdapterTypeFactory(), ChatSearchTypeFactory {
 
     override fun type(searchResult: SearchResult): Int {
@@ -44,7 +45,7 @@ class ChatSearchTypeFactoryImpl(
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            ContactLoadMoreViewHolder.LAYOUT -> ContactLoadMoreViewHolder(parent)
+            ContactLoadMoreViewHolder.LAYOUT -> ContactLoadMoreViewHolder(parent, contactLoadMoreListener)
             ChatSearchErrorNetworkViewHolder.LAYOUT -> ChatSearchErrorNetworkViewHolder(parent)
             ChatItemListViewHolder.LAYOUT -> ItemSearchChatViewHolder(parent, searchListener)
             LoadingSearchChatViewHolder.LAYOUT -> LoadingSearchChatViewHolder(parent)

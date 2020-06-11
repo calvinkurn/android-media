@@ -7,10 +7,17 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatsearch.view.uimodel.ContactLoadMoreUiModel
 import com.tokopedia.unifyprinciples.Typography
 
-class ContactLoadMoreViewHolder(itemView: View?) : AbstractViewHolder<ContactLoadMoreUiModel>(itemView) {
+class ContactLoadMoreViewHolder(
+        itemView: View?,
+        private val listener: Listener?
+) : AbstractViewHolder<ContactLoadMoreUiModel>(itemView) {
 
     private var tittle: Typography? = itemView?.findViewById(R.id.txt_tittle)
     private var ctaDetail: Typography? = itemView?.findViewById(R.id.txt_action_detail)
+
+    interface Listener {
+        fun onClickContactLoadMore()
+    }
 
     override fun bind(element: ContactLoadMoreUiModel) {
         bindTitle(element)
@@ -23,7 +30,9 @@ class ContactLoadMoreViewHolder(itemView: View?) : AbstractViewHolder<ContactLoa
     }
 
     private fun bindCtaDetail(element: ContactLoadMoreUiModel) {
-
+        ctaDetail?.setOnClickListener {
+            listener?.onClickContactLoadMore()
+        }
     }
 
     companion object {

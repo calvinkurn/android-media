@@ -7,6 +7,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -47,6 +48,10 @@ class ChatSearchActivity : BaseSimpleActivity(), HasComponent<ChatSearchComponen
         initWindowBackground()
         useLightNotificationBar()
         setupToolbar()
+    }
+
+    override fun onClickContactLoadMore() {
+        Toast.makeText(this, "load more", Toast.LENGTH_SHORT).show()
     }
 
     override fun getComponent(): ChatSearchComponent {
