@@ -95,8 +95,9 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-        showLoading()
-        observeReviewList()
+        showEmptyState()
+//        showLoading()
+//        observeReviewList()
     }
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
@@ -114,6 +115,10 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     override fun getDefaultInitialPage(): Int {
         return ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE
+    }
+
+    override fun callInitialLoadAutomatically(): Boolean {
+        return false
     }
 
     private fun initView() {
