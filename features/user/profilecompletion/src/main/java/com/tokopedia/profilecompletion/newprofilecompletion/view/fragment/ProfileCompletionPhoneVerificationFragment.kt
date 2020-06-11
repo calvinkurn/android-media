@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.phoneverification.view.fragment.PhoneVerificationFragment
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.newprofilecompletion.ProfileCompletionNewConstants
-import com.tokopedia.profilecompletion.newprofilecompletion.view.util.ProfileCompletionCustomPhoneNumberUtil.transform
+import com.tokopedia.utils.phonenumber.PhoneNumberUtil.transform
 import com.tokopedia.profilecompletion.newprofilecompletion.data.ProfileCompletionDataView
 
 /**

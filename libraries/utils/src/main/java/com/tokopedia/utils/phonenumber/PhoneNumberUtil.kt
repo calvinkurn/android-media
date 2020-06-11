@@ -1,9 +1,9 @@
-package com.tokopedia.profilecompletion.newprofilecompletion.view.util
+package com.tokopedia.utils.phonenumber
 
 /**
  * @author  by stevenfredian on 10/27/16.
  */
-object ProfileCompletionCustomPhoneNumberUtil {
+object PhoneNumberUtil {
     @JvmStatic
     fun transform(phoneRawString: String): String {
         var phoneRaw = checkStart(phoneRawString)
