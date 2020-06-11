@@ -514,13 +514,22 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 initializePromoLastSeenRecyclerView(data.uiData.promoLastSeenItemUiModelList)
                 bottomsheetPromoLastSeenContainer?.show()
 
+                // Determine available space height for bottomsheet if soft keyboard open
                 val promoInputHeight = viewModel.promoInputUiModel.value?.uiState?.viewHeight ?: 0
                 val promoInputMargin = resources.getDimension(R.dimen.dp_8).dpToPx()
-                val bottomsheetHeight = getDeviceHeight(it) - keyboardHeight - promoInputHeight - promoInputMargin
-                promoCheckoutLastSeenBottomsheet?.peekHeight = bottomsheetHeight.toInt()
+                val availableSpaceHeight = getDeviceHeight(it) - keyboardHeight - promoInputHeight - promoInputMargin
 
-                rvPromoLastSeen?.layoutParams?.height = (bottomsheetHeight - (bottomsheetCloseButton?.height
-                        ?: 0)).toInt()
+                // Determine total space, in pixel, needed to show all promo last seen item
+                val itemPromoLastSeenHeight = resources.getDimensionPixelSize(R.dimen.dp_52)
+                val totalSpaceNeededForPromoLastSeenItems = data.uiData.promoLastSeenItemUiModelList.size * itemPromoLastSeenHeight
+
+                // If available space is not sufficient to show all promo item, then set max available height for the bottomsheet
+                val isAvailableSpaceSufficient = availableSpaceHeight - totalSpaceNeededForPromoLastSeenItems >= 0
+                if (!isAvailableSpaceSufficient) {
+                    promoCheckoutLastSeenBottomsheet?.peekHeight = availableSpaceHeight.toInt()
+                    rvPromoLastSeen?.layoutParams?.height = (availableSpaceHeight - (bottomsheetCloseButton?.height
+                            ?: 0)).toInt()
+                }
 
                 promoCheckoutLastSeenBottomsheet?.state = BottomSheetBehavior.STATE_COLLAPSED
             }
