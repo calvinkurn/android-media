@@ -36,32 +36,23 @@ class BrandlistPageMapper {
         }
 
         fun mappingAllBrandGroupHeader(adapter: BrandlistPageAdapter?, listener: BrandlistHeaderBrandInterface, totalBrands: Int, selectedChip: Int, recyclerViewLastState: Parcelable?) {
-            adapter?.getVisitables()?.set(ALL_BRAND_GROUP_HEADER_POSITION, AllBrandGroupHeaderViewModel(listener, totalBrands, selectedChip, recyclerViewLastState))
-            adapter?.notifyItemChanged(ALL_BRAND_GROUP_HEADER_POSITION)
+            adapter?.let {
+                it.getVisitables().set(ALL_BRAND_GROUP_HEADER_POSITION, AllBrandGroupHeaderViewModel(listener, totalBrands, selectedChip, recyclerViewLastState))
+                it.notifyItemChanged(ALL_BRAND_GROUP_HEADER_POSITION)
+                it.refreshSticky()
+            }
         }
 
         fun mappingLoadingBrandRecomm(adapter: BrandlistPageAdapter?) {
             adapter?.getVisitables()?.add(ALL_BRAND_POSITION, LoadingModel())
             adapter?.notifyItemChanged(ALL_BRAND_POSITION, LoadingModel())
 
-            val _totalAllBrandViewModel: Int = adapter?.getVisitables()?.filterIsInstance<AllBrandViewModel>()?.size
-                    ?: 0
+            val _totalAllBrandViewModel: Int = adapter?.getVisitables()?.filterIsInstance<AllBrandViewModel>()?.size ?: 0
             if (_totalAllBrandViewModel > 0) {
                 val _totalUnusedData: Int = adapter?.getVisitables()?.size ?: 0
                 adapter?.let {
-                    it.getVisitables().subList(ALL_BRAND_POSITION + 2, _totalUnusedData).clear()
-                    it.notifyItemRangeRemoved(ALL_BRAND_POSITION + 2, _totalAllBrandViewModel)
-                }
-            }
-        }
-
-        fun mappingRemoveLoadingBrandRecomm(adapter: BrandlistPageAdapter?) {
-            val _totalLoadingViewModel: Int = adapter?.getVisitables()?.filterIsInstance<LoadingModel>()?.size
-                    ?: 0
-            if (_totalLoadingViewModel > 0) {
-                adapter?.let {
-                    it.getVisitables().subList(ALL_BRAND_POSITION, ALL_BRAND_POSITION + 1).clear()
-                    it.notifyItemRangeRemoved(ALL_BRAND_POSITION, _totalLoadingViewModel)
+                    it.getVisitables().subList(ALL_BRAND_POSITION + 1, _totalUnusedData).clear()
+                    it.notifyItemRangeRemoved(ALL_BRAND_POSITION + 1, _totalAllBrandViewModel)
                 }
             }
         }
@@ -117,9 +108,8 @@ class BrandlistPageMapper {
 
                         val _totalLoadingViewModel: Int = it.getVisitables().filterIsInstance<LoadingModel>().size ?: 0
                         if (_totalLoadingViewModel > 0 && it.getVisitables().size > ALL_BRAND_POSITION) {
-                            val _position = it.getVisitables().indexOf(LoadingModel())
-                            it.getVisitables().remove(LoadingModel())
-                            it.notifyItemRangeRemoved(_position, _totalLoadingViewModel)
+                            it.getVisitables().removeAt(adapter.lastIndex)
+                            it.notifyItemRemoved(adapter.lastIndex)
                         }
                     }
                 } else {
@@ -160,15 +150,6 @@ class BrandlistPageMapper {
             } else if (stateLoadBrands == LoadAllBrandState.LOAD_INITIAL_ALL_BRAND) {
                 getLoadMoreData(allBrand, listener, adapter)
             }
-
-//            adapter?.let {
-//                val _totalLoadingViewModel: Int = it.getVisitables().filterIsInstance<LoadingModel>().size ?: 0
-//                if (_totalLoadingViewModel > 0 && it.getVisitables().size > ALL_BRAND_POSITION) {
-//                    val _position = it.getVisitables().indexOf(LoadingModel())
-//                    it.getVisitables().remove(LoadingModel())
-//                    it.notifyItemRangeRemoved(_position, _totalLoadingViewModel)
-//                }
-//            }
         }
 
         private fun getLoadMoreData(allBrand: OfficialStoreAllBrands,
