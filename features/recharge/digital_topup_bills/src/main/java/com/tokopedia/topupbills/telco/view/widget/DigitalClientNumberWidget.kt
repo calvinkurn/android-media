@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.topupbills.R
 import org.jetbrains.annotations.NotNull
+import java.util.regex.Pattern
 
 /**
  * Created by nabillasabbaha on 25/04/19.
@@ -63,16 +64,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                 } else {
                     btnClear.visibility = View.VISIBLE
                 }
-
-                when {
-                    count in 1..9 -> setErrorInputNumber(context.getString(R.string.digital_telco_error_min_phone_number))
-                    count in 10..14 -> {
-                        listener.onRenderOperator()
-                        imgOperator.visibility = View.VISIBLE
-                        hideErrorInputNumber()
-                    }
-                    count > 14 -> setErrorInputNumber(context.getString(R.string.digital_telco_error_max_phone_number))
-                }
+                listener.onRenderOperator()
             }
         })
 
@@ -81,6 +73,10 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                 listener.onClientNumberHasFocus((this as TextView).text.toString())
             }
         }
+    }
+
+    fun checkPhone(expression: String, regex: String): Boolean {
+        return Pattern.compile(regex).matcher(expression).matches()
     }
 
     fun clearFocusAutoComplete() {
@@ -100,7 +96,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         errorInputNumber.visibility = View.VISIBLE
     }
 
-    fun hideErrorInputNumber() {
+    private fun hideErrorInputNumber() {
         errorInputNumber.text = ""
         errorInputNumber.visibility = View.GONE
     }
@@ -115,9 +111,11 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 
     fun setIconOperator(url: String) {
         ImageHandler.LoadImage(imgOperator, url)
+        imgOperator.visibility = View.VISIBLE
+        hideErrorInputNumber()
     }
 
-    fun validatePrefixClientNumber(phoneNumber: String): String {
+    private fun validatePrefixClientNumber(phoneNumber: String): String {
         var phoneNumber = phoneNumber
         if (phoneNumber.startsWith("62")) {
             phoneNumber = phoneNumber.replaceFirst("62".toRegex(), "0")
@@ -130,7 +128,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         return phoneNumber.replace("[^0-9]+".toRegex(), "")
     }
 
-    fun formatPrefixClientNumber(phoneNumber: String?): String {
+    private fun formatPrefixClientNumber(phoneNumber: String?): String {
         phoneNumber?.run {
             if ("".equals(phoneNumber.trim { it <= ' ' }, ignoreCase = true)) {
                 return phoneNumber

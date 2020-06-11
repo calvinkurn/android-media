@@ -25,7 +25,7 @@ data class RechargeCatalogPrefixSelect(
         @SerializedName("placeholder")
         @Expose
         val placeholder: String = "",
-        @SerializedName("validation")
+        @SerializedName("validations")
         @Expose
         val validations: List<RechargeValidation> = listOf(),
         @SerializedName("prefixes")

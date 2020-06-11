@@ -38,6 +38,7 @@ import com.tokopedia.showcase.ShowCasePreference
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.generateRechargeCheckoutToken
 import com.tokopedia.topupbills.telco.data.RechargePrefix
+import com.tokopedia.topupbills.telco.data.TelcoCatalogPrefixSelect
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
@@ -210,14 +211,24 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 }
                 telcoClientNumberWidget.setIconOperator(selectedOperator.operator.attributes.imageUrl)
 
+                renderValidation(this.operatorData)
                 hitTrackingForInputNumber(selectedOperator)
                 renderProductViewPager()
                 getProductListData(selectedOperator.operator.id)
             }
         } catch (exception: Exception) {
-            view?.run {
-                telcoClientNumberWidget.setErrorInputNumber(
-                        getString(R.string.telco_number_error_not_found))
+            telcoClientNumberWidget.setErrorInputNumber(
+                    getString(R.string.telco_number_error_not_found))
+        }
+    }
+
+    private fun renderValidation(operatorData: TelcoCatalogPrefixSelect) {
+        for (validation in operatorData.rechargeCatalogPrefixSelect.validations) {
+            val phoneIsValid = telcoClientNumberWidget.checkPhone(telcoClientNumberWidget.getInputNumber(),
+                    validation.rule)
+            if (!phoneIsValid) {
+                telcoClientNumberWidget.setErrorInputNumber(validation.message)
+                break
             }
         }
     }
@@ -300,13 +311,13 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         val listProductTab = mutableListOf<TopupBillsTabItem>()
         listProductTab.add(
                 TopupBillsTabItem(DigitalTelcoProductFragment.newInstance(TelcoComponentName.PRODUCT_PULSA,
-                operatorName, TelcoProductType.PRODUCT_GRID, productId), TelcoComponentName.PRODUCT_PULSA))
+                        operatorName, TelcoProductType.PRODUCT_GRID, productId), TelcoComponentName.PRODUCT_PULSA))
         listProductTab.add(
                 TopupBillsTabItem(DigitalTelcoProductFragment.newInstance(TelcoComponentName.PRODUCT_PAKET_DATA,
-                operatorName, TelcoProductType.PRODUCT_LIST, productId), TelcoComponentName.PRODUCT_PAKET_DATA))
+                        operatorName, TelcoProductType.PRODUCT_LIST, productId), TelcoComponentName.PRODUCT_PAKET_DATA))
         listProductTab.add(
                 TopupBillsTabItem(DigitalTelcoProductFragment.newInstance(TelcoComponentName.PRODUCT_ROAMING,
-                operatorName, TelcoProductType.PRODUCT_LIST, productId), TelcoComponentName.PRODUCT_ROAMING))
+                        operatorName, TelcoProductType.PRODUCT_LIST, productId), TelcoComponentName.PRODUCT_ROAMING))
 
         val pagerAdapter = TopupBillsProductTabAdapter(listProductTab, childFragmentManager)
         viewPager.adapter = pagerAdapter
@@ -328,7 +339,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             }
 
             override fun onPageSelected(pos: Int) {
-                if (listProductTab.size  == 3) {
+                if (listProductTab.size == 3) {
                     topupAnalytics.eventClickTelcoPrepaidCategory(listProductTab[pos].title)
                 }
             }

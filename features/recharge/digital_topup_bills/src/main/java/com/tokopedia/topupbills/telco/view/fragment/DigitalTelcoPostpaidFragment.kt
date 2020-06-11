@@ -31,6 +31,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.generateRechargeCheckoutToken
 import com.tokopedia.topupbills.telco.data.RechargePrefix
+import com.tokopedia.topupbills.telco.data.TelcoCatalogPrefixSelect
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.view.activity.DigitalSearchNumberActivity
@@ -184,7 +185,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                         renderProductFromCustomData()
                     }
                 }
-                postpaidClientNumberWidget.setButtonEnquiryEnable()
             }
 
             override fun onClearAutoComplete() {
@@ -279,7 +279,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     override fun renderProductFromCustomData() {
         try {
             if (postpaidClientNumberWidget.getInputNumber().isNotEmpty()) {
-                operatorSelected = this.operatorData.rechargeCatalogPrefixSelect.prefixes.single {
+                operatorSelected = operatorData.rechargeCatalogPrefixSelect.prefixes.single {
                     postpaidClientNumberWidget.getInputNumber().startsWith(it.value)
                 }
                 operatorSelected?.run {
@@ -301,14 +301,28 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
                         }
                     }
-
                     postpaidClientNumberWidget.setIconOperator(operator.attributes.imageUrl)
+                    if (postpaidClientNumberWidget.getInputNumber().length in 10..14) {
+                        postpaidClientNumberWidget.setButtonEnquiry(true)
+                    } else {
+                        postpaidClientNumberWidget.setButtonEnquiry(false)
+                    }
+                    renderValidation(operatorData)
                 }
             }
         } catch (exception: Exception) {
-            view?.run {
-                postpaidClientNumberWidget.setErrorInputNumber(
-                        getString(R.string.telco_number_error_not_found))
+            postpaidClientNumberWidget.setErrorInputNumber(
+                    getString(R.string.telco_number_error_not_found))
+        }
+    }
+
+    private fun renderValidation(operatorData: TelcoCatalogPrefixSelect) {
+        for (validation in operatorData.rechargeCatalogPrefixSelect.validations) {
+            val phoneIsValid = postpaidClientNumberWidget.checkPhone(postpaidClientNumberWidget.getInputNumber(),
+                    validation.rule)
+            if (!phoneIsValid) {
+                postpaidClientNumberWidget.setErrorInputNumber(validation.message)
+                break
             }
         }
     }
