@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentFactory
 import com.tokopedia.play.broadcaster.di.key.FragmentKey
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayPrivacyPolicyBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.*
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
 import com.tokopedia.play.broadcaster.view.fragment.factory.PlayBroadcastFragmentFactory
@@ -60,4 +61,9 @@ abstract class PlayBroadcasterFragmentModule {
     @IntoMap
     @FragmentKey(PlayBroadcastFragment::class)
     abstract fun getParentBroadcastFragment(fragment: PlayBroadcastFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(PlayProductLiveBottomSheet::class)
+    abstract fun getProductLiveBottomSheet(fragment: PlayProductLiveBottomSheet): Fragment
 }

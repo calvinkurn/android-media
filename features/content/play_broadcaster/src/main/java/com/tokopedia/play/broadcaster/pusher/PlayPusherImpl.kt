@@ -237,9 +237,11 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         }
 
         override fun onReconnectFail(pusher: AlivcLivePusher?) {
+            _observableNetworkState.postValue(PlayPusherNetworkState.Loss)
         }
 
         override fun onSendDataTimeout(pusher: AlivcLivePusher?) {
+            _observableNetworkState.postValue(PlayPusherNetworkState.Loss)
         }
 
         override fun onConnectFail(pusher: AlivcLivePusher?) {
