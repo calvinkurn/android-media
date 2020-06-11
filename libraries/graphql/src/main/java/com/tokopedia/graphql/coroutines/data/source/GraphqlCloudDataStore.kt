@@ -8,6 +8,7 @@ import com.tokopedia.akamai_bot_lib.isAkamai
 import com.tokopedia.graphql.FingerprintManager
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.graphql.GraphqlConstant
+import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -39,7 +40,7 @@ class GraphqlCloudDataStore @Inject constructor(
         CYFMonitor.setLogLevel(CYFMonitor.INFO)
         return if (isAkamai(requests.first().query)) {
             val header = mutableMapOf<String, String>()
-            header[AKAMAI_SENSOR_DATA_HEADER] = CYFMonitor.getSensorData() ?: ""
+            header[AKAMAI_SENSOR_DATA_HEADER] = GraphqlClient.getFunction().getAkamaiValue()
             api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests))
         } else {
             api.getResponseSuspend(requests.toMutableList(), mapOf(), FingerprintManager.getQueryDigest(requests))

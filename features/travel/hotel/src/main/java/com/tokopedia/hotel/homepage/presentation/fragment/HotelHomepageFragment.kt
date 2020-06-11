@@ -133,7 +133,9 @@ class HotelHomepageFragment : HotelBaseFragment(),
         initView()
         hidePromoContainer()
         loadPromoData()
-        homepageViewModel.getDefaultHomepageParameter(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_default_homepage_parameter))
+        if (hotelHomepageModel.locName.isEmpty()) {
+            homepageViewModel.getDefaultHomepageParameter(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_default_homepage_parameter))
+        }
     }
 
     override fun onResume() {
