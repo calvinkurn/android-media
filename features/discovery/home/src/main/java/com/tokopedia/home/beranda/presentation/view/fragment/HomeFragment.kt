@@ -1906,7 +1906,9 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onDetach() {
-        getHomeViewModel().onCleared()
+        if(this::viewModel.isInitialized) {
+            getHomeViewModel().onCleared()
+        }
         super.onDetach()
     }
 
