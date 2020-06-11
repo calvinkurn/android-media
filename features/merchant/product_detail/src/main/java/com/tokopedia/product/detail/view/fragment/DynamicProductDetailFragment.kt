@@ -219,11 +219,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private var trackerListNamePdp: String? = ""
     private var warehouseId: String? = null
     private var isTopdasLoaded: Boolean = false
-    private var shouldRenderSticky = true
     private var doActivityResult = true
     private var shouldFireVariantTracker = true
     private var pdpUiUpdater: PdpUiUpdater? = PdpUiUpdater(mapOf())
     private var enableCheckImeiRemoteConfig = false
+    private var shouldTrackStickyLogin = true
 
     //View
     private lateinit var bottomSheet: ValuePropositionBottomSheet
@@ -454,8 +454,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 if (resultCode == Activity.RESULT_OK && doActivityResult) {
                     onSwipeRefresh()
                 }
-                shouldRenderSticky = true
-                updateStickyContent()
+                updateStickyState()
                 if (resultCode == Activity.RESULT_OK && viewModel.userSessionInterface.isLoggedIn) {
                     when (viewModel.talkLastAction) {
                         is DynamicProductDetailTalkGoToWriteDiscussion -> goToWriteActivity()
@@ -478,15 +477,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             ProductDetailConstant.REQUEST_CODE_SHOP_INFO -> {
                 if (data != null) {
                     val isFavorite = data.getBooleanExtra(ProductDetailConstant.SHOP_STATUS_FAVOURITE, false)
-                    val isUserLogin = data.getBooleanExtra(ProductDetailConstant.SHOP_STICKY_LOGIN, false)
+                    val isUserLoginFromShopPage = data.getBooleanExtra(ProductDetailConstant.SHOP_STICKY_LOGIN, false)
                     val favorite = pdpUiUpdater?.getShopInfo?.shopInfo?.favoriteData?.alreadyFavorited == 1
 
-                    shouldRenderSticky = true
-                    if (isUserLogin) updateStickyContent()
-
-                    if (isFavorite != favorite) {
-                        onSuccessFavoriteShop(true)
-                    }
+                    if (isUserLoginFromShopPage) updateStickyState()
+                    if (isFavorite != favorite) onSuccessFavoriteShop(true)
                 }
             }
             else ->
@@ -827,7 +822,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         activity?.let {
             trackOnTickerClicked(tickerTitle, tickerType, componentTrackDataModel)
             ShopStatusInfoBottomSheet.showShopStatusBottomSheet(it, viewModel.shopInfo?.statusInfo
-                    ?: ShopInfo.StatusInfo(), viewModel.shopInfo?.closedInfo ?: ShopInfo.ClosedInfo(), viewModel.isShopOwner())
+                    ?: ShopInfo.StatusInfo(), viewModel.shopInfo?.closedInfo
+                    ?: ShopInfo.ClosedInfo(), viewModel.isShopOwner())
         }
     }
 
@@ -910,7 +906,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    override fun onDecline() { }
+    override fun onDecline() {}
 
     override fun getProductFragmentManager(): FragmentManager {
         return childFragmentManager
@@ -1596,7 +1592,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
         pdpUiUpdater?.productShipingInfoMap?.let { productShippingInfoMap ->
             if (it.ratesModel?.getServicesSize() == 0) {
-                 dynamicAdapter.removeComponentSection(productShippingInfoMap)
+                dynamicAdapter.removeComponentSection(productShippingInfoMap)
             } else {
                 pdpUiUpdater?.updateDataP3(context, it)
             }
@@ -2192,31 +2188,30 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             return
         }
 
-        val userSession = UserSession(activity)
-        if (userSession.isLoggedIn) {
+        if (viewModel.isUserSessionActive) {
             stickyLoginView.visibility = View.GONE
             return
         }
 
         this.tickerDetail?.let { stickyLoginView.setContent(it) }
         stickyLoginView.show(StickyLoginConstant.Page.PDP)
-        stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.PDP)
+        if (shouldTrackStickyLogin || stickyLoginView.isShowing()) {
+            stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.PDP)
+            shouldTrackStickyLogin = false
+        }
     }
 
     private fun updateStickyContent() {
-        if (shouldRenderSticky) {
-            viewModel.getStickyLoginContent(
-                    onSuccess = {
-                        this.tickerDetail = it
-                        updateStickyState()
-                        updateActionButtonShadow()
-                        shouldRenderSticky = false
-                    },
-                    onError = {
-                        stickyLoginView.visibility = View.GONE
-                    }
-            )
-        }
+        viewModel.getStickyLoginContent(
+                onSuccess = {
+                    this.tickerDetail = it
+                    updateStickyState()
+                    updateActionButtonShadow()
+                },
+                onError = {
+                    stickyLoginView.visibility = View.GONE
+                }
+        )
     }
 
     private fun initBtnAction() {
@@ -2450,7 +2445,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    private fun openWebViewUrl(url:String){
+    private fun openWebViewUrl(url: String) {
         val webViewUrl = String.format(
                 "%s?titlebar=false&url=%s",
                 ApplinkConst.WEBVIEW,
@@ -2878,7 +2873,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun trackOnTickerClicked(tickerTitle: String, tickerType: Int, componentTrackDataModel: ComponentTrackDataModel?) {
-        DynamicProductDetailTracking.Click.eventClickTicker(tickerTitle, tickerType, viewModel.getDynamicProductInfoP1 , componentTrackDataModel, viewModel.userId)
+        DynamicProductDetailTracking.Click.eventClickTicker(tickerTitle, tickerType, viewModel.getDynamicProductInfoP1, componentTrackDataModel, viewModel.userId)
     }
 
     private fun showImeiPermissionBottomSheet() {

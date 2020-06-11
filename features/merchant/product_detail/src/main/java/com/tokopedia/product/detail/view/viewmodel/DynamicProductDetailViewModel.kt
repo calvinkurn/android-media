@@ -288,6 +288,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun getStickyLoginContent(onSuccess: (StickyLoginTickerPojo.TickerDetail) -> Unit, onError: ((Throwable) -> Unit)?) {
+        if (isUserSessionActive) return
         stickyLoginUseCase.setParams(StickyLoginConstant.Page.PDP)
         stickyLoginUseCase.execute(
                 onSuccess = {
