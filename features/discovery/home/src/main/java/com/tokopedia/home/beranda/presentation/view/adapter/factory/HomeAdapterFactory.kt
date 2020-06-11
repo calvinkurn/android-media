@@ -27,10 +27,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home_component.HomeComponentTypeFactory
-import com.tokopedia.home_component.listener.DynamicLegoBannerListener
-import com.tokopedia.home_component.listener.HomeComponentListener
-import com.tokopedia.home_component.listener.RecommendationListCarouselListener
-import com.tokopedia.home_component.listener.ReminderWidgetListener
+import com.tokopedia.home_component.listener.*
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
 import com.tokopedia.home_component.viewholders.RecommendationListCarouselViewHolder
 import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
@@ -52,7 +49,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val homeComponentListener: HomeComponentListener,
                          private val legoListener: DynamicLegoBannerListener,
                          private val recommendationListCarouselListener: RecommendationListCarouselListener,
-                         private val reminderWidgetListener: ReminderWidgetListener
+                         private val rechargeRecommendationListener: RechargeRecommendationListener,
+                         private val salamWidgetListener: SalamWidgetListener
 ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory{
@@ -288,8 +286,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             MixLeftViewHolder.LAYOUT -> viewHolder = MixLeftViewHolder(view, listener, parentRecycledViewPool)
             MixTopBannerViewHolder.LAYOUT -> viewHolder = MixTopBannerViewHolder(view, listener)
             ProductHighlightViewHolder.LAYOUT -> viewHolder = ProductHighlightViewHolder(view, listener)
-//            RechargeRecommendationViewHolder.LAYOUT -> viewHolder = RechargeRecommendationViewHolder(view, rechargeRecommendationListener, listener)
-//            SalamWidgetViewHolder.LAYOUT -> viewHolder = SalamWidgetViewHolder(view,salamWidgetListener,listener)
             CategoryWidgetViewHolder.LAYOUT -> viewHolder = CategoryWidgetViewHolder(view, listener)
             DynamicLegoBannerViewHolder.LAYOUT -> viewHolder =
                     DynamicLegoBannerViewHolder(
@@ -304,7 +300,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                             parentRecycledViewPool
                     )
             ReminderWidgetViewHolder.LAYOUT -> viewHolder =
-                    ReminderWidgetViewHolder(view,reminderWidgetListener,homeComponentListener)
+                    ReminderWidgetViewHolder(view,rechargeRecommendationListener,salamWidgetListener,homeComponentListener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

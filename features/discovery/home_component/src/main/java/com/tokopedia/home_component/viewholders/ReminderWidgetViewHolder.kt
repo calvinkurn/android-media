@@ -6,10 +6,12 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.listener.HomeComponentListener
-import com.tokopedia.home_component.listener.ReminderWidgetListener
+import com.tokopedia.home_component.listener.RechargeRecommendationListener
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import kotlinx.android.synthetic.main.home_component_reminder_widget.view.*
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.home_component.listener.SalamWidgetListener
+import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.kotlin.extensions.view.*
 
 /**
@@ -18,7 +20,8 @@ import com.tokopedia.kotlin.extensions.view.*
 
 class ReminderWidgetViewHolder(
         itemView: View,
-        private val listener: ReminderWidgetListener,
+        private val rechargeListener: RechargeRecommendationListener,
+        private val salamListener : SalamWidgetListener,
         val homeComponentListener: HomeComponentListener
         ): AbstractViewHolder<ReminderWidgetModel>(itemView){
 
@@ -55,98 +58,32 @@ class ReminderWidgetViewHolder(
                 }
 
                 btn_reminder_recommendation.setOnClickListener {
-
+                    if(element.source == ReminderEnum.RECHARGE) {
+                        rechargeListener.onRechargeRecommendationClickListener(reminder)
+                        rechargeListener.onRechargeRecommendationDeclineClickListener(reminder)
+                    } else if(element.source == ReminderEnum.SALAM){
+                        salamListener.onSalamWidgetClickListener(reminder)
+                    }
                 }
 
                 addOnImpressionListener(element, object : ViewHintListener {
                     override fun onViewHint() {
-
+                        if(element.source == ReminderEnum.RECHARGE) {
+                            rechargeListener.onRechargeRecommendationImpressionListener(reminder)
+                        } else if(element.source == ReminderEnum.SALAM){
+                            //to do salam tracking
+                        }
                     }
                 })
 
                 ic_close_reminder_recommendation.setOnClickListener {
-
+                    if(element.source == ReminderEnum.RECHARGE) {
+                        rechargeListener.onRechargeRecommendationDeclineClickListener(reminder)
+                    } else if(element.source == ReminderEnum.SALAM){
+                        //to do salam tracking
+                    }
                 }
             }
         }
     }
 }
-
-//class RechargeRecommendationViewHolder(
-//        itemView: View,
-//        private val listener: RechargeRecommendationListener,
-//        private val categoryListener: HomeCategoryListener
-//) : AbstractViewHolder<RechargeRecommendationViewModel>(itemView) {
-//
-//    companion object {
-//        @LayoutRes
-//        val LAYOUT = R.layout.home_recharge_recommendation_item
-//    }
-//
-//    override fun bind(element: RechargeRecommendationViewModel) {
-//        with(itemView) {
-//            if (element.rechargeRecommendation.recommendations.isEmpty()) {
-//                home_recharge_recommendation_loading.show()
-//            } else {
-//                home_recharge_recommendation_loading.hide()
-//
-//                val recommendation = element.rechargeRecommendation.recommendations[0]
-//                if (recommendation.backgroundColor.isNotEmpty()) {
-//                    try {
-//                        recharge_recommendation_widget_container.setBackgroundColor(Color.parseColor(recommendation.backgroundColor))
-//                    } catch (e: Exception) {
-//                    }
-//                }
-//                if (recommendation.title.isNotEmpty()) {
-//                    recharge_recommendation_title.text = recommendation.title
-//                }
-//                ic_recharge_recommendation_product.loadImage(recommendation.iconURL)
-//                recharge_recommendation_text_main.text = MethodChecker.fromHtml(recommendation.mainText)
-//                recharge_recommendation_text_sub.text = MethodChecker.fromHtml(recommendation.subText)
-//
-//                if (recommendation.buttonText.isNotEmpty()) {
-//                    btn_recharge_recommendation.text = recommendation.buttonText
-//                }
-//                btn_recharge_recommendation.setOnClickListener {
-//                    categoryListener.getTrackingQueueObj()?.let {
-//                        RechargeRecommendationTracking.homeRechargeRecommendationOnClickTracker(
-//                                it, recommendation
-//                        )
-//                    }
-//
-//                    listener.onContentClickListener(recommendation.applink)
-//
-//                    // Trigger decline listener to remove widget from homepage
-//                    val requestParams = mapOf(
-//                            PARAM_UUID to element.rechargeRecommendation.UUID,
-//                            PARAM_CONTENT_ID to recommendation.contentID)
-//                    listener.onDeclineClickListener(requestParams)
-//                }
-//
-//                addOnImpressionListener(element, object : ViewHintListener {
-//                    override fun onViewHint() {
-//                        categoryListener.getTrackingQueueObj()?.let {
-//                            RechargeRecommendationTracking.homeRechargeRecommendationImpressionTracker(
-//                                    it, recommendation
-//                            )
-//                        }
-//                    }
-//                })
-//
-//                ic_close_recharge_recommendation.setOnClickListener {
-//                    RechargeRecommendationTracking.homeRechargeRecommendationOnCloseTracker(recommendation)
-//
-//                    val requestParams = mapOf(
-//                            PARAM_UUID to element.rechargeRecommendation.UUID,
-//                            PARAM_CONTENT_ID to recommendation.contentID)
-//                    listener.onDeclineClickListener(requestParams)
-//                }
-//            }
-//        }
-//    }
-//
-//    interface RechargeRecommendationListener {
-//        fun onContentClickListener(applink: String)
-//        fun onDeclineClickListener(requestParams: Map<String, String>)
-//    }
-//}

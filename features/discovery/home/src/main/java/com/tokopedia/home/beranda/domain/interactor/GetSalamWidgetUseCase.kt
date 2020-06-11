@@ -51,7 +51,7 @@ class GetSalamWidgetUseCase @Inject constructor(
                 "      \"ID\": 4,\n" +
                 "      \"mainText\": \"Hi, Wulandari Saputri!\",\n" +
                 "      \"SubText\": \"Jumat adalah hari yang baik untuk sedekah. Yuk sedekahkan Rp5.000 dari OVO kamu!\",\n" +
-                "      \"AppLink\": \"\",\n" +
+                "      \"AppLink\": \"tokopedia://s/umroh\",\n" +
                 "      \"Link\": \"\",\n" +
                 "      \"IconURL\": \"https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/1/9/20723472/20723472_4f6c17e5-5434-4da0-9dc0-35ae1395570c.png\",\n" +
                 "      \"Title\": \"Yuk, berbagi setelah belanja!\",\n" +

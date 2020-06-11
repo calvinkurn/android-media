@@ -17,6 +17,7 @@ data class ReminderData(
         val link: String = "",
         val mainText: String = "",
         val subText: String = "",
-        val title: String = ""
+        val title: String = "",
+        val UUID:String = ""
 )
 

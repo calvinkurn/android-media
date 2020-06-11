@@ -108,7 +108,6 @@ import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.home.widget.FloatingTextButton
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
-import com.tokopedia.home_component.listener.ReminderWidgetListener
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
@@ -881,7 +880,9 @@ open class HomeFragment : BaseDaggerFragment(),
                 HomeComponentCallback(viewModel.get()),
                 DynamicLegoBannerComponentCallback(context),
                 RecommendationListCarouselComponentCallback(viewModel.get(), this),
-                ReminderWidgetComponentCallback(context, viewModel.get(),this))
+                ReminderWidgetComponentCallback(context, viewModel.get(),this),
+                ReminderWidgetComponentCallback(context, viewModel.get(),this)
+                )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
                 .build()
