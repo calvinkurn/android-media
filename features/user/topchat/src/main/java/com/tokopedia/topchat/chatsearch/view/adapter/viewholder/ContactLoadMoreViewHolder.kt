@@ -1,13 +1,28 @@
 package com.tokopedia.topchat.chatsearch.view.adapter.viewholder
 
+import android.annotation.SuppressLint
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatsearch.view.uimodel.ContactLoadMoreUiModel
+import com.tokopedia.unifyprinciples.Typography
 
 class ContactLoadMoreViewHolder(itemView: View?) : AbstractViewHolder<ContactLoadMoreUiModel>(itemView) {
 
+    private var tittle: Typography? = itemView?.findViewById(R.id.txt_tittle)
+    private var ctaDetail: Typography? = itemView?.findViewById(R.id.txt_action_detail)
+
     override fun bind(element: ContactLoadMoreUiModel) {
+        bindTitle(element)
+        bindCtaDetail(element)
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun bindTitle(element: ContactLoadMoreUiModel) {
+        tittle?.text = "Pengguna (${element.totalCount - 5}+)"
+    }
+
+    private fun bindCtaDetail(element: ContactLoadMoreUiModel) {
 
     }
 

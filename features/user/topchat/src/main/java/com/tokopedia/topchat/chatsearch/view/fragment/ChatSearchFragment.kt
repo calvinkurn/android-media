@@ -74,7 +74,6 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
         view?.findViewById<VerticalRecyclerView>(recyclerViewResourceId)?.apply {
             clearItemDecoration()
             overScrollMode = RecyclerView.OVER_SCROLL_NEVER
-            setPadding(paddingLeft, 16.toPx(), paddingRight, 16.toPx())
             clipToPadding = false
         }
     }
