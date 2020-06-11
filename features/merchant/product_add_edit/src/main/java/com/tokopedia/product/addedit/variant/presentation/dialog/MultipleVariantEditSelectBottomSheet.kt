@@ -1,32 +1,24 @@
 package com.tokopedia.product.addedit.variant.presentation.dialog
 
 import android.os.Bundle
-import android.util.LayoutDirection
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.tooltip.adapter.TooltipTypeFactory
-import com.tokopedia.product.addedit.tooltip.model.TooltipModel
+import com.tokopedia.product.addedit.variant.presentation.adapter.MultipleVariantEditSelectTypeAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.add_edit_product_multiple_variant_edit_input_bottom_sheet_content.view.*
+import kotlinx.android.synthetic.main.add_edit_product_multiple_variant_edit_select_bottom_sheet_content.view.*
 
 class MultipleVariantEditSelectBottomSheet : BottomSheetUnify() {
 
     private var contentView: View? = null
-    private var listAdapter: BaseListAdapter<TooltipModel, TooltipTypeFactory>? = null
+    private var selectAdapter: MultipleVariantEditSelectTypeAdapter? = null
 
     init {
-        listAdapter = BaseListAdapter(TooltipTypeFactory())
-        setCloseClickListener {
-            dismiss()
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        selectAdapter = MultipleVariantEditSelectTypeAdapter()
+        setBehaviorAsKnob()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -37,30 +29,53 @@ class MultipleVariantEditSelectBottomSheet : BottomSheetUnify() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         removeContainerPadding()
+        addMarginTitle()
+    }
+
+    private fun setBehaviorAsKnob() {
+        setTitle("Pilih variant yang ingin diatur")
+        showCloseIcon = false
+        showKnob = true
     }
 
     private fun removeContainerPadding() {
         val padding = resources.getDimensionPixelSize(R.dimen.tooltip_padding)
-        val paddingTop = resources.getDimensionPixelSize(R.dimen.tooltip_padding_top)
+        val paddingTop = resources.getDimensionPixelSize(R.dimen.tooltip_close_margin)
         bottomSheetWrapper.setPadding(padding, paddingTop, padding, padding)
     }
 
+    private fun addMarginTitle() {
+        val topMargin = resources.getDimensionPixelSize(R.dimen.spacing_lvl3)
+        val horizontalMargin = resources.getDimensionPixelSize(R.dimen.tooltip_close_margin)
+        (bottomSheetTitle.layoutParams as RelativeLayout.LayoutParams).apply {
+            setMargins(horizontalMargin, topMargin, horizontalMargin, 0)
+            addRule(RelativeLayout.CENTER_VERTICAL)
+        }
+    }
+
     private fun initChildLayout() {
-        contentView = View.inflate(context, R.layout.add_edit_product_multiple_variant_edit_input_bottom_sheet_content, null)
+        contentView = View.inflate(context,
+                R.layout.add_edit_product_multiple_variant_edit_select_bottom_sheet_content, null)
         contentView?.recyclerViewVariantCheck?.apply {
             setHasFixedSize(true)
-            adapter = listAdapter
+            val items = listOf("semua", "sebagian", "semauku")
+            selectAdapter?.setData(items)
+            adapter = selectAdapter
             layoutManager = LinearLayoutManager(context)
         }
-        contentView?.checkboxSelectAll?.layoutDirection = LayoutDirection.RTL
+        contentView?.buttonNext?.setOnClickListener {
+            dismiss()
+            val multipleVariantEditSelectBottomSheet = MultipleVariantEditInputBottomSheet()
+            multipleVariantEditSelectBottomSheet.show(fragmentManager!!, "tgu")
+        }
         setChild(contentView)
     }
 
     fun notifyDataSetChanged() {
-        listAdapter?.notifyDataSetChanged()
+        selectAdapter?.notifyDataSetChanged()
     }
 
     companion object {
-        const val TAG = "Tag list"
+        const val TAG = "Tag Multiple Variant Edit Select"
     }
 }

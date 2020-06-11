@@ -1,65 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layoutParent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:paddingTop="@dimen/layout_lvl2"
-        android:paddingBottom="@dimen/layout_lvl2"
-        android:paddingLeft="@dimen/layout_lvl2"
-        android:paddingRight="@dimen/layout_lvl1"
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/tfuPrice"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:text_field_input_type="number"
+        app:text_field_label="Harga"
+        app:text_field_prepend_text="Rp" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:layout_width="@dimen/layout_lvl0"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Semua"
-            android:textColor="@color/Neutral_N700_96"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_4" />
-
-        <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
-            android:id="@+id/checkboxSelectAll"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-    </LinearLayout>
-
-    <com.tokopedia.unifycomponents.DividerUnify
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/tfuStock"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_lvl1"/>
+        android:layout_height="wrap_content"
+        app:text_field_input_type="number"
+        app:text_field_label="Stok"
+        app:text_field_prepend_text="Rp" />
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewVariantCheck"
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/tfuSku"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl0"
-        android:layout_weight="1"
-        android:paddingBottom="@dimen/layout_lvl3" />
+        android:layout_height="wrap_content"
+        app:text_field_label="SKU (Stock Keeping Unit)" />
 
-    <androidx.cardview.widget.CardView
-        app:cardElevation="@dimen/layout_lvl1"
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/buttonApply"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/button"
-            android:text="Lanjut"
-            android:layout_marginTop="@dimen/layout_lvl1"
-            android:layout_marginBottom="@dimen/layout_lvl1"
-            android:layout_marginLeft="@dimen/layout_lvl2"
-            android:layout_marginRight="@dimen/layout_lvl2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-    </androidx.cardview.widget.CardView>
-
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:text="Terapkan" />
 
 </LinearLayout>
