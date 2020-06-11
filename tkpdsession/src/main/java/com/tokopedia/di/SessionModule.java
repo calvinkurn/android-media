@@ -8,8 +8,6 @@ import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -27,14 +25,9 @@ import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.session.data.source.CreatePasswordDataSource;
 import com.tokopedia.session.data.source.GetTokenDataSource;
 import com.tokopedia.session.data.source.MakeLoginDataSource;
-import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
 import com.tokopedia.session.domain.mapper.MakeLoginMapper;
 import com.tokopedia.session.domain.mapper.TokenMapper;
 import com.tokopedia.session.register.data.mapper.CreatePasswordMapper;
-import com.tokopedia.session.register.registerphonenumber.data.mapper.RegisterPhoneNumberMapper;
-import com.tokopedia.session.register.registerphonenumber.data.source.CloudRegisterPhoneNumberSource;
-import com.tokopedia.session.register.registerphonenumber.domain.usecase.LoginRegisterPhoneNumberUseCase;
-import com.tokopedia.session.register.registerphonenumber.domain.usecase.RegisterPhoneNumberUseCase;
 import com.tokopedia.session.register.view.util.AccountsAuthInterceptor;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -232,12 +225,6 @@ public class SessionModule {
 
     @SessionScope
     @Provides
-    RegisterPhoneNumberMapper provideRegisterPhoneNumberMapper() {
-        return new RegisterPhoneNumberMapper();
-    }
-
-    @SessionScope
-    @Provides
     @RegisterPhoneNumberQualifier
     Retrofit providesRegisterPhoneNumberRetrofit(Retrofit.Builder retrofitBuilder,
                                                  OkHttpClient okHttpClient) {
@@ -248,37 +235,6 @@ public class SessionModule {
     @Provides
     RegisterPhoneNumberApi provideRegisterPhoneNumberApi(@RegisterPhoneNumberQualifier Retrofit retrofit) {
         return retrofit.create(RegisterPhoneNumberApi.class);
-    }
-
-    @SessionScope
-    @Provides
-    CloudRegisterPhoneNumberSource provideCloudRegisterPhoneNumberSource(
-            @ApplicationContext Context context,
-            RegisterPhoneNumberApi registerPhoneNumberApi,
-            RegisterPhoneNumberMapper mapper,
-            SessionHandler sessionHandler) {
-        return new CloudRegisterPhoneNumberSource(context, registerPhoneNumberApi, mapper, sessionHandler);
-    }
-
-    @SessionScope
-    @Provides
-    RegisterPhoneNumberUseCase provideRegisterPhoneNumberUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
-            @ApplicationContext Context context,
-            CloudRegisterPhoneNumberSource source) {
-        return new RegisterPhoneNumberUseCase(threadExecutor, postExecutionThread, context, source);
-    }
-
-    @SessionScope
-    @Provides
-    LoginRegisterPhoneNumberUseCase provideLoginRegisterPhoneNumberUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
-            RegisterPhoneNumberUseCase registerPhoneNumberUseCase,
-            GetUserInfoUseCase getUserInfoUseCase,
-            MakeLoginUseCase makeLoginUseCase) {
-        return new LoginRegisterPhoneNumberUseCase(threadExecutor, postExecutionThread, registerPhoneNumberUseCase, getUserInfoUseCase, makeLoginUseCase);
     }
 
     @SessionScope
