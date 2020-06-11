@@ -50,6 +50,7 @@ dependencies {
     // Misc Dependencies
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation rootProject.ext.miscDependencies.multiDex
 
     // Test Dependencies
     testImplementation rootProject.ext.testDependencies.mockk
