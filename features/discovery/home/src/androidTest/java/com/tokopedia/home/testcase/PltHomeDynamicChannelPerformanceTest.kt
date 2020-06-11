@@ -1,6 +1,5 @@
 package com.tokopedia.home.testcase
 
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils.writePLTPerformanceFile
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
@@ -32,7 +31,6 @@ class PltHomeDynamicChannelPerformanceTest {
     @Test
     fun testPageLoadTimePerformance() {
         waitForData()
-        InstrumentationRegistry.getInstrumentation().context.classLoader
         savePLTPerformanceResultData(TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE)
         activityRule.activity.deleteDatabase("HomeCache.db")
         activityRule.activity.finishAndRemoveTask()
