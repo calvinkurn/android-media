@@ -8,6 +8,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.common.data.model.response.shipping.ShippingNoPriceResponse
 import com.tokopedia.oneclickcheckout.common.domain.GetShippingDurationUseCase
 import com.tokopedia.oneclickcheckout.common.domain.mapper.ShippingDurationModelMapper
@@ -102,7 +103,11 @@ class ShippingDurationViewModel @Inject constructor(private val useCase: GetShip
                                 }
 
                                 override fun onNext(shippingRecomendationData: ShippingRecommendationData) {
-                                    logicSelection(mapToModelPrice(shippingRecomendationData))
+                                    if (!shippingRecomendationData.errorMessage.isNullOrEmpty()) {
+                                        _shippingDuration.value = OccState.Fail(false, MessageErrorException(shippingRecomendationData.errorMessage), "")
+                                    } else {
+                                        logicSelection(mapToModelPrice(shippingRecomendationData))
+                                    }
                                 }
 
                                 override fun onCompleted() {

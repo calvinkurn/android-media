@@ -11,16 +11,16 @@ class ShippingDurationModelMapper @Inject constructor() : ShippingDurationDataMa
     override fun convertToDomainModel(response: ShippingNoPriceResponse): ShippingListModel {
 
         return ShippingListModel().apply {
-            this.services = response.response.services.map(servicesItemModel)
+            services = response.response.services.map(servicesItemModel)
         }
 
     }
 
     private val servicesItemModel: (Services) -> ServicesItemModelNoPrice = {
         ServicesItemModelNoPrice().apply {
-            this.serviceId = it.serviceId
-            this.servicesDuration = it.serviceDuration
-            this.serviceCode = it.serviceCode
+            serviceId = it.serviceId
+            servicesDuration = it.serviceDuration
+            serviceCode = it.serviceCode
         }
     }
 }

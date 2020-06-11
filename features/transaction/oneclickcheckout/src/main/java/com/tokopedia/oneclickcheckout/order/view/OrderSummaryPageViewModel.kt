@@ -183,7 +183,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                             }
                             return@map data
                         }.subscribe(object : Observer<ShippingRecommendationData> {
-                            override fun onError(e: Throwable) {
+                            override fun onError(e: Throwable?) {
                                 _orderPreference = _orderPreference?.copy(shipping = Shipment(
                                         serviceName = _orderPreference?.preference?.shipment?.serviceName,
                                         serviceDuration = _orderPreference?.preference?.shipment?.serviceDuration,

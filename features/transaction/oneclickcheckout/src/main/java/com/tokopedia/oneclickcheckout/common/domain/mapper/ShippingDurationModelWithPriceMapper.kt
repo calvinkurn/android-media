@@ -12,30 +12,32 @@ class ShippingDurationModelWithPriceMapper @Inject constructor() : ShippingDurat
         val servicesList: ArrayList<ServicesItem> = ArrayList()
 
         return ShippingListModel().apply {
-            for (item in response.shippingDurationViewModels) {
-                servicesList.add(servicesItemModel(item.serviceData))
+            if (response.shippingDurationViewModels != null) {
+                for (item in response.shippingDurationViewModels) {
+                    servicesList.add(servicesItemModel(item.serviceData))
+                }
             }
             if (response.logisticPromo != null) {
                 servicesList.add(0, LogisticPromoInfo(response.logisticPromo.imageUrl))
             }
-            this.services = servicesList
+            services = servicesList
         }
     }
 
     private val servicesItemModel: (ServiceData) -> ServicesItemModel = {
         ServicesItemModel().apply {
-            this.servicesId = it.serviceId
-            this.servicesName = it.serviceName
-            this.texts = textItemModel(it.texts)
-            this.errorMessage = it.error.errorMessage
-            this.errorId = it.error.errorId
+            servicesId = it.serviceId
+            servicesName = it.serviceName
+            texts = textItemModel(it.texts)
+            errorMessage = it.error.errorMessage
+            errorId = it.error.errorId
         }
     }
 
     private val textItemModel: (ServiceTextData) -> TextsModel = {
         TextsModel().apply {
-            this.textRangePrice = it.textRangePrice
-            this.textsServiceDesc = it.textServiceDesc
+            textRangePrice = it.textRangePrice
+            textsServiceDesc = it.textServiceDesc
         }
     }
 
