@@ -24,10 +24,10 @@ import rx.Observer
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 
-class ShippingDurationViewModel @Inject constructor(val useCase: GetShippingDurationUseCase,
-                                                    val useCaseRates: GetRatesUseCase,
-                                                    val mapper: ShippingDurationModelMapper,
-                                                    val mapperPrice: ShippingDurationModelWithPriceMapper,
+class ShippingDurationViewModel @Inject constructor(private val useCase: GetShippingDurationUseCase,
+                                                    private val useCaseRates: GetRatesUseCase,
+                                                    private val mapper: ShippingDurationModelMapper,
+                                                    private val mapperPrice: ShippingDurationModelWithPriceMapper,
                                                     dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     var selectedId = -1
@@ -42,7 +42,7 @@ class ShippingDurationViewModel @Inject constructor(val useCase: GetShippingDura
     fun getShippingDuration() {
         _shippingDuration.value = OccState.Loading
         useCase.execute(onSuccess = {
-            logicSelection(mapTomodel(it))
+            logicSelection(mapToModel(it))
         }, onError = {
             _shippingDuration.value = OccState.Fail(false, it, "")
         })
@@ -67,7 +67,7 @@ class ShippingDurationViewModel @Inject constructor(val useCase: GetShippingDura
         }
     }
 
-    private fun mapTomodel(responses: ShippingNoPriceResponse): ShippingListModel {
+    private fun mapToModel(responses: ShippingNoPriceResponse): ShippingListModel {
         return mapper.convertToDomainModel(responses)
     }
 

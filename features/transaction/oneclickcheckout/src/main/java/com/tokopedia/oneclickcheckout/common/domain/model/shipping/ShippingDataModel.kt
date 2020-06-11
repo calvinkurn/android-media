@@ -2,14 +2,14 @@ package com.tokopedia.oneclickcheckout.common.domain.model.shipping
 
 sealed class ServicesItem
 
-class ServicesItemModelNoPrice(
-        var serviceCode: String? = null,
+data class ServicesItemModelNoPrice(
+        var serviceCode: String? = "",
         var serviceId: Int = -1,
-        var servicesDuration: String? = null,
+        var servicesDuration: String? = "",
         var isSelected: Boolean = false
 ) : ServicesItem()
 
-class ServicesItemModel(
+data class ServicesItemModel(
         var servicesName: String? = null,
         var servicesId: Int = -1,
         var texts: TextsModel? = null,

@@ -9,6 +9,7 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_WEIGHT_LIMIT_EXCEEDED
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorServiceData
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
@@ -80,7 +81,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     var orderProduct: OrderProduct = OrderProduct()
     var orderShop: OrderShop = OrderShop()
     private var kero: Kero = Kero()
-    private var _orderPreference: OrderPreference? = null
+    var _orderPreference: OrderPreference? = null
 
     var orderPromo: MutableLiveData<OrderPromo> = MutableLiveData(OrderPromo())
     var validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = null
@@ -241,12 +242,12 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                             var flagNeedToSetPinpoint = false
                                                             var errorMessage: String? = null
                                                             if (selectedShippingCourierUiModel.productData.error != null && selectedShippingCourierUiModel.productData.error.errorMessage != null && selectedShippingCourierUiModel.productData.error.errorId != null) {
+                                                                shippingErrorId = selectedShippingCourierUiModel.productData.error.errorId
                                                                 errorMessage = selectedShippingCourierUiModel.productData.error.errorMessage
                                                                 if (selectedShippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
                                                                     flagNeedToSetPinpoint = true
                                                                 }
                                                             }
-                                                            shippingErrorId = selectedShippingCourierUiModel.productData.error.errorId
                                                             val tempServiceDuration = shippingDurationViewModel.serviceData.serviceName
                                                             val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
                                                                 tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
@@ -286,8 +287,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                 if (shippingDurationViewModel.serviceData.serviceId == curShip.serviceId) {
                                                     shippingDurationViewModel.isSelected = true
                                                     selectedShippingDurationViewModel = shippingDurationViewModel
-                                                    val durationError = shippingDurationViewModel.serviceData.error
-                                                    if (durationError.errorId != null && durationError.errorId.isNotBlank() && durationError.errorMessage.isNotBlank()) {
+                                                    val durationError: ErrorServiceData? = shippingDurationViewModel.serviceData.error
+                                                    if (durationError?.errorId != null && durationError.errorId.isNotBlank() && durationError.errorMessage.isNotBlank()) {
                                                         val tempServiceDuration = shippingDurationViewModel.serviceData.serviceName
                                                         val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
                                                             tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
@@ -318,12 +319,12 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                             var flagNeedToSetPinpoint = false
                                                             var errorMessage: String? = null
                                                             if (selectedShippingCourierUiModel.productData.error != null && selectedShippingCourierUiModel.productData.error.errorMessage != null && selectedShippingCourierUiModel.productData.error.errorId != null) {
+                                                                shippingErrorId = selectedShippingCourierUiModel.productData.error.errorId
                                                                 errorMessage = selectedShippingCourierUiModel.productData.error.errorMessage
                                                                 if (selectedShippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
                                                                     flagNeedToSetPinpoint = true
                                                                 }
                                                             }
-                                                            shippingErrorId = selectedShippingCourierUiModel.productData.error.errorId
                                                             val tempServiceDuration = shippingDurationViewModel.serviceData.serviceName
                                                             val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
                                                                 tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
@@ -641,7 +642,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                 logisticPromoShipping = null,
                                 isApplyLogisticPromo = false))
                         orderPreference.value = OccState.Success(_orderPreference!!)
-                        orderSummaryAnalytics.eventChooseCourierSelectionOSP(selectedShippingCourierUiModel.productData.shipperId.toString())
                         calculateTotal()
                         validateUsePromo()
                     }
