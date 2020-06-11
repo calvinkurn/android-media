@@ -21,7 +21,10 @@ import com.tokopedia.kotlin.util.DownloadHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.TipsTrickBottomSheet
@@ -58,6 +61,9 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
     private var voucherUiModel: VoucherUiModel? = null
 
     @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
     private val viewModelProvider by lazy {
@@ -85,6 +91,17 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
         setHasOptionsMenu(true)
 
         setupView()
+
+        VoucherCreationTracking.sendOpenScreenTracking(
+                when(voucherUiModel?.status) {
+                    VoucherStatusConst.NOT_STARTED -> VoucherCreationAnalyticConstant.ScreenName.VoucherDetail.UPCOMING
+                    VoucherStatusConst.ONGOING -> VoucherCreationAnalyticConstant.ScreenName.VoucherDetail.ONGOING
+                    VoucherStatusConst.ENDED -> VoucherCreationAnalyticConstant.ScreenName.VoucherDetail.ENDED
+                    VoucherStatusConst.STOPPED -> VoucherCreationAnalyticConstant.ScreenName.VoucherDetail.CANCELLED
+                    else -> return
+                },
+                userSession.isLoggedIn,
+                userSession.userId)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

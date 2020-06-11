@@ -28,7 +28,10 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.VoucherPeriodBottomSheet
@@ -95,6 +98,9 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     private var fragmentListener: Listener? = null
 
     @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val mViewModel: VoucherListViewModel by lazy {
@@ -153,6 +159,15 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         if (successVoucherId != 0 && isNeedToShowSuccessDialog) {
             showSuccessCreateBottomSheet(successVoucherId)
         }
+
+        VoucherCreationTracking.sendOpenScreenTracking(
+                if (isActiveVoucher) {
+                    VoucherCreationAnalyticConstant.ScreenName.VoucherList.ACTIVE
+                } else {
+                    VoucherCreationAnalyticConstant.ScreenName.VoucherList.HISTORY
+                },
+                userSession.isLoggedIn,
+                userSession.userId)
 
         setupView()
         observeVoucherList()

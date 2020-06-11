@@ -28,7 +28,10 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMaxEndDate
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMaxStartDate
@@ -101,6 +104,9 @@ class SetVoucherPeriodFragment : Fragment() {
     private var isCreateNew: Boolean = true
 
     @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
     private val viewModelProvider by lazy {
@@ -150,6 +156,10 @@ class SetVoucherPeriodFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
+        VoucherCreationTracking.sendOpenScreenTracking(
+                VoucherCreationAnalyticConstant.ScreenName.VoucherCreation.PERIOD,
+                userSession.isLoggedIn,
+                userSession.userId)
     }
 
     private fun initInjector() {

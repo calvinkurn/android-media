@@ -17,7 +17,10 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.consts.VoucherUrl
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.create.domain.model.CreateVoucherParam
@@ -89,6 +92,9 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     private var getVoucherId: () -> Int? = { null }
     private var getPromoCodePrefix: () -> String = { "" }
     private var isEdit: Boolean = false
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -176,6 +182,14 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeLiveData()
+        VoucherCreationTracking.sendOpenScreenTracking(
+                if (activity?.intent?.getBooleanExtra(CreateMerchantVoucherStepsActivity.IS_DUPLICATE, false) == true) {
+                    VoucherCreationAnalyticConstant.ScreenName.VoucherCreation.REVIEW
+                } else {
+                    VoucherCreationAnalyticConstant.ScreenName.VOUCHER_DUPLICATE_REVIEW
+                },
+                userSession.isLoggedIn,
+                userSession.userId)
     }
 
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
