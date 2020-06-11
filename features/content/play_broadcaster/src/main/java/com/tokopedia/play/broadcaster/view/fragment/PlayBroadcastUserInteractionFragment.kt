@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
+import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
@@ -73,6 +74,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeTotalLikes()
         observeChatList()
         observeMetrics()
+        observeNetworkConnectionDuringLive()
     }
 
     private fun initView(view: View) {
@@ -103,6 +105,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     override fun onBackPressed(): Boolean {
+        try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
         showDialogWhenActionClose()
         return true
     }
@@ -168,13 +171,32 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
 
+    private fun showToast(
+            message: String,
+            type: Int,
+            duration: Int = Toaster.LENGTH_LONG,
+            actionLabel: String = "",
+            actionListener: View.OnClickListener = View.OnClickListener { }
+    ) {
+        view?.let { view ->
+            if (actionLabel.isNotEmpty()) Toaster.toasterCustomCtaWidth = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl8)
+            Toaster.toasterCustomBottomHeight =  ivShareLink.height + resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+            Toaster.make(view,
+                    text = message,
+                    duration = duration,
+                    type = type,
+                    actionText = actionLabel,
+                    clickListener = actionListener)
+        }
+    }
+
     private fun doCopyShareLink() {
         parentViewModel.channelInfo?.let { channelInfo ->
             PlayShareWrapper.doCopyShareLink(requireContext(), channelInfo) {
                 Toaster.make(requireView(),
                         text = getString(R.string.play_live_broadcast_share_link_copied),
                         duration = Toaster.LENGTH_LONG,
-                        actionText =  getString(R.string.play_live_broadcast_share_link_ok))
+                        actionText =  getString(R.string.play_ok))
             }
         }
     }
@@ -241,6 +263,30 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun observeMetrics() {
         parentViewModel.observableNewMetric.observe(viewLifecycleOwner, EventObserver(::setNewMetric))
+    }
+
+    private fun observeNetworkConnectionDuringLive() {
+        parentViewModel.observableLiveNetworkState.observe(viewLifecycleOwner, EventObserver{
+            when(it) {
+                is PlayPusherNetworkState.Recover -> {
+                    showToast(message = getString(R.string.play_live_broadcast_network_recover),
+                            type = Toaster.TYPE_NORMAL)
+                }
+                is PlayPusherNetworkState.Poor -> {
+                    showToast(message = getString(R.string.play_live_broadcast_network_loss),
+                            type = Toaster.TYPE_ERROR)
+                }
+                is PlayPusherNetworkState.Loss -> {
+                    showToast(message = getString(R.string.play_live_broadcast_network_loss),
+                            type = Toaster.TYPE_ERROR,
+                            duration = Toaster.LENGTH_INDEFINITE,
+                            actionLabel = getString(R.string.play_broadcast_try_again),
+                            actionListener = View.OnClickListener {
+                                parentViewModel.getPlayPusher().restartPush()
+                            })
+                }
+            }
+        })
     }
     //endregion
 
