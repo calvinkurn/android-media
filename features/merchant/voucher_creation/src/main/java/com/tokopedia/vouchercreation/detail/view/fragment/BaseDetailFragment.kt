@@ -87,6 +87,10 @@ abstract class BaseDetailFragment : BaseListFragment<VoucherDetailUiModel, Vouch
 
     }
 
+    override fun onImpression(dataKey: String) {
+
+    }
+
     override fun showDescriptionBottomSheet(title: String, content: String) {
         if (!isAdded) return
         DescriptionBottomSheet(context ?: return)

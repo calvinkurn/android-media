@@ -42,7 +42,7 @@ class VoucherDisplayAdapter(private val itemList: List<VoucherDisplayUiModel>,
                 }
                 val displayText = resources?.getString(uiModel.displayTextRes).toBlankOrString()
                 voucherDisplayText?.text = displayText
-                addOnImpressionListener(uiModel.impressHolder) {
+                voucherDisplayImage?.addOnImpressionListener(uiModel.impressHolder) {
                     sendCreateVoucherImpressionTracking(
                             step = VoucherCreationStep.TARGET,
                             action =

@@ -9,7 +9,9 @@ import com.tokopedia.vouchercreation.create.view.uimodel.vouchertarget.VoucherTa
 
 class VoucherTargetUiModel(val onShouldShowBottomSheet: (CreateVoucherBottomSheetType, VoucherTargetCardType?) -> Unit = { _,_ ->},
                            val onSetActiveVoucherTargetType: (Int) -> Unit,
-                           val voucherTargetList: List<VoucherTargetItemUiModel> = VoucherTargetStaticDataSource.getVoucherTargetItemUiModelList())
+                           val voucherTargetList: List<VoucherTargetItemUiModel> = VoucherTargetStaticDataSource.getVoucherTargetItemUiModelList(),
+                           val onRadioButtonClicked: (Int) -> Unit,
+                           val onChangePromoButtonClicked: () -> Unit)
     : Visitable<VoucherTargetTypeFactory> {
 
     override fun type(typeFactory: VoucherTargetTypeFactory): Int =

@@ -21,10 +21,8 @@ import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.kotlin.extensions.convertToDate
 import com.tokopedia.kotlin.extensions.toFormattedString
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
-import com.tokopedia.kotlin.extensions.view.toBitmap
-import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -41,6 +39,7 @@ import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getToday
 import com.tokopedia.vouchercreation.common.utils.convertUnsafeDateTime
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
+import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.painter.VoucherPreviewPainter
 import com.tokopedia.vouchercreation.create.view.uimodel.initiation.BannerBaseUiModel
@@ -121,6 +120,8 @@ class SetVoucherPeriodFragment : Fragment() {
         LocaleUtils.getIDLocale()
     }
 
+    private val impressHolder = ImpressHolder()
+
     private var bannerVoucherUiModel: BannerVoucherUiModel = getVoucherBanner()
 
     private var bannerBitmap: Bitmap? = null
@@ -156,10 +157,12 @@ class SetVoucherPeriodFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
-        VoucherCreationTracking.sendOpenScreenTracking(
-                VoucherCreationAnalyticConstant.ScreenName.VoucherCreation.PERIOD,
-                userSession.isLoggedIn,
-                userSession.userId)
+        view.addOnImpressionListener(impressHolder) {
+            VoucherCreationTracking.sendOpenScreenTracking(
+                    VoucherCreationAnalyticConstant.ScreenName.VoucherCreation.PERIOD,
+                    userSession.isLoggedIn,
+                    userSession.userId)
+        }
     }
 
     private fun initInjector() {
@@ -172,6 +175,11 @@ class SetVoucherPeriodFragment : Fragment() {
     private fun setupView() {
         startDateTextField?.textFieldInput?.run{
             setOnClickListener {
+                VoucherCreationTracking.sendCreateVoucherClickTracking(
+                        step = VoucherCreationStep.PERIOD,
+                        action = VoucherCreationAnalyticConstant.EventAction.Click.CALENDAR_START,
+                        userId = userSession.userId
+                )
                 getStartDateTimePicker()?.show(childFragmentManager, START_DATE_TIME_PICKER_TAG)
             }
             isFocusable = false
@@ -179,6 +187,11 @@ class SetVoucherPeriodFragment : Fragment() {
         }
         endDateTextField?.textFieldInput?.run {
             setOnClickListener {
+                VoucherCreationTracking.sendCreateVoucherClickTracking(
+                        step = VoucherCreationStep.PERIOD,
+                        action = VoucherCreationAnalyticConstant.EventAction.Click.CALENDAR_END,
+                        userId = userSession.userId
+                )
                 getEndDateTimePicker()?.show(childFragmentManager, END_DATE_TIME_PICKER_TAG)
             }
             isFocusable = false
@@ -188,6 +201,11 @@ class SetVoucherPeriodFragment : Fragment() {
         disableTextFieldEdit()
         setDateNextButton?.run {
             setOnClickListener {
+                VoucherCreationTracking.sendCreateVoucherClickTracking(
+                        step = VoucherCreationStep.PERIOD,
+                        action = VoucherCreationAnalyticConstant.EventAction.Click.CONTINUE,
+                        userId = userSession.userId
+                )
                 isLoading = true
                 onNextClicked()
             }

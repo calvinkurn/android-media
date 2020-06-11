@@ -21,7 +21,7 @@ object VoucherCreationTracking {
 
     fun sendCreateVoucherClickTracking(@VoucherCreationStep step: Int,
                                        action: String,
-                                       label: String,
+                                       label: String = "",
                                        userId: String,
                                        isDuplicate: Boolean = false) {
         sendGeneralTracking(
@@ -56,7 +56,7 @@ object VoucherCreationTracking {
 
     fun sendCreateVoucherImpressionTracking(@VoucherCreationStep step: Int,
                                             action: String,
-                                            label: String,
+                                            label: String = "",
                                             userId: String,
                                             isDuplicate: Boolean = false) {
         sendGeneralTracking(

@@ -19,7 +19,13 @@ class VoucherTargetViewHolder(itemView: View) : AbstractViewHolder<VoucherTarget
     override fun bind(element: VoucherTargetUiModel) {
         itemView.run {
             voucherTargetWidgetRecyclerView?.layoutManager = LinearLayoutManager(context)
-            voucherTargetWidgetRecyclerView?.adapter = MerchantVoucherTargetAdapter(element.voucherTargetList, ::onRequestNotify, element.onShouldShowBottomSheet, element.onSetActiveVoucherTargetType)
+            voucherTargetWidgetRecyclerView?.adapter = MerchantVoucherTargetAdapter(
+                    element.voucherTargetList,
+                    ::onRequestNotify,
+                    element.onShouldShowBottomSheet,
+                    element.onSetActiveVoucherTargetType,
+                    element.onRadioButtonClicked,
+                    element.onChangePromoButtonClicked)
         }
     }
 

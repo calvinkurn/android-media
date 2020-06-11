@@ -67,9 +67,13 @@ class VoucherDetailAdapterFactoryImpl(
             TipsViewHolder.RES_LAYOUT -> TipsViewHolder(parent) {
                 voucherDetailListener.showTipsAndTrickBottomSheet()
             }
-            InfoContainerViewHolder.RES_LAYOUT -> InfoContainerViewHolder(parent) {
-                voucherDetailListener.onInfoContainerCtaClick(it)
-            }
+            InfoContainerViewHolder.RES_LAYOUT -> InfoContainerViewHolder(parent,
+                    onCtaClick = {
+                        voucherDetailListener.onInfoContainerCtaClick(it)
+                    },
+                    onImpression = {
+                        voucherDetailListener.onImpression(it)
+                    })
             FooterButtonViewHolder.RES_LAYOUT -> FooterButtonViewHolder(parent) {
                 voucherDetailListener.onFooterButtonClickListener()
             }

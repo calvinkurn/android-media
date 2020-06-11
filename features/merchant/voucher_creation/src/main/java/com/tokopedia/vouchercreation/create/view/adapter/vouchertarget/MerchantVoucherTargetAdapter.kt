@@ -12,7 +12,9 @@ import kotlinx.android.synthetic.main.mvc_voucher_target_item.view.*
 class MerchantVoucherTargetAdapter(private val merchantVoucherTargetList: List<VoucherTargetItemUiModel>,
                                    private val onRequestNotifyLambda: () -> Unit,
                                    private val onShouldOpenBottomSheet: (CreateVoucherBottomSheetType, VoucherTargetCardType?) -> Unit,
-                                   private val onSetVoucherTargetType: (Int) -> Unit) : RecyclerView.Adapter<MerchantVoucherTargetAdapter.MerchantVoucherTargetViewHolder>() {
+                                   private val onSetVoucherTargetType: (Int) -> Unit,
+                                   private val onRadioButtonClicked: (Int) -> Unit,
+                                   private val onChangePromoCodeButtonClicked: () -> Unit) : RecyclerView.Adapter<MerchantVoucherTargetAdapter.MerchantVoucherTargetViewHolder>() {
 
     class MerchantVoucherTargetViewHolder(itemView: VoucherTargetCardItemView) : RecyclerView.ViewHolder(itemView)
 
@@ -28,17 +30,23 @@ class MerchantVoucherTargetAdapter(private val merchantVoucherTargetList: List<V
             (holder.itemView as? VoucherTargetCardItemView)?.run {
                 val canShowBottomSheet = uiModel.voucherTargetType == VoucherTargetCardType.PRIVATE && !uiModel.isHavePromoCard
                 setupCurrentView(uiModel.voucherTargetType, uiModel.isEnabled, uiModel.isHavePromoCard, uiModel.promoCode)
-                voucherTargetItemRadioButton?.setOnCheckedChangeListener { _, isChecked ->
-                    if (isChecked) {
-                        onItemEnabled(position)
-                        if (canShowBottomSheet) {
-                            onShouldOpenBottomSheet(CreateVoucherBottomSheetType.CREATE_PROMO_CODE, null)
+                voucherTargetItemRadioButton?.run {
+                    setOnCheckedChangeListener { _, isChecked ->
+                        if (isChecked) {
+                            onItemEnabled(position)
+                            if (canShowBottomSheet) {
+                                onShouldOpenBottomSheet(CreateVoucherBottomSheetType.CREATE_PROMO_CODE, null)
+                            }
                         }
+                    }
+                    setOnClickListener {
+                        onRadioButtonClicked(uiModel.voucherTargetType.targetType)
                     }
                 }
                 voucherTargetPromoCodeInfo?.run {
                     if (isChangeEnabled && uiModel.isHavePromoCard) {
                         voucherCreatePromoCodeChange?.setOnClickListener {
+                            onChangePromoCodeButtonClicked()
                             onShouldOpenBottomSheet(CreateVoucherBottomSheetType.CREATE_PROMO_CODE, null)
                         }
                     } else {

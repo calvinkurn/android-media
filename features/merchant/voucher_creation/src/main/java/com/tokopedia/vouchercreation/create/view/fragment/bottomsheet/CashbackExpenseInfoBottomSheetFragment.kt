@@ -35,6 +35,13 @@ class CashbackExpenseInfoBottomSheetFragment(private val bottomSheetContext: Con
         }
     }
 
+    private var onEditButtonClicked: () -> Unit = {}
+
+    fun setEditNowButtonClicked(action: () -> Unit): CashbackExpenseInfoBottomSheetFragment {
+        onEditButtonClicked = action
+        return this
+    }
+
     private fun initView() {
         getCashbackInfo().run {
             minimumPurchaseInfo?.infoValueString = String.format(
@@ -45,6 +52,7 @@ class CashbackExpenseInfoBottomSheetFragment(private val bottomSheetContext: Con
             val description = String.format(bottomSheetContext.getString(R.string.mvc_create_promo_type_bottomsheet_desc).toBlankOrString(), CurrencyFormatHelper.convertToRupiah(minimumDiscount.toString())).parseAsHtml()
             cashbackExpenseDescription?.text = description
             cashbackExpenseButton?.setOnClickListener {
+                onEditButtonClicked()
                 this@CashbackExpenseInfoBottomSheetFragment.dismiss()
             }
         }

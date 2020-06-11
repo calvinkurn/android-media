@@ -5,6 +5,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
@@ -18,7 +19,8 @@ import kotlinx.android.synthetic.main.item_mvc_info_container.view.*
 
 class InfoContainerViewHolder(
         itemView: View?,
-        private val onCtaClick: (dataKey: String) -> Unit
+        private val onCtaClick: (dataKey: String) -> Unit,
+        private val onImpression: (dataKey: String) -> Unit
 ) : AbstractViewHolder<InfoContainerUiModel>(itemView) {
 
     companion object {
@@ -36,6 +38,9 @@ class InfoContainerViewHolder(
             tvMvcInfoCta.isVisible = element.hasCta
             tvMvcInfoCta.setOnClickListener {
                 onCtaClick(element.dataKey)
+            }
+            addOnImpressionListener(element.impressHolder) {
+                onImpression(element.dataKey)
             }
         }
         subInfoAdapter.setSubInfoItems(element.informationList)

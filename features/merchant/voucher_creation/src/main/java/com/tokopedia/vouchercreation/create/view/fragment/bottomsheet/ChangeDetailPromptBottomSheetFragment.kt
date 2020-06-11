@@ -33,6 +33,8 @@ class ChangeDetailPromptBottomSheetFragment(context: Context,
     private val clickableSpan = context.getString(R.string.mvc_review_back_redirect_clickable).toBlankOrString()
     private val spanColor = context.getResColor(R.color.light_G500)
 
+    private var onBackButtonClicked: () -> Unit = {}
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (isAdded) {
@@ -40,9 +42,14 @@ class ChangeDetailPromptBottomSheetFragment(context: Context,
         }
     }
 
+    fun setBackButtonClickListener(action: () -> Unit) {
+        onBackButtonClicked = action
+    }
+
     private fun initView() {
         view?.run {
             reviewBackConfirmButton?.setOnClickListener {
+                onBackButtonClicked()
                 dismiss()
             }
             reviewBackCancelText?.run {

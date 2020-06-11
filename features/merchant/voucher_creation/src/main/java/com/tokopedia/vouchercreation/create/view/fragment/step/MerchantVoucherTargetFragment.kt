@@ -10,7 +10,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -76,6 +78,11 @@ class MerchantVoucherTargetFragment : BaseCreateMerchantVoucherFragment<VoucherT
     private val createPromoCodeBottomSheetFragment by lazy {
         CreatePromoCodeBottomSheetFragment.createInstance(context, ::onNextCreatePromoCode, ::getPromoCodeString, getPromoCodePrefix).apply {
             setCloseClickListener {
+                VoucherCreationTracking.sendCreateVoucherClickTracking(
+                        step = VoucherCreationStep.TARGET,
+                        action = VoucherCreationAnalyticConstant.EventAction.Click.CLOSE_PRIVATE,
+                        userId = userSession.userId
+                )
                 dismiss()
             }
         }
@@ -85,9 +92,15 @@ class MerchantVoucherTargetFragment : BaseCreateMerchantVoucherFragment<VoucherT
         VoucherDisplayBottomSheetFragment.createInstance(context, ::getClickedVoucherDisplayType, userSession.userId)
     }
 
+    private val impressHolder = ImpressHolder()
+
     private var alertMinimumMessage = ""
 
-    private var voucherTargetWidget = VoucherTargetUiModel(::openBottomSheet, ::onSetActiveVoucherTargetType)
+    private var voucherTargetWidget = VoucherTargetUiModel(
+            ::openBottomSheet,
+            ::onSetActiveVoucherTargetType,
+            onRadioButtonClicked = ::onRadioButtonClicked,
+            onChangePromoButtonClicked = ::onChangePromoCodeButtonClicked)
 
     private var shouldReturnToInitialValue = true
 
@@ -131,10 +144,12 @@ class MerchantVoucherTargetFragment : BaseCreateMerchantVoucherFragment<VoucherT
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        VoucherCreationTracking.sendOpenScreenTracking(
-                VoucherCreationAnalyticConstant.ScreenName.VoucherCreation.TARGET,
-                userSession.isLoggedIn,
-                userSession.userId)
+        view.addOnImpressionListener(impressHolder) {
+            VoucherCreationTracking.sendOpenScreenTracking(
+                    VoucherCreationAnalyticConstant.ScreenName.VoucherCreation.TARGET,
+                    userSession.isLoggedIn,
+                    userSession.userId)
+        }
     }
 
     override fun onDismissBottomSheet(bottomSheetType: CreateVoucherBottomSheetType) {
@@ -178,7 +193,7 @@ class MerchantVoucherTargetFragment : BaseCreateMerchantVoucherFragment<VoucherT
         viewModel.run {
             voucherTargetListData.observe(viewLifecycleOwner, Observer { voucherTargetList ->
                 dismissBottomSheet()
-                voucherTargetWidget = VoucherTargetUiModel(::openBottomSheet, ::onSetActiveVoucherTargetType, voucherTargetList)
+                voucherTargetWidget = VoucherTargetUiModel(::openBottomSheet, ::onSetActiveVoucherTargetType, voucherTargetList, ::onRadioButtonClicked, ::onChangePromoCodeButtonClicked)
                 extraWidget = listOf(voucherTargetWidget)
                 super.setupView()
             })
@@ -261,6 +276,17 @@ class MerchantVoucherTargetFragment : BaseCreateMerchantVoucherFragment<VoucherT
     private fun setupNextButton() {
         voucherTargetNextButton?.run {
             setOnClickListener {
+                VoucherCreationTracking.sendCreateVoucherClickTracking(
+                        step = VoucherCreationStep.TARGET,
+                        action = VoucherCreationAnalyticConstant.EventAction.Click.CONTINUE,
+                        label =
+                                when (currentTargetType) {
+                                    VoucherTargetType.PUBLIC -> VoucherCreationAnalyticConstant.EventLabel.PUBLIC
+                                    VoucherTargetType.PRIVATE -> VoucherCreationAnalyticConstant.EventLabel.PRIVATE
+                                    else -> ""
+                                },
+                        userId = userSession.userId
+                )
                 if (!isLoading) {
                     isLoading = true
                     couponName = fillVoucherNameTextfield?.textFieldInput?.text?.toString().toBlankOrString()
@@ -287,37 +313,47 @@ class MerchantVoucherTargetFragment : BaseCreateMerchantVoucherFragment<VoucherT
     private fun openBottomSheet(bottomSheetType: CreateVoucherBottomSheetType,
                                 voucherTargetCardType: VoucherTargetCardType? = null) {
         lastClickedVoucherDisplayType = voucherTargetCardType ?: lastClickedVoucherDisplayType
-        VoucherCreationTracking.sendCreateVoucherClickTracking(
-                step = VoucherCreationStep.TARGET,
-                action =
-                    when(voucherTargetCardType) {
+        if (bottomSheetType == CreateVoucherBottomSheetType.VOUCHER_DISPLAY) {
+            VoucherCreationTracking.sendCreateVoucherClickTracking(
+                    step = VoucherCreationStep.TARGET,
+                    action =
+                    when(lastClickedVoucherDisplayType) {
                         VoucherTargetCardType.PUBLIC -> VoucherCreationAnalyticConstant.EventAction.Click.VOUCHER_DISPLAY_PUBLIC
                         VoucherTargetCardType.PRIVATE -> VoucherCreationAnalyticConstant.EventAction.Click.VOUCHER_DISPLAY_PRIVATE
-                        else -> ""
                     },
-                label = "",
-                userId = userSession.userId)
+                    label = "",
+                    userId = userSession.userId)
+        }
         showBottomSheet(bottomSheetType)
     }
 
     private fun onSetActiveVoucherTargetType(@VoucherTargetType targetType: Int) {
         viewModel.setActiveVoucherTargetType(targetType)
-        if (targetType == VoucherTargetType.PUBLIC) {
-            VoucherCreationTracking.sendCreateVoucherClickTracking(
-                    step = VoucherCreationStep.TARGET,
-                    action =
-                        when(targetType) {
-                            VoucherTargetType.PUBLIC -> VoucherCreationAnalyticConstant.EventAction.Click.VOUCHER_TARGET_PUBLIC
-                            VoucherTargetType.PRIVATE -> VoucherCreationAnalyticConstant.EventAction.Click.VOUCHER_TARGET_PRIVATE
-                            else -> ""
-                        },
-                    label = "",
-                    userId = userSession.userId)
-        }
     }
 
     private fun onNextCreatePromoCode(promoCode: String) {
         viewModel.setPromoCode(promoCode, getPromoCodePrefix())
+    }
+
+    private fun onRadioButtonClicked(@VoucherTargetType targetType: Int) {
+        VoucherCreationTracking.sendCreateVoucherClickTracking(
+                step = VoucherCreationStep.TARGET,
+                action =
+                when(targetType) {
+                    VoucherTargetType.PUBLIC -> VoucherCreationAnalyticConstant.EventAction.Click.VOUCHER_TARGET_PUBLIC
+                    VoucherTargetType.PRIVATE -> VoucherCreationAnalyticConstant.EventAction.Click.VOUCHER_TARGET_PRIVATE
+                    else -> ""
+                },
+                label = "",
+                userId = userSession.userId)
+    }
+
+    private fun onChangePromoCodeButtonClicked() {
+        VoucherCreationTracking.sendCreateVoucherClickTracking(
+                step = VoucherCreationStep.TARGET,
+                action = VoucherCreationAnalyticConstant.EventAction.Click.EDIT_PROMO_PRIVATE,
+                userId = userSession.userId
+        )
     }
 
     private fun getPromoCodeString() : String = getPromoCodePrefix() + promoCodeText

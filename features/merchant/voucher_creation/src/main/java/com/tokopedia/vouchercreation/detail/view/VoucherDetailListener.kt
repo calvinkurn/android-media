@@ -25,4 +25,6 @@ interface VoucherDetailListener {
     fun onSuccessDrawPostVoucher(postVoucherBitmap: Bitmap)
 
     fun onErrorTryAgain()
+
+    fun onImpression(dataKey: String)
 }

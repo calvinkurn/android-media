@@ -121,6 +121,7 @@ object VoucherCreationAnalyticConstant {
             const val CASHBACK_TYPE_RUPIAH = "cashback type - rupiah"
             const val CASHBACK_TYPE_PERCENTAGE = "cashback type - persentase"
             const val PRICE_SUGGESTION_EDIT_NOW = "click price suggestion - edit now"
+            const val CALENDAR_START = "click calendar start"
             const val CALENDAR_END = "click calendar end"
             const val BACK_BUTTON = "click back button"
             const val EDIT_INFO_VOUCHER = "click edit info voucher"
@@ -195,6 +196,14 @@ object VoucherCreationAnalyticConstant {
             const val SHARE_OTHERS = "share - lainnya"
             const val PERIOD = "click periode"
         }
+    }
+
+    object EventLabel {
+        const val PUBLIC = "public"
+        const val PRIVATE = "private"
+
+        const val CASHBACK = "cashback"
+        const val SHIPPING = "shipping"
     }
 
 }

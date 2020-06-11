@@ -14,8 +14,4 @@ class CreateMerchantVoucherStepsAdapter(fragmentActivity: FragmentActivity,
     }
 
     override fun getItemCount(): Int = fragmentList.size
-
-    private fun onNextStep() {
-
-    }
 }

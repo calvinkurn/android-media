@@ -20,8 +20,12 @@ import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.create.view.viewmodel.CreatePromoCodeViewModel
 import kotlinx.android.synthetic.main.mvc_create_promo_code_bottom_sheet_view.*
 import javax.inject.Inject
@@ -54,6 +58,9 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
     }
 
     override var bottomSheetViewTitle: String? = bottomSheetContext?.resources?.getString(R.string.mvc_create_target_create_promo_code_bottomsheet_title)
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -187,6 +194,11 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
                         isWaitingForValidation = true
                         viewModel.validatePromoCode(promoCode)
                     }
+                    VoucherCreationTracking.sendCreateVoucherClickTracking(
+                            step = VoucherCreationStep.TARGET,
+                            action = VoucherCreationAnalyticConstant.EventAction.Click.SAVE_PRIVATE,
+                            userId = userSession.userId
+                    )
                 }
             }
         }

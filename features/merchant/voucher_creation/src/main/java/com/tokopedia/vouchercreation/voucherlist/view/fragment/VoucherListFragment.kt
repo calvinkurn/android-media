@@ -42,6 +42,7 @@ import com.tokopedia.vouchercreation.common.utils.SharingUtil
 import com.tokopedia.vouchercreation.common.utils.SocmedPackage
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
+import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.detail.view.activity.VoucherDetailActivity
 import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherSort
@@ -772,10 +773,29 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                             val parent = view as? ViewGroup ?: return@observe
                             SuccessCreateBottomSheet.createInstance(parent, uiModel)
                                     .setOnShareClickListener {
+                                        VoucherCreationTracking.sendCreateVoucherClickTracking(
+                                                step = VoucherCreationStep.REVIEW,
+                                                action = VoucherCreationAnalyticConstant.EventAction.Click.VOUCHER_SUCCESS_SHARE_NOW,
+                                                userId = userSession.userId
+                                        )
                                         showShareBottomSheet(uiModel)
                                     }
                                     .setOnDownloadClickListener {
+                                        VoucherCreationTracking.sendCreateVoucherClickTracking(
+                                                step = VoucherCreationStep.REVIEW,
+                                                action = VoucherCreationAnalyticConstant.EventAction.Click.VOUCHER_SUCCESS_DOWNLOAD,
+                                                userId = userSession.userId
+                                        )
                                         showDownloadBottomSheet(uiModel)
+                                    }
+                                    .apply {
+                                        setCloseClickListener {
+                                            VoucherCreationTracking.sendCreateVoucherClickTracking(
+                                                    step = VoucherCreationStep.REVIEW,
+                                                    action = VoucherCreationAnalyticConstant.EventAction.Click.VOUCHER_SUCCESS_CLICK_BACK_BUTTON,
+                                                    userId = userSession.userId
+                                            )
+                                        }
                                     }
                                     .show(childFragmentManager)
                         }

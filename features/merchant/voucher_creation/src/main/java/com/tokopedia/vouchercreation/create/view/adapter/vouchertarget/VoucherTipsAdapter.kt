@@ -14,7 +14,8 @@ import com.tokopedia.vouchercreation.create.view.uimodel.vouchertarget.voucherti
 import kotlinx.android.synthetic.main.mvc_voucher_tips_item.view.*
 
 class VoucherTipsAdapter(val itemList: List<TipsItemUiModel>,
-                         private val onChevronIconAltered: (Int) -> Unit = {}) : RecyclerView.Adapter<VoucherTipsAdapter.VoucherTipsViewHolder>() {
+                         private val onChevronIconAltered: (Int) -> Unit = {},
+                         private val onItemClicked: (Int) -> Unit) : RecyclerView.Adapter<VoucherTipsAdapter.VoucherTipsViewHolder>() {
 
     class VoucherTipsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
@@ -42,6 +43,7 @@ class VoucherTipsAdapter(val itemList: List<TipsItemUiModel>,
                 setAccordionState(tipsItemUiModel.isOpen)
                 voucherTipsItemRecyclerView?.setAdapterItem(tipsItemUiModel.tipsItemList)
                 voucherTipsView?.setOnClickListener {
+                    onItemClicked(tipsItemUiModel.titleRes)
                     onChevronIconAltered(position)
                 }
             }

@@ -3,14 +3,22 @@ package com.tokopedia.vouchercreation.create.view.fragment.bottomsheet
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.StringRes
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
+import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.create.data.source.TipsAndTrickStaticDataSource
 import com.tokopedia.vouchercreation.create.view.adapter.vouchertarget.VoucherTipsAdapter
+import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import kotlinx.android.synthetic.main.mvc_voucher_bottom_sheet_view.*
+import javax.inject.Inject
 
 class TipsAndTrickBottomSheetFragment(bottomSheetContext: Context) : BottomSheetUnify(), VoucherBottomView {
 
@@ -26,6 +34,9 @@ class TipsAndTrickBottomSheetFragment(bottomSheetContext: Context) : BottomSheet
         }
     }
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
     private val linearLayoutManager by lazy {
         LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
@@ -34,8 +45,14 @@ class TipsAndTrickBottomSheetFragment(bottomSheetContext: Context) : BottomSheet
         context?.run {
             VoucherTipsAdapter(
                     TipsAndTrickStaticDataSource.getTipsAndTrickUiModelList(),
-                    ::onChevronAltered)
+                    ::onChevronAltered,
+                    ::onItemClicked)
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        initInjector()
+        super.onCreate(savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,6 +60,13 @@ class TipsAndTrickBottomSheetFragment(bottomSheetContext: Context) : BottomSheet
         if (isAdded) {
             initView()
         }
+    }
+
+    private fun initInjector() {
+        DaggerVoucherCreationComponent.builder()
+                .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
+                .build()
+                .inject(this)
     }
 
     private fun initView() {
@@ -68,6 +92,21 @@ class TipsAndTrickBottomSheetFragment(bottomSheetContext: Context) : BottomSheet
             isOpen = !isOpen
         }
         voucherTipsAdapter?.notifyItemChanged(position)
+    }
+
+    private fun onItemClicked(@StringRes titleRes: Int) {
+        VoucherCreationTracking.sendCreateVoucherClickTracking(
+                step = VoucherCreationStep.TARGET,
+                action =
+                        when(titleRes) {
+                            R.string.mvc_tips_title_cashback_benefit -> VoucherCreationAnalyticConstant.EventAction.Click.TIPS_TRICK_VOUCHER_TYPE
+                            R.string.mvc_create_tips_title_voucher_name -> VoucherCreationAnalyticConstant.EventAction.Click.TIPS_TRICK_VOUCHER_NAME
+                            R.string.mvc_create_tips_title_cashback_type -> VoucherCreationAnalyticConstant.EventAction.Click.TIPS_TRICK_CASHBACK_TYPE
+                            R.string.mvc_create_tips_title_voucher_max_estimation -> VoucherCreationAnalyticConstant.EventAction.Click.TIPS_TRICK_SPENDING_ESTIMATION
+                            else -> ""
+                        },
+                userId = userSession.userId
+        )
     }
 
     override var bottomSheetViewTitle: String? = bottomSheetContext.resources?.getString(R.string.mvc_create_tips_bottomsheet_title).toBlankOrString()

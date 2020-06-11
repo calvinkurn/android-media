@@ -17,9 +17,11 @@ import com.bumptech.glide.signature.ObjectKey
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -114,6 +116,8 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
         context?.let { CashbackVoucherCreateFragment.createInstance(onNextStep, ::onShouldChangeBannerValue, it, getVoucherReviewData) }
     }
 
+    private val impressHolder = ImpressHolder()
+
     private var bannerVoucherUiModel: BannerVoucherUiModel = getVoucherUiModel()
 
     private var painter: VoucherPreviewPainter? = null
@@ -137,6 +141,12 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        view.addOnImpressionListener(impressHolder) {
+            VoucherCreationTracking.sendOpenScreenTracking(
+                    VoucherCreationAnalyticConstant.ScreenName.VoucherCreation.TYPE_BUDGET,
+                    userSession.isLoggedIn,
+                    userSession.userId)
+        }
         observeLiveData()
         initiateVoucherPreview()
         VoucherCreationTracking.sendOpenScreenTracking(

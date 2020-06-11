@@ -217,6 +217,11 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     }
 
     override fun showTipsAndTrickBottomSheet() {
+        VoucherCreationTracking.sendCreateVoucherClickTracking(
+                step = VoucherCreationStep.REVIEW,
+                action = VoucherCreationAnalyticConstant.EventAction.Click.VOUCHER_DISPLAY_PUBLIC,
+                userId = userSession.userId
+        )
         publicVoucherTipsAndTrickBottomSheet.run {
             setTitle(this@ReviewVoucherFragment.resources.getString(R.string.mvc_create_public_voucher_display_title).toBlankOrString())
             show(this@ReviewVoucherFragment.childFragmentManager, VoucherDisplayBottomSheetFragment.TAG)
@@ -224,6 +229,20 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     }
 
     override fun onInfoContainerCtaClick(dataKey: String) {
+        with(dataKey) {
+            val eventAction =
+                    when(this) {
+                        VOUCHER_INFO_DATA_KEY -> VoucherCreationAnalyticConstant.EventAction.Click.EDIT_INFO_VOUCHER
+                        VOUCHER_BENEFIT_DATA_KEY -> VoucherCreationAnalyticConstant.EventAction.Click.EDIT_VOUCHER_BENEFIT
+                        PERIOD_DATA_KEY -> VoucherCreationAnalyticConstant.EventAction.Click.EDIT_PERIOD
+                        else -> return@with
+                    }
+            VoucherCreationTracking.sendCreateVoucherClickTracking(
+                    step = VoucherCreationStep.REVIEW,
+                    action = eventAction,
+                    userId = userSession.userId
+            )
+        }
         val step = when(dataKey) {
             VOUCHER_INFO_DATA_KEY -> VoucherCreationStep.TARGET
             VOUCHER_BENEFIT_DATA_KEY -> VoucherCreationStep.BENEFIT
@@ -236,14 +255,29 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     }
 
     override fun onFooterCtaTextClickListener() {
+        VoucherCreationTracking.sendCreateVoucherClickTracking(
+                step = VoucherCreationStep.REVIEW,
+                action = VoucherCreationAnalyticConstant.EventAction.Click.TNC,
+                userId = userSession.userId
+        )
         termsAndConditionBottomSheet?.show(childFragmentManager, TermsAndConditionBottomSheetFragment.TAG)
     }
 
     override fun onTickerClicked() {
+        VoucherCreationTracking.sendCreateVoucherClickTracking(
+                step = VoucherCreationStep.REVIEW,
+                action = VoucherCreationAnalyticConstant.EventAction.Click.TOOLTIP_SPENDING_ESTIMATION,
+                userId = userSession.userId
+        )
         generalExpenseBottomSheet.show(childFragmentManager, GeneralExpensesInfoBottomSheetFragment.TAG)
     }
 
     override fun onFooterButtonClickListener() {
+        VoucherCreationTracking.sendCreateVoucherClickTracking(
+                step = VoucherCreationStep.REVIEW,
+                action = VoucherCreationAnalyticConstant.EventAction.Click.ADD_VOUCHER,
+                userId = userSession.userId
+        )
         if (getVoucherReviewUiModel().startDate.isBlank()) {
             view?.run {
                 Toaster.make(this,
@@ -286,6 +320,19 @@ class ReviewVoucherFragment : BaseDetailFragment() {
 
     override fun onSuccessDrawPostVoucher(postVoucherBitmap: Bitmap) {
         squareVoucherBitmap = postVoucherBitmap
+    }
+
+    override fun onImpression(dataKey: String) {
+        when(dataKey) {
+            PERIOD_DATA_KEY -> {
+                VoucherCreationTracking.sendCreateVoucherImpressionTracking(
+                        step = VoucherCreationStep.REVIEW,
+                        action = VoucherCreationAnalyticConstant.EventAction.Impression.DISPLAY_PERIOD,
+                        userId = userSession.userId
+                )
+            }
+            else -> return
+        }
     }
 
     private fun observeLiveData() {
@@ -455,6 +502,11 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     }
 
     private fun onDialogTryAgain() {
+        VoucherCreationTracking.sendCreateVoucherClickTracking(
+                step = VoucherCreationStep.REVIEW,
+                action = VoucherCreationAnalyticConstant.EventAction.Click.FAILED_POP_UP_TRY_AGAIN,
+                userId = userSession.userId
+        )
         failedCreateVoucherDialog?.dismiss()
         loadingDialog?.show()
         isWaitingForResult = true
@@ -471,15 +523,30 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     }
 
     private fun onDialogRequestHelp() {
+        VoucherCreationTracking.sendCreateVoucherClickTracking(
+                step = VoucherCreationStep.REVIEW,
+                action = VoucherCreationAnalyticConstant.EventAction.Click.FAILED_POP_UP_HELP,
+                userId = userSession.userId
+        )
         failedCreateVoucherDialog?.dismiss()
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, VoucherUrl.HELP_URL)
     }
 
     private fun onDialogChangePromoCode() {
+        VoucherCreationTracking.sendCreateVoucherClickTracking(
+                step = VoucherCreationStep.REVIEW,
+                action = VoucherCreationAnalyticConstant.EventAction.Click.ERROR_CREATION_EDIT_PROMO_CODE,
+                userId = userSession.userId
+        )
         onReturnToStep(VoucherCreationStep.TARGET)
     }
 
     private fun onPromoCodeErrorBack() {
+        VoucherCreationTracking.sendCreateVoucherClickTracking(
+                step = VoucherCreationStep.REVIEW,
+                action = VoucherCreationAnalyticConstant.EventAction.Click.ERROR_CREATION_BACK_BUTTON,
+                userId = userSession.userId
+        )
         adapter.data.indexOf(voucherInfoSection).let { index ->
             voucherInfoSection.informationList.last().isWarning = true
             val warningIndex = index + 1

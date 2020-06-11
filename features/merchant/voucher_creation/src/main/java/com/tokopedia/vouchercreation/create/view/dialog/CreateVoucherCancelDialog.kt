@@ -6,6 +6,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.vouchercreation.R
 
 class CreateVoucherCancelDialog(context: Context,
+                                private val onPrimaryClick: () -> Unit,
                                 private val onSecondaryClick: () -> Unit) {
 
     private val dialog = DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
@@ -15,6 +16,7 @@ class CreateVoucherCancelDialog(context: Context,
         setDescription(context.getString(R.string.mvc_create_prompt_back_desc))
         setPrimaryCTAText(context.getString(R.string.mvc_back))
         setPrimaryCTAClickListener {
+            onPrimaryClick()
             dismiss()
         }
         setSecondaryCTAText(context.getString(R.string.mvc_yes_cancel))

@@ -136,7 +136,9 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                viewModel.setStepPosition(position)
+                runOnUiThread {
+                    viewModel.setStepPosition(position)
+                }
             }
         }
     }
@@ -161,16 +163,41 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     private val backPromptBottomSheet by lazy {
         ChangeDetailPromptBottomSheetFragment.createInstance(this, ::onCancelVoucher).apply {
             setCloseClickListener {
+                VoucherCreationTracking.sendCreateVoucherClickTracking(
+                        step = VoucherCreationStep.REVIEW,
+                        action = VoucherCreationAnalyticConstant.EventAction.Click.REVIEW_PROCESS_CLICK_CANCEL_BUTTON,
+                        userId = userSession.userId
+                )
                 this.dismiss()
+            }
+            setBackButtonClickListener {
+                VoucherCreationTracking.sendCreateVoucherClickTracking(
+                        step = VoucherCreationStep.REVIEW,
+                        action = VoucherCreationAnalyticConstant.EventAction.Click.REVIEW_PROCESS_CLICK_BACK_BUTTON,
+                        userId = userSession.userId
+                )
             }
         }
     }
 
     private val cancelDialog by lazy {
-        CreateVoucherCancelDialog(this) {
-            setResult(Activity.RESULT_OK)
-            finish()
-        }
+        CreateVoucherCancelDialog(this,
+                onPrimaryClick = {
+                    VoucherCreationTracking.sendCreateVoucherClickTracking(
+                            step = VoucherCreationStep.REVIEW,
+                            action = VoucherCreationAnalyticConstant.EventAction.Click.CANCEL_VOUCHER_CREATION_CANCELLED,
+                            userId = userSession.userId
+                    )
+                },
+                onSecondaryClick = {
+                    VoucherCreationTracking.sendCreateVoucherClickTracking(
+                            step = VoucherCreationStep.REVIEW,
+                            action = VoucherCreationAnalyticConstant.EventAction.Click.CANCEL_VOUCHER_CREATION_BACK,
+                            userId = userSession.userId
+                    )
+                    setResult(Activity.RESULT_OK)
+                    finish()
+                })
     }
 
     private var currentStepPosition = 0
@@ -233,6 +260,10 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                 cancelDialog.show()
             }
             VoucherCreationStep.REVIEW -> {
+                VoucherCreationTracking.sendCreateVoucherClickTracking(
+                        step = currentStepPosition,
+                        action = VoucherCreationAnalyticConstant.EventAction.Click.BACK_BUTTON,
+                        userId = userSession.userId)
                 backPromptBottomSheet.show(supportFragmentManager, ChangeDetailPromptBottomSheetFragment.TAG)
             }
             else -> {
@@ -317,8 +348,10 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         viewModel.stepPositionLiveData.observe(this, Observer { position ->
             val stepInfo = fragmentStepsHashMap.toList().getOrNull(position)?.first
             stepInfo?.run {
-                changeStepsInformation(this)
-                createMerchantVoucherViewPager?.currentItem = stepPosition
+                runOnUiThread {
+                    changeStepsInformation(this)
+                    createMerchantVoucherViewPager?.currentItem = stepPosition
+                }
             }
         })
         viewModel.voucherPreviewBitmapLiveData.observe(this, Observer { bitmap ->
@@ -515,6 +548,11 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     private fun getVoucherId() = voucherId
 
     private fun onCancelVoucher() {
+        VoucherCreationTracking.sendCreateVoucherClickTracking(
+                step = VoucherCreationStep.REVIEW,
+                action = VoucherCreationAnalyticConstant.EventAction.Click.REVIEW_PROCESS_CLICK_IN_HERE,
+                userId = userSession.userId
+        )
         cancelDialog.show()
     }
 

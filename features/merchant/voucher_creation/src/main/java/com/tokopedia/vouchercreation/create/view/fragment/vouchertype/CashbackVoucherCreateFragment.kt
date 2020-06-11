@@ -15,7 +15,10 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.common.view.promotionexpense.PromotionExpenseEstimationUiModel
@@ -23,6 +26,7 @@ import com.tokopedia.vouchercreation.common.view.textfield.vouchertype.VoucherTe
 import com.tokopedia.vouchercreation.create.data.source.PromotionTypeUiListStaticDataSource
 import com.tokopedia.vouchercreation.create.view.enums.CashbackType
 import com.tokopedia.vouchercreation.create.view.enums.PromotionType
+import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.CashbackExpenseInfoBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.GeneralExpensesInfoBottomSheetFragment
@@ -68,6 +72,9 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
     private var getVoucherReviewUiModel: () -> VoucherReviewUiModel? = { null }
 
     @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
     private val viewModelProvider by lazy {
@@ -88,7 +95,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
 //    }
 
     private val unavailableTickerUiModel by lazy {
-        UnavailableTickerUiModel
+        UnavailableTickerUiModel(::onCloseTicker)
     }
 
     private val cashbackTypePickerModel by lazy {
@@ -108,6 +115,13 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
                     adapter.run {
                         notifyItemChanged(dataSize - 1)
                     }
+                }
+                setEditNowButtonClicked {
+                    VoucherCreationTracking.sendCreateVoucherClickTracking(
+                            step = VoucherCreationStep.BENEFIT,
+                            action = VoucherCreationAnalyticConstant.EventAction.Click.PRICE_SUGGESTION_EDIT_NOW,
+                            userId = userSession.userId
+                    )
                 }
             }}
     }
@@ -440,6 +454,12 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
     }
 
     private fun onNext() {
+        VoucherCreationTracking.sendCreateVoucherClickTracking(
+                step = VoucherCreationStep.BENEFIT,
+                action = VoucherCreationAnalyticConstant.EventAction.Click.CONTINUE,
+                label = VoucherCreationAnalyticConstant.EventLabel.CASHBACK,
+                userId = userSession.userId
+        )
         if (activeCashbackType is CashbackType.Percentage) {
             if (checkIfValuesAreCorrect(cashbackPercentageInfoUiModel.minimumDiscount, cashbackPercentageInfoUiModel.maximumDiscount)) {
                 validatePercentageValues()
@@ -457,16 +477,25 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
      */
     private fun onCashbackSelectedType(cashbackType: CashbackType) {
         val extraSize = INPUT_FIELD_ADAPTER_SIZE + bottomSectionUiModelList.size
+        val cashbackTypeEventAction: String
         textFieldIndex = adapter.data.size - extraSize
         adapter.data.removeAt(textFieldIndex)
         when(cashbackType) {
             CashbackType.Rupiah -> {
                 adapter.data.add(textFieldIndex, rupiahCashbackAdapterUiModel)
+                cashbackTypeEventAction = VoucherCreationAnalyticConstant.EventAction.Click.CASHBACK_TYPE_RUPIAH
             }
             CashbackType.Percentage -> {
                 adapter.data.add(textFieldIndex, percentageCashbackAdapterUiModel)
+                cashbackTypeEventAction = VoucherCreationAnalyticConstant.EventAction.Click.CASHBACK_TYPE_PERCENTAGE
             }
         }
+
+        VoucherCreationTracking.sendCreateVoucherClickTracking(
+                step = VoucherCreationStep.BENEFIT,
+                action = cashbackTypeEventAction,
+                userId = userSession.userId
+        )
         viewModel.changeCashbackType(cashbackType)
 
         adapter.notifyItemChanged(textFieldIndex)
@@ -485,7 +514,20 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
     }
 
     private fun onTooltipClicked() {
+        VoucherCreationTracking.sendCreateVoucherClickTracking(
+                step = VoucherCreationStep.BENEFIT,
+                action = VoucherCreationAnalyticConstant.EventAction.Click.TOOLTIP_SPENDING_ESTIMATION,
+                userId = userSession.userId
+        )
         expensesInfoBottomSheetFragment.show(childFragmentManager, GeneralExpensesInfoBottomSheetFragment::class.java.name)
+    }
+
+    private fun onCloseTicker() {
+        VoucherCreationTracking.sendCreateVoucherClickTracking(
+                step = VoucherCreationStep.BENEFIT,
+                action = VoucherCreationAnalyticConstant.EventAction.Click.CLOSE_INFO_SECTION,
+                userId = userSession.userId
+        )
     }
 
     private fun getCashbackInfo(): CashbackPercentageInfoUiModel = cashbackPercentageInfoUiModel
