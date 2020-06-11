@@ -19,7 +19,8 @@ class VoucherDisplayBottomSheetFragment(private val getVoucherType: () -> Vouche
 
     companion object {
         fun createInstance(context: Context?,
-                        getVoucherType: () -> VoucherTargetCardType) : VoucherDisplayBottomSheetFragment {
+                        getVoucherType: () -> VoucherTargetCardType,
+                           userId: String) : VoucherDisplayBottomSheetFragment {
             return VoucherDisplayBottomSheetFragment(getVoucherType).apply {
                 context?.run {
                     val view = View.inflate(context, R.layout.mvc_voucher_display_bottom_sheet_view, null)
@@ -27,6 +28,7 @@ class VoucherDisplayBottomSheetFragment(private val getVoucherType: () -> Vouche
                     view?.setupItemDecoration()
                     setChild(view)
                     setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+                    this@apply.userId = userId
                 }
             }
         }
@@ -46,6 +48,8 @@ class VoucherDisplayBottomSheetFragment(private val getVoucherType: () -> Vouche
         LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
     }
 
+    private var userId: String = ""
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (isAdded) {
@@ -58,7 +62,8 @@ class VoucherDisplayBottomSheetFragment(private val getVoucherType: () -> Vouche
     private fun initView() {
         view?.setupBottomSheetChildNoMargin()
         val displayList = getVoucherType().displayPairList
-        val voucherDisplayAdapter = VoucherDisplayAdapter(displayList)
+        val targetType = getVoucherType().targetType
+        val voucherDisplayAdapter = VoucherDisplayAdapter(displayList, targetType, userId)
         voucherDisplayRecyclerView?.run {
             layoutManager = linearLayoutManager
             linearLayoutManager.smoothScrollToPosition(this, null, 0)

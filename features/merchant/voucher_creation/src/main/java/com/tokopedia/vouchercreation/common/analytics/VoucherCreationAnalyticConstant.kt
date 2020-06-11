@@ -103,6 +103,7 @@ object VoucherCreationAnalyticConstant {
         object Click {
             const val LAMP_ICON = "click lamp icon"
             const val VOUCHER_TARGET_PUBLIC = "click voucher target - public"
+            const val VOUCHER_TARGET_PRIVATE = "click voucher target - private"
             const val VOUCHER_DISPLAY_PUBLIC = "click tampilan voucher - publik"
             const val VOUCHER_DISPLAY_PRIVATE = "click tampilan voucher - private"
             const val SAVE_PRIVATE = "click simpan - private"

@@ -77,6 +77,9 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     }
 
     @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
     private val viewModelProvider by lazy {
@@ -273,6 +276,12 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
             try {
                 addRightIcon(R.drawable.ic_tips).setOnClickListener {
                     bottomSheet.show(supportFragmentManager, TipsAndTrickBottomSheetFragment::javaClass.name)
+                    VoucherCreationTracking.sendCreateVoucherClickTracking(
+                            step = currentStepPosition,
+                            action = VoucherCreationAnalyticConstant.EventAction.Click.LAMP_ICON,
+                            label = "",
+                            userId = userSession.userId,
+                            isDuplicate = isDuplicateVoucher)
                 }
             } catch (ex: Resources.NotFoundException) {
                 ex.printStackTrace()

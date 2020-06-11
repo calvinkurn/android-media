@@ -21,6 +21,7 @@ import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationCo
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.enums.CreateVoucherBottomSheetType
+import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.create.view.enums.VoucherTargetCardType
 import com.tokopedia.vouchercreation.create.view.fragment.BaseCreateMerchantVoucherFragment
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.CreatePromoCodeBottomSheetFragment
@@ -286,11 +287,33 @@ class MerchantVoucherTargetFragment : BaseCreateMerchantVoucherFragment<VoucherT
     private fun openBottomSheet(bottomSheetType: CreateVoucherBottomSheetType,
                                 voucherTargetCardType: VoucherTargetCardType? = null) {
         lastClickedVoucherDisplayType = voucherTargetCardType ?: lastClickedVoucherDisplayType
+        VoucherCreationTracking.sendCreateVoucherClickTracking(
+                step = VoucherCreationStep.TARGET,
+                action =
+                    when(voucherTargetCardType) {
+                        VoucherTargetCardType.PUBLIC -> VoucherCreationAnalyticConstant.EventAction.Click.VOUCHER_DISPLAY_PUBLIC
+                        VoucherTargetCardType.PRIVATE -> VoucherCreationAnalyticConstant.EventAction.Click.VOUCHER_DISPLAY_PRIVATE
+                        else -> ""
+                    },
+                label = "",
+                userId = userSession.userId)
         showBottomSheet(bottomSheetType)
     }
 
     private fun onSetActiveVoucherTargetType(@VoucherTargetType targetType: Int) {
         viewModel.setActiveVoucherTargetType(targetType)
+        if (targetType == VoucherTargetType.PUBLIC) {
+            VoucherCreationTracking.sendCreateVoucherClickTracking(
+                    step = VoucherCreationStep.TARGET,
+                    action =
+                        when(targetType) {
+                            VoucherTargetType.PUBLIC -> VoucherCreationAnalyticConstant.EventAction.Click.VOUCHER_TARGET_PUBLIC
+                            VoucherTargetType.PRIVATE -> VoucherCreationAnalyticConstant.EventAction.Click.VOUCHER_TARGET_PRIVATE
+                            else -> ""
+                        },
+                    label = "",
+                    userId = userSession.userId)
+        }
     }
 
     private fun onNextCreatePromoCode(promoCode: String) {
