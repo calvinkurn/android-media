@@ -11,11 +11,11 @@
           "price": "{{\\d*.\\d*}}",
           "dimension40": "{{.*}}",
           "dimension84": "{{.*}}",
-          "index": "{{.*}}",
+          "index": "{{\\d*.\\d*}}",
           "item_name": "{{.*}}",
           "item_brand": "{{.*}}",
           "item_variant": "{{.*}}",
-          "category": "{{.*}}"
+          "item_category": "{{.*}}"
         }
       ],
       "eventCategory": "homepage",
@@ -23,7 +23,7 @@
       "eventAction": "impression on product dynamic channel left carousel",
       "item_list": "{{.*}}",
       "eventLabel": "{{.*}}",
-      "channelId": "{{\\d*}}"
+      "channelId": "{{.*}}"
     },
     {
       "items": [
@@ -34,11 +34,11 @@
           "price": "{{\\d*.\\d*}}",
           "dimension40": "{{.*}}",
           "dimension84": "{{.*}}",
-          "index": "{{.*}}",
+          "index": "{{\\d*.\\d*}}",
           "item_name": "{{.*}}",
           "item_brand": "{{.*}}",
           "item_variant": "{{.*}}",
-          "category": "{{.*}}"
+          "item_category": "{{.*}}"
         }
       ],
       "eventCategory": "homepage",
@@ -46,7 +46,7 @@
       "eventAction": "click on product dynamic channel left carousel",
       "item_list": "{{.*}}",
       "eventLabel": "{{.*}}",
-      "channelId": "{{\\d*}}",
+      "channelId": "{{.*}}",
       "campaignCode": "{{{.*}}}"
     },
     {
