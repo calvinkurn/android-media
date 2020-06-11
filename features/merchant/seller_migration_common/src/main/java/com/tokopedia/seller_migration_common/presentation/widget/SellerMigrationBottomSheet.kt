@@ -26,10 +26,6 @@ abstract class SellerMigrationBottomSheet(private val titles: List<String> = emp
                                           private val contents: List<String> = emptyList(),
                                           private val images: ArrayList<String> = arrayListOf()) : BottomSheetUnify() {
 
-    private var sellerMigrationWarningDate: Typography? = null
-    private var sellerMigrationBottomSheetButton: UnifyButton? = null
-    private var sellerMigrationBottomSheetLink: Typography? = null
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupPadding()
@@ -48,11 +44,11 @@ abstract class SellerMigrationBottomSheet(private val titles: List<String> = emp
     }
 
     private fun setUpButtons() {
-        sellerMigrationBottomSheetButton = view?.findViewById(R.id.sellerMigrationBottomSheetButton)
+        val sellerMigrationBottomSheetButton: UnifyButton? = view?.findViewById(R.id.sellerMigrationBottomSheetButton)
         sellerMigrationBottomSheetButton?.setOnClickListener {
             goToSellerApp()
         }
-        sellerMigrationBottomSheetLink = view?.findViewById(R.id.sellerMigrationBottomSheetLink)
+        val sellerMigrationBottomSheetLink: Typography? = view?.findViewById(R.id.sellerMigrationBottomSheetLink)
         sellerMigrationBottomSheetLink?.text = context?.let { HtmlLinkHelper(it, getString(R.string.seller_migration_bottom_sheet_footer)).spannedString }
         sellerMigrationBottomSheetLink?.setOnTouchListener(SellerMigrationTouchListener {
             goToInformationWebview(it)
@@ -82,7 +78,7 @@ abstract class SellerMigrationBottomSheet(private val titles: List<String> = emp
     private fun setupWarningCard() {
         val remoteConfigDate = getSellerMigrationDate(context)
         if(remoteConfigDate.isNotBlank()) {
-            sellerMigrationWarningDate = view?.findViewById(R.id.sellerMigrationWarningDate)
+            val sellerMigrationWarningDate: Typography? = view?.findViewById(R.id.sellerMigrationWarningDate)
             sellerMigrationWarningCard.show()
             sellerMigrationWarningDate?.text = remoteConfigDate
         }

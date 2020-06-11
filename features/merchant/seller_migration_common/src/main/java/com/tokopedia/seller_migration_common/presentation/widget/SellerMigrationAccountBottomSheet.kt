@@ -32,8 +32,6 @@ class SellerMigrationAccountBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private var sellerMigrationWarningDate: Typography? = null
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupPadding()
@@ -52,7 +50,7 @@ class SellerMigrationAccountBottomSheet : BottomSheetUnify() {
     private fun setupWarningCard() {
         val remoteConfigDate = getSellerMigrationDate(context)
         if(remoteConfigDate.isNotBlank()) {
-            sellerMigrationWarningDate = view?.findViewById(R.id.sellerMigrationWarningDate)
+            val sellerMigrationWarningDate: Typography? = view?.findViewById(R.id.sellerMigrationWarningDate)
             sellerMigrationAccountWarning?.show()
             sellerMigrationWarningDate?.text = remoteConfigDate
         }

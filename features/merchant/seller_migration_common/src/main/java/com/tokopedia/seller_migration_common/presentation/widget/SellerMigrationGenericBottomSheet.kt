@@ -24,8 +24,6 @@ class SellerMigrationGenericBottomSheet : SellerMigrationBottomSheet() {
         }
     }
 
-    private var sellerMigrationWarningDate: Typography? = null
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
@@ -40,7 +38,7 @@ class SellerMigrationGenericBottomSheet : SellerMigrationBottomSheet() {
     private fun setupWarningCard() {
         val remoteConfigDate = getSellerMigrationDate(context)
         if(remoteConfigDate.isNotBlank()) {
-            sellerMigrationWarningDate = view?.findViewById(R.id.sellerMigrationWarningDate)
+            val sellerMigrationWarningDate: Typography? = view?.findViewById(R.id.sellerMigrationWarningDate)
             sellerMigrationWarningCard.show()
             sellerMigrationWarningDate?.text = remoteConfigDate
         }
