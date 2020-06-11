@@ -3,19 +3,32 @@ package com.tokopedia.topchat.chatsearch.view.fragment
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.topchat.chatsearch.data.SearchResult
+import com.tokopedia.topchat.chatsearch.di.ChatSearchComponent
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactory
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactoryImpl
+import com.tokopedia.topchat.chatsearch.viewmodel.ChatContactLoadMoreViewModel
+import javax.inject.Inject
 
 class ContactLoadMoreChatFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>() {
 
     private var listener: ContactLoadMoreChatListener? = null
     private var query: String = ""
     private var firstResponse: List<SearchResult> = emptyList()
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
+    private val viewModel by lazy { viewModelFragmentProvider.get(ChatContactLoadMoreViewModel::class.java) }
+
+    override fun isAutoLoadEnabled(): Boolean = true
 
     override fun onAttachActivity(context: Context?) {
         if (context is ContactLoadMoreChatListener) {
@@ -24,10 +37,20 @@ class ContactLoadMoreChatFragment : BaseListFragment<Visitable<*>, ChatSearchTyp
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         initArguments()
+        super.onViewCreated(view, savedInstanceState)
         initToolbarTittle()
-        renderList(firstResponse)
+        setupObserver()
+    }
+
+    private fun setupObserver() {
+        setupSearchResultContactObserver()
+    }
+
+    private fun setupSearchResultContactObserver() {
+        viewModel.searchResult.observe(this, Observer {
+            renderList(it, true)
+        })
     }
 
     private fun initArguments() {
@@ -58,7 +81,7 @@ class ContactLoadMoreChatFragment : BaseListFragment<Visitable<*>, ChatSearchTyp
     }
 
     override fun initInjector() {
-
+        getComponent(ChatSearchComponent::class.java).inject(this)
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
@@ -66,7 +89,7 @@ class ContactLoadMoreChatFragment : BaseListFragment<Visitable<*>, ChatSearchTyp
     }
 
     override fun loadData(page: Int) {
-
+        viewModel.loadSearchResult(page, query, firstResponse)
     }
 
     companion object {
