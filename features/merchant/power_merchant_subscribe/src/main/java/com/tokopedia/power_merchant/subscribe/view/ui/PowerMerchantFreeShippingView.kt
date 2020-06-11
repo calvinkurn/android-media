@@ -5,8 +5,8 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.power_merchant.subscribe.R
@@ -27,24 +27,28 @@ class PowerMerchantFreeShippingView: FrameLayout {
         inflate(context, R.layout.layout_power_merchant_free_shipping, this)
     }
 
-    fun show(status: PowerMerchantFreeShippingStatus) {
+    fun show(freeShipping: PowerMerchantFreeShippingStatus) {
+        val transitionPeriod = freeShipping.isTransitionPeriod
+        showHideContainer(transitionPeriod)
+
         when {
-            status.isTransitionPeriod -> showTransitionPeriod()
-            status.isActive -> showActiveFreeShipping(status.isShopScoreEligible)
-            else -> showInactiveFreeShipping(status.isEligible)
+            transitionPeriod -> showTransitionPeriod()
+            freeShipping.isActive -> showActiveFreeShipping(freeShipping.isShopScoreEligible)
+            else -> showInactiveFreeShipping(freeShipping.isEligible)
         }
+
         showLayout()
     }
 
     private fun showTransitionPeriod() {
-        activeLayout.textTitle.text = context
-            .getString(R.string.power_merchant_free_shipping_transition_title)
-        activeLayout.textDescription.text = context
-            .getString(R.string.power_merchant_free_shipping_transition_description)
-        setActiveLayoutClickListener()
+        val description = context.getString(R.string.power_merchant_free_shipping_transition_description)
+        transitionLayout.textDescription.text = MethodChecker.fromHtml(description)
 
-        activeLayout.show()
-        inActiveLayout.hide()
+        transitionLayout.setOnClickListener {
+            openFreeShippingPage()
+        }
+
+        transitionLayout.show()
     }
 
     private fun showActiveFreeShipping(shopScoreEligible: Boolean) {
@@ -54,6 +58,7 @@ class PowerMerchantFreeShippingView: FrameLayout {
 
         activeLayout.show()
         inActiveLayout.hide()
+        transitionLayout.hide()
     }
 
     private fun showInactiveFreeShipping(isEligible: Boolean) {
@@ -64,6 +69,7 @@ class PowerMerchantFreeShippingView: FrameLayout {
 
         inActiveLayout.show()
         activeLayout.hide()
+        transitionLayout.hide()
     }
 
     private fun setActiveTitleText(shopScoreEligible: Boolean) {
@@ -121,7 +127,16 @@ class PowerMerchantFreeShippingView: FrameLayout {
     }
 
     private fun openFreeShippingPage() {
-        RouteManager.route(context, ApplinkConst.WEBVIEW, URL_FREE_SHIPPING_TERMS_AND_CONDITION)
+        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW,
+            URL_FREE_SHIPPING_TERMS_AND_CONDITION)
+    }
+
+    private fun showHideContainer(transitionPeriod: Boolean) {
+        if(transitionPeriod) {
+            container.hide()
+        } else {
+            container.show()
+        }
     }
 
     private fun showLayout() {

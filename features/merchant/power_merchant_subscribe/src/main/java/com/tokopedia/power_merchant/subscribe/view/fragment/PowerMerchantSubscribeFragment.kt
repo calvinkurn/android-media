@@ -173,13 +173,22 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         observe(viewModel.getPmFreeShippingStatusResult) {
             when(it) {
                 is Success -> {
-                    freeShippingLayout.show(it.data)
-                    freeShippingError.hide()
+                    val freeShipping = it.data
+
+                    if(freeShipping.isTransitionPeriod && !freeShipping.isActive) {
+                        freeShippingError.hide()
+                        freeShippingLayout.hide()
+                    } else {
+                        freeShippingError.hide()
+                        freeShippingLayout.show(freeShipping)
+                    }
                 }
                 is Fail -> {
                     freeShippingLayout.hide()
-                    freeShippingError.show()
-                    freeShippingError.progressState = false
+                    freeShippingError.apply {
+                        progressState = false
+                        show()
+                    }
                 }
             }
         }

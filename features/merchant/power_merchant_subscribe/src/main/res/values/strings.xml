@@ -101,8 +101,8 @@
 
     <string name="power_merchant_free_shipping_eligible_title">Tokomu memenuhi syarat untuk Bebas Ongkir</string>
     <string name="power_merchant_free_shipping_not_eligible_title">Pelajari tentang Bebas Ongkir</string>
-    <string name="power_merchant_free_shipping_transition_title">Segera! Bebas Ongkir akan berubah</string>
-    <string name="power_merchant_free_shipping_transition_description">Per 1 Juli 2020, skema baru akan diterapkan.</string>
+    <string name="power_merchant_free_shipping_transition_title">Perubahan Skema Bebas Ongkir</string>
+    <string name="power_merchant_free_shipping_transition_description"><![CDATA[<strong><font color=\"#31353b\">Per 1 Juli 2020,</font></strong> skema baru akan diterapkan. Pelajari lebih lanjut.]]></string>
     <string name="power_merchant_free_shipping_description"><![CDATA[Tingkatkan potensi penjualanmu <strong><font color=\"#31353b\">hingga 50%.</font></strong>]]></string>
     <string name="power_merchant_free_shipping_not_eligible_description">Tarik perhatian pembeli dan tingkatkan penjualanmu.</string>
     <string name="power_merchant_free_shipping_active_description">Cek penggunaan Bebas Ongkir-mu</string>
