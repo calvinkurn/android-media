@@ -49,11 +49,6 @@ class AddNameFragment : BaseDaggerFragment() {
         getComponent(ManageNameComponent::class.java).inject(this)
     }
 
-//    override fun onContinueClick() {
-//        KeyboardHandler.DropKeyboard(getActivity(), getView())
-//        presenter.addName(etName.getText().toString())
-//    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_manage_name, container, false);
     }
@@ -80,8 +75,8 @@ class AddNameFragment : BaseDaggerFragment() {
                 "<br>" + getString(R.string.link_term_condition) +
                 " serta " + getString(R.string.link_privacy_policy)
 
-        bottom_info.text = MethodChecker.fromHtml(joinString)
-        bottom_info.movementMethod = LinkMovementMethod.getInstance()
+        bottom_info?.text = MethodChecker.fromHtml(joinString)
+        bottom_info?.movementMethod = LinkMovementMethod.getInstance()
         ViewUtil.stripUnderlines(bottom_info)
     }
 
@@ -112,23 +107,23 @@ class AddNameFragment : BaseDaggerFragment() {
     }
 
     fun enableNextButton() {
-        btn_continue.isEnabled = true
+        btn_continue?.isEnabled = true
     }
 
     fun disableNextButton(){
-        btn_continue.isEnabled = false
+        btn_continue?.isEnabled = false
     }
 
     fun showValidationError(error: String?) {
         isError = true
-        et_name.setError(true)
-        et_name.setMessage(error ?: "")
+        et_name?.setError(true)
+        et_name?.setMessage(error ?: "")
     }
 
     fun hideValidationError() {
         isError = false
-        et_name.setError(false)
-        et_name.setMessage("")
+        et_name?.setError(false)
+        et_name?.setMessage("")
     }
 
     fun onSuccessAddName() {
@@ -139,15 +134,15 @@ class AddNameFragment : BaseDaggerFragment() {
     }
 
     fun showLoading(){
-        btn_continue.isEnabled = false
-        add_name_linear_layout.alpha = 0.5F
-        add_name_progressbar.show()
+        btn_continue?.isEnabled = false
+        add_name_linear_layout?.alpha = 0.5F
+        add_name_progressbar?.show()
     }
 
     fun dismissLoading(){
-        btn_continue.isEnabled = true
-        add_name_linear_layout.alpha = 1.0F
-        add_name_progressbar.hide()
+        btn_continue?.isEnabled = true
+        add_name_linear_layout?.alpha = 1.0F
+        add_name_progressbar?.hide()
     }
 
     fun onErrorRegister(error: Throwable){

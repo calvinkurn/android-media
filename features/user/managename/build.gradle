@@ -18,8 +18,11 @@ buildscript {
 }
 
 dependencies {
+
+    // Features
     implementation project(rootProject.ext.features.sessioncommon)
-    implementation project(rootProject.ext.libraries.cmPushNotifications)
+
+    // Libraries
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.analyticsDebugger)
@@ -27,34 +30,38 @@ dependencies {
         implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
     }
     implementation project(rootProject.ext.libraries.applink)
-
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
 
+    // Unify Dependencies
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
-    implementation rootProject.ext.unifyDependencies.global_error
+
+    // Internal Dependencies
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.network
 
+    // Support Library
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
+
+    // Misc Dependencies
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
-    implementation rootProject.ext.miscDependencies.multiDex
     implementation(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
     }
 
-    implementation rootProject.ext.playServicesDependencies.auth
+    // Test Dependencies
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.kotlinMockito2
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.powerMockito
 
+    // Debug tools
     implementation rootProject.ext.debugToolsDependencies.chuck
 }
 
