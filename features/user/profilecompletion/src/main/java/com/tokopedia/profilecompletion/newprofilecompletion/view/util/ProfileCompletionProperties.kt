@@ -38,7 +38,7 @@ object ProfileCompletionProperties {
         }
 
         override fun call(enabled: Boolean?) {
-            view.isEnabled = enabled!!
+            view.isEnabled = enabled?: false
         }
 
     }

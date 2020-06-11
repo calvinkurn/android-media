@@ -240,7 +240,7 @@ class ProfileCompletionTextDrawable(context: Context) : Drawable() {
             val desired = Math.ceil(Layout.getDesiredWidth(mText, mTextPaint).toDouble())
             mTextLayout = StaticLayout(mText, mTextPaint, desired.toInt(),
                     mTextAlignment, 1.0f, 0.0f, false)
-            mTextBounds[0, 0, mTextLayout!!.width] = mTextLayout!!.height
+            mTextBounds[0, 0, mTextLayout?.width?: 0] = mTextLayout?.height?: 0
         }
 
         //We may need to be redrawn
@@ -251,9 +251,9 @@ class ProfileCompletionTextDrawable(context: Context) : Drawable() {
      * Internal method to apply the correct text color based on the drawable's state
      */
     private fun updateTextColors(stateSet: IntArray): Boolean {
-        val newColor = mTextColors!!.getColorForState(stateSet, Color.WHITE)
+        val newColor = mTextColors?.getColorForState(stateSet, Color.WHITE)
         if (mTextPaint.color != newColor) {
-            mTextPaint.color = newColor
+            mTextPaint.color = newColor?: 0
             return true
         }
         return false
@@ -269,7 +269,7 @@ class ProfileCompletionTextDrawable(context: Context) : Drawable() {
          * The drawable's ability to represent state is based on
          * the text color list set
          */
-        return mTextColors!!.isStateful
+        return mTextColors?.isStateful?: false
     }
 
     override fun onStateChange(state: IntArray): Boolean {
@@ -301,7 +301,7 @@ class ProfileCompletionTextDrawable(context: Context) : Drawable() {
         canvas.translate(bounds.left.toFloat(), bounds.top.toFloat())
         if (mTextPath == null) {
             //Allow the layout to draw the text
-            mTextLayout!!.draw(canvas)
+            mTextLayout?.draw(canvas)
         } else {
             //Draw directly on the canvas using the supplied path
             canvas.drawTextOnPath(mText.toString(), mTextPath, 0f, 0f, mTextPaint)

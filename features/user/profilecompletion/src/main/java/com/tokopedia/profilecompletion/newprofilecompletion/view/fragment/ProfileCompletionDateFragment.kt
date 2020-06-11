@@ -123,9 +123,9 @@ class ProfileCompletionDateFragment : BaseDaggerFragment() {
                 if (charSequence.length == 4) {
                     val theYear = charSequence.toString().toInt()
                     if (theYear < YEAR_MIN) {
-                        actxtYear!!.setText(YEAR_MIN.toString())
+                        actxtYear?.setText(YEAR_MIN.toString())
                     } else if (theYear > YEAR_MAX) {
-                        actxtYear!!.setText(YEAR_MAX.toString())
+                        actxtYear?.setText(YEAR_MAX.toString())
                     }
                 }
             }
