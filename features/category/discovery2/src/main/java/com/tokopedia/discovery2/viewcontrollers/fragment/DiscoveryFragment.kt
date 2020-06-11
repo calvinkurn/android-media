@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
@@ -37,7 +39,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback {
+class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback, SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryFab: CustomTopChatView
@@ -47,10 +49,11 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback {
     private lateinit var ivSearch: ImageView
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     private lateinit var globalError: GlobalError
-    var pageEndPoint = ""
     private lateinit var discoveryAdapter: DiscoveryRecycleAdapter
     private val analytics: DiscoveryAnalytics by lazy { DiscoveryAnalytics(trackingQueue = trackingQueue, pagePath = discoveryViewModel.pagePath, pageType = discoveryViewModel.pageType) }
-    private var defaultTabDataFetched = false
+    private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var mProgressBar: ProgressBar
+    var pageEndPoint = ""
 
     @Inject
     lateinit var trackingQueue: TrackingQueue
@@ -100,8 +103,10 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback {
         globalError = view.findViewById(R.id.global_error)
         view.findViewById<ImageView>(R.id.iv_back).setOnClickListener { activity?.onBackPressed() }
         recyclerView = view.findViewById(R.id.discovery_recyclerView)
-
-
+        mSwipeRefreshLayout = view.findViewById(R.id.swiperefresh)
+        mProgressBar = view.findViewById(R.id.progressBar)
+        mProgressBar.show()
+        mSwipeRefreshLayout.setOnRefreshListener(this)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -109,7 +114,6 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback {
         discoveryViewModel = (activity as DiscoveryActivity).getViewModel()
         /** Future Improvement : Please don't remove any commented code from this file. Need to work on this **/
 //        mDiscoveryViewModel = ViewModelProviders.of(requireActivity()).get((activity as BaseViewModelActivity<DiscoveryViewModel>).getViewModelType())
-
 
         recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         discoveryAdapter = DiscoveryRecycleAdapter(this)
@@ -122,9 +126,10 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback {
         setUpObserver()
     }
 
-    fun resync() {
+    fun reSync() {
         discoveryViewModel.getDiscoveryData()
     }
+
     private fun setUpObserver() {
         discoveryViewModel.getDiscoveryResponseList().observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -132,9 +137,7 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback {
                     it.data?.let {
                         discoveryAdapter.addDataList(it)
                     }
-
-
-
+                    mProgressBar.hide()
                 }
             }
         })
@@ -147,7 +150,6 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback {
                         setAnimationOnScroll()
                     }
                 }
-
                 is Fail -> {
                     mDiscoveryFab.hide()
                 }
@@ -162,9 +164,10 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback {
                 }
 
                 is Fail -> {
-                    typographyHeader.text = getString(R.string.discovery)
+                    typographyHeader.text = ""
                     ivSearch.hide()
                     ivShare.hide()
+                    mProgressBar.hide()
 
                     if (it.throwable is UnknownHostException
                             || it.throwable is SocketTimeoutException) {
@@ -264,7 +267,7 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback {
 
     override fun notifyMergeAdapter() {
         if (!recyclerView.isComputingLayout) {
-            discoveryAdapter.notifyDataSetChanged()
+//            discoveryAdapter.notifyDataSetChanged()
         }
     }
 
@@ -279,13 +282,10 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback {
         trackingQueue.sendAll()
     }
 
-
-
-    fun isDefaultTabDataFetched(): Boolean {
-        return defaultTabDataFetched
-    }
-
-    fun setDefaultTabDataFetched() {
-        defaultTabDataFetched = true
+    override fun onRefresh() {
+        discoveryAdapter.clearListViewModel()
+        discoveryViewModel.clearPageData()
+        discoveryViewModel.getDiscoveryData()
+        mSwipeRefreshLayout.isRefreshing = false
     }
 }

@@ -35,7 +35,7 @@ class ChipsFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
         })
         chipsFilterViewModel.getSyncPageLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
             if(item) {
-                (fragment as DiscoveryFragment).resync()
+                (fragment as DiscoveryFragment).reSync()
             }
         })
     }

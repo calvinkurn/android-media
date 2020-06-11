@@ -50,7 +50,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                     val data = discoveryDataUseCase.getDiscoveryPageDataUseCase(pageIdentifier)
                     data.let {
                         withContext(Dispatchers.Default) {
-                            discoveryResponseList.postValue(Success(it.components as List<ComponentsItem>))
+                            discoveryResponseList.postValue(Success(it.components))
 
                         }
                         setPageInfo(it.pageInfo)
@@ -137,6 +137,10 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     override fun doOnDestroy() {
         super.doOnDestroy()
+        clearPageData()
+    }
+
+    fun clearPageData(){
         discoveryDataUseCase.clearPage(pageIdentifier)
     }
 }

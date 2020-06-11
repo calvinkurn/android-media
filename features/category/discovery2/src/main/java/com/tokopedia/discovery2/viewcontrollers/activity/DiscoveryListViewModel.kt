@@ -17,39 +17,8 @@ class DiscoveryListViewModel(private val applicationContext: Application) : Andr
             val viewModelObject = viewModel.call(applicationContext, componentItem, position)
             mapOfViewModels[position] = viewModelObject
         }
-
         return mapOfViewModels[position]!!
-
-//        if (viewHolderViewModelList.size - 1 >= position) {
-//            Log.d("getViewHolderModel", position.toString() + " " + viewHolderViewModelList[position])
-//            return viewHolderViewModelList[position]
-//        }
-//        val viewModelObject = viewModel.call(applicationContext, componentItem, position)
-//        viewHolderViewModelList.add(viewModelObject)
-//        Log.d("getViewHolderModelafter", position.toString() + " " + viewModelObject + (viewHolderViewModelList.size - 1))
-//        return viewModelObject
-
-//        if (viewHolderViewModelList.size > position && viewHolderViewModelList[position] != null) {
-//            return viewHolderViewModelList[position]
-//        }
-//        val viewModelObject = viewModel.call(applicationContext, componentItem, position)
-//        if(viewHolderViewModelList.size < position){
-//            for(i in viewHolderViewModelList.size until position){
-//                viewHolderViewModelList.add(null)
-//            }
-//        }
-//        viewHolderViewModelList.add(position, viewModelObject)
-//        return viewModelObject
     }
-
-
-//    //temp code
-//    fun getInnerComponentViewModel(position: Int): DiscoveryBaseViewModel? {
-//        if (viewHolderViewModelList.size - 1 >= position) {
-//            return viewHolderViewModelList[position]
-//        }
-//        return null
-//    }
 
     //temp code
     fun getInnerComponentViewModel(position: Int): DiscoveryBaseViewModel? {
@@ -58,7 +27,6 @@ class DiscoveryListViewModel(private val applicationContext: Application) : Andr
 
     fun clearList() {
         mapOfViewModels.clear()
-//        viewHolderViewModelList.clear()
     }
 
 
