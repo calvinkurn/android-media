@@ -134,9 +134,7 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
             startActivityForResult(intent, REQUEST_CODE_PIN)
         } else {
-            if (activity != null) {
-                activity?.finish()
-            }
+            activity?.finish()
         }
     }
 
@@ -254,14 +252,12 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_PIN) {
-            if (activity != null) {
-                if (resultCode == Activity.RESULT_OK) {
-                    currentData?.completion?.let { updateProgressBar(it, it + 10) }
-                    setViewEnabled()
-                    currentData?.let { loadFragment(it, pair) }
-                }
-                activity?.finish()
+            if (resultCode == Activity.RESULT_OK) {
+                currentData?.completion?.let { updateProgressBar(it, it + 10) }
+                setViewEnabled()
+                currentData?.let { loadFragment(it, pair) }
             }
+            activity?.finish()
         }
     }
 
