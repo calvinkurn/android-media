@@ -5,46 +5,22 @@
     android:layout_height="match_parent"
     android:padding="@dimen/spacing_lvl4">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_time_counter"
+    <com.tokopedia.play.broadcaster.view.custom.PlayTimerView
+        android:id="@+id/view_timer"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/play_stats_info_counter_height"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
-        android:gravity="center"
-        android:text="@string/play_live_broadcast_time_default"
-        android:textColor="@color/Neutral_N0"
-        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_2" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tv_time_counter_end"
+    <com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
+        android:id="@+id/view_stat_info"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_lvl2"
-        android:background="@drawable/bg_play_red_rounded_corner"
-        android:drawablePadding="@dimen/spacing_lvl1"
-        android:gravity="center"
-        android:textColor="@color/Neutral_N0"
-        android:textSize="@dimen/fontSize_lvl1"
-        android:textStyle="bold"
-        android:visibility="invisible"
-        app:drawableLeftCompat="@drawable/ic_play_clock_white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_time_counter" />
-
-    <include
-        layout="@layout/layout_play_stats_info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/play_stats_info_height"
         android:layout_marginTop="@dimen/spacing_lvl3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_time_counter"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/view_timer" />
 
     <com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
         android:id="@+id/pmv_metrics"
