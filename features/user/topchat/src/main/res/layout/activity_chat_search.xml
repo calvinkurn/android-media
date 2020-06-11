@@ -25,7 +25,22 @@
             android:paddingBottom="@dimen/dp_topchat_10"
             app:srcCompat="@drawable/ic_system_action_back_grayscale_24" />
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_toolbar_tittle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:visibility="gone"
+            app:typographyType="heading_4"
+            app:typographyWeight="bold"
+            tools:text="'Lorem Ipsum set amet dolor'"
+            tools:visibility="visible" />
+
         <RelativeLayout
+            android:id="@+id/container_search"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl2"
@@ -33,7 +48,9 @@
             android:layout_marginRight="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl2"
             android:layout_weight="1"
-            android:background="@drawable/topchat_bg_search_action_background">
+            android:background="@drawable/topchat_bg_search_action_background"
+            android:visibility="visible"
+            tools:visibility="visible">
 
             <EditText
                 android:id="@+id/searchTextView"

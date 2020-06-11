@@ -50,6 +50,7 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        listener?.showSearchBar()
         if (savedInstanceState == null && !alreadyLoaded) {
             super.onViewCreated(view, savedInstanceState)
             showRecentSearch()
@@ -57,8 +58,8 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
             setupObserver()
             alreadyLoaded = true
         } else {
-            setupRecyclerView()
             isLoadingInitialData = true
+            setupRecyclerView()
             setupObserver()
         }
     }
@@ -67,6 +68,10 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
         if (context is ChatSearchFragmentListener) {
             listener = context
         }
+    }
+
+    override fun onClickContactLoadMore() {
+        listener?.onClickContactLoadMore(viewModel.query)
     }
 
     override fun onClickChangeKeyword() {
@@ -156,10 +161,6 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
 
     override fun finishSearchActivity() {
         activity?.finish()
-    }
-
-    override fun onClickContactLoadMore() {
-        listener?.onClickContactLoadMore()
     }
 
     companion object {

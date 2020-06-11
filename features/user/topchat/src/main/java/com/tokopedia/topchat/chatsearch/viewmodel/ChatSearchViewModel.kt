@@ -33,9 +33,8 @@ class ChatSearchViewModel @Inject constructor(
     private var _searchResults = MutableLiveData<List<Visitable<*>>>()
     val searchResult: LiveData<List<Visitable<*>>> get() = _searchResults
 
-    private var query: String = ""
+    var query: String = ""
     private var page: Int = 1
-
     private var canRetry = false
 
     fun onSearchQueryChanged(newQuery: String) {

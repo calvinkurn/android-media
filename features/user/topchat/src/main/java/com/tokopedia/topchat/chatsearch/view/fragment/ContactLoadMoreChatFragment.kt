@@ -1,8 +1,8 @@
 package com.tokopedia.topchat.chatsearch.view.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactory
@@ -10,9 +10,27 @@ import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactoryImpl
 
 class ContactLoadMoreChatFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>() {
 
+    private var listener: ContactLoadMoreChatListener? = null
+    private var query: String = ""
+
+    override fun onAttachActivity(context: Context?) {
+        if (context is ContactLoadMoreChatListener) {
+            listener = context
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Toast.makeText(context, "load more", Toast.LENGTH_SHORT).show()
+        initArguments()
+        initToolbarTittle()
+    }
+
+    private fun initArguments() {
+        query = arguments?.getString(KEY_QUERY) ?: ""
+    }
+
+    private fun initToolbarTittle() {
+        listener?.changeToolbarTitle(query)
     }
 
     override fun getAdapterTypeFactory(): ChatSearchTypeFactory {
@@ -36,8 +54,13 @@ class ContactLoadMoreChatFragment : BaseListFragment<Visitable<*>, ChatSearchTyp
     }
 
     companion object {
-        fun create(): ContactLoadMoreChatFragment {
-            return ContactLoadMoreChatFragment()
+        private const val KEY_QUERY = "key_query"
+        fun create(query: String): ContactLoadMoreChatFragment {
+            return ContactLoadMoreChatFragment().apply {
+                arguments = Bundle().apply {
+                    putString(KEY_QUERY, query)
+                }
+            }
         }
     }
 }
