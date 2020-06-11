@@ -61,7 +61,7 @@
                 android:layout_alignStart="@+id/tv_title"
                 android:layout_alignLeft="@+id/tv_title"
                 android:layout_centerVertical="true"
-                android:textColor="@color/n_700_44"
+                android:textColor="@color/Neutral_N700_44"
                 app:layout_constraintBottom_toTopOf="@+id/stepper"
                 app:layout_constraintEnd_toStartOf="@+id/btn_delete"
                 app:layout_constraintStart_toStartOf="@+id/tv_title"
@@ -112,6 +112,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:progress="50"
+                tools:targetApi="lollipop"
                 tools:visibility="visible" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

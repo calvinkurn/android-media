@@ -33,9 +33,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp_16"
+            android:text="@string/add_preference"
             android:visibility="gone"
-            app:unifyButtonVariant="ghost"
-            android:text="@string/add_preference" />
+            app:unifyButtonVariant="ghost" />
 
     </LinearLayout>
 

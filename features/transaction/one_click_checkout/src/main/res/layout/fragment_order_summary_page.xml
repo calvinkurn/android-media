@@ -26,9 +26,9 @@
 
                 <include
                     android:id="@+id/layout_occ_onboarding"
+                    layout="@layout/layout_occ_onboarding"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    layout="@layout/layout_occ_onboarding"/>
+                    android:layout_height="wrap_content" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_header"
@@ -124,7 +124,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
-                    android:text="Selengkapnya"
+                    android:text="@string/more_info"
                     android:textColor="@color/Green_G500"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/iv_subheader"
@@ -198,7 +198,7 @@
                     android:id="@+id/tv_insurance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/label_insurance"
+                    android:text="@string/lbl_shipping_insurance"
                     android:textColor="@color/Neutral_N700_96"
                     app:layout_constraintBottom_toBottomOf="@+id/cb_insurance"
                     app:layout_constraintStart_toEndOf="@+id/cb_insurance"
@@ -261,9 +261,9 @@
                     layout="@layout/layout_payment"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/btn_promo_checkout"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/btn_promo_checkout" />
 
                 <androidx.constraintlayout.widget.Group
                     android:id="@+id/group_insurance"

@@ -185,7 +185,7 @@
         android:paddingLeft="@dimen/dp_16"
         android:paddingEnd="@dimen/dp_0"
         android:paddingRight="@dimen/dp_0"
-        android:text="@string/label_change_template"
+        android:text="@string/lbl_change_template"
         android:textColor="@color/Green_G500"
         app:layout_constraintBottom_toBottomOf="@+id/tv_shipping_message"
         app:layout_constraintEnd_toEndOf="parent"

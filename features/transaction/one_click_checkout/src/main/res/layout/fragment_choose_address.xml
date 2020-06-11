@@ -14,11 +14,11 @@
         android:orientation="vertical">
 
         <com.tokopedia.design.text.SearchInputView
-            android:layout_marginTop="@dimen/dp_8"
             android:id="@+id/search_input_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_25"
-            android:text="Pencarian tidak dapat ditemukan"
+            android:text="@string/search_not_found"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/search_input_view" />
 

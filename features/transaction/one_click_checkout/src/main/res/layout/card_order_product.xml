@@ -203,7 +203,7 @@
         android:gravity="end"
         android:maxLines="2"
         android:textAlignment="gravity"
-        android:textColor="@color/text_error_red_2"
+        android:textColor="#D0021B"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

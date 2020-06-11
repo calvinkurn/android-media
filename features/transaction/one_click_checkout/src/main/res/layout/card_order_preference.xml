@@ -64,8 +64,8 @@
                 android:id="@+id/iv_edit_preference"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:paddingEnd="@dimen/dp_16"
                 android:paddingStart="@dimen/dp_16"
+                android:paddingEnd="@dimen/dp_16"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_card_header"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/iv_card_header"
@@ -137,9 +137,9 @@
                 layout="@layout/layout_order_preference_shipping"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/divider"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/divider" />
 
             <ImageView
                 android:id="@+id/iv_payment"

@@ -229,7 +229,7 @@
             android:id="@+id/tv_main_preference"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Pilihan Utama"
+            android:text="@string/lbl_default_preference_profile"
             android:textColor="@color/Neutral_N700_68"
             app:layout_constraintBottom_toBottomOf="@+id/cb_main_preference"
             app:layout_constraintEnd_toEndOf="parent"

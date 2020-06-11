@@ -52,6 +52,6 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_22"
-        android:text="Lanjut Belanja" />
+        android:text="@string/default_action_occ_info_bottom_sheet" />
 
 </LinearLayout>

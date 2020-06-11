@@ -71,9 +71,9 @@
         android:layout_margin="@dimen/dp_16"
         android:drawablePadding="@dimen/dp_neg_16"
         android:text="@string/pay"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ticker_payment_error"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:unifyButtonSize="large"
         app:unifyButtonType="transaction" />
 

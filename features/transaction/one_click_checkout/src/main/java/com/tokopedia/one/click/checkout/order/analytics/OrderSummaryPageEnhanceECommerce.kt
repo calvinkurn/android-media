@@ -8,47 +8,47 @@ class OrderSummaryPageEnhanceECommerce {
         data[KEY_NAME] = name
     }
 
-    fun setId(id: Int) {
+    fun setId(id: String) {
         data[KEY_ID] = id
     }
 
-    fun setPrice(price: Long) {
+    fun setPrice(price: String) {
         data[KEY_PRICE] = price
     }
 
     fun setBrand(brand: String?) {
-        data[KEY_BRAND] = brand ?: "none/other"
+        data[KEY_BRAND] = setDefaultIfEmpty(brand)
     }
 
-    fun setCategory(category: String?) {
-        data[KEY_CATEGORY] = category ?: "none/other"
+    fun setCategory(category: String) {
+        data[KEY_CATEGORY] = setDefaultIfEmpty(category)
     }
 
-    fun setVariant(variant: String? ) {
-        data[KEY_VARIANT] = variant ?: "none/other"
+    fun setVariant(variant: String?) {
+        data[KEY_VARIANT] = setDefaultIfEmpty(variant)
     }
 
-    fun setQuantity(quantity: Int) {
+    fun setQuantity(quantity: String) {
         data[KEY_QUANTITY] = quantity
     }
 
     fun setListName(listName: String) {
-        data[KEY_LIST_NAME] = listName
+        data[KEY_LIST_NAME] = setDefaultIfEmpty(listName)
     }
 
     fun setAttribution(attribution: String) {
-        data[KEY_ATTRIBUTION] = attribution
+        data[KEY_ATTRIBUTION] = setDefaultIfEmpty(attribution)
     }
 
     fun setDiscountedPrice(discountedPrice: Boolean) {
         data[KEY_DISCOUNTED_PRICE] = discountedPrice.toString()
     }
 
-    fun setWarehouseId(warehouseId: Int) {
+    fun setWarehouseId(warehouseId: String) {
         data[KEY_WAREHOUSE_ID] = warehouseId
     }
 
-    fun setProductWeight(productWeight: Int) {
+    fun setProductWeight(productWeight: String) {
         data[KEY_PRODUCT_WEIGHT] = productWeight
     }
 
@@ -57,18 +57,18 @@ class OrderSummaryPageEnhanceECommerce {
     }
 
     fun setPromoDetails(promoDetails: String) {
-        data[KEY_PROMO_DETAILS] = promoDetails
+        data[KEY_PROMO_DETAILS] = setDefaultIfEmpty(promoDetails)
     }
 
-    fun setCartId(cartId: Long) {
+    fun setCartId(cartId: String) {
         data[KEY_CART_ID] = cartId
     }
 
-    fun setBuyerAddressId(buyerAddressId: Int) {
+    fun setBuyerAddressId(buyerAddressId: String) {
         data[KEY_BUYER_ADDRESS_ID] = buyerAddressId
     }
 
-    fun setSpid(spid: Int) {
+    fun setSpid(spid: String) {
         data[KEY_SP_ID] = spid
     }
 
@@ -84,7 +84,7 @@ class OrderSummaryPageEnhanceECommerce {
         data[KEY_IS_FULFILLMENT] = isFullfilment.toString()
     }
 
-    fun setShopId(shopId: Int) {
+    fun setShopId(shopId: String) {
         data[KEY_SHOP_ID] = shopId
     }
 
@@ -96,16 +96,12 @@ class OrderSummaryPageEnhanceECommerce {
         data[KEY_SHOP_TYPE] = if (isOfficial == 1) "official_store" else if (isGold == 1) "gold_merchant" else "marketplace"
     }
 
-    fun setCategoryId(categoryId: Int) {
+    fun setCategoryId(categoryId: String) {
         data[KEY_CATEGORY_ID] = categoryId
     }
 
     fun setProductType(productType: String) {
         data[KEY_PRODUCT_TYPE] = productType
-    }
-
-    fun setKeyValue(key: String, value: Any) {
-        data[key] = value
     }
 
     fun build(step: Int, option: String): Map<String, Any> {
@@ -119,6 +115,13 @@ class OrderSummaryPageEnhanceECommerce {
                         KEY_PRODUCTS to listOf(data)
                 )
         )
+    }
+
+    private fun setDefaultIfEmpty(value: String?): String {
+        if (value.isNullOrBlank()) {
+            return DEFAULT_EMPTY_VALUE
+        }
+        return value
     }
 
     companion object {
@@ -160,5 +163,7 @@ class OrderSummaryPageEnhanceECommerce {
 
         const val STEP_2 = 2
         const val STEP_2_OPTION = "click bayar success"
+
+        private const val DEFAULT_EMPTY_VALUE = "none / other"
     }
 }
