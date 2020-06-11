@@ -108,4 +108,6 @@
     <string name="power_merchant_free_shipping_title">Bebas Ongkir aktif</string>
     <string name="power_merchant_free_shipping_shop_score_description">Akan aktif setelah performa meningkat</string>
     <string name="power_merchant_free_shipping_shop_score_title">Bebas Ongkir : <![CDATA[<font color=\"#31353b\">Tidak aktif</font>]]></string>
+    <string name="power_merchant_free_shipping_load_error">Bebas Ongkir tak bisa ditampilkan</string>
+    <string name="power_merchant_click_to_reload">Ketuk ikon untuk memuat ulang</string>
 </resources>

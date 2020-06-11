@@ -90,11 +90,13 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observeGetFreeShippingDetail()
-        observeGetPmStatusInfo()
-        observeViewState()
-
         if (remoteConfig.getBoolean(ANDROID_PM_F1_ENABLED, false)) {
+            observeGetFreeShippingDetail()
+            observeGetPmStatusInfo()
+            observeViewState()
+
+            setupFreeShippingError()
+
             viewModel.getPmStatusInfo()
         } else {
             activity?.let {
@@ -104,6 +106,17 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
                     RouteManager.route(it, ApplinkConstInternalMarketplace.GOLD_MERCHANT_SUBSCRIBE_DASHBOARD)
                 }
                 it.finish()
+            }
+        }
+    }
+
+    private fun setupFreeShippingError() {
+        freeShippingError.apply {
+            refreshBtn?.setOnClickListener {
+                if(!progressState) {
+                    progressState = true
+                    viewModel.getFreeShippingStatus()
+                }
             }
         }
     }
@@ -159,7 +172,15 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     private fun observeGetFreeShippingDetail() {
         observe(viewModel.getPmFreeShippingStatusResult) {
             when(it) {
-                is Success -> freeShippingLayout.show(it.data)
+                is Success -> {
+                    freeShippingLayout.show(it.data)
+                    freeShippingError.hide()
+                }
+                is Fail -> {
+                    freeShippingLayout.hide()
+                    freeShippingError.show()
+                    freeShippingError.progressState = false
+                }
             }
         }
     }

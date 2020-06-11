@@ -2,6 +2,7 @@ package com.tokopedia.power_merchant.subscribe.view.ui
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import android.widget.FrameLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -32,6 +33,7 @@ class PowerMerchantFreeShippingView: FrameLayout {
             status.isActive -> showActiveFreeShipping(status.isShopScoreEligible)
             else -> showInactiveFreeShipping(status.isEligible)
         }
+        showLayout()
     }
 
     private fun showTransitionPeriod() {
@@ -107,5 +109,9 @@ class PowerMerchantFreeShippingView: FrameLayout {
 
     private fun openFreeShippingPage() {
         RouteManager.route(context, ApplinkConst.WEBVIEW, URL_FREE_SHIPPING_TERMS_AND_CONDITION)
+    }
+
+    private fun showLayout() {
+        visibility = View.VISIBLE
     }
 }
