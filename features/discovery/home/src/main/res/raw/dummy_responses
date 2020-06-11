@@ -1,0 +1,1235 @@
+{
+    "status": "OK",
+    "ticker": {
+      "meta": {
+        "total_data": 0
+      },
+      "tickers": [
+        {
+          "id": "231",
+          "title": "Home Lite",
+          "message": "Home Lite",
+          "color": "#cde4c3",
+          "layout": "default"
+        }
+      ]
+    },
+    "slides": {
+      "meta": {
+        "total_data": 0
+      },
+      "slides": [
+        {
+          "id": "193",
+          "galaxy_attribution": "PG",
+          "persona": "",
+          "brand_id": "",
+          "category_persona": "",
+          "image_url": "https://ecs7.tokopedia.net/img/banner/2019/9/27/5512373/5512373_e046837a-8ea7-4c95-b203-d11d868827aa",
+          "redirect_url": "https://ta-staging.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEHpjR6_y7bm-xgVY789CBUstpbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_1NH_rfHsjO6ZFiy3zwrfo5rM1i6sUfoZd7HsepHsrOoAnO6_JaoiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoepep_OzoHjN1e_ovuJ7a_BzCH7Y1__--q9P23_oZ8uKp_Mhg3J2ky1o-ojBke3BHe72a3BxDHfUpZMWyH7NkysoGQJBkQfBoe7BpZ37OPM-W_Mh-qMY23Bz6Q17a3MOouJO73M23qjYAHAC6uVJF_VP-oJO139zvzOgD_uzg8BBE_Mh6qjjhZ3BRq3UpZSCqHMhO3A-ZQcoc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMoUZSgqZVgkgJyNrV2AZ_g-qjV2_JoGPMoWQcNxupuMyp-tPMoc69Cqe7jfZ32Cq1hAZSxjuOgNguyNHVB9gI2-qMY2Z3BRq3Ha_SgsQugM33NGPMep_Mh-qMY2_32gH1hk19B6zJON_S2uHJOJu_uouJjaZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32g8jhkZ_-6qj1p_M2ooJOk1_o6qju2gBJYvZUDUSupg9-wq3ei6iUOo_Ja6_KaUiFirfuprfB5QBY2gmUEUSHBH7Vmr9npb3oq8cB6QB209RgE6AP5ySBsuuxp9fuVrMUaPmdOHZ1azSgZQMY0yR-_uMdRzM2Cq9ztqJxueuuIQVPMgpzA3I2RPjU7Psr7y3Hibm-xQcri6i-jg3yibm-XP3Oig9-wQfgwy3zpUst7bm-XP3Oig9-wy3zp9R-BrZUEH_nDUMNwyfVXgcBjy9zB9fVjraUEH_yDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUS7?src=homebanner&page=1&cpm_template_req=6&click_ad_type=1&template_id_used=6&t=android&sid=s%253ABqp3-cZxiNnZk_vz87obycUXs_eErb2t.51%252FvRnokcrSVn7FjAithhHUAUGlWfg4CXzwvB4v74ac&uid=5512982&r=https%3A%2F%2Fstaging.tokopedia.com%2F",
+          "applink": "tokopedia://digital/form",
+          "topads_view_url": "https://ta-staging.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sHNopjfomFiy3zwPIBFgZUEHaFircYpq9z2Qfdi6sJDUSz2Q31i6sJO6_JRosUNo_jDUSCxPcKi6i-ByRHRbSz5qfYFg3z2yZNXg9e5q3OSbf-xQMNBri4aHAJNbpj5Hsr5o_1hHsHRHa4Oo_JaHprp9f1FoAydHpPxb_xBy_rWocHNoZOiHsnpb3ehH3edosKdHsPxyZUDUMVj9RosQR-BUstaos1XoAU7HpURo_eFo_jhHsyDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1H7H7Y1__-6uJJp_OzoHjN1e_ovuJ7aZ3BRqujp1SByH7ND3uxGqMVAZ_g-qjV2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325qu21_MOoHB2W_uzoPV2kuM2vepnF_BzzHJh9Z_zouVB7_7P3QJO1392g8jND_M2-H1B2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q1B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1Ok3_VHqBVN_jzo81NEu_CozV1O_uz-HjB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Ok392Hqjja_M2VH7Nk__zoqBJp_M2Vq3gzv_7ibm-Orfua9fBjUstio_1hHsjdHiUDUSoBrRo2QfNwq3ei6i-p-_oCeSVFHaOs3Sx2_MNqqOYf8sKRQf-NyOuyrOYBz9-iHSeXo_JBHjgf1MN5qfoa1OgXo7gke3B7qcxUu1Vuzfh9gMr7eOxEPRgmoIyRocVsUiFiy3hSUstigcuMUiFiQSuWyMua9fYM9fVjraUEomFiQSuWyMua9fVjrOYag9Ji6sJFbm-X9foxQMz2gcV7guYxgIHi6sJfbm-xyBY7g9o7Usti_iUDUSgBrSo2Qfdi6i-fHi-Y?template_id_used=6&uid=5512982&src=homebanner&cpm_template_req=6&t=android&sid=s%253ABqp3-cZxiNnZk_vz87obycUXs_eErb2t.51%252FvRnokcrSVn7FjAithhHUAUGlWfg4CXzwvB4v74ac&page=1",
+          "promo_code": "",
+          "creative_name": "Testing Topads",
+          "type": "topads",
+          "campaignCode": ""
+        },
+        {
+          "id": "194",
+          "galaxy_attribution": "PG",
+          "persona": "",
+          "brand_id": "",
+          "category_persona": "",
+          "image_url": "https://ecs7.tokopedia.net/img/banner/2019/9/30/5512373/5512373_e091197a-10f3-4d9a-a333-7f5e37fc7a3d",
+          "redirect_url": "https://ta-staging.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEHpj7opypbm-xgVY789CBUstpbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_1NH_rfHsjO6ZFiy3zwrfo5rM1i6sUfHaddH_jaosH7HpnhHAypHaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3Ou8B2k_MOqqjuE_VPgHuBEgRz6zV1F_jHhq1YJz_-HucxD3BzVHj7a_92quVBN_Bo-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-HjONoAzoucWN_M2oHJOEe9xozVBE_9B-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32-HjO2oIxo8B1O_Oz0o1Y1qpuvucDO_SBG6ZUDUSupg9-wq3ei6iUOo_Ja6_KaUiFirfuprfB5QBY2gmUEUSHBH7Vmr9npb3oq8cB6QB209RgE6AP5ySBsuuxp9fuVrMUaPmdOHZ1azSgZQMY0yR-_uMdRzM2Cq9ztqJxueuuIQVPMgpzA3I2RPjU7Psr7y3Hibm-xQcri6i-jg3yibm-XP3Oig9-wQfgwy3zpUst7bm-XP3Oig9-wy3zp9R-BrZUEH_nDUMNwyfVXgcBjy9zB9fVjraUEH_yDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUS7?src=homebanner&cpm_template_req=6&template_id_used=6&t=android&page=1&sid=s%253ABqp3-cZxiNnZk_vz87obycUXs_eErb2t.51%252FvRnokcrSVn7FjAithhHUAUGlWfg4CXzwvB4v74ac&uid=5512982&click_ad_type=1&r=http%3A%2F%2Fstaging.tokopedia.com%2Frainbowsstore",
+          "applink": "tokopedia://digital/form/?category_id=1000",
+          "topads_view_url": "https://ta-staging.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sHNoArfHaFiy3zwPIBFgZUEHaFircYpq9z2Qfdi6sUDUSz2Q31i6sJO6_JRosUNo_jDUSCxPcKi6i-ByRHRbSz5qfYFg3z2yZNXg9e5q3OSbf-xQMNBri4aHAJNbpj5Hpn5o_1hHsHRHa4Oo_JaHprp9f1F6_Jh6_Pxb_JFgsHWoceNyZOxHpHpb_PMo31pofgsofJpgmUDUMVj9RosQR-BUstaosHX6AJNHsypoAHFH_nfHpHDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBWu92qqjNW3M2V8jh93_Vg8MP7_jzuHJNAH3BvzJ1a_VztQV21z_-oHjOE3Bzg81N_Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_-o8_e7_uz081Nk__Co8jVd_1zg8jONZ9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBkZ_-oq_zd_92uo1Y1qpuvucDO_Oz0o1NNZsjibm-Orfua9fBjUstio_1hHsjdHiUDUSoBrRo2QfNwq3ei6i-p-_oCeSVFHaOs3Sx2_MNqqOYf8sKRQf-NyOuyrOYBz9-iHSeXo_JBHjgf1MN5qfoa1OgXo7gke3B7qcxUu1Vuzfh9gMr7eOxEPRgmoIyRocVsUiFiy3hSUstigcuMUiFiQSuWyMua9fYM9fVjraUEomFiQSuWyMua9fVjrOYag9Ji6sJFbm-X9foxQMz2gcV7guYxgIHi6sJfbm-xyBY7g9o7Usti_iUDUSgBrSo2Qfdi6i-fHi-Y?template_id_used=6&sid=s%253ABqp3-cZxiNnZk_vz87obycUXs_eErb2t.51%252FvRnokcrSVn7FjAithhHUAUGlWfg4CXzwvB4v74ac&uid=5512982&t=android&src=homebanner&page=1&cpm_template_req=6",
+          "promo_code": "",
+          "creative_name": "Testing Topads",
+          "type": "topads",
+          "campaignCode": ""
+        },
+        {
+          "id": "195",
+          "galaxy_attribution": "PG",
+          "persona": "",
+          "brand_id": "",
+          "category_persona": "",
+          "image_url": "https://ecs7.tokopedia.net/img/banner/2019/9/30/5512373/5512373_e091197a-10f3-4d9a-a333-7f5e37fc7a3d",
+          "redirect_url": "https://ta-staging.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEHpj7opypbm-xgVY789CBUstpbm-FQRo2PcB5QiUEomFiPcBWgZUEH_1NH_rfHsjO6ZFiy3zwrfo5rM1i6sUfHaddH_jaosH7HpnhHAypHaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3Ou8B2k_MOqqjuE_VPgHuBEgRz6zV1F_jHhq1YJz_-HucxD3BzVHj7a_92quVBN_Bo-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-HjONoAzoucWN_M2oHJOEe9xozVBE_9B-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32-HjO2oIxo8B1O_Oz0o1Y1qpuvucDO_SBG6ZUDUSupg9-wq3ei6iUOo_Ja6_KaUiFirfuprfB5QBY2gmUEUSHBH7Vmr9npb3oq8cB6QB209RgE6AP5ySBsuuxp9fuVrMUaPmdOHZ1azSgZQMY0yR-_uMdRzM2Cq9ztqJxueuuIQVPMgpzA3I2RPjU7Psr7y3Hibm-xQcri6i-jg3yibm-XP3Oig9-wQfgwy3zpUst7bm-XP3Oig9-wy3zp9R-BrZUEH_nDUMNwyfVXgcBjy9zB9fVjraUEH_yDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUS7?r=http%3A%2F%2Fstaging.tokopedia.com%2Frainbowsstore&src=homebanner&uid=5512982&sid=s%253ABqp3-cZxiNnZk_vz87obycUXs_eErb2t.51%252FvRnokcrSVn7FjAithhHUAUGlWfg4CXzwvB4v74ac&cpm_template_req=6&t=android&template_id_used=6&click_ad_type=1&page=1",
+          "applink": "tokopedia://digital/form/?category_id=1000",
+          "topads_view_url": "https://ta-staging.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sHNoArfHaFiy3zwPIBFgZUEHaFircYpq9z2Qfdi6seDUSz2Q31i6sJO6_JRosUNo_jDUSCxPcKi6i-ByRHRbSz5qfYFg3z2yZNXg9e5q3OSbf-xQMNBri4aHAJNbpj5Hpn5o_1hHsHRHa4Oo_JaHprp9f1F6_Jh6_Pxb_JFgsHWoceNyZOxHpHpb_PMo31pofgsofJpgmUDUMVj9RosQR-BUstaosHX6AJNHsypoAHFH_nfHpHDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBWu92qqjNW3M2V8jh93_Vg8MP7_jzuHJNAH3BvzJ1a_VztQV21z_-oHjOE3Bzg81N_Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_-o8_e7_uz081Nk__Co8jVd_1zg8jONZ9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBkZ_-oq_zd_92uo1Y1qpuvucDO_Oz0o1NNZsjibm-Orfua9fBjUstio_1hHsjdHiUDUSoBrRo2QfNwq3ei6i-p-_oCeSVFHaOs3Sx2_MNqqOYf8sKRQf-NyOuyrOYBz9-iHSeXo_JBHjgf1MN5qfoa1OgXo7gke3B7qcxUu1Vuzfh9gMr7eOxEPRgmoIyRocVsUiFiy3hSUstigcuMUiFiQSuWyMua9fYM9fVjraUEomFiQSuWyMua9fVjrOYag9Ji6sJFbm-X9foxQMz2gcV7guYxgIHi6sJfbm-xyBY7g9o7Usti_iUDUSgBrSo2Qfdi6i-fHi-Y?uid=5512982&cpm_template_req=6&template_id_used=6&t=android&sid=s%253ABqp3-cZxiNnZk_vz87obycUXs_eErb2t.51%252FvRnokcrSVn7FjAithhHUAUGlWfg4CXzwvB4v74ac&src=homebanner&page=1",
+          "promo_code": "",
+          "creative_name": "Testing Topads",
+          "type": "topads",
+          "campaignCode": ""
+        },
+        {
+          "id": "191",
+          "galaxy_attribution": "PG",
+          "persona": "",
+          "brand_id": "",
+          "category_persona": "",
+          "image_url": "https://ecs7.tokopedia.net/img/cache/800/VxWOnu/2020/5/18/5e3b4108-77c2-4269-99bf-46145b60bcbd.jpg",
+          "redirect_url": "tokopedia.com",
+          "applink": "tokopedia://webview?url=tokopedia.com",
+          "topads_view_url": "",
+          "promo_code": "",
+          "creative_name": "Banner Baru",
+          "type": "general",
+          "campaignCode": "Testing"
+        },
+        {
+          "id": "117",
+          "galaxy_attribution": "",
+          "persona": "Fashion Wanita,Entertainment,Beauty,Fashion Pria",
+          "brand_id": "",
+          "category_persona": "",
+          "image_url": "https://ecs7.tokopedia.net/img/cache/800//",
+          "redirect_url": "https://staging.tokopedia.com/100kb",
+          "applink": "tokopedia://webview?url=https%3A%2F%2Fstaging.tokopedia.com%2F100kb",
+          "topads_view_url": "",
+          "promo_code": "",
+          "creative_name": "Banner 100kb",
+          "type": "general",
+          "campaignCode": ""
+        },
+        {
+          "id": "192",
+          "galaxy_attribution": "PG",
+          "persona": "",
+          "brand_id": "",
+          "category_persona": "",
+          "image_url": "https://ecs7.tokopedia.net/img/cache/800//",
+          "redirect_url": "https://www.tokopedia.com/discovery/promo-rabu?source=home",
+          "applink": "tokopedia://discovery/promo-rabu?source=home",
+          "topads_view_url": "",
+          "promo_code": "",
+          "creative_name": "Home Banner",
+          "type": "general",
+          "campaignCode": ""
+        },
+        {
+          "id": "162",
+          "galaxy_attribution": "PG",
+          "persona": "",
+          "brand_id": "",
+          "category_persona": "",
+          "image_url": "https://ecs7.tokopedia.net/img/cache/800//",
+          "redirect_url": "tokopedia.com",
+          "applink": "tokopedia://webview?url=tokopedia.com",
+          "topads_view_url": "",
+          "promo_code": "",
+          "creative_name": "test kosong again",
+          "type": "general",
+          "campaignCode": ""
+        },
+        {
+          "id": "144",
+          "galaxy_attribution": "PG",
+          "persona": "",
+          "brand_id": "",
+          "category_persona": "",
+          "image_url": "https://ecs7.tokopedia.net/img/cache/800/banner/2020/2/13/8969137/8969137_74f71e40-1cd3-4f90-b321-e402e65eaa04.jpg",
+          "redirect_url": "http://www.tokopedia.com",
+          "applink": "tokopedia://discovery/flash-sale",
+          "topads_view_url": "",
+          "promo_code": "",
+          "creative_name": "TestBanner",
+          "type": "general",
+          "campaignCode": ""
+        },
+        {
+          "id": "118",
+          "galaxy_attribution": "",
+          "persona": "",
+          "brand_id": "",
+          "category_persona": "",
+          "image_url": "https://ecs7.tokopedia.net/img/cache/800/banner/2020/1/29/40768394/40768394_57a5b9b9-813e-456b-964f-b8ba4ba75821.jpg",
+          "redirect_url": "http://www.tokopedia.com/JPG",
+          "applink": "tokopedia://webview?url=http%3A%2F%2Fwww.tokopedia.com%2FJPG",
+          "topads_view_url": "",
+          "promo_code": "",
+          "creative_name": "Banner JPG",
+          "type": "general",
+          "campaignCode": ""
+        },
+        {
+          "id": "116",
+          "galaxy_attribution": "galaxy_attribution",
+          "persona": "Fashion Wanita,Entertainment,Beauty,Fashion Pria",
+          "brand_id": "1234,5678",
+          "category_persona": "",
+          "image_url": "https://ecs7.tokopedia.net/img/cache/800//",
+          "redirect_url": "https://staging.tokopedia.com/66kb",
+          "applink": "tokopedia://webview?url=https%3A%2F%2Fstaging.tokopedia.com%2F66kb",
+          "topads_view_url": "",
+          "promo_code": "",
+          "creative_name": "Banner 66kb",
+          "type": "general",
+          "campaignCode": ""
+        }
+      ]
+    },
+    "dynamicHomeIcon": {
+      "dynamicIcon": [
+        {
+          "id": 164,
+          "galaxy_attribution": "",
+          "persona": "",
+          "brand_id": "",
+          "category_persona": "",
+          "name": "Hotel",
+          "url": "wwesx",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/300-square/attachment/2019/6/19/30542097/30542097_df24db37-ad55-4932-a9e2-7c827511b9d0.png",
+          "applinks": "tokopedia://hotel/dashboard",
+          "bu_identifier": "Hotel Digital_PG_Hotel"
+        },
+        {
+          "id": 96,
+          "galaxy_attribution": "",
+          "persona": "",
+          "brand_id": "",
+          "category_persona": "",
+          "name": "Semua Kategori",
+          "url": "https://m.tokopedia.com/kategori-lainnya",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/3/22/5510856/5510856_5a5b80d8-eacd-4624-b1ce-a353f4a0d744.png",
+          "applinks": "tokopedia://category-explore?type=2&tab=1",
+          "bu_identifier": ""
+        },
+        {
+          "id": 94,
+          "galaxy_attribution": "",
+          "persona": "",
+          "brand_id": "",
+          "category_persona": "",
+          "name": "Belanja",
+          "url": "https://m.tokopedia.com/kategori-belanja",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/3/22/5510856/5510856_74208b26-e96c-49e4-9d0b-4b3ce6a6e69a.png",
+          "applinks": "tokopedia://category-explore?type=1",
+          "bu_identifier": ""
+        },
+        {
+          "id": 97,
+          "galaxy_attribution": "",
+          "persona": "",
+          "brand_id": "",
+          "category_persona": "",
+          "name": "Top-Up & Tagihan",
+          "url": "https://m.tokopedia.com/pulsa/",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/3/22/5510856/5510856_b5643ed3-30e2-4aae-bfbe-cb8f02654cd2.png",
+          "applinks": "tokopedia://recharge/home",
+          "bu_identifier": "null_null_Top-Up & Tagihan"
+        },
+        {
+          "id": 98,
+          "galaxy_attribution": "",
+          "persona": "",
+          "brand_id": "",
+          "category_persona": "",
+          "name": "Travel & Entertainment",
+          "url": "https://m.tokopedia.com",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/3/22/5510856/5510856_0ac6c02f-27c8-40f0-a508-8163d70abee5.png",
+          "applinks": "tokopedia://travelentertainment/home",
+          "bu_identifier": ""
+        },
+        {
+          "id": 15,
+          "galaxy_attribution": "",
+          "persona": "",
+          "brand_id": "",
+          "category_persona": "",
+          "name": "Belanja Yuk",
+          "url": "https://staging.tokopedia.com//kategori",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/1/2/5479567/5479567_cb14ad92-e25f-4b1e-bc1c-2ba5ab06d6ab.png",
+          "applinks": "tokopedia://jump/beli",
+          "bu_identifier": ""
+        },
+        {
+          "id": 55,
+          "galaxy_attribution": "",
+          "persona": "",
+          "brand_id": "",
+          "category_persona": "",
+          "name": "Olahraga",
+          "url": "https://m.tokopedia.com/p/olahraga",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2018/10/5/5479567/5479567_e841bcff-1843-436f-8f2d-ac3e5c2e6a1d.png",
+          "applinks": "tokopedia://category/62",
+          "bu_identifier": ""
+        },
+        {
+          "id": 9,
+          "galaxy_attribution": "",
+          "persona": "",
+          "brand_id": "",
+          "category_persona": "",
+          "name": "Grab Online",
+          "url": "https://m.tokopedia.com/",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/1/2/5479567/5479567_48fe0ec8-8bbf-4cf4-bed5-f23d5f94b132.png",
+          "applinks": "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2F",
+          "bu_identifier": "null_null_Grab Online"
+        },
+        {
+          "id": 18,
+          "galaxy_attribution": "",
+          "persona": "",
+          "brand_id": "",
+          "category_persona": "",
+          "name": "Shake!",
+          "url": "https://m.tokopedia.com/pinjaman-online/",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2018/5/23/5479567/5479567_125da713-1e14-41dc-b3cd-902bc53d7f7c.png",
+          "applinks": "",
+          "bu_identifier": ""
+        },
+        {
+          "id": 16,
+          "galaxy_attribution": "",
+          "persona": "",
+          "brand_id": "",
+          "category_persona": "",
+          "name": "Top Up & Layanan",
+          "url": "https://staging.tokopedia.com/tokocard/",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2018/8/31/5511629/5511629_56233bd0-9892-47c3-80bb-66aa8737df7f.png",
+          "applinks": "tokopedia://jump/tagihan",
+          "bu_identifier": ""
+        }
+      ]
+    },
+    "dynamicHomeChannel": {
+      "channels": [
+        {
+          "id": 11680,
+          "group_id": 56,
+          "galaxy_attribution": "",
+          "persona": "",
+          "brand_id": "",
+          "category_persona": "",
+          "name": "Popula Keyword",
+          "layout": "popular_keyword",
+          "type": "inspiration",
+          "showPromoBadge": false,
+          "categoryID": "{}",
+          "perso_type": 1,
+          "campaignCode": "",
+          "has_close_button": false,
+          "header": {
+            "id": 392,
+            "name": "Popula Keyword",
+            "subtitle": "",
+            "url": "",
+            "applink": "",
+            "serverTime": 0,
+            "expiredTime": "",
+            "backColor": "",
+            "backImage": "",
+            "textColor": "#000000"
+          },
+          "grids": [
+            {
+              "id": 2384,
+              "back_color": "",
+              "name": "",
+              "url": "https://staging.tokopedia.com/smartfren-qc/kaos-wanita-e2e-campaign-3-variant-mix-stock-hitam?trkid=f%3DP0Cb0_src%3Dwidget_page%3D1_ob%3D17_catid%3D1680",
+              "applink": "tokopedia://product/15254878",
+              "price": "Rp 2.500",
+              "slashedPrice": "Rp 10.000",
+              "discount": "75%",
+              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/phZFtb/2020/6/3/878fee05-cf9c-456b-88ec-e2c99f0023a4.jpg",
+              "label": "Masih Tersedia",
+              "soldPercentage": 0,
+              "attribution": "",
+              "productClickUrl": "",
+              "impression": "",
+              "cashback": "",
+              "isTopads": false,
+              "freeOngkir": {
+                "isActive": false,
+                "imageUrl": ""
+              },
+              "productViewCountFormatted": "",
+              "isOutOfStock": false,
+              "warehouseID": 0,
+              "minOrder": 0,
+              "shop": {
+                "shopID": 0
+              },
+              "labelGroup": [],
+              "has_buy_button": false
+            },
+            {
+              "id": 2385,
+              "back_color": "",
+              "name": "",
+              "url": "https://staging.tokopedia.com/smartfren-qc/patung-kuwera-automation-e2e-campaign-variant-limited-hitam?trkid=f%3DP0Cb0_src%3Dwidget_page%3D1_ob%3D17_catid%3D1769",
+              "applink": "tokopedia://product/15254869",
+              "price": "Rp 2.500",
+              "slashedPrice": "Rp 10.000",
+              "discount": "75%",
+              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/phZFtb/2020/6/3/9be7f009-2598-4520-873d-346beaa02586.jpg",
+              "label": "Masih Tersedia",
+              "soldPercentage": 0,
+              "attribution": "",
+              "productClickUrl": "",
+              "impression": "",
+              "cashback": "",
+              "isTopads": false,
+              "freeOngkir": {
+                "isActive": false,
+                "imageUrl": ""
+              },
+              "productViewCountFormatted": "",
+              "isOutOfStock": false,
+              "warehouseID": 0,
+              "minOrder": 0,
+              "shop": {
+                "shopID": 0
+              },
+              "labelGroup": [],
+              "has_buy_button": false
+            },
+            {
+              "id": 2386,
+              "back_color": "",
+              "name": "",
+              "url": "https://m.tokopedia.com/",
+              "applink": "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2F",
+              "price": "",
+              "slashedPrice": "",
+              "discount": "",
+              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/phZFtb/2020/6/3/0839d0c7-f3c2-4a29-b60a-767ba587cd33.jpg",
+              "label": "",
+              "soldPercentage": 0,
+              "attribution": "attribution",
+              "productClickUrl": "",
+              "impression": "",
+              "cashback": "",
+              "isTopads": false,
+              "freeOngkir": {
+                "isActive": false,
+                "imageUrl": ""
+              },
+              "productViewCountFormatted": "",
+              "isOutOfStock": false,
+              "warehouseID": 0,
+              "minOrder": 0,
+              "shop": {
+                "shopID": 0
+              },
+              "labelGroup": [],
+              "has_buy_button": false
+            },
+            {
+              "id": 2387,
+              "back_color": "",
+              "name": "",
+              "url": "https://m.tokopedia.com/",
+              "applink": "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2F",
+              "price": "",
+              "slashedPrice": "",
+              "discount": "",
+              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/phZFtb/2020/6/3/5302a61f-75b4-4ee7-b0df-d78ff9c2043a.jpg",
+              "label": "",
+              "soldPercentage": 0,
+              "attribution": "attribution",
+              "productClickUrl": "",
+              "impression": "",
+              "cashback": "",
+              "isTopads": false,
+              "freeOngkir": {
+                "isActive": false,
+                "imageUrl": ""
+              },
+              "productViewCountFormatted": "",
+              "isOutOfStock": false,
+              "warehouseID": 0,
+              "minOrder": 0,
+              "shop": {
+                "shopID": 0
+              },
+              "labelGroup": [],
+              "has_buy_button": false
+            },
+            {
+              "id": 2388,
+              "back_color": "",
+              "name": "",
+              "url": "https://m.tokopedia.com/",
+              "applink": "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2F",
+              "price": "",
+              "slashedPrice": "",
+              "discount": "",
+              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/phZFtb/2020/6/3/e76eb233-ad78-4b09-895b-a30f59d410aa.jpg",
+              "label": "",
+              "soldPercentage": 0,
+              "attribution": "attribution",
+              "productClickUrl": "",
+              "impression": "",
+              "cashback": "",
+              "isTopads": false,
+              "freeOngkir": {
+                "isActive": false,
+                "imageUrl": ""
+              },
+              "productViewCountFormatted": "",
+              "isOutOfStock": false,
+              "warehouseID": 0,
+              "minOrder": 0,
+              "shop": {
+                "shopID": 0
+              },
+              "labelGroup": [],
+              "has_buy_button": false
+            },
+            {
+              "id": 2389,
+              "back_color": "",
+              "name": "",
+              "url": "https://m.tokopedia.com/",
+              "applink": "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2F",
+              "price": "",
+              "slashedPrice": "",
+              "discount": "",
+              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/phZFtb/2020/6/3/e694d2d7-a8b2-4cf2-a6f0-f3a217e8a85a.jpg",
+              "label": "",
+              "soldPercentage": 0,
+              "attribution": "attribution",
+              "productClickUrl": "",
+              "impression": "",
+              "cashback": "",
+              "isTopads": false,
+              "freeOngkir": {
+                "isActive": false,
+                "imageUrl": ""
+              },
+              "productViewCountFormatted": "",
+              "isOutOfStock": false,
+              "warehouseID": 0,
+              "minOrder": 0,
+              "shop": {
+                "shopID": 0
+              },
+              "labelGroup": [],
+              "has_buy_button": false
+            }
+          ],
+          "banner": {
+            "id": 0,
+            "title": "",
+            "description": "",
+            "url": "",
+            "back_color": "",
+            "cta": {
+              "type": "",
+              "mode": "",
+              "text": "",
+              "coupon_code": ""
+            },
+            "applink": "",
+            "text_color": "",
+            "image_url": "",
+            "attribution": "",
+            "gradient_color": [
+              "#FFFFFF",
+              "#000000"
+            ]
+          }
+        },
+        {
+                     "id": 3201,
+                     "group_id": 53,
+                     "galaxy_attribution": "",
+                     "persona": "",
+                     "brand_id": "",
+                     "category_persona": "",
+                     "name": "Home Widget 1",
+                     "layout": "dg_bills",
+                     "type": "inspiration",
+                     "showPromoBadge": false,
+                     "categoryID": "{}",
+                     "perso_type": 8,
+                     "campaignCode": "",
+                     "has_close_button": false,
+                     "header": {
+                     "id": 989,
+                     "name": "Home Widget 1",
+                     "subtitle": "",
+                     "url": "",
+                     "applink": "",
+                     "serverTime": 0,
+                     "expiredTime": "",
+                     "backColor": "",
+                     "backImage": "",
+                     "textColor": "#000000"
+                   }
+                },
+        {
+          "id": 3186,
+          "group_id": 56,
+          "galaxy_attribution": "PG",
+          "persona": "",
+          "brand_id": "",
+          "category_persona": "",
+          "name": "Category Widget",
+          "layout": "category_widget",
+          "type": "inspiration",
+          "showPromoBadge": false,
+          "categoryID": "{}",
+          "perso_type": 2,
+          "campaignCode": "",
+          "has_close_button": false,
+          "header": {
+            "id": 973,
+            "name": "",
+            "subtitle": "",
+            "url": "",
+            "applink": "",
+            "serverTime": 0,
+            "expiredTime": "",
+            "backColor": "red",
+            "backImage": "",
+            "textColor": "#000000"
+          },
+          "grids": [
+            {
+              "id": 715,
+              "back_color": "#001122",
+              "name": "Kesehatan",
+              "url": "https://www.tokopedia.com/p/kesehatan",
+              "applink": "tokopedia://discovery/kesehatan",
+              "price": "",
+              "slashedPrice": "",
+              "discount": "",
+              "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/3/11/5511629/5511629_0245c951-62df-42a7-9b7d-40f1ebbb4659.png",
+              "label": "",
+              "soldPercentage": 0,
+              "attribution": "",
+              "productClickUrl": "",
+              "impression": "",
+              "cashback": "",
+              "isTopads": false,
+              "freeOngkir": {
+                "isActive": false,
+                "imageUrl": ""
+              },
+              "productViewCountFormatted": "",
+              "isOutOfStock": false,
+              "warehouseID": 0,
+              "minOrder": 0,
+              "shop": {
+                "shopID": 0
+              },
+              "labelGroup": [],
+              "has_buy_button": false
+            },
+            {
+              "id": 65,
+              "back_color": "#001122",
+              "name": "Handphone & Tablet",
+              "url": "https://www.tokopedia.com/p/handphone-tablet",
+              "applink": "tokopedia://discovery/handphone-tablet",
+              "price": "",
+              "slashedPrice": "",
+              "discount": "",
+              "imageUrl": "",
+              "label": "",
+              "soldPercentage": 0,
+              "attribution": "",
+              "productClickUrl": "",
+              "impression": "",
+              "cashback": "",
+              "isTopads": false,
+              "freeOngkir": {
+                "isActive": false,
+                "imageUrl": ""
+              },
+              "productViewCountFormatted": "",
+              "isOutOfStock": false,
+              "warehouseID": 0,
+              "minOrder": 0,
+              "shop": {
+                "shopID": 0
+              },
+              "labelGroup": [],
+              "has_buy_button": false
+            },
+            {
+              "id": 60,
+              "back_color": "#001122",
+              "name": "Elektronik",
+              "url": "https://www.tokopedia.com/p/elektronik",
+              "applink": "tokopedia://discovery/elektronik",
+              "price": "",
+              "slashedPrice": "",
+              "discount": "",
+              "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/4/14/8966877/8966877_b5f4de3c-98b3-424d-ab9d-ffe5deae3fbd.png",
+              "label": "",
+              "soldPercentage": 0,
+              "attribution": "",
+              "productClickUrl": "",
+              "impression": "",
+              "cashback": "",
+              "isTopads": false,
+              "freeOngkir": {
+                "isActive": false,
+                "imageUrl": ""
+              },
+              "productViewCountFormatted": "",
+              "isOutOfStock": false,
+              "warehouseID": 0,
+              "minOrder": 0,
+              "shop": {
+                "shopID": 0
+              },
+              "labelGroup": [],
+              "has_buy_button": false
+            },
+            {
+              "id": 36,
+              "back_color": "#001122",
+              "name": "Produk Lainnya",
+              "url": "https://www.tokopedia.com/p/produk-lainnya",
+              "applink": "tokopedia://category/36?categoryName=Produk+Lainnya",
+              "price": "",
+              "slashedPrice": "",
+              "discount": "",
+              "imageUrl": "",
+              "label": "",
+              "soldPercentage": 0,
+              "attribution": "",
+              "productClickUrl": "",
+              "impression": "",
+              "cashback": "",
+              "isTopads": false,
+              "freeOngkir": {
+                "isActive": false,
+                "imageUrl": ""
+              },
+              "productViewCountFormatted": "",
+              "isOutOfStock": false,
+              "warehouseID": 0,
+              "minOrder": 0,
+              "shop": {
+                "shopID": 0
+              },
+              "labelGroup": [],
+              "has_buy_button": false
+            },
+            {
+              "id": 63,
+              "back_color": "#001122",
+              "name": "itimitif",
+              "url": "https://www.tokopedia.com/p/itimitif",
+              "applink": "tokopedia://discovery/itimitif",
+              "price": "",
+              "slashedPrice": "",
+              "discount": "",
+              "imageUrl": "",
+              "label": "",
+              "soldPercentage": 0,
+              "attribution": "",
+              "productClickUrl": "",
+              "impression": "",
+              "cashback": "",
+              "isTopads": false,
+              "freeOngkir": {
+                "isActive": false,
+                "imageUrl": ""
+              },
+              "productViewCountFormatted": "",
+              "isOutOfStock": false,
+              "warehouseID": 0,
+              "minOrder": 0,
+              "shop": {
+                "shopID": 0
+              },
+              "labelGroup": [],
+              "has_buy_button": false
+            },
+            {
+              "id": 35,
+              "back_color": "#001122",
+              "name": "Makanan & Minuman",
+              "url": "https://www.tokopedia.com/p/makanan-minuman",
+              "applink": "tokopedia://discovery/makanan-minuman",
+              "price": "",
+              "slashedPrice": "",
+              "discount": "",
+              "imageUrl": "",
+              "label": "",
+              "soldPercentage": 0,
+              "attribution": "",
+              "productClickUrl": "",
+              "impression": "",
+              "cashback": "",
+              "isTopads": false,
+              "freeOngkir": {
+                "isActive": false,
+                "imageUrl": ""
+              },
+              "productViewCountFormatted": "",
+              "isOutOfStock": false,
+              "warehouseID": 0,
+              "minOrder": 0,
+              "shop": {
+                "shopID": 0
+              },
+              "labelGroup": [],
+              "has_buy_button": false
+            }
+          ],
+          "banner": {
+            "id": 0,
+            "title": "",
+            "description": "",
+            "url": "",
+            "back_color": "",
+            "cta": {
+              "type": "",
+              "mode": "",
+              "text": "",
+              "coupon_code": ""
+            },
+            "applink": "",
+            "text_color": "",
+            "image_url": "",
+            "attribution": "",
+            "gradient_color": [
+              "#FFFFFF"
+            ]
+          }
+        },
+        {
+             "id": 3202,
+             "group_id": 56,
+             "galaxy_attribution": "",
+             "persona": "",
+             "brand_id": "",
+             "category_persona": "",
+             "name": "Home Widget 1",
+             "layout": "salam_todo",
+             "type": "inspiration",
+             "showPromoBadge": false,
+             "categoryID": "{}",
+             "perso_type": 8,
+             "campaignCode": "",
+             "has_close_button": false,
+             "header": {
+             "id": 989,
+             "name": "Home Widget 1",
+             "subtitle": "",
+             "url": "",
+             "applink": "",
+             "serverTime": 0,
+             "expiredTime": "",
+             "backColor": "",
+             "backImage": "",
+             "textColor": "#000000"
+           }
+        },
+        {
+          "id": 3202,
+          "group_id": 56,
+          "galaxy_attribution": "",
+          "persona": "",
+          "brand_id": "",
+          "category_persona": "",
+          "name": "Home Widget 1",
+          "layout": "6_image",
+          "type": "inspiration",
+          "showPromoBadge": false,
+          "categoryID": "{}",
+          "perso_type": 8,
+          "campaignCode": "",
+          "has_close_button": false,
+          "header": {
+            "id": 989,
+            "name": "Home Widget 1",
+            "subtitle": "",
+            "url": "",
+            "applink": "",
+            "serverTime": 0,
+            "expiredTime": "",
+            "backColor": "",
+            "backImage": "",
+            "textColor": "#000000"
+          },
+          "grids": [
+            {
+              "id": 169080109,
+              "back_color": "",
+              "name": "Headset Xiaomi MI Piston 3 ORIGINAL Stereo Super Bass",
+              "url": "?product_id=169080109",
+              "applink": "?product_id=169080109",
+              "price": "Rp 38.000",
+              "slashedPrice": "",
+              "discount": "",
+              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/10/21/169080109/169080109_ded54bf5-59c0-40f4-9238-7e62284c47ca.jpg",
+              "label": "",
+              "soldPercentage": 0,
+              "attribution": "test",
+              "productClickUrl": "http://merlin-staging.tokopedia.com/r3/v2/track?category=565&event=click&experimentVersion=v1.4&page=1&page_name=homepage&pid=169080109&pos=1&recommendation=best_seller&rectype=best_seller&redirect=https://www.tokopedia.com/akirastoree/headset-xiaomi-mi-piston-3-original-stereo-super-bass?catid0565=%26ref=homepage_pa1_po1%26src=r3best_seller&tid=49ByrWWbvvbh8cMJ5k9C6EWthYc=&uid=5512982&unique_id=&utime=1591762959&widget=r3_widget&xdevice=lite-0.0",
+              "impression": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/10/21/169080109/169080109_ded54bf5-59c0-40f4-9238-7e62284c47ca.jpg",
+              "cashback": "",
+              "isTopads": false,
+              "freeOngkir": {
+                "isActive": false,
+                "imageUrl": ""
+              },
+              "productViewCountFormatted": "",
+              "isOutOfStock": false,
+              "warehouseID": 1601898,
+              "minOrder": 1,
+              "shop": {
+                "shopID": 2005822
+              },
+              "labelGroup": [],
+              "has_buy_button": false
+            }
+          ],
+          "banner": {
+            "id": 0,
+            "title": "",
+            "description": "",
+            "url": "",
+            "back_color": "",
+            "cta": {
+              "type": "",
+              "mode": "",
+              "text": "",
+              "coupon_code": ""
+            },
+            "applink": "",
+            "text_color": "",
+            "image_url": "",
+            "attribution": "",
+            "gradient_color": [
+              "#FFFFFF",
+              "#000000"
+            ]
+          }
+        },
+        {
+          "id": 3222,
+          "group_id": 120,
+          "galaxy_attribution": "PG",
+          "persona": "",
+          "brand_id": "asdsad",
+          "category_persona": "",
+          "name": "asdsad",
+          "layout": "lego_3_image",
+          "type": "inspiration",
+          "showPromoBadge": false,
+          "categoryID": "{}",
+          "perso_type": 1,
+          "campaignCode": "asdsad",
+          "has_close_button": false,
+          "header": {
+            "id": 1009,
+            "name": "lego 3 image",
+            "subtitle": "asdsad",
+            "url": "asdsad",
+            "applink": "tokopedia://webview?url=asdsad",
+            "serverTime": 0,
+            "expiredTime": "",
+            "backColor": "red",
+            "backImage": "",
+            "textColor": "#000000"
+          },
+          "grids": [
+            {
+              "id": 22489,
+              "back_color": "",
+              "name": "",
+              "url": "asdsad",
+              "applink": "tokopedia://webview?url=asdsad",
+              "price": "",
+              "slashedPrice": "",
+              "discount": "",
+              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/attachment/2020/6/5/8966105/8966105_0b4a36d8-c922-4deb-9a27-2fe674a82819.jpg",
+              "label": "",
+              "soldPercentage": 0,
+              "attribution": "asdsad",
+              "productClickUrl": "",
+              "impression": "",
+              "cashback": "",
+              "isTopads": false,
+              "freeOngkir": {
+                "isActive": false,
+                "imageUrl": ""
+              },
+              "productViewCountFormatted": "",
+              "isOutOfStock": false,
+              "warehouseID": 0,
+              "minOrder": 0,
+              "shop": {
+                "shopID": 0
+              },
+              "labelGroup": [],
+              "has_buy_button": false
+            },
+            {
+              "id": 22490,
+              "back_color": "",
+              "name": "",
+              "url": "asdsad",
+              "applink": "tokopedia://webview?url=asdsad",
+              "price": "",
+              "slashedPrice": "",
+              "discount": "",
+              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/attachment/2020/6/5/8966105/8966105_c148257e-f47a-4c03-891c-25733c2a5926.jpg",
+              "label": "",
+              "soldPercentage": 0,
+              "attribution": "asdsad",
+              "productClickUrl": "",
+              "impression": "",
+              "cashback": "",
+              "isTopads": false,
+              "freeOngkir": {
+                "isActive": false,
+                "imageUrl": ""
+              },
+              "productViewCountFormatted": "",
+              "isOutOfStock": false,
+              "warehouseID": 0,
+              "minOrder": 0,
+              "shop": {
+                "shopID": 0
+              },
+              "labelGroup": [],
+              "has_buy_button": false
+            },
+            {
+              "id": 22491,
+              "back_color": "",
+              "name": "",
+              "url": "asdsad",
+              "applink": "tokopedia://webview?url=asdsad",
+              "price": "",
+              "slashedPrice": "",
+              "discount": "",
+              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/attachment/2020/6/5/8966105/8966105_12b9a2f7-f94e-433c-ba42-8aba66821e17.jpg",
+              "label": "",
+              "soldPercentage": 0,
+              "attribution": "asdsad",
+              "productClickUrl": "",
+              "impression": "",
+              "cashback": "",
+              "isTopads": false,
+              "freeOngkir": {
+                "isActive": false,
+                "imageUrl": ""
+              },
+              "productViewCountFormatted": "",
+              "isOutOfStock": false,
+              "warehouseID": 0,
+              "minOrder": 0,
+              "shop": {
+                "shopID": 0
+              },
+              "labelGroup": [],
+              "has_buy_button": false
+            }
+          ],
+          "banner": {
+            "id": 0,
+            "title": "",
+            "description": "",
+            "url": "",
+            "back_color": "",
+            "cta": {
+              "type": "",
+              "mode": "",
+              "text": "",
+              "coupon_code": ""
+            },
+            "applink": "",
+            "text_color": "",
+            "image_url": "",
+            "attribution": "",
+            "gradient_color": [
+              "#FFFFFF"
+            ]
+          }
+        },
+        {
+          "id": 3040,
+          "group_id": 0,
+          "galaxy_attribution": "",
+          "persona": "",
+          "brand_id": "",
+          "category_persona": "",
+          "name": "[Test] Tome Campaign",
+          "layout": "sprint_lego",
+          "type": "sales",
+          "showPromoBadge": true,
+          "categoryID": "{}",
+          "perso_type": 0,
+          "campaignCode": "PG_16 April 20_[Test] Tome Campaign_1280",
+          "has_close_button": false,
+          "header": {
+            "id": 773,
+            "name": "Tome Campaign",
+            "subtitle": "Berakhir dalam",
+            "url": "https://m.tokopedia.com/discovery/flash-sale",
+            "applink": "tokopedia://discovery/flash-sale",
+            "serverTime": 1591762959,
+            "expiredTime": "5000-01-01T01:01:01+07:00",
+            "backColor": "",
+            "backImage": "",
+            "textColor": ""
+          },
+          "grids": [
+            {
+              "id": 15337789,
+              "back_color": "",
+              "name": "",
+              "url": "https://staging.tokopedia.com/smartfren-qc/tome-edit-pr0duct-campaign-regular?trkid=f%3DP0Cb0_src%3Dflash-sale_page%3D1_ob%3D17_catid%3D1509",
+              "applink": "tokopedia://product/15337789",
+              "price": "Rp 50.000",
+              "slashedPrice": "Rp 100.000",
+              "discount": "50%",
+              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/2/18/5480338/5480338_0c2ec900-b378-49db-87c7-faa0b7f55ce3_1500_1500",
+              "label": "Diminati",
+              "soldPercentage": 4,
+              "attribution": "",
+              "productClickUrl": "",
+              "impression": "",
+              "cashback": "",
+              "isTopads": false,
+              "freeOngkir": {
+                "isActive": true,
+                "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+              },
+              "productViewCountFormatted": "",
+              "isOutOfStock": false,
+              "warehouseID": 0,
+              "minOrder": 0,
+              "shop": {
+                "shopID": 0
+              },
+              "labelGroup": [],
+              "has_buy_button": false
+            }
+          ],
+          "banner": {
+            "id": 0,
+            "title": "",
+            "description": "",
+            "url": "",
+            "back_color": "",
+            "cta": {
+              "type": "",
+              "mode": "",
+              "text": "",
+              "coupon_code": ""
+            },
+            "applink": "",
+            "text_color": "",
+            "image_url": "",
+            "attribution": "",
+            "gradient_color": [
+              "#FFFFFF"
+            ]
+          }
+        },
+        {
+          "id": 2551,
+          "group_id": 92,
+          "galaxy_attribution": "",
+          "persona": "",
+          "brand_id": "",
+          "category_persona": "",
+          "name": "Home Widget.",
+          "layout": "home_widget",
+          "type": "inspiration",
+          "showPromoBadge": false,
+          "categoryID": "{}",
+          "perso_type": 8,
+          "campaignCode": "",
+          "has_close_button": false,
+          "header": {
+            "id": 272,
+            "name": "Home Widget",
+            "subtitle": "",
+            "url": "",
+            "applink": "",
+            "serverTime": 0,
+            "expiredTime": "",
+            "backColor": "",
+            "backImage": "",
+            "textColor": "#000000"
+          },
+          "grids": [
+            {
+              "id": 1633,
+              "back_color": "",
+              "name": "",
+              "url": "https://m.tokopedia.com/p/fashion-wanita",
+              "applink": "tokopedia://category/1758?categoryName=fashion-wanita",
+              "price": "",
+              "slashedPrice": "",
+              "discount": "",
+              "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/attachment/2019/3/1/5479567/5479567_aac86faf-3037-4859-b5c5-4ec223b60ec2.jpg",
+              "label": "",
+              "soldPercentage": 0,
+              "attribution": "test",
+              "productClickUrl": "",
+              "impression": "",
+              "cashback": "",
+              "isTopads": false,
+              "freeOngkir": {
+                "isActive": false,
+                "imageUrl": ""
+              },
+              "productViewCountFormatted": "",
+              "isOutOfStock": false,
+              "warehouseID": 0,
+              "minOrder": 0,
+              "shop": {
+                "shopID": 0
+              },
+              "labelGroup": [],
+              "has_buy_button": true
+            }
+          ],
+          "banner": {
+            "id": 0,
+            "title": "",
+            "description": "",
+            "url": "",
+            "back_color": "",
+            "cta": {
+              "type": "",
+              "mode": "",
+              "text": "",
+              "coupon_code": ""
+            },
+            "applink": "",
+            "text_color": "",
+            "image_url": "",
+            "attribution": "",
+            "gradient_color": [
+              "#FFFFFF",
+              "#000000"
+            ]
+          }
+        }
+      ]
+    },
+    "homeFlag": {
+      "flags": [
+        {
+          "name": "has_recom_nav_button",
+          "is_active": false
+        },
+        {
+          "name": "dynamic_icon_wrap",
+          "is_active": false
+        },
+        {
+          "name": "has_tokopoints",
+          "is_active": true
+        }
+      ]
+    }
+  }

@@ -35,8 +35,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
-import com.tokopedia.home_component.model.ChannelGrid
-import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.model.*
+import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
@@ -503,11 +503,13 @@ open class HomeViewModel @Inject constructor(
     private fun insertRechargeRecommendation(data: RechargeRecommendation) {
         if (data.recommendations.isNotEmpty()) {
             _homeLiveData.value?.list?.run {
-                val findRechargeRecommendationViewModel = find { visitable -> visitable is RechargeRecommendationViewModel }
+                val findRechargeRecommendationViewModel = find { visitable -> visitable is ReminderWidgetModel
+                        && (visitable.source == ReminderEnum.RECHARGE)}
                 val indexOfRechargeRecommendationViewModel = indexOf(findRechargeRecommendationViewModel)
-                if (indexOfRechargeRecommendationViewModel > -1 && findRechargeRecommendationViewModel is RechargeRecommendationViewModel) {
+                if (indexOfRechargeRecommendationViewModel > -1 && findRechargeRecommendationViewModel is ReminderWidgetModel) {
                     val newFindRechargeRecommendationViewModel = findRechargeRecommendationViewModel.copy(
-                            rechargeRecommendation = data
+                           data = mapperRechargetoReminder(data),
+                           source = ReminderEnum.RECHARGE
                     )
                     launch { channel?.send(UpdateLiveDataModel(ACTION_UPDATE, newFindRechargeRecommendationViewModel, indexOfRechargeRecommendationViewModel)) }
                 }
@@ -518,13 +520,15 @@ open class HomeViewModel @Inject constructor(
     }
 
     private fun insertSalamWidget(data: SalamWidget) {
-        if (data.salamWidget.appLink.isNotEmpty()) {
+        if (data.salamWidget.mainText.isNotEmpty()) {
             _homeLiveData.value?.list?.run {
-                val findSalamWidgetModel = find { visitable -> visitable is SalamWidgetDataModel }
+                val findSalamWidgetModel = find { visitable -> visitable is ReminderWidgetModel
+                        && (visitable.source == ReminderEnum.SALAM)}
                 val indexOfSalamWidgetModel = indexOf(findSalamWidgetModel)
-                if (indexOfSalamWidgetModel > -1 && findSalamWidgetModel is SalamWidgetDataModel) {
+                if (indexOfSalamWidgetModel > -1 && findSalamWidgetModel is ReminderWidgetModel) {
                     val newFindSalamWidgetModel = findSalamWidgetModel.copy(
-                            salamWidget = data
+                            data = mapperSalamtoReminder(data),
+                            source = ReminderEnum.SALAM
                     )
                     launch { channel?.send(UpdateLiveDataModel(ACTION_UPDATE, newFindSalamWidgetModel, indexOfSalamWidgetModel)) }
                 }
@@ -536,18 +540,18 @@ open class HomeViewModel @Inject constructor(
 
     private fun removeRechargeRecommendation() {
         val findRechargeRecommendationViewModel =
-                _homeLiveData.value?.list?.find { visitable -> visitable is RechargeRecommendationViewModel }
+                _homeLiveData.value?.list?.find { visitable -> visitable is ReminderWidgetModel }
                         ?: return
-        if (findRechargeRecommendationViewModel is RechargeRecommendationViewModel) {
+        if (findRechargeRecommendationViewModel is ReminderWidgetModel && findRechargeRecommendationViewModel.source==ReminderEnum.RECHARGE) {
             launch { channel?.send(UpdateLiveDataModel(ACTION_DELETE, findRechargeRecommendationViewModel)) }
         }
     }
 
     private fun removeSalamWidget() {
         val findSalamWidgetModel =
-                _homeLiveData.value?.list?.find { visitable -> visitable is SalamWidgetDataModel }
+                _homeLiveData.value?.list?.find { visitable -> visitable is ReminderWidgetModel }
                         ?: return
-        if (findSalamWidgetModel is SalamWidgetDataModel) {
+        if (findSalamWidgetModel is ReminderWidgetModel && findSalamWidgetModel.source==ReminderEnum.SALAM) {
             launch { channel?.send(UpdateLiveDataModel(ACTION_DELETE, findSalamWidgetModel)) }
         }
     }
@@ -669,8 +673,9 @@ open class HomeViewModel @Inject constructor(
                     getReviewData()
                     getPlayBanner()
                     getPopularKeyword()
-                    getRechargeRecommendation()
+                    //getReminderWidget()
                     getSalamWidget()
+                    getRechargeRecommendation()
                     _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>() ?: listOf()))
                 } else {
                     if (homeDataModel?.list?.size?:0 > 1) {
@@ -804,8 +809,7 @@ open class HomeViewModel @Inject constructor(
 
     private fun getRechargeRecommendation() {
         if(getRechargeRecommendationJob?.isActive == true) return
-        if(!isRechargeModelAvailable()) return
-
+        if(!isReminderWidgetAvailable()) return
         getRechargeRecommendationJob = launchCatchError(coroutineContext, block = {
             getRechargeRecommendationUseCase.get().setParams()
             val data = getRechargeRecommendationUseCase.get().executeOnBackground()
@@ -817,7 +821,7 @@ open class HomeViewModel @Inject constructor(
 
     private fun getSalamWidget(){
         if(getSalamWidgetJob?.isActive == true) return
-        if(!isSalamWidgetModelAvailable()) return
+        if(!isReminderWidgetAvailable()) return
 
         getSalamWidgetJob = launchCatchError(coroutineContext, block = {
             val data = getSalamWidgetUseCase.get().executeOnBackground()
@@ -827,15 +831,26 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun isRechargeModelAvailable(): Boolean {
-        return _homeLiveData.value?.list?.find {
-            visitable -> visitable is RechargeRecommendationViewModel
-        } != null
+    private fun getReminderWidget(){
+        if(!isReminderWidgetAvailable()) return
+        _homeLiveData.value?.list?.run {
+            val findReminderWidgetModel = find { visitable -> visitable is ReminderWidgetModel }
+            val newReminderWidgetModel = findReminderWidgetModel as ReminderWidgetModel
+            when(newReminderWidgetModel.source){
+                ReminderEnum.SALAM -> {
+                    getSalamWidget()
+                }
+
+                ReminderEnum.RECHARGE -> {
+                    getRechargeRecommendation()
+                }
+            }
+        }
     }
 
-    private fun isSalamWidgetModelAvailable(): Boolean {
+    private fun isReminderWidgetAvailable() : Boolean{
         return _homeLiveData.value?.list?.find {
-            visitable -> visitable is SalamWidgetDataModel
+            visitable -> visitable is ReminderWidgetModel
         } != null
     }
 
@@ -1171,6 +1186,46 @@ open class HomeViewModel @Inject constructor(
                 walletType = walletBalanceModel.walletType,
                 isShowAnnouncement = walletBalanceModel.isShowAnnouncement
         )
+    }
+
+    private fun mapperRechargetoReminder(recharge : RechargeRecommendation): ReminderWidget{
+        recharge.recommendations.first().let {
+            return ReminderWidget(
+                    listOf(
+                            ReminderData(
+                                    appLink = it.applink,
+                                    backgroundColor = it.backgroundColor,
+                                    buttonText = it.buttonText,
+                                    id = it.contentID.toInt(),
+                                    iconURL = it.iconURL,
+                                    link = it.link,
+                                    mainText = it.mainText,
+                                    subText = it.subText,
+                                    title = it.title
+                            )
+                    )
+            )
+        }
+    }
+
+    private fun mapperSalamtoReminder(salam : SalamWidget):ReminderWidget{
+        salam.salamWidget.let {
+            return ReminderWidget(
+                    listOf(
+                            ReminderData(
+                                    appLink = it.appLink,
+                                    backgroundColor = it.backgroundColor,
+                                    buttonText = it.buttonText,
+                                    id = it.iD,
+                                    iconURL = it.iconURL,
+                                    link = it.link,
+                                    mainText = it.mainText,
+                                    subText = it.subText,
+                                    title = it.title
+                            )
+                    )
+            )
+        }
     }
 
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.domain.interactor
 
+import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -44,12 +45,28 @@ class GetSalamWidgetUseCase @Inject constructor(
     }
     //endregion
 
+    private val dummyResponse by lazy {
+        "{\n" +
+                "    \"salamWidget\": {\n" +
+                "      \"ID\": 4,\n" +
+                "      \"mainText\": \"Hi, Wulandari Saputri!\",\n" +
+                "      \"SubText\": \"Jumat adalah hari yang baik untuk sedekah. Yuk sedekahkan Rp5.000 dari OVO kamu!\",\n" +
+                "      \"AppLink\": \"\",\n" +
+                "      \"Link\": \"\",\n" +
+                "      \"IconURL\": \"https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/1/9/20723472/20723472_4f6c17e5-5434-4da0-9dc0-35ae1395570c.png\",\n" +
+                "      \"Title\": \"Yuk, berbagi setelah belanja!\",\n" +
+                "      \"BackgroundColor\": \"#ff8b00\",\n" +
+                "      \"ButtonText\": \"Berbagi Sekarang\"\n" +
+                "    }\n" +
+                "}"
+    }
+
     override suspend fun executeOnBackground(): SalamWidget {
         graphqlUseCase.clearCache()
         graphqlUseCase.setGraphqlQuery(query)
-        val response = graphqlUseCase.executeOnBackground()
-
-        if (response != null) return response
-        else throw (MessageErrorException(NULL_RESPONSE))
+      //  val response = graphqlUseCase.executeOnBackground()
+        ///if (response != null) response
+            return Gson().fromJson(dummyResponse, SalamWidget::class.java)
+       // else throw (MessageErrorException(NULL_RESPONSE))
     }
 }

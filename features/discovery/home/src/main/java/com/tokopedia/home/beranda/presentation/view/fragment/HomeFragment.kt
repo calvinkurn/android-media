@@ -99,20 +99,16 @@ import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeR
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerOrganicViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder.PopularKeywordListener
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.RechargeRecommendationViewHolder.RechargeRecommendationListener
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.SalamWidgetViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
-import com.tokopedia.home.beranda.presentation.view.listener.DynamicLegoBannerComponentCallback
-import com.tokopedia.home.beranda.presentation.view.listener.FramePerformanceIndexInterface
-import com.tokopedia.home.beranda.presentation.view.listener.HomeComponentCallback
-import com.tokopedia.home.beranda.presentation.view.listener.RecommendationListCarouselComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.*
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.home.widget.FloatingTextButton
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
+import com.tokopedia.home_component.listener.ReminderWidgetListener
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
@@ -171,9 +167,7 @@ open class HomeFragment : BaseDaggerFragment(),
         HomeFeedsListener,
         HomeReviewListener,
         PopularKeywordListener,
-        FramePerformanceIndexInterface,
-        RechargeRecommendationListener,
-        SalamWidgetViewHolder.SalamWidgetListener {
+        FramePerformanceIndexInterface{
 
     companion object {
         private const val TOKOPOINTS_NOTIFICATION_TYPE = "drawer"
@@ -884,11 +878,10 @@ open class HomeFragment : BaseDaggerFragment(),
                 this,
                 homeRecyclerView?.recycledViewPool?: RecyclerView.RecycledViewPool(),
                 this,
-                this,
-                this,
                 HomeComponentCallback(viewModel.get()),
                 DynamicLegoBannerComponentCallback(context),
-                RecommendationListCarouselComponentCallback(viewModel.get(), this))
+                RecommendationListCarouselComponentCallback(viewModel.get(), this),
+                ReminderWidgetComponentCallback(context, viewModel.get(),this))
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
                 .build()
@@ -1925,18 +1918,6 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun getFramePerformanceIndexData(): FragmentFramePerformanceIndexMonitoring {
         return fragmentFramePerformanceIndexMonitoring
-    }
-
-    override fun onContentClickListener(applink: String) {
-        RouteManager.route(context, applink)
-    }
-
-    override fun onSalamWidgetClickListener(applink: String) {
-        RouteManager.route(context, applink)
-    }
-
-    override fun onDeclineClickListener(requestParams: Map<String, String>) {
-        viewModel.get().declineRechargeRecommendationItem(requestParams)
     }
 
     override fun onDetach() {

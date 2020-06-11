@@ -20,7 +20,7 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/home_recharge_recommendation_shimmering_card_size">
+        android:layout_height="@dimen/home_reminder_shimmering_card_size">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
