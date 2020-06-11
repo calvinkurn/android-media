@@ -93,7 +93,7 @@ class StatisticViewModel @Inject constructor(
     fun getLineGraphWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             _lineGraphWidgetData.value = Success(withContext(Dispatchers.IO) {
-                getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(shopId, dataKeys, startDate, endDate)
+                getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(dataKeys, startDate, endDate)
                 return@withContext getLineGraphDataUseCase.executeOnBackground()
             })
         }, onError = {

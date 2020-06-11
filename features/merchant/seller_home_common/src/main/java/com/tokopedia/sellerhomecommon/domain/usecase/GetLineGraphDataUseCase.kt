@@ -6,7 +6,9 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.sellerhomecommon.domain.mapper.LineGraphMapper
+import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.GetLineGraphDataResponse
+import com.tokopedia.sellerhomecommon.domain.model.StartEndDateParamModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -34,41 +36,45 @@ class GetLineGraphDataUseCase(
     }
 
     companion object {
-        private const val SHOP_ID = "shopID"
-        private const val DATA_KEY = "dataKey"
-        private const val START_DATE = "startDate"
-        private const val END_DATE = "endDate"
+        private const val DATA_KEYS = "dataKeys"
 
         fun getRequestParams(
-                shopId: String,
                 dataKey: List<String>,
                 startDate: String,
                 endDate: String
         ): RequestParams = RequestParams.create().apply {
-            putString(SHOP_ID, shopId)
-            putObject(DATA_KEY, dataKey)
-            putString(START_DATE, startDate)
-            putString(END_DATE, endDate)
+            val dataKeys = dataKey.map {
+                DataKeyModel(
+                        key = it,
+                        jsonParams = StartEndDateParamModel(
+                                startDate = startDate,
+                                endDate = endDate
+                        ).toJsonString()
+                )
+            }
+            putObject(DATA_KEYS, dataKeys)
         }
 
-        private const val QUERY = """query getLineGraphData(${'$'}shopID: String!, ${'$'}dataKey: [String!]!, ${'$'}startDate: String!, ${'$'}endDate: String!) {
-                   getLineGraphData(shopID: ${'$'}shopID, dataKey: ${'$'}dataKey, startDate: ${'$'}startDate, endDate: ${'$'}endDate) {
-                     data {
-                       dataKey
-                       header
-                       description
-                       yLabels {
-                         yVal
-                         yLabel
-                       }
-                       list {
-                         yVal
-                         yLabel
-                         xLabel
-                       }
-                       error
-                     }
-                   }
-                }"""
+        private val QUERY = """
+            query (${'$'}dataKeys: [dataKey!]!) {
+              fetchLineGraphWidgetData(dataKeys: ${'$'}dataKeys) {
+                data {
+                  dataKey
+                  description
+                  header
+                  yLabels {
+                    yVal
+                    yLabel
+                  }
+                    list {
+                    yVal
+                    yLabel
+                    xLabel
+                  }
+                  error
+                }
+              }
+            }
+            """.trimIndent()
     }
 }

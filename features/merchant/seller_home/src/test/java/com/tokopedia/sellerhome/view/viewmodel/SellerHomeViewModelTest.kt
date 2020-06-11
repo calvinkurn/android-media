@@ -327,17 +327,12 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get line graph widget data then returns success result`() {
-        val shopId = "12345"
         val dataKeys = listOf("x", "y", "z")
         val startDate = "02-03-20202"
         val endDate = "09-03-20202"
 
         val lineGraphDataResult = listOf(LineGraphDataUiModel(), LineGraphDataUiModel(), LineGraphDataUiModel())
-        getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(shopId, dataKeys, startDate, endDate)
-
-        every {
-            userSession.shopId
-        } returns shopId
+        getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(dataKeys, startDate, endDate)
 
         coEvery {
             getLineGraphDataUseCase.executeOnBackground()
@@ -360,17 +355,12 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get line graph widget data then returns failed result`() {
-        val shopId = "12345"
         val dataKeys = listOf("x", "y", "z")
         val startDate = "02-03-20202"
         val endDate = "09-03-20202"
 
         val throwable= MessageErrorException("error message")
-        getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(shopId, dataKeys, startDate, endDate)
-
-        every {
-            userSession.shopId
-        } returns shopId
+        getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(dataKeys, startDate, endDate)
 
         coEvery {
             getLineGraphDataUseCase.executeOnBackground()
