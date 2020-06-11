@@ -225,6 +225,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
             }
         }
 
+        eventDraftProductClicked(AppEventTracking.EventLabel.EDIT_DRAFT);
         if (intent != null) {
             startActivity(intent);
         }
