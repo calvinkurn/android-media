@@ -54,6 +54,8 @@ class PlayBroadcastViewModel  @Inject constructor(
         get() = _observableNewChat
     val observableNewMetric: LiveData<Event<PlayMetricUiModel>>
         get() = _observableNewMetric
+    val observableProductList: LiveData<List<ProductContentUiModel>>
+        get() = _observableProductList
 
     val channelInfo: ChannelInfoUiModel?
         get() = _observableChannelInfo.value
@@ -64,6 +66,7 @@ class PlayBroadcastViewModel  @Inject constructor(
     private val _observableScreenStateEvent = MutableLiveData<Event<ScreenStateEvent>>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
     private val _observableNewMetric = MutableLiveData<Event<PlayMetricUiModel>>()
+    private val _observableProductList = MutableLiveData<List<ProductContentUiModel>>()
     private val _observableNewChat = MediatorLiveData<Event<PlayChatUiModel>>().apply {
         addSource(_observableChatList) { chatList ->
             chatList.lastOrNull()?.let { value = Event(it) }
@@ -93,6 +96,7 @@ class PlayBroadcastViewModel  @Inject constructor(
 
         mockChatList()
         mockMetrics()
+        mockProductList()
     }
 
     override fun onCleared() {
@@ -200,6 +204,15 @@ class PlayBroadcastViewModel  @Inject constructor(
                     PlayBroadcastMocker.getMockMetric()
                 )
             }
+        }
+    }
+
+    private fun mockProductList() {
+        scope.launch(ioDispatcher) {
+            delay(3000)
+            _observableProductList.postValue(
+                    PlayBroadcastMocker.getMockProductList(5)
+            )
         }
     }
 }

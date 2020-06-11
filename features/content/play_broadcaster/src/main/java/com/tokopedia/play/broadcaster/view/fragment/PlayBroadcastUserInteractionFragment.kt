@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -17,6 +16,7 @@ import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
 import com.tokopedia.play.broadcaster.util.PlayShareWrapper
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.ChatListPartialView
@@ -31,8 +31,7 @@ import javax.inject.Inject
  * Created by mzennis on 25/05/20.
  */
 class PlayBroadcastUserInteractionFragment @Inject constructor(
-        private val viewModelFactory: ViewModelFactory,
-        private val fragmentFactory: FragmentFactory
+        private val viewModelFactory: ViewModelFactory
 ): PlayBaseBroadcastFragment() {
 
     private lateinit var parentViewModel: PlayBroadcastViewModel
@@ -42,9 +41,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private lateinit var tvTotalView: Typography
     private lateinit var tvTotalLike: Typography
     private lateinit var ivShareLink: AppCompatImageView
+    private lateinit var ivProductTag: AppCompatImageView
     private lateinit var pmvMetrics: PlayMetricsView
 
     private lateinit var chatListView: ChatListPartialView
+    private lateinit var productLiveBottomSheet: PlayProductLiveBottomSheet
 
     override fun getScreenName(): String = "Play Broadcast Interaction"
 
@@ -81,6 +82,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         tvTotalView = view.findViewById(R.id.tv_total_views)
         tvTotalLike = view.findViewById(R.id.tv_total_likes)
         ivShareLink = view.findViewById(R.id.iv_share_link)
+        ivProductTag = view.findViewById(R.id.iv_product_tag)
         pmvMetrics = view.findViewById(R.id.pmv_metrics)
 
         chatListView = ChatListPartialView(view as ViewGroup)
@@ -91,6 +93,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         broadcastCoordinator.setupCloseButton(getString(R.string.play_action_bar_end))
 
         ivShareLink.setOnClickListener{ doCopyShareLink() }
+        ivProductTag.setOnClickListener { doShowProductInfo() }
     }
 
     private fun setupContent() {
@@ -132,6 +135,15 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun setNewMetric(metric: PlayMetricUiModel) {
         pmvMetrics.show(metric)
+    }
+
+    private fun getProductLiveBottomSheet(): PlayProductLiveBottomSheet {
+        if (!::productLiveBottomSheet.isInitialized) {
+            val setupClass = PlayProductLiveBottomSheet::class.java
+            val fragmentFactory = childFragmentManager.fragmentFactory
+            productLiveBottomSheet = fragmentFactory.instantiate(requireContext().classLoader, setupClass.name) as PlayProductLiveBottomSheet
+        }
+        return productLiveBottomSheet
     }
 
     private fun showDialogWhenActionClose() {
@@ -177,6 +189,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         actionText =  getString(R.string.play_live_broadcast_share_link_ok))
             }
         }
+    }
+
+    private fun doShowProductInfo() {
+        getProductLiveBottomSheet().show(childFragmentManager)
     }
 
     private fun doEndStreaming() {
