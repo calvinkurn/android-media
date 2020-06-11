@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -69,9 +70,14 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
 
     private fun setupViewPager(tabTitles: List<String>) {
         reviewInboxViewPager.adapter = viewModel.reviewTabs.value?.let { ReviewInboxContainerAdapter(it,this) }
-        TabLayoutMediator(reviewInboxTabs.tabLayout, reviewInboxViewPager) { tab, position ->
-            tab.text = tabTitles[position]
-        }.attach()
+        tabTitles.forEach {
+            reviewInboxTabs.addNewTab(it)
+        }
+        reviewInboxViewPager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                reviewInboxTabs.getUnifyTabLayout().selectTab(reviewInboxTabs.getUnifyTabLayout().getTabAt(position))
+            }
+        })
     }
 
     private fun setupTabLayout() {
@@ -99,6 +105,7 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
                         }
                     }
                 }
+                reviewInboxViewPager.setCurrentItem(tab.position, true)
             }
         })
     }
