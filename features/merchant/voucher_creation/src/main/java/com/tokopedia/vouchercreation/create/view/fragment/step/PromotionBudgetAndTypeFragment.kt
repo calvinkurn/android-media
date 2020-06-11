@@ -141,12 +141,12 @@ class PromotionBudgetAndTypeFragment : BaseCreateMerchantVoucherFragment<Promoti
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val fragmentTransaction = fragmentManager?.beginTransaction()?.apply {
+        val fragmentTransaction = childFragmentManager.beginTransaction().apply {
             cashbackVoucherCreateFragment?.let {
                 add(R.id.cashbackFragmentContainer, it, CashbackVoucherCreateFragment::javaClass.name)
             }
         }
-        fragmentTransaction?.commitAllowingStateLoss()
+        fragmentTransaction.commitAllowingStateLoss()
     }
 
     override fun onDismissBottomSheet(bottomSheetType: CreateVoucherBottomSheetType) {}
