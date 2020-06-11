@@ -1,4 +1,4 @@
-package com.tokopedia.inappreview
+package com.tokopedia.nps.helper
 
 import android.app.Activity
 import com.google.android.play.core.review.ReviewManager

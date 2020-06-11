@@ -18,7 +18,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common_wallet.balance.data.CacheUtil;
 import com.tokopedia.design.component.BottomSheets;
-import com.tokopedia.inappreview.InAppReviewHelper;
+import com.tokopedia.nps.helper.InAppReviewHelper;
 import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
