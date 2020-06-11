@@ -13,7 +13,6 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView,fragment.viewLifecycleOwner) {
 
     private lateinit var mProductRevampComponentViewModel: ProductCardRevampViewModel
-    private var addChildAdapterCallback: AddChildAdapterCallback = (fragment as AddChildAdapterCallback)
 
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
@@ -22,9 +21,6 @@ class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         lifecycleOwner?.let {
-            mProductRevampComponentViewModel.getProductCarouselItemsListData().observe(it, Observer { item ->
-                addChildAdapterCallback.notifyMergeAdapter()
-            })
             mProductRevampComponentViewModel.getSyncPageLiveData().observe(it, Observer { needResync ->
                 if (needResync) {
                     (fragment as DiscoveryFragment).reSync()
@@ -33,6 +29,13 @@ class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment
             })
         }
 
+    }
+
+    override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
+        super.removeObservers(lifecycleOwner)
+        lifecycleOwner?.let {
+            mProductRevampComponentViewModel.getSyncPageLiveData().removeObservers(it)
+        }
     }
 
 }

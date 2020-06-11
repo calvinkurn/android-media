@@ -205,8 +205,8 @@ class MainActivity : AppCompatActivity() {
         if (!applinkEditText.text.toString().isEmpty()) {
             RouteManager.route(this, applinkEditText.text.toString())
         } else {
-//          RouteManager.route(this, "tokopedia://discovery/produk-terlaris")
-          RouteManager.route(this, "tokopedia://discovery/clp_fashion-wanita_1758")
+          RouteManager.route(this, "tokopedia://discovery/produk-terlaris")
+//          RouteManager.route(this, "tokopedia://discovery/clp_fashion-wanita_1758")
 //          RouteManager.route(this, "tokopedia://discovery/home-living-salebration")
 //          RouteManager.route(this, "tokopedia://discovery/produk-terlaris")
 //          RouteManager.route(this, "tokopedia://discovery/test-disco")

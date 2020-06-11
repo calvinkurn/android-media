@@ -85,6 +85,7 @@ class DiscoveryPageDataMapper(val pageInfo: PageInfo) {
             component.needPagination = true
             listComponents.addAll(List(10) { ComponentsItem(name = ComponentNames.ShimmerProductCard.componentName) })
         } else {
+            listComponents.add(component)
             component.getComponentsItem()?.let {
                 listComponents.addAll(getDiscvoeryComponentList(it))
             }
