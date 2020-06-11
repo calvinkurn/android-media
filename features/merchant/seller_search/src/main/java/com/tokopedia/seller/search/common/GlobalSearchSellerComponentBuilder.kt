@@ -4,13 +4,13 @@ import android.app.Application
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.seller.search.common.di.component.GlobalSearchSellerComponent
 
-class ReviewSellerComponentBuilder {
+class GlobalSearchSellerComponentBuilder {
 
     companion object {
-        private var reviewSellerComponent: GlobalSearchSellerComponent? = null
+        private var searchSellerComponent: GlobalSearchSellerComponent? = null
 
         fun getComponent(application: Application): GlobalSearchSellerComponent {
-            return reviewSellerComponent?.run { reviewSellerComponent }
+            return searchSellerComponent?.run { searchSellerComponent }
                     ?: DaggerGlobalSearchSellerComponent.builder().baseAppComponent((application as BaseMainApplication).baseAppComponent).build()
         }
     }

@@ -12,7 +12,11 @@ data class SellerSearchResponse(
     ) {
         data class SellerSearchData(
                 @SerializedName("sections")
-                val sections: List<Section> = listOf()
+                val sections: List<Section> = listOf(),
+                @SerializedName("count")
+                val count: Int? = 0,
+                @SerializedName("filters")
+                val filters: List<String> = listOf()
         ) {
             data class Section(
                     @SerializedName("action_link")
@@ -24,7 +28,7 @@ data class SellerSearchResponse(
                     @SerializedName("id")
                     val id: String? = "",
                     @SerializedName("items")
-                    val items: List<Item>,
+                    val items: List<Item> = listOf(),
                     @SerializedName("title")
                     val title: String? = ""
             ) {

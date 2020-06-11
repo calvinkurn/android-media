@@ -3,6 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/spacing_lvl4"
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingLeft="@dimen/spacing_lvl4"
+    android:paddingRight="@dimen/spacing_lvl4"
+    android:paddingEnd="@dimen/spacing_lvl4"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -11,14 +15,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl2"
-        android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginLeft="@dimen/spacing_lvl3"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_time_history"/>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/ivTitleHistory"
+        android:id="@+id/tvTitleHistory"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:typographyType="body_1"
@@ -27,7 +29,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/ivHistoryTime"
         tools:text="Sop jamur"/>
-
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivCloseHistory"

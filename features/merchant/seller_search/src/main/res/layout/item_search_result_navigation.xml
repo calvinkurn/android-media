@@ -3,6 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/spacing_lvl4"
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingEnd="@dimen/spacing_lvl4"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -11,14 +13,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl2"
-        android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginLeft="@dimen/spacing_lvl3"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_topads"/>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvTitleSearchResultFeature"
+        android:id="@+id/tvTitleSearchResultNav"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:typographyWeight="reguler"
@@ -30,7 +30,7 @@
         tools:text="Sop jamur"/>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvDescSearchResultFeature"
+        android:id="@+id/tvDescSearchResultNav"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:typographyWeight="reguler"
@@ -40,7 +40,7 @@
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginRight="@dimen/spacing_lvl5"
         android:layout_marginEnd="@dimen/spacing_lvl5"
-        app:layout_constraintTop_toBottomOf="@id/tvTitleSearchResultFeature"
+        app:layout_constraintTop_toBottomOf="@id/tvTitleSearchResultNav"
         app:layout_constraintStart_toEndOf="@id/ivHistoryTime"
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="Lebih efektif beriklan agar produkmu dicari banyak pembeli dan penjualanmu meningkat"/>
