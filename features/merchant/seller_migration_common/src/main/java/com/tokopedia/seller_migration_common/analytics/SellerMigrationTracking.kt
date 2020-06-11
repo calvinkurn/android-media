@@ -20,11 +20,11 @@ object SellerMigrationTracking {
         trackSellerMigrationEvent(SellerMigrationTrackingMap(SellerMigrationTrackingConstants.EVENT_CLICK_REVIEW_TICKER,"", userId))
     }
 
-    fun eventGoToSellerApp(eventAction: String, userId: String) {
+    fun eventGoToSellerApp(userId: String, eventAction: String) {
         trackSellerMigrationEvent(SellerMigrationTrackingMap(eventAction, SellerMigrationTrackingConstants.EVENT_LABEL_TO_SELLER_APP, userId))
     }
 
-    fun eventGoToPlayStore(eventAction: String, userId: String) {
+    fun eventGoToPlayStore(userId: String, eventAction: String) {
         trackSellerMigrationEvent(SellerMigrationTrackingMap(eventAction, SellerMigrationTrackingConstants.EVENT_LABEL_TO_APP_STORE, userId))
     }
 
