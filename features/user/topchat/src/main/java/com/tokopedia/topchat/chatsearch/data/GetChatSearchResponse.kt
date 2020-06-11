@@ -8,4 +8,5 @@ data class GetChatSearchResponse(
         val chatSearch: ChatSearch = ChatSearch()
 ) {
     val searchResults get() = chatSearch.contact.searchResults
+    val contactCount get() = chatSearch.contact.count
 }

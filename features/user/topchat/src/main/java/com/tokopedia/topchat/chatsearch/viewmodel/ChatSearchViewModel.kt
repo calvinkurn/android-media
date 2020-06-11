@@ -2,10 +2,12 @@ package com.tokopedia.topchat.chatsearch.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.topchat.chatsearch.data.GetChatSearchResponse
 import com.tokopedia.topchat.chatsearch.data.SearchResult
 import com.tokopedia.topchat.chatsearch.usecase.GetSearchQueryUseCase
+import com.tokopedia.topchat.chatsearch.view.uimodel.ContactLoadMoreUiModel
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
@@ -28,8 +30,8 @@ class ChatSearchViewModel @Inject constructor(
     private var _errorMessage = MutableLiveData<Throwable>()
     val errorMessage: LiveData<Throwable> get() = _errorMessage
 
-    private var _searchResults = MutableLiveData<List<SearchResult>>()
-    val searchResult: LiveData<List<SearchResult>> get() = _searchResults
+    private var _searchResults = MutableLiveData<List<Visitable<*>>>()
+    val searchResult: LiveData<List<Visitable<*>>> get() = _searchResults
 
     private var query: String = ""
     private var page: Int = 1
@@ -76,9 +78,15 @@ class ChatSearchViewModel @Inject constructor(
         getSearchQueryUseCase.doSearch(::onSuccessDoSearch, ::onErrorDoSearch, query, page)
     }
 
-    private fun onSuccessDoSearch(response: GetChatSearchResponse) {
+    private fun onSuccessDoSearch(response: GetChatSearchResponse, contactLoadMore: ContactLoadMoreUiModel?) {
         canRetry = false
-        _searchResults.value = response.searchResults
+        if (isFirstPage() && contactLoadMore != null) {
+            val searchResults: MutableList<Visitable<*>> = response.searchResults.toMutableList()
+            searchResults.add(0, contactLoadMore)
+            _searchResults.value = searchResults
+        } else {
+            _searchResults.value = response.searchResults
+        }
     }
 
     private fun onErrorDoSearch(throwable: Throwable) {
