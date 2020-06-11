@@ -8,7 +8,6 @@ import com.tokopedia.gm.common.domain.interactor.GetPowerMerchantStatusUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.power_merchant.subscribe.common.coroutine.CoroutineDispatchers
-import com.tokopedia.power_merchant.subscribe.constant.PowerMerchantConfigKey.IS_PM_FREE_SHIPPING_IN_TRANSITION_KEY
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment.Companion.MINIMUM_SCORE_ACTIVATE_IDLE
 import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantFreeShippingStatus
 import com.tokopedia.power_merchant.subscribe.view.model.ViewState
