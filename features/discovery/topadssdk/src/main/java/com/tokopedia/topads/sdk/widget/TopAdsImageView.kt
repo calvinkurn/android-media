@@ -123,10 +123,11 @@ class TopAdsImageView : AppCompatImageView, HasComponent<TopAdsComponent> {
             ImageHandler.LoadImageResize(context,
                     this,
                     imageData.imageUrl,
-                    imageData.imageWidth,
-                    imageData.imageHeight
+                    context.resources.displayMetrics.widthPixels,
+                    getHeight(imageData.imageWidth)
             )
-            topadsImageViewImpressionListener?.onTopAdsImageViewImpression(imageData.adViewUrl ?: "")
+            topadsImageViewImpressionListener?.onTopAdsImageViewImpression(imageData.adViewUrl
+                    ?: "")
             this.setOnClickListener {
                 topAdsImageViewClickListener?.onTopAdsImageViewClicked(imageData.applink)
                 ImpresionTask(className).execute(imageData.adClickUrl)
@@ -137,5 +138,12 @@ class TopAdsImageView : AppCompatImageView, HasComponent<TopAdsComponent> {
 
     }
 
+    private fun getHeight(width: Int): Int {
+        val metrics = context.resources.displayMetrics
+        val deviceWidth = metrics.widthPixels.toFloat()
+        val widthRatio = deviceWidth / width.toFloat()
+        val height = widthRatio * metrics.heightPixels.toFloat()
+        return height.toInt()
+    }
 
 }

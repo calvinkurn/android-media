@@ -34,9 +34,9 @@ class TopAdsImageViewUseCase @Inject constructor(private val userSession: UserSe
                 adClickUrl = data?.adClickUrl ?: "adsclick"
                 adViewUrl = data?.adViewUrl ?: "asview"
                 applink = data?.applinks ?: "applink"
-                imageUrl = "https://ecs7.tokopedia.net/img/cache/480/attachment/2020/6/8/27760349/27760349_3916d53a-3472-40b0-b0cc-2662421aee84.jpg"
-                imageWidth = 400
-                imageHeight = 200
+                imageUrl = "https://ecs7.tokopedia.net/img/cache/480/attachment/2019/12/3/77499286/77499286_34951b52-5125-4b86-82ce-c834c9d0fbea.jpg"
+                imageWidth = 480
+                imageHeight = 372
             }
             response1.add(model)
         }
@@ -54,7 +54,7 @@ class TopAdsImageViewUseCase @Inject constructor(private val userSession: UserSe
         queryMap[PAGE_TOKEN] = pageToken
         queryMap[ADS_COUNT] = adsCount
         queryMap[DIMEN_ID] = dimens
-        queryMap[DEP_ID] = depId
+        if (depId.isNotEmpty()) queryMap[DEP_ID] = depId
 
         return queryMap
     }
