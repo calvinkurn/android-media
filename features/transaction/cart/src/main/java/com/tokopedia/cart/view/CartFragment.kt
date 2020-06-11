@@ -1640,7 +1640,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
                     var countListItem = 0
                     cartItemHolderData.cartItemDataList?.let { countListItem = it.size }
-                    if (i == (parentPosition - 2)) {
+                    val countAdapterItemBeforeCartItem = cartAdapter.getItemCountBeforeCartItem()
+                    val parentPositionDifference = countAdapterItemBeforeCartItem + 1
+                    if (i == (parentPosition - parentPositionDifference)) {
                         val listProductDetail = arrayListOf<ProductDetailsItem>()
                         for (j in 0 until countListItem) {
                             if (position != -1 && j == position) {
