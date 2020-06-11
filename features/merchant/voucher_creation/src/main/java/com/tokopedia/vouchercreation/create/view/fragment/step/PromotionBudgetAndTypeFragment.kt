@@ -4,7 +4,9 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -13,7 +15,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBitmap
@@ -27,15 +29,9 @@ import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
-import com.tokopedia.vouchercreation.create.view.enums.CreateVoucherBottomSheetType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
-import com.tokopedia.vouchercreation.create.view.fragment.BaseCreateMerchantVoucherFragment
-import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.GeneralExpensesInfoBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.fragment.vouchertype.CashbackVoucherCreateFragment
 import com.tokopedia.vouchercreation.create.view.painter.VoucherPreviewPainter
-import com.tokopedia.vouchercreation.create.view.typefactory.CreateVoucherTypeFactory
-import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeBudgetAdapterTypeFactory
-import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeBudgetTypeFactory
 import com.tokopedia.vouchercreation.create.view.uimodel.initiation.BannerBaseUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVoucherUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel
@@ -44,7 +40,7 @@ import com.tokopedia.vouchercreation.create.view.viewmodel.PromotionBudgetAndTyp
 import kotlinx.android.synthetic.main.mvc_banner_voucher_fragment.*
 import javax.inject.Inject
 
-class PromotionBudgetAndTypeFragment : BaseCreateMerchantVoucherFragment<PromotionTypeBudgetTypeFactory, PromotionTypeBudgetAdapterTypeFactory>() {
+class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
 
     companion object {
         @JvmStatic
@@ -92,8 +88,6 @@ class PromotionBudgetAndTypeFragment : BaseCreateMerchantVoucherFragment<Promoti
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    override var layoutRes: Int = R.layout.mvc_banner_voucher_fragment
-
     private val viewModelProvider by lazy {
         ViewModelProvider(this, viewModelFactory)
     }
@@ -116,12 +110,6 @@ class PromotionBudgetAndTypeFragment : BaseCreateMerchantVoucherFragment<Promoti
         }
     }
 
-    private val generalExpensesInfoBottomSheetFragment by lazy {
-        GeneralExpensesInfoBottomSheetFragment.createInstance(context).apply {
-            setTitle(context?.resources?.getString(R.string.mvc_create_promo_type_bottomsheet_title_promo_expenses).toBlankOrString())
-        }
-    }
-
     private val cashbackVoucherCreateFragment by lazy {
         context?.let { CashbackVoucherCreateFragment.createInstance(onNextStep, ::onShouldChangeBannerValue, it, getVoucherReviewData) }
     }
@@ -137,16 +125,20 @@ class PromotionBudgetAndTypeFragment : BaseCreateMerchantVoucherFragment<Promoti
 
     private var tempVoucherType: VoucherImageType = VoucherImageType.Rupiah(0)
 
-    override var extraWidget: List<Visitable<PromotionTypeBudgetTypeFactory>> = listOf()
-
     override fun onResume() {
         bannerVoucherUiModel = getVoucherUiModel()
         bannerInfo?.setPromoName(bannerVoucherUiModel.promoName)
         super.onResume()
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.mvc_banner_voucher_fragment, container, false)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        observeLiveData()
+        initiateVoucherPreview()
         VoucherCreationTracking.sendOpenScreenTracking(
                 VoucherCreationAnalyticConstant.ScreenName.VoucherCreation.TYPE_BUDGET,
                 userSession.isLoggedIn,
@@ -159,25 +151,6 @@ class PromotionBudgetAndTypeFragment : BaseCreateMerchantVoucherFragment<Promoti
         fragmentTransaction.commitAllowingStateLoss()
     }
 
-    override fun onDismissBottomSheet(bottomSheetType: CreateVoucherBottomSheetType) {}
-
-    override fun onBeforeShowBottomSheet(bottomSheetType: CreateVoucherBottomSheetType) {}
-
-    override fun onFinishRenderInitial() {}
-
-    override fun getAdapterTypeFactory(): PromotionTypeBudgetAdapterTypeFactory =
-            PromotionTypeBudgetAdapterTypeFactory(
-                    this,
-                    onNextStep,
-                    ::onShouldChangeBannerValue,
-                    if(isCreateNew) {
-                        { null }
-                    } else {
-                        getVoucherReviewData
-                    })
-
-    override fun onItemClicked(t: Visitable<CreateVoucherTypeFactory>?) {}
-
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
@@ -185,21 +158,6 @@ class PromotionBudgetAndTypeFragment : BaseCreateMerchantVoucherFragment<Promoti
                 .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
                 .build()
                 .inject(this)
-    }
-
-    override fun loadData(page: Int) {}
-
-    override fun setupView() {
-        super.setupView()
-        setupBottomSheet()
-        observeLiveData()
-        initiateVoucherPreview()
-    }
-
-    private fun setupBottomSheet() {
-        context?.run {
-            addBottomSheetView(CreateVoucherBottomSheetType.GENERAL_EXPENSE_INFO, generalExpensesInfoBottomSheetFragment)
-        }
     }
 
     private fun observeLiveData() {
