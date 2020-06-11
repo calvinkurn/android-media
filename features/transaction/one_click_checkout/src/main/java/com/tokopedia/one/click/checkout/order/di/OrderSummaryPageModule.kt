@@ -15,6 +15,8 @@ import com.tokopedia.one.click.checkout.order.data.UpdateCartOccGqlResponse
 import com.tokopedia.one.click.checkout.order.data.checkout.CheckoutOccGqlResponse
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
 import com.tokopedia.purchase_platform.common.feature.editaddress.di.PeopleAddressNetworkModule
+import com.tokopedia.purchase_platform.common.schedulers.DefaultSchedulers
+import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -34,6 +36,10 @@ class OrderSummaryPageModule {
     @OrderSummaryPageScope
     @Provides
     fun provideSchedulerProvider(): SchedulerProvider = MainScheduler()
+
+    @OrderSummaryPageScope
+    @Provides
+    fun provideExecutorSchedulers(): ExecutorSchedulers = DefaultSchedulers
 
     @OrderSummaryPageScope
     @Provides

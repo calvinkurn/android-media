@@ -29,18 +29,22 @@ data class Shipment(
         val isCheckInsurance: Boolean = false
 ) {
     fun getRealShipperProductId(): Int {
-        return logisticPromoShipping?.productData?.shipperProductId ?: shipperProductId.toZeroIfNull()
+        return logisticPromoShipping?.productData?.shipperProductId
+                ?: shipperProductId.toZeroIfNull()
     }
 
     fun getRealShipperId(): Int {
         return logisticPromoShipping?.productData?.shipperId ?: shipperId.toZeroIfNull()
     }
+
     fun getRealRatesId(): String {
         return logisticPromoShipping?.ratesId ?: ratesId ?: ""
     }
+
     fun getRealUt(): String {
         return logisticPromoShipping?.productData?.unixTime ?: ut ?: ""
     }
+
     fun getRealChecksum(): String {
         return logisticPromoShipping?.productData?.checkSum ?: checksum ?: ""
     }

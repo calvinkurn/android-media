@@ -803,7 +803,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         override fun onCourierChange(shippingCourierViewModel: ShippingCourierUiModel) {
-            orderSummaryAnalytics.eventChooseCourierSelectionOSP(viewModel._orderPreference?.shipping?.shipperId.toString())
+            orderSummaryAnalytics.eventChooseCourierSelectionOSP(shippingCourierViewModel.productData.shipperId.toString())
             viewModel.chooseCourier(shippingCourierViewModel)
         }
 
@@ -817,7 +817,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         override fun chooseCourier() {
-            orderSummaryAnalytics.eventChangeCourierOSP(viewModel._orderPreference?.shipping?.shipperId.toString())
+            orderSummaryAnalytics.eventChangeCourierOSP(viewModel.getCurrentShipperId().toString())
             if (viewModel.orderTotal.value?.buttonState != ButtonBayarState.LOADING) {
                 orderPreferenceCard.showCourierBottomSheet(this@OrderSummaryPageFragment)
             }
@@ -847,7 +847,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     fun showPreferenceListBottomSheet() {
         viewModel.updateCart()
-        val profileId = viewModel._orderPreference?.preference?.profileId ?: 0
+        val profileId = viewModel.getCurrentProfileId()
         val updateCartParam = viewModel.generateUpdateCartParam()
         if (profileId > 0 && updateCartParam != null) {
             PreferenceListBottomSheet(

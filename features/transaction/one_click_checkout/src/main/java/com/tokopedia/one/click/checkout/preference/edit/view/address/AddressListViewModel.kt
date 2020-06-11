@@ -5,9 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.logisticdata.data.entity.address.Token
+import com.tokopedia.one.click.checkout.common.domain.model.OccState
 import com.tokopedia.purchase_platform.common.feature.addresslist.GetAddressCornerUseCase
 import com.tokopedia.purchase_platform.common.feature.addresslist.domain.model.AddressListModel
-import com.tokopedia.one.click.checkout.common.domain.model.OccState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -48,6 +48,7 @@ class AddressListViewModel @Inject constructor(val useCase: GetAddressCornerUseC
                             }
 
                             override fun onCompleted() {
+                                //do nothing
                             }
                         })
         )

@@ -102,17 +102,18 @@ class ShippingDurationViewModel @Inject constructor(val useCase: GetShippingDura
                                 }
 
                                 override fun onNext(shippingRecomendationData: ShippingRecommendationData) {
-                                    logicSelection(mapTomodelPrice(shippingRecomendationData))
+                                    logicSelection(mapToModelPrice(shippingRecomendationData))
                                 }
 
                                 override fun onCompleted() {
+                                    //do nothing
                                 }
                             })
             )
         }
     }
 
-    private fun mapTomodelPrice(responses: ShippingRecommendationData): ShippingListModel {
+    private fun mapToModelPrice(responses: ShippingRecommendationData): ShippingListModel {
         return mapperPrice.convertToDomainModelWithPrice(responses)
     }
 

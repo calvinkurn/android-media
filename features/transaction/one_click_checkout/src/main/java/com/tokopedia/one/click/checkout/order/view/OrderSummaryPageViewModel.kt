@@ -51,6 +51,7 @@ import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligib
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata.Companion.TYPE_ICON_GLOBAL
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata.Companion.TYPE_ICON_OFFICIAL_STORE
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata.Companion.TYPE_ICON_POWER_MERCHANT
+import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -58,13 +59,12 @@ import kotlinx.coroutines.*
 import org.json.JSONException
 import org.json.JSONObject
 import rx.Observer
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 import kotlin.math.max
 
 class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
+                                                    private val executorSchedulers: ExecutorSchedulers,
                                                     private val getOccCartUseCase: GetOccCartUseCase,
                                                     private val ratesUseCase: GetRatesUseCase,
                                                     val getPreferenceListUseCase: GetPreferenceListUseCase,
@@ -79,8 +79,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
     var orderProduct: OrderProduct = OrderProduct()
     var orderShop: OrderShop = OrderShop()
-    var kero: Kero = Kero()
-    var _orderPreference: OrderPreference? = null
+    private var kero: Kero = Kero()
+    private var _orderPreference: OrderPreference? = null
 
     var orderPromo: MutableLiveData<OrderPromo> = MutableLiveData(OrderPromo())
     var validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = null
@@ -94,6 +94,14 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     private var debounceJob: Job? = null
 
     private var hasSentViewOspEe = false
+
+    fun getCurrentProfileId(): Int {
+        return _orderPreference?.preference?.profileId ?: 0
+    }
+
+    fun getCurrentShipperId(): Int {
+        return _orderPreference?.shipping?.shipperId ?: 0
+    }
 
     fun getOccCart(isFullRefresh: Boolean, source: String) {
         globalEvent.value = OccGlobalEvent.Normal
@@ -405,7 +413,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                             }
 
                             override fun onCompleted() {
-
+                                //do nothing
                             }
                         })
         )
@@ -466,12 +474,15 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         compositeSubscription.add(
                 clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).subscribe(object : Observer<ClearPromoUiModel?> {
                     override fun onError(e: Throwable?) {
+                        // do nothing, promocode directly removed
                     }
 
                     override fun onNext(t: ClearPromoUiModel?) {
+                        // do nothing, promocode directly removed
                     }
 
                     override fun onCompleted() {
+                        // do nothing, promocode directly removed
                     }
                 })
         )
@@ -496,8 +507,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest)
             compositeSubscription.add(
                     validateUsePromoRevampUseCase.createObservable(requestParams)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(executorSchedulers.io)
+                            .observeOn(executorSchedulers.main)
                             .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
                                 override fun onError(e: Throwable) {
                                     orderPromo.value = orderPromo.value?.copy(state = ButtonBayarState.DISABLE)
@@ -558,6 +569,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                 }
 
                                 override fun onCompleted() {
+                                    // do nothing
                                 }
                             })
             )
@@ -584,12 +596,15 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 compositeSubscription.add(
                         clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).subscribe(object : Observer<ClearPromoUiModel?> {
                             override fun onError(e: Throwable?) {
+                                // do nothing, promocode directly removed
                             }
 
                             override fun onNext(t: ClearPromoUiModel?) {
+                                // do nothing, promocode directly removed
                             }
 
                             override fun onCompleted() {
+                                // do nothing, promocode directly removed
                             }
                         })
                 )
@@ -626,6 +641,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                 logisticPromoShipping = null,
                                 isApplyLogisticPromo = false))
                         orderPreference.value = OccState.Success(_orderPreference!!)
+                        orderSummaryAnalytics.eventChooseCourierSelectionOSP(selectedShippingCourierUiModel.productData.shipperId.toString())
                         calculateTotal()
                         validateUsePromo()
                     }
@@ -669,12 +685,15 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 compositeSubscription.add(
                         clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).subscribe(object : Observer<ClearPromoUiModel?> {
                             override fun onError(e: Throwable?) {
+                                // do nothing, promocode directly removed
                             }
 
                             override fun onNext(t: ClearPromoUiModel?) {
+                                // do nothing, promocode directly removed
                             }
 
                             override fun onCompleted() {
+                                // do nothing, promocode directly removed
                             }
                         })
                 )
@@ -752,9 +771,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             globalEvent.value = OccGlobalEvent.Loading
             compositeSubscription.add(
                     editAddressUseCase.createObservable(requestParams)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .unsubscribeOn(Schedulers.io())
+                            .subscribeOn(executorSchedulers.io)
+                            .observeOn(executorSchedulers.main)
                             .subscribe(object : Observer<String> {
                                 override fun onError(e: Throwable) {
                                     globalEvent.value = OccGlobalEvent.Error(e)
@@ -787,6 +805,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                 }
 
                                 override fun onCompleted() {
+                                    // do nothing
                                 }
                             })
             )
@@ -809,8 +828,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest)
             compositeSubscription.add(
                     validateUsePromoRevampUseCase.createObservable(requestParams)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(executorSchedulers.io)
+                            .observeOn(executorSchedulers.main)
                             .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
                                 override fun onError(e: Throwable) {
                                     globalEvent.value = OccGlobalEvent.Error(e)
@@ -960,8 +979,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, generateValidateUsePromoRequest())
             compositeSubscription.add(
                     validateUsePromoRevampUseCase.createObservable(requestParams)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(executorSchedulers.io)
+                            .observeOn(executorSchedulers.main)
                             .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
                                 override fun onError(e: Throwable) {
                                     globalEvent.value = OccGlobalEvent.TriggerRefresh(throwable = e)
@@ -976,6 +995,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                 }
 
                                 override fun onCompleted() {
+                                    //do nothing
                                 }
                             })
             )
@@ -1157,6 +1177,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                             }
 
                             override fun onCompleted() {
+                                //do nothing
                             }
                         })
         )
@@ -1312,8 +1333,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 ?: generateValidateUsePromoRequest())
         compositeSubscription.add(
                 validateUsePromoRevampUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(executorSchedulers.io)
+                        .observeOn(executorSchedulers.main)
                         .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
                             override fun onError(e: Throwable) {
                                 orderPromo.value = orderPromo.value?.copy(state = ButtonBayarState.DISABLE)
@@ -1347,6 +1368,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                             }
 
                             override fun onCompleted() {
+                                //do nothing
                             }
                         })
         )
@@ -1359,75 +1381,75 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
     fun calculateTotal() {
         val quantity = orderProduct.quantity
-        if (quantity.orderQuantity > 0) {
-            var productPrice = orderProduct.productPrice.toDouble()
-            if (orderProduct.wholesalePrice.isNotEmpty()) {
-                for (wholesalePrice in orderProduct.wholesalePrice) {
-                    if (quantity.orderQuantity >= wholesalePrice.qtyMin) {
-                        productPrice = wholesalePrice.prdPrc.toDouble()
-                    }
-                }
-            }
-            val totalProductPrice = quantity.orderQuantity * productPrice
-            val shipping = _orderPreference?.shipping
-            val totalShippingPrice: Double = if (shipping?.logisticPromoShipping != null && shipping.isApplyLogisticPromo) {
-                shipping.logisticPromoShipping.productData.price.price.toDouble()
-            } else if (shipping?.shippingPrice != null) {
-                shipping.shippingPrice.toDouble()
-            } else 0.0
-            var insurancePrice = 0.0
-            if (shipping?.isCheckInsurance == true && shipping.insuranceData != null) {
-                insurancePrice = shipping.insuranceData.insurancePrice.toDouble()
-            }
-            val fee = _orderPreference?.preference?.payment?.fee?.toDouble() ?: 0.0
-            var productDiscount = 0
-            var shippingDiscount = 0
-            val cashbacks = ArrayList<Pair<String, String>>()
-            val summaries = validateUsePromoRevampUiModel?.promoUiModel?.benefitSummaryInfoUiModel?.summaries
-                    ?: emptyList()
-            for (summary in summaries) {
-                if (summary.type == SummariesUiModel.TYPE_DISCOUNT) {
-                    for (detail in summary.details) {
-                        if (detail.type == SummariesUiModel.TYPE_SHIPPING_DISCOUNT) {
-                            shippingDiscount += detail.amount
-                        } else if (detail.type == SummariesUiModel.TYPE_PRODUCT_DISCOUNT) {
-                            productDiscount += detail.amount
-                        }
-                    }
-                } else if (summary.type == SummariesUiModel.TYPE_CASHBACK) {
-                    for (detail in summary.details) {
-                        cashbacks.add(detail.description to detail.amountStr)
-                    }
-                }
-            }
-            val finalShippingPrice = max(totalShippingPrice - shippingDiscount, 0.0)
-            val subtotal = totalProductPrice + finalShippingPrice + insurancePrice + fee - productDiscount
-            val minimumAmount = _orderPreference?.preference?.payment?.minimumAmount ?: 0
-            val maximumAmount = _orderPreference?.preference?.payment?.maximumAmount ?: 0
-            val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, fee, shippingDiscount, productDiscount, cashbacks)
-            var currentState = orderTotal.value?.buttonState ?: ButtonBayarState.NORMAL
-            if (currentState == ButtonBayarState.NORMAL && (!shipping?.serviceErrorMessage.isNullOrEmpty() || quantity.isStateError || orderShop.errors.isNotEmpty())) {
-                currentState = ButtonBayarState.DISABLE
-            }
-            if (minimumAmount > subtotal) {
-                orderTotal.value = orderTotal.value?.copy(orderCost = orderCost,
-                        paymentErrorMessage = "Belanjaanmu kurang dari min. transaksi ${_orderPreference?.preference?.payment?.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(minimumAmount, false)}). Silahkan pilih pembayaran lain.",
-                        isButtonChoosePayment = true, buttonState = currentState)
-            } else if (maximumAmount > 0 && maximumAmount < subtotal) {
-                orderTotal.value = orderTotal.value?.copy(orderCost = orderCost,
-                        paymentErrorMessage = "Belanjaanmu melebihi limit transaksi ${_orderPreference?.preference?.payment?.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(maximumAmount, false)}). Silahkan pilih pembayaran lain.",
-                        isButtonChoosePayment = true, buttonState = currentState)
-            } else if (_orderPreference?.preference?.payment?.gatewayCode?.contains(OVO_GATEWAY_CODE) == true && subtotal > _orderPreference?.preference?.payment?.walletAmount ?: 0) {
-                orderTotal.value = orderTotal.value?.copy(orderCost = orderCost,
-                        paymentErrorMessage = OVO_INSUFFICIENT_ERROR_MESSAGE,
-                        isButtonChoosePayment = true, buttonState = currentState)
-                orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_PAYMENT_OVO_BALANCE)
-            } else {
-                orderTotal.value = orderTotal.value?.copy(orderCost = orderCost, paymentErrorMessage = null, isButtonChoosePayment = false, buttonState = currentState)
-            }
+        if (quantity.orderQuantity <= 0) {
+            orderTotal.value = orderTotal.value?.copy(orderCost = OrderCost(), buttonState = ButtonBayarState.DISABLE)
             return
         }
-        orderTotal.value = orderTotal.value?.copy(orderCost = OrderCost(), buttonState = ButtonBayarState.DISABLE)
+        var productPrice = orderProduct.productPrice.toDouble()
+        if (orderProduct.wholesalePrice.isNotEmpty()) {
+            for (wholesalePrice in orderProduct.wholesalePrice) {
+                if (quantity.orderQuantity >= wholesalePrice.qtyMin) {
+                    productPrice = wholesalePrice.prdPrc.toDouble()
+                }
+            }
+        }
+        val totalProductPrice = quantity.orderQuantity * productPrice
+        val shipping = _orderPreference?.shipping
+        val totalShippingPrice: Double = if (shipping?.logisticPromoShipping != null && shipping.isApplyLogisticPromo) {
+            shipping.logisticPromoShipping.productData.price.price.toDouble()
+        } else if (shipping?.shippingPrice != null) {
+            shipping.shippingPrice.toDouble()
+        } else 0.0
+        var insurancePrice = 0.0
+        if (shipping?.isCheckInsurance == true && shipping.insuranceData != null) {
+            insurancePrice = shipping.insuranceData.insurancePrice.toDouble()
+        }
+        val fee = _orderPreference?.preference?.payment?.fee?.toDouble() ?: 0.0
+        var productDiscount = 0
+        var shippingDiscount = 0
+        val cashbacks = ArrayList<Pair<String, String>>()
+        val summaries = validateUsePromoRevampUiModel?.promoUiModel?.benefitSummaryInfoUiModel?.summaries
+                ?: emptyList()
+        for (summary in summaries) {
+            if (summary.type == SummariesUiModel.TYPE_DISCOUNT) {
+                for (detail in summary.details) {
+                    if (detail.type == SummariesUiModel.TYPE_SHIPPING_DISCOUNT) {
+                        shippingDiscount += detail.amount
+                    } else if (detail.type == SummariesUiModel.TYPE_PRODUCT_DISCOUNT) {
+                        productDiscount += detail.amount
+                    }
+                }
+            } else if (summary.type == SummariesUiModel.TYPE_CASHBACK) {
+                for (detail in summary.details) {
+                    cashbacks.add(detail.description to detail.amountStr)
+                }
+            }
+        }
+        val finalShippingPrice = max(totalShippingPrice - shippingDiscount, 0.0)
+        val subtotal = totalProductPrice + finalShippingPrice + insurancePrice + fee - productDiscount
+        val minimumAmount = _orderPreference?.preference?.payment?.minimumAmount ?: 0
+        val maximumAmount = _orderPreference?.preference?.payment?.maximumAmount ?: 0
+        val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, fee, shippingDiscount, productDiscount, cashbacks)
+        var currentState = orderTotal.value?.buttonState ?: ButtonBayarState.NORMAL
+        if (currentState == ButtonBayarState.NORMAL && (!shipping?.serviceErrorMessage.isNullOrEmpty() || quantity.isStateError || orderShop.errors.isNotEmpty())) {
+            currentState = ButtonBayarState.DISABLE
+        }
+        if (minimumAmount > subtotal) {
+            orderTotal.value = orderTotal.value?.copy(orderCost = orderCost,
+                    paymentErrorMessage = "Belanjaanmu kurang dari min. transaksi ${_orderPreference?.preference?.payment?.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(minimumAmount, false)}). Silahkan pilih pembayaran lain.",
+                    isButtonChoosePayment = true, buttonState = currentState)
+        } else if (maximumAmount > 0 && maximumAmount < subtotal) {
+            orderTotal.value = orderTotal.value?.copy(orderCost = orderCost,
+                    paymentErrorMessage = "Belanjaanmu melebihi limit transaksi ${_orderPreference?.preference?.payment?.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(maximumAmount, false)}). Silahkan pilih pembayaran lain.",
+                    isButtonChoosePayment = true, buttonState = currentState)
+        } else if (_orderPreference?.preference?.payment?.gatewayCode?.contains(OVO_GATEWAY_CODE) == true && subtotal > _orderPreference?.preference?.payment?.walletAmount ?: 0) {
+            orderTotal.value = orderTotal.value?.copy(orderCost = orderCost,
+                    paymentErrorMessage = OVO_INSUFFICIENT_ERROR_MESSAGE,
+                    isButtonChoosePayment = true, buttonState = currentState)
+            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_PAYMENT_OVO_BALANCE)
+        } else {
+            orderTotal.value = orderTotal.value?.copy(orderCost = orderCost, paymentErrorMessage = null, isButtonChoosePayment = false, buttonState = currentState)
+        }
     }
 
     override fun onCleared() {
