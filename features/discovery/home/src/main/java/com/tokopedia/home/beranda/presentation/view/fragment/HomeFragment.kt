@@ -266,6 +266,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private var pageLoadTimeCallback: PageLoadTimePerformanceInterface? = null
     private var isOnRecylerViewLayoutAdded = false
     private var fragmentCreatedForFirstTime = false
+    private var lock = Object()
 
 
     override fun onAttach(context: Context) {
@@ -356,14 +357,15 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun initInjector() {
-        initInjectorHome()
     }
 
     fun initInjectorHome() {
-        if (activity != null) {
-            if (component == null) {
-                component = initBuilderComponent().build()
-                component!!.inject(this)
+        synchronized(lock){
+            if (activity != null) {
+                if (component == null) {
+                    component = initBuilderComponent().build()
+                    component!!.inject(this)
+                }
             }
         }
     }
