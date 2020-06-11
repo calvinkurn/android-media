@@ -55,7 +55,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_width="10dp"
-        android:layout_height="10dp"
+        android:layout_width="@dimen/power_merchant_chevron_right_size"
+        android:layout_height="@dimen/power_merchant_chevron_right_size"
         tools:ignore="ContentDescription" />
 </androidx.constraintlayout.widget.ConstraintLayout>
