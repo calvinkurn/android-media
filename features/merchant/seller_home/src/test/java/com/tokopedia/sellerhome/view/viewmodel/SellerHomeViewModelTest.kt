@@ -267,17 +267,12 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get card widget data then returns success result`() {
-        val shopId = 12345
         val dataKeys = listOf("a", "b", "c")
         val startDate = "02-03-20202"
         val endDate = "09-03-20202"
 
         val cardDataResult = listOf(CardDataUiModel(), CardDataUiModel(), CardDataUiModel())
-        getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(shopId, dataKeys, startDate, endDate)
-
-        every {
-            userSession.shopId
-        } returns shopId.toString()
+        getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(dataKeys, startDate, endDate)
 
         coEvery {
             getCardDataUseCase.executeOnBackground()
@@ -300,18 +295,13 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get card widget data then returns failed result`() = runBlocking {
-        val shopId = "12345"
         val dataKeys = listOf("a", "b", "c")
         val startDate = "02-03-20202"
         val endDate = "09-03-20202"
 
         val throwable = ResponseErrorException()
 
-        getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(shopId.toIntOrZero(), dataKeys, startDate, endDate)
-
-        every {
-            userSession.shopId
-        } returns shopId
+        getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(dataKeys, startDate, endDate)
 
         coEvery {
             getCardDataUseCase.executeOnBackground()

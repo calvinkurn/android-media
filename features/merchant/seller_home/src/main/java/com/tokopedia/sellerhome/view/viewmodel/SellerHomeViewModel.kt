@@ -126,7 +126,7 @@ class SellerHomeViewModel @Inject constructor(
     fun getCardWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             _cardWidgetData.value = Success(withContext(Dispatchers.IO) {
-                getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(shopId.toIntOrZero(), dataKeys, startDate, endDate)
+                getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(dataKeys, startDate, endDate)
                 return@withContext getCardDataUseCase.executeOnBackground()
             })
         }, onError = {
