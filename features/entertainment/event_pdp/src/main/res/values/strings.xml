@@ -60,8 +60,8 @@
     <string name="ent_checkout_payment">Sedang diproses</string>
     <string name="ent_checkout_error">Oke</string>
 
-    <string name="ent_checkout_location_span"><![CDATA["<font color='black'><b> %s </b></font> %s]]></string>
-    <string name="ent_checkout_summary_packet">%s x%d</string>
+    <string name="ent_checkout_location_span" formatted="false"><![CDATA["<font color='black'><b> %s </b></font> %s]]></string>
+    <string name="ent_checkout_summary_packet" formatted="false">%s x%d</string>
     <string name="ent_checkout_to_order_detail">%s?from_payment=true</string>
-    <string name="ent_pdp_param_to_package">%s/%s?selectedDate=%s&amp;startDate=%s&amp;endDate=%s</string>
+    <string name="ent_pdp_param_to_package" formatted="false">%s/%s?selectedDate=%s&amp;startDate=%s&amp;endDate=%s</string>
 </resources>

@@ -10,6 +10,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.removeObservers
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.feature.inbox.container.data.ReviewInboxTabs
@@ -65,10 +66,10 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
         removeObservers(viewModel.reviewTabs)
     }
 
-    private fun setupViewPager() {
+    private fun setupViewPager(tabTitles: List<String>) {
         reviewInboxViewPager.adapter = viewModel.reviewTabs.value?.let { ReviewInboxContainerAdapter(it,this) }
-        TabLayoutMediator(reviewInboxTabs.tabLayout, reviewInboxViewPager) { _, _ ->
-            // No Op
+        TabLayoutMediator(reviewInboxTabs.tabLayout, reviewInboxViewPager) { tab, position ->
+            tab.text = tabTitles[position]
         }.attach()
     }
 
@@ -78,24 +79,25 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
 
     private fun observeReviewTabs() {
         viewModel.reviewTabs.observe(this, Observer { tabs ->
+            val tabTitles = mutableListOf<String>()
             tabs.forEach { tab ->
                 when(tab) {
                     is ReviewInboxTabs.ReviewInboxPending -> {
-                        if(tab.counter.isNotBlank()) {
-                            reviewInboxTabs.addNewTab(getString(R.string.review_pending_tab_title, tab.counter))
+                        if(tab.counter.isNotBlank() || tab.counter.toIntOrZero() != 0) {
+                            tabTitles.add(getString(R.string.review_pending_tab_title, tab.counter))
                         } else {
-                            reviewInboxTabs.addNewTab(getString(R.string.review_pending_tab_title_no_count))
+                            tabTitles.add(getString(R.string.review_pending_tab_title_no_count))
                         }
                     }
                     is ReviewInboxTabs.ReviewInboxHistory -> {
-                        reviewInboxTabs.addNewTab(getString(R.string.review_history_tab_title))
+                        tabTitles.add(getString(R.string.review_history_tab_title))
                     }
                     is ReviewInboxTabs.ReviewInboxSeller -> {
-                        reviewInboxTabs.addNewTab(getString(R.string.review_seller_tab_title))
+                        tabTitles.add(getString(R.string.review_seller_tab_title))
                     }
                 }
             }
-            setupViewPager()
+            setupViewPager(tabTitles)
         })
     }
 

@@ -568,7 +568,7 @@ public class TkpdHintTextInputLayout extends LinearLayout {
         if (shouldShowPasswordIcon()) {
             if (mPasswordToggleView == null) {
                 mPasswordToggleView = (CheckableImageButton) LayoutInflater.from(getContext())
-                        .inflate(com.google.android.material.R.layout.design_text_input_password_icon,
+                        .inflate(com.google.android.material.R.layout.design_text_input_end_icon,
                                 mFrameLayout, false);
                 mPasswordToggleView.setImageDrawable(mPasswordToggleDrawable);
                 mPasswordToggleView.setContentDescription(mPasswordToggleContentDesc);

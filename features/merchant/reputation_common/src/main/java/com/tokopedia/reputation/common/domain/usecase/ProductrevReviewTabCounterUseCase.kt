@@ -11,10 +11,10 @@ class ProductrevReviewTabCounterUseCase @Inject constructor(graphqlRepository: G
 
         private val query by lazy {
             """
-                query {
+                query productrevInboxReviewCounter {
                   productrevInboxReviewCounter {
-                      count
-                  }
+                    count
+                  } 
                 }
             """.trimIndent()
         }
