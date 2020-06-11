@@ -75,8 +75,10 @@ class ShopShowcaseAddActivity : BaseSimpleActivity() {
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        KeyboardHandler.hideSoftKeyboard(this)
-        currentFocus?.clearFocus()
+        if(currentFocus != null) {
+            KeyboardHandler.hideSoftKeyboard(this)
+            currentFocus?.clearFocus()
+        }
         return super.dispatchTouchEvent(ev)
     }
 

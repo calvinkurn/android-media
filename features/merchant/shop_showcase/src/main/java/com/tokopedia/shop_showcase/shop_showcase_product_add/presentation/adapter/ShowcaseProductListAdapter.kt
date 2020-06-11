@@ -76,11 +76,8 @@ class ShowcaseProductListAdapter(
     private fun chooseProduct(holder: ShowcaseProductItemViewHolder, item: ShowcaseProduct) {
         val cardState = !item.ishighlighted
         if (cardState) {
-            val targetExcluded = excludedProduct.singleOrNull {
-                it.productId == item.productId
-            }
-            if(targetExcluded == null) {
-                item.isNewAppended = true
+            item.isNewAppended = excludedProduct.none { excludedProduct ->
+                excludedProduct.productId == item.productId
             }
             if(deletedProduct.size > 0)
                 deletedProduct.remove(item)
@@ -91,7 +88,6 @@ class ShowcaseProductListAdapter(
                 it.productId == item.productId
             }
             if(targetedProduct != null) {
-//                deletedProduct.add(targetedProduct)
                 selectedProduct.remove(targetedProduct)
             }
         }
