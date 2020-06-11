@@ -17,9 +17,9 @@ import com.tokopedia.seller_migration_common.getSellerMigrationDate
 import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
-import kotlinx.android.synthetic.main.partial_seller_migration_footer.*
-import kotlinx.android.synthetic.main.partial_seller_migration_warning.*
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.widget_seller_migration_bottom_sheet.*
 
 abstract class SellerMigrationBottomSheet(private val titles: List<String> = emptyList(),
@@ -44,11 +44,13 @@ abstract class SellerMigrationBottomSheet(private val titles: List<String> = emp
     }
 
     private fun setUpButtons() {
-        sellerMigrationBottomSheetButton.setOnClickListener {
+        val sellerMigrationBottomSheetButton: UnifyButton? = view?.findViewById(R.id.sellerMigrationBottomSheetButton)
+        sellerMigrationBottomSheetButton?.setOnClickListener {
             goToSellerApp()
         }
-        sellerMigrationBottomSheetLink.text = context?.let { HtmlLinkHelper(it, getString(R.string.seller_migration_bottom_sheet_footer)).spannedString }
-        sellerMigrationBottomSheetLink.setOnTouchListener(SellerMigrationTouchListener {
+        val sellerMigrationBottomSheetLink: Typography? = view?.findViewById(R.id.sellerMigrationBottomSheetLink)
+        sellerMigrationBottomSheetLink?.text = context?.let { HtmlLinkHelper(it, getString(R.string.seller_migration_bottom_sheet_footer)).spannedString }
+        sellerMigrationBottomSheetLink?.setOnTouchListener(SellerMigrationTouchListener {
             goToInformationWebview(it)
         })
     }
@@ -76,8 +78,9 @@ abstract class SellerMigrationBottomSheet(private val titles: List<String> = emp
     private fun setupWarningCard() {
         val remoteConfigDate = getSellerMigrationDate(context)
         if(remoteConfigDate.isNotBlank()) {
+            val sellerMigrationWarningDate: Typography? = view?.findViewById(R.id.sellerMigrationWarningDate)
             sellerMigrationWarningCard.show()
-            sellerMigrationWarningDate.text = remoteConfigDate
+            sellerMigrationWarningDate?.text = remoteConfigDate
         }
     }
 
