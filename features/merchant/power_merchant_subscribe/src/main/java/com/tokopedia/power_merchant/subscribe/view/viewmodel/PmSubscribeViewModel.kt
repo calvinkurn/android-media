@@ -15,6 +15,7 @@ import com.tokopedia.power_merchant.subscribe.view.model.ViewState
 import com.tokopedia.power_merchant.subscribe.view.model.ViewState.HideLoading
 import com.tokopedia.power_merchant.subscribe.view.model.ViewState.ShowLoading
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingStatusUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -63,6 +64,9 @@ class PmSubscribeViewModel @Inject constructor(
     }
 
     fun getFreeShippingStatus() {
+        val freeShippingDisabled = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED)
+        if(freeShippingDisabled) return
+
         launchCatchError(block = {
             val shopId = userSession.shopId.toInt()
             val pmStatus = _getPmStatusInfoResult.value as? Success<PowerMerchantStatus>
@@ -74,7 +78,7 @@ class PmSubscribeViewModel @Inject constructor(
 
                 val isActive = response.status
                 val isEligible = response.isEligible()
-                val isTransitionPeriod = remoteConfig.getBoolean(IS_PM_FREE_SHIPPING_IN_TRANSITION_KEY)
+                val isTransitionPeriod = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD)
                 val isShopScoreEligible = shopScore >= MINIMUM_SCORE_ACTIVATE_IDLE
 
                 PowerMerchantFreeShippingStatus(
