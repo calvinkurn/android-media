@@ -22,17 +22,17 @@ class MixLeftComponentCallback(val homeCategoryListener: HomeCategoryListener)
 
     override fun onProductCardClicked(channel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
         //because we have empty value at beginning of list, we need to reduce pos by 1
-        homeCategoryListener.openApplink(applink = applink, trackingAttribution =  "")
+        homeCategoryListener.onDynamicChannelClicked(applink = applink)
         MixLeftComponentTracking.sendMixLeftProductClick(channel, channelGrid, position - 1)
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
-        homeCategoryListener.openApplink(applink = applink, trackingAttribution =  "")
+        homeCategoryListener.onDynamicChannelClicked(applink = applink)
         MixLeftComponentTracking.sendMixLeftSeeAllCardClick(channel, homeCategoryListener.userId)
     }
 
     override fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int) {
-        homeCategoryListener.openApplink(applink = applink, trackingAttribution =  "")
+        homeCategoryListener.onDynamicChannelClicked(applink = applink)
         MixLeftComponentTracking.sendMixLeftBannerClick(channel, parentPos)
     }
 
@@ -41,12 +41,12 @@ class MixLeftComponentCallback(val homeCategoryListener: HomeCategoryListener)
     }
 
     override fun onImageBannerClicked(channelModel: ChannelModel, position: Int, applink: String) {
-        homeCategoryListener.openApplink(applink = applink, trackingAttribution =  "")
+        homeCategoryListener.onDynamicChannelClicked(applink = applink)
         MixLeftComponentTracking.sendMixLeftBannerClick(channelModel, position)
     }
 
     override fun onSeeAllBannerClicked(channel: ChannelModel, applink: String) {
-        homeCategoryListener.openApplink(applink = applink, trackingAttribution =  "")
+        homeCategoryListener.onDynamicChannelClicked(applink = applink)
         MixLeftComponentTracking.sendMixLeftSeeAllClick(channel, homeCategoryListener.userId)
     }
 }

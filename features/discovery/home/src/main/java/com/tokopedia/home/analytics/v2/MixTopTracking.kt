@@ -5,6 +5,8 @@ import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.home.analytics.v2.BaseTracking.Value.LIST
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
 
 object MixTopTracking : BaseTracking() {
     private class CustomAction{
@@ -111,5 +113,37 @@ object MixTopTracking : BaseTracking() {
             UserId.KEY, userId,
             BusinessUnit.KEY, BusinessUnit.DEFAULT
     )
+
+    //home component section
+
+
+    fun mapGridToProductTrackerComponent(grid: ChannelGrid, channelId: String, position: Int, persoType: String, categoryId: String) = Product(
+            id = grid.id,
+            name = grid.name,
+            brand = "",
+            category = "",
+            channelId = channelId,
+            isFreeOngkir = grid.isFreeOngkirActive,
+            productPosition = position.toString(),
+            productPrice = CurrencyFormatHelper.convertRupiahToInt(grid.price).toString(),
+            variant = "",
+            persoType = persoType,
+            categoryId = categoryId,
+            isTopAds = grid.isTopads
+    )
+
+    fun getBackgroundClickComponent(channels: ChannelModel, userId: String = "") = DataLayer.mapOf(
+            Event.KEY, Event.CLICK_HOMEPAGE,
+            Category.KEY, Category.HOMEPAGE,
+            Action.KEY, CustomAction.CLICK_BACKGROUND,
+            Label.KEY, channels.id + " - " + channels.channelHeader.name,
+            Screen.KEY, Screen.DEFAULT,
+            CurrentSite.KEY, CurrentSite.DEFAULT,
+            Screen.KEY, Screen.DEFAULT,
+            UserId.KEY, userId,
+            BusinessUnit.KEY, BusinessUnit.DEFAULT
+    )
+
+    //end of home component section
 
 }

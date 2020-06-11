@@ -886,7 +886,8 @@ open class HomeFragment : BaseDaggerFragment(),
                 HomeComponentCallback(viewModel.get()),
                 DynamicLegoBannerComponentCallback(context),
                 RecommendationListCarouselComponentCallback(viewModel.get(), this),
-                MixLeftComponentCallback(this))
+                MixLeftComponentCallback(this),
+                MixTopComponentCallback(this))
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
                 .build()
@@ -1370,7 +1371,7 @@ open class HomeFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun openApplink(applink: String, trackingAttribution: String) {
+    private fun openApplink(applink: String, trackingAttribution: String) {
         var applink = applink
         if (!TextUtils.isEmpty(applink)) {
             applink = appendTrackerAttributionIfNeeded(applink, trackingAttribution)

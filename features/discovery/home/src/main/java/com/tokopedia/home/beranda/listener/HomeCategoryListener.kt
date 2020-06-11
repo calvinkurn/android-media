@@ -110,6 +110,4 @@ interface HomeCategoryListener {
     fun onBuyAgainOneClickCheckOutClick(grid: DynamicHomeChannel.Grid, channel: DynamicHomeChannel.Channels, position: Int)
 
     fun onBuyAgainCloseChannelClick(channel: DynamicHomeChannel.Channels, position: Int)
-
-    fun openApplink(applink: String, trackingAttribution: String)
 }
