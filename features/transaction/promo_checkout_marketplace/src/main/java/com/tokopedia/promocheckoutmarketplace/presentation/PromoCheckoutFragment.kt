@@ -1,10 +1,15 @@
 package com.tokopedia.promocheckoutmarketplace.presentation
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.*
+import android.util.DisplayMetrics
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -38,6 +43,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
 import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
@@ -61,7 +67,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.dpToPx
-import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.*
 import java.net.UnknownHostException
@@ -78,6 +83,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     private var promoCheckoutLastSeenBottomsheet: BottomSheetBehavior<FrameLayout>? = null
     private var showBottomsheetJob: Job? = null
     private var keyboardHeight = 0
+    private val KEYBOARD_HEIGHT_THRESHOLD = 100
 
     private val viewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[PromoCheckoutViewModel::class.java]
@@ -158,7 +164,17 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         (recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
         view?.viewTreeObserver?.addOnGlobalLayoutListener {
-            keyboardHeight = getKeyboardHeight(view)
+            val heightDiff = view.rootView?.height?.minus(view.height) ?: 0
+            val displayMetrics = DisplayMetrics()
+            val windowManager = view.context?.applicationContext?.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+            windowManager.defaultDisplay.getMetrics(displayMetrics)
+            val heightDiffInDp = heightDiff.pxToDp(displayMetrics)
+            if (heightDiffInDp > KEYBOARD_HEIGHT_THRESHOLD) {
+                keyboardHeight = heightDiff
+            } else {
+                keyboardHeight = 0
+                hidePromoCheckoutLastSeenBottomsheet()
+            }
         }
 
         return view
@@ -494,7 +510,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             snapToPromoInput()
             showBottomsheetJob?.cancel()
             showBottomsheetJob = GlobalScope.launch(Dispatchers.Main) {
-                delay(750L)
+                delay(500L)
                 initializePromoLastSeenRecyclerView(data.uiData.promoLastSeenItemUiModelList)
                 bottomsheetPromoLastSeenContainer?.show()
 
@@ -503,7 +519,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 val bottomsheetHeight = getDeviceHeight(it) - keyboardHeight - promoInputHeight - promoInputMargin
                 promoCheckoutLastSeenBottomsheet?.peekHeight = bottomsheetHeight.toInt()
 
-                rvPromoLastSeen?.layoutParams?.height = (bottomsheetHeight - (bottomsheetCloseButton?.height ?: 0)).toInt()
+                rvPromoLastSeen?.layoutParams?.height = (bottomsheetHeight - (bottomsheetCloseButton?.height
+                        ?: 0)).toInt()
 
                 promoCheckoutLastSeenBottomsheet?.state = BottomSheetBehavior.STATE_COLLAPSED
             }
