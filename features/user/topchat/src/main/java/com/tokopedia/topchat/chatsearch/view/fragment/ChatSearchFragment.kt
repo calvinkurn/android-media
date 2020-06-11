@@ -59,6 +59,7 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
             alreadyLoaded = true
         } else {
             isLoadingInitialData = true
+            viewModel.disableEmptyQuery()
             setupRecyclerView()
             setupObserver()
         }
@@ -102,12 +103,6 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
         observeSearchResult()
     }
 
-    private fun observeSearchResult() {
-        viewModel.searchResult.observe(viewLifecycleOwner, Observer {
-            renderList(it, viewModel.hasNext)
-        })
-    }
-
     private fun observeLoadInitialData() {
         viewModel.loadInitialData.observe(viewLifecycleOwner, Observer {
             if (!it) return@Observer
@@ -136,6 +131,12 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
     private fun observeSearchTriggered() {
         viewModel.triggerSearch.observe(viewLifecycleOwner, Observer {
             analytic.eventQueryTriggered()
+        })
+    }
+
+    private fun observeSearchResult() {
+        viewModel.searchResult.observe(viewLifecycleOwner, Observer {
+            renderList(it, viewModel.hasNext)
         })
     }
 

@@ -61,6 +61,14 @@ class ChatSearchViewModel @Inject constructor(
         }
     }
 
+    fun disableEmptyQuery() {
+        _emptyQuery.value = false
+    }
+
+    fun isFirstPage(): Boolean {
+        return page == 1
+    }
+
     private fun loadNextPage(nextPage: Int) {
         this.page = nextPage
         doSearch()
@@ -68,10 +76,6 @@ class ChatSearchViewModel @Inject constructor(
 
     private fun retryLoadCurrentPage() {
         doSearch()
-    }
-
-    fun isFirstPage(): Boolean {
-        return page == 1
     }
 
     private fun doSearch() {
