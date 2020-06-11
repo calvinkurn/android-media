@@ -8,7 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.sellerhomecommon.domain.mapper.LineGraphMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.GetLineGraphDataResponse
-import com.tokopedia.sellerhomecommon.domain.model.StartEndDateParamModel
+import com.tokopedia.sellerhomecommon.domain.model.WidgetDataParameterModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -46,7 +46,7 @@ class GetLineGraphDataUseCase(
             val dataKeys = dataKey.map {
                 DataKeyModel(
                         key = it,
-                        jsonParams = StartEndDateParamModel(
+                        jsonParams = WidgetDataParameterModel(
                                 startDate = startDate,
                                 endDate = endDate
                         ).toJsonString()

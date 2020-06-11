@@ -8,7 +8,10 @@ import com.google.gson.annotations.SerializedName
  * Created By @ilhamsuaib on 11/06/20
  */
 
-data class StartEndDateParamModel(
+data class WidgetDataParameterModel(
+        @Expose
+        @SerializedName("date")
+        val date: String = "",
         @Expose
         @SerializedName("start_date")
         val startDate: String = "",
