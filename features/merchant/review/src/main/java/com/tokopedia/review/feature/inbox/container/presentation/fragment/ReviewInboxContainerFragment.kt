@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
+import com.tokopedia.review.feature.inbox.container.analytics.ReviewInboxContainerTracking
 import com.tokopedia.review.feature.inbox.container.data.ReviewInboxTabs
 import com.tokopedia.review.feature.inbox.container.di.DaggerReviewInboxContainerComponent
 import com.tokopedia.review.feature.inbox.container.di.ReviewInboxContainerComponent
@@ -75,6 +76,31 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
 
     private fun setupTabLayout() {
         reviewInboxTabs.customTabMode = TabLayout.MODE_SCROLLABLE
+        reviewInboxTabs.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabReselected(tab: TabLayout.Tab) {
+                // No Op
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+                // No Op
+            }
+
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                tab.text?.let {
+                    when {
+                        it.contains(getString(R.string.review_pending_tab_title_no_count)) -> {
+                            ReviewInboxContainerTracking.eventOnClickReviewPendingTab()
+                        }
+                        it.contains(getString(R.string.review_history_tab_title)) -> {
+                            ReviewInboxContainerTracking.eventOnClickReviewHistoryTab()
+                        }
+                        else -> {
+                            ReviewInboxContainerTracking.eventOnClickReviewSellerTab()
+                        }
+                    }
+                }
+            }
+        })
     }
 
     private fun observeReviewTabs() {
