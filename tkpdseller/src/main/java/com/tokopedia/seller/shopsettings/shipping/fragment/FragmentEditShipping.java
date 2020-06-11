@@ -45,6 +45,8 @@ import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresente
 import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresenterImpl;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -75,6 +77,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     private TkpdProgressDialog mainProgressDialog;
     private TkpdProgressDialog progressDialog;
     private InputMethodManager inputMethodManager;
+    private UserSessionInterface userSession;
     private int mapMode;
 
     public static FragmentEditShipping createInstance() {
@@ -168,6 +171,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         editShippingPresenter = new EditShippingPresenterImpl(this);
         inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        userSession = new UserSession(getActivity());
 
         chargeBoTicker = mainView.findViewById(R.id.ticker_charge_bo);
         fragmentShipingMainLayout = (LinearLayout) mainView.findViewById(R.id.fragment_shipping_main_layout);
@@ -549,7 +553,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
             chargeBoTicker.setDescriptionClickEvent(new TickerCallback() {
                 @Override
                 public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
-                    EditShippingAnalytics.INSTANCE.eventClickonTickerShippingEditor();
+                    EditShippingAnalytics.INSTANCE.eventClickonTickerShippingEditor(userSession.getUserId());
                     goToChargeBoWebview();
                 }
 
