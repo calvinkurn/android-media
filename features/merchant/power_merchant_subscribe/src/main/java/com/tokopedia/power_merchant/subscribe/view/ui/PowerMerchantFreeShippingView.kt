@@ -58,7 +58,8 @@ class PowerMerchantFreeShippingView: FrameLayout {
 
     private fun showInactiveFreeShipping(isEligible: Boolean) {
         setInactiveTitleText(isEligible)
-        setInactiveDescriptionText()
+        setInactiveDescriptionText(isEligible)
+        setCTABtnText(isEligible)
         setCTABtnClickListener()
 
         inActiveLayout.show()
@@ -66,32 +67,44 @@ class PowerMerchantFreeShippingView: FrameLayout {
     }
 
     private fun setActiveTitleText(shopScoreEligible: Boolean) {
-        activeLayout.textTitle.text = if(shopScoreEligible) {
+        val title = if(shopScoreEligible) {
             context.getString(R.string.power_merchant_free_shipping_title)
         } else  {
-            MethodChecker.fromHtml(
-                context.getString(R.string.power_merchant_free_shipping_shop_score_title))
+            context.getString(R.string.power_merchant_free_shipping_shop_score_title)
         }
+        activeLayout.textTitle.text = MethodChecker.fromHtml(title)
     }
 
     private fun setActiveDescriptionText(shopScoreEligible: Boolean) {
         activeLayout.textDescription.text = if(shopScoreEligible) {
-            context.getString(R.string.power_merchant_free_shipping_description)
+            context.getString(R.string.power_merchant_free_shipping_active_description)
         } else  {
             context.getString(R.string.power_merchant_free_shipping_shop_score_description)
         }
     }
 
-    private fun setInactiveDescriptionText() {
-        inActiveLayout.textDescription.text = context
-            .getString(R.string.power_merchant_free_shipping_description)
+    private fun setInactiveDescriptionText(eligible: Boolean) {
+        inActiveLayout.textDescription.text = if(eligible) {
+            MethodChecker.fromHtml(context.getString(R.string.power_merchant_free_shipping_description))
+        } else {
+            context.getString(R.string.power_merchant_free_shipping_not_eligible_description)
+        }
     }
 
     private fun setInactiveTitleText(eligible: Boolean) {
-        inActiveLayout.textTitle.text = if (eligible) {
+        inActiveLayout.textTitle.text = if(eligible) {
             context.getString(R.string.power_merchant_free_shipping_eligible_title)
         } else {
             context.getString(R.string.power_merchant_free_shipping_not_eligible_title)
+        }
+    }
+
+
+    private fun setCTABtnText(eligible: Boolean) {
+        btnCTA.text = if(eligible) {
+            context.getString(R.string.power_merchant_free_shipping_activate)
+        } else {
+            context.getString(R.string.power_merchant_free_shipping_learn_more)
         }
     }
 
