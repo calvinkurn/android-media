@@ -87,11 +87,11 @@ class SellerMigrationAccountBottomSheet : BottomSheetUnify() {
     }
 
     private fun trackGoToSellerApp() {
-        SellerMigrationTracking.eventGoToSellerApp(this.userId, SellerMigrationTrackingConstants.EVENT_CLICK_GO_TO_SELLER_APP_REVIEW)
+        SellerMigrationTracking.eventGoToSellerApp(this.userId, SellerMigrationTrackingConstants.EVENT_CLICK_GO_TO_SELLER_APP_ACCOUNT)
     }
 
     private fun trackGoToPlayStore() {
-        SellerMigrationTracking.eventGoToPlayStore(this.userId, SellerMigrationTrackingConstants.EVENT_CLICK_GO_TO_SELLER_APP_REVIEW)
+        SellerMigrationTracking.eventGoToPlayStore(this.userId, SellerMigrationTrackingConstants.EVENT_CLICK_GO_TO_SELLER_APP_ACCOUNT)
     }
 
     private fun goToInformationWebview(link: String) : Boolean {
