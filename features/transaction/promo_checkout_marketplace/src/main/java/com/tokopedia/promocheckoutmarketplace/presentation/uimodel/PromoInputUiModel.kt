@@ -40,7 +40,8 @@ data class PromoInputUiModel(
             var isButtonSelectEnabled: Boolean = false,
             var isError: Boolean = false,
             var isLoading: Boolean = false,
-            var isValidLastSeenPromo: Boolean = false
+            var isValidLastSeenPromo: Boolean = false,
+            var viewHeight: Int = 0
     )
 
 }

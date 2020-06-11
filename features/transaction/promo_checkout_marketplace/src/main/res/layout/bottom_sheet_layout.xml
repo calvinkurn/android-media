@@ -28,7 +28,7 @@
             android:paddingTop="@dimen/dp_16"
             android:paddingRight="@dimen/dp_12"
             android:paddingBottom="@dimen/dp_16"
-            android:src="@drawable/unify_bottomsheet_close"
+            app:srcCompat="@drawable/ic_close_default"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -41,6 +41,7 @@
             android:paddingBottom="@dimen/dp_16"
             android:text="@string/label_promo_last_seen_title"
             android:textColor="@color/light_N700_96"
+            app:layout_constraintBottom_toBottomOf="@+id/bottom_sheet_close"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/bottom_sheet_close"
             app:layout_constraintTop_toTopOf="parent"
@@ -49,7 +50,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_promo_last_seen"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:paddingLeft="@dimen/dp_12"
             android:paddingRight="@dimen/dp_12"
             app:layout_constraintStart_toStartOf="parent"

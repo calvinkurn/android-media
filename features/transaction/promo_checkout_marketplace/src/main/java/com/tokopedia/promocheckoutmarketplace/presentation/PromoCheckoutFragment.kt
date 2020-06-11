@@ -4,11 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -50,9 +46,6 @@ import com.tokopedia.promocheckout.common.data.EXTRA_KUPON_CODE
 import com.tokopedia.promocheckout.common.data.ONE_CLICK_SHIPMENT
 import com.tokopedia.promocheckout.common.data.PAGE_TRACKING
 import com.tokopedia.promocheckoutmarketplace.R
-import com.tokopedia.purchase_platform.common.constant.*
-import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
-import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.promocheckoutmarketplace.data.response.ResultStatus.Companion.STATUS_PHONE_NOT_VERIFIED
 import com.tokopedia.promocheckoutmarketplace.di.DaggerPromoCheckoutMarketplaceComponent
 import com.tokopedia.promocheckoutmarketplace.presentation.adapter.PromoCheckoutAdapter
@@ -62,8 +55,13 @@ import com.tokopedia.promocheckoutmarketplace.presentation.compoundview.ToolbarP
 import com.tokopedia.promocheckoutmarketplace.presentation.compoundview.ToolbarPromoCheckoutListener
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.*
 import com.tokopedia.promocheckoutmarketplace.presentation.viewmodel.*
+import com.tokopedia.purchase_platform.common.constant.*
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.dpToPx
+import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.*
 import java.net.UnknownHostException
@@ -79,6 +77,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private var promoCheckoutLastSeenBottomsheet: BottomSheetBehavior<FrameLayout>? = null
     private var showBottomsheetJob: Job? = null
+    private var keyboardHeight = 0
 
     private val viewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[PromoCheckoutViewModel::class.java]
@@ -158,6 +157,10 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         recyclerView.addItemDecoration(itemDecorator)
         (recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
+        view?.viewTreeObserver?.addOnGlobalLayoutListener {
+            keyboardHeight = getKeyboardHeight(view)
+        }
+
         return view
     }
 
@@ -194,7 +197,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             }
         }
 
-        bottomSheetTitle?.setOnClickListener {  }
+        bottomSheetTitle?.setOnClickListener { }
 
         activity?.let {
             swipeRefreshLayout?.setColorSchemeColors(ContextCompat.getColor(it, R.color.tkpd_main_green))
@@ -478,20 +481,30 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         viewModel.getPromoLastSeenResponse.observe(this, Observer {
             when {
                 it.state == GetPromoLastSeenAction.ACTION_SHOW -> {
-                    showPromoCheckoutLastSeenBottomsheet(it.data)
+                    it.data?.let {
+                        showPromoCheckoutLastSeenBottomsheet(it)
+                    }
                 }
             }
         })
     }
 
-    private fun showPromoCheckoutLastSeenBottomsheet(data: PromoLastSeenUiModel?) {
-        showBottomsheetJob?.cancel()
-        showBottomsheetJob = GlobalScope.launch(Dispatchers.Main) {
-            delay(500L)
-            data?.let {
-                snapToPromoInput()
-                initializePromoLastSeen(it.uiData.promoLastSeenItemUiModelList)
+    private fun showPromoCheckoutLastSeenBottomsheet(data: PromoLastSeenUiModel) {
+        activity?.let {
+            snapToPromoInput()
+            showBottomsheetJob?.cancel()
+            showBottomsheetJob = GlobalScope.launch(Dispatchers.Main) {
+                delay(750L)
+                initializePromoLastSeenRecyclerView(data.uiData.promoLastSeenItemUiModelList)
                 bottomsheetPromoLastSeenContainer?.show()
+
+                val promoInputHeight = viewModel.promoInputUiModel.value?.uiState?.viewHeight ?: 0
+                val promoInputMargin = resources.getDimension(R.dimen.dp_8).dpToPx()
+                val bottomsheetHeight = getDeviceHeight(it) - keyboardHeight - promoInputHeight - promoInputMargin
+                promoCheckoutLastSeenBottomsheet?.peekHeight = bottomsheetHeight.toInt()
+
+                rvPromoLastSeen?.layoutParams?.height = (bottomsheetHeight - (bottomsheetCloseButton?.height ?: 0)).toInt()
+
                 promoCheckoutLastSeenBottomsheet?.state = BottomSheetBehavior.STATE_COLLAPSED
             }
         }
@@ -501,7 +514,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         promoCheckoutLastSeenBottomsheet?.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
-    private fun initializePromoLastSeen(dataList: List<PromoLastSeenItemUiModel>) {
+    private fun initializePromoLastSeenRecyclerView(dataList: List<PromoLastSeenItemUiModel>) {
         rvPromoLastSeen?.apply {
             layoutManager = LinearLayoutManager(activity)
             adapter = PromoLastSeenAdapter(this@PromoCheckoutFragment)
@@ -520,6 +533,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             viewModel.promoInputUiModel.value?.let { promoInputUiModel ->
                 linearSmoothScroller.targetPosition = adapter.data.indexOf(promoInputUiModel)
                 layoutManager.startSmoothScroll(linearSmoothScroller)
+                adapter.notifyItemChanged(adapter.data.indexOf(viewModel.promoInputUiModel.value))
             }
         }
     }
@@ -739,7 +753,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 val query = GraphqlHelper.loadRawString(it.resources, R.raw.promo_suggestion_query)
                 viewModel.loadPromoLastSeen(query)
             } else {
-                showPromoCheckoutLastSeenBottomsheet(viewModel.promoLastSeenUiModel.value)
+                viewModel.promoLastSeenUiModel.value?.let {
+                    showPromoCheckoutLastSeenBottomsheet(it)
+                }
             }
         }
     }

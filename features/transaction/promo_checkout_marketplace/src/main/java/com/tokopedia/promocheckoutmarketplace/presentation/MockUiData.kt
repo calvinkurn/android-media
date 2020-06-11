@@ -766,151 +766,80 @@ val MOCK_RESPONSE_EMPTY_PROMO = """
 """.trimIndent()
 
 val MOCK_RESPONSE_PROMO_LAST_SEEN = """
-    {
-        "GetPromoSuggestion": {
-          "PromoHistory": [
-            {
-              "PromoCode": "BEAUTYDAILY",
-              "PromoContent": {
-                "ID": 427595,
-                "Name": "Beauty Dealight Cashback 7.5% up to 10,000",
-                "Public": true,
-                "Status": 1,
-                "BaseCode": "BEAUTYDAILY",
-                "IsBackdoor": false,
-                "PromoType": 32,
-                "PromoTitle": "Beauty Dealight Cashback 7.5% 10Rb",
-                "Description": "Beauty DealightCashback 7.5% up to 10,000, with min purchase 299Rb"
-              }
-            },
-            {
-              "PromoCode": "MATOASINGO",
-              "PromoContent": {
-                "ID": 426396,
-                "Name": "MATOA SINGO Launch in Tokopedia",
-                "Public": true,
-                "Status": 1,
-                "BaseCode": "MATOASINGO",
-                "IsBackdoor": false,
-                "PromoType": 2,
-                "PromoTitle": "MATOA SINGO Launch in Tokopedia",
-                "Description": "Free Ongkir Rp 10,000 with no minmum purchase"
-              }
-            },
-            {
-              "PromoCode": "BFTWIST20",
-              "PromoContent": {
-                "ID": 428943,
-                "Name": "Butterfly Twist Exclusive Launching",
-                "Public": true,
-                "Status": 1,
-                "BaseCode": "BFTWIST20",
-                "IsBackdoor": false,
-                "PromoType": 160,
-                "PromoTitle": "Butterfly Twist Launching",
-                "Description": "Cashback 10% Up to 75.000 dengan minimum purchase Rp 500.000"
-              }
-            },
-            {
-              "PromoCode": "MUKBANG10K",
-              "PromoContent": {
-                "ID": 431383,
-                "Name": "Let's Mukbang Gratis Ongkir 10,000",
-                "Public": true,
-                "Status": 1,
-                "BaseCode": "MUKBANG10K",
-                "IsBackdoor": false,
-                "PromoType": 2,
-                "PromoTitle": "Let's Mukbang Gratis Ongkir 10,000",
-                "Description": "Let's Mukbang Gratis Ongkir 10,000, with min purchase 100,000"
-              }
+        {
+            "GetPromoSuggestion": {
+              "PromoHistory": [
+                {
+                  "PromoCode": "BEAUTYDAILY",
+                  "PromoContent": {
+                    "ID": 427595,
+                    "Name": "Beauty Dealight Cashback 7.5% up to 10,000",
+                    "Public": true,
+                    "Status": 1,
+                    "BaseCode": "BEAUTYDAILY",
+                    "IsBackdoor": false,
+                    "PromoType": 32,
+                    "PromoTitle": "Beauty Dealight Cashback 7.5% 10Rb",
+                    "Description": "Beauty DealightCashback 7.5% up to 10,000, with min purchase 299Rb"
+                  }
+                },
+                {
+                  "PromoCode": "MATOASINGO",
+                  "PromoContent": {
+                    "ID": 426396,
+                    "Name": "MATOA SINGO Launch in Tokopedia",
+                    "Public": true,
+                    "Status": 1,
+                    "BaseCode": "MATOASINGO",
+                    "IsBackdoor": false,
+                    "PromoType": 2,
+                    "PromoTitle": "MATOA SINGO Launch in Tokopedia",
+                    "Description": "Free Ongkir Rp 10,000 with no minmum purchase"
+                  }
+                },
+                {
+                  "PromoCode": "BFTWIST20",
+                  "PromoContent": {
+                    "ID": 428943,
+                    "Name": "Butterfly Twist Exclusive Launching",
+                    "Public": true,
+                    "Status": 1,
+                    "BaseCode": "BFTWIST20",
+                    "IsBackdoor": false,
+                    "PromoType": 160,
+                    "PromoTitle": "Butterfly Twist Launching",
+                    "Description": "Cashback 10% Up to 75.000 dengan minimum purchase Rp 500.000"
+                  }
+                },
+                {
+                  "PromoCode": "MUKBANG10K",
+                  "PromoContent": {
+                    "ID": 431383,
+                    "Name": "Let's Mukbang Gratis Ongkir 10,000",
+                    "Public": true,
+                    "Status": 1,
+                    "BaseCode": "MUKBANG10K",
+                    "IsBackdoor": false,
+                    "PromoType": 2,
+                    "PromoTitle": "Let's Mukbang Gratis Ongkir 10,000",
+                    "Description": "Let's Mukbang Gratis Ongkir 10,000, with min purchase 100,000"
+                  }
+                },
+                {
+                  "PromoCode": "MUKBANG20K",
+                  "PromoContent": {
+                    "ID": 431383,
+                    "Name": "Let's Mukbang Gratis Ongkir 20,000",
+                    "Public": true,
+                    "Status": 1,
+                    "BaseCode": "MUKBANG10K",
+                    "IsBackdoor": false,
+                    "PromoType": 2,
+                    "PromoTitle": "Let's Mukbang Gratis Ongkir 20,000",
+                    "Description": "Let's Mukbang Gratis Ongkir 20,000, with min purchase 100,000"
+                  }
+                }
+              ]
             }
-    ,
-            {
-              "PromoCode": "MUKBANG10K",
-              "PromoContent": {
-                "ID": 431383,
-                "Name": "Let's Mukbang Gratis Ongkir 10,000",
-                "Public": true,
-                "Status": 1,
-                "BaseCode": "MUKBANG10K",
-                "IsBackdoor": false,
-                "PromoType": 2,
-                "PromoTitle": "Let's Mukbang Gratis Ongkir 10,000",
-                "Description": "Let's Mukbang Gratis Ongkir 10,000, with min purchase 100,000"
-              }
-            },
-            {
-              "PromoCode": "MUKBANG10K",
-              "PromoContent": {
-                "ID": 431383,
-                "Name": "Let's Mukbang Gratis Ongkir 10,000",
-                "Public": true,
-                "Status": 1,
-                "BaseCode": "MUKBANG10K",
-                "IsBackdoor": false,
-                "PromoType": 2,
-                "PromoTitle": "Let's Mukbang Gratis Ongkir 10,000",
-                "Description": "Let's Mukbang Gratis Ongkir 10,000, with min purchase 100,000"
-              }
-            },
-            {
-              "PromoCode": "MUKBANG10K",
-              "PromoContent": {
-                "ID": 431383,
-                "Name": "Let's Mukbang Gratis Ongkir 10,000",
-                "Public": true,
-                "Status": 1,
-                "BaseCode": "MUKBANG10K",
-                "IsBackdoor": false,
-                "PromoType": 2,
-                "PromoTitle": "Let's Mukbang Gratis Ongkir 10,000",
-                "Description": "Let's Mukbang Gratis Ongkir 10,000, with min purchase 100,000"
-              }
-            },
-            {
-              "PromoCode": "MUKBANG10K",
-              "PromoContent": {
-                "ID": 431383,
-                "Name": "Let's Mukbang Gratis Ongkir 10,000",
-                "Public": true,
-                "Status": 1,
-                "BaseCode": "MUKBANG10K",
-                "IsBackdoor": false,
-                "PromoType": 2,
-                "PromoTitle": "Let's Mukbang Gratis Ongkir 10,000",
-                "Description": "Let's Mukbang Gratis Ongkir 10,000, with min purchase 100,000"
-              }
-            },
-            {
-              "PromoCode": "MUKBANG10K",
-              "PromoContent": {
-                "ID": 431383,
-                "Name": "Let's Mukbang Gratis Ongkir 10,000",
-                "Public": true,
-                "Status": 1,
-                "BaseCode": "MUKBANG10K",
-                "IsBackdoor": false,
-                "PromoType": 2,
-                "PromoTitle": "Let's Mukbang Gratis Ongkir 10,000",
-                "Description": "Let's Mukbang Gratis Ongkir 10,000, with min purchase 100,000"
-              }
-            },
-            {
-              "PromoCode": "MUKBANG10K",
-              "PromoContent": {
-                "ID": 431383,
-                "Name": "Let's Mukbang Gratis Ongkir 10,000",
-                "Public": true,
-                "Status": 1,
-                "BaseCode": "MUKBANG10K",
-                "IsBackdoor": false,
-                "PromoType": 2,
-                "PromoTitle": "Let's Mukbang Gratis Ongkir 10,000",
-                "Description": "Let's Mukbang Gratis Ongkir 10,000, with min purchase 100,000"
-              }
-            }
-          ]
-        }
-      }
+          }
 """.trimIndent()
