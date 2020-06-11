@@ -56,6 +56,7 @@ import com.tokopedia.design.keyboard.KeyboardHelper
 import com.tokopedia.design.keyboard.KeyboardHelper.OnKeyboardVisibilityChangedListener
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
+import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerClick
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerClick
@@ -153,6 +154,8 @@ import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import javax.inject.Inject
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
 
 /**
  * @author by errysuprayogi on 11/27/17.
@@ -708,6 +711,25 @@ open class HomeFragment : BaseDaggerFragment(),
                         (dataMap[HomeViewModel.GRID] as DynamicHomeChannel.Grid?)!!,
                         dataMap[HomeViewModel.POSITION] as Int,
                         (dataMap[HomeViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
+                        "0",
+                        getHomeViewModel().getUserId()
+                ) as HashMap<String, Any>)
+                RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
+            }
+        })
+
+        viewModel.get().oneClickCheckoutHomeComponent.observe(viewLifecycleOwner, Observer { event: Event<Any> ->
+            val data = event.peekContent()
+            if (data is Throwable) { // error
+                showToaster(getString(R.string.home_error_connection), TYPE_ERROR)
+            } else {
+                val dataMap = data as Map<*, *>
+                sendEETracking(HomePageTrackingV2.RecommendationList.getAddToCartOnDynamicListCarouselHomeComponent(
+                        (dataMap[HomeViewModel.CHANNEL] as ChannelModel)!!,
+                        (dataMap[HomeViewModel.GRID] as ChannelGrid)!!,
+                        dataMap[HomeViewModel.POSITION] as Int,
+                        (dataMap[HomeViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
+                        "0",
                         getHomeViewModel().getUserId()
                 ) as HashMap<String, Any>)
                 RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
