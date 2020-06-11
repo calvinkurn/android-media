@@ -122,7 +122,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     }
 
     private val publicVoucherTipsAndTrickBottomSheet by lazy {
-        VoucherDisplayBottomSheetFragment.createInstance(context, ::getPublicVoucherDisplay)
+        VoucherDisplayBottomSheetFragment.createInstance(context, ::getPublicVoucherDisplay, userSession.userId)
     }
 
     private val failedCreateVoucherDialog by lazy {
