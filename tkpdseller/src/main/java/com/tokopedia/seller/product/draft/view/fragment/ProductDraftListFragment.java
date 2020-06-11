@@ -191,7 +191,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     ProductAddEditDraftListPageTracking.INSTANCE.eventAddEditDraftClicked(shopId, ProductAddEditDraftListPageTracking.CLICK_ADD_PRODUCT_WITHOUT_DRAFT);
-                    RouteManager.route(getContext(), ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW);
+                    startActivity(ProductAddNameCategoryActivity.Companion.createInstance(getActivity()));
                     return true;
                 }
             });
@@ -338,7 +338,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     public void onEmptyButtonClicked() {
         eventDraftProductClicked(AppEventTracking.EventLabel.ADD_PRODUCT);
         ProductAddEditDraftListPageTracking.INSTANCE.eventAddEditDraftClicked(shopId, ProductAddEditDraftListPageTracking.CLICK_ADD_PRODUCT);
-        RouteManager.route(getContext(), ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW);
+        RouteManager.route(getContext(), ApplinkConst.PRODUCT_ADD);
     }
 
     public void eventDraftProductClicked(String label) {
