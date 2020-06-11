@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
+import com.tokopedia.home_component.customview.HeaderListener
+import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
@@ -31,6 +33,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
+import kotlinx.android.synthetic.main.global_dc_mix_left.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -44,6 +47,7 @@ import kotlin.math.abs
 @SuppressLint("SyntheticAccessor")
 class MixLeftComponentViewHolder (itemView: View,
                                   val mixLeftComponentListener: MixLeftComponentListener,
+                                  val homeComponentListener: HomeComponentListener,
                                   private val parentRecycledViewPool: RecyclerView.RecycledViewPool)
     : AbstractViewHolder<MixLeftDataModel>(itemView), CoroutineScope, CommonProductCardCarouselListener {
 
@@ -73,11 +77,13 @@ class MixLeftComponentViewHolder (itemView: View,
         setupBackground(element.channelModel)
         setupList(element.channelModel)
         setSnapEffect()
+        setHeaderComponent(element)
     }
 
 //    override fun getViewHolderClassName(): String {
 //        return MixLeftViewHolder::class.java.simpleName
 //    }
+
 
     override fun onProductCardImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
         //because we have empty value at beginning of list, we need to reduce pos by 1
@@ -96,11 +102,6 @@ class MixLeftComponentViewHolder (itemView: View,
     override fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int) {
         mixLeftComponentListener.onEmptyCardClicked(channel, applink, parentPos)
     }
-
-//    override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
-//        RouteManager.route(itemView.context, applink)
-//        HomePageTrackingV2.MixLeft.sendMixLeftSeeAllClick(channel, homeCategoryListener.userId)
-//    }
 
     private fun initVar() {
         recyclerView = itemView.findViewById(R.id.rv_product)
@@ -242,4 +243,15 @@ class MixLeftComponentViewHolder (itemView: View,
         return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
     }
 
+    private fun setHeaderComponent(element: MixLeftDataModel) {
+        itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
+            override fun onSeeAllClick(link: String) {
+                mixLeftComponentListener.onSeeAllBannerClicked(element.channelModel, element.channelModel.channelHeader.applink)
+            }
+
+            override fun onChannelExpired(channelModel: ChannelModel) {
+                homeComponentListener.onChannelExpired(channelModel, adapterPosition, element)
+            }
+        })
+    }
 }

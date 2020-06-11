@@ -313,6 +313,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                     MixLeftComponentViewHolder(
                             view,
                             mixLeftComponentListener,
+                            homeComponentListener,
                             parentRecycledViewPool
                     )
             else -> viewHolder = super.createViewHolder(view, type)

@@ -11,7 +11,7 @@ import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProdu
  * @author by yoasfs on 09/06/20
  */
 class MixLeftComponentCallback(val homeCategoryListener: HomeCategoryListener)
-    : CommonProductCardCarouselListener, MixLeftComponentListener {
+    : MixLeftComponentListener {
 
     override fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
         //because we have empty value at beginning of list, we need to reduce pos by 1
@@ -43,5 +43,10 @@ class MixLeftComponentCallback(val homeCategoryListener: HomeCategoryListener)
     override fun onImageBannerClicked(channelModel: ChannelModel, position: Int, applink: String) {
         homeCategoryListener.openApplink(applink = applink, trackingAttribution =  "")
         MixLeftComponentTracking.sendMixLeftBannerClick(channelModel, position)
+    }
+
+    override fun onSeeAllBannerClicked(channel: ChannelModel, applink: String) {
+        homeCategoryListener.openApplink(applink = applink, trackingAttribution =  "")
+        MixLeftComponentTracking.sendMixLeftSeeAllClick(channel, homeCategoryListener.userId)
     }
 }
