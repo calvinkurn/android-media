@@ -16,7 +16,6 @@ import com.tokopedia.promocheckoutmarketplace.data.response.GetPromoSuggestionRe
 import com.tokopedia.promocheckoutmarketplace.data.response.ResultStatus.Companion.STATUS_COUPON_LIST_EMPTY
 import com.tokopedia.promocheckoutmarketplace.data.response.ResultStatus.Companion.STATUS_PHONE_NOT_VERIFIED
 import com.tokopedia.promocheckoutmarketplace.data.response.ResultStatus.Companion.STATUS_USER_BLACKLISTED
-import com.tokopedia.promocheckoutmarketplace.presentation.MOCK_RESPONSE_PROMO_LAST_SEEN
 import com.tokopedia.promocheckoutmarketplace.presentation.PromoErrorException
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics
 import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutUiModelMapper
@@ -198,7 +197,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
             // Get response
             val response = withContext(Dispatchers.IO) {
-                //                Gson().fromJson(MOCK_RESPONSE, CouponListRecommendationResponse::class.java)
                 val request = GraphqlRequest(mutation, CouponListRecommendationResponse::class.java, promo)
                 graphqlRepository.getReseponse(listOf(request))
                         .getSuccessData<CouponListRecommendationResponse>()
@@ -1328,10 +1326,9 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
             // Get response
             val response = withContext(Dispatchers.IO) {
-                Gson().fromJson(MOCK_RESPONSE_PROMO_LAST_SEEN, GetPromoSuggestionResponse::class.java)
-//                val request = GraphqlRequest(query, GetPromoSuggestionResponse::class.java)
-//                graphqlRepository.getReseponse(listOf(request))
-//                        .getSuccessData<GetPromoSuggestionResponse>()
+                val request = GraphqlRequest(query, GetPromoSuggestionResponse::class.java)
+                graphqlRepository.getReseponse(listOf(request))
+                        .getSuccessData<GetPromoSuggestionResponse>()
             }
 
             if (response.promoSuggestion.promoHistory.isNotEmpty()) {
