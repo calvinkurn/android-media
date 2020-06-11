@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.item_chat_list.view.*
 
 class ItemSearchChatViewHolder(
         itemView: View?,
-        private val listener: Listener
+        private val listener: Listener?
 ) : AbstractViewHolder<SearchResult>(itemView) {
 
     private var counter: Typography? = itemView?.findViewById(R.id.unread_counter)
@@ -65,7 +65,7 @@ class ItemSearchChatViewHolder(
         itemView.setOnClickListener {
             val chatRoomIntent = RouteManager.getIntent(it.context, ApplinkConst.TOPCHAT, element.msgId.toString())
             it.context.startActivity(chatRoomIntent)
-            listener.finishSearchActivity()
+            listener?.finishSearchActivity()
         }
     }
 

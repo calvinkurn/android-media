@@ -10,7 +10,7 @@ import com.tokopedia.topchat.R
 
 class EmptySearchChatViewHolder(
         itemView: View?,
-        private val listener: Listener
+        private val listener: Listener?
 ) : AbstractViewHolder<EmptyModel>(itemView) {
 
     private val ivIcon: ImageView? = itemView?.findViewById(R.id.iv_icon)
@@ -31,7 +31,7 @@ class EmptySearchChatViewHolder(
 
     private fun bindCtaClick(element: EmptyModel) {
         tvRetryButton?.setOnClickListener {
-            listener.onClickChangeKeyword()
+            listener?.onClickChangeKeyword()
         }
     }
 
