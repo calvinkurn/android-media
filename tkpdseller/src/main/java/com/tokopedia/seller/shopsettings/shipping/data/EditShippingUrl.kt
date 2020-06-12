@@ -8,5 +8,6 @@ object EditShippingUrl {
 
     val URL_BEBAS_ONGKIR = BASE_MOBILE_URL + "bebas-ongkir"
 
+    @JvmStatic
     val APPLINK_BEBAS_ONGKIR  = String.format("%s?titlebar=false&url=%s", ApplinkConst.WEBVIEW, URL_BEBAS_ONGKIR)
 }

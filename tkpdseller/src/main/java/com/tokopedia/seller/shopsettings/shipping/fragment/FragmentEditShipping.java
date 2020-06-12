@@ -37,12 +37,12 @@ import com.tokopedia.seller.shopsettings.shipping.customview.CourierView;
 import com.tokopedia.seller.shopsettings.shipping.customview.ShippingAddressLayout;
 import com.tokopedia.seller.shopsettings.shipping.customview.ShippingHeaderLayout;
 import com.tokopedia.seller.shopsettings.shipping.customview.ShippingInfoBottomSheet;
+import com.tokopedia.seller.shopsettings.shipping.data.EditShippingUrl;
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.Courier;
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.ShopShipping;
 import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresenter;
 import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresenterImpl;
-import com.tokopedia.seller.shopsettings.shipping.data.EditShippingUrl;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
 import com.tokopedia.user.session.UserSession;
@@ -71,7 +71,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
 
     LogisticRouter logisticRouter;
 
-    Ticker chargeBoTicker;
+    private Ticker chargeBoTicker;
 
     private EditShippingPresenter editShippingPresenter;
     private TkpdProgressDialog mainProgressDialog;
@@ -367,7 +367,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
         else if (getArguments().containsKey(RESUME_OPEN_SHOP_DATA_KEY)) {
             submitButtonCreateShop.setVisibility(View.VISIBLE);
         } else submitButtonCreateShop.setVisibility(View.GONE);
-        showTickerChargeBo();
+        renderTickerChargeBo();
     }
 
     @Override
@@ -545,15 +545,15 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
         }
     }
 
-    private void showTickerChargeBo(){
-        if(((LogisticRouter) getActivity().getApplicationContext()).getBooleanRemoteConfig(RemoteConfigKey.ENABLE_TICKER_CHARGE_BO, true)) {
+    private void renderTickerChargeBo(){
+        if((logisticRouter.getBooleanRemoteConfig(RemoteConfigKey.ENABLE_TICKER_CHARGE_BO, true))) {
             chargeBoTicker.setVisibility(View.VISIBLE);
             chargeBoTicker.setTickerTitle(getString(R.string.charge_bo_ticker_title));
             chargeBoTicker.setHtmlDescription(getString(R.string.charge_bo_ticker_content));
             chargeBoTicker.setDescriptionClickEvent(new TickerCallback() {
                 @Override
                 public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
-                    EditShippingAnalytics.INSTANCE.eventClickonTickerShippingEditor(userSession.getUserId());
+                    EditShippingAnalytics.eventClickonTickerShippingEditor(userSession.getUserId());
                     goToChargeBoWebview();
                 }
 
@@ -567,9 +567,11 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
 
     private void goToChargeBoWebview() {
         if (getActivity() != null) {
-            Intent intent = RouteManager.getIntent(getActivity(), EditShippingUrl.INSTANCE.getAPPLINK_BEBAS_ONGKIR());
+            Intent intent = RouteManager.getIntent(getActivity(), EditShippingUrl.getAPPLINK_BEBAS_ONGKIR());
             getActivity().startActivity(intent);
         }
     }
+
+
 
 }
