@@ -89,6 +89,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_digital_telco_postpaid, container, false)
         mainContainer = view.findViewById(R.id.main_container)
+        pageContainer = view.findViewById(R.id.page_container)
         postpaidClientNumberWidget = view.findViewById(R.id.telco_input_number)
         buyWidget = view.findViewById(R.id.buy_widget)
         tickerView = view.findViewById(R.id.ticker_view)
@@ -126,6 +127,20 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 tabLayout.hide()
                 separator.hide()
             }
+
+            viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+                override fun onPageScrollStateChanged(p0: Int) {
+
+                }
+
+                override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
+
+                }
+
+                override fun onPageSelected(pos: Int) {
+                    setTrackingOnTabMenu(listMenu[pos].title)
+                }
+            })
         }
     }
 
@@ -216,6 +231,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     fun getEnquiryNumber() {
         operatorSelected?.let { selectedOperator ->
+            topupAnalytics.eventClickCheckEnquiry(categoryName, operatorName, userSession.userId)
             var mapParam = HashMap<String, Any>()
             mapParam.put(KEY_CLIENT_NUMBER, postpaidClientNumberWidget.getInputNumber())
             mapParam.put(KEY_PRODUCT_ID, selectedOperator.operator.attributes.defaultProductId.toString())

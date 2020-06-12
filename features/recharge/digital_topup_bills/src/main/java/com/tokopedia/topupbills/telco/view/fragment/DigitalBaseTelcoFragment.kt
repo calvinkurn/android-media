@@ -8,6 +8,7 @@ import android.os.Parcelable
 import android.provider.ContactsContract
 import android.text.TextUtils
 import android.view.View
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
@@ -26,9 +27,11 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.DigitalTopupAnalytics
+import com.tokopedia.topupbills.common.DigitalTopupEventTracking
 import com.tokopedia.topupbills.covertContactUriToContactData
 import com.tokopedia.topupbills.telco.data.RechargeCatalogPrefixSelect
 import com.tokopedia.topupbills.telco.data.TelcoCatalogPrefixSelect
+import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedTelcoViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
@@ -47,6 +50,7 @@ import javax.inject.Inject
 abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     protected lateinit var mainContainer: NestedScrollView
+    protected lateinit var pageContainer: RelativeLayout
     protected lateinit var tickerView: Ticker
     private lateinit var viewModel: SharedTelcoViewModel
 
@@ -250,11 +254,11 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         listMenu.clear()
         if (promo.isNotEmpty()) {
             viewModel.setPromoTelco(promo)
-            listMenu.add(TopupBillsTabItem(DigitalTelcoPromoFragment.newInstance(), "Promo"))
+            listMenu.add(TopupBillsTabItem(DigitalTelcoPromoFragment.newInstance(), TelcoComponentName.PROMO))
         }
         if (recom.isNotEmpty()) {
             viewModel.setRecommendationTelco(recom)
-            listMenu.add(TopupBillsTabItem(DigitalTelcoRecommendationFragment.newInstance(), "Recents"))
+            listMenu.add(TopupBillsTabItem(DigitalTelcoRecommendationFragment.newInstance(), TelcoComponentName.RECENTS))
         }
 
         renderPromoAndRecommendation()
@@ -262,8 +266,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     override fun onMenuDetailError(error: Throwable) {
         super.onMenuDetailError(error)
-        view?.run {
-            Toaster.make(this, ErrorHandler.getErrorMessage(context, error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+        NetworkErrorHelper.showEmptyState(activity, pageContainer, ErrorHandler.getErrorMessage(context, error)) {
+            getMenuDetail(menuId)
         }
     }
 
@@ -290,6 +294,14 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     override fun onExpressCheckoutError(error: Throwable) {
         NetworkErrorHelper.showRedSnackbar(activity, error.message)
+    }
+
+    protected fun setTrackingOnTabMenu(title: String) {
+        var action = DigitalTopupEventTracking.Action.CLICK_TAB_PROMO
+        if (title == TelcoComponentName.RECENTS) {
+            action = DigitalTopupEventTracking.Action.CLICK_TAB_RECENT
+        }
+        topupAnalytics.eventClickTabMenuTelco(categoryName, userSession.userId, action)
     }
 
     protected abstract fun renderPromoAndRecommendation()

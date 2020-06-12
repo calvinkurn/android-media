@@ -11,6 +11,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.view.bottomsheet.TopupBillsMenuBottomSheets
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.common.DigitalTopupAnalytics
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
 import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
@@ -21,6 +22,8 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
 
     @Inject
     lateinit var userSession: UserSessionInterface
+    @Inject
+    lateinit var topupAnalytics: DigitalTopupAnalytics
 
     private fun initInjector() {
         component.inject(this)
@@ -96,6 +99,7 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
     }
 
     private fun showBottomMenus() {
+        sendTrackingDotsMenuTelco(userSession.userId)
         val menuBottomSheet = TopupBillsMenuBottomSheets()
         menuBottomSheet.listener = this
         menuBottomSheet.show(supportFragmentManager, TAG_TELCO_MENU)
@@ -116,6 +120,8 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
             }
         }
     }
+
+    abstract fun sendTrackingDotsMenuTelco(userId: String)
 
     companion object {
         const val REQUEST_CODE_LOGIN_TELCO = 10000

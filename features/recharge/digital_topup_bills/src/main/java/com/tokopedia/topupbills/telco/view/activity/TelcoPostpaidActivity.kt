@@ -17,13 +17,16 @@ import com.tokopedia.topupbills.telco.view.fragment.DigitalTelcoPostpaidFragment
 
 class TelcoPostpaidActivity : BaseTelcoActivity(), HasComponent<DigitalTopupComponent> {
 
+    var categoryId = ""
+
     override fun getNewFragment(): Fragment? {
         val digitalTelcoExtraParam = TopupBillsExtraParam()
         val bundle = intent.extras
         digitalTelcoExtraParam.menuId = bundle?.getString(PARAM_MENU_ID)
                 ?: TelcoComponentType.TELCO_POSTPAID.toString()
-        digitalTelcoExtraParam.categoryId = bundle?.getString(PARAM_CATEGORY_ID)
+        categoryId = bundle?.getString(PARAM_CATEGORY_ID)
                 ?: ""
+        digitalTelcoExtraParam.categoryId = categoryId
         digitalTelcoExtraParam.productId = bundle?.getString(PARAM_PRODUCT_ID)
                 ?: ""
         digitalTelcoExtraParam.clientNumber = bundle?.getString(PARAM_CLIENT_NUMBER)
@@ -33,5 +36,9 @@ class TelcoPostpaidActivity : BaseTelcoActivity(), HasComponent<DigitalTopupComp
 
     override fun getComponent(): DigitalTopupComponent {
         return DigitalTopupInstance.getComponent(application)
+    }
+
+    override fun sendTrackingDotsMenuTelco(userId: String) {
+        topupAnalytics.eventClickDotsMenuTelco(categoryId, userId)
     }
 }

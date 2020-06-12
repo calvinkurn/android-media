@@ -36,6 +36,7 @@ import com.tokopedia.showcase.ShowCaseDialog
 import com.tokopedia.showcase.ShowCaseObject
 import com.tokopedia.showcase.ShowCasePreference
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.common.DigitalTopupEventTracking
 import com.tokopedia.topupbills.generateRechargeCheckoutToken
 import com.tokopedia.topupbills.telco.data.RechargePrefix
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
@@ -65,6 +66,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     override var menuId = TelcoComponentType.TELCO_PREPAID
     private var inputNumberActionType = InputNumberActionType.MANUAL
+    private val listProductTab = mutableListOf<TopupBillsTabItem>()
 
     private var clientNumber = ""
     private var traceStop = false
@@ -128,6 +130,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_digital_telco_prepaid, container, false)
         mainContainer = view.findViewById(R.id.main_container)
+        pageContainer = view.findViewById(R.id.page_container)
         telcoClientNumberWidget = view.findViewById(R.id.telco_input_number)
         viewPager = view.findViewById(R.id.view_pager)
         tabLayout = view.findViewById(R.id.tab_layout)
@@ -146,6 +149,24 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         handleFocusClientNumber()
         getCatalogMenuDetail()
         getDataFromBundle(savedInstanceState)
+
+        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(p0: Int) {
+
+            }
+
+            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
+
+            }
+
+            override fun onPageSelected(pos: Int) {
+                if (showProducts) {
+                    topupAnalytics.eventClickTelcoPrepaidCategory(listProductTab[pos].title)
+                } else {
+                    setTrackingOnTabMenu(listMenu[pos].title)
+                }
+            }
+        })
     }
 
     private fun getCatalogMenuDetail() {
@@ -154,7 +175,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun renderPromoAndRecommendation() {
+        //reset view pager
+
         if (listMenu.size > 0 && !showProducts) {
+            viewPager.adapter = null
             val pagerAdapter = TopupBillsProductTabAdapter(listMenu, childFragmentManager)
             viewPager.adapter = pagerAdapter
             viewPager.offscreenPageLimit = listMenu.size
@@ -296,7 +320,9 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private fun renderProductViewPager() {
-        val listProductTab = mutableListOf<TopupBillsTabItem>()
+        viewPager.adapter = null
+        listProductTab.clear()
+
         listProductTab.add(
                 TopupBillsTabItem(DigitalTelcoProductFragment.newInstance(TelcoComponentName.PRODUCT_PULSA,
                         operatorName, TelcoProductType.PRODUCT_GRID, productId), TelcoComponentName.PRODUCT_PULSA))
@@ -316,22 +342,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         tabLayout.setupWithViewPager(viewPager)
         setTabFromProductSelected()
         showProducts = true
-
-        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(p0: Int) {
-
-            }
-
-            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
-
-            }
-
-            override fun onPageSelected(pos: Int) {
-                if (listProductTab.size == 3) {
-                    topupAnalytics.eventClickTelcoPrepaidCategory(listProductTab[pos].title)
-                }
-            }
-        })
     }
 
     private fun setTabFromProductSelected() {
