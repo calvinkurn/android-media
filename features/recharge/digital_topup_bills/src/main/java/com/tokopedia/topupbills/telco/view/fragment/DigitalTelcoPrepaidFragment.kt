@@ -130,6 +130,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_digital_telco_prepaid, container, false)
         mainContainer = view.findViewById(R.id.main_container)
+        pageContainer = view.findViewById(R.id.page_container)
         telcoClientNumberWidget = view.findViewById(R.id.telco_input_number)
         viewPager = view.findViewById(R.id.view_pager)
         tabLayout = view.findViewById(R.id.tab_layout)

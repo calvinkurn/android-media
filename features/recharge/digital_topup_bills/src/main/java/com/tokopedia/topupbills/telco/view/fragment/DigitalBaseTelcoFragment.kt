@@ -8,6 +8,7 @@ import android.os.Parcelable
 import android.provider.ContactsContract
 import android.text.TextUtils
 import android.view.View
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
@@ -49,6 +50,7 @@ import javax.inject.Inject
 abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     protected lateinit var mainContainer: NestedScrollView
+    protected lateinit var pageContainer: RelativeLayout
     protected lateinit var tickerView: Ticker
     private lateinit var viewModel: SharedTelcoViewModel
 
@@ -264,8 +266,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     override fun onMenuDetailError(error: Throwable) {
         super.onMenuDetailError(error)
-        view?.run {
-            Toaster.make(this, ErrorHandler.getErrorMessage(context, error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+        NetworkErrorHelper.showEmptyState(activity, pageContainer, ErrorHandler.getErrorMessage(context, error)) {
+            getMenuDetail(menuId)
         }
     }
 
