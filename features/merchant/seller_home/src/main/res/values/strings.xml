@@ -111,4 +111,8 @@
     <string name="sah_free_ongkir_title">Tokomu Bebas Ongkir</string>
     <string name="centralized_promo_promo_creation_free_shipping_title">Bebas Ongkir</string>
     <string name="centralized_promo_promo_creation_free_shipping_description">Fitur Bebas Ongkir dapat meningkatkan penjualan dan menarik calon pembeli.</string>
+
+    <string name="settings_free_shipping_title">Bebas Ongkir Aktif</string>
+    <string name="settings_free_shipping_detail">Detail Bebas Ongkir</string>
+    <string name="settings_free_shipping_description">Status Bebas Ongkir aktif untuk kurir **SiCepat** dan **Anteraja**</string>
 </resources>

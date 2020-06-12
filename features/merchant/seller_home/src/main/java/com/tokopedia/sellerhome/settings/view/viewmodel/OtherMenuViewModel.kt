@@ -4,20 +4,29 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.sellerhome.settings.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.SettingShopInfoUiModel
+import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingStatusUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
 class OtherMenuViewModel @Inject constructor(
         @Named("Main") dispatcher: CoroutineDispatcher,
-        private val getAllShopInfoUseCase: GetAllShopInfoUseCase
+        private val getAllShopInfoUseCase: GetAllShopInfoUseCase,
+        private val getShopFreeShippingStatusUseCase: GetShopFreeShippingStatusUseCase,
+        private val userSession: UserSessionInterface,
+        private val remoteConfig: FirebaseRemoteConfigImpl
 ): BaseViewModel(dispatcher) {
 
     companion object {
@@ -27,6 +36,7 @@ class OtherMenuViewModel @Inject constructor(
     private val _settingShopInfoLiveData = MutableLiveData<Result<SettingShopInfoUiModel>>()
     private val _isToasterAlreadyShown = NonNullLiveData(false)
     private val _isStatusBarInitialState = MutableLiveData<Boolean>().apply { value = true }
+    private val _isFreeShippingActive = MutableLiveData<Boolean>()
 
     val settingShopInfoLiveData: LiveData<Result<SettingShopInfoUiModel>>
         get() = _settingShopInfoLiveData
@@ -34,6 +44,8 @@ class OtherMenuViewModel @Inject constructor(
         get() = _isStatusBarInitialState
     val isToasterAlreadyShown: LiveData<Boolean>
         get() = _isToasterAlreadyShown
+    val isFreeShippingActive: LiveData<Boolean>
+        get() = _isFreeShippingActive
 
     fun getAllSettingShopInfo(isToasterRetry: Boolean = false) {
         if (isToasterRetry) {
@@ -46,6 +58,22 @@ class OtherMenuViewModel @Inject constructor(
 
     fun setIsStatusBarInitialState(isInitialState: Boolean) {
         _isStatusBarInitialState.value = isInitialState
+    }
+
+    fun getFreeShippingStatus() {
+        val freeShippingDisabled = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED)
+        val inTransitionPeriod = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD)
+        if(freeShippingDisabled || inTransitionPeriod) return
+
+        launchCatchError(block = {
+            val isFreeShippingActive = withContext(Dispatchers.IO) {
+                val shopId = userSession.shopId.toInt()
+                val params = GetShopFreeShippingStatusUseCase.createRequestParams(listOf(shopId))
+                getShopFreeShippingStatusUseCase.execute(params).firstOrNull()?.status ?: false
+            }
+
+            _isFreeShippingActive.value = isFreeShippingActive
+        }){}
     }
 
     private fun getAllShopInfoData() {
