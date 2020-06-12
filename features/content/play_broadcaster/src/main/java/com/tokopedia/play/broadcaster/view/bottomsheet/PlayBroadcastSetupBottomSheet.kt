@@ -22,10 +22,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
-import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.CoverSourceEnum
 import com.tokopedia.play.broadcaster.ui.model.CoverStarterEnum
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.util.BreadcrumbsModel
 import com.tokopedia.play.broadcaster.util.compatTransitionName
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
@@ -162,8 +162,9 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         mListener?.onSetupCompletedWithData(
                 selectedProducts = viewModel.selectedProductList,
                 cover = PlayCoverUiModel(
-                        url = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
-                        title = "Klarifikasi Tebak Siapa?"
+                        coverImageUri = viewModel.coverImageUri,
+                        coverImageUrl = viewModel.coverImageUrl,
+                        liveTitle = viewModel.liveTitle
                 )
         )
     }

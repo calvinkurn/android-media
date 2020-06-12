@@ -55,9 +55,11 @@ class PlayBroadcastSetupViewModel @Inject constructor(
                             title: String) {
         scope.launch {
             _observableSetupChannel.value = ChannelSetupUiModel(
-                    title = title,
-                    coverUrl = coverUrl,
-                    coverUri = coverUri,
+                    cover = PlayCoverUiModel(
+                            coverImageUri = coverUri,
+                            coverImageUrl = coverUrl,
+                            liveTitle = title
+                    ),
                     selectedProductList = productList
             )
         }
