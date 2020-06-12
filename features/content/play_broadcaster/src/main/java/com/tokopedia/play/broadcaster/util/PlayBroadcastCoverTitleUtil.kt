@@ -20,7 +20,7 @@ object PlayBroadcastCoverTitleUtil {
 
     fun getImageUriFromBitmap(context: Context, bitmap: Bitmap): Uri {
         val bytes = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
         val path = MediaStore.Images.Media.insertImage(
                 context.contentResolver,
                 bitmap,
