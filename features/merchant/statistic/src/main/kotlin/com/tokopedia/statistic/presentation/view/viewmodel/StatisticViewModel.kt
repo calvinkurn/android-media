@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
@@ -70,68 +69,74 @@ class StatisticViewModel @Inject constructor(
 
     fun getWidgetLayout() {
         launchCatchError(block = {
-            _widgetLayout.value = Success(withContext(Dispatchers.IO) {
+            val result: Success<List<BaseWidgetUiModel<*>>> = Success(withContext(Dispatchers.IO) {
                 getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, STATISTIC_PAGE_NAME)
                 return@withContext getLayoutUseCase.executeOnBackground()
             })
+            _widgetLayout.postValue(result)
         }, onError = {
-            _widgetLayout.value = Fail(it)
+            _widgetLayout.postValue(Fail(it))
         })
     }
 
     fun getCardWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            _cardWidgetData.value = Success(withContext(Dispatchers.IO) {
+            val result: Success<List<CardDataUiModel>> = Success(withContext(Dispatchers.IO) {
                 getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(dataKeys, startDate, endDate)
                 return@withContext getCardDataUseCase.executeOnBackground()
             })
+            _cardWidgetData.postValue(result)
         }, onError = {
-            _cardWidgetData.value = Fail(it)
+            _cardWidgetData.postValue(Fail(it))
         })
     }
 
     fun getLineGraphWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            _lineGraphWidgetData.value = Success(withContext(Dispatchers.IO) {
+            val result: Success<List<LineGraphDataUiModel>> = Success(withContext(Dispatchers.IO) {
                 getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(dataKeys, startDate, endDate)
                 return@withContext getLineGraphDataUseCase.executeOnBackground()
             })
+            _lineGraphWidgetData.postValue(result)
         }, onError = {
-            _lineGraphWidgetData.value = Fail(it)
+            _lineGraphWidgetData.postValue(Fail(it))
         })
     }
 
     fun getProgressWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            _progressWidgetData.value = Success(withContext(Dispatchers.IO) {
-                val today = DateTimeUtil.format(java.util.Date().time, DATE_FORMAT)
+            val result: Success<List<ProgressDataUiModel>> = Success(withContext(Dispatchers.IO) {
+                val today: String = DateTimeUtil.format(java.util.Date().time, DATE_FORMAT)
                 getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(today, dataKeys)
                 return@withContext getProgressDataUseCase.executeOnBackground()
             })
+            _progressWidgetData.postValue(result)
         }, onError = {
-            _progressWidgetData.value = Fail(it)
+            _progressWidgetData.postValue(Fail(it))
         })
     }
 
     fun getPostWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            _postListWidgetData.value = Success(withContext(Dispatchers.IO) {
+            val result: Success<List<PostListDataUiModel>> = Success(withContext(Dispatchers.IO) {
                 getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, startDate, endDate)
                 return@withContext getPostDataUseCase.executeOnBackground()
             })
+            _postListWidgetData.postValue(result)
         }, onError = {
-            _postListWidgetData.value = Fail(it)
+            _postListWidgetData.postValue(Fail(it))
         })
     }
 
     fun getCarouselWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            _carouselWidgetData.value = Success(withContext(Dispatchers.IO) {
+            val result: Success<List<CarouselDataUiModel>> = Success(withContext(Dispatchers.IO) {
                 getCarouselDataUseCase.params = GetCarouselDataUseCase.getRequestParams(dataKeys)
                 return@withContext getCarouselDataUseCase.executeOnBackground()
             })
+            _carouselWidgetData.postValue(result)
         }, onError = {
-            _carouselWidgetData.value = Fail(it)
+            _carouselWidgetData.postValue(Fail(it))
         })
     }
 }
