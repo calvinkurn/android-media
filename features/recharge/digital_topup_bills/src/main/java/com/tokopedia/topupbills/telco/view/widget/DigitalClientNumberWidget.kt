@@ -75,10 +75,6 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         }
     }
 
-    fun checkPhone(expression: String, regex: String): Boolean {
-        return Pattern.compile(regex).matcher(expression).matches()
-    }
-
     fun clearFocusAutoComplete() {
         autoCompleteInputNumber.clearFocus()
     }

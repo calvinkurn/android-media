@@ -41,7 +41,7 @@ class DigitalProductBottomSheet : BottomSheetUnify() {
 
             arguments?.let {
                 setTitle(it.getString(TITLE))
-                 details.text = it.getString(DETAILS)
+                details.text = it.getString(DETAILS)
                 productPrice.text = it.getString(PRICE)
 
                 selectItemBtn.setOnClickListener {

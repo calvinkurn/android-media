@@ -31,7 +31,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.generateRechargeCheckoutToken
 import com.tokopedia.topupbills.telco.data.RechargePrefix
-import com.tokopedia.topupbills.telco.data.TelcoCatalogPrefixSelect
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.view.activity.DigitalSearchNumberActivity
@@ -307,23 +306,12 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     } else {
                         postpaidClientNumberWidget.setButtonEnquiry(false)
                     }
-                    renderValidation(operatorData)
+                    validatePhoneNumber(operatorData, postpaidClientNumberWidget)
                 }
             }
         } catch (exception: Exception) {
             postpaidClientNumberWidget.setErrorInputNumber(
                     getString(R.string.telco_number_error_not_found))
-        }
-    }
-
-    private fun renderValidation(operatorData: TelcoCatalogPrefixSelect) {
-        for (validation in operatorData.rechargeCatalogPrefixSelect.validations) {
-            val phoneIsValid = postpaidClientNumberWidget.checkPhone(postpaidClientNumberWidget.getInputNumber(),
-                    validation.rule)
-            if (!phoneIsValid) {
-                postpaidClientNumberWidget.setErrorInputNumber(validation.message)
-                break
-            }
         }
     }
 
