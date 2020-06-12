@@ -126,6 +126,20 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 tabLayout.hide()
                 separator.hide()
             }
+
+            viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+                override fun onPageScrollStateChanged(p0: Int) {
+
+                }
+
+                override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
+
+                }
+
+                override fun onPageSelected(pos: Int) {
+                    setTrackingOnTabMenu(listMenu[pos].title)
+                }
+            })
         }
     }
 

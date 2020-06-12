@@ -134,7 +134,6 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                     seeMoreBottomSheet.setListener(object : DigitalProductBottomSheet.ActionListener {
                         override fun onClickOnProduct() {
                             activity?.run {
-                                itemProduct.attributes.selected = true
                                 sharedModelPrepaid.setProductCatalogSelected(itemProduct)
                                 telcoTelcoProductView.selectProductItem(itemProduct)
                                 topupAnalytics.impressionPickProductDetail(itemProduct, selectedOperatorName, userSession.userId)

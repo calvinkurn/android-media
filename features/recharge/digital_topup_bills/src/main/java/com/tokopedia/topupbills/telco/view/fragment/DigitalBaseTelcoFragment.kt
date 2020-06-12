@@ -26,6 +26,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.DigitalTopupAnalytics
+import com.tokopedia.topupbills.common.DigitalTopupEventTracking
 import com.tokopedia.topupbills.covertContactUriToContactData
 import com.tokopedia.topupbills.telco.data.RechargeCatalogPrefixSelect
 import com.tokopedia.topupbills.telco.data.TelcoCatalogPrefixSelect
@@ -255,7 +256,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         }
         if (recom.isNotEmpty()) {
             viewModel.setRecommendationTelco(recom)
-            listMenu.add(TopupBillsTabItem(DigitalTelcoRecommendationFragment.newInstance(), TelcoComponentName.PROMO))
+            listMenu.add(TopupBillsTabItem(DigitalTelcoRecommendationFragment.newInstance(), TelcoComponentName.RECENTS))
         }
 
         renderPromoAndRecommendation()
@@ -291,6 +292,14 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     override fun onExpressCheckoutError(error: Throwable) {
         NetworkErrorHelper.showRedSnackbar(activity, error.message)
+    }
+
+    protected fun setTrackingOnTabMenu(title: String) {
+        var action = DigitalTopupEventTracking.Action.CLICK_TAB_PROMO
+        if (title == TelcoComponentName.RECENTS) {
+            action = DigitalTopupEventTracking.Action.CLICK_TAB_RECENT
+        }
+        topupAnalytics.eventClickTabMenuTelco(categoryName, userSession.userId, action)
     }
 
     protected abstract fun renderPromoAndRecommendation()
