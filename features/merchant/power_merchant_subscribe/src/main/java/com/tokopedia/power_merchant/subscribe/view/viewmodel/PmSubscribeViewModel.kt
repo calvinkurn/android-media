@@ -69,33 +69,34 @@ class PmSubscribeViewModel @Inject constructor(
     }
 
     fun getFreeShippingStatus() {
-        val freeShippingDisabled = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED)
-        if(freeShippingDisabled) return
+        val freeShippingEnabled = !remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED)
 
-        launchCatchError(block = {
-            val shopId = userSession.shopId.toInt()
-            val pmStatus = _getPmStatusInfoResult.value as? Success<PowerMerchantStatus>
-            val shopScore = pmStatus?.data?.shopScore?.data?.value.orZero()
+        if(freeShippingEnabled) {
+            launchCatchError(block = {
+                val shopId = userSession.shopId.toInt()
+                val pmStatus = _getPmStatusInfoResult.value as? Success<PowerMerchantStatus>
+                val shopScore = pmStatus?.data?.shopScore?.data?.value.orZero()
 
-            val freeShippingStatus = withContext(dispatchers.io) {
-                val params = GetShopFreeShippingStatusUseCase.createRequestParams(listOf(shopId))
-                val response = getShopFreeShippingStatusUseCase.execute(params).first()
+                val freeShippingStatus = withContext(dispatchers.io) {
+                    val params = GetShopFreeShippingStatusUseCase.createRequestParams(listOf(shopId))
+                    val response = getShopFreeShippingStatusUseCase.execute(params).first()
 
-                val isActive = response.status
-                val isEligible = response.isEligible()
-                val isTransitionPeriod = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD)
-                val isShopScoreEligible = shopScore >= MINIMUM_SCORE_ACTIVATE_IDLE
+                    val isActive = response.status
+                    val isEligible = response.isEligible()
+                    val isTransitionPeriod = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD)
+                    val isShopScoreEligible = shopScore >= MINIMUM_SCORE_ACTIVATE_IDLE
 
-                PowerMerchantFreeShippingStatus(
-                    isActive,
-                    isEligible,
-                    isTransitionPeriod,
-                    isShopScoreEligible
-                )
+                    PowerMerchantFreeShippingStatus(
+                        isActive,
+                        isEligible,
+                        isTransitionPeriod,
+                        isShopScoreEligible
+                    )
+                }
+                _getPmFreeShippingStatusResult.value = Success(freeShippingStatus)
+            }) {
+                _getPmFreeShippingStatusResult.value = Fail(it)
             }
-            _getPmFreeShippingStatusResult.value = Success(freeShippingStatus)
-        }) {
-            _getPmFreeShippingStatusResult.value = Fail(it)
         }
     }
 
