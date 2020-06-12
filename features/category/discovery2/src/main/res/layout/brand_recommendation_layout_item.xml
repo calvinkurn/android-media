@@ -21,8 +21,6 @@
             android:id="@+id/brand_recom_iv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingVertical="@dimen/dp_8"
-            android:paddingHorizontal="@dimen/dp_10"
             tools:src="@drawable/empty_photo" />
     </androidx.cardview.widget.CardView>
 
