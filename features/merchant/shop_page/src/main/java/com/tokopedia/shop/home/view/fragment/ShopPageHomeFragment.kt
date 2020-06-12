@@ -70,6 +70,7 @@ import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHomeTabPerfor
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
+import com.tokopedia.shop.product.view.viewmodel.ShopSortSharedViewModel
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -139,6 +140,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private var sortId = ""
     private var sortName = ""
     private var recyclerViewTopPadding = 0
+    private var shopSortSharedViewModel: ShopSortSharedViewModel? = null
 
     val isLogin: Boolean
         get() = viewModel?.isLogin ?: false
@@ -162,6 +164,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         getIntentData()
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopHomeViewModel::class.java)
+        shopSortSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopSortSharedViewModel::class.java)
         customDimensionShopPage.updateCustomDimensionData(shopId, isOfficialStore, isGoldMerchant)
         staggeredGridLayoutManager = StaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
     }
@@ -211,7 +214,21 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 animator.supportsChangeAnimations = false
             }
         }
+        observeShopSortSharedViewModel()
         observeLiveData()
+    }
+
+    private fun observeShopSortSharedViewModel() {
+        shopSortSharedViewModel?.sharedSortData?.observe(this, Observer {
+            if (!shopHomeAdapter.isLoading) {
+                sortId = it.first
+                sortName = it.second
+                shopPageHomeTracking.sortProduct(sortName, isOwner, customDimensionShopPage)
+                shopHomeAdapter.changeSelectedSortFilter(sortId, sortName)
+                shopHomeAdapter.refreshSticky()
+                refreshProductList()
+            }
+        })
     }
 
     override fun onPause() {
@@ -225,6 +242,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.shopHomeLayoutData?.removeObservers(this)
         viewModel?.checkWishlistData?.removeObservers(this)
         viewModel?.flush()
+        shopSortSharedViewModel?.sharedSortData?.removeObservers(this)
         super.onDestroy()
     }
 
@@ -478,6 +496,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     shopPageHomeTracking.sortProduct(sortName, isOwner, customDimensionShopPage)
                     sortId = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE) ?: ""
                     sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME) ?: ""
+                    shopSortSharedViewModel?.changeSharedSortData(sortId, sortName)
                     shopHomeAdapter.changeSelectedSortFilter(sortId, sortName)
                     shopHomeAdapter.refreshSticky()
                     scrollToEtalaseTitlePosition()
@@ -969,6 +988,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
         sortId = ""
         sortName = ""
+        shopSortSharedViewModel?.changeSharedSortData(sortId, sortName)
         shopHomeAdapter.changeSelectedSortFilter(sortId, sortName)
         shopHomeAdapter.refreshSticky()
         scrollToEtalaseTitlePosition()

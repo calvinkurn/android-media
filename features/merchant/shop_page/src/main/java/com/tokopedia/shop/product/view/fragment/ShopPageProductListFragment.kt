@@ -78,6 +78,7 @@ import com.tokopedia.shop.product.view.viewholder.ShopProductAddViewHolder
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 import com.tokopedia.shop.product.view.viewholder.ShopProductsEmptyViewHolder
 import com.tokopedia.shop.product.view.viewmodel.ShopPageProductListViewModel
+import com.tokopedia.shop.product.view.viewmodel.ShopSortSharedViewModel
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
@@ -174,6 +175,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private var selectedEtalaseName = ""
     private var recyclerViewTopPadding = 0
     private var threeDotsClickShopProductViewModel: ShopProductViewModel? = null
+    private var shopSortSharedViewModel: ShopSortSharedViewModel? = null
     private var threeDotsClickShopTrackingType = -1
     private val customDimensionShopPage: CustomDimensionShopPage
         get() {
@@ -488,6 +490,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     shopPageTracking?.sortProduct(sortName, isOwner, customDimensionShopPage)
                     sortId = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE) ?: ""
                     sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME) ?: ""
+                    shopSortSharedViewModel?.changeSharedSortData(sortId, sortName)
                     shopProductAdapter.changeSelectedSortFilter(sortId, sortName)
                     shopProductAdapter.refreshSticky()
                     scrollToProductEtalaseSegment()
@@ -807,6 +810,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         super.onCreate(savedInstanceState)
         context?.let { shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it)) }
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageProductListViewModel::class.java)
+        shopSortSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopSortSharedViewModel::class.java)
         attribution = arguments?.getString(SHOP_ATTRIBUTION, "") ?: ""
     }
 
@@ -891,7 +895,21 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         if (shopInfo != null) {
             loadInitialData()
         }
+        observeShopSortSharedViewModel()
         observeViewModelLiveData()
+    }
+
+    private fun observeShopSortSharedViewModel() {
+        shopSortSharedViewModel?.sharedSortData?.observe(this, Observer {
+            if (!shopProductAdapter.isLoading) {
+                sortId = it.first
+                sortName = it.second
+                shopPageTracking?.sortProduct(sortName, isOwner, customDimensionShopPage)
+                shopProductAdapter.changeSelectedSortFilter(sortId, sortName)
+                shopProductAdapter.refreshSticky()
+                loadNewProductData()
+            }
+        })
     }
 
     override fun onPause() {
@@ -910,6 +928,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         viewModel.newMembershipData.removeObservers(this)
         viewModel.newMerchantVoucherData.removeObservers(this)
         viewModel.flush()
+        shopSortSharedViewModel?.sharedSortData?.removeObservers(this)
         super.onDestroy()
     }
 
@@ -1191,6 +1210,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         }
         sortId = ""
         sortName = ""
+        shopSortSharedViewModel?.changeSharedSortData(sortId, sortName)
         shopProductAdapter.changeSelectedSortFilter(sortId, sortName)
         shopProductAdapter.refreshSticky()
         //multiply with 2 to make first dy value on onScroll function greater than rv top padding
