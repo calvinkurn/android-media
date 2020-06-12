@@ -40,7 +40,6 @@ class GetPostDataUseCaseTest {
     }
 
     private val params = GetPostDataUseCase.getRequestParams(
-            shopId = ArgumentMatchers.anyInt(),
             dataKey = ArgumentMatchers.anyList(),
             startDate = ArgumentMatchers.anyString(),
             endDate = ArgumentMatchers.anyString()

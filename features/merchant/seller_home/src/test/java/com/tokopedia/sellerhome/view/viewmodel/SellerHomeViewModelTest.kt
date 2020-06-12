@@ -411,17 +411,12 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get post widget data then returns success result`() {
-        val shopId = 12345
         val dataKeys = listOf("x", "x")
         val startDate = "02-02-2020"
         val endDate = "07-02-2020"
         val postList = listOf(PostListDataUiModel(), PostListDataUiModel())
 
-        getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(shopId, dataKeys, startDate, endDate)
-
-        every {
-            userSession.shopId
-        } returns shopId.toString()
+        getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, startDate, endDate)
 
         coEvery {
             getPostDataUseCase.executeOnBackground()
@@ -444,17 +439,12 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get post widget data then returns failed result`() {
-        val shopId = 12345
         val dataKeys = listOf("x", "x")
         val startDate = "02-02-2020"
         val endDate = "07-02-2020"
         val exception = MessageErrorException("error msg")
 
-        getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(shopId, dataKeys, startDate, endDate)
-
-        every {
-            userSession.shopId
-        } returns shopId.toString()
+        getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, startDate, endDate)
 
         coEvery {
             getPostDataUseCase.executeOnBackground()

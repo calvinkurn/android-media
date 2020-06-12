@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class GetPostDataResponse(
-        @SerializedName("getPostWidgetData")
+        @SerializedName("fetchPostWidgetData")
         @Expose
         val getPostWidgetData: GetPostDataModel?
 )

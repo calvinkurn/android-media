@@ -160,7 +160,7 @@ class SellerHomeViewModel @Inject constructor(
     fun getPostWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             _postListWidgetData.value = Success(withContext(Dispatchers.IO) {
-                getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(shopId.toIntOrZero(), dataKeys, startDate, endDate)
+                getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, startDate, endDate)
                 return@withContext getPostDataUseCase.executeOnBackground()
             })
         }, onError = {
