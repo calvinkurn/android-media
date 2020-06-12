@@ -210,15 +210,14 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 }
                 telcoClientNumberWidget.setIconOperator(selectedOperator.operator.attributes.imageUrl)
 
+                validatePhoneNumber(this.operatorData, telcoClientNumberWidget)
                 hitTrackingForInputNumber(selectedOperator)
                 renderProductViewPager()
                 getProductListData(selectedOperator.operator.id)
             }
         } catch (exception: Exception) {
-            view?.run {
-                telcoClientNumberWidget.setErrorInputNumber(
-                        getString(R.string.telco_number_error_not_found))
-            }
+            telcoClientNumberWidget.setErrorInputNumber(
+                    getString(R.string.telco_number_error_not_found))
         }
     }
 
@@ -300,13 +299,13 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         val listProductTab = mutableListOf<TopupBillsTabItem>()
         listProductTab.add(
                 TopupBillsTabItem(DigitalTelcoProductFragment.newInstance(TelcoComponentName.PRODUCT_PULSA,
-                operatorName, TelcoProductType.PRODUCT_GRID, productId), TelcoComponentName.PRODUCT_PULSA))
+                        operatorName, TelcoProductType.PRODUCT_GRID, productId), TelcoComponentName.PRODUCT_PULSA))
         listProductTab.add(
                 TopupBillsTabItem(DigitalTelcoProductFragment.newInstance(TelcoComponentName.PRODUCT_PAKET_DATA,
-                operatorName, TelcoProductType.PRODUCT_LIST, productId), TelcoComponentName.PRODUCT_PAKET_DATA))
+                        operatorName, TelcoProductType.PRODUCT_LIST, productId), TelcoComponentName.PRODUCT_PAKET_DATA))
         listProductTab.add(
                 TopupBillsTabItem(DigitalTelcoProductFragment.newInstance(TelcoComponentName.PRODUCT_ROAMING,
-                operatorName, TelcoProductType.PRODUCT_LIST, productId), TelcoComponentName.PRODUCT_ROAMING))
+                        operatorName, TelcoProductType.PRODUCT_LIST, productId), TelcoComponentName.PRODUCT_ROAMING))
 
         val pagerAdapter = TopupBillsProductTabAdapter(listProductTab, childFragmentManager)
         viewPager.adapter = pagerAdapter
@@ -328,7 +327,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             }
 
             override fun onPageSelected(pos: Int) {
-                if (listProductTab.size  == 3) {
+                if (listProductTab.size == 3) {
                     topupAnalytics.eventClickTelcoPrepaidCategory(listProductTab[pos].title)
                 }
             }

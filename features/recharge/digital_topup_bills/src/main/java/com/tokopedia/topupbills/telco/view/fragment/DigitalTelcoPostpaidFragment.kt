@@ -184,7 +184,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                         renderProductFromCustomData()
                     }
                 }
-                postpaidClientNumberWidget.setButtonEnquiryEnable()
             }
 
             override fun onClearAutoComplete() {
@@ -279,7 +278,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     override fun renderProductFromCustomData() {
         try {
             if (postpaidClientNumberWidget.getInputNumber().isNotEmpty()) {
-                operatorSelected = this.operatorData.rechargeCatalogPrefixSelect.prefixes.single {
+                operatorSelected = operatorData.rechargeCatalogPrefixSelect.prefixes.single {
                     postpaidClientNumberWidget.getInputNumber().startsWith(it.value)
                 }
                 operatorSelected?.run {
@@ -301,15 +300,18 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
                         }
                     }
-
                     postpaidClientNumberWidget.setIconOperator(operator.attributes.imageUrl)
+                    if (postpaidClientNumberWidget.getInputNumber().length in 10..14) {
+                        postpaidClientNumberWidget.setButtonEnquiry(true)
+                    } else {
+                        postpaidClientNumberWidget.setButtonEnquiry(false)
+                    }
+                    validatePhoneNumber(operatorData, postpaidClientNumberWidget)
                 }
             }
         } catch (exception: Exception) {
-            view?.run {
-                postpaidClientNumberWidget.setErrorInputNumber(
-                        getString(R.string.telco_number_error_not_found))
-            }
+            postpaidClientNumberWidget.setErrorInputNumber(
+                    getString(R.string.telco_number_error_not_found))
         }
     }
 

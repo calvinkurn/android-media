@@ -1,18 +1,18 @@
-package com.tokopedia.vouchergame.common.view.widget
+package com.tokopedia.common.topupbills.view.bottomsheet
 
 import android.view.View
+import com.tokopedia.common.topupbills.R
 import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.vouchergame.R
-import kotlinx.android.synthetic.main.bottom_sheets_voucher_game_menu.view.*
+import kotlinx.android.synthetic.main.bottom_sheets_topup_bills_menu.view.*
 
 /**
  * @author by resakemal on 26/08/19
  */
-class VoucherGameMenuBottomSheets : BottomSheets() {
+class TopupBillsMenuBottomSheets : BottomSheets() {
 
     lateinit var listener: MenuListener
 
-    override fun getLayoutResourceId(): Int = R.layout.bottom_sheets_voucher_game_menu
+    override fun getLayoutResourceId(): Int = R.layout.bottom_sheets_topup_bills_menu
 
     override fun initView(view: View) {
         with(view) {

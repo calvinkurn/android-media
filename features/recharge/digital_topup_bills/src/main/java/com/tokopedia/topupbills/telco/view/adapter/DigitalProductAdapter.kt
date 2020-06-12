@@ -33,6 +33,23 @@ class DigitalProductAdapter(private val productList: List<TelcoProduct>, private
         }
     }
 
+    fun selectItemProduct(itemProduct: TelcoProduct) {
+        if (itemProduct.attributes.status != BaseTelcoProductViewHolder.PRODUCT_STATUS_OUT_OF_STOCK) {
+            for (i in productList.indices) {
+                if (productList[i].attributes.selected) {
+                    productList[i].attributes.selected = false
+                    listener.notifyItemChanged(i)
+                }
+
+                //handle if product item is already selected still should selected
+                if (productList[i].id == itemProduct.id) {
+                    itemProduct.attributes.selected = true
+                    listener.notifyItemChanged(i)
+                }
+            }
+        }
+    }
+
     override fun onBindViewHolder(holder: BaseTelcoProductViewHolder, position: Int) {
         when (holder) {
             is TelcoProductGridViewHolder -> holder.bindView(productList, productList[position])

@@ -13,6 +13,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.DigitalTopupAnalytics
 import com.tokopedia.topupbills.telco.data.TelcoCatalogProductInput
@@ -125,6 +127,15 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                     seeMoreBottomSheet.setOnDismissListener {
                         topupAnalytics.eventCloseDetailProduct(itemProduct.attributes.categoryId)
                     }
+                    seeMoreBottomSheet.setListener(object : DigitalProductBottomSheet.ActionListener {
+                        override fun onClickOnProduct() {
+                            activity?.run {
+                                itemProduct.attributes.selected = true
+                                sharedModelPrepaid.setProductCatalogSelected(itemProduct)
+                                telcoTelcoProductView.selectProductItem(itemProduct)
+                            }
+                        }
+                    })
                     seeMoreBottomSheet.show(it.supportFragmentManager, "")
 
                 }
@@ -142,22 +153,26 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
         productInputList.map {
             if (it.label == titleProduct) {
-                emptyStateProductView.visibility = View.GONE
-                telcoTelcoProductView.visibility = View.VISIBLE
+                if (it.product.dataCollections.isNotEmpty()) {
+                    emptyStateProductView.hide()
+                    telcoTelcoProductView.show()
 
-                val dataCollections = wrapDataCollections(it)
+                    val dataCollections = wrapDataCollections(it)
 
-                //set true on selected product datacollection list
-                var position = -1
-                if (selectedProductId > 0) {
-                    for (i in dataCollections.indices) {
-                        if (dataCollections[i].id == selectedProductId.toString()) {
-                            dataCollections[i].attributes.selected = true
-                            position = i
+                    //set true on selected product datacollection list
+                    var position = -1
+                    if (selectedProductId > 0) {
+                        for (i in dataCollections.indices) {
+                            if (dataCollections[i].id == selectedProductId.toString()) {
+                                dataCollections[i].attributes.selected = true
+                                position = i
+                            }
                         }
                     }
+                    telcoTelcoProductView.renderProductList(productType, dataCollections, position)
+                } else {
+                    onErrorProductList()
                 }
-                telcoTelcoProductView.renderProductList(productType, dataCollections, position)
             }
         }
     }
@@ -181,26 +196,26 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         hideShimmering()
         titleEmptyState.text = getString(R.string.title_telco_product_empty_state, titleProduct)
         descEmptyState.text = getString(R.string.desc_telco_product_empty_state, titleProduct)
-        emptyStateProductView.visibility = View.VISIBLE
-        telcoTelcoProductView.visibility = View.GONE
+        emptyStateProductView.show()
+        telcoTelcoProductView.hide()
     }
 
     private fun showShimmering() {
-        emptyStateProductView.visibility = View.GONE
-        telcoTelcoProductView.visibility = View.GONE
+        emptyStateProductView.hide()
+        telcoTelcoProductView.hide()
         arguments?.let {
             titleProduct = it.getString(TITLE_PAGE)
             if (titleProduct == TelcoComponentName.PRODUCT_PULSA) {
-                shimmeringGridLayout.visibility = View.VISIBLE
+                shimmeringGridLayout.show()
             } else {
-                shimmeringListLayout.visibility = View.VISIBLE
+                shimmeringListLayout.show()
             }
         }
     }
 
     private fun hideShimmering() {
-        shimmeringGridLayout.visibility = View.GONE
-        shimmeringListLayout.visibility = View.GONE
+        shimmeringGridLayout.hide()
+        shimmeringListLayout.hide()
     }
 
     override fun onDestroy() {

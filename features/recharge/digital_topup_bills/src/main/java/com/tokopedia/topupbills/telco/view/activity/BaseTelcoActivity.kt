@@ -1,12 +1,30 @@
 package com.tokopedia.topupbills.telco.view.activity
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.common.topupbills.view.bottomsheet.TopupBillsMenuBottomSheets
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
+import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
+import javax.inject.Inject
 
-open abstract class BaseTelcoActivity : BaseSimpleActivity() {
+open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<DigitalTopupComponent>,
+        TopupBillsMenuBottomSheets.MenuListener {
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    private fun initInjector() {
+        component.inject(this)
+    }
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_digital_telco
@@ -22,6 +40,8 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        initInjector()
         intent?.handleExtra()
 
         //draw background without overdraw GPU
@@ -40,11 +60,71 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_telco, menu)
+        return true
+    }
+
+    override fun onMenuOpened(featureId: Int, menu: Menu?): Boolean {
+        showBottomMenus()
+        return false
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId ?: "" == R.id.action_overflow_menu) {
+            showBottomMenus()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onOrderListClicked() {
+        if (userSession.isLoggedIn) {
+            navigatePageToOrder()
+        } else {
+            val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
+            startActivityForResult(intent, REQUEST_CODE_LOGIN_TELCO)
+        }
+    }
+
+    override fun onPromoClicked() {
+        RouteManager.route(this, ApplinkConst.PROMO_LIST)
+    }
+
+    override fun onHelpClicked() {
+        RouteManager.route(this, ApplinkConst.CONTACT_US_NATIVE)
+    }
+
+    private fun showBottomMenus() {
+        val menuBottomSheet = TopupBillsMenuBottomSheets()
+        menuBottomSheet.listener = this
+        menuBottomSheet.show(supportFragmentManager, TAG_TELCO_MENU)
+    }
+
+    private fun navigatePageToOrder() {
+        RouteManager.route(this, ApplinkConst.DIGITAL_ORDER)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        data?.let {
+            if (resultCode == Activity.RESULT_OK) {
+                if (requestCode == REQUEST_CODE_LOGIN_TELCO && userSession.isLoggedIn) {
+                    navigatePageToOrder()
+                }
+            }
+        }
+    }
+
     companion object {
+        const val REQUEST_CODE_LOGIN_TELCO = 10000
+
         const val PARAM_MENU_ID = "menu_id"
         const val PARAM_PRODUCT_ID = "product_id"
         const val PARAM_CLIENT_NUMBER = "client_number"
         const val PARAM_CATEGORY_ID = "category_id"
         const val RECHARGE_PRODUCT_EXTRA = "RECHARGE_PRODUCT_EXTRA"
+        const val TAG_TELCO_MENU = "menu_telco"
     }
 }
