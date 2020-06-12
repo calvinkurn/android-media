@@ -22,11 +22,13 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
@@ -93,6 +95,7 @@ public class SearchActivity extends BaseActivity
         BottomSheetListener,
         SearchNavigationListener,
         SearchPerformanceMonitoringListener,
+        ProductListFragment.PageLoadCallback,
         HasComponent<BaseAppComponent> {
 
     private Toolbar toolbar;
@@ -870,5 +873,18 @@ public class SearchActivity extends BaseActivity
             return pageLoadTimePerformanceMonitoring.getPltPerformanceData();
         }
         return null;
+    }
+
+    private ProductListFragment.PageLoadCallback delegate;
+
+    public void setPageLoadCallback(ProductListFragment.PageLoadCallback pageLoadCallback) {
+        delegate = pageLoadCallback;
+    }
+
+    @Override
+    public void onPageLoadFinished(RecyclerView recyclerView, List<Visitable> list) {
+        if (delegate == null) return;
+
+        delegate.onPageLoadFinished(recyclerView, list);
     }
 }

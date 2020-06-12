@@ -60,6 +60,7 @@ import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.analytics.RecommendationTracking;
 import com.tokopedia.search.analytics.SearchEventTracking;
 import com.tokopedia.search.analytics.SearchTracking;
+import com.tokopedia.search.di.module.RemoteConfigModule;
 import com.tokopedia.search.di.module.SearchContextModule;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
@@ -106,6 +107,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -153,6 +155,7 @@ public class ProductListFragment
     private BottomSheetListener bottomSheetListener;
     private RedirectionListener redirectionListener;
     private SearchPerformanceMonitoringListener searchPerformanceMonitoringListener;
+    @Nullable private PageLoadCallback pageLoadCallback;
     private RecyclerView recyclerView;
     private ProductListAdapter adapter;
     private TrackingQueue trackingQueue;
@@ -374,6 +377,7 @@ public class ProductListFragment
         bottomSheetListener = castContextToBottomSheetListener(context);
         redirectionListener = castContextToRedirectionListener(context);
         searchPerformanceMonitoringListener = castContextToSearchPerformanceMonitoring(context);
+        pageLoadCallback = castContextToPageLoadCallback(context);
     }
 
     private SearchNavigationListener castContextToSearchNavigationListener(Context context) {
@@ -403,6 +407,14 @@ public class ProductListFragment
     private SearchPerformanceMonitoringListener castContextToSearchPerformanceMonitoring(Context context) {
         if (context instanceof SearchPerformanceMonitoringListener) {
             return (SearchPerformanceMonitoringListener) context;
+        }
+
+        return null;
+    }
+
+    private PageLoadCallback castContextToPageLoadCallback(Context context) {
+        if (context instanceof PageLoadCallback) {
+            return (PageLoadCallback) context;
         }
 
         return null;
@@ -568,7 +580,7 @@ public class ProductListFragment
     public void setProductList(List<Visitable> list) {
         adapter.clearData();
 
-        stopSearchResultPagePerformanceMonitoring();
+        stopSearchResultPagePerformanceMonitoring(list);
         addProductList(list);
     }
 
@@ -578,7 +590,7 @@ public class ProductListFragment
         adapter.appendItems(list);
     }
 
-    private void stopSearchResultPagePerformanceMonitoring() {
+    private void stopSearchResultPagePerformanceMonitoring(List<Visitable> list) {
         recyclerView.getViewTreeObserver()
                 .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
@@ -586,6 +598,10 @@ public class ProductListFragment
                         if (searchPerformanceMonitoringListener != null) {
                             searchPerformanceMonitoringListener.stopRenderPerformanceMonitoring();
                             searchPerformanceMonitoringListener.stopPerformanceMonitoring();
+                        }
+
+                        if (pageLoadCallback != null) {
+                            pageLoadCallback.onPageLoadFinished(recyclerView, list);
                         }
 
                         recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -854,11 +870,16 @@ public class ProductListFragment
 
     @Override
     public void routeToProductDetail(ProductItemViewModel item, int adapterPosition) {
-        Intent intent = getProductIntent(item.getProductID(), item.getWarehouseID());
+        try {
+            Intent intent = getProductIntent(item.getProductID(), item.getWarehouseID());
 
-        if (intent != null) {
-            intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
-            startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
+            if (intent != null) {
+                intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
+                startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
+            }
+        }
+        catch(Exception error) {
+
         }
     }
 
@@ -1724,5 +1745,9 @@ public class ProductListFragment
     @Override
     public void trackBroadMatchImpression(String alternativeKeyword, List<Object> impressionObjectDataLayer) {
         SearchTracking.trackEventImpressionBroadMatch(getQueryKey(), alternativeKeyword, impressionObjectDataLayer);
+    }
+
+    public interface PageLoadCallback {
+        void onPageLoadFinished(RecyclerView recyclerView, List<Visitable> visitableList);
     }
 }

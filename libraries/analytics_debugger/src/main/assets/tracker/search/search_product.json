@@ -1,4 +1,5 @@
 {
+  "readme": "Search Product Tracking",
   "query" : [
     {
       "event": "clickSearch",
