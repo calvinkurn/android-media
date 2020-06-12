@@ -7,6 +7,8 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
@@ -228,11 +230,11 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                 fragmentManager?.let {
                     bottomSheets.show(it, "")
                 }
-            } else if(isScheduleSizeWithoutDate(productDetailData)) {
+            } else if (isScheduleSizeWithoutDate(productDetailData)) {
                 goToTicketPageWithoutDate()
             } else {
                 view?.let {
-                    Toaster.make(it, it.context.getString(R.string.ent_pdp_empty_package), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,it.context.getString(R.string.ent_checkout_error))
+                    Toaster.make(it, it.context.getString(R.string.ent_pdp_empty_package), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.context.getString(R.string.ent_checkout_error))
                 }
             }
         }
@@ -291,8 +293,8 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         rv_event_pdp.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                    widget_event_pdp_tab_section.setScrolledSection((rv_event_pdp.layoutManager
-                            as LinearLayoutManager).findFirstVisibleItemPosition())
+                widget_event_pdp_tab_section.setScrolledSection((rv_event_pdp.layoutManager
+                        as LinearLayoutManager).findFirstVisibleItemPosition())
             }
         })
     }
@@ -316,7 +318,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         val startDate = getStartDate(productDetailData)
         val endDate = getEndDate(productDetailData)
         context?.let {
-            RouteManager.route(it, getString(R.string.ent_pdp_param_to_package,ApplinkConstInternalEntertainment.EVENT_PACKAGE,urlPDP,selectedDate,startDate,endDate))
+            RouteManager.route(it, getString(R.string.ent_pdp_param_to_package, ApplinkConstInternalEntertainment.EVENT_PACKAGE, urlPDP, selectedDate, startDate, endDate))
         }
     }
 
@@ -389,8 +391,9 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
         val viewParent = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_event_pdp_about, null)
         val bottomSheets = BottomSheetUnify()
-
+        val webView = viewParent.web_view
         bottomSheets.apply {
+            isFullpage = true
             setChild(viewParent)
             setTitle(title)
             setCloseClickListener { bottomSheets.dismiss() }
@@ -401,13 +404,16 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         }
 
         bottomSheets.setShowListener {
-            val webView = viewParent.web_view
-            webView.loadData(value, "text/html", "UTF-8")
             val loader = viewParent.loader_unify
-            Handler().postDelayed({
-                webView.visibility = View.VISIBLE
-                loader.visibility = View.GONE
-            },2000)
+
+            webView.loadData(value, "text/html", "UTF-8")
+            webView.webViewClient = object : WebViewClient(){
+                override fun onPageFinished(view: WebView?, url: String?) {
+                    super.onPageFinished(view, url)
+                    webView.visibility = View.VISIBLE
+                    loader.visibility = View.GONE
+                }
+            }
         }
 
     }
