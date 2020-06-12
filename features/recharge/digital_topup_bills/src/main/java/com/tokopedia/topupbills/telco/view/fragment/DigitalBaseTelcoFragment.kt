@@ -32,12 +32,14 @@ import com.tokopedia.topupbills.telco.data.TelcoCatalogPrefixSelect
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedTelcoViewModel
+import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 /**
@@ -220,6 +222,17 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         mainContainer.setOnTouchListener { view1, motionEvent ->
             view1.clearFocus()
             false
+        }
+    }
+
+    protected fun validatePhoneNumber(operatorData: TelcoCatalogPrefixSelect, clientNumberWidget: DigitalClientNumberWidget) {
+        for (validation in operatorData.rechargeCatalogPrefixSelect.validations) {
+            val phoneIsValid = Pattern.compile(validation.rule)
+                    .matcher(clientNumberWidget.getInputNumber()).matches()
+            if (!phoneIsValid) {
+                clientNumberWidget.setErrorInputNumber(validation.message)
+                break
+            }
         }
     }
 

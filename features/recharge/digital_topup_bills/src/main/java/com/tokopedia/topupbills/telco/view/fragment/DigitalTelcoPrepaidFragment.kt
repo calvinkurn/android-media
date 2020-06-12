@@ -39,7 +39,6 @@ import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.DigitalTopupEventTracking
 import com.tokopedia.topupbills.generateRechargeCheckoutToken
 import com.tokopedia.topupbills.telco.data.RechargePrefix
-import com.tokopedia.topupbills.telco.data.TelcoCatalogPrefixSelect
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
@@ -212,7 +211,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 }
                 telcoClientNumberWidget.setIconOperator(selectedOperator.operator.attributes.imageUrl)
 
-                renderValidation(this.operatorData)
+                validatePhoneNumber(this.operatorData, telcoClientNumberWidget)
                 hitTrackingForInputNumber(selectedOperator)
                 renderProductViewPager()
                 getProductListData(selectedOperator.operator.id)
@@ -220,17 +219,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         } catch (exception: Exception) {
             telcoClientNumberWidget.setErrorInputNumber(
                     getString(R.string.telco_number_error_not_found))
-        }
-    }
-
-    private fun renderValidation(operatorData: TelcoCatalogPrefixSelect) {
-        for (validation in operatorData.rechargeCatalogPrefixSelect.validations) {
-            val phoneIsValid = telcoClientNumberWidget.checkPhone(telcoClientNumberWidget.getInputNumber(),
-                    validation.rule)
-            if (!phoneIsValid) {
-                telcoClientNumberWidget.setErrorInputNumber(validation.message)
-                break
-            }
         }
     }
 
