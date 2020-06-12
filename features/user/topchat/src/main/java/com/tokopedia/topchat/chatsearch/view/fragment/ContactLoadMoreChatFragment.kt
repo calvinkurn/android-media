@@ -2,14 +2,19 @@ package com.tokopedia.topchat.chatsearch.view.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.graphql.CommonUtils
+import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatsearch.data.SearchResult
 import com.tokopedia.topchat.chatsearch.di.ChatSearchComponent
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactory
@@ -29,6 +34,11 @@ class ContactLoadMoreChatFragment : BaseListFragment<Visitable<*>, ChatSearchTyp
     private val viewModel by lazy { viewModelFragmentProvider.get(ChatContactLoadMoreViewModel::class.java) }
 
     override fun isAutoLoadEnabled(): Boolean = true
+    override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_chat_contact_load_more_fragment, container, false)
+    }
 
     override fun onAttachActivity(context: Context?) {
         if (context is ContactLoadMoreChatListener) {
@@ -43,12 +53,21 @@ class ContactLoadMoreChatFragment : BaseListFragment<Visitable<*>, ChatSearchTyp
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupRecyclerView()
         initToolbarTittle()
         setupObserver()
     }
 
     override fun loadData(page: Int) {
         viewModel.loadSearchResult(page, query, firstResponse)
+    }
+
+    private fun setupRecyclerView() {
+        view?.findViewById<VerticalRecyclerView>(recyclerViewResourceId)?.apply {
+            clearItemDecoration()
+            overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+            clipToPadding = false
+        }
     }
 
     private fun setupObserver() {
