@@ -43,7 +43,12 @@ class InfoContainerViewHolder(
                 onImpression(element.dataKey)
             }
         }
-        subInfoAdapter.setSubInfoItems(element.informationList)
+        with(subInfoAdapter) {
+            setSubInfoItems(element.informationList)
+            setOnPromoCodeClicked {
+                element.onPromoCodeCopied()
+            }
+        }
     }
 
     private fun getLinearLayoutManager(context: Context): LinearLayoutManager {

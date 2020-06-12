@@ -1,6 +1,7 @@
 package com.tokopedia.vouchercreation.common.analytics
 
 import com.tokopedia.track.TrackApp
+import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 
 object VoucherCreationTracking {
@@ -78,11 +79,45 @@ object VoucherCreationTracking {
         )
     }
 
+    fun sendVoucherDetailClickTracking(isDetailEvent: Boolean = true,
+                                       @VoucherStatusConst status: Int,
+                                       action: String,
+                                       label: String = "",
+                                       userId: String) {
+        sendGeneralTracking(
+                event =
+                        if (isDetailEvent) {
+                            VoucherCreationAnalyticConstant.Event.CLICK_VOUCHER_DETAIL
+                        } else {
+                            VoucherCreationAnalyticConstant.Event.CLICK_VOUCHER_LIST
+                        },
+                category =
+                        when(status) {
+                            VoucherStatusConst.NOT_STARTED -> VoucherCreationAnalyticConstant.EventCategory.VoucherDetail.UPCOMING
+                            VoucherStatusConst.ONGOING -> VoucherCreationAnalyticConstant.EventCategory.VoucherDetail.ONGOING
+                            VoucherStatusConst.STOPPED -> VoucherCreationAnalyticConstant.EventCategory.VoucherDetail.CANCELLED
+                            VoucherStatusConst.ENDED -> VoucherCreationAnalyticConstant.EventCategory.VoucherDetail.ENDED
+                            else -> ""
+                        },
+                action = action,
+                label = label,
+                screenName =
+                        when(status) {
+                            VoucherStatusConst.NOT_STARTED -> VoucherCreationAnalyticConstant.ScreenName.VoucherDetail.UPCOMING
+                            VoucherStatusConst.ONGOING -> VoucherCreationAnalyticConstant.ScreenName.VoucherDetail.ONGOING
+                            VoucherStatusConst.STOPPED -> VoucherCreationAnalyticConstant.ScreenName.VoucherDetail.CANCELLED
+                            VoucherStatusConst.ENDED -> VoucherCreationAnalyticConstant.ScreenName.VoucherDetail.ENDED
+                            else -> ""
+                        },
+                userId = userId
+        )
+    }
+
     fun sendVoucherListImpressionTracking(action: String,
                                           isActive: Boolean,
                                           userId: String) {
         sendGeneralTracking(
-                event = VoucherCreationAnalyticConstant.Event.OPEN_SCREEN,
+                event = VoucherCreationAnalyticConstant.Event.VIEW_VOUCHER_LIST_IRIS,
                 category =
                         if (isActive) {
                             VoucherCreationAnalyticConstant.EventCategory.VoucherList.ACTIVE
@@ -132,6 +167,34 @@ object VoucherCreationTracking {
                     VoucherCreationStep.REVIEW -> VoucherCreationAnalyticConstant.ScreenName.VoucherCreation.REVIEW
                     else -> ""
                 },
+                userId = userId
+        )
+    }
+
+    fun sendVoucherDetailImpressionTracking(@VoucherStatusConst status: Int,
+                                            action: String,
+                                            label: String = "",
+                                            userId: String) {
+        sendGeneralTracking(
+                event = VoucherCreationAnalyticConstant.Event.VIEW_VOUCHER_DETAIL_IRIS,
+                category =
+                    when(status) {
+                        VoucherStatusConst.NOT_STARTED -> VoucherCreationAnalyticConstant.EventCategory.VoucherDetail.UPCOMING
+                        VoucherStatusConst.ONGOING -> VoucherCreationAnalyticConstant.EventCategory.VoucherDetail.ONGOING
+                        VoucherStatusConst.STOPPED -> VoucherCreationAnalyticConstant.EventCategory.VoucherDetail.CANCELLED
+                        VoucherStatusConst.ENDED -> VoucherCreationAnalyticConstant.EventCategory.VoucherDetail.ENDED
+                        else -> ""
+                    },
+                action = action,
+                label = label,
+                screenName =
+                    when(status) {
+                        VoucherStatusConst.NOT_STARTED -> VoucherCreationAnalyticConstant.ScreenName.VoucherDetail.UPCOMING
+                        VoucherStatusConst.ONGOING -> VoucherCreationAnalyticConstant.ScreenName.VoucherDetail.ONGOING
+                        VoucherStatusConst.STOPPED -> VoucherCreationAnalyticConstant.ScreenName.VoucherDetail.CANCELLED
+                        VoucherStatusConst.ENDED -> VoucherCreationAnalyticConstant.ScreenName.VoucherDetail.ENDED
+                        else -> ""
+                    },
                 userId = userId
         )
     }

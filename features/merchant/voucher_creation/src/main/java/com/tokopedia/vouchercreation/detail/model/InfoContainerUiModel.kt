@@ -16,6 +16,8 @@ data class InfoContainerUiModel(
         val impressHolder: ImpressHolder = ImpressHolder()
 ) : VoucherDetailUiModel {
 
+    var onPromoCodeCopied: () -> Unit = {}
+
     override fun type(typeFactory: VoucherDetailAdapterFactory): Int {
         return typeFactory.type(this)
     }

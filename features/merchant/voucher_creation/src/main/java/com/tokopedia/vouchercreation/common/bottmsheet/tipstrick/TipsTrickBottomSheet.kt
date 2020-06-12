@@ -10,19 +10,29 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.adapter.TipsTrickAdapter
 import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.adapter.TipsTrickCarouselAdapter
 import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.model.TipsTrickCarouselModel
 import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.model.TipsTrickModel
+import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
+import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.decorator.VoucherDisplayItemDecoration
 import com.tokopedia.vouchercreation.create.view.enums.VoucherDisplay
+import kotlinx.android.synthetic.main.bottomsheet_mvc_tips_trick.*
 import kotlinx.android.synthetic.main.bottomsheet_mvc_tips_trick.view.*
 import timber.log.Timber
+import javax.inject.Inject
 
 /**
  * Created By @ilhamsuaib on 08/05/20
@@ -33,8 +43,13 @@ class TipsTrickBottomSheet(
         private val isPrivateVoucher: Boolean
 ) : BottomSheetUnify() {
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
     private val tipsTrickAdapter by lazy { TipsTrickAdapter() }
-    private val carouselAdapter by lazy { TipsTrickCarouselAdapter() }
+    private val carouselAdapter by lazy { TipsTrickCarouselAdapter(userSession.userId) }
+
+    private val downloadImpressHolder = ImpressHolder()
 
     private var ctaDownloadCallback: () -> Unit = {}
     private var ctaShareCallback: () -> Unit = {}
@@ -62,9 +77,22 @@ class TipsTrickBottomSheet(
         setupCarouselImage(child)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        initInjector()
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupView()
         view.setupBottomSheetChildNoMargin()
+    }
+
+    private fun initInjector() {
+        DaggerVoucherCreationComponent.builder()
+                .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
+                .build()
+                .inject(this)
     }
 
     private fun getBottomSheetTitle(): String {
@@ -188,6 +216,16 @@ class TipsTrickBottomSheet(
                 )
         )
         tipsTrickAdapter.setItems(items)
+    }
+
+    private fun setupView() {
+        btnMvcTipsTrickDownload?.addOnImpressionListener(downloadImpressHolder) {
+            VoucherCreationTracking.sendVoucherDetailImpressionTracking(
+                    status = VoucherStatusConst.ONGOING,
+                    action = VoucherCreationAnalyticConstant.EventAction.Impression.DOWNLOAD_VOUCHER,
+                    userId = userSession.userId
+            )
+        }
     }
 
     private fun View.setupBottomSheetChildNoMargin() {

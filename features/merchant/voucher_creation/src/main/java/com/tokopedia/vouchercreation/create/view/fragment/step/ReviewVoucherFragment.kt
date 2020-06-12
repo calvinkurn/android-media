@@ -325,11 +325,13 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     override fun onImpression(dataKey: String) {
         when(dataKey) {
             PERIOD_DATA_KEY -> {
-                VoucherCreationTracking.sendCreateVoucherImpressionTracking(
-                        step = VoucherCreationStep.REVIEW,
-                        action = VoucherCreationAnalyticConstant.EventAction.Impression.DISPLAY_PERIOD,
-                        userId = userSession.userId
-                )
+                if (!isEdit) {
+                    VoucherCreationTracking.sendCreateVoucherImpressionTracking(
+                            step = VoucherCreationStep.REVIEW,
+                            action = VoucherCreationAnalyticConstant.EventAction.Impression.DISPLAY_PERIOD,
+                            userId = userSession.userId
+                    )
+                }
             }
             else -> return
         }

@@ -5,16 +5,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking.sendVoucherDetailImpressionTracking
 import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.model.TipsTrickCarouselModel
+import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import kotlinx.android.synthetic.main.item_mvc_tips_trick_carousel.view.*
 
 /**
  * Created By @ilhamsuaib on 08/05/20
  */
 
-class TipsTrickCarouselAdapter : RecyclerView.Adapter<TipsTrickCarouselAdapter.ViewHolder>() {
+class TipsTrickCarouselAdapter(private val userId: String) : RecyclerView.Adapter<TipsTrickCarouselAdapter.ViewHolder>() {
 
     private var items: List<TipsTrickCarouselModel> = emptyList()
 
@@ -38,6 +42,15 @@ class TipsTrickCarouselAdapter : RecyclerView.Adapter<TipsTrickCarouselAdapter.V
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(item: TipsTrickCarouselModel) = with(itemView) {
+            addOnImpressionListener(item.impressHolder) {
+                sendVoucherDetailImpressionTracking(
+                        status = VoucherStatusConst.ONGOING,
+                        action = VoucherCreationAnalyticConstant.EventAction.Impression.VOUCHER_DETAIL_DISPLAY,
+                        label = item.title,
+                        userId = userId
+                )
+            }
+
             val dp12 = context.resources.getDimension(R.dimen.mvc_dimen_12dp)
             val cardWidth = getScreenWidth().minus(dp12.toInt() * 3)
             parentMvcCarousel.layoutParams.width = cardWidth

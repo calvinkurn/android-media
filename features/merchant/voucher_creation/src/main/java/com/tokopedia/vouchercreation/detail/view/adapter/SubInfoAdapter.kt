@@ -27,6 +27,8 @@ class SubInfoAdapter : RecyclerView.Adapter<SubInfoAdapter.SubInfoViewHolder>() 
 
     private val items = mutableListOf<SubInfoItemUiModel>()
 
+    private var onPromoCodeClick: () -> Unit = {}
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubInfoViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return SubInfoViewHolder(inflater.inflate(R.layout.item_mvc_sub_info, parent, false))
@@ -45,6 +47,10 @@ class SubInfoAdapter : RecyclerView.Adapter<SubInfoAdapter.SubInfoViewHolder>() 
         notifyDataSetChanged()
     }
 
+    fun setOnPromoCodeClicked(action: () -> Unit) {
+        onPromoCodeClick = action
+    }
+
     inner class SubInfoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(model: SubInfoItemUiModel) = with(itemView) {
@@ -56,6 +62,7 @@ class SubInfoAdapter : RecyclerView.Adapter<SubInfoAdapter.SubInfoViewHolder>() 
             tvMvcInfoValue.text = model.infoValue.parseAsHtml()
             imgMvcVoucherCopy.isVisible = model.canCopy
             imgMvcVoucherCopy.setOnClickListener {
+                onPromoCodeClick()
                 context?.run {
                     SharingUtil.copyTextToClipboard(this, PROMO_CODE_LABEL, model.infoValue)
                 }

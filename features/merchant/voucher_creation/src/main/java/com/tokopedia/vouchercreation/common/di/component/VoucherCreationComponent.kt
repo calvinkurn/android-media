@@ -1,6 +1,7 @@
 package com.tokopedia.vouchercreation.common.di.component
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.TipsTrickBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.VoucherPeriodBottomSheet
 import com.tokopedia.vouchercreation.common.di.module.VoucherCreationModule
 import com.tokopedia.vouchercreation.common.di.module.VoucherCreationViewModelModule
@@ -37,4 +38,5 @@ interface VoucherCreationComponent {
     fun inject(voucherDetailFragment: VoucherDetailFragment)
     fun inject(editQuotaBottomSheet: EditQuotaBottomSheet)
     fun inject(tipsAndTrickBottomSheetFragment: TipsAndTrickBottomSheetFragment)
+    fun inject(tipsTrickBottomSheet: TipsTrickBottomSheet)
 }

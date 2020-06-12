@@ -15,8 +15,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.kotlin.util.DownloadHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -24,6 +26,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.ScreenName
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
@@ -81,6 +85,8 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
         FooterButtonUiModel(context?.getString(R.string.mvc_duplicate_voucher).toBlankOrString(), "")
     }
 
+    private val impressHolder = ImpressHolder()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         observeLiveData()
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -92,16 +98,18 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
 
         setupView()
 
-        VoucherCreationTracking.sendOpenScreenTracking(
-                when(voucherUiModel?.status) {
-                    VoucherStatusConst.NOT_STARTED -> VoucherCreationAnalyticConstant.ScreenName.VoucherDetail.UPCOMING
-                    VoucherStatusConst.ONGOING -> VoucherCreationAnalyticConstant.ScreenName.VoucherDetail.ONGOING
-                    VoucherStatusConst.ENDED -> VoucherCreationAnalyticConstant.ScreenName.VoucherDetail.ENDED
-                    VoucherStatusConst.STOPPED -> VoucherCreationAnalyticConstant.ScreenName.VoucherDetail.CANCELLED
-                    else -> return
-                },
-                userSession.isLoggedIn,
-                userSession.userId)
+        view.addOnImpressionListener(impressHolder) {
+            VoucherCreationTracking.sendOpenScreenTracking(
+                    when(voucherUiModel?.status) {
+                        VoucherStatusConst.NOT_STARTED -> ScreenName.VoucherDetail.UPCOMING
+                        VoucherStatusConst.ONGOING -> ScreenName.VoucherDetail.ONGOING
+                        VoucherStatusConst.ENDED -> ScreenName.VoucherDetail.ENDED
+                        VoucherStatusConst.STOPPED -> ScreenName.VoucherDetail.CANCELLED
+                        else -> return@addOnImpressionListener
+                    },
+                    userSession.isLoggedIn,
+                    userSession.userId)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -123,13 +131,34 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
     override fun loadData(page: Int) {}
 
     override fun onInfoContainerCtaClick(dataKey: String) {
-        val editStep =
-                when(dataKey) {
-                    VOUCHER_INFO_DATA_KEY -> VoucherCreationStep.TARGET
-                    VOUCHER_BENEFIT_DATA_KEY -> VoucherCreationStep.BENEFIT
-                    PERIOD_DATA_KEY -> VoucherCreationStep.PERIOD
-                    else -> VoucherCreationStep.REVIEW
-                }
+        val editStep: Int
+        val editInfoEventAction: String
+        when(dataKey) {
+            VOUCHER_INFO_DATA_KEY -> {
+                editStep = VoucherCreationStep.TARGET
+                editInfoEventAction = Click.EDIT_INFO_VOUCHER
+            }
+            VOUCHER_BENEFIT_DATA_KEY -> {
+                editStep = VoucherCreationStep.BENEFIT
+                editInfoEventAction = Click.EDIT_VOUCHER_BENEFIT
+            }
+            PERIOD_DATA_KEY -> {
+                editStep = VoucherCreationStep.PERIOD
+                editInfoEventAction = Click.EDIT_PERIOD
+            }
+            else -> {
+                editStep = VoucherCreationStep.REVIEW
+                editInfoEventAction = ""
+            }
+        }
+
+        VoucherCreationTracking.sendVoucherDetailClickTracking(
+                isDetailEvent = false,
+                status = voucherUiModel?.status ?: VoucherStatusConst.NOT_STARTED,
+                action = editInfoEventAction,
+                userId = userSession.userId
+        )
+
         val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER).apply {
             putExtra(CreateMerchantVoucherStepsActivity.EDIT_VOUCHER, voucherUiModel)
             putExtra(CreateMerchantVoucherStepsActivity.IS_EDIT, true)
@@ -138,11 +167,32 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
         startActivity(intent)
     }
 
+    override fun onTickerClicked() {
+        VoucherCreationTracking.sendVoucherDetailClickTracking(
+                isDetailEvent = voucherUiModel?.status != VoucherStatusConst.NOT_STARTED,
+                status = voucherUiModel?.status ?: VoucherStatusConst.NOT_STARTED,
+                action = Click.TOOLTIP_SPENDING_ESTIMATION,
+                userId = userSession.userId
+        )
+    }
+
     override fun onFooterButtonClickListener() {
         voucherUiModel?.run {
+            // Bagikan Voucher button
             if (status == VoucherStatusConst.ONGOING) {
+                VoucherCreationTracking.sendVoucherDetailClickTracking(
+                        status = voucherUiModel?.status ?: VoucherStatusConst.NOT_STARTED,
+                        action = Click.SHARE_VOUCHER,
+                        userId = userSession.userId
+                )
                 showShareBottomSheet()
             } else {
+                //Duplikat Voucher button
+                VoucherCreationTracking.sendVoucherDetailClickTracking(
+                        status = voucherUiModel?.status ?: VoucherStatusConst.NOT_STARTED,
+                        action = Click.DUPLICATE_VOUCHER,
+                        userId = userSession.userId
+                )
                 activity?.let {
                     val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER).apply {
                         putExtra(CreateMerchantVoucherStepsActivity.DUPLICATE_VOUCHER, this@run)
@@ -156,6 +206,11 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
     }
 
     override fun onFooterCtaTextClickListener() {
+        VoucherCreationTracking.sendVoucherDetailClickTracking(
+                status = voucherUiModel?.status ?: VoucherStatusConst.NOT_STARTED,
+                action = Click.IN_HERE,
+                userId = userSession.userId
+        )
         voucherUiModel?.run {
             when(status) {
                 VoucherStatusConst.NOT_STARTED -> {
@@ -177,12 +232,27 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
     }
 
     override fun showTipsAndTrickBottomSheet() {
+        VoucherCreationTracking.sendVoucherDetailClickTracking(
+                status = voucherUiModel?.status ?: VoucherStatusConst.NOT_STARTED,
+                action = Click.COPY_PROMO_CODE,
+                userId = userSession.userId
+        )
         if (!isAdded) return
         TipsTrickBottomSheet(context ?: return, !(voucherUiModel?.isPublic ?: true))
                 .setOnDownloadClickListener {
+                    VoucherCreationTracking.sendVoucherDetailClickTracking(
+                            status = voucherUiModel?.status ?: VoucherStatusConst.NOT_STARTED,
+                            action = Click.DOWNLOAD_VOUCHER,
+                            userId = userSession.userId
+                    )
                     showDownloadBottomSheet()
                 }
                 .setOnShareClickListener {
+                    VoucherCreationTracking.sendVoucherDetailClickTracking(
+                            status = voucherUiModel?.status ?: VoucherStatusConst.NOT_STARTED,
+                            action = Click.SHARE_VOUCHER,
+                            userId = userSession.userId
+                    )
                     showShareBottomSheet()
                 }
                 .show(childFragmentManager)
@@ -209,6 +279,19 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
 
     override fun onErrorTryAgain() {
         setupView()
+    }
+
+    override fun onImpression(dataKey: String) {
+        when(dataKey) {
+            PERIOD_DATA_KEY -> {
+                VoucherCreationTracking.sendVoucherDetailClickTracking(
+                        status = voucherUiModel?.status ?: VoucherStatusConst.NOT_STARTED,
+                        action = VoucherCreationAnalyticConstant.EventAction.Impression.DISPLAY_PERIOD,
+                        userId = userSession.userId
+                )
+            }
+            else -> return
+        }
     }
 
     private fun observeLiveData() {
@@ -321,8 +404,8 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
 
             if (status == VoucherStatusConst.ENDED) {
                 voucherDetailInfoList.add(
-                        //Todo: Remove
-                        PromoPerformanceUiModel("Rp.-", bookedQuota, quota)
+                        // pass empty string for now as product requirement changed temporarily
+                        PromoPerformanceUiModel("", bookedQuota, quota)
                 )
             }
 
@@ -336,11 +419,23 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
                 val voucherInfoHasCta = voucherUiModel.status == VoucherStatusConst.NOT_STARTED && voucherUiModel.type != VoucherTypeConst.FREE_ONGKIR
                 addAll(listOf(
                         DividerUiModel(DividerUiModel.THICK),
-                        getVoucherInfoSection(voucherTargetType, name, code, voucherInfoHasCta),
+                        getVoucherInfoSection(voucherTargetType, name, code, voucherInfoHasCta).apply {
+                            onPromoCodeCopied = {
+                                VoucherCreationTracking.sendVoucherDetailClickTracking(
+                                        isDetailEvent = status == VoucherStatusConst.NOT_STARTED,
+                                        status = voucherUiModel.status,
+                                        action = Click.COPY_PROMO_CODE,
+                                        userId = userSession.userId
+                                )
+                            }
+                        },
                         DividerUiModel(DividerUiModel.THIN)
                 ))
                 getVoucherImageType(type, discountTypeFormatted, discountAmt, discountAmtMax)?.let { imageType ->
                     add(getVoucherBenefitSection(imageType, minimumAmt, quota, voucherInfoHasCta))
+                }
+                if (status == VoucherStatusConst.NOT_STARTED || status == VoucherStatusConst.STOPPED) {
+                    add(getExpenseEstimationSection(discountAmtMax, quota))
                 }
                 addAll(listOf(
                         DividerUiModel(DividerUiModel.THIN),
