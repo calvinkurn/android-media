@@ -153,8 +153,16 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
             }
 
             override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                liveTitle = text.toString()
-                setupNextButton()
+                text?.let {
+                    tvPlayTitleCounter.text = getString(R.string.play_prepare_cover_title_counter,
+                            it.length, MAX_CHARS)
+                    liveTitle = text.toString()
+                    setupNextButton()
+                }
+                if (text == null) {
+                    tvPlayTitleCounter.text = getString(R.string.play_prepare_cover_title_counter,
+                            0, MAX_CHARS)
+                }
             }
         })
         tvPlayCoverTitleLabel.text = HtmlCompat.fromHtml(getString(R.string.play_prepare_cover_title_default_title_label),

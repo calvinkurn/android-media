@@ -94,6 +94,15 @@
             android:inputType="text"
             android:textColor="@color/Neutral_N0" />
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvPlayTitleCounter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:textColor="@color/Neutral_N0"
+            app:typographyType="body_3"
+            tools:text="31/38" />
+
     </LinearLayout>
 
     <View
