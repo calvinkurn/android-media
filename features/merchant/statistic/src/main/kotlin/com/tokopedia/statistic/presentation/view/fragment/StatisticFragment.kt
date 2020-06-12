@@ -201,10 +201,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun setOnSuccessGetLayout(widgets: List<BaseWidgetUiModel<*>>) {
-        if (widgets.isEmpty()) {
-            setNoWidgetFound()
-            return
-        }
         recyclerView.visible()
         view?.globalErrorStc?.gone()
 
@@ -221,10 +217,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
 
         renderWidgetOrGetWidgetDataFirst(widgets)
-    }
-
-    private fun setNoWidgetFound() {
-
     }
 
     /**
