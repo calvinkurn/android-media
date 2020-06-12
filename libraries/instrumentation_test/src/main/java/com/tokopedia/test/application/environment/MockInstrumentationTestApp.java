@@ -40,13 +40,14 @@ import com.tokopedia.track.interfaces.ContextAnalytics;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 
-public class MockInstrumentationTestApp extends BaseMainApplication implements TkpdCoreRouter, NetworkRouter {
+public class MockInstrumentationTestApp extends BaseMainApplication implements TkpdCoreRouter, NetworkRouter, MockResponseInterface {
 
     @Override
     public void onCreate() {
@@ -78,6 +79,16 @@ public void sendAnalyticsAnomalyResponse(String title,
         if (GlobalConfig.DEBUG) {
             List<Interceptor> testInterceptors = new ArrayList<>();
             testInterceptors.add(new MockInterceptor(MockResponseList.INSTANCE.create(this)));
+
+            GraphqlClient.reInitRetrofitWithInterceptors(testInterceptors, this);
+        }
+    }
+
+    @Override
+    public void reInitMockResponse(HashMap<String, String> mapMockResponse) {
+        if (GlobalConfig.DEBUG) {
+            List<Interceptor> testInterceptors = new ArrayList<>();
+            testInterceptors.add(new MockInterceptor(mapMockResponse));
 
             GraphqlClient.reInitRetrofitWithInterceptors(testInterceptors, this);
         }
@@ -147,21 +158,6 @@ public void sendAnalyticsAnomalyResponse(String title,
 
     @Override
     public Class<?> getInboxResCenterActivityClassReal() {
-        return null;
-    }
-
-    @Override
-    public Intent getActivitySellingTransactionShippingStatusReal(Context mContext) {
-        return null;
-    }
-
-    @Override
-    public Class getSellingActivityClassReal() {
-        return null;
-    }
-
-    @Override
-    public Intent getActivitySellingTransactionListReal(Context mContext) {
         return null;
     }
 

@@ -14,6 +14,8 @@ import com.tokopedia.flight.dashboard.view.fragment.cache.FlightDashboardCache
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
 import com.tokopedia.flight.dashboard.view.validator.FlightSelectPassengerValidator
+import com.tokopedia.flight.dummy.BANNER_DATA
+import com.tokopedia.flight.dummy.TICKER_DATA
 import com.tokopedia.flight.search.domain.FlightDeleteAllFlightSearchDataUseCase
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.presentation.viewmodel.FlightSearchUniversalViewModel
@@ -52,7 +54,7 @@ class FlightHomepageViewModelTest {
     private lateinit var flightHomepageViewModel: FlightHomepageViewModel
 
     @Before
-    fun setup() {
+    fun setUp() {
         MockKAnnotations.init(this)
         flightHomepageViewModel = FlightHomepageViewModel(flightAnalytics,
                 travelTickerUseCase, travelCollectiveBannerUseCase, dashboardCache,

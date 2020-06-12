@@ -1,5 +1,5 @@
 {
-  "subset" : [
+  "query" : [
     {
       "event": "clickSearch",
       "eventCategory": "top nav",

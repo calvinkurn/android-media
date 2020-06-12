@@ -40,7 +40,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.permissionchecker)
     implementation project(rootProject.ext.features.purchase_platform_common)
-    implementation project(rootProject.ext.features.tkpdtransactioncommon)
     implementation project(rootProject.ext.features.referral)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.linker)
@@ -88,9 +87,6 @@ dependencies {
     implementation(rootProject.ext.analyticsDependencies.moengage)
     implementation rootProject.ext.analyticsDependencies.moengageAmp
 
-    implementation (rootProject.ext.viewDependencies.ahBottomNavigation) {
-        exclude group: 'com.android.support', module: 'design'
-    }
     implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.scannerZxing
     implementation rootProject.ext.miscDependencies.multiDex

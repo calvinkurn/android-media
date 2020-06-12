@@ -285,7 +285,6 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     override fun onFavoriteNumbersError(error: Throwable) {
         errorSetFavNumbers()
-        Toast.makeText(activity, error.message, Toast.LENGTH_SHORT).show()
     }
 
     override fun onCheckVoucherError(error: Throwable) {

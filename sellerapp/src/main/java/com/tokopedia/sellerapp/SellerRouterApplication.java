@@ -85,7 +85,7 @@ import com.tokopedia.selleronboarding.utils.OnboardingPreference;
 import com.tokopedia.sellerorder.common.util.SomConsts;
 import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment;
 import com.tokopedia.shop.ShopModuleRouter;
-import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity;
+import com.tokopedia.talk_old.inboxtalk.view.activity.InboxTalkActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
@@ -389,6 +389,11 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Fragment getReviewFragment(Activity activity, String shopId, String shopDomain) {
         return ReviewShopFragment.createInstance(shopId, shopDomain);
+    }
+
+    @Override
+    public Class getReviewFragmentClass() {
+        return ReviewShopFragment.class;
     }
 
     @Override

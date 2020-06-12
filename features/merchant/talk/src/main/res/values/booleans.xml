@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="reply_adjust_toaster_height">true</bool>
+</resources>
