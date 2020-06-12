@@ -29,6 +29,8 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.R;
@@ -546,7 +548,8 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     }
 
     private void renderTickerChargeBo(){
-        if((logisticRouter.getBooleanRemoteConfig(RemoteConfigKey.ENABLE_TICKER_CHARGE_BO, true))) {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getActivity().getApplicationContext());
+        if(remoteConfig.getBoolean(RemoteConfigKey.ENABLE_TICKER_CHARGE_BO, true)) {
             chargeBoTicker.setVisibility(View.VISIBLE);
             chargeBoTicker.setTickerTitle(getString(R.string.charge_bo_ticker_title));
             chargeBoTicker.setHtmlDescription(getString(R.string.charge_bo_ticker_content));
