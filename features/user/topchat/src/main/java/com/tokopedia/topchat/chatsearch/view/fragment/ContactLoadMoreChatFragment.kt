@@ -71,11 +71,18 @@ class ContactLoadMoreChatFragment : BaseListFragment<Visitable<*>, ChatSearchTyp
 
     private fun setupObserver() {
         setupSearchResultContactObserver()
+        setupErrorObserver()
     }
 
     private fun setupSearchResultContactObserver() {
         viewModel.searchResult.observe(this, Observer {
             renderList(it.searchResults, it.hasNext)
+        })
+    }
+
+    private fun setupErrorObserver() {
+        viewModel.errorSearchResults.observe(this, Observer {
+            showGetListError(it)
         })
     }
 

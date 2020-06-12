@@ -16,6 +16,9 @@ class ChatContactLoadMoreViewModel @Inject constructor(
     private var _searchResults = MutableLiveData<GetChatSearchResponse>()
     val searchResult: LiveData<GetChatSearchResponse> get() = _searchResults
 
+    private var _errorSearchResults = MutableLiveData<Throwable>()
+    val errorSearchResults: LiveData<Throwable> get() = _errorSearchResults
+
     fun loadSearchResult(page: Int, query: String, firstResponse: GetChatSearchResponse) {
         searchContactQuery.doSearch(
                 ::onSuccessSearchContact, ::onErrorSearchContact, query, page, firstResponse
@@ -27,7 +30,7 @@ class ChatContactLoadMoreViewModel @Inject constructor(
     }
 
     private fun onErrorSearchContact(throwable: Throwable) {
-
+        _errorSearchResults.value = throwable
     }
 
 }
