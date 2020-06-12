@@ -57,6 +57,7 @@
     <string name="play_prepare_broadcast_dialog_end_primary">Lanjut</string>
     <string name="play_prepare_broadcast_dialog_end_secondary">Keluar</string>
 
+    <string name="play_live_broadcast_stat_info_default">0</string>
     <string name="play_live_broadcast_time_default">00:00</string>
     <string name="play_live_broadcast_time_left">Sisa %d menit</string>
     <string name="play_live_broadcast_dialog_end_title">Eh, kamu mau ke mana?</string>
