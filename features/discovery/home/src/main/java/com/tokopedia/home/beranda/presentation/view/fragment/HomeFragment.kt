@@ -1060,13 +1060,6 @@ open class HomeFragment : BaseDaggerFragment(),
                     getHomeViewModel().onRemoveSuggestedReview()
                 }
             }
-            REQUEST_CODE_LOGIN_TOKOPOINTS -> {
-                activity?.let {
-                    if (resultCode == Activity.RESULT_OK) {
-                        RouteManager.route(activity, ApplinkConstInternalPromo.TOKOPOINTS_HOME)
-                    }
-                }
-            }
             REQUEST_CODE_PLAY_ROOM -> if (data != null && data.hasExtra(EXTRA_TOTAL_VIEW)) getHomeViewModel().updateBannerTotalView(data.getStringExtra(EXTRA_TOTAL_VIEW))
         }
     }
@@ -1601,7 +1594,7 @@ open class HomeFragment : BaseDaggerFragment(),
             homeMainToolbar?.setInboxNumber(inboxCount)
         }
     }
-    
+
 
     override val homeMainToolbarHeight: Int
         get() {
@@ -1787,14 +1780,8 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onTokopointCheckNowClicked(applink: String) {
-        activity?.let {
-            if (::userSession.isInitialized && !userSession.isLoggedIn) {
-                startActivityForResult(RouteManager.getIntent(activity, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN_TOKOPOINTS)
-                return
-            }
-            if (!TextUtils.isEmpty(applink)) {
-                RouteManager.route(activity, applink)
-            }
+        if (!TextUtils.isEmpty(applink)) {
+            RouteManager.route(activity, applink)
         }
     }
 
