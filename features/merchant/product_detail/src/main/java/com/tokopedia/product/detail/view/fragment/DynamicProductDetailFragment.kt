@@ -455,6 +455,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     onSwipeRefresh()
                 }
                 updateStickyState()
+                updateActionButtonShadow()
+
                 if (resultCode == Activity.RESULT_OK && viewModel.userSessionInterface.isLoggedIn) {
                     when (viewModel.talkLastAction) {
                         is DynamicProductDetailTalkGoToWriteDiscussion -> goToWriteActivity()
@@ -480,7 +482,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     val isUserLoginFromShopPage = data.getBooleanExtra(ProductDetailConstant.SHOP_STICKY_LOGIN, false)
                     val favorite = pdpUiUpdater?.getShopInfo?.shopInfo?.favoriteData?.alreadyFavorited == 1
 
-                    if (isUserLoginFromShopPage) updateStickyState()
+                    if (isUserLoginFromShopPage) {
+                        updateStickyState()
+                        updateActionButtonShadow()
+                    }
                     if (isFavorite != favorite) onSuccessFavoriteShop(true)
                 }
             }
@@ -821,9 +826,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun onTickerShopClicked(tickerTitle: String, tickerType: Int, componentTrackDataModel: ComponentTrackDataModel?) {
         activity?.let {
             trackOnTickerClicked(tickerTitle, tickerType, componentTrackDataModel)
-            ShopStatusInfoBottomSheet.showShopStatusBottomSheet(it, viewModel.shopInfo?.statusInfo
-                    ?: ShopInfo.StatusInfo(), viewModel.shopInfo?.closedInfo
-                    ?: ShopInfo.ClosedInfo(), viewModel.isShopOwner())
+            //Make sure dont put your parameter inside constructor, it will cause crash when dont keep activity
+            val shopStatusBs = ShopStatusInfoBottomSheet()
+            shopStatusBs.statusInfo = viewModel.shopInfo?.statusInfo ?: ShopInfo.StatusInfo()
+            shopStatusBs.closedInfo = viewModel.shopInfo?.closedInfo ?: ShopInfo.ClosedInfo()
+            shopStatusBs.isShopOwner = viewModel.isShopOwner()
+            shopStatusBs.show(it.supportFragmentManager, "Shop Status BS")
         }
     }
 
@@ -2163,6 +2171,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         stickyLoginView.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
             updateStickyState()
         }
+        updateActionButtonShadow()
         stickyLoginView.setOnClickListener {
             goToLogin()
             stickyLoginView.tracker.clickOnLogin(StickyLoginConstant.Page.PDP)
@@ -2643,11 +2652,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun updateActionButtonShadow() {
-        if (stickyLoginView.isShowing()) {
-            actionButtonView.setBackground(R.color.white)
-        } else {
-            val drawable = context?.let { _context -> ContextCompat.getDrawable(_context, R.drawable.bg_shadow_top) }
-            drawable?.let { actionButtonView.setBackground(it) }
+        if (::actionButtonView.isInitialized) {
+            if (stickyLoginView.isShowing()) {
+                actionButtonView.setBackground(R.color.white)
+            } else {
+                val drawable = context?.let { _context -> ContextCompat.getDrawable(_context, R.drawable.bg_shadow_top) }
+                drawable?.let { actionButtonView.setBackground(it) }
+            }
         }
     }
 

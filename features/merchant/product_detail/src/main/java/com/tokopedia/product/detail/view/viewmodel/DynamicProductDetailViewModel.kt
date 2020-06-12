@@ -288,26 +288,27 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun getStickyLoginContent(onSuccess: (StickyLoginTickerPojo.TickerDetail) -> Unit, onError: ((Throwable) -> Unit)?) {
-        if (isUserSessionActive) return
-        stickyLoginUseCase.setParams(StickyLoginConstant.Page.PDP)
-        stickyLoginUseCase.execute(
-                onSuccess = {
-                    if (it.response.tickers.isNotEmpty()) {
-                        for (tickerDetail in it.response.tickers) {
-                            if (tickerDetail.layout == StickyLoginConstant.LAYOUT_FLOATING) {
-                                onSuccess.invoke(tickerDetail)
-                                return@execute
+        if (!isUserSessionActive) {
+            stickyLoginUseCase.setParams(StickyLoginConstant.Page.PDP)
+            stickyLoginUseCase.execute(
+                    onSuccess = {
+                        if (it.response.tickers.isNotEmpty()) {
+                            for (tickerDetail in it.response.tickers) {
+                                if (tickerDetail.layout == StickyLoginConstant.LAYOUT_FLOATING) {
+                                    onSuccess.invoke(tickerDetail)
+                                    return@execute
+                                }
                             }
+                            onError?.invoke(Throwable(""))
+                        } else {
+                            onError?.invoke(Throwable(""))
                         }
-                        onError?.invoke(Throwable(""))
-                    } else {
-                        onError?.invoke(Throwable(""))
+                    },
+                    onError = {
+                        onError?.invoke(it)
                     }
-                },
-                onError = {
-                    onError?.invoke(it)
-                }
-        )
+            )
+        }
     }
 
     fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false) {

@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.view.bottomsheet
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.FragmentActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -23,18 +22,15 @@ import com.tokopedia.unifyprinciples.Typography
 /**
  * Created by Yehezkiel on 08/06/20
  */
-class ShopStatusInfoBottomSheet(val mActivity: FragmentActivity, private val statusInfo: ShopInfo.StatusInfo, private val closedInfo: ShopInfo.ClosedInfo, private val isShopOwner: Boolean) : BottomSheetUnify() {
+class ShopStatusInfoBottomSheet : BottomSheetUnify() {
 
     private var parentView: View? = null
     private var messageText: Typography? = null
     private var messageCloseNote: Typography? = null
     private var btnRequestOpen: UnifyButton? = null
-
-    companion object {
-        fun showShopStatusBottomSheet(context: FragmentActivity, statusInfo: ShopInfo.StatusInfo, closedInfo: ShopInfo.ClosedInfo, isShopOwner: Boolean) {
-            ShopStatusInfoBottomSheet(context, statusInfo, closedInfo, isShopOwner).showDialog()
-        }
-    }
+    var statusInfo: ShopInfo.StatusInfo? = null
+    var closedInfo: ShopInfo.ClosedInfo? = null
+    var isShopOwner: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +43,7 @@ class ShopStatusInfoBottomSheet(val mActivity: FragmentActivity, private val sta
         messageCloseNote = parentView?.findViewById(R.id.message_close_note)
         btnRequestOpen = parentView?.findViewById(R.id.btn_request_open_shop)
 
-        when (statusInfo.shopStatus) {
+        when (statusInfo?.shopStatus) {
             ProductShopStatusTypeDef.CLOSED -> {
                 btnRequestOpen?.hide()
                 messageCloseNote?.show()
@@ -71,8 +67,8 @@ class ShopStatusInfoBottomSheet(val mActivity: FragmentActivity, private val sta
 
 
         context?.let {
-            messageText?.text = HtmlLinkHelper(it, statusInfo.statusMessage).spannedString
-            messageCloseNote?.text = MethodChecker.fromHtml(closedInfo.note)
+            messageText?.text = HtmlLinkHelper(it, statusInfo?.statusMessage ?: "").spannedString
+            messageCloseNote?.text = MethodChecker.fromHtml(closedInfo?.note ?: "")
             messageText?.movementMethod = ShopStatusLinkMovementMethod {
                 goToWebView(it)
             }
@@ -86,13 +82,13 @@ class ShopStatusInfoBottomSheet(val mActivity: FragmentActivity, private val sta
     }
 
     private fun goToWebView(url: String) {
-        mActivity.let {
+        context?.let {
             url.goToWebView(it)
         }
     }
 
     private fun goToContactUs() {
-        mActivity.let {
+        context?.let {
             RouteManager.route(it, ApplinkConst.CONTACT_US_NATIVE)
         }
     }
@@ -101,9 +97,4 @@ class ShopStatusInfoBottomSheet(val mActivity: FragmentActivity, private val sta
         btnRequestOpen?.showWithCondition(isShopOwner)
     }
 
-    fun showDialog() {
-        mActivity.supportFragmentManager.run {
-            show(this, "bs_shop_status")
-        }
-    }
 }
