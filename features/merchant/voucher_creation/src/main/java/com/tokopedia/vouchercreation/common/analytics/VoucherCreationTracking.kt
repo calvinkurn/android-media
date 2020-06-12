@@ -49,7 +49,13 @@ object VoucherCreationTracking {
                         VoucherCreationStep.TARGET -> VoucherCreationAnalyticConstant.ScreenName.VoucherCreation.TARGET
                         VoucherCreationStep.BENEFIT -> VoucherCreationAnalyticConstant.ScreenName.VoucherCreation.TYPE_BUDGET
                         VoucherCreationStep.PERIOD -> VoucherCreationAnalyticConstant.ScreenName.VoucherCreation.PERIOD
-                        VoucherCreationStep.REVIEW -> VoucherCreationAnalyticConstant.ScreenName.VoucherCreation.REVIEW
+                        VoucherCreationStep.REVIEW -> {
+                            if (isDuplicate) {
+                                VoucherCreationAnalyticConstant.ScreenName.VOUCHER_DUPLICATE_REVIEW
+                            } else {
+                                VoucherCreationAnalyticConstant.ScreenName.VoucherCreation.REVIEW
+                            }
+                        }
                         else -> ""
                     },
                 userId = userId

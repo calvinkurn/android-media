@@ -157,16 +157,16 @@ class ReviewVoucherFragment : BaseDetailFragment() {
         context?.getSharedPreferences(VOUCHER_CREATION, Context.MODE_PRIVATE)
     }
 
+    private val isDuplicate by lazy {
+        activity?.intent?.getBooleanExtra(CreateMerchantVoucherStepsActivity.IS_DUPLICATE, false) ?: false
+    }
+
     private var isWaitingForResult = false
 
     private var squareVoucherBitmap: Bitmap? = null
         set(value){
-            if (field == null) {
-                activity?.intent?.getBooleanExtra(CreateMerchantVoucherStepsActivity.IS_DUPLICATE, false)?.let { isDuplicate ->
-                    if (isDuplicate) {
-                        recycler_view?.scrollToPosition(adapter.dataSize - 1)
-                    }
-                }
+            if (field == null && isDuplicate) {
+                recycler_view?.scrollToPosition(adapter.dataSize - 1)
             }
             field = value
         }
@@ -235,12 +235,14 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                         VOUCHER_INFO_DATA_KEY -> VoucherCreationAnalyticConstant.EventAction.Click.EDIT_INFO_VOUCHER
                         VOUCHER_BENEFIT_DATA_KEY -> VoucherCreationAnalyticConstant.EventAction.Click.EDIT_VOUCHER_BENEFIT
                         PERIOD_DATA_KEY -> VoucherCreationAnalyticConstant.EventAction.Click.EDIT_PERIOD
+                        DATA_KEY_VOUCHER_PERIOD -> VoucherCreationAnalyticConstant.EventAction.Click.PERIOD
                         else -> return@with
                     }
             VoucherCreationTracking.sendCreateVoucherClickTracking(
                     step = VoucherCreationStep.REVIEW,
                     action = eventAction,
-                    userId = userSession.userId
+                    userId = userSession.userId,
+                    isDuplicate = isDuplicate
             )
         }
         val step = when(dataKey) {
@@ -258,7 +260,8 @@ class ReviewVoucherFragment : BaseDetailFragment() {
         VoucherCreationTracking.sendCreateVoucherClickTracking(
                 step = VoucherCreationStep.REVIEW,
                 action = VoucherCreationAnalyticConstant.EventAction.Click.TNC,
-                userId = userSession.userId
+                userId = userSession.userId,
+                isDuplicate = isDuplicate
         )
         termsAndConditionBottomSheet?.show(childFragmentManager, TermsAndConditionBottomSheetFragment.TAG)
     }
@@ -276,7 +279,8 @@ class ReviewVoucherFragment : BaseDetailFragment() {
         VoucherCreationTracking.sendCreateVoucherClickTracking(
                 step = VoucherCreationStep.REVIEW,
                 action = VoucherCreationAnalyticConstant.EventAction.Click.ADD_VOUCHER,
-                userId = userSession.userId
+                userId = userSession.userId,
+                isDuplicate = isDuplicate
         )
         if (getVoucherReviewUiModel().startDate.isBlank()) {
             view?.run {
