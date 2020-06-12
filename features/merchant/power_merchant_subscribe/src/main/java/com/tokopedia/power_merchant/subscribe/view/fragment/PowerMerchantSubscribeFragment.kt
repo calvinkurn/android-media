@@ -23,7 +23,6 @@ import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.gm.common.constant.GMParamConstant.PM_SUBSCRIBE_SUCCESS
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
@@ -31,21 +30,27 @@ import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.gm.common.widget.MerchantCommonBottomSheet
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.hideLoading
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showLoading
 import com.tokopedia.power_merchant.subscribe.*
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.activity.PMCancellationQuestionnaireActivity
 import com.tokopedia.power_merchant.subscribe.view.activity.PowerMerchantTermsActivity
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantCancelBottomSheet
-import com.tokopedia.power_merchant.subscribe.view.contract.PmSubscribeContract
+import com.tokopedia.power_merchant.subscribe.view.model.ViewState.*
 import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialBenefitPmViewHolder
 import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialMemberPmViewHolder
 import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialTncViewHolder
+import com.tokopedia.power_merchant.subscribe.view.viewmodel.PmSubscribeViewModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey.ANDROID_PM_F1_ENABLED
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.KYCConstant.MERCHANT_KYC_PROJECT_ID
@@ -53,13 +58,12 @@ import com.tokopedia.user_identification_common.KYCConstant.PARAM_PROJECT_ID
 import com.tokopedia.user_identification_common.KYCConstant.STATUS_VERIFIED
 import com.tokopedia.user_identification_common.domain.pojo.KycUserProjectInfoPojo
 import kotlinx.android.synthetic.main.dialog_kyc_verification.*
-import kotlinx.android.synthetic.main.dialog_score_verification.*
 import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.*
 import javax.inject.Inject
 
-class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract.View {
+class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     @Inject
-    lateinit var presenter: PmSubscribeContract.Presenter
+    lateinit var viewModel: PmSubscribeViewModel
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
     @Inject
@@ -90,7 +94,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
                         .baseAppComponent(appComponent)
                         .build().inject(this)
             }
-        presenter.attachView(this)
     }
 
     companion object {
@@ -143,7 +146,11 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         }
 
         if (remoteConfig.getBoolean(ANDROID_PM_F1_ENABLED, false)) {
-            presenter.getPmStatusInfo(userSessionInterface.shopId)
+            observeGetFreeShippingDetail()
+            observeGetPmStatusInfo()
+            observeViewState()
+
+            viewModel.getPmStatusInfo()
         } else {
             activity?.let {
                 if (userSessionInterface.isGoldMerchant) {
@@ -175,7 +182,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         }
     }
 
-    override fun cancelMembership() {
+    private fun cancelMembership() {
         bottomSheetCancel.dismiss()
         redirectToPMCancellationQuestionnairePage()
     }
@@ -187,18 +194,18 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         }
     }
 
-    override fun onSuccessCancelMembership() {
+    private fun onSuccessCancelMembership() {
         isSuccessCancellationPm = true
         refreshData()
     }
 
-    override fun refreshData() {
+    private fun refreshData() {
         root_view_pm.showLoading()
         hideButtonActivatedPm()
-        presenter.getPmStatusInfo(userSessionInterface.shopId)
+        viewModel.getPmStatusInfo()
     }
 
-    override fun onErrorCancelMembership(throwable: Throwable) {
+    private fun onErrorCancelMembership(throwable: Throwable) {
         hideLoading()
         showToasterError(throwable)
     }
@@ -274,7 +281,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         bottomSheetCancel.show(childFragmentManager, "power_merchant_cancel")
     }
 
-    override fun onSuccessGetPmInfo(powerMerchantStatus: PowerMerchantStatus) {
+    private fun onSuccessGetPmInfo(powerMerchantStatus: PowerMerchantStatus) {
         shopStatusModel = powerMerchantStatus.goldGetPmOsStatus.result.data
         getApprovalStatusPojo = powerMerchantStatus.kycUserProjectInfoPojo
         shopScore = powerMerchantStatus.shopScore.data.value
@@ -297,9 +304,16 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
         hideLoading()
 
+        if(!shopStatusModel.isPowerMerchantInactive()) {
+            viewModel.getFreeShippingStatus()
+        }
     }
 
-    override fun hideLoading() {
+    private fun showLoading() {
+        root_view_pm.showLoading()
+    }
+
+    private fun hideLoading() {
         root_view_pm.hideLoading()
     }
 
@@ -377,7 +391,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     override fun onDestroy() {
         super.onDestroy()
-        presenter.detachView()
+        viewModel.detachView()
     }
 
     private fun isAutoExtend(): Boolean {
@@ -402,11 +416,54 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         startActivity(intent)
     }
 
-    override fun showEmptyState(throwable: Throwable) {
+    private fun showEmptyState(throwable: Throwable) {
         NetworkErrorHelper.showEmptyState(root_view_pm.context, root_view_pm, ErrorHandler.getErrorMessage(context, throwable)) {
             refreshData()
         }
         hideLoading()
+    }
+
+    private fun observeGetFreeShippingDetail() {
+        observe(viewModel.getPmFreeShippingStatusResult) {
+            when(it) {
+                is Success -> {
+                    val freeShipping = it.data
+
+                    if(freeShipping.isTransitionPeriod && !freeShipping.isActive) {
+                        freeShippingError.hide()
+                        freeShippingLayout.hide()
+                    } else {
+                        freeShippingError.hide()
+                        freeShippingLayout.show(freeShipping)
+                    }
+                }
+                is Fail -> {
+                    freeShippingLayout.hide()
+                    freeShippingError.apply {
+                        progressState = false
+                        show()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun observeGetPmStatusInfo() {
+        observe(viewModel.getPmStatusInfoResult) {
+            when(it) {
+                is Success -> onSuccessGetPmInfo(it.data)
+                is Fail -> showEmptyState(it.throwable)
+            }
+        }
+    }
+
+    private fun observeViewState() {
+        observe(viewModel.viewState) {
+            when(it) {
+                is ShowLoading -> showLoading()
+                is HideLoading -> hideLoading()
+            }
+        }
     }
 
     private fun showExpiredDateTickerYellow() {
