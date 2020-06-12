@@ -577,7 +577,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private fun renderFilterEmpty(title: String, desc: String) {
         refreshHandler?.finishRefresh()
         order_list_rv?.visibility = View.GONE
-        quick_filter?.visibility = View.GONE
+        quick_filter?.visibility = View.VISIBLE
         empty_state_order_list?.visibility = View.VISIBLE
         title_empty?.text = title
         desc_empty?.text = desc
@@ -604,8 +604,9 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun renderEmptyOrderList() {
         refreshHandler?.finishRefresh()
-        order_list_rv.visibility = View.GONE
-        empty_state_order_list.visibility = View.VISIBLE
+        order_list_rv?.visibility = View.GONE
+        quick_filter?.visibility = View.VISIBLE
+        empty_state_order_list?.visibility = View.VISIBLE
         title_empty?.text = getString(R.string.empty_peluang_title)
 
         // Peluang Feature has been removed, thus we set text to empty and button is gone
