@@ -71,6 +71,10 @@ class OfficialHomeAdapterTypeFactory(
         return RecommendationListCarouselViewHolder.LAYOUT
     }
 
+    override fun type(reminderWidgetModel: ReminderWidgetModel): Int {
+        return ReminderWidgetViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             OfficialBannerViewHolder.LAYOUT -> OfficialBannerViewHolder(parent)
