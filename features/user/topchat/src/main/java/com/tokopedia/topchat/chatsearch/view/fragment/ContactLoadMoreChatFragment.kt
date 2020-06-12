@@ -19,11 +19,13 @@ import com.tokopedia.topchat.chatsearch.data.GetChatSearchResponse
 import com.tokopedia.topchat.chatsearch.di.ChatSearchComponent
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactory
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactoryImpl
+import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.ItemSearchChatViewHolder
 import com.tokopedia.topchat.chatsearch.view.uimodel.ContactLoadMoreUiModel
 import com.tokopedia.topchat.chatsearch.viewmodel.ChatContactLoadMoreViewModel
 import javax.inject.Inject
 
-class ContactLoadMoreChatFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>() {
+class ContactLoadMoreChatFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>(),
+        ItemSearchChatViewHolder.Listener {
 
     private var listener: ContactLoadMoreChatListener? = null
     private var query: String = ""
@@ -57,6 +59,10 @@ class ContactLoadMoreChatFragment : BaseListFragment<Visitable<*>, ChatSearchTyp
         setupRecyclerView()
         initToolbarTittle()
         setupObserver()
+    }
+
+    override fun finishSearchActivity() {
+        activity?.finish()
     }
 
     override fun loadData(page: Int) {
@@ -115,7 +121,9 @@ class ContactLoadMoreChatFragment : BaseListFragment<Visitable<*>, ChatSearchTyp
     }
 
     override fun getAdapterTypeFactory(): ChatSearchTypeFactory {
-        return ChatSearchTypeFactoryImpl()
+        return ChatSearchTypeFactoryImpl(
+                searchListener = this
+        )
     }
 
     override fun getScreenName(): String {
