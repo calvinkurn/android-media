@@ -409,9 +409,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
-        // enable editing in middle of string
-        productNameField?.enableSubstringEditing()
-
         // product price text change listener
         if (viewModel.productInputModel.variantInputModel.variantOptionParent.isNotEmpty() &&
                 viewModel.productInputModel.variantInputModel.productVariant.isNotEmpty()) {
