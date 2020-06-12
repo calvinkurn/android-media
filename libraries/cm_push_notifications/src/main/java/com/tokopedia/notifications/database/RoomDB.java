@@ -182,8 +182,33 @@ public abstract class RoomDB extends RoomDatabase {
     private static final Migration MIGRATION_8_9 = new Migration(8, 9) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
-            database.execSQL("ALTER TABLE `inapp_data` ADD COLUMN `perst_on` INTEGER NOT NULL");
-            database.execSQL("ALTER TABLE `inapp_data` ADD COLUMN `is_interacted` INTEGER NOT NULL");
+            database.execSQL("DROP TABLE IF EXISTS `BaseNotificationModel`");
+            database.execSQL("CREATE TABLE IF NOT EXISTS `BaseNotificationModel` (`notificationId` INTEGER" +
+                    " NOT NULL, `campaignId` INTEGER NOT NULL, `priority` INTEGER NOT NULL, `title` TEXT," +
+                    " `detailMessage` TEXT, `message` TEXT, `icon` TEXT, `soundFileName` TEXT, `tribeKey` " +
+                    "TEXT, `appLink` TEXT, `actionBtn` TEXT NOT NULL, `customValues` TEXT, `type` TEXT, " +
+                    "`channelName` TEXT, `videoPush` TEXT, `subText` TEXT, `visualCollapsedImg` TEXT, " +
+                    "`visualExpandedImg` TEXT, `carouselIndex` INTEGER NOT NULL, `isVibration` INTEGER " +
+                    "NOT NULL, `isSound` INTEGER NOT NULL, `isUpdatingExisting` INTEGER NOT NULL, " +
+                    "`carousel` TEXT NOT NULL, `grid` TEXT NOT NULL, `productInfo` TEXT NOT NULL, " +
+                    "`parentId` INTEGER NOT NULL, `campaignUserToken` TEXT, `notificationStatus`" +
+                    " INTEGER NOT NULL, `startTime` INTEGER NOT NULL, `endTime` INTEGER NOT NULL, " +
+                    "`notificationMode` INTEGER NOT NULL, `is_test` INTEGER NOT NULL, `transId` TEXT," +
+                    " `userTransId` TEXT, `userId` TEXT, `shopId` TEXT, `notifcenterBlastId` TEXT," +
+                    " `webhook_params` TEXT, `media_fallback_url` TEXT, `media_high_quality_url`" +
+                    " TEXT, `media_medium_quality_url` TEXT, `media_low_quality_url` TEXT, " +
+                    "`media_display_url` TEXT, `media_id` TEXT, PRIMARY KEY(`campaignId`))");
+            database.execSQL("DROP TABLE IF EXISTS `inapp_data`");
+            database.execSQL("CREATE TABLE IF NOT EXISTS `inapp_data` (`id` INTEGER PRIMARY KEY " +
+                    "AUTOINCREMENT NOT NULL, `campaignId` TEXT, `freq` INTEGER NOT NULL, `notificationType`" +
+                    " TEXT, `campaignUserToken` TEXT, `parentId` TEXT, `e` INTEGER NOT NULL, `inAnim` TEXT, " +
+                    "`s` TEXT, `d` INTEGER NOT NULL, `st` INTEGER NOT NULL, `et` INTEGER NOT NULL, `ct` " +
+                    "INTEGER NOT NULL, `buf_time` INTEGER NOT NULL, `shown` INTEGER NOT NULL, `last_shown` " +
+                    "INTEGER NOT NULL, `is_test` INTEGER NOT NULL, `perst_on` INTEGER, `is_interacted`" +
+                    " INTEGER, `ui_img` TEXT, `ui_appLink` TEXT, `ui_btnOri` TEXT, `ui_inAppButtons` " +
+                    "TEXT, `ui_bg_img` TEXT, `ui_bg_clr` TEXT, `ui_bg_sc` TEXT, `ui_bg_sw` INTEGER, `ui_bg_rd`" +
+                    " REAL, `ui_ttl_txt` TEXT, `ui_ttl_clr` TEXT, `ui_ttl_sz` TEXT, `ui_msg_txt` TEXT," +
+                    " `ui_msg_clr` TEXT, `ui_msg_sz` TEXT)");
         }
     };
 
