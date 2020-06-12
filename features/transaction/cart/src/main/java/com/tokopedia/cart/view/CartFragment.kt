@@ -311,19 +311,21 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         view?.viewTreeObserver?.addOnGlobalLayoutListener {
             val heightDiff = view.rootView?.height?.minus(view.height) ?: 0
             val displayMetrics = DisplayMetrics()
-            val windowManager = context?.applicationContext?.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-            windowManager.defaultDisplay.getMetrics(displayMetrics)
-            val heightDiffInDp = heightDiff.pxToDp(displayMetrics)
-            if (heightDiffInDp > 100) {
-                if (!isKeyboardOpened) {
-                    bottomLayout.gone()
-                    llPromoCheckout.gone()
+            val windowManager = context?.applicationContext?.getSystemService(Context.WINDOW_SERVICE) as? WindowManager
+            windowManager?.let {
+                windowManager.defaultDisplay.getMetrics(displayMetrics)
+                val heightDiffInDp = heightDiff.pxToDp(displayMetrics)
+                if (heightDiffInDp > 100) {
+                    if (!isKeyboardOpened) {
+                        bottomLayout.gone()
+                        llPromoCheckout.gone()
+                    }
+                    isKeyboardOpened = true
+                } else if (isKeyboardOpened) {
+                    bottomLayout.show()
+                    llPromoCheckout.show()
+                    isKeyboardOpened = false
                 }
-                isKeyboardOpened = true
-            } else if (isKeyboardOpened) {
-                bottomLayout.show()
-                llPromoCheckout.show()
-                isKeyboardOpened = false
             }
         }
 
