@@ -1,16 +1,24 @@
 package com.tokopedia.discovery2.viewcontrollers.activity
 
+import android.content.Context
+import android.content.Intent
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
+const val NATIVE = "native"
+const val REACT_NATIVE = "react-native"
 class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
@@ -20,10 +28,47 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
     companion object {
         const val END_POINT = "end_point"
+
+        @JvmField
+        var config: String = NATIVE
+
+        @JvmStatic
+        fun createDiscoveryIntent(context: Context, endpoint: String): Intent {
+            val intent = Intent(context, DiscoveryActivity::class.java)
+            intent.putExtra(END_POINT, endpoint)
+            return intent
+        }
+
     }
 
     override fun initView() {
+        if(config == REACT_NATIVE){
+            routeToReactNativeDiscovery()
+        }
         toolbar?.hide()
+        setObserver()
+        discoveryViewModel.getDiscoveryUIConfig()
+    }
+
+    private fun setObserver() {
+        discoveryViewModel.getDiscoveryUIConfigLiveData().observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    config = it.data
+                    if(it.data == REACT_NATIVE){
+                        routeToReactNativeDiscovery()
+                    }
+                }
+            }
+        })
+    }
+
+    private fun routeToReactNativeDiscovery(){
+        RouteManager.route(
+                this,
+                ApplinkConst.REACT_DISCOVERY_PAGE.replace("{page_id}", intent?.data?.lastPathSegment ?: intent?.getStringExtra(END_POINT) ?: "")
+        )
+        finish()
     }
 
     override fun initInject() {
@@ -35,7 +80,7 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
 
     override fun getNewFragment(): Fragment? {
-        return DiscoveryFragment.getInstance(intent?.data?.lastPathSegment)
+        return DiscoveryFragment.getInstance(intent?.data?.lastPathSegment ?: intent?.getStringExtra(END_POINT))
     }
 
     override fun getViewModelType(): Class<DiscoveryViewModel> {
