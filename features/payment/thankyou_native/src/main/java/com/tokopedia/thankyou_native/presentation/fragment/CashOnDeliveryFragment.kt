@@ -11,11 +11,7 @@ import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.helper.getMaskedNumberSubStringPayment
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
-import kotlinx.android.synthetic.main.thank_fragment_deferred.*
-import kotlinx.android.synthetic.main.thank_fragment_processing.*
 import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
-import kotlinx.android.synthetic.main.thank_fragment_success_payment.btnShopAgain
-import kotlinx.android.synthetic.main.thank_fragment_success_payment.recommendationContainer
 
 class CashOnDeliveryFragment : ThankYouBaseFragment() {
 

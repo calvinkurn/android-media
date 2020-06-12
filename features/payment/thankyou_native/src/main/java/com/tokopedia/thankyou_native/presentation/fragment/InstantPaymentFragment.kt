@@ -21,11 +21,7 @@ import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import com.tokopedia.thankyou_native.presentation.viewModel.CheckWhiteListViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.thank_fragment_deferred.*
-import kotlinx.android.synthetic.main.thank_fragment_processing.*
 import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
-import kotlinx.android.synthetic.main.thank_fragment_success_payment.btnShopAgain
-import kotlinx.android.synthetic.main.thank_fragment_success_payment.recommendationContainer
 
 class InstantPaymentFragment : ThankYouBaseFragment() {
 
