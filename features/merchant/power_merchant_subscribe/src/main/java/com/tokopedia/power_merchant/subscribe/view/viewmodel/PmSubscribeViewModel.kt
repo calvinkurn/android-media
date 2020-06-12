@@ -51,11 +51,14 @@ class PmSubscribeViewModel @Inject constructor(
 
         launchCatchError(block = {
             val shopId = userSession.shopId
-            val powerMerchantStatus = withContext(dispatchers.io) {
+            val freeShippingEnabled = !remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED)
+
+            val response = withContext(dispatchers.io) {
                 val params = GetPowerMerchantStatusUseCase.createRequestParams(shopId)
                 getPowerMerchantStatusUseCase.getData(params)
             }
 
+            val powerMerchantStatus = response.copy(freeShippingEnabled = freeShippingEnabled)
             _getPmStatusInfoResult.value = Success(powerMerchantStatus)
             hideLoading()
         }) {

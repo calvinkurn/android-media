@@ -15,7 +15,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
-import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
@@ -222,10 +221,13 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setupCancelBottomSheet(shopStatusModel: ShopStatusModel) {
+    private fun setupCancelBottomSheet(powerMerchantStatus: PowerMerchantStatus) {
+        val shopStatusModel = powerMerchantStatus.goldGetPmOsStatus.result.data
+
         bottomSheetCancel = PowerMerchantCancelBottomSheet.newInstance(
             shopStatusModel.isAutoExtend(),
-            shopStatusModel.powerMerchant.expiredTime
+            shopStatusModel.powerMerchant.expiredTime,
+            powerMerchantStatus.freeShippingEnabled
         )
         bottomSheetCancel?.setListener(object : PowerMerchantCancelBottomSheet.BottomSheetCancelListener {
             override fun onClickCancelButton() {
@@ -291,10 +293,9 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGetPmInfo(powerMerchantStatus: PowerMerchantStatus) {
-        val shopStatusModel = powerMerchantStatus.goldGetPmOsStatus.result.data
         val shopStatus = powerMerchantStatus.goldGetPmOsStatus.result.data
 
-        setupCancelBottomSheet(shopStatusModel)
+        setupCancelBottomSheet(powerMerchantStatus)
 
         if(shopStatus.isPowerMerchantInactive()) {
             showRegistrationView(powerMerchantStatus)

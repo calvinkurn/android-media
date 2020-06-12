@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.util.PowerMerchantSpannableUtil.createSpannableString
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -22,15 +23,21 @@ class PowerMerchantCancelBottomSheet : BottomSheetUnify() {
 
     companion object {
         private val TAG: String = PowerMerchantCancelBottomSheet::class.java.simpleName
-        const val ARGUMENT_DATA_AUTO_EXTEND = "data_is_auto_extend"
-        const val ARGUMENT_DATA_DATE = "data_date"
+        private const val ARGUMENT_DATA_AUTO_EXTEND = "data_is_auto_extend"
+        private const val ARGUMENT_DATA_DATE = "data_date"
+        private const val EXTRA_FREE_SHIPPING_ENABLED = "extra_free_shipping_enabled"
 
         @JvmStatic
-        fun newInstance(isTransitionPeriod: Boolean, dateExpired: String): PowerMerchantCancelBottomSheet {
+        fun newInstance(
+            isTransitionPeriod: Boolean,
+            dateExpired: String,
+            freeShippingEnabled: Boolean
+        ): PowerMerchantCancelBottomSheet {
             return PowerMerchantCancelBottomSheet().apply {
                 val bundle = Bundle()
                 bundle.putBoolean(ARGUMENT_DATA_AUTO_EXTEND, isTransitionPeriod)
                 bundle.putString(ARGUMENT_DATA_DATE, dateExpired)
+                bundle.putBoolean(EXTRA_FREE_SHIPPING_ENABLED, freeShippingEnabled)
                 arguments = bundle
             }
         }
@@ -50,15 +57,20 @@ class PowerMerchantCancelBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         val isTransitionPeriod = arguments?.getBoolean(ARGUMENT_DATA_AUTO_EXTEND) ?: false
         val expiredDate = arguments?.getString(ARGUMENT_DATA_DATE) ?: ""
+        val freeShippingEnabled = arguments?.getBoolean(EXTRA_FREE_SHIPPING_ENABLED) ?: false
 
-        initView(isTransitionPeriod, expiredDate)
+        initView(isTransitionPeriod, expiredDate, freeShippingEnabled)
     }
 
     fun setListener(listener: BottomSheetCancelListener) {
         this.listener = listener
     }
 
-    private fun initView(isTransitionPeriod: Boolean, expiredDate: String) {
+    private fun initView(
+        isTransitionPeriod: Boolean,
+        expiredDate: String,
+        freeShippingEnabled: Boolean
+    ) {
         if (isTransitionPeriod) {
             tickerWarning.hide()
         } else {
@@ -73,6 +85,9 @@ class PowerMerchantCancelBottomSheet : BottomSheetUnify() {
         btnBack.setOnClickListener {
             dismiss()
         }
+
+        imageFreeShipping.showWithCondition(freeShippingEnabled)
+        textFreeShipping.showWithCondition(freeShippingEnabled)
     }
 
     private fun showWarningTicker(expiredDate: String) {
