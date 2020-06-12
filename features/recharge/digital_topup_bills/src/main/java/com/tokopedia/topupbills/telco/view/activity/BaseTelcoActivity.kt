@@ -1,5 +1,6 @@
 package com.tokopedia.topupbills.telco.view.activity
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -79,9 +80,10 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
 
     override fun onOrderListClicked() {
         if (userSession.isLoggedIn) {
-        RouteManager.route(this, ApplinkConst.DIGITAL_ORDER)
+            navigatePageToOrder()
         } else {
-            RouteManager.route(this, ApplinkConst.LOGIN)
+            val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
+            startActivityForResult(intent, REQUEST_CODE_LOGIN_TELCO)
         }
     }
 
@@ -99,7 +101,25 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
         menuBottomSheet.show(supportFragmentManager, TAG_TELCO_MENU)
     }
 
+    private fun navigatePageToOrder() {
+        RouteManager.route(this, ApplinkConst.DIGITAL_ORDER)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        data?.let {
+            if (resultCode == Activity.RESULT_OK) {
+                if (requestCode == REQUEST_CODE_LOGIN_TELCO && userSession.isLoggedIn) {
+                    navigatePageToOrder()
+                }
+            }
+        }
+    }
+
     companion object {
+        const val REQUEST_CODE_LOGIN_TELCO = 10000
+
         const val PARAM_MENU_ID = "menu_id"
         const val PARAM_PRODUCT_ID = "product_id"
         const val PARAM_CLIENT_NUMBER = "client_number"
