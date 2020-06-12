@@ -64,7 +64,7 @@ abstract class ProductItemViewHolder(
     protected fun createImageProductViewHintListener(productItem: ProductItemViewModel): ViewHintListener {
         return object: ViewHintListener {
             override fun onViewHint() {
-                productListener.onProductImpressed(productItem, adapterPosition)
+                productListener.onProductImpressed(productItem)
             }
         }
     }

@@ -20,7 +20,8 @@ fun InitialStateData.convertRecentSearchToVisitableList(): MutableList<Visitable
                 label = item.label,
                 labelType = item.labelType,
                 shortcutImage = item.shortcutImage,
-                productId = item.itemId
+                productId = item.itemId,
+                type = item.type
         )
         childList.add(model)
     }
