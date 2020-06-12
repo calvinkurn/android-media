@@ -76,6 +76,10 @@ abstract class BaseTracking {
         const val KEY = "channelId"
     }
 
+    protected object CampaignCode{
+        const val KEY = "campaignCode"
+    }
+
     protected object Value{
         const val NONE_OTHER = "none / other"
         const val LIST_WITH_HEADER = "/ - p%s - %s - %s"

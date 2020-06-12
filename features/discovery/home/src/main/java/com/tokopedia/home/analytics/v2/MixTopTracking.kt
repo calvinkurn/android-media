@@ -50,7 +50,7 @@ object MixTopTracking : BaseTracking() {
             Event.PRODUCT_CLICK,
             Category.HOMEPAGE,
             CustomAction.CLICK_ON_CAROUSEL_PRODUCT,
-            headerName,
+            channelId + " - " + headerName,
             CustomActionField.LIST_CAROUSEL_PRODUCT.format(positionOnWidgetHome, headerName),
             channelId,
             campaignCode,
@@ -141,7 +141,9 @@ object MixTopTracking : BaseTracking() {
             CurrentSite.KEY, CurrentSite.DEFAULT,
             Screen.KEY, Screen.DEFAULT,
             UserId.KEY, userId,
-            BusinessUnit.KEY, BusinessUnit.DEFAULT
+            BusinessUnit.KEY, BusinessUnit.DEFAULT,
+            ChannelId.KEY, channels.id,
+            CampaignCode.KEY, channels.trackingAttributionModel.campaignCode
     )
 
     //end of home component section
