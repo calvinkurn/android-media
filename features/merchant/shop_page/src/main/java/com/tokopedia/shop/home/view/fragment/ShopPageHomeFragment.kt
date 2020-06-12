@@ -46,11 +46,9 @@ import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopPageHomePlayCarouselListener
 import com.tokopedia.shop.home.view.listener.ShopPageHomeProductClickListener
-import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
-import com.tokopedia.shop.home.view.model.ShopPageHomeLayoutUiModel
+import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
@@ -58,12 +56,12 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_shop_page_home.*
-import kotlinx.android.synthetic.main.partial_new_shop_page_seller_play_widget.*
 import javax.inject.Inject
 
 class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeFactory>(),
         ShopHomeDisplayWidgetListener,
         ShopHomeVoucherViewHolder.ShopHomeVoucherViewHolderListener,
+        ShopPageHomePlayCarouselListener,
         ShopPageHomeProductClickListener {
 
     companion object {
@@ -125,7 +123,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         get() = adapter as ShopHomeAdapter
 
     private val shopHomeAdapterTypeFactory by lazy {
-        ShopHomeAdapterTypeFactory(this, this, this)
+        ShopHomeAdapterTypeFactory(this, this, this, this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -588,6 +586,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         productId = shopHomeProductViewModel?.id ?: ""
                 )
         )
+    }
+
+    override fun onPlayBannerCarouselRefresh(shopHomePlayCarouselUiModel: ShopHomePlayCarouselUiModel, position: Int) {
+        viewModel?.onRefreshPlayBanner(shopId)
     }
 
     private fun onSuccessRemoveWishList(

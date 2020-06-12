@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_TRIPLE_COLUMN
+import com.tokopedia.shop.home.WidgetName.PLAY_CAROUSEL_WIDGET
 import com.tokopedia.shop.home.WidgetName.PRODUCT
 import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER
 import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE_BANNER
@@ -34,6 +35,7 @@ class ShopHomeAdapterTypeFactory(
         when(baseShopHomeWidgetUiModel.name) {
             DISPLAY_SINGLE_COLUMN, DISPLAY_DOUBLE_COLUMN, DISPLAY_TRIPLE_COLUMN -> return ShopHomeMultipleImageColumnViewHolder.LAYOUT_RES
             SLIDER_SQUARE_BANNER -> return ShopHomeSliderSquareViewHolder.LAYOUT_RES
+            PLAY_CAROUSEL_WIDGET -> return ShopHomePlayCarouselViewHolder.LAYOUT
             SLIDER_BANNER -> return ShopHomeSliderBannerViewHolder.LAYOUT_RES
             VIDEO -> return ShopHomeVideoViewHolder.LAYOUT_RES
             PRODUCT -> return ShopHomeCarousellProductViewHolder.LAYOUT

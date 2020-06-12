@@ -9,16 +9,22 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
+import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase.Companion.SHOP_AUTHOR_TYPE
+import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase.Companion.SHOP_WIDGET_TYPE
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.domain.interactor.GQLCheckWishlistUseCase
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
 import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
+import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
+import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
+import com.tokopedia.shop.home.view.model.ShopHomePlayCarouselUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
+import com.tokopedia.shop.home.view.model.ShopPageHomeLayoutUiModel
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
-import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
-import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
-import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -38,6 +44,7 @@ class ShopHomeViewModel @Inject constructor(
         private val getShopProductUseCase: GqlGetShopProductUseCase,
         private val dispatcherProvider: CoroutineDispatcherProvider,
         private val addToCartUseCase: AddToCartUseCase,
+        private val getPlayWidgetUseCase: GetPlayWidgetUseCase,
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishlistUseCase: RemoveWishListUseCase,
         private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>
@@ -46,6 +53,7 @@ class ShopHomeViewModel @Inject constructor(
     companion object {
         const val ALL_SHOWCASE_ID = "etalase"
     }
+    private var shopId: String = ""
 
     val productListData: LiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>
         get() = _productListData
@@ -83,8 +91,17 @@ class ShopHomeViewModel @Inject constructor(
                     block = { getProductList(shopId, 1) },
                     onError = { null }
             )
+
             shopLayoutWidget.await()?.let {
-                _shopHomeLayoutData.postValue(Success(it))
+                val newShopPageHomeLayoutUiModel = asyncCatchError(
+                        dispatcherProvider.io(),
+                        block = { getPlayWidgetCarousel(shopId, it) },
+                        onError = {null}
+                )
+
+                newShopPageHomeLayoutUiModel.await()?.let { newShopPageHomeLayoutUiModelData ->
+                    _shopHomeLayoutData.postValue(Success(newShopPageHomeLayoutUiModelData))
+                }
                 productList.await()?.let { productListData ->
                     _productListData.postValue(Success(productListData))
                 }
@@ -105,6 +122,40 @@ class ShopHomeViewModel @Inject constructor(
         }) {
             _productListData.postValue(Fail(it))
         }
+    }
+
+    fun onRefreshPlayBanner(shopId: String){
+        val result = _shopHomeLayoutData.value
+        if(result is Success){
+            launchCatchError(block = {
+                val newShopPageHomeLayoutUiModel = asyncCatchError(
+                        dispatcherProvider.io(),
+                        block = { getPlayWidgetCarousel(shopId, result.data) },
+                        onError = {null}
+                )
+                newShopPageHomeLayoutUiModel.await()?.let {
+                    _shopHomeLayoutData.postValue(Success(it))
+                }
+            }){
+            }
+        }
+    }
+
+    private suspend fun getPlayWidgetCarousel(shopId: String, shopPageHomeLayoutUiModel: ShopPageHomeLayoutUiModel): ShopPageHomeLayoutUiModel?{
+        getPlayWidgetUseCase.setParams(SHOP_WIDGET_TYPE, shopId, SHOP_AUTHOR_TYPE)
+        val playBannerDataModel = getPlayWidgetUseCase.executeOnBackground()
+        shopPageHomeLayoutUiModel.listWidget.withIndex().find { (index, data) -> data is ShopHomePlayCarouselUiModel }?.let { (index, uiModel) ->
+            val newHomeLayout = shopPageHomeLayoutUiModel.listWidget.toMutableList()
+            if(playBannerDataModel.channelList.isNotEmpty()){
+                newHomeLayout[index] = (uiModel as ShopHomePlayCarouselUiModel).copy(playBannerCarouselDataModel = playBannerDataModel)
+            }else{
+                newHomeLayout.remove(uiModel)
+            }
+            return shopPageHomeLayoutUiModel.copy(
+                    listWidget = newHomeLayout
+            )
+        }
+        return null
     }
 
     fun addProductToCart(

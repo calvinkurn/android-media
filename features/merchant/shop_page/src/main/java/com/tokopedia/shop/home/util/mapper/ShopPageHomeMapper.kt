@@ -6,8 +6,12 @@ import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
+import com.tokopedia.shop.home.WidgetName
+import com.tokopedia.shop.home.WidgetName.PLAY_CAROUSEL_WIDGET
 import com.tokopedia.shop.home.WidgetName.PRODUCT
+import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.WidgetType.DISPLAY
+import com.tokopedia.shop.home.WidgetType.DYNAMIC
 import com.tokopedia.shop.home.WidgetType.VOUCHER
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.view.model.*
@@ -113,6 +117,10 @@ object ShopPageHomeMapper {
             isMyOwnProduct: Boolean
     ): List<BaseShopHomeWidgetUiModel> {
         return mutableListOf<BaseShopHomeWidgetUiModel>().apply {
+            add(mapToPlayWidgetUiModel(ShopLayoutWidget.Widget(
+                    name = WidgetName.PLAY_CAROUSEL_WIDGET,
+                    type = WidgetType.DYNAMIC
+            )))
             shopLayoutWidgetResponse.filter { it.data.isNotEmpty() }.onEach {
                 val widgetUiModel = mapToWidgetUiModel(it, isMyOwnProduct)
                 widgetUiModel?.let { model ->
@@ -135,6 +143,9 @@ object ShopPageHomeMapper {
             }
             VOUCHER.toLowerCase() -> {
                 mapToVoucherUiModel(widgetResponse)
+            }
+            DYNAMIC.toLowerCase()-> {
+                mapToPlayWidgetUiModel(widgetResponse)
             }
             else -> {
                 null
@@ -219,6 +230,16 @@ object ShopPageHomeMapper {
                 widgetModel.type,
                 mapToHeaderModel(widgetModel.header),
                 mapToWidgetProductListItemViewModel(widgetModel.data, isMyOwnProduct)
+        )
+    }
+
+    private fun mapToPlayWidgetUiModel(widgetModel: ShopLayoutWidget.Widget): ShopHomePlayCarouselUiModel {
+        return ShopHomePlayCarouselUiModel(
+                widgetId = widgetModel.widgetID,
+                layoutOrder = widgetModel.layoutOrder,
+                name = widgetModel.name,
+                type = widgetModel.type,
+                header = mapToHeaderModel(widgetModel.header)
         )
     }
 

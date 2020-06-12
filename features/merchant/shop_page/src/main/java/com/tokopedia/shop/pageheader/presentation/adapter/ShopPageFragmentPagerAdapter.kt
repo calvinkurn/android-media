@@ -34,7 +34,7 @@ internal class ShopPageFragmentPagerAdapter(
 
     private val ctxRef = WeakReference(ctx)
 
-    override fun getCount(): Int = 0
+    override fun getCount(): Int = listFragment.size
 
     override fun getItem(position: Int): Fragment {
         return listFragment[position]
