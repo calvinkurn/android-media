@@ -5,10 +5,13 @@
     <dimen name="play_dp_6">6dp</dimen>
     <dimen name="play_dp_10">10dp</dimen>
     <dimen name="play_dp_12">12dp</dimen>
+    <dimen name="play_dp_14">14dp</dimen>
     <dimen name="play_dp_18">18dp</dimen>
     <dimen name="play_dp_20">20dp</dimen>
     <dimen name="play_dp_22">22dp</dimen>
     <dimen name="play_dp_26">26dp</dimen>
+    <dimen name="play_dp_28">26dp</dimen>
+    <dimen name="play_dp_34">34dp</dimen>
     <dimen name="play_dp_55">55dp</dimen>
 
     <dimen name="play_search_bar_radius">8dp</dimen>
@@ -44,4 +47,10 @@
 
     <dimen name="play_seller_chat_max_height">270dp</dimen>
     <dimen name="play_metrics_height">100dp</dimen>
+
+    <dimen name="play_start_live_button_height">48dp</dimen>
+    <dimen name="play_start_live_button_elevation">4dp</dimen>
+    <dimen name="play_start_live_button_radius">8dp</dimen>
+
+    <dimen name="play_before_live_image_height">198dp</dimen>
 </resources>

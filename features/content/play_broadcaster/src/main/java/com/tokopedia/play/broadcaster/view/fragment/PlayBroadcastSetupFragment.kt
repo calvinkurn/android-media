@@ -10,18 +10,16 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayFollowerItemDecoration
-import com.tokopedia.play.broadcaster.ui.model.ChannelSetupUiModel
 import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
-import com.tokopedia.play.broadcaster.util.doOnPreDraw
-import com.tokopedia.play.broadcaster.view.adapter.PlayFollowersAdapter
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayPrivacyPolicyBottomSheet
+import com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSetupViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -42,10 +40,19 @@ class PlayBroadcastSetupFragment @Inject constructor(
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
     private lateinit var btnSetup: UnifyButton
-    private lateinit var rvFollowers: RecyclerView
+    private lateinit var followerView: PlayShareFollowerView
     private lateinit var tvPrivacyPolicy: TextView
 
-    private val followersAdapter = PlayFollowersAdapter()
+    private val setupListener = object : PlayBroadcastSetupBottomSheet.Listener {
+        override fun onSetupCanceled() {
+
+        }
+
+        override fun onSetupCompletedWithData(selectedProducts: List<ProductContentUiModel>, cover: PlayCoverUiModel) {
+            populateSetupData(selectedProducts, cover)
+            openFinalPreparationPage()
+        }
+    }
 
     private lateinit var privacyPolicyBottomSheet: PlayPrivacyPolicyBottomSheet
 
@@ -78,7 +85,7 @@ class PlayBroadcastSetupFragment @Inject constructor(
     private fun initView(view: View) {
         with (view) {
             btnSetup = findViewById(R.id.btn_setup)
-            rvFollowers = findViewById(R.id.rv_followers)
+            followerView = findViewById(R.id.follower_view)
             tvPrivacyPolicy = findViewById(R.id.tv_privacy_policy)
         }
     }
@@ -87,12 +94,6 @@ class PlayBroadcastSetupFragment @Inject constructor(
         broadcastCoordinator.setupTitle(getString(R.string.play_action_bar_prepare_title))
         btnSetup.setOnClickListener {
              openBroadcastSetupPage()
-        }
-
-        rvFollowers.adapter = followersAdapter
-        rvFollowers.doOnPreDraw {
-            if (rvFollowers.itemDecorationCount == 0)
-                rvFollowers.addItemDecoration(PlayFollowerItemDecoration())
         }
 
         setupPrivacyPolicy()
@@ -132,6 +133,7 @@ class PlayBroadcastSetupFragment @Inject constructor(
         val setupClass = PlayBroadcastSetupBottomSheet::class.java
         val fragmentFactory = childFragmentManager.fragmentFactory
         val setupFragment = fragmentFactory.instantiate(requireContext().classLoader, setupClass.name) as PlayBroadcastSetupBottomSheet
+        setupFragment.setListener(setupListener)
         setupFragment.show(childFragmentManager)
     }
 
@@ -156,13 +158,17 @@ class PlayBroadcastSetupFragment @Inject constructor(
                 })
     }
 
-    private fun setupCompleteView(channelSetupUiModel: ChannelSetupUiModel) {
-        broadcastCoordinator.setupTitle(getString(R.string.play_action_bar_prepare_final_title))
-        btnSetup.text = getString(R.string.play_start_streaming)
-        btnSetup.setOnClickListener {
-            showBeforeLiveCountDown()
-            viewModel.createChannel()
-        }
+    private fun populateSetupData(selectedProducts: List<ProductContentUiModel>, cover: PlayCoverUiModel) {
+        viewModel.setupChannelWithData(
+                selectedProducts = selectedProducts,
+                cover = cover
+        )
+    }
+
+    private fun openFinalPreparationPage() {
+        broadcastCoordinator.navigateToFragment(
+                fragmentClass = PlayBeforeLiveFragment::class.java
+        )
     }
 
     private fun completeViewAppears(): Boolean =
@@ -197,15 +203,16 @@ class PlayBroadcastSetupFragment @Inject constructor(
     /**
      * Observe
      */
-
     private fun observeFollowers() {
         viewModel.observableFollowers.observe(viewLifecycleOwner, Observer {
-            followersAdapter.setItemsAndAnimateChanges(it)
+            followerView.setFollowersModel(it)
         })
     }
 
     private fun observeSetupChannel() {
-        viewModel.observableSetupChannel.observe(viewLifecycleOwner, Observer(this::setupCompleteView))
+        viewModel.observableSetupChannel.observe(viewLifecycleOwner, Observer {
+
+        })
     }
 
     private fun observeCreateChannel() {

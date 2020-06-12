@@ -5,46 +5,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_share_title"
+    <com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
+        android:id="@+id/follower_view"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:text="@string/play_auto_share_title"
-        android:textColor="@color/Neutral_N0"
-        app:layout_constraintEnd_toStartOf="@id/btn_setup"
+        android:layout_height="@dimen/layout_lvl0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/btn_setup"
-        app:typographyType="body_3"
-        />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_followers"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/layout_lvl0"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        android:orientation="horizontal"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
         app:layout_constraintBottom_toBottomOf="@id/btn_setup"
-        app:layout_constraintStart_toStartOf="@id/tv_share_title"
-        app:layout_constraintTop_toBottomOf="@id/tv_share_title"
-        />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_followers_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginLeft="@dimen/spacing_lvl3"
-        android:text="@string/play_your_followers"
-        android:textColor="@color/Neutral_N0"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintBottom_toBottomOf="@id/rv_followers"
-        app:layout_constraintEnd_toEndOf="@id/tv_share_title"
-        app:layout_constraintStart_toEndOf="@id/rv_followers"
-        app:layout_constraintTop_toTopOf="@id/rv_followers"
-        app:typographyType="small"
+        app:layout_constraintEnd_toStartOf="@id/btn_setup"
         />
 
     <com.tokopedia.unifycomponents.UnifyButton
@@ -65,7 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="top"
-        app:constraint_referenced_ids="btn_setup, tv_share_title"
+        app:constraint_referenced_ids="btn_setup, follower_view"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -81,7 +51,7 @@
         android:textColor="@color/dark_N700_68"
         app:layout_constraintBottom_toTopOf="@id/barrier_top_action_bottom_info"
         app:layout_constraintEnd_toEndOf="@id/btn_setup"
-        app:layout_constraintStart_toStartOf="@id/tv_share_title"
+        app:layout_constraintStart_toStartOf="@id/follower_view"
         app:typographyType="body_3"
         tools:text="blab bla bla"
         />

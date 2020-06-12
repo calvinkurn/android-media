@@ -21,6 +21,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.util.BreadcrumbsModel
 import com.tokopedia.play.broadcaster.util.compatTransitionName
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
@@ -56,6 +58,8 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
 
     private val fragmentBreadcrumbs = Stack<BreadcrumbsModel>()
 
+    private var mListener: Listener? = null
+
     private val currentFragment: Fragment?
         get() = childFragmentManager.findFragmentById(R.id.fl_fragment)
 
@@ -72,7 +76,10 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
                     val lastFragmentBreadcrumbs = fragmentBreadcrumbs.pop()
                     childFragmentManager.popBackStack(lastFragmentBreadcrumbs.fragmentClass.name, 0)
                     setupHeader()
-                } else cancel()
+                } else {
+                    cancel()
+                    mListener?.onSetupCanceled()
+                }
             }
         }
     }
@@ -139,8 +146,18 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
     }
 
     fun complete() {
-        saveCompleteChannel()
         dismiss()
+        mListener?.onSetupCompletedWithData(
+                selectedProducts = viewModel.selectedProductList,
+                cover = PlayCoverUiModel(
+                        url = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
+                        title = "Klarifikasi Tebak Siapa?"
+                )
+        )
+    }
+
+    fun setListener(listener: Listener) {
+        mListener = listener
     }
 
     private fun setupHeader() {
@@ -226,14 +243,6 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         selectedProductPage.show()
     }
 
-    private fun saveCompleteChannel() {
-        parentViewModel.saveCompleteChannel(
-                productList = viewModel.selectedProductList,
-                coverUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
-                title = "Klarifikasi Tebak Siapa?"
-        )
-    }
-
     //region observe
     /**
      * Observe
@@ -267,5 +276,14 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
 
     companion object {
         private const val TAG = "PlayBroadcastSetupBottomSheet"
+    }
+
+    interface Listener {
+
+        fun onSetupCanceled()
+        fun onSetupCompletedWithData(
+                selectedProducts: List<ProductContentUiModel>,
+                cover: PlayCoverUiModel
+        )
     }
 }

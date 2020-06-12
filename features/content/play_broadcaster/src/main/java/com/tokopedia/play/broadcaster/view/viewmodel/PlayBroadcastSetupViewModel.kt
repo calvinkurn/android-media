@@ -9,10 +9,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.AddProductTagUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.CreateChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.CreateLiveStreamChannelUseCase
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
-import com.tokopedia.play.broadcaster.ui.model.ChannelSetupUiModel
-import com.tokopedia.play.broadcaster.ui.model.FollowerUiModel
-import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
-import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
+import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -48,6 +45,14 @@ class PlayBroadcastSetupViewModel @Inject constructor(
         get() = _observableCreateChannel
     private val _observableCreateChannel = MutableLiveData<Result<LiveStreamInfoUiModel>>()
 
+    val observableSelectedProduct: LiveData<List<ProductContentUiModel>>
+        get() = _observableSelectedProduct
+    private val _observableSelectedProduct = MutableLiveData<List<ProductContentUiModel>>()
+
+    val observableCover: LiveData<PlayCoverUiModel>
+        get() = _observableCover
+    private val _observableCover = MutableLiveData<PlayCoverUiModel>()
+
     init {
         _observableFollowers.value = PlayBroadcastMocker.getMockUnknownFollower()
     }
@@ -80,6 +85,14 @@ class PlayBroadcastSetupViewModel @Inject constructor(
          */
 
         _observableCreateChannel.value = Success(PlayBroadcastMocker.getLiveStreamingInfo())
+    }
+
+    fun setupChannelWithData(
+            selectedProducts: List<ProductContentUiModel>,
+            cover: PlayCoverUiModel
+    ) {
+        _observableSelectedProduct.value = selectedProducts
+        _observableCover.value = cover
     }
 
     private fun selectedProductIds(productList: List<ProductContentUiModel>): List<String> = productList.map { it.id.toString() }.toList()

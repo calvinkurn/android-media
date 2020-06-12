@@ -84,5 +84,8 @@
     <string name="play_privacy_policy_full">Dengan menekan tombol %s, saya menyetujui %s live streaming.</string>
     <string name="play_privacy_policy">Syarat &amp; Ketentuan</string>
 
+    <string name="play_cover_title_label">Judul live streaming</string>
     <string name="play_product_live_title">Produk Ditampilkan (%d)</string>
+    <string name="play_max_live_stream_duration">(Maks. siaran %d menit)</string>
+    <string name="play_before_live_selected_product">%d Produk Dipilih</string>
 </resources>
