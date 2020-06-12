@@ -175,9 +175,9 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     override fun renderPromoAndRecommendation() {
         //reset view pager
-        viewPager.adapter = null
 
         if (listMenu.size > 0 && !showProducts) {
+            viewPager.adapter = null
             val pagerAdapter = TopupBillsProductTabAdapter(listMenu, childFragmentManager)
             viewPager.adapter = pagerAdapter
             viewPager.offscreenPageLimit = listMenu.size
