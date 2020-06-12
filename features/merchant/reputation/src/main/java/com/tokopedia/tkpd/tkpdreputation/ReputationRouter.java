@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.tkpdreputation;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -16,6 +17,8 @@ public interface ReputationRouter {
     Intent getInboxReputationIntent(Context context);
 
     Fragment getReputationHistoryFragment();
+
+    Fragment getReviewSellerFragment();
 
     Intent getLoginIntent(Context context);
 

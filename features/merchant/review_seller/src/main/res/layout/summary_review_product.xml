@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingRight="@dimen/spacing_lvl4"
+    android:paddingEnd="@dimen/spacing_lvl4"
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingLeft="@dimen/spacing_lvl4"
+    android:paddingTop="@dimen/spacing_lvl2"
+    android:paddingBottom="@dimen/spacing_lvl2">
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/cardSummary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:card_type="border">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivRatingReview"
+                android:layout_width="@dimen/dp_28"
+                android:layout_height="@dimen/dp_28"
+                android:layout_marginStart="@dimen/dp_14"
+                android:layout_marginTop="@dimen/dp_24"
+                android:layout_marginEnd="@dimen/dp_14"
+                android:layout_marginBottom="@dimen/dp_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_rating_star_summary" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tgCountRating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:textColor="@color/clr_f531353b"
+                app:layout_constraintEnd_toStartOf="@id/tgFiveReview"
+                app:layout_constraintStart_toEndOf="@id/ivRatingReview"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="heading_1"
+                app:typographyWeight="bold"
+                tools:text="4.6" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tgFiveReview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginLeft="@dimen/dp_4"
+                android:layout_marginTop="@dimen/dp_24"
+                android:textColor="@color/clr_31353b"
+                app:layout_constraintStart_toEndOf="@id/tgCountRating"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="body_1"
+                app:typographyWeight="reguler"
+                tools:text="/ 5.0" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tgCountReview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                android:layout_marginLeft="@dimen/spacing_lvl3"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:layout_marginBottom="@dimen/dp_12"
+                android:textColor="@color/clr_31353b"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/ivRatingReview"
+                app:layout_constraintTop_toBottomOf="@id/tgFiveReview"
+                app:typographyType="body_2"
+                app:typographyWeight="bold"
+                tools:text="1.234" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tgReview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginLeft="@dimen/dp_4"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:layout_marginBottom="@dimen/dp_12"
+                android:text="@string/review_text"
+                android:textColor="@color/clr_31353b"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/tgCountReview"
+                app:layout_constraintTop_toBottomOf="@id/tgFiveReview"
+                app:typographyType="body_2"
+                app:typographyWeight="reguler" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tgLabelPeriodReview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:text="@string/period"
+                android:textColor="@color/clr_f531353b"
+                app:layout_constraintBottom_toTopOf="@+id/tgPeriodReview"
+                app:layout_constraintEnd_toEndOf="@+id/tgPeriodReview"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/tgPeriodReview"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="body_2"
+                app:typographyWeight="reguler" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tgPeriodReview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/spacing_lvl4"
+                android:textColor="@color/clr_f531353b"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline1"
+                app:typographyType="body_2"
+                app:typographyWeight="reguler"
+                tools:text="1 Des 2019 - Hari Ini" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+</LinearLayout>

@@ -2,6 +2,7 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
@@ -39,7 +40,6 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
 
     private fun onLoading() {
         showLoadingState()
-        listener.getProgressData()
     }
 
     private fun onError(element: ProgressWidgetUiModel) {
@@ -83,7 +83,7 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
 
     private fun goToDetails(element: ProgressWidgetUiModel) {
         with(element) {
-            if (com.tokopedia.applink.RouteManager.route(itemView.context, appLink)) {
+            if (RouteManager.route(itemView.context, appLink)) {
                 listener.sendProgressCtaClickEvent(dataKey, data?.colorState.toString(), data?.value.orZero())
             }
         }

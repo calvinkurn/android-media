@@ -37,8 +37,8 @@ class LineGraphViewHolder(
     }
 
     override fun bind(element: LineGraphWidgetUiModel) = with(itemView) {
+        setIsRecyclable(false)
         observeState(element)
-        listener.getLineGraphData()
 
         val data = element.data
 

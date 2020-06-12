@@ -9,4 +9,9 @@
         <item name="colorAccent">@color/pm_cb_color</item>
         <item name="android:textColorSecondary">@color/pm_cb_color</item>
     </style>
+
+    <style name="PmBottomSheet" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+    </style>
 </resources>

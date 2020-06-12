@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.ProductVariantAdapter
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.factory.ProductVariantStockAdapterFactoryImpl
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.viewholder.ProductVariantStockViewHolder.ProductVariantStockListener
@@ -40,15 +41,18 @@ class QuickEditVariantStockBottomSheet(
     }
 
     override fun onSaveButtonClicked(result: EditVariantResult) {
+        ProductManageTracking.eventClickEditStockVariantSave()
         onSaveVariantsStock(result)
         dismiss()
     }
 
     override fun onStockChanged(variantId: String, stock: Int) {
+        ProductManageTracking.eventClickChangeAmountVariant()
         viewModel.setVariantStock(variantId, stock)
     }
 
     override fun onStatusChanged(variantId: String, status: ProductStatus) {
+        ProductManageTracking.eventClickStatusToggleVariant(status)
         viewModel.setVariantStatus(variantId, status)
     }
 }
