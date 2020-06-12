@@ -13,9 +13,9 @@ class PlayFollowerItemDecoration(context: Context) : RecyclerView.ItemDecoration
     private val offset8 = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) * -1
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-        val position = parent.getChildAdapterPosition(view)
+        val position = parent.getChildLayoutPosition(view)
 
-        if (position != 0) outRect.left = offset8
+        if (position > 0) outRect.left = offset8
         else super.getItemOffsets(outRect, view, parent, state)
     }
 }

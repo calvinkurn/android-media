@@ -52,7 +52,6 @@ class PlayShareFollowerView : ConstraintLayout {
                         followersModel.totalFollowers,
                         followersModel.totalFollowers
                 )
-        followersAdapter.setItems(followersModel.followersList)
-        followersAdapter.notifyDataSetChanged()
+        followersAdapter.setItemsAndAnimateChanges(followersModel.followersList)
     }
 }
