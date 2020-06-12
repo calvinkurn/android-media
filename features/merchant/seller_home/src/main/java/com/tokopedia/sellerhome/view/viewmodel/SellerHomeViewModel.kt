@@ -3,7 +3,6 @@ package com.tokopedia.sellerhome.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerhome.domain.model.GetShopStatusResponse
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
@@ -88,11 +87,12 @@ class SellerHomeViewModel @Inject constructor(
 
     fun getTicker() {
         launchCatchError(block = {
-            _homeTicker.value = Success(withContext(Dispatchers.IO) {
+            val result: Success<List<TickerUiModel>> = Success(withContext(Dispatchers.IO) {
                 getTickerUseCase.executeOnBackground()
             })
+            _homeTicker.postValue(result)
         }, onError = {
-            _homeTicker.value = Fail(it)
+            _homeTicker.postValue(Fail(it))
         })
     }
 
@@ -103,79 +103,86 @@ class SellerHomeViewModel @Inject constructor(
 
     fun getWidgetLayout() {
         launchCatchError(block = {
-            _widgetLayout.value = Success(withContext(Dispatchers.IO) {
+            val result: Success<List<BaseWidgetUiModel<*>>> = Success(withContext(Dispatchers.IO) {
                 getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, SELLER_HOME_PAGE_NAME)
                 return@withContext getLayoutUseCase.executeOnBackground()
             })
+            _widgetLayout.postValue(result)
         }, onError = {
-            _widgetLayout.value = Fail(it)
+            _widgetLayout.postValue(Fail(it))
         })
     }
 
     fun getShopLocation() {
         launchCatchError(block = {
-            _shopLocation.value = Success(withContext(Dispatchers.IO) {
+            val result: Success<ShippingLoc> = Success(withContext(Dispatchers.IO) {
                 getShopLocationUseCase.params = GetShopLocationUseCase.getRequestParams(shopId)
                 return@withContext getShopLocationUseCase.executeOnBackground()
             })
+            _shopLocation.postValue(result)
         }, onError = {
-            _shopLocation.value = Fail(it)
+            _shopLocation.postValue(Fail(it))
         })
     }
 
     fun getCardWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            _cardWidgetData.value = Success(withContext(Dispatchers.IO) {
-                getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(shopId.toIntOrZero(), dataKeys, startDate, endDate)
+            val result: Success<List<CardDataUiModel>> = Success(withContext(Dispatchers.IO) {
+                getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(dataKeys, startDate, endDate)
                 return@withContext getCardDataUseCase.executeOnBackground()
             })
+            _cardWidgetData.postValue(result)
         }, onError = {
-            _cardWidgetData.value = Fail(it)
+            _cardWidgetData.postValue(Fail(it))
         })
     }
 
     fun getLineGraphWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            _lineGraphWidgetData.value = Success(withContext(Dispatchers.IO) {
-                getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(shopId, dataKeys, startDate, endDate)
+            val result: Success<List<LineGraphDataUiModel>> = Success(withContext(Dispatchers.IO) {
+                getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(dataKeys, startDate, endDate)
                 return@withContext getLineGraphDataUseCase.executeOnBackground()
             })
+            _lineGraphWidgetData.postValue(result)
         }, onError = {
-            _lineGraphWidgetData.value = Fail(it)
+            _lineGraphWidgetData.postValue(Fail(it))
         })
     }
 
     fun getProgressWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            _progressWidgetData.value = Success(withContext(Dispatchers.IO) {
+            val result: Success<List<ProgressDataUiModel>> = Success(withContext(Dispatchers.IO) {
                 val today = DateTimeUtil.format(Date().time, DATE_FORMAT)
-                getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(userSession.shopId, today, dataKeys)
+                getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(today, dataKeys)
                 return@withContext getProgressDataUseCase.executeOnBackground()
             })
+            _progressWidgetData.postValue(result)
         }, onError = {
-            _progressWidgetData.value = Fail(it)
+            _progressWidgetData.postValue(Fail(it))
         })
     }
 
     fun getPostWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            _postListWidgetData.value = Success(withContext(Dispatchers.IO) {
-                getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(shopId.toIntOrZero(), dataKeys, startDate, endDate)
+            val result: Success<List<PostListDataUiModel>> = Success(withContext(Dispatchers.IO) {
+                getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, startDate, endDate)
                 return@withContext getPostDataUseCase.executeOnBackground()
             })
+            _postListWidgetData.postValue(result)
         }, onError = {
-            _postListWidgetData.value = Fail(it)
+            _postListWidgetData.postValue(Fail(it))
         })
     }
 
     fun getCarouselWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            _carouselWidgetData.value = Success(withContext(Dispatchers.IO) {
+            val result: Success<List<CarouselDataUiModel>> = Success(withContext(Dispatchers.IO) {
                 getCarouselDataUseCase.params = GetCarouselDataUseCase.getRequestParams(dataKeys)
                 return@withContext getCarouselDataUseCase.executeOnBackground()
             })
+            _carouselWidgetData.postValue(result)
         }, onError = {
-            _carouselWidgetData.value = Fail(it)
+            _carouselWidgetData.postValue(Fail(it))
         })
     }
 }

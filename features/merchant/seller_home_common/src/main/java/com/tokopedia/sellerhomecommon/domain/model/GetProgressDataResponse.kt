@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 
 data class GetProgressDataResponse(
         @Expose
-        @SerializedName("getProgressBarData")
+        @SerializedName("fetchProgressBarWidgetData")
         val getProgressBarData: ProgressDataWrapper?
 )
 

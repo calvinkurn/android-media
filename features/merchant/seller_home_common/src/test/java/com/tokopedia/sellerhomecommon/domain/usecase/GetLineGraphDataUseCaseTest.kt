@@ -41,7 +41,6 @@ class GetLineGraphDataUseCaseTest {
     }
 
     private val params = GetLineGraphDataUseCase.getRequestParams(
-            shopId = ArgumentMatchers.anyString(),
             dataKey = ArgumentMatchers.anyList(),
             startDate = ArgumentMatchers.anyString(),
             endDate = ArgumentMatchers.anyString()

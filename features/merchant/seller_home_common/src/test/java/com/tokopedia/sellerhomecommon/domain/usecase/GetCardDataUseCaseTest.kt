@@ -42,7 +42,6 @@ class GetCardDataUseCaseTest {
     }
 
     private val params = GetCardDataUseCase.getRequestParams(
-            shopId = ArgumentMatchers.anyInt(),
             dataKey = ArgumentMatchers.anyList(),
             startDate = ArgumentMatchers.anyString(),
             endDate = ArgumentMatchers.anyString()

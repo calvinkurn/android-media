@@ -6,7 +6,9 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.sellerhomecommon.domain.mapper.CardMapper
+import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.GetCardDataResponse
+import com.tokopedia.sellerhomecommon.domain.model.WidgetDataParameterModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -34,33 +36,38 @@ class GetCardDataUseCase(
     }
 
     companion object {
-        private const val SHOP_ID = "shopID"
-        private const val DATA_KEY = "dataKey"
-        private const val START_DATE = "startDate"
-        private const val END_DATE = "endDate"
+        private const val DATA_KEYS = "dataKeys"
 
         fun getRequestParams(
-                shopId: Int,
                 dataKey: List<String>,
                 startDate: String,
                 endDate: String
         ): RequestParams = RequestParams.create().apply {
-            putInt(SHOP_ID, shopId)
-            putObject(DATA_KEY, dataKey)
-            putString(START_DATE, startDate)
-            putString(END_DATE, endDate)
+            val dataKeys = dataKey.map {
+                DataKeyModel(
+                        key = it,
+                        jsonParams = WidgetDataParameterModel(
+                                startDate = startDate,
+                                endDate = endDate
+                        ).toJsonString()
+                )
+            }
+            putObject(DATA_KEYS, dataKeys)
         }
 
-        private const val QUERY = """query getCardWidgetData(${'$'}shopID: Int!, ${'$'}dataKey: [String!]!, ${'$'}startDate: String!, ${'$'}endDate: String!) {
-                   getCardWidgetData(shopID: ${'$'}shopID, dataKey: ${'$'}dataKey, startDate: ${'$'}startDate, endDate: ${'$'}endDate) {
-                     data {
-                       dataKey
-                       value
-                       description
-                       state
-                       errorMsg
-                     }
-                   }
-                }"""
+        private val QUERY = """
+            query (${'$'}dataKeys : [dataKey!]!) {
+              fetchCardWidgetData(dataKeys: ${'$'}dataKeys) {
+                data {
+                  dataKey
+                  value
+                  state
+                  description
+                  error
+                  errorMsg
+                }
+              }
+            }
+        """.trimIndent()
     }
 }

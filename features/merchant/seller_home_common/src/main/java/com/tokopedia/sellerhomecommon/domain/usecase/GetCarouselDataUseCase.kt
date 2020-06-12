@@ -6,7 +6,9 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.sellerhomecommon.domain.mapper.CarouselMapper
+import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.GetCarouselDataResponse
+import com.tokopedia.sellerhomecommon.domain.model.WidgetDataParameterModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselDataUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -35,38 +37,45 @@ class GetCarouselDataUseCase(
 
     companion object {
 
-        private const val DATA_KEY = "dataKey"
-        private const val PAGE = "page"
-        private const val LIMIT = "limit"
-        private const val NUMBER_OF_LIMIT = 5
+        private const val DATA_KEYS = "dataKeys"
+        private const val DEFAULT_PAGE_NUMBER = 1
+        private const val DEFAULT_LIMIT = 5
 
-        fun getRequestParams(dataKeys: List<String>): RequestParams {
-            val mapList: List<Map<String, Any>> = dataKeys.map {
-                mapOf(
-                        DATA_KEY to it,
-                        PAGE to 1,
-                        LIMIT to NUMBER_OF_LIMIT
+        fun getRequestParams(
+                dataKey: List<String>,
+                pageNumber: Int = DEFAULT_PAGE_NUMBER,
+                limits: Int = DEFAULT_LIMIT
+        ): RequestParams {
+            val dataKeys = dataKey.map {
+                DataKeyModel(
+                        key = it,
+                        jsonParams = WidgetDataParameterModel(
+                                page = pageNumber,
+                                limit = limits
+                        ).toJsonString()
                 )
             }
             return RequestParams.create().apply {
-                putObject(DATA_KEY, mapList)
+                putObject(DATA_KEYS, dataKeys)
             }
         }
 
-        private const val QUERY = """query getCarouselWidgetData(${'$'}dataKey: [CarouselDataKey!]!) {
-                   getCarouselWidgetData(dataKey: ${'$'}dataKey) {\n" +
-                     data {
-                       dataKey
-                       items {
-                         ID
-                         URL
-                         CreativeName
-                         AppLink
-                         FeaturedMediaURL
-                       }
-                       errorMsg
-                     }
-                   }
-                }"""
+        private val QUERY = """
+            query (${'$'}dataKeys: [dataKey!]!) {
+              fetchCarouselWidgetData(dataKeys: ${'$'}dataKeys) {
+                data {
+                  dataKey
+                  items {
+                    ID
+                    URL
+                    CreativeName
+                    AppLink
+                    FeaturedMediaURL
+                  }
+                  errorMsg
+                }
+              }
+            }
+        """.trimIndent()
     }
 }

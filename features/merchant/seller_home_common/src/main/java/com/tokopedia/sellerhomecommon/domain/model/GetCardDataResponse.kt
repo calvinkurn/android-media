@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 
 data class GetCardDataResponse(
         @Expose
-        @SerializedName("getCardWidgetData")
+        @SerializedName("fetchCardWidgetData")
         val getCardData: GetCardDataModel?
 )
 

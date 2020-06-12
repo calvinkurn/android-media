@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 
 data class GetLineGraphDataResponse(
         @Expose
-        @SerializedName("getLineGraphData")
+        @SerializedName("fetchLineGraphWidgetData")
         val getLineGraphData: GetLineGraphDataModel?
 )
 

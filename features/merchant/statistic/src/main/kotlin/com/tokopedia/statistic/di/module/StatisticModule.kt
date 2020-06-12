@@ -10,6 +10,9 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import javax.inject.Named
 
 /**
  * Created By @ilhamsuaib on 09/06/20
@@ -30,4 +33,9 @@ class StatisticModule {
     @StatisticScope
     @Provides
     fun provideGraphqlRepository(): GraphqlRepository = Interactor.getInstance().graphqlRepository
+
+    @StatisticScope
+    @Provides
+    @Named("Main")
+    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 }

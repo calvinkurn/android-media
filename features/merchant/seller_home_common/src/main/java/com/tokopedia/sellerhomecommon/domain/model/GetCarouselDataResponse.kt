@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 
 data class GetCarouselDataResponse(
         @Expose
-        @SerializedName("getCarouselWidgetData")
+        @SerializedName("fetchCarouselWidgetData")
         val carouselData: GetCarouselDataModel
 )
 

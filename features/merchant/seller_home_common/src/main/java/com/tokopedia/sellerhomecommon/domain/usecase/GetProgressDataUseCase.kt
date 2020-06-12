@@ -3,9 +3,10 @@ package com.tokopedia.sellerhomecommon.domain.usecase
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerhomecommon.domain.mapper.ProgressMapper
+import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.GetProgressDataResponse
+import com.tokopedia.sellerhomecommon.domain.model.WidgetDataParameterModel
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressDataUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -33,34 +34,37 @@ class GetProgressDataUseCase constructor(
     }
 
     companion object {
-        private const val SHOP_ID = "shopID"
-        private const val DATE = "date"
-        private const val DATA_KEY = "dataKey"
+        private const val DATA_KEYS = "dataKeys"
 
         fun getRequestParams(
-                shopId: String,
                 date: String,
                 dataKey: List<String>
         ): RequestParams = RequestParams.create().apply {
-            putInt(SHOP_ID, shopId.toIntOrZero())
-            putString(DATE, date)
-            putObject(DATA_KEY, dataKey)
+            val dataKeys = dataKey.map {
+                DataKeyModel(
+                        key = it,
+                        jsonParams = WidgetDataParameterModel(date = date).toJsonString()
+                )
+            }
+            putObject(DATA_KEYS, dataKeys)
         }
 
-        private const val QUERY = """query getProgressData(${'$'}shopID: Int!, ${'$'}dataKey: [String!]!, ${'$'}date: String!) {
-                 getProgressBarData(shopID: ${'$'}shopID, dataKey: ${'$'}dataKey, date: ${'$'}date) {
-                    data {
-                       dataKey
-                       valueTxt
-                       maxValueTxt
-                       value
-                       maxValue
-                       state
-                       subtitle
-                       error
-                       errorMsg
-                    }
-                 }
-               }"""
+        private val QUERY = """
+            query (${'$'}dataKeys: [dataKey!]!) {
+              fetchProgressBarWidgetData(dataKeys: ${'$'}dataKeys) {
+                data {
+                  dataKey
+                  valueTxt
+                  maxValueTxt
+                  value
+                  maxValue
+                  state
+                  subtitle
+                  error
+                  errorMsg
+                }
+              }
+            }
+        """.trimIndent()
     }
 }

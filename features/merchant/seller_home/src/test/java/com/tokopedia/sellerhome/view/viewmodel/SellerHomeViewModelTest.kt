@@ -267,17 +267,12 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get card widget data then returns success result`() {
-        val shopId = 12345
         val dataKeys = listOf("a", "b", "c")
         val startDate = "02-03-20202"
         val endDate = "09-03-20202"
 
         val cardDataResult = listOf(CardDataUiModel(), CardDataUiModel(), CardDataUiModel())
-        getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(shopId, dataKeys, startDate, endDate)
-
-        every {
-            userSession.shopId
-        } returns shopId.toString()
+        getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(dataKeys, startDate, endDate)
 
         coEvery {
             getCardDataUseCase.executeOnBackground()
@@ -300,18 +295,13 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get card widget data then returns failed result`() = runBlocking {
-        val shopId = "12345"
         val dataKeys = listOf("a", "b", "c")
         val startDate = "02-03-20202"
         val endDate = "09-03-20202"
 
         val throwable = ResponseErrorException()
 
-        getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(shopId.toIntOrZero(), dataKeys, startDate, endDate)
-
-        every {
-            userSession.shopId
-        } returns shopId
+        getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(dataKeys, startDate, endDate)
 
         coEvery {
             getCardDataUseCase.executeOnBackground()
@@ -327,17 +317,12 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get line graph widget data then returns success result`() {
-        val shopId = "12345"
         val dataKeys = listOf("x", "y", "z")
         val startDate = "02-03-20202"
         val endDate = "09-03-20202"
 
         val lineGraphDataResult = listOf(LineGraphDataUiModel(), LineGraphDataUiModel(), LineGraphDataUiModel())
-        getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(shopId, dataKeys, startDate, endDate)
-
-        every {
-            userSession.shopId
-        } returns shopId
+        getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(dataKeys, startDate, endDate)
 
         coEvery {
             getLineGraphDataUseCase.executeOnBackground()
@@ -360,17 +345,12 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get line graph widget data then returns failed result`() {
-        val shopId = "12345"
         val dataKeys = listOf("x", "y", "z")
         val startDate = "02-03-20202"
         val endDate = "09-03-20202"
 
         val throwable= MessageErrorException("error message")
-        getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(shopId, dataKeys, startDate, endDate)
-
-        every {
-            userSession.shopId
-        } returns shopId
+        getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(dataKeys, startDate, endDate)
 
         coEvery {
             getLineGraphDataUseCase.executeOnBackground()
@@ -387,16 +367,11 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get progress widget data then returns success result`() {
-        val shopId = "124456"
         val dateStr = "02-02-2020"
         val dataKeys = listOf("x", "y", "z")
         val progressDataList = listOf(ProgressDataUiModel(), ProgressDataUiModel(), ProgressDataUiModel())
 
-        getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(shopId, dateStr, dataKeys)
-
-        every {
-            userSession.shopId
-        } returns shopId
+        getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(dateStr, dataKeys)
 
         coEvery {
             getProgressDataUseCase.executeOnBackground()
@@ -415,16 +390,11 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get progress widget data then returns failed result`() {
-        val shopId = "124456"
         val dateStr = "02-02-2020"
         val dataKeys = listOf("x", "y", "z")
         val throwable = MessageErrorException("error")
 
-        getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(shopId, dateStr, dataKeys)
-
-        every {
-            userSession.shopId
-        } returns shopId
+        getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(dateStr, dataKeys)
 
         coEvery {
             getProgressDataUseCase.executeOnBackground()
@@ -441,17 +411,12 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get post widget data then returns success result`() {
-        val shopId = 12345
         val dataKeys = listOf("x", "x")
         val startDate = "02-02-2020"
         val endDate = "07-02-2020"
         val postList = listOf(PostListDataUiModel(), PostListDataUiModel())
 
-        getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(shopId, dataKeys, startDate, endDate)
-
-        every {
-            userSession.shopId
-        } returns shopId.toString()
+        getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, startDate, endDate)
 
         coEvery {
             getPostDataUseCase.executeOnBackground()
@@ -474,17 +439,12 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get post widget data then returns failed result`() {
-        val shopId = 12345
         val dataKeys = listOf("x", "x")
         val startDate = "02-02-2020"
         val endDate = "07-02-2020"
         val exception = MessageErrorException("error msg")
 
-        getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(shopId, dataKeys, startDate, endDate)
-
-        every {
-            userSession.shopId
-        } returns shopId.toString()
+        getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, startDate, endDate)
 
         coEvery {
             getPostDataUseCase.executeOnBackground()

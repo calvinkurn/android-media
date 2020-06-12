@@ -6,7 +6,9 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.sellerhomecommon.domain.mapper.PostMapper
+import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.GetPostDataResponse
+import com.tokopedia.sellerhomecommon.domain.model.WidgetDataParameterModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListDataUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -34,37 +36,45 @@ class GetPostDataUseCase(
     }
 
     companion object {
-        private const val SHOP_ID = "shopId"
-        private const val DATA_KEY = "dataKey"
-        private const val START_DATE = "startDate"
-        private const val END_DATE = "endDate"
+        private const val DATA_KEYS = "dataKeys"
+        private const val DEFAULT_POST_LIMIT = 3
 
         fun getRequestParams(
-                shopId: Int,
                 dataKey: List<String>,
                 startDate: String,
-                endDate: String
+                endDate: String,
+                limit: Int = DEFAULT_POST_LIMIT
         ): RequestParams = RequestParams.create().apply {
-            putInt(SHOP_ID, shopId)
-            putObject(DATA_KEY, dataKey)
-            putString(START_DATE, startDate)
-            putString(END_DATE, endDate)
+            val dataKeys = dataKey.map {
+                DataKeyModel(
+                        key = it,
+                        jsonParams = WidgetDataParameterModel(
+                                startDate = startDate,
+                                endDate = endDate,
+                                limit = limit
+                        ).toJsonString()
+                )
+            }
+            putObject(DATA_KEYS, dataKeys)
         }
 
-        private const val QUERY = """query getPostWidgetData(${'$'}dataKey: [String!]!, ${'$'}shopId: Int!, ${'$'}startDate: String!, ${'$'}endDate: String!) {
-                   getPostWidgetData(dataKey: ${'$'}dataKey, shopID: ${'$'}shopId, startDate: ${'$'}startDate, endDate: ${'$'}endDate) {
-                     data {
-                       datakey
-                       list {
-                         title
-                         url
-                         applink
-                         subtitle
-                         featuredMediaURL
-                       }
-                       errorMsg
-                     }
-                   }
-                }"""
+        private val QUERY = """
+            query (${'$'}dataKeys: [dataKey!]!) {
+              fetchPostWidgetData(dataKeys: ${'$'}dataKeys) {
+                data {
+                  datakey
+                  list {
+                    title
+                    url
+                    applink
+                    subtitle
+                    featuredMediaURL
+                  }
+                  error
+                  errorMsg
+                }
+              }
+            }
+        """.trimIndent()
     }
 }
