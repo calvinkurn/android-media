@@ -89,7 +89,7 @@ class ChatSearchViewModel @Inject constructor(
             firstContactSearchResults = response
         }
         if (isFirstPage() && contactLoadMore != null) {
-            val searchResults: MutableList<Visitable<*>> = response.searchResults.toMutableList()
+            val searchResults: MutableList<Visitable<*>> = response.searchResults.subList(0, 5).toMutableList()
             searchResults.add(0, contactLoadMore)
             _searchResults.value = searchResults
         } else {
