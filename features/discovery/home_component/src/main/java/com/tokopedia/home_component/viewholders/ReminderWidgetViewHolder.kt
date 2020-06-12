@@ -78,6 +78,7 @@ class ReminderWidgetViewHolder(
 
                 ic_close_reminder_recommendation.setOnClickListener {
                     if(element.source == ReminderEnum.RECHARGE) {
+                        rechargeListener.onRechargeRecommendationDeclineTrackingListener(reminder)
                         rechargeListener.onRechargeRecommendationDeclineClickListener(reminder)
                     } else if(element.source == ReminderEnum.SALAM){
                         //to do salam tracking

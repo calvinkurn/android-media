@@ -869,6 +869,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun initAdapter() {
         layoutManager = LinearLayoutManager(context)
         homeRecyclerView?.layoutManager = layoutManager
+        val reminderWidgetCallback = ReminderWidgetComponentCallback(context, viewModel.get(),this)
         val adapterFactory = HomeAdapterFactory(
                 this,
                 this,
@@ -880,9 +881,7 @@ open class HomeFragment : BaseDaggerFragment(),
                 HomeComponentCallback(viewModel.get()),
                 DynamicLegoBannerComponentCallback(context),
                 RecommendationListCarouselComponentCallback(viewModel.get(), this),
-                ReminderWidgetComponentCallback(context, viewModel.get(),this),
-                ReminderWidgetComponentCallback(context, viewModel.get(),this)
-                )
+                reminderWidgetCallback, reminderWidgetCallback)
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
                 .build()
