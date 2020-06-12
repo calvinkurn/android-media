@@ -110,6 +110,7 @@ final class ProductListPresenter
     private boolean hasLoadData = false;
     private boolean useRatingString = false;
     private String responseCode = "";
+    private int topAdsCount = 1;
 
     private List<Visitable> productList;
     private List<InspirationCarouselViewModel> inspirationCarouselViewModel;
@@ -532,8 +533,10 @@ final class ProductListPresenter
                     item.setDiscountPercentage(topAds.getProduct().getCampaign().getDiscountPercentage());
                     item.setLabelGroupList(mapLabelGroupList(topAds.getProduct().getLabelGroupList()));
                     item.setFreeOngkirViewModel(mapFreeOngkir(topAds.getProduct().getFreeOngkir()));
+                    item.setPosition(topAdsCount);
                     list.add(i, item);
                     j++;
+                    topAdsCount++;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -925,6 +928,7 @@ final class ProductListPresenter
             }
         }
 
+        topAdsCount = 1;
         productList = convertToListOfVisitable(productViewModel);
         list.addAll(productList);
 
@@ -1345,12 +1349,12 @@ final class ProductListPresenter
     }
 
     @Override
-    public void onProductImpressed(ProductItemViewModel item, int adapterPosition) {
+    public void onProductImpressed(ProductItemViewModel item) {
         if (getView() == null || item == null) return;
 
         if (item.isTopAds()) {
             getView().sendTopAdsTrackingUrl(item.getTopadsImpressionUrl());
-            getView().sendTopAdsGTMTrackingProductImpression(item, adapterPosition);
+            getView().sendTopAdsGTMTrackingProductImpression(item);
         } else if (enableTrackingViewPort) {
             getView().sendProductImpressionTrackingEvent(item);
         }
@@ -1367,7 +1371,7 @@ final class ProductListPresenter
 
         if (item.isTopAds()) {
             getView().sendTopAdsTrackingUrl(item.getTopadsClickUrl());
-            getView().sendTopAdsGTMTrackingProductClick(item, adapterPosition);
+            getView().sendTopAdsGTMTrackingProductClick(item);
         }
         else {
             getView().sendGTMTrackingProductClick(item, adapterPosition, getUserId());
