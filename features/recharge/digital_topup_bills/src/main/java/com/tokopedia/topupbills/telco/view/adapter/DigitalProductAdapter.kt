@@ -43,7 +43,7 @@ class DigitalProductAdapter(private val productList: List<TelcoProduct>, private
 
                 //handle if product item is already selected still should selected
                 if (productList[i].id == itemProduct.id) {
-                    itemProduct.attributes.selected = true
+                    productList[i].attributes.selected = true
                     listener.notifyItemChanged(i)
                 }
             }
