@@ -3,6 +3,8 @@ package com.tokopedia.topchat.chatsearch.view.adapter.viewholder
 import android.annotation.SuppressLint
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatsearch.view.uimodel.ContactLoadMoreUiModel
 import com.tokopedia.unifyprinciples.Typography
@@ -30,8 +32,13 @@ class ContactLoadMoreViewHolder(
     }
 
     private fun bindCtaDetail(element: ContactLoadMoreUiModel) {
-        ctaDetail?.setOnClickListener {
-            listener?.onClickContactLoadMore()
+        if (element.hideCta) {
+            ctaDetail?.hide()
+        } else {
+            ctaDetail?.show()
+            ctaDetail?.setOnClickListener {
+                listener?.onClickContactLoadMore()
+            }
         }
     }
 

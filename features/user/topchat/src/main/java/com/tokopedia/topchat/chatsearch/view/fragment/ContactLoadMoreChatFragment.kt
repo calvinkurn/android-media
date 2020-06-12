@@ -13,11 +13,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.graphql.CommonUtils
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatsearch.data.GetChatSearchResponse
 import com.tokopedia.topchat.chatsearch.di.ChatSearchComponent
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactory
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactoryImpl
+import com.tokopedia.topchat.chatsearch.view.uimodel.ContactLoadMoreUiModel
 import com.tokopedia.topchat.chatsearch.viewmodel.ChatContactLoadMoreViewModel
 import javax.inject.Inject
 
@@ -76,7 +78,14 @@ class ContactLoadMoreChatFragment : BaseListFragment<Visitable<*>, ChatSearchTyp
 
     private fun setupSearchResultContactObserver() {
         viewModel.searchResult.observe(this, Observer {
-            renderList(it.searchResults, it.hasNext)
+            if (viewModel.isFirstPage()) {
+                val header = ContactLoadMoreUiModel(it.contactCount.toIntOrZero(), true)
+                val results: MutableList<Visitable<*>> = it.searchResults.toMutableList()
+                results.add(0, header)
+                renderList(results, it.hasNext)
+            } else {
+                renderList(it.searchResults, it.hasNext)
+            }
         })
     }
 

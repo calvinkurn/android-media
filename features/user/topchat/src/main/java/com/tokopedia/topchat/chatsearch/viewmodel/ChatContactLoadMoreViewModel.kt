@@ -13,6 +13,8 @@ class ChatContactLoadMoreViewModel @Inject constructor(
         private val searchContactQuery: GetSearchContactQueryUseCase
 ) : BaseViewModel(dispatcher) {
 
+    var page = 0
+
     private var _searchResults = MutableLiveData<GetChatSearchResponse>()
     val searchResult: LiveData<GetChatSearchResponse> get() = _searchResults
 
@@ -20,9 +22,14 @@ class ChatContactLoadMoreViewModel @Inject constructor(
     val errorSearchResults: LiveData<Throwable> get() = _errorSearchResults
 
     fun loadSearchResult(page: Int, query: String, firstResponse: GetChatSearchResponse) {
+        this.page = page
         searchContactQuery.doSearch(
                 ::onSuccessSearchContact, ::onErrorSearchContact, query, page, firstResponse
         )
+    }
+
+    fun isFirstPage(): Boolean {
+        return page == 1
     }
 
     private fun onSuccessSearchContact(getChatSearchResponse: GetChatSearchResponse) {
