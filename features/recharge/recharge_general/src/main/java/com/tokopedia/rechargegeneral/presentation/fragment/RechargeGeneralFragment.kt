@@ -878,7 +878,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     override fun onMenuDetailError(error: Throwable) {
-        showGetListError(error)
+
     }
 
     override fun onCatalogPluginDataError(error: Throwable) {

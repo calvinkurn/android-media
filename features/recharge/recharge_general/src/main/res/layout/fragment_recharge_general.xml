@@ -28,24 +28,23 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-                <androidx.cardview.widget.CardView
+                <com.tokopedia.unifycomponents.CardUnify
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_16"
-                    app:cardCornerRadius="@dimen/dp_8"
-                    app:cardElevation="@dimen/dp_2">
+                    android:layout_margin="@dimen/spacing_lvl4"
+                    app:card_type="shadow" >
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/dp_16"
+                        android:layout_margin="@dimen/spacing_lvl4"
                         android:orientation="vertical">
 
                         <com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
                             android:id="@+id/operator_cluster_select"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/dp_8"
+                            android:layout_marginBottom="@dimen/spacing_lvl3"
                             android:visibility="gone"
                             app:isDropdown="true"
                             tools:visibility="visible" />
@@ -54,7 +53,7 @@
                             android:id="@+id/operator_select"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/dp_8"
+                            android:layout_marginBottom="@dimen/spacing_lvl3"
                             android:visibility="gone"
                             app:isDropdown="true" />
 
@@ -76,19 +75,19 @@
                             android:id="@+id/recharge_general_enquiry_button"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/dp_8"
+                            android:layout_marginTop="@dimen/spacing_lvl3"
                             android:text="@string/enquiry_label"
                             app:unifyButtonType="main" />
 
                     </LinearLayout>
 
-                </androidx.cardview.widget.CardView>
+                </com.tokopedia.unifycomponents.CardUnify>
 
                 <com.tokopedia.design.component.Tabs
                     android:id="@+id/tab_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_40"
-                    android:layout_marginTop="@dimen/dp_15"
+                    android:layout_height="@dimen/spacing_lvl7"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
                     android:background="@color/white"
                     android:theme="@style/ThemeOverlay.AppCompat.Light"
                     android:visibility="gone"
@@ -103,7 +102,7 @@
                 <View
                     android:id="@+id/separator"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
+                    android:layout_height="@dimen/recharge_general_seperator_size"
                     android:background="@color/separator_voucher"
                     android:visibility="gone" />
 
@@ -111,9 +110,9 @@
                     android:id="@+id/product_view_pager"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:layout_marginBottom="@dimen/dp_16"
+                    android:layout_marginLeft="@dimen/spacing_lvl4"
+                    android:layout_marginRight="@dimen/spacing_lvl4"
+                    android:layout_marginBottom="@dimen/spacing_lvl4"
                     android:visibility="visible"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
@@ -131,8 +130,8 @@
         tools:visibility="gone">
 
         <com.tokopedia.unifycomponents.LoaderUnify
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="@dimen/dp_50"
+            android:layout_width="@dimen/spacing_lvl8"
+            android:layout_height="@dimen/spacing_lvl8"
             android:layout_gravity="center" />
 
     </FrameLayout>
