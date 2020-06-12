@@ -8,6 +8,9 @@ import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.HISTORY
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.NAVIGATION
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.ORDER
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.PRODUCT
+import com.tokopedia.seller.search.feature.initialsearch.view.model.SellerSearchMinCharUiModel
+import com.tokopedia.seller.search.feature.initialsearch.view.model.SellerSearchNoHistoryUiModel
+import com.tokopedia.seller.search.feature.initialsearch.view.model.SellerSearchNoResultUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.sellersearch.SellerSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.history.HistorySearchViewHolder
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.navigation.NavigationSearchViewHolder
@@ -29,6 +32,18 @@ class InitialSearchAdapterTypeFactory(private val historySearchListener: History
         }
     }
 
+    override fun type(sellerSearchMinCharUiModel: SellerSearchMinCharUiModel): Int {
+        return SellerSearchMinCharViewHolder.LAYOUT_RES
+    }
+
+    override fun type(sellerSearchNoHistoryUiModel: SellerSearchNoHistoryUiModel): Int {
+        return SellerSearchNoHistoryViewHolder.LAYOUT_RES
+    }
+
+    override fun type(sellerSearchNoResultUiModel: SellerSearchNoResultUiModel): Int {
+        return SellerSearchNoResultViewHolder.LAYOUT_RES
+    }
+
     override fun type(viewModel: LoadingModel): Int {
         return ShimmerLoadingViewHolder.LAYOUT_RES
     }
@@ -39,6 +54,10 @@ class InitialSearchAdapterTypeFactory(private val historySearchListener: History
             OrderSearchViewHolder.LAYOUT_RES -> OrderSearchViewHolder(parent, orderSearchListener)
             ProductSearchViewHolder.LAYOUT_RES -> ProductSearchViewHolder(parent, productSearchListener)
             NavigationSearchViewHolder.LAYOUT_RES -> NavigationSearchViewHolder(parent, navigationSearchListener)
+            ShimmerLoadingViewHolder.LAYOUT_RES -> ShimmerLoadingViewHolder(parent)
+            SellerSearchMinCharViewHolder.LAYOUT_RES -> SellerSearchMinCharViewHolder(parent)
+            SellerSearchNoHistoryViewHolder.LAYOUT_RES -> SellerSearchNoHistoryViewHolder(parent)
+            SellerSearchNoResultViewHolder.LAYOUT_RES -> SellerSearchNoResultViewHolder(parent)
             else ->  super.createViewHolder(parent, type)
         }
     }
