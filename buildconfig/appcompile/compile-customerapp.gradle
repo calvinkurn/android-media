@@ -138,6 +138,7 @@ include "features:merchant:variant_common"
 include "features:merchant:favorite"
 include "features:merchant:product_add_edit"
 include "features:merchant:shop_showcase"
+include "features:merchant:youtube_common"
 
 include "features:operational:contact_us"
 include "features:operational:csat_rating"

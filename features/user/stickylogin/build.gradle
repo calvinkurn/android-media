@@ -40,8 +40,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation rootProject.ext.debugToolsDependencies.chuck
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
