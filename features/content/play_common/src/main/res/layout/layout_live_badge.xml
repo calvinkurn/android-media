@@ -14,7 +14,7 @@
         android:id="@+id/tv_live"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:lineHeight="@dimen/dp_14"
+        android:lineHeight="@dimen/fontSize_lvl3"
         android:layout_gravity="center"
         android:text="@string/play_common_live"
         android:textAllCaps="true"

@@ -96,8 +96,6 @@ public abstract class MainApplication extends MainRouterApplication{
                 .appModule(new AppModule(this));
         getApplicationComponent().inject(this);
 
-        locationUtils = new LocationUtils(this);
-        locationUtils.initLocationBackground();
         initBranch();
         NotificationUtils.setNotificationChannel(this);
         if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
@@ -120,6 +118,8 @@ public abstract class MainApplication extends MainRouterApplication{
 
     @NotNull
     private Boolean executeInBackground(){
+        locationUtils = new LocationUtils(MainApplication.this);
+        locationUtils.initLocationBackground();
         TooLargeTool.startLogging(MainApplication.this);
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
             upgradeSecurityProvider();
@@ -143,7 +143,9 @@ public abstract class MainApplication extends MainRouterApplication{
     @Override
     public void onTerminate() {
         super.onTerminate();
-        locationUtils.deInitLocationBackground();
+        if(locationUtils != null) {
+            locationUtils.deInitLocationBackground();
+        }
     }
 
     private void init() {
@@ -178,7 +180,7 @@ public abstract class MainApplication extends MainRouterApplication{
 
     @NotNull
     private Boolean initBranch(){
-        LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
+        LinkerManager.initLinkerManager(getApplicationContext());
 
         if(userSession.isLoggedIn()) {
             UserData userData = new UserData();

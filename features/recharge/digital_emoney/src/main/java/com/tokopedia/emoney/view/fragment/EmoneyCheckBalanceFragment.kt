@@ -57,8 +57,12 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         initInjector()
 
         activity?.let {
-            nfcAdapter = NfcAdapter.getDefaultAdapter(it)
-            processTagIntent(it.intent)
+            try {
+                nfcAdapter = NfcAdapter.getDefaultAdapter(it)
+                processTagIntent(it.intent)
+            } catch (e : Exception){
+                e.printStackTrace()
+            }
         }
     }
 

@@ -34,7 +34,8 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
     private var _paymentQuery = ""
     private var _shippingParam: ShippingParam? = null
     private var _listShopShipment: ArrayList<ShopShipment>? = null
-    private var _should_show_delete_button: Boolean = true
+    private var _isExtraProfile: Boolean = true
+    private var _fromFlow = FROM_FLOW_PREF
 
     override fun getComponent(): PreferenceEditComponent {
         return DaggerPreferenceEditComponent.builder()
@@ -64,7 +65,8 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
         _profileId = intent.getIntExtra(EXTRA_PROFILE_ID, 0)
         _shippingParam = intent.getParcelableExtra(EXTRA_SHIPPING_PARAM)
         _listShopShipment = intent.getParcelableArrayListExtra(EXTRA_LIST_SHOP_SHIPMENT)
-        _should_show_delete_button = intent.getBooleanExtra(EXTRA_SHOW_DELETE_BUTTON, true)
+        _isExtraProfile = intent.getBooleanExtra(EXTRA_IS_EXTRA_PROFILE, true)
+        _fromFlow = intent.getIntExtra(EXTRA_FROM_FLOW, FROM_FLOW_PREF)
 
         if (_profileId == 0) {
             supportFragmentManager.beginTransaction().replace(R.id.container, AddressListFragment.newInstance()).commit()
@@ -153,20 +155,12 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
         return _shippingParam
     }
 
-    override fun setListShopShipment(listShopShipment: ArrayList<ShopShipment>?) {
-        _listShopShipment = listShopShipment
-    }
-
     override fun getListShopShipment(): ArrayList<ShopShipment>? {
         return _listShopShipment
     }
 
-    override fun setShouldShowDeleteButton(shouldShowDeleteButton: Boolean) {
-        _should_show_delete_button = shouldShowDeleteButton
-    }
-
-    override fun getShouldShowDeleteButton(): Boolean {
-        return _should_show_delete_button
+    override fun isExtraProfile(): Boolean {
+        return _isExtraProfile
     }
 
     override fun setHeaderTitle(title: String) {
@@ -237,6 +231,10 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
         }
     }
 
+    override fun getFromFlow(): Int {
+        return _fromFlow
+    }
+
     companion object {
 
         const val EXTRA_PREFERENCE_INDEX = "preference_index"
@@ -244,10 +242,14 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
         const val EXTRA_ADDRESS_ID = "address_id"
         const val EXTRA_SHIPPING_ID = "shipping_id"
         const val EXTRA_GATEWAY_CODE = "gateway_code"
-        const val EXTRA_SHOW_DELETE_BUTTON = "show_delete_button"
+        const val EXTRA_IS_EXTRA_PROFILE = "is_extra_profile"
 
         const val EXTRA_SHIPPING_PARAM = "shipping_param"
         const val EXTRA_LIST_SHOP_SHIPMENT = "list_shop_shipment"
+
+        const val EXTRA_FROM_FLOW = "from_flow"
+        const val FROM_FLOW_OSP = 1
+        const val FROM_FLOW_PREF = 0
 
         const val EXTRA_RESULT_MESSAGE = "RESULT_MESSAGE"
     }

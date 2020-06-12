@@ -4,9 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_incentive_ovo"
-    android:fillViewport="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:orientation="vertical"
@@ -15,8 +14,9 @@
 
         <ImageView
             android:id="@+id/ivIncentiveOvo"
-            android:layout_width="@dimen/size_incentive_ovo_image"
-            android:layout_height="@dimen/size_incentive_ovo_image"
+            android:layout_width="@dimen/size_width_incentive_ovo_image"
+            android:layout_height="@dimen/size_height_incentive_ovo_image"
+            android:scaleType="centerCrop"
             android:layout_gravity="center"
             tools:srcCompat="@drawable/ic_smiley_bad" />
 
@@ -25,6 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="Mau Gratis OVO Points?"
+            android:layout_marginTop="@dimen/margin_small_sm"
             android:layout_gravity="center"
             app:typographyType="heading_2"
             app:typographyWeight="bold" />
@@ -61,11 +62,6 @@
             android:layout_marginTop="12dp"
             android:layout_marginEnd="@dimen/layout_lvl2"
             android:layout_marginRight="@dimen/layout_lvl2" />
-
-        <View
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"/>
 
         <com.tokopedia.design.component.ButtonCompat
             android:id="@+id/btnContinueReview"

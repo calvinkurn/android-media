@@ -17,7 +17,6 @@ import com.tokopedia.network.service.AccountsBasicService;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.network.service.RegisterPhoneNumberApi;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
-import com.tokopedia.profilecompletion.data.mapper.EditUserInfoMapper;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepository;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
@@ -171,20 +170,13 @@ public class SessionModule {
 
     @SessionScope
     @Provides
-    EditUserInfoMapper provideEditUserInfoMapper() {
-        return new EditUserInfoMapper();
-    }
-
-    @SessionScope
-    @Provides
     ProfileSourceFactory provideProfileSourceFactory(@ApplicationContext Context context,
                                                      @Named(BEARER_SERVICE) AccountsService accountsService,
                                                      GetUserInfoMapper getUserInfoMapper,
-                                                     EditUserInfoMapper editUserInfoMapper,
                                                      SessionHandler sessionHandler) {
         return new ProfileSourceFactory(
                 context, accountsService,
-                getUserInfoMapper, editUserInfoMapper,
+                getUserInfoMapper,
                 sessionHandler);
     }
 
