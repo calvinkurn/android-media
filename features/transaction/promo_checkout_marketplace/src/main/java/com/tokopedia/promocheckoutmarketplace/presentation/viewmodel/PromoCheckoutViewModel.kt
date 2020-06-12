@@ -1243,8 +1243,9 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
-    fun updatePromoInputStateBeforeApplyPromo(promoCode: String) {
+    fun updatePromoInputStateBeforeApplyPromo(promoCode: String, isFromLastSeen: Boolean) {
         analytics.eventClickTerapkanPromo(getPageSource(), promoCode)
+        analytics.eventClickTerapkanAfterTypingPromoCode(getPageSource(), promoCode, isFromLastSeen)
         promoInputUiModel.value?.let {
             it.uiState.isLoading = true
             it.uiState.isButtonSelectEnabled = true
@@ -1347,6 +1348,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     }
 
     fun setPromoInputFromLastApply(promoCode: String) {
+        analytics.eventClickPromoLastSeenItem(getPageSource(), promoCode)
         promoInputUiModel.value?.let {
             it.uiState.isValidLastSeenPromo = true
             it.uiData.validLastSeenPromoCode = promoCode

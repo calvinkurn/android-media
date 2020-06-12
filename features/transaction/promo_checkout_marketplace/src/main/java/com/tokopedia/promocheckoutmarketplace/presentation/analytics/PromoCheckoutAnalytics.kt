@@ -21,27 +21,28 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
                                 eventLabel: String) {
         var eventCategoryPage: String? = null
         var eventNamePage: String? = null
-        if (page == PAGE_CART) {
-            if (event == EVENT_NAME_VIEW) {
-                eventNamePage = EventName.VIEW_ATC_IRIS
-            } else if (event == EVENT_NAME_CLICK) {
-                eventNamePage = EventName.CLICK_ATC
+        when (page) {
+            PAGE_CART -> {
+                when (event) {
+                    EVENT_NAME_VIEW -> eventNamePage = EventName.VIEW_ATC_IRIS
+                    EVENT_NAME_CLICK -> eventNamePage = EventName.CLICK_ATC
+                }
+                eventCategoryPage = EventCategory.CART
             }
-            eventCategoryPage = EventCategory.CART
-        } else if (page == PAGE_CHECKOUT) {
-            if (event == EVENT_NAME_VIEW) {
-                eventNamePage = EventName.VIEW_COURIER_IRIS
-            } else if (event == EVENT_NAME_CLICK) {
-                eventNamePage = EventName.CLICK_COURIER
+            PAGE_CHECKOUT -> {
+                when (event) {
+                    EVENT_NAME_VIEW -> eventNamePage = EventName.VIEW_COURIER_IRIS
+                    EVENT_NAME_CLICK -> eventNamePage = EventName.CLICK_COURIER
+                }
+                eventCategoryPage = EventCategory.COURIER_SELECTION
             }
-            eventCategoryPage = EventCategory.COURIER_SELECTION
-        } else if (page == PAGE_OCC) {
-            if (event == EVENT_NAME_VIEW) {
-                eventNamePage = EventName.VIEW_CHECKOUT_EXPRESS_IRIS
-            } else if (event == EVENT_NAME_CLICK) {
-                eventNamePage = EventName.CLICK_CHECKOUT_EXPRESS
+            PAGE_OCC -> {
+                when (event) {
+                    EVENT_NAME_VIEW -> eventNamePage = EventName.VIEW_CHECKOUT_EXPRESS_IRIS
+                    EVENT_NAME_CLICK -> eventNamePage = EventName.CLICK_CHECKOUT_EXPRESS
+                }
+                eventCategoryPage = EventCategory.ORDER_SUMMARY
             }
-            eventCategoryPage = EventCategory.ORDER_SUMMARY
         }
 
         if (eventNamePage != null && eventCategoryPage != null) {
@@ -255,15 +256,6 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         )
     }
 
-    fun eventClickPilihPromoFailedTerjadiKesalahanServer(page: Int) {
-        sendEventByPage(
-                page,
-                EVENT_NAME_CLICK,
-                EventAction.CLICK_PILIH_PROMO,
-                EventLabel.FAILED_TERJADI_KESALAHAN_SERVER
-        )
-    }
-
     fun eventClickSimpanPromoBaru(page: Int) {
         sendEventByPage(
                 page,
@@ -312,7 +304,6 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         )
     }
 
-    // Todo FU : UI not valid, row 46
     fun eventClickBeliTanpaPromo(page: Int) {
         sendEventByPage(
                 page,
@@ -320,6 +311,25 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
                 EventAction.CLICK_BELI_TANPA_PROMO,
                 ""
         )
+    }
+
+    fun eventClickTerapkanAfterTypingPromoCode(page: Int, promoCode: String, isFromLasSeen: Boolean) {
+        sendEventByPage(
+                page,
+                EVENT_NAME_CLICK,
+                EventAction.CLICK_TERAPKAN_PROMO,
+                "$promoCode - ${if (isFromLasSeen) "1" else "0"}"
+        )
+    }
+
+    fun eventClickPromoLastSeenItem(page: Int, promoCode: String){
+        sendEventByPage(
+                page,
+                EVENT_NAME_CLICK,
+                EventAction.SELECT_PROMO_CODE_FROM_LAST_SEEN,
+                promoCode
+        )
+
     }
 
 }
