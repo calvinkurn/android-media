@@ -1,7 +1,6 @@
 package com.tokopedia.product.manage.feature.list.di
 
 import android.content.Context
-import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.chuckerteam.chucker.api.RetentionManager
 import com.tokopedia.abstraction.AbstractionRouter
@@ -25,15 +24,7 @@ class ProductManageNetworkModule {
     @Provides
     @ProductManageListScope
     fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
-        val collector = ChuckerCollector(
-                context = context,
-                showNotification = GlobalConfig.isAllowDebuggingTools()
-        )
-
-        return ChuckerInterceptor(
-                context = context,
-                collector = collector
-        )
+        return ChuckerInterceptor(context)
     }
 
     @GMProductManageQualifier

@@ -132,6 +132,7 @@ ext {
             sellerActiveCommon              : ":features:merchant:seller_active_common",
             sellerHome                      : ":features:merchant:seller_home",
             sellerOnboarding                : ":features:merchant:seller_onboarding",
+            sellerReputation                : ":features:merchant:seller_reputation",
             reviewSeller                    : ":features:merchant:review_seller",
 
             shopCommon                      : ":features:merchant:shop_common",
