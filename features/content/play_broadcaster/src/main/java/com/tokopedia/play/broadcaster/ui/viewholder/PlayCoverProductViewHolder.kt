@@ -1,7 +1,5 @@
 package com.tokopedia.play.broadcaster.ui.viewholder
 
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.broadcaster.R
@@ -19,19 +17,13 @@ class PlayCoverProductViewHolder(itemView: View,
         with(itemView) {
             ivPlayCoverThumbnail.loadImage(item)
             ivPlayCoverThumbnail.setOnClickListener {
-                listener.onCoverSelectedFromProduct(getBitmap())
+                listener.onCoverSelectedFromProduct(adapterPosition)
             }
         }
     }
 
-    private fun getBitmap(): Bitmap {
-        with(itemView) {
-            return (ivPlayCoverThumbnail.drawable as BitmapDrawable).bitmap
-        }
-    }
-
     interface Listener {
-        fun onCoverSelectedFromProduct(selectedImageBitmap: Bitmap)
+        fun onCoverSelectedFromProduct(position: Int)
     }
 
     companion object {

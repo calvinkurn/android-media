@@ -4,10 +4,8 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,7 +17,6 @@ import com.tokopedia.play.broadcaster.view.adapter.PlayCoverProductAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.bottom_sheet_play_choose_cover.*
-import java.io.ByteArrayOutputStream
 
 /**
  * @author by furqan on 03/06/2020
@@ -28,14 +25,16 @@ class PlayBroadcastChooseCoverBottomSheet : BottomSheetUnify() {
 
     var listener: Listener? = null
 
-    private var imageUrlList = arrayListOf<String>()
+    private var imageUrlList = arrayListOf<Pair<String, String>>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         savedInstanceState?.let {
-            imageUrlList = it.getStringArrayList(EXTRA_IMAGE_URL) ?: arrayListOf()
+            imageUrlList = it.getSerializable(EXTRA_IMAGE_URL) as ArrayList<Pair<String, String>>?
+                    ?: arrayListOf()
         } ?: arguments?.let {
-            imageUrlList = it.getStringArrayList(EXTRA_IMAGE_URL) ?: arrayListOf()
+            imageUrlList = it.getSerializable(EXTRA_IMAGE_URL) as ArrayList<Pair<String, String>>?
+                    ?: arrayListOf()
         }
         initBottomSheet()
     }
@@ -62,7 +61,7 @@ class PlayBroadcastChooseCoverBottomSheet : BottomSheetUnify() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putStringArrayList(EXTRA_IMAGE_URL, imageUrlList)
+        outState.putSerializable(EXTRA_IMAGE_URL, imageUrlList)
     }
 
     private fun initBottomSheet() {
@@ -104,10 +103,11 @@ class PlayBroadcastChooseCoverBottomSheet : BottomSheetUnify() {
 
         rvPlayCoverProduct.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
         rvPlayCoverProduct.setHasFixedSize(true)
-        rvPlayCoverProduct.adapter = PlayCoverProductAdapter(imageUrlList, object : PlayCoverProductViewHolder.Listener {
-            override fun onCoverSelectedFromProduct(selectedImageBitmap: Bitmap) {
+        val imageUrls = imageUrlList.map { it.second }.toList()
+        rvPlayCoverProduct.adapter = PlayCoverProductAdapter(imageUrls, object : PlayCoverProductViewHolder.Listener {
+            override fun onCoverSelectedFromProduct(position: Int) {
                 if (isAllPermissionGranted()) {
-                    listener?.onGetCoverFromProduct(getImageUriFromBitmap(selectedImageBitmap))
+                    listener?.onGetCoverFromProduct(position)
                     dismiss()
                 } else {
                     requestPermissions(arrayOf(Manifest.permission.CAMERA,
@@ -146,17 +146,9 @@ class PlayBroadcastChooseCoverBottomSheet : BottomSheetUnify() {
         dismiss()
     }
 
-    private fun getImageUriFromBitmap(bitmap: Bitmap): Uri {
-        val bytes = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-        val path = MediaStore.Images.Media.insertImage(requireContext().contentResolver, bitmap,
-                COVER_TITLE, null)
-        return Uri.parse(path.toString())
-    }
-
     interface Listener {
         fun onGetCoverFromCamera(imageUri: Uri?)
-        fun onGetCoverFromProduct(imageUri: Uri?)
+        fun onGetCoverFromProduct(productPosition: Int)
         fun onChooseFromGalleryClicked()
     }
 
@@ -164,15 +156,14 @@ class PlayBroadcastChooseCoverBottomSheet : BottomSheetUnify() {
         const val TAG_CHOOSE_COVER = "TagChooseCover"
 
         private const val EXTRA_IMAGE_URL = "EXTRA_IMAGE_URL"
-        private const val COVER_TITLE = "PlayCover"
 
         private const val PERMISSION_CODE = 1111
         private const val REQUEST_IMAGE_CAPTURE = 2222
 
-        fun getInstance(imageUrlList: ArrayList<String>): PlayBroadcastChooseCoverBottomSheet =
+        fun getInstance(imageUrlList: ArrayList<Pair<Long, String>>): PlayBroadcastChooseCoverBottomSheet =
                 PlayBroadcastChooseCoverBottomSheet().also {
                     it.arguments = Bundle().apply {
-                        putStringArrayList(EXTRA_IMAGE_URL, imageUrlList)
+                        putSerializable(EXTRA_IMAGE_URL, imageUrlList)
                     }
                 }
     }

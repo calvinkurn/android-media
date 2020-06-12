@@ -3,15 +3,22 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.RectF
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.AsyncTask
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.model.PlayCoverUploadEntity
 import com.tokopedia.play.broadcaster.dispatcher.PlayBroadcastDispatcher
+import com.tokopedia.play.broadcaster.domain.usecase.GetOriginalProductImageUseCase
+import com.tokopedia.play.broadcaster.util.PlayBroadcastCoverTitleUtil
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastCoverFromGalleryBottomSheet.Companion.MINIMUM_COVER_HEIGHT
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastCoverFromGalleryBottomSheet.Companion.MINIMUM_COVER_WIDTH
 import com.tokopedia.user.session.UserSessionInterface
@@ -35,10 +42,32 @@ class PlayBroadcastCoverTitleViewModel @Inject constructor(
         @Named(PlayBroadcastDispatcher.MAIN) dispatcher: CoroutineDispatcher,
         @Named(PlayBroadcastDispatcher.IO) private val ioDispatcher: CoroutineDispatcher,
         private val uploadImageUseCase: UploadImageUseCase<PlayCoverUploadEntity>,
+        private val getOriginalProductImageUseCase: GetOriginalProductImageUseCase,
         private val userSession: UserSessionInterface)
     : BaseViewModel(dispatcher) {
 
-    val imageEcsLink = MutableLiveData<String>()
+    private val mutableOriginalImageUri = MutableLiveData<Uri>()
+    val originalImageUri: LiveData<Uri>
+        get() = mutableOriginalImageUri
+    private val mutableImageEcsLink = MutableLiveData<String>()
+    val imageEcsLink: LiveData<String>
+        get() = mutableImageEcsLink
+
+    fun getOriginalImageUrl(context: Context, productId: Long, resizedImageUrl: String) {
+        launchCatchError(ioDispatcher, block = {
+            val originalImageUrlList = getOriginalProductImageUseCase.apply {
+                params = GetOriginalProductImageUseCase.createParams(productId)
+            }.executeOnBackground()
+            val resizedUrlLastSegments = resizedImageUrl.split("/")
+                    .let { it[it.lastIndex] }
+            val originalImageUrl = originalImageUrlList.first {
+                it.contains(resizedUrlLastSegments)
+            }
+            getBitmapFromUrl(context, originalImageUrl)
+        }) {
+            it.printStackTrace()
+        }
+    }
 
     fun uploadCover(imagePath: String) {
         launchCatchError(ioDispatcher, block = {
@@ -62,7 +91,7 @@ class PlayBroadcastCoverTitleViewModel @Inject constructor(
             if (url.contains(DEFAULT_RESOLUTION)) {
                 url = url.replaceFirst(DEFAULT_RESOLUTION, RESOLUTION_700)
             }
-            imageEcsLink.postValue(url)
+            mutableImageEcsLink.postValue(url)
         }) {
             it.printStackTrace()
         }
@@ -116,6 +145,20 @@ class PlayBroadcastCoverTitleViewModel @Inject constructor(
             imageFile.delete()
             Uri.fromFile(it)
         } ?: imageUri
+    }
+
+    private fun getBitmapFromUrl(context: Context, imageUrl: String) {
+        Glide.with(context)
+                .asBitmap()
+                .load(imageUrl)
+                .into(object : CustomTarget<Bitmap>() {
+                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                        mutableOriginalImageUri.postValue(PlayBroadcastCoverTitleUtil
+                                .getImageUriFromBitmap(context, resource))
+                    }
+
+                    override fun onLoadCleared(placeholder: Drawable?) {}
+                })
     }
 
     companion object {

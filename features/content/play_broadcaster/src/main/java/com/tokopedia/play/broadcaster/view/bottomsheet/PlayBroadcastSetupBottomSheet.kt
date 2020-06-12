@@ -243,10 +243,10 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
     }
 
     private fun showCoverTitlePage() {
-        val productImageList: ArrayList<String> = ArrayList(viewModel.selectedProductList
-                .map { it.originalImageUrl }.toList())
+        val productImageList: ArrayList<Pair<Long, String>> = ArrayList(viewModel.selectedProductList
+                .map { Pair(it.id, it.originalImageUrl) }.toList())
         navigateToFragment(PlayCoverTitleSetupFragment::class.java, Bundle().apply {
-            putStringArrayList(PlayCoverTitleSetupFragment.EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST, productImageList)
+            putSerializable(PlayCoverTitleSetupFragment.EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST, productImageList)
         })
     }
 

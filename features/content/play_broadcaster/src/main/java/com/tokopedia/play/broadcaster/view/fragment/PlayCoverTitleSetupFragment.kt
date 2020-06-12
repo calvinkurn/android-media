@@ -39,7 +39,7 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
 
     private lateinit var viewModel: PlayBroadcastCoverTitleViewModel
 
-    private var selectedImageUrlList = arrayListOf<String>()
+    private var selectedImageUrlList = arrayListOf<Pair<Long, String>>()
     private var liveTitle: String = ""
     private var selectedCoverUri: Uri? = null
     private var coverSource: CoverSourceEnum = CoverSourceEnum.NONE
@@ -53,11 +53,11 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         savedInstanceState?.let {
-            selectedImageUrlList = it.getStringArrayList(EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST)
+            selectedImageUrlList = it.getSerializable(EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST) as ArrayList<Pair<Long, String>>?
                     ?: arrayListOf()
             liveTitle = it.getString(EXTRA_LIVE_TITLE, "") ?: ""
         } ?: arguments?.let {
-            selectedImageUrlList = it.getStringArrayList(EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST)
+            selectedImageUrlList = it.getSerializable(EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST) as ArrayList<Pair<Long, String>>?
                     ?: arrayListOf()
         }
         viewModel = ViewModelProviders.of(requireParentFragment(), viewModelFactory)
@@ -82,6 +82,12 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
                 bottomSheetCoordinator.saveCoverAndTitle(it, liveTitle)
             }
         })
+
+        viewModel.originalImageUri.observe(viewLifecycleOwner, Observer {
+            if (coverSource == CoverSourceEnum.PRODUCT) {
+                renderCoverCropLayout(it)
+            }
+        })
     }
 
     override fun onDestroyView() {
@@ -91,7 +97,7 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putStringArrayList(EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST, selectedImageUrlList)
+        outState.putSerializable(EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST, selectedImageUrlList)
         outState.putString(EXTRA_LIVE_TITLE, liveTitle)
     }
 
@@ -103,12 +109,12 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
         }
     }
 
-    override fun onGetCoverFromProduct(imageUri: Uri?) {
-        imageUri?.let {
-            coverSource = CoverSourceEnum.PRODUCT
-            showCoverCropLayout()
-            renderCoverCropLayout(it)
-        }
+    override fun onGetCoverFromProduct(position: Int) {
+        coverSource = CoverSourceEnum.PRODUCT
+        viewModel.getOriginalImageUrl(requireContext(),
+                selectedImageUrlList[position].first,
+                selectedImageUrlList[position].second)
+        showCoverCropLayout()
     }
 
     override fun onChooseFromGalleryClicked() {
