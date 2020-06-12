@@ -10,6 +10,8 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.vouchercreation.detail.domain.usecase.VoucherDetailUseCase
+import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResult
+import com.tokopedia.vouchercreation.voucherlist.domain.usecase.ShopBasicDataUseCase
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +21,8 @@ import javax.inject.Inject
 class VoucherDetailViewModel @Inject constructor(
         dispatcher: CoroutineDispatcher,
         private val voucherDetailUseCase: VoucherDetailUseCase,
-        private val cancelVoucherUseCase: CancelVoucherUseCase) : BaseViewModel(dispatcher) {
+        private val cancelVoucherUseCase: CancelVoucherUseCase,
+        private val shopBasicDataUseCase: ShopBasicDataUseCase) : BaseViewModel(dispatcher) {
 
     private val mVoucherIdLiveData = MutableLiveData<Int>()
 
@@ -61,13 +64,31 @@ class VoucherDetailViewModel @Inject constructor(
     val cancelVoucherResultLiveData: LiveData<Result<Int>>
         get() = mCancelVoucherResultLiveData
 
+    private val _shopBasicLiveData = MutableLiveData<Result<ShopBasicDataResult>>()
+    val shopBasicLiveData: LiveData<Result<ShopBasicDataResult>>
+        get() = _shopBasicLiveData
+
     fun getVoucherDetail(voucherId: Int) {
         mVoucherIdLiveData.value = voucherId
+        getBasicData()
     }
 
     fun cancelVoucher(voucherId: Int,
                       @CancelVoucherUseCase.CancelStatus cancelStatus: String) {
         mCancelledVoucherIdLiveData.value = Pair(voucherId, cancelStatus)
+    }
+
+    private fun getBasicData() {
+        launchCatchError(
+                block = {
+                    _shopBasicLiveData.value = Success(withContext(Dispatchers.IO) {
+                        shopBasicDataUseCase.executeOnBackground()
+                    })
+                },
+                onError = {
+                    _shopBasicLiveData.value = Fail(it)
+                }
+        )
     }
 
 }

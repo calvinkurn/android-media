@@ -573,6 +573,11 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                                 }
                             }
                         }
+                        VoucherCreationTracking.sendShareClickTracking(
+                                socmedType = socmedType,
+                                userId = userSession.userId,
+                                isDetail = false
+                        )
                     }
                 }
                 .show(childFragmentManager)

@@ -7,18 +7,14 @@ object VoucherCreationAnalyticConstant {
         const val EVENT_CATEGORY = "eventCategory"
         const val EVENT_ACTION = "eventAction"
         const val EVENT_LABEL = "eventLabel"
-        const val ECOMMERCE = "ecommerce"
         const val ID = "id"
         const val NAME = "name"
-        const val CREATIVE = "creative"
-        const val CREATIVE_URL = "creative_url"
-        const val POSITION = "position"
-        const val PROMOTIONS = "promotions"
         const val SCREEN_NAME = "screenName"
         const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
         const val CURRENT_SITE = "currentSite"
         const val USER_ID = "userId"
         const val BUSINESS_UNIT = "businessUnit"
+        const val PAGE_SOURCE = "pageSource"
     }
 
     object Values {
@@ -48,6 +44,11 @@ object VoucherCreationAnalyticConstant {
         }
 
         const val VOUCHER_DUPLICATE_REVIEW = "/voucherduplicate - review"
+    }
+
+    object PageSource {
+        const val DETAIL = "/voucherdetailpage - berlangsung"
+        const val LIST = "/voucherlistactive"
     }
 
     object Event {

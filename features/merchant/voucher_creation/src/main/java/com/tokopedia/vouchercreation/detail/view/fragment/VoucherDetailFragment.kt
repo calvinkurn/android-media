@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.kotlin.util.DownloadHelper
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -39,15 +40,19 @@ import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.DASH_DATE_FORMAT
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.HOUR_FORMAT
+import com.tokopedia.vouchercreation.common.utils.SharingUtil
+import com.tokopedia.vouchercreation.common.utils.SocmedPackage
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.create.view.enums.getVoucherImageType
 import com.tokopedia.vouchercreation.detail.model.*
 import com.tokopedia.vouchercreation.detail.view.viewmodel.VoucherDetailViewModel
+import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import com.tokopedia.vouchercreation.voucherlist.view.widget.CancelVoucherDialog
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
+import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.SocmedType
 import javax.inject.Inject
 
 /**
@@ -60,6 +65,8 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
         fun newInstance(voucherId: Int): VoucherDetailFragment = VoucherDetailFragment(voucherId)
 
         const val DOWNLOAD_REQUEST_CODE = 222
+
+        private const val COPY_PROMO_CODE_LABEL = "detail_promo_code"
     }
 
     private var voucherUiModel: VoucherUiModel? = null
@@ -86,6 +93,8 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
     }
 
     private val impressHolder = ImpressHolder()
+
+    private var shopBasicData: ShopBasicDataResult? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         observeLiveData()
@@ -331,6 +340,11 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
                     }
                 }
             }
+            observe(viewModel.shopBasicLiveData) { result ->
+                if (result is Success) {
+                    shopBasicData = result.data
+                }
+            }
         }
     }
 
@@ -350,8 +364,54 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
         if (!isAdded) return
         val parent = view as? ViewGroup ?: return
         ShareVoucherBottomSheet(parent)
-                .setOnItemClickListener {
-
+                .setOnItemClickListener { socmedType ->
+                    context?.run {
+                        voucherUiModel?.let { voucher ->
+                            shopBasicData?.let { shopData ->
+                                val shareUrl = "${TokopediaUrl.getInstance().WEB}${shopData.shopDomain}"
+                                val shareMessage =
+                                        if (voucher.isPublic) {
+                                            String.format(
+                                                    getString(R.string.mvc_share_message_public).toBlankOrString(),
+                                                    voucher.typeFormatted,
+                                                    shopData.shopName,
+                                                    shareUrl)
+                                        } else {
+                                            String.format(
+                                                    getString(R.string.mvc_share_message_private).toBlankOrString(),
+                                                    voucher.typeFormatted,
+                                                    voucher.code,
+                                                    shopData.shopName,
+                                                    shareUrl)
+                                        }
+                                when(socmedType) {
+                                    SocmedType.COPY_LINK -> {
+                                        SharingUtil.copyTextToClipboard(this, COPY_PROMO_CODE_LABEL, shareMessage)
+                                    }
+                                    SocmedType.INSTAGRAM -> {
+                                        SharingUtil.shareToSocialMedia(SocmedPackage.INSTAGRAM, this, voucher.imageSquare)
+                                    }
+                                    SocmedType.FACEBOOK_MESSENGER -> {
+                                        SharingUtil.shareToSocialMedia(SocmedPackage.MESSENGER, this, voucher.imageSquare, shareMessage)
+                                    }
+                                    SocmedType.WHATSAPP -> {
+                                        SharingUtil.shareToSocialMedia(SocmedPackage.WHATSAPP, this, voucher.imageSquare, shareMessage)
+                                    }
+                                    SocmedType.LINE -> {
+                                        SharingUtil.shareToSocialMedia(SocmedPackage.LINE, this, voucher.imageSquare, shareMessage)
+                                    }
+                                    SocmedType.LAINNYA -> {
+                                        SharingUtil.otherShare(this, shareMessage)
+                                    }
+                                }
+                            }
+                            VoucherCreationTracking.sendShareClickTracking(
+                                    socmedType = socmedType,
+                                    userId = userSession.userId,
+                                    isDetail = true
+                            )
+                        }
+                    }
                 }
                 .show(childFragmentManager)
     }

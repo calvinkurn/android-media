@@ -114,9 +114,35 @@ object VoucherCreationTracking {
         )
     }
 
-    fun sendShareClickTracking(@SocmedType socMedType: Int,
-                               userId: String) {
-
+    fun sendShareClickTracking(@SocmedType socmedType: Int,
+                               userId: String,
+                               isDetail: Boolean) {
+        sendGeneralTracking(
+                event = VoucherCreationAnalyticConstant.Event.CLICK_SHARE,
+                category = VoucherCreationAnalyticConstant.EventCategory.SHARE_SHEET,
+                action =
+                        when(socmedType) {
+                            SocmedType.COPY_LINK -> VoucherCreationAnalyticConstant.EventAction.Click.SHARE_COPY_LINK
+                            SocmedType.INSTAGRAM -> VoucherCreationAnalyticConstant.EventAction.Click.SHARE_INSTAGRAM
+                            SocmedType.FACEBOOK -> VoucherCreationAnalyticConstant.EventAction.Click.SHARE_FACEBOOK
+                            SocmedType.FACEBOOK_MESSENGER -> VoucherCreationAnalyticConstant.EventAction.Click.SHARE_FB_MESSENGER
+                            SocmedType.WHATSAPP -> VoucherCreationAnalyticConstant.EventAction.Click.SHARE_WHATSAPP
+                            SocmedType.LINE -> VoucherCreationAnalyticConstant.EventAction.Click.SHARE_LINE
+                            SocmedType.TWITTER -> VoucherCreationAnalyticConstant.EventAction.Click.SHARE_TWITTER
+                            SocmedType.LAINNYA -> VoucherCreationAnalyticConstant.EventAction.Click.SHARE_OTHERS
+                            SocmedType.BROADCAST -> VoucherCreationAnalyticConstant.EventAction.Click.SHARE_BROADCAST
+                            else -> ""
+                        },
+                label = "",
+                screenName = "",
+                userId = userId,
+                pageSource =
+                        if (isDetail) {
+                            VoucherCreationAnalyticConstant.PageSource.DETAIL
+                        } else {
+                            VoucherCreationAnalyticConstant.PageSource.LIST
+                        }
+        )
     }
 
     fun sendVoucherListImpressionTracking(action: String,
@@ -220,6 +246,27 @@ object VoucherCreationTracking {
                 VoucherCreationAnalyticConstant.Key.CURRENT_SITE to VoucherCreationAnalyticConstant.Values.TOKOPEDIA_SELLER,
                 VoucherCreationAnalyticConstant.Key.USER_ID to userId,
                 VoucherCreationAnalyticConstant.Key.BUSINESS_UNIT to VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    private fun sendGeneralTracking(event: String,
+                                    category: String,
+                                    action: String,
+                                    label: String,
+                                    screenName: String,
+                                    userId: String,
+                                    pageSource: String) {
+        val map = mapOf(
+                VoucherCreationAnalyticConstant.Key.EVENT to event,
+                VoucherCreationAnalyticConstant.Key.EVENT_CATEGORY to category,
+                VoucherCreationAnalyticConstant.Key.EVENT_ACTION to action,
+                VoucherCreationAnalyticConstant.Key.EVENT_LABEL to label,
+                VoucherCreationAnalyticConstant.Key.SCREEN_NAME to screenName,
+                VoucherCreationAnalyticConstant.Key.CURRENT_SITE to VoucherCreationAnalyticConstant.Values.TOKOPEDIA_SELLER,
+                VoucherCreationAnalyticConstant.Key.USER_ID to userId,
+                VoucherCreationAnalyticConstant.Key.BUSINESS_UNIT to VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS,
+                VoucherCreationAnalyticConstant.Key.PAGE_SOURCE to pageSource
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
