@@ -39,6 +39,7 @@ class ProductCardItemViewModel(val application: Application, private val compone
     private val REGISTER = "REGISTER"
     private val UNREGISTER = "UNREGISTER"
     private val ERROR_MESSAGE = "Terjadi kesalahan, coba lagi nanti."
+    private val NOTIFY_ME_TEXT = "tertarik"
 
     @Inject
     lateinit var campaignNotifyUserCase: CampaignNotifyUserCase
@@ -115,9 +116,9 @@ class ProductCardItemViewModel(val application: Application, private val compone
 
 
     fun getPDPViewCount(dataItem: DataItem): String {
-        val pdpViewData = dataItem.pdpView
-        return if (pdpViewData.toIntOrZero() >= 1000) {
-            Utils.getCountView(pdpViewData.toDoubleOrZero())
+        val pdpViewData = dataItem.pdpView.toDoubleOrZero()
+        return if (pdpViewData >= 1000) {
+            Utils.getCountView(pdpViewData)
         } else {
             ""
         }
@@ -127,8 +128,8 @@ class ProductCardItemViewModel(val application: Application, private val compone
     fun getInterestedCount(dataItem: DataItem): String {
         val notifyMeCount = dataItem.notifyMeCount
         val interestThreshold = dataItem.thresholdInterest
-        return if (notifyMeCount != null && interestThreshold != null && notifyMeCount >= interestThreshold) {
-            Utils.getCountView(notifyMeCount.toDouble(), "tertarik")
+        return if (interestThreshold != null && notifyMeCount >= interestThreshold) {
+            Utils.getCountView(notifyMeCount.toDoubleOrZero(), NOTIFY_ME_TEXT)
         } else {
             ""
         }

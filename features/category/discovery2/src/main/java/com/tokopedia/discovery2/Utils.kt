@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
+import kotlin.math.floor
 
 
 class Utils {
@@ -17,10 +18,13 @@ class Utils {
         const val DEFAULT_BANNER_HEIGHT = 150
         const val BANNER_SUBSCRIPTION_DEFAULT_STATUS = -1
         const val SEARCH_DEEPLINK = "tokopedia://search-autocomplete"
-        const val SERIBU = 1000
-        const val SEJUTA = 1000000
-        const val SEMILIAR = 1000000000
-        const val VIEW_LIMIT = 0.1
+        private const val SERIBU = 1000
+        private const val SEJUTA = 1000000
+        private const val SEMILIAR = 1000000000
+        private const val VIEW_LIMIT = 1.0
+        private const val SERIBU_TEXT = "rb orang"
+        private const val SEJUTA_TEXT = "jt orang"
+        private const val SEMILIAR_TEXT = "M orang"
 
 
         fun extractDimension(url: String?, dimension: String = "height"): Int? {
@@ -41,34 +45,27 @@ class Utils {
             context?.startActivity(Intent.createChooser(share, shareTxt))
         }
 
-        fun getCountView(countView: Double, notifyMeText: String = ""): String {
-            if (countView >= SERIBU && countView < SEJUTA) {
-                val rbCount = countView / SERIBU
-                return if (checkCommaEligibility(rbCount)) {
-                    "${rbCount.toInt()} rb orang $notifyMeText"
-                } else {
-                    "${"%.1f".format(rbCount).replace('.', ',')} rb orang $notifyMeText"
-                }
-            } else if (countView >= SEJUTA && countView < SEMILIAR) {
-                val jtCount = countView / SEJUTA
-                return if (checkCommaEligibility(jtCount)) {
-                    "${jtCount.toInt()} jt orang $notifyMeText"
-                } else {
-                    "${"%.1f".format(jtCount).replace('.', ',')} jt orang $notifyMeText"
-                }
-            } else if (countView >= SEMILIAR) {
-                val MCount = countView / SEMILIAR
-                return if (checkCommaEligibility(MCount)) {
-                    "${MCount.toInt()} M orang $notifyMeText"
-                } else {
-                    "${"%.1f".format(MCount).replace('.', ',')} M orang $notifyMeText"
-                }
+        fun getCountView(countView: Double, notifyMeText: String = ""): String = when {
+            countView >= SERIBU && countView < SEJUTA -> {
+                getDisplayValue(getDecimalFormatted(countView / SERIBU), SERIBU_TEXT, notifyMeText)
             }
-            return ""
+            countView >= SEJUTA && countView < SEMILIAR -> {
+                getDisplayValue(getDecimalFormatted(countView / SEJUTA), SEJUTA_TEXT, notifyMeText)
+            }
+            countView >= SEMILIAR -> {
+                getDisplayValue(getDecimalFormatted(countView / SEMILIAR), SEMILIAR_TEXT, notifyMeText)
+            }
+            else -> ""
         }
 
-        private fun checkCommaEligibility(currentViewCount: Double): Boolean {
-            return currentViewCount.rem(1) < VIEW_LIMIT
+        private fun getDecimalFormatted(currentViewCount: Double) = floor(currentViewCount * 1e1) / 1e1
+
+        private fun getDisplayValue(convertedValue: Double, text: String, notifyMeText: String): String {
+            return if (convertedValue > VIEW_LIMIT) {
+                "${convertedValue.toString().replace('.', ',')} $text $notifyMeText"
+            } else {
+                "${convertedValue.toInt()} $text $notifyMeText"
+            }
         }
     }
 }
