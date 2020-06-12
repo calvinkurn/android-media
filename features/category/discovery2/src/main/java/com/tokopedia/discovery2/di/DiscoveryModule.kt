@@ -129,7 +129,6 @@ class DiscoveryModule {
         return DiscoveryUIConfigGQLRepository(provideDiscoveryUIConfigQuery(context))
     }
 
-    @DiscoveryScope
     @Provides
     fun provideDiscoveryUIConfigQuery(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gql_discovery_ui_config)
