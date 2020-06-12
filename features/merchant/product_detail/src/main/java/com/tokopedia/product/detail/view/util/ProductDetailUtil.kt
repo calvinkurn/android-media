@@ -86,6 +86,25 @@ infix fun String?.toDate(format: String): String {
 
         return if (isLongFormat) {
             val date = Date(it.toLong() * 1000)
+            date.toFormattedString(format)
+        } else {
+            this
+        }
+    }
+    return ""
+}
+
+infix fun String?.toDateId(format: String): String {
+    this?.let {
+        val isLongFormat = try {
+            it.toLong()
+            true
+        } catch (e: Throwable) {
+            false
+        }
+
+        return if (isLongFormat) {
+            val date = Date(it.toLong() * 1000)
             date.toFormattedString(format, Locale("id", "ID"))
         } else {
             this
@@ -108,7 +127,7 @@ fun <T : Any> Result<T>.doSuccessOrFail(success: (Success<T>) -> Unit, fail: (Fa
     }
 }
 
-fun String.goToWebView(context: Context){
+fun String.goToWebView(context: Context) {
     RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, this))
 }
 

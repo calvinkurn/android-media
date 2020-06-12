@@ -32,17 +32,16 @@ data class ProductSnapshotDataModel(
     override fun type(): String = type
 
     companion object {
-        const val SHOP_STATUS_ACTIVE = 1
         val LAYOUT = R.layout.item_dynamic_pdp_snapshot
     }
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int = typeFactory.type(this)
 
     fun showTradeIn(): Boolean {
-        return shouldShowTradein && data?.data?.campaign?.activeAndHasId == false
+        return shouldShowTradein && data?.data?.campaign?.shouldShowRibbonCampaign == false
     }
 
     fun showCod(): Boolean {
-        return shouldShowCod && !shouldShowTradein && data?.data?.campaign?.activeAndHasId == false
+        return shouldShowCod && !shouldShowTradein && data?.data?.campaign?.shouldShowRibbonCampaign == false
     }
 }

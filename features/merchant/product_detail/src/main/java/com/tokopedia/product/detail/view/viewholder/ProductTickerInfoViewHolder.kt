@@ -10,7 +10,7 @@ import com.tokopedia.product.detail.common.data.model.constant.ProductShopStatus
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.product.detail.view.util.toDate
+import com.tokopedia.product.detail.view.util.toDateId
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.unifycomponents.ticker.*
@@ -55,7 +55,7 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
                 }
             }
             ProductShopStatusTypeDef.CLOSED -> {
-                val openDate = closedInfo?.closeDetail?.openDateUnix.toDate("EEEE, dd MMM yyyy")
+                val openDate = closedInfo?.closeDetail?.openDateUnix.toDateId("EEEE, dd MMM yyyy")
                 val statusMessage = view.context.getString(R.string.ticker_desc_shop_close, openDate)
                 val statusTitle = getStringRes(R.string.ticker_title_shop_close)
                 renderShopTicker(statusTitle, statusMessage, listener::onTickerShopClicked)
