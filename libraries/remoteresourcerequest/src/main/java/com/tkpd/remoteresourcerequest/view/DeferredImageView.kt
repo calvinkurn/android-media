@@ -5,13 +5,14 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.text.TextUtils
 import android.util.AttributeSet
-import android.webkit.URLUtil
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatImageView
 import com.tkpd.remoteresourcerequest.R
 import com.tkpd.remoteresourcerequest.task.DeferredResourceTask
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager
+import com.tkpd.remoteresourcerequest.type.ImageTypeMapper
+import com.tkpd.remoteresourcerequest.type.RequestedResourceType
 
 
 /**
@@ -19,6 +20,7 @@ import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager
  */
 class DeferredImageView : AppCompatImageView {
     var mRemoteFileName: String = ""
+    var dpiSupportType = 0
 
     private var task: DeferredResourceTask? = null
 
@@ -32,6 +34,12 @@ class DeferredImageView : AppCompatImageView {
         init(null, 0)
     }
 
+    constructor(context: Context, fileName: String, dpiSupportType: Int) : super(context) {
+        mRemoteFileName = fileName
+        this.dpiSupportType = dpiSupportType
+        init(null, 0)
+    }
+
     constructor(context: Context) : super(context) {
         init(null, 0)
     }
@@ -41,33 +49,43 @@ class DeferredImageView : AppCompatImageView {
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
-            context,
-            attrs,
-            defStyle
+        context,
+        attrs,
+        defStyle
     ) {
         init(attrs, defStyle)
     }
 
     private fun init(attrs: AttributeSet?, defStyle: Int) {
         val typedArray = context.obtainStyledAttributes(
-                attrs, R.styleable.DeferredImageView, defStyle, 0
+            attrs, R.styleable.DeferredImageView, defStyle, 0
         )
         mRemoteFileName = typedArray.getString(
-                R.styleable.DeferredImageView_remoteFileName) ?: mRemoteFileName
+            R.styleable.DeferredImageView_remoteFileName
+        ) ?: mRemoteFileName
+        dpiSupportType = typedArray.getInt(R.styleable.DeferredImageView_imageDpiSupportType, 0)
         typedArray.recycle()
         downloadAndSetResource()
     }
 
     private fun downloadAndSetResource() {
+        check(mRemoteFileName.isNotEmpty()) {
+            context.getString(R.string.exception_file_name_not_found)
+        }
         task?.let { it.deferredImageView?.clear() }
-        if (!TextUtils.isEmpty(mRemoteFileName))
-            task = ResourceDownloadManager.getManager().startDownload(mRemoteFileName, this, null)
+        //start with originally no image
+        setImageDrawable(null)
+        task = ResourceDownloadManager.getManager()
+            .startDownload(getDensitySupportType(), null)
+
     }
+
+    private fun getDensitySupportType(): RequestedResourceType = ImageTypeMapper.getImageType(this)
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         ResourceDownloadManager.getManager()
-                .stopDeferredImageViewRendering(mRemoteFileName, this)
+            .stopDeferredImageViewRendering(task)
 
     }
 

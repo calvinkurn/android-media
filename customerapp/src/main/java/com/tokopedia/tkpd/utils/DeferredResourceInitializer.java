@@ -2,23 +2,19 @@ package com.tokopedia.tkpd.utils;
 
 import android.content.Context;
 
+import com.tkpd.remoteresourcerequest.callback.DeferredCallback;
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
-import com.tkpd.remoteresourcerequest.utils.DeferredCallback;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
 
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
-import static io.hansel.hanselsdk.HanselRequestType.init;
-
-public class DeferredResourceInitializer implements DeferredCallback{
+public class DeferredResourceInitializer implements DeferredCallback {
     private static String RELATIVE_URL = "/android/res/";
     public void initializeResourceDownloadManager(Context context){
         WeaveInterface libInitWeave = new WeaveInterface() {
@@ -36,7 +32,7 @@ public class DeferredResourceInitializer implements DeferredCallback{
                 .Companion.getManager()
                 .setBaseAndRelativeUrl(AccountHomeUrl.CDN_URL, RELATIVE_URL)
                 .addDeferredCallback(this)
-                .initialize(context, R.raw.url_list);
+                .initialize(context, R.raw.url_list, BuildConfig.VERSION_NAME);
         return true;
     }
 

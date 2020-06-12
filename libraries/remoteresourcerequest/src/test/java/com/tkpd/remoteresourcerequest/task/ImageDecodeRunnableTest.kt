@@ -2,6 +2,7 @@ package com.tkpd.remoteresourcerequest.task
 
 import android.graphics.BitmapFactory
 import android.util.DisplayMetrics
+import com.tkpd.remoteresourcerequest.runnable.ImageDecodeRunnable
 import io.mockk.*
 import org.junit.Before
 import org.junit.Test
@@ -12,7 +13,8 @@ class ImageDecodeRunnableTest {
 
     @Before
     fun setup(){
-        decodeRunnable = ImageDecodeRunnable(task)
+        decodeRunnable =
+            ImageDecodeRunnable(task)
     }
     @Test
     fun runTest(){

@@ -1,4 +1,4 @@
-package com.tkpd.remoteresourcerequest.utils
+package com.tkpd.remoteresourcerequest.callback
 
 interface DeferredCallback {
     fun logDeferred(message: String)
@@ -9,7 +9,7 @@ interface DeferredCallback {
 
 object CallbackDispatcher {
     fun dispatchLog(deferredCallback: DeferredCallback?, message: String) {
-        deferredCallback?.logDeferred("DeferredCallback $message")
+        deferredCallback?.logDeferred(message)
     }
 
     fun onDownloadState(deferredCallback: DeferredCallback?, resUrl: String, isFailed: Boolean) {

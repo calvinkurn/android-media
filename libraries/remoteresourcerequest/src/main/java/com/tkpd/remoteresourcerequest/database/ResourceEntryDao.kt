@@ -25,4 +25,9 @@ interface ResourceEntryDao {
     @Query("UPDATE resource_entry SET lastAccessed = :lastAccessMillis  where url = :url")
     fun updateLastAccess(lastAccessMillis: Long, url: String)
 
+    @Query("Select appVersion FROM resource_entry LIMIT 1")
+    fun getAppVersion(): String?
+    @Query("DELETE FROM resource_entry")
+    fun deleteEntries()
+
 }
