@@ -129,8 +129,8 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     override fun stopPush() {
         try {
             if (mAliVcLivePusher?.isPushing == true) {
-                mAliVcLivePusher?.stopPush()
                 mTimer?.stop()
+                mAliVcLivePusher?.stopPush()
             }
         } catch (e: Exception) {
             if (GlobalConfig.DEBUG) {
@@ -196,20 +196,11 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     }
 
     override fun addMaxStreamDuration(millis: Long) {
-        this.mTimer = PlayPusherTimer(builder.context, millis)
-        this.mTimer?.addCallback(object: PlayPusherTimerListener {
-            override fun onCountDownActive(
-                    elapsedTime: String,
-                    minutesUntilFinished: Long,
-                    secondsUntilFinished: Long
-            ) {
-                _observableInfoState.postValue(PlayPusherInfoState.Active(elapsedTime, minutesUntilFinished, secondsUntilFinished))
-            }
-
-            override fun onCountDownFinish() {
-                _observableInfoState.postValue(PlayPusherInfoState.Finish)
-            }
-        })
+        this.mTimer = PlayPusherTimer(
+                context = builder.context,
+                liveStreamDuration = millis,
+                callback = mPlayPusherTimerListener
+        )
     }
 
     override fun getObservablePlayPusherInfoState(): LiveData<PlayPusherInfoState> {
@@ -246,9 +237,11 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         }
 
         override fun onReconnectFail(pusher: AlivcLivePusher?) {
+            _observableNetworkState.postValue(PlayPusherNetworkState.Loss)
         }
 
         override fun onSendDataTimeout(pusher: AlivcLivePusher?) {
+            _observableNetworkState.postValue(PlayPusherNetworkState.Loss)
         }
 
         override fun onConnectFail(pusher: AlivcLivePusher?) {
@@ -270,6 +263,21 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
             _observableNetworkState.postValue(PlayPusherNetworkState.Poor)
         }
 
+    }
+
+    private val mPlayPusherTimerListener = object : PlayPusherTimerListener{
+        override fun onCountDownActive(timeLeft: String) {
+            _observableInfoState.postValue(PlayPusherInfoState.Active(timeLeft))
+        }
+
+        override fun onCountDownAlmostFinish(minutesUntilFinished: Long) {
+            _observableInfoState.postValue(PlayPusherInfoState.AlmostFinish(minutesUntilFinished))
+        }
+
+        override fun onCountDownFinish() {
+            stopPush()
+            _observableInfoState.postValue(PlayPusherInfoState.Finish)
+        }
     }
 
     companion object {

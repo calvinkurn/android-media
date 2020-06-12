@@ -10,10 +10,7 @@ import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
-import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
-import com.tokopedia.play.broadcaster.ui.model.PlayChannelStatus
-import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
-import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
+import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionUtil
 import com.tokopedia.play.broadcaster.view.event.ScreenStateEvent
@@ -55,6 +52,10 @@ class PlayBroadcastViewModel  @Inject constructor(
         get() = _observableChatList
     val observableNewChat: LiveData<Event<PlayChatUiModel>>
         get() = _observableNewChat
+    val observableNewMetric: LiveData<Event<PlayMetricUiModel>>
+        get() = _observableNewMetric
+    val observableProductList: LiveData<List<ProductContentUiModel>>
+        get() = _observableProductList
 
     val channelInfo: ChannelInfoUiModel?
         get() = _observableChannelInfo.value
@@ -64,6 +65,8 @@ class PlayBroadcastViewModel  @Inject constructor(
     private val _observableTotalLike = MutableLiveData<TotalLikeUiModel>()
     private val _observableScreenStateEvent = MutableLiveData<Event<ScreenStateEvent>>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
+    private val _observableNewMetric = MutableLiveData<Event<PlayMetricUiModel>>()
+    private val _observableProductList = MutableLiveData<List<ProductContentUiModel>>()
     private val _observableNewChat = MediatorLiveData<Event<PlayChatUiModel>>().apply {
         addSource(_observableChatList) { chatList ->
             chatList.lastOrNull()?.let { value = Event(it) }
@@ -92,6 +95,13 @@ class PlayBroadcastViewModel  @Inject constructor(
         playPusher.create()
 
         mockChatList()
+        mockMetrics()
+        mockProductList()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        scope.cancel()
     }
 
     fun getConfiguration() {
@@ -168,17 +178,41 @@ class PlayBroadcastViewModel  @Inject constructor(
         _observableChatList.value = currentChatList
     }
 
+    private suspend fun onRetrievedNewMetric(newMetric: PlayMetricUiModel) = withContext(mainDispatcher) {
+        _observableNewMetric.value = Event(newMetric)
+    }
+
     /**
-     *
+     * mock
      */
     private fun mockChatList() {
         scope.launch(ioDispatcher) {
-            while(scope.isActive) {
+            while(isActive) {
                 delay(1000)
                 onRetrievedNewChat(
                     PlayBroadcastMocker.getMockChat()
                 )
             }
+        }
+    }
+
+    private fun mockMetrics() {
+        scope.launch(ioDispatcher) {
+            while(isActive) {
+                delay(3000)
+                onRetrievedNewMetric(
+                    PlayBroadcastMocker.getMockMetric()
+                )
+            }
+        }
+    }
+
+    private fun mockProductList() {
+        scope.launch(ioDispatcher) {
+            delay(3000)
+            _observableProductList.postValue(
+                    PlayBroadcastMocker.getMockProductList(5)
+            )
         }
     }
 }

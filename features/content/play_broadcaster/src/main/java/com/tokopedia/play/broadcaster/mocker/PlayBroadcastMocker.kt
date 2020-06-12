@@ -78,7 +78,7 @@ object PlayBroadcastMocker {
             isOfficial = false,
             channelId = "1",
             maxTaggedProduct = 15,
-            maxLiveStreamDuration = (1000 * 60) * 6,
+            maxLiveStreamDuration = (5 * 60 * 1000) + ( 5 * 1000), // 05:05
             countDownDuration = 10
     )
 
@@ -87,7 +87,7 @@ object PlayBroadcastMocker {
             title = "Klarififikasi Bisa Tebak Siapa?",
             description = "Yuk gabung sekarang di Play Klarifikasi Bisa Tebak siapa?",
             coverUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
-            ingestUrl = "rtmp://test",
+            ingestUrl = "rtmp://192.168.0.102/live/Hy6ROIk6I",
             shareUrl = "https://www.tokopedia.com/play/channels/1234",
             status = PlayChannelStatus.Active
     )
@@ -102,7 +102,7 @@ object PlayBroadcastMocker {
 
     fun getLiveStreamingInfo() = LiveStreamInfoUiModel(
             "1234",
-            ingestUrl = "rtmp://test",
+            ingestUrl = "rtmp://192.168.0.102/live/Hy6ROIk6I",
             streamUrl = "rtmp://test"
     )
 
@@ -114,6 +114,17 @@ object PlayBroadcastMocker {
                 name = name,
                 message = listOf(":pepecry", ":pepelmao", ":lul").random(),
                 isSelfMessage = false
+        )
+    }
+
+    fun getMockMetric(): PlayMetricUiModel {
+        val firstSentence = "${Random.nextInt(1, 10)} Penonton"
+        val secondSentence = listOf("Bergabung", "Mengunjungi tokomu", "Melihat produkmu").random()
+        val fullSentence = "$firstSentence $secondSentence"
+        return PlayMetricUiModel(
+                firstSentence = firstSentence,
+                secondSentence = secondSentence,
+                fullSentence = fullSentence
         )
     }
 }

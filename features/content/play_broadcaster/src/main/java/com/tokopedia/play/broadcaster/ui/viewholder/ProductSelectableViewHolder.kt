@@ -23,7 +23,8 @@ import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
  */
 class ProductSelectableViewHolder(
         itemView: View,
-        private val listener: Listener
+        private val listener: Listener? = null,
+        showSelection: Boolean = true
 ) : BaseViewHolder(itemView) {
 
     private val ivImage: ImageView = itemView.findViewById(R.id.iv_image)
@@ -35,6 +36,9 @@ class ProductSelectableViewHolder(
     private var onCheckedChangeListener: (CompoundButton, Boolean) -> Unit = { _ , _ -> }
 
     init {
+        if (showSelection) cbSelected.show()
+        else cbSelected.gone()
+
         lblEmptyStock.unlockFeature = true
         lblEmptyStock.setLabelType(
                 "#${Integer.toHexString(MethodChecker.getColor(lblEmptyStock.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))}"
@@ -62,13 +66,13 @@ class ProductSelectableViewHolder(
                 val isSelecting = !cbSelected.isChecked
                 if (isSelecting) when (val state = item.isSelectable()) {
                     Selectable -> triggerCheckbox()
-                    is NotSelectable -> listener.onProductSelectError(state.reason)
+                    is NotSelectable -> listener?.onProductSelectError(state.reason)
                 } else triggerCheckbox()
             }
         }
 
         onCheckedChangeListener = { _, isChecked ->
-            listener.onProductSelectStateChanged(item.id, isChecked)
+            listener?.onProductSelectStateChanged(item.id, isChecked)
         }
         cbSelected.setOnCheckedChangeListener(onCheckedChangeListener)
     }
