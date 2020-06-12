@@ -48,7 +48,7 @@ class BannerItem(val bannerItemData: DataItem, private val constraintLayout: Con
         }
         constraintSet.connect(bannerImageView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
         if (!bannerItemData.imageUrlDynamicMobile.isNullOrEmpty()) {
-            (bannerImageView as ImageUnify).setImageUrl(bannerItemData.imageUrlDynamicMobile ?: "")
+            (bannerImageView as ImageUnify).setImageUrl(bannerItemData.imageUrlDynamicMobile)
         }
         constraintSet.applyTo(constraintLayout)
     }

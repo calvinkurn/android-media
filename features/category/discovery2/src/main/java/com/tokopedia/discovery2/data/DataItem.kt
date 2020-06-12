@@ -308,7 +308,7 @@ data class DataItem(
         val freeOngkir: FreeOngkir? = null,
 
         @SerializedName("pdp_view")
-        val pdpView: String = "",
+        val pdpView: String = "0",
 
         @SerializedName("campaign_sold_count")
         val campaignSoldCount: String? = null,
@@ -323,7 +323,7 @@ data class DataItem(
         val stockWording: StockWording? = null,
 
         @SerializedName("total_interest_notify_me")
-        val notifyMeCount: String? = null,
+        val notifyMeCount: String = "0",
 
         @SerializedName("threshold_interest")
         val thresholdInterest: String? = null,

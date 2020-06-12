@@ -22,6 +22,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
 
     private var compositeAdapter: DiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
     private var addChildAdapterCallback: AddChildAdapterCallback
+    private lateinit var linearLayoutManager: LinearLayoutManager
 
     init {
         attachRecyclerView()
@@ -30,13 +31,14 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
     }
 
     private fun attachRecyclerView() {
+        linearLayoutManager = LinearLayoutManager(fragment.activity, LinearLayoutManager.HORIZONTAL, false)
         tabsRecyclerView.apply {
             setMargin(resources.getDimensionPixelSize(R.dimen.dp_12),
                     resources.getDimensionPixelSize(R.dimen.dp_8),
                     resources.getDimensionPixelSize(R.dimen.dp_12),
                     resources.getDimensionPixelSize(R.dimen.dp_8))
             adapter = tabsRecyclerViewAdapter
-            layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = linearLayoutManager
             addItemDecoration(SpaceItemDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_4), LinearLayoutManager.HORIZONTAL))
         }
     }
@@ -59,7 +61,8 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
         })
     }
 
-    fun onTabClick(id: String) {
+    fun onTabClick(id: String, position: Int) {
+        linearLayoutManager.scrollToPositionWithOffset(position, 0)
         tabsViewModel.onTabClick(id)
     }
 }

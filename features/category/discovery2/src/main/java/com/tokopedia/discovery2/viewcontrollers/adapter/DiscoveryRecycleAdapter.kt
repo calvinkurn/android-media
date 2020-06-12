@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryListViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerProductCardViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.DiscoveryHomeFactory
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 
@@ -82,6 +84,7 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
         if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
             layoutParams.isFullSpan = when (holder) {
                 is ProductCardItemViewHolder -> false
+                is ShimmerProductCardViewHolder -> false
                 else -> true
             }
         }

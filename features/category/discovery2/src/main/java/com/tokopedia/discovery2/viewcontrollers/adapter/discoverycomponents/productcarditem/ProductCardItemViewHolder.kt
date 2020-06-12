@@ -287,9 +287,10 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
 //    }
 
     private fun setRating(dataItem: DataItem) {
-        if (dataItem.rating.toIntOrZero() > 0) {
+        val ratingCount = dataItem.rating.toDoubleOrZero()
+        if (ratingCount > 0) {
             imageViewRating.show()
-            textViewRatingCount.setTextAndCheckShow(dataItem.rating)
+            textViewRatingCount.setTextAndCheckShow(ratingCount.toString())
             setTextViewReviewCount(dataItem.countReview.toIntOrZero())
         } else {
             imageViewRating.hide()
@@ -298,7 +299,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         }
     }
 
-    private fun setTextViewReviewCount(reviewCount: Int?) {
+    private fun setTextViewReviewCount(reviewCount: Int) {
         if (reviewCount != 0) {
             textViewReviewCount.show()
             textViewReviewCount.text = String.format("%s", "($reviewCount)")
@@ -315,17 +316,8 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     private fun showNotifyResultToast(toastData: Triple<Boolean, String?, Int?>) {
         if (!toastData.first && !toastData.second.isNullOrEmpty()) {
             Toaster.make(itemView.rootView, toastData.second!!, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
-//            removeProductItem(toastData.third)
         } else if (!toastData.second.isNullOrEmpty()) {
             Toaster.make(itemView.rootView, toastData.second!!, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
-        }
-    }
-
-    private fun removeProductItem(productID: Int?) {
-        productID?.let {
-            if (productID > 0 && productCardItemViewModel.getRemoveProductProperty() == true) {
-//                (parentAbstractViewHolder as? ProductCardRevampViewHolder)?.removeProduct(productID)
-            }
         }
     }
 }

@@ -80,8 +80,8 @@ open class BaseRepository {
     suspend fun <T : Any> getGQLData(gqlQuery: String,
                                      gqlResponseType: Class<T>,
                                      gqlParams: Map<String, Any>, queryName: String): Any? {
-        var jsonObject: JsonObject = getGQLData(gqlQuery, JsonObject::class.java, gqlParams)
-        var jsonObject1 = jsonObject.get(queryName)
+        val jsonObject: JsonObject = getGQLData(gqlQuery, JsonObject::class.java, gqlParams)
+        val jsonObject1 = jsonObject.get(queryName)
         return Gson().fromJson(jsonObject1, gqlResponseType)
 
     }
