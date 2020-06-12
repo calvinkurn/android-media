@@ -634,7 +634,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private fun renderEmptyOrderList() {
         refreshHandler?.finishRefresh()
         order_list_rv?.visibility = View.GONE
-        quick_filter?.visibility = View.GONE
+        quick_filter?.visibility = View.VISIBLE
         empty_state_order_list?.visibility = View.VISIBLE
         title_empty?.text = getString(R.string.empty_peluang_title)
 
