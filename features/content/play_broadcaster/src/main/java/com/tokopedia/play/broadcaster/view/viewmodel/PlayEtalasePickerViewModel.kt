@@ -9,7 +9,11 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetSelfEtalaseListUseCase
 import com.tokopedia.play.broadcaster.error.SelectForbiddenException
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcasterUiMapper
-import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.EtalaseContentUiModel
+import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
+import com.tokopedia.play.broadcaster.ui.model.SearchSuggestionUiModel
+import com.tokopedia.play.broadcaster.ui.model.result.PageResult
+import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.view.state.NotSelectable
 import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.play.broadcaster.view.state.SelectableState
@@ -169,7 +173,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
                         currentValue = etalase.copy(
                                 productMap = etalase.productMap.filterKeys { it <= page }.toMutableMap()
                         ),
-                        state = ResultState.Success(etalase.stillHasProduct)
+                        state = PageResultState.Success(etalase.stillHasProduct)
                 )
 
             } else {
@@ -184,13 +188,13 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
                 PageResult(
                         currentValue = etalase.copy(stillHasProduct = stillHasNextPage),
-                        state = ResultState.Success(stillHasNextPage)
+                        state = PageResultState.Success(stillHasNextPage)
                 )
             }
         } else {
             PageResult(
                     currentValue = EtalaseContentUiModel.Empty(),
-                    state = ResultState.Fail(IllegalStateException("Etalase not found"))
+                    state = PageResultState.Fail(IllegalStateException("Etalase not found"))
             )
         }
     }
@@ -225,7 +229,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
         _observableEtalase.value = PageResult(
                 currentValue = etalaseList,
-                state = ResultState.Success(false)
+                state = PageResultState.Success(false)
         )
     }
 
@@ -234,7 +238,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
         val appendedList = prevList + productList
         return@withContext PageResult(
                 currentValue = appendedList,
-                state = ResultState.Success(appendedList.size < totalData)
+                state = PageResultState.Success(appendedList.size < totalData)
         )
     }
 

@@ -10,16 +10,17 @@ import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
+import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
+import com.tokopedia.play.broadcaster.view.custom.PlayStartStreamingButton
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSetupViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
@@ -33,11 +34,13 @@ class PlayBeforeLiveFragment @Inject constructor(
     private lateinit var tvCoverTitle: TextView
     private lateinit var llSelectedProduct: LinearLayout
     private lateinit var tvSelectedProduct: TextView
-    private lateinit var btnStartLive: View
+    private lateinit var btnStartLive: PlayStartStreamingButton
     private lateinit var followerView: PlayShareFollowerView
 
     private lateinit var setupViewModel: PlayBroadcastSetupViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
+
+    private lateinit var exitDialog: DialogUnify
 
     override fun getScreenName(): String = "Play Before Live Page"
 
@@ -61,9 +64,13 @@ class PlayBeforeLiveFragment @Inject constructor(
         super.onActivityCreated(savedInstanceState)
 
         observeFollowers()
-        observeSelectedProduct()
-        observeCover()
+        observeSetupChannel()
         observeCreateChannel()
+    }
+
+    override fun onBackPressed(): Boolean {
+        showDialogWhenActionClose()
+        return true
     }
 
     private fun initView(view: View) {
@@ -79,11 +86,11 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private fun setupView(view: View) {
         broadcastCoordinator.setupTitle(getString(R.string.play_action_bar_prepare_final_title))
-        btnStartLive.setOnClickListener {
-            setupViewModel.createChannel()
-        }
+        btnStartLive.setOnClickListener { startStreaming() }
         llSelectedProduct.setOnClickListener { openEditProductPage() }
         tvCoverTitle.setOnClickListener { openEditCoverPage() }
+
+        btnStartLive.setMaxStreamingDuration(30)
     }
 
     //region observe
@@ -96,24 +103,26 @@ class PlayBeforeLiveFragment @Inject constructor(
         })
     }
 
-    private fun observeSelectedProduct() {
-        setupViewModel.observableSelectedProduct.observe(viewLifecycleOwner, Observer {
-            tvSelectedProduct.text = getString(R.string.play_before_live_selected_product, it.size)
-        })
-    }
-
-    private fun observeCover() {
-        setupViewModel.observableCover.observe(viewLifecycleOwner, Observer {
-            ivImagePreview.loadImageRounded(it.url)
-            tvCoverTitle.text = it.title
+    private fun observeSetupChannel() {
+        setupViewModel.observableSetupChannel.observe(viewLifecycleOwner, Observer {
+            tvSelectedProduct.text = getString(R.string.play_before_live_selected_product, it.selectedProductList.size)
+            ivImagePreview.loadImageRounded(it.cover.url)
+            tvCoverTitle.text = it.cover.title
         })
     }
 
     private fun observeCreateChannel() {
         setupViewModel.observableCreateChannel.observe(viewLifecycleOwner, Observer {
             when(it) {
-                is Success ->  openBroadcastLivePage(it.data)
-                is Fail -> showToaster(it.throwable.localizedMessage, Toaster.TYPE_ERROR)
+                NetworkResult.Loading -> btnStartLive.setLoading(true)
+                is NetworkResult.Success -> {
+                    openBroadcastLivePage(it.data)
+                    btnStartLive.setLoading(false)
+                }
+                is NetworkResult.Fail -> {
+                    showToaster(it.error.localizedMessage, Toaster.TYPE_ERROR)
+                    btnStartLive.setLoading(false)
+                }
             }
         })
     }
@@ -139,5 +148,29 @@ class PlayBeforeLiveFragment @Inject constructor(
         Toaster.make(requireView(),
                 text = message,
                 type = toasterType)
+    }
+
+    private fun startStreaming() {
+        setupViewModel.createChannel()
+    }
+
+    private fun getExitDialog(): DialogUnify {
+        if (!::exitDialog.isInitialized) {
+            exitDialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.play_prepare_broadcast_dialog_end_title))
+                setDescription(getString(R.string.play_prepare_broadcast_dialog_end_desc))
+                setPrimaryCTAText(getString(R.string.play_prepare_broadcast_dialog_end_primary))
+                setSecondaryCTAText(getString(R.string.play_prepare_broadcast_dialog_end_secondary))
+                setPrimaryCTAClickListener { this.dismiss() }
+                setSecondaryCTAClickListener {
+                    activity?.finish()
+                }
+            }
+        }
+        return exitDialog
+    }
+
+    private fun showDialogWhenActionClose() {
+        getExitDialog().show()
     }
 }

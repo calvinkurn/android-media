@@ -10,8 +10,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.CreateChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.CreateLiveStreamChannelUseCase
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.ui.model.*
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -41,30 +40,12 @@ class PlayBroadcastSetupViewModel @Inject constructor(
         get() = _observableSetupChannel
     private val _observableSetupChannel = MutableLiveData<ChannelSetupUiModel>()
 
-    val observableCreateChannel: LiveData<Result<LiveStreamInfoUiModel>>
+    val observableCreateChannel: LiveData<NetworkResult<LiveStreamInfoUiModel>>
         get() = _observableCreateChannel
-    private val _observableCreateChannel = MutableLiveData<Result<LiveStreamInfoUiModel>>()
-
-    val observableSelectedProduct: LiveData<List<ProductContentUiModel>>
-        get() = _observableSelectedProduct
-    private val _observableSelectedProduct = MutableLiveData<List<ProductContentUiModel>>()
-
-    val observableCover: LiveData<PlayCoverUiModel>
-        get() = _observableCover
-    private val _observableCover = MutableLiveData<PlayCoverUiModel>()
+    private val _observableCreateChannel = MutableLiveData<NetworkResult<LiveStreamInfoUiModel>>()
 
     init {
         _observableFollowers.value = PlayBroadcastMocker.getMockUnknownFollower()
-    }
-
-    fun saveCompleteChannel(productList: List<ProductContentUiModel>, coverUrl: String, title: String) {
-        scope.launch {
-            _observableSetupChannel.value = ChannelSetupUiModel(
-                    title = title,
-                    coverUrl = coverUrl,
-                    selectedProductList = productList
-            )
-        }
     }
 
     fun createChannel() {
@@ -83,16 +64,22 @@ class PlayBroadcastSetupViewModel @Inject constructor(
          * }
          *
          */
+        _observableCreateChannel.value = NetworkResult.Loading
 
-        _observableCreateChannel.value = Success(PlayBroadcastMocker.getLiveStreamingInfo())
+        scope.launch {
+            delay(3000)
+            _observableCreateChannel.value = NetworkResult.Success(PlayBroadcastMocker.getLiveStreamingInfo())
+        }
     }
 
     fun setupChannelWithData(
             selectedProducts: List<ProductContentUiModel>,
             cover: PlayCoverUiModel
     ) {
-        _observableSelectedProduct.value = selectedProducts
-        _observableCover.value = cover
+        _observableSetupChannel.value = ChannelSetupUiModel(
+                cover = cover,
+                selectedProductList = selectedProducts
+        )
     }
 
     private fun selectedProductIds(productList: List<ProductContentUiModel>): List<String> = productList.map { it.id.toString() }.toList()

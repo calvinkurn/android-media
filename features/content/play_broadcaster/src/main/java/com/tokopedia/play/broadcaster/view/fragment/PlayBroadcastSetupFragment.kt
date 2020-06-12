@@ -12,7 +12,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
@@ -74,7 +73,6 @@ class PlayBroadcastSetupFragment @Inject constructor(
         super.onActivityCreated(savedInstanceState)
 
         observeFollowers()
-        observeSetupChannel()
     }
 
     private fun initView(view: View) {
@@ -92,14 +90,6 @@ class PlayBroadcastSetupFragment @Inject constructor(
         }
 
         setupPrivacyPolicy()
-    }
-
-    override fun onBackPressed(): Boolean {
-        if (completeViewAppears()) {
-            showDialogWhenActionClose()
-            return true
-        }
-        return false
     }
 
     private fun setupPrivacyPolicy() {
@@ -158,24 +148,6 @@ class PlayBroadcastSetupFragment @Inject constructor(
         )
     }
 
-    private fun completeViewAppears(): Boolean =
-            viewModel.observableSetupChannel.value != null
-
-    private fun showDialogWhenActionClose() {
-        activity?.let {
-            DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(getString(R.string.play_prepare_broadcast_dialog_end_title))
-                setDescription(getString(R.string.play_prepare_broadcast_dialog_end_desc))
-                setPrimaryCTAText(getString(R.string.play_prepare_broadcast_dialog_end_primary))
-                setSecondaryCTAText(getString(R.string.play_prepare_broadcast_dialog_end_secondary))
-                setPrimaryCTAClickListener { this.dismiss() }
-                setSecondaryCTAClickListener {
-                    it.finish()
-                }
-            }.show()
-        }
-    }
-
     private fun showBeforeLiveCountDown() {
 
     }
@@ -187,12 +159,6 @@ class PlayBroadcastSetupFragment @Inject constructor(
     private fun observeFollowers() {
         viewModel.observableFollowers.observe(viewLifecycleOwner, Observer {
             followerView.setFollowersModel(it)
-        })
-    }
-
-    private fun observeSetupChannel() {
-        viewModel.observableSetupChannel.observe(viewLifecycleOwner, Observer {
-
         })
     }
     //endregion
