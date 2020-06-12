@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.item_mvc_filter.view.*
 
 class FilterViewHolder(
         itemView: View?,
-        private val onItemClick: () -> Unit
+        private val onItemClick: (String) -> Unit
 ) : AbstractViewHolder<FilterItem>(itemView) {
 
     companion object {
@@ -28,16 +28,12 @@ class FilterViewHolder(
 
             cbxMvcFilter.setOnCheckedChangeListener { _, isChecked ->
                 element.isSelected = isChecked
-                setOnCheckedChanged()
+                onItemClick(element.key)
             }
             setOnClickListener {
                 val isChecked = !cbxMvcFilter.isChecked
                 cbxMvcFilter.isChecked = isChecked
             }
         }
-    }
-
-    private fun setOnCheckedChanged() {
-        onItemClick()
     }
 }

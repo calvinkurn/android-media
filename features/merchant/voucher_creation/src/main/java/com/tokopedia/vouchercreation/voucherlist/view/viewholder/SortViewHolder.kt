@@ -22,8 +22,10 @@ class SortViewHolder(
     override fun bind(element: SortUiModel) {
         with(itemView) {
             tvMvcSort.text = element.label
-            radMvcSort.isChecked = element.isSelected
-
+            radMvcSort.run{
+                isChecked = element.isSelected
+                //todo: add logic to notify adapter when checked changed
+            }
             setOnClickListener {
                 onApplyClick(element)
             }

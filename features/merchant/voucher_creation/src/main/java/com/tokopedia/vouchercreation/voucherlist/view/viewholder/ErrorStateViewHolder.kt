@@ -3,6 +3,7 @@ package com.tokopedia.vouchercreation.voucherlist.view.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.voucherlist.model.ui.ErrorStateUiModel
 import kotlinx.android.synthetic.main.item_mvc_voucher_list_error_state.view.*
@@ -12,7 +13,8 @@ import kotlinx.android.synthetic.main.item_mvc_voucher_list_error_state.view.*
  */
 
 class ErrorStateViewHolder(itemView: View?,
-                           private val onTryAgain: () -> Unit) : AbstractViewHolder<ErrorStateUiModel>(itemView) {
+                           private val onTryAgain: () -> Unit,
+                           private val onImpression: (String) -> Unit) : AbstractViewHolder<ErrorStateUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -20,6 +22,9 @@ class ErrorStateViewHolder(itemView: View?,
     }
 
     override fun bind(element: ErrorStateUiModel) {
+        itemView.addOnImpressionListener(element.impressHolder) {
+            onImpression(ErrorStateUiModel.DATA_KEY)
+        }
         itemView.geMvcList?.setActionClickListener {
             onTryAgain()
         }

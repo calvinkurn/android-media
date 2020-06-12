@@ -16,7 +16,7 @@ import com.tokopedia.vouchercreation.voucherlist.view.viewholder.FilterViewHolde
  */
 
 class FilterAdapterFactoryImpl(
-        private val onItemClick: () -> Unit
+        private val onItemClick: (String) -> Unit
 ) : BaseAdapterTypeFactory(), FilterAdapterFactory {
 
     override fun type(model: BaseFilterUiModel): Int {

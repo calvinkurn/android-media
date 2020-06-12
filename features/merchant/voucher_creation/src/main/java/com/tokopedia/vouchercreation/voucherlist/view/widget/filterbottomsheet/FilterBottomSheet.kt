@@ -42,6 +42,7 @@ class FilterBottomSheet(
     }
 
     private var applyFilter = false
+    private var onItemClick: (String) -> Unit = {}
     private var onApplyClick: () -> Unit = {}
     private var onCancelApply: (items: List<BaseFilterUiModel>) -> Unit = {}
     private val filterAdapter by lazy { FilterAdapter(this::onItemFilterClick) }
@@ -85,7 +86,8 @@ class FilterBottomSheet(
         }
     }
 
-    private fun onItemFilterClick() {
+    private fun onItemFilterClick(key: String) {
+        onItemClick(key)
         val filterItems = filterAdapter.items.filterIsInstance<FilterItem>()
         val canReset = filterItems.any { it.isSelected }
 
@@ -106,6 +108,11 @@ class FilterBottomSheet(
         filterAdapter.items.filterIsInstance<FilterItem>().forEach { it.isSelected = false }
         filterAdapter.notifyDataSetChanged()
         clearAction()
+    }
+
+    fun setOnItemClickListener(action: (String) -> Unit): FilterBottomSheet {
+        onItemClick = action
+        return this
     }
 
     fun setOnApplyClickListener(action: () -> Unit): FilterBottomSheet {

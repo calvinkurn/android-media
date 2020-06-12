@@ -31,10 +31,14 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Impression
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventLabel
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.bottmsheet.StopVoucherDialog
 import com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher.DownloadVoucherBottomSheet
 import com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet.VoucherPeriodBottomSheet
+import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.exception.VoucherCancellationException
@@ -229,14 +233,36 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            android.R.id.home -> activity?.onBackPressed()
+            android.R.id.home -> {
+                VoucherCreationTracking.sendVoucherListClickTracking(
+                        action = Click.BACK_BUTTON,
+                        isActive = isActiveVoucher,
+                        userId = userSession.userId
+                )
+                activity?.onBackPressed()
+            }
             R.id.menuMvcShowVoucherActive -> {
+                VoucherCreationTracking.sendVoucherListClickTracking(
+                        action = Click.HISTORY_BUTTON,
+                        isActive = isActiveVoucher,
+                        userId = userSession.userId
+                )
                 fragmentListener?.switchFragment(true)
             }
             R.id.menuMvcShowVoucherHistory -> {
+                VoucherCreationTracking.sendVoucherListClickTracking(
+                        action = Click.HISTORY_BUTTON,
+                        isActive = isActiveVoucher,
+                        userId = userSession.userId
+                )
                 fragmentListener?.switchFragment(false)
             }
             R.id.menuMvcAddVoucher -> {
+                VoucherCreationTracking.sendVoucherListClickTracking(
+                        action = Click.ADD_BUTTON,
+                        isActive = isActiveVoucher,
+                        userId = userSession.userId
+                )
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER)
                 startActivityForResult(intent, CreateMerchantVoucherStepsActivity.REQUEST_CODE)
             }
@@ -261,33 +287,157 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         }
     }
 
+    override fun onVoucherIconClickListener(status: Int) {
+        VoucherCreationTracking.sendVoucherListClickTracking(
+                action = Click.VOUCHER_ICON,
+                label =
+                        when(status) {
+                            VoucherStatusConst.ONGOING -> VoucherCreationAnalyticConstant.EventLabel.ONGOING
+                            VoucherStatusConst.NOT_STARTED -> VoucherCreationAnalyticConstant.EventLabel.UPCOMING
+                            else -> ""
+                        },
+                isActive = isActiveVoucher,
+                userId = userSession.userId
+        )
+    }
+
     override fun onShareClickListener(voucher: VoucherUiModel) {
+        VoucherCreationTracking.sendVoucherListClickTracking(
+                action = Click.VOUCHER_SHARE,
+                isActive = isActiveVoucher,
+                userId = userSession.userId
+        )
         showShareBottomSheet(voucher)
     }
 
     override fun onEditQuotaClickListener(voucher: VoucherUiModel) {
+        VoucherCreationTracking.sendVoucherListClickTracking(
+                action = Click.CHANGE_QUOTA,
+                isActive = isActiveVoucher,
+                userId = userSession.userId
+        )
         showEditQuotaBottomSheet(voucher)
     }
 
     private fun onMoreMenuItemClickListener(menu: MoreMenuUiModel, voucher: VoucherUiModel) {
+        VoucherCreationTracking.sendVoucherListClickTracking(
+                action =
+                        when(voucher.status) {
+                            VoucherStatusConst.ONGOING -> Click.BURGER_BUTTON_ONGOING
+                            VoucherStatusConst.NOT_STARTED -> Click.BURGER_BUTTON_UPCOMING
+                            VoucherStatusConst.ENDED -> Click.BURGER_BUTTON
+                            VoucherStatusConst.STOPPED -> Click.BURGER_BUTTON
+                            else -> ""
+                        },
+                label =
+                        when(voucher.status) {
+                            VoucherStatusConst.ENDED -> EventLabel.ENDED
+                            VoucherStatusConst.STOPPED -> EventLabel.CANCELLED
+                            else -> ""
+                        },
+                isActive = isActiveVoucher,
+                userId = userSession.userId
+        )
         dismissBottomSheet<MoreMenuBottomSheet>(MoreMenuBottomSheet.TAG)
+        var moreMenuClickEventAction: String? = null
         when (menu) {
-            is EditQuota -> showEditQuotaBottomSheet(voucher)
-            is ViewDetail -> viewVoucherDetail(voucher.id)
-            is ShareVoucher -> showShareBottomSheet(voucher)
-            is EditPeriod -> showEditPeriodBottomSheet(voucher)
-            is DownloadVoucher -> showDownloadBottomSheet(voucher)
-            is CancelVoucher -> showCancelVoucherDialog(voucher)
-            is StopVoucher -> showStopVoucherDialog(voucher)
-            is Duplicate -> duplicateVoucher(voucher)
+            is EditQuota -> {
+                moreMenuClickEventAction =
+                        if (isActiveVoucher) {
+                            when (voucher.status) {
+                                VoucherStatusConst.ONGOING -> Click.EDIT_QUOTA_ONGOING
+                                VoucherStatusConst.NOT_STARTED -> Click.EDIT_QUOTA_UPCOMING
+                                else -> null
+                            }
+                        } else {
+                            null
+                        }
+                showEditQuotaBottomSheet(voucher)
+            }
+            is ViewDetail -> {
+                moreMenuClickEventAction =
+                        if (isActiveVoucher) {
+                            when (voucher.status) {
+                                VoucherStatusConst.ONGOING -> Click.DETAIL_AND_EDIT_ONGOING
+                                VoucherStatusConst.NOT_STARTED -> Click.DETAIL_AND_EDIT_UPCOMING
+                                else -> null
+                            }
+                        } else {
+                            Click.VOUCHER_DETAIL_BOTTOM_SHEET
+                        }
+                viewVoucherDetail(voucher.id)
+            }
+            is ShareVoucher -> {
+                moreMenuClickEventAction = Click.SHARE_ONGOING
+                showShareBottomSheet(voucher)
+            }
+            is EditPeriod -> {
+                moreMenuClickEventAction = Click.CHANGE_PERIOD_UPCOMING
+                showEditPeriodBottomSheet(voucher)
+            }
+            is DownloadVoucher -> {
+                moreMenuClickEventAction = if (isActiveVoucher) {
+                    when (voucher.status) {
+                        VoucherStatusConst.ONGOING -> Click.DOWNLOAD_ONGOING
+                        VoucherStatusConst.NOT_STARTED -> Click.DOWNLOAD_UPCOMING
+                        else -> null
+                    }
+                } else {
+                    null
+                }
+                showDownloadBottomSheet(voucher)
+            }
+            is CancelVoucher -> {
+                moreMenuClickEventAction = Click.CANCEL_UPCOMING
+                showCancelVoucherDialog(voucher)
+            }
+            is StopVoucher -> {
+                moreMenuClickEventAction = Click.CANCEL_ONGOING
+                showStopVoucherDialog(voucher)
+            }
+            is Duplicate -> {
+                moreMenuClickEventAction = if (isActiveVoucher) {
+                    when (voucher.status) {
+                        VoucherStatusConst.ONGOING -> Click.DUPLICATE_ONGOING
+                        VoucherStatusConst.NOT_STARTED -> Click.DUPLICATE_UPCOMING
+                        else -> null
+                    }
+                } else {
+                    Click.DUPLICATE_VOUCHER_BOTTOM_SHEET
+                }
+                duplicateVoucher(voucher)
+            }
+        }
+        moreMenuClickEventAction?.let { eventAction ->
+            VoucherCreationTracking.sendVoucherListClickTracking(
+                    action = eventAction,
+                    isActive = isActiveVoucher,
+                    userId = userSession.userId
+            )
         }
     }
 
     override fun onDuplicateClickListener(voucher: VoucherUiModel) {
+        VoucherCreationTracking.sendVoucherListClickTracking(
+                action = Click.DUPLICATE_VOUCHER,
+                label =
+                    when(voucher.status) {
+                        VoucherStatusConst.ENDED -> EventLabel.ENDED
+                        VoucherStatusConst.STOPPED -> EventLabel.CANCELLED
+                        else -> ""
+                    },
+                isActive = isActiveVoucher,
+                userId = userSession.userId
+        )
         duplicateVoucher(voucher)
     }
 
     override fun onErrorTryAgain() {
+        VoucherCreationTracking.sendVoucherListClickTracking(
+                action = Click.TRY_AGAIN_ERROR_STATE,
+                isActive = isActiveVoucher,
+                userId = userSession.userId
+        )
         clearAllData()
         loadData(1)
     }
@@ -317,6 +467,26 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onImpressionListener(dataKey: String) {
+        when(dataKey) {
+            ErrorStateUiModel.DATA_KEY -> {
+                VoucherCreationTracking.sendVoucherListImpressionTracking(
+                        action = Impression.ERROR_STATE,
+                        isActive = isActiveVoucher,
+                        userId = userSession.userId
+                )
+            }
+            NoResultStateUiModel.DATA_KEY -> {
+                VoucherCreationTracking.sendVoucherListImpressionTracking(
+                        action = Impression.NO_RESULT,
+                        isActive = isActiveVoucher,
+                        userId = userSession.userId
+                )
+            }
+            else -> {}
+        }
     }
 
     private fun duplicateVoucher(voucher: VoucherUiModel) {
@@ -516,6 +686,13 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     private fun setupSearchBar() {
         searchBarMvc?.run {
+            setOnClickListener {
+                VoucherCreationTracking.sendVoucherListClickTracking(
+                        action = Click.SEARCH_BAR,
+                        isActive = isActiveVoucher,
+                        userId = userSession.userId
+                )
+            }
             searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     clearAllData()
@@ -578,8 +755,26 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     }
 
     private fun showSortBottomSheet() {
+        VoucherCreationTracking.sendVoucherListClickTracking(
+                action = Click.SORT_BUTTON,
+                isActive = isActiveVoucher,
+                userId = userSession.userId
+        )
         if (!isAdded) return
         sortBottomSheet
+                ?.setOnSortClickedListener {
+                    VoucherCreationTracking.sendVoucherListClickTracking(
+                            action = Click.APPLY,
+                            label = 
+                                    when(it?.key) {
+                                        SortBy.NEWEST_DONE_DATE -> EventLabel.NEWEST
+                                        SortBy.OLDEST_DONE_DATE -> EventLabel.OLDEST
+                                        else -> ""
+                                    },
+                            isActive = isActiveVoucher,
+                            userId = userSession.userId
+                    )
+                }
                 ?.setOnApplySortListener {
                     applySort()
                 }
@@ -591,8 +786,27 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     }
 
     private fun showFilterBottomSheet() {
+        VoucherCreationTracking.sendVoucherListClickTracking(
+                action = Click.FILTER_BY_TYPE,
+                isActive = isActiveVoucher,
+                userId = userSession.userId
+        )
         if (!isAdded) return
         filterBottomSheet
+                ?.setOnItemClickListener { key ->
+                    VoucherCreationTracking.sendVoucherListClickTracking(
+                            action =
+                                    when(key) {
+                                        FilterBy.SPECIAL -> Click.FILTER_TYPE_PRIVATE
+                                        FilterBy.PUBLIC -> Click.FILTER_TYPE_PUBLIC
+                                        FilterBy.FREE_SHIPPING -> Click.FILTER_TYPE_SHIPPING
+                                        FilterBy.CASHBACK -> Click.FILTER_TYPE_CASHBACK
+                                        else -> ""
+                                    },
+                            isActive = isActiveVoucher,
+                            userId = userSession.userId
+                    )
+                }
                 ?.setOnApplyClickListener {
                     applyFilter()
                 }
@@ -633,18 +847,14 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         }
         headerChipMvc?.setActiveFilter(activeFilterList)
 
-        val voucherTypeFilter = activeFilterList.filter { it.key == FilterBy.CASHBACK || it.key == FilterBy.FREE_SHIPPING }
-        if (voucherTypeFilter.size == 1) {
-            voucherTypeFilter.first { it.key == FilterBy.CASHBACK || it.key == FilterBy.FREE_SHIPPING }.key.let { type ->
-                voucherType =
-                        when(type) {
-                            FilterBy.FREE_SHIPPING -> VoucherTypeConst.FREE_ONGKIR
-                            FilterBy.CASHBACK -> VoucherTypeConst.CASHBACK
-                            else -> VoucherTypeConst.DISCOUNT
-                        }
-            }
-        } else {
-            voucherType = null
+        voucherType = null
+        activeFilterList.firstOrNull { it.key == FilterBy.CASHBACK || it.key == FilterBy.FREE_SHIPPING }?.key?.let { type ->
+            voucherType =
+                    when(type) {
+                        FilterBy.FREE_SHIPPING -> VoucherTypeConst.FREE_ONGKIR
+                        FilterBy.CASHBACK -> VoucherTypeConst.CASHBACK
+                        else -> VoucherTypeConst.DISCOUNT
+                    }
         }
 
         val voucherTargetFilter = activeFilterList.filter { it.key == FilterBy.PUBLIC || it.key == FilterBy.SPECIAL }
@@ -675,7 +885,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         if (isToolbarAlreadyLoaded && !isActiveVoucher) {
             renderList(vouchers, vouchers.isNotEmpty())
             if (adapter.data.isEmpty()) {
-                renderList(listOf(NoResultStateUiModel))
+                renderList(listOf(NoResultStateUiModel()))
             }
         } else {
             clearAllData()
@@ -696,7 +906,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     private fun setOnErrorGetVoucherList(throwable: Throwable) {
         throwable.printStackTrace()
         clearAllData()
-        renderList(listOf(ErrorStateUiModel))
+        renderList(listOf(ErrorStateUiModel()))
     }
 
     private fun onSuccessUpdateVoucherPeriod() {
@@ -775,7 +985,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                                     .setOnShareClickListener {
                                         VoucherCreationTracking.sendCreateVoucherClickTracking(
                                                 step = VoucherCreationStep.REVIEW,
-                                                action = VoucherCreationAnalyticConstant.EventAction.Click.VOUCHER_SUCCESS_SHARE_NOW,
+                                                action = Click.VOUCHER_SUCCESS_SHARE_NOW,
                                                 userId = userSession.userId
                                         )
                                         showShareBottomSheet(uiModel)
@@ -783,7 +993,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                                     .setOnDownloadClickListener {
                                         VoucherCreationTracking.sendCreateVoucherClickTracking(
                                                 step = VoucherCreationStep.REVIEW,
-                                                action = VoucherCreationAnalyticConstant.EventAction.Click.VOUCHER_SUCCESS_DOWNLOAD,
+                                                action = Click.VOUCHER_SUCCESS_DOWNLOAD,
                                                 userId = userSession.userId
                                         )
                                         showDownloadBottomSheet(uiModel)
@@ -792,7 +1002,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                                         setCloseClickListener {
                                             VoucherCreationTracking.sendCreateVoucherClickTracking(
                                                     step = VoucherCreationStep.REVIEW,
-                                                    action = VoucherCreationAnalyticConstant.EventAction.Click.VOUCHER_SUCCESS_CLICK_BACK_BUTTON,
+                                                    action = Click.VOUCHER_SUCCESS_CLICK_BACK_BUTTON,
                                                     userId = userSession.userId
                                             )
                                         }
@@ -805,11 +1015,30 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         }
     }
 
+    private fun onCreateVoucherClicked() {
+        VoucherCreationTracking.sendVoucherListClickTracking(
+                action =
+                        if (isActiveVoucher) {
+                            Click.EMPTY_VOUCHER_CREATE_VOUCHER
+                        } else {
+                            Click.CREATE_VOUCHER
+                        },
+                isActive = isActiveVoucher,
+                userId = userSession.userId
+        )
+        RouteManager.route(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER)
+    }
+
     private fun onSeeHistoryClicked() {
+        VoucherCreationTracking.sendVoucherListClickTracking(
+                action = Click.EMPTY_VOUCHER_HISTORY,
+                isActive = isActiveVoucher,
+                userId = userSession.userId
+        )
         fragmentListener?.switchFragment(false)
     }
 
-    private fun getEmptyStateUiModel() = EmptyStateUiModel(isActiveVoucher, ::onSeeHistoryClicked)
+    private fun getEmptyStateUiModel() = EmptyStateUiModel(isActiveVoucher, ::onSeeHistoryClicked, ::onCreateVoucherClicked)
 
     private fun showCancellationSuccessToaster(isCancel: Boolean,
                                                voucherId: Int) {

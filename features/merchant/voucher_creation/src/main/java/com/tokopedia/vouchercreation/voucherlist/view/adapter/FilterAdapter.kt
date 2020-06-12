@@ -8,7 +8,7 @@ import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.FilterAdap
  * Created By @ilhamsuaib on 22/04/20
  */
 
-class FilterAdapter(onItemClick: () -> Unit) : BaseAdapter<FilterAdapterFactoryImpl>(FilterAdapterFactoryImpl(onItemClick)) {
+class FilterAdapter(onItemClick: (String) -> Unit) : BaseAdapter<FilterAdapterFactoryImpl>(FilterAdapterFactoryImpl(onItemClick)) {
 
     val items: List<Visitable<*>>
         get() = visitables

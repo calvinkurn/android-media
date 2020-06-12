@@ -3,8 +3,6 @@ package com.tokopedia.vouchercreation.voucherlist.view.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.vouchercreation.R
@@ -34,7 +32,7 @@ class EmptyStateViewHolder(itemView: View?) : AbstractViewHolder<EmptyStateUiMod
             tvMvcEmptyStateViewHistory.isVisible = element.isActiveVoucher
 
             btnMvcEmptyStateAction?.setOnClickListener {
-                RouteManager.route(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER)
+                element.onCreateVoucherClicked()
             }
             tvMvcEmptyStateViewHistory?.setOnClickListener {
                 element.onSeeHistoryClicked()

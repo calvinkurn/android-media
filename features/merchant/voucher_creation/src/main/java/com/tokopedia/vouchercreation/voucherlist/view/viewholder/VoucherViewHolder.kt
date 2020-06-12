@@ -44,6 +44,9 @@ class VoucherViewHolder(
             setupVoucherCtaButton(element)
             setVoucherDate(element)
 
+            imgMvcVoucherType?.setOnClickListener {
+                listener.onVoucherIconClickListener(element.status)
+            }
             btnMvcMore.setOnClickListener {
                 listener.onMoreMenuClickListener(element)
             }
@@ -188,6 +191,10 @@ class VoucherViewHolder(
         fun onEditQuotaClickListener(voucher: VoucherUiModel)
 
         fun onDuplicateClickListener(voucher: VoucherUiModel)
+
+        fun onVoucherIconClickListener(@VoucherStatusConst status: Int)
+
+        fun onImpressionListener(dataKey: String)
 
         fun onErrorTryAgain()
     }

@@ -54,6 +54,53 @@ object VoucherCreationTracking {
         )
     }
 
+    fun sendVoucherListClickTracking(action: String,
+                                     isActive: Boolean,
+                                     label: String = "",
+                                     userId: String) {
+        sendGeneralTracking(
+                event = VoucherCreationAnalyticConstant.Event.CLICK_VOUCHER_LIST,
+                category =
+                        if (isActive) {
+                            VoucherCreationAnalyticConstant.EventCategory.VoucherList.ACTIVE
+                        } else {
+                            VoucherCreationAnalyticConstant.EventCategory.VoucherList.HISTORY
+                        },
+                action = action,
+                label = label,
+                screenName =
+                        if (isActive) {
+                            VoucherCreationAnalyticConstant.ScreenName.VoucherList.ACTIVE
+                        } else {
+                            VoucherCreationAnalyticConstant.ScreenName.VoucherList.HISTORY
+                        },
+                userId = userId
+        )
+    }
+
+    fun sendVoucherListImpressionTracking(action: String,
+                                          isActive: Boolean,
+                                          userId: String) {
+        sendGeneralTracking(
+                event = VoucherCreationAnalyticConstant.Event.OPEN_SCREEN,
+                category =
+                        if (isActive) {
+                            VoucherCreationAnalyticConstant.EventCategory.VoucherList.ACTIVE
+                        } else {
+                            VoucherCreationAnalyticConstant.EventCategory.VoucherList.HISTORY
+                        },
+                action = action,
+                label = "",
+                screenName =
+                        if (isActive) {
+                            VoucherCreationAnalyticConstant.ScreenName.VoucherList.ACTIVE
+                        } else {
+                            VoucherCreationAnalyticConstant.ScreenName.VoucherList.HISTORY
+                        },
+                userId = userId
+        )
+    }
+
     fun sendCreateVoucherImpressionTracking(@VoucherCreationStep step: Int,
                                             action: String,
                                             label: String = "",

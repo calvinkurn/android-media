@@ -156,6 +156,12 @@ object VoucherCreationAnalyticConstant {
             const val DOWNLOAD_UPCOMING = "download - mendatang"
             const val DUPLICATE_UPCOMING = "duplicate - mendatang"
             const val CANCEL_UPCOMING = "cancel - mendatang"
+            const val EDIT_QUOTA_ONGOING = "click edit quota - berlangsung"
+            const val DETAIL_AND_EDIT_ONGOING = "click detail dan edit - berlangsung"
+            const val SHARE_ONGOING = "click share - berlangsung"
+            const val DOWNLOAD_ONGOING = "download - berlangsung"
+            const val DUPLICATE_ONGOING = "duplicate - berlangsung"
+            const val CANCEL_ONGOING = "cancel - berlangsung"
             const val SHARE_UPCOMING = "share - mendatang"
             const val TRY_AGAIN_ERROR_STATE = "click coba lagi - error state"
             const val CREATE_VOUCHER = "click create voucher"
@@ -204,6 +210,15 @@ object VoucherCreationAnalyticConstant {
 
         const val CASHBACK = "cashback"
         const val SHIPPING = "shipping"
+
+        const val ONGOING = "berlangsung"
+        const val UPCOMING = "mendatang"
+
+        const val NEWEST = "terkini"
+        const val OLDEST = "terlama"
+
+        const val ENDED = "berakhir"
+        const val CANCELLED = "dibatalkan"
     }
 
 }

@@ -26,6 +26,7 @@ class SortBottomSheet(
 
     private val sortAdapter by lazy { SortAdapter(this::onSortItemClick) }
 
+    private var onSortClicked: (SortUiModel?) -> Unit = {}
     private var onApplyClick: (SortUiModel?) -> Unit = {}
     private var onCancelApplySort: (List<SortUiModel>) -> Unit = {}
     private var applySort = false
@@ -75,6 +76,7 @@ class SortBottomSheet(
     }
 
     private fun onSortItemClick(sort: SortUiModel) {
+        onSortClicked(sort)
         if (sort.isSelected) return
         sortAdapter.sortItems.forEach { it.isSelected = false }
         sort.isSelected = true
@@ -90,6 +92,11 @@ class SortBottomSheet(
         if (!applySort) {
             onCancelApplySort(tmpSortList)
         }
+    }
+
+    fun setOnSortClickedListener(callback: (SortUiModel?) -> Unit): SortBottomSheet {
+        onSortClicked = callback
+        return this
     }
 
     fun setOnApplySortListener(callback: (sort: SortUiModel?) -> Unit): SortBottomSheet {
