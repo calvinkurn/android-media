@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerhomecommon.domain.mapper.LayoutMapper
 import com.tokopedia.sellerhomecommon.domain.model.GetLayoutResponse
+import com.tokopedia.sellerhomecommon.domain.model.WidgetModel
 import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -27,8 +28,12 @@ class GetLayoutUseCase(
         val errors: List<GraphqlError>? = gqlResponse.getError(GetLayoutResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetLayoutResponse>()
-            val widgetList = data.layout?.widget.orEmpty()
-            return mapper.mapRemoteModelToUiModel(widgetList)
+            val widgetList: List<WidgetModel> = data.layout?.widget.orEmpty()
+            if (widgetList.isNotEmpty()) {
+                return mapper.mapRemoteModelToUiModel(widgetList)
+            } else {
+                throw RuntimeException("no widget found")
+            }
         } else {
             throw MessageErrorException(errors.joinToString(", ") { it.message })
         }
