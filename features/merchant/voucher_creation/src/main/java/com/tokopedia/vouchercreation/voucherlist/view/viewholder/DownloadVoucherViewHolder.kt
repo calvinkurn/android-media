@@ -29,6 +29,7 @@ class DownloadVoucherViewHolder(itemView: View?) : AbstractViewHolder<DownloadVo
             cbxMvcDownloadVoucher.setOnCheckedChangeListener(null)
             cbxMvcDownloadVoucher.isChecked = element.isSelected
             cbxMvcDownloadVoucher.setOnCheckedChangeListener { _, isChecked ->
+                element.onCheckBoxClicked(element.downloadVoucherType)
                 element.isSelected = isChecked
             }
             setViewExpansion(element.isExpanded)
@@ -39,6 +40,9 @@ class DownloadVoucherViewHolder(itemView: View?) : AbstractViewHolder<DownloadVo
                 }
                 toggleViewExpansion(isExpanded)
                 element.isExpanded = imgMvcVoucher.isVisible
+            }
+            icMvcChevron?.setOnClickListener {
+                element.onChevronIconClicked(element.downloadVoucherType)
             }
             setupDownloadImage(element.downloadVoucherType)
         }

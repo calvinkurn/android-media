@@ -13,7 +13,9 @@ data class DownloadVoucherUiModel(
         val ratioStr: String,
         val description: String,
         val downloadVoucherType: DownloadVoucherType,
-        val onImageOpened: (Int) -> Unit = { _ -> }
+        val onImageOpened: (Int) -> Unit = { _ -> },
+        val onCheckBoxClicked: (DownloadVoucherType) -> Unit = {},
+        val onChevronIconClicked: (DownloadVoucherType) -> Unit = {}
 ) : Visitable<DownloadVoucherFactory> {
 
     override fun type(typeFactory: DownloadVoucherFactory): Int {

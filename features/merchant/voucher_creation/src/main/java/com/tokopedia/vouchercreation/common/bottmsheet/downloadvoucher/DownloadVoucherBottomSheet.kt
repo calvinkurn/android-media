@@ -9,7 +9,10 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.DownloadVoucherAdapter
 import kotlinx.android.synthetic.main.bottomsheet_mvc_download_voucher.view.*
 
@@ -20,7 +23,8 @@ import kotlinx.android.synthetic.main.bottomsheet_mvc_download_voucher.view.*
 class DownloadVoucherBottomSheet(
         private val parent: ViewGroup,
         private val bannerUrl: String,
-        private val squareUrl: String
+        private val squareUrl: String,
+        private val userSession: UserSessionInterface
 ) : BottomSheetUnify() {
 
     private val mAdapter by lazy { DownloadVoucherAdapter() }
@@ -82,14 +86,18 @@ class DownloadVoucherBottomSheet(
                         ratioStr = parent.context.getString(R.string.mvc_ratio_1_1),
                         description = parent.context.getString(R.string.mvc_for_instagram_facebook_post),
                         downloadVoucherType = DownloadVoucherType.Square(squareUrl),
-                        onImageOpened = ::onImageExpanded
+                        onImageOpened = ::onImageExpanded,
+                        onCheckBoxClicked = ::onCheckBoxClicked,
+                        onChevronIconClicked = ::onChevronItemClicked
                 ),
                 DownloadVoucherUiModel(
                         isSelected = true,
                         ratioStr = parent.context.getString(R.string.mvc_shop_cover),
                         description = parent.context.getString(R.string.mvc_for_cover_of_your_shop),
                         downloadVoucherType = DownloadVoucherType.Banner(bannerUrl),
-                        onImageOpened = ::onImageExpanded
+                        onImageOpened = ::onImageExpanded,
+                        onCheckBoxClicked = ::onCheckBoxClicked,
+                        onChevronIconClicked = ::onChevronItemClicked
                 )
         )
     }
@@ -105,6 +113,32 @@ class DownloadVoucherBottomSheet(
         if (notifiedIndex >= 0) {
             mAdapter.notifyItemChanged(notifiedIndex)
         }
+    }
+
+    private fun onCheckBoxClicked(downloadVoucherType: DownloadVoucherType) {
+        VoucherCreationTracking.sendVoucherListClickTracking(
+                action =
+                        when(downloadVoucherType) {
+                            is DownloadVoucherType.Square -> VoucherCreationAnalyticConstant.EventAction.Click.CHOOSE_VOUCHER_SIZE_1
+                            is DownloadVoucherType.InstaStory -> VoucherCreationAnalyticConstant.EventAction.Click.CHOOSE_VOUCHER_SIZE_2
+                            is DownloadVoucherType.Banner -> VoucherCreationAnalyticConstant.EventAction.Click.CHOOSE_VOUCHER_SIZE_3
+                        },
+                isActive = true,
+                userId = userSession.userId
+        )
+    }
+
+    private fun onChevronItemClicked(downloadVoucherType: DownloadVoucherType) {
+        VoucherCreationTracking.sendVoucherListClickTracking(
+                action =
+                        when(downloadVoucherType) {
+                            is DownloadVoucherType.Square -> VoucherCreationAnalyticConstant.EventAction.Click.CHOOSE_VOUCHER_SIZE_1_DROPDOWN
+                            is DownloadVoucherType.InstaStory -> VoucherCreationAnalyticConstant.EventAction.Click.CHOOSE_VOUCHER_SIZE_2_DROPDOWN
+                            is DownloadVoucherType.Banner -> VoucherCreationAnalyticConstant.EventAction.Click.CHOOSE_VOUCHER_SIZE_3_DROPDOWN
+                        },
+                isActive = true,
+                userId = userSession.userId
+        )
     }
 
 }

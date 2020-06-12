@@ -581,7 +581,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     private fun showDownloadBottomSheet(voucher: VoucherUiModel) {
         if (!isAdded) return
         val parent = view as? ViewGroup ?: return
-        DownloadVoucherBottomSheet(parent, voucher.image, voucher.imageSquare)
+        DownloadVoucherBottomSheet(parent, voucher.image, voucher.imageSquare, userSession)
                 .setOnDownloadClickListener { voucherList ->
                     voucherList.forEach {
                         activity?.run {
@@ -599,6 +599,11 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                         }
                     }
 
+                    VoucherCreationTracking.sendVoucherListClickTracking(
+                            action = Click.DOWNLOAD_VOUCHER,
+                            isActive = isActiveVoucher,
+                            userId = userSession.userId
+                    )
                 }
                 .show(childFragmentManager)
     }

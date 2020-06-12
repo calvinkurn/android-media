@@ -264,7 +264,8 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
         DownloadVoucherBottomSheet(
                 parent,
                 voucherUiModel?.image.toBlankOrString(),
-                voucherUiModel?.imageSquare.toBlankOrString())
+                voucherUiModel?.imageSquare.toBlankOrString(),
+                userSession)
                 .setOnDownloadClickListener { voucherList ->
                     voucherList.forEach {
                         if (activity?.let { it1 -> ActivityCompat.checkSelfPermission(it1, Manifest.permission.WRITE_EXTERNAL_STORAGE) } != PackageManager.PERMISSION_GRANTED) {

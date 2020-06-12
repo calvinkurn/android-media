@@ -3,6 +3,7 @@ package com.tokopedia.vouchercreation.common.analytics
 import com.tokopedia.track.TrackApp
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
+import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.SocmedType
 
 object VoucherCreationTracking {
 
@@ -111,6 +112,11 @@ object VoucherCreationTracking {
                         },
                 userId = userId
         )
+    }
+
+    fun sendShareClickTracking(@SocmedType socMedType: Int,
+                               userId: String) {
+
     }
 
     fun sendVoucherListImpressionTracking(action: String,
