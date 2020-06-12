@@ -9,13 +9,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatsearch.data.SearchResult
+import com.tokopedia.topchat.chatsearch.data.GetChatSearchResponse
 import com.tokopedia.topchat.chatsearch.di.ChatSearchComponent
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactory
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactoryImpl
@@ -26,7 +25,7 @@ class ContactLoadMoreChatFragment : BaseListFragment<Visitable<*>, ChatSearchTyp
 
     private var listener: ContactLoadMoreChatListener? = null
     private var query: String = ""
-    private var firstResponse: List<SearchResult> = emptyList()
+    private var firstResponse: GetChatSearchResponse = GetChatSearchResponse()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -76,7 +75,7 @@ class ContactLoadMoreChatFragment : BaseListFragment<Visitable<*>, ChatSearchTyp
 
     private fun setupSearchResultContactObserver() {
         viewModel.searchResult.observe(this, Observer {
-            renderList(it, true)
+            renderList(it.searchResults, it.hasNext)
         })
     }
 
@@ -86,12 +85,12 @@ class ContactLoadMoreChatFragment : BaseListFragment<Visitable<*>, ChatSearchTyp
         firstResponse = convertFirstResponseToObject(stringFirstResponse)
     }
 
-    private fun convertFirstResponseToObject(stringFirstResponse: String): List<SearchResult> {
+    private fun convertFirstResponseToObject(stringFirstResponse: String): GetChatSearchResponse {
         return try {
-            val listType = object : TypeToken<List<SearchResult>>() {}.type
-            CommonUtils.fromJson(stringFirstResponse, listType)
+            CommonUtils.fromJson(stringFirstResponse, GetChatSearchResponse::class.java)
         } catch (e: Exception) {
-            emptyList()
+            e.printStackTrace()
+            firstResponse
         }
     }
 
@@ -118,7 +117,7 @@ class ContactLoadMoreChatFragment : BaseListFragment<Visitable<*>, ChatSearchTyp
     companion object {
         private const val KEY_QUERY = "key_query"
         private const val KEY_FIRST_PAGE_RESPONSE = "key_first_page_response"
-        fun create(query: String, firstPageContacts: List<SearchResult>): ContactLoadMoreChatFragment {
+        fun create(query: String, firstPageContacts: GetChatSearchResponse): ContactLoadMoreChatFragment {
             return ContactLoadMoreChatFragment().apply {
                 arguments = Bundle().apply {
                     putString(KEY_QUERY, query)

@@ -33,7 +33,7 @@ class ChatSearchViewModel @Inject constructor(
     private var _searchResults = MutableLiveData<List<Visitable<*>>>()
     val searchResult: LiveData<List<Visitable<*>>> get() = _searchResults
 
-    var firstContactSearchResults: List<SearchResult> = emptyList()
+    var firstContactSearchResults: GetChatSearchResponse = GetChatSearchResponse()
 
     var query: String = ""
     private var page: Int = 1
@@ -86,7 +86,7 @@ class ChatSearchViewModel @Inject constructor(
     private fun onSuccessDoSearch(response: GetChatSearchResponse, contactLoadMore: ContactLoadMoreUiModel?) {
         canRetry = false
         if (isFirstPage()) {
-            firstContactSearchResults = response.searchResults
+            firstContactSearchResults = response
         }
         if (isFirstPage() && contactLoadMore != null) {
             val searchResults: MutableList<Visitable<*>> = response.searchResults.toMutableList()
