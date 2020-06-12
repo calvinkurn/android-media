@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
-import com.tokopedia.play.broadcaster.ui.model.ResultState
+import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 import com.tokopedia.play.broadcaster.util.doOnPreDraw
 import com.tokopedia.play.broadcaster.util.scroll.EndlessRecyclerViewScrollListener
@@ -125,7 +125,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
             bottomSheetCoordinator.setupTitle(it.currentValue.name)
             tvInfo.text = getString(R.string.play_product_select_max_info, viewModel.maxProduct)
             when (it.state) {
-                is ResultState.Success -> {
+                is PageResultState.Success -> {
                     selectableProductAdapter.setItemsAndAnimateChanges(it.currentValue.productMap.values.flatten())
 
                     startPostponedTransition()
@@ -133,10 +133,10 @@ class PlayEtalaseDetailFragment @Inject constructor(
                     scrollListener.setHasNextPage(it.currentValue.stillHasProduct)
                     scrollListener.updateState(true)
                 }
-                ResultState.Loading -> {
+                PageResultState.Loading -> {
                     selectableProductAdapter.setItemsAndAnimateChanges(it.currentValue.productMap.values.flatten() + ProductLoadingUiModel)
                 }
-                is ResultState.Fail -> {
+                is PageResultState.Fail -> {
                     selectableProductAdapter.setItemsAndAnimateChanges(it.currentValue.productMap.values.flatten())
                     scrollListener.setHasNextPage(it.currentValue.stillHasProduct)
                     scrollListener.updateState(false)

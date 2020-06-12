@@ -30,6 +30,7 @@
     <string name="play_ok">Oke</string>
     <string name="play_cancel">Cancel</string>
     <string name="play_change">Ganti</string>
+    <string name="play_broadcast_try_again">Coba Lagi</string>
 
     <string name="play_selected_products">Produk Dipilih (%d)</string>
 
@@ -87,7 +88,9 @@
     <string name="play_live_broadcast_dialog_end_timeout_desc">Yay, kamu telah berhasil melakukan live streaming. Ayo lihat hasil siaranmu!</string>
     <string name="play_live_broadcast_dialog_end_timeout_primary">Lihat Laporan</string>
     <string name="play_live_broadcast_share_link_copied">Link disalin!</string>
-    <string name="play_live_broadcast_share_link_ok">Oke</string>
+    <string name="play_live_broadcast_network_recover">Yay, koneksi internetmu kembali terhubung!</string>
+    <string name="play_live_broadcast_network_loss">Koneksi internetmu terputus, nih.</string>
+    <string name="play_live_broadcast_network_poor">Koneksi internetmu melambat, nih.</string>
 
     <string name="play_summary_title">Laporan Live Streaming</string>
     <string name="play_summary_button_finish">Selesai</string>
@@ -101,4 +104,9 @@
 
     <string name="play_privacy_policy_full">Dengan menekan tombol %s, saya menyetujui %s live streaming.</string>
     <string name="play_privacy_policy">Syarat &amp; Ketentuan</string>
+
+    <string name="play_cover_title_label">Judul live streaming</string>
+    <string name="play_product_live_title">Produk Ditampilkan (%d)</string>
+    <string name="play_max_live_stream_duration">(Maks. siaran %d menit)</string>
+    <string name="play_before_live_selected_product">%d Produk Dipilih</string>
 </resources>

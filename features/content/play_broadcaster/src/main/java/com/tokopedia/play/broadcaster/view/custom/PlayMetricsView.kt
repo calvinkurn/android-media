@@ -11,7 +11,9 @@ import android.text.style.StyleSpan
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.transition.Fade
 import androidx.transition.Slide
@@ -20,7 +22,6 @@ import androidx.transition.TransitionSet
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
-import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by jegul on 10/06/20
@@ -34,39 +35,43 @@ class PlayMetricsView : LinearLayout {
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
-    private var prevView: View? = null
+    private var currentIndex = -1
+    private val textViewList: List<TextView>
 
     init {
         gravity = Gravity.BOTTOM
         orientation = VERTICAL
+        textViewList = List(2) { getTextViewInstance() }
     }
 
     fun show(metric: PlayMetricUiModel) {
+        val nextIndex = if (currentIndex == textViewList.size - 1) 0 else currentIndex + 1
+        val currentView = if (currentIndex < 0) null else textViewList[currentIndex]
+        val nextView = textViewList[nextIndex]
+
         val transitionSet = TransitionSet()
-        val previousView = prevView
-        if (previousView != null) {
+        if (currentView != null) {
             transitionSet
                     .addTransition(Slide(Gravity.TOP)
-                            .addTarget(previousView))
+                            .addTarget(currentView))
                     .addTransition(Fade(Fade.OUT)
-                            .addTarget(previousView))
+                            .addTarget(currentView))
         }
 
-        val newView: Typography = View.inflate(context, R.layout.item_play_metrics, null) as Typography
-        newView.layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-        newView.text = getSpannedMetric(metric)
+        nextView.text = getSpannedMetric(metric)
 
         transitionSet
                 .addTransition(Slide(Gravity.BOTTOM)
-                        .addTarget(newView))
+                        .addTarget(nextView))
                 .addTransition(Fade(Fade.IN)
-                        .addTarget(newView))
+                        .addTarget(nextView))
 
         TransitionManager.beginDelayedTransition(this, transitionSet)
 
-        removeView(previousView)
-        addView(newView)
-        prevView = newView
+        removeView(currentView)
+        addView(nextView)
+
+        currentIndex = nextIndex
     }
 
     private fun getSpannedMetric(metric: PlayMetricUiModel): CharSequence {
@@ -81,5 +86,11 @@ class PlayMetricsView : LinearLayout {
         spannedText.setSpan(StyleSpan(Typeface.BOLD), secondSentenceFirstIndex, secondSentenceLastIndex, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
 
         return spannedText
+    }
+
+    private fun getTextViewInstance(): TextView {
+        val view = View.inflate(context, R.layout.item_play_metrics, null) as TextView
+        view.layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        return view
     }
 }

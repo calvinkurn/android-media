@@ -7,13 +7,16 @@ package com.tokopedia.play.broadcaster.pusher.timer
 interface PlayPusherTimerListener {
 
     /**
-     * maximum time limit => 30 minutes
+     * default maximum time limit => 30 minutes
      * format => minutes:seconds
      */
     fun onCountDownActive(timeLeft: String)
 
     /**
-     * when hitting the 5:00 - 04:56 & 2 - 01:56 minutes prior to end
+     * when hitting the
+     * 05:00 - 04:56
+     * 02:00 - 01:56
+     * minutes prior to end
      */
     fun onCountDownAlmostFinish(minutesUntilFinished: Long)
 
