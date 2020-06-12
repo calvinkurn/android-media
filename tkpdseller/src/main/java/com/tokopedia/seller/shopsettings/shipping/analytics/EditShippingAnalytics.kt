@@ -16,6 +16,7 @@ object EditShippingAnalytics {
         return TrackApp.getInstance().gtm
     }
 
+    @JvmStatic
     fun eventClickonTickerShippingEditor(userId: String) {
         val map = TrackAppUtils.gtmData(
                 CLICK_TEXT_DISINI,
