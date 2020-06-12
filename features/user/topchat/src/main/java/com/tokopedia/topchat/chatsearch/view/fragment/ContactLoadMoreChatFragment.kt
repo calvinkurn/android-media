@@ -36,11 +36,19 @@ class ContactLoadMoreChatFragment : BaseListFragment<Visitable<*>, ChatSearchTyp
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         initArguments()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initToolbarTittle()
         setupObserver()
+    }
+
+    override fun loadData(page: Int) {
+        viewModel.loadSearchResult(page, query, firstResponse)
     }
 
     private fun setupObserver() {
@@ -86,10 +94,6 @@ class ContactLoadMoreChatFragment : BaseListFragment<Visitable<*>, ChatSearchTyp
 
     override fun onItemClicked(t: Visitable<*>?) {
 
-    }
-
-    override fun loadData(page: Int) {
-        viewModel.loadSearchResult(page, query, firstResponse)
     }
 
     companion object {

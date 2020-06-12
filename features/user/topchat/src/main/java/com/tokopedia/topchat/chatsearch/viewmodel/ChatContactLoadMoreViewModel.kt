@@ -19,10 +19,10 @@ class ChatContactLoadMoreViewModel @Inject constructor(
     val searchResult: LiveData<List<SearchResult>> get() = _searchResults
 
     fun loadSearchResult(page: Int, query: String, firstResponse: List<SearchResult>) {
-        if (firstResponse.isEmpty() && page == 1) {
-            getSearchQueryUseCase.doSearch(::onSuccessSearchContact, ::onErrorSearchContact, query, page)
-        } else {
+        if (firstResponse.isNotEmpty() && page == 1) {
             _searchResults.value = firstResponse
+        } else {
+            getSearchQueryUseCase.doSearch(::onSuccessSearchContact, ::onErrorSearchContact, query, page)
         }
     }
 
