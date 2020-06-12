@@ -1,7 +1,5 @@
 package com.tokopedia.review.feature.inbox.container.analytics
 
-import android.util.Log
-
 object ReviewInboxContainerTracking {
 
     fun eventOnClickReviewPendingTab() {
