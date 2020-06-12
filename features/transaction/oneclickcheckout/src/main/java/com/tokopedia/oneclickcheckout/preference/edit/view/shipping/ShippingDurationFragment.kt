@@ -242,7 +242,7 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
     private fun showGlobalError(type: Int) {
         globalError?.setType(type)
         globalError?.setActionClickListener {
-            viewModel.getShippingDuration()
+            checkEntryPoint()
         }
         globalError?.visible()
         contentLayout?.gone()

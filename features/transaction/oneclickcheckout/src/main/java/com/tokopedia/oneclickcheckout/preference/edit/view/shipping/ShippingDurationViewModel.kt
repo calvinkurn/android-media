@@ -50,7 +50,7 @@ class ShippingDurationViewModel @Inject constructor(private val useCase: GetShip
 
     }
 
-    fun logicSelection(shippingDurationModel: ShippingListModel) {
+    private fun logicSelection(shippingDurationModel: ShippingListModel) {
         launch {
             withContext(Dispatchers.Default) {
                 val shippingList = shippingDurationModel.services
