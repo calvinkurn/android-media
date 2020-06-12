@@ -3,6 +3,7 @@ package com.tokopedia.entertainment.pdp.fragment
 import android.content.Context
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +18,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
@@ -56,7 +56,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mapviewer.activity.MapViewerActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_about.view.*
 import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_facilities.view.*
 import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_how_to_go_there.view.*
@@ -64,12 +63,6 @@ import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_open_hour.view.*
 import kotlinx.android.synthetic.main.fragment_event_pdp.*
 import kotlinx.android.synthetic.main.partial_event_pdp_price.*
 import kotlinx.android.synthetic.main.widget_event_pdp_calendar.view.*
-import kotlinx.android.synthetic.main.widget_event_pdp_carousel.*
-import kotlinx.android.synthetic.main.widget_event_pdp_tab_section.view.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -393,18 +386,29 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     }
 
     override fun seeAllAbout(value: String, title: String) {
-        val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_event_pdp_about, null)
+
+        val viewParent = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_event_pdp_about, null)
         val bottomSheets = BottomSheetUnify()
+
         bottomSheets.apply {
-            setChild(view)
+            setChild(viewParent)
             setTitle(title)
             setCloseClickListener { bottomSheets.dismiss() }
         }
 
-            view.web_event_pdp_about.loadData(value, "text/html", "UTF-8")
-            fragmentManager?.let {
-                bottomSheets.show(it, "")
-            }
+        fragmentManager?.let {
+            bottomSheets.show(it, "")
+        }
+
+        bottomSheets.setShowListener {
+            val webView = viewParent.web_view
+            webView.loadData(value, "text/html", "UTF-8")
+            val loader = viewParent.loader_unify
+            Handler().postDelayed({
+                webView.visibility = View.VISIBLE
+                loader.visibility = View.GONE
+            },2000)
+        }
 
     }
 
