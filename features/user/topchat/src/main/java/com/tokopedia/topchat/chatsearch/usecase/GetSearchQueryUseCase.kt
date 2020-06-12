@@ -31,17 +31,10 @@ class GetSearchQueryUseCase @Inject constructor(
             onSuccess: (GetChatSearchResponse, ContactLoadMoreUiModel?) -> Unit,
             onError: (Throwable) -> Unit,
             keyword: String,
-            page: Int,
-            firstResponse: GetChatSearchResponse? = null
+            page: Int
     ) {
         launchCatchError(dispatchers.IO,
                 {
-                    if (firstResponse?.searchResults?.isNotEmpty() == true && page == 1) {
-                        withContext(dispatchers.Main) {
-                            onSuccess(firstResponse, null)
-                        }
-                        return@launchCatchError
-                    }
                     isSearching = true
                     val params = generateSearchParams(keyword, page)
                     val response = gqlUseCase.apply {
