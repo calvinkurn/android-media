@@ -683,12 +683,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 val selectedEtalaseChipItem = shopEtalaseViewModelList.firstOrNull {
                     it.etalaseId == selectedEtalaseId
                 }
-                if( null != selectedEtalaseChipItem){
+                if (null != selectedEtalaseChipItem) {
                     selectedEtalaseId = selectedEtalaseChipItem.etalaseId
                     selectedEtalaseName = selectedEtalaseChipItem.etalaseName
                     etalaseBadge = selectedEtalaseChipItem.etalaseBadge
                     updateHintRemoteConfig(selectedEtalaseName)
-                }else{
+                } else {
                     selectedEtalaseId = ""
                     selectedEtalaseName = ""
                 }
