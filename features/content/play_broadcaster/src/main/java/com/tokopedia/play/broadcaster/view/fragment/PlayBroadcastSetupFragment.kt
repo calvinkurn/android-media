@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
@@ -23,10 +22,7 @@ import com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSetupViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
@@ -79,7 +75,6 @@ class PlayBroadcastSetupFragment @Inject constructor(
 
         observeFollowers()
         observeSetupChannel()
-        observeCreateChannel()
     }
 
     private fun initView(view: View) {
@@ -150,14 +145,6 @@ class PlayBroadcastSetupFragment @Inject constructor(
         return privacyPolicyBottomSheet
     }
 
-    private fun openBroadcastLivePage(liveStreamInfo: LiveStreamInfoUiModel) {
-        broadcastCoordinator.navigateToFragment(PlayBroadcastUserInteractionFragment::class.java,
-                Bundle().apply {
-                    putString(PlayBroadcastUserInteractionFragment.KEY_CHANNEL_ID, liveStreamInfo.channelId)
-                    putString(PlayBroadcastUserInteractionFragment.KEY_INGEST_URL, liveStreamInfo.ingestUrl)
-                })
-    }
-
     private fun populateSetupData(selectedProducts: List<ProductContentUiModel>, cover: PlayCoverUiModel) {
         viewModel.setupChannelWithData(
                 selectedProducts = selectedProducts,
@@ -189,12 +176,6 @@ class PlayBroadcastSetupFragment @Inject constructor(
         }
     }
 
-    private fun showToaster(message: String, toasterType: Int) {
-        Toaster.make(requireView(),
-                text = message,
-                type = toasterType)
-    }
-
     private fun showBeforeLiveCountDown() {
 
     }
@@ -212,15 +193,6 @@ class PlayBroadcastSetupFragment @Inject constructor(
     private fun observeSetupChannel() {
         viewModel.observableSetupChannel.observe(viewLifecycleOwner, Observer {
 
-        })
-    }
-
-    private fun observeCreateChannel() {
-        viewModel.observableCreateChannel.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Success ->  openBroadcastLivePage(it.data)
-                is Fail -> showToaster(it.throwable.localizedMessage, Toaster.TYPE_ERROR)
-            }
         })
     }
     //endregion

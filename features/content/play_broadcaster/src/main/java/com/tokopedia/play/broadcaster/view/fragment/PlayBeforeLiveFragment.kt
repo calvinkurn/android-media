@@ -12,10 +12,14 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
 import com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSetupViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
@@ -59,6 +63,7 @@ class PlayBeforeLiveFragment @Inject constructor(
         observeFollowers()
         observeSelectedProduct()
         observeCover()
+        observeCreateChannel()
     }
 
     private fun initView(view: View) {
@@ -103,7 +108,24 @@ class PlayBeforeLiveFragment @Inject constructor(
             tvCoverTitle.text = it.title
         })
     }
+
+    private fun observeCreateChannel() {
+        setupViewModel.observableCreateChannel.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Success ->  openBroadcastLivePage(it.data)
+                is Fail -> showToaster(it.throwable.localizedMessage, Toaster.TYPE_ERROR)
+            }
+        })
+    }
     //endregion
+
+    private fun openBroadcastLivePage(liveStreamInfo: LiveStreamInfoUiModel) {
+        broadcastCoordinator.navigateToFragment(PlayBroadcastUserInteractionFragment::class.java,
+                Bundle().apply {
+                    putString(PlayBroadcastUserInteractionFragment.KEY_CHANNEL_ID, liveStreamInfo.channelId)
+                    putString(PlayBroadcastUserInteractionFragment.KEY_INGEST_URL, liveStreamInfo.ingestUrl)
+                })
+    }
 
     private fun openEditProductPage() {
 
@@ -111,5 +133,11 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private fun openEditCoverPage() {
 
+    }
+
+    private fun showToaster(message: String, toasterType: Int) {
+        Toaster.make(requireView(),
+                text = message,
+                type = toasterType)
     }
 }
