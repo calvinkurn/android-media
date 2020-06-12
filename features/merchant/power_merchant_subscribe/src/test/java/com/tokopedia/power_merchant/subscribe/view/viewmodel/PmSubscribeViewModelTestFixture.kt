@@ -33,6 +33,10 @@ open class PmSubscribeViewModelTestFixture {
         userSession = mockk(relaxed = true)
         remoteConfig = mockk(relaxed = true)
 
+        coEvery {
+            remoteConfig.getBoolean(any())
+        } returns true
+
         viewModel = PmSubscribeViewModel(
             getPowerMerchantStatusUseCase,
             getShopFreeShippingStatusUseCase,
