@@ -3,4 +3,5 @@
     <dimen name="toolbar_font_size">7sp</dimen>
     <dimen name="chips_font_size">7sp</dimen>
     <dimen name="chips_padding_size">3dp</dimen>
+    <dimen name="banner_margin">-42dp</dimen>
 </resources>
