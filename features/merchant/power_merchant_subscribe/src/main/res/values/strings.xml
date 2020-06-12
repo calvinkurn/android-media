@@ -113,4 +113,5 @@
     <string name="power_merchant_free_shipping_activate">Aktifkan Bebas Ongkir</string>
     <string name="power_merchant_free_shipping_learn_more">Pelajari Bebas Ongkir</string>
     <string name="power_merchant_click_to_reload">Ketuk ikon untuk memuat ulang</string>
+    <string name="power_merchant_success_free_shipping_description">Yuk, aktivasi fitur Bebas Ongkir untuk meningkatkan penjualan tokomu.</string>
 </resources>

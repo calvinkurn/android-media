@@ -38,10 +38,13 @@ class PmSubscribeViewModel @Inject constructor(
         get() = _getPmStatusInfoResult
     val getPmFreeShippingStatusResult: LiveData<Result<PowerMerchantFreeShippingStatus>>
         get() = _getPmFreeShippingStatusResult
+    val onActivatePmSuccess: LiveData<PowerMerchantFreeShippingStatus>
+        get() = _onActivatePmSuccess
 
     private val _viewState = MutableLiveData<ViewState>()
     private val _getPmStatusInfoResult = MutableLiveData<Result<PowerMerchantStatus>>()
     private val _getPmFreeShippingStatusResult = MutableLiveData<Result<PowerMerchantFreeShippingStatus>>()
+    private val _onActivatePmSuccess = MutableLiveData<PowerMerchantFreeShippingStatus>()
 
     fun getPmStatusInfo(){
         showLoading()
@@ -91,6 +94,21 @@ class PmSubscribeViewModel @Inject constructor(
         }) {
             _getPmFreeShippingStatusResult.value = Fail(it)
         }
+    }
+
+    fun onActivatePmSuccess() {
+        val getFreeShippingResult = _getPmFreeShippingStatusResult.value
+            as? Success<PowerMerchantFreeShippingStatus>
+
+        val freeShippingStatus = getFreeShippingResult?.data
+            ?: PowerMerchantFreeShippingStatus(
+                isActive = false,
+                isEligible = false,
+                isTransitionPeriod = false,
+                isShopScoreEligible = false
+            )
+
+        _onActivatePmSuccess.value = freeShippingStatus
     }
 
     fun detachView() {

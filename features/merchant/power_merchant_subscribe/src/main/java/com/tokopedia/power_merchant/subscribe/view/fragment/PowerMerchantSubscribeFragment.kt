@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
@@ -30,6 +31,8 @@ import com.tokopedia.power_merchant.subscribe.view.activity.PowerMerchantTermsAc
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantCancelBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantNotificationBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantNotificationBottomSheet.CTAMode
+import com.tokopedia.power_merchant.subscribe.view.constant.PowerMerchantUrl.URL_FREE_SHIPPING_TERMS_AND_CONDITION
+import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantFreeShippingStatus
 import com.tokopedia.power_merchant.subscribe.view.model.ViewState.HideLoading
 import com.tokopedia.power_merchant.subscribe.view.model.ViewState.ShowLoading
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.PmSubscribeViewModel
@@ -91,6 +94,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (remoteConfig.getBoolean(ANDROID_PM_F1_ENABLED, false)) {
+            observeActivatePowerMerchant()
             observeGetFreeShippingDetail()
             observeGetPmStatusInfo()
             observeViewState()
@@ -153,10 +157,10 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == ACTIVATE_INTENT_CODE && resultCode == Activity.RESULT_OK) {
-            showBottomSheetSuccess()
+            viewModel.onActivatePmSuccess()
             refreshData()
         } else if (requestCode == AUTOEXTEND_INTENT_CODE && resultCode == Activity.RESULT_OK) {
-            showBottomSheetSuccess()
+            viewModel.onActivatePmSuccess()
             refreshData()
         } else if (requestCode == TURN_OFF_AUTOEXTEND_INTENT_CODE && resultCode == Activity.RESULT_OK){
             onSuccessCancelMembership()
@@ -166,6 +170,12 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     private fun showEmptyState(throwable: Throwable) {
         NetworkErrorHelper.showEmptyState(context, view, ErrorHandler.getErrorMessage(context, throwable)) {
             refreshData()
+        }
+    }
+
+    private fun observeActivatePowerMerchant() {
+        observe(viewModel.onActivatePmSuccess) {
+            showBottomSheetSuccess(it)
         }
     }
 
@@ -240,16 +250,40 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showBottomSheetSuccess() {
+    private fun showBottomSheetSuccess(freeShipping: PowerMerchantFreeShippingStatus) {
+        val isFreeShippingEligible = freeShipping.isEligible
+
+        val primaryBtnLabel = if(isFreeShippingEligible) {
+            getString(R.string.power_merchant_free_shipping_learn_more)
+        } else {
+            getString(R.string.pm_label_bs_success_button)
+        }
+
+        val description = if(isFreeShippingEligible) {
+            getString(R.string.power_merchant_success_free_shipping_description)
+        } else {
+            getString(R.string.power_merchant_success_description)
+        }
+
         val bottomSheet = PowerMerchantNotificationBottomSheet.createInstance(
             getString(R.string.power_merchant_success_title),
-            getString(R.string.power_merchant_success_description),
+            description,
             R.drawable.ic_pm_registration_success,
             CTAMode.SINGLE
         )
-        bottomSheet.setPrimaryButtonText(getString(R.string.pm_label_bs_success_button))
-        bottomSheet.setPrimaryButtonClickListener { bottomSheet.dismiss() }
+        bottomSheet.setPrimaryButtonText(primaryBtnLabel)
+        bottomSheet.setPrimaryButtonClickListener {
+            if(isFreeShippingEligible) {
+                openLearnMoreFreeShipping()
+            }
+            bottomSheet.dismiss()
+        }
         bottomSheet.show(childFragmentManager)
+    }
+
+    private fun openLearnMoreFreeShipping() {
+        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW,
+            URL_FREE_SHIPPING_TERMS_AND_CONDITION)
     }
 
     private fun showBottomSheetCancel() {
