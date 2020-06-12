@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
+import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -45,7 +46,7 @@ class SmartBillsViewModel @Inject constructor(
             val graphqlRequest = GraphqlRequest(rawQuery, RechargeStatementMonths.Response::class.java, mapParams)
             val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(
                     if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST
-            ).build()
+            ).setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
             val data = withContext(dispatcher.IO) {
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeStatementMonths.Response>()
@@ -65,7 +66,7 @@ class SmartBillsViewModel @Inject constructor(
             val graphqlRequest = GraphqlRequest(rawQuery, RechargeStatementBills.Response::class.java, mapParams)
             val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(
                     if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST
-            ).build()
+            ).setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
             val data = withContext(dispatcher.IO) {
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeStatementBills.Response>()
