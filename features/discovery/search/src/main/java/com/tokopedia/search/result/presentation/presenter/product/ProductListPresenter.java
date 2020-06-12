@@ -520,6 +520,7 @@ final class ProductListPresenter
                     item.setPrice(topAds.getProduct().getPriceFormat());
                     item.setShopCity(topAds.getShop().getLocation());
                     item.setImageUrl(topAds.getProduct().getImage().getS_ecs());
+                    item.setImageUrl300(topAds.getProduct().getImage().getM_ecs());
                     item.setImageUrl700(topAds.getProduct().getImage().getM_ecs());
                     item.setWishlisted(topAds.getProduct().isWishlist());
                     item.setRatingString(useRatingString ? topAds.getProduct().getProductRatingFormat() : "");
