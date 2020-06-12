@@ -151,6 +151,7 @@
 /features/user/chatbot_no_op/                   		@tokopedia/minion-kevin
 /features/user/chat_common/                     		@tokopedia/minion-kevin
 /features/user/topchat/                         		@tokopedia/minion-kevin
+/features/user/orderhistory/                         	@tokopedia/minion-kevin
 /features/user/topchat_no_op/                   		@tokopedia/minion-kevin
 /features/user/profilecompletion/                       @tokopedia/minion-kevin
 /features/user/vote/                            		@tokopedia/minion-kevin
@@ -162,6 +163,7 @@
 /features/user/loginregister/                   		@tokopedia/minion-kevin
 /features/user/sessioncommon/                   		@tokopedia/minion-kevin
 /features/user/loginphone/                      		@tokopedia/minion-kevin
+/features/user/managename/                      		@tokopedia/minion-kevin
 /features/user/notifcenter/                     		@tokopedia/minion-kevin
 /features/user/attachproduct/                   		@tokopedia/minion-kevin
 /features/user/changephonenumber                		@tokopedia/minion-kevin
@@ -274,8 +276,10 @@
 /libraries/blockcanary                                  @tokopedia/core-team
 /libraries/annotation_proc_central                      @tokopedia/core-team
 
+/buildconfig/                                           @tokopedia/core-team
 /dynamic-features/                                      @tokopedia/core-team
 /dynamic-features-sellerapp/                            @tokopedia/core-team
+/tools/                                                 @tokopedia/core-team
 
 /tkpddiscovery/                                        	@tokopedia/core-team
 /tkpdsession/                                       	@tokopedia/core-team
