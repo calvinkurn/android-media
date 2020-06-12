@@ -160,6 +160,7 @@ class PlayBroadcastSetupFragment @Inject constructor(
         broadcastCoordinator.setupTitle(getString(R.string.play_action_bar_prepare_final_title))
         btnSetup.text = getString(R.string.play_start_streaming)
         btnSetup.setOnClickListener {
+            showBeforeLiveCountDown()
             viewModel.createChannel()
         }
     }
@@ -186,6 +187,10 @@ class PlayBroadcastSetupFragment @Inject constructor(
         Toaster.make(requireView(),
                 text = message,
                 type = toasterType)
+    }
+
+    private fun showBeforeLiveCountDown() {
+
     }
 
     //region observe
