@@ -1,7 +1,8 @@
 package com.tokopedia.seller.search.common.util.mapper
 
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.seller.search.common.GlobalSearchSellerConstant
+import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.ALL
 import com.tokopedia.seller.search.common.data.SellerSearchResponse
 import com.tokopedia.seller.search.feature.initialsearch.data.DeleteHistoryResponse
 import com.tokopedia.seller.search.feature.initialsearch.data.SuccessSearchResponse
@@ -13,10 +14,15 @@ import com.tokopedia.seller.search.feature.initialsearch.view.model.sellersearch
 
 object GlobalSearchSellerMapper {
 
-    fun mapTopItemFilterSearch(): List<FilterSearchUiModel> {
+    fun mapTopItemFilterSearch(sellerSearch: SellerSearchResponse.SellerSearch): List<FilterSearchUiModel> {
         return mutableListOf<FilterSearchUiModel>().apply {
-            GlobalSearchSellerConstant.filterList.map {
-                add(FilterSearchUiModel(title = it, isSelected = false))
+            sellerSearch.data.sections.mapIndexed { i, section ->
+                if(i.isZero()) {
+                    add(FilterSearchUiModel(title = ALL, isSelected = true))
+                }
+                if(section.has_more == true) {
+                    add(FilterSearchUiModel(title = section.title, isSelected = false))
+                }
             }
         }
     }

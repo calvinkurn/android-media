@@ -6,6 +6,7 @@ object GlobalSearchSellerConstant {
     const val FAQ = "faq"
     const val PRODUCT = "product"
     const val NAVIGATION = "navigation"
+    const val ALL = "semua"
 
     val filterList = listOf("Semua", "Pesanan", "Produk", "Fitur")
 }
