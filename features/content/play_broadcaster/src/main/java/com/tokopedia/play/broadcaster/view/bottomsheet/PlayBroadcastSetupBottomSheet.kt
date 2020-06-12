@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.view.bottomsheet
 
 import android.app.Dialog
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -134,7 +135,8 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         tvTitle.text = title
     }
 
-    override fun saveCoverAndTitle(coverUrl: String, liveTitle: String) {
+    override fun saveCoverAndTitle(coverUri: Uri, coverUrl: String, liveTitle: String) {
+        viewModel.coverImageUri = coverUri
         viewModel.coverImageUrl = coverUrl
         viewModel.liveTitle = liveTitle
         complete()
@@ -240,6 +242,7 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         parentViewModel.saveCompleteChannel(
                 productList = viewModel.selectedProductList,
                 coverUrl = viewModel.coverImageUrl,
+                coverUri = viewModel.coverImageUri,
                 title = viewModel.liveTitle
         )
     }

@@ -38,6 +38,8 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
     : PlayBaseSetupFragment(), PlayBroadcastChooseCoverBottomSheet.Listener,
         PlayBroadcastCoverFromGalleryBottomSheet.Listener {
 
+    var listenerForCropOnly: ListenerForCropOnly? = null
+
     private lateinit var viewModel: PlayBroadcastCoverTitleViewModel
 
     private var selectedImageUrlList = arrayListOf<Pair<Long, String>>()
@@ -100,9 +102,13 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
         super.onActivityCreated(savedInstanceState)
 
         viewModel.imageEcsLink.observe(viewLifecycleOwner, Observer {
-            if (it.isNotEmpty()) {
-                if (liveTitle.isNotEmpty()) {
-                    bottomSheetCoordinator.saveCoverAndTitle(it, liveTitle)
+            selectedCoverUri?.let { selectedCover ->
+                if (it.isNotEmpty()) {
+                    if (starterState == CoverStarterEnum.CROP_ONLY) {
+                        listenerForCropOnly?.onFinishedCrop(selectedCover, it)
+                    } else if (liveTitle.isNotEmpty()) {
+                        bottomSheetCoordinator.saveCoverAndTitle(selectedCover, it, liveTitle)
+                    }
                 }
             }
         })
@@ -241,13 +247,12 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
         containerPlayCoverCropImage.removeAllViews()
         val ivPlayCoverCropImage = PlayCropImageView(requireContext())
         ivPlayCoverCropImage.setImageUri(imageUri, null)
+        ivPlayCoverCropImage.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT)
         ivPlayCoverCropImage.isScaleEnabled = true
         ivPlayCoverCropImage.isRotateEnabled = false
 
         // need delay until onDraw for overlay is called to get the crop points
-        ivPlayCoverCropImage.post {
-            ivPlayCoverCropImage.layoutParams.height = resources.getDimensionPixelSize(R.dimen.play_cover_height)
-        }
         Handler().postDelayed({
             ivPlayCoverCropImage.setCropRect(ivPlayCoverCropOverlay.getCropRect())
         }, SECONDS)
@@ -286,13 +291,18 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
     private fun onCancelCropImage() {
         hideCoverCropLayout()
         renderCoverTitleLayout(null)
-        when (coverSource) {
-            CoverSourceEnum.GALLERY -> onChooseFromGalleryClicked()
-            else -> onChangeCoverClicked()
+        if (starterState == CoverStarterEnum.NORMAL) {
+            when (coverSource) {
+                CoverSourceEnum.GALLERY -> onChooseFromGalleryClicked()
+                else -> onChangeCoverClicked()
+            }
+        } else if (starterState == CoverStarterEnum.CROP_ONLY) {
+            listenerForCropOnly?.onCancelCrop(coverSource)
         }
     }
 
     private fun onImageCropped(resultImageUri: Uri) {
+        selectedCoverUri = resultImageUri
         if (starterState == CoverStarterEnum.CROP_ONLY) {
             onFinishCoverTitleSetup()
         } else {
@@ -322,6 +332,11 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
         if (::viewModel.isInitialized && selectedCoverUri != null) {
             viewModel.uploadCover(File(selectedCoverUri?.path).absolutePath)
         }
+    }
+
+    interface ListenerForCropOnly {
+        fun onFinishedCrop(imageUri: Uri, imageUrl: String)
+        fun onCancelCrop(coverSource: CoverSourceEnum)
     }
 
     companion object {

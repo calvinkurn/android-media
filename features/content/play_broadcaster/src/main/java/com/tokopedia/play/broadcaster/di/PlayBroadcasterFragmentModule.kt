@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.di
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.play.broadcaster.di.key.FragmentKey
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastCoverCropBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayPrivacyPolicyBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.*
@@ -65,4 +66,17 @@ abstract class PlayBroadcasterFragmentModule {
     @IntoMap
     @FragmentKey(PlayCoverTitleSetupFragment::class)
     abstract fun getPlayCoverTitleSetupFragment(fragment: PlayCoverTitleSetupFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(PlayBroadcastCoverCropBottomSheet::class)
+    abstract fun getPlayBroadcastCoverCropBottomSheet(fragment: PlayBroadcastCoverCropBottomSheet): Fragment
+
+    /**
+     * Please Delete This
+     */
+    @Binds
+    @IntoMap
+    @FragmentKey(DummyFragment::class)
+    abstract fun getDummyFragment(fragment: DummyFragment): Fragment
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -52,11 +53,15 @@ class PlayBroadcastSetupViewModel @Inject constructor(
         _observableFollowers.value = PlayBroadcastMocker.getMockUnknownFollower()
     }
 
-    fun saveCompleteChannel(productList: List<ProductContentUiModel>, coverUrl: String, title: String) {
+    fun saveCompleteChannel(productList: List<ProductContentUiModel>,
+                            coverUrl: String,
+                            coverUri: Uri?,
+                            title: String) {
         scope.launch {
             _observableSetupChannel.value = ChannelSetupUiModel(
                     title = title,
                     coverUrl = coverUrl,
+                    coverUri = coverUri,
                     selectedProductList = productList
             )
         }
