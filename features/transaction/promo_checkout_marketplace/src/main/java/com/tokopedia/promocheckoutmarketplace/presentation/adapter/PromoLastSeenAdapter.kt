@@ -3,7 +3,7 @@ package com.tokopedia.promocheckoutmarketplace.presentation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.promocheckoutmarketplace.presentation.PromoCheckoutLastSeenListener
+import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckoutLastSeenListener
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoLastSeenItemUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.viewholder.PromoLastSeenViewHolder
 

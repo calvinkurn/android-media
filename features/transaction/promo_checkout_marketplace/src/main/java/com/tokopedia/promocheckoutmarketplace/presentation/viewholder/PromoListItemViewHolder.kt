@@ -16,13 +16,12 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.promocheckoutmarketplace.R
-import com.tokopedia.promocheckoutmarketplace.presentation.PromoCheckoutActionListener
+import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckoutActionListener
 import com.tokopedia.promocheckoutmarketplace.presentation.setImageFilterGrayScale
 import com.tokopedia.promocheckoutmarketplace.presentation.setImageFilterNormal
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItemUiModel
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.item_promo_list_item.view.*
 
 class PromoListItemViewHolder(private val view: View,
                               private val listener: PromoCheckoutActionListener

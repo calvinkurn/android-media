@@ -1,4 +1,4 @@
-package com.tokopedia.promocheckoutmarketplace.presentation
+package com.tokopedia.promocheckoutmarketplace.presentation.listener
 
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.*
 
@@ -7,10 +7,8 @@ interface PromoCheckoutActionListener {
     fun onClickApplyRecommendedPromo()
 
     fun onClickPromoManualInputTextField()
-
-    fun onTypePromoManualInput(promoCode: String)
-
-    fun onClickApplyManualInputPromo(promoCode: String)
+    
+    fun onClickApplyManualInputPromo(promoCode: String, isFromLastSeen: Boolean)
 
     fun onCLickClearManualInputPromo()
 

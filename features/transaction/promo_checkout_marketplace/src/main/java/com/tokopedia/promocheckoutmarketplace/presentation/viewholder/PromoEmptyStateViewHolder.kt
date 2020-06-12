@@ -4,7 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.promocheckoutmarketplace.R
-import com.tokopedia.promocheckoutmarketplace.presentation.PromoCheckoutActionListener
+import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckoutActionListener
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEmptyStateUiModel
 
 class PromoEmptyStateViewHolder(private val view: View,

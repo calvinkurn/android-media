@@ -6,7 +6,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.promocheckoutmarketplace.R
-import com.tokopedia.promocheckoutmarketplace.presentation.PromoCheckoutActionListener
+import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckoutActionListener
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoInputUiModel
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -73,7 +73,6 @@ class PromoInputViewHolder(private val view: View,
                     buttonApplyPromo.isEnabled = false
                     textFieldInputPromo.setFirstIcon(R.color.white)
                 }
-                listener.onTypePromoManualInput(text?.toString() ?: "")
             }
         })
 
@@ -85,7 +84,7 @@ class PromoInputViewHolder(private val view: View,
         buttonApplyPromo.setOnClickListener {
             val promoCode = textFieldInputPromo.textFieldInput.text.toString()
             if (promoCode.isNotEmpty()) {
-                listener.onClickApplyManualInputPromo(promoCode)
+                listener.onClickApplyManualInputPromo(promoCode, element.uiState.isValidLastSeenPromo)
             }
         }
 

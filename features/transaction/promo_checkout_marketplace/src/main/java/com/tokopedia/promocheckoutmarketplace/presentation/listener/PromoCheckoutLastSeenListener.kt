@@ -1,4 +1,4 @@
-package com.tokopedia.promocheckoutmarketplace.presentation
+package com.tokopedia.promocheckoutmarketplace.presentation.listener
 
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoLastSeenItemUiModel
 
