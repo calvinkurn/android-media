@@ -1,7 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs
 
 import android.graphics.Color
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -13,11 +12,9 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.loadImageWithCallback
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.utils.image.ImageUtils
 
-class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
+class TabsItemViewHolder(itemView: View, fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     private val tabImageView: ImageView = itemView.findViewById(R.id.tab_image)
     private val selectedView: View = itemView.findViewById(R.id.selected_view)
     private val tabTextView: TextView = itemView.findViewById(R.id.tab_text)
@@ -44,24 +41,17 @@ class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : Abstr
                         setFontColor(fontColor)
                     }
                     showSelectedView(item.isSelected)
-                    setClick(it.id)
-
+                    setClick(it.id, adapterPosition)
                 }
-
             })
-
         }
-
-
     }
-
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
             tabsItemViewModel.getComponentLiveData().removeObservers(lifecycleOwner)
         }
-
     }
 
     private fun setTabText(name: String) {
@@ -75,9 +65,9 @@ class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : Abstr
         }
     }
 
-    private fun setClick(id: String) {
+    private fun setClick(id: String, position: Int) {
         itemView.setOnClickListener {
-            (parentAbstractViewHolder as TabsViewHolder).onTabClick(id)
+            (parentAbstractViewHolder as TabsViewHolder).onTabClick(id, position)
         }
     }
 
@@ -88,9 +78,7 @@ class TabsItemViewHolder(itemView: View, private val fragment: Fragment) : Abstr
         } else {
             selectedView.hide()
         }
-
     }
-
 }
 
 
