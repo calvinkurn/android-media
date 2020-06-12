@@ -304,7 +304,9 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
 
         hideLoading()
 
-        if(!shopStatusModel.isPowerMerchantInactive()) {
+        if(shopStatusModel.isPowerMerchantInactive()) {
+            freeShippingLayout.hide()
+        } else {
             viewModel.getFreeShippingStatus()
         }
     }

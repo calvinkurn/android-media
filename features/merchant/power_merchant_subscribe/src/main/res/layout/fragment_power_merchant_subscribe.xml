@@ -110,6 +110,7 @@
                 android:id="@+id/freeShippingLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:layout_marginTop="@dimen/spacing_lvl5"/>
 
             <com.tokopedia.unifycomponents.LocalLoad
