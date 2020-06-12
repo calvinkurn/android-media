@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.buyerorder.R
@@ -18,12 +19,16 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottomsheet_buyer_request_cancel.view.*
 import kotlinx.android.synthetic.main.fragment_buyer_request_cancel.*
 import java.io.Serializable
+import javax.inject.Inject
 
 
 /**
  * Created by fwidjaja on 08/06/20.
  */
 class BuyerRequestCancelFragment: BaseDaggerFragment(), BuyerRequestCancelBottomsheetAdapter.ActionListener {
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
     private lateinit var buyerReqCancelBottomSheetAdapter: BuyerRequestCancelBottomsheetAdapter
     private lateinit var buyerListOfProductsBottomSheetAdapter: BuyerListOfProductsBottomSheetAdapter
     private var shopName = ""
