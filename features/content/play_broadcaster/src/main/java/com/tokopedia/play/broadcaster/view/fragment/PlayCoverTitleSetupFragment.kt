@@ -16,6 +16,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.CoverSourceEnum
+import com.tokopedia.play.broadcaster.ui.model.CoverStarterEnum
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastChooseCoverBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastCoverFromGalleryBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
@@ -43,6 +44,7 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
     private var liveTitle: String = ""
     private var selectedCoverUri: Uri? = null
     private var coverSource: CoverSourceEnum = CoverSourceEnum.NONE
+    private var starterState: CoverStarterEnum = CoverStarterEnum.NORMAL
 
     override fun getScreenName(): String = "Play Cover Title Setup"
 
@@ -56,9 +58,30 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
             selectedImageUrlList = it.getSerializable(EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST) as ArrayList<Pair<Long, String>>?
                     ?: arrayListOf()
             liveTitle = it.getString(EXTRA_LIVE_TITLE, "") ?: ""
+            starterState = if (it.getInt(EXTRA_STARTER_STATE) == CoverStarterEnum.CROP_ONLY.value)
+                CoverStarterEnum.CROP_ONLY else CoverStarterEnum.NORMAL
+            coverSource = when (it.getInt(EXTRA_COVER_SOURCE)) {
+                CoverSourceEnum.CAMERA.value -> CoverSourceEnum.CAMERA
+                CoverSourceEnum.PRODUCT.value -> CoverSourceEnum.PRODUCT
+                CoverSourceEnum.GALLERY.value -> CoverSourceEnum.GALLERY
+                else -> CoverSourceEnum.NONE
+            }
         } ?: arguments?.let {
             selectedImageUrlList = it.getSerializable(EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST) as ArrayList<Pair<Long, String>>?
                     ?: arrayListOf()
+            starterState = if (it.getInt(EXTRA_STARTER_STATE) == CoverStarterEnum.CROP_ONLY.value)
+                CoverStarterEnum.CROP_ONLY else CoverStarterEnum.NORMAL
+            coverSource = when (it.getInt(EXTRA_COVER_SOURCE)) {
+                CoverSourceEnum.CAMERA.value -> CoverSourceEnum.CAMERA
+                CoverSourceEnum.PRODUCT.value -> CoverSourceEnum.PRODUCT
+                CoverSourceEnum.GALLERY.value -> CoverSourceEnum.GALLERY
+                else -> CoverSourceEnum.NONE
+            }
+
+            // if crop mode and from gallery/camera, there will be Image Uri provided
+            if (it.containsKey(EXTRA_COVER_URI)) {
+                selectedCoverUri = it.getParcelable(EXTRA_COVER_URI)
+            }
         }
         viewModel = ViewModelProviders.of(requireParentFragment(), viewModelFactory)
                 .get(PlayBroadcastCoverTitleViewModel::class.java)
@@ -70,7 +93,6 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView()
         setupView()
     }
 
@@ -78,8 +100,10 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
         super.onActivityCreated(savedInstanceState)
 
         viewModel.imageEcsLink.observe(viewLifecycleOwner, Observer {
-            if (it.isNotEmpty() && liveTitle.isNotEmpty()) {
-                bottomSheetCoordinator.saveCoverAndTitle(it, liveTitle)
+            if (it.isNotEmpty()) {
+                if (liveTitle.isNotEmpty()) {
+                    bottomSheetCoordinator.saveCoverAndTitle(it, liveTitle)
+                }
             }
         })
 
@@ -99,6 +123,8 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
         super.onSaveInstanceState(outState)
         outState.putSerializable(EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST, selectedImageUrlList)
         outState.putString(EXTRA_LIVE_TITLE, liveTitle)
+        outState.putInt(EXTRA_STARTER_STATE, starterState.value)
+        outState.putInt(EXTRA_COVER_SOURCE, coverSource.value)
     }
 
     override fun onGetCoverFromCamera(imageUri: Uri?) {
@@ -132,7 +158,10 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
         }
     }
 
-    private fun initView() {
+    private fun setupView() {
+        bottomSheetCoordinator.setupTitle(getString(R.string.play_prepare_cover_title_title))
+        bottomSheetCoordinator.showBottomAction(false)
+
         containerChangeCover.setOnClickListener {
             onChangeCoverClicked()
         }
@@ -142,11 +171,6 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
         btnPlayPrepareBroadcastNext.setOnClickListener {
             onFinishCoverTitleSetup()
         }
-    }
-
-    private fun setupView() {
-        bottomSheetCoordinator.setupTitle(getString(R.string.play_prepare_cover_title_title))
-        bottomSheetCoordinator.showBottomAction(false)
 
         etPlayCoverTitleText.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N0))
         etPlayCoverTitleText.setHintTextColor(resources.getColor(R.color.play_white_68))
@@ -159,11 +183,8 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
             }
 
             override fun onTextChanged(text: CharSequence, p1: Int, p2: Int, p3: Int) {
-                tvPlayTitleCounter.text = getString(R.string.play_prepare_cover_title_counter,
-                        text.length, MAX_CHARS)
                 liveTitle = text.toString()
-                tvPlayTitleCounter.text = getString(R.string.play_prepare_cover_title_counter,
-                        0, MAX_CHARS)
+                setupTitleCounter()
                 setupNextButton()
             }
         })
@@ -174,6 +195,19 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
 
         setupNextButton()
         setupCoverLabelText()
+
+        if (starterState == CoverStarterEnum.CROP_ONLY) {
+            showCoverCropLayout()
+            if (coverSource == CoverSourceEnum.GALLERY || coverSource == CoverSourceEnum.CAMERA) {
+                selectedCoverUri?.let {
+                    renderCoverCropLayout(it)
+                }
+            } else {
+                viewModel.getOriginalImageUrl(requireContext(),
+                        selectedImageUrlList[0].first,
+                        selectedImageUrlList[0].second)
+            }
+        }
     }
 
     private fun onChangeCoverClicked() {
@@ -259,8 +293,12 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
     }
 
     private fun onImageCropped(resultImageUri: Uri) {
-        hideCoverCropLayout()
-        renderCoverTitleLayout(resultImageUri)
+        if (starterState == CoverStarterEnum.CROP_ONLY) {
+            onFinishCoverTitleSetup()
+        } else {
+            hideCoverCropLayout()
+            renderCoverTitleLayout(resultImageUri)
+        }
     }
 
     private fun setupCoverLabelText() {
@@ -269,6 +307,11 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
         } else {
             tvPlayChangeCoverLabel.text = getString(R.string.play_prepare_cover_title_add_cover_label)
         }
+    }
+
+    private fun setupTitleCounter() {
+        tvPlayTitleCounter.text = getString(R.string.play_prepare_cover_title_counter,
+                liveTitle.length, MAX_CHARS)
     }
 
     private fun setupNextButton() {
@@ -283,6 +326,10 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
 
     companion object {
         const val EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST = "EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST"
+        const val EXTRA_STARTER_STATE = "EXTRA_STARTER_STATE"
+        const val EXTRA_COVER_SOURCE = "EXTRA_COVER_SOURCE"
+        const val EXTRA_COVER_URI = "EXTRA_COVER_URI"
+
         private const val EXTRA_LIVE_TITLE = "EXTRA_LIVE_TITLE"
         private const val MAX_CHARS = 38
         private const val SECONDS: Long = 1000

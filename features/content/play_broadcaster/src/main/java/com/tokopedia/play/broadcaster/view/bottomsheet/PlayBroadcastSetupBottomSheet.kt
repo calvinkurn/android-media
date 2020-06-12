@@ -21,6 +21,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.ui.model.CoverSourceEnum
+import com.tokopedia.play.broadcaster.ui.model.CoverStarterEnum
 import com.tokopedia.play.broadcaster.util.BreadcrumbsModel
 import com.tokopedia.play.broadcaster.util.compatTransitionName
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
@@ -247,6 +249,8 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
                 .map { Pair(it.id, it.originalImageUrl) }.toList())
         navigateToFragment(PlayCoverTitleSetupFragment::class.java, Bundle().apply {
             putSerializable(PlayCoverTitleSetupFragment.EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST, productImageList)
+            putInt(PlayCoverTitleSetupFragment.EXTRA_STARTER_STATE, CoverStarterEnum.NORMAL.value)
+            putInt(PlayCoverTitleSetupFragment.EXTRA_COVER_SOURCE, CoverSourceEnum.NONE.value)
         })
     }
 
