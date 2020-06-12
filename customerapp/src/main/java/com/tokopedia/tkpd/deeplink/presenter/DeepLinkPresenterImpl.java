@@ -42,6 +42,7 @@ import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.session.model.InfoModel;
 import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException;
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo;
@@ -765,10 +766,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             List<String> linkSegment = uriData.getPathSegments();
             pageId = linkSegment.get(1);
         }
-        Intent intent = ReactNativeDiscoveryActivity.createCallingIntent(
+        Intent intent = DiscoveryActivity.createDiscoveryIntent(
                 context,
-                ReactConst.Screen.DISCOVERY_PAGE,
-                "",
                 pageId);
         intent.putExtras(bundle);
         context.startActivity(intent);

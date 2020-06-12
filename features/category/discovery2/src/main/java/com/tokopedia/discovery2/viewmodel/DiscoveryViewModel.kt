@@ -11,6 +11,7 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.PageInfo
+import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryUIConfigGQLRepository
 import com.tokopedia.discovery2.usecase.CustomTopChatUseCase
 import com.tokopedia.discovery2.usecase.DiscoveryDataUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -27,12 +28,14 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: DiscoveryDataUseCase,
+                                             private val discoveryUIConfigRepo: DiscoveryUIConfigGQLRepository,
                                              private val userSession: UserSessionInterface,
                                              private val trackingQueue: TrackingQueue) : BaseViewModel(), CoroutineScope {
 
     private val discoveryPageInfo = MutableLiveData<Result<PageInfo>>()
     private val discoveryFabLiveData = MutableLiveData<Result<ComponentsItem>>()
     private val discoveryResponseList = MutableLiveData<Result<List<ComponentsItem>>>()
+    private val discoveryUIConfig = MutableLiveData<Result<String>>()
     var pageIdentifier: String = ""
     var pageType: String = ""
     var pagePath: String = ""
@@ -63,6 +66,21 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     }
 
+    fun getDiscoveryUIConfig() {
+        launchCatchError(
+                block = {
+                    val data = discoveryUIConfigRepo.getDiscoveryUIConfigData()
+                    setUIConfig(data.config)
+                },
+                onError = {
+                    discoveryUIConfig.postValue(Fail(it))
+                }
+        )
+    }
+
+    private fun setUIConfig(config: String?) {
+        discoveryUIConfig.postValue(Success(config ?: "native"))
+    }
 
     private fun setPageInfo(pageInfo: PageInfo?) {
         if (pageInfo != null) {
@@ -102,6 +120,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     fun getDiscoveryPageInfo(): LiveData<Result<PageInfo>> = discoveryPageInfo
     fun getDiscoveryResponseList(): LiveData<Result<List<ComponentsItem>>> = discoveryResponseList
     fun getDiscoveryFabLiveData(): LiveData<Result<ComponentsItem>> = discoveryFabLiveData
+    fun getDiscoveryUIConfigLiveData(): LiveData<Result<String>> = discoveryUIConfig
 
     private fun fetchTopChatMessageId(context: Context, appLinks: String, shopId: Int) {
         val queryMap: MutableMap<String, Any> = mutableMapOf("fabShopId" to shopId, "source" to "discovery")
