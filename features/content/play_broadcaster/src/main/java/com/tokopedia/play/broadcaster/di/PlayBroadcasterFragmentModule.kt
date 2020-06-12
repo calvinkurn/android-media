@@ -66,4 +66,9 @@ abstract class PlayBroadcasterFragmentModule {
     @IntoMap
     @FragmentKey(PlayProductLiveBottomSheet::class)
     abstract fun getProductLiveBottomSheet(fragment: PlayProductLiveBottomSheet): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(PlayBeforeLiveFragment::class)
+    abstract fun getBeforeLiveFragment(fragment: PlayBeforeLiveFragment): Fragment
 }
