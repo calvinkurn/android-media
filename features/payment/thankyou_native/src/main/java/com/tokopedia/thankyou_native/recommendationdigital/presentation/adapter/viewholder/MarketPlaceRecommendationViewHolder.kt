@@ -11,7 +11,7 @@ import com.tokopedia.thankyou_native.recommendation.presentation.adapter.listene
 import com.tokopedia.thankyou_native.recommendation.model.MarketPlaceRecommendationModel
 import kotlinx.android.synthetic.main.thank_item_recommendation.view.*
 
-class MarketPlaceRecommendationViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+class DigitalRecommendationViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
     companion object {
         val LAYOUT_ID = R.layout.thank_item_recommendation

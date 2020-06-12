@@ -8,6 +8,7 @@ import com.tokopedia.thankyou_native.recommendationdigital.di.module.DigitalView
 import com.tokopedia.thankyou_native.recommendationdigital.di.scope.DigitalRecommendationScope
 import com.tokopedia.thankyou_native.recommendationdigital.di.module.DispatcherModule
 import com.tokopedia.thankyou_native.recommendationdigital.di.module.GqlQueryModule
+import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.DigitalRecommendation
 import dagger.Component
 
 @DigitalRecommendationScope

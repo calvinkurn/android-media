@@ -29,7 +29,7 @@ import com.tokopedia.thankyou_native.recommendation.model.MarketPlaceRecommendat
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.DigitakRecommendationAdapter
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.decorator.ProductCardDefaultDecorator
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.listener.MarketPlaceRecommendationViewListener
-import com.tokopedia.thankyou_native.recommendation.presentation.viewmodel.MarketPlaceRecommendationViewModel
+import com.tokopedia.thankyou_native.recommendation.presentation.viewmodel.DigitalRecommendationViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -52,9 +52,9 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
 
     var isObserverAttached = false
 
-    private val viewModel: MarketPlaceRecommendationViewModel by lazy(LazyThreadSafetyMode.NONE) {
+    private val viewModel: DigitalRecommendationViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(fragment, viewModelFactory.get())
-        viewModelProvider[MarketPlaceRecommendationViewModel::class.java]
+        viewModelProvider[DigitalRecommendationViewModel::class.java]
     }
 
     private lateinit var adapter: DigitakRecommendationAdapter

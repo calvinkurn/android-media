@@ -30,14 +30,14 @@ import com.tokopedia.thankyou_native.recommendation.presentation.adapter.Digitak
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.decorator.ProductCardDefaultDecorator
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.listener.MarketPlaceRecommendationViewListener
 import com.tokopedia.thankyou_native.recommendation.presentation.view.IDigitalRecommendationView
-import com.tokopedia.thankyou_native.recommendation.presentation.viewmodel.MarketPlaceRecommendationViewModel
+import com.tokopedia.thankyou_native.recommendation.presentation.viewmodel.DigitalRecommendationViewModel
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.adapter.DigitalRecommendationAdapter
+import com.tokopedia.thankyou_native.recommendationdigital.presentation.viewmodel.DigitalRecommendationViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.thank_pdp_recommendation.view.*
 import javax.inject.Inject
-
 class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
 
 
@@ -54,9 +54,9 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
 
     var isObserverAttached = false
 
-    private val viewModel: MarketPlaceRecommendationViewModel by lazy(LazyThreadSafetyMode.NONE) {
+    private val viewModel: DigitalRecommendationViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(fragment, viewModelFactory.get())
-        viewModelProvider[MarketPlaceRecommendationViewModel::class.java]
+        viewModelProvider[DigitalRecommendationViewModel::class.java]
     }
 
     private lateinit var adapter: DigitalRecommendationAdapter

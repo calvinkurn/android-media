@@ -1,4 +1,4 @@
-package com.tokopedia.thankyou_native.recommendation.presentation.viewmodel
+package com.tokopedia.thankyou_native.recommendationdigital.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -28,7 +28,7 @@ import rx.Subscriber
 import java.io.IOException
 import javax.inject.Inject
 
-class MarketPlaceRecommendationViewModel @Inject constructor(
+class DigitalRecommendationViewModel @Inject constructor(
         @CoroutineMainDispatcher val mainDispatcher: dagger.Lazy<CoroutineDispatcher>,
         @CoroutineBackgroundDispatcher val backgroundDispatcher: dagger.Lazy<CoroutineDispatcher>,
         private val getRecommendationUseCase: dagger.Lazy<GetRecommendationUseCase>,

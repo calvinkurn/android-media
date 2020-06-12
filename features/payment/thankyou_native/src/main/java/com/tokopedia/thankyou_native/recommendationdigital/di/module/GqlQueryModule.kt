@@ -12,12 +12,12 @@ import javax.inject.Named
 class GqlQueryModule {
 
     @Provides
-    @Named(GQL_RECOMMENDATION_DATA)
+    @Named(GQL_DIGITAL_RECOMMENDATION_DATA)
     fun provideRawRecommendationData(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.gql_thanks_recommendation)
+            GraphqlHelper.loadRawString(context.resources, R.raw.digital_recommendation_list)
 
     companion object {
-        const val GQL_RECOMMENDATION_DATA = "gql_recommendation_data"
+        const val GQL_DIGITAL_RECOMMENDATION_DATA = "gql_rdigital_ecommendation_data"
     }
 
 }
