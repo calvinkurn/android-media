@@ -38,16 +38,20 @@ class GetCarouselDataUseCase(
     companion object {
 
         private const val DATA_KEYS = "dataKeys"
-        private const val PAGE_NUMBER = 1
-        private const val NUMBER_OF_LIMIT = 5
+        private const val DEFAULT_PAGE_NUMBER = 1
+        private const val DEFAULT_LIMIT = 5
 
-        fun getRequestParams(dataKey: List<String>): RequestParams {
+        fun getRequestParams(
+                dataKey: List<String>,
+                pageNumber: Int = DEFAULT_PAGE_NUMBER,
+                limits: Int = DEFAULT_LIMIT
+        ): RequestParams {
             val dataKeys = dataKey.map {
                 DataKeyModel(
                         key = it,
                         jsonParams = WidgetDataParameterModel(
-                                page = PAGE_NUMBER,
-                                limit = NUMBER_OF_LIMIT
+                                page = pageNumber,
+                                limit = limits
                         ).toJsonString()
                 )
             }
