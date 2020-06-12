@@ -2,7 +2,6 @@ package com.tokopedia.discovery2.datamapper
 
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
