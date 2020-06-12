@@ -71,7 +71,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         launchCatchError(
                 block = {
                     val data = discoveryUIConfigRepo.getDiscoveryUIConfigData()
-                    setUIConfig(data.config)
+                    setUIConfig(data.discoveryPageUIConfig?.data?.config)
                 },
                 onError = {
                     discoveryUIConfig.postValue(Fail(it))
