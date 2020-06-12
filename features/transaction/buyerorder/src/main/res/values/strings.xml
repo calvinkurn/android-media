@@ -437,4 +437,9 @@ Anda di sini.</string>
     <string name="product_price_placeholder">Rp 10.000.000</string>
     <string name="see_all_placeholder">Lihat Semua Produk (3)</string>
     <string name="ask_1_placeholder">Mengapa kamu ingin membatalkan pesanan ini?</string>
+    <string name="reason_placeholder">Pilih alasan</string>
+    <string name="ajukan_btn">Ajukan</string>
+    <string name="reason_cancel">Ingin mengubah pesanan</string>
+    <string name="show_bottomsheet">Show Bottomsheet</string>
+    <string name="bottomsheet_title">Pilih alasan pembatalan</string>
 </resources>

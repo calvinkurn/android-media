@@ -13,6 +13,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -51,6 +52,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.buyerorder.R;
+import com.tokopedia.buyerorder.common.util.BuyerConsts;
 import com.tokopedia.buyerorder.common.util.UnifiedOrderListRouter;
 import com.tokopedia.buyerorder.common.view.DoubleTextView;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
@@ -71,6 +73,7 @@ import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.detail.data.recommendationMPPojo.RecommendationResponse;
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent;
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
+import com.tokopedia.buyerorder.detail.view.activity.BuyerRequestCancelActivity;
 import com.tokopedia.buyerorder.detail.view.activity.RequestCancelActivity;
 import com.tokopedia.buyerorder.detail.view.activity.SeeInvoiceActivity;
 import com.tokopedia.buyerorder.detail.view.adapter.RecommendationMPAdapter;
@@ -86,6 +89,7 @@ import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -179,7 +183,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private Status status;
     private Ticker mTickerInfos;
     private RecyclerView recommendationList;
-
+    private List<Items> listProducts;
+    private String invoiceNum;
 
     @Override
     protected String getScreenName() {
@@ -330,6 +335,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @Override
     public void setInvoice(final Invoice invoice) {
         if (!invoice.invoiceRefNum().isEmpty()) {
+            invoiceNum = invoice.invoiceRefNum();
             dividerInvoice.setVisibility(View.VISIBLE);
             invoiceLayout.setVisibility(View.VISIBLE);
             invoiceView.setText(invoice.invoiceRefNum());
@@ -791,7 +797,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     intent.putExtra(KEY_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
                     intent.putExtra(ACTION_BUTTON_URL, actionButton.getUri());
                     if (this.status.status().equals(STATUS_CODE_220) || this.status.status().equals(STATUS_CODE_400)) {
-                        if (presenter.shouldShowTimeForCancellation()) {
+                        /*if (presenter.shouldShowTimeForCancellation()) {
                             Toaster.INSTANCE.showErrorWithAction(mainView,
                                     presenter.getCancelTime(),
                                     Snackbar.LENGTH_LONG,
@@ -799,9 +805,15 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                                     });
                         } else {
                             System.out.println("++ tambahin dsini");
-                            startActivityForResult(RequestCancelActivity.getInstance(getContext(), getArguments().getString(KEY_ORDER_ID), actionButton.getUri(), 1), REQUEST_CANCEL_ORDER);
-                            orderListAnalytics.sendActionButtonClickEvent(CLICK_REQUEST_CANCEL, this.status.status());
-                        }
+                            *//*startActivityForResult(RequestCancelActivity.getInstance(getContext(), getArguments().getString(KEY_ORDER_ID), actionButton.getUri(), 1), REQUEST_CANCEL_ORDER);
+                            orderListAnalytics.sendActionButtonClickEvent(CLICK_REQUEST_CANCEL, this.status.status());*//*
+                        }*/
+
+                        Intent buyerReqCancelIntent = new Intent(getContext(), BuyerRequestCancelActivity.class);
+                        buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SHOP_NAME, shopInfo.getShopName());
+                        buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_INVOICE, invoiceNum);
+                        buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_LIST_PRODUCT, (Serializable) listProducts);
+                        startActivity(buyerReqCancelIntent);
                     } else if (this.status.status().equals(STATUS_CODE_11)) {
                         startActivityForResult(RequestCancelActivity.getInstance(getContext(), getArguments().getString(KEY_ORDER_ID), actionButton.getUri(), 0), REQUEST_CANCEL_ORDER);
                     } else if (actionButton.getLabel().equalsIgnoreCase("Lacak")) {
@@ -980,6 +992,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @SuppressLint("SetTextI18n")
     @Override
     public void setItems(List<Items> items, boolean isTradeIn) {
+        listProducts = items;
         rlShopInfo.setVisibility(View.VISIBLE);
         String labelShop = shopInformationTitle.getContext().getResources().getString(R.string.label_shop_title) + " ";
         int startLabelShop = labelShop.length();
