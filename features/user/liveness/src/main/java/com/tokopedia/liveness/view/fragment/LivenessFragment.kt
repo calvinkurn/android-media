@@ -107,7 +107,6 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
         livenessDetectionViewModel.livenessResponseLiveData.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    Timber.d("P2#LIVENESS_UPLOAD_RESULT#'SuccessUpload';ktpPath='$ktpPath';facePath='$facePath';tkpdProjectId='$tkpdProjectId'")
                     val intent = Intent()
                     intent.putExtra(ApplinkConst.Liveness.EXTRA_IS_SUCCESS_REGISTER, it.data.isSuccessRegister)
                     if (!it.data.isSuccessRegister) {
