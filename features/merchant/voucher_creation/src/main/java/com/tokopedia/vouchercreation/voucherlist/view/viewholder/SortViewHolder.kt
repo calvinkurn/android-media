@@ -24,7 +24,11 @@ class SortViewHolder(
             tvMvcSort.text = element.label
             radMvcSort.run{
                 isChecked = element.isSelected
-                //todo: add logic to notify adapter when checked changed
+                setOnCheckedChangeListener { _, isChecked ->
+                    if (isChecked) {
+                        onApplyClick(element)
+                    }
+                }
             }
             setOnClickListener {
                 onApplyClick(element)
