@@ -4,12 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.viewholder.MultipleVariantEditSelectViewHolder
 
 class MultipleVariantEditSelectTypeAdapter: RecyclerView.Adapter<MultipleVariantEditSelectViewHolder>(),
         MultipleVariantEditSelectViewHolder.OnFieldClickListener {
 
-    private var items: List<String> = listOf()
+    private var items: List<SelectionInputModel> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MultipleVariantEditSelectViewHolder {
         val rootView = LayoutInflater.from(parent.context).inflate(R.layout.item_multiple_variant_edit_select, parent, false)
@@ -28,12 +30,8 @@ class MultipleVariantEditSelectTypeAdapter: RecyclerView.Adapter<MultipleVariant
 
     }
 
-    fun setData(items: List<String>) {
-        this.items = items
+    fun setData(items: VariantInputModel) {
+        this.items = items.selections
         notifyDataSetChanged()
-    }
-
-    fun getItem(position: Int): String {
-        return items[position]
     }
 }

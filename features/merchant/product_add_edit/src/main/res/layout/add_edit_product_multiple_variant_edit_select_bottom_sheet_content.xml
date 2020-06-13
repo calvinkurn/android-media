@@ -18,8 +18,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_4"
-        />
+        app:typographyType="heading_4" />
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/checkboxSelectAll"
@@ -39,8 +38,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewVariantCheck"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_300"
-        android:paddingTop="@dimen/spacing_lvl4"
+        android:layout_height="@dimen/multiple_variant_selection_list_height"
         android:paddingLeft="@dimen/spacing_lvl4"
         android:paddingStart="@dimen/spacing_lvl4"
         android:paddingRight="@dimen/layout_lvl0"

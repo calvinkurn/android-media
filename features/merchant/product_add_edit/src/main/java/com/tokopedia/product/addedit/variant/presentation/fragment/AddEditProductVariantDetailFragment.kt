@@ -60,7 +60,9 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val multipleVariantEditSelectBottomSheet = MultipleVariantEditSelectBottomSheet()
-        multipleVariantEditSelectBottomSheet.show(fragmentManager!!, null)
+        val variantInputModel = viewModel.productInputModel.value?.variantInputModel
+        multipleVariantEditSelectBottomSheet.setData(variantInputModel)
+        multipleVariantEditSelectBottomSheet.show(fragmentManager)
     }
 
     fun onBackPressed() {

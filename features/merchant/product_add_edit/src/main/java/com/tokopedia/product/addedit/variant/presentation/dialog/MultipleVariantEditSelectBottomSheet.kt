@@ -5,13 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.variant.presentation.adapter.MultipleVariantEditSelectTypeAdapter
+import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.add_edit_product_multiple_variant_edit_select_bottom_sheet_content.view.*
 
 class MultipleVariantEditSelectBottomSheet : BottomSheetUnify() {
+
+    companion object {
+        const val TAG = "Tag Multiple Variant Edit Select"
+    }
 
     private var contentView: View? = null
     private var selectAdapter: MultipleVariantEditSelectTypeAdapter? = null
@@ -30,6 +36,19 @@ class MultipleVariantEditSelectBottomSheet : BottomSheetUnify() {
         super.onActivityCreated(savedInstanceState)
         removeContainerPadding()
         addMarginTitle()
+    }
+
+    fun setData(items: VariantInputModel?) {
+        items?.run {
+            selectAdapter?.setData(this)
+            selectAdapter?.notifyDataSetChanged()
+        }
+    }
+
+    fun show(manager: FragmentManager?) {
+        manager?.run {
+            super.show(this , MultipleVariantEditInputBottomSheet.TAG)
+        }
     }
 
     private fun setBehaviorAsKnob() {
@@ -58,24 +77,14 @@ class MultipleVariantEditSelectBottomSheet : BottomSheetUnify() {
                 R.layout.add_edit_product_multiple_variant_edit_select_bottom_sheet_content, null)
         contentView?.recyclerViewVariantCheck?.apply {
             setHasFixedSize(true)
-            val items = listOf("semua", "sebagian", "semauku")
-            selectAdapter?.setData(items)
             adapter = selectAdapter
             layoutManager = LinearLayoutManager(context)
         }
         contentView?.buttonNext?.setOnClickListener {
             dismiss()
             val multipleVariantEditSelectBottomSheet = MultipleVariantEditInputBottomSheet()
-            multipleVariantEditSelectBottomSheet.show(fragmentManager!!, "tgu")
+            multipleVariantEditSelectBottomSheet.show(fragmentManager)
         }
         setChild(contentView)
-    }
-
-    fun notifyDataSetChanged() {
-        selectAdapter?.notifyDataSetChanged()
-    }
-
-    companion object {
-        const val TAG = "Tag Multiple Variant Edit Select"
     }
 }

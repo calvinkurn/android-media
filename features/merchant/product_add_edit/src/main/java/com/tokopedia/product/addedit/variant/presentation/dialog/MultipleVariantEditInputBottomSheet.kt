@@ -5,11 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.product.addedit.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.add_edit_product_multiple_variant_edit_input_bottom_sheet_content.view.*
 
 class MultipleVariantEditInputBottomSheet : BottomSheetUnify() {
+
+    companion object {
+        const val TAG = "Tag Multiple Variant Edit Input"
+    }
 
     private var contentView: View? = null
 
@@ -30,6 +35,12 @@ class MultipleVariantEditInputBottomSheet : BottomSheetUnify() {
         addMarginCloseButton()
     }
 
+    fun show(manager: FragmentManager?) {
+        manager?.run {
+            super.show(this , TAG)
+        }
+    }
+
     private fun addMarginCloseButton() {
         val topMargin = resources.getDimensionPixelSize(R.dimen.spacing_lvl3)
         val horizontalMargin = resources.getDimensionPixelSize(R.dimen.tooltip_close_margin)
@@ -48,7 +59,5 @@ class MultipleVariantEditInputBottomSheet : BottomSheetUnify() {
         setChild(contentView)
     }
 
-    companion object {
-        const val TAG = "Tag Multiple Variant Edit Input"
-    }
+
 }
