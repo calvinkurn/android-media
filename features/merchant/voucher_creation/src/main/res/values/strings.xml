@@ -33,8 +33,8 @@
     <!--Prompt back-->
     <string name="mvc_create_prompt_back_title">Yakin mau batalkan tambah voucher?</string>
     <string name="mvc_create_prompt_back_desc">Voucher toko cashback dapat bantu meningkatkan performa kamu, loh.</string>
-    <string name="mvc_review_change_confirmation_title">Kamu ingin mengubah detail voucher toko cashback?</string>
-    <string name="mvc_review_change_confirmation_detail">Kamu dapat langsung mengubah detail voucher dari halaman ini. Periksa kembali sebelum menambahkan voucher.</string>
+    <string name="mvc_review_change_confirmation_title">Kamu ingin mengubah detail Voucher Cashback?</string>
+    <string name="mvc_review_change_confirmation_detail">Kamu dapat langsung mengubah detail voucher di halaman ini. Periksa kembali sebelum menambahkan voucher.</string>
     <string name="mvc_review_back_redirect">Untuk batalkan pembuatan voucher klik di sini</string>
     <string name="mvc_review_back_redirect_clickable">di sini</string>
 
@@ -85,8 +85,8 @@
     <string name="mvc_create_tips_desc_max_estimation_1">Biaya promosi akan terhitung setelah pembeli menggunakan voucher toko dalam pembelian.</string>
     <string name="mvc_create_tips_desc_max_estimation_2">Pengeluaran akan otomatis dipotong dari hasil penjualanmu.</string>
     <string name="mvc_create_tips_desc_max_estimation_3">Kamu tidak perlu bayar di muka.</string>
-    <string name="mvc_tips_title_cashback_benefit">KEGUNAAN VOUCHER TOKO CASHBACK</string>
-    <string name="mvc_tips_desc_cashback">Gunakan Voucher cashback agar tokomu  mendapatkan <b>lebih banyak pelanggan</b>, namun tetap ingin mempertahankan citra brand toko dan harga barang.</string>
+    <string name="mvc_tips_title_cashback_benefit">KEGUNAAN VOUCHER CASHBACK</string>
+    <string name="mvc_tips_desc_cashback">Gunakan Voucher cashback untuk mendapatkan <b>lebih banyak pelanggan</b>, dengan tetap menjaga citra brand toko, dan harga barang.</string>
 
     <!--Step 2-->
     <string name="mvc_create_tips_calculation">Cara perhitungan estimasi pengeluaran</string>
@@ -120,7 +120,7 @@
     <string name="mvc_create_promo_type_bottomsheet_desc">Pastikan potongan harga &lt;b>lebih besar dari Rp%s&lt;/b> untuk menarik lebih banyak calon pembeli.</string>
     <string name="mvc_create_promo_type_bottomsheet_change_now">Ubah Sekarang</string>
     <string name="mvc_create_cashback">Buat Voucher Toko Cashback</string>
-    <string name="mvc_unavailable_ticker">Untuk Voucher Toko Gratis Ongkir saat ini hanya tersedia di desktop</string>
+    <string name="mvc_unavailable_ticker">Voucher Gratis Ongkir saat ini hanya tersedia di desktop</string>
 
     <!-- Step 3 -->
     <string name="mvc_start_date_title">Pilih Tanggal Mulai</string>
@@ -160,7 +160,7 @@
 
     <!-- common -->
     <string name="mvc_create_set_period">Tentukan periode voucher aktif</string>
-    <string name="mvc_no_active_voucher">Gak ada voucher aktif</string>
+    <string name="mvc_no_active_voucher">Nggak ada voucher aktif</string>
     <string name="mvc_list_empty_state_description">Yuk, gunakan Voucher Toko untuk meningkatkan peluang penjualan tokomu.</string>
     <string name="mvc_create_voucher">Buat Voucher</string>
     <string name="mvc_view_history">Lihat Riwayat</string>
@@ -194,7 +194,7 @@
     <string name="mvc_stop_voucher_dialog_description"><![CDATA[<font color="#747478">Dengan menghentikan Voucher Toko <b>\"%s\"</b>, calon pembeli tidak dapat menggunakan voucher ini.</font>]]></string>
     <string name="mvc_download_voucher">Download Voucher</string>
     <string name="mvc_select_voucher_size">Pilih Ukuran Voucher</string>
-    <string name="mvc_download_voucher_description">Download voucher menggunakan ukuran yang sesuai kebutuhan kamu dari 3 ukuran berikut :</string>
+    <string name="mvc_download_voucher_description">Download voucher menggunakan ukuran yang sesuai kebutuhan kamu dari 2 ukuran berikut :</string>
     <string name="mvc_ratio_1_1">Ratio 1:1</string>
     <string name="mvc_for_instagram_facebook_post">Untuk post Instagram, Facebook.</string>
     <string name="mvc_ratio_16_9">Ratio 16:9</string>
@@ -253,7 +253,7 @@
     <string name="mvc_share_now">Bagikan Sekarang</string>
     <string name="mvc_storage_permission_enabled_needed">Anda tidak memberikan izin akses untuk Media Penyimpanan.</string>
     <string name="mvc_free_delivery_alert">Untuk ubah dan duplikat Voucher Toko Gratis Ongkir saat ini hanya tersedia di desktop</string>
-    <string name="mvc_free_delivery_alert_duplicate">Untuk duplikat Voucher Toko Gratis Ongkir saat ini hanya tersedia di desktop</string>
+    <string name="mvc_free_delivery_alert_duplicate">Duplikat Voucher Gratis Ongkir hanya tersedia di desktop</string>
 
     <!-- voucher list -->
     <string name="mvc_ongoing">Berlangsung</string>
@@ -293,7 +293,7 @@
     <string name="mvc_detail_quota">Kuota</string>
     <string name="mvc_detail_terms">Syarat Pembelian</string>
     <string name="mvc_detail_period">Periode</string>
-    <string name="mvc_detail_purchase_terms">"Min. pembelian Rp%s - &lt;br>Max. potongan Rp%s"</string>
+    <string name="mvc_detail_purchase_terms">"Min. pembelian Rp%s - &lt;br>Maks. potongan Rp%s"</string>
     <string name="mvc_detail_tips">&lt;b>Voucher kamu akan tampil&lt;/b> di halaman detail produk dan halaman toko. Lihat Tampilan</string>
     <string name="mvc_detail_tips_clickable">Lihat Tampilan</string>
     <string name="mvc_detail_ticker_private">&lt;b>Bagikan voucher&lt;b> untuk menjangkau lebih banyak pembeli. Lihat Tips &amp; Trik</string>

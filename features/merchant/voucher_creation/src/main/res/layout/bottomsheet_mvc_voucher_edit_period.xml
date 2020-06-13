@@ -92,7 +92,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edtMvcStartDate"
         app:text_field_append_drawable_icon_2="@drawable/ic_mvc_calendar"
-        app:text_field_label="@string/mvc_start_date"
+        app:text_field_label="@string/mvc_end_date"
         tools:layout_height="@dimen/mvc_dimen_20dp" />
 
     <com.tokopedia.unifycomponents.UnifyButton
