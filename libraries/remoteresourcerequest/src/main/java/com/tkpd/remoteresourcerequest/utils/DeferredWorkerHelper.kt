@@ -35,6 +35,7 @@ class DeferredWorkerHelper(val context: Context) {
         }
     }
 
+    @Throws(JSONException::class)
     private fun getDeferredResourceFromFile(
         @RawRes resourceId: Int,
         diffFileList: ArrayList<String>

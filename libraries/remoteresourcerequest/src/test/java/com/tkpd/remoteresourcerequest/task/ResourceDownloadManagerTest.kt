@@ -3,18 +3,19 @@ package com.tkpd.remoteresourcerequest.task
 import android.content.Context
 import android.os.Handler
 import android.os.Message
+import com.tkpd.remoteresourcerequest.BuildConfig
+import com.tkpd.remoteresourcerequest.callback.DeferredCallback
 import com.tkpd.remoteresourcerequest.callback.DeferredTaskCallback
 import com.tkpd.remoteresourcerequest.type.ImageType
 import com.tkpd.remoteresourcerequest.type.MultiDPIImageType
 import com.tkpd.remoteresourcerequest.utils.DensityFinder
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import io.mockk.*
-import io.mockk.impl.annotations.MockK
 import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-
-import org.junit.Assert.*
 import java.lang.ref.WeakReference
 
 class ResourceDownloadManagerTest {
@@ -23,7 +24,8 @@ class ResourceDownloadManagerTest {
     val context = mockk<Context>(relaxed = true)
     val manager = spyk<ResourceDownloadManager>()
     lateinit var imageType: ImageType
-    val callback = mockk<DeferredTaskCallback>(relaxed = true)
+    val deferredCallback = mockk<DeferredCallback>(relaxed = true)
+    val taskCallback = mockk<DeferredTaskCallback>(relaxed = true)
     private val imageView = mockk<DeferredImageView>(relaxed = true)
     val handler = mockk<Handler>()
 
@@ -32,7 +34,7 @@ class ResourceDownloadManagerTest {
         every { task.deferredImageView } returns WeakReference(imageView)
         every { manager.getMainHandler() } returns handler
         every { manager.getNewDownloadTaskInstance() } returns task
-        every { manager.scheduleWorker(context, 1) } just Runs
+        every { manager.scheduleWorker(context, any(), any()) } just Runs
 
 
     }
@@ -43,10 +45,21 @@ class ResourceDownloadManagerTest {
 
     @Test
     fun initialize() {
+        every { manager.deferredCallback } returns deferredCallback
+        manager.initialize(context, 1)
+        verify(exactly = 1) { manager.scheduleWorker(context, 1, BuildConfig.VERSION_NAME) }
     }
 
     @Test
     fun setBaseAndRelativeUrl() {
+        manager.initialize(context, 1, "2.0")
+        imageType = MultiDPIImageType(null, "abc.png")
+        manager.setBaseAndRelativeUrl("www.abc.com/", "relative/")
+
+        assertEquals(
+                "www.abc.com/relative/${DensityFinder.densityUrlPath}/abc.png",
+                manager.getResourceUrl(imageType)
+        )
     }
 
     @Test
@@ -58,9 +71,9 @@ class ResourceDownloadManagerTest {
         manager.initialize(context, 1)
         imageType = MultiDPIImageType(null, "abc.png")
 
-        manager.startDownload(imageType, callback)
+        manager.startDownload(imageType, taskCallback)
 
-        verify { task.initTask("www.abccc.com/def/mdpi/abc.png", imageType, callback) }
+        verify { task.initTask("www.abccc.com/def/mdpi/abc.png", imageType, taskCallback) }
         verify { task.getDownloadRunnable() }
     }
 
@@ -89,12 +102,61 @@ class ResourceDownloadManagerTest {
         val msg = mockk<Message>()
         msg.obj = task
         every { task.deferredImageView } returns null
-        every { handler.obtainMessage(any(),any()).sendToTarget() } just Runs
+        every { handler.obtainMessage(any(), any()).sendToTarget() } just Runs
         msg.what = ResourceDownloadManager.DOWNLOAD_COMPLETED
         manager.setBaseAndRelativeUrl("www.abc.com/", "def/")
         manager.initialize(context, 1)
         val value = manager.handleMessage(msg)
         verify(exactly = 2) { task.getDownloadUrl() }
+
+        assertTrue(value)
+    }
+
+    @Test
+    fun handleStateDecodeStarted() {
+        var msg = mockk<Message>(relaxed = true)
+        msg.obj = task
+        msg.what = ResourceDownloadManager.DECODE_STARTED
+        every { handler.obtainMessage(any(), any()).sendToTarget() } just Runs
+
+        val value = manager.handleMessage(msg)
+
+        verify(exactly = 1) { task.getDownloadUrl() }
+
+        assertTrue(value)
+    }
+
+    @Test
+    fun handleStateDecodeComplete() {
+        every { handler.obtainMessage(any(), any()).sendToTarget() } just Runs
+        var msg = mockk<Message>(relaxed = true)
+        msg.obj = task
+        msg.what = ResourceDownloadManager.DECODE_COMPLETED
+
+        manager.setBaseAndRelativeUrl("www.abc.com/", "def/")
+        manager.initialize(context, 1)
+
+        val value = manager.handleMessage(msg)
+
+        verify(exactly = 1) { task.getDownloadUrl() }
+
+        assertTrue(value)
+    }
+
+    @Test
+    fun handleStateDecodeFailed() {
+        every { handler.obtainMessage(any(), any()).sendToTarget() } just Runs
+        var msg = mockk<Message>(relaxed = true)
+        msg.obj = task
+        msg.what = ResourceDownloadManager.DECODE_FAILED
+
+        manager.setBaseAndRelativeUrl("www.abc.com/", "def/")
+        manager.initialize(context, 1)
+
+        val value = manager.handleMessage(msg)
+
+        verify(exactly = 1) { task.getDownloadUrl() }
+        verify { task.recycleTask() }
 
         assertTrue(value)
     }
@@ -120,7 +182,7 @@ class ResourceDownloadManagerTest {
         msg.what = ResourceDownloadManager.DOWNLOAD_SKIPPED
 
         every { task.deferredImageView } returns null
-        every { handler.obtainMessage(any(),any()).sendToTarget() } just Runs
+        every { handler.obtainMessage(any(), any()).sendToTarget() } just Runs
 
         manager.setBaseAndRelativeUrl("www.abc.com/", "def/")
         manager.initialize(context, 1)
@@ -145,6 +207,24 @@ class ResourceDownloadManagerTest {
     }
 
     @Test
-    fun stopPendingDownload() {
+    fun stopDeferredImageViewRenderingWithNull() {
+        every { task.deferredImageView } returns null
+        every { task.interruptDecodeRunnable() } just Runs
+
+        manager.stopDeferredImageViewRendering(task)
+        // in case no imageview is set
+        verify(exactly = 0) { task.interruptDecodeRunnable() }
+
+    }
+
+    @Test
+    fun stopDeferredImageViewRenderingWithNonNull() {
+        every { task.deferredImageView } returns WeakReference(imageView)
+        every { task.interruptDecodeRunnable() } just Runs
+
+        manager.stopDeferredImageViewRendering(task)
+        // in case no imageview is set
+        verify(exactly = 1) { task.interruptDecodeRunnable() }
+
     }
 }

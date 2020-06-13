@@ -283,7 +283,7 @@ class ResourceDownloadManager private constructor() {
 
     private fun onDownloadFailed(task: DeferredResourceTask) {
         task.deferredImageView?.let { imageReference ->
-            imageReference.get()?.setImageResource(R.drawable.ic_loading_toped_new)
+            imageReference.get()?.setImageResource(R.drawable.ic_loading_error)
         }
         task.notifyDownloadFailed()
     }

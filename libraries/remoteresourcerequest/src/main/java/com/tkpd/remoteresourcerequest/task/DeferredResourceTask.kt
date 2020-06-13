@@ -161,17 +161,11 @@ class DeferredResourceTask(
     }
 
     fun notifyDownloadComplete() {
-        deferredTaskCallback?.onTaskCompleted(
-                mUrl.substring(mUrl.lastIndexOf(URL_SEPARATOR) + 1),
-                filePath = getFilePath()
-        )
+        deferredTaskCallback?.onTaskCompleted(mUrl, filePath = getFilePath())
     }
 
     fun notifyDownloadFailed() {
-        deferredTaskCallback?.onTaskCompleted(
-                mUrl.substring(mUrl.lastIndexOf(URL_SEPARATOR) + 1),
-                filePath = getFilePath()
-        )
+        deferredTaskCallback?.onTaskFailed(mUrl)
     }
 
     private fun getFilePath(): String? = getFileLocationFromDirectory().absolutePath

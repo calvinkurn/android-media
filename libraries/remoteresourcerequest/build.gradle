@@ -53,6 +53,9 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbRoomKtx
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
 
+
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+
     //test
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockk
@@ -65,7 +68,9 @@ dependencies {
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    androidTestImplementation rootProject.ext.testDependencies.mockitorCore,     { exclude group: 'net.bytebuddy' } // DexMaker has it"s own MockMaker==============================--
+    androidTestImplementation rootProject.ext.testDependencies.mockitorCore, {
+        exclude group: 'net.bytebuddy'
+    } // DexMaker has it"s own MockMaker==============================--
     androidTestImplementation rootProject.ext.testDependencies.mockitorAndroid
 
     testImplementation rootProject.ext.testDependencies.mockitorCore

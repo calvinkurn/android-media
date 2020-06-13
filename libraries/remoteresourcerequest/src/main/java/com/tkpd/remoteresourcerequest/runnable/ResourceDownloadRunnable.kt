@@ -32,7 +32,6 @@ class ResourceDownloadRunnable(
         fun setByteBuffer(byteArray: ByteArray?)
     }
 
-    @Throws(Exception::class)
     fun downloadFileSync() {
         var hasSomeExceptionOccurred = false
         /**
@@ -173,7 +172,7 @@ class ResourceDownloadRunnable(
         try {
             out = FileOutputStream(file)
             out.write(byteArray)
-        } catch (e: Exception) {
+        } catch (e: IOException) {
             e.printStackTrace()
         } finally {
             check(file.length() == byteArray.size.toLong()) { CORRUPT_FILE_MESSAGE }
