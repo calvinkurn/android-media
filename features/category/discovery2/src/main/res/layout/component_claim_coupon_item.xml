@@ -11,8 +11,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/appCompatImageViewDouble"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_0"
         android:scaleType="centerCrop"
         android:visibility="gone"
         app:layout_constraintDimensionRatio="h,3:1.6"
@@ -27,8 +27,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/appCompatImageView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_0"
         android:scaleType="centerCrop"
         android:visibility="gone"
         app:layout_constraintDimensionRatio="h,3.3:1"
@@ -45,7 +45,7 @@
         android:id="@+id/claim_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_margin="@dimen/dp_8"
         android:background="@drawable/discovery_bg_button_state"
         android:gravity="center"
         android:paddingLeft="@dimen/dp_10"

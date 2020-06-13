@@ -32,7 +32,7 @@ data class ComponentsItem(
         val title: String? = "",
 
         @SerializedName("skiprender")
-        val skiprender: Boolean = false,
+        val skipRender: Boolean = false,
 
         @SerializedName("properties")
         var properties: Properties? = null,

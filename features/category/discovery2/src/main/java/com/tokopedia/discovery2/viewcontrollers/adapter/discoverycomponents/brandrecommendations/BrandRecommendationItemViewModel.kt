@@ -14,10 +14,6 @@ class BrandRecommendationItemViewModel(val application: Application, components:
         componentData.value = components
     }
 
-    fun getComponentDataLiveData() : LiveData<ComponentsItem> = componentData
-
-    override fun initDaggerInject() {
-
-    }
+    fun getComponentDataLiveData(): LiveData<ComponentsItem> = componentData
 
 }

@@ -9,14 +9,16 @@ import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.BannerAction
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.CheckPushStatusUseCase
 import com.tokopedia.discovery2.usecase.SubScribeToUseCase
-import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
@@ -25,6 +27,7 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
+private const val PROMO_CODE = "Promo Code"
 class MultiBannerViewModel(val application: Application, var components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val bannerData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val pushBannerStatus: MutableLiveData<Int> = MutableLiveData()
@@ -59,8 +62,8 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     fun getPushBannerStatusData(): LiveData<Int> = pushBannerStatus
     fun getShowLoginData(): LiveData<Boolean> = showLogin
     fun getPushBannerSubscriptionData(): LiveData<Int> = pushBannerSubscription
-    fun getBannerUrlHeight() = Utils.extractDimension(bannerData.value?.data?.get(0)?.imageUrlDynamicMobile)
-    fun getBannerUrlWidth() = Utils.extractDimension(bannerData.value?.data?.get(0)?.imageUrlDynamicMobile, "width")
+    fun getBannerUrlHeight() = Utils.extractDimension(bannerData.value?.data?.firstOrNull()?.imageUrlDynamicMobile)
+    fun getBannerUrlWidth() = Utils.extractDimension(bannerData.value?.data?.firstOrNull()?.imageUrlDynamicMobile, "width")
 
     fun onBannerClicked(position: Int, view: View) {
         when (bannerData.value?.data?.get(position)?.action) {
@@ -73,13 +76,14 @@ class MultiBannerViewModel(val application: Application, var components: Compone
 
     private fun copyCodeToClipboard(position: Int, view: View) {
         (application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?)
-                ?.primaryClip = ClipData.newPlainText("Promo Code", bannerData.value?.data?.get(position)?.code)
+                ?.primaryClip = ClipData.newPlainText(PROMO_CODE, bannerData.value?.data?.get(position)?.code)
         if (bannerData.value?.data?.get(position)?.applinks?.isNotEmpty() == true) {
-            Toaster.make(view, "Kode kupon berhasil disalin. Gunakan saat transaksi.", Toast.LENGTH_SHORT, Toaster.TYPE_NORMAL, "S & K", View.OnClickListener {
+            Toaster.make(view, view.context.getString(R.string.coupon_code_successfully_copied), Toast.LENGTH_SHORT, Toaster.TYPE_NORMAL,
+                    view.context.getString(R.string.coupon_code_btn_text), View.OnClickListener {
                 navigate(view.context, bannerData.value?.data?.get(position)?.applinks)
             })
         } else {
-            Toaster.make(view, "Kode kupon berhasil disalin. Gunakan saat transaksi.", Toast.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+            Toaster.make(view, view.context.getString(R.string.coupon_code_successfully_copied), Toast.LENGTH_SHORT, Toaster.TYPE_NORMAL)
         }
     }
 
@@ -130,7 +134,7 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     private fun getCampaignId(position: Int): Int {
         val parameterList: List<String>? = bannerData.value?.data?.get(position)?.paramsMobile?.split("=")
         if (parameterList != null && parameterList.size >= 2) {
-            return parameterList[1].toInt()
+            return parameterList[1].toIntOrZero()
         }
         return 0
     }

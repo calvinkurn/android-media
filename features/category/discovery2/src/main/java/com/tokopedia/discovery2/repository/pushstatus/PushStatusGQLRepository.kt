@@ -18,8 +18,4 @@ class PushStatusGQLRepository @Inject constructor(val getGQLString: (Int) -> Str
         return getGQLData(getGQLString(R.raw.set_push_reminder_gql),
                 PushSubscriptionResponse::class.java, mapOf("campaignID" to compaignId))
     }
-
-
-
-
 }

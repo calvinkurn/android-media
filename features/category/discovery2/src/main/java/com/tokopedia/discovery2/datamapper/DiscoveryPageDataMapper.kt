@@ -21,18 +21,20 @@ fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse): Discov
     })
     return discoveryPageData
 }
+
 class DiscoveryPageDataMapper(val pageInfo: PageInfo) {
     fun getDiscvoeryComponentList(components: List<ComponentsItem>): List<ComponentsItem> {
-        var listComponents: ArrayList<ComponentsItem> = ArrayList()
+        val listComponents: ArrayList<ComponentsItem> = ArrayList()
         for ((position, component) in components.withIndex()) {
-            listComponents.addAll(parseComponent(component,position))
+            listComponents.addAll(parseComponent(component, position))
 
         }
 
         return listComponents
     }
-    fun parseComponent(component: ComponentsItem,position: Int):List<ComponentsItem> {
-        var listComponents: ArrayList<ComponentsItem> = ArrayList()
+
+    fun parseComponent(component: ComponentsItem, position: Int): List<ComponentsItem> {
+        val listComponents: ArrayList<ComponentsItem> = ArrayList()
         when (component.name) {
             ComponentNames.Tabs.componentName -> listComponents.addAll(parseTab(component, position))
             ComponentNames.ProductCardRevamp.componentName,
@@ -43,7 +45,7 @@ class DiscoveryPageDataMapper(val pageInfo: PageInfo) {
     }
 
 
-    fun parseTab(component: ComponentsItem, position: Int):List<ComponentsItem> {
+    fun parseTab(component: ComponentsItem, position: Int): List<ComponentsItem> {
 
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
         listComponents.add(component)
@@ -55,16 +57,16 @@ class DiscoveryPageDataMapper(val pageInfo: PageInfo) {
         component.getComponentsItem()?.forEach {
 
             it.apply {
-                val tabData = data?.get(0);
+                val tabData = data?.get(0)
                 if (tabData?.isSelected!!) {
-                    val targetComponentIdList = tabData?.targetComponentId?.split(",")?.map { it.trim() }
+                    val targetComponentIdList = tabData.targetComponentId?.split(",")?.map { it.trim() }
                     if (!targetComponentIdList.isNullOrEmpty()) {
                         val componentsItem: ArrayList<ComponentsItem> = ArrayList()
                         targetComponentIdList.forEachIndexed { index, componentId ->
                             getComponent(componentId, pageInfo.identifier!!)?.let { component1 ->
                                 component1.parentComponentId = component.id
                                 componentsItem.add(component1)
-                                listComponents.addAll(parseComponent(component1,position))
+                                listComponents.addAll(parseComponent(component1, position))
                             }
                         }
                         this.setComponentsItem(componentsItem)
@@ -76,7 +78,7 @@ class DiscoveryPageDataMapper(val pageInfo: PageInfo) {
         return listComponents
     }
 
-    fun parseProductVerticalList(component: ComponentsItem):List<ComponentsItem> {
+    fun parseProductVerticalList(component: ComponentsItem): List<ComponentsItem> {
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
         if (component.getComponentsItem().isNullOrEmpty() && component.noOfPagesLoaded == 0) {
             listComponents.add(component.copy().apply {

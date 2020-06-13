@@ -17,7 +17,4 @@ class DynamicCategoryItemViewModel(val application: Application, components: Com
         return componentData
     }
 
-    override fun initDaggerInject() {
-
-    }
 }

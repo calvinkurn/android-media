@@ -17,8 +17,4 @@ class ChipsFilterItemViewModel(val application: Application, components: Compone
     fun getComponentLiveData(): LiveData<ComponentsItem> {
         return componentData
     }
-
-    override fun initDaggerInject() {
-
-    }
 }

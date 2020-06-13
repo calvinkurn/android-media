@@ -10,6 +10,9 @@ import com.tokopedia.discovery2.data.cpmtopads.Headline
 import com.tokopedia.discovery2.data.cpmtopads.ImageProduct
 import com.tokopedia.discovery2.data.cpmtopads.ProductItem
 
+private const val CHIPS = "Chips"
+private const val TABS_ITEM = "tabs_item"
+
 class DiscoveryDataMapper {
 
     companion object {
@@ -20,8 +23,9 @@ class DiscoveryDataMapper {
             val list = ArrayList<ComponentsItem>()
             itemList.forEachIndexed {index, it ->
                 val componentsItem = ComponentsItem()
+                val id = "${CHIPS}_$index"
                 componentsItem.name = subComponentName
-                componentsItem.id = "Chips_$index"
+                componentsItem.id = id
                 it.parentComponentName = parentComponentName
                 it.positionForParentItem = position
                 val dataItem = mutableListOf<DataItem>()
@@ -36,6 +40,7 @@ class DiscoveryDataMapper {
             val list = ArrayList<ComponentsItem>()
             var isSelectedFound = false
             component.data?.forEachIndexed { index, it ->
+                val id = "${TABS_ITEM}_$index"
                 if (it.isSelected) {
                     isSelectedFound = true
                 }
@@ -46,7 +51,7 @@ class DiscoveryDataMapper {
                 val dataItem = mutableListOf<DataItem>()
                 dataItem.add(it)
                 componentsItem.data = dataItem
-                componentsItem.id = "tab_item_$index"
+                componentsItem.id = id
                 list.add(componentsItem)
             }
             if (!isSelectedFound) {
@@ -137,7 +142,7 @@ class DiscoveryDataMapper {
         val list = ArrayList<ComponentsItem>()
         child?.forEach {
             val componentsItem = ComponentsItem()
-            componentsItem.name = "horizontal_category_navigation_item"
+            componentsItem.name = ComponentNames.HorizontalCategoryNavigationIem.componentName
             val dataItemlist = mutableListOf<DataItem>()
             val dataItem = DataItem()
             dataItem.imageUrlMobile = it?.thumbnailImage

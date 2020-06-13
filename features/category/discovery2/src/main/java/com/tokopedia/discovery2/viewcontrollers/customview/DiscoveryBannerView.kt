@@ -5,16 +5,16 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.View
+import android.widget.FrameLayout
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.discovery2.R
 
 private const val SAVED = "instance state BannerView.class"
 private const val SAVE_STATE_AUTO_SCROLL_ON_PROGRESS = "auto_scroll_on_progress"
 
 class DiscoveryBannerView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : BaseCustomView(context, attrs, defStyleAttr) {
+    : FrameLayout(context, attrs, defStyleAttr) {
 
     private var autoScrollEnabled: Boolean = false
     private var autoScrollOnProgressLiveData = MutableLiveData<Boolean>()

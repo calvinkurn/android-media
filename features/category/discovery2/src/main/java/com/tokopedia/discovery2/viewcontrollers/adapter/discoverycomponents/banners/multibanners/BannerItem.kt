@@ -4,16 +4,18 @@ import android.content.Context
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.unifycomponents.ImageUnify
 
+private const val VIEW_ID_CONSTANT = 100
 class BannerItem(val bannerItemData: DataItem, private val constraintLayout: ConstraintLayout,
-                 private val constraintSet: ConstraintSet, private val viewWidth: Int? = Utils.DEFAULT_BANNER_WIDTH, private val viewHeight: Int? = Utils.DEFAULT_BANNER_HEIGHT, private val index: Int,
+                 private val constraintSet: ConstraintSet, private val viewWidth: Int? = Utils.DEFAULT_BANNER_WIDTH,
+                 private val viewHeight: Int? = Utils.DEFAULT_BANNER_HEIGHT, private val index: Int,
                  private val previousBannerItem: BannerItem?, val context: Context, private val islastItem: Boolean) {
 
     var bannerImageView = View(context)
-    private val VIEW_ID_CONSTANT = 100
 
     init {
         addImageConstrains()
@@ -48,7 +50,7 @@ class BannerItem(val bannerItemData: DataItem, private val constraintLayout: Con
         }
         constraintSet.connect(bannerImageView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
         if (!bannerItemData.imageUrlDynamicMobile.isNullOrEmpty()) {
-            (bannerImageView as ImageUnify).setImageUrl(bannerItemData.imageUrlDynamicMobile ?: "")
+            (bannerImageView as ImageUnify).setImageUrl(bannerItemData.imageUrlDynamicMobile)
         }
         constraintSet.applyTo(constraintLayout)
     }

@@ -8,7 +8,11 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.discovery2.ClaimCouponConstant
+import com.tokopedia.discovery2.Constant
+import com.tokopedia.discovery2.Constant.ClaimCouponConstant.CLAIMED
+import com.tokopedia.discovery2.Constant.ClaimCouponConstant.NOT_LOGGEDIN
+import com.tokopedia.discovery2.Constant.ClaimCouponConstant.OUT_OF_STOCK
+import com.tokopedia.discovery2.Constant.ClaimCouponConstant.UNCLAIMED
 import com.tokopedia.discovery2.GenerateUrl
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
@@ -36,7 +40,7 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
 
     }
 
-    private fun setData(dataItem: DataItem?, isDouble:Boolean) {
+    private fun setData(dataItem: DataItem?, isDouble: Boolean) {
         if (isDouble) {
             claimCouponImageDouble.show()
             claimCouponImage.hide()
@@ -57,9 +61,10 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
             (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickClaimCoupon(dataItem?.title, dataItem?.slug)
             claimCouponItemViewModel.redeemCoupon()
             claimCouponItemViewModel.getRedeemCouponCode().observe(fragment.viewLifecycleOwner, Observer { item ->
-                if (!item.isNullOrEmpty() && item != ClaimCouponConstant.NOT_LOGGEDIN) {
-                    setBtn(ClaimCouponConstant.UNCLAIMED)
-                    Toaster.make(itemView.rootView, ClaimCouponConstant.REDEEM_COUPON_MSG, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, ClaimCouponConstant.LIHAT_TEXT, View.OnClickListener {
+                if (!item.isNullOrEmpty() && item != NOT_LOGGEDIN) {
+                    setBtn(UNCLAIMED)
+                    Toaster.make(itemView.rootView, itemView.context.getString(R.string.claim_coupon_redeem_coupon_msg),
+                            Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, itemView.context.getString(R.string.claim_coupon_lihat_text), View.OnClickListener {
                         val applink = GenerateUrl.getClaimCoupon(item)
                         claimCouponItemViewModel.navigate(itemView.context, applink)
                     })
@@ -74,12 +79,12 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
     }
 
     private fun setBtn(status: String?) {
-        claimBtn.text = if (status == ClaimCouponConstant.OUT_OF_STOCK || status == null)
-            ClaimCouponConstant.UNCLAIMED
+        claimBtn.text = if (status == OUT_OF_STOCK || status == null)
+            UNCLAIMED
         else
             status
-        claimBtn.isEnabled = status == ClaimCouponConstant.CLAIMED
-        if(claimBtn.isEnabled)
+        claimBtn.isEnabled = status == CLAIMED
+        if (claimBtn.isEnabled)
             claimBtn.setTextColor(MethodChecker.getColor(itemView.context, R.color.white))
         else
             claimBtn.setTextColor(MethodChecker.getColor(itemView.context, R.color.voucher_text_color_disable))

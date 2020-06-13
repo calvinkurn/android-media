@@ -17,8 +17,4 @@ class CarouselBannerItemViewModel(val application: Application, components: Comp
     fun getComponentLiveData(): LiveData<ComponentsItem> {
         return componentData
     }
-
-    override fun initDaggerInject() {
-
-    }
 }

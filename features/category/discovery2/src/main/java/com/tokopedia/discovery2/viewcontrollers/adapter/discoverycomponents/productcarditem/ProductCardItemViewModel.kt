@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.StockWording
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -23,6 +24,13 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
+private const val OFFICIAL_STORE = 1
+private const val GOLD_MERCHANT = 2
+private const val EMPTY = 0
+private const val SOURCE = "discovery"
+private const val REGISTER = "REGISTER"
+private const val UNREGISTER = "UNREGISTER"
+
 class ProductCardItemViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
     private val dataItem: MutableLiveData<DataItem> = MutableLiveData()
@@ -32,20 +40,12 @@ class ProductCardItemViewModel(val application: Application, private val compone
     private val showLoginLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private val notifyMeCurrentStatus: MutableLiveData<Boolean> = MutableLiveData()
     private val showNotifyToast: MutableLiveData<Triple<Boolean, String?, Int?>> = MutableLiveData()
-    private val OFFICIAL_STORE = 1
-    private val GOLD_MERCHANT = 2
-    private val EMPTY = 0
-    private val SOURCE = "discovery"
-    private val REGISTER = "REGISTER"
-    private val UNREGISTER = "UNREGISTER"
-    private val ERROR_MESSAGE = "Terjadi kesalahan, coba lagi nanti."
 
     @Inject
     lateinit var campaignNotifyUserCase: CampaignNotifyUserCase
 
 
     init {
-
         initDaggerInject()
     }
 
@@ -70,15 +70,11 @@ class ProductCardItemViewModel(val application: Application, private val compone
     }
 
     fun getComponentName(): String {
-        var componentName: String = ""
+        var componentName = ""
         components.name?.let {
             componentName = it
         }
         return componentName
-    }
-
-    fun getRemoveProductProperty(): Boolean? {
-        return components.properties?.buttonNotification
     }
 
     fun isUserLoggedIn(): Boolean {
@@ -205,7 +201,7 @@ class ProductCardItemViewModel(val application: Application, private val compone
                         }
                     }
                 }, onError = {
-                    showNotifyToast.value = Triple(true, ERROR_MESSAGE, 0)
+                    showNotifyToast.value = Triple(true, context.getString(R.string.product_card_error_msg), 0)
                     it.printStackTrace()
                 })
             }

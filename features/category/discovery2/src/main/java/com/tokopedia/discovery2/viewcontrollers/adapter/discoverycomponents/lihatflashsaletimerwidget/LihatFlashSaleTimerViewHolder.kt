@@ -43,7 +43,6 @@ class LihatFlashSaleTimerViewHolder(itemView: View, private val fragment: Fragme
         lihatFlashSaleTimerViewModel = discoveryBaseViewModel as LihatFlashSaleTimerViewModel
         lihatSemuaTextView.setOnClickListener(this)
 
-        // Observe Model Data
         lihatFlashSaleTimerViewModel.getComponentData().observe(fragment.viewLifecycleOwner, Observer { componentItem ->
             if (!componentItem.data.isNullOrEmpty()) {
                 setTimerUI(componentItem, HOURS)
@@ -54,7 +53,6 @@ class LihatFlashSaleTimerViewHolder(itemView: View, private val fragment: Fragme
             }
         })
 
-        // Observe Timer Data
         lihatFlashSaleTimerViewModel.getTimerData().observe(fragment.viewLifecycleOwner, Observer {
             hoursTextView.text = String.format(TIME_DISPLAY_FORMAT, it.hours)
             minutesTextView.text = String.format(TIME_DISPLAY_FORMAT, it.minutes)
@@ -107,7 +105,7 @@ class LihatFlashSaleTimerViewHolder(itemView: View, private val fragment: Fragme
 
     @SuppressLint("ResourceType")
     private fun getTimerFontColour(componentItem: ComponentsItem?): String? {
-        return if (componentItem?.data?.get(0)?.timerFontColor != null && componentItem.data?.get(0)?.timerFontColor!!.isNotEmpty()) {
+        return if (componentItem?.data?.get(0)?.timerFontColor?.isEmpty() == true) {
             componentItem.data?.get(0)?.timerFontColor
         } else {
             context.resources.getString(R.color.clr_fd412b)
@@ -116,7 +114,7 @@ class LihatFlashSaleTimerViewHolder(itemView: View, private val fragment: Fragme
 
     @SuppressLint("ResourceType")
     private fun getTimerBoxColour(componentItem: ComponentsItem?): String? {
-        return if (componentItem?.data?.get(0)?.timerBoxColor != null && componentItem.data?.get(0)?.timerBoxColor!!.isNotEmpty()) {
+        return if (componentItem?.data?.get(0)?.timerBoxColor?.isEmpty() == true) {
             componentItem.data?.get(0)?.timerBoxColor
         } else {
             context.resources.getString(R.color.clr_fd412b)

@@ -23,7 +23,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_name"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
@@ -49,7 +49,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_2"
-        android:textColor="#fa591d"
+        android:textColor="@color/discovery2_topads_product_light_red"
         app:layout_constraintLeft_toLeftOf="@id/product_name"
         app:layout_constraintTop_toBottomOf="@id/product_name"
         app:typographyType="small"
@@ -68,7 +68,7 @@
         tools:srcCompat="@color/black_70" />
 
     <ImageView
-        android:layout_width="20dp"
+        android:layout_width="@dimen/dp_20"
         android:layout_height="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_6"
         android:layout_marginRight="@dimen/dp_6"

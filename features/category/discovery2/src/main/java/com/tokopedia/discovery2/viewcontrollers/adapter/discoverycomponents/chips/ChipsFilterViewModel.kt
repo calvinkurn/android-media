@@ -7,7 +7,6 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
-import com.tokopedia.discovery2.usecase.CheckPushStatusUseCase
 import com.tokopedia.discovery2.usecase.ChipSelectionUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -70,7 +69,7 @@ class ChipsFilterViewModel(val application: Application, val components: Compone
         listData.value = components.getComponentsItem() as ArrayList<ComponentsItem>
         id?.let {
             launchCatchError(block = {
-                if(chipSelectionUseCase.onChipUnSelection(components.id,components.pageEndPoint, it)) {
+                if(chipSelectionUseCase.onChipUnSelection(components.id, components.pageEndPoint)) {
                     syncData.value = true
                 }
             }, onError = {

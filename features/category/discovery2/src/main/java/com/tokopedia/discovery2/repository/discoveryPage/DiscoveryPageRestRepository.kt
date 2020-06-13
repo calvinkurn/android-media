@@ -12,11 +12,9 @@ import javax.inject.Inject
 
 class DiscoveryPageRestRepository @Inject constructor() : BaseRepository(), DiscoveryPageRepository {
 
-
     override suspend fun getDiscoveryPageData(pageIdentifier: String): DiscoveryResponse {
         return (getRestData(GenerateUrl.getUrl(pageIdentifier),
                 object : TypeToken<DataResponse<DiscoveryResponse>>() {}.type,
-                RequestType.GET) as DataResponse<DiscoveryResponse>).data!!
-
+                RequestType.GET) as DataResponse<DiscoveryResponse>).data
     }
 }

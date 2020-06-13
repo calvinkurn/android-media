@@ -1,13 +1,12 @@
 package com.tokopedia.discovery2.usecase
 
-import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.getComponent
 import javax.inject.Inject
 
 
 class ChipSelectionUseCase @Inject constructor() {
 
-    suspend fun onChipSelection(componentId: String, pageIdentifier: String,chipSelectionId:String): Boolean {
+    fun onChipSelection(componentId: String, pageIdentifier: String,chipSelectionId:String): Boolean {
         val component = getComponent(componentId, pageIdentifier)
         component?.let {
             val parentComponent = getComponent(it.parentComponentId,pageIdentifier)
@@ -22,7 +21,6 @@ class ChipSelectionUseCase @Inject constructor() {
                             childComponent
                         }
 
-                    //TODO change to reset call
                 })
                 parentComponent.chipSelectionData = getComponent(chipSelectionId,pageIdentifier)?.data?.get(0)
             }
@@ -32,7 +30,7 @@ class ChipSelectionUseCase @Inject constructor() {
         return false
     }
 
-    fun onChipUnSelection(componentId: String, pageIdentifier: String, chipSelectionId: String): Boolean {
+    fun onChipUnSelection(componentId: String, pageIdentifier: String): Boolean {
         val component = getComponent(componentId, pageIdentifier)
         component?.let {
             val parentComponent = getComponent(it.parentComponentId,pageIdentifier)
@@ -46,8 +44,6 @@ class ChipSelectionUseCase @Inject constructor() {
                     else {
                         childComponent
                     }
-
-                    //TODO change to reset call
                 })
                 parentComponent.chipSelectionData = null
             }

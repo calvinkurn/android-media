@@ -18,6 +18,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 
 private const val TIME_DISPLAY_FORMAT = "%1$02d"
+
 class BannerTimerViewHolder(private val customItemView: View, val fragment: Fragment) : AbstractViewHolder(customItemView) {
 
     private lateinit var bannerTimerViewModel: BannerTimerViewModel
@@ -50,7 +51,6 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
         constraintSet.setDimensionRatio(bannerImageView.id, "H, $viewWidth : $viewHeight")
         constraintSet.applyTo(constraintLayout)
 
-        // Observe Model Data
         bannerTimerViewModel.getComponentData().observe(fragment.viewLifecycleOwner, Observer { componentItem ->
             if (!componentItem.data.isNullOrEmpty()) {
                 ImageHandler.LoadImage(bannerImageView, componentItem.data?.get(0)?.backgroundUrlMobile)
@@ -63,7 +63,6 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
             }
         })
 
-        // Observe Timer Data
         bannerTimerViewModel.getTimerData().observe(fragment.viewLifecycleOwner, Observer {
             daysTextView.text = String.format(TIME_DISPLAY_FORMAT, it.days)
             hoursTextView.text = String.format(TIME_DISPLAY_FORMAT, it.hours)
@@ -135,7 +134,7 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
 
     @SuppressLint("ResourceType")
     private fun getTimerFontColour(componentItem: ComponentsItem?): String? {
-        return if (componentItem?.data?.get(0)?.fontColor != null && componentItem.data?.get(0)?.fontColor!!.isNotEmpty()) {
+        return if (componentItem?.data?.get(0)?.fontColor?.isEmpty() == true) {
             componentItem.data?.get(0)?.fontColor
         } else {
             context.resources.getString(R.color.clr_ff8000)
@@ -144,7 +143,7 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
 
     @SuppressLint("ResourceType")
     private fun getTimerBoxColour(componentItem: ComponentsItem?): String? {
-        return if (componentItem?.data?.get(0)?.boxColor != null && componentItem.data?.get(0)?.boxColor!!.isNotEmpty()) {
+        return if (componentItem?.data?.get(0)?.boxColor?.isEmpty() == true) {
             componentItem.data?.get(0)?.boxColor
         } else {
             context.resources.getString(R.color.white)

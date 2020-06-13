@@ -371,7 +371,6 @@ object ApplinkConstInternalGlobal {
     val OQR_PIN_URL_ENTRY_PATTERN = "$INTERNAL_GLOBAL/ovoqrthanks/{transfer_id}/"
 
 
-    // tokopedia-android-internal://global/vishnu
     @JvmField
     val DISCOVERY = "$INTERNAL_GLOBAL/discovery"
 

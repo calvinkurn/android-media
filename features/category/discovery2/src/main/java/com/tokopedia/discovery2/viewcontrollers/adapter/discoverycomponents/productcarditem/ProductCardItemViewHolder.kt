@@ -5,15 +5,16 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.view.View
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -25,6 +26,9 @@ import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.Toaster
 
 
+private const val OFFICIAL_STORE = 1
+private const val GOLD_MERCHANT = 2
+
 class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
     private var productImage: ImageUnify = itemView.findViewById(R.id.imageProduct)
@@ -35,7 +39,6 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     private var textViewPrice: TextView = itemView.findViewById(R.id.textViewPrice)
     private var textViewShopLocation: TextView = itemView.findViewById(R.id.textViewShopLocation)
 
-    //    private var labelCashbackPromo: Label = itemView.findViewById(R.id.labelCashBack)
     private var shopBadge: ImageView = itemView.findViewById(R.id.imageViewShopBadge)
     private var imageFreeOngkirPromo: ImageView = itemView.findViewById(R.id.imageFreeOngkirPromo)
     private var productCardView: CardView = itemView.findViewById(R.id.cardViewProductCard)
@@ -53,9 +56,6 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     private lateinit var productCardItemViewModel: ProductCardItemViewModel
     private var productCardName = ""
     private var context: Context? = fragment.activity
-    private val OFFICIAL_STORE = 1
-    private val GOLD_MERCHANT = 2
-
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         productCardItemViewModel = discoveryBaseViewModel as ProductCardItemViewModel
@@ -63,7 +63,8 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     }
 
     private fun initView() {
-        productCardItemViewModel.setContext(productCardView.context)
+        productCardItemViewModel.
+        setContext(productCardView.context)
         productCardView.setOnClickListener {
             handleUIClick(it)
         }
@@ -75,7 +76,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         productCardName = productCardItemViewModel.getComponentName()
-        lifecycleOwner?.let { lifecycleOwner ->
+        lifecycleOwner?.let {
             productCardItemViewModel.getDataItemValue().observe(lifecycleOwner, Observer {
                 populateData(it)
             })
@@ -182,14 +183,14 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     }
 
     private fun notifyMeActiveState() {
-        notifyMeView.text = "Pengingat Aktif"
-        notifyMeView.setTextColor(Color.parseColor("#ae31353b"))
+        notifyMeView.text = itemView.context.getString(R.string.active_reminder_text)
+        notifyMeView.setTextColor(MethodChecker.getColor(itemView.context, R.color.clr_ae31353b))
         notifyMeView.setBackgroundResource(R.drawable.productcard_module_bg_button_active)
     }
 
     private fun notifyMeInActiveState() {
-        notifyMeView.text = "Ingatkan Saya"
-        notifyMeView.setTextColor(Color.parseColor("#03ac0e"))
+        notifyMeView.text = itemView.context.getString(R.string.remind_me_text)
+        notifyMeView.setTextColor(MethodChecker.getColor(itemView.context, R.color.greenColor))
         notifyMeView.setBackgroundResource(R.drawable.productcard_module_bg_button_inactive)
     }
 
@@ -231,7 +232,8 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     private fun showStockProgressTitle(dataItem: DataItem) {
         val stockWording = productCardItemViewModel.getStockWord(dataItem)
         stockTitle.hide()
-        if (!stockWording.title.isNullOrEmpty() && productCardName != "product_card_revamp_item" && productCardName != "product_card_carousel_item") {
+        if (!stockWording.title.isNullOrEmpty() && productCardName != ComponentNames.ProductCardRevampItem.componentName
+                && productCardName != ComponentNames.ProductCardCarouselItem.componentName) {
             stockTitle.setTextAndCheckShow(stockWording.title)
             stockTitle.setTextColor(Color.parseColor(stockWording.color))
         }
@@ -275,17 +277,6 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         }
     }
 
-    //    private fun setCashbackLabel(cashback: String?) {
-//        labelCashbackPromo.hide()
-//        if (!cashback.isNullOrEmpty()) {
-//            labelCashbackPromo.let {
-//                it.show()
-//                it.text = String.format("%s", "Cashback $cashback%")
-//                it.setLabelType(Label.GENERAL_LIGHT_GREEN)
-//            }
-//        }
-//    }
-
     private fun setRating(dataItem: DataItem) {
         if (dataItem.rating.toIntOrZero() > 0) {
             imageViewRating.show()
@@ -315,17 +306,8 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     private fun showNotifyResultToast(toastData: Triple<Boolean, String?, Int?>) {
         if (!toastData.first && !toastData.second.isNullOrEmpty()) {
             Toaster.make(itemView.rootView, toastData.second!!, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
-//            removeProductItem(toastData.third)
         } else if (!toastData.second.isNullOrEmpty()) {
             Toaster.make(itemView.rootView, toastData.second!!, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
-        }
-    }
-
-    private fun removeProductItem(productID: Int?) {
-        productID?.let {
-            if (productID > 0 && productCardItemViewModel.getRemoveProductProperty() == true) {
-//                (parentAbstractViewHolder as? ProductCardRevampViewHolder)?.removeProduct(productID)
-            }
         }
     }
 }

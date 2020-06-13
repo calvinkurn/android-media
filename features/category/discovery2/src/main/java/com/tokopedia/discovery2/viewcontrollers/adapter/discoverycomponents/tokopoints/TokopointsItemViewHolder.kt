@@ -8,7 +8,9 @@ import androidx.lifecycle.Observer
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 class TokopointsItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView), View.OnClickListener {
@@ -29,17 +31,17 @@ class TokopointsItemViewHolder(itemView: View, private val fragment: Fragment) :
             initView()
             couponTitleTv.text = item.title
             bannerImageView.loadImageWithoutPlaceholder(item.thumbnailUrlMobile ?: "")
-            if (item.pointsSlash.toIntOrZero() > 0 && (item.pointsSlashStr?:"").isNotEmpty()) {
+            if (item.pointsSlash.toIntOrZero() > 0 && (item.pointsSlashStr ?: "").isNotEmpty()) {
                 slashedPriceTv.text = item.pointsSlashStr
                 pointsValueTv.text = item.pointsStr
 
-                if (item?.discountPercentageStr?.isNotEmpty()!!) {
-                    discountPriceTv.visibility = View.VISIBLE
+                if (item?.discountPercentageStr?.isNotEmpty() == true) {
+                    discountPriceTv.show()
                     discountPriceTv.text = item.discountPercentageStr
                 } else {
                     resetDiscountData()
                 }
-            } else if (item.pointsStr?.isNotEmpty()!!) {
+            } else if (item.pointsStr?.isNotEmpty() == true) {
                 slashedPriceTv.text = ""
                 pointsValueTv.text = item.pointsStr
                 resetDiscountData()
@@ -49,7 +51,7 @@ class TokopointsItemViewHolder(itemView: View, private val fragment: Fragment) :
 
     fun resetDiscountData() {
         discountPriceTv.text = ""
-        discountPriceTv.visibility = View.INVISIBLE
+        discountPriceTv.invisible()
     }
 
     private fun initView() {
