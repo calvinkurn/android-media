@@ -125,7 +125,7 @@ class EditQuotaBottomSheet(parent: ViewGroup) : BottomSheetUnify() {
 
             KeyboardHandler.showSoftKeyboard(activity)
 
-            val estimationAmount = quota * minimumAmt
+            val estimationAmount = quota * discountAmtMax
 
             if (status == VoucherStatusConst.ONGOING) {
                 minQuota = quota
@@ -167,7 +167,9 @@ class EditQuotaBottomSheet(parent: ViewGroup) : BottomSheetUnify() {
             mvcTicker.run {
                 title = context?.getString(R.string.mvc_estimation_title).toBlankOrString()
                 description = context?.getString(R.string.mvc_estimation_description).toBlankOrString()
-                nominal = CurrencyFormatHelper.convertToRupiah(estimationAmount.toString()).toBlankOrString()
+                nominal = String.format(
+                        getString(R.string.mvc_rp_value),
+                        CurrencyFormatHelper.convertToRupiah(estimationAmount.toString()).toBlankOrString()).toBlankOrString()
             }
 
             setAction(context.getString(R.string.mvc_retry)) {
