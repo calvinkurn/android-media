@@ -138,11 +138,13 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
                 submitInputEdit()
             }
         }
-        switchInsurance?.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (shipmentViewModel.isEditMode && !shipmentViewModel.isAddMode) {
-                ProductEditShippingTracking.clickInsurance(shopId)
-            } else {
-                ProductAddShippingTracking.clickInsurance(shopId)
+        switchInsurance?.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked)  {
+                if (shipmentViewModel.isEditMode && !shipmentViewModel.isAddMode) {
+                    ProductEditShippingTracking.clickInsurance(shopId)
+                } else {
+                    ProductAddShippingTracking.clickInsurance(shopId)
+                }
             }
         }
     }

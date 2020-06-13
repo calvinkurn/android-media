@@ -3,6 +3,8 @@ package com.tokopedia.product.manage.feature.stockreminder.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +20,8 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.getNumberFormatted
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
@@ -44,6 +48,8 @@ class StockReminderFragment: BaseDaggerFragment() {
         private const val ARG_STOCK = "stock"
         private const val TOGGLE_ACTIVE = "active"
         private const val TOGGLE_NOT_ACTIVE = "not active"
+        private const val MINIMUM_STOCK = 1
+        private const val EMPTY_INPUT_STOCK = 0
 
         fun createInstance(productId: Long, productName: String, stock: Int): Fragment {
             val fragment = StockReminderFragment()
@@ -135,6 +141,10 @@ class StockReminderFragment: BaseDaggerFragment() {
                 true
             }
         }
+
+        addStockEditorTextChangedListener()
+        setAddButtonClickListener()
+        setSubtractButtonClickListener()
 
         swStockReminder.setOnCheckedChangeListener { _, isChecked ->
             toggleStateChecked = isChecked
@@ -270,5 +280,81 @@ class StockReminderFragment: BaseDaggerFragment() {
                 Toaster.onCTAClick = View.OnClickListener { updateStockReminder() }
             }
         }
+    }
+
+    private fun addStockEditorTextChangedListener() {
+        qeStock.apply {
+            editText.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(editor: Editable?) {
+                    val input = editor.toString()
+                    val stock = if(input.isNotEmpty()) {
+                        input.toInt()
+                    } else {
+                        EMPTY_INPUT_STOCK
+                    }
+                    toggleQuantityEditorBtn(stock)
+                }
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                }
+            })
+        }
+    }
+
+    private fun setAddButtonClickListener() {
+        qeStock.apply {
+            addButton.setOnClickListener {
+                val input = editText.text.toString()
+
+                var stock = if(input.isNotEmpty()) {
+                    input.toInt()
+                } else {
+                    EMPTY_INPUT_STOCK
+                }
+
+                stock++
+
+                if(stock <= qeStock.maxValue) {
+                    editText.setText(stock.getNumberFormatted())
+                }
+            }
+        }
+    }
+
+    private fun setSubtractButtonClickListener() {
+        qeStock.apply {
+            subtractButton.setOnClickListener {
+                val input = editText.text.toString()
+
+                var stock = if(input.isNotEmpty()) {
+                    input.toInt()
+                } else {
+                    EMPTY_INPUT_STOCK
+                }
+
+                stock--
+
+                if(stock >= MINIMUM_STOCK) {
+                    editText.setText(stock.getNumberFormatted())
+                }
+            }
+        }
+    }
+
+    private fun toggleQuantityEditorBtn(stock: Int) {
+        val enableAddBtn = stock < qeStock.maxValue
+        val enableSubtractBtn = stock > MINIMUM_STOCK
+
+        qeStock.apply {
+            addButton.isEnabled = enableAddBtn
+            subtractButton.isEnabled = enableSubtractBtn
+        }
+    }
+
+    private fun String.toInt(): Int {
+        return replace(".", "").toIntOrZero()
     }
 }

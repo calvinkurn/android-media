@@ -114,7 +114,6 @@ import javax.inject.Inject
 
 class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHolder.OnPhotoChangeListener {
 
-    private var isProductStatusSwitchFirstTime = false
     private var countTouchPhoto = 0
     private var dataBackPressed: Int? = null
 
@@ -229,6 +228,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         return viewModel.isEditing.value ?: false
     }
 
+    fun isDrafting(): Boolean {
+        return viewModel.getDraftId() > 0L
+    }
+
     fun dataBackPressedLoss(): Boolean {
         // when stepper page has no data, dataBackPressed is null but if stepper page has data, dataBackPressed has data too
         // dataBackPressed is a sign of activity where data is obtained
@@ -324,14 +327,16 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             }
         }
 
-        productStatusSwitch?.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isProductStatusSwitchFirstTime) {
-                if (viewModel.isEditing.value == true) {
-                    ProductEditStepperTracking.trackChangeProductStatus(shopId)
-                }
-            }
-            isProductStatusSwitchFirstTime = true
+        productStatusSwitch?.setOnCheckedChangeListener { _, isChecked ->
             viewModel.updateProductStatus(isChecked)
+        }
+
+        // track switch status on click
+        productStatusSwitch?.setOnClickListener {
+            val isChecked = productStatusSwitch?.isChecked
+            if (isChecked == true && viewModel.isEditing.value == true) {
+                ProductEditStepperTracking.trackChangeProductStatus(shopId)
+            }
         }
 
         doneButton?.setOnClickListener {

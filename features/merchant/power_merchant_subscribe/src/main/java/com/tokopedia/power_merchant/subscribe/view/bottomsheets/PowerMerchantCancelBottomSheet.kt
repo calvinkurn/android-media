@@ -1,29 +1,27 @@
 package com.tokopedia.power_merchant.subscribe.view.bottomsheets
 
-import android.app.Dialog
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.View
-import android.widget.Button
-import android.widget.FrameLayout
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.design.component.TextViewCompat
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
+import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.view.util.PowerMerchantSpannableUtil.createSpannableString
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.android.synthetic.main.bottom_sheet_power_merchant_cancellation.*
 
-class PowerMerchantCancelBottomSheet : BottomSheets() {
-    lateinit var buttonCancel: Button
-    lateinit var txtExpiredDate: TextViewCompat
-    lateinit var tickerContainer: FrameLayout
+class PowerMerchantCancelBottomSheet : BottomSheetUnify() {
     private var listener: BottomSheetCancelListener? = null
-    private var isTransitionPeriod: Boolean = false
-    private var expiredDate: String = ""
     private val powerMerchantTracking: PowerMerchantTracking by lazy {
         PowerMerchantTracking()
     }
 
     companion object {
+        private val TAG: String = PowerMerchantCancelBottomSheet::class.java.simpleName
         const val ARGUMENT_DATA_AUTO_EXTEND = "data_is_auto_extend"
         const val ARGUMENT_DATA_DATE = "data_date"
 
@@ -38,69 +36,62 @@ class PowerMerchantCancelBottomSheet : BottomSheets() {
         }
     }
 
-    private fun initVar() {
-        isTransitionPeriod = arguments?.getBoolean(ARGUMENT_DATA_AUTO_EXTEND) ?: false
-        expiredDate = arguments?.getString(ARGUMENT_DATA_DATE) ?: ""
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val itemView = View.inflate(context,
+            R.layout.bottom_sheet_power_merchant_cancellation, null)
+
+        isFullpage = true
+        setChild(itemView)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.PmBottomSheet)
     }
 
-    interface BottomSheetCancelListener {
-        fun onclickButton()
-    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val isTransitionPeriod = arguments?.getBoolean(ARGUMENT_DATA_AUTO_EXTEND) ?: false
+        val expiredDate = arguments?.getString(ARGUMENT_DATA_DATE) ?: ""
 
-    override fun getLayoutResourceId(): Int {
-        return R.layout.bottom_sheet_pm_cancel
+        initView(isTransitionPeriod, expiredDate)
     }
 
     fun setListener(listener: BottomSheetCancelListener) {
         this.listener = listener
     }
 
-    override fun title(): String {
-        super.title()
-        return ""
-    }
-
-    override fun configView(parentView: View?) {
-        super.configView(parentView)
-
-        val displaymetrics = DisplayMetrics()
-        activity?.run {
-            windowManager.defaultDisplay.getMetrics(displaymetrics)
-            val widthSpec = View.MeasureSpec.makeMeasureSpec(displaymetrics.widthPixels, View.MeasureSpec.EXACTLY)
-            parentView?.post {
-                parentView.measure(widthSpec, 0)
-                updateHeight(parentView.measuredHeight)
-            }
-        }
-
-    }
-
-    override fun initView(view: View) {
-        initVar()
-        tickerContainer = view.findViewById(R.id.ticker_yellow_cancellation_bs)
-        txtExpiredDate = view.findViewById(R.id.txt_ticker_yellow_bs)
-        buttonCancel = view.findViewById(R.id.button_cancel_bs)
-
-        if (!isTransitionPeriod) {
-            showExpiredDateTickerYellow()
+    private fun initView(isTransitionPeriod: Boolean, expiredDate: String) {
+        if (isTransitionPeriod) {
+            tickerWarning.hide()
         } else {
-            tickerContainer.visibility = View.GONE
-
+            showWarningTicker(expiredDate)
         }
 
-        buttonCancel.setOnClickListener {
+        btnCancel.setOnClickListener {
             powerMerchantTracking.eventCancelMembershipBottomSheet()
-            listener?.onclickButton()
+            listener?.onClickCancelButton()
+        }
+
+        btnBack.setOnClickListener {
+            dismiss()
         }
     }
 
-    private fun showExpiredDateTickerYellow() {
-        tickerContainer.visibility = View.VISIBLE
-        txtExpiredDate.text = MethodChecker.fromHtml(getString(R.string.expired_label_bs, expiredDate))
+    private fun showWarningTicker(expiredDate: String) {
+       context?.let {
+           val cancellationDate = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD,
+               DateFormatUtils.FORMAT_D_MMMM_YYYY, expiredDate)
+           val warningText = it.getString(R.string.expired_label, cancellationDate)
+           val highlightTextColor = ContextCompat.getColor(it, R.color.light_N700)
+
+           tickerWarning.setTextDescription(createSpannableString(warningText, cancellationDate, highlightTextColor, true))
+           tickerWarning.show()
+       }
     }
 
-    override fun setupDialog(dialog: Dialog, style: Int) {
-        super.setupDialog(dialog, style)
-        updateHeight()
+    fun show(fm: FragmentManager) {
+        show(fm, TAG)
+    }
+
+    interface BottomSheetCancelListener {
+        fun onClickCancelButton()
     }
 }
