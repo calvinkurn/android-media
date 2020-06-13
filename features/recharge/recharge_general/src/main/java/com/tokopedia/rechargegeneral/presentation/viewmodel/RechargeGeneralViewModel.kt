@@ -40,7 +40,7 @@ class RechargeGeneralViewModel @Inject constructor(
             val graphqlRequest = GraphqlRequest(rawQuery, RechargeGeneralOperatorCluster.Response::class.java, mapParams)
             val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST).build()
             val data = withContext(dispatcher.IO) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<RechargeGeneralOperatorCluster.Response>()
 
             if (data.response.operatorGroups == null) {
@@ -58,7 +58,7 @@ class RechargeGeneralViewModel @Inject constructor(
             val graphqlRequest = GraphqlRequest(rawQuery, RechargeGeneralDynamicInput.Response::class.java, mapParams)
             val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST).build()
             val data = withContext(dispatcher.IO) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<RechargeGeneralDynamicInput.Response>()
 
             val foundProduct = data.response.enquiryFields.find { it.name == PARAM_PRODUCT }

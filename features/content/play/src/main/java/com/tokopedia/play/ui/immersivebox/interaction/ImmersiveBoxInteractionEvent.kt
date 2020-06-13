@@ -7,5 +7,5 @@ import com.tokopedia.play.component.ComponentEvent
  */
 sealed class ImmersiveBoxInteractionEvent : ComponentEvent {
 
-    object BoxClicked : ImmersiveBoxInteractionEvent()
+    data class BoxClicked(val currentAlpha: Float) : ImmersiveBoxInteractionEvent()
 }

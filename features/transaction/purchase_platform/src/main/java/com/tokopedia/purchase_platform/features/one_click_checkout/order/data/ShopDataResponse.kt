@@ -2,9 +2,6 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.order.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.purchase_platform.features.cart.data.model.response.GoldMerchant
-import com.tokopedia.purchase_platform.features.cart.data.model.response.OfficialStore
-import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShopShipment
 
 data class ShopDataResponse(
         @SerializedName("shop_id")
