@@ -60,7 +60,6 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
             this.onSetShopInfo = onSetShopInfo
             this.getVoucherReviewData = getVoucherReviewData
             this.isCreateNew = isCreateNew
-//            extraWidget = listOf(promotionTypeInputWidget)
         }
     }
 
@@ -158,7 +157,7 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
                 add(R.id.cashbackFragmentContainer, it, CashbackVoucherCreateFragment::javaClass.name)
             }
         }
-        fragmentTransaction.commitAllowingStateLoss()
+        fragmentTransaction.commit()
     }
 
     override fun getScreenName(): String = ""

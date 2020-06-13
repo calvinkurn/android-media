@@ -29,7 +29,7 @@ class VoucherListAdapterFactoryImpl(
         return when (type) {
             VoucherViewHolder.RES_LAYOUT -> VoucherViewHolder(parent, voucherListener)
             LoadingStateVoucherViewHolder.RES_LAYOUT -> LoadingStateVoucherViewHolder(parent)
-            NoResultStateViewHolder.RES_LAYOUT -> NoResultStateViewHolder(parent)
+            NoResultStateViewHolder.RES_LAYOUT -> NoResultStateViewHolder(parent, voucherListener)
             ErrorStateViewHolder.RES_LAYOUT -> ErrorStateViewHolder(parent, voucherListener::onErrorTryAgain, voucherListener::onImpressionListener)
             EmptyStateViewHolder.RES_LAYOUT -> EmptyStateViewHolder(parent)
             else -> super.createViewHolder(parent, type)
