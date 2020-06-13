@@ -813,6 +813,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SHOP_NAME, shopInfo.getShopName());
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_INVOICE, invoiceNum);
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_LIST_PRODUCT, (Serializable) listProducts);
+                        buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
                         startActivity(buyerReqCancelIntent);
                     } else if (this.status.status().equals(STATUS_CODE_11)) {
                         startActivityForResult(RequestCancelActivity.getInstance(getContext(), getArguments().getString(KEY_ORDER_ID), actionButton.getUri(), 0), REQUEST_CANCEL_ORDER);

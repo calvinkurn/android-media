@@ -10,4 +10,5 @@ object BuyerConsts {
     const val PARAM_LIST_PRODUCT = "param_list_product"
     const val PARAM_INVOICE = "param_invoice"
     const val PARAM_INPUT = "input"
+    const val PARAM_ORDER_ID = "order_id"
 }

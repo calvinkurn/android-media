@@ -4,18 +4,27 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.common.util.BuyerConsts
 import com.tokopedia.buyerorder.detail.data.Items
+import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonData
+import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent
 import com.tokopedia.buyerorder.detail.view.adapter.BuyerListOfProductsBottomSheetAdapter
 import com.tokopedia.buyerorder.detail.view.adapter.BuyerRequestCancelBottomsheetAdapter
+import com.tokopedia.buyerorder.detail.view.viewmodel.BuyerGetCancellationReasonViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.bottomsheet_buyer_request_cancel.view.*
 import kotlinx.android.synthetic.main.fragment_buyer_request_cancel.*
 import java.io.Serializable
@@ -33,8 +42,14 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(), BuyerRequestCancelBottom
     private lateinit var buyerListOfProductsBottomSheetAdapter: BuyerListOfProductsBottomSheetAdapter
     private var shopName = ""
     private var invoiceNum = ""
+    private var orderId = ""
     private var listProductsSerializable : Serializable? = null
     private var listProduct = emptyList<Items>()
+    private var cancelReasonResponse = BuyerGetCancellationReasonData.Data.GetCancellationReason()
+
+    private val buyerGetCancellationReasonViewModel by lazy {
+        ViewModelProviders.of(this, viewModelFactory)[BuyerGetCancellationReasonViewModel::class.java]
+    }
 
     companion object {
         @JvmStatic
@@ -44,6 +59,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(), BuyerRequestCancelBottom
                     putString(BuyerConsts.PARAM_SHOP_NAME, bundle.getString(BuyerConsts.PARAM_SHOP_NAME))
                     putString(BuyerConsts.PARAM_INVOICE, bundle.getString(BuyerConsts.PARAM_INVOICE))
                     putSerializable(BuyerConsts.PARAM_LIST_PRODUCT, bundle.getSerializable(BuyerConsts.PARAM_LIST_PRODUCT))
+                    putString(BuyerConsts.PARAM_ORDER_ID, bundle.getString(BuyerConsts.PARAM_ORDER_ID))
                 }
             }
         }
@@ -56,7 +72,9 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(), BuyerRequestCancelBottom
             invoiceNum = arguments?.getString(BuyerConsts.PARAM_INVOICE).toString()
             listProductsSerializable = arguments?.getSerializable(BuyerConsts.PARAM_LIST_PRODUCT)
             listProduct = listProductsSerializable as List<Items>
+            orderId = arguments?.getString(BuyerConsts.PARAM_ORDER_ID).toString()
         }
+        getCancelReasons()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -68,10 +86,12 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(), BuyerRequestCancelBottom
     }
 
     override fun initInjector() {
+        getComponent(OrderDetailsComponent::class.java).inject(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        observingCancelReasons()
 
         buyerReqCancelBottomSheetAdapter = BuyerRequestCancelBottomsheetAdapter(this)
         label_shop_name?.text = shopName
@@ -146,5 +166,32 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(), BuyerRequestCancelBottom
 
     override fun onBottomSheetItemClick(key: String) {
         println("++ keclick nih")
+    }
+
+    private fun getCancelReasons() {
+        val userSession = UserSession(context)
+        buyerGetCancellationReasonViewModel.getCancelReasons(
+                GraphqlHelper.loadRawString(resources, R.raw.get_cancel_reason), userSession.userId, orderId)
+    }
+
+    private fun observingCancelReasons() {
+        buyerGetCancellationReasonViewModel.cancelReasonResult.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    val arrayListOfReason = arrayListOf<String>()
+                    cancelReasonResponse = it.data.getCancellationReason
+                    cancelReasonResponse.reasons.forEach { reasonItem ->
+                        arrayListOfReason.add(reasonItem.title)
+                    }
+                    buyerReqCancelBottomSheetAdapter = BuyerRequestCancelBottomsheetAdapter(this).apply {
+                        listReason = arrayListOfReason
+                        notifyDataSetChanged()
+                    }
+                }
+                is Fail -> {
+                    // muncul error default
+                }
+            }
+        })
     }
 }

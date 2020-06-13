@@ -5,13 +5,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.buyerorder.R
+import kotlinx.android.synthetic.main.bottomsheet_cancel_item.view.*
 
 /**
  * Created by fwidjaja on 11/06/20.
  */
 
 class BuyerRequestCancelBottomsheetAdapter(private var listener: ActionListener): RecyclerView.Adapter<BuyerRequestCancelBottomsheetAdapter.ViewHolder>() {
-    var mapKey = HashMap<String, String>()
+    // var mapKey = HashMap<String, String>()
+    var listReason = listOf<String>()
 
     interface ActionListener {
         fun onBottomSheetItemClick(key: String)
@@ -23,16 +25,14 @@ class BuyerRequestCancelBottomsheetAdapter(private var listener: ActionListener)
 
     override fun getItemCount(): Int {
         // return mapKey.size
-        return 5
+        return listReason.size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val arrayValues = mapKey.values.toMutableList()
-        val arrayKeys = mapKey.keys.toMutableList()
-        // holder.itemView.label_reject.text = arrayValues[position]
+        holder.itemView.label_cancel.text = listReason[position]
 
         holder.itemView.setOnClickListener {
-            listener.onBottomSheetItemClick(arrayKeys[position])
+            listener.onBottomSheetItemClick(listReason[position])
         }
     }
 

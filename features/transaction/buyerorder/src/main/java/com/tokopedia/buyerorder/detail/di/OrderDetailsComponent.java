@@ -16,7 +16,8 @@ import dagger.Component;
 
 
 @OrderListModuleScope
-@Component(dependencies = {BaseAppComponent.class}, modules = {OrderListDetailModule.class, GetCancellationReasonModule.class})
+@Component(dependencies = {BaseAppComponent.class}, modules = {OrderListDetailModule.class,
+        GetCancellationReasonModule.class, GetCancellationReasonViewModelModule.class})
 public interface OrderDetailsComponent {
     void inject(OrderListDetailFragment orderListDetailFragment);
 
