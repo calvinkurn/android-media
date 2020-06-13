@@ -315,6 +315,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             when (it) {
                 is Success -> {
                     showLoading(false)
+                    showLoadingSwipeToRefresh(false)
                     val errorMessage = it.data.shopShowcasesByShopID.error.message
                     if (errorMessage.isNotEmpty()) {
                         showErrorResponse(errorMessage)
