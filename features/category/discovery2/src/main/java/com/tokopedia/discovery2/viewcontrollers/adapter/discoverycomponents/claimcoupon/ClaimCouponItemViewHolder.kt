@@ -8,7 +8,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.CLAIMED
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.NOT_LOGGEDIN
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.OUT_OF_STOCK

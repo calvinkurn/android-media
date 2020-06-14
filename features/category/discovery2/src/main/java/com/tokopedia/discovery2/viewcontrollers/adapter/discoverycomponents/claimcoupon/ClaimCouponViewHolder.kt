@@ -14,7 +14,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
-class ClaimCouponViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView,fragment.viewLifecycleOwner) {
+class ClaimCouponViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
 
     private val recyclerView: RecyclerView = itemView.findViewById(R.id.claim_coupon_rv)
@@ -28,9 +28,9 @@ class ClaimCouponViewHolder(itemView: View, private val fragment: Fragment) : Ab
     }
 
     private fun addShimmer(isDouble: Boolean) {
-        val height = if(isDouble)
+        val height = if (isDouble)
             200 else 290
-        val list : ArrayList<ComponentsItem> = ArrayList()
+        val list: ArrayList<ComponentsItem> = ArrayList()
         list.add(ComponentsItem(name = "shimmer", shimmerHeight = height))
         list.add(ComponentsItem(name = "shimmer", shimmerHeight = height))
         discoveryRecycleAdapter.setDataList(list)

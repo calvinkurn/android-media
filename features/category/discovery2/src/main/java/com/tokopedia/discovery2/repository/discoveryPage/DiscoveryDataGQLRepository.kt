@@ -1,12 +1,12 @@
 package com.tokopedia.discovery2.repository.discoveryPage
 
 import com.tokopedia.basemvvm.repository.BaseRepository
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataResponse
 import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
-import com.tokopedia.config.GlobalConfig
 
 private const val IDENTIFIER = "identifier"
 private const val VERSION = "version"

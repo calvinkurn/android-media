@@ -4,7 +4,6 @@ import android.view.View
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
@@ -27,7 +26,6 @@ class BrandRecommendationItemViewHolder(itemView: View, private val fragment: Fr
                 setClick(item.data?.get(0))
             }
         })
-
     }
 
     private fun setClick(data: DataItem?) {
@@ -39,12 +37,9 @@ class BrandRecommendationItemViewHolder(itemView: View, private val fragment: Fr
                 }
             }
         }
-
     }
 
     private fun sendClickBrandRecommendationClickEvent(it: DataItem) {
         (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerClick(it, adapterPosition)
     }
-
-
 }

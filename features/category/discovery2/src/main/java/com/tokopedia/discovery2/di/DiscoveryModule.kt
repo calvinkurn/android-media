@@ -105,7 +105,7 @@ class DiscoveryModule {
     }
 
     @Provides
-    fun provideDiscoveryUIConfigRepository(@ApplicationContext context: Context): DiscoveryUIConfigGQLRepository{
+    fun provideDiscoveryUIConfigRepository(@ApplicationContext context: Context): DiscoveryUIConfigGQLRepository {
         return DiscoveryUIConfigGQLRepository(provideDiscoveryUIConfigQuery(context))
     }
 

@@ -264,7 +264,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     }
 
 
-
     fun getDiscoveryAnalytics(): DiscoveryAnalytics {
         return analytics
     }

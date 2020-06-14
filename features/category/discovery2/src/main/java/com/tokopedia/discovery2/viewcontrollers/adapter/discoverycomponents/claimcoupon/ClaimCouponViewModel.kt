@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.discovery2.GenerateUrl
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.ClaimCouponUseCase
@@ -13,7 +12,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -49,8 +47,8 @@ class ClaimCouponViewModel(val application: Application, val components: Compone
 
     fun getClickCouponData() {
         launchCatchError(block = {
-                claimCouponUseCase.getClickCouponData(components.id, components.pageEndPoint)
-                componentList.postValue(components.getComponentsItem() as ArrayList<ComponentsItem>)
+            claimCouponUseCase.getClickCouponData(components.id, components.pageEndPoint)
+            componentList.postValue(components.getComponentsItem() as ArrayList<ComponentsItem>)
         }, onError = {
         })
     }

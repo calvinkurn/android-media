@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.CategoryNavigationUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -42,11 +41,12 @@ class CategoryNavigationViewModel(val application: Application, private val comp
         super.onAttachToViewHolder()
         getCategoryNavigationData()
     }
+
     fun getCategoryNavigationData() {
         launchCatchError(
                 block = {
                     withContext(Dispatchers.IO) {
-                        if(categoryNavigationUseCase.getCategoryNavigationData(components.id,components.pageEndPoint))  {
+                        if (categoryNavigationUseCase.getCategoryNavigationData(components.id, components.pageEndPoint)) {
                             listData.postValue(Success(components.getComponentsItem() as ArrayList<ComponentsItem>))
                         }
                     }

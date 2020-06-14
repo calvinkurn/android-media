@@ -13,10 +13,10 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class LoadMoreViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() , CoroutineScope {
+class LoadMoreViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
     @Inject
-    lateinit var productCardUseCase : ProductCardsUseCase
+    lateinit var productCardUseCase: ProductCardsUseCase
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()

@@ -16,7 +16,6 @@ class TabsItemViewModel(val application: Application, var components: Components
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
 
 
-
     fun getComponentLiveData(): LiveData<ComponentsItem> {
         return componentData
     }
@@ -25,6 +24,7 @@ class TabsItemViewModel(val application: Application, var components: Components
         super.onAttachToViewHolder()
         componentData.value = components
     }
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 

@@ -1,7 +1,6 @@
 package com.tokopedia.discovery2.usecase
 
 import com.tokopedia.discovery2.GenerateUrl
-import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.repository.claimCoupon.IClaimCouponRepository
 import javax.inject.Inject

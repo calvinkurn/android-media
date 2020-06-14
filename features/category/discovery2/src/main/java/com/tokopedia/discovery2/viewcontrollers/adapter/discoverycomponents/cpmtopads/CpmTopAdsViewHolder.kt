@@ -17,7 +17,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.usecase.coroutines.Success
 
-class CpmTopAdsViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView,fragment.viewLifecycleOwner) {
+class CpmTopAdsViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
     private val recyclerView: RecyclerView = itemView.findViewById(R.id.discovery_cpm_topads_rv)
     private val promotedText: TextView = itemView.findViewById(R.id.discovery_cpm_promoted_text)
@@ -41,7 +41,8 @@ class CpmTopAdsViewHolder(itemView: View, private val fragment: Fragment) : Abst
     private fun addShimmer() {
         val list: ArrayList<ComponentsItem> = ArrayList()
         val width = fragment.context?.resources?.getDimensionPixelSize(R.dimen.dp_250) ?: 0
-        val height = fragment.context?.resources?.getDimensionPixelSize(R.dimen.shop_card_height) ?: 0
+        val height = fragment.context?.resources?.getDimensionPixelSize(R.dimen.shop_card_height)
+                ?: 0
         list.add(ComponentsItem(name = "shimmer", shimmerWidth = width, shimmerHeight = height))
         list.add(ComponentsItem(name = "shimmer", shimmerWidth = width, shimmerHeight = height))
         discoveryRecycleAdapter.setDataList(list)

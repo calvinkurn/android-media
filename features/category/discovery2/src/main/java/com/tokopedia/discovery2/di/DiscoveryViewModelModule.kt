@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.discovery2.di.DiscoveryScope
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import dagger.Binds
 import dagger.Module

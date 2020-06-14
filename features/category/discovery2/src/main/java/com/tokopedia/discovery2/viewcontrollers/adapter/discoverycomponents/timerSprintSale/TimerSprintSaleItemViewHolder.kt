@@ -8,7 +8,6 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
-import com.tokopedia.trackingoptimizer.sendTrack
 import com.tokopedia.unifyprinciples.Typography
 
 class TimerSprintSaleItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {

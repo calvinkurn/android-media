@@ -4,7 +4,6 @@ import android.view.View
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
@@ -28,7 +27,8 @@ class DynamicCategoryItemViewHolder(itemView: View, private val fragment: Fragme
     private fun setUpObservers() {
         dynamicCategoryItemViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer {
             it.data?.firstOrNull()?.let { itemData ->
-                dynamicCategorySingleItemIcon.loadImageWithoutPlaceholder(itemData.thumbnailUrlMobile ?: "")
+                dynamicCategorySingleItemIcon.loadImageWithoutPlaceholder(itemData.thumbnailUrlMobile
+                        ?: "")
                 setClick(itemData)
                 dynamicCategorySingleItemTitle.setTextAndCheckShow(itemData.name)
             }

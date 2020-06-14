@@ -11,7 +11,7 @@ class DiscoveryDataUseCase @Inject constructor(private val discoveryPageReposito
     suspend fun getDiscoveryPageDataUseCase(pageIdentifier: String): DiscoveryPageData {
         return mapDiscoveryResponseToPageData(discoveryPageData[pageIdentifier]?.let {
             it
-        }?: discoveryPageRepository.getDiscoveryPageData(pageIdentifier).apply {
+        } ?: discoveryPageRepository.getDiscoveryPageData(pageIdentifier).apply {
             discoveryPageData[pageIdentifier] = this
             componentMap = HashMap()
         })

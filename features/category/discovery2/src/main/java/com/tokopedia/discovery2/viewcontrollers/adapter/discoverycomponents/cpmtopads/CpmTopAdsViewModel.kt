@@ -5,22 +5,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.DataItem
-import com.tokopedia.discovery2.data.cpmtopads.Headline
-import com.tokopedia.discovery2.data.cpmtopads.ProductItem
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
-import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.usecase.CpmTopAdsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.withContext
 
 class CpmTopAdsViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
@@ -31,7 +27,6 @@ class CpmTopAdsViewModel(val application: Application, private val components: C
 
     @Inject
     lateinit var cpmTopAdsUseCase: CpmTopAdsUseCase
-
 
 
     override val coroutineContext: CoroutineContext
@@ -45,11 +40,12 @@ class CpmTopAdsViewModel(val application: Application, private val components: C
         super.onAttachToViewHolder()
         fetchCpmTopAdsData()
     }
+
     fun fetchCpmTopAdsData() {
         launchCatchError(block = {
-            withContext(Dispatchers.IO){
-                val data = components.data?.get(0)?.paramsMobile?.let { cpmTopAdsUseCase.getCpmTopAdsData(components.id,components.pageEndPoint) }
-                if (data!=null){
+            withContext(Dispatchers.IO) {
+                val data = components.data?.get(0)?.paramsMobile?.let { cpmTopAdsUseCase.getCpmTopAdsData(components.id, components.pageEndPoint) }
+                if (data != null) {
                     cpmTopAdsList.postValue(Success(components.cpmData?.componentList as ArrayList<ComponentsItem>))
                     promotedText.postValue(Success(components.cpmData?.promotedText as String))
                     brandName.postValue(Success(components.cpmData?.brandName as String))
@@ -72,9 +68,9 @@ class CpmTopAdsViewModel(val application: Application, private val components: C
     }
 
     fun getCpmTopAdsList(): LiveData<Result<ArrayList<ComponentsItem>>> = cpmTopAdsList
-    fun getPromotedText(): LiveData<Result<String>> =  promotedText
-    fun getBrandName(): LiveData<Result<String>> =  brandName
-    fun getImageUrl(): LiveData<Result<String>> =  imageUrl
+    fun getPromotedText(): LiveData<Result<String>> = promotedText
+    fun getBrandName(): LiveData<Result<String>> = brandName
+    fun getImageUrl(): LiveData<Result<String>> = imageUrl
 
 
 }

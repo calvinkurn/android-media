@@ -16,7 +16,7 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 
 class ChipsFilterViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
     private val chipsRecyclerView: RecyclerView = itemView.findViewById(R.id.bannerRecyclerView)
-    private var chipsFilterRecycleAdapter: DiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment,this)
+    private var chipsFilterRecycleAdapter: DiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment, this)
     private lateinit var chipsFilterViewModel: ChipsFilterViewModel
 
     init {
@@ -34,7 +34,7 @@ class ChipsFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
             chipsFilterRecycleAdapter.notifyDataSetChanged()
         })
         chipsFilterViewModel.getSyncPageLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
-            if(item) {
+            if (item) {
                 (fragment as DiscoveryFragment).reSync()
             }
         })

@@ -18,6 +18,7 @@ import kotlin.coroutines.CoroutineContext
 class TokopointsViewModel(val application: Application, val component: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val tokopointsComponentData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val tokopointsList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
+
     @Inject
     lateinit var tokopointsListDataUseCase: TokopointsListDataUseCase
 
@@ -42,9 +43,9 @@ class TokopointsViewModel(val application: Application, val component: Component
     fun getTokopointsItemsListData() = tokopointsList
 
     fun fetchTokopointsListData(pageEndPoint: String) {
-        if(tokopointsList.value.isNullOrEmpty()) {
+        if (tokopointsList.value.isNullOrEmpty()) {
             launchCatchError(block = {
-                if(tokopointsListDataUseCase.getTokopointsDataUseCase(component.id, pageEndPoint)) {
+                if (tokopointsListDataUseCase.getTokopointsDataUseCase(component.id, pageEndPoint)) {
                     tokopointsList.value = component.getComponentsItem() as ArrayList<ComponentsItem>?
                 }
             }, onError = {

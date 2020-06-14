@@ -19,6 +19,7 @@ import kotlin.coroutines.CoroutineContext
 class ChipsFilterViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
     private val listData: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
+
     @Inject
     lateinit var chipSelectionUseCase: ChipSelectionUseCase
 
@@ -34,6 +35,7 @@ class ChipsFilterViewModel(val application: Application, val components: Compone
         super.onAttachToViewHolder()
         listData.value = components.getComponentsItem() as ArrayList<ComponentsItem>?
     }
+
     fun getListDataLiveData(): MutableLiveData<ArrayList<ComponentsItem>> {
         return listData
     }
@@ -47,29 +49,29 @@ class ChipsFilterViewModel(val application: Application, val components: Compone
 
     fun onChipSelected(id: String?) {
         components.getComponentsItem()?.forEach {
-            it.data?.get(0)?.chipSelectionType   = if (it.id == id) SELECTED else NORMAL
+            it.data?.get(0)?.chipSelectionType = if (it.id == id) SELECTED else NORMAL
         }
         listData.value = components.getComponentsItem() as ArrayList<ComponentsItem>
         id?.let {
             launchCatchError(block = {
-                if(chipSelectionUseCase.onChipSelection(components.id,components.pageEndPoint, it)) {
+                if (chipSelectionUseCase.onChipSelection(components.id, components.pageEndPoint, it)) {
                     syncData.value = true
                 }
             }, onError = {
                 it.printStackTrace()
             })
-             }
+        }
     }
 
     fun onChipUnSelected(id: String?) {
         components.getComponentsItem()?.forEach {
-             if (it.id == id)
-                 it.data?.get(0)?.chipSelectionType   = NORMAL
+            if (it.id == id)
+                it.data?.get(0)?.chipSelectionType = NORMAL
         }
         listData.value = components.getComponentsItem() as ArrayList<ComponentsItem>
         id?.let {
             launchCatchError(block = {
-                if(chipSelectionUseCase.onChipUnSelection(components.id, components.pageEndPoint)) {
+                if (chipSelectionUseCase.onChipUnSelection(components.id, components.pageEndPoint)) {
                     syncData.value = true
                 }
             }, onError = {

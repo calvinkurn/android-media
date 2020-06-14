@@ -2,7 +2,7 @@ package com.tokopedia.discovery2.data.campaignnotifymeresponse
 
 import com.google.gson.annotations.SerializedName
 
-class CampaignNotifyMeResponse (
+class CampaignNotifyMeResponse(
         @SerializedName("checkCampaignNotifyMe")
         val checkCampaignNotifyMeResponse: CheckCampaignNotifyMeResponse? = null
 ) {

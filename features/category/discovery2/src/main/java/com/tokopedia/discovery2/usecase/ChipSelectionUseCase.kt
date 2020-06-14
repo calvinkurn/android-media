@@ -6,23 +6,23 @@ import javax.inject.Inject
 
 class ChipSelectionUseCase @Inject constructor() {
 
-    fun onChipSelection(componentId: String, pageIdentifier: String,chipSelectionId:String): Boolean {
+    fun onChipSelection(componentId: String, pageIdentifier: String, chipSelectionId: String): Boolean {
         val component = getComponent(componentId, pageIdentifier)
         component?.let {
-            val parentComponent = getComponent(it.parentComponentId,pageIdentifier)
+            val parentComponent = getComponent(it.parentComponentId, pageIdentifier)
             parentComponent?.getComponentsItem()?.let {
-                parentComponent.setComponentsItem(it.map { childComponent->
-                        if(childComponent.id != componentId){
-                            childComponent.apply {
-                                setComponentsItem(null)
-                                noOfPagesLoaded = 0
-                        }}
-                        else {
-                            childComponent
+                parentComponent.setComponentsItem(it.map { childComponent ->
+                    if (childComponent.id != componentId) {
+                        childComponent.apply {
+                            setComponentsItem(null)
+                            noOfPagesLoaded = 0
                         }
+                    } else {
+                        childComponent
+                    }
 
                 })
-                parentComponent.chipSelectionData = getComponent(chipSelectionId,pageIdentifier)?.data?.get(0)
+                parentComponent.chipSelectionData = getComponent(chipSelectionId, pageIdentifier)?.data?.get(0)
             }
             return true
         }
@@ -33,15 +33,15 @@ class ChipSelectionUseCase @Inject constructor() {
     fun onChipUnSelection(componentId: String, pageIdentifier: String): Boolean {
         val component = getComponent(componentId, pageIdentifier)
         component?.let {
-            val parentComponent = getComponent(it.parentComponentId,pageIdentifier)
+            val parentComponent = getComponent(it.parentComponentId, pageIdentifier)
             parentComponent?.getComponentsItem()?.let {
-                parentComponent.setComponentsItem(it.map { childComponent->
-                    if(childComponent.id != componentId){
+                parentComponent.setComponentsItem(it.map { childComponent ->
+                    if (childComponent.id != componentId) {
                         childComponent.apply {
                             setComponentsItem(null)
                             noOfPagesLoaded = 0
-                        }}
-                    else {
+                        }
+                    } else {
                         childComponent
                     }
                 })

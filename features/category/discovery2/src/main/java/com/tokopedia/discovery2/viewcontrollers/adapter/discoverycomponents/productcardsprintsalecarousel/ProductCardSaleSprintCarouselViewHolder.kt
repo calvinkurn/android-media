@@ -15,7 +15,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 class ProductCardSaleSprintCarouselViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
 
     private val recyclerView: RecyclerView = itemView.findViewById(R.id.tokopoints_rv)
-    private  var discoveryRecycleAdapter: DiscoveryRecycleAdapter
+    private var discoveryRecycleAdapter: DiscoveryRecycleAdapter
 
     private lateinit var productCardSprintSaleCarouselViewModel: ProductCardSprintSaleCarouselViewModel
 
@@ -24,11 +24,12 @@ class ProductCardSaleSprintCarouselViewHolder(itemView: View, private val fragme
         discoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
         recyclerView.adapter = discoveryRecycleAdapter
     }
-    
+
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         productCardSprintSaleCarouselViewModel = discoveryBaseViewModel as ProductCardSprintSaleCarouselViewModel
         addShimmer()
     }
+
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {
@@ -36,7 +37,7 @@ class ProductCardSaleSprintCarouselViewHolder(itemView: View, private val fragme
                 discoveryRecycleAdapter.setDataList(item)
             })
             productCardSprintSaleCarouselViewModel.syncData.observe(it, Observer { sync ->
-                if(sync) {
+                if (sync) {
                     discoveryRecycleAdapter.notifyDataSetChanged()
                 }
             })
@@ -57,6 +58,7 @@ class ProductCardSaleSprintCarouselViewHolder(itemView: View, private val fragme
         list.add(ComponentsItem(name = "shimmer_product_card"))
         discoveryRecycleAdapter.setDataList(list)
     }
+
     override fun getInnerRecycleView(): RecyclerView? {
         return recyclerView
     }

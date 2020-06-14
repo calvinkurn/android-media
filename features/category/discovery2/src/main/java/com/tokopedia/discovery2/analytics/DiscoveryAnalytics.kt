@@ -6,7 +6,17 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import java.util.HashSet
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
+import kotlin.collections.List
+import kotlin.collections.Map
+import kotlin.collections.MutableMap
+import kotlin.collections.firstOrNull
+import kotlin.collections.isNotEmpty
+import kotlin.collections.mapOf
+import kotlin.collections.mutableMapOf
+import kotlin.collections.set
 
 class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
                          val pagePath: String = EMPTY_STRING,

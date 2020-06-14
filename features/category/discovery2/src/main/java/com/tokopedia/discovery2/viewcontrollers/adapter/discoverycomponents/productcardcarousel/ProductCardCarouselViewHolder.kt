@@ -1,6 +1,5 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel
 
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
@@ -13,9 +12,8 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
-import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
-class ProductCardCarouselViewHolder(itemView: View, fragment: Fragment) : AbstractViewHolder(itemView,fragment.viewLifecycleOwner) {
+class ProductCardCarouselViewHolder(itemView: View, fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
     private var mProductCarouselRecyclerView: RecyclerView = itemView.findViewById(R.id.tokopoints_rv)
     private var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
@@ -43,7 +41,7 @@ class ProductCardCarouselViewHolder(itemView: View, fragment: Fragment) : Abstra
                 mDiscoveryRecycleAdapter.setDataList(item)
             })
             mProductCarouselComponentViewModel.syncData.observe(it, Observer { sync ->
-                if(sync) {
+                if (sync) {
                     mDiscoveryRecycleAdapter.notifyDataSetChanged()
                 }
             })

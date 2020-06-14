@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class DisplayAdsV3(
 
-	@SerializedName("data")
-	val data: List<DataItem?>? = null
+        @SerializedName("data")
+        val data: List<DataItem?>? = null
 
 )

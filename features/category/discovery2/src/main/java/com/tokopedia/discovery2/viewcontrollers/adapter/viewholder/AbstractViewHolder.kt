@@ -25,7 +25,7 @@ abstract class AbstractViewHolder(itemView: View) : RecyclerView.ViewHolder(item
 
         if (this.discoveryBaseViewModel != null) {
             if (this.discoveryBaseViewModel !== discoveryBaseViewModel) {
-                Log.e("AbstractViewHolder","removing observer old observer "+this.discoveryBaseViewModel +" adding observer "+discoveryBaseViewModel)
+                Log.e("AbstractViewHolder", "removing observer old observer " + this.discoveryBaseViewModel + " adding observer " + discoveryBaseViewModel)
                 removeObservers(lifecycleOwner)
                 this.discoveryBaseViewModel?.onDetachToViewHolder()
                 this.discoveryBaseViewModel = discoveryBaseViewModel

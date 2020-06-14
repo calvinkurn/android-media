@@ -19,6 +19,7 @@ import javax.inject.Inject
 
 const val NATIVE = "native"
 const val REACT_NATIVE = "react-native"
+
 class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
@@ -42,7 +43,7 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
     }
 
     override fun initView() {
-        if(config == REACT_NATIVE){
+        if (config == REACT_NATIVE) {
             routeToReactNativeDiscovery()
         }
         toolbar?.hide()
@@ -55,7 +56,7 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
             when (it) {
                 is Success -> {
                     config = it.data
-                    if(it.data == REACT_NATIVE){
+                    if (it.data == REACT_NATIVE) {
                         routeToReactNativeDiscovery()
                     }
                 }
@@ -63,10 +64,11 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         })
     }
 
-    private fun routeToReactNativeDiscovery(){
+    private fun routeToReactNativeDiscovery() {
         RouteManager.route(
                 this,
-                ApplinkConst.REACT_DISCOVERY_PAGE.replace("{page_id}", intent?.data?.lastPathSegment ?: intent?.getStringExtra(END_POINT) ?: "")
+                ApplinkConst.REACT_DISCOVERY_PAGE.replace("{page_id}", intent?.data?.lastPathSegment
+                        ?: intent?.getStringExtra(END_POINT) ?: "")
         )
         finish()
     }
@@ -80,7 +82,8 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
 
     override fun getNewFragment(): Fragment? {
-        return DiscoveryFragment.getInstance(intent?.data?.lastPathSegment ?: intent?.getStringExtra(END_POINT))
+        return DiscoveryFragment.getInstance(intent?.data?.lastPathSegment
+                ?: intent?.getStringExtra(END_POINT))
     }
 
     override fun getViewModelType(): Class<DiscoveryViewModel> {

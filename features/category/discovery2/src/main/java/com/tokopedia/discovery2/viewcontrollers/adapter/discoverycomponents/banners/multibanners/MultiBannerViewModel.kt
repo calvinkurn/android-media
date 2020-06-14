@@ -28,6 +28,7 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 private const val PROMO_CODE = "Promo Code"
+
 class MultiBannerViewModel(val application: Application, var components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val bannerData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val pushBannerStatus: MutableLiveData<Int> = MutableLiveData()

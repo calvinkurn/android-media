@@ -49,7 +49,7 @@ class BannerDotIndicator(private val radius: Int, private val indicatorItemPaddi
         val adapter = parent.adapter ?: return
 
         val itemCount = adapter.itemCount
-        if(itemCount<=1) {
+        if (itemCount <= 1) {
             return
         }
         val indicatorPosY = parent.height - indicatorPadding * 1.5f

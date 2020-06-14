@@ -104,7 +104,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     }
 
 
-
     fun getBitmapFromURL(src: String?): Bitmap? = runBlocking {
         getBitmap(src).await()
     }
@@ -160,7 +159,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         clearPageData()
     }
 
-    fun clearPageData(){
+    fun clearPageData() {
         discoveryDataUseCase.clearPage(pageIdentifier)
     }
 }

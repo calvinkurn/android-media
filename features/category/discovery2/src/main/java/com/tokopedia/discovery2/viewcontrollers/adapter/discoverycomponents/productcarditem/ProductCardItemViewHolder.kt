@@ -63,8 +63,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     }
 
     private fun initView() {
-        productCardItemViewModel.
-        setContext(productCardView.context)
+        productCardItemViewModel.setContext(productCardView.context)
         productCardView.setOnClickListener {
             handleUIClick(it)
         }

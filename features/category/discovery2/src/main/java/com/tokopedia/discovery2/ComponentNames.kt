@@ -59,5 +59,4 @@ enum class ComponentNames(val componentName: String) {
     ProductCardSprintSaleCarouselItem("product_card_sprint_sale_carousel_item"),
 
 
-
 }
