@@ -22,11 +22,9 @@ class PlayPusherBuilder(@ApplicationContext var context: Context) {
         private set
     var isEnableAutoResolution = true
         private set
-    var fps = AlivcFpsEnum.FPS_20
+    var fps = AlivcFpsEnum.FPS_30
         private set
     var qualityMode: PlayPusherQualityMode = PlayPusherQualityMode.FluencyFirst
-        private set
-    var isEnableBitrateControl = false
         private set
     var audioChannel = AlivcAudioChannelEnum.AUDIO_CHANNEL_ONE
         private set
@@ -60,10 +58,6 @@ class PlayPusherBuilder(@ApplicationContext var context: Context) {
 
     fun fps(fpsEnum: AlivcFpsEnum) = apply {
         this.fps = fpsEnum
-    }
-
-    fun enableBitrateControl(enable: Boolean) = apply {
-        this.isEnableBitrateControl = enable
     }
 
     fun qualityMode(qualityMode: PlayPusherQualityMode) = apply {

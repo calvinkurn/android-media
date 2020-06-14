@@ -51,7 +51,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
-        setupContent()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -62,6 +61,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView()
+        setupContent()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -94,22 +94,23 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun setupContent() {
-        arguments?.getString(KEY_CHANNEL_ID)?.let {
-            channelId -> parentViewModel.getChannel(channelId)
-        }
-        arguments?.getString(KEY_INGEST_URL)?.let {
-            ingestUrl -> parentViewModel.startPushBroadcast(ingestUrl)
-        }
-    }
-
-    override fun onBackPressed(): Boolean {
-        showDialogWhenActionClose()
-        return true
+//        arguments?.getString(KEY_CHANNEL_ID)?.let {
+//            channelId -> parentViewModel.getChannel(channelId)
+//        }
+//        arguments?.getString(KEY_INGEST_URL)?.let {
+//            ingestUrl -> parentViewModel.startPushBroadcast(ingestUrl)
+//        }
+        parentViewModel.startPushBroadcast("rtmp://192.168.0.110:1935/stream/")
     }
 
     override fun onDestroy() {
         try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
         super.onDestroy()
+    }
+
+    override fun onBackPressed(): Boolean {
+        showDialogWhenActionClose()
+        return true
     }
 
     private fun showTimeLeft(timeLeft: String) {
