@@ -70,7 +70,7 @@ class PartialButtonActionView private constructor(val view: View,
 
     private fun renderButton() {
         if (isWarehouseProduct) {
-            showNoStockButton()
+            showWarehouseButton()
         } else if (hasShopAuthority) {
             showShopManageButton()
         } else if (!GlobalConfig.isSellerApp() && onSuccessGetCartType) {
@@ -199,23 +199,27 @@ class PartialButtonActionView private constructor(val view: View,
 
     private fun hideButtonEmptyAndTopAds() = with(view) {
         btn_empty_stock.hide()
-        btn_top_ads.hide()
+        seller_button_container.hide()
     }
 
     private fun showShopManageButton() {
         with(view) {
             btn_empty_stock.hide()
             btn_topchat.hide()
-            btn_top_ads.show()
+            seller_button_container.show()
             if (hasTopAdsActive) {
                 btn_top_ads.setOnClickListener { rincianTopAdsClick?.invoke() }
                 btn_top_ads.text = context.getString(R.string.rincian_topads)
                 btn_top_ads.buttonVariant = UnifyButton.Variant.GHOST
+                btn_top_ads.buttonType = UnifyButton.Type.ALTERNATE
             } else {
                 btn_top_ads.setOnClickListener { promoTopAdsClick?.invoke() }
                 btn_top_ads.text = context.getString(R.string.promote_topads)
-                btn_top_ads.buttonVariant = UnifyButton.Variant.FILLED
+                btn_top_ads.buttonVariant = UnifyButton.Variant.GHOST
+                btn_top_ads.buttonType = UnifyButton.Type.TRANSACTION
             }
+
+            btn_edit_product.setOnClickListener(this@PartialButtonActionView)
         }
     }
 
@@ -223,19 +227,23 @@ class PartialButtonActionView private constructor(val view: View,
         with(view) {
             changeTopChatLayoutParamsToHandleWarehouseButton()
             btn_byme.hide()
-            btn_top_ads.hide()
+            seller_button_container.hide()
             btn_empty_stock.show()
             btn_topchat.showWithCondition(!isShopOwner)
             btn_topchat.setOnClickListener(this@PartialButtonActionView)
         }
     }
 
-    fun gone() {
-        view.base_btn_action.gone()
+    private fun showWarehouseButton() {
+        if (isShopOwner) {
+            showShopManageButton()
+        } else {
+            showNoStockButton()
+        }
     }
 
-    fun visible() {
-        view.base_btn_action.visible()
+    fun gone() {
+        view.base_btn_action.gone()
     }
 
     fun showByMe(show: Boolean, pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate) {

@@ -13,7 +13,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDa
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.topads.sdk.utils.ImpresionTask
 import kotlinx.android.synthetic.main.item_dynamic_recommendation.view.*
 
 class ProductRecommendationViewHolder(private val view: View,

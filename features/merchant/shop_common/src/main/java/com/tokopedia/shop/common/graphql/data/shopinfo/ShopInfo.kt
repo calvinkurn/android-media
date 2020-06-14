@@ -128,7 +128,11 @@ data class ShopInfo(
 
         @SerializedName("statusTitle")
         @Expose
-        val statusTitle: String = ""
+        val statusTitle: String = "",
+
+        @SerializedName("isIdle")
+        @Expose
+        val isIdle: Boolean = false
     )
 
     data class FavoriteData(
@@ -179,7 +183,17 @@ data class ShopInfo(
 
             @SerializedName("until")
             @Expose
-            val closeUntil: String = ""
+            val closeUntil: String = "",
+
+            @SerializedName("detail")
+            @Expose
+            val closeDetail: CloseDetail = CloseDetail()
+    )
+
+    data class CloseDetail(
+            @SerializedName("openDate")
+            @Expose
+            val openDateUnix: String = ""
     )
 
     data class CreatedInfo(
