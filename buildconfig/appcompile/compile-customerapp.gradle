@@ -180,6 +180,7 @@ include "features:transaction:purchase_platform_common"
 include "features:transaction:cart"
 include "features:transaction:checkout"
 include "features:transaction:sellerorder"
+include "features:transaction:oneclickcheckout"
 
 include "features:user:attachproduct"
 include "features:user:attachinvoice"

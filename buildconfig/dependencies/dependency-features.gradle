@@ -191,6 +191,7 @@ ext {
             loyaltyCommon                   : ":features:promo:loyalty_common",
             sellerorder                     : ":features:transaction:sellerorder",
             buyerorder                      : ":features:transaction:buyerorder",
+            oneclickcheckout                : ":features:transaction:oneclickcheckout",
 
             attachproduct                   : ":features:user:attachproduct",
             attachinvoice                   : ":features:user:attachinvoice",
