@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.ImageView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.notifications.R
+import com.tokopedia.notifications.analytics.InAppAnalytics
 import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMButton
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
@@ -28,6 +29,10 @@ internal open class BannerView(activity: Activity) {
                 R.layout.cm_layout_banner_inapp,
                 null
         )
+        // impression tracker
+        InAppAnalytics.impression(data)
+
+        // pre view setup
         onViewCreated(parentView, data)
         viewState(data)
         return parentView
