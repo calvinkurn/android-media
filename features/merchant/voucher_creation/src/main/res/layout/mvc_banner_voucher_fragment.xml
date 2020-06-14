@@ -27,7 +27,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/bannerFrame"
-        android:background="@color/transparent"
         android:clipToPadding="false"/>
 
     <!-- will set height to 0dp as the recycler view is temporarily disabled -->

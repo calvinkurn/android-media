@@ -29,6 +29,7 @@ class CashbackPercentageValidationUseCase @Inject constructor(gqlRepository: Gra
                 "      validation_error{\n" +
                 "        benefit_type\n" +
                 "        coupon_type\n" +
+                "        benefit_percent\n" +
                 "        benefit_max\n" +
                 "        min_purchase\n" +
                 "        quota\n" +

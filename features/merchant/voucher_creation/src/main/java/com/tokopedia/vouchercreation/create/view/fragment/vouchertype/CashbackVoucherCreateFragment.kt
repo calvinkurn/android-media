@@ -296,11 +296,12 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
         super.onResume()
 
         viewModel.refreshValue()
+        cashbackTypePickerModel.currentActiveType = activeCashbackType
         // We actually don't need to notify adapter data as the data has not been changed
         // But, as we used view pager and each fragment has different height (which will cut some layout when page changes according to previous page),
         // we will notify the adapter to mimic layout refresh
         adapter.run {
-            notifyItemChanged(dataSize - 1)
+            notifyItemChanged(data.indexOf(cashbackTypePickerModel))
         }
     }
 

@@ -154,7 +154,11 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
                 userSession.userId)
         val fragmentTransaction = childFragmentManager.beginTransaction().apply {
             cashbackVoucherCreateFragment?.let {
-                add(R.id.cashbackFragmentContainer, it, CashbackVoucherCreateFragment::javaClass.name)
+                if (childFragmentManager.findFragmentByTag(CashbackVoucherCreateFragment::javaClass.name) == null) {
+                    add(R.id.cashbackFragmentContainer, it, CashbackVoucherCreateFragment::javaClass.name)
+                } else {
+                    replace(R.id.cashbackFragmentContainer, it, CashbackVoucherCreateFragment::javaClass.name)
+                }
             }
         }
         fragmentTransaction.commit()
