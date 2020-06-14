@@ -91,6 +91,7 @@ class BrandlistPageFragment :
     private var recyclerViewLastState: Parcelable? = null
     private var recyclerViewTopPadding = 0
     private var isChipSelected: Boolean = false
+    private var isChipEnabled: Boolean = false
 
     private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
         object : EndlessRecyclerViewScrollListener(layoutManager) {
@@ -327,10 +328,12 @@ class BrandlistPageFragment :
 
                     viewModel.updateTotalBrandSize(it.data.totalBrands)
                     viewModel.updateCurrentOffset(it.data.brands.size)
+                    isChipEnabled = true
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
                     showErrorMessage(it.throwable)
+                    isChipEnabled = true
                 }
             }
         })
@@ -343,6 +346,7 @@ class BrandlistPageFragment :
                 setStateLoadBrands(LoadAllBrandState.LOAD_INITIAL_ALL_BRAND)
                 viewModel.loadInitialData(category, userId)
                 isLoadedOnce = true
+                isChipEnabled = false
 
                 if (!isRefresh) {
                     brandlistTracking?.sendScreen(categoryName.toEmptyStringIfNull())
@@ -420,14 +424,18 @@ class BrandlistPageFragment :
             return
         }
 
+        if (!isChipEnabled) { // Prevent user click chips too fast before last data showed
+            return
+        }
+
         selectedChip = position
         selectedCategoryName = categoryName
         recyclerViewLastState = recyclerViewState
         isChipSelected = true
+        isChipEnabled = false
 
         resetCurrentBrandRecom()
         showLoadingBrandRecom()
-//        adapter?.showLoading()
 
         if (position > 0 && position < 2) {     // Load Semua Brand
             isLoadMore = false

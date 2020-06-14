@@ -158,11 +158,9 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         initView()
-        super.onLayout(changed, left, top, right, bottom)
-//        try {
-//            super.onLayout(changed, left, top, right, bottom)
-//        } catch (e: IndexOutOfBoundsException) {
-//            Log.e("Error", "IndexOutOfBoundsException in RecyclerView happens")
-//        }
+        try {
+            super.onLayout(changed, left, top, right, bottom)
+        } catch (e: IndexOutOfBoundsException) {
+        }
     }
 }

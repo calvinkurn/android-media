@@ -31,13 +31,13 @@ class BrandlistPageAdapter(
     val spanSizeLookup: GridLayoutManager.SpanSizeLookup by lazy {
         object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                if (visitables.size < position) {
-                    return BRANDLIST_GRID_SPAN_COUNT
-                } else {
+                return try {
                     return when (visitables[position].type(adapterTypeFactory)) {
                         AllBrandViewHolder.LAYOUT -> ALL_BRAND_GRID_SPAN_COUNT
                         else -> BRANDLIST_GRID_SPAN_COUNT
                     }
+                } catch (e: IndexOutOfBoundsException) {
+                    BRANDLIST_GRID_SPAN_COUNT
                 }
             }
         }
