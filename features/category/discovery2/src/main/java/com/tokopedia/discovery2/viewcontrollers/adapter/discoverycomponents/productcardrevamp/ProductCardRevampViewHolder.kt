@@ -27,7 +27,6 @@ class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment
 
             })
         }
-
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
