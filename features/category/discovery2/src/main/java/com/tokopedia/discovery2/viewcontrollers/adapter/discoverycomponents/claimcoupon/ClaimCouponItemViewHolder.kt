@@ -59,16 +59,16 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
         claimBtn.setOnClickListener {
             claimCouponItemViewModel.redeemCoupon()
             claimCouponItemViewModel.getRedeemCouponCode().observe(fragment.viewLifecycleOwner, Observer { item ->
-                if (!item.isNullOrEmpty() && item != NOT_LOGGEDIN) {
+                if (item == NOT_LOGGEDIN) {
+                    Toaster.make(itemView.rootView, itemView.context.getString(R.string.discovery_please_log_in), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, itemView.context.getString(R.string.discovery_login), View.OnClickListener {
+                        RouteManager.route(itemView.context, ApplinkConst.LOGIN)
+                    })
+                } else {
                     setBtn(UNCLAIMED)
                     Toaster.make(itemView.rootView, itemView.context.getString(R.string.claim_coupon_redeem_coupon_msg),
                             Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, itemView.context.getString(R.string.claim_coupon_lihat_text), View.OnClickListener {
                         val applink = GenerateUrl.getClaimCoupon(item)
                         claimCouponItemViewModel.navigate(itemView.context, applink)
-                    })
-                } else {
-                    Toaster.make(itemView.rootView, itemView.context.getString(R.string.discovery_please_log_in), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, itemView.context.getString(R.string.discovery_login), View.OnClickListener {
-                        RouteManager.route(itemView.context, ApplinkConst.LOGIN)
                     })
                 }
             })

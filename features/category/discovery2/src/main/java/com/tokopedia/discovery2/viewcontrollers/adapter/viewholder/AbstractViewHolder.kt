@@ -1,6 +1,5 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.viewholder
 
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +16,6 @@ abstract class AbstractViewHolder(itemView: View) : RecyclerView.ViewHolder(item
     protected var parentAbstractViewHolder: AbstractViewHolder? = null
     protected var discoveryBaseViewModel: DiscoveryBaseViewModel? = null
 
-    // TODO Remove this implementation
     abstract fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel)
 
     fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel, parentViewHolder: AbstractViewHolder?) {
@@ -25,7 +23,6 @@ abstract class AbstractViewHolder(itemView: View) : RecyclerView.ViewHolder(item
 
         if (this.discoveryBaseViewModel != null) {
             if (this.discoveryBaseViewModel !== discoveryBaseViewModel) {
-                Log.e("AbstractViewHolder", "removing observer old observer " + this.discoveryBaseViewModel + " adding observer " + discoveryBaseViewModel)
                 removeObservers(lifecycleOwner)
                 this.discoveryBaseViewModel?.onDetachToViewHolder()
                 this.discoveryBaseViewModel = discoveryBaseViewModel
@@ -44,7 +41,6 @@ abstract class AbstractViewHolder(itemView: View) : RecyclerView.ViewHolder(item
     }
 
     open fun onViewAttachedToWindow() {
-
 
     }
 
