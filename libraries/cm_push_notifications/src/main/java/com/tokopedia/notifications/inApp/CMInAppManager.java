@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
 import android.net.Uri;
-import androidx.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -17,15 +16,17 @@ import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
+import com.tokopedia.notifications.inApp.viewEngine.BannerView;
 import com.tokopedia.notifications.inApp.viewEngine.CMActivityLifeCycle;
 import com.tokopedia.notifications.inApp.viewEngine.CMInAppController;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppListener;
 import com.tokopedia.notifications.inApp.viewEngine.ElementType;
-import com.tokopedia.notifications.inApp.viewEngine.ViewEngine;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.RemoteConfig.KEY_CM_INAPP_END_TIME_INTERVAL;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor.HOURS_24_IN_MILLIS;
@@ -88,17 +89,19 @@ public class CMInAppManager implements CmInAppListener {
             public void notificationsDataResult(List<CMInApp> inAppDataList) {
                 synchronized (lock) {
                     if (canShowInApp(inAppDataList)) {
-                        if (getCurrentActivity() == null)
-                            return;
+                        if (getCurrentActivity() == null) return;
                         Activity activity = getCurrentActivity();
-                        ViewEngine viewEngine = new ViewEngine(currentActivity.get());
                         CMInApp cmInApp = inAppDataList.get(0);
-                        final View view = viewEngine.createView(cmInApp);
-                        if (view == null)
-                            return;
+
+                        BannerView bannerView = new BannerView(currentActivity.get());
+                        final View view = bannerView.createView(cmInApp);
                         View inAppViewPrev = activity.findViewById(R.id.mainContainer);
-                        if (null != inAppViewPrev)//In-App view already present on Activity
-                            return;
+
+                        if (view == null) return;
+
+                        //In-App view already present on Activity
+                        if (null != inAppViewPrev) return;
+
                         FrameLayout root = (FrameLayout) activity.getWindow()
                                 .getDecorView()
                                 .findViewById(android.R.id.content)
