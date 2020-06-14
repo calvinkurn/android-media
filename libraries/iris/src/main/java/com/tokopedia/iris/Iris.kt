@@ -1,7 +1,5 @@
 package com.tokopedia.iris
 
-import android.content.Context
-import com.tokopedia.iris.data.db.mapper.ConfigurationMapper
 import com.tokopedia.iris.model.Configuration
 
 /**
@@ -37,10 +35,10 @@ interface Iris {
     @Deprecated(message = "function should not be called directly", replaceWith = ReplaceWith(expression = "saveEvent(map)"))
     fun sendEvent(map: Map<String, Any>)
 
-    fun setUserId(userId: String)
-
-    fun setDeviceId(deviceId: String)
-
     fun setAlarm(isTurnOn: Boolean, force: Boolean)
 
+    /**
+     * get Iris Session ID to provide DA & DE
+     */
+    fun getSessionId(): String
 }

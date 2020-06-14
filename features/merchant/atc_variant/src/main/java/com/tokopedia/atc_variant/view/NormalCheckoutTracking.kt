@@ -225,7 +225,7 @@ class NormalCheckoutTracking {
         }
 
         val dimension40 = when {
-            reference == ApplinkConst.TOPCHAT -> "/chat"
+            reference == ApplinkConst.TOPCHAT -> "/chat - buy again"
             else -> ""
         }
 

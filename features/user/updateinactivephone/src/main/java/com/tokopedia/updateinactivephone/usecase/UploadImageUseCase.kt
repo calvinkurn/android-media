@@ -1,7 +1,7 @@
 package com.tokopedia.updateinactivephone.usecase
 
 import android.content.Context
-import com.tokopedia.core.util.ImageUploadHandler
+import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.data.repository.UploadImageRepositoryImpl
 import com.tokopedia.updateinactivephone.data.model.request.UploadImageModel
@@ -49,9 +49,7 @@ class UploadImageUseCase(
     private fun getUploadImageFile(requestParams: RequestParams): RequestBody {
         var file: File
         try {
-            file = ImageUploadHandler.writeImageToTkpdPath(
-                    ImageUploadHandler.compressImage(requestParams.getString(PARAM_FILE_TO_UPLOAD, ""))
-            )
+            file = ImageUtils.compressImageFile(requestParams.getString(PARAM_FILE_TO_UPLOAD, ""), 100)
         } catch (e: Exception) {
             throw RuntimeException(context.getString(R.string.error_upload_image))
         }

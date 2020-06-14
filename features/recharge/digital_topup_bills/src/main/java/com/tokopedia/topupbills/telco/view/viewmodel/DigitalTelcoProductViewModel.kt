@@ -33,7 +33,7 @@ class DigitalTelcoProductViewModel @Inject constructor(private val graphqlReposi
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoProductComponentData::class.java, mapParam)
                 graphqlRepository.getReseponse(listOf(graphqlRequest),
                         GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 10).build())
+                                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build())
             }.getSuccessData<TelcoProductComponentData>()
 
             onLoading(false)

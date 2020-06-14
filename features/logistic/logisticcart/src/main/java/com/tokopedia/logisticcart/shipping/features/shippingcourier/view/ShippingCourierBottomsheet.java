@@ -16,7 +16,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.DaggerShi
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.ShippingCourierComponent;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.ShippingCourierModule;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
-import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;

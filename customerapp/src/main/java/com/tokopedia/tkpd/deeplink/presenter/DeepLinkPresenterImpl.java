@@ -202,7 +202,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 case DeepLinkChecker.PRODUCT:
                     keepActivityOn = true;
                     if (linkSegment.size() >= 2
-                            && (linkSegment.get(1).equals("info") || isEtalase(linkSegment) || isShopHome(linkSegment))) {
+                            && (linkSegment.get(1).equals("info") || isEtalase(linkSegment) || isShopHome(linkSegment) || isShopReview(linkSegment))) {
                         openShopInfo(linkSegment, uriData, defaultBundle);
                         screenName = AppScreen.SCREEN_SHOP_INFO;
                     } else {
@@ -251,10 +251,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                         return;
                     }
                     break;
-                case DeepLinkChecker.PELUANG:
-                    screenName = AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_BERANDA;
-                    openPeluangPage(uriData.getPathSegments(), uriData, defaultBundle);
-                    break;
                 case DeepLinkChecker.GROUPCHAT:
                     openGroupChat(linkSegment, defaultBundle);
                     screenName = AppScreen.GROUP_CHAT;
@@ -265,10 +261,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     break;
                 case DeepLinkChecker.PROMO_LIST:
                     DeepLinkChecker.openPromoList(uriData.toString(), context, defaultBundle);
-                    screenName = "";
-                    break;
-                case DeepLinkChecker.SALE:
-                    openSale(linkSegment, defaultBundle);
                     screenName = "";
                     break;
                 case DeepLinkChecker.FLIGHT:
@@ -377,17 +369,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
     }
 
-    private void openPeluangPage(List<String> linkSegment, Uri uriData, Bundle bundle) {
-        String query = uriData.getQueryParameter("q");
-        Intent intent = RouteManager.getIntent(context, ApplinkConst.SELLER_OPPORTUNITY);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
-        context.finish();
-    }
-
     private void openHotel(Uri uri, Bundle bundle) {
         RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.DASHBOARD_HOTEL));
         context.finish();
@@ -400,21 +381,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             intent.putExtra(ApplinkConstInternalTravel.EXTRA_DESTINATION_WEB_URL, uri.toString());
             context.startActivity(intent);
         }
-        context.finish();
-    }
-
-    private void openSale(List<String> linkSegment, Bundle bundle) {
-        Intent intent;
-        if (linkSegment.size() <= 1) {
-            intent = RouteManager.getIntent(context, ApplinkConst.PROMO_LIST);
-        } else {
-            String SLUG_PARAM = "{slug}";
-            String applink = ApplinkConst.PROMO_SALE_NO_SLASH.
-                    replace(SLUG_PARAM, linkSegment.get(1));
-            intent = new Intent(Intent.ACTION_VIEW, Uri.parse(applink));
-        }
-        intent.putExtras(bundle);
-        context.startActivity(intent);
         context.finish();
     }
 
@@ -604,6 +570,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                                     bundle,
                                     ApplinkConst.SHOP_HOME,
                                     shopId);
+                        } else if (isShopReview(linkSegment)) {
+                            RouteManager.route(context,
+                                    bundle,
+                                    ApplinkConst.SHOP_REVIEW,
+                                    shopId);
                         } else {
                             Intent intent = RouteManager.getIntent(context, ApplinkConst.SHOP, shopId);
                             intent.putExtras(bundle);
@@ -634,6 +605,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private boolean isShopHome(List<String> linkSegment) {
         String lastSegment = linkSegment.get(linkSegment.size() - 1);
         return lastSegment.equalsIgnoreCase("home");
+    }
+
+    private boolean isShopReview(List<String> linkSegment) {
+        String lastSegment = linkSegment.get(linkSegment.size() - 1);
+        return lastSegment.equalsIgnoreCase("review");
     }
 
     private void openHomeRecommendation(final List<String> linkSegment, final Uri uriData, Bundle bundle) {
@@ -867,5 +843,4 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             e.printStackTrace();
         }
     }
-
 }

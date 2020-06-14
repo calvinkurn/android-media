@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewParent
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.ViewFlipper
 import androidx.annotation.IntDef
@@ -21,6 +22,7 @@ import androidx.annotation.StringDef
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
@@ -64,6 +66,7 @@ import com.tokopedia.promotionstarget.presentation.ui.dialog.PopUpVersion.Compan
 import com.tokopedia.promotionstarget.presentation.ui.dialog.PopUpVersion.Companion.NORMAL
 import com.tokopedia.promotionstarget.presentation.ui.recycleViewHelper.CouponItemDecoration
 import com.tokopedia.promotionstarget.presentation.ui.viewmodel.TargetPromotionsDialogVM
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -346,7 +349,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     }
 
     private fun prepareBottomSheet(activityContext: Context, couponUiType: TargetPromotionsCouponType): Pair<View, BottomSheetDialog> {
-        val bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(activityContext)
+        val bottomSheet = CloseableBottomSheetDialog.createInstanceCloseableRounded(activityContext,{})
         val view = LayoutInflater.from(activityContext).inflate(getLayout(couponUiType), null, false)
         bottomSheet.setCustomContentView(view, "", true)
         bottomSheet.show()
@@ -372,6 +375,11 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         imageViewRight = root.findViewById(R.id.imageViewRight)
         tvTitleRight = root.findViewById(R.id.tvTitleRight)
         tvSubTitleRight = root.findViewById(R.id.tvSubTitleRight)
+
+        try {
+            val imageClose = (root.parent.parent as ConstraintLayout).findViewById<ImageView>(R.id.close_button_rounded)
+            imageClose.setImageResource(R.drawable.t_promo_close)
+        }catch (th:Throwable){}
 
         screenWidth = activityContext.resources.displayMetrics.widthPixels.toFloat()
         rightViewList.add(imageViewRight)
@@ -399,6 +407,8 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         this.gratificationData = gratificationData
 
         initInjections(activityContext)
+        viewModel.gratificationData = gratificationData
+
         couponDetailResponse?.let {
             setUiData(it)
         }

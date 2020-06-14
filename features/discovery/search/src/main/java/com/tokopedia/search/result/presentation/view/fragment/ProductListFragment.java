@@ -62,6 +62,8 @@ import com.tokopedia.search.analytics.SearchEventTracking;
 import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.di.module.SearchContextModule;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
+import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
+import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
@@ -71,13 +73,13 @@ import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration;
 import com.tokopedia.search.result.presentation.view.listener.BannedProductsRedirectToBrowserListener;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
+import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener;
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener;
 import com.tokopedia.search.result.presentation.view.listener.ProductListener;
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterListener;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
-import com.tokopedia.search.result.presentation.view.listener.RelatedSearchListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
@@ -122,14 +124,14 @@ public class ProductListFragment
         ProductListener,
         TickerListener,
         SuggestionListener,
-        RelatedSearchListener,
         QuickFilterListener,
         GlobalNavListener,
         BannerAdsListener,
         EmptyStateListener,
         RecommendationListener,
         InspirationCarouselListener,
-        BannedProductsRedirectToBrowserListener {
+        BannedProductsRedirectToBrowserListener,
+        BroadMatchListener {
 
     private static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
@@ -305,8 +307,7 @@ public class ProductListFragment
                 this, this,
                 this, this,
                 this, this, this,
-                this, this,
-                topAdsConfig);
+                this, this, topAdsConfig);
 
         adapter = new ProductListAdapter(this, productListTypeFactory);
     }
@@ -757,10 +758,10 @@ public class ProductListFragment
     }
 
     @Override
-    public void onProductImpressed(ProductItemViewModel item, int adapterPosition) {
+    public void onProductImpressed(ProductItemViewModel item) {
         if (presenter == null) return;
 
-        presenter.onProductImpressed(item, adapterPosition);
+        presenter.onProductImpressed(item);
     }
 
     @Override
@@ -769,10 +770,10 @@ public class ProductListFragment
     }
 
     @Override
-    public void sendTopAdsGTMTrackingProductImpression(ProductItemViewModel item, int adapterPosition) {
+    public void sendTopAdsGTMTrackingProductImpression(ProductItemViewModel item) {
         Product product = createTopAdsProductForTracking(item);
 
-        TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, adapterPosition);
+        TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, item.getPosition());
     }
 
     private Product createTopAdsProductForTracking(ProductItemViewModel item) {
@@ -831,10 +832,10 @@ public class ProductListFragment
     }
 
     @Override
-    public void sendTopAdsGTMTrackingProductClick(ProductItemViewModel item, int adapterPosition) {
+    public void sendTopAdsGTMTrackingProductClick(ProductItemViewModel item) {
         Product product = createTopAdsProductForTracking(item);
 
-        TopAdsGtmTracker.eventSearchResultProductClick(getContext(), getQueryKey(), product, adapterPosition, SCREEN_SEARCH_PAGE_PRODUCT_TAB);
+        TopAdsGtmTracker.eventSearchResultProductClick(getContext(), getQueryKey(), product, item.getPosition(), SCREEN_SEARCH_PAGE_PRODUCT_TAB);
     }
 
     @Override
@@ -1009,12 +1010,6 @@ public class ProductListFragment
     public void onSuggestionClicked(SuggestionViewModel suggestionViewModel) {
         SearchTracking.eventClickSuggestedSearch(getQueryKey(), suggestionViewModel.getSuggestion());
         performNewProductSearch(suggestionViewModel.getSuggestedQuery());
-    }
-
-    @Override
-    public void onRelatedSearchClicked(String queryParams, String keyword) {
-        SearchTracking.eventClickRelatedSearch(getContext(), getQueryKey(), keyword);
-        performNewProductSearch(queryParams);
     }
 
     private void performNewProductSearch(String queryParams) {
@@ -1700,5 +1695,34 @@ public class ProductListFragment
         if (searchPerformanceMonitoringListener != null) {
             searchPerformanceMonitoringListener.startRenderPerformanceMonitoring();
         }
+    }
+
+    @Override
+    public void onBroadMatchItemClicked(@NotNull BroadMatchItemViewModel broadMatchItemViewModel) {
+        trackEventClickBroadMatchItem(broadMatchItemViewModel);
+
+        redirectionStartActivity(broadMatchItemViewModel.getApplink(), broadMatchItemViewModel.getUrl());
+    }
+
+    private void trackEventClickBroadMatchItem(@NotNull BroadMatchItemViewModel broadMatchItemViewModel) {
+        List<Object> broadMatchItem = new ArrayList<>();
+        broadMatchItem.add(broadMatchItemViewModel.asClickObjectDataLayer());
+
+        SearchTracking.trackEventClickBroadMatchItem(getQueryKey(), broadMatchItemViewModel.getAlternativeKeyword(), broadMatchItem);
+    }
+
+    @Override
+    public void onBroadMatchSeeMoreClicked(@NotNull BroadMatchViewModel broadMatchViewModel) {
+        SearchTracking.trackEventClickBroadMatchSeeMore(getQueryKey(), broadMatchViewModel.getKeyword());
+
+        String applink = (broadMatchViewModel.getApplink().startsWith(ApplinkConst.DISCOVERY_SEARCH)) ?
+            modifyApplinkToSearchResult(broadMatchViewModel.getApplink()) : broadMatchViewModel.getApplink();
+
+        redirectionStartActivity(applink, broadMatchViewModel.getUrl());
+    }
+
+    @Override
+    public void trackBroadMatchImpression(String alternativeKeyword, List<Object> impressionObjectDataLayer) {
+        SearchTracking.trackEventImpressionBroadMatch(getQueryKey(), alternativeKeyword, impressionObjectDataLayer);
     }
 }

@@ -2,11 +2,11 @@ package com.tokopedia.emoney.viewmodel
 
 import android.nfc.tech.IsoDep
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.emoney.data.AttributesEmoneyInquiry
-import com.tokopedia.emoney.data.EmoneyInquiry
-import com.tokopedia.emoney.data.EmoneyInquiryResponse
-import com.tokopedia.emoney.data.NfcCardErrorTypeDef
-import com.tokopedia.emoney.util.NFCUtils
+import com.tokopedia.common_electronic_money.data.AttributesEmoneyInquiry
+import com.tokopedia.common_electronic_money.data.EmoneyInquiry
+import com.tokopedia.common_electronic_money.data.EmoneyInquiryResponse
+import com.tokopedia.common_electronic_money.util.NFCUtils
+import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -186,20 +186,6 @@ class EmoneyBalanceViewModelTest {
 
         assertNotNull(emoneyBalanceViewModel.errorCardMessage.value)
         assertEquals(NfcCardErrorTypeDef.FAILED_UPDATE_BALANCE, emoneyBalanceViewModel.errorCardMessage.value)
-    }
-
-    @Test
-    fun processTagIntent_CardIsNotEmoney_ContinueProcessTagOnBrizzi() {
-        //given
-        initSuccessData()
-        every { NFCUtils.toHex(byteNfc) } returns "2000"
-
-        //when
-        emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0)
-
-        //then
-        assertNotNull(emoneyBalanceViewModel.cardIsNotEmoney.value)
-        assertEquals(emoneyBalanceViewModel.cardIsNotEmoney.value, true)
     }
 
     @Test

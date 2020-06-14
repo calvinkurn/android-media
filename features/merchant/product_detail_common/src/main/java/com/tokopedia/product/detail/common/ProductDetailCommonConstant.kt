@@ -44,7 +44,7 @@ object ProductDetailCommonConstant{
 
     val DEFAULT_SHOP_FIELDS = listOf("core", "favorite", "assets", "shipment",
             "last_active", "location", "terms", "allow_manage",
-            "is_owner", "other-goldos", "status")
+            "is_owner", "other-goldos", "status",  "closed_info")
 
     const val SHOP_ID_PARAM = "shopId"
     const val PRODUCT_ID_PARAM = "productId"
@@ -79,4 +79,7 @@ object ProductDetailCommonConstant{
     const val VALUE_TEASER_TRACKING_REGISTER = "on"
     const val VALUE_TEASER_TRACKING_UNREGISTER = "off"
     const val VALUE_TEASER_SOURCE = "pdp"
+
+    const val PARAM_APPLINK_SHOP_ID = "shop_id"
+    const val PARAM_APPLINK_PRODUCT_ID = "product_id"
 }

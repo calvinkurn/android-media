@@ -1,0 +1,14 @@
+{
+  "query" : [
+    {
+      "event": "clickTopNav",
+      "eventCategory": "top nav - /",
+      "eventAction": "click - shop - recent search",
+      "eventLabel": "{{.* - keyword: .*}}",
+      "screenName": "/",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{.*}}",
+      "businessUnit": "search"
+    }
+  ]
+}

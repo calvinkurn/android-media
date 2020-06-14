@@ -104,12 +104,6 @@ public interface ApplinkConst {
     String GROUPCHAT_DETAIL = "tokopedia://groupchat/{channel_id}";
     String CHAT_TEMPLATE = "tokopedia://chat/settings/templatechat";
     String REFERRAL = "tokopedia://referral";
-    String OFFICIAL_STORES_PROMO = "tokopedia://official-stores/promo/{slug}";
-    String OFFICIAL_STORE_PROMO = "tokopedia://official-store/promo/{slug}";
-    String OFFICIAL_STORES_PROMO_TERMS = "tokopedia://official-stores/promo-terms";
-    String PROMO_SALE = "tokopedia://sale/{slug}/";
-    String PROMO_SALE_NO_SLASH = "tokopedia://sale/{slug}";
-    String PROMO_SALE_TERMS = "tokopedia://promo-sale/promo-terms";
     String WALLET_HOME = "tokopedia://wallet";
     String WALLET_ACTIVATION = "tokopedia://wallet/activation";
     String WALLET_TRANSACTION_HISTORY = "tokopedia://wallet/transaction/history";
@@ -178,7 +172,6 @@ public interface ApplinkConst {
     String PRODUCT_DRAFT = "tokopedia://seller/product/draft";
     String PRODUCT_EDIT = "tokopedia://product/edit/{product_id}";
     String SELLER_TRANSACTION = "tokopedia://seller";
-    String SELLER_OPPORTUNITY = "tokopedia://seller/opportunity";
     String SELLER_CENTER = "tokopedia://seller/seller-center";
     String SELLER_SHIPPING_EDITOR = "tokopedia://seller/setting/shipping-editor";
     String CONTACT_US = "tokopedia://contact-us";
@@ -256,6 +249,7 @@ public interface ApplinkConst {
     String ADD_NAME_REGISTER = "tokopedia://addnameregister/{phone}";
     String ADD_NAME_PROFILE = "tokopedia://addname";
     String CREATE_PASSWORD = "tokopedia://createpassword";
+    String RESET_PASSWORD = "tokopedia://resetpassword";
     String PHONE_VERIFICATION = "tokopedia://phoneverification";
     String CHANGE_INACTIVE_PHONE = "tokopedia://changeinactivephone";
     String ADD_PIN_ONBOARD = "tokopedia://add-pin-onboarding";
@@ -303,6 +297,8 @@ public interface ApplinkConst {
     String SALAM_UMRAH_PDP = "tokopedia://s/umroh/produk/{slug}";
     String SALAM_UMRAH_CHECKOUT = "tokopedia://s/umroh/checkout";
     String SALAM_UMRAH_SHOP = "tokopedia://shop/7298319";
+    String THANK_YOU_PAGE_NATIVE = "tokopedia://payment/thankyou";
+
     String SALAM_UMRAH_AGEN = "tokopedia://s/umroh/agen/{slug}";
     String SALAM_UMRAH_LIST_AGEN = "tokopedia://s/umroh/agen";
 
@@ -347,6 +343,7 @@ public interface ApplinkConst {
 
         String COUPON_DETAIL3 = "tokopedia://tokopoints/kupon-saya/detail/{coupon_code}";
         String COUPON_DETAIL4 = "tokopedia://tokopoints/kupon-saya/detail/{coupon_code}/";
+
     }
     String OQR_PIN_URL_ENTRY_LINK = "tokopedia://ovoqrthanks/";
     String DISCOVERY = "tokopedia://discovery";
