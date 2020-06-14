@@ -69,7 +69,8 @@ class MerchantVoucherTargetViewModel @Inject constructor(
     }
 
     fun setReloadVoucherTargetData(@VoucherTargetType targetType: Int,
-                                   promoCode: String) {
+                                   promoCode: String,
+                                   promoCodePrefix: String) {
         mPrivateVoucherPromoCode.value = promoCode
         mVoucherTargetTypeLiveData.value = targetType
         mShouldReturnToInitialValue.value = targetType == VoucherTargetType.PRIVATE
@@ -82,7 +83,7 @@ class MerchantVoucherTargetViewModel @Inject constructor(
                         voucherTargetType = VoucherTargetCardType.PRIVATE,
                         isEnabled = targetType == VoucherTargetType.PRIVATE,
                         isHavePromoCard = targetType == VoucherTargetType.PRIVATE && promoCode.isNotEmpty(),
-                        promoCode = promoCode)
+                        promoCode = promoCodePrefix + promoCode)
         )
     }
 

@@ -387,6 +387,8 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                         promoCodePrefix = voucherCodePrefix
                     }
                     setupViewPager()
+
+                    voucherReviewUiModel.promoCode = voucherReviewUiModel.promoCode.replace(promoCodePrefix, "")
                     if (isDuplicateVoucher) {
                         createMerchantVoucherViewPager?.currentItem = VoucherCreationStep.REVIEW
                     } else if (isEditVoucher) {

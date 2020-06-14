@@ -305,7 +305,7 @@ class MerchantVoucherTargetFragment : BaseCreateMerchantVoucherFragment<VoucherT
 
     private fun setupReloadData() {
         with(getVoucherReviewUiModel()) {
-            viewModel.setReloadVoucherTargetData(targetType, promoCode)
+            viewModel.setReloadVoucherTargetData(targetType, promoCode, getPromoCodePrefix())
             fillVoucherNameTextfield?.textFieldInput?.setText(voucherName)
         }
     }
@@ -356,7 +356,7 @@ class MerchantVoucherTargetFragment : BaseCreateMerchantVoucherFragment<VoucherT
         )
     }
 
-    private fun getPromoCodeString() : String = getPromoCodePrefix() + promoCodeText
+    private fun getPromoCodeString() : String = promoCodeText
 
     private fun getClickedVoucherDisplayType() : VoucherTargetCardType = lastClickedVoucherDisplayType
 
