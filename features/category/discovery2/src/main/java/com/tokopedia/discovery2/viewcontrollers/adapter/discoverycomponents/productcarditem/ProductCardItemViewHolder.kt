@@ -278,9 +278,10 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     }
 
     private fun setRating(dataItem: DataItem) {
-        if (dataItem.rating.toIntOrZero() > 0) {
+        val ratingCount = dataItem.rating.toDoubleOrZero()
+        if (ratingCount > 0) {
             imageViewRating.show()
-            textViewRatingCount.setTextAndCheckShow(dataItem.rating)
+            textViewRatingCount.setTextAndCheckShow(ratingCount.toString())
             setTextViewReviewCount(dataItem.countReview.toIntOrZero())
         } else {
             imageViewRating.hide()
@@ -289,7 +290,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         }
     }
 
-    private fun setTextViewReviewCount(reviewCount: Int?) {
+    private fun setTextViewReviewCount(reviewCount: Int) {
         if (reviewCount != 0) {
             textViewReviewCount.show()
             textViewReviewCount.text = String.format("%s", "($reviewCount)")

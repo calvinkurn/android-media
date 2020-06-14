@@ -28,13 +28,14 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:gravity="center"
-            android:scaleType="centerCrop"
-            android:visibility="visible"
             app:layout_constraintDimensionRatio="H,1:1"
+            android:scaleType="fitXY"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/error_drawable" />
+            app:srcCompat="@drawable/error_drawable"
+            app:unify_image_corner_radius = "0"/>
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/buttonWishlist"

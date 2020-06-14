@@ -30,6 +30,7 @@ private const val EMPTY = 0
 private const val SOURCE = "discovery"
 private const val REGISTER = "REGISTER"
 private const val UNREGISTER = "UNREGISTER"
+private const val NOTIFY_ME_TEXT = "tertarik"
 
 class ProductCardItemViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
@@ -111,9 +112,9 @@ class ProductCardItemViewModel(val application: Application, private val compone
 
 
     fun getPDPViewCount(dataItem: DataItem): String {
-        val pdpViewData = dataItem.pdpView
-        return if (pdpViewData.toIntOrZero() >= 1000) {
-            Utils.getCountView(pdpViewData.toDoubleOrZero())
+        val pdpViewData = dataItem.pdpView.toDoubleOrZero()
+        return if (pdpViewData >= 1000) {
+            Utils.getCountView(pdpViewData)
         } else {
             ""
         }
@@ -123,8 +124,8 @@ class ProductCardItemViewModel(val application: Application, private val compone
     fun getInterestedCount(dataItem: DataItem): String {
         val notifyMeCount = dataItem.notifyMeCount
         val interestThreshold = dataItem.thresholdInterest
-        return if (notifyMeCount != null && interestThreshold != null && notifyMeCount >= interestThreshold) {
-            Utils.getCountView(notifyMeCount.toDouble(), "tertarik")
+        return if (interestThreshold != null && notifyMeCount >= interestThreshold) {
+            Utils.getCountView(notifyMeCount.toDoubleOrZero(), NOTIFY_ME_TEXT)
         } else {
             ""
         }

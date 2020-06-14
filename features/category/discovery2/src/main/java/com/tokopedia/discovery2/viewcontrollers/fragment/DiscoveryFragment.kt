@@ -140,6 +140,7 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback, SwipeRe
                     mProgressBar.hide()
                 }
             }
+            mSwipeRefreshLayout.isRefreshing = false
         })
 
         discoveryViewModel.getDiscoveryFabLiveData().observe(viewLifecycleOwner, Observer {
@@ -168,6 +169,7 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback, SwipeRe
                     ivSearch.hide()
                     ivShare.hide()
                     mProgressBar.hide()
+                    mSwipeRefreshLayout.isRefreshing = false
 
                     if (it.throwable is UnknownHostException
                             || it.throwable is SocketTimeoutException) {
@@ -286,6 +288,5 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback, SwipeRe
         discoveryAdapter.clearListViewModel()
         discoveryViewModel.clearPageData()
         discoveryViewModel.getDiscoveryData()
-        mSwipeRefreshLayout.isRefreshing = false
     }
 }
