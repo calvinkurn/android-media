@@ -500,10 +500,12 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
                 }
                 addAll(listOf(
                         DividerUiModel(DividerUiModel.THIN),
-                        getPeriodSection(fullDisplayedDate, voucherInfoHasCta),
-                        DividerUiModel(DividerUiModel.THICK)
+                        getPeriodSection(fullDisplayedDate, voucherInfoHasCta)
                 ))
-                getButtonUiModel(status)?.let { button ->
+                if (type != VoucherTypeConst.FREE_ONGKIR) {
+                    add(DividerUiModel(DividerUiModel.THICK))
+                }
+                getButtonUiModel(status, type)?.let { button ->
                     add(button)
                 }
                 getFooterUiModel(status)?.let { footer ->
@@ -528,12 +530,17 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
         return TipsUiModel(tips, clickableText)
     }
 
-    private fun getButtonUiModel(@VoucherStatusConst status: Int): FooterButtonUiModel? {
-        return when(status) {
-            VoucherStatusConst.ENDED -> duplicateButtonUiModel
-            VoucherStatusConst.STOPPED -> duplicateButtonUiModel
-            VoucherStatusConst.ONGOING -> shareButtonUiModel
-            else -> null
+    private fun getButtonUiModel(@VoucherStatusConst status: Int,
+                                 @VoucherTypeConst type: Int): FooterButtonUiModel? {
+        return if (type == VoucherTypeConst.CASHBACK) {
+            when(status) {
+                VoucherStatusConst.ENDED -> duplicateButtonUiModel
+                VoucherStatusConst.STOPPED -> duplicateButtonUiModel
+                VoucherStatusConst.ONGOING -> shareButtonUiModel
+                else -> null
+            }
+        } else {
+            null
         }
     }
 

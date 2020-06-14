@@ -128,7 +128,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                             ::getBannerBitmap,
                             ::getVoucherId,
                             ::getPromoCodePrefix,
-                            isEdit))
+                            this@CreateMerchantVoucherStepsActivity.isEditVoucher))
         }
     }
 
@@ -215,7 +215,6 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     private var voucherId: Int? = null
 
     private var isCreateNew = false
-    private var isEdit = false
 
     private var bannerBaseUiModel =
             BannerBaseUiModel(
@@ -255,19 +254,23 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     }
 
     override fun onBackPressed() {
-        when(currentStepPosition) {
-            VoucherCreationStep.TARGET -> {
-                cancelDialog.show()
-            }
-            VoucherCreationStep.REVIEW -> {
-                VoucherCreationTracking.sendCreateVoucherClickTracking(
-                        step = currentStepPosition,
-                        action = VoucherCreationAnalyticConstant.EventAction.Click.BACK_BUTTON,
-                        userId = userSession.userId)
-                backPromptBottomSheet.show(supportFragmentManager, ChangeDetailPromptBottomSheetFragment.TAG)
-            }
-            else -> {
-                onBackStep()
+        if (isEditVoucher) {
+            finish()
+        } else {
+            when(currentStepPosition) {
+                VoucherCreationStep.TARGET -> {
+                    cancelDialog.show()
+                }
+                VoucherCreationStep.REVIEW -> {
+                    VoucherCreationTracking.sendCreateVoucherClickTracking(
+                            step = currentStepPosition,
+                            action = VoucherCreationAnalyticConstant.EventAction.Click.BACK_BUTTON,
+                            userId = userSession.userId)
+                    backPromptBottomSheet.show(supportFragmentManager, ChangeDetailPromptBottomSheetFragment.TAG)
+                }
+                else -> {
+                    onBackStep()
+                }
             }
         }
     }
@@ -325,7 +328,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         when {
             checkIfDuplicate() -> return
             checkIfEdit() -> {
-                isEdit = true
+                isEditVoucher = true
                 return
             }
             else -> {
@@ -426,7 +429,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                     return if (id != 0) {
                         viewModel.initiateEditDuplicateVoucher(true)
                         setDuplicateEditVoucherData(voucherUiModel, true)
-                        isEditVoucher = true
+                        this@CreateMerchantVoucherStepsActivity.isEditVoucher = true
                         voucherId = id
                         createMerchantVoucherHeader?.setTitle(R.string.mvc_edit_voucher)
                         true

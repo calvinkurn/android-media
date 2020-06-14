@@ -240,7 +240,7 @@
     <string name="mvc_detail_ticker_stop_promo">Untuk menghentikan promosi, klik di sini</string>
     <string name="mvc_detail_ticker_cancel_promo">Untuk membatalkan promosi, klik di sini</string>
     <string name="mvc_detail_ticker_here">di sini</string>
-    <string name="mvc_review_agreement">Dengan klik Tambah Voucher, saya menyetujui syarat dan ketentuan yang berlaku.</string>
+    <string name="mvc_review_agreement">Dengan klik Tambah Voucher, saya menyetujui &lt;br>syarat dan ketentuan yang berlaku.</string>
     <string name="mvc_review_terms">syarat dan ketentuan</string>
     <string name="mvc_estimation_title">Estimasi Maks. Pengeluaran</string>
     <string name="mvc_estimation_description">Dipotong dari transaksi selesai</string>

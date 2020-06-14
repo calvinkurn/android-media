@@ -103,7 +103,7 @@
     <string name="centralized_promo_promo_creation_broadcast_chat_title">Broadcast Chat</string>
     <string name="centralized_promo_promo_creation_broadcast_chat_description">Tingkatkan penjualan dengan kirim pesan promosi ke pembeli</string>
     <string name="centralized_promo_promo_creation_merchant_voucher_title">Voucher Toko</string>
-    <string name="centralized_promo_promo_creation_merchant_voucher_cashback_title">Voucher Toko Cashback</string>
+    <string name="centralized_promo_promo_creation_merchant_voucher_cashback_title">Voucher Cashback</string>
     <string name="centralized_promo_promo_creation_merchant_voucher_description">Gunakan voucher toko yang sesuai target pembeli tokomu</string>
 
     <!-- First merchant voucher -->
