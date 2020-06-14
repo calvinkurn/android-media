@@ -6,12 +6,10 @@ import androidx.lifecycle.ViewModel
 import com.tokopedia.play.broadcaster.dispatcher.PlayBroadcastDispatcher
 import com.tokopedia.play.broadcaster.domain.usecase.AddMediaUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.AddProductTagUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.CreateChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.CreateLiveStreamChannelUseCase
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -22,11 +20,9 @@ import javax.inject.Named
 class PlayBroadcastSetupViewModel @Inject constructor(
         @Named(PlayBroadcastDispatcher.MAIN) dispatcher: CoroutineDispatcher,
         @Named(PlayBroadcastDispatcher.IO) private val ioDispatcher: CoroutineDispatcher,
-        private val createChannelUseCase: CreateChannelUseCase,
         private val addProductTagUseCase: AddProductTagUseCase,
         private val addMediaUseCase: AddMediaUseCase,
-        private val createLiveStreamChannelUseCase: CreateLiveStreamChannelUseCase,
-        private val userSession: UserSessionInterface
+        private val createLiveStreamChannelUseCase: CreateLiveStreamChannelUseCase
 ) : ViewModel() {
 
     private val job: Job = SupervisorJob()
@@ -40,35 +36,19 @@ class PlayBroadcastSetupViewModel @Inject constructor(
         get() = _observableSetupChannel
     private val _observableSetupChannel = MutableLiveData<ChannelSetupUiModel>()
 
-    val observableCreateChannel: LiveData<NetworkResult<LiveStreamInfoUiModel>>
-        get() = _observableCreateChannel
-    private val _observableCreateChannel = MutableLiveData<NetworkResult<LiveStreamInfoUiModel>>()
+    val observableCreateLiveStream: LiveData<NetworkResult<LiveStreamInfoUiModel>>
+        get() = _observableCreateLiveStream
+    private val _observableCreateLiveStream = MutableLiveData<NetworkResult<LiveStreamInfoUiModel>>()
 
     init {
         _observableFollowers.value = PlayBroadcastMocker.getMockUnknownFollower()
     }
 
-    fun createChannel() {
-        /**
-         * TODO("require staging environment")
-         * scope.launchCatchError( block = {
-         * _observableSetupChannel.value?.let {
-         * val channelId = createChannel(it.title)
-         * addProductTags(channelId.channelId, selectedProductIds(it.selectedProductList))
-         * addCover(channelId.channelId, it.coverUrl)
-         * val media  = createLiveStream(channelId.channelId)
-         * _observableCreateChannel.value = Success(PlayBroadcasterUiMapper.mapLiveStream(channelId.channelId, media))
-         * }
-         * }) {
-         *  _observableCreateChannel.value = Fail(Throwable("create channel failed"))
-         * }
-         *
-         */
-        _observableCreateChannel.value = NetworkResult.Loading
-
+    fun createLiveStream() {
+        _observableCreateLiveStream.value = NetworkResult.Loading
         scope.launch {
             delay(3000)
-            _observableCreateChannel.value = NetworkResult.Success(PlayBroadcastMocker.getLiveStreamingInfo())
+            _observableCreateLiveStream.value = NetworkResult.Success(PlayBroadcastMocker.getLiveStreamingInfo())
         }
     }
 
@@ -84,16 +64,7 @@ class PlayBroadcastSetupViewModel @Inject constructor(
 
     private fun selectedProductIds(productList: List<ProductContentUiModel>): List<String> = productList.map { it.id.toString() }.toList()
 
-    private suspend fun createChannel(title: String) = withContext(ioDispatcher) {
-        return@withContext createChannelUseCase.apply {
-            params = CreateChannelUseCase.createParams(
-                    title = title,
-                    authorId = userSession.shopId
-            )
-        }.executeOnBackground()
-    }
-
-    private suspend fun addProductTags(channelId: String, productIds: List<String>) = withContext(ioDispatcher) {
+    private suspend fun updateProduct(channelId: String, productIds: List<String>) = withContext(ioDispatcher) {
         return@withContext addProductTagUseCase.apply {
             params = AddProductTagUseCase.createParams(
                     channelId = channelId,
@@ -102,7 +73,7 @@ class PlayBroadcastSetupViewModel @Inject constructor(
         }.executeOnBackground()
     }
 
-    private suspend fun addCover(channelId: String, coverUrl: String) = withContext(ioDispatcher) {
+    private suspend fun updateCover(channelId: String, coverUrl: String) = withContext(ioDispatcher) {
         return@withContext addMediaUseCase.apply {
             params = AddMediaUseCase.createParams(
                     channelId = channelId,

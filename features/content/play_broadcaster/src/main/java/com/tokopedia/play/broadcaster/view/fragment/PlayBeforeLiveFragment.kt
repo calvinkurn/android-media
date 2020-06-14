@@ -112,7 +112,7 @@ class PlayBeforeLiveFragment @Inject constructor(
     }
 
     private fun observeCreateChannel() {
-        setupViewModel.observableCreateChannel.observe(viewLifecycleOwner, Observer {
+        setupViewModel.observableCreateLiveStream.observe(viewLifecycleOwner, Observer {
             when(it) {
                 NetworkResult.Loading -> btnStartLive.setLoading(true)
                 is NetworkResult.Success -> {
@@ -151,7 +151,7 @@ class PlayBeforeLiveFragment @Inject constructor(
     }
 
     private fun startStreaming() {
-        setupViewModel.createChannel()
+        setupViewModel.createLiveStream()
     }
 
     private fun getExitDialog(): DialogUnify {

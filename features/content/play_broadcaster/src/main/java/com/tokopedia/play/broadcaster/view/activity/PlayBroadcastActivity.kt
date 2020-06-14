@@ -23,6 +23,8 @@ import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
 import com.tokopedia.play.broadcaster.view.custom.PlayRequestPermissionView
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment.Companion.PARENT_FRAGMENT_TAG
+import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastSetupFragment
+import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.ActionBarPartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -56,6 +58,7 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
         initView()
         getConfiguration()
 
+        observeConfiguration()
         observePermissionStateEvent()
     }
 
@@ -168,6 +171,25 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
     /**
      * Observe
      */
+    private fun observeConfiguration() {
+        viewModel.observableConfigInfo.observe(this, Observer {
+            if (it.streamAllowed) {
+                if (it.activeOnDifferentDevices) {
+                    // TODO("handle: Tokomu sedang siaran di perangkat lain")
+                }
+                if (it.haveOnGoingLive) {
+                    navigateToFragment(PlayBroadcastUserInteractionFragment::class.java,
+                            Bundle().apply {
+                                putString(PlayBroadcastUserInteractionFragment.KEY_CHANNEL_ID, it.activeChannelId.toString())
+                            })
+                } else {
+                    navigateToFragment(PlayBroadcastSetupFragment::class.java)
+                }
+            } else {
+                // TODO("handle when stream not allowed")
+            }
+        })
+    }
 
     private fun observePermissionStateEvent() {
         viewModel.observablePermissionState.observe(this, Observer {

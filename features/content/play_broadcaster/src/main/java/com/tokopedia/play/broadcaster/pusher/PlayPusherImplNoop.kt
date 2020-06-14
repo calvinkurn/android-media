@@ -86,6 +86,10 @@ class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
         })
     }
 
+    override fun addMaxPauseDuration(millis: Long) {
+
+    }
+
     override fun getObservablePlayPusherInfoState(): LiveData<PlayPusherInfoState> {
         return _observableInfoState
     }

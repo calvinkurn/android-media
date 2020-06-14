@@ -55,12 +55,11 @@ class CreateChannelUseCase @Inject constructor(
         private const val VALUE_STATUS = 0
 
         fun createParams(
-                title: String,
                 authorId: String,
                 authorType: Int = VALUE_SHOP_TYPE,
                 status: Int  = VALUE_STATUS // TODO("ask BE")
         ): Map<String, Any> = mapOf(
-                PARAMS_TITLE to title,
+                PARAMS_TITLE to "", // empty by default
                 PARAMS_AUTHOR_ID to authorId,
                 PARAMS_AUTHOR_TYPE to authorType,
                 PARAMS_STATUS to status

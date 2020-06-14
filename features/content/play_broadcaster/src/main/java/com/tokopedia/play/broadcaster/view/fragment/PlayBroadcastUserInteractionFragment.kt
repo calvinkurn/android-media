@@ -46,6 +46,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private lateinit var chatListView: ChatListPartialView
     private lateinit var productLiveBottomSheet: PlayProductLiveBottomSheet
 
+    private lateinit var exitDialog: DialogUnify
+
     override fun getScreenName(): String = "Play Broadcast Interaction"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -151,21 +153,26 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun showDialogWhenActionClose() {
-        context?.let {
-            DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(getString(R.string.play_live_broadcast_dialog_end_title))
-                setDescription(getString(R.string.play_live_broadcast_dialog_end_desc))
-                setPrimaryCTAText(getString(R.string.play_live_broadcast_dialog_end_primary))
-                setSecondaryCTAText(getString(R.string.play_live_broadcast_dialog_end_secondary))
-                setPrimaryCTAClickListener { dismiss() }
-                setSecondaryCTAClickListener {
-                    dismiss()
-                    doEndStreaming()
-                }
-                setCancelable(false)
-                setOverlayClose(false)
-            }.show()
+        getExitDialog().show()
+    }
+
+    private fun getExitDialog(): DialogUnify {
+        if (!::exitDialog.isInitialized) {
+           exitDialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+               setTitle(getString(R.string.play_live_broadcast_dialog_end_title))
+               setDescription(getString(R.string.play_live_broadcast_dialog_end_desc))
+               setPrimaryCTAText(getString(R.string.play_live_broadcast_dialog_end_primary))
+               setSecondaryCTAText(getString(R.string.play_live_broadcast_dialog_end_secondary))
+               setPrimaryCTAClickListener { dismiss() }
+               setSecondaryCTAClickListener {
+                   dismiss()
+                   doEndStreaming()
+               }
+               setCancelable(false)
+               setOverlayClose(false)
+           }
         }
+        return exitDialog
     }
 
     private fun showDialogWhenTimeout() {

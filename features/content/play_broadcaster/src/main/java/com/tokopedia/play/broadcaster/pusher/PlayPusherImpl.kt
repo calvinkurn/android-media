@@ -21,7 +21,7 @@ import com.tokopedia.play.broadcaster.pusher.type.PlayPusherQualityMode
  */
 class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
-    private var mTimer: PlayPusherTimer? = null
+    private var mTimerDuration: PlayPusherTimer? = null
     private var mIngestUrl: String = ""
 
     private var mAliVcLivePusher: AlivcLivePusher = AlivcLivePusher()
@@ -101,6 +101,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         }
         try {
             mAliVcLivePusher.startPushAysnc(this.mIngestUrl)
+            mTimerDuration?.start()
         } catch (e: Exception) {
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
@@ -121,6 +122,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     override fun stopPush() {
         try {
             mAliVcLivePusher.stopPush()
+            mTimerDuration?.stop()
         } catch (e: Exception) {
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
@@ -165,6 +167,9 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     override fun destroy() {
         try {
             mAliVcLivePusher.destroy()
+            if (mAliVcLivePusher.isPushing) {
+                mTimerDuration?.pause()
+            }
         } catch (e: java.lang.IllegalStateException) {
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
@@ -173,11 +178,15 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     }
 
     override fun addMaxStreamDuration(millis: Long) {
-        this.mTimer = PlayPusherTimer(
+        this.mTimerDuration = PlayPusherTimer(
                 context = builder.context,
                 liveStreamDuration = millis,
                 callback = mPlayPusherTimerListener
         )
+    }
+
+    override fun addMaxPauseDuration(millis: Long) {
+
     }
 
     override fun getObservablePlayPusherInfoState(): LiveData<PlayPusherInfoState> {

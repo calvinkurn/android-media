@@ -6,6 +6,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.play.broadcaster.dispatcher.PlayBroadcastDispatcher
+import com.tokopedia.play.broadcaster.domain.usecase.CreateChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetConfigurationUseCase
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
@@ -16,6 +17,7 @@ import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionUtil
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.Event
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -28,8 +30,10 @@ class PlayBroadcastViewModel  @Inject constructor(
         private val playPusher: PlayPusher,
         private val permissionUtil: PlayPermissionUtil,
         private val getConfigurationUseCase: GetConfigurationUseCase,
+        private val createChannelUseCase: CreateChannelUseCase,
         @Named(PlayBroadcastDispatcher.MAIN) private val mainDispatcher: CoroutineDispatcher,
-        @Named(PlayBroadcastDispatcher.IO) private val ioDispatcher: CoroutineDispatcher
+        @Named(PlayBroadcastDispatcher.IO) private val ioDispatcher: CoroutineDispatcher,
+        private val userSession: UserSessionInterface
 ) : ViewModel() {
 
     private val job: Job = SupervisorJob()
@@ -111,7 +115,23 @@ class PlayBroadcastViewModel  @Inject constructor(
         scope.launch {
             val configurationUiModel = PlayBroadcastMocker.getMockConfiguration()
             _observableConfigInfo.value = configurationUiModel
+
+            if (configurationUiModel.streamAllowed
+                    && !configurationUiModel.haveOnGoingLive
+                    && configurationUiModel.draftChannelId == 0) {
+                createChannel()
+            }
+            playPusher.addMaxStreamDuration(configurationUiModel.durationConfig.duration)
+            playPusher.addMaxPauseDuration(configurationUiModel.durationConfig.pauseDuration)
         }
+    }
+
+    private suspend fun createChannel() = withContext(ioDispatcher) {
+        return@withContext createChannelUseCase.apply {
+            params = CreateChannelUseCase.createParams(
+                    authorId = userSession.shopId
+            )
+        }.executeOnBackground()
     }
 
     fun getChannel(channelId: String): ChannelInfoUiModel {
@@ -146,14 +166,6 @@ class PlayBroadcastViewModel  @Inject constructor(
         }
     }
 
-    fun getPlayPusher(): PlayPusher {
-        return playPusher
-    }
-
-    fun getPermissionUtil(): PlayPermissionUtil {
-        return permissionUtil
-    }
-
     private fun startWebSocket(channelInfo: ChannelInfoUiModel) {
         // TODO("connect socket")
     }
@@ -166,6 +178,14 @@ class PlayBroadcastViewModel  @Inject constructor(
 
     private suspend fun onRetrievedNewMetric(newMetric: PlayMetricUiModel) = withContext(mainDispatcher) {
         _observableNewMetric.value = Event(newMetric)
+    }
+
+    fun getPlayPusher(): PlayPusher {
+        return playPusher
+    }
+
+    fun getPermissionUtil(): PlayPermissionUtil {
+        return permissionUtil
     }
 
     /**
