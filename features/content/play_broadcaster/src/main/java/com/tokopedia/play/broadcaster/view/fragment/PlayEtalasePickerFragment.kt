@@ -23,7 +23,7 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.EtalaseLoadingUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
-import com.tokopedia.play.broadcaster.ui.model.ResultState
+import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayEtalaseViewHolder
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 import com.tokopedia.play.broadcaster.ui.viewholder.SearchSuggestionViewHolder
@@ -260,14 +260,14 @@ class PlayEtalasePickerFragment @Inject constructor(
     private fun observeEtalase() {
         viewModel.observableEtalase.observe(viewLifecycleOwner, Observer {
             when (it.state) {
-                ResultState.Loading -> {
+                PageResultState.Loading -> {
                     etalaseAdapter.setItemsAndAnimateChanges(listOf(EtalaseLoadingUiModel))
                 }
-                is ResultState.Success -> {
+                is PageResultState.Success -> {
                     etalaseAdapter.setItemsAndAnimateChanges(it.currentValue)
                     startPostponedTransition()
                 }
-                is ResultState.Fail -> {
+                is PageResultState.Fail -> {
                     startPostponedTransition()
                 }
             }
@@ -278,7 +278,7 @@ class PlayEtalasePickerFragment @Inject constructor(
     private fun observeSearchProducts() {
         viewModel.observableSearchedProducts.observe(viewLifecycleOwner, Observer {
             when (it.state) {
-                is ResultState.Success -> {
+                is PageResultState.Success -> {
                     searchProductsAdapter.setItemsAndAnimateChanges(it.currentValue)
 
                     if (it.currentValue.isEmpty()) {
@@ -292,13 +292,13 @@ class PlayEtalasePickerFragment @Inject constructor(
                     }
                     scrollListener.updateState(true)
                 }
-                ResultState.Loading -> {
+                PageResultState.Loading -> {
                     if (it.currentValue.isEmpty()) {
                         searchProductsAdapter.setItems(listOf(ProductLoadingUiModel))
                         searchProductsAdapter.notifyDataSetChanged()
                     } else searchProductsAdapter.setItemsAndAnimateChanges(it.currentValue + ProductLoadingUiModel)
                 }
-                is ResultState.Fail -> {
+                is PageResultState.Fail -> {
                     searchProductsAdapter.setItemsAndAnimateChanges(it.currentValue)
                     scrollListener.setHasNextPage(true)
                     scrollListener.updateState(false)
