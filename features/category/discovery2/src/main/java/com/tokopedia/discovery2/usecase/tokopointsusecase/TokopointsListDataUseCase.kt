@@ -9,10 +9,11 @@ class TokopointsListDataUseCase @Inject constructor(private val tokopointsReposi
         private const val RPC_PAGE_NUMBER_KEY = "rpc_page_number"
         private const val RPC_PAGE_SIZE = "rpc_page_size"
     }
-    suspend fun getTokopointsDataUseCase(componentId: String,  pageEndPoint: String): Boolean {
-        val componentsItem = getComponent(componentId,pageEndPoint)
+
+    suspend fun getTokopointsDataUseCase(componentId: String, pageEndPoint: String): Boolean {
+        val componentsItem = getComponent(componentId, pageEndPoint)
         componentsItem?.let { component ->
-            component?.setComponentsItem(tokopointsRepository.getTokopointsData(componentId, getQueryParameterMap(1.toString(),6), pageEndPoint))
+            component?.setComponentsItem(tokopointsRepository.getTokopointsData(componentId, getQueryParameterMap(1.toString(), 6), pageEndPoint))
             component?.noOfPagesLoaded = 1
             return true
         }
@@ -21,7 +22,7 @@ class TokopointsListDataUseCase @Inject constructor(private val tokopointsReposi
 
     }
 
-    private fun getQueryParameterMap(pageNum:String, productPerPage: Int): MutableMap<String, Any> {
+    private fun getQueryParameterMap(pageNum: String, productPerPage: Int): MutableMap<String, Any> {
         val queryParameterMap = mutableMapOf<String, Any>()
         queryParameterMap[RPC_PAGE_NUMBER_KEY] = pageNum
         queryParameterMap[RPC_PAGE_SIZE] = productPerPage
