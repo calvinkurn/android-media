@@ -5,8 +5,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.widget.FrameLayout
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Observer
@@ -30,9 +28,9 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
+import com.tokopedia.play.broadcaster.view.partial.ActionBarPartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.util.event.EventObserver
-import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 /**
@@ -49,11 +47,8 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
     private lateinit var viewModel: PlayBroadcastViewModel
 
     private lateinit var containerSetup: FrameLayout
-    private lateinit var viewActionBar: View
+    private lateinit var viewActionBar: ActionBarPartialView
     private lateinit var viewRequestPermission: PlayRequestPermissionView
-    private lateinit var ivSwitchCamera: AppCompatImageView
-    private lateinit var tvClose: AppCompatTextView
-    private lateinit var tvTitle: Typography
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -63,9 +58,8 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_broadcast)
         setupContent()
-        setupPermission()
+        initView()
         getConfiguration()
-        setupToolbar()
 
         observeScreenStateEvent()
         observePermissionStateEvent()
@@ -88,8 +82,6 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
     }
 
     private fun setupContent() {
-        containerSetup = findViewById(R.id.fl_setup)
-        viewActionBar = findViewById(R.id.view_action_bar)
         val currentFragment = supportFragmentManager.findFragmentByTag(PARENT_FRAGMENT_TAG)
         if (currentFragment == null) {
             supportFragmentManager.beginTransaction()
@@ -98,21 +90,19 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
         }
     }
 
-    private fun setupPermission() {
+    private fun initView() {
+        containerSetup = findViewById(R.id.fl_setup)
         viewRequestPermission = findViewById(R.id.view_request_permission)
-    }
 
-    private fun setupToolbar() {
-        tvTitle = findViewById(R.id.tv_title)
-        ivSwitchCamera = findViewById(R.id.iv_switch)
-        tvClose = findViewById(R.id.tv_close)
+        viewActionBar = ActionBarPartialView(findViewById(android.R.id.content), object : ActionBarPartialView.Listener{
+            override fun onCameraIconClicked() {
+                viewModel.getPlayPusher().switchCamera()
+            }
 
-        ivSwitchCamera.setOnClickListener {
-            doSwitchCamera()
-        }
-        tvClose.setOnClickListener {
-            onBackPressed()
-        }
+            override fun onCloseIconClicked() {
+                onBackPressed()
+            }
+        })
     }
 
     private fun getConfiguration() {
@@ -148,12 +138,11 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
     }
 
     override fun setupTitle(title: String) {
-        tvTitle.text = title
+        viewActionBar.setTitle(title)
     }
 
     override fun setupCloseButton(actionTitle: String) {
-        tvClose.text = actionTitle
-        tvClose.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+        viewActionBar.setupCloseButton(actionTitle)
     }
 
     override fun showActionBar(shouldShow: Boolean) {
@@ -168,11 +157,7 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
 
     private fun getCurrentFragment() = supportFragmentManager.findFragmentById(R.id.fl_setup)
 
-    private fun doSwitchCamera() {
-        viewModel.getPlayPusher().switchCamera()
-    }
-
-    private fun onClosePage(): Boolean {
+    private fun shouldClosePage(): Boolean {
         val currentVisibleFragment = getCurrentFragment()
         if (currentVisibleFragment != null && currentVisibleFragment is PlayBaseBroadcastFragment) {
             return currentVisibleFragment.onBackPressed()
@@ -181,7 +166,7 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
     }
 
     override fun onBackPressed() {
-        if (onClosePage()) return
+        if (shouldClosePage()) return
         super.onBackPressed()
     }
 
