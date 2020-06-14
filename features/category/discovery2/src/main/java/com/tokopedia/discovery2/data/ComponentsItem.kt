@@ -33,7 +33,6 @@ data class ComponentsItem(
 
         var constraintRatio: String? = null,
 
-
         var needPagination: Boolean = false,
         var noOfPagesLoaded: Int = 0,
         var componentsPerPage: Int = 20,
@@ -52,7 +51,6 @@ data class ComponentsItem(
             discoveryPageData[this.pageEndPoint]?.componentMap?.set(it.id, it)
         }
         componentsItem = listComponents
-
     }
 
     fun getComponentsItem(): List<ComponentsItem>? {
