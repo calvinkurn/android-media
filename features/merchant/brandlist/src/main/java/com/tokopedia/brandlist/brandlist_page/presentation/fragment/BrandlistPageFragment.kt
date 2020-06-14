@@ -297,6 +297,7 @@ class BrandlistPageFragment :
                     val totalBrandsFiltered = if (stateLoadBrands == LoadAllBrandState.LOAD_ALL_BRAND ||
                             stateLoadBrands == LoadAllBrandState.LOAD_INITIAL_ALL_BRAND) totalBrandsNumber else it.data.totalBrands
                     adapter?.hideLoading()
+
                     swipeRefreshLayout?.isRefreshing = false
                     endlessScrollListener.updateStateAfterGetData()
 
@@ -424,22 +425,36 @@ class BrandlistPageFragment :
         recyclerViewLastState = recyclerViewState
         isChipSelected = true
 
+        resetCurrentBrandRecom()
         showLoadingBrandRecom()
-        adapter?.showLoading()
+//        adapter?.showLoading()
 
         if (position > 0 && position < 2) {     // Load Semua Brand
             isLoadMore = false
             selectedBrandLetter = defaultBrandLetter
             setStateLoadBrands(LoadAllBrandState.LOAD_ALL_BRAND)
             viewModel.resetAllBrandRequestParameter()
-            viewModel.loadAllBrands(category)
+            Handler().postDelayed({
+                viewModel.loadAllBrands(category)
+            }, 100)
+
         } else if (position >= 2) {     // Load per alphabet
             isLoadMore = false
             selectedBrandLetter = chipName
             setStateLoadBrands(LoadAllBrandState.LOAD_BRAND_PER_ALPHABET)
             viewModel.resetAllBrandRequestParameter()
-            viewModel.loadBrandsPerAlphabet(category, chipName)
+            Handler().postDelayed({
+                viewModel.loadBrandsPerAlphabet(category, chipName)
+            }, 100)
         }
+    }
+
+    private fun showLoadingBrandRecom() {
+        BrandlistPageMapper.mappingLoadingBrandRecomm(adapter)
+    }
+
+    private fun resetCurrentBrandRecom() {
+        BrandlistPageMapper.mappingRemoveBrandRecom(adapter)
     }
 
     override fun onClickSearchButton() {
@@ -449,9 +464,5 @@ class BrandlistPageFragment :
             startActivity(intent)
             activity?.supportFragmentManager?.beginTransaction()?.setCustomAnimations(R.anim.slide_up, R.anim.no_change)?.commit()
         }
-    }
-
-    private fun showLoadingBrandRecom() {
-        BrandlistPageMapper.mappingLoadingBrandRecomm(adapter)
     }
 }
