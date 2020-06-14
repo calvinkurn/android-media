@@ -18,8 +18,6 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
     private val tabsRecyclerView: RecyclerView = itemView.findViewById(R.id.bannerRecyclerView)
     private lateinit var tabsViewModel: TabsViewModel
     private val tabsRecyclerViewAdapter: DiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment, this)
-
-    private var addChildAdapterCallback: AddChildAdapterCallback
     private lateinit var linearLayoutManager: LinearLayoutManager
 
     init {
