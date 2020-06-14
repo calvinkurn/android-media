@@ -18,20 +18,11 @@ data class ComponentsItem(
         @SerializedName("name")
         var name: String? = "",
 
-        @SerializedName("ab_default")
-        val abDefault: Boolean = false,
-
         @SerializedName("id")
         var id: String = "",
 
-        @SerializedName("is_ab")
-        val isAb: Boolean = false,
-
         @SerializedName("title")
         val title: String? = "",
-
-        @SerializedName("skiprender")
-        val skipRender: Boolean = false,
 
         @SerializedName("properties")
         var properties: Properties? = null,
