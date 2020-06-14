@@ -16,7 +16,8 @@ import timber.log.Timber;
 
 public class DeferredResourceInitializer implements DeferredCallback {
     private static String RELATIVE_URL = "/android/res/";
-    public void initializeResourceDownloadManager(Context context){
+
+    public void initializeResourceDownloadManager(Context context) {
         WeaveInterface libInitWeave = new WeaveInterface() {
             @NotNull
             @Override
@@ -27,7 +28,7 @@ public class DeferredResourceInitializer implements DeferredCallback {
         Weaver.Companion.executeWeaveCoRoutineNow(libInitWeave);
     }
 
-    private boolean init(Context context){
+    private boolean init(Context context) {
         ResourceDownloadManager
                 .Companion.getManager()
                 .setBaseAndRelativeUrl(AccountHomeUrl.CDN_URL, RELATIVE_URL)
@@ -38,7 +39,7 @@ public class DeferredResourceInitializer implements DeferredCallback {
 
     @Override
     public void logDeferred(@NotNull String message) {
-        Timber.tag(ResourceDownloadManager.MANAGER_TAG).i(message);
+        Timber.w("P1%s#%s", ResourceDownloadManager.MANAGER_TAG, message);
     }
 
     @Override

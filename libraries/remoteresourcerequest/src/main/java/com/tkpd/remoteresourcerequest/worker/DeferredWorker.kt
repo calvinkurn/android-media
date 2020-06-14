@@ -74,6 +74,7 @@ class DeferredWorker(val context: Context, params: WorkerParameters) :
                             }
 
                             override fun onTaskFailed(resourceUrl: String?) {
+                                cont.resume(false)
                             }
                         })
 

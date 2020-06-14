@@ -1,6 +1,5 @@
 package com.tkpd.remoteresourcerequest.runnable
 
-import com.tkpd.remoteresourcerequest.BuildConfig
 import com.tkpd.remoteresourcerequest.database.ResourceDB
 import com.tkpd.remoteresourcerequest.database.ResourceEntry
 import com.tkpd.remoteresourcerequest.utils.Constants.CORRUPT_FILE_MESSAGE
@@ -90,10 +89,9 @@ class ResourceDownloadRunnable(
                  * However for point 3, we have released the [semaphore] in finally block.
                  *
                  */
-                semaphore.acquireUninterruptibly()
+                semaphore.acquire()
 
                 task.handleDownloadState(DOWNLOAD_STATE_STARTED)
-                val appVersion = BuildConfig.VERSION_NAME
                 val entry = readEntryFromDatabase()
                 if (entry != null) {
                     task.setByteBuffer(fileFromAbsolutePath(entry.absolutePath))
@@ -111,6 +109,7 @@ class ResourceDownloadRunnable(
                             override fun onResponse(call: Call?, response: Response) {
                                 if (!response.isSuccessful) {
                                     task.handleDownloadState(DOWNLOAD_STATE_FAILED)
+                                    semaphore.release()
                                     throw IOException(downloadFailMessage.format(response))
                                 }
                                 val byteArray: ByteArray? = response.body()?.bytes()

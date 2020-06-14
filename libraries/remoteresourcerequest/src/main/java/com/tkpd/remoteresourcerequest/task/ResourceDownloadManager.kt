@@ -231,7 +231,7 @@ class ResourceDownloadManager private constructor() {
                 logCurrentState("DOWNLOAD_COMPLETED $urlAndWorkerInfo")
                 CallbackDispatcher.onDownloadState(
                         deferredCallback,
-                        task.getDownloadUrl(), true
+                        task.getDownloadUrl(), false
                 )
 
                 onDownloadCompleted(task)
@@ -241,7 +241,7 @@ class ResourceDownloadManager private constructor() {
                 logCurrentState("DOWNLOAD_FAILED $urlAndWorkerInfo")
                 CallbackDispatcher.onDownloadState(
                         deferredCallback,
-                        task.getDownloadUrl(), false
+                        task.getDownloadUrl(), true
                 )
                 onDownloadFailed(task)
                 offerTask(task)
