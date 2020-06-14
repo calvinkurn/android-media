@@ -43,7 +43,7 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
     }
 
     override fun initView() {
-        if (config == REACT_NATIVE) {
+        if (config != NATIVE) {
             routeToReactNativeDiscovery()
         }
         toolbar?.hide()
@@ -56,7 +56,7 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
             when (it) {
                 is Success -> {
                     config = it.data
-                    if (it.data == REACT_NATIVE) {
+                    if (it.data != NATIVE) {
                         routeToReactNativeDiscovery()
                     }
                 }
