@@ -141,8 +141,8 @@ class BannerDotIndicator(private val radius: Int, private val indicatorItemPaddi
     }
 
     private fun handleAppLink(context: Context, btnAppLink: String) {
-        clickSeeAllInterface.onClickSeeAll()
         RouteManager.route(context, btnAppLink)
+        clickSeeAllInterface.onClickSeeAll()
     }
 
     interface ClickSeeAllInterface {

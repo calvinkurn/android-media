@@ -38,8 +38,8 @@ class CategoryNavigationItemViewHolder(itemView: View, private val fragment: Fra
     private fun setClick(data: DataItem) {
         if (!data.applinks.isNullOrEmpty()) {
             itemView.setOnClickListener {
-                (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackCategoryNavigationClick(data, adapterPosition)
                 RouteManager.route(itemView.context, data.applinks)
+                (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackCategoryNavigationClick(data, adapterPosition)
             }
         }
     }

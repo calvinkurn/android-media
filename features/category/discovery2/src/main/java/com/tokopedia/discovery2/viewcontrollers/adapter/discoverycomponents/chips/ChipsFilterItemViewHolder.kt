@@ -51,13 +51,13 @@ class ChipsFilterItemViewHolder(itemView: View, private val fragment: Fragment) 
     private fun setClick(componentsItem: ComponentsItem) {
         chipsFilterItem.setOnClickListener {
             componentsItem?.data?.get(0)?.let { it1 ->
-                sendChipClickEvent(it1)
 
                 if (it1.chipSelectionType == NORMAL) {
                     (parentAbstractViewHolder as ChipsFilterViewHolder).onChipSelected(componentsItem.id)
                 } else {
                     (parentAbstractViewHolder as ChipsFilterViewHolder).onChipUnSelected(componentsItem.id)
                 }
+                sendChipClickEvent(it1)
             }
         }
     }

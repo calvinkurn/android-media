@@ -34,8 +34,8 @@ class BrandRecommendationItemViewHolder(itemView: View, private val fragment: Fr
         data?.let {
             if (!it.applinks.isNullOrEmpty()) {
                 itemView.setOnClickListener { itemView ->
-                    sendClickBrandRecommendationClickEvent(it)
                     RouteManager.route(itemView.context, it.applinks)
+                    sendClickBrandRecommendationClickEvent(it)
                 }
             }
         }

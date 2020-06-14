@@ -69,8 +69,8 @@ class CpmTopadsShopItemViewHolder(itemView: View, private val fragment: Fragment
         data?.let {
             if (!it.applinks.isNullOrEmpty()) {
                 itemView.setOnClickListener { itemView ->
-                    sendTopAdsShopClick(it)
                     RouteManager.route(itemView.context, it.applinks)
+                    sendTopAdsShopClick(it)
                 }
             }
         }

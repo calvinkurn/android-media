@@ -32,8 +32,8 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
     }
 
     private fun onClick(data: DataItem) {
-        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackLihatSemuaClick(data.name)
         lihatSemuaViewModel.navigate(fragment.activity, data.btnApplink)
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackLihatSemuaClick(data.name)
     }
 
 }

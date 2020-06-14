@@ -38,8 +38,8 @@ class DynamicCategoryItemViewHolder(itemView: View, private val fragment: Fragme
     private fun setClick(dataItem: DataItem) {
         if (!dataItem.applinks.isNullOrEmpty()) {
             itemView.setOnClickListener {
-                sentGtmEvent(dataItem)
                 RouteManager.route(itemView.context, dataItem.applinks)
+                sentGtmEvent(dataItem)
             }
         }
     }

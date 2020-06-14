@@ -53,12 +53,11 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
 
         setBtn(dataItem?.status)
         itemView.setOnClickListener {
-            (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventClickCoupon(dataItem, adapterPosition, isDouble)
             claimCouponItemViewModel.setClick(itemView.context, dataItem?.status)
+            (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventClickCoupon(dataItem, adapterPosition, isDouble)
         }
 
         claimBtn.setOnClickListener {
-            (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickClaimCoupon(dataItem?.title, dataItem?.slug)
             claimCouponItemViewModel.redeemCoupon()
             claimCouponItemViewModel.getRedeemCouponCode().observe(fragment.viewLifecycleOwner, Observer { item ->
                 if (!item.isNullOrEmpty() && item != NOT_LOGGEDIN) {
@@ -74,7 +73,7 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
                     })
                 }
             })
-
+            (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickClaimCoupon(dataItem?.title, dataItem?.slug)
         }
     }
 

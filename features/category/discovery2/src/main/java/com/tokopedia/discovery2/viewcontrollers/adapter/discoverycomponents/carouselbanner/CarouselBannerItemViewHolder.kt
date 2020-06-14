@@ -35,8 +35,8 @@ class CarouselBannerItemViewHolder(itemView: View, private val fragment: Fragmen
         dataItem?.let {
             if (!it.applinks.isNullOrEmpty()) {
                 itemView.setOnClickListener { itemView ->
-                    (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerClick(it, adapterPosition)
                     RouteManager.route(itemView.context, it.applinks)
+                    (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerClick(it, adapterPosition)
                 }
             }
         }

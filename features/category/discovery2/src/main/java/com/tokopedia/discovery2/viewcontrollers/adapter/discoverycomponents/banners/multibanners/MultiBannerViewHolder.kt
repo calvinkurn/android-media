@@ -95,8 +95,8 @@ class MultiBannerViewHolder(customItemView: View, val fragment: Fragment) : Abst
 
     private fun setClickOnBanners(itemData: DataItem, index: Int) {
         bannersItemList[index].bannerImageView.setOnClickListener {
-            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerClick(itemData, index)
             multiBannerViewModel.onBannerClicked(index, it)
+            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerClick(itemData, index)
         }
     }
 }
