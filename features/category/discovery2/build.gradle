@@ -45,6 +45,7 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
 }
 

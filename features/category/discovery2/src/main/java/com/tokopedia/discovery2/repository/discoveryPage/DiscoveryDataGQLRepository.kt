@@ -6,10 +6,10 @@ import com.tokopedia.discovery2.data.DataResponse
 import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
+import com.tokopedia.config.GlobalConfig
 
 private const val IDENTIFIER = "identifier"
 private const val VERSION = "version"
-private const val VERSION_CODE = "3.78"
 private const val DEVICE = "device"
 private const val DEVICE_VALUE = "Android"
 
@@ -23,7 +23,7 @@ class DiscoveryDataGQLRepository @Inject constructor(val getGQLString: (Int) -> 
 
     private fun getQueryMap(pageIdentifier: String): Map<String, Any> {
         return mapOf(IDENTIFIER to pageIdentifier,
-                VERSION to VERSION_CODE,
+                VERSION to GlobalConfig.VERSION_NAME,
                 DEVICE to DEVICE_VALUE)
     }
 }
