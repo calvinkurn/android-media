@@ -35,95 +35,75 @@ import dagger.Provides
 @Module
 class DiscoveryModule {
 
-    @DiscoveryScope
     @Provides
     fun provideBaseRepository(): BaseRepository {
         return BaseRepository()
     }
 
-    @DiscoveryScope
     @Provides
     fun providePushStatusGQLRepository(@ApplicationContext context: Context): PushStatusRepository {
         return PushStatusGQLRepository(provideGetStringMethod(context))
     }
 
-    @DiscoveryScope
     @Provides
     fun provideCpmTopAdsGQLRepository(@ApplicationContext context: Context): CpmTopAdsRepository {
         return CpmTopAdsGQLRepository(provideGetStringMethod(context))
     }
 
-    @DiscoveryScope
     @Provides
     fun provideCustomTopChatRepository(@ApplicationContext context: Context): CustomTopChatRepository {
         return CustomTopChatGqlRepository(provideGetStringMethod(context))
     }
 
-    @DiscoveryScope
     @Provides
-    fun provideCategoryNavigationRestRepository(@ApplicationContext context: Context): CategoryNavigationRepository {
+    fun provideCategoryNavigationRestRepository(): CategoryNavigationRepository {
         return CategoryNavigationRestRepository()
     }
 
-    @DiscoveryScope
     @Provides
     fun provideRedeemCouponRepository(@ApplicationContext context: Context): IClaimCouponGqlRepository {
         return ClaimCouponGQLRepository(provideGetStringMethod(context))
     }
 
 
-    @DiscoveryScope
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
-    @DiscoveryScope
     @Provides
     fun provideClaimCouponRestRepository(): IClaimCouponRepository {
         return ClaimCouponRestRepository()
     }
 
-    @DiscoveryScope
     @Provides
-    fun provideTokopointsRestRepository(@ApplicationContext context: Context): TokopointsRepository {
+    fun provideTokopointsRestRepository(): TokopointsRepository {
         return TokopointsRestRepository()
     }
 
-    @DiscoveryScope
     @Provides
-    fun provideProductCardsRestRepository(@ApplicationContext context: Context): ProductCardsRepository {
+    fun provideProductCardsRestRepository(): ProductCardsRepository {
         return ProductCardsRestRepository()
     }
 
-    @DiscoveryScope
     @Provides
     fun provideDiscoveryPageRepository(@ApplicationContext context: Context): DiscoveryPageRepository {
         return DiscoveryDataGQLRepository(provideGetStringMethod(context))
-//            return DiscoveryPageRestRepository()
     }
 
-
-
-
-
-    @DiscoveryScope
     @Provides
     fun provideGetStringMethod(@ApplicationContext context: Context): (Int) -> String {
         return { id -> GraphqlHelper.loadRawString(context.resources, id) }
     }
 
-    @DiscoveryScope
     @Provides
     fun providesTrackingQueue(@ApplicationContext context: Context): TrackingQueue = TrackingQueue(context)
 
-    @DiscoveryScope
     @Provides
     fun provideCampaignSubscribeGQLRepository(@ApplicationContext context: Context): CampaignSubscribeRepo {
         return CampaignSubscribeGQLRepository(provideGetStringMethod(context))
     }
 
-    @DiscoveryScope
     @Provides
     fun provideDiscoveryUIConfigRepository(@ApplicationContext context: Context): DiscoveryUIConfigGQLRepository{
         return DiscoveryUIConfigGQLRepository(provideDiscoveryUIConfigQuery(context))

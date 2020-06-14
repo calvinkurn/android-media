@@ -4,16 +4,15 @@ import android.app.Application
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.multibannerresponse.timmerwithbanner.TimerDataModel
-import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.timerbanners.SaleCountDownTimer
 import java.text.SimpleDateFormat
 import java.util.*
 
-class LihatFlashSaleTimerViewModel(val application: Application, componentData: ComponentsItem, val position:Int) : DiscoveryBaseViewModel() {
+class LihatFlashSaleTimerViewModel(val application: Application, componentData: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
 
     private val saleWidgetData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private var timeCounter: SaleCountDownTimer? = null
@@ -51,17 +50,12 @@ class LihatFlashSaleTimerViewModel(val application: Application, componentData: 
         return flashSaleDate
     }
 
-    // TODO Cancel countdown timer on viewHolder destroy
     fun stopTimer() {
-            timeCounter?.cancel()
+        timeCounter?.cancel()
     }
 
     fun getTimerData(): LiveData<TimerDataModel> {
         return timeCounter?.mutableTimeDiffModel ?: MutableLiveData()
-    }
-
-    override fun initDaggerInject() {
-
     }
 
     fun onLihatSemuaClicked(context: Context) {

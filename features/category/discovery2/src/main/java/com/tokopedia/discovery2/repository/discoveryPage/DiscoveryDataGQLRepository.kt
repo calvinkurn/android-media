@@ -1,22 +1,30 @@
 package com.tokopedia.discovery2.repository.discoveryPage
 
-import com.google.gson.reflect.TypeToken
 import com.tokopedia.basemvvm.repository.BaseRepository
-import com.tokopedia.common.network.data.model.RequestType
-import com.tokopedia.discovery2.GenerateUrl
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataResponse
 import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
+import com.tokopedia.config.GlobalConfig
 
-//TODO change version name and from DataName
+private const val IDENTIFIER = "identifier"
+private const val VERSION = "version"
+private const val DEVICE = "device"
+private const val DEVICE_VALUE = "Android"
+
 class DiscoveryDataGQLRepository @Inject constructor(val getGQLString: (Int) -> String) : BaseRepository(), DiscoveryPageRepository {
     lateinit var userSession: UserSession
     override suspend fun getDiscoveryPageData(pageIdentifier: String): DiscoveryResponse {
         return (getGQLData(getGQLString(R.raw.query_discovery_data),
-                DataResponse::class.java, mapOf("identifier" to pageIdentifier, "version" to "3.78", "device" to "Android"), "discoveryPageInfo") as DataResponse).data
+                DataResponse::class.java, getQueryMap(pageIdentifier),
+                "discoveryPageInfo") as DataResponse).data
+    }
 
+    private fun getQueryMap(pageIdentifier: String): Map<String, Any> {
+        return mapOf(IDENTIFIER to pageIdentifier,
+                VERSION to GlobalConfig.VERSION_NAME,
+                DEVICE to DEVICE_VALUE)
     }
 }
 

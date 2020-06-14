@@ -32,8 +32,4 @@ class BrandRecommendationViewModel(val application: Application, components: Com
     fun getComponentDataLiveData(): LiveData<ComponentsItem> = componentData
     fun getListDataLiveData(): LiveData<ArrayList<ComponentsItem>> = listData
 
-    override fun initDaggerInject() {
-    }
-
-
 }

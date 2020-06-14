@@ -56,10 +56,10 @@ class BannerDotIndicator(private val radius: Int, private val indicatorItemPaddi
         drawInactiveDots(c, indicatorPadding.toFloat(), indicatorPosY, itemCount)
         val activePosition: Int = when (parent.layoutManager) {
             is GridLayoutManager -> {
-                (parent.layoutManager as GridLayoutManager?)!!.findFirstVisibleItemPosition()
+                (parent.layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
             }
             is LinearLayoutManager -> {
-                (parent.layoutManager as LinearLayoutManager?)!!.findFirstVisibleItemPosition()
+                (parent.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
             }
             else -> { // not supported layout manager
                 return

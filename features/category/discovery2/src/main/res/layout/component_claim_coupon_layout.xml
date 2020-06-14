@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipChildren="false"
-    android:clipToPadding="false"
-    android:orientation="vertical">
+    android:clipToPadding="false">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/claim_coupon_rv"
@@ -20,6 +19,5 @@
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         tools:itemCount="4"
         app:spanCount="2"
-        tools:listitem="@layout/component_claim_coupon_item"
-        tools:orientation="vertical" />
+        tools:listitem="@layout/component_claim_coupon_item" />
 </androidx.constraintlayout.widget.ConstraintLayout>

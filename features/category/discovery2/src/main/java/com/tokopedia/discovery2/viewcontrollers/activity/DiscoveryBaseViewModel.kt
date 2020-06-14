@@ -10,7 +10,7 @@ import com.tokopedia.discovery2.data.multibannerresponse.timmerwithbanner.TimerD
 
 
 abstract class DiscoveryBaseViewModel(){
-    abstract fun initDaggerInject()
+    open fun initDaggerInject() {}
     val syncData: MutableLiveData<Boolean> = MutableLiveData()
     fun getSyncPageLiveData(): LiveData<Boolean> {
         return syncData

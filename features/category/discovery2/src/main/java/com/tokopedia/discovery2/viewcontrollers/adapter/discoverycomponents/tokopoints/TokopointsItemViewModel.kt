@@ -25,6 +25,7 @@ class TokopointsItemViewModel(val application: Application, val components: Comp
         super.onAttachToViewHolder()
         dataItem.value = components.data?.get(0)
     }
+
     fun getDataItemValue(): LiveData<DataItem> = dataItem
 
     override fun initDaggerInject() {
@@ -32,7 +33,10 @@ class TokopointsItemViewModel(val application: Application, val components: Comp
     }
 
     fun onTokopointsItemClicked(context: Context) {
-        if (dataItem.value?.slug != null && dataItem.value?.slug!!.isNotEmpty())
-            navigate(context, "${TOKOPOINTS_DETAIL_APPLINK}${dataItem.value?.slug}")
+        dataItem.value?.slug?.let {
+            if (it.isNotEmpty()) {
+                navigate(context, "${TOKOPOINTS_DETAIL_APPLINK}${it}")
+            }
+        }
     }
 }

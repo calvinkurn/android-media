@@ -9,12 +9,12 @@ import android.view.animation.Animation
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.view.animation.ScaleAnimation
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.kotlin.extensions.view.show
@@ -22,7 +22,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 
 class CustomTopChatView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : BaseCustomView(context, attrs, defStyleAttr) {
+    : FrameLayout(context, attrs, defStyleAttr) {
 
     private var topChatBackground: CardView
     private var topChatTextView: Typography

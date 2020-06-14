@@ -7,6 +7,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -14,7 +15,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
-class ProductCardCarouselViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView,fragment.viewLifecycleOwner) {
+class ProductCardCarouselViewHolder(itemView: View, fragment: Fragment) : AbstractViewHolder(itemView,fragment.viewLifecycleOwner) {
 
     private var mProductCarouselRecyclerView: RecyclerView = itemView.findViewById(R.id.tokopoints_rv)
     private var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
@@ -58,8 +59,8 @@ class ProductCardCarouselViewHolder(itemView: View, private val fragment: Fragme
 
     private fun addShimmer() {
         val list: ArrayList<ComponentsItem> = ArrayList()
-        list.add(ComponentsItem(name = "shimmer_product_card"))
-        list.add(ComponentsItem(name = "shimmer_product_card"))
+        list.add(ComponentsItem(name = ComponentNames.ShimmerProductCard.componentName))
+        list.add(ComponentsItem(name = ComponentNames.ShimmerProductCard.componentName))
         mDiscoveryRecycleAdapter.setDataList(list)
     }
 

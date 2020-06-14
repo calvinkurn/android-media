@@ -3,19 +3,18 @@ package com.tokopedia.discovery2
 class GenerateUrl {
 
     companion object {
-        const val url = "https://ace.tokopedia.com/discopage/discovery/api/page/"
-        const val claimCouponUrl = "https://ace.tokopedia.com/discopage/discovery/api/component/"
-        const val claimCoupon = "tokopedia://tokopoints/kupon-saya/detail/"
-//        const val url = "https://ace-staging.tokopedia.com/hoth/discovery/api/page/"
+        private const val BASE_URL = "https://ace.tokopedia.com"
+        private const val PAGE_URL = "$BASE_URL/discopage/discovery/api/page/"
+        private const val CLAIM_COUPON_URL = "$BASE_URL/discopage/discovery/api/component/"
+        private const val CLAIM_COUPON = "tokopedia://tokopoints/kupon-saya/detail/"
 
-        const val componentURL = "https://ace.tokopedia.com/discopage/discovery/api/component/"
-//        const val componentURL = "https://ace-staging.tokopedia.com/hoth/discovery/api/component/"
+        private const val COMPONENT_URL = "$BASE_URL/discopage/discovery/api/component/"
 
-        fun getUrl(endPoint: String) = String.format("$url%s", endPoint)
-        fun getClaimCouponUrl(endPoint1: String,endPoint2: String) = String.format("$claimCouponUrl%s/%s", endPoint1,endPoint2)
-        fun getClaimCoupon(couponCode: String)  = String.format("$claimCoupon%s", couponCode)
+        fun getUrl(endPoint: String) = String.format("$PAGE_URL%s", endPoint)
+        fun getClaimCouponUrl(endPoint1: String, endPoint2: String) = String.format("$CLAIM_COUPON_URL%s/%s", endPoint1, endPoint2)
+        fun getClaimCoupon(couponCode: String) = String.format("$CLAIM_COUPON%s", couponCode)
 
-        fun getComponentUrl(pageEndPoint: String, componentId: String) = String.format("$componentURL%s%s","${pageEndPoint}/" , componentId)
+        fun getComponentUrl(pageEndPoint: String, componentId: String) = String.format("$COMPONENT_URL%s%s", "${pageEndPoint}/", componentId)
     }
 
 

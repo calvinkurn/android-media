@@ -42,9 +42,4 @@ class CarouselBannerViewModel(val application: Application, components: Componen
     fun getSeeAllButtonLiveData(): LiveData<String> {
         return seeAllButton
     }
-
-    override fun initDaggerInject() {
-
-    }
-
 }

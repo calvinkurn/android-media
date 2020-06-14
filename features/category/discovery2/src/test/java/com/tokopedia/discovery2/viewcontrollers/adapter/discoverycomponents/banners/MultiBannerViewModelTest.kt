@@ -44,27 +44,14 @@ class MultiBannerViewModelTest {
     @Test
     fun `banner action is APPLINK`() {
         coEvery { componentsItem.data?.get(0)?.action } returns "APPLINK"
-//        viewModel.onBannerClicked(0, itemView.context)
 
         coVerify { RouteManager.route(application, componentsItem.data?.get(0)?.applinks) }
     }
-
-//    @Test
-//    fun `banner action is CODE`() {
-//        coEvery { componentsItem.data?.get(0)?.action } returns "CODE"
-//        viewModel.onBannerClicked(0)
-//
-//        coVerify { RouteManager.route(application, componentsItem.data?.get(0)?.applinks) }
-//    }
-
 
     @Test
     fun `user not loggedin for pushNotification`() {
         coEvery { componentsItem.data?.get(0)?.action } returns "PUSH_NOTIFIER"
         coEvery { viewModel.isUserLoggedIn() } returns false
-
-//        viewModel.onBannerClicked(0, itemView.context)
-
         assertTrue(viewModel.getShowLoginData().value ?: false)
 
     }
@@ -73,15 +60,7 @@ class MultiBannerViewModelTest {
     fun `user loggedin for pushNotification`() {
         coEvery { componentsItem.data?.get(0)?.action } returns "PUSH_NOTIFIER"
         coEvery { viewModel.isUserLoggedIn() } returns true
-
-        //coEvery { pushSubscriptionResponse.notifierSetReminder?.isSuccess } returns 1
-
-//        viewModel.onBannerClicked(0, itemView.context)
-
-        //  assertEquals(viewModel.getPushBannerStatusData(), 0)
         coVerify {
-            //            multiBannerDataUseCase
-//                    .subscribeToPush(any()) }
         }
 
 

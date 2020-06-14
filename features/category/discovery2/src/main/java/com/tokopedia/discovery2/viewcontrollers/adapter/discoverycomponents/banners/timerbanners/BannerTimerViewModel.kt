@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.multibannerresponse.timmerwithbanner.TimerDataModel
@@ -39,7 +38,6 @@ class BannerTimerViewModel(val application: Application, components: ComponentsI
         }
     }
 
-    // TODO Cancel countdown timer on viewHolder destroy
     fun stopTimer() {
         if (timerWithBannerCounter != null) {
             timerWithBannerCounter!!.cancel()
@@ -51,10 +49,8 @@ class BannerTimerViewModel(val application: Application, components: ComponentsI
     }
 
     fun onBannerClicked(context: Context) {
-        navigate(context, bannerTimeData.value?.data?.get(0)?.applinks)
-    }
-
-    override fun initDaggerInject() {
-
+        bannerTimeData.value?.data?.firstOrNull()?.let {
+            navigate(context, it.applinks)
+        }
     }
 }

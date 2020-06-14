@@ -18,8 +18,4 @@ class CpmTopadsShopItemViewModel(val application: Application, components: Compo
         return componentData
     }
 
-    override fun initDaggerInject() {
-
-    }
-
 }

@@ -22,9 +22,6 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
         private var noOfObject = 0
     }
 
-    // To set the common ViewPool for Inner Recycler View to recycle views
-    private val viewPool = RecyclerView.RecycledViewPool()
-
     private var componentList: ArrayList<ComponentsItem> = ArrayList()
     private var viewHolderListModel = ViewModelProviders.of(fragment).get((DiscoveryListViewModel::class.java.canonicalName
             ?: "") + noOfObject++, DiscoveryListViewModel::class.java)

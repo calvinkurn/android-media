@@ -25,10 +25,6 @@ class DynamicCategoryViewModel(val application: Application, components: Compone
         return componentData
     }
 
-    override fun initDaggerInject() {
-
-    }
-
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 

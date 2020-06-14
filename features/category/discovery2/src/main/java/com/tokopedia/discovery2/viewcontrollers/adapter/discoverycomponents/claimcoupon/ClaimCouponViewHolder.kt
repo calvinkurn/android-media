@@ -6,7 +6,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.discovery2.ClaimCouponConstant.Companion.DOUBLE_COLUMNS
+import com.tokopedia.discovery2.Constant.ClaimCouponConstant.DOUBLE_COLUMNS
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel

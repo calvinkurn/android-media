@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
-class ComingSoonViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
+class ComingSoonViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
 
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
 
@@ -17,9 +17,4 @@ class ComingSoonViewModel(val application: Application, private val components: 
     fun getComponent(): LiveData<ComponentsItem> {
         return componentData
     }
-
-    override fun initDaggerInject() {
-
-    }
-
 }
