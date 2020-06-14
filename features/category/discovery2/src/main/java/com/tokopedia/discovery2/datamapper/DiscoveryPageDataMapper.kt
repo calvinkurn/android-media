@@ -12,6 +12,7 @@ val discoveryPageData: MutableMap<String, DiscoveryResponse> = HashMap()
 fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse): DiscoveryPageData {
     val discoveryPageData = DiscoveryPageData(discoveryResponse.pageInfo)
     val discoveryDataMapper = DiscoveryPageDataMapper(discoveryResponse.pageInfo)
+
     discoveryPageData.components = discoveryDataMapper.getDiscvoeryComponentList(discoveryResponse.components.filter {
         discoveryPageData.pageInfo.identifier?.let { identifier ->
             it.pageEndPoint = identifier

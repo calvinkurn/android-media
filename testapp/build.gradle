@@ -10,19 +10,19 @@ kapt {
 }
 def allowSplit() {
     return gradle.startParameter.taskNames.contains("assembleLiveRelease") &&
-            (project.hasProperty('tkpdBuildType') && tkpdBuildType == "production")
+            (project.hasProperty('tkpdBuildType') && tkpdBuildType == "production");
 }
 def allowDistribution() {
     if (project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
-        return "true"
+        return "true";
     }
-    return "false"
+    return "false";
 }
 def getTkpdVersionCode() {
-    return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : project.defaultVersionCode
+    return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : project.defaultVersionCode;
 }
 def getTkpdVersionName() {
-    return project.hasProperty('versionName') ? versionName : project.defaultVersionName
+    return project.hasProperty('versionName') ? versionName : project.defaultVersionName;
 }
 buildscript {
     repositories {
@@ -44,8 +44,8 @@ android {
     }
 
     project.ext {
-        defaultVersionCode = 299700000
-        defaultVersionName = "3.70"
+        defaultVersionCode = 299700000;
+        defaultVersionName = "3.70";
         react = [
                 nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
         ]
@@ -178,7 +178,6 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
-
 }
 
 repositories {

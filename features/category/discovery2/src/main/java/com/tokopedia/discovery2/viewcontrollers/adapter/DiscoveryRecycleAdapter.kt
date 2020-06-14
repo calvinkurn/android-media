@@ -47,10 +47,10 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
     }
 
     override fun getItemId(position: Int): Long {
-        if (!componentList.isNullOrEmpty() && componentList.size > position && !componentList[position].data.isNullOrEmpty()) {
-            return componentList[position].data?.get(0)?.productId?.toLong()!!
+        if (componentList.isNullOrEmpty() || componentList.size > position || componentList[position].data.isNullOrEmpty()) {
+            return super.getItemId(position)
         }
-        return super.getItemId(position)
+        return componentList[position].data?.get(0)?.productId?.toLong()!!
     }
 
     fun addDataList(dataList: List<ComponentsItem>) {

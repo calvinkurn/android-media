@@ -124,10 +124,10 @@ data class DataItem(
         @SerializedName("font_color", alternate = ["text_color"])
         val fontColor: String? = "",
 
-        @field:SerializedName("button_text")
+        @SerializedName("button_text")
         var buttonText: String? = "",
 
-        @field:SerializedName("creative_name")
+        @SerializedName("creative_name")
         var creativeName: String? = "",
 
         @SerializedName("title")
@@ -154,10 +154,10 @@ data class DataItem(
         @SerializedName("btn_applink")
         val btnApplink: String? = "",
 
-        @field:SerializedName("price_format")
+        @SerializedName("price_format")
         var priceFormat: String? = "",
 
-        @field:SerializedName("image_click_url", alternate = ["url"])
+        @SerializedName("image_click_url", alternate = ["url"])
         var imageClickUrl: String? = "",
 
         @SerializedName("size_mobile")

@@ -111,26 +111,6 @@ object ImageUtils {
         }
     }
 
-    fun loadImageWithCallback(imageview: ImageView, url: String, imageLoaderStateListener: ImageLoaderStateListener) {
-        if (imageview.context != null) {
-            Glide.with(imageview.context)
-                    .load(url)
-                    .dontAnimate()
-                    .listener(object : RequestListener<Drawable>{
-                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                            imageLoaderStateListener.failedLoad()
-                            return false
-                        }
-
-                        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            imageLoaderStateListener.successLoad()
-                            return false
-                        }
-                    })
-                    .into(imageview)
-        }
-    }
-
     fun clearImage(imageView: ImageView?) {
         if (imageView != null) {
             Glide.with(imageView.context).clear(imageView)

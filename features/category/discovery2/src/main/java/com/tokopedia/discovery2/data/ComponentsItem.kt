@@ -12,7 +12,6 @@ data class ComponentsItem(
         @SerializedName("data")
         var data: List<DataItem>? = null,
 
-
         @SerializedName("ab_modulo")
         val abModulo: String? = "",
 

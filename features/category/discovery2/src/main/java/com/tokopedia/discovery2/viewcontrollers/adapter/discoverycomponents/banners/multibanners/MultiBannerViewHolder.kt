@@ -37,7 +37,7 @@ class MultiBannerViewHolder(customItemView: View, val fragment: Fragment) : Abst
                 constraintLayout.removeAllViews()
                 bannersItemList = ArrayList()
                 bannerName = item?.name ?: ""
-                item.data?.let { addBanners(it) }
+                addBanners(item.data!!)
             }
         })
 

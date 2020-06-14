@@ -22,7 +22,6 @@ import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.END_POINT
-import com.tokopedia.discovery2.viewcontrollers.adapter.AddChildAdapterCallback
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
@@ -39,7 +38,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback, SwipeRefreshLayout.OnRefreshListener {
+class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryFab: CustomTopChatView
@@ -264,14 +263,6 @@ class DiscoveryFragment : BaseDaggerFragment(), AddChildAdapterCallback, SwipeRe
         }
     }
 
-    override fun addChildAdapter(discoveryRecycleAdapter: DiscoveryRecycleAdapter) {
-    }
-
-    override fun notifyMergeAdapter() {
-        if (!recyclerView.isComputingLayout) {
-//            discoveryAdapter.notifyDataSetChanged()
-        }
-    }
 
 
     fun getDiscoveryAnalytics(): DiscoveryAnalytics {
