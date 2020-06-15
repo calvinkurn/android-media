@@ -22,7 +22,7 @@ import java.lang.ref.WeakReference
 internal open class BannerView(activity: Activity) {
 
     private val mActivity = WeakReference<Activity>(activity)
-    private val alertDialog = AlertDialog.Builder(activity)
+    private val alertDialog = AlertDialog.Builder(mActivity.get())
 
     private lateinit var imgBanner: ImageView
     private lateinit var btnClose: ImageView
