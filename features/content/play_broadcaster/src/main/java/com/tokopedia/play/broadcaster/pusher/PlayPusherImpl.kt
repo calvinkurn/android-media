@@ -166,10 +166,10 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
     override fun destroy() {
         try {
-            mAliVcLivePusher.destroy()
             if (mAliVcLivePusher.isPushing) {
                 mTimerDuration?.pause()
             }
+            mAliVcLivePusher.destroy()
         } catch (e: java.lang.IllegalStateException) {
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
