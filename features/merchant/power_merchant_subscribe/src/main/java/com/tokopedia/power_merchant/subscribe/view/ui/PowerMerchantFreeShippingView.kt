@@ -10,7 +10,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.power_merchant.subscribe.view.constant.PowerMerchantUrl.URL_FREE_SHIPPING_TERMS_AND_CONDITION
+import com.tokopedia.power_merchant.subscribe.view.constant.PowerMerchantUrl.URL_FREE_SHIPPING_INTERIM_PAGE
 import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantFreeShippingStatus
 import kotlinx.android.synthetic.main.layout_power_merchant_free_shipping.view.*
 import kotlinx.android.synthetic.main.layout_power_merchant_free_shipping_inactive.view.*
@@ -128,7 +128,7 @@ class PowerMerchantFreeShippingView: FrameLayout {
 
     private fun openFreeShippingPage() {
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW,
-            URL_FREE_SHIPPING_TERMS_AND_CONDITION)
+            URL_FREE_SHIPPING_INTERIM_PAGE)
     }
 
     private fun showHideContainer(transitionPeriod: Boolean) {
