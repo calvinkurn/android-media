@@ -1,29 +1,46 @@
 package com.tokopedia.notifications.inApp.viewEngine
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.util.DisplayMetrics
 import android.view.View
+import android.view.WindowManager
 import android.widget.ImageView
-import com.tokopedia.applink.RouteManager
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.analytics.InAppAnalytics
 import com.tokopedia.notifications.inApp.CMInAppManager
-import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMButton
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMLayout
-import com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_FULL_SCREEN_IMAGE_ONLY
-import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.*
+import com.tokopedia.notifications.inApp.viewEngine.adapter.ActionButtonAdapter
 import com.tokopedia.unifycomponents.setImage
 import java.lang.ref.WeakReference
 
 internal open class BannerView(activity: Activity) {
 
     private val mActivity = WeakReference<Activity>(activity)
+    private val alertDialog = AlertDialog.Builder(activity)
 
     private lateinit var imgBanner: ImageView
     private lateinit var btnClose: ImageView
-    private lateinit var btnAction: UnifyButton
+    private lateinit var lstActionButton: RecyclerView
 
-    fun createView(data: CMInApp): View? {
+    private val dialog by lazy {
+        alertDialog.create()
+    }
+
+    fun dialog(data: CMInApp) {
+        alertDialog.setView(createView(data))
+        dialog.show()
+
+        // resize dialog's width with 80% of screen
+        setWindowAttributes(dialog, getDisplayMetrics(mActivity.get()).first)
+    }
+
+    private fun createView(data: CMInApp): View? {
         val parentView = View.inflate(
                 mActivity.get(),
                 R.layout.cm_layout_banner_inapp,
@@ -42,13 +59,12 @@ internal open class BannerView(activity: Activity) {
         // casting view component
         imgBanner = container.findViewById(R.id.imgBanner)
         btnClose = container.findViewById(R.id.btnClose)
-        btnAction = container.findViewById(R.id.btnAction)
+        lstActionButton = container.findViewById(R.id.lstActionButton)
 
         // set data view
         val layout = data.getCmLayout()
-        val action = layout.getButton().first()
-        setBanner(layout, action)
-        setActionButton(action)
+        setBanner(layout)
+        setActionButton(layout)
         setCloseButton(data)
     }
 
@@ -60,20 +76,33 @@ internal open class BannerView(activity: Activity) {
         }
     }
 
-    private fun setBanner(layout: CMLayout, action: CMButton) {
+    private fun setBanner(layout: CMLayout) {
         imgBanner.setImage(layout.getImg(), 0f)
-        imgBanner.setOnClickListener {
-            RouteManager.route(mActivity.get(), action.getAppLink())
-        }
     }
 
-    private fun setActionButton(action: CMButton) {
-        btnAction.text = action.getTxt()
-        btnAction.tag = action.getAppLink()
+    private fun setActionButton(layout: CMLayout) {
+        val buttons = layout.getButton()
+        val adapter = ActionButtonAdapter(buttons, ::onActionClicked)
+
+        lstActionButton.layoutManager = when (layout.getBtnOrientation()) {
+            ORIENTATION_VERTICAL -> LinearLayoutManager(mActivity.get())
+            ORIENTATION_HORIZONTAL -> GridLayoutManager(mActivity.get(), 2)
+            else -> LinearLayoutManager(mActivity.get())
+        }
+
+        lstActionButton.setHasFixedSize(true)
+        lstActionButton.adapter = adapter
+    }
+
+    private fun onActionClicked() {
+        dialog?.dismiss()
     }
 
     private fun setCloseButton(data: CMInApp) {
         btnClose.setOnClickListener {
+            dialog.dismiss()
+
+            // source from legacy: ViewEngine
             CMInAppManager.getCmInAppListener().apply {
                 if (this != null) {
                     onCMInAppClosed(data)
@@ -85,7 +114,29 @@ internal open class BannerView(activity: Activity) {
     }
 
     private fun fullScreenImageOnly() {
-        btnAction.visibility = View.GONE
+        lstActionButton.visibility = View.GONE
     }
 
+    companion object {
+        private fun getDisplayMetrics(activity: Activity?): Pair<Int, Int> {
+            val displayMetrics = DisplayMetrics()
+            activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
+            val displayWidth = displayMetrics.widthPixels
+            val displayHeight = displayMetrics.heightPixels
+
+            return Pair(displayWidth, displayHeight)
+        }
+
+        private fun setWindowAttributes(dialog: AlertDialog?, displayWidth: Int) {
+            val layoutParams = WindowManager.LayoutParams()
+            layoutParams.copyFrom(dialog?.window?.attributes)
+            layoutParams.width = (displayWidth * 0.8f).toInt() // 80%
+            dialog?.window?.attributes = layoutParams
+        }
+
+        @JvmStatic
+        fun create(activity: Activity, data: CMInApp) {
+            BannerView(activity).dialog(data)
+        }
+    }
 }
