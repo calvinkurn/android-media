@@ -260,7 +260,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         bottomSheetCommon = MerchantCommonBottomSheet.newInstance(bottomSheetModel)
         bottomSheetCommon.setListener(object : MerchantCommonBottomSheet.BottomSheetListener {
             override fun onBottomSheetButtonClicked() {
-                goToLearnMoreFreeShipping(freeShippingEligible)
+                openFreeShippingPage(freeShippingEligible)
                 bottomSheetCommon.dismiss()
                 refreshData()
             }
@@ -268,10 +268,10 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         bottomSheetCommon.show(childFragmentManager, "power_merchant_success")
     }
 
-    private fun goToLearnMoreFreeShipping(freeShippingEligible: Boolean) {
+    private fun openFreeShippingPage(freeShippingEligible: Boolean) {
         if(freeShippingEligible) {
             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW,
-                PowerMerchantUrl.URL_FREE_SHIPPING_TERMS_AND_CONDITION)
+                PowerMerchantUrl.URL_FREE_SHIPPING_INTERIM_PAGE)
         }
     }
 
