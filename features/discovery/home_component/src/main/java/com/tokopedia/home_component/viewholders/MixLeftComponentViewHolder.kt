@@ -78,11 +78,11 @@ class MixLeftComponentViewHolder (itemView: View,
         setupList(element.channelModel)
         setSnapEffect()
         setHeaderComponent(element)
-    }
 
-//    override fun getViewHolderClassName(): String {
-//        return MixLeftViewHolder::class.java.simpleName
-//    }
+        itemView.addOnImpressionListener(element.channelModel)  {
+            mixLeftComponentListener.onMixLeftImpressed(element.channelModel, adapterPosition)
+        }
+    }
 
 
     override fun onProductCardImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {

@@ -30,6 +30,7 @@ import com.tokopedia.home_component.util.GravitySnapHelper
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.viewholders.adapter.MixTopComponentAdapter
 import com.tokopedia.home_component.visitable.MixTopDataModel
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.v2.BlankSpaceConfig
@@ -77,6 +78,9 @@ class MixTopComponentViewHolder(
     override fun bind(element: MixTopDataModel) {
         mappingView(element.channelModel)
         setHeaderComponent(element = element)
+        itemView.addOnImpressionListener(element.channelModel) {
+            mixTopComponentListener.onMixTopImpressed(element.channelModel, adapterPosition)
+        }
     }
 
     override fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, position: Int) {

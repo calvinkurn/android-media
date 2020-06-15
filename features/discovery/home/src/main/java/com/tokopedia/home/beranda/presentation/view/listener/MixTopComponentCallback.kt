@@ -11,6 +11,10 @@ import com.tokopedia.home_component.model.ChannelModel
  */
 class MixTopComponentCallback(val homeCategoryListener: HomeCategoryListener)
     : MixTopComponentListener {
+    override fun onMixTopImpressed(channel: ChannelModel, parentPos: Int) {
+
+    }
+
     override fun onSeeAllBannerClicked(channel: ChannelModel, applink: String) {
         homeCategoryListener.sendEETracking(MixTopTracking.getMixTopSeeAllClick(channel.id, channel.channelHeader.name) as HashMap<String, Any>)
         homeCategoryListener.onDynamicChannelClicked(channel.channelHeader.applink)
@@ -30,13 +34,19 @@ class MixTopComponentCallback(val homeCategoryListener: HomeCategoryListener)
     }
 
     override fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, adapterPosition: Int, position: Int) {
-        val product = MixTopTracking.mapGridToProductTrackerComponent(channelGrid, channel.id, position+1, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId)
+        //GA
+        val product = MixTopTracking.mapGridToProductTrackerComponent(
+                channelGrid, channel.id, position+1, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId)
         homeCategoryListener.getTrackingQueueObj()?.putEETracking(
                 MixTopTracking.getMixTopView(
                         listOf(product),
                         channel.channelHeader.name,
                         adapterPosition.toString()
                 ) as HashMap<String, Any>)
+        //iris
+        homeCategoryListener.putEEToIris(MixTopTracking.getMixTopViewIris(
+                MixTopTracking.mapChannelToProductTracker(channel), channel.channelHeader.name, channel.id, position.toString()) as java.util.HashMap<String, Any>)
+
     }
 
     override fun onProductCardClicked(channel: ChannelModel, channelGrid: ChannelGrid, adapterPosition: Int, position: Int, applink: String) {

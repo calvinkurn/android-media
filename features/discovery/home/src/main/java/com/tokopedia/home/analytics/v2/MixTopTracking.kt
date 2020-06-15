@@ -116,6 +116,9 @@ object MixTopTracking : BaseTracking() {
 
     //home component section
 
+    fun mapChannelToProductTracker(channels: ChannelModel) = channels.channelGrids.withIndex().map {
+        mapGridToProductTrackerComponent(it.value, channels.id, it.index, channels.trackingAttributionModel.persoType, channels.trackingAttributionModel.categoryId)
+    }
 
     fun mapGridToProductTrackerComponent(grid: ChannelGrid, channelId: String, position: Int, persoType: String, categoryId: String) = Product(
             id = grid.id,
