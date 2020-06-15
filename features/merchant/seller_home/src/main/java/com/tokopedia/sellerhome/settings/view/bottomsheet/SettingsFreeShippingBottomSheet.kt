@@ -27,6 +27,10 @@ class SettingsFreeShippingBottomSheet: BottomSheetUnify() {
 
         setChild(itemView)
         setTitle(getString(R.string.settings_free_shipping_title))
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         btnFreeShippingDetail.setOnClickListener {
             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW,
