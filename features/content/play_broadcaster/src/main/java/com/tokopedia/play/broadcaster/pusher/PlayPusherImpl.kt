@@ -215,12 +215,12 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     }
 
     private val mAliVcLivePushErrorListener = object : AlivcLivePushErrorListener {
-        override fun onSystemError(p0: AlivcLivePusher?, p1: AlivcLivePushError?) {
-            showLog("onSystemError currentStatus:${p0?.currentStatus}, lastError:${p0?.lastError}, isNetworkPushing:${p0?.isNetworkPushing}, isPushing:${p0?.isPushing}")
+        override fun onSystemError(pusher: AlivcLivePusher?, pusherError: AlivcLivePushError?) {
+            showLog("onSystemError currentStatus:${pusher?.currentStatus}, lastError:${pusher?.lastError}, isNetworkPushing:${pusher?.isNetworkPushing}, isPushing:${pusher?.isPushing}")
         }
 
-        override fun onSDKError(p0: AlivcLivePusher?, p1: AlivcLivePushError?) {
-            showLog("onSDKError currentStatus:${p0?.currentStatus}, lastError:${p0?.lastError}, isNetworkPushing:${p0?.isNetworkPushing}, isPushing:${p0?.isPushing}")
+        override fun onSDKError(pusher: AlivcLivePusher?, pusherError: AlivcLivePushError?) {
+            showLog("onSDKError currentStatus:${pusher?.currentStatus}, lastError:${pusher?.lastError}, isNetworkPushing:${pusher?.isNetworkPushing}, isPushing:${pusher?.isPushing}")
         }
     }
 
@@ -231,7 +231,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         override fun onPreviewStarted(pusher: AlivcLivePusher?) {
         }
 
-        override fun onAdjustFps(pusher: AlivcLivePusher?, p1: Int, p2: Int) {
+        override fun onAdjustFps(pusher: AlivcLivePusher?, pusherError: Int, p2: Int) {
         }
 
         override fun onFirstFramePreviewed(pusher: AlivcLivePusher?) {
@@ -240,7 +240,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         override fun onPushStoped(pusher: AlivcLivePusher?) {
         }
 
-        override fun onDropFrame(pusher: AlivcLivePusher?, p1: Int, p2: Int) {
+        override fun onDropFrame(pusher: AlivcLivePusher?, pusherError: Int, p2: Int) {
         }
 
         override fun onFirstAVFramePushed(pusher: AlivcLivePusher?) {
@@ -249,7 +249,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         override fun onPreviewStoped(pusher: AlivcLivePusher?) {
         }
 
-        override fun onAdjustBitRate(pusher: AlivcLivePusher?, p1: Int, p2: Int) {
+        override fun onAdjustBitRate(pusher: AlivcLivePusher?, pusherError: Int, p2: Int) {
         }
 
         override fun onPushStarted(pusher: AlivcLivePusher?) {
