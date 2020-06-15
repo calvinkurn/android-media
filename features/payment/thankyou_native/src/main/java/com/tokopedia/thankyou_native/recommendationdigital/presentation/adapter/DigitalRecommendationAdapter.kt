@@ -1,59 +1,45 @@
 package com.tokopedia.thankyou_native.recommendationdigital.presentation.adapter
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
-import com.tokopedia.productcard.v2.BlankSpaceConfig
-import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.thankyou_native.recommendation.presentation.adapter.listener.MarketPlaceRecommendationViewListener
-import com.tokopedia.thankyou_native.recommendation.model.MarketPlaceRecommendationModel
-import com.tokopedia.thankyou_native.recommendation.presentation.adapter.viewholder.MarketPlaceRecommendationViewHolder
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationsItem
+import com.tokopedia.thankyou_native.recommendationdigital.presentation.adapter.listener.DigitalRecommendationViewListener
+import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.DigitalRecommendationWidget
 
-class DigitalRecommendationAdapter(val marketPlaceRecommendationModelList: List<MarketPlaceRecommendationModel>,
-                                   private val blankSpaceConfig: BlankSpaceConfig,
-                                   val listener: MarketPlaceRecommendationViewListener?) :
-        ListAdapter<ProductCardModel, MarketPlaceRecommendationViewHolder>(ProductModelDiffUtil()) {
+class DigitalRecommendationAdapter(val items: List<RecommendationsItem>, val onItemBindListener: DigitalRecommendationViewListener)
+    : RecyclerView.Adapter<DigitalRecommendationAdapter.DigitalRecommendationViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MarketPlaceRecommendationViewHolder {
-        val context = parent.context
-        val view = LayoutInflater.from(context)
-                .inflate(MarketPlaceRecommendationViewHolder.LAYOUT_ID, parent, false)
-        return MarketPlaceRecommendationViewHolder(view)
+    override fun onBindViewHolder(viewHolder: DigitalRecommendationViewHolder, position: Int) {
+        val element = items[position]
+        //(viewHolder.itemView as DigitalRecommendationWidget).data = mapRecommendationData(element)
+        viewHolder.itemView.setOnClickListener {
+            onItemBindListener.onDigitalProductClick(element, position)
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, position: Int): DigitalRecommendationViewHolder {
+        val view = DigitalRecommendationWidget(parent.context)
+        return DigitalRecommendationViewHolder(view)
     }
 
     override fun getItemCount(): Int {
-        return marketPlaceRecommendationModelList.count()
+        return items.size
     }
 
-    override fun onBindViewHolder(holderMarketPlace: MarketPlaceRecommendationViewHolder, position: Int) {
-        holderMarketPlace.bind(marketPlaceRecommendationModelList[position], blankSpaceConfig, listener)
-    }
+//    private fun mapRecommendationData(data: RecommendationsItem): RecommendationsItem {
+//        return RecommendationsItem(
+//                id = data.productId,
+//                name = data.categoryName,
+//                imageUrl = data.iconUrl,
+//                url = data.webLink,
+//                applink = data.applink,
+//                title1st = data.title,
+//                desc1st = data.clientNumber,
+//                tagName = data.tag,
+//                tagType = data.tagType,
+//                price = data.productPrice.toString()
+//        )
+//    }
 
-    override fun onViewRecycled(holderMarketPlace: MarketPlaceRecommendationViewHolder) {
-        super.onViewRecycled(holderMarketPlace)
-        holderMarketPlace.clearImage()
-    }
-
-    override fun onViewAttachedToWindow(holderMarketPlace: MarketPlaceRecommendationViewHolder) {
-        super.onViewAttachedToWindow(holderMarketPlace)
-        holderMarketPlace.getThankYouRecommendationModel()?.let {
-            if (!it.isSeenOnceByUser) {
-                listener?.onRecommendationItemDisplayed(it.recommendationItem,
-                        holderMarketPlace.adapterPosition + 1)
-                it.isSeenOnceByUser = true
-            }
-        }
-    }
-
-    class ProductModelDiffUtil : DiffUtil.ItemCallback<ProductCardModel>() {
-        override fun areItemsTheSame(oldItem: ProductCardModel, newItem: ProductCardModel): Boolean {
-            return oldItem.productName == newItem.productName
-        }
-
-        override fun areContentsTheSame(oldItem: ProductCardModel, newItem: ProductCardModel): Boolean {
-            return oldItem == newItem
-        }
-    }
-
+    class DigitalRecommendationViewHolder(itemView: DigitalRecommendationWidget) : RecyclerView.ViewHolder(itemView)
 }

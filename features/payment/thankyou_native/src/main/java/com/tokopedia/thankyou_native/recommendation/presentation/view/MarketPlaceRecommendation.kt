@@ -26,10 +26,10 @@ import com.tokopedia.thankyou_native.recommendation.analytics.RecommendationAnal
 import com.tokopedia.thankyou_native.recommendation.di.component.DaggerRecommendationComponent
 import com.tokopedia.thankyou_native.recommendation.model.MarketPlaceRecommendationModel
 import com.tokopedia.thankyou_native.recommendation.model.MarketPlaceRecommendationResult
-import com.tokopedia.thankyou_native.recommendation.presentation.adapter.DigitakRecommendationAdapter
+import com.tokopedia.thankyou_native.recommendation.presentation.adapter.MarketPlaceRecommendationAdapter
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.decorator.ProductCardDefaultDecorator
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.listener.MarketPlaceRecommendationViewListener
-import com.tokopedia.thankyou_native.recommendation.presentation.viewmodel.DigitalRecommendationViewModel
+import com.tokopedia.thankyou_native.recommendation.presentation.viewmodel.MarketPlaceRecommendationViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -52,12 +52,12 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
 
     var isObserverAttached = false
 
-    private val viewModel: DigitalRecommendationViewModel by lazy(LazyThreadSafetyMode.NONE) {
+    private val viewModel: MarketPlaceRecommendationViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(fragment, viewModelFactory.get())
-        viewModelProvider[DigitalRecommendationViewModel::class.java]
+        viewModelProvider[MarketPlaceRecommendationViewModel::class.java]
     }
 
-    private lateinit var adapter: DigitakRecommendationAdapter
+    private lateinit var adapter: MarketPlaceRecommendationAdapter
 
     var listener: MarketPlaceRecommendationViewListener? = null
 
@@ -144,7 +144,7 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL,
                 false)
-        adapter = DigitakRecommendationAdapter(marketPlaceRecommendationModelList, blankSpaceConfig, listener)
+        adapter = MarketPlaceRecommendationAdapter(marketPlaceRecommendationModelList, blankSpaceConfig, listener)
         recyclerView.adapter = adapter
         recyclerView.addItemDecoration(ProductCardDefaultDecorator())
     }

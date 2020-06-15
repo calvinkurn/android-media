@@ -13,7 +13,7 @@ class GqlQueryModule {
 
     @Provides
     @Named(GQL_DIGITAL_RECOMMENDATION_DATA)
-    fun provideRawRecommendationData(@ApplicationContext context: Context): String =
+    fun provideDigitalRecommendationData(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.digital_recommendation_list)
 
     companion object {

@@ -28,6 +28,7 @@ import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewMo
 import com.tokopedia.thankyou_native.recommendation.presentation.view.IRecommendationView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.MarketPlaceRecommendation
 import com.tokopedia.thankyou_native.recommendation.presentation.view.WishList
+import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.IDigitalRecommendationView
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -52,6 +53,10 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     private var iRecommendationView: IRecommendationView? = null
 
     private val marketRecommendationPlaceLayout = R.layout.thank_layout_market_place_recom
+
+    private var iDigitalRecommendationView: IDigitalRecommendationView? = null
+
+    private val digitalRecommendationLayout = R.layout.thank_layout_digital_recom
 
     private val thanksPageDataViewModel: ThanksPageDataViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
@@ -86,19 +91,34 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     }
 
     private fun addRecommendation() {
-        val merchantType = ThankPageTypeMapper.getThankPageType(thanksPageData)
+        when (ThankPageTypeMapper.getThankPageType(thanksPageData)) {
+            is MarketPlaceThankPage -> {
+                addMarketPlaceRecommendation()
+                addDigitalRecommendation()
+            }
+            is DigitalThankPage -> {
+                addDigitalRecommendation()
+                addMarketPlaceRecommendation()
+            }
+        }
+    }
+    private fun addMarketPlaceRecommendation(){
         val recomContainer = getRecommendationContainer()
         recomContainer?.let { container ->
-            iRecommendationView = when (merchantType) {
-                is MarketPlaceThankPage -> {
-                    val view = getRecommendationView(marketRecommendationPlaceLayout)
-                    container.addView(view)
-                    view.findViewById<MarketPlaceRecommendation>(R.id.marketPlaceRecommendationView)
-                }
-                is DigitalThankPage -> null
-            }
-            iRecommendationView?.loadRecommendation(this)
+            val view = getRecommendationView(marketRecommendationPlaceLayout)
+            container.addView(view)
+            view.findViewById<MarketPlaceRecommendation>(R.id.marketPlaceRecommendationView)
         }
+        iRecommendationView?.loadRecommendation(this)
+    }
+    private fun addDigitalRecommendation(){
+        val recomContainer = getRecommendationContainer()
+        recomContainer?.let { container ->
+            val view = getRecommendationView(digitalRecommendationLayout)
+            container.addView(view)
+            view.findViewById<MarketPlaceRecommendation>(R.id.digitalRecommendationView)
+        }
+        iDigitalRecommendationView?.loadRecommendation(this)
     }
 
     private fun getRecommendationView(@LayoutRes layout: Int): View {
