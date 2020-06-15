@@ -175,7 +175,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
 
     private fun setupCancelBottomSheet(shopStatusModel: ShopStatusModel) {
         bottomSheetCancel = PowerMerchantCancelBottomSheet.newInstance(
-            shopStatusModel.isAutoExtend(),
             shopStatusModel.powerMerchant.expiredTime
         )
         bottomSheetCancel?.setListener(object : PowerMerchantCancelBottomSheet.BottomSheetCancelListener {
