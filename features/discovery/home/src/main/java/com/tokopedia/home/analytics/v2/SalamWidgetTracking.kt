@@ -5,7 +5,7 @@ import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidgetData
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 object SalamWidgetTracking : BaseTracking(){
-    private const val SALAM_WIDGET_NAME = "salam bills"
+    private const val SALAM_WIDGET_NAME = "salam"
     private const val SALAM_WIDGET_EVENT_CATEGORY = "homepage-salam"
     private const val SALAM_WIDGET_CLICK_EVENT = "clickHomepage"
     private const val CLICK_CLOSE_ON = "click close on %s"
@@ -14,7 +14,7 @@ object SalamWidgetTracking : BaseTracking(){
             trackingQueue: TrackingQueue,
             salamWidgetData: SalamWidgetData
     ){
-        val productName = salamWidgetData.appLink
+        val productName = salamWidgetData.title
         trackingQueue.putEETracking(getBasicPromotionView(
                 Event.PROMO_VIEW,
                 SALAM_WIDGET_EVENT_CATEGORY,
@@ -29,7 +29,7 @@ object SalamWidgetTracking : BaseTracking(){
             trackingQueue: TrackingQueue,
             salamWidgetData: SalamWidgetData
     ){
-        val productName = salamWidgetData.appLink
+        val productName = salamWidgetData.title
         val promotionClickData = DataLayer.mapOf(
                 Event.KEY, Event.PROMO_CLICK,
                 Category.KEY, SALAM_WIDGET_EVENT_CATEGORY,
@@ -41,7 +41,7 @@ object SalamWidgetTracking : BaseTracking(){
     }
 
     fun homeSalamWidgetOnCloseTracker(salamWidgetData: SalamWidgetData){
-        val productName = salamWidgetData.appLink
+        val productName = salamWidgetData.title
         getTracker().sendGeneralEvent(
                 SALAM_WIDGET_CLICK_EVENT,
                 SALAM_WIDGET_EVENT_CATEGORY,
