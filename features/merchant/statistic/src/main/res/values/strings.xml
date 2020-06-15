@@ -5,4 +5,6 @@
     <string name="stc_select_date">Pilih Tanggal</string>
     <string name="stc_failed_to_get_information">Informasi gagal dimuat</string>
     <string name="stc_reload">Muat ulang</string>
+    <string name="stc_change_date_range">Ubah Rentang Waktu</string>
+    <string name="stc_last_n_days">%1$d hari terakhir</string>
 </resources>

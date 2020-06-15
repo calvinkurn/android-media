@@ -23,6 +23,7 @@ import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.SellerHomeBo
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.di.DaggerStatisticComponent
+import com.tokopedia.statistic.presentation.view.bottomsheet.SelectDateRageBottomSheet
 import com.tokopedia.statistic.presentation.view.viewmodel.StatisticViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -56,6 +57,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         ViewModelProvider(this, viewModelFactory).get(StatisticViewModel::class.java)
     }
     private val recyclerView by lazy { super.getRecyclerView(view) }
+    private val dateRangeBottomSheet by lazy { SelectDateRageBottomSheet(requireContext()) }
 
     private var isFirstLoad = true
     private var isErrorToastShown = false
@@ -226,7 +228,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun selectDateRange() {
-        //implement date picker here
+        if (!isAdded) return
+        dateRangeBottomSheet.show(childFragmentManager)
     }
 
     private fun requestVisibleWidgetsData() {
