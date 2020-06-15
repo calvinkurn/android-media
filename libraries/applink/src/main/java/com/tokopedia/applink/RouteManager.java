@@ -38,6 +38,8 @@ public class RouteManager {
     public static final String BRANCH = "branch";
     public static final String BRANCH_FORCE_NEW_SESSION = "branch_force_new_session";
 
+    public static final String KEY_REDIRECT_TO_SELLER_APP = "redirect_to_sellerapp";
+
     /**
      * will create implicit internal Intent ACTION_VIEW correspond to deeplink
      */

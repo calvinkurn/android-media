@@ -427,7 +427,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                         // do the validation first
                         viewModel.validateProductPriceInput(it)
                         productPriceField?.textFieldInput?.let { editText ->
-                            InputPriceUtil.applyPriceFormatToInputField(editText, it, this)
+                            InputPriceUtil.applyPriceFormatToInputField(editText, it, start,
+                                    charSequence.length, count,this)
                         }
                     }
                 }
@@ -1284,7 +1285,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     // do the validation first
                     viewModel.validateProductPriceInput(it)
                     productPriceBulkPriceEditBottomSheetContent.tfu_product_price?.textFieldInput?.let { editText ->
-                        InputPriceUtil.applyPriceFormatToInputField(editText, it, this)
+                        InputPriceUtil.applyPriceFormatToInputField(editText, it, start,
+                                charSequence.length, count, this)
                     }
                     viewModel.shouldUpdateVariant = true
                 }
