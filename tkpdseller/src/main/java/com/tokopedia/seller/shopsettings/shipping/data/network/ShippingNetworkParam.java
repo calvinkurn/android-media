@@ -1,4 +1,4 @@
-package com.tokopedia.seller.shopsettings.shipping.network;
+package com.tokopedia.seller.shopsettings.shipping.data.network;
 
 import java.util.HashMap;
 import java.util.Map;
