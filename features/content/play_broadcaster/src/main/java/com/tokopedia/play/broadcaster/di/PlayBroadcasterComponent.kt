@@ -9,7 +9,9 @@ import dagger.Component
  */
 @Component(
         dependencies = [BaseAppComponent::class],
-        modules = [PlayBroadcasterViewModelModule::class, PlayBroadcasterModule::class, PlayBroadcasterFragmentModule::class]
+        modules = [PlayBroadcasterViewModelModule::class,
+            PlayBroadcasterModule::class,
+            PlayBroadcasterFragmentModule::class]
 )
 @PlayBroadcasterScope
 interface PlayBroadcasterComponent {

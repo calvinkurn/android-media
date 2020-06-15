@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -37,7 +38,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
         private val getSelfEtalaseListUseCase: GetSelfEtalaseListUseCase,
         private val getProductsInEtalaseUseCase: GetProductsInEtalaseUseCase,
         private val userSession: UserSessionInterface
-): ViewModel() {
+) : ViewModel() {
 
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + mainDispatcher)
@@ -68,6 +69,10 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
     val selectedProductList: List<ProductContentUiModel>
         get() = observableSelectedProducts.value.orEmpty()
+
+    var coverImageUri: Uri? = null
+    var coverImageUrl: String = ""
+    var liveTitle: String = ""
 
     private val etalaseMap = mutableMapOf<String, EtalaseContentUiModel>()
     private val productsMap = mutableMapOf<Long, ProductContentUiModel>()

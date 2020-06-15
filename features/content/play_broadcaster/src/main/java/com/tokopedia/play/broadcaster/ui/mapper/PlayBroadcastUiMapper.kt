@@ -37,8 +37,8 @@ object PlayBroadcastUiMapper {
                 id = it.productId.toLong(),
                 name = it.name,
                 imageUrl = it.primaryImage.resize300,
-//                stock = it.stock,
-                stock = 2, // TODO("for testing only")
+                originalImageUrl = it.primaryImage.original,
+                stock = it.stock,
                 isSelectedHandler = isSelectedHandler,
                 isSelectable = isSelectableHandler
         )
