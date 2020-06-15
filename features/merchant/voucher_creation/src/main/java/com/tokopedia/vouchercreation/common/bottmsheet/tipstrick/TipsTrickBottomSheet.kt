@@ -61,20 +61,6 @@ class TipsTrickBottomSheet(
         setTitle(getBottomSheetTitle())
         setChild(child)
         setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
-
-        child.run {
-            tvMvcCarouselInfo.text = getCarouselInfo().parseAsHtml()
-            icMvcCarouselInfo.loadImageDrawable(getVoucherTypeIcon())
-
-            btnMvcTipsTrickDownload.setOnClickListener {
-                ctaDownloadCallback()
-            }
-            btnMvcTipsTrickShare.setOnClickListener {
-                ctaShareCallback()
-            }
-        }
-        setupTipsAndTrick(child)
-        setupCarouselImage(child)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -219,6 +205,19 @@ class TipsTrickBottomSheet(
     }
 
     private fun setupView() {
+        view?.run {
+            tvMvcCarouselInfo.text = getCarouselInfo().parseAsHtml()
+            icMvcCarouselInfo.loadImageDrawable(getVoucherTypeIcon())
+
+            btnMvcTipsTrickDownload.setOnClickListener {
+                ctaDownloadCallback()
+            }
+            btnMvcTipsTrickShare.setOnClickListener {
+                ctaShareCallback()
+            }
+            setupTipsAndTrick(this)
+            setupCarouselImage(this)
+        }
         btnMvcTipsTrickDownload?.addOnImpressionListener(downloadImpressHolder) {
             VoucherCreationTracking.sendVoucherDetailImpressionTracking(
                     status = VoucherStatusConst.ONGOING,
