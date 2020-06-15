@@ -218,6 +218,7 @@ class HotelCancellationFragment : HotelBaseFragment() {
                     hotel_cancellation_refund_price_detail.addView(widget)
                 }
             }
+            if (it.detail.isEmpty()) hotel_cancellation_refund_price_detail.hide()
 
             hotel_cancellation_total_price_refund.removeAllViews()
             for (paymentSummary in it.summary) {
@@ -227,6 +228,7 @@ class HotelCancellationFragment : HotelBaseFragment() {
                     hotel_cancellation_total_price_refund.addView(widget)
                 }
             }
+            if (it.summary.isEmpty()) hotel_cancellation_total_price_refund.hide()
 
             if (it.footer.desc.isNotEmpty()) {
                 val spannable = HotelTextHyperlinkUtil.getSpannedFromHtmlString(requireContext(),
@@ -235,7 +237,6 @@ class HotelCancellationFragment : HotelBaseFragment() {
                 hotel_cancellation_refund_additional_text.movementMethod = LinkMovementMethod.getInstance()
                 hotel_cancellation_refund_additional_text.setText(spannable, TextView.BufferType.SPANNABLE)
             } else hotel_cancellation_refund_additional_text.hide()
-
         }
 
         if (hotelCancellationModel.footer.desc.isNotEmpty()) {

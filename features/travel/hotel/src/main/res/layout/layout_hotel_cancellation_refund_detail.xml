@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingTop="@dimen/layout_lvl3">
+    android:paddingTop="@dimen/layout_lvl3"
+    android:id="@+id/layout_payment_info">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/hotel_cancellation_payment_title"

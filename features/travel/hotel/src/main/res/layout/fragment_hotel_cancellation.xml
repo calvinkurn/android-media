@@ -24,10 +24,9 @@
             android:layout_height="wrap_content"
             android:background="@color/Neutral_N0" />
 
-        <!--    will be updated to 6pt-->
         <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/spacing_lvl3"
+            android:layout_height="@dimen/hotel_6dp"
             android:background="@color/Neutral_N50" />
 
         <com.tokopedia.hotel.cancellation.presentation.widget.HotelCancellationPolicyWidget
@@ -35,10 +34,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <!--    will be updated to 6pt-->
         <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/spacing_lvl3"
+            android:layout_height="@dimen/hotel_6dp"
             android:background="@color/Neutral_N50" />
 
         <include layout="@layout/layout_hotel_cancellation_refund_detail" />
