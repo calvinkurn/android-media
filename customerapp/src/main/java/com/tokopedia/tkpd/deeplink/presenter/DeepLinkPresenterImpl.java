@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
@@ -34,19 +33,10 @@ import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.session.model.AccountsModel;
-import com.tokopedia.core.session.model.AccountsParameter;
-import com.tokopedia.core.session.model.InfoModel;
-import com.tokopedia.core.session.model.SecurityModel;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException;
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo;
-import com.tokopedia.session.domain.interactor.SignInInteractor;
-import com.tokopedia.session.domain.interactor.SignInInteractorImpl;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
 import com.tokopedia.tkpd.R;
@@ -104,7 +94,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private final Activity context;
     private final DeepLinkView viewListener;
-    private SignInInteractor interactor;
 
     @Inject
     GetShopInfoByDomainUseCase getShopInfoUseCase;
@@ -119,7 +108,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     public DeepLinkPresenterImpl(DeepLinkActivity activity) {
         this.viewListener = activity;
         this.context = activity;
-        this.interactor = SignInInteractorImpl.createInstance(activity);
 
         initInjection(activity);
     }
@@ -418,60 +406,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void login(Uri uriData) {
-        interactor.handleAccounts(parseUriData(uriData), new SignInInteractor.SignInListener() {
-            @Override
-            public void onSuccess(AccountsModel result) {
-                Log.d(TAG, "onSuccess: ");
-                if (SessionHandler.isMsisdnVerified()) {
-                    finishLogin();
-                } else if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
-                    Intent intentHome = ((com.tokopedia.core.TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
-                    intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    Intent intentPhoneVerif = ((TkpdCoreRouter) MainApplication.getAppContext())
-                            .getPhoneVerificationActivationIntent(context);
-
-                    context.startActivities(new Intent[]
-                            {
-                                    intentHome,
-                                    intentPhoneVerif
-                            });
-                    context.finish();
-                }
-            }
-
-            @Override
-            public void onError(String error) {
-                Log.d(TAG, "onError: " + error);
-                finishLogin();
-            }
-
-            @Override
-            public void moveToSecurityQuestion(SecurityModel securityModel) {
-                finishLogin();
-            }
-
-            @Override
-            public void moveToCreatePassword(InfoModel infoModel) {
-                finishLogin();
-            }
-        });
-    }
-
-    private void finishLogin() {
-        Intent intent = ((com.tokopedia.core.TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.LOGIN);
         context.startActivity(intent);
         context.finish();
-    }
-
-    private AccountsParameter parseUriData(Uri uriData) {
-        AccountsParameter data = new AccountsParameter();
-        data.setEmail(" ");
-        data.setPassword(uriData.getPathSegments().get(1));
-        data.setAttempt(uriData.getQueryParameter("a"));
-        data.setGrantType(SignInInteractor.GRANT_PASSWORD);
-        data.setPasswordType(SignInInteractor.ACTIVATION_CODE);
-        return data;
     }
 
     private void openInvoice(Uri uriData) {
