@@ -137,6 +137,12 @@ class GlobalSearchView : BaseCustomView {
         }
     }
 
+    private fun btnBackHome() {
+        actionUpBtn?.setOnClickListener {
+            //TODO applink
+        }
+    }
+
     interface GlobalSearchViewListener {
         fun onQueryTextChangeListener(keyword: String)
         fun onMinCharState()

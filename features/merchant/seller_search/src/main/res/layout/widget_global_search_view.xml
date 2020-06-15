@@ -29,7 +29,7 @@
         android:layout_marginRight="@dimen/spacing_lvl4"
         app:search_bar_clearable="true"
         app:search_bar_enable="true"
-        app:search_bar_placeholder="Ketik nama produk, pesanan, atau fitur"
+        app:search_bar_placeholder="@string/placeholder_search_seller"
         app:search_bar_show_icon="false"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/actionUpBtn"
