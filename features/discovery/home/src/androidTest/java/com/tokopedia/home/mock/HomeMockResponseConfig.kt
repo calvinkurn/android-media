@@ -8,6 +8,11 @@ import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawStrin
 class HomeMockResponseConfig: MockModelConfig() {
     companion object {
         const val KEY_QUERY_DYNAMIC_HOME_CHANNEL = "homeData"
+        const val KEY_CONTAINS_WIDGET_TAB = "widget_tab"
+        const val KEY_CONTAINS_WIDGET_GRID = "widget_grid"
+        const val KEY_CONTAINS_SUGGESTED_REVIEW = "suggestedProductReview"
+        const val KEY_CONTAINS_PLAY_DC = "playGetLiveDynamicChannels"
+        const val KEY_CONTAINS_RECHARGE = "rechargeRecommendation"
     }
     override fun createMockModel(context: Context): MockModelConfig {
         addMockResponse(
@@ -16,27 +21,27 @@ class HomeMockResponseConfig: MockModelConfig() {
                 FIND_BY_QUERY_NAME)
 
         addMockResponse(
-                "widget_tab",
+                KEY_CONTAINS_WIDGET_TAB,
                 getRawString(context, R.raw.response_mock_data_home_widget_tab),
                 FIND_BY_CONTAINS)
 
         addMockResponse(
-                "widget_grid",
+                KEY_CONTAINS_WIDGET_GRID,
                 getRawString(context, R.raw.response_mock_data_home_widget_grid),
                 FIND_BY_CONTAINS)
 
         addMockResponse(
-                "suggestedProductReview",
+                KEY_CONTAINS_SUGGESTED_REVIEW,
                 getRawString(context, R.raw.response_mock_data_suggested_review),
                 FIND_BY_CONTAINS)
 
         addMockResponse(
-                "playGetLiveDynamicChannels",
+                KEY_CONTAINS_PLAY_DC,
                 getRawString(context, R.raw.response_mock_data_play_widget),
                 FIND_BY_CONTAINS)
 
         addMockResponse(
-                "rechargeRecommendation",
+                KEY_CONTAINS_RECHARGE,
                 getRawString(context, R.raw.response_mock_data_recharge_recommendation),
                 FIND_BY_CONTAINS)
 
