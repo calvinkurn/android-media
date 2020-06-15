@@ -69,7 +69,7 @@ class ShopShowcaseAddActivity : BaseSimpleActivity() {
     override fun onBackPressed() {
         if(isActionEdit) {
             if(fragment != null) {
-                (fragment as ShopShowcaseAddFragment).onBackPressedConfirm()
+                (fragment as? ShopShowcaseAddFragment)?.onBackPressedConfirm()
             }
         } else {
             finish()
