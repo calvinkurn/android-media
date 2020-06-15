@@ -34,7 +34,7 @@ object PromoCreationStaticData {
 
         if(freeShippingEnabled) {
             val applink = String.format("%s?url=%s", ApplinkConst.WEBVIEW,
-                CentralizedPromoUrl.URL_FREE_SHIPPING_LEARN_MORE)
+                CentralizedPromoUrl.URL_FREE_SHIPPING_INTERIM_PAGE)
 
             promoItems.add(PromoCreationUiModel(
                 R.drawable.ic_sah_free_shipping,
