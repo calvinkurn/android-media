@@ -19,10 +19,12 @@ import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.SellerHomeBottomSheetContent
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.di.DaggerStatisticComponent
 import com.tokopedia.statistic.presentation.view.viewmodel.StatisticViewModel
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -40,6 +42,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         private const val TOAST_DURATION = 5000L
         private const val DELAY_FETCH_VISIBLE_WIDGET_DATA = 500L
         private const val SCREEN_NAME = "statistic_page_fragment"
+        private const val TAG_TOOLTIP = "statistic_tooltip"
 
         fun newInstance(): StatisticFragment {
             return StatisticFragment()
@@ -65,6 +68,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
 
+        hideTooltipIfExist()
         setupView()
 
         observeWidgetLayoutLiveData()
@@ -115,7 +119,21 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     override fun loadData(page: Int) {}
 
     override fun onTooltipClicked(tooltip: TooltipUiModel) {
+        val bottomSheetContentView = SellerHomeBottomSheetContent(context ?: return)
 
+        with(BottomSheetUnify()) {
+            setTitle(tooltip.title)
+            clearClose(false)
+            clearHeader(false)
+            setCloseClickListener {
+                this.dismiss()
+            }
+
+            bottomSheetContentView.setTooltipData(tooltip)
+
+            setChild(bottomSheetContentView)
+            show(this@StatisticFragment.childFragmentManager, TAG_TOOLTIP)
+        }
     }
 
     override fun removeWidget(position: Int, widget: BaseWidgetUiModel<*>) {
@@ -170,6 +188,11 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             }
         })
         (recyclerView.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+    }
+
+    private fun hideTooltipIfExist() {
+        val bottomSheet = childFragmentManager.findFragmentByTag(TAG_TOOLTIP)
+        (bottomSheet as? BottomSheetUnify)?.dismiss()
     }
 
     private fun getCardData(widgets: List<BaseWidgetUiModel<*>>) {
