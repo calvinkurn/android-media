@@ -32,6 +32,7 @@ import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
@@ -162,6 +163,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.productListData?.removeObservers(this)
         viewModel?.shopHomeLayoutData?.removeObservers(this)
         viewModel?.checkWishlistData?.removeObservers(this)
+        viewModel?.reminderPlayLiveData?.removeObservers(this)
         viewModel?.flush()
         super.onDestroy()
     }
@@ -215,6 +217,20 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             when (it) {
                 is Success -> {
                     onSuccessCheckWishlist(it.data)
+                }
+            }
+        })
+
+        viewModel?.reminderPlayLiveData?.observe(this, Observer {
+            when(it){
+                is Success -> {
+                    showToastSuccess(
+                            if(it.data) getString(R.string.shop_page_play_card_success_add_reminder)
+                            else getString(R.string.shop_page_play_card_success_remove_reminder)
+                    )
+                }
+                is Fail -> {
+                    showErrorToast(it.throwable.message ?: "")
                 }
             }
         })
@@ -592,6 +608,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.onRefreshPlayBanner(shopId)
     }
 
+    override fun onReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel, position: Int) {
+        viewModel?.setToggleReminderPlayBanner(playBannerCarouselItemDataModel.channelId, true)
+    }
+
     private fun onSuccessRemoveWishList(
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
             shopHomeProductViewModel: ShopHomeProductViewModel?
@@ -707,6 +727,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun showToastSuccess(message: String) {
         activity?.run {
             Toaster.make(findViewById(android.R.id.content), message)
+        }
+    }
+
+    private fun showErrorToast(message: String) {
+        activity?.run {
+            Toaster.make(findViewById(android.R.id.content), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 

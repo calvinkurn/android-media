@@ -9,9 +9,11 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.play_common.domain.model.PlayToggleChannelReminder
 import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
 import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase.Companion.SHOP_AUTHOR_TYPE
 import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase.Companion.SHOP_WIDGET_TYPE
+import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.domain.interactor.GQLCheckWishlistUseCase
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
@@ -45,6 +47,7 @@ class ShopHomeViewModel @Inject constructor(
         private val dispatcherProvider: CoroutineDispatcherProvider,
         private val addToCartUseCase: AddToCartUseCase,
         private val getPlayWidgetUseCase: GetPlayWidgetUseCase,
+        private val playToggleChannelReminderUseCase: PlayToggleChannelReminderUseCase,
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishlistUseCase: RemoveWishListUseCase,
         private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>
@@ -66,6 +69,9 @@ class ShopHomeViewModel @Inject constructor(
     val checkWishlistData: LiveData<Result<List<Pair<ShopHomeCarousellProductUiModel, List<CheckWishlistResult>>>>>
         get() = _checkWishlistData
     private val _checkWishlistData = MutableLiveData<Result<List<Pair<ShopHomeCarousellProductUiModel, List<CheckWishlistResult>>>>>()
+
+    val reminderPlayLiveData: LiveData<Result<Boolean>> get() = _reminderPlayLiveData
+    private val _reminderPlayLiveData = MutableLiveData<Result<Boolean>>()
 
     val userSessionShopId: String
         get() = userSession.shopId ?: ""
@@ -138,6 +144,20 @@ class ShopHomeViewModel @Inject constructor(
                 }
             }){
             }
+        }
+    }
+
+    fun setToggleReminderPlayBanner(channelId: String, isSet: Boolean){
+        launchCatchError(block = {
+            playToggleChannelReminderUseCase.setParams(channelId, isSet)
+            val reminder = playToggleChannelReminderUseCase.executeOnBackground()
+            if(reminder.header.status == PlayToggleChannelReminder.SUCCESS_STATUS){
+                _reminderPlayLiveData.postValue(Success(isSet))
+            } else {
+                _reminderPlayLiveData.postValue(Fail(Throwable(reminder.header.message)))
+            }
+        }){
+            _reminderPlayLiveData.postValue(Fail(it))
         }
     }
 

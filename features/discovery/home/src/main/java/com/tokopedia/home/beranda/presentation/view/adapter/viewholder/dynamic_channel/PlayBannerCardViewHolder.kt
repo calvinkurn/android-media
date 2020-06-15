@@ -50,7 +50,7 @@ class PlayBannerCardViewHolder(
     }
 
     override fun onReminderClick(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
-
+        listener.onPlayBannerReminderClick(dataModel)
     }
 
     override fun onSeeMoreClick(dataModel: PlayBannerCarouselBannerDataModel, position: Int) {
@@ -58,7 +58,7 @@ class PlayBannerCardViewHolder(
     }
 
     override fun onOverlayImageBannerClick(dataModel: PlayBannerCarouselOverlayImageDataModel) {
-        TODO("Not yet implemented")
+
     }
 
     override fun onRefreshView(dataModel: PlayBannerCarouselDataModel) {
