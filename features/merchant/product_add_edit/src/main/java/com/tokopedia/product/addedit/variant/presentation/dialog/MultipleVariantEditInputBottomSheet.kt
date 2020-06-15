@@ -7,16 +7,23 @@ import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.add_edit_product_multiple_variant_edit_input_bottom_sheet_content.view.*
 
-class MultipleVariantEditInputBottomSheet : BottomSheetUnify() {
+class MultipleVariantEditInputBottomSheet(
+        private val multipleVariantEditInputListener: MultipleVariantEditInputListener
+): BottomSheetUnify() {
 
     companion object {
         const val TAG = "Tag Multiple Variant Edit Input"
     }
 
     private var contentView: View? = null
+
+    interface MultipleVariantEditInputListener {
+        fun onMultipleEditInputFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel)
+    }
 
     init {
         setCloseClickListener {
@@ -55,6 +62,14 @@ class MultipleVariantEditInputBottomSheet : BottomSheetUnify() {
                 R.layout.add_edit_product_multiple_variant_edit_input_bottom_sheet_content, null)
         contentView?.buttonApply?.setOnClickListener {
             dismiss()
+            multipleVariantEditInputListener.onMultipleEditInputFinished(
+                    MultipleVariantEditInputModel(
+                            12.toBigInteger(),
+                            12,
+                            "www",
+                            emptyList()
+                    )
+            )
         }
         setChild(contentView)
     }

@@ -42,6 +42,10 @@ class MultipleVariantEditSelectTypeAdapter: RecyclerView.Adapter<MultipleVariant
         notifyDataSetChanged()
     }
 
+    fun getSelectedData(): List<HashMap<Int, Boolean>> {
+        return selectedIndex
+    }
+
     private fun initializeSelectedIndex(selections: List<SelectionInputModel>, isSelected: Boolean) =
             selections.map {
                 val result = hashMapOf<Int, Boolean>()

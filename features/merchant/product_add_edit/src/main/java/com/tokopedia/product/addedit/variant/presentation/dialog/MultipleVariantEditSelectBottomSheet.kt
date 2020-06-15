@@ -9,12 +9,15 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.variant.presentation.adapter.MultipleVariantEditSelectTypeAdapter
+import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import kotlinx.android.synthetic.main.add_edit_product_multiple_variant_edit_select_bottom_sheet_content.view.*
 
-class MultipleVariantEditSelectBottomSheet : BottomSheetUnify() {
+class MultipleVariantEditSelectBottomSheet(
+        private val multipleVariantEditListener: MultipleVariantEditListener
+): BottomSheetUnify(), MultipleVariantEditInputBottomSheet.MultipleVariantEditInputListener {
 
     companion object {
         const val TAG = "Tag Multiple Variant Edit Select"
@@ -22,6 +25,10 @@ class MultipleVariantEditSelectBottomSheet : BottomSheetUnify() {
 
     private var contentView: View? = null
     private var selectAdapter: MultipleVariantEditSelectTypeAdapter? = null
+
+    interface MultipleVariantEditListener {
+        fun onMultipleEditFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel)
+    }
 
     init {
         selectAdapter = MultipleVariantEditSelectTypeAdapter()
@@ -37,6 +44,10 @@ class MultipleVariantEditSelectBottomSheet : BottomSheetUnify() {
         super.onActivityCreated(savedInstanceState)
         removeContainerPadding()
         addMarginTitle()
+    }
+
+    override fun onMultipleEditInputFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel) {
+        multipleVariantEditListener.onMultipleEditFinished(multipleVariantEditInputModel)
     }
 
     fun setData(items: VariantInputModel?) {
@@ -82,7 +93,7 @@ class MultipleVariantEditSelectBottomSheet : BottomSheetUnify() {
         }
         contentView?.buttonNext?.setOnClickListener {
             dismiss()
-            val multipleVariantEditSelectBottomSheet = MultipleVariantEditInputBottomSheet()
+            val multipleVariantEditSelectBottomSheet = MultipleVariantEditInputBottomSheet(this)
             multipleVariantEditSelectBottomSheet.show(fragmentManager)
         }
         contentView?.checkboxSelectAll?.setOnClickListener {
