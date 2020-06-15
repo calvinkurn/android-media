@@ -1136,7 +1136,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                     .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, ApplinkConstInternalMechant.MODE_DUPLICATE_PRODUCT)
                     .build()
                     .toString()
-            RouteManager.route(context, uri)
+            val intent = RouteManager.getIntent(requireContext(), uri)
+            startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT)
         }
     }
 

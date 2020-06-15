@@ -53,7 +53,7 @@ class ProductManageSellerFragment : ProductManageFragment() {
 
     private var alreadySendScreenNameAfterAddEditProduct: Boolean = false
 
-    override fun getScreenName(): String = "ProductListActivity"
+    override fun getScreenName(): String = "/product list page"
 
     override fun getLayoutRes(): Int = R.layout.fragment_product_manage_seller
 

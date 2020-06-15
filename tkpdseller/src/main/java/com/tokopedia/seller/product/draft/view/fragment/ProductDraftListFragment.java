@@ -67,7 +67,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
 
     public static final String EXTRA_DRAFT_ID = "DRAFT_ID";
 
-    public static final String SCREEN_NAME = "ProductDraftList";
+    public static final String SCREEN_NAME = "/draft product page";
 
     @Inject
     ProductDraftListPresenter productDraftListPresenter;
