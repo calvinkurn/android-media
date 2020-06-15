@@ -11,7 +11,7 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.requests.LinkerShareRequest
 import com.tokopedia.linker.share.DataMapper
-import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
+import com.tokopedia.play.broadcaster.ui.model.ShareUiModel
 
 
 /**
@@ -19,20 +19,21 @@ import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
  */
 object PlayShareWrapper {
 
-    fun doCopyShareLink(context: Context, channelInfo: ChannelInfoUiModel, onUrlCopied: () -> Unit) {
+    fun doCopyShareLink(context: Context, shareUiModel: ShareUiModel, onUrlCopied: () -> Unit) {
         // TODO("try catch for testing only, because testapp does not init LinkerManager")
         try {
             LinkerManager.getInstance().executeShareRequest(LinkerShareRequest(0,
-                    DataMapper.getLinkerShareData(generateShareData(channelInfo)), object : ShareCallback {
+                    DataMapper.getLinkerShareData(generateShareData(shareUiModel)), object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                    val shareContents = linkerShareData?.shareContents?:generateShareContents(channelInfo.description, channelInfo.shareUrl)
+                    val shareContents = linkerShareData?.shareContents?:
+                    generateShareContents(shareUiModel.description, shareUiModel.redirectUrl)
                     doCopyToClipboard(context, shareContents, onUrlCopied)
                 }
 
                 override fun onError(linkerError: LinkerError?) {
                     doCopyToClipboard(
                             context,
-                            generateShareContents(channelInfo.description, channelInfo.shareUrl),
+                            generateShareContents(shareUiModel.description, shareUiModel.redirectUrl),
                             onUrlCopied
                     )
                 }
@@ -40,7 +41,7 @@ object PlayShareWrapper {
         } catch (e: Exception) {
             doCopyToClipboard(
                     context,
-                    generateShareContents(channelInfo.description, channelInfo.shareUrl),
+                    generateShareContents(shareUiModel.description, shareUiModel.redirectUrl),
                     onUrlCopied
             )
         }
@@ -55,15 +56,15 @@ object PlayShareWrapper {
 
     private fun generateShareContents(shareContents: String, shareLink: String): String = String.format("%s\n\n%s", shareContents, shareLink)
 
-    private fun generateShareData(channelInfo: ChannelInfoUiModel): LinkerData = LinkerData.Builder.getLinkerBuilder()
-            .setId(channelInfo.channelId)
-            .setName(channelInfo.title)
-            .setTextContent(channelInfo.description)
-            .setDescription(channelInfo.description)
-            .setImgUri(channelInfo.coverUrl)
-            .setOgImageUrl(channelInfo.coverUrl)
-            .setOgTitle(channelInfo.title)
-            .setUri(channelInfo.shareUrl)
+    private fun generateShareData(shareUiModel: ShareUiModel): LinkerData = LinkerData.Builder.getLinkerBuilder()
+            .setId(shareUiModel.id)
+            .setName(shareUiModel.title)
+            .setTextContent(shareUiModel.description)
+            .setDescription(shareUiModel.description)
+            .setImgUri(shareUiModel.imageUrl)
+            .setOgImageUrl(shareUiModel.imageUrl)
+            .setOgTitle(shareUiModel.title)
+            .setUri(shareUiModel.redirectUrl)
             .setType(LinkerData.GROUPCHAT_TYPE)
             .build()
 }

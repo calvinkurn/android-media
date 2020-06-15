@@ -211,8 +211,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun doCopyShareLink() {
-        parentViewModel.channelInfo?.let { channelInfo ->
-            PlayShareWrapper.doCopyShareLink(requireContext(), channelInfo) {
+        parentViewModel.shareInfo?.let { shareInfo ->
+            PlayShareWrapper.doCopyShareLink(requireContext(), shareInfo) {
                 showToast(message = getString(R.string.play_live_broadcast_share_link_copied),
                         type = Toaster.TYPE_NORMAL,
                         actionLabel = getString(R.string.play_ok))

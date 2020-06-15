@@ -61,11 +61,15 @@ class PlayBroadcastViewModel  @Inject constructor(
         get() = _observableNewMetric
     val observableProductList: LiveData<List<ProductContentUiModel>>
         get() = _observableProductList
+    val observableShareInfo: LiveData<ShareUiModel>
+        get() = _observableShareInfo
 
     val configuration: ConfigurationUiModel?
         get() = _observableConfigInfo.value
     val channelInfo: ChannelInfoUiModel?
         get() = _observableChannelInfo.value
+    val shareInfo: ShareUiModel?
+        get() = _observableShareInfo.value
 
     private val _observableConfigInfo = MutableLiveData<ConfigurationUiModel>()
     private val _observableChannelInfo = MutableLiveData<ChannelInfoUiModel>()
@@ -74,6 +78,7 @@ class PlayBroadcastViewModel  @Inject constructor(
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
     private val _observableNewMetric = MutableLiveData<Event<PlayMetricUiModel>>()
     private val _observableProductList = MutableLiveData<List<ProductContentUiModel>>()
+    private val _observableShareInfo = MutableLiveData<ShareUiModel>()
     private val _observableNewChat = MediatorLiveData<Event<PlayChatUiModel>>().apply {
         addSource(_observableChatList) { chatList ->
             chatList.lastOrNull()?.let { value = Event(it) }
@@ -116,13 +121,20 @@ class PlayBroadcastViewModel  @Inject constructor(
             val configurationUiModel = PlayBroadcastMocker.getMockConfiguration()
             _observableConfigInfo.value = configurationUiModel
 
-            if (configurationUiModel.streamAllowed
-                    && !configurationUiModel.haveOnGoingLive
-                    && configurationUiModel.draftChannelId == 0) {
-                createChannel()
-            }
             playPusher.addMaxStreamDuration(configurationUiModel.durationConfig.duration)
             playPusher.addMaxPauseDuration(configurationUiModel.durationConfig.pauseDuration)
+        }
+    }
+
+    fun startPrepareChannel() {
+        scope.launch {
+            if (configuration?.streamAllowed == true
+                    && configuration?.haveOnGoingLive == false
+                    && configuration?.draftChannelId == 0) {
+                createChannel()
+            } else {
+
+            }
         }
     }
 
