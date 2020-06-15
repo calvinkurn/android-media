@@ -1,26 +1,22 @@
 package com.tokopedia.carouselproductcard
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.carouselproductcard.typeFactory.CarouselProductCardListTypeFactoryImpl
 
-internal class CarouselProductCardListAdapter :
+internal class CarouselProductCardListAdapter:
         ListAdapter<BaseCarouselCardModel, BaseProductCardViewHolder<BaseCarouselCardModel>>(ProductCardModelDiffUtil()),
         CarouselProductCardAdapter {
 
+    private val adapterTypeFactory = CarouselProductCardListTypeFactoryImpl()
+
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): BaseProductCardViewHolder<BaseCarouselCardModel> {
-        val view = LayoutInflater
-                .from(viewGroup.context)
-                .inflate(viewType, viewGroup, false)
-        return when(viewType){
-            CarouselProductCardListViewHolder.LAYOUT -> CarouselProductCardListViewHolder(view)
-            else -> CarouselSeeMoreCardGridViewHolder(view)
-        } as BaseProductCardViewHolder<BaseCarouselCardModel>
+        return adapterTypeFactory.onCreateViewHolder(viewGroup, viewType)
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if(getItem(position) is CarouselProductCardModel) CarouselProductCardListViewHolder.LAYOUT else  CarouselSeeMoreCardGridViewHolder.LAYOUT
+        return getItem(position).type(adapterTypeFactory)
     }
 
     override fun onBindViewHolder(carouselProductCardListViewHolder: BaseProductCardViewHolder<BaseCarouselCardModel>, position: Int) {

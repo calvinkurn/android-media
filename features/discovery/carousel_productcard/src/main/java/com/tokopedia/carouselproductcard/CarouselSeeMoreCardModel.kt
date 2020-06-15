@@ -1,15 +1,20 @@
 package com.tokopedia.carouselproductcard
 
+import com.tokopedia.carouselproductcard.typeFactory.CarouselProductCardTypeFactory
+
 internal data class CarouselSeeMoreCardModel(
-        val applink: String,
         var carouselProductCardListenerInfo: CarouselProductCardListenerInfo
 ) : BaseCarouselCardModel{
     override fun areContentsTheSame(newItem: BaseCarouselCardModel): Boolean {
-        return newItem is CarouselSeeMoreCardModel && applink == newItem.applink
+        return newItem is CarouselSeeMoreCardModel
     }
 
     override fun areItemsTheSame(newItem: BaseCarouselCardModel): Boolean {
-        return newItem is CarouselSeeMoreCardModel && applink == newItem.applink
+        return newItem is CarouselSeeMoreCardModel
+    }
+
+    override fun type(typeFactory: CarouselProductCardTypeFactory): Int {
+        return typeFactory.type(this)
     }
 
     fun getOnSeeMoreClickListener() = carouselProductCardListenerInfo.onSeeMoreClickListener

@@ -52,7 +52,6 @@ class ProductRecommendationViewHolder(private val view: View,
         view.rvProductRecom.bindCarouselProductCardViewGrid(
                 scrollToPosition = listener.getRecommendationCarouselSavedState().get(adapterPosition),
                 recyclerViewPool = listener.getParentRecyclerViewPool(),
-                seeMoreAppLink = product.seeMoreAppLink,
                 showSeeMoreCard = product.seeMoreAppLink.isNotBlank(),
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
                     override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
@@ -90,7 +89,7 @@ class ProductRecommendationViewHolder(private val view: View,
                     }
                 },
                 carouselSeeMoreClickListener = object : CarouselProductCardListener.OnSeeMoreClickListener{
-                    override fun onSeeMoreClick(applink: String, carouselProductCardPosition: Int) {
+                    override fun onSeeMoreClick() {
                         listener.onSeeAllRecomClicked(product.pageName, product.seeMoreAppLink, getComponentTrackData(element))
                     }
                 },

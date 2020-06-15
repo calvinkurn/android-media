@@ -23,6 +23,6 @@ interface CarouselProductCardListener {
     }
 
     interface OnSeeMoreClickListener{
-        fun onSeeMoreClick(applink: String, carouselProductCardPosition: Int)
+        fun onSeeMoreClick()
     }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.carouselproductcard
 
+import com.tokopedia.carouselproductcard.typeFactory.CarouselProductCardTypeFactory
 import com.tokopedia.productcard.ProductCardModel
 
 internal data class CarouselProductCardModel(
@@ -13,6 +14,10 @@ internal data class CarouselProductCardModel(
 
     override fun areItemsTheSame(newItem: BaseCarouselCardModel): Boolean {
         return newItem is CarouselProductCardModel && productCardModel.productName == newItem.productCardModel.productName
+    }
+
+    override fun type(typeFactory: CarouselProductCardTypeFactory): Int {
+        return typeFactory.type(this)
     }
 
     override fun areContentsTheSame(newItem: BaseCarouselCardModel): Boolean {
