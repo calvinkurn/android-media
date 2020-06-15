@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactory
 
 data class ContactLoadMoreUiModel(
-        val totalCount: Int = 0,
+        val totalCount: String = "",
         val hideCta: Boolean = false
 ) : Visitable<ChatSearchTypeFactory> {
 

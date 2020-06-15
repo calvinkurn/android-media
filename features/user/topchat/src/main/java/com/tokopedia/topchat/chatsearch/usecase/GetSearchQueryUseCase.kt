@@ -59,9 +59,9 @@ class GetSearchQueryUseCase @Inject constructor(
     }
 
     private fun createContactLoadMore(response: GetChatSearchResponse): ContactLoadMoreUiModel? {
-        val contactCount = response.contactCount.toIntOrZero()
+        val contactCount = response.searchResults.size
         if (contactCount > 5) {
-            return ContactLoadMoreUiModel(contactCount)
+            return ContactLoadMoreUiModel(response.contactCount)
         }
         return null
     }

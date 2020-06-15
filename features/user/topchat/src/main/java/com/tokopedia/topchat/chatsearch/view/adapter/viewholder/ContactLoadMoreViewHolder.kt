@@ -28,7 +28,7 @@ class ContactLoadMoreViewHolder(
 
     @SuppressLint("SetTextI18n")
     private fun bindTitle(element: ContactLoadMoreUiModel) {
-        tittle?.text = "Pengguna (${element.totalCount - 5}+)"
+        tittle?.text = "Pengguna (${element.totalCount})"
     }
 
     private fun bindCtaDetail(element: ContactLoadMoreUiModel) {
