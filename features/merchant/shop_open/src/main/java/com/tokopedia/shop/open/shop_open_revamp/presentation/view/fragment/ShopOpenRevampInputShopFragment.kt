@@ -39,8 +39,8 @@ import com.tokopedia.shop.open.shop_open_revamp.di.ShopOpenRevampModule
 import com.tokopedia.shop.open.shop_open_revamp.listener.FragmentNavigationInterface
 import com.tokopedia.shop.open.shop_open_revamp.listener.InputShopInterface
 import com.tokopedia.shop.open.shop_open_revamp.presentation.adapter.ShopOpenRevampShopsSuggestionAdapter
+import com.tokopedia.shop.open.shop_open_revamp.presentation.view.watcher.AfterTextWatcher
 import com.tokopedia.shop.open.shop_open_revamp.presentation.viewmodel.ShopOpenRevampViewModel
-import com.tokopedia.shop.open.view.watcher.AfterTextWatcher
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -274,6 +274,7 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                     if (_shopId.isNotEmpty() && _isSuccess) {
                         isSuccess = true
                         userSession.shopId = _shopId
+                        userSession.shopName = shopNameValue
                         fragmentNavigationInterface?.navigateToNextPage(PageNameConstant.SPLASH_SCREEN_PAGE, FIRST_FRAGMENT_TAG)
                         shopOpenRevampTracking?.clickCreateShop(isSuccess, shopNameValue)
                     } else {

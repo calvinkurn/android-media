@@ -19,4 +19,5 @@ interface BaseWidgetUiModel<T : BaseDataUiModel> : Visitable<WidgetAdapterFactor
     val ctaText: String
     var data: T?
     val impressHolder: ImpressHolder
+    var isLoaded: Boolean
 }

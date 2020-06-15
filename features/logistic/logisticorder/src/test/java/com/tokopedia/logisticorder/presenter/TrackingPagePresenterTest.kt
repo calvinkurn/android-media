@@ -8,6 +8,7 @@ import com.tokopedia.logisticorder.usecase.entity.RetryAvailabilityResponse
 import com.tokopedia.logisticorder.usecase.entity.RetryBookingResponse
 import com.tokopedia.logisticorder.view.ITrackingPageFragment
 import com.tokopedia.user.session.UserSession
+import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -16,17 +17,22 @@ import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 
 object TrackingPagePresenterTest : Spek({
+    val useCase: TrackCourierUseCase = mockk(relaxed = true)
+    val getRetryUseCase : GetRetryAvailability = mockk(relaxed = true)
+    val retryPickUpUseCase : RetryPickup = mockk(relaxed = true)
+    val userSession: UserSession = mockk(relaxed = true)
+    val view: ITrackingPageFragment = mockk(relaxed = true)
+
+    val presenter : TrackingPagePresenter by memoized{
+        TrackingPagePresenter(useCase, getRetryUseCase, retryPickUpUseCase, userSession, view)
+    }
+
+    beforeEachTest {
+        MockKAnnotations.init(this)
+        presenter.attachView(view)
+    }
+
     Feature("tracking"){
-
-        val useCase: TrackCourierUseCase = mockk(relaxed = true)
-        val getRetryUseCase : GetRetryAvailability = mockk(relaxed = true)
-        val retryPickUpUseCase : RetryPickup = mockk(relaxed = true)
-        val userSession: UserSession = mockk(relaxed = true)
-        val view: ITrackingPageFragment = mockk(relaxed = true)
-
-        val presenter : TrackingPagePresenter by memoized{
-            TrackingPagePresenter(useCase, getRetryUseCase, retryPickUpUseCase, userSession, view)
-        }
 
         Scenario("presenter onDetach"){
             When("presenter onDetach"){

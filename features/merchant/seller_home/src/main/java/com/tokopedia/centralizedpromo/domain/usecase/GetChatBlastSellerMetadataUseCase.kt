@@ -31,6 +31,7 @@ class GetChatBlastSellerMetadataUseCase @Inject constructor(
                 "  chatBlastSellerMetadata {\n" +
                 "    promo\n" +
                 "    promoType\n" +
+                "    url\n" +
                 "  }\n" +
                 "}"
     }

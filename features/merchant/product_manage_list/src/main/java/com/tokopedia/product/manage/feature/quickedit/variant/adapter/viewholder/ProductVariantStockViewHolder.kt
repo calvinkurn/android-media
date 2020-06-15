@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.getNumberFormatted
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.R
@@ -42,6 +43,8 @@ class ProductVariantStockViewHolder(
         setStockMinMaxValue()
         setStockEditorValue(variant.stock)
         addStockEditorTextChangedListener(variant)
+        setAddButtonClickListener()
+        setSubtractButtonClickListener()
     }
 
     private fun setupStatusSwitch(variant: ProductVariant) {
@@ -75,15 +78,17 @@ class ProductVariantStockViewHolder(
     }
 
     private fun addStockEditorTextChangedListener(variant: ProductVariant) {
-        itemView.quantityEditorStock.apply {
+        val quantityEditor = itemView.quantityEditorStock
+        quantityEditor.apply {
             editText.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(editor: Editable?) {
                     val input = editor.toString()
                     val stock = if(input.isNotEmpty()) {
-                        input.replace(".", "").toIntOrZero()
+                        input.toInt()
                     } else {
                         MINIMUM_STOCK
                     }
+                    toggleQuantityEditorBtn(stock)
                     listener.onStockChanged(variant.id, stock)
                 }
 
@@ -94,6 +99,60 @@ class ProductVariantStockViewHolder(
                 }
             })
         }
+    }
+
+    private fun setAddButtonClickListener() {
+        itemView.quantityEditorStock.apply {
+            addButton.setOnClickListener {
+                val input = editText.text.toString()
+
+                var stock = if(input.isNotEmpty()) {
+                    input.toInt()
+                } else {
+                    MINIMUM_STOCK
+                }
+
+                stock++
+
+                if(stock <= MAXIMUM_STOCK) {
+                    editText.setText(stock.getNumberFormatted())
+                }
+            }
+        }
+    }
+
+    private fun setSubtractButtonClickListener() {
+        itemView.quantityEditorStock.apply {
+            subtractButton.setOnClickListener {
+                val input = editText.text.toString()
+
+                var stock = if(input.isNotEmpty()) {
+                    input.toInt()
+                } else {
+                    MINIMUM_STOCK
+                }
+
+                stock--
+
+                if(stock >= MINIMUM_STOCK) {
+                    editText.setText(stock.getNumberFormatted())
+                }
+            }
+        }
+    }
+
+    private fun toggleQuantityEditorBtn(stock: Int) {
+        val enableAddBtn = stock < MAXIMUM_STOCK
+        val enableSubtractBtn = stock > MINIMUM_STOCK
+
+        itemView.quantityEditorStock.apply {
+            addButton.isEnabled = enableAddBtn
+            subtractButton.isEnabled = enableSubtractBtn
+        }
+    }
+
+    private fun String.toInt(): Int {
+        return replace(".", "").toIntOrZero()
     }
 
     interface ProductVariantStockListener {

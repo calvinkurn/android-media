@@ -91,7 +91,7 @@ class CentralizedPromoViewModel @Inject constructor(
             val broadcastChatExtra = if (chatBlastSellerMetadataUiModel.promo > 0 && chatBlastSellerMetadataUiModel.promoType == 2){
                 context.getString(R.string.centralized_promo_broadcast_chat_extra_free_quota, chatBlastSellerMetadataUiModel.promo)
             } else ""
-            Success(PromoCreationStaticData.provideStaticData(context, broadcastChatExtra))
+            Success(PromoCreationStaticData.provideStaticData(context, broadcastChatExtra, chatBlastSellerMetadataUiModel.url))
         } catch (t: Throwable) {
             Fail(t)
         }

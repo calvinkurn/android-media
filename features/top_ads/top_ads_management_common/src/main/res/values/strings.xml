@@ -30,6 +30,7 @@
     <string name="recommendated_bid_message">Biaya rata-rata kompetitor Rp %d</string>
     <string name="min_bid_error">Biaya minimum %d rupiah</string>
     <string name="max_bid_error">Biaya maximum %d rupiah</string>
+    <string name="topads_common_50_multiply_error">Biaya harus kelipatan Rp %d</string>
 
 
 </resources>

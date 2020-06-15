@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.reflect.TypeToken
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
@@ -34,6 +35,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.product.addedit.BuildConfig
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
@@ -114,7 +116,6 @@ import javax.inject.Inject
 
 class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHolder.OnPhotoChangeListener {
 
-    private var isProductStatusSwitchFirstTime = false
     private var countTouchPhoto = 0
     private var dataBackPressed: Int? = null
 
@@ -229,6 +230,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         return viewModel.isEditing.value ?: false
     }
 
+    fun isDrafting(): Boolean {
+        return viewModel.getDraftId() > 0L
+    }
+
     fun dataBackPressedLoss(): Boolean {
         // when stepper page has no data, dataBackPressed is null but if stepper page has data, dataBackPressed has data too
         // dataBackPressed is a sign of activity where data is obtained
@@ -299,10 +304,12 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         loadingLayout = view.findViewById(R.id.loading_layout)
 
         addEditProductPhotoButton?.setOnClickListener {
-
             // tracking
+            val buttonTextStart: String = getString(R.string.action_start)
             if (viewModel.isEditing.value == true) {
                 ProductEditStepperTracking.trackClickChangeProductPic(shopId)
+            } else if (addEditProductPhotoButton?.text == buttonTextStart){
+                ProductAddStepperTracking.trackStart(shopId)
             }
 
             productPhotoAdapter?.run {
@@ -322,14 +329,16 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             }
         }
 
-        productStatusSwitch?.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isProductStatusSwitchFirstTime) {
-                if (viewModel.isEditing.value == true) {
-                    ProductEditStepperTracking.trackChangeProductStatus(shopId)
-                }
-            }
-            isProductStatusSwitchFirstTime = true
+        productStatusSwitch?.setOnCheckedChangeListener { _, isChecked ->
             viewModel.updateProductStatus(isChecked)
+        }
+
+        // track switch status on click
+        productStatusSwitch?.setOnClickListener {
+            val isChecked = productStatusSwitch?.isChecked
+            if (isChecked == true && viewModel.isEditing.value == true) {
+                ProductEditStepperTracking.trackChangeProductStatus(shopId)
+            }
         }
 
         doneButton?.setOnClickListener {
@@ -427,6 +436,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             setCashback()
         }
 
+        context?.let { UpdateShopActiveService.startService(it) }
         //If you add another observe, don't forget to remove observers at removeObservers()
         observeIsEditingStatus()
         observeProductData()
@@ -461,7 +471,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                             viewModel.updateProductPhotos(imagePickerResult, originalImageUrl, isEditted)
                         } else {
                             // this only executed when we came from empty stepper page (add product)
-                            ProductAddStepperTracking.trackStart(shopId)
                             val newProductInputModel = viewModel.getNewProductInputModel(imagePickerResult)
                             startAddEditProductDetailActivity(newProductInputModel, isEditing = false, isAdding = true)
                         }
@@ -572,16 +581,25 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
         photoItemTouchHelper?.startDrag(viewHolder)
+        //countTouchPhoto is used for count how many times images hit
+        //we use this because startDrag(viewHolder) can hit tracker two times
         countTouchPhoto += 1
-        // photoItemTouchHelper?.startDrag(viewHolder) can hit tracker one time
-        // to avoid double hit tracker when dragging or touching image product, we need count how many onStartDrag func run
-        if(countTouchPhoto == 2) {
-            if (viewModel.isEditing.value == true && !viewModel.isAdding) {
-                ProductEditMainTracking.trackDragPhoto(shopId)
-            } else {
-                ProductAddMainTracking.trackDragPhoto(shopId)
+        //countTouchPhoto can increment 1 every time we come or back to this page
+        //if we back from ActivityOnResult countTouchPhoto still increment
+        //to avoid that we have to make sure the value of countTouchPhoto must be 1
+        if(countTouchPhoto > 2) {
+            countTouchPhoto = 1
+        }
+        // tracker only hit when there are two images of product
+        if(productPhotoAdapter?.itemCount ?: 0 > 1) {
+            // to avoid double hit tracker when dragging or touching image product, we have to put if here
+            if(countTouchPhoto == 2) {
+                if (viewModel.isEditing.value == true && !viewModel.isAdding) {
+                    ProductEditMainTracking.trackDragPhoto(shopId)
+                } else {
+                    ProductAddMainTracking.trackDragPhoto(shopId)
+                }
             }
-            countTouchPhoto = 0
         }
     }
 

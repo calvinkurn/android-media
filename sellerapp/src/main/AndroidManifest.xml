@@ -102,6 +102,9 @@
         <meta-data
             android:name="com.bugsnag.android.API_KEY"
             android:value="50d42520ce58b3168a5a721995812a72"/>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/GOOGLE_API_KEY_SA" />
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -202,24 +205,6 @@
 
             </intent-filter>
         </activity>
-
-        <service
-            android:name="com.tokopedia.seller.transaction.neworder.view.presenter.GetOrderService"
-            android:exported="false" />
-
-        <service
-            android:name="com.tokopedia.seller.transaction.neworder.view.appwidget.ListOrderViewServiceWidget"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
-
-        <receiver android:name="com.tokopedia.seller.transaction.neworder.view.appwidget.NewOrderWidget">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/new_order_widget_info" />
-        </receiver>
 
         <provider
             android:name="com.facebook.FacebookContentProvider"
