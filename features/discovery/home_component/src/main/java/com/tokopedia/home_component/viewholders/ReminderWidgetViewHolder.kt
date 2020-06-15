@@ -63,6 +63,7 @@ class ReminderWidgetViewHolder(
                         rechargeListener.onRechargeRecommendationDeclineClickListener(reminder)
                     } else if(element.source == ReminderEnum.SALAM){
                         salamListener.onSalamWidgetClickListener(reminder)
+                        salamListener.onSalamWidgetDeclineClickListener(reminder)
                     }
                 }
 
@@ -71,7 +72,7 @@ class ReminderWidgetViewHolder(
                         if(element.source == ReminderEnum.RECHARGE) {
                             rechargeListener.onRechargeRecommendationImpressionListener(reminder)
                         } else if(element.source == ReminderEnum.SALAM){
-                            //to do salam tracking
+                            salamListener.onSalamWidgetImpressionListener(reminder)
                         }
                     }
                 })
@@ -81,7 +82,8 @@ class ReminderWidgetViewHolder(
                         rechargeListener.onRechargeRecommendationDeclineTrackingListener(reminder)
                         rechargeListener.onRechargeRecommendationDeclineClickListener(reminder)
                     } else if(element.source == ReminderEnum.SALAM){
-                        //to do salam tracking
+                        salamListener.onSalamWidgetDeclineClickListener(reminder)
+                        salamListener.onSalamWidgetDeclineTrackingListener(reminder)
                     }
                 }
             }
