@@ -40,7 +40,6 @@ import com.tokopedia.sellerhome.settings.analytics.SettingTrackingListener
 import com.tokopedia.sellerhome.settings.analytics.sendShopInfoImpressionData
 import com.tokopedia.sellerhome.settings.data.constant.SellerBaseUrl
 import com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity
-import com.tokopedia.sellerhome.settings.view.bottomsheet.SettingsFreeShippingBottomSheet
 import com.tokopedia.sellerhome.settings.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.sellerhome.settings.view.uimodel.DividerUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.MenuItemUiModel
@@ -57,7 +56,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_other_menu.*
-import kotlinx.android.synthetic.main.setting_partial_shop_info_success.*
 import kotlinx.android.synthetic.main.setting_topads_bottomsheet_layout.view.*
 import javax.inject.Inject
 
@@ -187,7 +185,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     override fun onRefreshShopInfo() {
         showAllLoadingShimmering()
         otherMenuViewModel.getAllSettingShopInfo()
-        otherMenuViewModel.getFreeShippingStatus()
     }
 
     override fun sendImpressionDataIris(settingShopInfoImpressionTrackable: SettingShopInfoImpressionTrackable) {
@@ -260,7 +257,10 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         with(otherMenuViewModel) {
             settingShopInfoLiveData.observe(viewLifecycleOwner, Observer { result ->
                 when(result) {
-                    is Success -> showSettingShopInfoState(result.data)
+                    is Success -> {
+                        showSettingShopInfoState(result.data)
+                        otherMenuViewModel.getFreeShippingStatus()
+                    }
                     is Fail -> showSettingShopInfoState(SettingResponseState.SettingError)
                 }
             })
@@ -272,11 +272,10 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     private fun observeFreeShippingStatus() {
         observe(otherMenuViewModel.isFreeShippingActive) { freeShippingActive ->
-            if(freeShippingActive) {
-                freeShippingLayout.show()
-            } else {
-                freeShippingLayout.hide()
-            }
+            otherMenuViewHolder?.setupFreeShippingLayout(
+                fragmentManager,
+                freeShippingActive
+            )
         }
     }
 
@@ -350,7 +349,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     private fun getAllShopInfoData() {
         showAllLoadingShimmering()
         otherMenuViewModel.getAllSettingShopInfo()
-        otherMenuViewModel.getFreeShippingStatus()
     }
 
     private fun showAllLoadingShimmering() {
@@ -378,7 +376,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     private fun retryFetchAfterError() {
         showAllLoadingShimmering()
         otherMenuViewModel.getAllSettingShopInfo(isToasterRetry = true)
-        otherMenuViewModel.getFreeShippingStatus()
     }
 
     private fun View.showToasterError(errorMessage: String) {
@@ -393,14 +390,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun setupView(view: View) {
-        val freeShippingBottomSheet = SettingsFreeShippingBottomSheet.createInstance()
-
         view.run {
             statusBarBackground?.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, statusBarHeight ?: HEIGHT_OFFSET)
-
-            freeShippingLayout.setOnClickListener {
-                freeShippingBottomSheet.show(childFragmentManager)
-            }
         }
         populateAdapterData()
         recycler_view.layoutManager = LinearLayoutManager(context)
