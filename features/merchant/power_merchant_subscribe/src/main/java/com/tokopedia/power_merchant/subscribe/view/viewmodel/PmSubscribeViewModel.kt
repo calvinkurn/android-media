@@ -100,6 +100,21 @@ class PmSubscribeViewModel @Inject constructor(
         }
     }
 
+    fun onActivatePmSuccess() {
+        val getFreeShippingResult = _getPmFreeShippingStatusResult.value
+            as? Success<PowerMerchantFreeShippingStatus>
+
+        val freeShippingStatus = getFreeShippingResult?.data
+            ?: PowerMerchantFreeShippingStatus(
+                isActive = false,
+                isEligible = false,
+                isTransitionPeriod = false,
+                isShopScoreEligible = false
+            )
+
+        _onActivatePmSuccess.value = freeShippingStatus
+    }
+
     fun detachView() {
         getPowerMerchantStatusUseCase.unsubscribe()
     }
