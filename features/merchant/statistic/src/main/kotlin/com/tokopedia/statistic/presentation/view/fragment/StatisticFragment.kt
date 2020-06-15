@@ -285,7 +285,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
         isErrorToastShown = false
 
-        val errorWidgets = adapter.data.filterIndexed { index, widget ->
+        val errorWidgets: List<BaseWidgetUiModel<*>> = adapter.data.filterIndexed { index, widget ->
             val isWidgetError = !widget.data?.error.isNullOrBlank()
             if (isWidgetError) {
                 //set data to null then notify adapter to show the widget shimmer
@@ -295,7 +295,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             return@filterIndexed isWidgetError
         }
 
-        getWidgetsData(errorWidgets)
+        if (errorWidgets.isNotEmpty()) {
+            getWidgetsData(errorWidgets)
+        }
     }
 
     private fun reloadPage() = view?.run {
