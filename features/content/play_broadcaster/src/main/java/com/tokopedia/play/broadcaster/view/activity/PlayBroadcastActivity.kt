@@ -22,7 +22,7 @@ import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
 import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
 import com.tokopedia.play.broadcaster.view.custom.PlayRequestPermissionView
 import com.tokopedia.play.broadcaster.view.event.ScreenStateEvent
-import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment
+import com.tokopedia.play.broadcaster.view.fragment.DummyFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment.Companion.PARENT_FRAGMENT_TAG
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastSummaryFragment

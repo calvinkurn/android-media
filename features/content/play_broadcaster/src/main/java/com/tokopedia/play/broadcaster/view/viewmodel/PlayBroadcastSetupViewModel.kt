@@ -1,20 +1,15 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.play.broadcaster.dispatcher.PlayBroadcastDispatcher
-import com.tokopedia.play.broadcaster.domain.usecase.AddMediaUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.AddProductTagUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.CreateChannelUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.CreateLiveStreamChannelUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
-import com.tokopedia.play.broadcaster.ui.model.ChannelSetupUiModel
-import com.tokopedia.play.broadcaster.ui.model.FollowerUiModel
-import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
-import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
+import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -28,6 +23,7 @@ class PlayBroadcastSetupViewModel @Inject constructor(
         @Named(PlayBroadcastDispatcher.IO) private val ioDispatcher: CoroutineDispatcher,
         private val createChannelUseCase: CreateChannelUseCase,
         private val addProductTagUseCase: AddProductTagUseCase,
+        private val getLiveFollowersDataUseCase: GetLiveFollowersDataUseCase,
         private val addMediaUseCase: AddMediaUseCase,
         private val createLiveStreamChannelUseCase: CreateLiveStreamChannelUseCase,
         private val userSession: UserSessionInterface
@@ -36,27 +32,36 @@ class PlayBroadcastSetupViewModel @Inject constructor(
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + dispatcher)
 
-    val observableFollowers: LiveData<List<FollowerUiModel>>
+    val observableFollowers: LiveData<FollowerDataUiModel>
         get() = _observableFollowers
-    private val _observableFollowers = MutableLiveData<List<FollowerUiModel>>()
+    private val _observableFollowers = MutableLiveData<FollowerDataUiModel>()
 
     val observableSetupChannel: LiveData<ChannelSetupUiModel>
         get() = _observableSetupChannel
     private val _observableSetupChannel = MutableLiveData<ChannelSetupUiModel>()
 
-    val observableCreateChannel: LiveData<Result<LiveStreamInfoUiModel>>
+    val observableCreateChannel: LiveData<NetworkResult<LiveStreamInfoUiModel>>
         get() = _observableCreateChannel
-    private val _observableCreateChannel = MutableLiveData<Result<LiveStreamInfoUiModel>>()
+    private val _observableCreateChannel = MutableLiveData<NetworkResult<LiveStreamInfoUiModel>>()
 
     init {
-        _observableFollowers.value = PlayBroadcastMocker.getMockUnknownFollower()
+        _observableFollowers.value = FollowerDataUiModel.init(MAX_FOLLOWERS_PREVIEW)
+        scope.launch {
+            _observableFollowers.value = getLiveFollowers()
+        }
     }
 
-    fun saveCompleteChannel(productList: List<ProductContentUiModel>, coverUrl: String, title: String) {
+    fun saveCompleteChannel(productList: List<ProductContentUiModel>,
+                            coverUrl: String,
+                            coverUri: Uri?,
+                            title: String) {
         scope.launch {
             _observableSetupChannel.value = ChannelSetupUiModel(
-                    title = title,
-                    coverUrl = coverUrl,
+                    cover = PlayCoverUiModel(
+                            coverImageUri = coverUri,
+                            coverImageUrl = coverUrl,
+                            liveTitle = title
+                    ),
                     selectedProductList = productList
             )
         }
@@ -78,8 +83,22 @@ class PlayBroadcastSetupViewModel @Inject constructor(
          * }
          *
          */
+        _observableCreateChannel.value = NetworkResult.Loading
 
-        _observableCreateChannel.value = Success(PlayBroadcastMocker.getLiveStreamingInfo())
+        scope.launch {
+            delay(3000)
+            _observableCreateChannel.value = NetworkResult.Success(PlayBroadcastMocker.getLiveStreamingInfo())
+        }
+    }
+
+    fun setupChannelWithData(
+            selectedProducts: List<ProductContentUiModel>,
+            cover: PlayCoverUiModel
+    ) {
+        _observableSetupChannel.value = ChannelSetupUiModel(
+                cover = cover,
+                selectedProductList = selectedProducts
+        )
     }
 
     private fun selectedProductIds(productList: List<ProductContentUiModel>): List<String> = productList.map { it.id.toString() }.toList()
@@ -117,5 +136,18 @@ class PlayBroadcastSetupViewModel @Inject constructor(
                     channelId = channelId
             )
         }.executeOnBackground()
+    }
+
+    private suspend fun getLiveFollowers(): FollowerDataUiModel = withContext(ioDispatcher) {
+        getLiveFollowersDataUseCase.params = GetLiveFollowersDataUseCase.createParams(userSession.shopId, MAX_FOLLOWERS_PREVIEW)
+        return@withContext try {
+            PlayBroadcastUiMapper.mapLiveFollowers(getLiveFollowersDataUseCase.executeOnBackground())
+        } catch (e: Throwable) {
+            FollowerDataUiModel.init(MAX_FOLLOWERS_PREVIEW)
+        }
+    }
+
+    companion object {
+        private const val MAX_FOLLOWERS_PREVIEW = 3
     }
 }

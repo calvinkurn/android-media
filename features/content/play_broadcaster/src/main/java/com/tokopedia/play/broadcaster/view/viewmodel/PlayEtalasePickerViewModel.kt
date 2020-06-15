@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,8 +9,12 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetProductsInEtalaseUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetSelfEtalaseListUseCase
 import com.tokopedia.play.broadcaster.error.SelectForbiddenException
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
-import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcasterUiMapper
-import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
+import com.tokopedia.play.broadcaster.ui.model.EtalaseContentUiModel
+import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
+import com.tokopedia.play.broadcaster.ui.model.SearchSuggestionUiModel
+import com.tokopedia.play.broadcaster.ui.model.result.PageResult
+import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.view.state.NotSelectable
 import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.play.broadcaster.view.state.SelectableState
@@ -33,7 +38,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
         private val getSelfEtalaseListUseCase: GetSelfEtalaseListUseCase,
         private val getProductsInEtalaseUseCase: GetProductsInEtalaseUseCase,
         private val userSession: UserSessionInterface
-): ViewModel() {
+) : ViewModel() {
 
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + mainDispatcher)
@@ -64,6 +69,10 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
     val selectedProductList: List<ProductContentUiModel>
         get() = observableSelectedProducts.value.orEmpty()
+
+    var coverImageUri: Uri? = null
+    var coverImageUrl: String = ""
+    var liveTitle: String = ""
 
     private val etalaseMap = mutableMapOf<String, EtalaseContentUiModel>()
     private val productsMap = mutableMapOf<Long, ProductContentUiModel>()
@@ -169,7 +178,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
                         currentValue = etalase.copy(
                                 productMap = etalase.productMap.filterKeys { it <= page }.toMutableMap()
                         ),
-                        state = ResultState.Success(etalase.stillHasProduct)
+                        state = PageResultState.Success(etalase.stillHasProduct)
                 )
 
             } else {
@@ -184,13 +193,13 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
                 PageResult(
                         currentValue = etalase.copy(stillHasProduct = stillHasNextPage),
-                        state = ResultState.Success(stillHasNextPage)
+                        state = PageResultState.Success(stillHasNextPage)
                 )
             }
         } else {
             PageResult(
                     currentValue = EtalaseContentUiModel.Empty(),
-                    state = ResultState.Fail(IllegalStateException("Etalase not found"))
+                    state = PageResultState.Fail(IllegalStateException("Etalase not found"))
             )
         }
     }
@@ -225,7 +234,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
         _observableEtalase.value = PageResult(
                 currentValue = etalaseList,
-                state = ResultState.Success(false)
+                state = PageResultState.Success(false)
         )
     }
 
@@ -234,7 +243,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
         val appendedList = prevList + productList
         return@withContext PageResult(
                 currentValue = appendedList,
-                state = ResultState.Success(appendedList.size < totalData)
+                state = PageResultState.Success(appendedList.size < totalData)
         )
     }
 
@@ -261,14 +270,14 @@ class PlayEtalasePickerViewModel @Inject constructor(
         }.executeOnBackground()
 
         return@withContext Pair(
-                PlayBroadcasterUiMapper.mapProductList(productList, ::isProductSelected, ::isSelectable),
+                PlayBroadcastUiMapper.mapProductList(productList, ::isProductSelected, ::isSelectable),
                 productList.totalData
         )
     }
 
     private suspend fun getEtalaseList() = withContext(ioDispatcher) {
         val etalaseList = getSelfEtalaseListUseCase.executeOnBackground()
-        return@withContext PlayBroadcasterUiMapper.mapEtalaseList(etalaseList)
+        return@withContext PlayBroadcastUiMapper.mapEtalaseList(etalaseList)
     }
 
     private suspend fun getSearchSuggestions(keyword: String) = withContext(ioDispatcher) {
@@ -282,7 +291,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
                 )
             }.executeOnBackground()
 
-            PlayBroadcasterUiMapper.mapSearchSuggestionList(keyword, suggestionList)
+            PlayBroadcastUiMapper.mapSearchSuggestionList(keyword, suggestionList)
         }
     }
 
@@ -297,7 +306,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
         }.executeOnBackground()
 
         return@withContext Pair(
-                PlayBroadcasterUiMapper.mapProductList(productList, ::isProductSelected, ::isSelectable),
+                PlayBroadcastUiMapper.mapProductList(productList, ::isProductSelected, ::isSelectable),
                 productList.totalData
         )
     }

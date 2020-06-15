@@ -127,7 +127,7 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
                 bottomSheetClose.setImageDrawable(it.resources.getDrawable(
                         com.tokopedia.resources.common.R.drawable.ic_system_action_back_grayscale_24))
             }
-            btnPlayPrepareBroadcastNext.text = getString(R.string.play_prepare_broadcast_label_next)
+            btnPlayPrepareBroadcastNext.text = getString(R.string.play_next)
         } else {
             btnPlayPrepareBroadcastNext.text = getString(R.string.play_prepare_broadcast_label_save)
         }

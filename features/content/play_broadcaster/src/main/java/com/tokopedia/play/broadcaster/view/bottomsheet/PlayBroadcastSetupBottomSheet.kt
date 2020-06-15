@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.view.bottomsheet
 
 import android.app.Dialog
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,9 +22,14 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.ui.model.CoverSourceEnum
+import com.tokopedia.play.broadcaster.ui.model.CoverStarterEnum
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.util.BreadcrumbsModel
 import com.tokopedia.play.broadcaster.util.compatTransitionName
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
+import com.tokopedia.play.broadcaster.view.fragment.PlayCoverTitleSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.partial.BottomActionPartialView
@@ -32,6 +38,7 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSetupViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
  * Created by jegul on 26/05/20
@@ -56,6 +63,8 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
 
     private val fragmentBreadcrumbs = Stack<BreadcrumbsModel>()
 
+    private var mListener: Listener? = null
+
     private val currentFragment: Fragment?
         get() = childFragmentManager.findFragmentById(R.id.fl_fragment)
 
@@ -72,7 +81,10 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
                     val lastFragmentBreadcrumbs = fragmentBreadcrumbs.pop()
                     childFragmentManager.popBackStack(lastFragmentBreadcrumbs.fragmentClass.name, 0)
                     setupHeader()
-                } else cancel()
+                } else {
+                    cancel()
+                    mListener?.onSetupCanceled()
+                }
             }
         }
     }
@@ -109,7 +121,7 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
             }
 
             override fun onNextButtonClicked() {
-                complete()
+                showCoverTitlePage()
             }
         })
     }
@@ -130,6 +142,13 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         tvTitle.text = title
     }
 
+    override fun saveCoverAndTitle(coverUri: Uri, coverUrl: String, liveTitle: String) {
+        viewModel.coverImageUri = coverUri
+        viewModel.coverImageUrl = coverUrl
+        viewModel.liveTitle = liveTitle
+        complete()
+    }
+
     override fun showBottomAction(shouldShow: Boolean) {
         if (shouldShow) bottomActionView.show() else bottomActionView.hide()
     }
@@ -139,8 +158,19 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
     }
 
     fun complete() {
-        saveCompleteChannel()
         dismiss()
+        mListener?.onSetupCompletedWithData(
+                selectedProducts = viewModel.selectedProductList,
+                cover = PlayCoverUiModel(
+                        coverImageUri = viewModel.coverImageUri,
+                        coverImageUrl = viewModel.coverImageUrl,
+                        liveTitle = viewModel.liveTitle
+                )
+        )
+    }
+
+    fun setListener(listener: Listener) {
+        mListener = listener
     }
 
     private fun setupHeader() {
@@ -229,9 +259,20 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
     private fun saveCompleteChannel() {
         parentViewModel.saveCompleteChannel(
                 productList = viewModel.selectedProductList,
-                coverUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
-                title = "Klarifikasi Tebak Siapa?"
+                coverUrl = viewModel.coverImageUrl,
+                coverUri = viewModel.coverImageUri,
+                title = viewModel.liveTitle
         )
+    }
+
+    private fun showCoverTitlePage() {
+        val productImageList: ArrayList<Pair<Long, String>> = ArrayList(viewModel.selectedProductList
+                .map { Pair(it.id, it.originalImageUrl) }.toList())
+        navigateToFragment(PlayCoverTitleSetupFragment::class.java, Bundle().apply {
+            putSerializable(PlayCoverTitleSetupFragment.EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST, productImageList)
+            putInt(PlayCoverTitleSetupFragment.EXTRA_STARTER_STATE, CoverStarterEnum.NORMAL.value)
+            putInt(PlayCoverTitleSetupFragment.EXTRA_COVER_SOURCE, CoverSourceEnum.NONE.value)
+        })
     }
 
     //region observe
@@ -267,5 +308,14 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
 
     companion object {
         private const val TAG = "PlayBroadcastSetupBottomSheet"
+    }
+
+    interface Listener {
+
+        fun onSetupCanceled()
+        fun onSetupCompletedWithData(
+                selectedProducts: List<ProductContentUiModel>,
+                cover: PlayCoverUiModel
+        )
     }
 }

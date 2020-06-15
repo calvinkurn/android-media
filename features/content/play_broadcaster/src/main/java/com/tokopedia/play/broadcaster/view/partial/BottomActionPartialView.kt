@@ -62,9 +62,7 @@ class BottomActionPartialView(
     }
 
     interface Listener {
-
         fun onInventoryIconClicked()
-
         fun onNextButtonClicked()
     }
 }
