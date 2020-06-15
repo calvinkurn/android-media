@@ -58,7 +58,9 @@ internal class CarouselProductCardGridActivityTest: AppCompatActivity() {
         fun bind(productCardModelList: List<ProductCardModel>) {
             item?.bindCarouselProductCardViewGrid(
                     productCardModelList = productCardModelList,
-                    recyclerViewPool = recycledViewPool
+                    recyclerViewPool = recycledViewPool,
+                    seeMoreAppLink = "test applink",
+                    showSeeMoreCard = true
             )
         }
 

@@ -43,14 +43,17 @@ class ProductRecommendationViewHolder(private val view: View,
             view.seeMoreRecom.setOnClickListener {
                 listener.onSeeAllRecomClicked(pageName, seeMoreAppLink, getComponentTrackData(element))
             }
-            initAdapter(this, element.cardModel, getComponentTrackData(element))
+            initAdapter(element, this, element.cardModel, getComponentTrackData(element))
         }
     }
 
-    private fun initAdapter(product: RecommendationWidget, cardModel: List<ProductCardModel>?, componentTrackDataModel: ComponentTrackDataModel) {
+    private fun initAdapter(element: ProductRecommendationDataModel, product:RecommendationWidget, cardModel: List<ProductCardModel>?, componentTrackDataModel: ComponentTrackDataModel) {
+
         view.rvProductRecom.bindCarouselProductCardViewGrid(
                 scrollToPosition = listener.getRecommendationCarouselSavedState().get(adapterPosition),
                 recyclerViewPool = listener.getParentRecyclerViewPool(),
+                seeMoreAppLink = product.seeMoreAppLink,
+                showSeeMoreCard = product.seeMoreAppLink.isNotBlank(),
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
                     override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
@@ -84,6 +87,11 @@ class ProductRecommendationViewHolder(private val view: View,
                                 carouselProductCardPosition,
                                 product.pageName,
                                 product.title, componentTrackDataModel)
+                    }
+                },
+                carouselSeeMoreClickListener = object : CarouselProductCardListener.OnSeeMoreClickListener{
+                    override fun onSeeMoreClick(applink: String, carouselProductCardPosition: Int) {
+                        listener.onSeeAllRecomClicked(product.pageName, product.seeMoreAppLink, getComponentTrackData(element))
                     }
                 },
                 productCardModelList = cardModel?.toMutableList() ?: listOf())

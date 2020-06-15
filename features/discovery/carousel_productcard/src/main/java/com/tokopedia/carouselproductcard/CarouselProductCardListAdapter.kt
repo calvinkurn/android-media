@@ -6,25 +6,28 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 
 internal class CarouselProductCardListAdapter :
-        ListAdapter<CarouselProductCardModel, CarouselProductCardListViewHolder>(ProductCardModelDiffUtil()),
+        ListAdapter<BaseCarouselCardModel, BaseProductCardViewHolder<BaseCarouselCardModel>>(ProductCardModelDiffUtil()),
         CarouselProductCardAdapter {
 
-    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): CarouselProductCardListViewHolder {
+    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): BaseProductCardViewHolder<BaseCarouselCardModel> {
         val view = LayoutInflater
                 .from(viewGroup.context)
-                .inflate(CarouselProductCardListViewHolder.LAYOUT, viewGroup, false)
-        return CarouselProductCardListViewHolder(view)
+                .inflate(viewType, viewGroup, false)
+        return when(viewType){
+            CarouselProductCardListViewHolder.LAYOUT -> CarouselProductCardListViewHolder(view)
+            else -> CarouselSeeMoreCardGridViewHolder(view)
+        } as BaseProductCardViewHolder<BaseCarouselCardModel>
     }
 
     override fun getItemViewType(position: Int): Int {
-        return CarouselProductCardListViewHolder.LAYOUT
+        return if(getItem(position) is CarouselProductCardModel) CarouselProductCardListViewHolder.LAYOUT else  CarouselSeeMoreCardGridViewHolder.LAYOUT
     }
 
-    override fun onBindViewHolder(carouselProductCardListViewHolder: CarouselProductCardListViewHolder, position: Int) {
+    override fun onBindViewHolder(carouselProductCardListViewHolder: BaseProductCardViewHolder<BaseCarouselCardModel>, position: Int) {
         carouselProductCardListViewHolder.bind(getItem(position))
     }
 
-    override fun onViewRecycled(carouselProductCardListViewHolder: CarouselProductCardListViewHolder) {
+    override fun onViewRecycled(carouselProductCardListViewHolder: BaseProductCardViewHolder<BaseCarouselCardModel>) {
         carouselProductCardListViewHolder.recycle()
         super.onViewRecycled(carouselProductCardListViewHolder)
     }
@@ -33,7 +36,7 @@ internal class CarouselProductCardListAdapter :
         return this
     }
 
-    override fun submitCarouselProductCardModelList(list: List<CarouselProductCardModel>?) {
+    override fun submitCarouselProductCardModelList(list: List<BaseCarouselCardModel>?) {
         submitList(list)
     }
 }
