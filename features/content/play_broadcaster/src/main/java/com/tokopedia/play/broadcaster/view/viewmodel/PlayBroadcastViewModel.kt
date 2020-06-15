@@ -6,6 +6,8 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.play.broadcaster.dispatcher.PlayBroadcastDispatcher
+import com.tokopedia.play.broadcaster.domain.usecase.CreateChannelUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetConfigurationUseCase
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
@@ -13,9 +15,9 @@ import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionUtil
-import com.tokopedia.play.broadcaster.view.event.ScreenStateEvent
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.Event
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -27,21 +29,24 @@ import javax.inject.Named
 class PlayBroadcastViewModel  @Inject constructor(
         private val playPusher: PlayPusher,
         private val permissionUtil: PlayPermissionUtil,
+        private val getConfigurationUseCase: GetConfigurationUseCase,
+        private val createChannelUseCase: CreateChannelUseCase,
         @Named(PlayBroadcastDispatcher.MAIN) private val mainDispatcher: CoroutineDispatcher,
-        @Named(PlayBroadcastDispatcher.IO) private val ioDispatcher: CoroutineDispatcher
+        @Named(PlayBroadcastDispatcher.IO) private val ioDispatcher: CoroutineDispatcher,
+        private val userSession: UserSessionInterface
 ) : ViewModel() {
 
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + mainDispatcher)
 
+    val observableConfigInfo: LiveData<ConfigurationUiModel>
+        get() = _observableConfigInfo
     val observableChannelInfo: LiveData<ChannelInfoUiModel>
         get() = _observableChannelInfo
     val observableTotalView: LiveData<TotalViewUiModel>
         get() = _observableTotalView
     val observableTotalLike: LiveData<TotalLikeUiModel>
         get() = _observableTotalLike
-    val observableScreenStateEvent: LiveData<Event<ScreenStateEvent>>
-        get() = _observableScreenStateEvent
     val observableLiveInfoState: LiveData<Event<PlayPusherInfoState>>
         get() = _observableLiveInfoState
     val observableLiveNetworkState: LiveData<Event<PlayPusherNetworkState>>
@@ -56,17 +61,24 @@ class PlayBroadcastViewModel  @Inject constructor(
         get() = _observableNewMetric
     val observableProductList: LiveData<List<ProductContentUiModel>>
         get() = _observableProductList
+    val observableShareInfo: LiveData<ShareUiModel>
+        get() = _observableShareInfo
 
+    val configuration: ConfigurationUiModel?
+        get() = _observableConfigInfo.value
     val channelInfo: ChannelInfoUiModel?
         get() = _observableChannelInfo.value
+    val shareInfo: ShareUiModel?
+        get() = _observableShareInfo.value
 
+    private val _observableConfigInfo = MutableLiveData<ConfigurationUiModel>()
     private val _observableChannelInfo = MutableLiveData<ChannelInfoUiModel>()
     private val _observableTotalView = MutableLiveData<TotalViewUiModel>()
     private val _observableTotalLike = MutableLiveData<TotalLikeUiModel>()
-    private val _observableScreenStateEvent = MutableLiveData<Event<ScreenStateEvent>>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
     private val _observableNewMetric = MutableLiveData<Event<PlayMetricUiModel>>()
     private val _observableProductList = MutableLiveData<List<ProductContentUiModel>>()
+    private val _observableShareInfo = MutableLiveData<ShareUiModel>()
     private val _observableNewChat = MediatorLiveData<Event<PlayChatUiModel>>().apply {
         addSource(_observableChatList) { chatList ->
             chatList.lastOrNull()?.let { value = Event(it) }
@@ -97,6 +109,7 @@ class PlayBroadcastViewModel  @Inject constructor(
         mockChatList()
         mockMetrics()
         mockProductList()
+        mockShareData()
     }
 
     override fun onCleared() {
@@ -105,21 +118,33 @@ class PlayBroadcastViewModel  @Inject constructor(
     }
 
     fun getConfiguration() {
-        _observableScreenStateEvent.value = Event(ScreenStateEvent.ShowLoading)
         scope.launch {
-            val config = PlayBroadcastMocker.getMockConfiguration()
-            if (config.isUserWhitelisted) {
-                playPusher.addMaxStreamDuration(config.maxLiveStreamDuration)
-                if (config.isHaveOnGoingLive) {
-                    _observableScreenStateEvent.value = Event(ScreenStateEvent.ShowUserInteractionPage(config.channelId))
-                } else {
-                    _observableScreenStateEvent.value = Event(ScreenStateEvent.ShowSetupPage)
-                }
+            val configurationUiModel = PlayBroadcastMocker.getMockConfiguration()
+            _observableConfigInfo.value = configurationUiModel
+
+            playPusher.addMaxStreamDuration(configurationUiModel.durationConfig.duration)
+            playPusher.addMaxPauseDuration(configurationUiModel.durationConfig.pauseDuration)
+        }
+    }
+
+    fun startPrepareChannel() {
+        scope.launch {
+            if (configuration?.streamAllowed == true
+                    && configuration?.haveOnGoingLive == false
+                    && configuration?.draftChannelId == 0) {
+                createChannel()
             } else {
-                // TODO("ask PO for this case")
-                _observableScreenStateEvent.value = Event(ScreenStateEvent.ShowDialogError("Warning!", "Not a whitelisted user"))
+
             }
         }
+    }
+
+    private suspend fun createChannel() = withContext(ioDispatcher) {
+        return@withContext createChannelUseCase.apply {
+            params = CreateChannelUseCase.createParams(
+                    authorId = userSession.shopId
+            )
+        }.executeOnBackground()
     }
 
     fun getChannel(channelId: String): ChannelInfoUiModel {
@@ -135,10 +160,6 @@ class PlayBroadcastViewModel  @Inject constructor(
 
     private fun updateChannelStatus(status: PlayChannelStatus) {
         // TODO("update channel status")
-    }
-
-    fun startLiveStreaming() {
-        _observableScreenStateEvent.value = Event(ScreenStateEvent.ShowCountDown)
     }
 
     fun startPushBroadcast(ingestUrl: String) {
@@ -158,18 +179,8 @@ class PlayBroadcastViewModel  @Inject constructor(
         }
     }
 
-    fun getPlayPusher(): PlayPusher {
-        return playPusher
-    }
-
-    fun getPermissionUtil(): PlayPermissionUtil {
-        return permissionUtil
-    }
-
     private fun startWebSocket(channelInfo: ChannelInfoUiModel) {
-        scope.launch {
-            // TODO("connect socket")
-        }
+        // TODO("connect socket")
     }
 
     private suspend fun onRetrievedNewChat(newChat: PlayChatUiModel) = withContext(mainDispatcher) {
@@ -180,6 +191,14 @@ class PlayBroadcastViewModel  @Inject constructor(
 
     private suspend fun onRetrievedNewMetric(newMetric: PlayMetricUiModel) = withContext(mainDispatcher) {
         _observableNewMetric.value = Event(newMetric)
+    }
+
+    fun getPlayPusher(): PlayPusher {
+        return playPusher
+    }
+
+    fun getPermissionUtil(): PlayPermissionUtil {
+        return permissionUtil
     }
 
     /**
@@ -213,6 +232,13 @@ class PlayBroadcastViewModel  @Inject constructor(
             _observableProductList.postValue(
                     PlayBroadcastMocker.getMockProductList(5)
             )
+        }
+    }
+
+    private fun mockShareData() {
+        scope.launch(ioDispatcher) {
+            delay(3000)
+            _observableShareInfo.postValue(PlayBroadcastMocker.getMockShare())
         }
     }
 }

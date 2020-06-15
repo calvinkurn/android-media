@@ -73,16 +73,6 @@ class PlayBroadcastFragment @Inject constructor(
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        parentViewModel.getPlayPusher().resume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        parentViewModel.getPlayPusher().pause()
-    }
-
     override fun onDestroy() {
         parentViewModel.getPlayPusher().destroy()
         super.onDestroy()

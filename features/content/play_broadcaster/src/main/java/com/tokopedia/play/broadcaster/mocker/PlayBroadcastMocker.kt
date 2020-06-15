@@ -5,7 +5,6 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.domain.model.Configuration
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
@@ -78,14 +77,22 @@ object PlayBroadcastMocker {
         )
     }
 
-    fun getMockConfiguration() = Configuration(
-            isUserWhitelisted = true,
-            isHaveOnGoingLive = false,
-            isOfficial = false,
-            channelId = "1",
-            maxTaggedProduct = 15,
-            maxLiveStreamDuration = (5 * 60 * 1000) + ( 5 * 1000), // 05:05
-            countDownDuration = 10
+    fun getMockConfiguration() = ConfigurationUiModel(
+            streamAllowed = true,
+            activeOnDifferentDevices = false, // IsLiveActive
+            haveOnGoingLive = false, // activeChannelId != 0
+            activeChannelId = 0,
+            draftChannelId = 12,
+            durationConfig = DurationConfigUiModel(
+                    duration = (30 * 60 * 1000),
+                    pauseDuration = (1 * 60 * 1000),
+                    errorMessage = "Maks. siaran 30 menit"
+            ),
+            productTagConfig = ProductTagConfigUiModel(
+                    maxProduct = 15,
+                    minProduct = 1,
+                    errorMessage = "Oops, kamu sudah memilih 15 produk"
+            )
     )
 
     fun getMockActiveChannel() = ChannelInfoUiModel(
@@ -93,8 +100,7 @@ object PlayBroadcastMocker {
             title = "Klarififikasi Bisa Tebak Siapa?",
             description = "Yuk gabung sekarang di Play Klarifikasi Bisa Tebak siapa?",
             coverUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
-            ingestUrl = "rtmp://192.168.0.102/live/Hy6ROIk6I",
-            shareUrl = "https://www.tokopedia.com/play/channels/1234",
+            ingestUrl = "rtmp://192.168.0.110:1935/stream/",
             status = PlayChannelStatus.Active
     )
 
@@ -108,7 +114,7 @@ object PlayBroadcastMocker {
 
     fun getLiveStreamingInfo() = LiveStreamInfoUiModel(
             "1234",
-            ingestUrl = "rtmp://192.168.0.102/live/Hy6ROIk6I",
+            ingestUrl = "rtmp://192.168.0.110:1935/stream/",
             streamUrl = "rtmp://test"
     )
 
@@ -133,4 +139,12 @@ object PlayBroadcastMocker {
                 fullSentence = fullSentence
         )
     }
+
+    fun getMockShare() = ShareUiModel(
+            id = "1234",
+            title = "Klarififikasi Bisa Tebak Siapa?",
+            description = "Yuk gabung sekarang di Play Klarifikasi Bisa Tebak siapa?",
+            imageUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
+            redirectUrl = "https://www.tokopedia.com/play/channels/1234"
+    )
 }

@@ -21,16 +21,13 @@ import com.tokopedia.play.broadcaster.di.PlayBroadcasterModule
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
 import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
 import com.tokopedia.play.broadcaster.view.custom.PlayRequestPermissionView
-import com.tokopedia.play.broadcaster.view.event.ScreenStateEvent
-import com.tokopedia.play.broadcaster.view.fragment.DummyFragment
+import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastFragment.Companion.PARENT_FRAGMENT_TAG
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastSetupFragment
-import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.ActionBarPartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
-import com.tokopedia.play_common.util.event.EventObserver
 import javax.inject.Inject
 
 /**
@@ -61,7 +58,7 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
         initView()
         getConfiguration()
 
-        observeScreenStateEvent()
+        observeConfiguration()
         observePermissionStateEvent()
     }
 
@@ -174,25 +171,22 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
     /**
      * Observe
      */
-
-    private fun observeScreenStateEvent() {
-        viewModel.observableScreenStateEvent.observe(this, EventObserver{
-            when(it) {
-                is ScreenStateEvent.ShowSetupPage -> {
-                    navigateToFragment(PlayBroadcastSetupFragment::class.java)
+    private fun observeConfiguration() {
+        viewModel.observableConfigInfo.observe(this, Observer {
+            if (it.streamAllowed) {
+                if (it.activeOnDifferentDevices) {
+                    // TODO("handle: Tokomu sedang siaran di perangkat lain")
                 }
-                is ScreenStateEvent.ShowUserInteractionPage -> {
+                if (it.haveOnGoingLive) {
                     navigateToFragment(PlayBroadcastUserInteractionFragment::class.java,
                             Bundle().apply {
-                                putString(PlayBroadcastUserInteractionFragment.KEY_CHANNEL_ID, it.channelId)
+                                putString(PlayBroadcastUserInteractionFragment.KEY_CHANNEL_ID, it.activeChannelId.toString())
                             })
+                } else {
+                    navigateToFragment(PlayBroadcastSetupFragment::class.java)
                 }
-                is ScreenStateEvent.ShowSummaryPage -> {
-                    navigateToFragment(PlayBroadcastSummaryFragment::class.java,
-                        Bundle().apply {
-                            putString(PlayBroadcastSummaryFragment.KEY_CHANNEL_ID, it.channelId)
-                        })
-                }
+            } else {
+                // TODO("handle when stream not allowed")
             }
         })
     }

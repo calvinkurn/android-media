@@ -67,6 +67,11 @@ interface PlayPusher {
     fun addMaxStreamDuration(millis: Long)
 
     /**
+     * add maximum pause duration when streaming, the default is 1minutes
+     */
+    fun addMaxPauseDuration(millis: Long)
+
+    /**
      * Get Active & Finish Live Streaming State
      */
     fun getObservablePlayPusherInfoState(): LiveData<PlayPusherInfoState>

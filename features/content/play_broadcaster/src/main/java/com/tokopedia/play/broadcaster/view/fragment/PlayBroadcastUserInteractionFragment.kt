@@ -46,12 +46,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private lateinit var chatListView: ChatListPartialView
     private lateinit var productLiveBottomSheet: PlayProductLiveBottomSheet
 
+    private lateinit var exitDialog: DialogUnify
+
     override fun getScreenName(): String = "Play Broadcast Interaction"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
-        setupContent()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -62,6 +63,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView()
+        setupContent()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -94,22 +96,23 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun setupContent() {
-        arguments?.getString(KEY_CHANNEL_ID)?.let {
-            channelId -> parentViewModel.getChannel(channelId)
-        }
-        arguments?.getString(KEY_INGEST_URL)?.let {
-            ingestUrl -> parentViewModel.startPushBroadcast(ingestUrl)
-        }
-    }
-
-    override fun onBackPressed(): Boolean {
-        showDialogWhenActionClose()
-        return true
+//        arguments?.getString(KEY_CHANNEL_ID)?.let {
+//            channelId -> parentViewModel.getChannel(channelId)
+//        }
+//        arguments?.getString(KEY_INGEST_URL)?.let {
+//            ingestUrl -> parentViewModel.startPushBroadcast(ingestUrl)
+//        }
+        parentViewModel.startPushBroadcast("rtmp://192.168.0.110:1935/stream/")
     }
 
     override fun onDestroy() {
         try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
         super.onDestroy()
+    }
+
+    override fun onBackPressed(): Boolean {
+        showDialogWhenActionClose()
+        return true
     }
 
     private fun showTimeLeft(timeLeft: String) {
@@ -150,21 +153,26 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun showDialogWhenActionClose() {
-        context?.let {
-            DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(getString(R.string.play_live_broadcast_dialog_end_title))
-                setDescription(getString(R.string.play_live_broadcast_dialog_end_desc))
-                setPrimaryCTAText(getString(R.string.play_live_broadcast_dialog_end_primary))
-                setSecondaryCTAText(getString(R.string.play_live_broadcast_dialog_end_secondary))
-                setPrimaryCTAClickListener { dismiss() }
-                setSecondaryCTAClickListener {
-                    dismiss()
-                    doEndStreaming()
-                }
-                setCancelable(false)
-                setOverlayClose(false)
-            }.show()
+        getExitDialog().show()
+    }
+
+    private fun getExitDialog(): DialogUnify {
+        if (!::exitDialog.isInitialized) {
+           exitDialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+               setTitle(getString(R.string.play_live_broadcast_dialog_end_title))
+               setDescription(getString(R.string.play_live_broadcast_dialog_end_desc))
+               setPrimaryCTAText(getString(R.string.play_live_broadcast_dialog_end_primary))
+               setSecondaryCTAText(getString(R.string.play_live_broadcast_dialog_end_secondary))
+               setPrimaryCTAClickListener { dismiss() }
+               setSecondaryCTAClickListener {
+                   dismiss()
+                   doEndStreaming()
+               }
+               setCancelable(false)
+               setOverlayClose(false)
+           }
         }
+        return exitDialog
     }
 
     private fun showDialogWhenTimeout() {
@@ -203,8 +211,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun doCopyShareLink() {
-        parentViewModel.channelInfo?.let { channelInfo ->
-            PlayShareWrapper.doCopyShareLink(requireContext(), channelInfo) {
+        parentViewModel.shareInfo?.let { shareInfo ->
+            PlayShareWrapper.doCopyShareLink(requireContext(), shareInfo) {
                 showToast(message = getString(R.string.play_live_broadcast_share_link_copied),
                         type = Toaster.TYPE_NORMAL,
                         actionLabel = getString(R.string.play_ok))
