@@ -35,9 +35,17 @@ class BrandlistPageMapper {
             notifyElement(NEW_BRAND_POSITION, NewBrandViewModel(newBrand.shops, newBrand.header, listener), adapter)
         }
 
-        fun mappingAllBrandGroupHeader(adapter: BrandlistPageAdapter?, listener: BrandlistHeaderBrandInterface, totalBrands: Int, selectedChip: Int, recyclerViewLastState: Parcelable?) {
+        fun mappingAllBrandGroupHeader(
+                adapter: BrandlistPageAdapter?,
+                listener: BrandlistHeaderBrandInterface,
+                totalBrands: Int,
+                selectedChip: Int,
+                lastTimeClicked: Long,
+                recyclerViewLastState: Parcelable?
+        ) {
             adapter?.let {
-                it.getVisitables().set(ALL_BRAND_GROUP_HEADER_POSITION, AllBrandGroupHeaderViewModel(listener, totalBrands, selectedChip, recyclerViewLastState))
+                it.getVisitables().set(ALL_BRAND_GROUP_HEADER_POSITION, AllBrandGroupHeaderViewModel(
+                        listener, totalBrands, selectedChip, lastTimeClicked, recyclerViewLastState))
                 it.notifyItemChanged(ALL_BRAND_GROUP_HEADER_POSITION)
                 it.refreshSticky()
             }

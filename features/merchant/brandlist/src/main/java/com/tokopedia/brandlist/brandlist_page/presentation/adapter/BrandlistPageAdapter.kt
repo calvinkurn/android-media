@@ -47,7 +47,7 @@ class BrandlistPageAdapter(
         visitables.add(FEATURED_BRAND_POSITION, FeaturedBrandViewModel(mutableListOf(), null, brandlistPageFragment))
         visitables.add(POPULAR_BRAND_POSITION, PopularBrandViewModel(mutableListOf(), null, brandlistPageFragment))
         visitables.add(NEW_BRAND_POSITION, NewBrandViewModel(mutableListOf(), null, brandlistPageFragment))
-        visitables.add(ALL_BRAND_GROUP_HEADER_POSITION, AllBrandGroupHeaderViewModel(brandlistPageFragment, 0, 1, recyclerViewLastState))
+        visitables.add(ALL_BRAND_GROUP_HEADER_POSITION, AllBrandGroupHeaderViewModel(brandlistPageFragment, 0, 1, 0, recyclerViewLastState))
     }
 
     fun getVisitables(): MutableList<Visitable<*>> {
