@@ -29,7 +29,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener{
     }
 
     override fun onSearchSubmitted(text: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        performSearch(text)
     }
 
     override fun onSearchTextChanged(text: String?) {
@@ -39,6 +39,10 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener{
     private fun openSoftKeyboard() {
         (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(
                 searchAddress.searchTextView, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    fun performSearch(query: String?) {
+        //ToDo: viewModel.searchAddress(query)
     }
 
 }
