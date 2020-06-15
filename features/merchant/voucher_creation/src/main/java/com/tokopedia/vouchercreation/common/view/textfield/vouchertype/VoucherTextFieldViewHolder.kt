@@ -3,6 +3,7 @@ package com.tokopedia.vouchercreation.common.view.textfield.vouchertype
 import android.text.InputFilter
 import android.text.InputType
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
@@ -45,6 +46,7 @@ class VoucherTextFieldViewHolder(itemView: View) : AbstractViewHolder<VoucherTex
                     }
                 }
                 filters = arrayOf(InputFilter.LengthFilter(element.type.maxLength))
+                imeOptions = EditorInfo.IME_ACTION_DONE
             }
 
             when(element.type) {
