@@ -58,9 +58,11 @@ class BrandlistAlphabetHeaderAdapter (
             }
 
             chipContainer.setOnClickListener {
-                selectedPosition = position
-                notifyDataSetChanged()
-                listener.onClickedChip(position, headerItem, recyclerViewState)
+                if (position != selectedPosition && position != startPosition) {
+                    selectedPosition = position
+                    notifyDataSetChanged()
+                    listener.onClickedChip(position, headerItem, recyclerViewState)
+                }
             }
         }
 

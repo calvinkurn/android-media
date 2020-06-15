@@ -420,9 +420,9 @@ class BrandlistPageFragment :
     }
 
     override fun onClickedChip(position: Int, chipName: String, recyclerViewState: Parcelable?) {
-        if (position == selectedChip && categoryName == selectedCategoryName) {
-            return
-        }
+//        if (position == selectedChip && categoryName == selectedCategoryName) {
+//            return
+//        }
 
         if (!isChipEnabled) { // Prevent user click chips too fast before last data showed
             return
