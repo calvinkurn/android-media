@@ -4,11 +4,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -37,6 +38,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     companion object {
         private const val TOAST_DURATION = 5000L
+        private const val DELAY_FETCH_VISIBLE_WIDGET_DATA = 500L
+        private const val SCREEN_NAME = "statistic_page_fragment"
 
         fun newInstance(): StatisticFragment {
             return StatisticFragment()
@@ -51,14 +54,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
     private val recyclerView by lazy { super.getRecyclerView(view) }
 
-    private var widgetHasMap = hashMapOf<String, MutableList<BaseWidgetUiModel<*>>>()
     private var isFirstLoad = true
     private var isErrorToastShown = false
-    private var hasLoadCardData = false
-    private var hasLoadLineGraphData = false
-    private var hasLoadProgressData = false
-    private var hasLoadPostData = false
-    private var hasLoadCarouselData = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return layoutInflater.inflate(R.layout.fragment_stc_statistic, container, false)
@@ -76,6 +73,13 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         observeWidgetData(mViewModel.progressWidgetData, WidgetType.PROGRESS)
         observeWidgetData(mViewModel.postListWidgetData, WidgetType.POST_LIST)
         observeWidgetData(mViewModel.carouselWidgetData, WidgetType.CAROUSEL)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!isFirstLoad) {
+            reloadPage()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -97,7 +101,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         return WidgetAdapterFactoryImpl(this)
     }
 
-    override fun getScreenName(): String = this::class.java.simpleName
+    override fun getScreenName(): String = SCREEN_NAME
 
     override fun initInjector() {
         DaggerStatisticComponent.builder()
@@ -118,47 +122,11 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         recyclerView.post {
             adapter.data.remove(widget)
             adapter.notifyItemRemoved(position)
-            widgetHasMap[widget.widgetType]?.remove(widget)
         }
     }
 
     override fun setOnErrorWidget(position: Int, widget: BaseWidgetUiModel<*>) {
         showErrorToaster()
-    }
-
-    override fun getCardData() {
-        if (hasLoadCardData) return
-        hasLoadCardData = true
-        val dataKeys = Utils.getWidgetDataKeys<CardWidgetUiModel>(adapter.data)
-        mViewModel.getCardWidgetData(dataKeys)
-    }
-
-    override fun getLineGraphData() {
-        if (hasLoadLineGraphData) return
-        hasLoadLineGraphData = true
-        val dataKeys = Utils.getWidgetDataKeys<LineGraphWidgetUiModel>(adapter.data)
-        mViewModel.getLineGraphWidgetData(dataKeys)
-    }
-
-    override fun getProgressData() {
-        if (hasLoadProgressData) return
-        hasLoadProgressData = true
-        val dataKeys = Utils.getWidgetDataKeys<ProgressWidgetUiModel>(adapter.data)
-        mViewModel.getProgressWidgetData(dataKeys)
-    }
-
-    override fun getPostData() {
-        if (hasLoadPostData) return
-        hasLoadPostData = true
-        val dataKeys = Utils.getWidgetDataKeys<PostListWidgetUiModel>(adapter.data)
-        mViewModel.getPostWidgetData(dataKeys)
-    }
-
-    override fun getCarouselData() {
-        if (hasLoadCarouselData) return
-        hasLoadCarouselData = true
-        val dataKeys = Utils.getWidgetDataKeys<CarouselWidgetUiModel>(adapter.data)
-        mViewModel.getCarouselWidgetData(dataKeys)
     }
 
     private fun setupView() = view?.run {
@@ -184,8 +152,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
                     return try {
-                        val isCardWidget = adapter.data[position].widgetType != WidgetType.CARD
-                        if (isCardWidget) spanCount else 1
+                        val isCardWidget = adapter.data[position].widgetType == WidgetType.CARD
+                        if (isCardWidget) 1 else spanCount
                     } catch (e: IndexOutOfBoundsException) {
                         spanCount
                     }
@@ -193,56 +161,89 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             }
         }
         recyclerView.layoutManager = gridLayoutManager
-        ViewCompat.setNestedScrollingEnabled(recyclerView, false)
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    requestVisibleWidgetsData()
+                }
+                super.onScrollStateChanged(recyclerView, newState)
+            }
+        })
+        (recyclerView.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+    }
+
+    private fun getCardData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.forEach { it.isLoaded = true }
+        val dataKeys: List<String> = Utils.getWidgetDataKeys<CardWidgetUiModel>(widgets)
+        mViewModel.getCardWidgetData(dataKeys)
+    }
+
+    private fun getLineGraphData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.forEach { it.isLoaded = true }
+        val dataKeys: List<String> = Utils.getWidgetDataKeys<LineGraphWidgetUiModel>(widgets)
+        mViewModel.getLineGraphWidgetData(dataKeys)
+    }
+
+    private fun getProgressData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.forEach { it.isLoaded = true }
+        val dataKeys: List<String> = Utils.getWidgetDataKeys<ProgressWidgetUiModel>(widgets)
+        mViewModel.getProgressWidgetData(dataKeys)
+    }
+
+    private fun getPostData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.forEach { it.isLoaded = true }
+        val dataKeys: List<String> = Utils.getWidgetDataKeys<PostListWidgetUiModel>(widgets)
+        mViewModel.getPostWidgetData(dataKeys)
+    }
+
+    private fun getCarouselData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.forEach { it.isLoaded = true }
+        val dataKeys: List<String> = Utils.getWidgetDataKeys<CarouselWidgetUiModel>(widgets)
+        mViewModel.getCarouselWidgetData(dataKeys)
     }
 
     private fun selectDateRange() {
+        //implement date picker here
+    }
 
+    private fun requestVisibleWidgetsData() {
+        val layoutManager = recyclerView.layoutManager as GridLayoutManager
+        val firstVisible: Int = layoutManager.findFirstVisibleItemPosition()
+        val lastVisible: Int = layoutManager.findLastVisibleItemPosition()
+
+        val visibleWidgets = mutableListOf<BaseWidgetUiModel<*>>()
+        adapter.data.forEachIndexed { index, widget ->
+            if (index in firstVisible..lastVisible && !widget.isLoaded) {
+                visibleWidgets.add(widget)
+            }
+        }
+
+        if (visibleWidgets.isNotEmpty()) getWidgetsData(visibleWidgets)
     }
 
     private fun setOnSuccessGetLayout(widgets: List<BaseWidgetUiModel<*>>) {
         recyclerView.visible()
         view?.globalErrorStc?.gone()
+        super.clearAllData()
+        super.renderList(widgets)
 
-        adapter.data.clear()
-        widgetHasMap.clear()
-
-        adapter.data.addAll(widgets)
-        widgets.forEach {
-            if (widgetHasMap[it.widgetType].isNullOrEmpty()) {
-                widgetHasMap[it.widgetType] = mutableListOf(it)
-                return@forEach
+        if (isFirstLoad) {
+            recyclerView.post {
+                requestVisibleWidgetsData()
             }
-            widgetHasMap[it.widgetType]?.add(it)
+            isFirstLoad = false
+        } else {
+            requestVisibleWidgetsData()
         }
-
-        renderWidgetOrGetWidgetDataFirst(widgets)
-    }
-
-    /**
-     * If first load then directly render widget so it show widget shimmer
-     * Else it should get all widgets data then render the widget
-     * */
-    private fun renderWidgetOrGetWidgetDataFirst(widgets: List<BaseWidgetUiModel<*>>) {
-        if (isFirstLoad)
-            renderList(widgets)
-        else
-            getWidgetsData(widgets)
-
-        isFirstLoad = false
     }
 
     private fun getWidgetsData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.forEachIndexed { i, widget ->
-            when (widget.widgetType) {
-                WidgetType.CARD -> getCardData()
-                WidgetType.LINE_GRAPH -> getLineGraphData()
-                WidgetType.PROGRESS -> getProgressData()
-                WidgetType.CAROUSEL -> getCarouselData()
-                WidgetType.POST_LIST -> getPostData()
-                else -> adapter.notifyItemChanged(i)
-            }
-        }
+        val groupedWidgets: Map<String, List<BaseWidgetUiModel<*>>> = widgets.groupBy { it.widgetType }
+        groupedWidgets[WidgetType.CARD]?.run { getCardData(this) }
+        groupedWidgets[WidgetType.LINE_GRAPH]?.run { getLineGraphData(this) }
+        groupedWidgets[WidgetType.PROGRESS]?.run { getProgressData(this) }
+        groupedWidgets[WidgetType.CAROUSEL]?.run { getCarouselData(this) }
+        groupedWidgets[WidgetType.POST_LIST]?.run { getPostData(this) }
     }
 
     private fun setOnErrorGetLayout(throwable: Throwable) = view?.run {
@@ -272,7 +273,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     /**
-     * if any widget that failed when load their data, the action should be load the widget data
+     * if any widget that failed when load their data, the action should be load the widget data.
      * else, reload the page like pull refresh
      * */
     private fun reloadPageOrLoadDataOfErrorWidget() {
@@ -283,43 +284,23 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
 
         isErrorToastShown = false
-        adapter.data.forEachIndexed { index, widget ->
-            if (!widget.data?.error.isNullOrBlank()) {
-                when (widget.widgetType) {
-                    WidgetType.CARD -> {
-                        hasLoadCardData = false
-                        getCardData()
-                    }
-                    WidgetType.LINE_GRAPH -> {
-                        hasLoadLineGraphData = false
-                        getLineGraphData()
-                    }
-                    WidgetType.PROGRESS -> {
-                        hasLoadProgressData = false
-                        getProgressData()
-                    }
-                    WidgetType.CAROUSEL -> {
-                        hasLoadCarouselData = false
-                        getCarouselData()
-                    }
-                    WidgetType.POST_LIST -> {
-                        hasLoadPostData = false
-                        getPostData()
-                    }
-                }
+
+        val errorWidgets: List<BaseWidgetUiModel<*>> = adapter.data.filterIndexed { index, widget ->
+            val isWidgetError = !widget.data?.error.isNullOrBlank()
+            if (isWidgetError) {
+                //set data to null then notify adapter to show the widget shimmer
                 widget.data = null
                 adapter.notifyItemChanged(index)
             }
+            return@filterIndexed isWidgetError
+        }
+
+        if (errorWidgets.isNotEmpty()) {
+            getWidgetsData(errorWidgets)
         }
     }
 
     private fun reloadPage() = view?.run {
-        hasLoadCardData = false
-        hasLoadLineGraphData = false
-        hasLoadProgressData = false
-        hasLoadPostData = false
-        hasLoadCarouselData = false
-
         val isAdapterNotEmpty = adapter.data.isNotEmpty()
         setProgressBarVisibility(!isAdapterNotEmpty)
         swipeRefreshStc.isRefreshing = isAdapterNotEmpty
@@ -340,24 +321,35 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private inline fun <reified D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> Throwable.setOnErrorWidgetState(widgetType: String) {
         val message = this.message.orEmpty()
-        widgetHasMap[widgetType]?.forEach { widget ->
-            if (widget is W) {
-                widget.data = D::class.java.newInstance().apply {
-                    error = message
+        adapter.data.filter { it.widgetType == widgetType }
+                .forEach { widget ->
+                    if (widget is W) {
+                        val widgetData = D::class.java.newInstance().apply {
+                            error = message
+                        }
+                        widget.data = widgetData
+                        notifyWidgetChanged(widget)
+                    }
                 }
-                notifyWidgetChanged(widget)
-            }
-        }
+
         showErrorToaster()
+        view?.postDelayed({
+            requestVisibleWidgetsData()
+        }, DELAY_FETCH_VISIBLE_WIDGET_DATA)
     }
 
     private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> List<D>.setOnSuccessWidgetState(widgetType: String) {
-        widgetHasMap[widgetType]?.forEachIndexed { i, widget ->
-            if (widget is W && widget.dataKey == this[i].dataKey) {
-                widget.data = this[i]
-                notifyWidgetChanged(widget)
+        forEach { widgetData ->
+            adapter.data.find { it.dataKey == widgetData.dataKey }?.let { widget ->
+                if (widget is W) {
+                    widget.data = widgetData
+                    notifyWidgetChanged(widget)
+                }
             }
         }
+        view?.postDelayed({
+            requestVisibleWidgetsData()
+        }, DELAY_FETCH_VISIBLE_WIDGET_DATA)
     }
 
     private fun notifyWidgetChanged(widget: BaseWidgetUiModel<*>) {
@@ -385,9 +377,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         liveData.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> result.data.setOnSuccessWidgetState(type)
-                is Fail -> {
-                    result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
-                }
+                is Fail -> result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
             }
         })
     }
