@@ -231,7 +231,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         override fun onPreviewStarted(pusher: AlivcLivePusher?) {
         }
 
-        override fun onAdjustFps(pusher: AlivcLivePusher?, pusherError: Int, p2: Int) {
+        override fun onAdjustFps(pusher: AlivcLivePusher?, curFps: Int, targetFps: Int) {
         }
 
         override fun onFirstFramePreviewed(pusher: AlivcLivePusher?) {
@@ -240,7 +240,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         override fun onPushStoped(pusher: AlivcLivePusher?) {
         }
 
-        override fun onDropFrame(pusher: AlivcLivePusher?, pusherError: Int, p2: Int) {
+        override fun onDropFrame(pusher: AlivcLivePusher?, countBef: Int, countAft: Int) {
         }
 
         override fun onFirstAVFramePushed(pusher: AlivcLivePusher?) {
@@ -249,7 +249,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         override fun onPreviewStoped(pusher: AlivcLivePusher?) {
         }
 
-        override fun onAdjustBitRate(pusher: AlivcLivePusher?, pusherError: Int, p2: Int) {
+        override fun onAdjustBitRate(pusher: AlivcLivePusher?, curBr: Int, targetBr: Int) {
         }
 
         override fun onPushStarted(pusher: AlivcLivePusher?) {
