@@ -103,9 +103,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     override fun onBackPressed(): Boolean {
-        try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
         showDialogWhenActionClose()
         return true
+    }
+
+    override fun onDestroy() {
+        try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
+        super.onDestroy()
     }
 
     private fun showTimeLeft(timeLeft: String) {

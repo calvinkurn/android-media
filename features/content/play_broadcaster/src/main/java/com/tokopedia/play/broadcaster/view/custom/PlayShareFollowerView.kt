@@ -8,8 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayFollowerItemDecoration
-import com.tokopedia.play.broadcaster.ui.model.FollowerUiModel
-import com.tokopedia.play.broadcaster.util.doOnPreDraw
+import com.tokopedia.play.broadcaster.ui.model.FollowerDataUiModel
 import com.tokopedia.play.broadcaster.view.adapter.PlayFollowersAdapter
 
 /**
@@ -42,13 +41,17 @@ class PlayShareFollowerView : ConstraintLayout {
 
     private fun setupView(view: View) {
         rvFollowers.adapter = followersAdapter
-        rvFollowers.doOnPreDraw {
-            if (rvFollowers.itemDecorationCount == 0)
-                rvFollowers.addItemDecoration(PlayFollowerItemDecoration())
-        }
+        rvFollowers.addItemDecoration(PlayFollowerItemDecoration(context))
     }
 
-    fun setFollowersModel(followers: List<FollowerUiModel>) {
-        followersAdapter.setItemsAndAnimateChanges(followers)
+    fun setFollowersModel(followersModel: FollowerDataUiModel) {
+        tvFollowersCount.text =
+                if (followersModel.totalFollowers == 0) context.getString(R.string.play_your_followers)
+                else context.resources.getQuantityString(
+                        R.plurals.play_followers_count,
+                        followersModel.totalFollowers,
+                        followersModel.totalFollowers
+                )
+        followersAdapter.setItemsAndAnimateChanges(followersModel.followersList)
     }
 }

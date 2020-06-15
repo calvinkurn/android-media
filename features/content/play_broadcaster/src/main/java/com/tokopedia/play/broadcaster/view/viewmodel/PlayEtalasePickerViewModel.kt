@@ -9,7 +9,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetProductsInEtalaseUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetSelfEtalaseListUseCase
 import com.tokopedia.play.broadcaster.error.SelectForbiddenException
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
-import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcasterUiMapper
+import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.EtalaseContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.SearchSuggestionUiModel
@@ -270,14 +270,14 @@ class PlayEtalasePickerViewModel @Inject constructor(
         }.executeOnBackground()
 
         return@withContext Pair(
-                PlayBroadcasterUiMapper.mapProductList(productList, ::isProductSelected, ::isSelectable),
+                PlayBroadcastUiMapper.mapProductList(productList, ::isProductSelected, ::isSelectable),
                 productList.totalData
         )
     }
 
     private suspend fun getEtalaseList() = withContext(ioDispatcher) {
         val etalaseList = getSelfEtalaseListUseCase.executeOnBackground()
-        return@withContext PlayBroadcasterUiMapper.mapEtalaseList(etalaseList)
+        return@withContext PlayBroadcastUiMapper.mapEtalaseList(etalaseList)
     }
 
     private suspend fun getSearchSuggestions(keyword: String) = withContext(ioDispatcher) {
@@ -291,7 +291,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
                 )
             }.executeOnBackground()
 
-            PlayBroadcasterUiMapper.mapSearchSuggestionList(keyword, suggestionList)
+            PlayBroadcastUiMapper.mapSearchSuggestionList(keyword, suggestionList)
         }
     }
 
@@ -306,7 +306,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
         }.executeOnBackground()
 
         return@withContext Pair(
-                PlayBroadcasterUiMapper.mapProductList(productList, ::isProductSelected, ::isSelectable),
+                PlayBroadcastUiMapper.mapProductList(productList, ::isProductSelected, ::isSelectable),
                 productList.totalData
         )
     }
