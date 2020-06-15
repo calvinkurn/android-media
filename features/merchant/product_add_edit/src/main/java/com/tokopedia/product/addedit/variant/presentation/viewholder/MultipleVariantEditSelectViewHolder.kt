@@ -5,20 +5,35 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.addedit.variant.presentation.model.OptionInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 import com.tokopedia.unifycomponents.list.ListItemUnify
+import kotlinx.android.synthetic.main.add_edit_product_variant_unit_picker_layout.view.*
 import kotlinx.android.synthetic.main.item_multiple_variant_edit_select.view.*
 
-class MultipleVariantEditSelectViewHolder(itemView: View, clickListener: OnFieldClickListener)
+class MultipleVariantEditSelectViewHolder(itemView: View, val clickListener: OnFieldClickListener)
     : RecyclerView.ViewHolder(itemView) {
 
     interface OnFieldClickListener {
-        fun onFieldClicked(position: Int)
+        fun onFieldClicked(selectionPosition: Int, optionPosition: Int, value: Boolean)
     }
 
-    fun bindData(selectionInputModel: SelectionInputModel) {
-        itemView.textSelection.text = selectionInputModel.variantName
-        val dataList = mapOptionsToListItems(selectionInputModel.options)
+    private var dataList: ArrayList<ListItemUnify> = arrayListOf()
 
+    fun bindData(selectionInputModel: SelectionInputModel) {
+        dataList = mapOptionsToListItems(selectionInputModel.options)
+        itemView.textSelection.text = selectionInputModel.variantName
         itemView.listUnifySelection.setData(dataList)
+        itemView.listUnifySelection.onLoadFinish {
+            itemView.listUnifySelection.setOnItemClickListener { _, _, position, _ ->
+                val selectedItem = dataList[position]
+                selectedItem.listRightCheckbox?.performClick()
+            }
+
+            dataList.forEachIndexed { position, listItemUnify ->
+                listItemUnify.listRightCheckbox?.setOnClickListener {
+                    val isChecked = listItemUnify.listRightCheckbox?.isChecked ?: false
+                    clickListener.onFieldClicked(adapterPosition, position, isChecked)
+                }
+            }
+        }
     }
 
     private fun mapOptionsToListItems(options: List<OptionInputModel>) = ArrayList(

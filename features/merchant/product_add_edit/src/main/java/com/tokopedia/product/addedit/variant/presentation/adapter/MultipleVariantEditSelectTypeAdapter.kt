@@ -12,6 +12,7 @@ class MultipleVariantEditSelectTypeAdapter: RecyclerView.Adapter<MultipleVariant
         MultipleVariantEditSelectViewHolder.OnFieldClickListener {
 
     private var items: List<SelectionInputModel> = listOf()
+    private var selectedIndex: List<HashMap<Int, Boolean>> = arrayListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MultipleVariantEditSelectViewHolder {
         val rootView = LayoutInflater.from(parent.context).inflate(R.layout.item_multiple_variant_edit_select, parent, false)
@@ -26,12 +27,23 @@ class MultipleVariantEditSelectTypeAdapter: RecyclerView.Adapter<MultipleVariant
         holder.bindData(items[position])
     }
 
-    override fun onFieldClicked(position: Int) {
-
+    override fun onFieldClicked(selectionPosition: Int, optionPosition: Int, value: Boolean) {
+        selectedIndex[selectionPosition][optionPosition] = value
     }
 
-    fun setData(items: VariantInputModel) {
-        this.items = items.selections
+    fun setData(variantInputModel: VariantInputModel) {
+        items = variantInputModel.selections
+        selectedIndex = initializeSelectedIndex(variantInputModel.selections)
         notifyDataSetChanged()
     }
+
+    private fun initializeSelectedIndex(selections: List<SelectionInputModel>) =
+            selections.map {
+                val result = hashMapOf<Int, Boolean>()
+                it.options.forEachIndexed { index, _ ->
+                    result[index] = false
+                }
+                result
+            }
+
 }
