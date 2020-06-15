@@ -88,4 +88,9 @@
     <string name="play_product_live_title">Produk Ditampilkan (%d)</string>
     <string name="play_max_live_stream_duration">(Maks. siaran %d menit)</string>
     <string name="play_before_live_selected_product">%d Produk Dipilih</string>
+
+    <plurals name="play_followers_count">
+        <item quantity="one">%d \nFollower</item>
+        <item quantity="other">%d \nFollowers</item>
+    </plurals>
 </resources>
