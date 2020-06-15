@@ -68,7 +68,9 @@ class ShopShowcaseAddActivity : BaseSimpleActivity() {
 
     override fun onBackPressed() {
         if(isActionEdit) {
-            onBackPressedConfirm()
+            if(fragment != null) {
+                (fragment as? ShopShowcaseAddFragment)?.onBackPressedConfirm()
+            }
         } else {
             finish()
         }
@@ -82,21 +84,4 @@ class ShopShowcaseAddActivity : BaseSimpleActivity() {
         return super.dispatchTouchEvent(ev)
     }
 
-    private fun onBackPressedConfirm() {
-        val confirmDialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-        confirmDialog.apply {
-            setTitle(getString(R.string.text_exit_confirm_dialog_title))
-            setDescription(getString(R.string.text_exit_confirm_dialog_description))
-            setPrimaryCTAText(getString(R.string.text_cancel_button))
-            setPrimaryCTAClickListener {
-                this.dismiss()
-            }
-            setSecondaryCTAText(getString(R.string.text_exit_button))
-            setSecondaryCTAClickListener {
-                this.dismiss()
-                finish()
-            }
-            show()
-        }
-    }
 }
