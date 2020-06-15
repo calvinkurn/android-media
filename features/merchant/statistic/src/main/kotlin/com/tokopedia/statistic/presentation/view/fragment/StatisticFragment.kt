@@ -4,11 +4,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -37,6 +38,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     companion object {
         private const val TOAST_DURATION = 5000L
+        private const val DELAY_FETCH_VISIBLE_WIDGET_DATA = 500L
 
         fun newInstance(): StatisticFragment {
             return StatisticFragment()
@@ -76,6 +78,13 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         observeWidgetData(mViewModel.progressWidgetData, WidgetType.PROGRESS)
         observeWidgetData(mViewModel.postListWidgetData, WidgetType.POST_LIST)
         observeWidgetData(mViewModel.carouselWidgetData, WidgetType.CAROUSEL)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!isFirstLoad) {
+            reloadPage()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -161,6 +170,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         mViewModel.getCarouselWidgetData(dataKeys)
     }
 
+    private fun getCardData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.forEach { it.isLoaded = true }
+        val dataKeys: List<String> = Utils.getWidgetDataKeys<CardWidgetUiModel>(widgets)
+        mViewModel.getCardWidgetData(dataKeys)
+    }
+
     private fun setupView() = view?.run {
         (activity as? AppCompatActivity)?.let { activity ->
             activity.setSupportActionBar(headerStcStatistic)
@@ -184,8 +199,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
                     return try {
-                        val isCardWidget = adapter.data[position].widgetType != WidgetType.CARD
-                        if (isCardWidget) spanCount else 1
+                        val isCardWidget = adapter.data[position].widgetType == WidgetType.CARD
+                        if (isCardWidget) 1 else spanCount
                     } catch (e: IndexOutOfBoundsException) {
                         spanCount
                     }
@@ -193,21 +208,77 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             }
         }
         recyclerView.layoutManager = gridLayoutManager
-        ViewCompat.setNestedScrollingEnabled(recyclerView, false)
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    requestVisibleWidgetsData()
+                }
+                super.onScrollStateChanged(recyclerView, newState)
+            }
+        })
+        (recyclerView.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+    }
+
+    private fun getLineGraphData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.forEach { it.isLoaded = true }
+        val dataKeys: List<String> = Utils.getWidgetDataKeys<LineGraphWidgetUiModel>(widgets)
+        mViewModel.getLineGraphWidgetData(dataKeys)
+    }
+
+    private fun getProgressData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.forEach { it.isLoaded = true }
+        val dataKeys: List<String> = Utils.getWidgetDataKeys<ProgressWidgetUiModel>(widgets)
+        mViewModel.getProgressWidgetData(dataKeys)
+    }
+
+    private fun getPostData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.forEach { it.isLoaded = true }
+        val dataKeys: List<String> = Utils.getWidgetDataKeys<PostListWidgetUiModel>(widgets)
+        mViewModel.getPostWidgetData(dataKeys)
+    }
+
+    private fun getCarouselData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.forEach { it.isLoaded = true }
+        val dataKeys: List<String> = Utils.getWidgetDataKeys<CarouselWidgetUiModel>(widgets)
+        mViewModel.getCarouselWidgetData(dataKeys)
     }
 
     private fun selectDateRange() {
 
     }
 
+    private fun requestVisibleWidgetsData() {
+        val layoutManager = recyclerView.layoutManager as GridLayoutManager
+        val firstVisible: Int = layoutManager.findFirstVisibleItemPosition()
+        val lastVisible: Int = layoutManager.findLastVisibleItemPosition()
+
+        val visibleWidgets = mutableListOf<BaseWidgetUiModel<*>>()
+        widgetHasMap.entries.forEach { pair ->
+            if (pair.key == WidgetType.CARD) {
+                visibleWidgets.addAll(pair.value.filter { !it.isLoaded })
+            } else {
+                pair.value.forEach { widget ->
+                    val widgetIndexInRecyclerView = adapter.data.indexOf(widget)
+                    if (widgetIndexInRecyclerView in firstVisible..lastVisible && !widget.isLoaded) {
+                        visibleWidgets.add(widget)
+                    }
+                }
+            }
+        }
+
+        if (visibleWidgets.isNotEmpty()) getWidgetsData(visibleWidgets)
+    }
+
     private fun setOnSuccessGetLayout(widgets: List<BaseWidgetUiModel<*>>) {
         recyclerView.visible()
         view?.globalErrorStc?.gone()
 
-        adapter.data.clear()
+        super.clearAllData()
         widgetHasMap.clear()
 
-        adapter.data.addAll(widgets)
+        super.renderList(widgets)
+        adapter.notifyDataSetChanged()
+
         widgets.forEach {
             if (widgetHasMap[it.widgetType].isNullOrEmpty()) {
                 widgetHasMap[it.widgetType] = mutableListOf(it)
@@ -216,31 +287,29 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             widgetHasMap[it.widgetType]?.add(it)
         }
 
-        renderWidgetOrGetWidgetDataFirst(widgets)
-    }
-
-    /**
-     * If first load then directly render widget so it show widget shimmer
-     * Else it should get all widgets data then render the widget
-     * */
-    private fun renderWidgetOrGetWidgetDataFirst(widgets: List<BaseWidgetUiModel<*>>) {
-        if (isFirstLoad)
-            renderList(widgets)
-        else
-            getWidgetsData(widgets)
-
-        isFirstLoad = false
+        if (isFirstLoad) {
+            recyclerView.post {
+                requestVisibleWidgetsData()
+            }
+            isFirstLoad = false
+        } else {
+            requestVisibleWidgetsData()
+        }
     }
 
     private fun getWidgetsData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.forEachIndexed { i, widget ->
-            when (widget.widgetType) {
-                WidgetType.CARD -> getCardData()
-                WidgetType.LINE_GRAPH -> getLineGraphData()
-                WidgetType.PROGRESS -> getProgressData()
-                WidgetType.CAROUSEL -> getCarouselData()
-                WidgetType.POST_LIST -> getPostData()
-                else -> adapter.notifyItemChanged(i)
+        val groupedWidgets: Map<String, List<BaseWidgetUiModel<*>>> = widgets.groupBy { it.widgetType }
+        groupedWidgets[WidgetType.CARD]?.run { getCardData(this) }
+        groupedWidgets[WidgetType.LINE_GRAPH]?.run { getLineGraphData(this) }
+        groupedWidgets[WidgetType.PROGRESS]?.run { getProgressData(this) }
+        groupedWidgets[WidgetType.CAROUSEL]?.run { getCarouselData(this) }
+        groupedWidgets[WidgetType.POST_LIST]?.run { getPostData(this) }
+        groupedWidgets[WidgetType.SECTION]?.run {
+            forEach {
+                if (!it.isLoaded) {
+                    it.isLoaded = true
+                    notifyWidgetChanged(it)
+                }
             }
         }
     }
@@ -349,15 +418,23 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             }
         }
         showErrorToaster()
+        view?.postDelayed({
+            requestVisibleWidgetsData()
+        }, DELAY_FETCH_VISIBLE_WIDGET_DATA)
     }
 
     private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> List<D>.setOnSuccessWidgetState(widgetType: String) {
-        widgetHasMap[widgetType]?.forEachIndexed { i, widget ->
-            if (widget is W && widget.dataKey == this[i].dataKey) {
-                widget.data = this[i]
-                notifyWidgetChanged(widget)
+        forEach { widgetData ->
+            widgetHasMap[widgetType]?.find { it.dataKey == widgetData.dataKey }?.let { widget ->
+                if (widget is W) {
+                    widget.data = widgetData
+                    notifyWidgetChanged(widget)
+                }
             }
         }
+        view?.postDelayed({
+            requestVisibleWidgetsData()
+        }, DELAY_FETCH_VISIBLE_WIDGET_DATA)
     }
 
     private fun notifyWidgetChanged(widget: BaseWidgetUiModel<*>) {
