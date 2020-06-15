@@ -16,7 +16,6 @@ class ShopSearchProductActivity : BaseSimpleActivity(), HasComponent<ShopCompone
         const val KEY_SHOP_INFO_CACHE_MANAGER_ID = "keyShopInfoCacheManagerId"
         const val KEY_SHOP_ATTRIBUTION = "keyShopAttribution"
         const val KEY_KEYWORD = "keyKeyword"
-        const val KEY_SORT_ID = "keySortId"
         const val KEY_SHOP_REF = "shopRef"
 
         @JvmStatic
@@ -29,13 +28,6 @@ class ShopSearchProductActivity : BaseSimpleActivity(), HasComponent<ShopCompone
             return intent
         }
 
-        @JvmStatic
-        fun createIntent(context: Context, keyword: String, cacheManagerId: String,
-                         shopAttribution: String?, sortId: String, shopRef: String): Intent {
-            val intent = createIntent(context, keyword, cacheManagerId, shopAttribution, shopRef)
-            intent.putExtra(KEY_SORT_ID, sortId)
-            return intent
-        }
     }
 
     private var shopInfoCacheManagerId: String = ""
@@ -43,8 +35,6 @@ class ShopSearchProductActivity : BaseSimpleActivity(), HasComponent<ShopCompone
     private var shopAttribution: String = ""
 
     private var keyword: String = ""
-
-    private var sortId: String = ""
 
     private var shopRef: String = ""
 
@@ -55,7 +45,6 @@ class ShopSearchProductActivity : BaseSimpleActivity(), HasComponent<ShopCompone
             shopInfoCacheManagerId = getStringExtra(KEY_SHOP_INFO_CACHE_MANAGER_ID).orEmpty()
             shopAttribution = getStringExtra(KEY_SHOP_ATTRIBUTION).orEmpty()
             keyword = getStringExtra(KEY_KEYWORD).orEmpty()
-            sortId = getStringExtra(KEY_SORT_ID).orEmpty()
             shopRef = getStringExtra(KEY_SHOP_REF).orEmpty()
         }
     }
@@ -69,7 +58,6 @@ class ShopSearchProductActivity : BaseSimpleActivity(), HasComponent<ShopCompone
             keyword,
             shopInfoCacheManagerId,
             shopAttribution,
-            sortId,
             shopRef
     )
 

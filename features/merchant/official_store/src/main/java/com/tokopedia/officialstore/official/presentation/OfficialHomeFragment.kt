@@ -120,9 +120,12 @@ class OfficialHomeFragment :
                 if (swipeRefreshLayout?.isRefreshing == false) {
                     val CATEGORY_CONST: String = category?.slug.orEmpty()
                     val recomConstant = (FirebasePerformanceMonitoringConstant.PRODUCT_RECOM).replace(SLUG_CONST, CATEGORY_CONST)
+                    val categories = category?.categories.toString()
+                    val categoriesWithoutOpeningSquare = categories.replace("[", "") // Remove Square bracket from the string
+                    val categoriesWithoutClosingSquare = categoriesWithoutOpeningSquare.replace("]", "") // Remove Square bracket from the string
                     counterTitleShouldBeRendered += 1
                     productRecommendationPerformanceMonitoring = PerformanceMonitoring.start(recomConstant)
-                    viewModel.loadMore(category, page)
+                    viewModel.loadMoreProducts(categoriesWithoutClosingSquare, page)
 
                     if (adapter?.getVisitables()?.lastOrNull() is ProductRecommendationViewModel) {
                         adapter?.showLoading()
@@ -303,7 +306,7 @@ class OfficialHomeFragment :
     }
 
     private fun observeProductRecommendation() {
-        viewModel.officialStoreProductRecommendationResult.observe(this, Observer {
+        viewModel.productRecommendation.observe(this, Observer {
             when (it) {
                 is Success -> {
                     PRODUCT_RECOMMENDATION_TITLE_SECTION = it.data.title
@@ -412,7 +415,7 @@ class OfficialHomeFragment :
         viewModel.officialStoreBenefitsResult.removeObservers(this)
         viewModel.officialStoreFeaturedShopResult.removeObservers(this)
         viewModel.officialStoreDynamicChannelResult.removeObservers(this)
-        viewModel.officialStoreProductRecommendationResult.removeObservers(this)
+        viewModel.productRecommendation.removeObservers(this)
         viewModel.flush()
         super.onDestroy()
     }

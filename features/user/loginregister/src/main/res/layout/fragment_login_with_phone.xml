@@ -148,4 +148,18 @@
     android:visibility="gone"
     app:layout_constraintBottom_toBottomOf="parent"/>
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/to_tokopedia_care"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_margin="@dimen/spacing_lvl5"
+        android:text="@string/need_help_call_tokopedia_care"
+        android:textAlignment="center"
+        app:typographyWeight="reguler"
+        app:typographyType="body_2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

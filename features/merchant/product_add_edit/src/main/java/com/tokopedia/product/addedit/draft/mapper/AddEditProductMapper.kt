@@ -90,7 +90,11 @@ object AddEditProductMapper {
 
     fun mapDraftToProductInputModel(productDraft: ProductDraft): ProductInputModel {
         val productInputModel = ProductInputModel()
-        productInputModel.variantInputModel = mapJsonToProductInputModel(productDraft.variantInputModel)
+        if(productDraft.variantInputModel.isNotEmpty()) {
+            productInputModel.variantInputModel = mapJsonToProductInputModel(productDraft.variantInputModel)
+        } else {
+            productInputModel.variantInputModel = ProductVariantInputModel()
+        }
         productInputModel.productId = productDraft.productId
         productInputModel.detailInputModel.apply {
             productName = productDraft.detailInputModel.productName

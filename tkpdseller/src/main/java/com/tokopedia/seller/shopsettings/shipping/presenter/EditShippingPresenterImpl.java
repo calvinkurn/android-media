@@ -21,7 +21,7 @@ import com.tokopedia.seller.shopsettings.shipping.model.editshipping.EditShippin
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.ProvinceCitiesDistrict;
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.ShopShipping;
 import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
-import com.tokopedia.seller.shopsettings.shipping.network.ShippingNetworkParam;
+import com.tokopedia.seller.shopsettings.shipping.data.network.ShippingNetworkParam;
 
 import org.json.JSONException;
 import org.json.JSONObject;
