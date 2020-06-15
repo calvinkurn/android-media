@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.common_wallet.balance.data.CacheUtil
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.home.R
 import com.tokopedia.home.beranda.common.HomeDispatcherProvider
 import com.tokopedia.home.beranda.common.HomeDispatcherProviderImpl
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
@@ -21,7 +20,6 @@ import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.GraphqlHelper
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -41,12 +39,6 @@ class HomeModule {
 
     @HomeScope
     @Provides
-    fun provideDummyResponse(@ApplicationContext context: Context):String {
-       return GraphqlHelper.loadRawString(context.resources, R.raw.dummy_responses)
-    }
-
-    @HomeScope
-    @Provides
     fun provideHomeDispatcher(): HomeDispatcherProvider = HomeDispatcherProviderImpl()
 
     @HomeScope
@@ -62,13 +54,12 @@ class HomeModule {
     fun homeRepository(geolocationRemoteDataSource: Lazy<GeolocationRemoteDataSource>,
                        homeRemoteDataSource: HomeRemoteDataSource,
                        homeCachedDataSource: HomeCachedDataSource,
-                       homeDefaultDataSource: HomeDefaultDataSource,
-                       dummyResponse: String
+                       homeDefaultDataSource: HomeDefaultDataSource
     ): HomeRepository = HomeRepositoryImpl(
             homeCachedDataSource,
             homeRemoteDataSource,
             homeDefaultDataSource,
-            geolocationRemoteDataSource, dummyResponse)
+            geolocationRemoteDataSource)
 
     @HomeScope
     @Provides

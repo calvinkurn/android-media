@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.data.repository
 
 import android.text.TextUtils
-import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
@@ -25,8 +24,7 @@ class HomeRepositoryImpl @Inject constructor(
         private val homeCachedDataSource: HomeCachedDataSource,
         private val homeRemoteDataSource: HomeRemoteDataSource,
         private val homeDefaultDataSource: HomeDefaultDataSource,
-        private val geolocationRemoteDataSource: Lazy<GeolocationRemoteDataSource>,
-        private val dummyResponse: String
+        private val geolocationRemoteDataSource: Lazy<GeolocationRemoteDataSource>
 ): HomeRepository {
 
     override fun getHomeData() = homeCachedDataSource.getCachedHomeData()
@@ -40,8 +38,7 @@ class HomeRepositoryImpl @Inject constructor(
                 }
             }
         }
-        //val homeData = response.getSuccessData<HomeData>()
-        val homeData = Gson().fromJson(dummyResponse,HomeData::class.java)
+        val homeData = response.getSuccessData<HomeData>()
         if (homeData.dynamicHomeChannel.channels.isEmpty()) {
             homeCachedDataSource.saveToDatabase(homeDefaultDataSource.getDefaultHomeData())
         } else {
