@@ -20,13 +20,6 @@ android {
 
     defaultConfig {
         multiDexEnabled true
-        defaultConfig {
-            if (project.hasProperty("mockTest")) {
-                testInstrumentationRunner "com.tokopedia.test.application.environment.MockInstrumentationTestRunner"
-            } else {
-                testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
-            }
-        }
     }
 }
 
@@ -160,3 +153,4 @@ project.ext {
 apply from: '../../../publish_local.gradle'
 apply from: '../../../jacoco_task.gradle'
 apply from: '../../../sonar_config.gradle'
+apply from: "../../../compile-instrument-test.gradle"
