@@ -80,6 +80,15 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.TICKER_INFO -> {
                     listOfComponent.add(ProductTickerInfoDataModel(type = component.type, name = component.componentName))
                 }
+                ProductDetailConstant.BY_ME -> {
+                    val contentData = component.componentData.firstOrNull()
+                    val content = if (contentData?.content?.isEmpty() == true) listOf(Content()) else contentData?.content
+                    listOfComponent.add(ProductGeneralInfoDataModel(component.componentName, component.type, contentData?.applink
+                            ?: "", contentData?.title ?: "",
+                            contentData?.isApplink ?: true, contentData?.icon
+                            ?: "", content ?: listOf(Content()))
+                    )
+                }
             }
         }
         return listOfComponent

@@ -684,6 +684,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     }
                 }
             }
+            ProductDetailConstant.BY_ME -> {
+                this::onAffiliateClick()
+            }
         }
     }
 
