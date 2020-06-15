@@ -9,7 +9,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMButton
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlin.LazyThreadSafetyMode.NONE as NONE
+import kotlin.LazyThreadSafetyMode.NONE
 
 open class ActionButtonViewHolder(
         view: View,
@@ -22,10 +22,7 @@ open class ActionButtonViewHolder(
     fun bind(button: CMButton) {
         btnAction.text = button.getTxt()
         btnAction.setOnClickListener {
-            val appLink = RouteManager.getIntent(context, button.getAppLink())
-            context.startActivity(appLink)
-
-            // custom action from dialog
+            RouteManager.route(context, button.getAppLink())
             onClick()
         }
     }
