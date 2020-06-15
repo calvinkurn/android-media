@@ -393,6 +393,10 @@ object ApplinkConstInternalGlobal {
     val EDIT_BCA_ONE_KLICK_ENTRY_PATTERN = "$INTERNAL_GLOBAL/editbcaoneklik"
 
     @JvmField
+    val DISCOVERY = "$INTERNAL_GLOBAL/discovery"
+
+
+    @JvmField
     val PARAM_ACCOUNT_ID = "account_id"
     @JvmField
     val PARAM_ACCOUNT_NAME = "account_name"

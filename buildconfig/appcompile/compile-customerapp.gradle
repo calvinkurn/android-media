@@ -33,6 +33,7 @@ include "features:category:basemvvm"
 include "features:category:tradein"
 include "features:category:age_restriction"
 include "features:category:explore_category"
+include "features:category:discovery2"
 
 include "features:digital:digital_browse"
 

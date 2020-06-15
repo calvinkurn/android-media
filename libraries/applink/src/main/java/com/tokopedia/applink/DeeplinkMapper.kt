@@ -51,6 +51,7 @@ import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomDoneAppLin
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomNewOrderAppLink
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomReadyToShipAppLink
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomShippedAppLink
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory.getDiscoveryDeeplink
 
 /**
  * Function to map the deeplink to applink (registered in manifest)
@@ -172,6 +173,9 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.ORDER_HISTORY, true) -> getRegisteredNavigationOrderHistory(uri)
                     deeplink.startsWith(ApplinkConst.RESET_PASSWORD, true) -> ApplinkConstInternalGlobal.FORGOT_PASSWORD
                     deeplink.startsWith(ApplinkConst.PRODUCT_ADD, true) -> getRegisteredNavigationMarketplace(deeplink)
+                    deeplink.startsWith(ApplinkConst.DISCOVERY, true) ->
+                        getDiscoveryDeeplink(deeplink)
+
                     else -> {
                         if (specialNavigationMapper(deeplink, ApplinkConst.HOST_CATEGORY_P)) {
                             getRegisteredCategoryNavigation(deeplink)

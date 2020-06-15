@@ -10,9 +10,13 @@ import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.BitmapImageViewTarget
 import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
 import com.bumptech.glide.signature.ObjectKey
 import com.tokopedia.kotlin.extensions.R
@@ -229,5 +233,10 @@ object ImageUtils {
         } else {
             imageView.setImageDrawable(drawable)
         }
+    }
+
+    interface ImageLoaderStateListener {
+        fun successLoad()
+        fun failedLoad()
     }
 }
