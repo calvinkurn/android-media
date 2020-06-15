@@ -19,6 +19,7 @@ import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase;
 import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.analytics.SearchEventTracking;
+import com.tokopedia.search.result.domain.model.Redirection;
 import com.tokopedia.search.result.domain.model.SearchProduct;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
@@ -679,21 +680,17 @@ final class ProductListPresenter
         }
     }
 
-    //TODO:: Redirection missing from backend
     private boolean isSearchRedirected(SearchProductModel searchProductModel) {
-//        SearchProductModel.Redirection redirection = searchProductModel.getAceSearchProduct().getData().
-//
-//        return redirection != null
-//                && redirection.getRedirectApplink() != null
-//                && redirection.getRedirectApplink().length() > 0;
-        return false;
+        Redirection redirection = searchProductModel.getAceSearchProduct().getData().getRedirection();
+
+        return redirection != null
+                && !textIsEmpty(redirection.getRedirectApplink());
     }
 
-    //TODO:: Redirection missing from backend
     private void getViewToRedirectSearch(SearchProductModel searchProductModel) {
-//        String applink = searchProductModel.getSearchProduct().getRedirection().getRedirectApplink();
-//
-//        getView().redirectSearchToAnotherPage(applink);
+        String applink = searchProductModel.getAceSearchProduct().getData().getRedirection().getRedirectApplink();
+
+        getView().redirectSearchToAnotherPage(applink);
     }
 
     private void getViewToProcessSearchResult(Map<String, Object> searchParameter, SearchProductModel searchProductModel) {

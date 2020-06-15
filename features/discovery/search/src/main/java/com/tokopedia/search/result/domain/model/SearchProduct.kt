@@ -48,6 +48,14 @@ data class SearchProductData(
         @Expose
         val isQuerySafe: Boolean = true,
 
+        @SerializedName("autocompleteApplink")
+        @Expose
+        val autocompleteApplink: String = "",
+
+        @SerializedName("redirection")
+        @Expose
+        val redirection: Redirection = Redirection(),
+
         @SerializedName("ticker")
         @Expose
         val ticker: Ticker = Ticker(),
@@ -63,6 +71,12 @@ data class SearchProductData(
         @SerializedName("products")
         @Expose
         val productList: List<Product> = listOf()
+)
+
+data class Redirection(
+        @SerializedName("redirectApplink")
+        @Expose
+        val redirectApplink: String = ""
 )
 
 data class Ticker(

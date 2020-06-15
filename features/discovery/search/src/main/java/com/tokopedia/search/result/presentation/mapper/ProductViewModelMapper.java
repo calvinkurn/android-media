@@ -76,8 +76,7 @@ public class ProductViewModelMapper {
                     );
         }
         productViewModel.setAdditionalParams(searchProductHeader.getAdditionalParams());
-        //TODO:: Missing from backend
-//        productViewModel.setAutocompleteApplink(searchProduct.getAutocompleteApplink());
+        productViewModel.setAutocompleteApplink(searchProductData.getAutocompleteApplink());
         productViewModel.setDefaultView(searchProductHeader.getDefaultView());
 
         return productViewModel;

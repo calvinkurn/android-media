@@ -82,6 +82,10 @@ class SearchProductFirstPageGqlUseCase(
                     }
                     data {
                         isQuerySafe
+                        autocompleteApplink
+                        redirection {
+                            redirectApplink
+                        }
                         ticker {
                             text
                             query
