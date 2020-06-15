@@ -30,7 +30,7 @@ import com.tokopedia.power_merchant.subscribe.view.activity.PowerMerchantTermsAc
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantCancelBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantNotificationBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantNotificationBottomSheet.CTAMode
-import com.tokopedia.power_merchant.subscribe.view.constant.PowerMerchantUrl.URL_FREE_SHIPPING_TERMS_AND_CONDITION
+import com.tokopedia.power_merchant.subscribe.view.constant.PowerMerchantUrl.URL_FREE_SHIPPING_INTERIM_PAGE
 import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantFreeShippingStatus
 import com.tokopedia.power_merchant.subscribe.view.model.ViewState.HideLoading
 import com.tokopedia.power_merchant.subscribe.view.model.ViewState.ShowLoading
@@ -275,16 +275,16 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         bottomSheet.setPrimaryButtonText(primaryBtnLabel)
         bottomSheet.setPrimaryButtonClickListener {
             if(isFreeShippingEligible) {
-                openLearnMoreFreeShipping()
+                openFreeShippingPage()
             }
             bottomSheet.dismiss()
         }
         bottomSheet.show(childFragmentManager)
     }
 
-    private fun openLearnMoreFreeShipping() {
+    private fun openFreeShippingPage() {
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW,
-            URL_FREE_SHIPPING_TERMS_AND_CONDITION)
+            URL_FREE_SHIPPING_INTERIM_PAGE)
     }
 
     private fun showBottomSheetCancel() {

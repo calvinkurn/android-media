@@ -34,7 +34,7 @@ class SettingsFreeShippingBottomSheet: BottomSheetUnify() {
 
         btnFreeShippingDetail.setOnClickListener {
             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW,
-                CentralizedPromoUrl.URL_FREE_SHIPPING_LEARN_MORE)
+                CentralizedPromoUrl.URL_FREE_SHIPPING_INTERIM_PAGE)
             dismiss()
         }
     }

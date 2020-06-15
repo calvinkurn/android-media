@@ -2,5 +2,5 @@ package com.tokopedia.centralizedpromo.constant
 
 object CentralizedPromoUrl {
 
-    const val URL_FREE_SHIPPING_LEARN_MORE = "https://seller.tokopedia.com/edu/bebas-ongkir/"
+    const val URL_FREE_SHIPPING_INTERIM_PAGE = "https://m.tokopedia.com/bebas-ongkir"
 }
