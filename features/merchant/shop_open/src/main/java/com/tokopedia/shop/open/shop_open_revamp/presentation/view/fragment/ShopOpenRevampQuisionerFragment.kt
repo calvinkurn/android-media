@@ -335,20 +335,28 @@ class ShopOpenRevampQuisionerFragment :
                 showLoader()
                 data?.let {
                     val saveAddressDataModel = it.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_MODEL)
-                    var latitudeString: String = ""
-                    var longitudeString: String = ""
-                    if (saveAddressDataModel != null){
-                        latitudeString = saveAddressDataModel.latitude.toString()
-                        longitudeString = saveAddressDataModel.longitude.toString()
+                    var _latitudeString: String = ""
+                    var _longitudeString: String = ""
+                    var _postalCode: String = ""
+                    var _districtId: Int = 0
+                    var _formattedAddress: String = ""
+                    
+                    saveAddressDataModel?.let {
+                        _latitudeString = it.latitude.toString()
+                        _longitudeString = it.longitude.toString()
+                        _postalCode = it.postalCode.toString()
+                        _districtId = it.districtId
+                        _formattedAddress = it.formattedAddress
                     }
+
                     val _shopId = if (userSession.shopId.isNotEmpty()) userSession.shopId.toInt() else 0 // Get shopId from create Shop
 
                     if (!_shopId.equals(0) &&
-                            saveAddressDataModel.postalCode.isNotEmpty() &&
-                            latitudeString.isNotEmpty() &&
-                            longitudeString.isNotEmpty() &&
-                            saveAddressDataModel.districtId != 0 &&
-                            saveAddressDataModel.formattedAddress.isNotEmpty()) {
+                            _postalCode.isNotEmpty() &&
+                            _latitudeString.isNotEmpty() &&
+                            _longitudeString.isNotEmpty() &&
+                            _districtId != 0 &&
+                            _formattedAddress.isNotEmpty()) {
 
                         shopId = _shopId
                         postCode = saveAddressDataModel.postalCode
