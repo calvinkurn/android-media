@@ -67,11 +67,11 @@ class PlayEtalaseDetailFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupTransition()
-        postponeEnterTransition()
         viewModel = ViewModelProviders.of(requireParentFragment(), viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        postponeEnterTransition()
         bottomSheetCoordinator.showBottomAction(true)
         return inflater.inflate(R.layout.fragment_play_etalase_detail, container, false)
     }
@@ -138,6 +138,9 @@ class PlayEtalaseDetailFragment @Inject constructor(
                 }
                 is PageResultState.Fail -> {
                     selectableProductAdapter.setItemsAndAnimateChanges(it.currentValue.productMap.values.flatten())
+
+                    startPostponedTransition()
+
                     scrollListener.setHasNextPage(it.currentValue.stillHasProduct)
                     scrollListener.updateState(false)
                 }
@@ -150,7 +153,9 @@ class PlayEtalaseDetailFragment @Inject constructor(
      */
     private fun setupTransition() {
         setupEnterTransition()
+        setupExitTransition()
         setupReturnTransition()
+        setupReenterTransition()
     }
 
     private fun setupEnterTransition() {
@@ -176,6 +181,21 @@ class PlayEtalaseDetailFragment @Inject constructor(
                 .addTransition(ChangeTransform())
                 .addTransition(ChangeBounds())
                 .setDuration(450)
+    }
+
+    private fun setupExitTransition() {
+        exitTransition = TransitionSet()
+                .addTransition(Slide(Gravity.START))
+                .addTransition(Fade(Fade.OUT))
+                .setDuration(300)
+    }
+
+    private fun setupReenterTransition() {
+        reenterTransition = TransitionSet()
+                .addTransition(Slide(Gravity.START))
+                .addTransition(Fade(Fade.IN))
+                .setStartDelay(200)
+                .setDuration(300)
     }
 
     private fun startPostponedTransition() {

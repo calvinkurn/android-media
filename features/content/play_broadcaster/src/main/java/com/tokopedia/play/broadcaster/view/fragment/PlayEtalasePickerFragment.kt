@@ -110,8 +110,8 @@ class PlayEtalasePickerFragment @Inject constructor(
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        bottomSheetCoordinator.showBottomAction(false)
         postponeEnterTransition()
+        bottomSheetCoordinator.showBottomAction(false)
         return inflater.inflate(R.layout.fragment_play_etalase_picker, container, false)
     }
 
@@ -334,6 +334,9 @@ class PlayEtalasePickerFragment @Inject constructor(
         }
     }
 
+    /**
+     * Transition
+     */
     private fun setupTransition() {
         setupExitTransition()
         setupReenterTransition()

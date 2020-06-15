@@ -6,12 +6,14 @@ import android.os.Handler
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.transition.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
@@ -56,6 +58,7 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setupTransition()
         savedInstanceState?.let {
             selectedImageUrlList = it.getSerializable(EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST) as ArrayList<Pair<Long, String>>?
                     ?: arrayListOf()
@@ -332,6 +335,39 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
         if (::viewModel.isInitialized && selectedCoverUri != null) {
             viewModel.uploadCover(File(selectedCoverUri?.path).absolutePath)
         }
+    }
+
+    /**
+     * Transition
+     */
+    private fun setupTransition() {
+        setupEnterTransition()
+        setupReturnTransition()
+    }
+
+    private fun setupEnterTransition() {
+        enterTransition = TransitionSet()
+                .addTransition(Slide(Gravity.END))
+                .addTransition(Fade(Fade.IN))
+                .setStartDelay(200)
+                .setDuration(300)
+
+        sharedElementEnterTransition = TransitionSet()
+                .addTransition(ChangeTransform())
+                .addTransition(ChangeBounds())
+                .setDuration(450)
+    }
+
+    private fun setupReturnTransition() {
+        returnTransition = TransitionSet()
+                .addTransition(Slide(Gravity.END))
+                .addTransition(Fade(Fade.OUT))
+                .setDuration(250)
+
+        sharedElementReturnTransition = TransitionSet()
+                .addTransition(ChangeTransform())
+                .addTransition(ChangeBounds())
+                .setDuration(450)
     }
 
     interface ListenerForCropOnly {
