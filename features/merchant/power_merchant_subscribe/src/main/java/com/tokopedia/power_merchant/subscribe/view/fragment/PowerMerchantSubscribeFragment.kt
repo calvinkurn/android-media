@@ -157,10 +157,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == ACTIVATE_INTENT_CODE && resultCode == Activity.RESULT_OK) {
             viewModel.onActivatePmSuccess()
-            refreshData()
         } else if (requestCode == AUTOEXTEND_INTENT_CODE && resultCode == Activity.RESULT_OK) {
             viewModel.onActivatePmSuccess()
-            refreshData()
         } else if (requestCode == TURN_OFF_AUTOEXTEND_INTENT_CODE && resultCode == Activity.RESULT_OK){
             onSuccessCancelMembership()
         }
@@ -175,6 +173,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     private fun observeActivatePowerMerchant() {
         observe(viewModel.onActivatePmSuccess) {
             showBottomSheetSuccess(it)
+            refreshData()
         }
     }
 
