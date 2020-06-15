@@ -48,7 +48,6 @@ public class RecommendationViewModelMapper {
         productItem.setShopID(String.valueOf(productModel.getShopId()));
         productItem.setShopName(productModel.getShopName());
         productItem.setShopCity(productModel.getLocation());
-        productItem.setGoldMerchant(productModel.isGold());
         productItem.setWishlisted(productModel.isWishlist());
         productItem.setBadgesList(convertToBadgesItemList(productModel.getBadgesUrl()));
         productItem.setPosition(position);

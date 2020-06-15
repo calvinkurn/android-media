@@ -28,27 +28,24 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private int rating;
     private String ratingString;
     private int countReview;
-    private int countCourier;
     private String price;
+    private int priceInt;
     private String priceRange;
     private String shopID;
     private String shopName;
     private String shopCity;
-    private boolean isGoldMerchant;
     private boolean isWishlisted;
     private boolean isWishlistButtonEnabled = true;
     private List<BadgeItemViewModel> badgesList;
-    private List<LabelItemViewModel> labelList;
     private int position;
     private String originalPrice;
     private int discountPercentage;
-    private String topLabel;
-    private String bottomLabel;
     private String productWishlistUrl;
     private int categoryID;
     private String categoryName;
     private String categoryBreadcrumb;
     private boolean isTopAds;
+    private boolean isOrganicAds;
     private String topadsImpressionUrl;
     private String topadsClickUrl;
     private String topadsWishlistUrl;
@@ -65,6 +62,14 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
 
     public void setTopAds(boolean topAds) {
         isTopAds = topAds;
+    }
+
+    public boolean isOrganicAds() {
+        return isOrganicAds;
+    }
+
+    public void setIsOrganicAds(boolean isOrganicAds) {
+        this.isOrganicAds = isOrganicAds;
     }
 
     public String getTopadsImpressionUrl() {
@@ -155,6 +160,14 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         return price;
     }
 
+    public void setPriceInt(int priceInt) {
+        this.priceInt = priceInt;
+    }
+
+    public int getPriceInt() {
+        return priceInt;
+    }
+
     public String getPriceRange() {
         return priceRange;
     }
@@ -187,14 +200,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         return shopCity;
     }
 
-    public boolean isGoldMerchant() {
-        return isGoldMerchant;
-    }
-
-    public void setGoldMerchant(boolean isGoldMerchant) {
-        this.isGoldMerchant = isGoldMerchant;
-    }
-
     public boolean isWishlisted() {
         return isWishlisted;
     }
@@ -217,14 +222,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
 
     public List<BadgeItemViewModel> getBadgesList() {
         return badgesList;
-    }
-
-    public void setLabelList(List<LabelItemViewModel> labelList) {
-        this.labelList = labelList;
-    }
-
-    public List<LabelItemViewModel> getLabelList() {
-        return labelList;
     }
 
     public int getPageNumber() {
@@ -263,14 +260,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         this.countReview = countReview;
     }
 
-    public int getCountCourier() {
-        return countCourier;
-    }
-
-    public void setCountCourier(int countCourier) {
-        this.countCourier = countCourier;
-    }
-
     public String getOriginalPrice() {
         return originalPrice;
     }
@@ -285,22 +274,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
 
     public void setDiscountPercentage(int discountPercentage) {
         this.discountPercentage = discountPercentage;
-    }
-
-    public String getTopLabel() {
-        return topLabel;
-    }
-
-    public void setTopLabel(String topLabel) {
-        this.topLabel = topLabel;
-    }
-
-    public String getBottomLabel() {
-        return bottomLabel;
-    }
-
-    public void setBottomLabel(String bottomLabel) {
-        this.bottomLabel = bottomLabel;
     }
 
     public int getCategoryID() {
@@ -428,22 +401,17 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         dest.writeString(this.ratingString);
         dest.writeInt(this.rating);
         dest.writeInt(this.countReview);
-        dest.writeInt(this.countCourier);
         dest.writeString(this.price);
         dest.writeString(this.priceRange);
         dest.writeString(this.shopID);
         dest.writeString(this.shopName);
         dest.writeString(this.shopCity);
-        dest.writeByte(this.isGoldMerchant ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isWishlisted ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isWishlistButtonEnabled ? (byte) 1 : (byte) 0);
         dest.writeTypedList(this.badgesList);
-        dest.writeTypedList(this.labelList);
         dest.writeInt(this.position);
         dest.writeString(this.originalPrice);
         dest.writeInt(this.discountPercentage);
-        dest.writeString(this.topLabel);
-        dest.writeString(this.bottomLabel);
         dest.writeString(this.productWishlistUrl);
         dest.writeInt(this.categoryID);
         dest.writeString(this.categoryName);
@@ -468,22 +436,17 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         this.ratingString = in.readString();
         this.rating = in.readInt();
         this.countReview = in.readInt();
-        this.countCourier = in.readInt();
         this.price = in.readString();
         this.priceRange = in.readString();
         this.shopID = in.readString();
         this.shopName = in.readString();
         this.shopCity = in.readString();
-        this.isGoldMerchant = in.readByte() != 0;
         this.isWishlisted = in.readByte() != 0;
         this.isWishlistButtonEnabled = in.readByte() != 0;
         this.badgesList = in.createTypedArrayList(BadgeItemViewModel.CREATOR);
-        this.labelList = in.createTypedArrayList(LabelItemViewModel.CREATOR);
         this.position = in.readInt();
         this.originalPrice = in.readString();
         this.discountPercentage = in.readInt();
-        this.topLabel = in.readString();
-        this.bottomLabel = in.readString();
         this.productWishlistUrl = in.readString();
         this.categoryID = in.readInt();
         this.categoryName = in.readString();

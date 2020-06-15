@@ -13,7 +13,6 @@ import java.util.List;
 public class ProductViewModel implements Parcelable {
 
     private List<ProductItemViewModel> productList = new ArrayList<>();
-    private String query;
     private String additionalParams;
     private String autocompleteApplink;
     private String responseCode;
@@ -23,7 +22,6 @@ public class ProductViewModel implements Parcelable {
     private SuggestionViewModel suggestionModel;
     private int totalData;
     private int totalItem;
-    private boolean imageSearch;
     private boolean isQuerySafe;
     private DynamicFilterModel dynamicFilterModel;
     private QuickFilterViewModel quickFilterModel;
@@ -33,6 +31,7 @@ public class ProductViewModel implements Parcelable {
     private List<InspirationCarouselViewModel> inspirationCarouselViewModel = new ArrayList<>();
     private int defaultView;
     private RelatedViewModel relatedViewModel;
+    private String totalDataText = "";
 
     public TopAdsModel getAdsModel() {
         return adsModel;
@@ -85,20 +84,20 @@ public class ProductViewModel implements Parcelable {
         this.totalData = totalData;
     }
 
+    public String getTotalDataText() {
+        return totalDataText;
+    }
+
+    public void setTotalDataText(String totalDataText) {
+        this.totalDataText = totalDataText;
+    }
+
     public List<ProductItemViewModel> getProductList() {
         return productList;
     }
 
     public void setProductList(List<ProductItemViewModel> productList) {
         this.productList = productList;
-    }
-
-    public String getQuery() {
-        return query;
-    }
-
-    public void setQuery(String query) {
-        this.query = query;
     }
 
     public String getAdditionalParams() {
@@ -201,7 +200,6 @@ public class ProductViewModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(this.productList);
-        dest.writeString(this.query);
         dest.writeString(this.additionalParams);
         dest.writeString(this.autocompleteApplink);
         dest.writeString(this.responseCode);
@@ -210,7 +208,6 @@ public class ProductViewModel implements Parcelable {
         dest.writeParcelable(this.suggestionModel, flags);
         dest.writeInt(this.totalData);
         dest.writeInt(this.totalItem);
-        dest.writeByte(this.imageSearch ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isQuerySafe ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.dynamicFilterModel, flags);
         dest.writeParcelable(this.adsModel, flags);
@@ -221,7 +218,6 @@ public class ProductViewModel implements Parcelable {
 
     protected ProductViewModel(Parcel in) {
         this.productList = in.createTypedArrayList(ProductItemViewModel.CREATOR);
-        this.query = in.readString();
         this.additionalParams = in.readString();
         this.autocompleteApplink = in.readString();
         this.responseCode = in.readString();
@@ -230,7 +226,6 @@ public class ProductViewModel implements Parcelable {
         this.suggestionModel = in.readParcelable(SuggestionViewModel.class.getClassLoader());
         this.totalData = in.readInt();
         this.totalItem = in.readInt();
-        this.imageSearch = in.readByte() != 0;
         this.isQuerySafe = in.readByte() != 0;
         this.dynamicFilterModel = in.readParcelable(DynamicFilterModel.class.getClassLoader());
         this.adsModel = in.readParcelable(TopAdsModel.class.getClassLoader());

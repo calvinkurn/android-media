@@ -16,6 +16,10 @@ public class SearchProductModel {
     @Expose
     private SearchProduct searchProduct = new SearchProduct();
 
+    @SerializedName("ace_search_product_v4")
+    @Expose
+    private com.tokopedia.search.result.domain.model.SearchProduct aceSearchProduct = new com.tokopedia.search.result.domain.model.SearchProduct();
+
     @SerializedName("search_filter_product")
     @Expose
     private DynamicFilterModel dynamicFilterModel = new DynamicFilterModel();
@@ -48,8 +52,13 @@ public class SearchProductModel {
         this.cpmModel = cpmModel;
     }
 
+    @Deprecated
     public SearchProduct getSearchProduct() {
         return searchProduct;
+    }
+
+    public com.tokopedia.search.result.domain.model.SearchProduct getAceSearchProduct() {
+        return aceSearchProduct;
     }
 
     public DynamicFilterModel getDynamicFilterModel() {
