@@ -6,13 +6,16 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Environment
 import androidx.annotation.StringDef
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 
 @MustBeDocumented
@@ -52,14 +55,34 @@ object SharingUtil {
                         return false
                     }
 
-                    override fun onResourceReady(resource: Bitmap?, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        val stringPath = resource?.getSavedImageDirPath(context, System.currentTimeMillis().toString()).toBlankOrString()
+                    override fun onResourceReady(resource: Bitmap, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                        val stringPath = saveImageToExternalStorage(resource)
                         goToSocialMedia(packageString, context, stringPath, messageString)
                         return false
                     }
                 })
                 .submit()
 
+    }
+
+    private fun saveImageToExternalStorage(imageBitmap: Bitmap): String {
+        val fileName = System.currentTimeMillis().toString()
+        val fileDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+        val filePath = File(fileDir, "${fileName}.jpg")
+
+        val fos = FileOutputStream(filePath)
+        try {
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        } finally {
+            try {
+                fos.close()
+            } catch (ex: IOException) {
+                ex.printStackTrace()
+            }
+        }
+        return filePath.toString()
     }
 
     private fun goToSocialMedia(@SocmedPackage packageString: String,
