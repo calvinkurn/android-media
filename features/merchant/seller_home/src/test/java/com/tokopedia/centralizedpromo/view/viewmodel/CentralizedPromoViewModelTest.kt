@@ -9,6 +9,8 @@ import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.PromoCreationStaticData
 import com.tokopedia.centralizedpromo.view.model.*
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhome.R
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -42,6 +44,9 @@ class CentralizedPromoViewModelTest {
 
     @RelaxedMockK
     lateinit var getChatBlastSellerMetadataUseCase: GetChatBlastSellerMetadataUseCase
+
+    @RelaxedMockK
+    lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -82,7 +87,15 @@ class CentralizedPromoViewModelTest {
     private val testCoroutineDispatcher = TestCoroutineDispatcher()
 
     private val viewModel : CentralizedPromoViewModel by lazy {
-        CentralizedPromoViewModel(context, userSession, getOnGoingPromotionUseCase, getPostUseCase, getChatBlastSellerMetadataUseCase, testCoroutineDispatcher)
+        CentralizedPromoViewModel(
+            context,
+            userSession,
+            getOnGoingPromotionUseCase,
+            getPostUseCase,
+            getChatBlastSellerMetadataUseCase,
+            remoteConfig,
+            testCoroutineDispatcher
+        )
     }
 
     @Test
@@ -140,45 +153,49 @@ class CentralizedPromoViewModelTest {
 
     @Test
     fun `Success get layout data for post`() {
-        val successResult = PostListUiModel(
+        runBlocking {
+            val successResult = PostListUiModel(
                 items = listOf(
-                        PostUiModel(
-                                title = "Test Post",
-                                applink = "https://static-staging.tokopedia.net/seller/merchant-info/test-post/",
-                                url = "https://static-staging.tokopedia.net/seller/merchant-info/test-post/",
-                                featuredMediaUrl = "https://ecs7.tokopedia.net/img/blog/seller/2019/09/217_AM_-seller-center-1.jpg",
-                                subtitle = "<p>Info &#183; 20 SEP 19</p>"
-                        ),
-                        PostUiModel(
-                                title = "Test ke 2",
-                                applink = "https://static-staging.tokopedia.net/seller/merchant-info/test-ke-2/",
-                                url = "https://static-staging.tokopedia.net/seller/merchant-info/test-ke-2/",
-                                featuredMediaUrl = "https://ecs7.tokopedia.net/img/blog/seller/2019/09/217_AM_-seller-center-1.jpg",
-                                subtitle = "<p>Info &#183; 6 SEP 19</p>"
-                        ),
-                        PostUiModel(
-                                title = "Kumpul Keluarga Tokopedia Bersama Toko Cabang",
-                                applink = "https://seller.tokopedia.com/edu/seller-events/kumpul-keluarga-tc050320/",
-                                url = "https://seller.tokopedia.com/edu/seller-events/kumpul-keluarga-tc050320/",
-                                featuredMediaUrl = "https://seller.tokopedia.com/edu/seller-events/kumpul-keluarga-tc050320/tokocabang-event-seller-center_1024x439/",
-                                subtitle = "<p>Seller Event &#183; 5 MAR 20</p>"
-                        )
+                    PostUiModel(
+                        title = "Test Post",
+                        applink = "https://static-staging.tokopedia.net/seller/merchant-info/test-post/",
+                        url = "https://static-staging.tokopedia.net/seller/merchant-info/test-post/",
+                        featuredMediaUrl = "https://ecs7.tokopedia.net/img/blog/seller/2019/09/217_AM_-seller-center-1.jpg",
+                        subtitle = "<p>Info &#183; 20 SEP 19</p>"
+                    ),
+                    PostUiModel(
+                        title = "Test ke 2",
+                        applink = "https://static-staging.tokopedia.net/seller/merchant-info/test-ke-2/",
+                        url = "https://static-staging.tokopedia.net/seller/merchant-info/test-ke-2/",
+                        featuredMediaUrl = "https://ecs7.tokopedia.net/img/blog/seller/2019/09/217_AM_-seller-center-1.jpg",
+                        subtitle = "<p>Info &#183; 6 SEP 19</p>"
+                    ),
+                    PostUiModel(
+                        title = "Kumpul Keluarga Tokopedia Bersama Toko Cabang",
+                        applink = "https://seller.tokopedia.com/edu/seller-events/kumpul-keluarga-tc050320/",
+                        url = "https://seller.tokopedia.com/edu/seller-events/kumpul-keluarga-tc050320/",
+                        featuredMediaUrl = "https://seller.tokopedia.com/edu/seller-events/kumpul-keluarga-tc050320/tokocabang-event-seller-center_1024x439/",
+                        subtitle = "<p>Seller Event &#183; 5 MAR 20</p>"
+                    )
                 ),
                 errorMessage = ""
-        )
+            )
 
-        coEvery {
-            getPostUseCase.executeOnBackground()
-        } returns successResult
+            coEvery {
+                getPostUseCase.executeOnBackground()
+            } returns successResult
 
-        viewModel.getLayoutData(LayoutType.POST)
+            viewModel.getLayoutData(LayoutType.POST)
 
-        coVerify {
-            getPostUseCase.executeOnBackground()
+            coVerify {
+                getPostUseCase.executeOnBackground()
+            }
+
+            delay(100)
+
+            val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.POST)
+            assert(result != null && result == Success(successResult))
         }
-
-        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.POST)
-        assert(result != null && result == Success(successResult))
     }
 
     @Test
@@ -205,6 +222,10 @@ class CentralizedPromoViewModelTest {
         coEvery {
             getChatBlastSellerMetadataUseCase.executeOnBackground()
         } returns ChatBlastSellerMetadataUiModel(200, 2)
+
+        every {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED)
+        } returns true
 
         every {
             context.getString(R.string.centralized_promo_broadcast_chat_extra_free_quota, any<Integer>())

@@ -12,9 +12,9 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
-import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
@@ -30,6 +30,8 @@ import com.tokopedia.power_merchant.subscribe.view.activity.PowerMerchantTermsAc
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantCancelBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantNotificationBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantNotificationBottomSheet.CTAMode
+import com.tokopedia.power_merchant.subscribe.view.constant.PowerMerchantUrl.URL_FREE_SHIPPING_TERMS_AND_CONDITION
+import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantFreeShippingStatus
 import com.tokopedia.power_merchant.subscribe.view.model.ViewState.HideLoading
 import com.tokopedia.power_merchant.subscribe.view.model.ViewState.ShowLoading
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.PmSubscribeViewModel
@@ -90,11 +92,15 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observeGetPmStatusInfo()
-        observeViewState()
-
         if (remoteConfig.getBoolean(ANDROID_PM_F1_ENABLED, false)) {
-            viewModel.getPmStatusInfo(userSessionInterface.shopId)
+            observeActivatePowerMerchant()
+            observeGetFreeShippingDetail()
+            observeGetPmStatusInfo()
+            observeViewState()
+
+            setupFreeShippingError()
+
+            viewModel.getPmStatusInfo()
         } else {
             activity?.let {
                 if (userSessionInterface.isGoldMerchant) {
@@ -103,6 +109,17 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
                     RouteManager.route(it, ApplinkConstInternalMarketplace.GOLD_MERCHANT_SUBSCRIBE_DASHBOARD)
                 }
                 it.finish()
+            }
+        }
+    }
+
+    private fun setupFreeShippingError() {
+        freeShippingError.apply {
+            refreshBtn?.setOnClickListener {
+                if(!progressState) {
+                    progressState = true
+                    viewModel.getFreeShippingStatus()
+                }
             }
         }
     }
@@ -117,7 +134,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     }
 
     private fun refreshData() {
-        viewModel.getPmStatusInfo(userSessionInterface.shopId)
+        viewModel.getPmStatusInfo()
     }
 
     private fun showLoading() {
@@ -139,11 +156,9 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == ACTIVATE_INTENT_CODE && resultCode == Activity.RESULT_OK) {
-            showBottomSheetSuccess()
-            refreshData()
+            viewModel.onActivatePmSuccess()
         } else if (requestCode == AUTOEXTEND_INTENT_CODE && resultCode == Activity.RESULT_OK) {
-            showBottomSheetSuccess()
-            refreshData()
+            viewModel.onActivatePmSuccess()
         } else if (requestCode == TURN_OFF_AUTOEXTEND_INTENT_CODE && resultCode == Activity.RESULT_OK){
             onSuccessCancelMembership()
         }
@@ -152,6 +167,38 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     private fun showEmptyState(throwable: Throwable) {
         NetworkErrorHelper.showEmptyState(context, view, ErrorHandler.getErrorMessage(context, throwable)) {
             refreshData()
+        }
+    }
+
+    private fun observeActivatePowerMerchant() {
+        observe(viewModel.onActivatePmSuccess) {
+            showBottomSheetSuccess(it)
+            refreshData()
+        }
+    }
+
+    private fun observeGetFreeShippingDetail() {
+        observe(viewModel.getPmFreeShippingStatusResult) {
+            when(it) {
+                is Success -> {
+                    val freeShipping = it.data
+
+                    if(freeShipping.isTransitionPeriod && !freeShipping.isActive) {
+                        freeShippingError.hide()
+                        freeShippingLayout.hide()
+                    } else {
+                        freeShippingError.hide()
+                        freeShippingLayout.show(freeShipping)
+                    }
+                }
+                is Fail -> {
+                    freeShippingLayout.hide()
+                    freeShippingError.apply {
+                        progressState = false
+                        show()
+                    }
+                }
+            }
         }
     }
 
@@ -173,10 +220,13 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setupCancelBottomSheet(shopStatusModel: ShopStatusModel) {
+    private fun setupCancelBottomSheet(powerMerchantStatus: PowerMerchantStatus) {
+        val shopStatusModel = powerMerchantStatus.goldGetPmOsStatus.result.data
+
         bottomSheetCancel = PowerMerchantCancelBottomSheet.newInstance(
             shopStatusModel.isAutoExtend(),
-            shopStatusModel.powerMerchant.expiredTime
+            shopStatusModel.powerMerchant.expiredTime,
+            powerMerchantStatus.freeShippingEnabled
         )
         bottomSheetCancel?.setListener(object : PowerMerchantCancelBottomSheet.BottomSheetCancelListener {
             override fun onClickCancelButton() {
@@ -201,16 +251,40 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showBottomSheetSuccess() {
+    private fun showBottomSheetSuccess(freeShipping: PowerMerchantFreeShippingStatus) {
+        val isFreeShippingEligible = freeShipping.isEligible
+
+        val primaryBtnLabel = if(isFreeShippingEligible) {
+            getString(R.string.power_merchant_free_shipping_learn_more)
+        } else {
+            getString(R.string.pm_label_bs_success_button)
+        }
+
+        val description = if(isFreeShippingEligible) {
+            getString(R.string.power_merchant_success_free_shipping_description)
+        } else {
+            getString(R.string.power_merchant_success_description)
+        }
+
         val bottomSheet = PowerMerchantNotificationBottomSheet.createInstance(
             getString(R.string.power_merchant_success_title),
-            getString(R.string.power_merchant_success_description),
+            description,
             R.drawable.ic_pm_registration_success,
             CTAMode.SINGLE
         )
-        bottomSheet.setPrimaryButtonText(getString(R.string.pm_label_bs_success_button))
-        bottomSheet.setPrimaryButtonClickListener { bottomSheet.dismiss() }
+        bottomSheet.setPrimaryButtonText(primaryBtnLabel)
+        bottomSheet.setPrimaryButtonClickListener {
+            if(isFreeShippingEligible) {
+                openLearnMoreFreeShipping()
+            }
+            bottomSheet.dismiss()
+        }
         bottomSheet.show(childFragmentManager)
+    }
+
+    private fun openLearnMoreFreeShipping() {
+        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW,
+            URL_FREE_SHIPPING_TERMS_AND_CONDITION)
     }
 
     private fun showBottomSheetCancel() {
@@ -218,15 +292,15 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGetPmInfo(powerMerchantStatus: PowerMerchantStatus) {
-        val shopStatusModel = powerMerchantStatus.goldGetPmOsStatus.result.data
         val shopStatus = powerMerchantStatus.goldGetPmOsStatus.result.data
 
-        setupCancelBottomSheet(shopStatusModel)
+        setupCancelBottomSheet(powerMerchantStatus)
 
         if(shopStatus.isPowerMerchantInactive()) {
             showRegistrationView(powerMerchantStatus)
         } else {
             showMembershipView(powerMerchantStatus)
+            viewModel.getFreeShippingStatus()
         }
 
         showCTAButton(powerMerchantStatus)
@@ -237,6 +311,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
             onClickRegister(powerMerchantStatus)
         }
         featureLayout.show(powerMerchantStatus)
+        freeShippingLayout.show()
         registrationLayout.hide()
         benefitLayout.hide()
     }
@@ -245,6 +320,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         registrationLayout.show(powerMerchantStatus, powerMerchantTracking)
         featureLayout.show(powerMerchantStatus)
         benefitLayout.show(powerMerchantTracking)
+        freeShippingLayout.hide()
         membershipLayout.hide()
     }
 

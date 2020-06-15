@@ -9,11 +9,15 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.analytics.*
+import com.tokopedia.sellerhome.settings.view.bottomsheet.SettingsFreeShippingBottomSheet
 import com.tokopedia.sellerhome.settings.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.sellerhome.settings.view.uimodel.base.RegularMerchant
 import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
@@ -24,6 +28,7 @@ import kotlinx.android.synthetic.main.setting_balance.view.*
 import kotlinx.android.synthetic.main.setting_balance_topads.view.*
 import kotlinx.android.synthetic.main.setting_partial_main_info_success.view.*
 import kotlinx.android.synthetic.main.setting_partial_shop_info_error.view.*
+import kotlinx.android.synthetic.main.setting_partial_shop_info_success.*
 import kotlinx.android.synthetic.main.setting_partial_shop_info_success.view.*
 import kotlinx.android.synthetic.main.setting_shop_status_pm.view.*
 import kotlinx.android.synthetic.main.setting_shop_status_regular.view.*
@@ -102,6 +107,21 @@ class OtherMenuViewHolder(private val itemView: View,
                 shopTotalFollowersUiModel.sendSettingShopInfoClickTracking()
                 listener.onFollowersCountClicked()
             }
+        }
+    }
+
+    fun setupFreeShippingLayout(fm: FragmentManager?, freeShippingActive: Boolean) {
+        val freeShippingBottomSheet = SettingsFreeShippingBottomSheet.createInstance()
+        val freeShippingLayout = itemView.shopInfoLayout.freeShippingLayout
+
+        freeShippingLayout.setOnClickListener {
+            freeShippingBottomSheet.show(fm)
+        }
+
+        if(freeShippingActive) {
+            freeShippingLayout.show()
+        } else {
+            freeShippingLayout.hide()
         }
     }
 
