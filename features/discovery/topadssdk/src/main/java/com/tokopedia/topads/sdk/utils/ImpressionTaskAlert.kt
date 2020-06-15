@@ -28,7 +28,7 @@ class ImpressionTaskAlert(private val className: String) {
 
     private fun checkParam(uri: Uri) {
         if (uri.getQueryParameter(SID).isNullOrBlank()){
-            Timber.w("P2#$TOPADS_TRACKING#no_sid;class='$className';url=$uri")
+            Timber.w("P2#$TOPADS_TRACKING#no_sid;class='$className';url='$uri'")
         }
     }
 
