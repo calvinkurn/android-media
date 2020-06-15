@@ -5,19 +5,17 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
 import com.tokopedia.play.broadcaster.domain.model.CreateLiveStreamChannelResponse
+import com.tokopedia.play.broadcaster.domain.model.GetLiveFollowersResponse
 import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
 import com.tokopedia.play.broadcaster.type.EtalaseType
-import com.tokopedia.play.broadcaster.ui.model.EtalaseContentUiModel
-import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
-import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
-import com.tokopedia.play.broadcaster.ui.model.SearchSuggestionUiModel
+import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 
 /**
  * Created by jegul on 02/06/20
  */
-object PlayBroadcasterUiMapper {
+object PlayBroadcastUiMapper {
 
     fun mapEtalaseList(etalaseList: List<ShopEtalaseModel>): List<EtalaseContentUiModel> = etalaseList.map {
         val type = EtalaseType.getByType(it.type, it.id)
@@ -39,8 +37,8 @@ object PlayBroadcasterUiMapper {
                 id = it.productId.toLong(),
                 name = it.name,
                 imageUrl = it.primaryImage.resize300,
-//                stock = it.stock,
-                stock = 2, // TODO("for testing only")
+                originalImageUrl = it.primaryImage.original,
+                stock = it.stock,
                 isSelectedHandler = isSelectedHandler,
                 isSelectable = isSelectableHandler
         )
@@ -60,6 +58,19 @@ object PlayBroadcasterUiMapper {
                 spannedSuggestion = SpannableStringBuilder(fullSuggestedText).apply {
                     if (startIndex >= 0) setSpan(StyleSpan(Typeface.BOLD), startIndex, lastIndex, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
                 }
+        )
+    }
+
+    fun mapLiveFollowers(
+            response: GetLiveFollowersResponse
+    ) : FollowerDataUiModel {
+        val totalRetrievedFollowers = response.shopFollowerList.data.size
+        return FollowerDataUiModel(
+                followersList = List(3) {
+                    if (it >= totalRetrievedFollowers) FollowerUiModel.Unknown.fromIndex(it)
+                    else FollowerUiModel.User(response.shopFollowerList.data[it].photo)
+                },
+                totalFollowers = response.shopInfoById.result.firstOrNull()?.favoriteData?.totalFavorite ?: 0
         )
     }
 

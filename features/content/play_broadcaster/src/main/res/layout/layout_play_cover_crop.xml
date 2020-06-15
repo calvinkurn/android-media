@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Neutral_N0"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/play_cover_height">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvPlayCoverCropHeaderDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginRight="@dimen/spacing_lvl4"
+                android:text="@string/play_prepare_cover_title_header_description"
+                android:textColor="@color/Neutral_N700_68"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="body_3" />
+
+            <LinearLayout
+                android:id="@+id/containerPlayCoverCropImage"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/play_cover_height"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:orientation="vertical"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvPlayCoverCropHeaderDescription" />
+
+            <com.tokopedia.play.broadcaster.view.widget.PlayRectCropImageOverlay
+                android:id="@+id/ivPlayCoverCropOverlay"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/play_cover_height"
+                android:focusable="false"
+                app:layout_constraintBottom_toBottomOf="@+id/containerPlayCoverCropImage"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/containerPlayCoverCropImage" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_lvl1"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:background="@color/play_bg_shadow"
+        app:layout_constraintBottom_toTopOf="@+id/containerPlayCoverCropBottom"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/containerPlayCoverCropBottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnPlayCoverCropChange"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginRight="@dimen/spacing_lvl3"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:layout_weight="1"
+            android:text="@string/play_change"
+            app:unifyButtonType="alternate"
+            app:unifyButtonVariant="ghost" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnPlayCoverCropNext"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:layout_weight="1"
+            android:text="@string/play_next" />
+
+    </LinearLayout>
+
+</LinearLayout>

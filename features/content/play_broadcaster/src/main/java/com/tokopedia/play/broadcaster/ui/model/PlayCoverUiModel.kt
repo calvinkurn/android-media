@@ -1,9 +1,11 @@
 package com.tokopedia.play.broadcaster.ui.model
 
+import android.net.Uri
+
 /**
- * Created by jegul on 12/06/20
+ * @author by furqan on 12/06/2020
  */
 data class PlayCoverUiModel(
-        val url: String,
-        val title: String
-)
+        var coverImageUri: Uri?,
+        var coverImageUrl: String,
+        var liveTitle: String)

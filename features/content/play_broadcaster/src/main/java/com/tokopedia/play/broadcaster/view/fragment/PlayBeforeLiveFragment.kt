@@ -106,14 +106,14 @@ class PlayBeforeLiveFragment @Inject constructor(
     private fun observeSetupChannel() {
         setupViewModel.observableSetupChannel.observe(viewLifecycleOwner, Observer {
             tvSelectedProduct.text = getString(R.string.play_before_live_selected_product, it.selectedProductList.size)
-            ivImagePreview.loadImageRounded(it.cover.url)
-            tvCoverTitle.text = it.cover.title
+            ivImagePreview.loadImageRounded(it.cover.coverImageUrl)
+            tvCoverTitle.text = it.cover.liveTitle
         })
     }
 
     private fun observeCreateChannel() {
         setupViewModel.observableCreateLiveStream.observe(viewLifecycleOwner, Observer {
-            when(it) {
+            when (it) {
                 NetworkResult.Loading -> btnStartLive.setLoading(true)
                 is NetworkResult.Success -> {
                     openBroadcastLivePage(it.data)

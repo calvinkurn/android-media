@@ -53,4 +53,9 @@
     <dimen name="play_start_live_button_radius">8dp</dimen>
 
     <dimen name="play_before_live_image_height">198dp</dimen>
+
+    <dimen name="play_cover_from_selection_size">70dp</dimen>
+    <dimen name="play_cover_width">234dp</dimen>
+    <dimen name="play_cover_height">415dp</dimen>
+    <dimen name="play_cover_bottom_detail">120dp</dimen>
 </resources>
