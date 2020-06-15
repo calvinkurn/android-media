@@ -4,7 +4,10 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.seller_migration_common.R
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.SELLER_MIGRATION_PRODUCT_IMAGE_LINK
+import com.tokopedia.user.session.UserSession
 
 class SellerMigrationProductBottomSheet(titles: List<String>,
                                         contents: List<String>,
@@ -23,5 +26,20 @@ class SellerMigrationProductBottomSheet(titles: List<String>,
                 }
             }
         }
+    }
+
+    private var userId = ""
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        userId = UserSession(context).userId
+    }
+
+    override fun trackGoToSellerApp() {
+        SellerMigrationTracking.eventGoToSellerApp(this.userId, SellerMigrationTrackingConstants.EVENT_CLICK_GO_TO_SELLER_APP_PRODUCT)
+    }
+
+    override fun trackGoToPlayStore() {
+        SellerMigrationTracking.eventGoToPlayStore(this.userId, SellerMigrationTrackingConstants.EVENT_CLICK_GO_TO_SELLER_APP_PRODUCT)
     }
 }
