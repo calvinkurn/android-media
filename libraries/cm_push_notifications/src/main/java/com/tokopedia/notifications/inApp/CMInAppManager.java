@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.tokopedia.applink.RouteManager;
@@ -38,14 +37,14 @@ import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConverto
 public class CMInAppManager implements CmInAppListener {
 
     private static CMInAppManager inAppManager;
+    private Application application;
+    private WeakReference<Activity> currentActivity;
+    private CmInAppListener cmInAppListener;
+    private final Object lock = new Object();
 
-    Application application;
-
-    WeakReference<Activity> currentActivity;
-
-    CmInAppListener cmInAppListener;
-
-    final Object lock = new Object();
+    static {
+        inAppManager = new CMInAppManager();
+    }
 
     public long getCmInAppEndTimeInterval() {
         return ((CMRouter) application.getApplicationContext()).getLongRemoteConfig(
@@ -54,10 +53,6 @@ public class CMInAppManager implements CmInAppListener {
 
     public static CMInAppManager getInstance() {
         return inAppManager;
-    }
-
-    static {
-        inAppManager = new CMInAppManager();
     }
 
     public void init(@NonNull Application application) {
@@ -84,43 +79,31 @@ public class CMInAppManager implements CmInAppListener {
     }
 
     private void showInAppNotification() {
-        DataProvider dataProvider = new DataProvider() {
-            @Override
-            public void notificationsDataResult(List<CMInApp> inAppDataList) {
-                synchronized (lock) {
-                    if (canShowInApp(inAppDataList)) {
-                        if (getCurrentActivity() == null) return;
-                        Activity activity = getCurrentActivity();
-                        CMInApp cmInApp = inAppDataList.get(0);
-
-                        BannerView bannerView = new BannerView(currentActivity.get());
-                        final View view = bannerView.createView(cmInApp);
-                        View inAppViewPrev = activity.findViewById(R.id.mainContainer);
-
-                        if (view == null) return;
-
-                        //In-App view already present on Activity
-                        if (null != inAppViewPrev) return;
-
-                        FrameLayout root = (FrameLayout) activity.getWindow()
-                                .getDecorView()
-                                .findViewById(android.R.id.content)
-                                .getRootView();
-                        root.addView(view);
-                        dataConsumed(cmInApp);
-                    }
+        DataProvider dataProvider = inAppDataList -> {
+            synchronized (lock) {
+                if (canShowInApp(inAppDataList)) {
+                    CMInApp cmInApp = inAppDataList.get(0);
+                    showDialog(cmInApp);
+                    dataConsumed(cmInApp);
                 }
             }
         };
-        RulesManager.getInstance().checkValidity(currentActivity.get().getClass().getName(), 0L, dataProvider);
+
+        RulesManager.getInstance().checkValidity(
+                currentActivity.get().getClass().getName(),
+                0L,
+                dataProvider
+        );
+    }
+
+    private void showDialog(CMInApp data) {
+        if (getCurrentActivity() == null) return;
+        Activity activity = getCurrentActivity();
+        BannerView.create(activity, data);
     }
 
     private boolean canShowInApp(List<CMInApp> inAppDataList) {
-        if (inAppDataList != null && inAppDataList.size() > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return inAppDataList != null && inAppDataList.size() > 0;
     }
 
     private Activity getCurrentActivity() {
