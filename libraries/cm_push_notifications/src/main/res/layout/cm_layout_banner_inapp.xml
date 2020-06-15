@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/mainContainer"
+    android:background="@android:color/white"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -10,7 +11,7 @@
         android:id="@+id/imgBanner"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#0000FF"
+        android:background="@android:color/white"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -27,16 +28,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btnAction"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_8"
-        android:text="@android:string/unknownName"
-        android:textSize="@dimen/sp_12"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgBanner"
-        app:unifyButtonType="main" />
+        app:layout_constraintTop_toBottomOf="@+id/imgBanner">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/lstActionButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
