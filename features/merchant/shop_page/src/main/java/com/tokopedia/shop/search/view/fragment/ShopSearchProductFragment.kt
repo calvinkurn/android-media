@@ -46,7 +46,6 @@ import com.tokopedia.shop.search.view.adapter.model.ShopSearchProductDynamicResu
 import com.tokopedia.shop.search.view.adapter.model.ShopSearchProductFixedResultDataModel
 import com.tokopedia.shop.search.view.viewmodel.ShopSearchProductViewModel
 import com.tokopedia.shop.search.widget.ShopSearchProductDividerItemDecoration
-import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -60,7 +59,6 @@ import kotlin.concurrent.schedule
 class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataModel, ShopSearchProductAdapterTypeFactory>() {
 
     companion object {
-        private const val REQUEST_CODE_SORT = 103
         private const val KEY_SHOP_ID = "SHOP_ID"
         private const val KEY_SHOP_NAME = "SHOP_NAME"
         private const val KEY_IS_OFFICIAL = "IS_OFFICIAL"
@@ -136,7 +134,6 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     }
     private var shopAttribution: String = ""
     private var searchQuery = ""
-    private var sortValue: String? = ""
     private var shopRef: String = ""
     private var viewFragment: View? = null
 
@@ -232,23 +229,6 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
         searchProduct()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            REQUEST_CODE_SORT -> {
-                val sortValue = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE)
-                val sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME) ?: ""
-                sortValue?.let {
-                    shopPageTrackingShopSearchProduct.sortProduct(sortName, isMyShop, customDimensionShopPage)
-                    this.sortValue = sortValue
-                    searchQuery = editTextSearchProduct.text.toString()
-                    redirectToShopProductListPage()
-                    activity?.finish()
-                }
-            }
-        }
-    }
-
     private fun searchProduct() {
         adapter.clearAllElements()
         if (searchQuery.isNotEmpty()) {
@@ -276,7 +256,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                 searchQuery,
                 "",
                 shopAttribution,
-                sortValue,
+
                 shopRef
         )
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -345,7 +325,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     }
 
     private fun initViewNew(view: View) {
-        showSortButton()
+        hideClearButton()
         with(getRecyclerView(view) as VerticalRecyclerView) {
             clearItemDecoration()
             addItemDecoration(ShopSearchProductDividerItemDecoration(
@@ -368,9 +348,6 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
             setText(searchQuery)
             setSelection(searchQuery.length)
         }
-        shopPageMainSortIcon.setOnClickListener {
-            onClickSort()
-        }
         image_view_clear_button.setOnClickListener {
             editTextSearchProduct.text.clear()
         }
@@ -391,7 +368,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
             override fun onTextChanged(text: CharSequence, start: Int, before: Int, count: Int) {
                 timer?.cancel()
                 if (TextUtils.isEmpty(text.toString())) {
-                    showSortButton()
+                    hideClearButton()
                 } else {
                     showClearButton()
                 }
@@ -412,12 +389,10 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     }
 
     private fun showClearButton() {
-        shopPageMainSortIcon.hide()
         image_view_clear_button.show()
     }
 
-    private fun showSortButton() {
-        shopPageMainSortIcon.show()
+    private fun hideClearButton() {
         image_view_clear_button.hide()
     }
 
@@ -456,7 +431,6 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
             isGold = getBoolean(KEY_IS_GOLD_MERCHANT, false)
             shopAttribution = getString(KEY_SHOP_ATTRIBUTION).orEmpty()
             searchQuery = getString(KEY_KEYWORD).orEmpty()
-            sortValue = getString(KEY_SORT_ID).orEmpty()
             shopRef = getString(KEY_SHOP_REF).orEmpty()
         }
     }
@@ -464,16 +438,6 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this, viewModelFactory)
                 .get(ShopSearchProductViewModel::class.java)
-    }
-
-    private fun onClickSort() {
-        shopPageTrackingShopSearchProduct.clickSort(isMyShop, customDimensionShopPage)
-        redirectToShopProductSortPage()
-    }
-
-    private fun redirectToShopProductSortPage() {
-        val intent = ShopProductSortActivity.createIntent(activity, sortValue)
-        startActivityForResult(intent, REQUEST_CODE_SORT)
     }
 
     private fun onClickCancel() {

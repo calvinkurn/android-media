@@ -60,6 +60,7 @@ public interface ApplinkConst {
     String DIGITAL = "tokopedia://digital";
     String DIGITAL_PRODUCT = "tokopedia://digital/form";
     String DIGITAL_SMARTCARD = "tokopedia://digital/smartcard";
+    String DIGITAL_SMARTBILLS = "tokopedia://digital/bayarsekaligus";
     String DIGITAL_CART = "tokopedia://digital/cart";
     String DIGITAL_CATEGORY = "tokopedia://digital/category";
     String TRAIN_HOMEPAGE = "tokopedia://kereta";
@@ -103,12 +104,6 @@ public interface ApplinkConst {
     String GROUPCHAT_DETAIL = "tokopedia://groupchat/{channel_id}";
     String CHAT_TEMPLATE = "tokopedia://chat/settings/templatechat";
     String REFERRAL = "tokopedia://referral";
-    String OFFICIAL_STORES_PROMO = "tokopedia://official-stores/promo/{slug}";
-    String OFFICIAL_STORE_PROMO = "tokopedia://official-store/promo/{slug}";
-    String OFFICIAL_STORES_PROMO_TERMS = "tokopedia://official-stores/promo-terms";
-    String PROMO_SALE = "tokopedia://sale/{slug}/";
-    String PROMO_SALE_NO_SLASH = "tokopedia://sale/{slug}";
-    String PROMO_SALE_TERMS = "tokopedia://promo-sale/promo-terms";
     String WALLET_HOME = "tokopedia://wallet";
     String WALLET_ACTIVATION = "tokopedia://wallet/activation";
     String WALLET_TRANSACTION_HISTORY = "tokopedia://wallet/transaction/history";

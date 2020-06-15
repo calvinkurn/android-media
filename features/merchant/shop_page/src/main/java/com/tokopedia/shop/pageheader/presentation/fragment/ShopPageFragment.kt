@@ -60,7 +60,6 @@ import com.tokopedia.shop.product.view.fragment.HomeProductFragment
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
 import com.tokopedia.shop.setting.view.activity.ShopPageSettingActivity
-import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
@@ -96,7 +95,6 @@ class ShopPageFragment :
         private const val REQUEST_CODER_USER_LOGIN = 100
         private const val REQUEST_CODE_FOLLOW = 101
         private const val REQUEST_CODE_USER_LOGIN_CART = 102
-        private const val REQUEST_CODE_SORT = 300
         private const val VIEW_CONTENT = 1
         private const val VIEW_LOADING = 2
         private const val VIEW_ERROR = 3
@@ -241,11 +239,6 @@ class ShopPageFragment :
     private fun getChatButtonInitialMargin() {
         val buttonChatLayoutParams = (button_chat.layoutParams as ViewGroup.MarginLayoutParams)
         initialFloatingChatButtonMarginBottom = buttonChatLayoutParams.bottomMargin
-    }
-
-    private fun openShopProductSortPage() {
-        val intent = ShopProductSortActivity.createIntent(activity, "")
-        startActivityForResult(intent, REQUEST_CODE_SORT)
     }
 
     private fun observeLiveData(owner: LifecycleOwner) {
@@ -418,14 +411,6 @@ class ShopPageFragment :
         searchBarText.setOnClickListener {
             clickSearch()
         }
-        searchBarSort.setOnClickListener {
-            clickSort()
-        }
-    }
-
-    private fun clickSort() {
-        shopPageTracking?.clickSort(isMyShop, customDimensionShopPage)
-        openShopProductSortPage()
     }
 
     private fun redirectToShopSearchProduct() {
@@ -827,48 +812,20 @@ class ShopPageFragment :
             if (resultCode == Activity.RESULT_OK) {
                 refreshData()
             }
-        } else if (requestCode == REQUEST_CODE_SORT) {
-            data?.let {
-                val sortValue = it.getStringExtra(ShopProductSortActivity.SORT_VALUE)
-                val sortName = it.getStringExtra(ShopProductSortActivity.SORT_NAME)
-                shopPageTracking?.sortProduct(sortName, isMyShop, customDimensionShopPage)
-                redirectToShopSearchProductResultPage(sortValue)
-            }
-        } else if (requestCode == REQUEST_CODE_USER_LOGIN_CART) {
+        }
+//        else if (requestCode == REQUEST_CODE_SORT) {
+//            data?.let {
+//                val sortValue = it.getStringExtra(ShopProductSortActivity.SORT_VALUE)
+//                val sortName = it.getStringExtra(ShopProductSortActivity.SORT_NAME)
+//                shopPageTracking?.sortProduct(sortName, isMyShop, customDimensionShopPage)
+//                redirectToShopSearchProductResultPage(sortValue)
+//            }
+//        }
+        else if (requestCode == REQUEST_CODE_USER_LOGIN_CART) {
             if (resultCode == Activity.RESULT_OK) {
                 refreshData()
                 goToCart()
             }
-        }
-    }
-
-    private fun redirectToShopSearchProductResultPage(sortName: String) {
-        var selectedEtalaseId = ""
-        for (pos in 0 until viewPagerAdapter.count) {
-            val fragment = viewPagerAdapter.getRegisteredFragment(pos)
-            if (fragment is ShopPageProductListFragment) {
-                selectedEtalaseId = fragment.getSelectedEtalaseId()
-            }
-        }
-        if (selectedEtalaseId.isNotEmpty()) {
-            shopPageTracking?.clickSortBy(
-                    isMyShop,
-                    sortName,
-                    CustomDimensionShopPage.create(
-                            shopId,
-                            shopPageHeaderDataModel?.isOfficial ?: false,
-                            shopPageHeaderDataModel?.isGoldMerchant ?: false
-                    )
-            )
-            startActivity(ShopProductListActivity.createIntent(
-                    activity,
-                    shopId,
-                    "",
-                    selectedEtalaseId,
-                    "",
-                    sortName,
-                    shopRef
-            ))
         }
     }
 

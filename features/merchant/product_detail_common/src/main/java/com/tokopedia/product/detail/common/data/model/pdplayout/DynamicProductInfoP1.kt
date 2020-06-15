@@ -10,6 +10,16 @@ data class DynamicProductInfoP1(
 
     fun isProductActive(nearestWarehouseStock: Int): Boolean = nearestWarehouseStock > 0 && basic.isActive()
 
+    val shopTypeString: String
+        get() {
+            return if (data.isOS)
+                "official_store"
+            else if (data.isPowerMerchant)
+                "gold_merchant"
+            else
+                "reguler"
+        }
+
     val parentProductId: String
         get() =
             if (data.variant.isVariant && data.variant.parentID.isNotEmpty() && data.variant.parentID.toInt() > 0) {

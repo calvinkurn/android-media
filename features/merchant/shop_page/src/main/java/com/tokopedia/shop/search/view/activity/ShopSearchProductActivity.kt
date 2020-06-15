@@ -68,7 +68,7 @@ class ShopSearchProductActivity : BaseSimpleActivity(), HasComponent<ShopCompone
     private var isGold: Boolean = false
     private var shopAttribution: String = ""
     private var keyword: String = ""
-    private var sortId: String = ""
+
     private var shopRef: String = ""
     private var component: ShopComponent? = null
 
@@ -80,7 +80,6 @@ class ShopSearchProductActivity : BaseSimpleActivity(), HasComponent<ShopCompone
             isGold = getBooleanExtra(KEY_IS_GOLD_MERCHANT, false)
             shopAttribution = getStringExtra(KEY_SHOP_ATTRIBUTION).orEmpty()
             keyword = getStringExtra(KEY_KEYWORD).orEmpty()
-            sortId = getStringExtra(KEY_SORT_ID).orEmpty()
             shopRef = getStringExtra(KEY_SHOP_REF).orEmpty()
         }
     }
@@ -97,7 +96,6 @@ class ShopSearchProductActivity : BaseSimpleActivity(), HasComponent<ShopCompone
             isGold,
             keyword,
             shopAttribution,
-            sortId,
             shopRef
     )
 

@@ -63,9 +63,7 @@ public class ShopProductListActivity extends BaseSimpleActivity
 
     private ShopInfo shopInfo;
     private OldShopPageTrackingBuyer shopPageTracking;
-    private RemoteConfig remoteConfig;
     private EditText editTextSearch;
-    private View imageViewSortIcon;
     private View textViewCancel;
 
     public static Intent createIntent(Context context, String shopId, String keyword,
@@ -93,12 +91,8 @@ public class ShopProductListActivity extends BaseSimpleActivity
         return intent;
     }
 
-    //TODO milhamj
-//                .putExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, extras.getBoolean(ShopParamConstant.KEY_RELOAD_STATE))
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        remoteConfig = new FirebaseRemoteConfigImpl(this);
         shopId = getIntent().getStringExtra(ShopParamConstant.EXTRA_SHOP_ID);
         shopRef = getIntent().getStringExtra(ShopParamConstant.EXTRA_SHOP_REF);
         etalaseId = getIntent().getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID);
@@ -157,7 +151,6 @@ public class ShopProductListActivity extends BaseSimpleActivity
 
     private void initSearchInputView() {
         editTextSearch = findViewById(R.id.editTextSearchProduct);
-        imageViewSortIcon = findViewById(R.id.image_view_sort);
         textViewCancel = findViewById(R.id.text_view_cancel);
         editTextSearch.setText(keyword);
         editTextSearch.setKeyListener(null);
@@ -172,14 +165,6 @@ public class ShopProductListActivity extends BaseSimpleActivity
         textViewCancel.setOnClickListener(view -> {
             finish();
         });
-        imageViewSortIcon.setOnClickListener(view -> {
-            if (shopInfo != null) {
-                Fragment fragmentShopPageProductListResultFragment = getSupportFragmentManager().findFragmentByTag(getTagFragment());
-                if (fragmentShopPageProductListResultFragment instanceof ShopPageProductListResultFragment) {
-                    ((ShopPageProductListResultFragment) fragmentShopPageProductListResultFragment).clickSortButton();
-                }
-            }
-        });
     }
 
     private void redirectToShopSearchProduct() {
@@ -191,7 +176,6 @@ public class ShopProductListActivity extends BaseSimpleActivity
                 shopInfo.getGoldOS().isGold() == 1,
                 keyword,
                 attribution,
-                sort,
                 shopRef
         ));
     }
