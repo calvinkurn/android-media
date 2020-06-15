@@ -11,6 +11,7 @@ import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.variant.presentation.adapter.MultipleVariantEditSelectTypeAdapter
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import kotlinx.android.synthetic.main.add_edit_product_multiple_variant_edit_select_bottom_sheet_content.view.*
 
 class MultipleVariantEditSelectBottomSheet : BottomSheetUnify() {
@@ -41,7 +42,6 @@ class MultipleVariantEditSelectBottomSheet : BottomSheetUnify() {
     fun setData(items: VariantInputModel?) {
         items?.run {
             selectAdapter?.setData(this)
-            selectAdapter?.notifyDataSetChanged()
         }
     }
 
@@ -84,6 +84,10 @@ class MultipleVariantEditSelectBottomSheet : BottomSheetUnify() {
             dismiss()
             val multipleVariantEditSelectBottomSheet = MultipleVariantEditInputBottomSheet()
             multipleVariantEditSelectBottomSheet.show(fragmentManager)
+        }
+        contentView?.checkboxSelectAll?.setOnClickListener {
+            val isSelected = (it as CheckboxUnify).isChecked
+            selectAdapter?.setAllDataSelected(isSelected)
         }
         setChild(contentView)
     }

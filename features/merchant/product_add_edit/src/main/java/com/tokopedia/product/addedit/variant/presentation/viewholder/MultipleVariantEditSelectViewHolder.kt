@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.addedit.variant.presentation.model.OptionInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 import com.tokopedia.unifycomponents.list.ListItemUnify
-import kotlinx.android.synthetic.main.add_edit_product_variant_unit_picker_layout.view.*
 import kotlinx.android.synthetic.main.item_multiple_variant_edit_select.view.*
 
 class MultipleVariantEditSelectViewHolder(itemView: View, val clickListener: OnFieldClickListener)
@@ -17,7 +16,7 @@ class MultipleVariantEditSelectViewHolder(itemView: View, val clickListener: OnF
 
     private var dataList: ArrayList<ListItemUnify> = arrayListOf()
 
-    fun bindData(selectionInputModel: SelectionInputModel) {
+    fun bindData(selectionInputModel: SelectionInputModel, selectedItemMap: HashMap<Int, Boolean>) {
         dataList = mapOptionsToListItems(selectionInputModel.options)
         itemView.textSelection.text = selectionInputModel.variantName
         itemView.listUnifySelection.setData(dataList)
@@ -28,6 +27,7 @@ class MultipleVariantEditSelectViewHolder(itemView: View, val clickListener: OnF
             }
 
             dataList.forEachIndexed { position, listItemUnify ->
+                listItemUnify.listRightCheckbox?.isChecked = selectedItemMap[position] ?: false
                 listItemUnify.listRightCheckbox?.setOnClickListener {
                     val isChecked = listItemUnify.listRightCheckbox?.isChecked ?: false
                     clickListener.onFieldClicked(adapterPosition, position, isChecked)

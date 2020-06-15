@@ -24,7 +24,7 @@ class MultipleVariantEditSelectTypeAdapter: RecyclerView.Adapter<MultipleVariant
     }
 
     override fun onBindViewHolder(holder: MultipleVariantEditSelectViewHolder, position: Int) {
-        holder.bindData(items[position])
+        holder.bindData(items[position], selectedIndex[position])
     }
 
     override fun onFieldClicked(selectionPosition: Int, optionPosition: Int, value: Boolean) {
@@ -33,15 +33,20 @@ class MultipleVariantEditSelectTypeAdapter: RecyclerView.Adapter<MultipleVariant
 
     fun setData(variantInputModel: VariantInputModel) {
         items = variantInputModel.selections
-        selectedIndex = initializeSelectedIndex(variantInputModel.selections)
+        selectedIndex = initializeSelectedIndex(variantInputModel.selections, false)
         notifyDataSetChanged()
     }
 
-    private fun initializeSelectedIndex(selections: List<SelectionInputModel>) =
+    fun setAllDataSelected(isSelected: Boolean) {
+        selectedIndex = initializeSelectedIndex(items, isSelected)
+        notifyDataSetChanged()
+    }
+
+    private fun initializeSelectedIndex(selections: List<SelectionInputModel>, isSelected: Boolean) =
             selections.map {
                 val result = hashMapOf<Int, Boolean>()
                 it.options.forEachIndexed { index, _ ->
-                    result[index] = false
+                    result[index] = isSelected
                 }
                 result
             }
