@@ -8,7 +8,7 @@ import com.tokopedia.seller.search.common.util.SellerSearchAdapterDiffCallback
 import com.tokopedia.seller.search.feature.initialsearch.view.model.sellersearch.ItemSellerSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.HistorySearchListener
 
-class ItemHistorySearchAdapter(private val historySearchListener: HistorySearchListener): ListAdapter<ItemSellerSearchUiModel, ItemHistorySearchViewHolder>(SellerSearchAdapterDiffCallback.ItemSearchDiffCallback) {
+class ItemHistorySearchAdapter(private val historySearchListener: HistorySearchListener?): ListAdapter<ItemSellerSearchUiModel, ItemHistorySearchViewHolder>(SellerSearchAdapterDiffCallback.ItemSearchDiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHistorySearchViewHolder {
         val view = LayoutInflater.from(parent.context)

@@ -8,7 +8,7 @@ import com.tokopedia.seller.search.common.util.SellerSearchAdapterDiffCallback
 import com.tokopedia.seller.search.feature.initialsearch.view.model.sellersearch.ItemSellerSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.NavigationSearchListener
 
-class ItemNavigationSearchAdapter(private val navigationSearchListener: NavigationSearchListener):
+class ItemNavigationSearchAdapter(private val navigationSearchListener: NavigationSearchListener?):
         ListAdapter<ItemSellerSearchUiModel, ItemNavigationSearchViewHolder>(SellerSearchAdapterDiffCallback.ItemSearchDiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemNavigationSearchViewHolder {

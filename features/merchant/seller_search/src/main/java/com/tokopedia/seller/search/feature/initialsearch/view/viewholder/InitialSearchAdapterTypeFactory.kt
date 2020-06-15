@@ -17,10 +17,23 @@ import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.navigat
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.order.OrderSearchViewHolder
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.product.ProductSearchViewHolder
 
-class InitialSearchAdapterTypeFactory(private val historySearchListener: HistorySearchListener,
-                                private val orderSearchListener: OrderSearchListener,
-                                private val productSearchListener: ProductSearchListener,
-                                private val navigationSearchListener: NavigationSearchListener): BaseAdapterTypeFactory(), TypeFactoryInitialSearchViewHolder {
+class InitialSearchAdapterTypeFactory: BaseAdapterTypeFactory, TypeFactoryInitialSearchViewHolder {
+
+    private var historySearchListener: HistorySearchListener? = null
+    private var orderSearchListener: OrderSearchListener? = null
+    private var productSearchListener: ProductSearchListener? = null
+    private var navigationSearchListener: NavigationSearchListener? = null
+
+    constructor(orderSearchListener: OrderSearchListener,
+                productSearchListener: ProductSearchListener, navigationSearchListener: NavigationSearchListener) {
+        this.orderSearchListener = orderSearchListener
+        this.productSearchListener = productSearchListener
+        this.navigationSearchListener = navigationSearchListener
+    }
+
+    constructor(historySearchListener: HistorySearchListener) {
+        this.historySearchListener = historySearchListener
+    }
 
     override fun type(sellerSearchUiModel: SellerSearchUiModel): Int {
         return when(sellerSearchUiModel.id) {

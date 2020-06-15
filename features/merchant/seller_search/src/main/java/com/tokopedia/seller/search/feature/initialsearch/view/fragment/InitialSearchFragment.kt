@@ -4,48 +4,57 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.seller.search.R
+import com.tokopedia.seller.search.feature.initialsearch.di.component.InitialSearchComponent
+import com.tokopedia.seller.search.feature.initialsearch.view.activity.InitialSellerSearchActivity
 import com.tokopedia.seller.search.feature.initialsearch.view.adapter.SearchSellerAdapter
-import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.*
+import com.tokopedia.seller.search.feature.initialsearch.view.model.sellersearch.SellerSearchUiModel
+import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.HistorySearchListener
+import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.HistoryViewUpdateListener
+import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.InitialSearchAdapterTypeFactory
 import com.tokopedia.seller.search.feature.initialsearch.view.viewmodel.InitialSearchViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class InitialSearchFragment: BaseListFragment<Visitable<*>, InitialSearchAdapterTypeFactory>(), HistorySearchListener, OrderSearchListener, ProductSearchListener, NavigationSearchListener {
-
-    companion object {
-        const val MIN_CHARACTER_SEARCH = 3
-    }
+class InitialSearchFragment: BaseListFragment<Visitable<*>, InitialSearchAdapterTypeFactory>(), HistorySearchListener {
 
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private var viewModel: InitialSearchViewModel? = null
-
     private val searchSellerAdapterTypeFactory by lazy {
-        InitialSearchAdapterTypeFactory(this, this, this, this )
+        InitialSearchAdapterTypeFactory(this)
     }
 
     private val searchSellerAdapter: SearchSellerAdapter
         get() = adapter as SearchSellerAdapter
 
+    private var viewModel: InitialSearchViewModel? = null
+
+    private var searchSeller: SellerSearchUiModel? = null
+
     private var searchKeyword = ""
     private var shopId = ""
 
+    private var historyViewUpdateListener: HistoryViewUpdateListener? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        shopId = userSession.shopId
+        shopId = userSession.shopId.orEmpty()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(InitialSearchViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(InitialSearchViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -56,14 +65,18 @@ class InitialSearchFragment: BaseListFragment<Visitable<*>, InitialSearchAdapter
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView(view)
+        observeLiveData()
     }
 
     override fun getScreenName(): String = ""
 
-    override fun initInjector() {}
+    override fun initInjector() {
+        getComponent(InitialSearchComponent::class.java).inject(this)
+    }
 
     override fun loadInitialData() {
         super.loadInitialData()
+        viewModel?.getSellerSearch(keyword = searchKeyword, shopId = shopId)
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, InitialSearchAdapterTypeFactory> {
@@ -77,7 +90,14 @@ class InitialSearchFragment: BaseListFragment<Visitable<*>, InitialSearchAdapter
     override fun loadData(page: Int) {}
 
     override fun getRecyclerView(view: View): RecyclerView {
-        return view.findViewById(R.id.rvSearchSeller)
+        return view.findViewById(R.id.rvSearchHistorySeller)
+    }
+
+    override fun onDestroy() {
+        viewModel?.getSellerSearch?.removeObservers(this)
+        viewModel?.deleteHistorySearch?.removeObservers(this)
+        viewModel?.flush()
+        super.onDestroy()
     }
 
     private fun initRecyclerView(view: View) {
@@ -88,27 +108,77 @@ class InitialSearchFragment: BaseListFragment<Visitable<*>, InitialSearchAdapter
     }
 
     override fun onClearSearchItem(keyword: String) {
-
+        viewModel?.deleteSuggestionSearch(listOf(keyword))
     }
 
     override fun onClearAllSearch() {
-
+        viewModel?.deleteSuggestionSearch(searchSeller?.titleList ?: listOf())
     }
 
     override fun onHistoryItemClicked(appUrl: String) {
-
+        startActivityFromAutoComplete(appUrl)
+        dropKeyBoard()
     }
 
-    override fun onNavigationItemClicked(appUrl: String) {
+    private fun observeLiveData() {
+       viewModel?.getSellerSearch?.observe(this, Observer {
+           when(it) {
+               is Success -> {
+                   setHistorySearch(it.data)
+               }
+               is Fail -> { }
+           }
+       })
 
+        viewModel?.deleteHistorySearch?.observe(this, Observer {
+            when(it) {
+                is Success -> {
+                    viewModel?.getSellerSearch(keyword = searchKeyword, shopId = shopId)
+                }
+                is Fail -> { }
+            }
+        })
     }
 
-    override fun onOrderItemClicked(appUrl: String) {
-
+    private fun setHistorySearch(data: List<SellerSearchUiModel>) {
+        if(data.isEmpty()) {
+            searchSellerAdapter.removeEmptyOrErrorState()
+            searchSellerAdapter.addSellerSearchNoHistory()
+        } else {
+            searchSellerAdapter.removeEmptyOrErrorState()
+            searchSellerAdapter.setSellerSearchListData(data)
+        }
+        historyViewUpdateListener?.showHistoryView()
     }
 
-    override fun onProductItemClicked(appUrl: String) {
-
+    fun setHistoryViewUpdateListener(historyViewUpdateListener: HistoryViewUpdateListener) {
+        this.historyViewUpdateListener = historyViewUpdateListener
     }
 
+    fun historySearch(keyword: String) {
+        this.searchKeyword = keyword
+        loadInitialData()
+    }
+
+    fun setSearchKeyword(keyword: String) {
+        this.searchKeyword = keyword
+    }
+
+     fun onMinCharState() {
+        searchSellerAdapter.removeEmptyOrErrorState()
+        searchSellerAdapter.addSellerSearchMinChar()
+    }
+
+    private fun dropKeyBoard() {
+        if (activity != null && activity is InitialSellerSearchActivity) {
+            (activity as InitialSellerSearchActivity).dropKeyboardHistory()
+        }
+    }
+
+    private fun startActivityFromAutoComplete(appLink: String) {
+        if (activity == null) return
+
+        RouteManager.route(activity, appLink)
+        activity?.finish()
+    }
 }

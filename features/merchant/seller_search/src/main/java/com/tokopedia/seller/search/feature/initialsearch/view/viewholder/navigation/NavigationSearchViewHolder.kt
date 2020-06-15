@@ -12,7 +12,7 @@ import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.Navigat
 import kotlinx.android.synthetic.main.search_result_navigation.view.*
 
 class NavigationSearchViewHolder(view: View,
-                                private val navigationSearchListener: NavigationSearchListener): AbstractViewHolder<SellerSearchUiModel>(view) {
+                                 private val navigationSearchListener: NavigationSearchListener?): AbstractViewHolder<SellerSearchUiModel>(view) {
 
     companion object {
         @LayoutRes

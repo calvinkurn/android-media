@@ -14,6 +14,14 @@ import com.tokopedia.seller.search.feature.initialsearch.view.model.sellersearch
 
 object GlobalSearchSellerMapper {
 
+    private fun mapToTitleListSearch(searchSeller: SellerSearchResponse.SellerSearch): List<String> {
+        return mutableListOf<String>().apply {
+            searchSeller.data.sections.map {
+                add(it.title.orEmpty())
+            }
+        }
+    }
+
     fun mapTopItemFilterSearch(sellerSearch: SellerSearchResponse.SellerSearch): List<FilterSearchUiModel> {
         return mutableListOf<FilterSearchUiModel>().apply {
             sellerSearch.data.sections.mapIndexed { i, section ->
@@ -29,6 +37,9 @@ object GlobalSearchSellerMapper {
 
     fun mapToSellerSearchUiModel(sellerSearch: SellerSearchResponse.SellerSearch): List<SellerSearchUiModel> {
         return mutableListOf<SellerSearchUiModel>().apply {
+
+            val titleList = mapToTitleListSearch(sellerSearch)
+
             val searchSellerList = mutableListOf<ItemSellerSearchUiModel>()
             sellerSearch.data.sections.map {
                 it.items.map { itemSearch ->
@@ -43,6 +54,7 @@ object GlobalSearchSellerMapper {
                         title = it.title,
                         hasMore = it.has_more ?: false,
                         count = sellerSearch.data.count.orZero(),
+                        titleList = titleList,
                         sellerSearchList = searchSellerList
                 ))
             }

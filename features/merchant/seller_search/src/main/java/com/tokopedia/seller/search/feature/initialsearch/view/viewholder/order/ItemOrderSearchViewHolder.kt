@@ -8,7 +8,7 @@ import kotlinx.android.synthetic.main.item_search_result_order.view.*
 
 class ItemOrderSearchViewHolder(
         itemView: View,
-        private val orderSearchListener: OrderSearchListener
+        private val orderSearchListener: OrderSearchListener?
 ): RecyclerView.ViewHolder(itemView) {
 
     fun bind(itemSellerSearchUiModel: ItemSellerSearchUiModel) {
@@ -18,7 +18,7 @@ class ItemOrderSearchViewHolder(
             tvSearchResultOrderDesc?.text = itemSellerSearchUiModel.desc
 
             setOnClickListener {
-                orderSearchListener.onOrderItemClicked(itemSellerSearchUiModel.appUrl.orEmpty())
+                orderSearchListener?.onOrderItemClicked(itemSellerSearchUiModel, adapterPosition)
             }
         }
     }

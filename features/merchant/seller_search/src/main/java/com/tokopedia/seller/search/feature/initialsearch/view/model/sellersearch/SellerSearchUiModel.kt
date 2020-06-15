@@ -8,6 +8,7 @@ data class SellerSearchUiModel(
         var hasMore: Boolean = false,
         var title: String? = "",
         var count: Int? = 0,
+        var titleList: List<String> = listOf(),
         var sellerSearchList: List<ItemSellerSearchUiModel> = listOf()
 ): BaseGlobalSearchSeller {
     override fun type(typeFactory: InitialSearchAdapterTypeFactory): Int {

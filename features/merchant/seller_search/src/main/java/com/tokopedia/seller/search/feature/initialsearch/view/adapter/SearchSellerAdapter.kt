@@ -14,7 +14,7 @@ class SearchSellerAdapter(
 
     var sellerSearchViewModel: MutableList<SellerSearchUiModel> = mutableListOf()
 
-    fun setProductListReviewData(sellerSearchUiModelList: List<SellerSearchUiModel>) {
+    fun setSellerSearchListData(sellerSearchUiModelList: List<SellerSearchUiModel>) {
         val lastIndex = visitables.size
         visitables.addAll(sellerSearchUiModelList)
         notifyItemRangeInserted(lastIndex, sellerSearchUiModelList.size)

@@ -8,7 +8,7 @@ import kotlinx.android.synthetic.main.item_search_result_product.view.*
 
 class ItemProductSearchViewHolder(
         itemView: View,
-        private val productSearchListener: ProductSearchListener
+        private val productSearchListener: ProductSearchListener?
 ): RecyclerView.ViewHolder(itemView) {
 
     fun bind(itemSellerSearchUiModel: ItemSellerSearchUiModel) {
@@ -18,7 +18,7 @@ class ItemProductSearchViewHolder(
             tvSearchResultProductDesc?.text = itemSellerSearchUiModel.desc
 
             setOnClickListener {
-                productSearchListener.onProductItemClicked(itemSellerSearchUiModel.appUrl.orEmpty())
+                productSearchListener?.onProductItemClicked(itemSellerSearchUiModel, adapterPosition)
             }
         }
     }

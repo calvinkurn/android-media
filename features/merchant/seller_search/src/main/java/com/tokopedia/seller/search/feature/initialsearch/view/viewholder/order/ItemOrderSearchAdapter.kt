@@ -8,7 +8,7 @@ import com.tokopedia.seller.search.common.util.SellerSearchAdapterDiffCallback
 import com.tokopedia.seller.search.feature.initialsearch.view.model.sellersearch.ItemSellerSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.OrderSearchListener
 
-class ItemOrderSearchAdapter(private val orderSearchListener: OrderSearchListener): ListAdapter<ItemSellerSearchUiModel, ItemOrderSearchViewHolder>(SellerSearchAdapterDiffCallback.ItemSearchDiffCallback) {
+class ItemOrderSearchAdapter(private val orderSearchListener: OrderSearchListener?): ListAdapter<ItemSellerSearchUiModel, ItemOrderSearchViewHolder>(SellerSearchAdapterDiffCallback.ItemSearchDiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemOrderSearchViewHolder {
         val view = LayoutInflater.from(parent.context)

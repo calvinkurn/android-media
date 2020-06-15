@@ -62,7 +62,7 @@ class FilterSearchAdapter(private val filterSearchListener: FilterSearchListener
                         ChipsUnify.TYPE_NORMAL
                     }
                     setOnClickListener {
-                        filterSearchListener.onFilterItemClicked(chipText.orEmpty(), chipType.orEmpty(), adapterPosition)
+                        filterSearchListener.onFilterItemClicked(data.keyword.orEmpty(), chipType.orEmpty(), adapterPosition)
                     }
                 }
             }

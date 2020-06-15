@@ -1,45 +1,77 @@
 package com.tokopedia.seller.search.feature.initialsearch.view.widget
 
 import android.content.Context
+import android.graphics.Rect
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.style.UnderlineSpan
 import android.util.AttributeSet
+import android.view.KeyEvent
 import android.view.View
-import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import com.tokopedia.seller.search.R
-import com.tokopedia.seller.search.feature.initialsearch.view.fragment.InitialSearchFragment
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_global_search_view.view.*
 
-class GlobalSearchView: BaseCustomView {
+class GlobalSearchView : BaseCustomView {
 
+    companion object {
+        const val DEBOUNCE_DELAY_MILLIS = 200L
+        const val MIN_CHARACTER_SEARCH = 3
+    }
+
+    private var mClearingFocus: Boolean = false
     private var searchKeyword = ""
+    private var hint: String? = ""
 
-    private var initialSearchListener: GlobalSearchViewListener.InitialSearchListener? = null
-    private var suggestionSearchListener: GlobalSearchViewListener.SuggestionSearchListener? = null
+    private var searchViewListener: GlobalSearchViewListener? = null
 
-    constructor(context: Context): super(context) {
-        init()
-    }
-    constructor(context: Context, attrs: AttributeSet): super(context, attrs) {
+    constructor(context: Context) : super(context) {
         init()
     }
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int): super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
+        init()
+    }
+
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         init()
     }
 
     private fun init() {
         View.inflate(context, R.layout.widget_global_search_view, this)
+        initSearchBarView()
     }
 
-    fun setInitialSearchListener(initialSearchListener: GlobalSearchViewListener.InitialSearchListener) {
-        this.initialSearchListener = initialSearchListener
+    override fun requestFocus(direction: Int, previouslyFocusedRect: Rect?): Boolean {
+        if (mClearingFocus) return false
+        return if (!isFocusable) false else searchBarView.requestFocus(direction, previouslyFocusedRect)
     }
 
-    fun setSuggestionSearchListener(suggestionSearchListener: GlobalSearchViewListener.SuggestionSearchListener) {
-        this.suggestionSearchListener = suggestionSearchListener
+    fun setSearchViewListener(searchViewListener: GlobalSearchViewListener) {
+        this.searchViewListener = searchViewListener
+    }
+
+    private fun showKeyboard(view: View) {
+        view.requestFocus()
+        val imm = view.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(view, 0)
+    }
+
+    private fun hideKeyboard(view: View) {
+        val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    private fun setTextViewHint(hint: CharSequence?) {
+        searchBarView?.searchBarTextField?.hint = hint
+    }
+
+    override fun clearFocus() {
+        super.clearFocus()
+        hideKeyboard(this)
+        searchBarView?.searchBarTextField?.clearFocus()
     }
 
     private fun initSearchBarView() {
@@ -48,12 +80,18 @@ class GlobalSearchView: BaseCustomView {
             iconListener = {
                 if (searchBarPlaceholder.isNotEmpty()) {
                     //TODO refresh
+                    searchBarTextField.text.clear()
+                    searchKeyword = searchBarTextField.text.toString()
+                    Handler().postDelayed({
+                        searchViewListener?.onQueryTextChangeListener(searchKeyword)
+                    }, DEBOUNCE_DELAY_MILLIS)
                 }
             }
-            val query = searchBarTextField.text.trim().toString()
 
             searchBarTextField.setOnFocusChangeListener { _, hasFocus ->
-                if(hasFocus) { }
+                if (hasFocus) {
+                    showKeyboard(searchBarTextField)
+                }
             }
 
             searchBarTextField.addTextChangedListener(object : TextWatcher {
@@ -66,26 +104,31 @@ class GlobalSearchView: BaseCustomView {
                 override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 
                 override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                    if(s.length < InitialSearchFragment.MIN_CHARACTER_SEARCH) {
-                        //TODO history
-                        suggestionSearchListener?.onMinCharState()
-                    } else {
-                        //TODO suggestion
-                        searchKeyword = s.trim().toString()
-                        suggestionSearchListener?.onSuggestionSearch(searchKeyword)
+                    val keyword = s.trim().toString()
+                    when {
+                        keyword.isEmpty() -> {
+                            searchKeyword = keyword
+                            Handler().postDelayed({
+                                searchViewListener?.onQueryTextChangeListener(searchKeyword)
+                            }, DEBOUNCE_DELAY_MILLIS)
+                        }
+                        keyword.length < MIN_CHARACTER_SEARCH -> {
+                            Handler().postDelayed({
+                                searchViewListener?.onMinCharState()
+                            }, DEBOUNCE_DELAY_MILLIS)
+                        }
+                        else -> {
+                            searchKeyword = s.trim().toString()
+                            Handler().postDelayed({
+                                searchViewListener?.onQueryTextChangeListener(searchKeyword)}, DEBOUNCE_DELAY_MILLIS)
+                        }
                     }
                 }
             })
 
-            searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
-
-                if(actionId == EditorInfo.IME_ACTION_SEARCH) {
-
-                    if(query.length < InitialSearchFragment.MIN_CHARACTER_SEARCH) {
-                        //TODO min char
-                    } else {
-                        //TODO Keyword
-                    }
+            searchBarTextField.setOnEditorActionListener { _, actionId, event ->
+                if ((actionId == KeyEvent.KEYCODE_ENTER) && (event.action == KeyEvent.ACTION_DOWN)) {
+                    hideKeyboard(searchBarView.searchBarTextField)
                     return@setOnEditorActionListener true
                 }
 
@@ -95,14 +138,7 @@ class GlobalSearchView: BaseCustomView {
     }
 
     interface GlobalSearchViewListener {
-        interface InitialSearchListener {
-            fun onInitialSearchHistorySearch(keyword: String)
-            fun onNoHistoryState()
-        }
-        interface SuggestionSearchListener {
-            fun onSuggestionSearch(keyword: String)
-            fun onMinCharState()
-            fun onNoResultState()
-        }
+        fun onQueryTextChangeListener(keyword: String)
+        fun onMinCharState()
     }
 }

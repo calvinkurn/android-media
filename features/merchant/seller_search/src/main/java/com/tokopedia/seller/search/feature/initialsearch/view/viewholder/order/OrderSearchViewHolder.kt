@@ -12,7 +12,7 @@ import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.OrderSe
 import kotlinx.android.synthetic.main.search_result_order.view.*
 
 class OrderSearchViewHolder(view: View,
-                            private val orderSearchListener: OrderSearchListener): AbstractViewHolder<SellerSearchUiModel>(view) {
+                            private val orderSearchListener: OrderSearchListener?): AbstractViewHolder<SellerSearchUiModel>(view) {
 
     companion object {
         @LayoutRes

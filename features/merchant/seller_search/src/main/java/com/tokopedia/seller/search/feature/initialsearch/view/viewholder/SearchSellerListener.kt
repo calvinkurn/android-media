@@ -1,5 +1,7 @@
 package com.tokopedia.seller.search.feature.initialsearch.view.viewholder
 
+import com.tokopedia.seller.search.feature.initialsearch.view.model.sellersearch.ItemSellerSearchUiModel
+
 interface HistorySearchListener {
     fun onClearSearchItem(keyword: String)
     fun onClearAllSearch()
@@ -7,17 +9,27 @@ interface HistorySearchListener {
 }
 
 interface NavigationSearchListener {
-    fun onNavigationItemClicked(appUrl: String)
+    fun onNavigationItemClicked(data: ItemSellerSearchUiModel, position: Int)
 }
 
 interface OrderSearchListener {
-    fun onOrderItemClicked(appUrl: String)
+    fun onOrderItemClicked(data: ItemSellerSearchUiModel, position: Int)
 }
 
 interface ProductSearchListener {
-    fun onProductItemClicked(appUrl: String)
+    fun onProductItemClicked(data: ItemSellerSearchUiModel, position: Int)
 }
 
 interface FilterSearchListener {
     fun onFilterItemClicked(title: String, chipType: String, position: Int)
+}
+
+interface HistoryViewUpdateListener {
+    fun showHistoryView()
+    fun dropKeyboardHistory()
+}
+
+interface SuggestionViewUpdateListener {
+    fun showSuggestionView()
+    fun dropKeyboardSuggestion()
 }

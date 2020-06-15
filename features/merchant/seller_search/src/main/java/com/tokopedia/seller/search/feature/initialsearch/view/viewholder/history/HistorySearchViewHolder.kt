@@ -10,7 +10,7 @@ import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.History
 import kotlinx.android.synthetic.main.initial_search_with_history.view.*
 
 class HistorySearchViewHolder(itemView: View,
-                              private val historySearchListener: HistorySearchListener): AbstractViewHolder<SellerSearchUiModel>(itemView) {
+                              private val historySearchListener: HistorySearchListener?): AbstractViewHolder<SellerSearchUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -27,7 +27,7 @@ class HistorySearchViewHolder(itemView: View,
                 adapter = adapterHistory
             }
             tvClearAll.setOnClickListener {
-                historySearchListener.onClearAllSearch()
+                historySearchListener?.onClearAllSearch()
             }
         }
 

@@ -8,7 +8,7 @@ import kotlinx.android.synthetic.main.item_search_result_navigation.view.*
 
 class ItemNavigationSearchViewHolder(
         itemView: View,
-        private val navigationSearchListener: NavigationSearchListener
+        private val navigationSearchListener: NavigationSearchListener?
 ) : RecyclerView.ViewHolder(itemView) {
 
     fun bind(itemSellerSearchUiModel: ItemSellerSearchUiModel) {
@@ -17,7 +17,7 @@ class ItemNavigationSearchViewHolder(
             tvDescSearchResultNav?.text = itemSellerSearchUiModel.desc
 
             setOnClickListener {
-                navigationSearchListener.onNavigationItemClicked(itemSellerSearchUiModel.appUrl.orEmpty())
+                navigationSearchListener?.onNavigationItemClicked(itemSellerSearchUiModel, adapterPosition)
             }
         }
     }
