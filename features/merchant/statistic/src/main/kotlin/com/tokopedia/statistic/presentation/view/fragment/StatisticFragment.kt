@@ -203,7 +203,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun selectDateRange() {
-
+        //implement date picker here
     }
 
     private fun requestVisibleWidgetsData() {
