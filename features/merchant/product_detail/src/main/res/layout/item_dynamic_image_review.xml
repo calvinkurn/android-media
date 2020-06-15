@@ -5,7 +5,6 @@
     android:id="@+id/container_image_review"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
     android:orientation="vertical"
     android:paddingLeft="@dimen/dp_16"
     android:paddingTop="@dimen/dp_16"
@@ -28,7 +27,6 @@
         android:text="@string/title_buyer_review"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:textColor="@color/charcoal_grey_88"
         app:typographyType="heading_4"
         app:typographyWeight="bold"
         />

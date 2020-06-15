@@ -51,6 +51,7 @@ import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomDoneAppLin
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomNewOrderAppLink
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomReadyToShipAppLink
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomShippedAppLink
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory.getDiscoveryDeeplink
 
 /**
  * Function to map the deeplink to applink (registered in manifest)
@@ -85,6 +86,7 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.SALAM_UMRAH_SHOP, true) -> getRegisteredNavigationSalamUmrahShop(deeplink, context)
                     deeplink.startsWith(ApplinkConst.TOP_CHAT, true) && isChatBotTrue(deeplink) ->
                         getChatbotDeeplink(deeplink)
+                    deeplink.startsWith(ApplinkConst.TOP_CHAT, true) -> AppLinkMapperSellerHome.getTopChatAppLink(deeplink)
                     deeplink.startsWith(ApplinkConst.HOTEL, true) -> deeplink
                     deeplink.startsWith(ApplinkConst.DIGITAL, true) ->
                         getRegisteredNavigationDigital(context, deeplink)
@@ -144,8 +146,8 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.EVENTS,true) -> getRegisteredNavigationEvents(deeplink, context)
                     isProductTalkDeeplink(deeplink) -> getRegisteredNavigationProductTalk(deeplink)
                     isShopTalkDeeplink(deeplink) -> getRegisteredNavigationShopTalk(deeplink)
-                    deeplink.startsWith(ApplinkConst.SELLER_NEW_ORDER, true) -> getSomNewOrderAppLink()
-                    deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_READY_TO_SHIP, true) -> getSomReadyToShipAppLink()
+                    deeplink.startsWith(ApplinkConst.SELLER_NEW_ORDER, true) -> getSomNewOrderAppLink(deeplink)
+                    deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_READY_TO_SHIP, true) -> getSomReadyToShipAppLink(deeplink)
                     deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_DELIVERED, true) -> getRegisteredNavigationMainAppSellerDelivered()
                     deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_WAITING_PICKUP, true) -> getRegisteredNavigationMainAppSellerWaitingPickup()
                     deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_WAITING_AWB, true) -> getRegisteredNavigationMainAppSellerWaitingAwb()
@@ -154,13 +156,11 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_RETUR, true) -> getRegisteredNavigationMainAppSellerRetur()
                     deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_COMPLAINT, true) -> getRegisteredNavigationMainAppSellerComplaint()
                     deeplink.startsWith(ApplinkConst.SELLER_HISTORY, true) -> getRegisteredNavigationMainAppSellerHistory()
-                    deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_SHIPPED) -> getSomShippedAppLink()
-                    deeplink.startsWith(ApplinkConst.SELLER_SHIPMENT, true) -> getSomReadyToShipAppLink()
-                    deeplink.startsWith(ApplinkConst.SELLER_STATUS, true) -> getSomShippedAppLink()
-                    GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.SELLER_NEW_ORDER, true) -> AppLinkMapperSellerHome.getSomNewOrderAppLink()
-                    GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.SELLER_SHIPMENT, true) -> AppLinkMapperSellerHome.getSomReadyToShipAppLink()
-                    deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_FINISHED, true) -> AppLinkMapperSellerHome.getSomDoneAppLink()
-                    deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_CANCELED, true) -> AppLinkMapperSellerHome.getSomCancelledAppLink()
+                    deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_SHIPPED) -> getSomShippedAppLink(deeplink)
+                    deeplink.startsWith(ApplinkConst.SELLER_SHIPMENT, true) -> AppLinkMapperSellerHome.getSomReadyToShipAppLink(deeplink)
+                    deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_FINISHED, true) -> AppLinkMapperSellerHome.getSomDoneAppLink(deeplink)
+                    deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_CANCELED, true) -> AppLinkMapperSellerHome.getSomCancelledAppLink(deeplink)
+                    deeplink.startsWith(ApplinkConst.SELLER_STATUS, true) -> getSomShippedAppLink(deeplink)
                     deeplink.startsWithPattern(ApplinkConst.FEED_DETAILS) ->
                         getRegisteredFeed(deeplink)
                     DeeplinkMapperMerchant.isShopPageDeeplink(uri) -> DeeplinkMapperMerchant.getShopPageInternalApplink(uri)
@@ -173,6 +173,9 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.ORDER_HISTORY, true) -> getRegisteredNavigationOrderHistory(uri)
                     deeplink.startsWith(ApplinkConst.RESET_PASSWORD, true) -> ApplinkConstInternalGlobal.FORGOT_PASSWORD
                     deeplink.startsWith(ApplinkConst.PRODUCT_ADD, true) -> getRegisteredNavigationMarketplace(deeplink)
+                    deeplink.startsWith(ApplinkConst.DISCOVERY, true) ->
+                        getDiscoveryDeeplink(deeplink)
+
                     else -> {
                         if (specialNavigationMapper(deeplink, ApplinkConst.HOST_CATEGORY_P)) {
                             getRegisteredCategoryNavigation(deeplink)
@@ -189,14 +192,15 @@ object DeeplinkMapper {
                 tempDeeplink = createAppendDeeplinkWithQuery(tempDeeplink, query)
                 tempDeeplink
             }
+            deeplink.startsWith(ApplinkConst.SellerApp.SELLER_APP_HOME) -> AppLinkMapperSellerHome.getSellerHomeAppLink(deeplink)
             deeplink.startsWith(DeeplinkConstant.SCHEME_SELLERAPP, true) -> getRegisteredNavigationFromSellerapp(context,deeplink)
             deeplink.startsWith(ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST) -> DeepLinkMapperProductManage.getProductListInternalAppLink(deeplink)
-            deeplink.startsWith(ApplinkConstInternalGlobal.TOPCHAT) -> AppLinkMapperSellerHome.getTopChatAppLink()
-            deeplink.startsWith(ApplinkConstInternalOrder.NEW_ORDER) -> getSomNewOrderAppLink()
-            deeplink.startsWith(ApplinkConstInternalOrder.READY_TO_SHIP) -> getSomReadyToShipAppLink()
-            deeplink.startsWith(ApplinkConstInternalOrder.SHIPPED) -> getSomShippedAppLink()
-            deeplink.startsWith(ApplinkConstInternalOrder.FINISHED) -> getSomDoneAppLink()
-            deeplink.startsWith(ApplinkConstInternalOrder.CANCELLED) -> getSomCancelledAppLink()
+            deeplink.startsWith(ApplinkConstInternalGlobal.TOPCHAT) -> AppLinkMapperSellerHome.getTopChatAppLink(deeplink)
+            deeplink.startsWith(ApplinkConstInternalOrder.NEW_ORDER) -> getSomNewOrderAppLink(deeplink)
+            deeplink.startsWith(ApplinkConstInternalOrder.READY_TO_SHIP) -> getSomReadyToShipAppLink(deeplink)
+            deeplink.startsWith(ApplinkConstInternalOrder.SHIPPED) -> getSomShippedAppLink(deeplink)
+            deeplink.startsWith(ApplinkConstInternalOrder.FINISHED) -> getSomDoneAppLink(deeplink)
+            deeplink.startsWith(ApplinkConstInternalOrder.CANCELLED) -> getSomCancelledAppLink(deeplink)
             else -> deeplink
         }
         return mappedDeepLink
@@ -255,7 +259,7 @@ object DeeplinkMapper {
         return Uri.parse(deeplink).getQueryParameter("is_chat_bot")?.equals("true") == true
     }
 
-    private fun createAppendDeeplinkWithQuery(deeplink: String, query: String?): String {
+    fun createAppendDeeplinkWithQuery(deeplink: String, query: String?): String {
         return if (query?.isNotEmpty() == true && deeplink.isNotEmpty()) {
             val questionMarkIndex = deeplink.indexOf("?")
             deeplink + if (questionMarkIndex == -1) {
@@ -312,6 +316,7 @@ object DeeplinkMapper {
             ApplinkConst.SETTING_NOTIFICATION -> ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
             ApplinkConst.GROUPCHAT_LIST -> ApplinkConstInternalPlay.GROUPCHAT_LIST
             ApplinkConst.KYC -> ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
+            ApplinkConst.ADD_NAME_PROFILE -> ApplinkConstInternalGlobal.MANAGE_NAME
             ApplinkConst.KYC_NO_PARAM -> ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO_BASE
             ApplinkConst.KYC_FORM_NO_PARAM -> ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM_BASE
             ApplinkConst.SETTING_BANK -> ApplinkConstInternalGlobal.SETTING_BANK
@@ -339,6 +344,7 @@ object DeeplinkMapper {
             ApplinkConst.CHANGE_PASSWORD -> return ApplinkConstInternalGlobal.CHANGE_PASSWORD
             ApplinkConst.HAS_PASSWORD -> return ApplinkConstInternalGlobal.HAS_PASSWORD
             ApplinkConst.THANK_YOU_PAGE_NATIVE -> ApplinkConstInternalPayment.PAYMENT_THANK_YOU_PAGE
+            ApplinkConst.PROFILE_COMPLETION -> ApplinkConstInternalGlobal.PROFILE_COMPLETION
             else -> ""
         }
         if (mappedDeeplink.isNotEmpty()) {
@@ -411,9 +417,9 @@ object DeeplinkMapper {
             ApplinkConst.SETTING_BANK -> ApplinkConstInternalGlobal.SETTING_BANK
             ApplinkConst.CREATE_SHOP -> ApplinkConstInternalMarketplace.OPEN_SHOP
             ApplinkConst.CHANGE_PASSWORD -> ApplinkConstInternalGlobal.CHANGE_PASSWORD
-            ApplinkConst.SELLER_NEW_ORDER -> getSomNewOrderAppLink()
-            ApplinkConst.SELLER_SHIPMENT -> getSomReadyToShipAppLink()
-            ApplinkConst.TOP_CHAT -> AppLinkMapperSellerHome.getTopChatAppLink()
+            ApplinkConst.SELLER_NEW_ORDER -> getSomNewOrderAppLink(trimDeeplink)
+            ApplinkConst.SELLER_SHIPMENT -> getSomReadyToShipAppLink(trimDeeplink)
+            ApplinkConst.TOP_CHAT -> AppLinkMapperSellerHome.getTopChatAppLink(deeplink)
             else -> ""
         }
     }

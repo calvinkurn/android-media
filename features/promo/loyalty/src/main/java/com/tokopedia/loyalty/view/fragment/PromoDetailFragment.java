@@ -254,7 +254,7 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
     @Override
     public void onItemPromoCodeCopyClipboardClicked(String promoName, String promoCode) {
         promoDetailPresenter.cachePromoCodeData(promoCode, getResources());
-        this.promoDetailAnalytics.userClickCopyIcon(promoName);
+        this.promoDetailAnalytics.userClickCopyIcon(promoCode);
         String message = getString(R.string.voucher_code_copy_to_clipboard);
 
         if (getView() != null) Snackbar.make(getView(), message, Snackbar.LENGTH_SHORT).show();
@@ -296,7 +296,7 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
 
     @Override
     public void onWebViewLinkClicked(String url) {
-        RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, url);
+        RouteManager.route(getActivity(), url);
     }
 
 

@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">TopSeller</string>
+
+    <string name="GOOGLE_API_KEY_SA">AIzaSyA5wS94D52rNG0ygrt0Od8UdMrLUTBMyB8</string>
+
     <string name="extend_gold_merchant">Perpanjang %1$s</string>
     <string name="upgrade_gold_merchant">Upgrade ke %1$s</string>
     <string name="payment_and_topup">Pembayaran dan Top Up</string>

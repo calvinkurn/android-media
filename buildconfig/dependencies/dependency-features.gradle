@@ -49,6 +49,7 @@ ext {
             rechargeGeneral                 : ":features:recharge:recharge_general",
             rechargeOcr                     : ":features:recharge:rechargeocr",
             rechargeCreditCard              : ":features:recharge:recharge_credit_card",
+            smartBills                      : ":features:recharge:smart_bills",
             voucherGame                     : ":features:recharge:voucher_game",
 
             commonTravel                    : ":features:travel:common_travel",
@@ -152,6 +153,7 @@ ext {
             onboarding                      : ":features:user:onboarding",
             contactUs                       : ":features:operational:contact_us",
             csat_rating                       : ":features:operational:csat_rating",
+            discovery2                       : ":features:category:discovery2",
 
             commonPayment                   : ":features:payment:common_payment",
             thankYouNative                  : ":features:payment:thankyou_native",
@@ -164,7 +166,6 @@ ext {
 
             gamification                    : ":features:promo:gamification",
             merchantVoucher                 : ":features:promo:merchant_voucher",
-            seamlesslogin                   : ":features:user:seamless_login",
             tokopoints                      : ":features:promo:tokopoints",
             tokopointsNotification          : ":features:promo:tokopoints_notification",
             promoCheckout                   : ":features:promo:promo_checkout",
@@ -193,6 +194,7 @@ ext {
             loyaltyCommon                   : ":features:promo:loyalty_common",
             sellerorder                     : ":features:transaction:sellerorder",
             buyerorder                      : ":features:transaction:buyerorder",
+            oneclickcheckout                : ":features:transaction:oneclickcheckout",
 
             attachproduct                   : ":features:user:attachproduct",
             attachinvoice                   : ":features:user:attachinvoice",
@@ -220,6 +222,7 @@ ext {
             updateinactivephone             : ":features:user:updateinactivephone",
             userIdentification              : ":features:user:user_identification",
             seamlesslogin                   : ":features:user:seamless_login",
+            managename                      : ":features:user:managename",
             stickyLogin                     : ":features:user:stickylogin",
             userIdentificationCommon        : ":features:user:user_identification_common",
             kyccentralized                  : ":features:user:kyc_centralized",

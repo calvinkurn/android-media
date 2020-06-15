@@ -174,6 +174,7 @@ open class HomeFragment : BaseDaggerFragment(),
         RechargeRecommendationListener {
 
     companion object {
+        private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment"
         private const val TOKOPOINTS_NOTIFICATION_TYPE = "drawer"
         private const val SCROLL_STATE_DRAG = 0
         private const val REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220
@@ -1009,7 +1010,7 @@ open class HomeFragment : BaseDaggerFragment(),
             openWebViewURL(slidesModel.redirectUrl, activity)
         }
         if (slidesModel.redirectUrl.isNotEmpty()) {
-            TopAdsUrlHitter(HomeFragment::class.qualifiedName).hitClickUrl(getContext(), slidesModel.redirectUrl)
+            TopAdsUrlHitter(className).hitClickUrl(getContext(), slidesModel.redirectUrl)
         }
     }
 
@@ -1445,7 +1446,7 @@ open class HomeFragment : BaseDaggerFragment(),
             putEEToTrackingQueue(getOverlayBannerImpression(bannerSlidesModel) as HashMap<String, Any>)
         } else if (!bannerSlidesModel.isInvoke) {
             if (bannerSlidesModel.topadsViewUrl.isNotEmpty()) {
-                TopAdsUrlHitter(HomeFragment::class.qualifiedName).hitImpressionUrl(context, bannerSlidesModel.topadsViewUrl)
+                TopAdsUrlHitter(className).hitImpressionUrl(context, bannerSlidesModel.topadsViewUrl)
             }
             val dataLayer = getBannerImpression(bannerSlidesModel) as HashMap<String, Any>
             dataLayer[KEY_SESSION_IRIS] = getIrisSession().getSessionId()

@@ -82,6 +82,26 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
         return ProductNotifyMeViewHolder.LAYOUT
     }
 
+    override fun type(data: ProductMediaDataModel): Int {
+        return ProductMediaViewHolder.LAYOUT
+    }
+
+    override fun type(data: ProductContentDataModel): Int {
+        return ProductContentViewHolder.LAYOUT
+    }
+
+    override fun type(data: ProductMiniSocialProofDataModel): Int {
+        return ProductMiniSocialProofViewHolder.LAYOUT
+    }
+
+    override fun type(data: ProductMiniShopInfoDataModel): Int {
+        return ProductMiniShopInfoViewHolder.LAYOUT
+    }
+
+    override fun type(data: ProductTickerInfoDataModel): Int {
+        return ProductTickerInfoViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ProductLastSeenViewHolder.LAYOUT -> ProductLastSeenViewHolder(view)
@@ -101,6 +121,11 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
             PageErrorViewHolder.LAYOUT -> PageErrorViewHolder(view, listener)
             ProductVariantViewHolder.LAYOUT -> ProductVariantViewHolder(view, variantListener)
             ProductNotifyMeViewHolder.LAYOUT -> ProductNotifyMeViewHolder(view, listener)
+            ProductMediaViewHolder.LAYOUT -> ProductMediaViewHolder(view, listener)
+            ProductContentViewHolder.LAYOUT -> ProductContentViewHolder(view, listener)
+            ProductMiniSocialProofViewHolder.LAYOUT -> ProductMiniSocialProofViewHolder(view, listener)
+            ProductMiniShopInfoViewHolder.LAYOUT -> ProductMiniShopInfoViewHolder(view, listener)
+            ProductTickerInfoViewHolder.LAYOUT -> ProductTickerInfoViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         }
     }
