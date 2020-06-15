@@ -280,7 +280,12 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        initHomePageFlows()
+        var homeDaggerWeave = object : WeaveInterface{
+            override fun execute(): Any {
+                return initHomePageFlows()
+            }
+        }
+        Weaver.executeWeaveCoRoutineWithFirebase(homeDaggerWeave, RemoteConfigKey.ENABLE_ASYNC_HOME_DAGGER, context.applicationContext)
         mainParentStatusBarListener = context as MainParentStatusBarListener
         homePerformanceMonitoringListener = castContextToHomePerformanceMonitoring(context)
         requestStatusBarDark()
