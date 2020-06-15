@@ -1,0 +1,3 @@
+package com.tokopedia.manageaddress.domain.response
+
+class GetPeopleAddressResponse
