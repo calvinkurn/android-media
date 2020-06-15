@@ -29,16 +29,16 @@ class PlayTimerView : ConstraintLayout {
     }
 
     fun showTimeRunOut(minutesUntilFinished: Long = 0L) {
-        visibilityWhenTimeRunOut(true)
+        setVisibilityWhenTimesRunOut(true)
         tvTimeCounterEnd.text = context.getString(R.string.play_live_broadcast_time_left, minutesUntilFinished)
     }
 
     fun showTimeLeft(timeLeft: String = "") {
-        visibilityWhenTimeRunOut(false)
+        setVisibilityWhenTimesRunOut(false)
         tvTimeCounter.text = timeLeft
     }
 
-    private fun visibilityWhenTimeRunOut(state: Boolean) {
+    private fun setVisibilityWhenTimesRunOut(state: Boolean) {
         tvTimeCounter.visibility = if (state) View.INVISIBLE else View.VISIBLE
         tvTimeCounterEnd.visibility = if (state) View.VISIBLE else View.INVISIBLE
     }
