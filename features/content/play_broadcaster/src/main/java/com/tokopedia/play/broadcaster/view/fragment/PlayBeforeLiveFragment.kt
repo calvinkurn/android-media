@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
+import com.tokopedia.play.broadcaster.util.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
 import com.tokopedia.play.broadcaster.view.custom.PlayStartStreamingButton
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
@@ -36,6 +37,7 @@ class PlayBeforeLiveFragment @Inject constructor(
     private lateinit var tvSelectedProduct: TextView
     private lateinit var btnStartLive: PlayStartStreamingButton
     private lateinit var followerView: PlayShareFollowerView
+    private lateinit var ivShareLink: ImageView
 
     private lateinit var setupViewModel: PlayBroadcastSetupViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
@@ -81,6 +83,7 @@ class PlayBeforeLiveFragment @Inject constructor(
             llSelectedProduct = findViewById(R.id.ll_selected_product)
             btnStartLive = findViewById(R.id.btn_start_live)
             followerView = findViewById(R.id.follower_view)
+            ivShareLink = findViewById(R.id.iv_share_link)
         }
     }
 
@@ -91,6 +94,7 @@ class PlayBeforeLiveFragment @Inject constructor(
         tvCoverTitle.setOnClickListener { openEditCoverPage() }
 
         btnStartLive.setMaxStreamingDuration(30)
+        ivShareLink.setOnClickListener { doCopyShareLink() }
     }
 
     //region observe
@@ -144,10 +148,21 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     }
 
-    private fun showToaster(message: String, toasterType: Int) {
+    private fun doCopyShareLink() {
+        parentViewModel.shareInfo?.let { shareInfo ->
+            PlayShareWrapper.doCopyShareLink(requireContext(), shareInfo) {
+                showToaster(message = getString(R.string.play_live_broadcast_share_link_copied),
+                        toasterType = Toaster.TYPE_NORMAL,
+                        actionLabel = getString(R.string.play_ok))
+            }
+        }
+    }
+
+    private fun showToaster(message: String, toasterType: Int, actionLabel: String = "") {
         Toaster.make(requireView(),
                 text = message,
-                type = toasterType)
+                type = toasterType,
+                actionText = actionLabel)
     }
 
     private fun startStreaming() {

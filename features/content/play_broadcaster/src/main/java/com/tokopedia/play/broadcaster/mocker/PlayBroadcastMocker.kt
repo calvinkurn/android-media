@@ -101,7 +101,6 @@ object PlayBroadcastMocker {
             description = "Yuk gabung sekarang di Play Klarifikasi Bisa Tebak siapa?",
             coverUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
             ingestUrl = "rtmp://192.168.0.110:1935/stream/",
-            shareUrl = "https://www.tokopedia.com/play/channels/1234",
             status = PlayChannelStatus.Active
     )
 
@@ -140,4 +139,12 @@ object PlayBroadcastMocker {
                 fullSentence = fullSentence
         )
     }
+
+    fun getMockShare() = ShareUiModel(
+            id = "1234",
+            title = "Klarififikasi Bisa Tebak Siapa?",
+            description = "Yuk gabung sekarang di Play Klarifikasi Bisa Tebak siapa?",
+            imageUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
+            redirectUrl = "https://www.tokopedia.com/play/channels/1234"
+    )
 }

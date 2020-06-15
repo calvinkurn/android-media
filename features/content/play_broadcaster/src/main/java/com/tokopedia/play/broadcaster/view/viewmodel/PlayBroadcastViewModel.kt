@@ -109,6 +109,7 @@ class PlayBroadcastViewModel  @Inject constructor(
         mockChatList()
         mockMetrics()
         mockProductList()
+        mockShareData()
     }
 
     override fun onCleared() {
@@ -231,6 +232,13 @@ class PlayBroadcastViewModel  @Inject constructor(
             _observableProductList.postValue(
                     PlayBroadcastMocker.getMockProductList(5)
             )
+        }
+    }
+
+    private fun mockShareData() {
+        scope.launch(ioDispatcher) {
+            delay(3000)
+            _observableShareInfo.postValue(PlayBroadcastMocker.getMockShare())
         }
     }
 }

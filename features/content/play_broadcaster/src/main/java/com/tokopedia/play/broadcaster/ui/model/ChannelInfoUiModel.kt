@@ -9,7 +9,6 @@ data class ChannelInfoUiModel(
         val title: String,
         val description: String,
         val coverUrl: String,
-        val shareUrl: String,
         val ingestUrl: String,
         val status: PlayChannelStatus
 )
