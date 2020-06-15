@@ -77,7 +77,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     lateinit var shopStatusModel: ShopStatusModel
     lateinit var getApprovalStatusPojo: KycUserProjectInfoPojo
     lateinit var bottomSheetCommon: MerchantCommonBottomSheet
-    lateinit var bottomSheetCancel: PowerMerchantCancelBottomSheet
+    private var bottomSheetCancel: PowerMerchantCancelBottomSheet? = null
 
     private var shopScore: Int = 0
     private var minScore: Int = 0
@@ -185,7 +185,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     }
 
     private fun cancelMembership() {
-        bottomSheetCancel.dismiss()
+        bottomSheetCancel?.dismiss()
         redirectToPMCancellationQuestionnairePage()
     }
 
@@ -197,7 +197,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessCancelMembership() {
-        isSuccessCancellationPm = true
+        showToasterCancellationSuccess()
         refreshData()
     }
 
@@ -207,21 +207,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         viewModel.getPmStatusInfo()
     }
 
-    private fun onErrorCancelMembership(throwable: Throwable) {
-        hideLoading()
-        showToasterError(throwable)
-    }
-
-    private fun showToasterError(throwable: Throwable) {
-        activity?.run {
-            Toaster.make(view!!, ErrorHandler.getErrorMessage(this, throwable),
-                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.error_cancellation_tryagain),
-                    View.OnClickListener { cancelMembership() })
-        }
-    }
-
     private fun showToasterCancellationSuccess() {
-        isSuccessCancellationPm = false
         activity?.let {
             Toaster.make(view!!, getString(R.string.pm_cancellation_success), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
         }
@@ -289,14 +275,21 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         }
     }
 
-    fun showBottomSheetCancel() {
-        bottomSheetCancel = PowerMerchantCancelBottomSheet.newInstance(shopStatusModel.isAutoExtend(), shopStatusModel.powerMerchant.expiredTime)
-        bottomSheetCancel.setListener(object : PowerMerchantCancelBottomSheet.BottomSheetCancelListener {
+    private fun setupBottomSheetCancel(freeShippingEnabled: Boolean) {
+        bottomSheetCancel = PowerMerchantCancelBottomSheet.newInstance(
+            shopStatusModel.isAutoExtend(),
+            shopStatusModel.powerMerchant.expiredTime,
+            freeShippingEnabled
+        )
+        bottomSheetCancel?.setListener(object : PowerMerchantCancelBottomSheet.BottomSheetCancelListener {
             override fun onclickButton() {
                 cancelMembership()
             }
         })
-        bottomSheetCancel.show(childFragmentManager, "power_merchant_cancel")
+    }
+
+    private fun showBottomSheetCancel() {
+        bottomSheetCancel?.show(childFragmentManager, "power_merchant_cancel")
     }
 
     private fun onSuccessGetPmInfo(powerMerchantStatus: PowerMerchantStatus) {
@@ -304,21 +297,16 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         getApprovalStatusPojo = powerMerchantStatus.kycUserProjectInfoPojo
         shopScore = powerMerchantStatus.shopScore.data.value
         minScore = powerMerchantStatus.shopScore.badgeScore
-        var isTransitionPeriod = shopStatusModel.isTransitionPeriod()
+
+        val isTransitionPeriod = shopStatusModel.isTransitionPeriod()
+        val freeShippingEnabled = powerMerchantStatus.freeShippingEnabled
+
         if (isTransitionPeriod) {
             renderViewTransitionPeriod()
         } else {
             renderViewNonTransitionPeriod()
         }
         partialMemberPmViewHolder.renderPartialMember(shopStatusModel, isAutoExtend())
-
-        if (isSuccessActivatedPm) {
-            showBottomSheetSuccess(shopStatusModel)
-        }
-
-        if (isSuccessCancellationPm) {
-            showToasterCancellationSuccess()
-        }
 
         hideLoading()
 
@@ -327,6 +315,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         } else {
             viewModel.getFreeShippingStatus()
         }
+
+        setupBottomSheetCancel(freeShippingEnabled)
     }
 
     private fun showLoading() {
@@ -425,7 +415,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         } else if (requestCode == AUTOEXTEND_INTENT_CODE && resultCode == Activity.RESULT_OK) {
             viewModel.onActivatePmSuccess()
         } else if (requestCode == TURN_OFF_AUTOEXTEND_INTENT_CODE && resultCode == Activity.RESULT_OK){
-            refreshData()
+            onSuccessCancelMembership()
         }
     }
 
