@@ -1,9 +1,11 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.factory
 
+import android.app.Application
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
@@ -134,7 +136,8 @@ class DiscoveryHomeFactory {
 
         }
 
-        private fun <E : AbstractViewHolder, T : DiscoveryBaseViewModel> initializeComponent(component: ComponentsList, componentViewHolder: KFunction<E>, componentViewModel: KFunction<T>) {
+        private fun <E : AbstractViewHolder, T : DiscoveryBaseViewModel> initializeComponent(component: ComponentsList, componentViewHolder:(v: View, fragment: Fragment) -> E,
+                                                                                             componentViewModel:(application: Application, components: ComponentsItem, position: Int)->T) {
             componentIdMap[component.componentName] = component.ordinal
             componentMapper[component.ordinal] = ComponentHelpersHolder(componentViewHolder, componentViewModel)
         }
@@ -150,7 +153,7 @@ class DiscoveryHomeFactory {
             return componentMapper[viewType]?.getViewHolder(itemView, fragment)
         }
 
-        fun createViewModel(viewType: Int): KFunction<DiscoveryBaseViewModel> {
+        fun createViewModel(viewType: Int): (application: Application,  components: ComponentsItem, position: Int)->DiscoveryBaseViewModel {
             if (componentMapper[viewType] != null) {
                 return componentMapper[viewType]!!.getComponentModels()
             }
