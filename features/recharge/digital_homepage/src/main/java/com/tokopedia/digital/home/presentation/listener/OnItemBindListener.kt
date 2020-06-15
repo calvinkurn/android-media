@@ -18,8 +18,7 @@ interface OnItemBindListener {
     fun onSectionItemImpression(elements: List<DigitalHomePageSectionModel.Item>, sectionType: String)
     fun onRecommendationImpression(elements: List<RecommendationItemEntity>)
 
-    fun onRechargeCategoryItemClicked(element: RechargeHomepageSections.Item, position: Int)
+    fun onRechargeBannerAllItemClicked()
     fun onRechargeSectionItemClicked(element: RechargeHomepageSections.Item, position: Int, sectionType: String)
-
     fun onRechargeSectionItemImpression(elements: List<RechargeHomepageSections.Item>, sectionType: String)
 }

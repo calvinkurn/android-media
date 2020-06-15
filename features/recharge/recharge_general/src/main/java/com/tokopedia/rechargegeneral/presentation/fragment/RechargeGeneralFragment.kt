@@ -189,7 +189,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
         viewModel.operatorCluster.observe(this, Observer {
             when(it) {
-                is Success -> {payment
+                is Success -> {
                     loading_view.hide()
                     renderInitialData()
                 }

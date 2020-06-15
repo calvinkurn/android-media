@@ -4,20 +4,24 @@ import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
-import com.tokopedia.digital.home.model.RechargeHomepageSections
+import com.tokopedia.digital.home.model.RechargeHomepageCategoryModel
+import com.tokopedia.digital.home.model.RechargeHomepageSectionModel
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.DYNAMIC_ICON_IMPRESSION
 import com.tokopedia.digital.home.presentation.adapter.adapter.RechargeItemCategoryAdapter
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import kotlinx.android.synthetic.main.layout_digital_home_category.view.*
 
-class RechargeHomepageCategoryViewHolder(itemView: View, val onItemBindListener: OnItemBindListener) :
-        AbstractViewHolder<RechargeHomepageSections.Section>(itemView) {
+class RechargeHomepageCategoryViewHolder(itemView: View, val listener: OnItemBindListener) :
+        AbstractViewHolder<RechargeHomepageCategoryModel>(itemView) {
 
-    override fun bind(element: RechargeHomepageSections.Section) {
+    override fun bind(element: RechargeHomepageCategoryModel) {
+        val section = element.section
         with (itemView) {
             val layoutManager = GridLayoutManager(itemView.context, CATEGORY_SPAN_COUNT)
             category_recycler_view.layoutManager = layoutManager
-            category_recycler_view.adapter = RechargeItemCategoryAdapter(element.items, onItemBindListener)
-            title.text = element.title
+            category_recycler_view.adapter = RechargeItemCategoryAdapter(section.items, listener)
+            title.text = section.title
+            listener.onRechargeSectionItemImpression(section.items, DYNAMIC_ICON_IMPRESSION)
         }
     }
 

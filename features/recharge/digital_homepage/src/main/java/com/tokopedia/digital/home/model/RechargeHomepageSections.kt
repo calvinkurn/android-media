@@ -17,6 +17,9 @@ data class RechargeHomepageSections (
     )
 
     data class Section (
+            @SerializedName("id")
+            @Expose
+            val id: Int = 0,
             @SerializedName("title")
             @Expose
             val title: String = "",
@@ -29,13 +32,12 @@ data class RechargeHomepageSections (
             @SerializedName("items")
             @Expose
             val items: List<Item> = listOf()
-    ): Visitable<DigitalHomePageTypeFactory> {
-            override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
-                    return typeFactory.type(this)
-            }
-    }
+    )
 
     data class Item (
+            @SerializedName("id")
+            @Expose
+            val id: Int = 0,
             @SerializedName("title")
             @Expose
             val title: String = "",
@@ -79,21 +81,40 @@ data class RechargeHomepageSections (
             @Expose
             val dueDate: String = ""
     )
+}
 
-    companion object {
-            const val SECTION_TOP_BANNER = "TOP_BANNER"
-            const val SECTION_TOP_BANNER_EMPTY = "TOP_BANNER_EMPTY"
-            const val SECTION_TOP_ICONS = "TOP_ICONS"
-            const val SECTION_DYNAMIC_ICONS = "DYNAMIC_ICONS"
-            const val SECTION_DUAL_ICONS = "DUAL_ICONS"
-            const val SECTION_URGENCY_WIDGET = "URGENCY_WIDGET"
-            const val SECTION_VIDEO_HIGHLIGHT = "VIDEO_HIGHLIGHT"
-            const val SECTION_VIDEO_HIGHLIGHTS = "VIDEO_HIGHLIGHTS"
-            const val SECTION_SINGLE_BANNER = "SINGLE_BANNER"
-            const val SECTION_COUNTDOWN_SINGLE_BANNER = "COUNTDOWN_SINGLE_BANNER"
-            const val SECTION_DUAL_BANNERS = "DUAL_BANNERS"
-            const val SECTION_LEGO_BANNERS = "LEGO_BANNERS"
-            const val SECTION_PRODUCT_CARD_ROW = "PRODUCT_CARD_ROW"
-            const val SECTION_COUNTDOWN_PRODUCT_BANNER = "COUNTDOWN_PRODUCT_BANNER"
-    }
+abstract class RechargeHomepageAbstractSectionModel: Visitable<DigitalHomePageTypeFactory> {
+        abstract override fun type(typeFactory: DigitalHomePageTypeFactory): Int
+}
+
+abstract class RechargeHomepageSectionModel(val section: RechargeHomepageSections.Section): RechargeHomepageAbstractSectionModel()
+
+class RechargeHomepageBannerModel(section: RechargeHomepageSections.Section): RechargeHomepageSectionModel(section) {
+        override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+                return typeFactory.type(this)
+        }
+}
+
+class RechargeHomepageBannerEmptyModel(section: RechargeHomepageSections.Section): RechargeHomepageSectionModel(section) {
+        override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+                return typeFactory.type(this)
+        }
+}
+
+class RechargeHomepageFavoriteModel(section: RechargeHomepageSections.Section): RechargeHomepageSectionModel(section) {
+        override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+                return typeFactory.type(this)
+        }
+}
+
+class RechargeHomepageCategoryModel(section: RechargeHomepageSections.Section): RechargeHomepageSectionModel(section) {
+        override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+                return typeFactory.type(this)
+        }
+}
+
+class RechargeHomepageTrustMarkModel(section: RechargeHomepageSections.Section): RechargeHomepageSectionModel(section) {
+        override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+                return typeFactory.type(this)
+        }
 }

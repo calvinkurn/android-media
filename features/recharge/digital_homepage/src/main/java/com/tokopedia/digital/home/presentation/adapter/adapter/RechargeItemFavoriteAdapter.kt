@@ -11,11 +11,11 @@ import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.layout_digital_home_category_item_submenu_frame.view.*
 
-class RechargeItemFavoriteAdapter(val items: List<RechargeHomepageSections.Item>, val onItemBindListener: OnItemBindListener)
+class RechargeItemFavoriteAdapter(val items: List<RechargeHomepageSections.Item>, val listener: OnItemBindListener)
     : RecyclerView.Adapter<RechargeItemFavoriteAdapter.DigitalItemFavoriteViewHolder>() {
 
     override fun onBindViewHolder(viewHolder: DigitalItemFavoriteViewHolder, position: Int) {
-        viewHolder.bind(items[position], onItemBindListener)
+        viewHolder.bind(items[position], listener)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): DigitalItemFavoriteViewHolder {

@@ -24,10 +24,7 @@ import com.tokopedia.digital.home.APPLINK_HOME_FAV_LIST
 import com.tokopedia.digital.home.APPLINK_HOME_MYBILLS
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.di.DigitalHomePageComponent
-import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
-import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
-import com.tokopedia.digital.home.model.DigitalHomePageSectionModel
-import com.tokopedia.digital.home.model.RechargeHomepageSections
+import com.tokopedia.digital.home.model.*
 import com.tokopedia.digital.home.presentation.Util.DigitalHomeTrackingUtil
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SUBSCRIPTION_GUIDE_CLICK
 import com.tokopedia.digital.home.presentation.activity.DigitalHomePageSearchActivity
@@ -40,7 +37,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.layout_digital_home.*
 import javax.inject.Inject
 
-class DigitalHomePageFragment : BaseListFragment<RechargeHomepageSections.Section, DigitalHomePageTypeFactory>(),
+class DigitalHomePageFragment : BaseListFragment<RechargeHomepageAbstractSectionModel, DigitalHomePageTypeFactory>(),
         OnItemBindListener,
         DigitalHomePageTransactionViewHolder.TransactionListener,
         SearchInputView.FocusChangeListener {
@@ -165,7 +162,7 @@ class DigitalHomePageFragment : BaseListFragment<RechargeHomepageSections.Sectio
         viewModel.rechargeHomepageSections.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    renderList(it.data.sections)
+                    renderList(it.data)
                 }
                 is Fail -> {
                     showGetListError(it.throwable)
@@ -227,12 +224,12 @@ class DigitalHomePageFragment : BaseListFragment<RechargeHomepageSections.Sectio
         trackingUtil.eventRecommendationImpression(elements)
     }
 
-    override fun onRechargeCategoryItemClicked(element: RechargeHomepageSections.Item, position: Int) {
+    override fun onRechargeBannerAllItemClicked() {
 
     }
 
     override fun onRechargeSectionItemClicked(element: RechargeHomepageSections.Item, position: Int, sectionType: String) {
-
+        RouteManager.route(context, element.applink)
     }
 
     override fun onRechargeSectionItemImpression(elements: List<RechargeHomepageSections.Item>, sectionType: String) {
@@ -243,7 +240,7 @@ class DigitalHomePageFragment : BaseListFragment<RechargeHomepageSections.Sectio
         return DigitalHomePageTypeFactory(this, this)
     }
 
-    override fun onItemClicked(t: RechargeHomepageSections.Section) {
+    override fun onItemClicked(t: RechargeHomepageAbstractSectionModel) {
         // do nothing
     }
 
