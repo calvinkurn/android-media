@@ -5,39 +5,21 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.TextView
-import androidx.lifecycle.Observer
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Fade
 import androidx.transition.Slide
-import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
-import com.tokopedia.play.broadcaster.ui.model.EtalaseLoadingUiModel
-import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
-import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
-import com.tokopedia.play.broadcaster.ui.viewholder.PlayEtalaseViewHolder
-import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
-import com.tokopedia.play.broadcaster.ui.viewholder.SearchSuggestionViewHolder
+import com.tokopedia.play.broadcaster.util.compatTransitionName
 import com.tokopedia.play.broadcaster.util.doOnPreDraw
-import com.tokopedia.play.broadcaster.util.productNotFoundState
-import com.tokopedia.play.broadcaster.util.scroll.EndlessRecyclerViewScrollListener
-import com.tokopedia.play.broadcaster.util.scroll.StopFlingScrollListener
-import com.tokopedia.play.broadcaster.view.adapter.PlayEtalaseAdapter
-import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
-import com.tokopedia.play.broadcaster.view.adapter.SearchSuggestionsAdapter
-import com.tokopedia.play.broadcaster.view.custom.PlaySearchBar
+import com.tokopedia.play.broadcaster.view.contract.PlayEtalaseSetupCoordinator
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
-import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 /**
@@ -45,60 +27,19 @@ import javax.inject.Inject
  */
 class PlayEtalasePickerFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory
-) : PlayBaseSetupFragment() {
+) : PlayBaseSetupFragment(), PlayEtalaseSetupCoordinator {
 
     private lateinit var viewModel: PlayEtalasePickerViewModel
 
     private lateinit var container: ViewGroup
     private lateinit var tvInfo: TextView
-    private lateinit var psbSearch: PlaySearchBar
-    private lateinit var rvEtalase: RecyclerView
-    private lateinit var rvSearchedProducts: RecyclerView
-    private lateinit var rvSuggestions: RecyclerView
-    private lateinit var errorProductNotFound: GlobalError
+    private lateinit var flEtalaseFlow: FrameLayout
 
-    private val etalaseAdapter = PlayEtalaseAdapter(object : PlayEtalaseViewHolder.Listener {
-        override fun onEtalaseClicked(etalaseId: String, sharedElements: List<View>) {
-            bottomSheetCoordinator.navigateToFragment(
-                    PlayEtalaseDetailFragment::class.java,
-                    Bundle().apply {
-                        putString(PlayEtalaseDetailFragment.EXTRA_ETALASE_ID, etalaseId)
-                    },
-                    sharedElements = sharedElements
-            )
-        }
-
-        override fun onEtalaseBound(etalaseId: String) {
-            viewModel.loadEtalaseProductPreview(etalaseId)
-        }
-    })
-
-    private val searchProductsAdapter = ProductSelectableAdapter(object : ProductSelectableViewHolder.Listener {
-        override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
-            viewModel.selectProduct(productId, isSelected)
-        }
-
-        override fun onProductSelectError(reason: Throwable) {
-            Toaster.make(
-                    view = requireView(),
-                    text = reason.localizedMessage,
-                    duration = Toaster.LENGTH_SHORT,
-                    actionText = getString(R.string.play_ok)
-            )
-        }
-    })
-
-    private val searchSuggestionsAdapter = SearchSuggestionsAdapter(object : SearchSuggestionViewHolder.Listener {
-        override fun onSuggestionClicked(suggestionText: String) {
-            psbSearch.text = suggestionText
-            psbSearch.forceSearch()
-        }
-    })
-
-    private lateinit var scrollListener: EndlessRecyclerViewScrollListener
+    private val fragmentFactory: FragmentFactory
+        get() = childFragmentManager.fragmentFactory
 
     override fun refresh() {
-        etalaseAdapter.notifyDataSetChanged()
+//        etalaseAdapter.notifyDataSetChanged()
     }
 
     override fun getScreenName(): String = "Play Etalase Picker"
@@ -122,210 +63,106 @@ class PlayEtalasePickerFragment @Inject constructor(
         bottomSheetCoordinator.setupTitle(getString(R.string.play_etalase_picker_title))
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        observeEtalase()
-        observeSearchProducts()
-        observeSearchSuggestions()
-    }
-
     override fun onInterceptBackPressed(): Boolean {
         return false
+    }
+
+    override fun openEtalaseDetail(etalaseId: String, sharedElements: List<View>) {
+        bottomSheetCoordinator.navigateToFragment(
+                PlayEtalaseDetailFragment::class.java,
+                Bundle().apply {
+                    putString(PlayEtalaseDetailFragment.EXTRA_ETALASE_ID, etalaseId)
+                },
+                sharedElements = sharedElements
+        )
+    }
+
+    override fun openSearchPage(keyword: String, sharedElements: List<View>) {
+        openFragment(PlaySearchSuggestionsFragment::class.java, sharedElements = sharedElements)
     }
 
     private fun initView(view: View) {
         with(view) {
             container = this as ViewGroup
             tvInfo = findViewById(R.id.tv_info)
-            psbSearch = findViewById(R.id.psb_search)
-            rvEtalase = findViewById(R.id.rv_etalase)
-            rvSearchedProducts = findViewById(R.id.rv_searched_products)
-            rvSuggestions = findViewById(R.id.rv_suggestions)
-            errorProductNotFound = findViewById(R.id.error_product_not_found)
+            flEtalaseFlow = findViewById(R.id.fl_etalase_flow)
         }
     }
 
     private fun setupView(view: View) {
-        psbSearch.setListener(object : PlaySearchBar.Listener {
+//        psbSearch.setListener(object : PlaySearchBar.Listener {
+//
+//            override fun onEditStateChanged(view: PlaySearchBar, isEditing: Boolean) {
+//                if (isEditing) enterSearchMode()
+//                else exitSearchMode()
+//            }
+//
+//            override fun onCanceled(view: PlaySearchBar) {
+//                exitSearchMode()
+//            }
+//
+//            override fun onNewKeyword(view: PlaySearchBar, keyword: String) {
+//                viewModel.loadSuggestionsFromKeyword(keyword)
+//            }
+//
+//            override fun onSearchButtonClicked(view: PlaySearchBar, keyword: String) {
+//                if (keyword.isNotEmpty()) shouldSearchProductWithKeyword(keyword)
+//                else psbSearch.cancel()
+//            }
+//        })
 
-            override fun onEditStateChanged(view: PlaySearchBar, isEditing: Boolean) {
-                if (isEditing) enterSearchMode()
-                else exitSearchMode()
-            }
-
-            override fun onCanceled(view: PlaySearchBar) {
-                exitSearchMode()
-            }
-
-            override fun onNewKeyword(view: PlaySearchBar, keyword: String) {
-                viewModel.loadSuggestionsFromKeyword(keyword)
-            }
-
-            override fun onSearchButtonClicked(view: PlaySearchBar, keyword: String) {
-                if (keyword.isNotEmpty()) shouldSearchProductWithKeyword(keyword)
-                else psbSearch.cancel()
-            }
-        })
-
-        errorProductNotFound.productNotFoundState()
-
-        setupEtalaseList()
-        setupSearchList()
-        setupSuggestionList()
-    }
-
-    private fun setupEtalaseList() {
-        rvEtalase.layoutManager = GridLayoutManager(rvSearchedProducts.context, SPAN_COUNT, RecyclerView.VERTICAL, false).apply {
-            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-
-                override fun getSpanSize(position: Int): Int {
-                    return if (etalaseAdapter.getItem(position) == EtalaseLoadingUiModel) SPAN_COUNT
-                    else 1
-                }
-            }
-        }
-        rvEtalase.adapter = etalaseAdapter
-        rvEtalase.addItemDecoration(PlayGridTwoItemDecoration(requireContext()))
-        rvEtalase.addOnScrollListener(StopFlingScrollListener())
-    }
-
-    private fun setupSearchList() {
-        rvSearchedProducts.layoutManager = GridLayoutManager(rvSearchedProducts.context, SPAN_COUNT, RecyclerView.VERTICAL, false).apply {
-            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-
-                override fun getSpanSize(position: Int): Int {
-                    return if (searchProductsAdapter.getItem(position) == ProductLoadingUiModel) SPAN_COUNT
-                    else 1
-                }
-            }
-        }
-        rvSearchedProducts.adapter = searchProductsAdapter
-        rvSearchedProducts.addItemDecoration(PlayGridTwoItemDecoration(requireContext()))
-        scrollListener = object : EndlessRecyclerViewScrollListener(rvSearchedProducts.layoutManager!!) {
-            override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.searchProductsByKeyword(psbSearch.text, page)
-            }
-        }
-        rvSearchedProducts.addOnScrollListener(scrollListener)
-        rvSearchedProducts.addOnScrollListener(StopFlingScrollListener())
-    }
-
-    private fun setupSuggestionList() {
-        rvSuggestions.adapter = searchSuggestionsAdapter
-    }
-
-    private fun enterSearchMode() {
-        onSearchModeTransition()
-
-        rvEtalase.gone()
-        rvSearchedProducts.gone()
-        errorProductNotFound.gone()
-
-        rvSuggestions.visible()
-
-        viewModel.loadSuggestionsFromKeyword(psbSearch.text)
-
-        bottomSheetCoordinator.showBottomAction(false)
-    }
-
-    private fun exitSearchMode() {
-        onSearchModeTransition()
-
-        if (psbSearch.text.isNotEmpty()) {
-            rvSearchedProducts.visible()
-            rvEtalase.gone()
-        } else {
-            rvSearchedProducts.gone()
-            errorProductNotFound.gone()
-            rvEtalase.visible()
-        }
-
-        rvSuggestions.invisible()
-
-        bottomSheetCoordinator.showBottomAction(psbSearch.text.isNotEmpty())
+        openFragment(PlayEtalaseListFragment::class.java)
     }
 
     private fun shouldSearchProductWithKeyword(keyword: String) {
-        scrollListener.resetState()
-        scrollListener.loadMoreNextPage()
+//        scrollListener.resetState()
+//        scrollListener.loadMoreNextPage()
 
-        exitSearchMode()
+//        exitSearchMode()
     }
 
-    //region observe
-    /**
-     * Observe
-     */
-    private fun observeEtalase() {
-        viewModel.observableEtalase.observe(viewLifecycleOwner, Observer {
-            when (it.state) {
-                PageResultState.Loading -> {
-                    etalaseAdapter.setItemsAndAnimateChanges(listOf(EtalaseLoadingUiModel))
-                }
-                is PageResultState.Success -> {
-                    etalaseAdapter.setItemsAndAnimateChanges(it.currentValue)
-                    startPostponedTransition()
-                }
-                is PageResultState.Fail -> {
-                    startPostponedTransition()
-                }
-            }
-
-        })
-    }
-
-    private fun observeSearchProducts() {
-        viewModel.observableSearchedProducts.observe(viewLifecycleOwner, Observer {
-            when (it.state) {
-                is PageResultState.Success -> {
-                    searchProductsAdapter.setItemsAndAnimateChanges(it.currentValue)
-
-                    if (it.currentValue.isEmpty()) {
-                        errorProductNotFound.visible()
-                        rvSearchedProducts.gone()
-                        scrollListener.setHasNextPage(false)
-                    } else {
-                        errorProductNotFound.gone()
-                        rvSearchedProducts.visible()
-                        scrollListener.setHasNextPage(it.state.hasNextPage)
+    private fun openFragment(
+            fragmentClass: Class<out Fragment>,
+            extras: Bundle = Bundle.EMPTY,
+            sharedElements: List<View> = emptyList(),
+            onFragment: (Fragment) -> Unit = {}
+    ): Fragment {
+        val fragmentTransaction = childFragmentManager.beginTransaction()
+        val destFragment = getFragmentByClassName(fragmentClass)
+        destFragment.arguments = extras
+        onFragment(destFragment)
+        fragmentTransaction
+                .apply {
+                    sharedElements.forEach {
+                        val transitionName = it.compatTransitionName
+                        if (transitionName != null) addSharedElement(it, transitionName)
                     }
-                    scrollListener.updateState(true)
+
+                    if (sharedElements.isNotEmpty()) setReorderingAllowed(true)
                 }
-                PageResultState.Loading -> {
-                    if (it.currentValue.isEmpty()) {
-                        searchProductsAdapter.setItems(listOf(ProductLoadingUiModel))
-                        searchProductsAdapter.notifyDataSetChanged()
-                    } else searchProductsAdapter.setItemsAndAnimateChanges(it.currentValue + ProductLoadingUiModel)
-                }
-                is PageResultState.Fail -> {
-                    searchProductsAdapter.setItemsAndAnimateChanges(it.currentValue)
-                    scrollListener.setHasNextPage(true)
-                    scrollListener.updateState(false)
-                }
-            }
-        })
+                .replace(R.id.fl_etalase_flow, destFragment, fragmentClass.name)
+                .addToBackStack(fragmentClass.name)
+                .commit()
+
+        return destFragment
     }
 
-    private fun observeSearchSuggestions() {
-        viewModel.observableSuggestionList.observe(viewLifecycleOwner, Observer {
-            searchSuggestionsAdapter.setItemsAndAnimateChanges(it)
-        })
+    private fun getFragmentByClassName(fragmentClass: Class<out Fragment>): Fragment {
+        return fragmentFactory.instantiate(fragmentClass.classLoader!!, fragmentClass.name)
     }
-    //endregion
 
     /**
      * Transition
      */
     private fun onSearchModeTransition() {
-        TransitionManager.beginDelayedTransition(
-                container,
-                Slide(Gravity.BOTTOM)
-                        .addTarget(rvEtalase)
-                        .setDuration(300)
-                        .setStartDelay(200)
-                        .excludeChildren(psbSearch, true)
-        )
+//        TransitionManager.beginDelayedTransition(
+//                container,
+//                Slide(Gravity.BOTTOM)
+//                        .addTarget(rvEtalase)
+//                        .setDuration(300)
+//                        .setStartDelay(200)
+//                        .excludeChildren(psbSearch, true)
+//        )
     }
 
     private fun startPostponedTransition() {

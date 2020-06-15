@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:transitionGroup="true"
-    >
+    android:transitionGroup="true">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_info"
@@ -13,84 +11,24 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/play_dp_12"
-        android:layout_marginRight="@dimen/play_dp_12"
+        android:layout_marginStart="@dimen/play_dp_12"
         android:text="@string/play_etalase_picker_info"
-        app:layout_constraintEnd_toEndOf="@id/psb_search"
-        app:layout_constraintStart_toStartOf="@id/psb_search"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
         />
 
-    <com.tokopedia.play.broadcaster.view.custom.PlaySearchBar
-        android:id="@+id/psb_search"
+    <FrameLayout
+        android:id="@+id/fl_etalase_flow"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_height="@dimen/layout_lvl0"
         android:layout_marginTop="@dimen/play_dp_20"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_info"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_goneMarginTop="@dimen/play_dp_12"
-        />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_etalase"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/layout_lvl0"
-        android:layout_marginTop="@dimen/spacing_lvl5"
-        android:layout_marginEnd="@dimen/play_dp_12"
-        android:layout_marginRight="@dimen/play_dp_12"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/psb_search"
-        app:layout_constraintStart_toStartOf="@id/psb_search"
-        app:layout_constraintTop_toBottomOf="@id/psb_search"
-        />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_searched_products"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/layout_lvl0"
-        android:layout_marginTop="@dimen/spacing_lvl5"
-        android:layout_marginEnd="@dimen/play_dp_12"
-        android:layout_marginRight="@dimen/play_dp_12"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/psb_search"
-        app:layout_constraintStart_toStartOf="@id/psb_search"
-        app:layout_constraintTop_toBottomOf="@id/psb_search"
-        />
-
-    <com.tokopedia.globalerror.GlobalError
-        android:id="@+id/error_product_not_found"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/layout_lvl0"
-        android:layout_marginTop="@dimen/spacing_lvl5"
-        android:layout_marginEnd="@dimen/play_dp_12"
-        android:layout_marginRight="@dimen/play_dp_12"
-        android:gravity="center"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/psb_search"
-        app:layout_constraintStart_toStartOf="@id/psb_search"
-        app:layout_constraintTop_toBottomOf="@id/psb_search"
-        tools:visibility="visible"
-        />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_suggestions"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/layout_lvl0"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginEnd="@dimen/play_dp_12"
-        android:layout_marginRight="@dimen/play_dp_12"
-        android:orientation="vertical"
-        android:visibility="gone"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/psb_search"
-        app:layout_constraintStart_toStartOf="@id/psb_search"
-        app:layout_constraintTop_toBottomOf="@id/psb_search"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
