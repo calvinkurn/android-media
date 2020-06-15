@@ -34,6 +34,7 @@ internal open class BannerView(activity: Activity) {
 
     fun dialog(data: CMInApp) {
         alertDialog.setView(createView(data))
+        alertDialog.setCancelable(false)
         dialog.show()
 
         // resize dialog's width with 80% of screen
@@ -81,8 +82,15 @@ internal open class BannerView(activity: Activity) {
     }
 
     private fun setActionButton(layout: CMLayout) {
-        val buttons = layout.getButton()
-        val adapter = ActionButtonAdapter(buttons, ::onActionClicked)
+        if (layout.getButton().isEmpty()) {
+            lstActionButton.visibility = View.GONE
+            return
+        }
+
+        val adapter = ActionButtonAdapter(
+                layout.getButton(),
+                ::onActionClicked
+        )
 
         lstActionButton.layoutManager = when (layout.getBtnOrientation()) {
             ORIENTATION_VERTICAL -> LinearLayoutManager(mActivity.get())
