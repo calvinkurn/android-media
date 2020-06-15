@@ -359,11 +359,11 @@ class ShopOpenRevampQuisionerFragment :
                             _formattedAddress.isNotEmpty()) {
 
                         shopId = _shopId
-                        postCode = saveAddressDataModel.postalCode
-                        courierOrigin = saveAddressDataModel.districtId.toInt()
-                        addrStreet = saveAddressDataModel.formattedAddress
-                        latitude = latitudeString
-                        longitude = longitudeString
+                        postCode = _postalCode
+                        courierOrigin = _districtId.toInt()
+                        addrStreet = _formattedAddress
+                        latitude = _latitudeString
+                        longitude = _longitudeString
                         saveShipmentLocation(shopId, postCode, courierOrigin, addrStreet, latitude, longitude)
                     }
                 }
