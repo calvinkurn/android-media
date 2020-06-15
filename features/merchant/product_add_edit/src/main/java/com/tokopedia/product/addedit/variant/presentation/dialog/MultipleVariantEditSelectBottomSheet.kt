@@ -42,11 +42,13 @@ class MultipleVariantEditSelectBottomSheet(
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
         removeContainerPadding()
         addMarginTitle()
     }
 
     override fun onMultipleEditInputFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel) {
+        multipleVariantEditInputModel.selection = selectAdapter?.getSelectedData().orEmpty()
         multipleVariantEditListener.onMultipleEditFinished(multipleVariantEditInputModel)
     }
 
@@ -63,7 +65,6 @@ class MultipleVariantEditSelectBottomSheet(
     }
 
     private fun setBehaviorAsKnob() {
-        setTitle("Pilih variant yang ingin diatur")
         showCloseIcon = false
         showKnob = true
     }
@@ -84,6 +85,7 @@ class MultipleVariantEditSelectBottomSheet(
     }
 
     private fun initChildLayout() {
+        setTitle(getString(R.string.label_variant_multiple_select_bottom_sheet_title))
         contentView = View.inflate(context,
                 R.layout.add_edit_product_multiple_variant_edit_select_bottom_sheet_content, null)
         contentView?.recyclerViewVariantCheck?.apply {

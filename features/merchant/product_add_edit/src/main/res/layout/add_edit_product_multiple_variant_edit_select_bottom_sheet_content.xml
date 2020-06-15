@@ -10,7 +10,7 @@
         android:id="@+id/typographySelectAll"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:text="Semua"
+        android:text="@string/label_variant_multiple_select_all"
         android:textColor="@color/Neutral_N700_96"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
@@ -62,7 +62,7 @@
             android:layout_marginTop="@dimen/layout_lvl1"
             android:layout_marginRight="@dimen/layout_lvl2"
             android:layout_marginBottom="@dimen/layout_lvl1"
-            android:text="Lanjut" />
+            android:text="@string/apply_variant_multiple_next" />
 
     </androidx.cardview.widget.CardView>
 

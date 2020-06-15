@@ -12,22 +12,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:text_field_input_type="number"
-        app:text_field_label="Harga"
-        app:text_field_prepend_text="Rp" />
+        app:text_field_label="@string/label_variant_multiple_price"
+        app:text_field_prepend_text="@string/label_variant_multiple_currency" />
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/tfuStock"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:text_field_input_type="number"
-        app:text_field_label="Stok"
-        app:text_field_prepend_text="Rp" />
+        app:text_field_label="@string/label_variant_multiple_stock" />
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/tfuSku"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:text_field_label="SKU (Stock Keeping Unit)" />
+        app:text_field_label="@string/label_variant_multiple_sku" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/buttonApply"
@@ -35,6 +34,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginBottom="@dimen/spacing_lvl3"
-        android:text="Terapkan" />
+        android:text="@string/action_variant_multiple_apply" />
 
 </LinearLayout>
