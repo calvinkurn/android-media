@@ -295,8 +295,8 @@ class PlayBroadcastCoverFromGalleryBottomSheet : BottomSheetUnify(),
     }
 
     companion object {
-        const val MINIMUM_COVER_WIDTH = 168
-        const val MINIMUM_COVER_HEIGHT = 298
+        const val MINIMUM_COVER_WIDTH = 300
+        const val MINIMUM_COVER_HEIGHT = 533
 
         private const val SAVED_ALBUM_TITLE = "SAVED_ALBUM_TITLE"
 
