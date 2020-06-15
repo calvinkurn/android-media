@@ -11,12 +11,12 @@ import kotlinx.android.synthetic.main.bottomsheet_cancel_item.view.*
  * Created by fwidjaja on 11/06/20.
  */
 
-class BuyerRequestCancelBottomsheetAdapter(private var listener: ActionListener): RecyclerView.Adapter<BuyerRequestCancelBottomsheetAdapter.ViewHolder>() {
+class GetCancelReasonBottomSheetAdapter(private var listener: ActionListener): RecyclerView.Adapter<GetCancelReasonBottomSheetAdapter.ViewHolder>() {
     // var mapKey = HashMap<String, String>()
     var listReason = listOf<String>()
 
     interface ActionListener {
-        fun onBottomSheetItemClick(key: String)
+        fun onReasonClicked(reason: String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -32,7 +32,7 @@ class BuyerRequestCancelBottomsheetAdapter(private var listener: ActionListener)
         holder.itemView.label_cancel.text = listReason[position]
 
         holder.itemView.setOnClickListener {
-            listener.onBottomSheetItemClick(listReason[position])
+            listener.onReasonClicked(listReason[position])
         }
     }
 
