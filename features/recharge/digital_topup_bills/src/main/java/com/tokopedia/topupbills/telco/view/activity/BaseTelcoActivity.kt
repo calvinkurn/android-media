@@ -68,12 +68,12 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
                     //Collapsed
                     (toolbar as HeaderUnify).transparentMode = false
                     menuTelco.getItem(0).icon = ContextCompat.getDrawable(this@BaseTelcoActivity,
-                            R.drawable.ic_toolbar_overflow_level_two_black)
+                            com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_black)
                 } else {
                     //Expanded
                     (toolbar as HeaderUnify).transparentMode = true
                     menuTelco.getItem(0).icon = ContextCompat.getDrawable(this@BaseTelcoActivity,
-                            R.drawable.ic_toolbar_overflow_level_two_white)
+                            com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_white)
                 }
             }
         })
