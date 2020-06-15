@@ -60,6 +60,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(), MultipleVarian
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // TODO move to atur semua button onclick
         val multipleVariantEditSelectBottomSheet = MultipleVariantEditSelectBottomSheet(this)
         val variantInputModel = viewModel.productInputModel.value?.variantInputModel
         multipleVariantEditSelectBottomSheet.setData(variantInputModel)
@@ -67,7 +68,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(), MultipleVarian
     }
 
     override fun onMultipleEditFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel) {
-        println("$multipleVariantEditInputModel")
+        viewModel.updateProductInputModel(multipleVariantEditInputModel)
     }
 
     fun onBackPressed() {
