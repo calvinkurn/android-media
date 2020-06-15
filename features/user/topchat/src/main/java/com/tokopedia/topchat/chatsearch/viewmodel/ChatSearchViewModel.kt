@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.topchat.chatsearch.data.GetChatSearchResponse
-import com.tokopedia.topchat.chatsearch.data.SearchResult
 import com.tokopedia.topchat.chatsearch.usecase.GetSearchQueryUseCase
 import com.tokopedia.topchat.chatsearch.view.uimodel.ContactLoadMoreUiModel
 import kotlinx.coroutines.CoroutineDispatcher

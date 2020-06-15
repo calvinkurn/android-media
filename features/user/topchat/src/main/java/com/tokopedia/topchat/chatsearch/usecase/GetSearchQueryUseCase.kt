@@ -3,9 +3,9 @@ package com.tokopedia.topchat.chatsearch.usecase
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import com.tokopedia.topchat.chatsearch.data.GetChatSearchResponse
+import com.tokopedia.topchat.chatsearch.data.GetMultiChatSearchResponse
 import com.tokopedia.topchat.chatsearch.view.uimodel.ContactLoadMoreUiModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -14,7 +14,7 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class GetSearchQueryUseCase @Inject constructor(
-        private val gqlUseCase: GraphqlUseCase<GetChatSearchResponse>,
+        private val gqlUseCase: GraphqlUseCase<GetMultiChatSearchResponse>,
         private var dispatchers: TopchatCoroutineContextProvider
 ) : CoroutineScope {
 
@@ -38,15 +38,16 @@ class GetSearchQueryUseCase @Inject constructor(
                     isSearching = true
                     val params = generateSearchParams(keyword, page)
                     val response = gqlUseCase.apply {
-                        setTypeClass(GetChatSearchResponse::class.java)
+                        setTypeClass(GetMultiChatSearchResponse::class.java)
                         setRequestParams(params)
                         setGraphqlQuery(query)
                     }.executeOnBackground()
                     val contactLoadMore = createContactLoadMore(response)
+                    val searchContactResponse = GetChatSearchResponse(response.searchByName)
                     isSearching = false
-                    hasNext = response.chatSearch.contact.hasNext
+                    hasNext = response.contactHasNext
                     withContext(dispatchers.Main) {
-                        onSuccess(response, contactLoadMore)
+                        onSuccess(searchContactResponse, contactLoadMore)
                     }
                 },
                 {
@@ -58,8 +59,8 @@ class GetSearchQueryUseCase @Inject constructor(
         )
     }
 
-    private fun createContactLoadMore(response: GetChatSearchResponse): ContactLoadMoreUiModel? {
-        val contactCount = response.searchResults.size
+    private fun createContactLoadMore(response: GetMultiChatSearchResponse): ContactLoadMoreUiModel? {
+        val contactCount = response.contactSearchResults.size
         if (contactCount > 5) {
             return ContactLoadMoreUiModel(response.contactCount)
         }
@@ -84,8 +85,8 @@ class GetSearchQueryUseCase @Inject constructor(
     }
 
     private val query = """
-            query chatSearch($$paramKeyword: String, $$paramPage: Int, $$paramIsSeller: Int){
-              chatSearch(
+            query ($$paramKeyword: String, $$paramPage: Int, $$paramIsSeller: Int){
+              searchByName: chatSearch(
                 keyword:$$paramKeyword, 
                 page: $$paramPage, 
                 isSeller: $$paramIsSeller, 
@@ -113,6 +114,26 @@ class GetSearchQueryUseCase @Inject constructor(
                     oppositeType
                   }
                 }
+              }
+              searchByReply: chatSearch(
+                keyword: $$paramKeyword, 
+                page: $$paramPage, 
+                isSeller: $$paramIsSeller, 
+                by:"reply"
+              ){
+                replies{
+                data {
+                  createBy
+                  createTimeStr
+                  lastMessage
+                  msgId
+                  oppositeId
+                  oppositeType
+                  replyId
+                  roomId
+                }
+                hasNext
+              }
               }
             }
         """.trimIndent()
