@@ -5,10 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Base64;
-import android.util.Log;
-
 import androidx.test.platform.app.InstrumentationRegistry;
-
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -40,9 +37,7 @@ import com.tokopedia.test.application.util.DeviceInfo;
 import com.tokopedia.test.application.util.DeviceScreenInfo;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
-
 import org.jetbrains.annotations.NotNull;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -53,9 +48,9 @@ import java.util.UUID;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 
-import static com.tokopedia.test.application.MockParameterKey.KEY_MOCK_CLASS_PATH;
-
 public class MockInstrumentationTestApp extends BaseMainApplication implements TkpdCoreRouter, NetworkRouter, MockResponseInterface {
+
+    private static String KEY_MOCK_CLASS_PATH = "mockClassPath";
 
     @Override
     public void onCreate() {

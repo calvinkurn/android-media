@@ -6,7 +6,9 @@ import com.tokopedia.test.application.environment.interceptor.mock.MockModelConf
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 
 class HomeMockResponseConfig: MockModelConfig() {
-    val KEY_QUERY_DYNAMIC_HOME_CHANNEL = "homeData"
+    companion object {
+        const val KEY_QUERY_DYNAMIC_HOME_CHANNEL = "homeData"
+    }
     override fun createMockModel(context: Context): MockModelConfig {
         addMockResponse(
                 KEY_QUERY_DYNAMIC_HOME_CHANNEL,
