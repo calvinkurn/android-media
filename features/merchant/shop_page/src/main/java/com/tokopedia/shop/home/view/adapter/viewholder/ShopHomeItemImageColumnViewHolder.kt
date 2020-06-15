@@ -27,7 +27,7 @@ class ShopHomeItemImageColumnViewHolder(
 
     fun bind(data: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem) {
         performanceMonitoring = PerformanceMonitoring.start(SHOP_HOME_IMAGE_MULTIPLE_COLUMN_TRACE)
-        ivMultipleColumn.setImageUrl(data.imageUrl, heightRatio = heightRatio)
+        ivMultipleColumn.setImageUrl(data.imageUrl)
         ivMultipleColumn.onUrlLoaded = {
             performanceMonitoring?.stopTrace() ?: Unit
         }

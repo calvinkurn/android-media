@@ -18,9 +18,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.play.*
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
+import com.tokopedia.play.util.observer.PlayVideoUtilObserver
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.fragment.PlayFragment
-import com.tokopedia.play_common.util.PlayLifecycleObserver
+import com.tokopedia.play_common.util.PlayVideoPlayerObserver
 import com.tokopedia.play_common.util.PlayProcessLifecycleObserver
 import org.jetbrains.annotations.TestOnly
 import javax.inject.Inject
@@ -42,7 +43,10 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
     }
 
     @Inject
-    lateinit var playLifecycleObserver: PlayLifecycleObserver
+    lateinit var playLifecycleObserver: PlayVideoPlayerObserver
+
+    @Inject
+    lateinit var playVideoUtilObserver: PlayVideoUtilObserver
 
     @Inject
     lateinit var playProcessLifecycleObserver: PlayProcessLifecycleObserver
@@ -101,6 +105,7 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
 
     private fun setupPage() {
         lifecycle.addObserver(playLifecycleObserver)
+        lifecycle.addObserver(playVideoUtilObserver)
         ProcessLifecycleOwner.get()
                 .lifecycle.addObserver(playProcessLifecycleObserver)
     }

@@ -21,7 +21,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -61,7 +60,6 @@ import com.tokopedia.shop.product.view.fragment.HomeProductFragment
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
 import com.tokopedia.shop.setting.view.activity.ShopPageSettingActivity
-import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
@@ -98,7 +96,6 @@ class ShopPageFragment :
         private const val REQUEST_CODER_USER_LOGIN = 100
         private const val REQUEST_CODE_FOLLOW = 101
         private const val REQUEST_CODE_USER_LOGIN_CART = 102
-        private const val REQUEST_CODE_SORT = 300
         private const val VIEW_CONTENT = 1
         private const val VIEW_LOADING = 2
         private const val VIEW_ERROR = 3
@@ -112,6 +109,7 @@ class ShopPageFragment :
         private const val CART_LOCAL_CACHE_NAME = "CART"
         private const val TOTAL_CART_CACHE_KEY = "CACHE_TOTAL_CART"
         private const val PATH_HOME = "home"
+        private const val PATH_REVIEW = "review"
         private const val QUERY_SHOP_REF = "shop_ref"
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
 
@@ -151,6 +149,7 @@ class ShopPageFragment :
     private val intentData: Intent = Intent()
     private var isFirstLoading: Boolean = false
     private var shouldOverrideTabToHome: Boolean = false
+    private var shouldOverrideTabToReview: Boolean = false
     private var listShopPageTabModel = listOf<ShopPageTabModel>()
     private val customDimensionShopPage: CustomDimensionShopPage by lazy {
         CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
@@ -241,11 +240,6 @@ class ShopPageFragment :
         initialFloatingChatButtonMarginBottom = buttonChatLayoutParams.bottomMargin
     }
 
-    private fun openShopProductSortPage() {
-        val intent = ShopProductSortActivity.createIntent(activity, "")
-        startActivityForResult(intent, REQUEST_CODE_SORT)
-    }
-
     private fun observeLiveData(owner: LifecycleOwner) {
         shopViewModel.shopFavouriteResp.observe(this, Observer {
             updateFavouriteResult(it.alreadyFavorited == 1)
@@ -333,6 +327,9 @@ class ShopPageFragment :
                     if (lastPathSegment.orEmpty() == PATH_HOME) {
                         shouldOverrideTabToHome = true
                     }
+                    if (lastPathSegment.orEmpty() == PATH_REVIEW) {
+                        shouldOverrideTabToReview = true
+                    }
                     shopRef = getQueryParameter(QUERY_SHOP_REF) ?: ""
                     shopAttribution = getQueryParameter(QUERY_SHOP_ATTRIBUTION) ?: ""
                 }
@@ -408,14 +405,6 @@ class ShopPageFragment :
         searchBarText.setOnClickListener {
             clickSearch()
         }
-        searchBarSort.setOnClickListener {
-            clickSort()
-        }
-    }
-
-    private fun clickSort() {
-        shopPageTracking?.clickSort(isMyShop, customDimensionShopPage)
-        openShopProductSortPage()
     }
 
     private fun saveShopInfoModelToCacheManager(shopInfo: ShopInfo): String? {
@@ -625,6 +614,13 @@ class ShopPageFragment :
                 viewPagerAdapter.getFragmentPosition(ShopPageHomeFragment::class.java)
             }
         }
+        if(shouldOverrideTabToReview){
+            selectedPosition = if(viewPagerAdapter.isFragmentObjectExists((activity?.application as ShopModuleRouter).reviewFragmentClass)){
+                viewPagerAdapter.getFragmentPosition((activity?.application as ShopModuleRouter).reviewFragmentClass)
+            } else {
+                selectedPosition
+            }
+        }
         tabLayout?.apply {
             for (i in 0 until tabCount) {
                 getTabAt(i)?.customView = viewPagerAdapter.getTabView(i, selectedPosition)
@@ -785,36 +781,20 @@ class ShopPageFragment :
             if (resultCode == Activity.RESULT_OK) {
                 refreshData()
             }
-        } else if (requestCode == REQUEST_CODE_SORT) {
-            data?.let {
-                val sortValue = it.getStringExtra(ShopProductSortActivity.SORT_VALUE)
-                val sortName = it.getStringExtra(ShopProductSortActivity.SORT_NAME)
-                shopPageTracking?.sortProduct(sortName, isMyShop, customDimensionShopPage)
-                redirectToShopSearchProductResultPage(sortValue)
-            }
-        } else if (requestCode == REQUEST_CODE_USER_LOGIN_CART) {
+        }
+//        else if (requestCode == REQUEST_CODE_SORT) {
+//            data?.let {
+//                val sortValue = it.getStringExtra(ShopProductSortActivity.SORT_VALUE)
+//                val sortName = it.getStringExtra(ShopProductSortActivity.SORT_NAME)
+//                shopPageTracking?.sortProduct(sortName, isMyShop, customDimensionShopPage)
+//                redirectToShopSearchProductResultPage(sortValue)
+//            }
+//        }
+        else if (requestCode == REQUEST_CODE_USER_LOGIN_CART) {
             if (resultCode == Activity.RESULT_OK) {
                 refreshData()
                 goToCart()
             }
-        }
-    }
-
-    private fun redirectToShopSearchProductResultPage(sortName: String) {
-        if (getShopInfoData() == null)
-            return
-        var selectedEtalaseId = ""
-        for (pos in 0 until viewPagerAdapter.count) {
-            val fragment = viewPagerAdapter.getRegisteredFragment(pos)
-            if (fragment is ShopPageProductListFragment) {
-                selectedEtalaseId = fragment.getSelectedEtalaseId()
-            }
-        }
-        if (selectedEtalaseId.isNotEmpty()) {
-            shopPageTracking?.clickSortBy(isMyShop,
-                    sortName, CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant))
-            startActivity(ShopProductListActivity.createIntent(activity, shopId,
-                    "", selectedEtalaseId, "", sortName, shopRef))
         }
     }
 
