@@ -7,7 +7,7 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_gravity="center"
-        android:id="@+id/loader_unify"
+        android:id="@+id/loader_unify_event_pdp"
         android:layout_width="@dimen/spacing_lvl8"
         android:layout_height="@dimen/spacing_lvl8"
         android:layout_marginTop="@dimen/spacing_lvl3"
@@ -15,7 +15,7 @@
         app:loader_type="circular" />
 
     <WebView
-        android:id="@+id/web_view"
+        android:id="@+id/web_event_pdp_about"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"

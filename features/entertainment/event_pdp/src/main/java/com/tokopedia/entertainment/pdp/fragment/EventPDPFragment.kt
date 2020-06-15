@@ -391,7 +391,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
         val viewParent = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_event_pdp_about, null)
         val bottomSheets = BottomSheetUnify()
-        val webView = viewParent.web_view
+        val webView = viewParent.web_event_pdp_about
         bottomSheets.apply {
             isFullpage = true
             setChild(viewParent)
@@ -404,7 +404,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         }
 
         bottomSheets.setShowListener {
-            val loader = viewParent.loader_unify
+            val loader = viewParent.loader_unify_event_pdp
 
             webView.loadData(value, "text/html", "UTF-8")
             webView.webViewClient = object : WebViewClient(){
