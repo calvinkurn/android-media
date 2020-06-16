@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class DataChangeAddressRequest {
 
-    @SerializedName("cart_id")
+    @SerializedName("cart_id_str")
     @Expose
     private long cartId;
 
