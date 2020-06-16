@@ -2,6 +2,7 @@ package com.tokopedia.seller.search.common
 
 import android.app.Application
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.seller.search.common.di.component.DaggerGlobalSearchSellerComponent
 import com.tokopedia.seller.search.common.di.component.GlobalSearchSellerComponent
 
 class GlobalSearchSellerComponentBuilder {

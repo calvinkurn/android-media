@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.common.GlobalSearchSellerComponentBuilder
+import com.tokopedia.seller.search.feature.initialsearch.di.component.DaggerInitialSearchComponent
 import com.tokopedia.seller.search.feature.initialsearch.di.component.InitialSearchComponent
 import com.tokopedia.seller.search.feature.initialsearch.di.module.InitialSearchModule
 import com.tokopedia.seller.search.feature.initialsearch.view.fragment.InitialSearchFragment
@@ -44,7 +45,7 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
     override fun getComponent(): InitialSearchComponent {
         return DaggerInitialSearchComponent
                 .builder()
-                .initialSearchComponent(GlobalSearchSellerComponentBuilder.getComponent(application))
+                .globalSearchSellerComponent(GlobalSearchSellerComponentBuilder.getComponent(application))
                 .initialSearchModule(InitialSearchModule())
                 .build()
     }
