@@ -77,9 +77,6 @@
 /features/merchant/gallery/                             @tokopedia/minion-stuart
 /features/merchant/favorite/                            @tokopedia/minion-stuart
 
-/features/communication/broadcast_message               @tokopedia/minion-stuart
-/features/communication/broadcast_message_common        @tokopedia/minion-stuart
-
 /features/top_ads/top_ads_dashboard/                    @tokopedia/minion-skywalker
 /features/top_ads/top_ads_free_claim/                   @tokopedia/minion-skywalker
 /features/top_ads/top_ads_management/                   @tokopedia/minion-skywalker
