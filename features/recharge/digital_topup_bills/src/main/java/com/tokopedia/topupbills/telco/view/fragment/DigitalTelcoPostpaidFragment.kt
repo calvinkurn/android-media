@@ -236,6 +236,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             mapParam.put(KEY_CLIENT_NUMBER, postpaidClientNumberWidget.getInputNumber())
             mapParam.put(KEY_PRODUCT_ID, selectedOperator.operator.attributes.defaultProductId.toString())
 
+            postpaidClientNumberWidget.setLoadingButtonEnquiry(true)
             enquiryViewModel.getEnquiry(GraphqlHelper.loadRawString(resources,
                     com.tokopedia.common.topupbills.R.raw.query_enquiry_digital), mapParam)
 
@@ -249,6 +250,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private fun enquirySuccess() {
+        postpaidClientNumberWidget.setLoadingButtonEnquiry(false)
         tabLayout.hide()
         separator.hide()
         viewPager.hide()
@@ -261,6 +263,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private fun enquiryFailed() {
+        postpaidClientNumberWidget.setLoadingButtonEnquiry(false)
         val errorEnquiry = enquiryViewModel.enquiryResult.value as Fail
         view?.run {
             errorEnquiry.throwable?.let {
