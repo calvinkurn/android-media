@@ -1239,6 +1239,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun observeP2Login() {
         viewLifecycleOwner.observe(viewModel.p2Login) {
             topAdsGetProductManage = it.topAdsGetProductManage
+            if(it.pdpAffiliate == null) {
+                dynamicAdapter.removeComponentSection(pdpUiUpdater?.productByMeMap)
+            }
             it.pdpAffiliate?.let { renderAffiliate(it) }
             actionButtonView.setTopAdsButton(hasTopAds())
             pdpUiUpdater?.updateWishlistData(it.isWishlisted)
@@ -2036,8 +2039,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             ticker_occ_layout.gone()
         } else if (!GlobalConfig.isSellerApp()) {
             base_btn_affiliate_dynamic.gone()
-            actionButtonView.byMeClick = this::onAffiliateClick
-            actionButtonView.showByMe(true)
         }
     }
 

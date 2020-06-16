@@ -10,28 +10,6 @@
     android:background="@drawable/bg_shadow_top">
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/btn_byme"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginBottom="@dimen/dp_8"
-        android:background="@drawable/white_button_rounded"
-        android:padding="@dimen/dp_4"
-        android:scaleType="center"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btn_topchat"
-        app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/btn_topchat"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_byme"
-        tools:visibility="visible" />
-
-    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/btn_topchat"
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"
@@ -45,9 +23,8 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btn_buy_now"
-        app:layout_constraintLeft_toRightOf="@+id/btn_byme"
         app:layout_constraintRight_toLeftOf="@+id/btn_buy_now"
-        app:layout_constraintStart_toEndOf="@+id/btn_byme"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_topchat_variant_green"
         tools:visibility="visible" />
