@@ -141,6 +141,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
 
     private static ApplinkDelegate applinkDelegate;
     private Subscription clearNotifUseCase;
+    private static final String ENABLE_ASYNC_APPLINK_DELEGATE_CREATION = "android_async_applink_delegate_creation";
+
 
     public static ApplinkDelegate getApplinkDelegateInstance() {
         if (applinkDelegate == null) {
@@ -223,7 +225,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         finish();
     }
 
-    public static void createApplinkDelegateInBackground(){
+    public static void createApplinkDelegateInBackground(Context context){
         WeaveInterface appLinkDelegateWeave = new WeaveInterface() {
             @NotNull
             @Override
@@ -231,7 +233,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                 return getAppLinkDelegate();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineNow(appLinkDelegateWeave);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(appLinkDelegateWeave, ENABLE_ASYNC_APPLINK_DELEGATE_CREATION, context.getApplicationContext());
     }
 
     private static boolean getAppLinkDelegate(){
