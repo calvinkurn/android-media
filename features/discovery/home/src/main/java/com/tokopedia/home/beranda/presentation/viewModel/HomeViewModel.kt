@@ -521,8 +521,8 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun insertSalamWidget(data: SalamWidget) {
-        if (data.salamWidget.mainText.isNotEmpty()) {
+    private fun getUpdateLiveDataSalamWidget(data: SalamWidget): UpdateLiveDataModel {
+        var updateLiveDataModel = UpdateLiveDataModel()
             _homeLiveData.value?.list?.run {
                 val findSalamWidgetModel = find { visitable -> visitable is ReminderWidgetModel
                         && (visitable.source == ReminderEnum.SALAM)}
@@ -532,12 +532,10 @@ open class HomeViewModel @Inject constructor(
                             data = mapperSalamtoReminder(data),
                             source = ReminderEnum.SALAM
                     )
-                    launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, newFindSalamWidgetModel, indexOfSalamWidgetModel)) }
+                   updateLiveDataModel = UpdateLiveDataModel(ACTION_UPDATE, newFindSalamWidgetModel, indexOfSalamWidgetModel)
                 }
             }
-        } else {
-            removeSalamWidget()
-        }
+        return updateLiveDataModel
     }
 
     private fun removeRechargeRecommendation() {
@@ -826,7 +824,11 @@ open class HomeViewModel @Inject constructor(
 
         getSalamWidgetJob = launchCatchError(coroutineContext, block = {
             val data = getSalamWidgetUseCase.get().executeOnBackground()
-            insertSalamWidget(data)
+            if(data.salamWidget.mainText.isNotEmpty()) {
+                updateWidget(getUpdateLiveDataSalamWidget(data))
+            } else {
+                removeSalamWidget()
+            }
         }){
             removeSalamWidget()
         }
