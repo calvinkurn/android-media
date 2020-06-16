@@ -18,9 +18,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:host="@string/host_marketplace"
-                    android:pathPattern="@string/path_sellerapp_search"
-                    android:scheme="@string/internal_scheme" />
+                    android:scheme="@string/tokopedia_scheme"
+                    android:host="@string/path_sellerapp_search"/>
             </intent-filter>
 
         </activity>

@@ -161,6 +161,8 @@ public interface ApplinkConst {
     String SELLER_INFO = "tokopedia://sellerinfo";
     String SELLER_INFO_DETAIL = "tokopedia://sellerinfo/detail";
 
+    String SELLER_SEARCH = "tokopedia://seller-search";
+
     String TC_LANDING = "tokopedia://tc-landing";
 
     String PLAY_NOTIFICATION_VIDEO = "tokopedia://play-notif-video";

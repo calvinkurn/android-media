@@ -16,7 +16,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -171,7 +170,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
             RouteManager.route(requireContext(), ApplinkConst.SELLER_INFO)
             NavigationTracking.sendClickNotificationEvent()
         } else if(item.itemId == SEARCH_MENU_ID) {
-            RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.SELLER_SEARCH)
+            RouteManager.route(requireContext(), ApplinkConst.SELLER_SEARCH)
         }
         return super.onOptionsItemSelected(item)
     }

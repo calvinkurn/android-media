@@ -286,10 +286,6 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val REVIEW_SELLER = "$INTERNAL_MARKETPLACE/seller-review-page"
 
-    //InitialSellerSearchActivity
-    @JvmField
-    val SELLER_SEARCH = "$INTERNAL_MARKETPLACE/seller-search"
-
     //InboxReputationReportActivity
     @JvmField
     val REVIEW_SELLER_REPORT = "$INTERNAL_MARKETPLACE/review-report"
