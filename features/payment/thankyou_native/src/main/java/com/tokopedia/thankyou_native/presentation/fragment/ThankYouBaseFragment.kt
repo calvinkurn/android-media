@@ -28,6 +28,7 @@ import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewMo
 import com.tokopedia.thankyou_native.recommendation.presentation.view.IRecommendationView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.MarketPlaceRecommendation
 import com.tokopedia.thankyou_native.recommendation.presentation.view.WishList
+import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.DigitalRecommendation
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.IDigitalRecommendationView
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -104,7 +105,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     }
     private fun addMarketPlaceRecommendation(){
         val recomContainer = getRecommendationContainer()
-        recomContainer?.let { container ->
+        iRecommendationView= recomContainer?.let { container ->
             val view = getRecommendationView(marketRecommendationPlaceLayout)
             container.addView(view)
             view.findViewById<MarketPlaceRecommendation>(R.id.marketPlaceRecommendationView)
@@ -113,10 +114,10 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     }
     private fun addDigitalRecommendation(){
         val recomContainer = getRecommendationContainer()
-        recomContainer?.let { container ->
+        iDigitalRecommendationView =  recomContainer?.let { container ->
             val view = getRecommendationView(digitalRecommendationLayout)
             container.addView(view)
-            view.findViewById<MarketPlaceRecommendation>(R.id.digitalRecommendationView)
+            view.findViewById<DigitalRecommendation>(R.id.digitalRecommendationView)
         }
         iDigitalRecommendationView?.loadRecommendation(this)
     }

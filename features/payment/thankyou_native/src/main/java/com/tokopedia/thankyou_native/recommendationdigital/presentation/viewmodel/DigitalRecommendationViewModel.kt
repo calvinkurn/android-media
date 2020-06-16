@@ -2,7 +2,9 @@ package com.tokopedia.thankyou_native.recommendationdigital.presentation.viewmod
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.thankyou_native.recommendationdigital.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.thankyou_native.recommendationdigital.domain.usecase.DigitalRecommendationUseCase
+import com.tokopedia.thankyou_native.recommendationdigital.model.DigitalRecommendationList
 import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -12,11 +14,11 @@ import javax.inject.Inject
 
 class DigitalRecommendationViewModel @Inject constructor(
         private val digitalRecommendationUseCase: DigitalRecommendationUseCase,
-         dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+         @CoroutineMainDispatcher dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
-    val digitalRecommendationLiveData = MutableLiveData<Result<RecommendationResponse>>()
+    val digitalRecommendationLiveData = MutableLiveData<Result<DigitalRecommendationList>>()
 
-    fun getDigitalRecommendationData(deviceId: String, categoryId: String) {
+    fun getDigitalRecommendationData(deviceId: Int, categoryId: String) {
         digitalRecommendationUseCase.cancelJobs()
         digitalRecommendationUseCase.getDigitalRecommendationData(
                 ::onDigitalRecomDataSuccess,
@@ -26,8 +28,8 @@ class DigitalRecommendationViewModel @Inject constructor(
         )
     }
 
-    private fun onDigitalRecomDataSuccess(recommendationResponse: RecommendationResponse) {
-        digitalRecommendationLiveData.value = Success(recommendationResponse)
+    private fun onDigitalRecomDataSuccess(digitalRecommendationList: DigitalRecommendationList) {
+        digitalRecommendationLiveData.value = Success(digitalRecommendationList)
     }
 
     private fun onDigitalRecomError(throwable: Throwable) {

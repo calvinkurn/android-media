@@ -11,7 +11,7 @@ class DigitalRecommendationAdapter(val items: List<RecommendationsItem>, val onI
 
     override fun onBindViewHolder(viewHolder: DigitalRecommendationViewHolder, position: Int) {
         val element = items[position]
-        //(viewHolder.itemView as DigitalRecommendationWidget).data = mapRecommendationData(element)
+        (viewHolder.itemView as DigitalRecommendationWidget).data = element
         viewHolder.itemView.setOnClickListener {
             onItemBindListener.onDigitalProductClick(element, position)
         }

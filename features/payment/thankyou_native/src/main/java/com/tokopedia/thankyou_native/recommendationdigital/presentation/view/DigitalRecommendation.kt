@@ -12,19 +12,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
-import com.tokopedia.thankyou_native.recommendation.analytics.RecommendationAnalytics
-import com.tokopedia.thankyou_native.recommendation.di.component.DaggerRecommendationComponent
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.decorator.ProductCardDefaultDecorator
+import com.tokopedia.thankyou_native.recommendationdigital.di.component.DaggerDigitalRecommendationComponent
 import com.tokopedia.thankyou_native.recommendationdigital.model.DigitalRecommendationList
 import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationsItem
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.adapter.DigitalRecommendationAdapter
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.adapter.listener.DigitalRecommendationViewListener
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.viewmodel.DigitalRecommendationViewModel
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_pdp_recommendation.view.*
 import javax.inject.Inject
 
@@ -33,14 +33,14 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
 
     private lateinit var fragment: BaseDaggerFragment
 
-    @Inject
-    lateinit var analytics: dagger.Lazy<RecommendationAnalytics>
+//    @Inject
+//    lateinit var analytics: dagger.Lazy<RecommendationAnalytics>
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
-    @Inject
-    lateinit var userSessionInterface: dagger.Lazy<UserSessionInterface>
+//    @Inject
+//    lateinit var userSessionInterface: dagger.Lazy<UserSessionInterface>
 
     var isObserverAttached = false
 
@@ -72,7 +72,7 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
     }
 
     private fun injectComponents() {
-        DaggerRecommendationComponent.builder()
+        DaggerDigitalRecommendationComponent.builder()
                 .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
                 .build().inject(this)
     }
@@ -84,7 +84,7 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
     override fun loadRecommendation(fragment: BaseDaggerFragment) {
         this.fragment = fragment
         startViewModelObserver()
-        viewModel.getDigitalRecommendationData("1","5")
+        viewModel.getDigitalRecommendationData(5,"1")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
@@ -110,7 +110,7 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
             viewModel.digitalRecommendationLiveData.observe(fragment,
                     Observer {
                         when (it) {
-                           // is Success -> addResultToUI(it.data)
+                            is Success -> addResultToUI(it.data)
                         }
                     }
             )
@@ -130,7 +130,7 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL,
                 false)
-        adapter = DigitalRecommendationAdapter(recommendationItemList , listener)
+        adapter = DigitalRecommendationAdapter(recommendationItemList , listener!!)
         recyclerView.adapter = adapter
         recyclerView.addItemDecoration(ProductCardDefaultDecorator())
     }
@@ -146,12 +146,8 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
 
 
     private fun onRecomProductClick(item: RecommendationsItem, position: Int) {
+        RouteManager.route(context, item.appLink)
        // analytics.get().sendRecommendationItemClick(item, position = position + 1)
-        val intent = RouteManager.getIntent(context,
-                ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString())
-
-       // intent.putExtra(WishList.PDP_EXTRA_UPDATED_POSITION, position)
-       // fragment.startActivityForResult(intent, WishList.REQUEST_FROM_PDP)
     }
 
 
