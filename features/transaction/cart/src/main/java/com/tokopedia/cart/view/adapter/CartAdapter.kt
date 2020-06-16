@@ -381,7 +381,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             DisabledShopViewHolder.LAYOUT -> {
                 val view = LayoutInflater.from(parent.context)
                         .inflate(DisabledShopViewHolder.LAYOUT, parent, false)
-                return DisabledShopViewHolder(view)
+                return DisabledShopViewHolder(view, actionListener)
             }
             else -> throw RuntimeException("No view holder type found")
         }

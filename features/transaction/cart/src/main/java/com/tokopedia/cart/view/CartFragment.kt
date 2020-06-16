@@ -1224,13 +1224,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onCartShopNameClicked(cartShopHolderData: CartShopHolderData) {
-        sendAnalyticsOnClickShopCartItem(cartShopHolderData.shopGroupAvailableData.shopId
-                ?: "", cartShopHolderData.shopGroupAvailableData.shopName ?: "")
+    override fun onCartShopNameClicked(shopId: String?, shopName: String?) {
+        if (shopId != null && shopName != null) {
+            sendAnalyticsOnClickShopCartItem(shopId, shopName)
 
-        activity?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConst.SHOP, cartShopHolderData.shopGroupAvailableData.shopId)
-            it.startActivity(intent)
+            activity?.let {
+                val intent = RouteManager.getIntent(it, ApplinkConst.SHOP, shopId)
+                it.startActivity(intent)
+            }
         }
     }
 
