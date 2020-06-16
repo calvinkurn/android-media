@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.Fade
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.viewholder.SearchSuggestionViewHolder
@@ -28,7 +29,7 @@ class PlaySearchSuggestionsFragment @Inject constructor(
 
     private val searchSuggestionsAdapter = SearchSuggestionsAdapter(object : SearchSuggestionViewHolder.Listener {
         override fun onSuggestionClicked(suggestionText: String) {
-            etalaseSetupCoordinator.openProductSearchPage(suggestionText, PlaySearchSuggestionsFragment::class.java)
+            etalaseSetupCoordinator.openProductSearchPage(suggestionText)
         }
     })
 
@@ -87,18 +88,12 @@ class PlaySearchSuggestionsFragment @Inject constructor(
      * Transition
      */
     private fun setupTransition() {
-        setupEnterTransition()
         setupExitTransition()
     }
 
-    private fun setupEnterTransition() {
-//        enterTransition = Slide(Gravity.BOTTOM)
-//                .setDuration(300)
-    }
-
     private fun setupExitTransition() {
-//        exitTransition = Fade(Fade.OUT)
-//                .setDuration(300)
+        exitTransition = Fade(Fade.OUT)
+                .setDuration(300)
     }
 
     companion object {

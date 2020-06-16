@@ -163,11 +163,13 @@ class PlaySearchResultFragment @Inject constructor(
 
     private fun setupEnterTransition() {
         enterTransition = Slide(Gravity.BOTTOM)
+                .setStartDelay(150)
                 .setDuration(300)
     }
 
     private fun setupExitTransition() {
         exitTransition = Slide(Gravity.BOTTOM)
+                .setStartDelay(150)
                 .setDuration(300)
     }
 

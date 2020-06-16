@@ -14,6 +14,7 @@
         android:layout_marginTop="@dimen/play_dp_20"
         android:layout_marginEnd="@dimen/play_dp_12"
         android:layout_marginStart="@dimen/play_dp_12"
+        android:transitionGroup="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

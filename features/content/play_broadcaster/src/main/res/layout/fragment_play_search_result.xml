@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:transitionGroup="true"
     >
 
     <androidx.recyclerview.widget.RecyclerView
@@ -14,6 +15,7 @@
         android:layout_marginTop="@dimen/play_dp_20"
         android:layout_marginEnd="@dimen/play_dp_12"
         android:layout_marginStart="@dimen/play_dp_12"
+        android:transitionGroup="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,6 +31,7 @@
         android:layout_marginStart="@dimen/play_dp_12"
         android:gravity="center"
         android:visibility="gone"
+        android:transitionGroup="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
