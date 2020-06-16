@@ -292,4 +292,9 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     public void showSimpleAppRatingDialog(Activity activity) {
 
     }
+
+    @Override
+    public Fragment getReviewSellerFragment() {
+        return null;
+    }
 }
