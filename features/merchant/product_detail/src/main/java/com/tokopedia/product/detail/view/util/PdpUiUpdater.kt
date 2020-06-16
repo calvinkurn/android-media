@@ -179,10 +179,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 val dateFormatted = it.data.price.lastUpdateUnix toDate "dd-MM-yyy , HH:mm"
                 lastSeen = "$dateFormatted WIB"
             }
-
-            productByMeMap?.run {
-                data.first().subtitle = context?.getString(R.string.product_detail_by_me_subtitle) ?: ""
-            }
         }
     }
 
@@ -264,6 +260,12 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
         productFullfilmentMap?.run {
             data.first().subtitle = fullFillmentText
+        }
+    }
+
+    fun updateByMeData(context: Context?) {
+        productByMeMap?.run {
+            data.first().subtitle = context?.getString(R.string.product_detail_by_me_subtitle) ?: ""
         }
     }
 

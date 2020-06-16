@@ -1241,6 +1241,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             topAdsGetProductManage = it.topAdsGetProductManage
             if(it.pdpAffiliate == null) {
                 dynamicAdapter.removeComponentSection(pdpUiUpdater?.productByMeMap)
+            } else {
+                pdpUiUpdater?.updateByMeData(context)
             }
             it.pdpAffiliate?.let { renderAffiliate(it) }
             actionButtonView.setTopAdsButton(hasTopAds())
