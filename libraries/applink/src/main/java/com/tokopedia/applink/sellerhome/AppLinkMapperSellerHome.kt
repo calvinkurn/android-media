@@ -66,7 +66,7 @@ object AppLinkMapperSellerHome {
         }
     }
 
-    private fun shouldRedirectToSellerApp(deepLink: String): Boolean {
+    fun shouldRedirectToSellerApp(deepLink: String): Boolean {
         val uri = Uri.parse(deepLink)
         return uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false)
     }
