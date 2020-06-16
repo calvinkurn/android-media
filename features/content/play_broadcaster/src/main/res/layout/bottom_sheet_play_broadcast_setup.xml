@@ -9,7 +9,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:background="@color/Blue_B600">
+        tools:background="@color/Blue_B600"
+        >
 
         <FrameLayout
             android:id="@+id/fl_overlay"
@@ -33,7 +34,7 @@
             android:id="@+id/fl_fragment"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/layout_lvl0"
-            android:background="@drawable/bottomsheet_background"
+            android:background="@drawable/bg_play_bottom_sheet"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

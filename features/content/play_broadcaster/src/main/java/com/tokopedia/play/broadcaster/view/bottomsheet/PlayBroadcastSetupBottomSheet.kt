@@ -107,6 +107,10 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         complete()
     }
 
+    override fun goBack() {
+        dialog?.onBackPressed()
+    }
+
     fun show(fragmentManager: FragmentManager) {
         show(fragmentManager, TAG)
     }

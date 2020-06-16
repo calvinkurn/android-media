@@ -21,6 +21,7 @@ import com.tokopedia.play.broadcaster.ui.model.CoverSourceEnum
 import com.tokopedia.play.broadcaster.ui.model.CoverStarterEnum
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastChooseCoverBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastCoverFromGalleryBottomSheet
+import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastCoverTitleViewModel
 import com.tokopedia.play.broadcaster.view.widget.PlayCropImageView
@@ -49,6 +50,8 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
     private var selectedCoverUri: Uri? = null
     private var coverSource: CoverSourceEnum = CoverSourceEnum.NONE
     private var starterState: CoverStarterEnum = CoverStarterEnum.NORMAL
+
+    private lateinit var bottomSheetHeader: PlayBottomSheetHeader
 
     override fun getScreenName(): String = "Play Cover Title Setup"
 
@@ -96,6 +99,7 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView(view)
         setupView()
     }
 
@@ -165,8 +169,14 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
         }
     }
 
+    private fun initView(view: View) {
+        with (view) {
+            bottomSheetHeader = findViewById(R.id.bottom_sheet_header)
+        }
+    }
+
     private fun setupView() {
-        bottomSheetCoordinator.setupTitle(getString(R.string.play_prepare_cover_title_title))
+        bottomSheetHeader.setHeader(getString(R.string.play_prepare_cover_title_title), isRoot = false)
 
         containerChangeCover.setOnClickListener {
             onChangeCoverClicked()

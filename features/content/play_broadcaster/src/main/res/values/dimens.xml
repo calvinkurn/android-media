@@ -58,4 +58,6 @@
     <dimen name="play_cover_width">234dp</dimen>
     <dimen name="play_cover_height">415dp</dimen>
     <dimen name="play_cover_bottom_detail">120dp</dimen>
+
+    <dimen name="play_bottom_sheet_top_radius">10dp</dimen>
 </resources>

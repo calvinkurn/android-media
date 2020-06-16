@@ -148,6 +148,12 @@ class PlayEtalaseDetailFragment @Inject constructor(
             scrollListener.loadMoreNextPage()
             shouldLoadFirst = false
         }
+
+        bottomSheetHeader.setListener(object : PlayBottomSheetHeader.Listener {
+            override fun onBackButtonClicked(view: PlayBottomSheetHeader) {
+                bottomSheetCoordinator.goBack()
+            }
+        })
     }
 
     /**
@@ -155,7 +161,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
      */
     private fun observeProductsInSelectedEtalase() {
         viewModel.observableSelectedEtalase.observe(viewLifecycleOwner, Observer {
-            bottomSheetHeader.setHeader(getString(R.string.play_etalase_detail_header, it.currentValue.name, it.currentValue.totalProduct), isRoot = true)
+            bottomSheetHeader.setHeader(getString(R.string.play_etalase_detail_header, it.currentValue.name, it.currentValue.totalProduct), isRoot = false)
             tvInfo.text = getString(R.string.play_product_select_max_info, viewModel.maxProduct)
             when (it.state) {
                 is PageResultState.Success -> {

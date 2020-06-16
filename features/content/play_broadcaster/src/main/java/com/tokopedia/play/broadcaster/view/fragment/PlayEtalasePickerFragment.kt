@@ -168,6 +168,11 @@ class PlayEtalasePickerFragment @Inject constructor(
 
         if (currentFragment == null) openFragment(PlayEtalaseListFragment::class.java)
 
+        bottomSheetHeader.setListener(object : PlayBottomSheetHeader.Listener {
+            override fun onBackButtonClicked(view: PlayBottomSheetHeader) {
+                bottomSheetCoordinator.goBack()
+            }
+        })
         bottomSheetHeader.setHeader(getString(R.string.play_etalase_picker_title), isRoot = true)
     }
 
