@@ -3,8 +3,8 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
+import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.ProductListSectionContract
-import com.tokopedia.search.result.presentation.presenter.product.testinstance.searchProductModelCommon
 import com.tokopedia.search.shouldBe
 import io.mockk.MockKVerificationScope
 
@@ -15,7 +15,7 @@ fun MockKVerificationScope.verifyShowLoading(productListView: ProductListSection
     productListView.showRefreshLayout()
 }
 
-fun MockKVerificationScope.verifyProcessingData(productListView: ProductListSectionContract.View) {
+fun MockKVerificationScope.verifyProcessingData(productListView: ProductListSectionContract.View, searchProductModel: SearchProductModel) {
     productListView.stopNetworkRequestPerformanceMonitoring()
     productListView.startRenderPerformanceMonitoring()
 
@@ -25,8 +25,8 @@ fun MockKVerificationScope.verifyProcessingData(productListView: ProductListSect
     productListView.lastProductItemPositionFromCache
     productListView.saveLastProductItemPositionToCache(any())
 
-    productListView.setAutocompleteApplink(searchProductModelCommon.searchProduct.autocompleteApplink)
-    productListView.setDefaultLayoutType(searchProductModelCommon.searchProduct.defaultView)
+    productListView.setAutocompleteApplink(searchProductModel.aceSearchProduct.data.autocompleteApplink)
+    productListView.setDefaultLayoutType(searchProductModel.aceSearchProduct.header.defaultView)
     productListView.removeLoading()
     productListView.setProductList(any())
     productListView.showFreeOngkirShowCase(false)
@@ -54,6 +54,7 @@ fun MockKVerificationScope.verifyShowLoadMoreError(productListView: ProductListS
 }
 
 fun MockKVerificationScope.verifySendTrackingOnFirstTimeLoad(productListView: ProductListSectionContract.View) {
+    productListView.queryKey
     productListView.sendTrackingEventAppsFlyerViewListingSearch(any(), any(), any())
     productListView.sendTrackingEventMoEngageSearchAttempt(any(), any(), any())
     productListView.previousKeyword

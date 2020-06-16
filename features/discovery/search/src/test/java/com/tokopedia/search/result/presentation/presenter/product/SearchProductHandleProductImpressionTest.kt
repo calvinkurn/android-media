@@ -2,8 +2,6 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
-import com.tokopedia.search.result.presentation.presenter.product.testinstance.topAdsClickUrl
-import com.tokopedia.search.result.presentation.presenter.product.testinstance.topAdsImpressionUrl
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.slot

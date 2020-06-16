@@ -2,10 +2,10 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.search.TestException
+import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.error
-import com.tokopedia.search.result.presentation.presenter.product.testinstance.searchProductModelCommon
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.usecase.RequestParams
@@ -19,27 +19,28 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
 
     @Test
     fun `Load More Data Success`() {
-        `Given Search Product API will return SearchProductModel`()
-        `Given Search Product Load More API will return SearchProductModel`()
+        val searchProductModel = searchProductCommonResponseJSON.jsonToObject<SearchProductModel>()
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given Search Product Load More API will return SearchProductModel`(searchProductModel)
         `Given Product List Presenter already Load Data`()
 
         val loadMoreSearchParameter = createLoadMoreSearchParameter()
         `When Product List Presenter Load More Data`(loadMoreSearchParameter)
 
         `Then verify load more use case request params`()
-        `Then verify view interaction when load more data success`()
+        `Then verify view interaction when load more data success`(searchProductModel)
         `Then verify start from is incremented twice`()
     }
 
-    private fun `Given Search Product API will return SearchProductModel`() {
+    private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {
         every { searchProductFirstPageUseCase.execute(any(), any()) }.answers {
-            secondArg<Subscriber<SearchProductModel>>().complete(searchProductModelCommon)
+            secondArg<Subscriber<SearchProductModel>>().complete(searchProductModel)
         }
     }
 
-    private fun `Given Search Product Load More API will return SearchProductModel`() {
+    private fun `Given Search Product Load More API will return SearchProductModel`(searchProductModel: SearchProductModel) {
         every { searchProductLoadMoreUseCase.execute(capture(requestParamsSlot), any()) }.answers {
-            secondArg<Subscriber<SearchProductModel>>().complete(searchProductModelCommon)
+            secondArg<Subscriber<SearchProductModel>>().complete(searchProductModel)
         }
     }
 
@@ -71,13 +72,13 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
         requestParams.getInt(SearchApiConst.START, -1) shouldBe 8
     }
 
-    private fun `Then verify view interaction when load more data success`() {
+    private fun `Then verify view interaction when load more data success`(searchProductModel: SearchProductModel) {
         verifyOrder {
             productListView.isAnyFilterActive
 
             verifyShowLoading(productListView)
 
-            verifyProcessingData(productListView)
+            verifyProcessingData(productListView, searchProductModel)
 
             productListView.showBottomNavigation()
             productListView.updateScrollListener()
@@ -100,15 +101,16 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
     fun `Load More Data Failed with exception`() {
         val testException = TestException()
         val slotSearchParameterErrorLog = slot<String>()
+        val searchProductModelCommon = searchProductCommonResponseJSON.jsonToObject<SearchProductModel>()
 
-        `Given Search Product API will return SearchProductModel`()
+        `Given Search Product API will return SearchProductModel`(searchProductModelCommon)
         `Given Search Product Load More API will throw exception`(testException)
         `Given Product List Presenter already Load Data`()
 
         val loadMoreSearchParameter = createLoadMoreSearchParameter()
         `When Product List Presenter Load More Data`(loadMoreSearchParameter)
 
-        `Then verify view interaction for load data failed with exception`(slotSearchParameterErrorLog, testException)
+        `Then verify view interaction for load data failed with exception`(slotSearchParameterErrorLog, testException, searchProductModelCommon)
         `Then verify logged error message is from search parameter`(slotSearchParameterErrorLog, loadMoreSearchParameter)
     }
 
@@ -118,13 +120,17 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
         }
     }
 
-    private fun `Then verify view interaction for load data failed with exception`(slotSearchParameterErrorLog: CapturingSlot<String>, exception: Exception) {
+    private fun `Then verify view interaction for load data failed with exception`(
+            slotSearchParameterErrorLog: CapturingSlot<String>,
+            exception: Exception,
+            searchProductModelFirstPage: SearchProductModel
+    ) {
         verifyOrder {
             productListView.isAnyFilterActive
 
             verifyShowLoading(productListView)
 
-            verifyProcessingData(productListView)
+            verifyProcessingData(productListView, searchProductModelFirstPage)
 
             productListView.showBottomNavigation()
             productListView.updateScrollListener()

@@ -1052,6 +1052,7 @@ final class ProductListPresenter
         Set<String> categoryIdMapping = new HashSet<>();
         Set<String> categoryNameMapping = new HashSet<>();
         ArrayList<String> prodIdArray = new ArrayList<>();
+        String query = getView().getQueryKey();
 
         if (productViewModel.getProductList().size() > 0) {
             for (int i = 0; i < productViewModel.getProductList().size(); i++) {
@@ -1066,9 +1067,9 @@ final class ProductListPresenter
             }
         }
 
-        getView().sendTrackingEventAppsFlyerViewListingSearch(afProdIds, getView().getQueryKey(), prodIdArray);
-        getView().sendTrackingEventMoEngageSearchAttempt(getView().getQueryKey(), !productViewModel.getProductList().isEmpty(), moengageTrackingCategory);
-        getView().sendTrackingGTMEventSearchAttempt(createGeneralSearchTrackingModel(productViewModel, getView().getQueryKey(), categoryIdMapping, categoryNameMapping));
+        getView().sendTrackingEventAppsFlyerViewListingSearch(afProdIds, query, prodIdArray);
+        getView().sendTrackingEventMoEngageSearchAttempt(query, !productViewModel.getProductList().isEmpty(), moengageTrackingCategory);
+        getView().sendTrackingGTMEventSearchAttempt(createGeneralSearchTrackingModel(productViewModel, query, categoryIdMapping, categoryNameMapping));
 
         isFirstTimeLoad = false;
     }

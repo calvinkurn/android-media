@@ -88,10 +88,6 @@ data class Ticker(
         @Expose
         val query: String = "",
 
-        @SerializedName("applink")
-        @Expose
-        val applink: String = "",
-
         @SerializedName("typeId")
         @Expose
         val typeId: Int = 0
@@ -164,25 +160,9 @@ data class OtherRelatedProduct(
 )
 
 data class Suggestion(
-        @SerializedName("currentKeyword")
-        @Expose
-        val currentKeyword: String = "",
-
         @SerializedName("suggestion")
         @Expose
         val suggestion: String = "",
-
-        @SerializedName("suggestionCount")
-        @Expose
-        val suggestionCount: Int = 0,
-
-        @SerializedName("instead")
-        @Expose
-        val instead: String = "",
-
-        @SerializedName("insteadCount")
-        @Expose
-        val insteadCount: Int = 0,
 
         @SerializedName("query")
         @Expose
@@ -320,10 +300,6 @@ data class ProductShop(
         @SerializedName("name")
         @Expose
         val name: String = "",
-
-        @SerializedName("url")
-        @Expose
-        val url: String = "",
 
         @SerializedName("city")
         @Expose

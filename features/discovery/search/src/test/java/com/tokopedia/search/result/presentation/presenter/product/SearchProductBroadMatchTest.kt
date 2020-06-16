@@ -3,6 +3,8 @@ package com.tokopedia.search.result.presentation.presenter.product
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
+import com.tokopedia.search.result.domain.model.OtherRelated
+import com.tokopedia.search.result.domain.model.OtherRelatedProduct
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel
 import com.tokopedia.search.result.presentation.model.BroadMatchViewModel
@@ -104,7 +106,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
             visitableList: List<Visitable<*>>,
             searchProductModel: SearchProductModel
     ) {
-        val otherRelated = searchProductModel.searchProduct.related.otherRelated
+        val otherRelated = searchProductModel.aceSearchProduct.data.related.otherRelatedList
         visitableList.filterIsInstance<BroadMatchViewModel>().size shouldBe otherRelated.size
 
         var index = visitableList.indexOfFirst { it is BroadMatchViewModel }
@@ -121,12 +123,12 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         }
     }
 
-    private fun BroadMatchViewModel.assertBroadMatchViewModel(otherRelated: SearchProductModel.OtherRelated) {
+    private fun BroadMatchViewModel.assertBroadMatchViewModel(otherRelated: OtherRelated) {
         keyword shouldBe otherRelated.keyword
         applink shouldBe otherRelated.applink
-        broadMatchItemViewModelList.size shouldBe otherRelated.otherRelatedProductList.size
+        broadMatchItemViewModelList.size shouldBe otherRelated.productList.size
 
-        otherRelated.otherRelatedProductList.forEachIndexed { index, otherRelatedProduct ->
+        otherRelated.productList.forEachIndexed { index, otherRelatedProduct ->
             broadMatchItemViewModelList[index].assertBroadMatchItemViewModel(
                     otherRelatedProduct, index + 1, otherRelated.keyword
             )
@@ -134,7 +136,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
     }
 
     private fun BroadMatchItemViewModel.assertBroadMatchItemViewModel(
-            otherRelatedProduct: SearchProductModel.OtherRelatedProduct,
+            otherRelatedProduct: OtherRelatedProduct,
             expectedPosition: Int,
             expectedAlternativeKeyword: String
     ) {

@@ -2,10 +2,10 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.search.TestException
+import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.error
-import com.tokopedia.search.result.presentation.presenter.product.testinstance.searchProductModelCommon
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.usecase.RequestParams
@@ -19,6 +19,7 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
 
     @Test
     fun `Load Data Success`() {
+        val searchProductModel = searchProductCommonResponseJSON.jsonToObject<SearchProductModel>()
         val searchParameter : Map<String, Any> = mutableMapOf<String, Any>().also {
             it[SearchApiConst.Q] = "samsung"
             it[SearchApiConst.START] = "0"
@@ -26,12 +27,12 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
             it[SearchApiConst.USER_ID] = productListPresenter.userId
         }
 
-        `Given Search Product API will return SearchProductModel`(searchProductModelCommon)
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
 
         `When Load Data`(searchParameter)
 
         `Then verify use case request params START should be 0`()
-        `Then verify view interaction when load data success`()
+        `Then verify view interaction when load data success`(searchProductModel)
         `Then verify get dynamic filter use case is executed`()
         `Then verify start from is incremented`()
     }
@@ -52,13 +53,13 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
         requestParams.getString(SearchApiConst.START, null) shouldBe "0"
     }
 
-    private fun `Then verify view interaction when load data success`() {
+    private fun `Then verify view interaction when load data success`(searchProductModel: SearchProductModel) {
         verifyOrder {
             productListView.isAnyFilterActive
 
             verifyShowLoading(productListView)
 
-            verifyProcessingData(productListView)
+            verifyProcessingData(productListView, searchProductModel)
 
             productListView.showBottomNavigation()
             productListView.updateScrollListener()
@@ -131,14 +132,15 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
 
     @Test
     fun `Load Data Success Is First Time Load`() {
-        `Given Search Product API will return SearchProductModel`(searchProductModelCommon)
+        val searchProductModel = searchProductCommonResponseJSON.jsonToObject<SearchProductModel>()
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
         `Given View is first active tab`()
         `Given View reload data immediately calls load data`()
 
         `When View is created`()
 
         `Then verify use case request params START should be 0`()
-        `Then verify view interaction when created`()
+        `Then verify view interaction when created`(searchProductModel)
         `Then verify get dynamic filter use case is executed`()
         `Then verify start from is incremented`()
     }
@@ -164,7 +166,7 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
         productListPresenter.onViewCreated()
     }
 
-    private fun `Then verify view interaction when created`() {
+    private fun `Then verify view interaction when created`(searchProductModel: SearchProductModel) {
         verifyOrder {
             productListView.isFirstActiveTab
             productListView.reloadData()
@@ -173,7 +175,7 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
 
             verifyShowLoading(productListView)
 
-            verifyProcessingData(productListView)
+            verifyProcessingData(productListView, searchProductModel)
 
             productListView.showBottomNavigation()
             productListView.updateScrollListener()

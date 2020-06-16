@@ -16,8 +16,9 @@
         "redirectApplink": ""
       },
       "ticker": {
-        "text": "",
-        "query": ""
+        "text": "Hasil disaring otomatis karena banyak yang beli di atas Rp720.000. \u003ca href\u003dhttps://staging.tokopedia.com/search?ob\u003d3\u0026q\u003dsamsung\u0026source\u003dsearch\u003eLihat semua harga\u003c/a\u003e",
+        "query": "pmin\u003d0",
+        "typeId": 1
       },
       "suggestion": {
         "currentKeyword": "",

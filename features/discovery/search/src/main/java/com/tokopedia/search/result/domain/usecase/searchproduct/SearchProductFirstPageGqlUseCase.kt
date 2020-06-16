@@ -89,7 +89,6 @@ class SearchProductFirstPageGqlUseCase(
                         ticker {
                             text
                             query
-                            applink
                             typeId
                         }
                         related {
@@ -112,11 +111,7 @@ class SearchProductFirstPageGqlUseCase(
                             }
                         }
                         suggestion {
-                            currentKeyword
                             suggestion
-                            suggestionCount
-                            instead
-                            insteadCount
                             query
                             text
                         }
@@ -132,7 +127,6 @@ class SearchProductFirstPageGqlUseCase(
                             shop {
                                 id
                                 name
-                                url
                                 city
                                 isOfficial
                                 isPowerBadge
@@ -170,126 +164,6 @@ class SearchProductFirstPageGqlUseCase(
                         }
                     }
                 }
-                searchProduct(params: ${'$'}params) {
-                    query
-                    source
-                    isFilter
-                    response_code
-                    keyword_process
-                    count
-                    count_text
-                    additional_params
-                    isQuerySafe
-                    autocomplete_applink
-                    errorMessage
-                    lite_url
-                    default_view
-                    redirection {
-                        redirect_applink
-                    }
-                    ticker {
-                        text
-                        query
-                        type_id
-                    }
-                    suggestion {
-                        currentKeyword
-                        suggestion
-                        suggestionCount
-                        instead
-                        insteadCount
-                        text
-                        query
-                    }
-                    related {
-                        related_keyword
-                        other_related {
-                            keyword
-                            url
-                            applink
-                            product {
-                                id
-                                name
-                                price
-                                image_url
-                                rating
-                                count_review
-                                url
-                                applink
-                                price_str
-                            }
-                        }
-                    }
-                    products {
-                        id
-                        warehouse_id_default
-                        name
-                        childs
-                        url
-                        image_url
-                        image_url_300
-                        image_url_700
-                        price
-                        price_range
-                        wishlist
-                        whole_sale_price {
-                            quantity_min
-                            quantity_max
-                            price
-                        }
-                        courier_count
-                        condition
-                        category_id
-                        category_name
-                        category_breadcrumb
-                        department_id
-                        department_name
-                        booster_list
-                        free_ongkir {
-                          is_active
-                          img_url
-                        }
-                        labels {
-                            title
-                            color
-                        }
-                        label_groups {
-                            position
-                            type
-                            title
-                        }
-                        badges {
-                            title
-                            image_url
-                            show
-                        }
-                        is_featured
-                        rating
-                        rating_average
-                        count_review
-                        original_price
-                        discount_expired_time
-                        discount_start_time
-                        discount_percentage
-                        sku
-                        stock
-                        ga_key
-                        is_preorder
-                        shop {
-                            id
-                            name
-                            url
-                            is_gold_shop
-                            is_power_badge
-                            location
-                            city
-                            reputation
-                            clover
-                            is_official
-                        }
-                    }
-                }
-            
                 quick_filter(query: ${'$'}query, extraParams: ${'$'}params) {
                     filter {
                         options {
