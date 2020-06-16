@@ -19,7 +19,8 @@ import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.*
-import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.SellerHomeBottomSheetContent
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
+import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.di.DaggerStatisticComponent
@@ -31,6 +32,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_stc_statistic.view.*
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -40,6 +42,8 @@ import javax.inject.Inject
 class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl>(), WidgetListener {
 
     companion object {
+        private const val DEFAULT_START_DAYS = 7L
+        private const val DEFAULT_END_DAYS = 1L
         private const val TOAST_DURATION = 5000L
         private const val DELAY_FETCH_VISIBLE_WIDGET_DATA = 500L
         private const val SCREEN_NAME = "statistic_page_fragment"
@@ -57,7 +61,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         ViewModelProvider(this, viewModelFactory).get(StatisticViewModel::class.java)
     }
     private val recyclerView by lazy { super.getRecyclerView(view) }
-    private val dateRangeBottomSheet by lazy { SelectDateRageBottomSheet(requireContext()) }
+    private val dateRangeBottomSheet by lazy { SelectDateRageBottomSheet(requireContext(), childFragmentManager) }
+    private val defaultStartDate = Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DAYS))
+    private val defaultEndDate = Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_END_DAYS))
 
     private var isFirstLoad = true
     private var isErrorToastShown = false
@@ -121,21 +127,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     override fun loadData(page: Int) {}
 
     override fun onTooltipClicked(tooltip: TooltipUiModel) {
-        val bottomSheetContentView = SellerHomeBottomSheetContent(context ?: return)
-
-        with(BottomSheetUnify()) {
-            setTitle(tooltip.title)
-            clearClose(false)
-            clearHeader(false)
-            setCloseClickListener {
-                this.dismiss()
-            }
-
-            bottomSheetContentView.setTooltipData(tooltip)
-
-            setChild(bottomSheetContentView)
-            show(this@StatisticFragment.childFragmentManager, TAG_TOOLTIP)
-        }
+        if (!isAdded || context == null) return
+        TooltipBottomSheet(requireContext(), tooltip)
+                .show(this@StatisticFragment.childFragmentManager, TAG_TOOLTIP)
     }
 
     override fun removeWidget(position: Int, widget: BaseWidgetUiModel<*>) {
@@ -156,6 +150,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             activity.supportActionBar?.title = activity.getString(R.string.stc_shop_statistic)
         }
 
+        setDefaultRange()
+
         setupRecyclerView()
 
         swipeRefreshStc.setOnRefreshListener {
@@ -165,6 +161,19 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         globalErrorStc.setActionClickListener {
             reloadPage()
         }
+    }
+
+    private fun setDefaultRange() = view?.run {
+        val headerSubTitle: String = context.getString(R.string.stc_last_n_days_cc, DEFAULT_START_DAYS)
+        val startDateStr: String = DateTimeUtil.format(defaultStartDate.time, "dd")
+        val endDateStr: String = DateTimeUtil.format(defaultEndDate.time, "dd MMM yyyy")
+        val subTitle = "$headerSubTitle ($startDateStr - $endDateStr)"
+
+        setHeaderSubTitle(subTitle)
+    }
+
+    private fun setHeaderSubTitle(subTitle: String) {
+        view?.headerStcStatistic?.headerSubTitle = subTitle
     }
 
     private fun setupRecyclerView() = view?.run {
@@ -229,7 +238,11 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private fun selectDateRange() {
         if (!isAdded) return
-        dateRangeBottomSheet.show(childFragmentManager)
+        dateRangeBottomSheet
+                .setOnApplyChanges {
+
+                }
+                .show()
     }
 
     private fun requestVisibleWidgetsData() {
