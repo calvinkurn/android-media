@@ -513,7 +513,7 @@ open class HomeViewModel @Inject constructor(
                            data = mapperRechargetoReminder(data),
                            source = ReminderEnum.RECHARGE
                     )
-                    launch(coroutineContext){ channel?.send(UpdateLiveDataModel(ACTION_UPDATE, newFindRechargeRecommendationViewModel, indexOfRechargeRecommendationViewModel)) }
+                    launch(coroutineContext){ updateWidget(UpdateLiveDataModel(ACTION_UPDATE, newFindRechargeRecommendationViewModel, indexOfRechargeRecommendationViewModel)) }
                 }
             }
         } else {
@@ -532,7 +532,7 @@ open class HomeViewModel @Inject constructor(
                             data = mapperSalamtoReminder(data),
                             source = ReminderEnum.SALAM
                     )
-                    launch(coroutineContext) { channel?.send(UpdateLiveDataModel(ACTION_UPDATE, newFindSalamWidgetModel, indexOfSalamWidgetModel)) }
+                    launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, newFindSalamWidgetModel, indexOfSalamWidgetModel)) }
                 }
             }
         } else {
