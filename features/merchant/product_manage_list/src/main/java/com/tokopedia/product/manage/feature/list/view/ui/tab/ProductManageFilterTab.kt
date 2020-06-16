@@ -63,8 +63,8 @@ class ProductManageFilterTab(
                 }
             } else {
                 val title = context.getString(tab.titleId, tab.count)
-                val item = SortFilterItem(title)
-                sortFilterTab.chipItems.add(item)
+                val item = arrayListOf(SortFilterItem(title))
+                sortFilterTab.addItem(item)
             }
         }
     }
