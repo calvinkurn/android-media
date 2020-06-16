@@ -758,13 +758,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (isTradeIn) {
             params.put(CheckoutGqlUseCase.PARAM_IS_TRADE_IN, true);
             params.put(CheckoutGqlUseCase.PARAM_IS_TRADE_IN_DROP_OFF, isTradeInDropOff);
-            long devIdLong = 0L;
-            try {
-                devIdLong = Long.parseLong(deviceId);
-            } catch (NumberFormatException e) {
-                Timber.d(e);
-            }
-            params.put(CheckoutGqlUseCase.PARAM_DEV_ID, devIdLong);
+            params.put(CheckoutGqlUseCase.PARAM_DEV_ID, deviceId);
         }
         params.put(CheckoutGqlUseCase.PARAM_OPTIONAL, 0);
         params.put(CheckoutGqlUseCase.PARAM_IS_THANKYOU_NATIVE, true);
