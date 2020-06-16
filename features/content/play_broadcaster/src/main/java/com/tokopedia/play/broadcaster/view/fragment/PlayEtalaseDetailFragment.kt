@@ -21,6 +21,7 @@ import com.tokopedia.play.broadcaster.util.doOnPreDraw
 import com.tokopedia.play.broadcaster.util.scroll.EndlessRecyclerViewScrollListener
 import com.tokopedia.play.broadcaster.util.scroll.StopFlingScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
+import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.partial.BottomActionPartialView
 import com.tokopedia.play.broadcaster.view.partial.SelectedProductPagePartialView
@@ -42,6 +43,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
     private lateinit var tvInfo: TextView
     private lateinit var rvProduct: RecyclerView
+    private lateinit var bottomSheetHeader: PlayBottomSheetHeader
 
     private lateinit var selectedProductPage: SelectedProductPagePartialView
     private lateinit var bottomActionView: BottomActionPartialView
@@ -100,6 +102,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
         with(view) {
             tvInfo = findViewById(R.id.tv_info)
             rvProduct = findViewById(R.id.rv_product)
+            bottomSheetHeader = findViewById(R.id.bottom_sheet_header)
         }
 
         selectedProductPage = SelectedProductPagePartialView(view as ViewGroup, object : SelectedProductPagePartialView.Listener {
@@ -152,7 +155,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
      */
     private fun observeProductsInSelectedEtalase() {
         viewModel.observableSelectedEtalase.observe(viewLifecycleOwner, Observer {
-            bottomSheetCoordinator.setupTitle(it.currentValue.name)
+            bottomSheetHeader.setHeader(getString(R.string.play_etalase_detail_header, it.currentValue.name, it.currentValue.totalProduct), isRoot = true)
             tvInfo.text = getString(R.string.play_product_select_max_info, viewModel.maxProduct)
             when (it.state) {
                 is PageResultState.Success -> {

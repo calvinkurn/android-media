@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.util.compatTransitionName
 import com.tokopedia.play.broadcaster.view.contract.PlayEtalaseSetupCoordinator
+import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
 import com.tokopedia.play.broadcaster.view.custom.PlaySearchBar
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseEtalaseSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
@@ -39,6 +40,7 @@ class PlayEtalasePickerFragment @Inject constructor(
     private lateinit var tvInfo: TextView
     private lateinit var flEtalaseFlow: FrameLayout
     private lateinit var psbSearch: PlaySearchBar
+    private lateinit var bottomSheetHeader : PlayBottomSheetHeader
 
     private lateinit var selectedProductPage: SelectedProductPagePartialView
     private lateinit var bottomActionView: BottomActionPartialView
@@ -68,7 +70,6 @@ class PlayEtalasePickerFragment @Inject constructor(
         setupView(view)
 
         showBottomAction(false)
-        bottomSheetCoordinator.setupTitle(getString(R.string.play_etalase_picker_title))
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -122,6 +123,7 @@ class PlayEtalasePickerFragment @Inject constructor(
             tvInfo = findViewById(R.id.tv_info)
             flEtalaseFlow = findViewById(R.id.fl_etalase_flow)
             psbSearch = findViewById(R.id.psb_search)
+            bottomSheetHeader = findViewById(R.id.bottom_sheet_header)
         }
 
         selectedProductPage = SelectedProductPagePartialView(view as ViewGroup, object : SelectedProductPagePartialView.Listener {
@@ -165,6 +167,8 @@ class PlayEtalasePickerFragment @Inject constructor(
         })
 
         if (currentFragment == null) openFragment(PlayEtalaseListFragment::class.java)
+
+        bottomSheetHeader.setHeader(getString(R.string.play_etalase_picker_title), isRoot = true)
     }
 
 

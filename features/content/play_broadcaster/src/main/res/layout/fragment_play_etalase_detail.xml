@@ -6,6 +6,15 @@
     android:transitionGroup="true"
     >
 
+    <com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
+        android:id="@+id/bottom_sheet_header"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_info"
         android:layout_width="@dimen/layout_lvl0"
@@ -17,7 +26,7 @@
         app:typographyType="body_3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bottom_sheet_header"
         />
 
     <androidx.recyclerview.widget.RecyclerView

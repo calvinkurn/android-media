@@ -8,9 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.FragmentManager
@@ -48,9 +45,6 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
     private lateinit var viewModel: PlayEtalasePickerViewModel
 
     private lateinit var flFragment: FrameLayout
-    private lateinit var ivBack: ImageView
-    private lateinit var tvTitle: TextView
-    private lateinit var clContent: ConstraintLayout
     private lateinit var flOverlay: FrameLayout
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
@@ -74,7 +68,6 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
                 if (!fragmentBreadcrumbs.empty()) {
                     val lastFragmentBreadcrumbs = fragmentBreadcrumbs.pop()
                     childFragmentManager.popBackStack(lastFragmentBreadcrumbs.fragmentClass.name, 0)
-                    setupHeader()
                 } else {
                     cancel()
                     mListener?.onSetupCanceled()
@@ -105,11 +98,6 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
     override fun navigateToFragment(fragmentClass: Class<out Fragment>, extras: Bundle, sharedElements: List<View>, onFragment: (Fragment) -> Unit) {
         addBreadcrumb()
         openFragment(fragmentClass, extras, sharedElements, onFragment)
-        setupHeader()
-    }
-
-    override fun setupTitle(title: String) {
-        tvTitle.text = title
     }
 
     override fun saveCoverAndTitle(coverUri: Uri, coverUrl: String, liveTitle: String) {
@@ -139,13 +127,6 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         mListener = listener
     }
 
-    private fun setupHeader() {
-        ivBack.setImageResource(
-                if (fragmentBreadcrumbs.isEmpty()) com.tokopedia.unifycomponents.R.drawable.unify_bottomsheet_close
-                else R.drawable.ic_system_action_back_grayscale_24
-        )
-    }
-
     private fun setupDialog(dialog: Dialog) {
         dialog.setOnShowListener {
             val bottomSheetDialog = dialog as BottomSheetDialog
@@ -166,16 +147,12 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
     private fun initView(view: View) {
         with(view) {
             flFragment = findViewById(R.id.fl_fragment)
-            ivBack = findViewById(R.id.iv_back)
-            tvTitle = findViewById(R.id.tv_title)
-            clContent = findViewById(R.id.cl_content)
             flOverlay = findViewById(R.id.fl_overlay)
         }
     }
 
     private fun setupView(view: View) {
         flOverlay.setOnClickListener { dialog?.onBackPressed() }
-        ivBack.setOnClickListener { dialog?.onBackPressed() }
 
         navigateToFragment(PlayEtalasePickerFragment::class.java)
     }
