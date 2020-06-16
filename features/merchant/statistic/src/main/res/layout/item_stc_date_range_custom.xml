@@ -22,7 +22,7 @@
     <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
         android:id="@+id/radStcCustomDateRange"
         android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/dimen_stc_22dp"
+        android:layout_height="@dimen/layout_lvl3"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginBottom="@dimen/layout_lvl2"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -30,68 +30,32 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvStcLblStartFrom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl3"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:text="@string/stc_start_from"
-        android:textColor="@color/color_stc_grey_ae31353b"
-        android:textSize="@dimen/fontSize_lvl2"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radStcCustomDateRange"
-        app:typographyType="body_3"
-        tools:visibility="visible" />
-
-    <com.tokopedia.unifycomponents.TextFieldUnify
-        android:id="@+id/edtStcStartFrom"
+    <com.tokopedia.statistic.presentation.view.customview.DateTextFieldView
+        android:id="@+id/edtStcStart"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl3"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginRight="@dimen/layout_lvl2"
-        android:focusable="false"
         android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/edtStcUntil"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvStcLblStartFrom"
-        app:text_field_placeholder="@string/stc_select_date"
-        tools:layout_height="@dimen/layout_lvl4"
-        tools:visibility="visible" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvStcLblUntil"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl3"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:text="@string/stc_until"
-        android:textColor="@color/color_stc_grey_ae31353b"
-        android:textSize="@dimen/fontSize_lvl2"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="@+id/edtStcUntil"
         app:layout_constraintTop_toBottomOf="@+id/radStcCustomDateRange"
-        app:typographyType="body_3"
         tools:visibility="visible" />
 
-    <com.tokopedia.unifycomponents.TextFieldUnify
+    <com.tokopedia.statistic.presentation.view.customview.DateTextFieldView
         android:id="@+id/edtStcUntil"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
-        android:focusable="false"
+        android:layout_marginTop="@dimen/layout_lvl3"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/edtStcStartFrom"
-        app:layout_constraintTop_toBottomOf="@+id/tvStcLblUntil"
-        app:text_field_placeholder="@string/stc_select_date"
-        tools:layout_height="@dimen/layout_lvl4"
+        app:layout_constraintStart_toEndOf="@+id/edtStcStart"
+        app:layout_constraintTop_toBottomOf="@+id/radStcCustomDateRange"
         tools:visibility="visible" />
 
     <View
@@ -100,6 +64,8 @@
         android:layout_height="@dimen/shc_dimen_1dp"
         android:layout_marginTop="@dimen/layout_lvl3"
         android:background="@color/light_N75"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edtStcUntil" />
 
     <com.tokopedia.unifycomponents.UnifyButton
@@ -115,6 +81,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/verLineStcCustom"
         app:unifyButtonSize="medium"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

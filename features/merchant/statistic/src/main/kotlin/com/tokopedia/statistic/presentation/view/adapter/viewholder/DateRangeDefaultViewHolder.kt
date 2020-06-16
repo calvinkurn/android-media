@@ -35,12 +35,19 @@ class DateRangeDefaultViewHolder(
             tvStcDateRangeLabel.text = element.label
             tvStcDefaultDateRange.text = getDateRangeStr(element)
             radStcDefaultDateRange.isChecked = element.isSelected
+            radStcDefaultDateRange.setOnClickListener {
+                setOnSelected(element)
+            }
 
             setOnClickListener {
-                onClick(element)
-                element.isSelected = true
+                setOnSelected(element)
             }
         }
+    }
+
+    private fun setOnSelected(element: DateRangeItem.Default) {
+        onClick(element)
+        element.isSelected = true
     }
 
     private fun getDateRangeStr(element: DateRangeItem.Default): String {

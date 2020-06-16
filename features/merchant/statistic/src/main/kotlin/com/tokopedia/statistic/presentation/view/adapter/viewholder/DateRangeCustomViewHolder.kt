@@ -40,11 +40,16 @@ class DateRangeCustomViewHolder(
                 onClick(element)
             }
 
-            edtStcStartFrom.setOnClickListener {
+
+            edtStcStart.label = context.getString(R.string.stc_start_from)
+            edtStcStart.setOnClickListener {
+                println("show date picker")
                 CalendarPicker(context)
                         .init()
                         .showDatePicker(fm)
             }
+
+            edtStcUntil.label = context.getString(R.string.stc_until)
             edtStcUntil.setOnClickListener {
                 CalendarPicker(context)
                         .init()
@@ -55,15 +60,13 @@ class DateRangeCustomViewHolder(
 
     private fun showCustomForm(isShown: Boolean) = with(itemView) {
         if (isShown) {
-            tvStcLblStartFrom.visible()
-            edtStcStartFrom.visible()
-            tvStcLblUntil.visible()
+            edtStcStart.visible()
             edtStcUntil.visible()
+            verLineStcCustom.visible()
         } else {
-            tvStcLblStartFrom.gone()
-            edtStcStartFrom.gone()
-            tvStcLblUntil.gone()
+            edtStcStart.gone()
             edtStcUntil.gone()
+            verLineStcCustom.gone()
         }
     }
 }
