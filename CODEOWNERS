@@ -203,7 +203,7 @@
 
 /features/fintech/common_wallet         				@tokopedia/minion-solo
 /features/fintech/instant_loan          				@tokopedia/minion-solo
-/features/fintech/layanan_finansial          			@tokopedia/minion-solo
+/features/fintech/layanan_finansial                     @tokopedia/minion-solo
 /features/fintech/ovo_pay_with_qr       				@tokopedia/minion-solo
 /features/fintech/saldo_details         				@tokopedia/minion-solo
 /features/fintech/home_credit           				@tokopedia/minion-solo
@@ -220,7 +220,7 @@
 
 
 /features/im/challenges                 				@tokopedia/minion-yoda
-/features/im/install_referral                   		@tokopedia/minion-yoda
+/features/im/install_referral                           @tokopedia/minion-yoda
 /features/im/referral                   				@tokopedia/minion-yoda
 /features/im/common_promo                               @tokopedia/minion-yoda
 /features/ovop2p                                        @tokopedia/minion-yoda
