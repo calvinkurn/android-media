@@ -11,7 +11,9 @@ import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import kotlinx.android.synthetic.main.home_component_reminder_widget.view.*
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.home_component.listener.SalamWidgetListener
+import com.tokopedia.home_component.model.ReminderData
 import com.tokopedia.home_component.model.ReminderEnum
+import com.tokopedia.home_component.model.ReminderWidget
 import com.tokopedia.kotlin.extensions.view.*
 
 /**
@@ -31,6 +33,15 @@ class ReminderWidgetViewHolder(
     }
 
     override fun bind(element: ReminderWidgetModel) {
+        initView(element, itemView)
+    }
+
+    override fun bind(element: ReminderWidgetModel, payloads: MutableList<Any>) {
+        bind(element)
+    }
+
+
+    fun initView(element: ReminderWidgetModel, itemView: View){
         with(itemView) {
             if(element.data.reminders.isEmpty()){
                 home_reminder_recommendation_loading.show()
@@ -59,8 +70,7 @@ class ReminderWidgetViewHolder(
 
                 btn_reminder_recommendation.setOnClickListener {
                     if(element.source == ReminderEnum.RECHARGE) {
-                        rechargeListener.onRechargeRecommendationClickListener(reminder)
-                        rechargeListener.onRechargeRecommendationDeclineClickListener(reminder)
+
                     } else if(element.source == ReminderEnum.SALAM){
                         salamListener.onSalamWidgetClickListener(reminder)
                         salamListener.onSalamWidgetDeclineClickListener(reminder)
