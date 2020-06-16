@@ -58,6 +58,7 @@ class SearchProductLoadMoreGqlUseCase(
                             }
                             shop {
                                 id
+                                name
                                 city
                             }
                             freeOngkir {

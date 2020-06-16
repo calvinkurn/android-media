@@ -297,6 +297,10 @@ data class ProductShop(
         @Expose
         val id: String = "",
 
+        @SerializedName("name")
+        @Expose
+        val name: String = "",
+
         @SerializedName("city")
         @Expose
         val city: String = ""

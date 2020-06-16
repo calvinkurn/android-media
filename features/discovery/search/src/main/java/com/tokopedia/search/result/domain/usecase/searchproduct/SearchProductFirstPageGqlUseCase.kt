@@ -126,6 +126,7 @@ class SearchProductFirstPageGqlUseCase(
                             }
                             shop {
                                 id
+                                name
                                 city
                             }
                             freeOngkir {

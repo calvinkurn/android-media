@@ -224,6 +224,7 @@ public class ProductViewModelMapper {
         productItem.setPriceInt(productModel.getPriceInt());
         productItem.setPriceRange(productModel.getPriceRange());
         productItem.setShopID(productModel.getShop().getId());
+        productItem.setShopName(productModel.getShop().getName());
         productItem.setShopCity(productModel.getShop().getCity());
         productItem.setWishlisted(productModel.isWishlist());
         productItem.setBadgesList(convertToBadgesItemList(productModel.getBadgeList()));

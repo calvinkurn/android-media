@@ -181,6 +181,14 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         return shopID;
     }
 
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
     public void setShopCity(String shopCity) {
         this.shopCity = shopCity;
     }
