@@ -2,7 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:background="@color/clr_2d263b">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_switch"
@@ -28,7 +30,8 @@
         app:layout_constraintStart_toEndOf="@+id/iv_switch"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_4"
-        app:typographyWeight="bold" />
+        app:typographyWeight="bold"
+        tools:text="@string/play_action_bar_prepare_title" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_close"

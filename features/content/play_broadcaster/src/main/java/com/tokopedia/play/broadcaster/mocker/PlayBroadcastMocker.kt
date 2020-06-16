@@ -79,7 +79,7 @@ object PlayBroadcastMocker {
 
     fun getMockConfiguration() = ConfigurationUiModel(
             streamAllowed = true,
-            activeOnDifferentDevices = false, // IsLiveActive
+            activeOnOtherDevices = false, // IsLiveActive
             haveOnGoingLive = false, // activeChannelId != 0
             activeChannelId = 0,
             draftChannelId = 12,
