@@ -1075,4 +1075,14 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             }
         }
     }
+
+    fun getItemCountBeforeCartItem(): Int {
+        var count = 0
+        cartDataList.forEach {
+            if (it is CartShopHolderData) return@forEach
+            count++
+        }
+
+        return count
+    }
 }
