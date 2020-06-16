@@ -896,7 +896,7 @@ object DynamicProductDetailTracking {
                     "productName" to (productInfo?.data?.name ?: ""),
                     "productId" to (productInfo?.basic?.getProductId() ?: ""),
                     "productUrl" to (productInfo?.basic?.url ?: ""),
-                    "productDepplinkUrl" to deeplinkUrl,
+                    "productDeeplinkUrl" to deeplinkUrl,
                     "productImageUrl" to imageUrl,
                     "productPrice" to (productInfo?.data?.price?.value ?: ""),
                     "isOfficialStore" to (productInfo?.data?.isOS ?: ""),
