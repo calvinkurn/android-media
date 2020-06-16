@@ -42,6 +42,7 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
     private val tvInvoiceShopShippingAddress = view.tvInvoiceShopShippingAddress
 
 
+
     override fun bind(element: ShopInvoice?) {
         element?.let {
             if(element.shopName.isNullOrBlank()){
@@ -113,14 +114,15 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
                 tvInvoiceShopItemShippingInsuranceValue.gone()
                 tvInvoiceShopItemShippingInsurance.gone()
             }
-            element.shippingAddress?.let {
+            if(element.shippingAddress.isNullOrBlank()){
+                tvInvoiceShopShippingAddressValue.gone()
+                tvInvoiceShopShippingAddress.gone()
+            }else{
                 tvInvoiceShopShippingAddressValue.text = element.shippingAddress
                 tvInvoiceShopShippingAddressValue.visible()
                 tvInvoiceShopShippingAddress.visible()
-            } ?: run {
-                tvInvoiceShopShippingAddressValue.gone()
-                tvInvoiceShopShippingAddress.gone()
             }
+
         }
     }
 

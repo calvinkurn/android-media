@@ -10,29 +10,17 @@
     app:cardCornerRadius="8dp"
     app:cardElevation="0dp">
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/thanks_digital_recommendation_card_content_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/thanks_digital_recom_bg"
         android:minHeight="110dp">
-
-        <View
-            android:id="@+id/thanks_dg_rec_card_bg"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/thanks_digital_recom_bg"
-            app:layout_constraintHeight_percent=".4"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent=".5" />
 
         <ImageView
             android:id="@+id/thanks_dg_rec_image"
-            android:layout_width="@dimen/layout_lvl7"
-            android:layout_height="@dimen/layout_lvl7"
-            android:layout_marginLeft="@dimen/spacing_lvl2"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:padding="10dp"
             android:scaleType="fitCenter"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -42,15 +30,14 @@
             android:id="@+id/thanks_dh_rec_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
+            android:layout_marginLeft="2dp"
             android:layout_marginTop="8dp"
             android:layout_marginRight="8dp"
             android:gravity="center_vertical"
-            android:text="name"
             app:layout_constraintLeft_toRightOf="@id/thanks_dg_rec_image"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_3" />
+            app:typographyType="heading_5" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/thanks_dg_rec_text_sub"
@@ -60,12 +47,10 @@
             android:layout_marginTop="8dp"
             android:layout_marginRight="8dp"
             android:gravity="center_vertical"
-            android:text="gvhhbhbbnbn"
-            app:layout_constraintLeft_toRightOf="@id/thanks_dg_rec_image"
+            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/thanks_dh_rec_name"
+            app:layout_constraintTop_toBottomOf="@id/thanks_dg_rec_image"
             app:typographyType="body_3" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
