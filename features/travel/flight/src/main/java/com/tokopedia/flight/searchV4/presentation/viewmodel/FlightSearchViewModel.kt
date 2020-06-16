@@ -3,6 +3,7 @@ package com.tokopedia.flight.searchV4.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
@@ -85,6 +86,10 @@ class FlightSearchViewModel @Inject constructor(
     }
 
     fun initialize(needDeleteData: Boolean, isReturnTrip: Boolean) {
+        if (flightSearchPassData.linkUrl.contains(DeeplinkConstant.SCHEME_INTERNAL)) {
+            flightSearchPassData.linkUrl.replace(DeeplinkConstant.SCHEME_INTERNAL, DeeplinkConstant.SCHEME_TOKOPEDIA)
+        }
+
         if (needDeleteData) {
             if (isReturnTrip) {
                 deleteFlightReturnSearch {}
