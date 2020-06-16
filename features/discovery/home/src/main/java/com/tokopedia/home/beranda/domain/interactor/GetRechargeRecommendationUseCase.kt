@@ -1,6 +1,5 @@
 package com.tokopedia.home.beranda.domain.interactor
 
-import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
