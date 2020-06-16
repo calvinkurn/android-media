@@ -47,6 +47,7 @@ import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTarge
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.create.view.enums.getVoucherImageType
+import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.GeneralExpensesInfoBottomSheetFragment
 import com.tokopedia.vouchercreation.detail.model.*
 import com.tokopedia.vouchercreation.detail.view.viewmodel.VoucherDetailViewModel
 import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResult
@@ -92,6 +93,10 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
     }
     private val duplicateButtonUiModel by lazy {
         FooterButtonUiModel(context?.getString(R.string.mvc_duplicate_voucher).toBlankOrString(), "")
+    }
+
+    private val generalExpenseBottomSheet by lazy {
+        GeneralExpensesInfoBottomSheetFragment.createInstance(context)
     }
 
     private val impressHolder = ImpressHolder()
@@ -185,6 +190,7 @@ class VoucherDetailFragment(val voucherId: Int) : BaseDetailFragment() {
                 action = Click.TOOLTIP_SPENDING_ESTIMATION,
                 userId = userSession.userId
         )
+        generalExpenseBottomSheet.show(childFragmentManager, GeneralExpensesInfoBottomSheetFragment.TAG)
     }
 
     override fun onFooterButtonClickListener() {
