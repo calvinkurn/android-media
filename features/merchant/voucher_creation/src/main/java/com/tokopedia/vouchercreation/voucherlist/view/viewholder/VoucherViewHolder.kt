@@ -41,6 +41,7 @@ class VoucherViewHolder(
             setImageVoucher(element.isPublic, element.type)
             setVoucherStatus(element)
             showPromoCode(element.isPublic, element.code)
+
             setupVoucherCtaButton(element)
             setVoucherDate(element)
 
@@ -82,7 +83,6 @@ class VoucherViewHolder(
             val buttonVariant: Int
             val stringRes: Int
             val clickAction: KFunction1<VoucherUiModel, Unit>
-            val isActive: Boolean
 
             when (element.status) {
                 VoucherStatusConst.ONGOING -> {
@@ -90,35 +90,33 @@ class VoucherViewHolder(
                     buttonVariant = UnifyButton.Variant.FILLED
                     stringRes = R.string.mvc_share
                     clickAction = listener::onShareClickListener
-                    isActive = true
+                    btnMvcVoucherCta?.visible()
                 }
                 VoucherStatusConst.NOT_STARTED -> {
                     buttonType = UnifyButton.Type.ALTERNATE
                     buttonVariant = UnifyButton.Variant.GHOST
                     stringRes = R.string.mvc_edit_quota
                     clickAction = listener::onEditQuotaClickListener
-                    isActive = true
+                    btnMvcVoucherCta?.visible()
                 }
                 else -> {
+                    if (element.type != VoucherTypeConst.FREE_ONGKIR) {
+                        btnMvcVoucherCta?.visible()
+                    } else {
+                        btnMvcVoucherCta?.gone()
+                    }
                     buttonType = UnifyButton.Type.ALTERNATE
                     buttonVariant = UnifyButton.Variant.GHOST
                     stringRes = R.string.mvc_duplicate
                     clickAction = listener::onDuplicateClickListener
-                    isActive = false
                 }
             }
             btnMvcVoucherCta?.run {
-                val shouldDisableActionTemporary =
-                        element.type == VoucherTypeConst.FREE_ONGKIR && !isActive
-                if (shouldDisableActionTemporary) {
-                    invisible()
-                } else {
-                    this.buttonType = buttonType
-                    this.buttonVariant = buttonVariant
-                    text = context.getString(stringRes)
-                    setOnClickListener {
-                        clickAction(element)
-                    }
+                this.buttonType = buttonType
+                this.buttonVariant = buttonVariant
+                text = context.getString(stringRes)
+                setOnClickListener {
+                    clickAction(element)
                 }
             }
         }
