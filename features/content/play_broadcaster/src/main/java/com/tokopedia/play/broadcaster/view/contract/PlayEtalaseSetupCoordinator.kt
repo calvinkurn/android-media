@@ -13,4 +13,8 @@ interface PlayEtalaseSetupCoordinator {
             keyword: String,
             sharedElements: List<View>
     )
+
+    fun postponeEnterTransition()
+
+    fun startPostponedEnterTransition()
 }

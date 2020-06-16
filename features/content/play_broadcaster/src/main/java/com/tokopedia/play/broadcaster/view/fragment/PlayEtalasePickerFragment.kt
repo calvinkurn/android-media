@@ -16,7 +16,6 @@ import androidx.transition.TransitionSet
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.util.compatTransitionName
-import com.tokopedia.play.broadcaster.util.doOnPreDraw
 import com.tokopedia.play.broadcaster.view.contract.PlayEtalaseSetupCoordinator
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
@@ -38,6 +37,9 @@ class PlayEtalasePickerFragment @Inject constructor(
     private val fragmentFactory: FragmentFactory
         get() = childFragmentManager.fragmentFactory
 
+    private val currentFragment: Fragment?
+        get() = childFragmentManager.findFragmentById(R.id.fl_etalase_flow)
+
     override fun refresh() {
 //        etalaseAdapter.notifyDataSetChanged()
     }
@@ -51,7 +53,6 @@ class PlayEtalasePickerFragment @Inject constructor(
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        postponeEnterTransition()
         bottomSheetCoordinator.showBottomAction(false)
         return inflater.inflate(R.layout.fragment_play_etalase_picker, container, false)
     }
@@ -111,7 +112,7 @@ class PlayEtalasePickerFragment @Inject constructor(
 //            }
 //        })
 
-        openFragment(PlayEtalaseListFragment::class.java)
+        if (currentFragment == null) openFragment(PlayEtalaseListFragment::class.java)
     }
 
     private fun shouldSearchProductWithKeyword(keyword: String) {
@@ -165,11 +166,7 @@ class PlayEtalasePickerFragment @Inject constructor(
 //        )
     }
 
-    private fun startPostponedTransition() {
-        requireView().doOnPreDraw {
-            startPostponedEnterTransition()
-        }
-    }
+
 
     /**
      * Transition

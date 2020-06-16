@@ -54,6 +54,7 @@ class PlayEtalaseListFragment @Inject constructor(
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        etalaseSetupCoordinator.postponeEnterTransition()
         return inflater.inflate(R.layout.fragment_play_etalase_list, container, false)
     }
 
@@ -117,7 +118,7 @@ class PlayEtalaseListFragment @Inject constructor(
 
     private fun startPostponedTransition() {
         requireView().doOnPreDraw {
-            startPostponedEnterTransition()
+            etalaseSetupCoordinator.startPostponedEnterTransition()
         }
     }
 
