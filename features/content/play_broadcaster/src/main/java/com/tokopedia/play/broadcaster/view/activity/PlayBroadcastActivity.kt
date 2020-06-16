@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
@@ -174,16 +175,10 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
     private fun observeConfiguration() {
         viewModel.observableConfigInfo.observe(this, Observer {
             if (it.streamAllowed) {
-                if (it.activeOnDifferentDevices) {
-                    // TODO("handle: Tokomu sedang siaran di perangkat lain")
-                }
-                if (it.haveOnGoingLive) {
-                    navigateToFragment(PlayBroadcastUserInteractionFragment::class.java,
-                            Bundle().apply {
-                                putString(PlayBroadcastUserInteractionFragment.KEY_CHANNEL_ID, it.activeChannelId.toString())
-                            })
-                } else {
-                    navigateToFragment(PlayBroadcastSetupFragment::class.java)
+                when {
+                    it.activeOnOtherDevices -> showDialogWhenActiveOnOtherDevices()
+                    it.haveOnGoingLive -> openBroadcastActivePage(it.activeChannelId.toString())
+                    else -> openBroadcastSetupPage()
                 }
             } else {
                 // TODO("handle when stream not allowed")
@@ -221,5 +216,50 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
         if (GlobalConfig.DEBUG) {
             throw IllegalStateException(throwable)
         }
+    }
+
+    private fun openBroadcastSetupPage() {
+        navigateToFragment(PlayBroadcastSetupFragment::class.java)
+    }
+
+    private fun openBroadcastActivePage(channelId: String) {
+        navigateToFragment(PlayBroadcastUserInteractionFragment::class.java,
+                Bundle().apply {
+                    putString(PlayBroadcastUserInteractionFragment.KEY_CHANNEL_ID, channelId)
+                })
+    }
+
+    private fun showDialogWhenActiveOnOtherDevices() {
+        getDialog(
+                title = getString(R.string.play_dialog_error_active_other_devices_title),
+                desc = getString(R.string.play_dialog_error_active_other_devices_desc),
+                primaryCta = getString(R.string.play_broadcast_exit),
+                primaryListener = { dialog ->
+                    dialog.dismiss()
+                    finish()
+                }
+        ).show()
+    }
+
+    private fun getDialog(
+            title: String,
+            desc: String,
+            @DialogUnify.ActionType actionType: Int = DialogUnify.SINGLE_ACTION,
+            @DialogUnify.ImageType imageType: Int = DialogUnify.NO_IMAGE,
+            primaryCta: String,
+            primaryListener: (DialogUnify) -> Unit = {},
+            secondaryCta: String = "",
+            secondaryListener: (DialogUnify) -> Unit = {},
+            cancelable: Boolean = false,
+            overlayClose: Boolean = false
+    ): DialogUnify = DialogUnify(this, actionType, imageType).apply {
+        setTitle(title)
+        setDescription(desc)
+        setPrimaryCTAText(primaryCta)
+        setSecondaryCTAText(secondaryCta)
+        setPrimaryCTAClickListener { primaryListener(this) }
+        setSecondaryCTAClickListener { secondaryListener(this) }
+        setCancelable(cancelable)
+        setOverlayClose(overlayClose)
     }
 }
