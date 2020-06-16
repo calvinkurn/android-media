@@ -16,8 +16,6 @@ public interface TransactionRouter {
 
     Intent getInboxReputationIntent(Context context);
 
-    Intent getDetailResChatIntentBuyer(Context context, String resoId, String shopName);
-
     Intent getShopPageIntent(Context context, String shopId);
 
     boolean getEnableFingerprintPayment();

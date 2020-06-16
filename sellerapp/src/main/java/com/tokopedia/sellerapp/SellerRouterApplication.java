@@ -62,10 +62,6 @@ import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.common.di.component.DaggerGMComponent;
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.common.di.module.GMModule;
-import com.tokopedia.inbox.common.ResolutionRouter;
-import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
-import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
-import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.linker.model.LinkerData;
@@ -143,6 +139,7 @@ import com.tokopedia.topchat.chatlist.fragment.ChatTabListFragment;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.withdraw.WithdrawRouter;
 
@@ -184,7 +181,6 @@ public abstract class SellerRouterApplication extends MainApplication
         CoreNetworkRouter,
         FlashSaleRouter,
         LinkerRouter,
-        ResolutionRouter ,
         SellerHomeRouter,
         LoginRouter {
 
@@ -596,17 +592,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return RouteManager.getIntent(context, ApplinkConst.TOPCHAT_IDLESS);
     }
 
-
-    @Override
-    public Intent getResolutionCenterIntentSeller(Context context) {
-        return ResoInboxActivity.newSellerInstance(context);
-    }
-
-    @Override
-    public Intent getDetailResChatIntentBuyer(Context context, String resoId, String shopName) {
-        return DetailResChatActivity.newBuyerInstance(context, resoId, shopName);
-    }
-
     @Override
     public Intent getPhoneVerificationActivationIntent(Context context) {
         return PhoneVerificationActivationActivity.getCallingIntent(context);
@@ -944,7 +929,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getCreateResCenterActivityIntent(Context context, String orderId) {
-        return CreateResCenterActivity.getCreateResCenterActivityIntent(context, orderId);
+        return RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, String.format(TokopediaUrl.Companion.getInstance().getMOBILEWEB() + ApplinkConst.ResCenter.RESO_CREATE, orderId));
     }
 
     @Override
