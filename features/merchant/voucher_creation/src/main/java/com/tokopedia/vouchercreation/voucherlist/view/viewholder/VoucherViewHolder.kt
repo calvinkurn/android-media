@@ -82,6 +82,7 @@ class VoucherViewHolder(
             val buttonVariant: Int
             val stringRes: Int
             val clickAction: KFunction1<VoucherUiModel, Unit>
+            val isActive: Boolean
 
             when (element.status) {
                 VoucherStatusConst.ONGOING -> {
@@ -89,26 +90,35 @@ class VoucherViewHolder(
                     buttonVariant = UnifyButton.Variant.FILLED
                     stringRes = R.string.mvc_share
                     clickAction = listener::onShareClickListener
+                    isActive = true
                 }
                 VoucherStatusConst.NOT_STARTED -> {
                     buttonType = UnifyButton.Type.ALTERNATE
                     buttonVariant = UnifyButton.Variant.GHOST
                     stringRes = R.string.mvc_edit_quota
                     clickAction = listener::onEditQuotaClickListener
+                    isActive = true
                 }
                 else -> {
                     buttonType = UnifyButton.Type.ALTERNATE
                     buttonVariant = UnifyButton.Variant.GHOST
                     stringRes = R.string.mvc_duplicate
                     clickAction = listener::onDuplicateClickListener
+                    isActive = false
                 }
             }
             btnMvcVoucherCta?.run {
-                this.buttonType = buttonType
-                this.buttonVariant = buttonVariant
-                text = context.getString(stringRes)
-                setOnClickListener {
-                    clickAction(element)
+                val shouldDisableActionTemporary =
+                        element.type == VoucherTypeConst.FREE_ONGKIR && !isActive
+                if (shouldDisableActionTemporary) {
+                    invisible()
+                } else {
+                    this.buttonType = buttonType
+                    this.buttonVariant = buttonVariant
+                    text = context.getString(stringRes)
+                    setOnClickListener {
+                        clickAction(element)
+                    }
                 }
             }
         }
