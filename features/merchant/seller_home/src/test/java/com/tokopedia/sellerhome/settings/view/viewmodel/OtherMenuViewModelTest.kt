@@ -7,7 +7,7 @@ import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.sellerhome.settings.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.sellerhome.utils.observeOnce
-import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingStatusUseCase
+import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -32,7 +32,7 @@ class OtherMenuViewModelTest {
     lateinit var getAllShopInfoUseCase: GetAllShopInfoUseCase
 
     @RelaxedMockK
-    lateinit var getShopFreeShippingStatusUseCase: GetShopFreeShippingStatusUseCase
+    lateinit var getShopFreeShippingInfoUseCase: GetShopFreeShippingInfoUseCase
 
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
@@ -54,7 +54,7 @@ class OtherMenuViewModelTest {
         OtherMenuViewModel(
             testDispatcher,
             getAllShopInfoUseCase,
-            getShopFreeShippingStatusUseCase,
+            getShopFreeShippingInfoUseCase,
             userSession,
             remoteConfig
         )

@@ -9,6 +9,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.sellerhome.settings.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.SettingShopInfoUiModel
+import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingStatusUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -22,11 +23,11 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
 class OtherMenuViewModel @Inject constructor(
-        @Named("Main") dispatcher: CoroutineDispatcher,
-        private val getAllShopInfoUseCase: GetAllShopInfoUseCase,
-        private val getShopFreeShippingStatusUseCase: GetShopFreeShippingStatusUseCase,
-        private val userSession: UserSessionInterface,
-        private val remoteConfig: FirebaseRemoteConfigImpl
+    @Named("Main") dispatcher: CoroutineDispatcher,
+    private val getAllShopInfoUseCase: GetAllShopInfoUseCase,
+    private val getShopFreeShippingInfoUseCase: GetShopFreeShippingInfoUseCase,
+    private val userSession: UserSessionInterface,
+    private val remoteConfig: FirebaseRemoteConfigImpl
 ): BaseViewModel(dispatcher) {
 
     companion object {
@@ -69,7 +70,7 @@ class OtherMenuViewModel @Inject constructor(
             val isFreeShippingActive = withContext(Dispatchers.IO) {
                 val shopId = userSession.shopId.toInt()
                 val params = GetShopFreeShippingStatusUseCase.createRequestParams(listOf(shopId))
-                getShopFreeShippingStatusUseCase.execute(params).firstOrNull()?.status ?: false
+                getShopFreeShippingInfoUseCase.execute(params).first().freeShipping.isActive
             }
 
             _isFreeShippingActive.value = isFreeShippingActive
