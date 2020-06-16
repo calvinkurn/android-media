@@ -7,6 +7,7 @@ import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -19,13 +20,15 @@ import com.tokopedia.design.text.watcher.NumberTextWatcher
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.topads.common.activity.NoCreditActivity
 import com.tokopedia.topads.common.activity.SuccessActivity
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.data.param.AdsItem
 import com.tokopedia.topads.data.param.Group
 import com.tokopedia.topads.data.param.InputCreateGroup
 import com.tokopedia.topads.data.param.KeywordsItem
-import com.tokopedia.topads.data.response.*
+import com.tokopedia.topads.data.response.ResponseCreateGroup
+import com.tokopedia.topads.data.response.TopAdsDepositResponse
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.model.SummaryViewModel
@@ -36,6 +39,8 @@ import javax.inject.Inject
 /**
  * Author errysuprayogi on 29,October,2019
  */
+
+private const val CLICK_IKLANKAN_BUTTON = "click-iklankan"
 class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     private lateinit var viewModel: SummaryViewModel
@@ -119,6 +124,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         btn_submit.setOnClickListener {
             val map = convertToParam(view)
             viewModel.topAdsCreated(map, this::onSuccessActivation, this::onErrorActivation)
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_IKLANKAN_BUTTON, "")
         }
         suggestion = (stepperModel?.finalBidPerClick!!) * MULTIPLIER
         stepperModel?.dailyBudget = suggestion
@@ -256,5 +262,4 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         (activity as StepperActivity).updateToolbarTitle(getString(R.string.summary_page_step))
 
     }
-
 }
