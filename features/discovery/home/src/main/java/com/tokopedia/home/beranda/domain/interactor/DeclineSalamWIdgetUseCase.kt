@@ -1,5 +1,11 @@
 package com.tokopedia.home.beranda.domain.interactor
 
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
+import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 /**
@@ -7,5 +13,46 @@ import javax.inject.Inject
  */
 
 class DeclineSalamWIdgetUseCase @Inject constructor(
+        private val graphqlUseCase: GraphqlUseCase<SalamWidget>)
+    : UseCase<SalamWidget>() {
 
-)
+    init {
+        graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+        graphqlUseCase.setTypeClass(SalamWidget::class.java)
+    }
+
+    companion object {
+        const val PARAM_WIDGET_ID = "widgetID"
+        const val PARAM_REQUEST = "params"
+    }
+
+    private var params: RequestParams = RequestParams.create()
+
+    //region query
+    private val query by lazy {
+        val params = "\$params"
+
+        """mutation CloseWidget($params: SalamCloseWidgetInput!){
+            salamCloseWidget(params: $params){
+                ID
+             }
+        } 
+        """.trimIndent()
+    }
+
+    override suspend fun executeOnBackground(): SalamWidget {
+        graphqlUseCase.clearCache()
+        graphqlUseCase.setGraphqlQuery(query)
+        graphqlUseCase.setRequestParams(params.parameters)
+        return graphqlUseCase.executeOnBackground()
+    }
+
+    fun setParams(requestParams: Map<String, Int>) {
+        params.parameters.clear()
+        //validate params
+        if (requestParams.containsKey(PARAM_WIDGET_ID)) {
+            params.putObject(PARAM_REQUEST, requestParams)
+        }
+    }
+
+}

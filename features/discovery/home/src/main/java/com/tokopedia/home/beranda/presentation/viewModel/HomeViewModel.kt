@@ -86,6 +86,7 @@ open class HomeViewModel @Inject constructor(
         private val getRechargeRecommendationUseCase: Lazy<GetRechargeRecommendationUseCase>,
         private val declineRechargeRecommendationUseCase: Lazy<DeclineRechargeRecommendationUseCase>,
         private val getSalamWidgetUseCase: Lazy<GetSalamWidgetUseCase>,
+        private val declineSalamWIdgetUseCase: Lazy<DeclineSalamWIdgetUseCase>,
         private val homeDispatcher: Lazy<HomeDispatcherProvider>
 ) : BaseCoRoutineScope(homeDispatcher.get().io()){
 
@@ -188,6 +189,7 @@ open class HomeViewModel @Inject constructor(
     private var getRechargeRecommendationJob: Job? = null
     private var declineRechargeRecommendationJob: Job? = null
     private var getSalamWidgetJob: Job? = null
+    private var declineSalamWidgetJob : Job? = null
     private var injectCouponTimeBasedJob: Job? = null
     private var jobChannel: Job? = null
     private var channel : Channel<UpdateLiveDataModel>? = null
@@ -860,6 +862,15 @@ open class HomeViewModel @Inject constructor(
         declineRechargeRecommendationJob = launchCatchError(coroutineContext, block = {
             declineRechargeRecommendationUseCase.get().setParams(requestParams)
             declineRechargeRecommendationUseCase.get().executeOnBackground()
+        }){}
+    }
+
+    fun declineSalamItem(requestParams: Map<String, Int>){
+        removeSalamWidget()
+        if (declineSalamWidgetJob?.isActive==true) return
+        declineSalamWidgetJob = launchCatchError(coroutineContext, block = {
+            declineSalamWIdgetUseCase.get().setParams(requestParams)
+            declineSalamWIdgetUseCase.get().executeOnBackground()
         }){}
     }
 
