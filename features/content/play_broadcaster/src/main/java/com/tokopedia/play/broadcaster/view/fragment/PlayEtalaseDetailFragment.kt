@@ -58,9 +58,9 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
 
-    override fun refresh() {
-        selectableProductAdapter.notifyDataSetChanged()
-    }
+//    override fun refresh() {
+//        selectableProductAdapter.notifyDataSetChanged()
+//    }
 
     override fun getScreenName(): String = "Etalase Detail"
 
@@ -72,7 +72,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         postponeEnterTransition()
-        bottomSheetCoordinator.showBottomAction(true)
+//        bottomSheetCoordinator.showBottomAction(true)
         return inflater.inflate(R.layout.fragment_play_etalase_detail, container, false)
     }
 

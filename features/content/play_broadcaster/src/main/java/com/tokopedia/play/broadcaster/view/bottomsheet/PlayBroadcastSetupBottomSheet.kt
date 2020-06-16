@@ -14,7 +14,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -32,8 +31,6 @@ import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
 import com.tokopedia.play.broadcaster.view.fragment.PlayCoverTitleSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
-import com.tokopedia.play.broadcaster.view.partial.BottomActionPartialView
-import com.tokopedia.play.broadcaster.view.partial.SelectedProductPagePartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSetupViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import java.util.*
@@ -55,9 +52,6 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
     private lateinit var tvTitle: TextView
     private lateinit var clContent: ConstraintLayout
     private lateinit var flOverlay: FrameLayout
-
-    private lateinit var selectedProductPage: SelectedProductPagePartialView
-    private lateinit var bottomActionView: BottomActionPartialView
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
@@ -106,30 +100,6 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView(view)
-
-        selectedProductPage = SelectedProductPagePartialView(view as ViewGroup, object : SelectedProductPagePartialView.Listener {
-            override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
-                viewModel.selectProduct(productId, isSelected)
-                val activeFragment = currentFragment
-                if (activeFragment is PlayBaseSetupFragment) activeFragment.refresh()
-            }
-        })
-
-        bottomActionView = BottomActionPartialView(view as ViewGroup, object : BottomActionPartialView.Listener {
-            override fun onInventoryIconClicked() {
-                showSelectedProductPage()
-            }
-
-            override fun onNextButtonClicked() {
-                showCoverTitlePage()
-            }
-        })
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        observeSelectedProducts()
     }
 
     override fun navigateToFragment(fragmentClass: Class<out Fragment>, extras: Bundle, sharedElements: List<View>, onFragment: (Fragment) -> Unit) {
@@ -147,10 +117,6 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         viewModel.coverImageUrl = coverUrl
         viewModel.liveTitle = liveTitle
         complete()
-    }
-
-    override fun showBottomAction(shouldShow: Boolean) {
-        if (shouldShow) bottomActionView.show() else bottomActionView.hide()
     }
 
     fun show(fragmentManager: FragmentManager) {
@@ -249,13 +215,6 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         }
     }
 
-    private fun showSelectedProductPage() {
-        if (selectedProductPage.isShown) return
-
-        selectedProductPage.setSelectedProductList(viewModel.selectedProductList)
-        selectedProductPage.show()
-    }
-
     private fun saveCompleteChannel() {
         parentViewModel.saveCompleteChannel(
                 productList = viewModel.selectedProductList,
@@ -274,18 +233,6 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
             putInt(PlayCoverTitleSetupFragment.EXTRA_COVER_SOURCE, CoverSourceEnum.NONE.value)
         })
     }
-
-    //region observe
-    /**
-     * Observe
-     */
-    private fun observeSelectedProducts() {
-        viewModel.observableSelectedProducts.observe(viewLifecycleOwner, Observer {
-            bottomActionView.setupBottomActionWithProducts(it)
-            selectedProductPage.onSelectedProductsUpdated(it)
-        })
-    }
-    //endregion
 
     /**
      * Want to test "Ubah Promo"? you only need to send percentage and quota params when `getInstance()`

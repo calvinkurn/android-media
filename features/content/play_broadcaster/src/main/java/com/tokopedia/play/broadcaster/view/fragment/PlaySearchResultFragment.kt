@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.view.fragment
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.Slide
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
@@ -21,7 +23,6 @@ import com.tokopedia.play.broadcaster.util.productNotFoundState
 import com.tokopedia.play.broadcaster.util.scroll.EndlessRecyclerViewScrollListener
 import com.tokopedia.play.broadcaster.util.scroll.StopFlingScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
-import com.tokopedia.play.broadcaster.view.custom.PlaySearchBar
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseEtalaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -35,9 +36,11 @@ class PlaySearchResultFragment @Inject constructor(
 
     private lateinit var rvSearchedProducts: RecyclerView
     private lateinit var errorProductNotFound: GlobalError
-    private lateinit var psbSearch: PlaySearchBar
 
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
+
+    private val keyword: String
+        get() = arguments?.getString(EXTRA_KEYWORD) ?: ""
 
     private val searchProductsAdapter = ProductSelectableAdapter(object : ProductSelectableViewHolder.Listener {
         override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
@@ -58,10 +61,12 @@ class PlaySearchResultFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(requireParentFragment(), viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
+        setupTransition()
+        viewModel = ViewModelProviders.of(requireParentFragment().requireParentFragment(), viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        etalaseSetupCoordinator.showBottomAction(true)
         return inflater.inflate(R.layout.fragment_play_search_result, container, false)
     }
 
@@ -76,19 +81,17 @@ class PlaySearchResultFragment @Inject constructor(
         observeSearchProducts()
     }
 
+    override fun refresh() {
+    }
+
     private fun initView(view: View) {
         with (view) {
             rvSearchedProducts = findViewById(R.id.rv_searched_products)
             errorProductNotFound = findViewById(R.id.error_product_not_found)
-            psbSearch = findViewById(R.id.psb_search)
         }
     }
 
     private fun setupView(view: View) {
-        psbSearch.setOnClickListener {
-            etalaseSetupCoordinator.openSearchPage("", emptyList())
-        }
-
         errorProductNotFound.productNotFoundState()
 
         rvSearchedProducts.layoutManager = GridLayoutManager(rvSearchedProducts.context, SPAN_COUNT, RecyclerView.VERTICAL, false).apply {
@@ -104,13 +107,16 @@ class PlaySearchResultFragment @Inject constructor(
         rvSearchedProducts.addItemDecoration(PlayGridTwoItemDecoration(requireContext()))
         scrollListener = object : EndlessRecyclerViewScrollListener(rvSearchedProducts.layoutManager!!) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.searchProductsByKeyword(psbSearch.text, page)
+                viewModel.searchProductsByKeyword(keyword, page)
             }
         }
         rvSearchedProducts.addOnScrollListener(scrollListener)
         rvSearchedProducts.addOnScrollListener(StopFlingScrollListener())
+
+        scrollListener.loadMoreNextPage()
     }
 
+    //region observe
     /**
      * Observe
      */
@@ -145,9 +151,29 @@ class PlaySearchResultFragment @Inject constructor(
             }
         })
     }
+    //endregion
+
+    /**
+     * Transition
+     */
+    private fun setupTransition() {
+        setupEnterTransition()
+        setupExitTransition()
+    }
+
+    private fun setupEnterTransition() {
+        enterTransition = Slide(Gravity.BOTTOM)
+                .setDuration(300)
+    }
+
+    private fun setupExitTransition() {
+        exitTransition = Slide(Gravity.BOTTOM)
+                .setDuration(300)
+    }
 
     companion object {
 
+        const val EXTRA_KEYWORD = "keyword"
         private const val SPAN_COUNT = 2
     }
 }

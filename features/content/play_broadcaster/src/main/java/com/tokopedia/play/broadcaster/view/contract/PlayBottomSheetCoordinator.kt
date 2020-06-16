@@ -7,5 +7,4 @@ import android.net.Uri
  */
 interface PlayBottomSheetCoordinator : PlayBaseCoordinator {
     fun saveCoverAndTitle(coverUri: Uri, coverUrl: String, liveTitle: String)
-    fun showBottomAction(shouldShow: Boolean)
 }

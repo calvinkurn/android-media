@@ -54,8 +54,6 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
 
     override fun onInterceptBackPressed(): Boolean = false
 
-    override fun refresh() {}
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupTransition()
@@ -169,7 +167,6 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
 
     private fun setupView() {
         bottomSheetCoordinator.setupTitle(getString(R.string.play_prepare_cover_title_title))
-        bottomSheetCoordinator.showBottomAction(false)
 
         containerChangeCover.setOnClickListener {
             onChangeCoverClicked()

@@ -51,10 +51,6 @@ class PlayBroadcastCoverCropBottomSheet @Inject constructor(
         // do nothing
     }
 
-    override fun showBottomAction(shouldShow: Boolean) {
-        // do nothing
-    }
-
     override fun navigateToFragment(fragmentClass: Class<out Fragment>, extras: Bundle, sharedElements: List<View>, onFragment: (Fragment) -> Unit) {
         // do nothing
     }

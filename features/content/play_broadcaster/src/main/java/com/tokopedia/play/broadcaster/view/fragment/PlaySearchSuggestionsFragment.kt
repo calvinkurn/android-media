@@ -10,23 +10,23 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.viewholder.SearchSuggestionViewHolder
+import com.tokopedia.play.broadcaster.util.doOnPreDraw
 import com.tokopedia.play.broadcaster.view.adapter.SearchSuggestionsAdapter
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseEtalaseSetupFragment
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.PlaySearchSuggestionsViewModel
 import javax.inject.Inject
 
 class PlaySearchSuggestionsFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory
 ): PlayBaseEtalaseSetupFragment() {
 
-    private lateinit var viewModel: PlayEtalasePickerViewModel
+    private lateinit var viewModel: PlaySearchSuggestionsViewModel
 
     private lateinit var rvSuggestions: RecyclerView
 
     private val searchSuggestionsAdapter = SearchSuggestionsAdapter(object : SearchSuggestionViewHolder.Listener {
         override fun onSuggestionClicked(suggestionText: String) {
-//            psbSearch.text = suggestionText
-//            psbSearch.forceSearch()
+            etalaseSetupCoordinator.openProductSearchPage(suggestionText)
         }
     })
 
@@ -34,10 +34,12 @@ class PlaySearchSuggestionsFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(requireParentFragment(), viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
+        setupTransition()
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlaySearchSuggestionsViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        etalaseSetupCoordinator.showBottomAction(false)
         return inflater.inflate(R.layout.fragment_play_search_suggestions, container, false)
     }
 
@@ -50,6 +52,13 @@ class PlaySearchSuggestionsFragment @Inject constructor(
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         observeSearchSuggestions()
+    }
+
+    override fun refresh() {
+    }
+
+    fun searchKeyword(keyword: String) {
+        viewModel.loadSuggestionsFromKeyword(keyword)
     }
 
     private fun initView(view: View) {
@@ -69,5 +78,29 @@ class PlaySearchSuggestionsFragment @Inject constructor(
         viewModel.observableSuggestionList.observe(viewLifecycleOwner, Observer {
             searchSuggestionsAdapter.setItemsAndAnimateChanges(it)
         })
+    }
+
+    /**
+     * Transition
+     */
+    private fun setupTransition() {
+        setupEnterTransition()
+        setupExitTransition()
+    }
+
+    private fun setupEnterTransition() {
+//        enterTransition = Slide(Gravity.BOTTOM)
+//                .setDuration(300)
+    }
+
+    private fun setupExitTransition() {
+//        exitTransition = Fade(Fade.OUT)
+//                .setDuration(300)
+    }
+
+    private fun startPostponedTransition() {
+        requireView().doOnPreDraw {
+            startPostponedEnterTransition()
+        }
     }
 }

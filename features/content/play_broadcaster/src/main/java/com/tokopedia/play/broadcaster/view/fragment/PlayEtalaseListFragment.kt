@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.view.fragment
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.Slide
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
@@ -19,7 +21,6 @@ import com.tokopedia.play.broadcaster.util.doOnPreDraw
 import com.tokopedia.play.broadcaster.util.scroll.StopFlingScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.PlayEtalaseAdapter
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
-import com.tokopedia.play.broadcaster.view.custom.PlaySearchBar
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseEtalaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import javax.inject.Inject
@@ -31,7 +32,6 @@ class PlayEtalaseListFragment @Inject constructor(
     private lateinit var viewModel: PlayEtalasePickerViewModel
 
     private lateinit var rvEtalase: RecyclerView
-    private lateinit var psbSearch: PlaySearchBar
 
     private val etalaseAdapter = PlayEtalaseAdapter(object : PlayEtalaseViewHolder.Listener {
         override fun onEtalaseClicked(etalaseId: String, sharedElements: List<View>) {
@@ -54,7 +54,7 @@ class PlayEtalaseListFragment @Inject constructor(
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        etalaseSetupCoordinator.postponeEnterTransition()
+        etalaseSetupCoordinator.showBottomAction(false)
         return inflater.inflate(R.layout.fragment_play_etalase_list, container, false)
     }
 
@@ -62,6 +62,7 @@ class PlayEtalaseListFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView(view)
+        setupTransition()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -69,18 +70,17 @@ class PlayEtalaseListFragment @Inject constructor(
         observeEtalase()
     }
 
+    override fun refresh() {
+        etalaseAdapter.notifyDataSetChanged()
+    }
+
     private fun initView(view: View) {
         with(view) {
             rvEtalase = findViewById(R.id.rv_etalase)
-            psbSearch = findViewById(R.id.psb_search)
         }
     }
 
     private fun setupView(view: View) {
-        psbSearch.setOnClickListener {
-            etalaseSetupCoordinator.openSearchPage("", emptyList())
-        }
-
         rvEtalase.layoutManager = GridLayoutManager(rvEtalase.context, SPAN_COUNT, RecyclerView.VERTICAL, false).apply {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
 
@@ -93,6 +93,10 @@ class PlayEtalaseListFragment @Inject constructor(
         rvEtalase.adapter = etalaseAdapter
         rvEtalase.addItemDecoration(PlayGridTwoItemDecoration(requireContext()))
         rvEtalase.addOnScrollListener(StopFlingScrollListener())
+
+//        flSearchClick.setOnClickListener {
+//            etalaseSetupCoordinator.openSearchPage("", listOf(psbSearch))
+//        }
     }
 
     /**
@@ -116,12 +120,35 @@ class PlayEtalaseListFragment @Inject constructor(
         })
     }
 
+    /**
+     * Transition
+     */
+    private fun setupTransition() {
+        setupExitTransition()
+        setupReenterTransition()
+    }
+
+    private fun setupExitTransition() {
+        exitTransition = Slide(Gravity.BOTTOM)
+                .setStartDelay(150)
+                .setDuration(300)
+    }
+
+    private fun setupReenterTransition() {
+        reenterTransition = Slide(Gravity.BOTTOM)
+                .setStartDelay(150)
+                .setDuration(300)
+    }
+
     private fun startPostponedTransition() {
         requireView().doOnPreDraw {
             etalaseSetupCoordinator.startPostponedEnterTransition()
         }
     }
 
+    /**
+     * Helper
+     */
     private fun getParentFragmentByClass(clazz: Class<out Fragment>): Fragment {
         var parent = parentFragment
         while (parent != null && clazz != parent::class.java) {
