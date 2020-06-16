@@ -17,16 +17,25 @@ import com.tokopedia.layanan_finansial.view.customview.LayananSectionView
 import com.tokopedia.layanan_finansial.view.models.LayananFinansialModel
 import com.tokopedia.layanan_finansial.view.models.LayananSectionModel
 import com.tokopedia.layanan_finansial.view.viewModel.LayananFinansialViewModel
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class LayananFragment : BaseListFragment<LayananSectionModel,LayananViewHolderFactory>() {
 
+
     @Inject
     lateinit var factory: ViewModelFactory
     val viewModel by lazy { ViewModelProviders.of(this,factory)[LayananFinansialViewModel::class.java] }
+    private val performanceInterface by lazy { PageLoadTimePerformanceCallback(LAYANAN_FINANCAIL_PLT_PREPARE_METRICS, LAYANAN_FINANCAIL_PLT_NETWORK_METRICS, LAYANAN_FINANCAIL_PLT_RENDER_METRICS) as PageLoadTimePerformanceInterface}
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        performanceInterface.startMonitoring(LAYANAN_FINANCAIL_PLT)
+        performanceInterface.startPreparePagePerformanceMonitoring()
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -36,8 +45,16 @@ class LayananFragment : BaseListFragment<LayananSectionModel,LayananViewHolderFa
     private fun addObserver()  = viewModel.liveData.observe(this, Observer {
         it?.let {
             when(it){
-                is Success -> render(it.data)
-                is Fail -> showGetListError(it.throwable)
+                is Success -> {
+                    performanceInterface.stopNetworkRequestPerformanceMonitoring()
+                    performanceInterface.startRenderPerformanceMonitoring()
+                    render(it.data)
+                    performanceInterface.stopRenderPerformanceMonitoring()
+                }
+                is Fail -> {
+                    performanceInterface.stopNetworkRequestPerformanceMonitoring()
+                    showGetListError(it.throwable)
+                }
             }
         }
     })
@@ -57,6 +74,8 @@ class LayananFragment : BaseListFragment<LayananSectionModel,LayananViewHolderFa
     }
 
     override fun loadData(page: Int) {
+        performanceInterface.stopPreparePagePerformanceMonitoring()
+        performanceInterface.startNetworkRequestPerformanceMonitoring()
         viewModel.getDetail()
     }
 
@@ -66,5 +85,17 @@ class LayananFragment : BaseListFragment<LayananSectionModel,LayananViewHolderFa
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
         return false
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        performanceInterface.stopMonitoring()
+    }
+
+    companion object {
+        val LAYANAN_FINANCAIL_PLT = "layananfinancial_fintech_plt"
+        val LAYANAN_FINANCAIL_PLT_PREPARE_METRICS = "layananfinancial_fintech_plt_prepare_metrics"
+        val LAYANAN_FINANCAIL_PLT_NETWORK_METRICS = "layananfinancial_fintech_plt_network_metrics"
+        val LAYANAN_FINANCAIL_PLT_RENDER_METRICS = "layananfinancial_fintech_plt_render_metrics"
     }
 }
