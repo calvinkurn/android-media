@@ -43,7 +43,7 @@ class EnhancedECommerceProductCartMapData {
 
     fun setDimension54(isFulfill: Boolean) {
         val data = if (isFulfill) "tokopedia" else "regular"
-        Product[KEY_DIMENSION_54] = if (data.isNotBlank()) data else DEFAULT_VALUE_NONE_OTHER
+        Product[KEY_DIMENSION_54] = data
     }
 
     fun setDimension80(data: String?) {
