@@ -686,6 +686,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
             ProductDetailConstant.BY_ME -> {
                 onAffiliateClick(true)
+                DynamicProductDetailTracking.Click.eventClickByMe(viewModel.getDynamicProductInfoP1)
             }
         }
     }
