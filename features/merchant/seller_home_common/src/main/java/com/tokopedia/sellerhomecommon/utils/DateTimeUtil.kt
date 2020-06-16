@@ -23,5 +23,9 @@ object DateTimeUtil {
         return Calendar.getInstance(getLocale()).timeInMillis.minus(TimeUnit.DAYS.toMillis(daysBefore))
     }
 
+    fun getNNextDaysTimestamp(days: Long): Long {
+        return Calendar.getInstance(getLocale()).timeInMillis.plus(TimeUnit.DAYS.toMillis(days))
+    }
+
     fun getFormattedDate(daysBefore: Long, format: String) = format(getNPastDaysTimestamp(daysBefore), format)
 }
