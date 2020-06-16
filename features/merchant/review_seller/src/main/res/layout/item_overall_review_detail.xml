@@ -54,7 +54,7 @@
         tools:text="@string/total_product_review"
         android:textColor="@color/typography_black"
         app:typographyType="body_2"
-        app:layout_constraintTop_toBottomOf="@id/rating_star"
+        app:layout_constraintTop_toBottomOf="@id/rating_star_overall"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
