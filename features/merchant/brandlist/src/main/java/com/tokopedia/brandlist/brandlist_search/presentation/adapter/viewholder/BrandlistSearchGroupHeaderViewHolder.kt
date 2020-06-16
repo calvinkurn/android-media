@@ -54,12 +54,9 @@ class BrandlistSearchGroupHeaderViewHolder(itemView: View) : AbstractViewHolder<
         }
 
         adapter = BrandlistSearchAlphabetHeaderAdapter(element.listener)
-        adapter?.let {
-            it.headerList = headerList
-            it.selectedPosition = element.selectedChip
-            it.lastTimeChipsClicked = element.lastTimeChipIsClicked
-            it.notifyDataSetChanged()
-        }
+        adapter?.headerList = headerList
+        adapter?.selectedPosition = element.selectedChip
+        adapter?.notifyDataSetChanged()
         recyclerViewBrandHeader.adapter = adapter
     }
 
