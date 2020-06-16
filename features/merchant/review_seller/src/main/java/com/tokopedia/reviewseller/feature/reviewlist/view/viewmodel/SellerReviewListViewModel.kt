@@ -39,7 +39,7 @@ class SellerReviewListViewModel @Inject constructor(
                     block = {
                         getProductRatingOverall(filterBy)
                     }, onError = {
-                        _productRatingOverall.value = Fail(it)
+                        _productRatingOverall.postValue(Fail(it))
                         null }
             )
 
@@ -49,14 +49,14 @@ class SellerReviewListViewModel @Inject constructor(
                                 sortBy = sortBy,
                                 filterBy = filterBy)
                     }, onError = {
-                        _reviewProductList.value = Fail(it)
+                        _reviewProductList.postValue(Fail(it))
                         null
                     })
 
             productRatingOverall.await()?.let {
                 reviewProductList.await()?.also { reviewProductData ->
-                    _productRatingOverall.value = Success(it)
-                    _reviewProductList.value = Success(reviewProductData)
+                    _productRatingOverall.postValue( Success(it))
+                    _reviewProductList.postValue(Success(reviewProductData))
                 }
             }
         }) {
@@ -68,9 +68,9 @@ class SellerReviewListViewModel @Inject constructor(
             val productReviewList = withContext(dispatcherProvider.io()) {
                 getProductReviewList(sortBy, filterBy, page)
             }
-            _reviewProductList.value = Success(productReviewList)
+            _reviewProductList.postValue(Success(productReviewList))
         }, onError = {
-            _reviewProductList.value = Fail(it)
+            _reviewProductList.postValue(Fail(it))
         })
     }
 

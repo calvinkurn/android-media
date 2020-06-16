@@ -3,10 +3,7 @@ package com.tokopedia.shop_showcase.shop_showcase_add.presentation.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.view.MotionEvent
-import android.view.View
-import android.view.Window
-import android.view.WindowManager
+import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -53,6 +50,10 @@ class ShopShowcaseAddActivity : BaseSimpleActivity() {
         return R.layout.activity_shop_showcase_add
     }
 
+    override fun getParentViewResourceID(): Int {
+        return R.id.parent_view
+    }
+
     override fun setupStatusBar(){
         val window: Window = window
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -67,7 +68,9 @@ class ShopShowcaseAddActivity : BaseSimpleActivity() {
 
     override fun onBackPressed() {
         if(isActionEdit) {
-            onBackPressedConfirm()
+            if(fragment != null) {
+                (fragment as? ShopShowcaseAddFragment)?.onBackPressedConfirm()
+            }
         } else {
             finish()
         }
@@ -81,21 +84,4 @@ class ShopShowcaseAddActivity : BaseSimpleActivity() {
         return super.dispatchTouchEvent(ev)
     }
 
-    private fun onBackPressedConfirm() {
-        val confirmDialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-        confirmDialog.apply {
-            setTitle(getString(R.string.text_exit_confirm_dialog_title))
-            setDescription(getString(R.string.text_exit_confirm_dialog_description))
-            setPrimaryCTAText(getString(R.string.text_cancel_button))
-            setPrimaryCTAClickListener {
-                this.dismiss()
-            }
-            setSecondaryCTAText(getString(R.string.text_exit_button))
-            setSecondaryCTAClickListener {
-                this.dismiss()
-                finish()
-            }
-            show()
-        }
-    }
 }

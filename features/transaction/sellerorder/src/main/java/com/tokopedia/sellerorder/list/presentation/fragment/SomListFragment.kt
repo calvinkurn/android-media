@@ -31,6 +31,8 @@ import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.sellerorder.BuildConfig
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
@@ -189,6 +191,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         observingFilter()
         observingStatusList()
         observingOrders()
+        context?.let { UpdateShopActiveService.startService(it) }
     }
 
     private fun prepareLayout() {
@@ -552,6 +555,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         refreshHandler?.finishRefresh()
         empty_state_order_list?.visibility = View.GONE
         order_list_rv?.visibility = View.VISIBLE
+        quick_filter?.visibility = View.VISIBLE
 
         if (!onLoadMore) {
             somListItemAdapter.addList(orderList.orders)
@@ -575,8 +579,9 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun renderFilterEmpty(title: String, desc: String) {
         refreshHandler?.finishRefresh()
-        order_list_rv.visibility = View.GONE
-        empty_state_order_list.visibility = View.VISIBLE
+        order_list_rv?.visibility = View.GONE
+        quick_filter?.visibility = View.VISIBLE
+        empty_state_order_list?.visibility = View.VISIBLE
         title_empty?.text = title
         desc_empty?.text = desc
         btn_cek_peluang?.visibility = View.GONE
@@ -585,8 +590,9 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun renderErrorOrderList(title: String, desc: String) {
         refreshHandler?.finishRefresh()
-        order_list_rv.visibility = View.GONE
-        empty_state_order_list.visibility = View.VISIBLE
+        order_list_rv?.visibility = View.GONE
+        quick_filter?.visibility = View.GONE
+        empty_state_order_list?.visibility = View.VISIBLE
         title_empty?.text = title
         desc_empty?.text = desc
         ic_empty?.loadImageDrawable(R.drawable.ic_som_error_list)
@@ -601,8 +607,9 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun renderEmptyOrderList() {
         refreshHandler?.finishRefresh()
-        order_list_rv.visibility = View.GONE
-        empty_state_order_list.visibility = View.VISIBLE
+        order_list_rv?.visibility = View.GONE
+        quick_filter?.visibility = View.VISIBLE
+        empty_state_order_list?.visibility = View.VISIBLE
         title_empty?.text = getString(R.string.empty_peluang_title)
 
         // Peluang Feature has been removed, thus we set text to empty and button is gone
