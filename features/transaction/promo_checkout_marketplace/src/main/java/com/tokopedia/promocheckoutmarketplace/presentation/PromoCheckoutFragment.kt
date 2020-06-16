@@ -173,6 +173,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             val heightDiffInDp = heightDiff.pxToDp(displayMetrics)
             if (heightDiffInDp > KEYBOARD_HEIGHT_THRESHOLD) {
                 keyboardHeight = heightDiff
+                onClickPromoManualInputTextField()
             } else {
                 keyboardHeight = 0
                 hidePromoCheckoutLastSeenBottomsheet()
@@ -534,6 +535,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 }
 
                 promoCheckoutLastSeenBottomsheet?.state = BottomSheetBehavior.STATE_COLLAPSED
+                promoCheckoutLastSeenBottomsheet?.state = BottomSheetBehavior.STATE_DRAGGING
+                promoCheckoutLastSeenBottomsheet?.state = BottomSheetBehavior.STATE_COLLAPSED
             }
         }
     }
@@ -771,6 +774,10 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     override fun onClickPromoManualInputTextField() {
+        getOrShowLastSeenData()
+    }
+
+    private fun getOrShowLastSeenData() {
         view?.let {
             if (promoCheckoutLastSeenBottomsheet == null) {
                 promoCheckoutLastSeenBottomsheet = BottomSheetBehavior.from(bottomsheetPromoLastSeenContainer)
