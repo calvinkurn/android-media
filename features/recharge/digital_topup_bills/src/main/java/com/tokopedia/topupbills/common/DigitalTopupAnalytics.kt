@@ -19,6 +19,22 @@ import com.tokopedia.track.TrackAppUtils
 
 class DigitalTopupAnalytics {
 
+    fun eventOpenScreen(userId: String, categoryId: Int) {
+        val categoryName = getCategoryName(categoryId)
+        val stringScreenName = StringBuilder(DigitalTopupEventTracking.Additional.DIGITAL_SCREEN_NAME)
+        stringScreenName.append(categoryName.toLowerCase())
+
+        val mapOpenScreen = HashMap<String, String>()
+        mapOpenScreen[DigitalTopupEventTracking.Additional.IS_LOGIN_STATUS] = if (userId.isEmpty())  "false" else "true"
+        mapOpenScreen[DigitalTopupEventTracking.Additional.BUSINESS_UNIT] = DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE
+        mapOpenScreen[DigitalTopupEventTracking.Additional.CURRENT_SITE] = DigitalTopupEventTracking.Additional.CURRENT_SITE_RECHARGE
+        mapOpenScreen[DigitalTopupEventTracking.Additional.USER_ID] = userId
+        mapOpenScreen[DigitalTopupEventTracking.Additional.CATEGORY] = categoryName
+        mapOpenScreen[DigitalTopupEventTracking.Additional.CATEGORY_ID] = categoryId.toString()
+
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(stringScreenName.toString(), mapOpenScreen)
+    }
+
     fun eventInputNumberManual(categoryId: Int, operatorName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
@@ -119,30 +135,30 @@ class DigitalTopupAnalytics {
         ))
     }
 
-    fun eventClickCheckEnquiry(categoryName: String, operatorName: String, userId: String) {
+    fun eventClickCheckEnquiry(categoryId: Int, operatorName: String, userId: String) {
         val mapEvent = TrackAppUtils.gtmData(
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                 DigitalTopupEventTracking.Action.CLICK_CHECK_TAGIHAN,
-                "$categoryName - $operatorName")
+                "${getCategoryName(categoryId)} - $operatorName")
         sendGeneralEvent(mapEvent, userId)
     }
 
-    fun eventClickTabMenuTelco(categoryName: String, userId: String, action: String) {
+    fun eventClickTabMenuTelco(categoryId: Int, userId: String, action: String) {
         val mapEvent = TrackAppUtils.gtmData(
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                 action,
-                "$categoryName")
+                "${getCategoryName(categoryId)}")
         sendGeneralEvent(mapEvent, userId)
     }
 
-    fun eventClickDotsMenuTelco(categoryName: String, userId: String) {
+    fun eventClickDotsMenuTelco(categoryId: String, userId: String) {
         val mapEvent = TrackAppUtils.gtmData(
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                 DigitalTopupEventTracking.Action.CLICK_DOTS_MENU,
-                "$categoryName")
+                "${getCategoryName(categoryId.toInt())}")
         sendGeneralEvent(mapEvent, userId)
     }
 
@@ -378,7 +394,7 @@ class DigitalTopupAnalytics {
             TelcoCategoryType.CATEGORY_PULSA -> TelcoComponentName.PRODUCT_PULSA.toLowerCase()
             TelcoCategoryType.CATEGORY_PAKET_DATA -> TelcoComponentName.PRODUCT_PAKET_DATA.toLowerCase()
             TelcoCategoryType.CATEGORY_ROAMING -> TelcoComponentName.PRODUCT_ROAMING.toLowerCase()
-            else -> TelcoComponentName.PRODUCT_PULSA.toLowerCase()
+            else -> TelcoComponentName.PRODUCT_PASCABAYAR.toLowerCase()
         }
     }
 }
