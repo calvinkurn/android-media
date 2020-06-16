@@ -2,6 +2,7 @@ package com.tokopedia.statistic.presentation.view.bottomsheet
 
 import android.content.Context
 import android.view.View
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
@@ -18,7 +19,8 @@ import java.util.*
  */
 
 class SelectDateRageBottomSheet(
-        private val mContext: Context
+        private val mContext: Context,
+        private val fm: FragmentManager
 ) : BottomSheetUnify(), DateRangeAdapterFactoryImpl.Listener {
 
     companion object {
@@ -28,9 +30,13 @@ class SelectDateRageBottomSheet(
         private const val DAYS_90 = 90
     }
 
-    private val mAdapter by lazy { DateRangeAdapter(this) }
+    private var applyChangesCallback: (DateRangeItem) -> Unit = {}
+    private val mAdapter by lazy { DateRangeAdapter(this, fm) }
     private val items: List<DateRangeItem> by lazy {
-        listOf(getDateRangeItem(DAYS_7, true), getDateRangeItem(DAYS_30), getDateRangeItem(DAYS_90))
+        listOf(getDateRangeItem(DAYS_7, true),
+                getDateRangeItem(DAYS_30), getDateRangeItem(DAYS_90),
+                DateRangeItem.Custom(mContext.getString(R.string.stc_custom))
+        )
     }
 
     init {
@@ -39,13 +45,29 @@ class SelectDateRageBottomSheet(
         setChild(child)
 
         setupView(child)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
     }
 
     override fun onApplyDateFilter(model: DateRangeItem) {
-
+        applyChangesCallback(model)
+        dismissAllowingStateLoss()
     }
 
-    fun show(fm: FragmentManager) {
+    override fun onItemDateRangeClick(model: DateRangeItem) {
+        items.forEach {
+            if (it != model) {
+                it.isSelected = false
+            }
+        }
+        mAdapter.notifyDataSetChanged()
+    }
+
+    fun setOnApplyChanges(callback: (DateRangeItem) -> Unit): SelectDateRageBottomSheet {
+        this.applyChangesCallback = callback
+        return this
+    }
+
+    fun show() {
         show(fm, this::class.java.simpleName)
     }
 
@@ -65,6 +87,4 @@ class SelectDateRageBottomSheet(
         val endDate = Date(DateTimeUtil.getNPastDaysTimestamp(DAY_1.toLong()))
         return DateRangeItem.Default(label, startDate, endDate, isSelected)
     }
-
-
 }

@@ -10,8 +10,8 @@ import java.util.*
 
 sealed class DateRangeItem(
         open val label: String,
-        open val startDate: Date,
-        open val endDate: Date,
+        open val startDate: Date? = null,
+        open val endDate: Date? = null,
         open var isSelected: Boolean = false
 ) : Visitable<DateRangeAdapterFactory> {
 
@@ -29,8 +29,8 @@ sealed class DateRangeItem(
 
     data class Custom(
             override val label: String,
-            override val startDate: Date,
-            override val endDate: Date,
+            override val startDate: Date? = null,
+            override val endDate: Date? = null,
             override var isSelected: Boolean = false
     ) : DateRangeItem(label, startDate, endDate, isSelected) {
 

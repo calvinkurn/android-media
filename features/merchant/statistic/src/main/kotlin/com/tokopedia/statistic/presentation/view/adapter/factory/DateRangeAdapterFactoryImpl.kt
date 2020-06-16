@@ -1,6 +1,7 @@
 package com.tokopedia.statistic.presentation.view.adapter.factory
 
 import android.view.View
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -13,7 +14,8 @@ import com.tokopedia.statistic.presentation.view.adapter.viewholder.DateRangeDef
  */
 
 class DateRangeAdapterFactoryImpl(
-        private val listener: Listener
+        private val listener: Listener,
+        private val fm: FragmentManager
 ) : BaseAdapterTypeFactory(), DateRangeAdapterFactory {
 
     override fun type(item: DateRangeItem.Default): Int = DateRangeDefaultViewHolder.RES_LAYOUT
@@ -22,13 +24,20 @@ class DateRangeAdapterFactoryImpl(
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            DateRangeDefaultViewHolder.RES_LAYOUT -> DateRangeDefaultViewHolder(parent, listener::onApplyDateFilter)
-            DateRangeCustomViewHolder.RES_LAYOUT -> DateRangeCustomViewHolder(parent, listener::onApplyDateFilter)
+            DateRangeDefaultViewHolder.RES_LAYOUT -> DateRangeDefaultViewHolder(parent) {
+                listener.onApplyDateFilter(it)
+                listener.onItemDateRangeClick(it)
+            }
+            DateRangeCustomViewHolder.RES_LAYOUT -> DateRangeCustomViewHolder(parent, fm, listener::onApplyDateFilter) {
+                listener.onItemDateRangeClick(it)
+            }
             else -> super.createViewHolder(parent, type)
         }
     }
 
     interface Listener {
+
+        fun onItemDateRangeClick(model: DateRangeItem)
 
         fun onApplyDateFilter(model: DateRangeItem)
     }
