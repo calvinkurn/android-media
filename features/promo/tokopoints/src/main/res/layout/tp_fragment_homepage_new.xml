@@ -18,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:measureAllChildren="false">
+
             <ProgressBar
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -40,11 +41,11 @@
                         android:id="@+id/collapsing_toolbar"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:background="@color/transparent"
                         app:contentScrim="?attr/colorPrimary"
                         app:expandedTitleGravity="left|bottom"
                         app:expandedTitleMarginBottom="@dimen/dp_8"
                         app:expandedTitleMarginStart="0dp"
-                        android:background="@color/transparent"
                         app:expandedTitleTextAppearance="@style/ToolbarExpandedTitle3"
                         app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
@@ -63,8 +64,7 @@
                                 android:layout_marginTop="-13dp"
                                 android:layout_marginEnd="0dp"
                                 android:layout_marginRight="0dp"
-                                android:scaleType="fitXY"
-                                tools:src="@color/red_1" />
+                                android:scaleType="fitXY" />
 
                             <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/img_egg"
@@ -73,8 +73,7 @@
                                 android:layout_marginStart="@dimen/tp_margin_medium"
                                 android:layout_marginLeft="@dimen/tp_margin_medium"
                                 android:layout_marginTop="@dimen/tp_top_margin_big_image"
-                                android:contentDescription="@string/tp_label_see_loyalty"
-                                tools:src="@drawable/ic_launcher_background" />
+                                android:contentDescription="@string/tp_label_see_loyalty" />
 
                             <TextView
                                 android:id="@+id/text_membership_label"
@@ -88,7 +87,7 @@
                                 android:layout_toRightOf="@id/img_egg"
                                 android:fontFamily="sans-serif-medium"
                                 android:textColor="@color/tp_toolbar_subtitle_color"
-                                android:textSize="@dimen/tp_text_size_xsmall"
+                                android:textSize="@dimen/tp_text_size_small"
                                 android:textStyle="bold"
                                 tools:text="Gulfikar Rinjani" />
 
@@ -117,12 +116,13 @@
                                 android:layout_below="@id/img_egg"
                                 android:layout_marginStart="@dimen/tp_margin_medium"
                                 android:layout_marginLeft="@dimen/tp_margin_medium"
-                                android:background="@color/green_70"
                                 android:layout_marginTop="@dimen/dp_9"
                                 android:layout_marginEnd="@dimen/tp_margin_medium"
-                                android:layout_marginRight="@dimen/tp_margin_medium">
+                                android:layout_marginRight="@dimen/tp_margin_medium"
+                                android:background="@color/green_70">
 
                                 <androidx.constraintlayout.widget.ConstraintLayout
+                                    android:id="@+id/container_target"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:padding="@dimen/dp_8">
@@ -131,7 +131,7 @@
                                         android:id="@+id/tv_targetText"
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
-                                        android:text="Transact 6x more or as much as Rp1.754.000 to become Platinum Member by 31 Des 2020"
+                                        tools:text="Transact 6x more or as much as Rp1.754.000 to become Platinum Member by 31 Des 2020"
                                         android:textColor="@color/grey_560"
                                         android:textSize="@dimen/sp_12"
                                         app:layout_constraintEnd_toStartOf="@+id/iv_next"
@@ -152,7 +152,6 @@
 
                             <com.tokopedia.unifycomponents.CardUnify
                                 android:id="@+id/card_point"
-                                android:background="@color/white"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/card_hightier_info"
@@ -161,6 +160,7 @@
                                 android:layout_marginTop="@dimen/dp_9"
                                 android:layout_marginEnd="@dimen/dp_16"
                                 android:layout_marginRight="@dimen/dp_16"
+                                android:background="@color/white"
                                 app:cardCornerRadius="@dimen/dp_8">
 
                                 <include layout="@layout/tp_home_point" />

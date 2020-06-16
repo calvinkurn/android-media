@@ -132,15 +132,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         addLatestStatusObserver()
         addStartSaveCouponObserver()
         addRedeemCouponObserver()
-        addPointQueryObserver()
     }
-
-    private fun addPointQueryObserver() = mViewModel.pointQueryLiveData.observe(this, androidx.lifecycle.Observer {
-        when (it) {
-            is Success -> onSuccessPoints(it.data)
-            is ErrorMessage -> onErrorPoint(null)
-        }
-    })
 
     private fun addRedeemCouponObserver() = mViewModel.onRedeemCouponLiveData.observe(this, androidx.lifecycle.Observer {
         it?.let { RouteManager.route(context, it) }
@@ -148,10 +140,10 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
 
     private fun addStartSaveCouponObserver() = mViewModel.startSaveCouponLiveData.observe(this, androidx.lifecycle.Observer {
         when (it) {
-            is Success -> showConfirmRedeemDialog(it.data.cta, it.data.code, it.data.title)
+            is Success -> redeemCoupon(it.data.cta, it.data.code, it.data.title)
             is ValidationError<*, *> -> {
                 if (it.data is ValidateMessageDialog) {
-                    showValidationMessageDialog(it.data.item, it.data.title, it.data.desc, it.data.messageCode)
+                    checkValidation(it.data.item, it.data.title, it.data.desc, it.data.messageCode)
                 }
             }
         }
@@ -163,7 +155,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
 
     private fun addValidationDialogObserver() = mViewModel.startValidateCouponLiveData.observe(this, androidx.lifecycle.Observer {
         it?.let {
-            showValidationMessageDialog(it.item, it.title, it.desc, it.messageCode)
+            checkValidation(it.item, it.title, it.desc, it.messageCode)
         }
     })
 
@@ -273,162 +265,35 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
     }
 
-    override fun showRedeemCouponDialog(cta: String, code: String, title: String) {
-        val adb = AlertDialog.Builder(activityContext)
-        adb.setTitle(R.string.tp_label_use_coupon)
-        val messageBuilder = StringBuilder()
-                .append(getString(R.string.tp_label_coupon))
-                .append(" ")
-                .append("<strong>")
-                .append(title)
-                .append("</strong>")
-                .append(" ")
-                .append(getString(R.string.tp_mes_coupon_part_2))
-        adb.setMessage(MethodChecker.fromHtml(messageBuilder.toString()))
-        adb.setPositiveButton(R.string.tp_label_use) { dialogInterface: DialogInterface?, i: Int ->
-            //Call api to validate the coupon
-            mViewModel.redeemCoupon(code, cta)
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                    AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI_GUNAKAN_KUPON,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN,
-                    title)
-        }
-        adb.setNegativeButton(R.string.tp_label_later) { dialogInterface: DialogInterface?, i: Int ->
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                    AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI_GUNAKAN_KUPON,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
-                    title)
-        }
-        val dialog = adb.create()
-        dialog.show()
-        decorateDialog(dialog)
+    override fun redeemCoupon(cta: String, code: String, title: String) {
+
+        //Call api to validate the coupon
+        mViewModel.redeemCoupon(code, cta)
+
     }
 
-    override fun showConfirmRedeemDialog(cta: String, code: String, title: String) {
-        val adb = AlertDialog.Builder(activityContext)
-        adb.setNegativeButton(R.string.tp_label_use) { dialogInterface: DialogInterface?, i: Int ->
-            showRedeemCouponDialog(cta, code, title)
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                    AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_BERHASIL,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN,
-                    title)
-        }
-        adb.setPositiveButton(R.string.tp_label_view_coupon
-        ) { dialogInterface: DialogInterface?, i: Int ->
-            startActivity(getCallingIntent(activityContext))
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                    AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_BERHASIL,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_LIHAT_KUPON,
-                    "")
-        }
-        adb.setTitle(R.string.tp_label_successful_exchange)
-        val dialog = adb.create()
-        dialog.show()
-        decorateDialog(dialog)
-        AnalyticsTrackerUtil.sendEvent(context,
-                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_COUPON,
-                AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_BERHASIL,
-                AnalyticsTrackerUtil.ActionKeys.VIEW_REDEEM_SUCCESS,
-                title)
-    }
 
-    override fun showValidationMessageDialog(item: CatalogsValueEntity, title: String, message: String, resCode: Int) {
-        val adb = AlertDialog.Builder(activityContext)
-        val labelPositive: String
-        var labelNegative: String? = null
+    override fun checkValidation(item: CatalogsValueEntity, title: String, message: String, resCode: Int) {
         when (resCode) {
-            CommonConstant.CouponRedemptionCode.LOW_POINT -> labelPositive = getString(R.string.tp_label_ok)
+
             CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> {
-                labelPositive = getString(R.string.tp_label_complete_profile)
-                labelNegative = getString(R.string.tp_label_later)
+                startActivity(Intent(appContext, ProfileCompletionActivity::class.java))
+                AnalyticsTrackerUtil.sendEvent(context,
+                        AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                        AnalyticsTrackerUtil.CategoryKeys.POPUP_VERIFIED,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_INCOMPLETE_PROFILE,
+                        "")
             }
             CommonConstant.CouponRedemptionCode.SUCCESS -> {
-                labelPositive = getString(R.string.tp_label_exchange)
-                labelNegative = getString(R.string.tp_label_betal)
+                mViewModel.startSaveCoupon(item)
+                AnalyticsTrackerUtil.sendEvent(context,
+                        AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                        AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
+                        title)
             }
-            CommonConstant.CouponRedemptionCode.QUOTA_LIMIT_REACHED -> labelPositive = getString(R.string.tp_label_ok)
-            else -> labelPositive = getString(R.string.tp_label_ok)
-        }
-        if (title == null || title.isEmpty()) {
-            adb.setTitle(R.string.tp_label_exchange_failed)
-        } else {
-            adb.setTitle(title)
-        }
-        adb.setMessage(MethodChecker.fromHtml(message))
-        if (labelNegative != null && !labelNegative.isEmpty()) {
-            adb.setNegativeButton(labelNegative) { dialogInterface: DialogInterface?, i: Int ->
-                when (resCode) {
-                    CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_VERIFIED,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
-                            "")
-                    CommonConstant.CouponRedemptionCode.SUCCESS -> AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_BATAL,
-                            title)
-                    else -> {
-                    }
-                }
-            }
-        }
-        adb.setPositiveButton(labelPositive) { dialogInterface: DialogInterface, i: Int ->
-            when (resCode) {
-                CommonConstant.CouponRedemptionCode.LOW_POINT -> {
-                    dialogInterface.cancel()
-                    AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_POINT_TIDAK,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_BELANJA,
-                            "")
-                }
-                CommonConstant.CouponRedemptionCode.QUOTA_LIMIT_REACHED -> {
-                    dialogInterface.cancel()
-                    AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_KUOTA_HABIS,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_OK,
-                            "")
-                }
-                CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> {
-                    startActivity(Intent(appContext, ProfileCompletionActivity::class.java))
-                    AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_VERIFIED,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_INCOMPLETE_PROFILE,
-                            "")
-                }
-                CommonConstant.CouponRedemptionCode.SUCCESS -> {
-                    mViewModel.startSaveCoupon(item)
-                    AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
-                            title)
-                }
-                else -> dialogInterface.cancel()
-            }
-        }
-        val dialog = adb.create()
-        dialog.show()
-        decorateDialog(dialog)
-    }
 
-    override fun onSuccessPoints(point: String) {
-        if (view == null) {
-            return
         }
-        userPoints = point
-        textUserPoint = view!!.findViewById(R.id.text_point_value)
-        textUserPoint?.setText(point)
-    }
-
-    override fun onErrorPoint(errorMessage: String?) { //TODO @lavekush need to handle it
     }
 
     override fun onRealCodeReFresh(realCode: String) {
@@ -465,7 +330,6 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             return
         }
         val quota: Typography = view!!.findViewById(R.id.text_quota_count)
-        pointValue = view!!.findViewById(R.id.text_point_value_coupon)
         val btnAction2: Typography = view!!.findViewById(R.id.button_action_2)
         val imgBanner = view!!.findViewById<ImageView>(R.id.img_banner)
         btnAction2.isEnabled = !data.isDisabledButton
@@ -555,12 +419,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         tncSeeMore.setOnClickListener { v: View? -> loadWebViewInBottomsheet(data.tnc, getString(R.string.tnc_coupon_catalog)) }
         howToUseSeeMore.setOnClickListener { v: View? -> loadWebViewInBottomsheet(data.howToUse, getString(R.string.how_to_use_coupon_catalog)) }
         val pointValue: Typography = view!!.findViewById(R.id.text_point_value_coupon)
-        if (data.pointsStr == null || data.pointsStr.isEmpty()) {
-            pointValue.visibility = View.GONE
-        } else {
-            pointValue.visibility = View.VISIBLE
-            pointValue.text = data.pointsStr
-        }
+        pointValue.text = "Gratis"
         //Quota text handling
         if (data.upperTextDesc == null || data.upperTextDesc.isEmpty()) {
             quota.visibility = View.GONE

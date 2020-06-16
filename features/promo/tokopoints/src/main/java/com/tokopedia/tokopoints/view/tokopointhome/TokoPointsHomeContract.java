@@ -35,10 +35,6 @@ public interface TokoPointsHomeContract {
 
         void showValidationMessageDialog(CatalogsValueEntity item, String title, String message, int resCode);
 
-        void onSuccessTokenDetail(LuckyEggEntity tokenDetail);
-
-        void showTokoPointCoupon(TokoPointSumCoupon data);
-
         /* New UI callback contract*/
 
         /**

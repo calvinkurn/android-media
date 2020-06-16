@@ -8,18 +8,14 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
 import android.view.*
 import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,12 +29,10 @@ import com.google.android.material.tabs.TabLayout.ViewPagerOnTabSelectedListener
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -49,7 +43,6 @@ import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager
 import com.tokopedia.tokopoints.notification.model.PopupNotification
 import com.tokopedia.tokopoints.view.adapter.SectionCategoryAdapter
 import com.tokopedia.tokopoints.view.adapter.SectionTickerPagerAdapter
-import com.tokopedia.tokopoints.view.addPoint.AddPointsFragment
 import com.tokopedia.tokopoints.view.cataloglisting.ValidateMessageDialog
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
 import com.tokopedia.tokopoints.view.customview.CustomViewPager
@@ -63,31 +56,23 @@ import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConst
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
 import com.tokopedia.tokopoints.view.fragment.StartPurchaseBottomSheet
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener
+import com.tokopedia.tokopoints.view.intro.RewardIntroActivity
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.model.LobDetails
-import com.tokopedia.tokopoints.view.model.LuckyEggEntity
-import com.tokopedia.tokopoints.view.model.TokoPointSumCoupon
+import com.tokopedia.tokopoints.view.model.rewardintro.TokopediaRewardIntroPage
 import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.util.*
-import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.PageControl
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerData
-import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
-import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.tp_fragment_homepage_new.*
 import kotlinx.android.synthetic.main.tp_home_point.*
+import kotlinx.android.synthetic.main.tp_item_dynamic_action.view.*
+import kotlinx.android.synthetic.main.tp_item_layout_dynamic_action.view.*
 import kotlinx.android.synthetic.main.tp_layout_section_category_parent.*
-import java.util.*
 import kotlinx.android.synthetic.main.tp_tooltip_es.view.*
 import javax.inject.Inject
-import kotlin.math.abs
-import kotlin.collections.ArrayList
 
 /*
  * Dynamic layout params are applied via
@@ -128,19 +113,15 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     private var tokoPointToolbar: TokoPointToolbar? = null
     private var serverErrorView: ServerErrorView? = null
     private var userLoggedInStatus: Boolean? = null
-    private var ivUserCoupon: AppCompatImageView? = null
-    private var userCouponCount: TextView? = null
     private var rewardsPointLayout: CardUnify? = null
     private var ivPointStack: AppCompatImageView? = null
     private var tvPointLabel: TextView? = null
     private var midSeparator: View? = null
     private var ivLoyaltyStack: AppCompatImageView? = null
     private var tvLoyaltyLabel: TextView? = null
-    private val tvPointsValue: TextView? = null
-    private var pointLayout: ConstraintLayout? = null
-    private var emptyTitle: TextView? = null
-    private var emptySubtitle: TextView? = null
-    private var tvNonLoginCta: TextView? = null
+    private var pointLayout: LinearLayout? = null
+
+    //   private var tvNonLoginCta: TextView? = null
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -167,7 +148,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
     private fun handleAppBarIconChange(appBarLayout: AppBarLayout?, verticalOffset: Int) {
         val verticalOffset1 = Math.abs(verticalOffset)
-        if (verticalOffset1 >= appBarLayout?.totalScrollRange!! - tickerContainer!!.height - dynamicLinksContainer!!.height-(card_point.height)/2) {
+        if (verticalOffset1 >= appBarLayout?.totalScrollRange!! - tickerContainer!!.height - dynamicLinksContainer!!.height - (card_point.height) / 2) {
             tokoPointToolbar?.showToolbarIcon()
         } else
             tokoPointToolbar?.hideToolbarIcon()
@@ -232,42 +213,30 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         }
         var alpha = offsetAlpha / 255 - 1
         if (alpha < 0) alpha = alpha * -1
-        statusBarBgView!!.alpha = alpha
-        if (alpha > 0.5) tokoPointToolbar!!.switchToDarkMode() else tokoPointToolbar!!.switchToTransparentMode()
-        tokoPointToolbar!!.applyAlphaToToolbarBackground(alpha)
-    }
-
-    var offsetChangedListenerAppBarElevation = OnOffsetChangedListener { appBarLayout, verticalOffset ->
-        var verticalOffset = verticalOffset
-        if (appBarCollapseListener != null) {
-            verticalOffset = Math.abs(verticalOffset)
-            if (verticalOffset >= appBarLayout.totalScrollRange) { //Appbar is hidden now
-                appBarCollapseListener!!.hideToolbarElevation()
-            } else {
-                appBarCollapseListener!!.showToolbarElevation()
-            }
-        }
+        statusBarBgView?.alpha = alpha
+        if (alpha > 0.5) tokoPointToolbar?.switchToDarkMode() else tokoPointToolbar?.switchToTransparentMode()
+        tokoPointToolbar?.applyAlphaToToolbarBackground(alpha)
     }
 
     private fun slideUp() {
-        if (bottomViewMembership!!.visibility != View.VISIBLE) {
-            val layoutParams = containerEgg!!.layoutParams as CoordinatorLayout.LayoutParams
+        if (bottomViewMembership?.visibility != View.VISIBLE) {
+            val layoutParams = containerEgg?.layoutParams as CoordinatorLayout.LayoutParams
             layoutParams.setMargins(0, 0, 0, resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_90))
-            val bottomUp = AnimationUtils.loadAnimation(bottomViewMembership!!.context,
+            val bottomUp = AnimationUtils.loadAnimation(bottomViewMembership?.context,
                     R.anim.tp_bottom_up)
-            bottomViewMembership!!.startAnimation(bottomUp)
-            bottomViewMembership!!.visibility = View.VISIBLE
+            bottomViewMembership?.startAnimation(bottomUp)
+            bottomViewMembership?.visibility = View.VISIBLE
         }
     }
 
     private fun slideDown() {
-        if (bottomViewMembership!!.visibility != View.GONE) {
-            val layoutParams = containerEgg!!.layoutParams as CoordinatorLayout.LayoutParams
+        if (bottomViewMembership?.visibility != View.GONE) {
+            val layoutParams = containerEgg?.layoutParams as CoordinatorLayout.LayoutParams
             layoutParams.setMargins(0, 0, 0, resources.getDimensionPixelOffset(R.dimen.tp_margin_large))
-            val slideDown = AnimationUtils.loadAnimation(bottomViewMembership!!.context,
+            val slideDown = AnimationUtils.loadAnimation(bottomViewMembership?.context,
                     R.anim.tp_bottom_down)
-            bottomViewMembership!!.startAnimation(slideDown)
-            bottomViewMembership!!.visibility = View.GONE
+            bottomViewMembership?.startAnimation(slideDown)
+            bottomViewMembership?.visibility = View.GONE
         }
     }
 
@@ -277,16 +246,11 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         startNetworkRequestPerformanceMonitoring()
         initListener()
         mPresenter.getTokoPointDetail()
-        val localCacheHandler = LocalCacheHandler(appContext, CommonConstant.PREF_TOKOPOINTS)
-        if (!localCacheHandler.getBoolean(CommonConstant.PREF_KEY_ON_BOARDED)) {
-            showOnBoardingTooltip(getString(R.string.tp_label_know_tokopoints), getString(R.string.tp_message_tokopoints_on_boarding))
-            localCacheHandler.putBoolean(CommonConstant.PREF_KEY_ON_BOARDED, true)
-            localCacheHandler.applyEditor()
-        }
-        tokoPointToolbar!!.setTitle(R.string.tp_title_tokopoints)
-        tokoPointToolbar!!.setOnTokoPointToolbarClickListener(this)
+        mPresenter.getRewardIntroData()
+        tokoPointToolbar?.setTitle(R.string.tp_title_tokopoints)
+        tokoPointToolbar?.setOnTokoPointToolbarClickListener(this)
         TokoPointsNotificationManager.fetchNotification(activity, "main", childFragmentManager)
-        mPresenter.tokopointOnboarding2020(this)
+        //mPresenter.tokopointOnboarding2020(this)
         initObserver()
     }
 
@@ -295,20 +259,16 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         addStartSaveCouponObserver()
         addRedeemCouponObserver()
         addTokopointDetailObserver()
-        addTokenDetailObserver()
-        addCouponCountObserver()
+        addRewardIntroObserver()
     }
 
-    private fun addCouponCountObserver() = mPresenter.couponCountLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addRewardIntroObserver() = mPresenter.rewardIntroData.observe(this, Observer {
         it?.let {
-            showTokoPointCoupon(it)
-        }
-    })
-
-    private fun addTokenDetailObserver() = mPresenter.tokoenDetailLiveData.observe(this, androidx.lifecycle.Observer {
-        it?.let {
-            hideLoading()
-            onSuccessTokenDetail(it)
+            when (it) {
+                is Success -> {
+                    showOnBoardingTooltip(it.data.tokopediaRewardIntroPage)
+                }
+            }
         }
     })
 
@@ -354,10 +314,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         }
     })
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
     override fun onResume() {
         super.onResume()
         mPresenter.couponCount
@@ -365,11 +321,11 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     }
 
     override fun showLoading() {
-        mContainerMain!!.displayedChild = CONTAINER_LOADER
+        mContainerMain?.displayedChild = CONTAINER_LOADER
     }
 
     override fun hideLoading() {
-        mContainerMain!!.displayedChild = CONTAINER_DATA
+        mContainerMain?.displayedChild = CONTAINER_DATA
     }
 
     override fun getAppContext(): Context {
@@ -408,8 +364,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                     AnalyticsTrackerUtil.ActionKeys.CLICK_MEM_BOTTOM,
                     "")
-        }  else if (source.id == R.id.text_failed_action) {
-            mPresenter!!.getTokoPointDetail()
+        } else if (source.id == R.id.text_failed_action) {
+            mPresenter.getTokoPointDetail()
         }
     }
 
@@ -418,9 +374,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         mContainerMain = view.findViewById(R.id.container_main)
         mTextMembershipValue = view.findViewById(R.id.text_membership_value)
         mTargetText = view.findViewById(R.id.tv_targetText)
-        /* if (userLoggedInStatus!!) {
-             mTextMembershipValue?.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable(activity, com.tokopedia.design.R.drawable.ic_arrow_right_grey), null)
-         }*/
         mTextMembershipLabel = view.findViewById(R.id.text_membership_label)
         mTextPoints = view.findViewById(R.id.text_my_points_value)
         mTextLoyalty = view.findViewById(R.id.text_loyalty_value)
@@ -441,8 +394,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         statusBarBgView = view.findViewById(R.id.status_bar_bg)
         tokoPointToolbar = view.findViewById(R.id.toolbar_tokopoint)
         serverErrorView = view.findViewById(R.id.server_error_view)
-        ivUserCoupon = view.findViewById(R.id.iv_tpToolbar_coupon)
-        //   userCouponCount = view.findViewById(R.id.tv_tpToolbar_couponCount)
         rewardsPointLayout = view.findViewById(R.id.card_point)
         ivPointStack = view.findViewById(R.id.img_points_stack)
         tvPointLabel = view.findViewById(R.id.text_my_points_label)
@@ -450,70 +401,32 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         ivLoyaltyStack = view.findViewById(R.id.img_loyalty_stack)
         pointLayout = view.findViewById(R.id.layout_homepoint)
         tvLoyaltyLabel = view.findViewById(R.id.text_loyalty_label)
-        tvNonLoginCta = view.findViewById(R.id.tvNonLoginCta)
         setStatusBarViewHeight()
     }
 
     private fun setStatusBarViewHeight() {
-        if (activity != null) statusBarBgView!!.layoutParams.height = getStatusBarHeight(activity)
+        if (activity != null) statusBarBgView?.layoutParams?.height = getStatusBarHeight(activity)
     }
 
     private fun initListener() {
         if (view == null) {
             return
         }
-        view!!.findViewById<View>(R.id.view_loyalty_bottom).setOnClickListener(this)
-        view!!.findViewById<View>(R.id.view_point_bottom).setOnClickListener(this)
-        view!!.findViewById<View>(R.id.img_egg).setOnClickListener(this)
-        view!!.findViewById<View>(R.id.text_membership_value).setOnClickListener(this)
-        view!!.findViewById<View>(R.id.text_failed_action).setOnClickListener(this)
-        /* view!!.findViewById<View>(R.id.view_point).setOnClickListener(this)
-         view!!.findViewById<View>(R.id.view_loyalty).setOnClickListener(this)*/
-        view!!.findViewById<View>(R.id.container_fab_egg_token).setOnClickListener(this)
+        view?.findViewById<View>(R.id.view_loyalty_bottom)?.setOnClickListener(this)
+        view?.findViewById<View>(R.id.view_point_bottom)?.setOnClickListener(this)
+        view?.findViewById<View>(R.id.img_egg)?.setOnClickListener(this)
+        view?.findViewById<View>(R.id.text_membership_value)?.setOnClickListener(this)
+        view?.findViewById<View>(R.id.container_fab_egg_token)?.setOnClickListener(this)
     }
 
     override fun openWebView(url: String) {
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url)
     }
 
-    override fun onSuccessTokenDetail(tokenDetail: LuckyEggEntity) {
-        if (tokenDetail != null) {
-            try {
-                if (tokenDetail.isOffFlag) {
-                    return
-                }
-                containerEgg!!.visibility = View.VISIBLE
-                val textCount = view!!.findViewById<TextView>(R.id.text_token_count)
-                val textMessage = view!!.findViewById<TextView>(R.id.text_token_title)
-                val imgToken = view!!.findViewById<ImageView>(R.id.img_token)
-                textCount.text = tokenDetail.sumTokenStr
-                mSumToken = tokenDetail.sumToken
-                textMessage.text = tokenDetail.floating.tokenClaimCustomText
-                if (tokenDetail.floating.tokenAsset.floatingImgUrl.endsWith(".gif")) {
-                    ImageHandler.loadGifFromUrl(imgToken, tokenDetail.floating.tokenAsset.floatingImgUrl, com.tokopedia.session.R.color.green_50)
-                } else {
-                    ImageHandler.loadImageFitCenter(context, imgToken, tokenDetail.floating.tokenAsset.floatingImgUrl)
-                }
-                if (mSumToken == 0) {
-                    textCount.visibility = View.GONE
-                    textMessage.setPadding(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_30),
-                            0,
-                            0,
-                            0)
-                } else {
-                    textCount.visibility = View.VISIBLE
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                //to avoid any accidental crash in order to prevent homepage error
-            }
-        }
-    }
-
     override fun onError(error: String, hasInternet: Boolean) {
         if (mContainerMain != null) {
-            mContainerMain!!.displayedChild = CONTAINER_ERROR
-            serverErrorView!!.showErrorUi(hasInternet)
+            mContainerMain?.displayedChild = CONTAINER_ERROR
+            serverErrorView?.showErrorUi(hasInternet)
         }
     }
 
@@ -675,59 +588,33 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         }
     }
 
-    private fun showOnBoardingTooltip(title: String, content: String) {
-        val view = LayoutInflater.from(context).inflate(R.layout.tp_tooltip_es, null, false)
-        view.title_tooltip.text = title
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            view.desc_tooltip.text = Html.fromHtml(content, Html.FROM_HTML_MODE_LEGACY)
-        } else {
-            view.desc_tooltip.text = Html.fromHtml(content)
+    private fun showOnBoardingTooltip(data: TokopediaRewardIntroPage?) {
+        if (data != null) {
+            val bundle = Bundle()
+            bundle.putParcelable("intro", data)
+            startActivity(RewardIntroActivity.getCallingIntent(context!!, bundle))
         }
-        val mToolTip = BottomSheetUnify()
-        mToolTip.apply {
-            setChild(view)
-            showHeader = false
-            showCloseIcon = false
-        }
-        view.btn_tooltip.setOnClickListener {
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_CEK,
-                    AnalyticsTrackerUtil.EventKeys.TOKOPOINTS_ON_BOARDING_LABEL)
-            mToolTip.dismiss()
-        }
-
-        mToolTip.show(childFragmentManager, "")
-    }
-
-    override fun showTokoPointCoupon(data: TokoPointSumCoupon) {
-        if (data == null || tokoPointToolbar == null) {
-            return
-        }
-        //TODO count show
-        //   tokoPointToolbar!!.setCouponCount(data.sumCoupon, data.sumCouponStr)
     }
 
     override fun renderTicker(content: SectionContent) {
         if (view == null || content == null || content.layoutTickerAttr == null || content.layoutTickerAttr.tickerList == null || content.layoutTickerAttr.tickerList.isEmpty()) {
-            tickerContainer!!.visibility = View.GONE
+            tickerContainer?.visibility = View.GONE
             return
         }
 
-        val pager: ViewPager = view!!.findViewById(R.id.view_pager_ticker)
-        pager.adapter = SectionTickerPagerAdapter(context, content.layoutTickerAttr.tickerList)
-        val pageIndicator: PageControl = view!!.findViewById(R.id.page_indicator_ticker)
-        val hideTickerView = view!!.findViewById<View>(R.id.ic_close_ticker)
-        hideTickerView.visibility = View.GONE
+        val pager: ViewPager? = view?.findViewById(R.id.view_pager_ticker)
+        pager?.adapter = SectionTickerPagerAdapter(context, content.layoutTickerAttr.tickerList)
+        val pageIndicator: PageControl? = view?.findViewById(R.id.page_indicator_ticker)
+        val hideTickerView = view?.findViewById<View>(R.id.ic_close_ticker)
+        hideTickerView?.visibility = View.GONE
         if (content.layoutTickerAttr.tickerList.size > 1) { //adding bottom dots(Page Indicator)
-            pageIndicator.setIndicator(2)
-            pageIndicator.visibility = View.VISIBLE
+            pageIndicator?.setIndicator(2)
+            pageIndicator?.visibility = View.VISIBLE
         } else {
-            pageIndicator.visibility = View.GONE
+            pageIndicator?.visibility = View.GONE
         }
         tickerContainer?.visibility = View.VISIBLE
-        pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        pager?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
             override fun onPageSelected(position: Int) {
                 AnalyticsTrackerUtil.sendEvent(context,
@@ -752,13 +639,19 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     }
 
     override fun renderToolbarWithHeader(data: TokopediaRewardTopSection) {
+        tokoPointToolbar?.setScrolledItem(data.dynamicActionList)
         mTextMembershipLabel?.text = data.introductionText
 
-        data.targetText?.let {
+        data.target?.let {
+            mTargetText?.setTextColor(Color.parseColor("#" + it.textColor))
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                mTargetText?.setText(Html.fromHtml(it, Html.FROM_HTML_MODE_LEGACY))
+                mTargetText?.text = Html.fromHtml(it.text, Html.FROM_HTML_MODE_LEGACY)
             } else {
-                mTargetText?.setText(Html.fromHtml(it))
+                mTargetText?.text = Html.fromHtml(it.text)
+            }
+            container_target.setBackgroundColor(Color.parseColor("#" + it.backgroundColor))
+            container_target.setOnClickListener {
+                RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW_TITLE, getString(R.string.tp_label_membership), CommonConstant.WebLink.MEMBERSHIP)
             }
         }
 
@@ -768,7 +661,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
         if (data.tier != null) {
             mTextMembershipValue?.text = data.tier.nameDesc
-            ImageHandler.loadImageFitCenter(mImgBackground?.context, mImgBackground, data.tier.backgroundImgURLMobile)
+            ImageHandler.loadImageFitCenter(mImgBackground?.context, mImgBackground, data.backgroundImageURL)
         }
 
         renderDynamicActionList(data.dynamicActionList)
@@ -776,33 +669,24 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
     fun renderDynamicActionList(dynamicActionList: List<DynamicActionListItem?>?) {
 
-        val firstActionItem = dynamicActionList?.get(0)
-        val secondActionItem = dynamicActionList?.get(1)
-        val thirdActionItem = dynamicActionList?.get(2)
-
-
-        tv_tokomember.text = firstActionItem?.cta?.text
-        val img_toko = view?.findViewById<ImageView>(R.id.img_tokomember)
-        img_toko?.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
-        img_toko?.loadImage(firstActionItem?.cta?.url!!)
-        ll_tokomember.setOnClickListener {
-            RouteManager.route(context, firstActionItem?.cta?.appLink)
+        dynamicActionList?.let { dynamicItemActionList ->
+            val param = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1F)
+            for (item in dynamicItemActionList) {
+                val view = View.inflate(this.context, R.layout.tp_item_layout_dynamic_action, null)
+                view.iv_dynamic.loadImage(item?.iconImageURL!!)
+                view.tv_dynamic.text = item.cta?.text
+                if (item.counter?.isShowCounter != null && item.counter.counterStr != null && item.counter.counterStr.isNotEmpty()) {
+                    view.notif_dynamic.visibility = View.VISIBLE
+                    view.notif_dynamic.setNotification(item.counter.counterStr, NotificationUnify.TEXT_TYPE, NotificationUnify.COLOR_PRIMARY)
+                }
+                view.setOnClickListener {
+                    RouteManager.route(context, item.cta?.appLink)
+                    view.notif_dynamic.visibility = View.GONE
+                }
+                layout_homepoint.addView(view, param)
+            }
         }
-
-        tv_challenge.text = secondActionItem?.cta?.text
-        ImageUtils.loadImage(img_challenge, secondActionItem?.cta?.icon!!, com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
-        ll_challenge.setOnClickListener {
-            RouteManager.route(context, secondActionItem?.cta?.appLink)
-        }
-
-        tv_mycoupon.text = thirdActionItem?.cta?.text
-        ImageHandler.loadImageFitCenter(context, img_mycoupon, thirdActionItem?.cta?.icon)
-        ll_mycoupon.setOnClickListener {
-            RouteManager.route(context, thirdActionItem?.cta?.appLink)
-        }
-
     }
-
 
     override fun renderPurchaseBottomsheet(data: LobDetails) {
         if (data == null || view == null) {
@@ -836,16 +720,16 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         if (sections.isEmpty()) { //TODO hide tab or show empty box
         }
         mExploreSectionPagerAdapter = ExploreSectionPagerAdapter(activityContext, mPresenter, sections)
-        mExploreSectionPagerAdapter!!.setRefreshing(false)
-        mPagerPromos!!.adapter = mExploreSectionPagerAdapter
-        mPagerPromos!!.addOnPageChangeListener(TabLayoutOnPageChangeListener(mTabLayoutPromo))
-        mTabLayoutPromo!!.addOnTabSelectedListener(ViewPagerOnTabSelectedListener(mPagerPromos))
-        mPagerPromos!!.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        mExploreSectionPagerAdapter?.setRefreshing(false)
+        mPagerPromos?.adapter = mExploreSectionPagerAdapter
+        mPagerPromos?.addOnPageChangeListener(TabLayoutOnPageChangeListener(mTabLayoutPromo))
+        mTabLayoutPromo?.addOnTabSelectedListener(ViewPagerOnTabSelectedListener(mPagerPromos))
+        mPagerPromos?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
             override fun onPageSelected(position: Int) {
                 if (position == 0) {
                     appBarHeader!!.addOnOffsetChangedListener(offsetChangedListenerBottomView)
-                    mPresenter!!.pagerSelectedItem = position
+                    mPresenter.pagerSelectedItem = position
                     AnalyticsTrackerUtil.sendEvent(context,
                             AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                             AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
@@ -854,7 +738,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 } else {
                     appBarHeader!!.removeOnOffsetChangedListener(offsetChangedListenerBottomView)
                     slideDown()
-                    mPresenter!!.pagerSelectedItem = position
+                    mPresenter.pagerSelectedItem = position
                     AnalyticsTrackerUtil.sendEvent(context,
                             AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                             AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
@@ -868,7 +752,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     }
 
     override fun onSuccessResponse(data: TokopediaRewardTopSection, sections: List<SectionContent>) {
-        mContainerMain!!.displayedChild = CONTAINER_DATA
+        mContainerMain?.displayedChild = CONTAINER_DATA
         renderToolbarWithHeader(data)
         renderSections(sections)
     }

@@ -7,6 +7,6 @@ data class Tier(
 	@SerializedName("nameDesc")
 	val nameDesc: String? = null,
 
-	@SerializedName("backgroundImgURLMobile")
-	val backgroundImgURLMobile: String? = null
+	@SerializedName("id")
+	val id: Int? = null
 )

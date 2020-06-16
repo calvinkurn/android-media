@@ -6,8 +6,9 @@ import com.tokopedia.tokopoints.di.TokoPointScope
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager
 import com.tokopedia.tokopoints.view.cataloglisting.CatalogPurchaseRedeemptionViewModel
 import com.tokopedia.tokopoints.view.model.*
+import com.tokopedia.tokopoints.view.model.rewardintro.IntroResponse
+import com.tokopedia.tokopoints.view.model.rewardtopsection.RewardResponse
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
-import com.tokopedia.tokopoints.view.model.rewardtopsection.TopSectionResponse
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.model.section.TokopointsSectionOuter
 import com.tokopedia.tokopoints.view.util.*
@@ -21,28 +22,38 @@ class TokoPointsHomeViewModel @Inject constructor(private val repository: Tokopo
     val tokopointDetailLiveData = MutableLiveData<Resources<TokopointSuccess>>()
     val tokoenDetailLiveData = MutableLiveData<LuckyEggEntity>()
     val couponCountLiveData = MutableLiveData<TokoPointSumCoupon>()
+    val rewardIntroData = MutableLiveData<Resources<IntroResponse>>()
 
     override fun getTokoPointDetail() {
         launchCatchError(block = {
-         tokopointDetailLiveData.value = Loading()
+            tokopointDetailLiveData.value = Loading()
             val graphqlResponse = repository.getTokoPointDetailData()
-            val data = graphqlResponse.getData<TopSectionResponse>(TopSectionResponse::class.java)
+            val data = graphqlResponse.getData<RewardResponse>(RewardResponse::class.java)
             val dataSection = graphqlResponse.getData<TokopointsSectionOuter>(TokopointsSectionOuter::class.java)
             if (data != null && dataSection != null && dataSection.sectionContent != null) {
-                tokopointDetailLiveData.value = Success(TokopointSuccess(data.tokopediaRewardTopSection!!,dataSection.sectionContent.sectionContent))
+                tokopointDetailLiveData.value = Success(TokopointSuccess(data.tokopediaRewardTopSection!!, dataSection.sectionContent.sectionContent))
             }
             //handling for lucky egg data
             val tokenDetail = graphqlResponse.getData<TokenDetailOuter>(TokenDetailOuter::class.java)
             if (tokenDetail != null && tokenDetail.tokenDetail != null && tokenDetail.tokenDetail.resultStatus.code == CommonConstant.CouponRedemptionCode.SUCCESS) {
                 tokoenDetailLiveData.value = tokenDetail.tokenDetail
             }
-        }){
+        }) {
             tokopointDetailLiveData.value = ErrorMessage(it.localizedMessage)
         }
     }
 
-    override fun tokopointOnboarding2020(view : TokoPointsHomeContract.View) {
+    override fun tokopointOnboarding2020(view: TokoPointsHomeContract.View) {
         TokoPointsNotificationManager.fetchNotification(view.activityContext, "onboarding", Tokopoint2020Subscriber(view))
+    }
+
+    fun getRewardIntroData() {
+        launchCatchError(block = {
+            val response = repository.getRewardIntroData()
+            val data = response.getData<IntroResponse>(IntroResponse::class.java)
+            rewardIntroData.value = Success(data)
+        }) {
+        }
     }
 
 
@@ -51,10 +62,10 @@ class TokoPointsHomeViewModel @Inject constructor(private val repository: Tokopo
         get() {
             launchCatchError(block = {
                 val couponOuter = repository.getCouponCountData()
-                if ( couponOuter.tokopointsSumCoupon != null) {
+                if (couponOuter.tokopointsSumCoupon != null) {
                     couponCountLiveData.value = couponOuter.tokopointsSumCoupon
                 }
-            }){}
+            }) {}
         }
 }
 

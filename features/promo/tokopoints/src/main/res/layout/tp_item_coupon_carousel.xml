@@ -95,13 +95,13 @@
             android:id="@+id/text_point_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/tp_margin_small"
-            android:layout_marginLeft="@dimen/tp_margin_small"
+            android:layout_marginStart="@dimen/tp_margin_medium"
+            android:layout_marginLeft="@dimen/tp_margin_medium"
             android:layout_marginTop="2dp"
             android:fontFamily="sans-serif-medium"
             android:textColor="@color/medium_green"
             android:textSize="@dimen/tp_text_size_small"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintStart_toEndOf="@+id/img_points_stack"
             app:layout_constraintTop_toBottomOf="@+id/text_point_label" />
 

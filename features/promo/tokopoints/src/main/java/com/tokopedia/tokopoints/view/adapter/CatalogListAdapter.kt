@@ -40,11 +40,8 @@ class CatalogListAdapter(private val mPresenter: CatalogPurchaseRedemptionPresen
         var timeValue: TextView
         var disabledError: TextView
         var btnContinue: TextView
-        var labelPoint: TextView
-        var textDiscount: TextView
         var imgBanner: ImageView
         var imgTime: ImageView
-        var imgPoint: ImageView
         var pbQuota: ProgressBar
         var isVisited = false
         override fun bindView(item: CatalogsValueEntity?, position: Int) {
@@ -61,28 +58,18 @@ class CatalogListAdapter(private val mPresenter: CatalogPurchaseRedemptionPresen
             btnContinue = view.findViewById(R.id.button_continue)
             imgBanner = view.findViewById(R.id.img_banner)
             imgTime = view.findViewById(R.id.img_time)
-            imgPoint = view.findViewById(R.id.img_points_stack)
-            labelPoint = view.findViewById(R.id.text_point_label)
-            textDiscount = view.findViewById(R.id.text_point_discount)
             pbQuota = view.findViewById(R.id.progress_timer_quota)
         }
     }
 
     private fun setData(holder: ViewHolder, item: CatalogsValueEntity?, position: Int) {
-         if(item == null) return
+        if (item == null) return
         holder.btnContinue.isEnabled = !item.isDisabledButton
         holder.description.text = item.title
         holder.btnContinue.setText(R.string.tp_label_exchange) //TODO asked for server driven value
         ImageHandler.loadImageFitCenter(holder.imgBanner.context, holder.imgBanner, item.thumbnailUrlMobile)
-        //setting points info if exist in response
-        if (item.pointsStr == null || item.pointsStr.isEmpty()) {
-            holder.pointValue.visibility = View.GONE
-            holder.imgPoint.visibility = View.GONE
-        } else {
-            holder.pointValue.visibility = View.VISIBLE
-            holder.imgPoint.visibility = View.VISIBLE
-            holder.pointValue.text = item.pointsStr
-        }
+        holder.pointValue.visibility = View.VISIBLE
+        holder.pointValue.text = "Gratis"
         //setting expiry time info if exist in response
         if (item.expiredLabel == null || item.expiredLabel.isEmpty()) {
             holder.timeLabel.visibility = View.GONE
@@ -131,31 +118,14 @@ class CatalogListAdapter(private val mPresenter: CatalogPurchaseRedemptionPresen
             holder.disabledError.text = item.disableErrorMessage
         }
         //disabling the coupons if not eligible for current membership
-        if (item.isDisabled) {
-            ImageUtil.dimImage(holder.imgBanner)
-            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, com.tokopedia.design.R.color.black_54))
-        } else {
-            ImageUtil.unDimImage(holder.imgBanner)
-            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, com.tokopedia.design.R.color.orange_red))
-        }
+        ImageUtil.dimImage(holder.imgBanner)
+        holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, com.tokopedia.design.R.color.black_54))
         if (item.isDisabledButton) {
             holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.context, com.tokopedia.abstraction.R.color.black_12))
         } else {
             holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.context, com.tokopedia.design.R.color.white))
         }
-        if (item.pointsSlash <= 0) {
-            holder.labelPoint.visibility = View.GONE
-        } else {
-            holder.labelPoint.visibility = View.VISIBLE
-            holder.labelPoint.text = item.pointsSlashStr
-            holder.labelPoint.paintFlags = holder.labelPoint.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-        }
-        if (item.discountPercentage <= 0) {
-            holder.textDiscount.visibility = View.GONE
-        } else {
-            holder.textDiscount.visibility = View.VISIBLE
-            holder.textDiscount.text = item.discountPercentageStr
-        }
+
         holder.btnContinue.setOnClickListener { v: View? ->
             //call validate api the show dialog
             mPresenter.startValidateCoupon(item)

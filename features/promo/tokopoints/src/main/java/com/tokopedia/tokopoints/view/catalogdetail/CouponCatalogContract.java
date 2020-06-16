@@ -31,16 +31,9 @@ public interface CouponCatalogContract {
 
         Resources getResources();
 
-        void showRedeemCouponDialog(String cta, String code, String title);
+        void redeemCoupon(String cta, String code, String title);
 
-        void showConfirmRedeemDialog(String cta, String code, String title);
-
-        void showValidationMessageDialog(CatalogsValueEntity item, String title, String message, int resCode);
-
-
-        void onSuccessPoints(String point);
-
-        void onErrorPoint(String errorMessage);
+        void checkValidation(CatalogsValueEntity item, String title, String message, int resCode);
 
         void onRealCodeReFresh(String realCode);
 

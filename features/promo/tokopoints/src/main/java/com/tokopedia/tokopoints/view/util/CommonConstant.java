@@ -147,5 +147,6 @@ public interface CommonConstant {
         String TP_GQL_HOME_PAGE_SECTION = "tp_gql_home_page_section";
         String TP_GQL_SUM_COUPON = "tp_gql_sum_coupon";
         String TP_GQL_ADD_POINT_REWARD  = "tp_gql_add_point_reward";
+        String TP_GQL_REWARD_INTRO="tp_gql_reward_intro";
     }
 }

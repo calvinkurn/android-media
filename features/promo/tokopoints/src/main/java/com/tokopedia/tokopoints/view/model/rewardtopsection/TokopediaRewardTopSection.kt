@@ -4,8 +4,8 @@ import com.google.gson.annotations.SerializedName
 
 data class TokopediaRewardTopSection(
 
-	@SerializedName("resultStatus")
-	val resultStatus: ResultStatus? = null,
+	@SerializedName("backgroundImageURLMobile")
+	val backgroundImageURLMobile: String? = null,
 
 	@SerializedName("profilePicture")
 	val profilePicture: String? = null,
@@ -19,9 +19,15 @@ data class TokopediaRewardTopSection(
 	@SerializedName("introductionText")
 	val introductionText: String? = null,
 
+	@SerializedName("backgroundImageURLMobileV2")
+	val backgroundImageURLMobileV2: String? = null,
+
 	@SerializedName("title")
 	val title: String? = null,
 
-	@SerializedName("targetText")
-	val targetText: String? = null
+	@SerializedName("target")
+	val target: Target? = null,
+
+	@SerializedName("backgroundImageURL")
+	val backgroundImageURL: String? = null
 )

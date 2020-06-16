@@ -1,17 +1,17 @@
 {
-  tokopediaRewardTopSection{
-    resultStatus {
-      code
-      status
-    }
+  tokopediaRewardTopSection {
     title
     profilePicture
     introductionText
     tier {
+      id
       nameDesc
-      backgroundImgURLMobile
     }
-    targetText
+    target {
+      text
+      textColor
+      backgroundColor
+    }
     dynamicActionList {
       id
       cta {
@@ -20,7 +20,18 @@
         url
         appLink
       }
-      metadata
+      counter {
+        isShowCounter
+        counter
+        counterStr
+      }
+      iconImageURL
+      iconImageURLScrolled
+      iconImageURLOptimized
+      iconImageURLOptimizedScrolled
     }
+    backgroundImageURL
+    backgroundImageURLMobile
+    backgroundImageURLMobileV2
   }
 }

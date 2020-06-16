@@ -3,9 +3,11 @@ package com.tokopedia.tokopoints.view.adapter;
 import android.content.Context;
 import android.graphics.Paint;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -83,15 +85,8 @@ public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogList
         holder.description.setText(item.getTitle());
         holder.btnContinue.setText(R.string.tp_label_exchange); //TODO asked for server driven value
         ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(), holder.imgBanner, item.getThumbnailUrlMobile());
-        //setting points info if exist in response
-        if (item.getPointsStr() == null || item.getPointsStr().isEmpty()) {
-            holder.pointValue.setVisibility(View.GONE);
-            holder.imgPoint.setVisibility(View.GONE);
-        } else {
-            holder.pointValue.setVisibility(View.VISIBLE);
-            holder.imgPoint.setVisibility(View.VISIBLE);
-            holder.pointValue.setText(item.getPointsStr());
-        }
+
+        holder.pointValue.setText("Gratis");
 
         //setting expiry time info if exist in response
         if (item.getExpiredLabel() == null || item.getExpiredLabel().isEmpty()) {
@@ -149,13 +144,7 @@ public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogList
         }
 
         //disabling the coupons if not eligible for current membership
-        if (item.isDisabled()) {
-            ImageUtil.dimImage(holder.imgBanner);
-            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.getContext(), com.tokopedia.design.R.color.black_54));
-        } else {
-            ImageUtil.unDimImage(holder.imgBanner);
-            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.getContext(), com.tokopedia.design.R.color.orange_red));
-        }
+        holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.getContext(), com.tokopedia.design.R.color.black_54));
 
         if (item.isDisabledButton()) {
             holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), com.tokopedia.abstraction.R.color.black_12));
