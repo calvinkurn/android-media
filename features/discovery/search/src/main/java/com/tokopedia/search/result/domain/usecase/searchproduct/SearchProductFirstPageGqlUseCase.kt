@@ -126,10 +126,7 @@ class SearchProductFirstPageGqlUseCase(
                             }
                             shop {
                                 id
-                                name
                                 city
-                                isOfficial
-                                isPowerBadge
                             }
                             freeOngkir {
                                 isActive

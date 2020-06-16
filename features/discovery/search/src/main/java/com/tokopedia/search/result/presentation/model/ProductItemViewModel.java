@@ -40,7 +40,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private int position;
     private String originalPrice;
     private int discountPercentage;
-    private String productWishlistUrl;
     private int categoryID;
     private String categoryName;
     private String categoryBreadcrumb;
@@ -51,8 +50,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private String topadsWishlistUrl;
     private boolean isNew;
     private List<LabelGroupViewModel> labelGroupList = new ArrayList<>();
-    private boolean isShopPowerBadge;
-    private boolean isShopOfficialStore;
     private FreeOngkirViewModel freeOngkirViewModel = new FreeOngkirViewModel();
     private String boosterList = "";
 
@@ -184,14 +181,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         return shopID;
     }
 
-    public void setShopName(String shopName) {
-        this.shopName = shopName;
-    }
-
-    public String getShopName() {
-        return shopName;
-    }
-
     public void setShopCity(String shopCity) {
         this.shopCity = shopCity;
     }
@@ -308,30 +297,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         return this.labelGroupList;
     }
 
-    public void setProductWishlistUrl(String productWishlistUrl) {
-        this.productWishlistUrl = productWishlistUrl;
-    }
-
-    public String getProductWishlistUrl() {
-        return productWishlistUrl;
-    }
-
-    public void setIsShopPowerBadge(boolean isShopPowerBadge) {
-        this.isShopPowerBadge = isShopPowerBadge;
-    }
-
-    public boolean isShopPowerBadge() {
-        return isShopPowerBadge;
-    }
-
-    public void setIsShopOfficialStore(boolean isShopOfficialStore) {
-        this.isShopOfficialStore = isShopOfficialStore;
-    }
-
-    public boolean isShopOfficialStore() {
-        return isShopOfficialStore;
-    }
-
     public void setFreeOngkirViewModel(FreeOngkirViewModel freeOngkirViewModel) {
         this.freeOngkirViewModel = freeOngkirViewModel;
     }
@@ -360,7 +325,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         return DataLayer.mapOf(
                 "name", getProductName(),
                 "id", getProductID(),
-                "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(getPrice())),
+                "price", getPriceInt(),
                 "brand", "none / other",
                 "category", getCategoryBreadcrumb(),
                 "variant", "none / other",
@@ -412,7 +377,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         dest.writeInt(this.position);
         dest.writeString(this.originalPrice);
         dest.writeInt(this.discountPercentage);
-        dest.writeString(this.productWishlistUrl);
         dest.writeInt(this.categoryID);
         dest.writeString(this.categoryName);
         dest.writeString(this.categoryBreadcrumb);
@@ -422,8 +386,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         dest.writeString(this.topadsClickUrl);
         dest.writeString(this.topadsWishlistUrl);
         dest.writeTypedList(this.labelGroupList);
-        dest.writeByte(this.isShopPowerBadge ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isShopOfficialStore ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.freeOngkirViewModel, flags);
     }
 
@@ -447,7 +409,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         this.position = in.readInt();
         this.originalPrice = in.readString();
         this.discountPercentage = in.readInt();
-        this.productWishlistUrl = in.readString();
         this.categoryID = in.readInt();
         this.categoryName = in.readString();
         this.categoryBreadcrumb = in.readString();
@@ -457,8 +418,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         this.topadsClickUrl = in.readString();
         this.topadsWishlistUrl = in.readString();
         this.labelGroupList = in.createTypedArrayList(LabelGroupViewModel.CREATOR);
-        this.isShopPowerBadge = in.readByte() != 0;
-        this.isShopOfficialStore = in.readByte() != 0;
         this.freeOngkirViewModel = in.readParcelable(FreeOngkirViewModel.class.getClassLoader());
     }
 

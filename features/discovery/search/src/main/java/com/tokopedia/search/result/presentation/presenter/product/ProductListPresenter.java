@@ -524,8 +524,6 @@ final class ProductListPresenter
                     item.setCountReview(convertCountReviewFormatToInt(topAds.getProduct().getCountReviewFormat()));
                     item.setBadgesList(mapBadges(topAds.getShop().getBadges()));
                     item.setNew(topAds.getProduct().isProductNewLabel());
-                    item.setIsShopOfficialStore(topAds.getShop().isShop_is_official());
-                    item.setShopName(topAds.getShop().getName());
                     item.setOriginalPrice(topAds.getProduct().getCampaign().getOriginalPrice());
                     item.setDiscountPercentage(topAds.getProduct().getCampaign().getDiscountPercentage());
                     item.setLabelGroupList(mapLabelGroupList(topAds.getProduct().getLabelGroupList()));

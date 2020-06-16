@@ -297,21 +297,9 @@ data class ProductShop(
         @Expose
         val id: String = "",
 
-        @SerializedName("name")
-        @Expose
-        val name: String = "",
-
         @SerializedName("city")
         @Expose
-        val city: String = "",
-
-        @SerializedName("isOfficial")
-        @Expose
-        val isOfficial: Boolean = false,
-
-        @SerializedName("isPowerBadge")
-        @Expose
-        val isPowerBadge: Boolean = false
+        val city: String = ""
 )
 
 data class ProductFreeOngkir(

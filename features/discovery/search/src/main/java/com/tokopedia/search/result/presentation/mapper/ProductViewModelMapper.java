@@ -221,9 +221,9 @@ public class ProductViewModelMapper {
         productItem.setDiscountPercentage(productModel.getDiscountPercentage());
         productItem.setOriginalPrice(productModel.getOriginalPrice());
         productItem.setPrice(productModel.getPrice());
+        productItem.setPriceInt(productModel.getPriceInt());
         productItem.setPriceRange(productModel.getPriceRange());
         productItem.setShopID(productModel.getShop().getId());
-        productItem.setShopName(productModel.getShop().getName());
         productItem.setShopCity(productModel.getShop().getCity());
         productItem.setWishlisted(productModel.isWishlist());
         productItem.setBadgesList(convertToBadgesItemList(productModel.getBadgeList()));
@@ -232,8 +232,6 @@ public class ProductViewModelMapper {
         productItem.setCategoryName(productModel.getCategoryName());
         productItem.setCategoryBreadcrumb(productModel.getCategoryBreadcrumb());
         productItem.setLabelGroupList(convertToLabelGroupList(productModel.getLabelGroupList()));
-        productItem.setIsShopPowerBadge(productModel.getShop().isPowerBadge());
-        productItem.setIsShopOfficialStore(productModel.getShop().isOfficial());
         productItem.setFreeOngkirViewModel(convertToFreeOngkirViewModel(productModel.getFreeOngkir()));
         productItem.setBoosterList(productModel.getBoosterList());
         productItem.setIsOrganicAds(productModel.isOrganicAds());

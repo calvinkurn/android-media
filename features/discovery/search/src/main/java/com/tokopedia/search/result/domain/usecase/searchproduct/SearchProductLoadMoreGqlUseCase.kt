@@ -58,11 +58,7 @@ class SearchProductLoadMoreGqlUseCase(
                             }
                             shop {
                                 id
-                                name
-                                url
                                 city
-                                isOfficial
-                                isPowerBadge
                             }
                             freeOngkir {
                                 isActive
