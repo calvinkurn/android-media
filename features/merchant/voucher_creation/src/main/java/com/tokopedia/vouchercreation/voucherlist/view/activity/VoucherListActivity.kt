@@ -27,6 +27,7 @@ class VoucherListActivity : BaseActivity(), VoucherListFragment.Listener {
                 }
 
         const val SUCCESS_VOUCHER_ID_KEY = "success_voucher_id"
+        const val UPDATE_VOUCHER_KEY = "update_voucher"
 
         private const val IS_ACTIVE = "is_active"
 
@@ -39,6 +40,7 @@ class VoucherListActivity : BaseActivity(), VoucherListFragment.Listener {
     private var isActiveVoucher = true
 
     private val successVoucherId by lazy { intent?.extras?.getInt(SUCCESS_VOUCHER_ID_KEY) }
+    private val isUpdateVoucherSuccess by lazy { intent?.extras?.getBoolean(UPDATE_VOUCHER_KEY) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,9 +99,13 @@ class VoucherListActivity : BaseActivity(), VoucherListFragment.Listener {
             setFragmentListener(this@VoucherListActivity)
             val willShowSuccessCreationDialog = !isSuccessDialogAlreadyShowed && isActiveVoucher && successVoucherId != 0
             if (willShowSuccessCreationDialog) {
-                val bundle = Bundle().apply {
-                    putBoolean(VoucherListFragment.IS_SUCCESS_VOUCHER, true)
+                val bundle = Bundle().apply bun@{
+                    isUpdateVoucherSuccess?.run {
+                        putBoolean(VoucherListFragment.IS_UPDATE_VOUCHER, true)
+                        return@bun
+                    }
                     successVoucherId?.run {
+                        putBoolean(VoucherListFragment.IS_SUCCESS_VOUCHER, true)
                         putInt(VoucherListFragment.VOUCHER_ID_KEY, this)
                     }
                 }

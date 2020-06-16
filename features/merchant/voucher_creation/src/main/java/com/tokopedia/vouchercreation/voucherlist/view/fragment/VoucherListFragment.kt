@@ -87,6 +87,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         private const val COPY_PROMO_CODE_LABEL = "list_promo_code"
 
         const val IS_SUCCESS_VOUCHER = "is_success"
+        const val IS_UPDATE_VOUCHER = "is_update"
         const val VOUCHER_ID_KEY = "voucher_id"
 
         private const val DOWNLOAD_REQUEST_CODE = 223
@@ -137,6 +138,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     private val isActiveVoucher by lazy { getBooleanArgs(KEY_IS_ACTIVE_VOUCHER, true) }
 
     private val isNeedToShowSuccessDialog by lazy { getBooleanArgs(IS_SUCCESS_VOUCHER, false) }
+    private val isNeedToShowSuccessUpdateDialog by lazy { getBooleanArgs(IS_UPDATE_VOUCHER, false) }
 
     private val successVoucherId by lazy { getIntArgs(VOUCHER_ID_KEY, 0) }
 
@@ -164,6 +166,8 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
         if (successVoucherId != 0 && isNeedToShowSuccessDialog) {
             showSuccessCreateBottomSheet(successVoucherId)
+        } else if (isNeedToShowSuccessUpdateDialog) {
+            showSuccessUpdateToaster()
         }
 
         VoucherCreationTracking.sendOpenScreenTracking(
@@ -1123,6 +1127,17 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                     View.OnClickListener {
                         mViewModel.cancelVoucher(voucherId, isCancel)
                     })
+        }
+    }
+
+    private fun showSuccessUpdateToaster() {
+        view?.run {
+            Toaster.make(this,
+                    context?.getString(R.string.mvc_success_update_toaster).toBlankOrString(),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    context?.getString(R.string.mvc_oke).toBlankOrString(),
+                    View.OnClickListener {})
         }
     }
 

@@ -382,6 +382,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                         is Success -> {
                             context?.run {
                                 val intent = VoucherListActivity.createInstance(this, true).apply {
+                                    putExtra(VoucherListActivity.UPDATE_VOUCHER_KEY, true)
                                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                                 }
                                 startActivity(intent)
