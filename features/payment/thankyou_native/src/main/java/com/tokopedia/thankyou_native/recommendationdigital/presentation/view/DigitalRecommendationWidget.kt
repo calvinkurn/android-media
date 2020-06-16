@@ -37,11 +37,11 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
     }
 
     open fun renderProduct(element: RecommendationsItem) {
-        if (element.productName .isNullOrBlank()) {
+        if (element.categoryName.isNullOrBlank()) {
             thanks_dh_rec_name.visibility = View.GONE
         } else {
             thanks_dh_rec_name.visibility = View.VISIBLE
-            thanks_dh_rec_name.text = element.productName.capitalize()
+            thanks_dh_rec_name.text = element.categoryName.capitalize()
         }
     }
 

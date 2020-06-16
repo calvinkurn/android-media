@@ -105,7 +105,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     }
     private fun addMarketPlaceRecommendation(){
         val recomContainer = getRecommendationContainer()
-        iRecommendationView= recomContainer?.let { container ->
+        iRecommendationView = recomContainer?.let { container ->
             val view = getRecommendationView(marketRecommendationPlaceLayout)
             container.addView(view)
             view.findViewById<MarketPlaceRecommendation>(R.id.marketPlaceRecommendationView)
