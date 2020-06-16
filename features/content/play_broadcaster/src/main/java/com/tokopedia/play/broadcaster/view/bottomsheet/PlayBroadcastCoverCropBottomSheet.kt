@@ -3,16 +3,13 @@ package com.tokopedia.play.broadcaster.view.bottomsheet
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.CoverSourceEnum
 import com.tokopedia.play.broadcaster.ui.model.CoverStarterEnum
-import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
 import com.tokopedia.play.broadcaster.view.fragment.PlayCoverTitleSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayCoverTitleSetupFragment.Companion.EXTRA_COVER_SOURCE
 import com.tokopedia.play.broadcaster.view.fragment.PlayCoverTitleSetupFragment.Companion.EXTRA_COVER_URI
-import com.tokopedia.play.broadcaster.view.fragment.PlayCoverTitleSetupFragment.Companion.EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST
 import com.tokopedia.play.broadcaster.view.fragment.PlayCoverTitleSetupFragment.Companion.EXTRA_STARTER_STATE
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
@@ -22,8 +19,7 @@ import javax.inject.Inject
  */
 class PlayBroadcastCoverCropBottomSheet @Inject constructor(
         private val viewModelFactory: ViewModelFactory)
-    : BottomSheetUnify(), PlayCoverTitleSetupFragment.ListenerForCropOnly,
-        PlayBottomSheetCoordinator {
+    : BottomSheetUnify(), PlayCoverTitleSetupFragment.ListenerForCropOnly {
 
     var listener: Listener? = null
 
@@ -45,22 +41,6 @@ class PlayBroadcastCoverCropBottomSheet @Inject constructor(
     override fun onCancelCrop(coverSource: CoverSourceEnum) {
         listener?.onCancelCrop(coverSource)
         dismiss()
-    }
-
-    override fun saveCoverAndTitle(coverUri: Uri, coverUrl: String, liveTitle: String) {
-        // do nothing
-    }
-
-    override fun showBottomAction(shouldShow: Boolean) {
-        // do nothing
-    }
-
-    override fun navigateToFragment(fragmentClass: Class<out Fragment>, extras: Bundle, sharedElements: List<View>, onFragment: (Fragment) -> Unit) {
-        // do nothing
-    }
-
-    override fun setupTitle(title: String) {
-        setTitle(title)
     }
 
     private fun initBottomSheet() {
@@ -91,9 +71,10 @@ class PlayBroadcastCoverCropBottomSheet @Inject constructor(
                 putInt(EXTRA_COVER_SOURCE, it.getInt(EXTRA_COVER_SOURCE, CoverSourceEnum.NONE.value))
                 if (it.containsKey(EXTRA_COVER_URI)) {
                     putParcelable(EXTRA_COVER_URI, it.getParcelable<Uri>(EXTRA_COVER_URI))
-                } else if (it.containsKey(EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST)) {
-                    putSerializable(EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST, it.getSerializable(EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST))
                 }
+//                else if (it.containsKey(EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST)) {
+//                    putSerializable(EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST, it.getSerializable(EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST))
+//                }
             }
         }
         val targetFragment = getCoverTitleFragment()

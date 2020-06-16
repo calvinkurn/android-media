@@ -6,6 +6,8 @@ import android.net.Uri
  * Created by jegul on 26/05/20
  */
 interface PlayBottomSheetCoordinator : PlayBaseCoordinator {
+
+    fun goBack()
+
     fun saveCoverAndTitle(coverUri: Uri, coverUrl: String, liveTitle: String)
-    fun showBottomAction(shouldShow: Boolean)
 }

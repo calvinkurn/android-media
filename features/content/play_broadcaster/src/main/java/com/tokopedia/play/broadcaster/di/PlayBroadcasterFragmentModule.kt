@@ -84,6 +84,24 @@ abstract class PlayBroadcasterFragmentModule {
     abstract fun getPlayBroadcastCoverCropBottomSheet(fragment: PlayBroadcastCoverCropBottomSheet): Fragment
 
     /**
+     * Etalase Setup
+     */
+    @Binds
+    @IntoMap
+    @FragmentKey(PlayEtalaseListFragment::class)
+    abstract fun getPlayEtalaseListFragment(fragment: PlayEtalaseListFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(PlaySearchSuggestionsFragment::class)
+    abstract fun getPlaySearchSuggestionsFragment(fragment: PlaySearchSuggestionsFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(PlaySearchResultFragment::class)
+    abstract fun getPlaySearchResultFragment(fragment: PlaySearchResultFragment): Fragment
+
+    /**
      * Please Delete This
      */
     @Binds

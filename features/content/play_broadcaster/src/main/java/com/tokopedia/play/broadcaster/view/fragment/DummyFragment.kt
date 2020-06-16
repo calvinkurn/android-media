@@ -191,7 +191,7 @@ class DummyFragment @Inject constructor()
                 putParcelable(PlayCoverTitleSetupFragment.EXTRA_COVER_URI, it)
             }
             coverSelectedDetail?.let {
-                putSerializable(PlayCoverTitleSetupFragment.EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST, arrayListOf(it))
+//                putSerializable(PlayCoverTitleSetupFragment.EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST, arrayListOf(it))
             }
         }
         fragment.listener = this

@@ -1,6 +1,8 @@
 package com.tokopedia.play.broadcaster.view.custom
 
 import android.content.Context
+import android.os.Parcel
+import android.os.Parcelable
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
@@ -17,6 +19,7 @@ import androidx.transition.*
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.ui.transition.ScaleTransition
 
 /**
  * Created by jegul on 26/05/20
@@ -32,6 +35,7 @@ class PlaySearchBar : ConstraintLayout {
         get() = etSearch.text.toString()
         set(value) {
             etSearch.setText(value)
+            etSearch.setSelection(etSearch.length())
         }
 
     private val view: View = View.inflate(context, R.layout.view_play_search_bar, this)
@@ -42,6 +46,8 @@ class PlaySearchBar : ConstraintLayout {
     private val tvCancel: TextView
 
     private var mListener: Listener? = null
+
+    private lateinit var mTextWatcher: TextWatcher
 
     init {
         clSearch = view.findViewById(R.id.cl_search)
@@ -70,31 +76,41 @@ class PlaySearchBar : ConstraintLayout {
         tvCancel.performClick()
     }
 
+    fun forceFocus() {
+        etSearch.requestFocus()
+        showKeyboard()
+    }
+
+    override fun onSaveInstanceState(): Parcelable? {
+        val superState = super.onSaveInstanceState()
+        val newState = SavedState(superState)
+        newState.cancelBtnVisibility = tvCancel.visibility
+        newState.clearBtnVisibility = ivClear.visibility
+        return newState
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        val savedState = state as SavedState
+        super.onRestoreInstanceState(savedState.superState)
+        tvCancel.visibility = savedState.cancelBtnVisibility
+        ivClear.visibility = savedState.clearBtnVisibility
+    }
+
     private fun setupView(view: View) {
         etSearch.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 onChangeFocusTransition()
                 tvCancel.visible()
+                etSearch.addTextChangedListener(getTextWatcher())
             }
             else {
                 if (etSearch.text.isEmpty()) tvCancel.performClick()
                 hideKeyboard()
+                etSearch.removeTextChangedListener(getTextWatcher())
             }
 
             mListener?.onEditStateChanged(this@PlaySearchBar, hasFocus)
         }
-        etSearch.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                ivClear.visibility = if (s?.isNotEmpty() == true) View.VISIBLE else View.GONE
-                mListener?.onNewKeyword(this@PlaySearchBar, etSearch.text.toString())
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-        })
         etSearch.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 doSearch()
@@ -113,11 +129,15 @@ class PlaySearchBar : ConstraintLayout {
             clearText()
             tvCancel.gone()
             etSearch.clearFocus()
+            updateClearButton()
             mListener?.onCanceled(this@PlaySearchBar)
         }
     }
 
-    private fun clearText() = etSearch.setText("")
+    private fun clearText() {
+        etSearch.setText("")
+        updateClearButton()
+    }
 
     private fun hideKeyboard() {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
@@ -135,6 +155,7 @@ class PlaySearchBar : ConstraintLayout {
                 TransitionSet()
                         .addTransition(getSearchBoxTransition())
                         .addTransition(getCancelButtonTransition())
+                        .addTransition(getClearButtonTransition())
                         .setStartDelay(200)
         )
     }
@@ -149,6 +170,69 @@ class PlaySearchBar : ConstraintLayout {
         return ChangeBounds()
                 .addTarget(clSearch)
                 .setDuration(300)
+    }
+
+    private fun getClearButtonTransition(): Transition {
+        return ScaleTransition()
+                .addTarget(ivClear)
+                .setDuration(300)
+    }
+
+    private fun showKeyboard() {
+        val imm = etSearch.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(etSearch, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    private fun getTextWatcher(): TextWatcher {
+        if (!::mTextWatcher.isInitialized) {
+            mTextWatcher = object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    updateClearButton()
+                    mListener?.onNewKeyword(this@PlaySearchBar, etSearch.text.toString())
+                }
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                }
+            }
+        }
+
+        return mTextWatcher
+    }
+
+    private fun updateClearButton() {
+        ivClear.visibility = if (etSearch.text.isNotEmpty()) View.VISIBLE else View.GONE
+    }
+
+    class SavedState : BaseSavedState {
+
+        var cancelBtnVisibility: Int = View.GONE
+        var clearBtnVisibility: Int = View.GONE
+
+        constructor(superState: Parcelable?) : super(superState)
+        constructor(source: Parcel?) : super(source) {
+            cancelBtnVisibility = source?.readInt() ?: View.GONE
+            clearBtnVisibility = source?.readInt() ?: View.GONE
+        }
+
+        override fun writeToParcel(out: Parcel?, flags: Int) {
+            super.writeToParcel(out, flags)
+            out?.writeInt(cancelBtnVisibility)
+            out?.writeInt(clearBtnVisibility)
+        }
+
+        companion object CREATOR : Parcelable.Creator<SavedState> {
+
+            override fun createFromParcel(parcel: Parcel): SavedState {
+                return SavedState(parcel)
+            }
+
+            override fun newArray(size: Int): Array<SavedState?> {
+                return arrayOfNulls(size)
+            }
+        }
     }
 
     interface Listener {

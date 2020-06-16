@@ -43,4 +43,9 @@ abstract class PlayBroadcasterViewModelModule {
     @ViewModelKey(PlayBroadcastCoverTitleViewModel::class)
     abstract fun getPlayBroadcastCoverTitleViewModel(viewModel: PlayBroadcastCoverTitleViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @ViewModelKey(PlaySearchSuggestionsViewModel::class)
+    abstract fun getPlaySearchSuggestionsViewModel(viewModel: PlaySearchSuggestionsViewModel): ViewModel
+
 }

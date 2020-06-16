@@ -16,5 +16,5 @@ interface PlayBaseCoordinator {
             onFragment: (Fragment) -> Unit = {}
     )
 
-    fun setupTitle(title: String)
+    fun setupTitle(title: String) {}
 }
