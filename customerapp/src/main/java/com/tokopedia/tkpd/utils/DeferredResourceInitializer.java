@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tkpd.remoteresourcerequest.utils.DeferredCallback;
 import com.tokopedia.home.account.AccountHomeUrl;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
@@ -28,14 +29,14 @@ public class DeferredResourceInitializer implements DeferredCallback{
                 return init(context);
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineNow(libInitWeave);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(libInitWeave, RemoteConfigKey.ENABLE_ASYNC_REMOTERESOURCE_INIT, context.getApplicationContext());
     }
 
     private boolean init(Context context){
         ResourceDownloadManager
                 .Companion.getManager()
                 .setBaseAndRelativeUrl(AccountHomeUrl.CDN_URL, RELATIVE_URL)
-                .addDeferredCallback(this)
+                .addDeferredCallback(DeferredResourceInitializer.this)
                 .initialize(context, R.raw.url_list);
         return true;
     }

@@ -61,7 +61,7 @@ public abstract class MainApplication extends MainRouterApplication{
                 return remoteConfig = new FirebaseRemoteConfigImpl(MainApplication.this);
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineNow(remoteConfigWeave);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(remoteConfigWeave, RemoteConfigKey.ENABLE_ASYNC_REMOTECONFIG_MAINAPP_INIT, MainApplication.this);
     }
 
     @Override
