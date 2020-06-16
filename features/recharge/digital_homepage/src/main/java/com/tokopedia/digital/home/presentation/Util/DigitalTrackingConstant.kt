@@ -25,6 +25,9 @@ object DigitalHomepageTrackingActionConstant {
     const val SUBHOME_WIDGET_CLICK = "click subhome widget"
     const val SEARCH_RESULT_PAGE_ICON_IMPRESSION = "impression SRP icon"
     const val SEARCH_RESULT_PAGE_ICON_CLICK = "click SRP icon"
+
+    const val VIDEO_HIGHLIGHT_IMPRESSION = "video highlight impression"
+    const val VIDEO_HIGHLIGHT_CLICK = "video highlight click"
 }
 
 object DigitalHomepageTrackingLabelConstant {

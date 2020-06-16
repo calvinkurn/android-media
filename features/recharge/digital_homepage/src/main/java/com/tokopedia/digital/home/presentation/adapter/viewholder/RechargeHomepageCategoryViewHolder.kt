@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageCategoryModel
-import com.tokopedia.digital.home.model.RechargeHomepageSectionModel
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.DYNAMIC_ICON_IMPRESSION
 import com.tokopedia.digital.home.presentation.adapter.adapter.RechargeItemCategoryAdapter
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
@@ -18,9 +17,9 @@ class RechargeHomepageCategoryViewHolder(itemView: View, val listener: OnItemBin
         val section = element.section
         with (itemView) {
             val layoutManager = GridLayoutManager(itemView.context, CATEGORY_SPAN_COUNT)
-            category_recycler_view.layoutManager = layoutManager
-            category_recycler_view.adapter = RechargeItemCategoryAdapter(section.items, listener)
-            title.text = section.title
+            rv_recharge_home_category.layoutManager = layoutManager
+            rv_recharge_home_category.adapter = RechargeItemCategoryAdapter(section.items, listener)
+            tv_recharge_home_category_title.text = section.title
             listener.onRechargeSectionItemImpression(section.items, DYNAMIC_ICON_IMPRESSION)
         }
     }

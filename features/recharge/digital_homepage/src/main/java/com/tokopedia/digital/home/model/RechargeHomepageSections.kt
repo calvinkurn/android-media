@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageTypeFactory
+import com.tokopedia.kotlin.model.ImpressHolder
 
 data class RechargeHomepageSections (
         @SerializedName("sections")
@@ -32,7 +33,7 @@ data class RechargeHomepageSections (
             @SerializedName("items")
             @Expose
             val items: List<Item> = listOf()
-    )
+    ): ImpressHolder()
 
     data class Item (
             @SerializedName("id")
@@ -114,6 +115,12 @@ class RechargeHomepageCategoryModel(section: RechargeHomepageSections.Section): 
 }
 
 class RechargeHomepageTrustMarkModel(section: RechargeHomepageSections.Section): RechargeHomepageSectionModel(section) {
+        override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+                return typeFactory.type(this)
+        }
+}
+
+class RechargeHomepageVideoHighlightModel(section: RechargeHomepageSections.Section): RechargeHomepageSectionModel(section) {
         override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
                 return typeFactory.type(this)
         }

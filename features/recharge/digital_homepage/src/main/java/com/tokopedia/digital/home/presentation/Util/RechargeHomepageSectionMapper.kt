@@ -12,6 +12,7 @@ object RechargeHomepageSectionMapper {
                     SECTION_TOP_BANNER -> RechargeHomepageBannerModel(it)
 //                    SECTION_TOP_BANNER_EMPTY -> RechargeHomepageBannerEmptyModel(it)
                     SECTION_TOP_ICONS -> RechargeHomepageFavoriteModel(it)
+                    SECTION_VIDEO_HIGHLIGHT -> RechargeHomepageVideoHighlightModel(it)
                     SECTION_DYNAMIC_ICONS -> RechargeHomepageCategoryModel(it)
                     SECTION_DUAL_ICONS -> RechargeHomepageTrustMarkModel(it)
                     else -> null

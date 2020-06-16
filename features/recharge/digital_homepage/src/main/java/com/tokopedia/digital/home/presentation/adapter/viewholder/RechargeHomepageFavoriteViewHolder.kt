@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageFavoriteModel
-import com.tokopedia.digital.home.model.RechargeHomepageSectionModel
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.BEHAVIORAL_CATEGORY_IMPRESSION
 import com.tokopedia.digital.home.presentation.adapter.adapter.RechargeItemFavoriteAdapter
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
@@ -21,7 +20,11 @@ class RechargeHomepageFavoriteViewHolder(itemView: View?, val listener: OnItemBi
             val layoutManager = GridLayoutManager(context, FAVORITES_SPAN_COUNT)
             rv_digital_homepage_favorites.layoutManager = layoutManager
             digital_homepage_favorites_container.show()
-            digital_homepage_favorites_title.text = section.title
+            tv_recharge_home_favorites_title.text = section.title
+            // TODO: Set see all textview redirect
+            tv_recharge_home_favorites_see_all.setOnClickListener {
+//                RouteManager.route(itemView.context, "")
+            }
             rv_digital_homepage_favorites.adapter = RechargeItemFavoriteAdapter(section.items, listener)
             listener.onRechargeSectionItemImpression(section.items, BEHAVIORAL_CATEGORY_IMPRESSION)
         }

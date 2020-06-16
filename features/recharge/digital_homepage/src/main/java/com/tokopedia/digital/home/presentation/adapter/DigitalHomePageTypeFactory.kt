@@ -68,6 +68,10 @@ class DigitalHomePageTypeFactory(val listener: OnItemBindListener,
         return RechargeHomepageTrustMarkViewHolder.LAYOUT
     }
 
+    fun type(videoHighlightModel: RechargeHomepageVideoHighlightModel): Int {
+        return RechargeHomepageVideoHighlightViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             // TODO: Finish the rest of viewholders and add them to the list
@@ -76,6 +80,7 @@ class DigitalHomePageTypeFactory(val listener: OnItemBindListener,
             RechargeHomepageTrustMarkViewHolder.LAYOUT -> RechargeHomepageTrustMarkViewHolder(parent, listener)
             RechargeHomepageBannerViewHolder.LAYOUT -> RechargeHomepageBannerViewHolder(parent, listener)
             RechargeHomepageBannerViewHolder.LAYOUT_EMPTY -> RechargeHomepageBannerViewHolder(parent, listener, true)
+            RechargeHomepageVideoHighlightViewHolder.LAYOUT -> RechargeHomepageVideoHighlightViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }
