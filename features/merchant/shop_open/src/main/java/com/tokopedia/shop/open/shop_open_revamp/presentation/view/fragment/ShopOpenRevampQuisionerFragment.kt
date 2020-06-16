@@ -342,11 +342,11 @@ class ShopOpenRevampQuisionerFragment :
                     var _formattedAddress: String = ""
                     
                     saveAddressDataModel?.let {
-                        _latitudeString = it.latitude.toString()
-                        _longitudeString = it.longitude.toString()
-                        _postalCode = it.postalCode.toString()
-                        _districtId = it.districtId
-                        _formattedAddress = it.formattedAddress
+                        _latitudeString = if (it.latitude != null) it.latitude.toString() else ""
+                        _longitudeString = if (it.longitude != null) it.longitude.toString() else ""
+                        _postalCode = if (it.postalCode != null) it.postalCode.toString() else ""
+                        _districtId = if (it.districtId != null) it.districtId else 0
+                        _formattedAddress = if (it.formattedAddress != null) it.formattedAddress else ""
                     }
 
                     val _shopId = if (userSession.shopId.isNotEmpty()) userSession.shopId.toInt() else 0 // Get shopId from create Shop
