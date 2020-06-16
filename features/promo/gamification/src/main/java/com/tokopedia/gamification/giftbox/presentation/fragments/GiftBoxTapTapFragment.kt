@@ -32,6 +32,7 @@ import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxTapTapView
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer
 import com.tokopedia.gamification.giftbox.presentation.views.RewardSummaryView
 import com.tokopedia.gamification.pdp.data.LiveDataResult
+import com.tokopedia.gamification.taptap.data.entiity.GamiTapEggHome
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.image.ImageUtils
@@ -238,59 +239,28 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                                         loadInactiveContainer()
                                     }
 
-                                    val actionButtonList = it.data.gamiTapEggHome.actionButton
+                                    val actionButtonList = it.data.gamiTapEggHome?.actionButton
                                     if (!actionButtonList.isNullOrEmpty()) {
                                         btnInactiveFirst.text = actionButtonList[0].text
                                     }
 
                                 }
                                 "lobby" -> {
+                                    it.data.gamiTapEggHome?.let { gamiTapEggHome ->
+                                        setupLobbyUi(gamiTapEggHome)
+                                    }
+
                                 }
                                 "crackUnlimited" -> {
+                                    it.data.gamiTapEggHome?.let { gamiTapEggHome ->
+                                        setupcrackUnlimitedUi(gamiTapEggHome)
+                                    }
                                 }
                                 else -> {
                                 }
                             }
                         }
 
-
-                        //timer
-                        val timeLeftHours = it.data?.gamiTapEggHome?.timeRemaining?.unixFetch
-                        val timeLeftSeconds = it.data?.gamiTapEggHome?.timeRemaining?.seconds
-                        val showTimer = it.data?.gamiTapEggHome?.timeRemaining?.isShow
-
-                        //glowing mode
-                        val tokenAsset = it.data?.gamiTapEggHome?.tokenAsset
-                        val glowImageUrl = tokenAsset?.glowImgURL
-                        val glowShadowImageUrl = tokenAsset?.glowShadowImgURL
-
-                        val imageUrlList = tokenAsset?.imageV2URLs
-                        var imageFrontUrl = ""
-                        val bgImageUrl = tokenAsset?.glowShadowImgURL
-                        if (imageUrlList != null && imageUrlList.isNotEmpty()) {
-                            imageFrontUrl = imageUrlList[0]
-                        }
-
-
-                        val shouldGlow = (!glowImageUrl.isNullOrEmpty() && glowShadowImageUrl.isNullOrEmpty())
-                        val tokenUserState = it.data?.gamiTapEggHome?.tokensUser?.state
-
-                        if (showTimer != null && showTimer && timeLeftHours != null && timeLeftSeconds != null) {
-                            renderBottomHourTimer(timeLeftSeconds)
-
-                            getTapTapView().loadFilesForTapTap(tokenUserState!!,
-                                    glowImageUrl,
-                                    glowShadowImageUrl,
-                                    imageFrontUrl,
-                                    bgImageUrl!!,
-                                    imageCallback = { it ->
-                                        setPositionOfViewsAtBoxOpen(tokenUserState)
-                                        hideLoader()
-                                        fadeInActiveStateViews()
-                                        getTapTapView().startInitialAnimation()?.start()
-                                    }
-                            )
-                        }
 
                         getTapTapView().fmGiftBox.setOnClickListener {
                             if (isTimeOut) {
@@ -351,6 +321,50 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 }
             }
         })
+    }
+
+    private fun setupcrackUnlimitedUi(gamiTapEggHome: GamiTapEggHome) {}
+
+    private fun setupLobbyUi(gamiTapEggHome: GamiTapEggHome) {
+        //timer
+        val timeLeftHours = gamiTapEggHome.timeRemaining?.unixFetch
+        val timeLeftSeconds = gamiTapEggHome.timeRemaining?.seconds
+        val showTimer = gamiTapEggHome.timeRemaining?.isShow
+
+        //glowing mode
+        val tokenAsset = gamiTapEggHome.tokenAsset
+        val glowImageUrl = tokenAsset?.glowImgURL
+        val glowShadowImageUrl = tokenAsset?.glowShadowImgURL
+
+        val imageUrlList = tokenAsset?.imageV2URLs
+        var imageFrontUrl = ""
+        val bgImageUrl = tokenAsset?.backgroundImgURL
+        if (!glowShadowImageUrl.isNullOrEmpty() && !bgImageUrl.isNullOrEmpty()) {
+
+            if (imageUrlList != null && imageUrlList.isNotEmpty()) {
+                imageFrontUrl = imageUrlList[0]
+            }
+
+            val shouldGlow = (!glowImageUrl.isNullOrEmpty() && glowShadowImageUrl.isNullOrEmpty())
+            val tokenUserState = gamiTapEggHome.tokensUser?.state
+
+            if (showTimer != null && showTimer && timeLeftHours != null && timeLeftSeconds != null) {
+                renderBottomHourTimer(timeLeftSeconds)
+
+                getTapTapView().loadFilesForTapTap(tokenUserState!!,
+                        glowImageUrl,
+                        glowShadowImageUrl,
+                        imageFrontUrl,
+                        bgImageUrl,
+                        imageCallback = { _ ->
+                            setPositionOfViewsAtBoxOpen(tokenUserState)
+                            hideLoader()
+                            fadeInActiveStateViews()
+                            getTapTapView().startInitialAnimation()?.start()
+                        }
+                )
+            }
+        }
     }
 
     private fun loadInactiveContainer() {
@@ -475,7 +489,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
     fun startOneMinuteCounter() {
         //todo this time should come from backend
-        val time = 10 * 1000L
+        val time = 7 * 1000L
         minuteCountDownTimer = object : CountDownTimer(time, 1000) {
             override fun onFinish() {
                 timeUpAnimation()
@@ -492,8 +506,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         minuteCountDownTimer?.start()
     }
 
-    fun renderBottomHourTimer(timeLeftSeconds: Long) {
-        //todo this time should come from backend
+    private fun renderBottomHourTimer(timeLeftSeconds: Long) {
         val time = timeLeftSeconds * 1000L
         hourCountDownTimer = object : CountDownTimer(time, 1000) {
             override fun onFinish() {
@@ -513,26 +526,26 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 val hour = minutes / 60
                 minutes %= 60
                 seconds %= 60
-                tvTimer.text = "${hour}:${minutes}:${seconds}"
+
+                val hourText = if (hour < 10) "0$hour" else hour.toString()
+                val minuteText = if (minutes < 10) "0$minutes" else minutes.toString()
+                val secondText = if (seconds < 10) "0$seconds" else seconds.toString()
+                tvTimer.text = "${hourText}:${minuteText}:${secondText}"
             }
         }
 
         hourCountDownTimer?.start()
-        //show hour timer
 
         val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
         val alphaAnim = ObjectAnimator.ofPropertyValuesHolder(tvTimer, alphaProp)
         alphaAnim.duration = 500L
         alphaAnim.start()
-
-        tvTimer.postDelayed({ hourCountDownTimer?.onFinish() }, 8 * 1000L)
     }
 
     fun animateTvTimerAndProgressBar() {
         tvTimer.animate().alpha(0f).setDuration(600L).start()
         progressBarTimer.animate().alpha(1f).setStartDelay(300L).setDuration(600L).start()
         tvProgressCount.animate().alpha(1f).setStartDelay(300L).setDuration(600L).start()
-
     }
 
 
