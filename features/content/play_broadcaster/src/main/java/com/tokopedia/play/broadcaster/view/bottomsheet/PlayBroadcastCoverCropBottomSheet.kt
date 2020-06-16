@@ -10,7 +10,6 @@ import com.tokopedia.play.broadcaster.ui.model.CoverStarterEnum
 import com.tokopedia.play.broadcaster.view.fragment.PlayCoverTitleSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayCoverTitleSetupFragment.Companion.EXTRA_COVER_SOURCE
 import com.tokopedia.play.broadcaster.view.fragment.PlayCoverTitleSetupFragment.Companion.EXTRA_COVER_URI
-import com.tokopedia.play.broadcaster.view.fragment.PlayCoverTitleSetupFragment.Companion.EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST
 import com.tokopedia.play.broadcaster.view.fragment.PlayCoverTitleSetupFragment.Companion.EXTRA_STARTER_STATE
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
@@ -72,9 +71,10 @@ class PlayBroadcastCoverCropBottomSheet @Inject constructor(
                 putInt(EXTRA_COVER_SOURCE, it.getInt(EXTRA_COVER_SOURCE, CoverSourceEnum.NONE.value))
                 if (it.containsKey(EXTRA_COVER_URI)) {
                     putParcelable(EXTRA_COVER_URI, it.getParcelable<Uri>(EXTRA_COVER_URI))
-                } else if (it.containsKey(EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST)) {
-                    putSerializable(EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST, it.getSerializable(EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST))
                 }
+//                else if (it.containsKey(EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST)) {
+//                    putSerializable(EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST, it.getSerializable(EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST))
+//                }
             }
         }
         val targetFragment = getCoverTitleFragment()

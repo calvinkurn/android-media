@@ -24,6 +24,7 @@ import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastCoverFromGal
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastCoverTitleViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import com.tokopedia.play.broadcaster.view.widget.PlayCropImageView
 import com.yalantis.ucrop.callback.BitmapCropCallback
 import com.yalantis.ucrop.util.RectUtils
@@ -43,9 +44,10 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
 
     var listenerForCropOnly: ListenerForCropOnly? = null
 
-    private lateinit var viewModel: PlayBroadcastCoverTitleViewModel
-
     private var selectedImageUrlList = arrayListOf<Pair<Long, String>>()
+    private lateinit var viewModel: PlayBroadcastCoverTitleViewModel
+    private lateinit var etalaseViewModel: PlayEtalasePickerViewModel
+
     private var liveTitle: String = ""
     private var selectedCoverUri: Uri? = null
     private var coverSource: CoverSourceEnum = CoverSourceEnum.NONE
@@ -61,8 +63,6 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
         super.onCreate(savedInstanceState)
         setupTransition()
         savedInstanceState?.let {
-            selectedImageUrlList = it.getSerializable(EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST) as ArrayList<Pair<Long, String>>?
-                    ?: arrayListOf()
             liveTitle = it.getString(EXTRA_LIVE_TITLE, "") ?: ""
             starterState = if (it.getInt(EXTRA_STARTER_STATE) == CoverStarterEnum.CROP_ONLY.value)
                 CoverStarterEnum.CROP_ONLY else CoverStarterEnum.NORMAL
@@ -73,8 +73,6 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
                 else -> CoverSourceEnum.NONE
             }
         } ?: arguments?.let {
-            selectedImageUrlList = it.getSerializable(EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST) as ArrayList<Pair<Long, String>>?
-                    ?: arrayListOf()
             starterState = if (it.getInt(EXTRA_STARTER_STATE) == CoverStarterEnum.CROP_ONLY.value)
                 CoverStarterEnum.CROP_ONLY else CoverStarterEnum.NORMAL
             coverSource = when (it.getInt(EXTRA_COVER_SOURCE)) {
@@ -91,6 +89,11 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
         }
         viewModel = ViewModelProviders.of(requireParentFragment(), viewModelFactory)
                 .get(PlayBroadcastCoverTitleViewModel::class.java)
+
+        etalaseViewModel = ViewModelProviders.of(requireParentFragment(), viewModelFactory)
+                .get(PlayEtalasePickerViewModel::class.java)
+
+        selectedImageUrlList = ArrayList(etalaseViewModel.observableSelectedProducts.value.orEmpty().map { Pair(it.id, it.imageUrl) })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -106,23 +109,8 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel.imageEcsLink.observe(viewLifecycleOwner, Observer {
-            selectedCoverUri?.let { selectedCover ->
-                if (it.isNotEmpty()) {
-                    if (starterState == CoverStarterEnum.CROP_ONLY) {
-                        listenerForCropOnly?.onFinishedCrop(selectedCover, it)
-                    } else if (liveTitle.isNotEmpty()) {
-                        bottomSheetCoordinator.saveCoverAndTitle(selectedCover, it, liveTitle)
-                    }
-                }
-            }
-        })
-
-        viewModel.originalImageUri.observe(viewLifecycleOwner, Observer {
-            if (coverSource == CoverSourceEnum.PRODUCT) {
-                renderCoverCropLayout(it)
-            }
-        })
+        observeImageEcsLink()
+        observeOriginalImageUri()
     }
 
     override fun onDestroyView() {
@@ -132,7 +120,6 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putSerializable(EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST, selectedImageUrlList)
         outState.putString(EXTRA_LIVE_TITLE, liveTitle)
         outState.putInt(EXTRA_STARTER_STATE, starterState.value)
         outState.putInt(EXTRA_COVER_SOURCE, coverSource.value)
@@ -344,6 +331,33 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
         }
     }
 
+    //region observe
+    /**
+     * Observe
+     */
+    private fun observeOriginalImageUri() {
+        viewModel.originalImageUri.observe(viewLifecycleOwner, Observer {
+            if (coverSource == CoverSourceEnum.PRODUCT) {
+                renderCoverCropLayout(it)
+            }
+        })
+    }
+
+    private fun observeImageEcsLink() {
+        viewModel.imageEcsLink.observe(viewLifecycleOwner, Observer {
+            selectedCoverUri?.let { selectedCover ->
+                if (it.isNotEmpty()) {
+                    if (starterState == CoverStarterEnum.CROP_ONLY) {
+                        listenerForCropOnly?.onFinishedCrop(selectedCover, it)
+                    } else if (liveTitle.isNotEmpty()) {
+                        bottomSheetCoordinator.saveCoverAndTitle(selectedCover, it, liveTitle)
+                    }
+                }
+            }
+        })
+    }
+    //endregion
+
     /**
      * Transition
      */
@@ -383,7 +397,6 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
     }
 
     companion object {
-        const val EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST = "EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST"
         const val EXTRA_STARTER_STATE = "EXTRA_STARTER_STATE"
         const val EXTRA_COVER_SOURCE = "EXTRA_COVER_SOURCE"
         const val EXTRA_COVER_URI = "EXTRA_COVER_URI"

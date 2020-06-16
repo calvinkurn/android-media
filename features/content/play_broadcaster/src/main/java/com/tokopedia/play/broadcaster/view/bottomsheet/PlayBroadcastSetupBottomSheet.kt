@@ -209,7 +209,6 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         val productImageList: ArrayList<Pair<Long, String>> = ArrayList(viewModel.selectedProductList
                 .map { Pair(it.id, it.originalImageUrl) }.toList())
         navigateToFragment(PlayCoverTitleSetupFragment::class.java, Bundle().apply {
-            putSerializable(PlayCoverTitleSetupFragment.EXTRA_SELECTED_PRODUCT_IMAGE_URL_LIST, productImageList)
             putInt(PlayCoverTitleSetupFragment.EXTRA_STARTER_STATE, CoverStarterEnum.NORMAL.value)
             putInt(PlayCoverTitleSetupFragment.EXTRA_COVER_SOURCE, CoverSourceEnum.NONE.value)
         })
