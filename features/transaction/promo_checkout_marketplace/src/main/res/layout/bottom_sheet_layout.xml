@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bottomsheet_background"
     android:orientation="vertical"
-    android:visibility="gone"
+    android:visibility="visible"
     app:behavior_hideable="true"
     app:behavior_peekHeight="250dp"
     app:layout_behavior="com.tokopedia.promocheckoutmarketplace.presentation.LockableBottomSheetBehavior"

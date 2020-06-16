@@ -85,7 +85,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     private var promoCheckoutLastSeenBottomsheet: BottomSheetBehavior<FrameLayout>? = null
     private var showBottomsheetJob: Job? = null
     private var keyboardHeight = 0
-    private val KEYBOARD_HEIGHT_THRESHOLD = 100
+    private var isPromoCheckoutlastSeenBottomsheetShown = false
 
     private val viewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[PromoCheckoutViewModel::class.java]
@@ -126,6 +126,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         const val REQUEST_CODE_PHONE_VERIFICATION = 9999
         const val HAS_ELEVATION = 6
         const val NO_ELEVATION = 0
+        const val KEYBOARD_HEIGHT_THRESHOLD = 100
+        const val DELAY_SHOW_BOTTOMSHEET_IN_MILIS = 500L
+        const val NO_DELAY_SHOW_BOTTOMSHEET_IN_MILIS = 0L
 
         fun createInstance(pageSource: Int,
                            promoRequest: PromoRequest,
@@ -173,9 +176,13 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             val heightDiffInDp = heightDiff.pxToDp(displayMetrics)
             if (heightDiffInDp > KEYBOARD_HEIGHT_THRESHOLD) {
                 keyboardHeight = heightDiff
-                onClickPromoManualInputTextField()
+                if (!isPromoCheckoutlastSeenBottomsheetShown) {
+                    isPromoCheckoutlastSeenBottomsheetShown = true
+                    getOrShowLastSeenData()
+                }
             } else {
                 keyboardHeight = 0
+                isPromoCheckoutlastSeenBottomsheetShown = false
                 hidePromoCheckoutLastSeenBottomsheet()
             }
         }
@@ -185,10 +192,63 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupToolbar(view)
-        setToolbarShadowVisibility(false)
-        viewModel.initFragmentUiModel(arguments?.getInt(ARGS_PAGE_SOURCE, 0) ?: 0)
 
+        // UI Initialization
+        initializeToolbar(view)
+        initializeFragmentUiModel()
+        initializeClickListener()
+        initializePromoCheckoutLastSeenBottomsheet()
+        initializeSwipeRefreshLayout()
+        initializeRecyclerViewScrollListener()
+
+        // Observe visitable data changes
+        observeFragmentUiModel()
+        observePromoRecommendationUiModel()
+        observePromoInputUiModel()
+        observePromoListUiModel()
+        observeEmptyStateUiModel()
+        observeVisitableChangeUiModel()
+        observeVisitableListChangeUiModel()
+
+        // Observe network call result
+        observeGetCouponRecommendationResult()
+        observeApplyPromoResult()
+        observeClearPromoResult()
+        observeGetPromoLastSeenResult()
+    }
+
+    private fun initializeSwipeRefreshLayout() {
+        activity?.let {
+            swipeRefreshLayout?.setColorSchemeColors(ContextCompat.getColor(it, R.color.tkpd_main_green))
+        }
+        swipeRefreshLayout?.setOnRefreshListener {
+            reloadData()
+        }
+    }
+
+    private fun initializeRecyclerViewScrollListener() {
+        val lastHeaderUiModel: PromoListHeaderUiModel? = null
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+
+            }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (recyclerView.canScrollVertically(-1)) {
+                    setToolbarShadowVisibility(true)
+                } else {
+                    setToolbarShadowVisibility(false)
+                }
+                handleStickyPromoHeader(recyclerView, lastHeaderUiModel)
+            }
+        })
+    }
+
+    private fun initializeFragmentUiModel() {
+        viewModel.initFragmentUiModel(arguments?.getInt(ARGS_PAGE_SOURCE, 0) ?: 0)
+    }
+
+    private fun initializeClickListener() {
         buttonApplyPromo?.let { buttonApplyPromo ->
             buttonApplyPromo.setOnClickListener {
                 setButtonLoading(buttonApplyPromo, true)
@@ -217,44 +277,13 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         }
 
         bottomSheetTitle?.setOnClickListener { }
+    }
 
-        activity?.let {
-            swipeRefreshLayout?.setColorSchemeColors(ContextCompat.getColor(it, R.color.tkpd_main_green))
+    private fun initializePromoCheckoutLastSeenBottomsheet() {
+        if (promoCheckoutLastSeenBottomsheet == null) {
+            promoCheckoutLastSeenBottomsheet = BottomSheetBehavior.from(bottomsheetPromoLastSeenContainer)
+            promoCheckoutLastSeenBottomsheet?.state = BottomSheetBehavior.STATE_HIDDEN
         }
-        swipeRefreshLayout?.setOnRefreshListener {
-            reloadData()
-        }
-
-        val lastHeaderUiModel: PromoListHeaderUiModel? = null
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-
-            }
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (recyclerView.canScrollVertically(-1)) {
-                    setToolbarShadowVisibility(true)
-                } else {
-                    setToolbarShadowVisibility(false)
-                }
-                handleStickyPromoHeader(recyclerView, lastHeaderUiModel)
-            }
-        })
-
-        // Observe visitable data changes
-        observeFragmentUiModel()
-        observePromoRecommendationUiModel()
-        observePromoInputUiModel()
-        observePromoListUiModel()
-        observeEmptyStateUiModel()
-        observeVisitableChangeUiModel()
-        observeVisitableListChangeUiModel()
-
-        // Observe network call result
-        observeGetCouponRecommendationResult()
-        observeApplyPromoResult()
-        observeClearPromoResult()
-        observeGetPromoLastSeenResult()
     }
 
     override fun onDestroy() {
@@ -513,9 +542,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             snapToPromoInput()
             showBottomsheetJob?.cancel()
             showBottomsheetJob = GlobalScope.launch(Dispatchers.Main) {
-                delay(500L)
+                delay(if (keyboardHeight > 0) NO_DELAY_SHOW_BOTTOMSHEET_IN_MILIS else DELAY_SHOW_BOTTOMSHEET_IN_MILIS)
                 initializePromoLastSeenRecyclerView(data.uiData.promoLastSeenItemUiModelList)
-                bottomsheetPromoLastSeenContainer?.show()
 
                 // Determine available space height for bottomsheet if soft keyboard open
                 val promoInputHeight = viewModel.promoInputUiModel.value?.uiState?.viewHeight ?: 0
@@ -534,8 +562,6 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                             ?: 0)).toInt()
                 }
 
-                promoCheckoutLastSeenBottomsheet?.state = BottomSheetBehavior.STATE_COLLAPSED
-                promoCheckoutLastSeenBottomsheet?.state = BottomSheetBehavior.STATE_DRAGGING
                 promoCheckoutLastSeenBottomsheet?.state = BottomSheetBehavior.STATE_COLLAPSED
             }
         }
@@ -646,7 +672,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         }
     }
 
-    private fun setupToolbar(view: View) {
+    private fun initializeToolbar(view: View) {
         activity?.let {
             val appbar = view.findViewById<Toolbar>(R.id.toolbar)
             appbar.removeAllViews()
@@ -655,6 +681,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 appbar.addView(toolbar)
                 (activity as AppCompatActivity).setSupportActionBar(appbar)
             }
+
+            setToolbarShadowVisibility(false)
         }
     }
 
@@ -779,11 +807,6 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun getOrShowLastSeenData() {
         view?.let {
-            if (promoCheckoutLastSeenBottomsheet == null) {
-                promoCheckoutLastSeenBottomsheet = BottomSheetBehavior.from(bottomsheetPromoLastSeenContainer)
-                promoCheckoutLastSeenBottomsheet?.state = BottomSheetBehavior.STATE_HIDDEN
-            }
-
             if (promoCheckoutLastSeenBottomsheet?.state == BottomSheetBehavior.STATE_HIDDEN) {
                 val query = GraphqlHelper.loadRawString(it.resources, R.raw.promo_suggestion_query)
                 viewModel.loadPromoLastSeen(query)
