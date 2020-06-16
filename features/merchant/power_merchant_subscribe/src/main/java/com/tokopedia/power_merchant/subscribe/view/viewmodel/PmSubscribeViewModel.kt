@@ -79,10 +79,10 @@ class PmSubscribeViewModel @Inject constructor(
 
                 val freeShippingStatus = withContext(dispatchers.io) {
                     val params = GetShopFreeShippingStatusUseCase.createRequestParams(listOf(shopId))
-                    val response = getShopFreeShippingStatusUseCase.execute(params).first()
+                    val freeShipping = getShopFreeShippingStatusUseCase.execute(params)
 
-                    val isActive = response.status
-                    val isEligible = response.isEligible()
+                    val isActive = freeShipping.active
+                    val isEligible = freeShipping.eligible
                     val isTransitionPeriod = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD)
                     val isShopScoreEligible = shopScore >= MINIMUM_SCORE_ACTIVATE_IDLE
 
