@@ -23,13 +23,9 @@ class SuggestionSearchViewModel @Inject constructor(
         private val insertSellerSearchUseCase: InsertSuccessSearchUseCase
 ) : BaseViewModel(dispatcherProvider.main()) {
 
-    private val _getSearchSeller = MutableLiveData<Result<List<SellerSearchUiModel>>>()
-    val getSellerSearch: LiveData<Result<List<SellerSearchUiModel>>>
+    private val _getSearchSeller = MutableLiveData<Result<Pair<List<SellerSearchUiModel>, List<FilterSearchUiModel>>>>()
+    val getSellerSearch: LiveData<Result<Pair<List<SellerSearchUiModel>, List<FilterSearchUiModel>>>>
         get() = _getSearchSeller
-
-    private val _getFilterSearch = MutableLiveData<Result<List<FilterSearchUiModel>>>()
-    val getFilterSearch: LiveData<Result<List<FilterSearchUiModel>>>
-        get() = _getFilterSearch
 
     private val _insertSuccessSearch = MutableLiveData<Result<RegisterSearchUiModel>>()
     val insertSuccessSearch: LiveData<Result<RegisterSearchUiModel>>
@@ -43,8 +39,7 @@ class SuggestionSearchViewModel @Inject constructor(
                 Pair(GlobalSearchSellerMapper.mapToSellerSearchUiModel(getSellerSearchUseCase.executeOnBackground()),
                         GlobalSearchSellerMapper.mapTopItemFilterSearch(getSellerSearchUseCase.executeOnBackground()))
             }
-            _getSearchSeller.postValue(Success(responseGetSellerSearch.first))
-            _getFilterSearch.postValue(Success(responseGetSellerSearch.second))
+            _getSearchSeller.postValue(Success(Pair(responseGetSellerSearch.first, responseGetSellerSearch.second)))
         }, onError = {
             _getSearchSeller.postValue(Fail(it))
         })

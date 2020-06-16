@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -31,6 +32,9 @@ class InitialSearchFragment: BaseListFragment<Visitable<*>, InitialSearchAdapter
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
     private val searchSellerAdapterTypeFactory by lazy {
         InitialSearchAdapterTypeFactory(this)
     }
@@ -54,7 +58,7 @@ class InitialSearchFragment: BaseListFragment<Visitable<*>, InitialSearchAdapter
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(InitialSearchViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(InitialSearchViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

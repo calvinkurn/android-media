@@ -70,6 +70,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         fun newInstance() = SellerHomeFragment()
 
         val NOTIFICATION_MENU_ID = R.id.menu_sah_notification
+        val SEARCH_MENU_ID = R.id.menu_sah_search
         private const val NOTIFICATION_BADGE_DELAY = 2000L
         private const val TAG_TOOLTIP = "seller_home_tooltip"
         private const val ERROR_LAYOUT = "Error get layout data."
@@ -168,6 +169,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         if (item.itemId == NOTIFICATION_MENU_ID) {
             RouteManager.route(requireContext(), ApplinkConst.SELLER_INFO)
             NavigationTracking.sendClickNotificationEvent()
+        } else if(item.itemId == SEARCH_MENU_ID) {
+            RouteManager.route(requireContext(), ApplinkConst.SELLER_SEARCH)
         }
         return super.onOptionsItemSelected(item)
     }

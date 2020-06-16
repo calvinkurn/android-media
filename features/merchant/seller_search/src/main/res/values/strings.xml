@@ -8,4 +8,5 @@
     <string name="latest_search_label">Terakhir dicari</string>
     <string name="clear_all_label">Hapus Semua</string>
     <string name="placeholder_search_seller">Ketik nama produk, pesanan, atau fitur</string>
+    <string name="search">Search</string>
 </resources>

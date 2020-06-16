@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +19,7 @@ import com.tokopedia.seller.search.feature.initialsearch.di.component.InitialSea
 import com.tokopedia.seller.search.feature.initialsearch.view.activity.InitialSellerSearchActivity
 import com.tokopedia.seller.search.feature.initialsearch.view.adapter.FilterSearchAdapter
 import com.tokopedia.seller.search.feature.initialsearch.view.adapter.SearchSellerAdapter
+import com.tokopedia.seller.search.feature.initialsearch.view.model.filter.FilterSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.sellersearch.ItemSellerSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.sellersearch.SellerSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.*
@@ -32,6 +34,9 @@ class SuggestionSearchFragment: BaseListFragment<Visitable<*>, InitialSearchAdap
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val filterAdapter by lazy { FilterSearchAdapter(this) }
 
@@ -61,7 +66,7 @@ class SuggestionSearchFragment: BaseListFragment<Visitable<*>, InitialSearchAdap
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(SuggestionSearchViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(SuggestionSearchViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -106,7 +111,7 @@ class SuggestionSearchFragment: BaseListFragment<Visitable<*>, InitialSearchAdap
         viewModel?.getSellerSearch?.observe(this, Observer {
             when(it) {
                 is Success -> {
-                    setSuggestionSearch(it.data)
+                    setSuggestionSearch(it.data.first, it.data.second)
                 }
                 is Fail -> { }
             }
@@ -124,12 +129,13 @@ class SuggestionSearchFragment: BaseListFragment<Visitable<*>, InitialSearchAdap
         })
     }
 
-    private fun setSuggestionSearch(data: List<SellerSearchUiModel>) {
+    private fun setSuggestionSearch(data: List<SellerSearchUiModel>, filterList: List<FilterSearchUiModel>) {
         if(data.isEmpty()) {
             searchSellerAdapter.removeEmptyOrErrorState()
             searchSellerAdapter.addSellerSearchNoResult()
         } else {
             searchSellerAdapter.removeEmptyOrErrorState()
+            filterAdapter.setFilterSearch(filterList)
             searchSellerAdapter.setSellerSearchListData(data)
         }
         suggestionViewUpdateListener?.showSuggestionView()
