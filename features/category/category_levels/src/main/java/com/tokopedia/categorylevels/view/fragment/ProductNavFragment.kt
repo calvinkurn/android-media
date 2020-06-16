@@ -158,7 +158,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
             if (it.containsKey(EXTRA_CATEGORY_URL)) {
                 categoryUrl = it.getString(EXTRA_CATEGORY_URL, "")
                 val uri = Uri.parse(categoryUrl)
-                mSelectedFilter = URLParser(uri.encodedQuery).paramKeyValueMap
+                mSelectedFilter = URLParser(uri.encodedQuery?:categoryUrl).paramKeyValueMap
             }
             mDepartmentId = it.getString(EXTRA_CATEGORY_DEPARTMENT_ID, "")
             mDepartmentName = it.getString(EXTRA_CATEGORY_DEPARTMENT_NAME, "")
