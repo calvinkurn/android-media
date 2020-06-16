@@ -372,6 +372,7 @@ class AddEditProductDescriptionFragment:
                 getVideoYoutube(descriptionViewModel.urlToFetch[position].orEmpty(), position)
             }
             refreshDuplicateVideo(position)
+            updateSaveButtonStatus()
         })
     }
 
@@ -636,5 +637,9 @@ class AddEditProductDescriptionFragment:
 
     private fun getFilteredValidVideoLink() = adapter.data.filter {
         it.inputUrl.isNotBlank() && it.errorMessage.isBlank()
+    }
+
+    private fun updateSaveButtonStatus() {
+        btnSave.isEnabled = descriptionViewModel.validateInputVideo(adapter.data)
     }
 }
