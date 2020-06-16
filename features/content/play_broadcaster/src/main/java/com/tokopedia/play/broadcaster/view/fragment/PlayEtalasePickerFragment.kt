@@ -81,7 +81,7 @@ class PlayEtalasePickerFragment @Inject constructor(
         return false
     }
 
-    override fun openEtalaseDetail(etalaseId: String, sharedElements: List<View>) {
+    override fun openEtalaseDetail(etalaseId: String, sharedElements: List<View>, source: Class<out Fragment>) {
         bottomSheetCoordinator.navigateToFragment(
                 PlayEtalaseDetailFragment::class.java,
                 extras = Bundle().apply {
@@ -91,11 +91,22 @@ class PlayEtalasePickerFragment @Inject constructor(
         )
     }
 
-    override fun openSearchPage(keyword: String) {
-        openFragment(PlaySearchSuggestionsFragment::class.java)
+    override fun openSearchPage(keyword: String, source: Class<out Fragment>) {
+        val addToBackStack = when (source) {
+            PlayEtalaseListFragment::class.java -> true
+            else -> false
+        }
+
+        openFragment(
+                PlaySearchSuggestionsFragment::class.java,
+                extras = Bundle().apply {
+                    putString(PlaySearchSuggestionsFragment.EXTRA_KEYWORD, keyword)
+                },
+                addToBackStack = addToBackStack
+        )
     }
 
-    override fun openProductSearchPage(keyword: String) {
+    override fun openProductSearchPage(keyword: String, source: Class<out Fragment>) {
         openFragment(PlaySearchResultFragment::class.java, extras = Bundle().apply {
             putString(PlaySearchResultFragment.EXTRA_KEYWORD, keyword)
         })
@@ -138,7 +149,11 @@ class PlayEtalasePickerFragment @Inject constructor(
         psbSearch.setListener(object : PlaySearchBar.Listener {
 
             override fun onEditStateChanged(view: PlaySearchBar, isEditing: Boolean) {
-                if (isEditing) openFragment(PlaySearchSuggestionsFragment::class.java)
+                if (isEditing && currentFragment !is PlaySearchSuggestionsFragment) {
+                    val currFragment = currentFragment
+                    val source = if (currFragment != null) currFragment::class.java else this@PlayEtalasePickerFragment::class.java
+                    openSearchPage(view.text, source)
+                }
             }
 
             override fun onCanceled(view: PlaySearchBar) {
@@ -151,7 +166,11 @@ class PlayEtalasePickerFragment @Inject constructor(
             }
 
             override fun onSearchButtonClicked(view: PlaySearchBar, keyword: String) {
-                if (keyword.isNotEmpty()) openProductSearchPage(keyword)
+                if (keyword.isNotEmpty()) {
+                    val currFragment = currentFragment
+                    val source = if (currFragment != null) currFragment::class.java else this@PlayEtalasePickerFragment::class.java
+                    openProductSearchPage(keyword, source)
+                }
                 else psbSearch.cancel()
             }
         })
@@ -164,6 +183,7 @@ class PlayEtalasePickerFragment @Inject constructor(
     private fun openFragment(
             fragmentClass: Class<out Fragment>,
             extras: Bundle = Bundle.EMPTY,
+            addToBackStack: Boolean = false,
             sharedElements: List<View> = emptyList(),
             onFragment: (Fragment) -> Unit = {}
     ): Fragment {
@@ -180,8 +200,10 @@ class PlayEtalasePickerFragment @Inject constructor(
 
                     if (sharedElements.isNotEmpty()) setReorderingAllowed(true)
                 }
+                .also {
+                    if (addToBackStack) it.addToBackStack(fragmentClass.name)
+                }
                 .replace(R.id.fl_etalase_flow, destFragment, fragmentClass.name)
-                .addToBackStack(fragmentClass.name)
                 .commit()
 
         return destFragment

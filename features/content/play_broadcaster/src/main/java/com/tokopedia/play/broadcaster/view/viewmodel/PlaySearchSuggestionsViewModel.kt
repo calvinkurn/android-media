@@ -9,9 +9,10 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.SearchSuggestionUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.debounce
 import javax.inject.Inject
 import javax.inject.Named
@@ -30,7 +31,7 @@ class PlaySearchSuggestionsViewModel @Inject constructor(
         get() = _observableSuggestionList
     private val _observableSuggestionList = MutableLiveData<List<SearchSuggestionUiModel>>()
 
-    private val searchChannel: Channel<String> = Channel()
+    private val searchChannel = BroadcastChannel<String>(Channel.CONFLATED)
 
     init {
         scope.launch { initSearchChannel() }
@@ -46,7 +47,7 @@ class PlaySearchSuggestionsViewModel @Inject constructor(
     }
 
     private suspend fun initSearchChannel() = withContext(mainDispatcher) {
-        searchChannel.consumeAsFlow().debounce(500).collect {
+        searchChannel.asFlow().debounce(500).collect {
             val searchSuggestions = getSearchSuggestions(it)
             _observableSuggestionList.value = searchSuggestions
         }

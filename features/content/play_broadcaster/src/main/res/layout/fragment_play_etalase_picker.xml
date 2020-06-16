@@ -34,7 +34,6 @@
         android:id="@+id/fl_etalase_flow"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
-        android:layout_marginTop="@dimen/play_dp_20"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/psb_search"

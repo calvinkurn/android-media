@@ -10,6 +10,7 @@
         android:id="@+id/rv_suggestions"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/play_dp_12"
         android:layout_marginStart="@dimen/play_dp_12"
         android:orientation="vertical"

@@ -7,18 +7,19 @@ interface PlayEtalaseSetupCoordinator {
 
     fun openEtalaseDetail(
             etalaseId: String,
-            sharedElements: List<View>
+            sharedElements: List<View>,
+            source: Class<out Fragment>
     )
 
-    fun openSearchPage(keyword: String)
+    fun openSearchPage(keyword: String, source: Class<out Fragment>)
+
+    fun openProductSearchPage(keyword: String, source: Class<out Fragment>)
 
     fun postponeEnterTransition()
 
     fun startPostponedEnterTransition()
 
     fun goBack(clazz: Class<out Fragment>)
-
-    fun openProductSearchPage(keyword: String)
 
     fun showBottomAction(shouldShow: Boolean)
 }

@@ -37,7 +37,8 @@ class PlayEtalaseListFragment @Inject constructor(
         override fun onEtalaseClicked(etalaseId: String, sharedElements: List<View>) {
             etalaseSetupCoordinator.openEtalaseDetail(
                     etalaseId,
-                    sharedElements
+                    sharedElements,
+                    PlayEtalaseListFragment::class.java
             )
         }
 

@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.viewholder.SearchSuggestionViewHolder
-import com.tokopedia.play.broadcaster.util.doOnPreDraw
 import com.tokopedia.play.broadcaster.view.adapter.SearchSuggestionsAdapter
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseEtalaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlaySearchSuggestionsViewModel
@@ -24,9 +23,12 @@ class PlaySearchSuggestionsFragment @Inject constructor(
 
     private lateinit var rvSuggestions: RecyclerView
 
+    private val keyword: String
+        get() = arguments?.getString(EXTRA_KEYWORD) ?: ""
+
     private val searchSuggestionsAdapter = SearchSuggestionsAdapter(object : SearchSuggestionViewHolder.Listener {
         override fun onSuggestionClicked(suggestionText: String) {
-            etalaseSetupCoordinator.openProductSearchPage(suggestionText)
+            etalaseSetupCoordinator.openProductSearchPage(suggestionText, PlaySearchSuggestionsFragment::class.java)
         }
     })
 
@@ -54,11 +56,10 @@ class PlaySearchSuggestionsFragment @Inject constructor(
         observeSearchSuggestions()
     }
 
-    override fun refresh() {
-    }
+    override fun refresh() {}
 
     fun searchKeyword(keyword: String) {
-        viewModel.loadSuggestionsFromKeyword(keyword)
+        if (::viewModel.isInitialized) viewModel.loadSuggestionsFromKeyword(keyword)
     }
 
     private fun initView(view: View) {
@@ -69,6 +70,8 @@ class PlaySearchSuggestionsFragment @Inject constructor(
 
     private fun setupView(view: View) {
         rvSuggestions.adapter = searchSuggestionsAdapter
+
+        searchKeyword(keyword)
     }
 
     /**
@@ -98,9 +101,8 @@ class PlaySearchSuggestionsFragment @Inject constructor(
 //                .setDuration(300)
     }
 
-    private fun startPostponedTransition() {
-        requireView().doOnPreDraw {
-            startPostponedEnterTransition()
-        }
+    companion object {
+
+        const val EXTRA_KEYWORD = "keyword"
     }
 }
