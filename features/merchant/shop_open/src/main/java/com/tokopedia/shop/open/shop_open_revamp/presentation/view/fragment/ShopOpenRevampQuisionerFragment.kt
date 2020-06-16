@@ -365,6 +365,11 @@ class ShopOpenRevampQuisionerFragment :
                         latitude = _latitudeString
                         longitude = _longitudeString
                         saveShipmentLocation(shopId, postCode, courierOrigin, addrStreet, latitude, longitude)
+                    } else {
+                        view?.let {
+                            Toaster.showError(it, "Please select valid address", Snackbar.LENGTH_LONG)
+                        }
+                        gotoPickLocation()
                     }
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
