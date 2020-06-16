@@ -40,15 +40,15 @@ class TimerSprintSaleItemViewHolder(itemView: View, private val fragment: Fragme
 
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
-        lifecycleOwner?.let { lifecycleOwner ->
-            timerSprintSaleItemViewModel.getComponentLiveData().observe(lifecycleOwner, Observer { componentItem ->
+        lifecycleOwner?.let {
+            timerSprintSaleItemViewModel.getComponentLiveData().observe(it, Observer { componentItem ->
                 if (!componentItem.data.isNullOrEmpty()) {
                     timerSprintSaleItemViewModel.startTimer()
                     sendSprintSaleTimerTrack()
                 }
             })
 
-            timerSprintSaleItemViewModel.getTimerData().observe(lifecycleOwner, Observer { timerData ->
+            timerSprintSaleItemViewModel.getTimerData().observe(it, Observer { timerData ->
                 tvHours.text = String.format(TIME_DISPLAY_FORMAT, timerData.hours)
                 tvMinutes.text = String.format(TIME_DISPLAY_FORMAT, timerData.minutes)
                 tvSeconds.text = String.format(TIME_DISPLAY_FORMAT, timerData.seconds)
@@ -58,9 +58,9 @@ class TimerSprintSaleItemViewHolder(itemView: View, private val fragment: Fragme
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
-        lifecycleOwner?.let { lifecycleOwner ->
-            timerSprintSaleItemViewModel.getComponentLiveData().removeObservers(lifecycleOwner)
-            timerSprintSaleItemViewModel.getTimerData().removeObservers(lifecycleOwner)
+        lifecycleOwner?.let { it ->
+            timerSprintSaleItemViewModel.getComponentLiveData().removeObservers(it)
+            timerSprintSaleItemViewModel.getTimerData().removeObservers(it)
         }
     }
 

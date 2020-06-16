@@ -53,7 +53,7 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         toolbar?.hide()
         setObserver()
         discoveryViewModel.getDiscoveryUIConfig()
-        setCrashLog()
+        setPageIdentifierLog()
     }
 
     private fun setObserver() {
@@ -107,7 +107,7 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         return viewModelFactory
     }
 
-    private fun setCrashLog() {
+    private fun setPageIdentifierLog() {
         if (!GlobalConfig.DEBUG) {
             Crashlytics.log(TAG + " " + intent?.data?.lastPathSegment)
         }

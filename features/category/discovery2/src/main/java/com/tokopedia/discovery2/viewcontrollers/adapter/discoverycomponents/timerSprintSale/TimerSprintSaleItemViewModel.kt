@@ -1,33 +1,33 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.timerSprintSale
 
 import android.app.Application
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.multibannerresponse.timmerwithbanner.TimerDataModel
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.timerbanners.SaleCountDownTimer
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TimerSprintSaleItemViewModel(val application: Application, components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
+class TimerSprintSaleItemViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private var timerWithBannerCounter: SaleCountDownTimer? = null
     private val elapsedTime: Long = 1000
 
     init {
-        componentData.value = components
         TimeZone.setDefault(TimeZone.getTimeZone(Utils.TIME_ZONE))
     }
 
-    fun getComponentLiveData(): LiveData<ComponentsItem> {
-        return componentData
+    override fun onAttachToViewHolder() {
+        super.onAttachToViewHolder()
+        componentData.value = components
     }
 
+    fun getComponentLiveData() = componentData
+
     fun isFutureSale(): Boolean {
-        val startData = componentData.value?.data?.get(0)?.startDate
+        val startData = components.data?.get(0)?.startDate
         if (startData.isNullOrEmpty()) return false
 
         val currentSystemTime = Calendar.getInstance().time
@@ -40,7 +40,7 @@ class TimerSprintSaleItemViewModel(val application: Application, components: Com
     }
 
     fun isSaleOver(): Boolean {
-        val endDate = componentData.value?.data?.get(0)?.endDate
+        val endDate = components.data?.get(0)?.endDate
         if (endDate.isNullOrEmpty()) return false
 
         val currentSystemTime = Calendar.getInstance().time
@@ -55,9 +55,9 @@ class TimerSprintSaleItemViewModel(val application: Application, components: Com
     fun startTimer() {
 
         val timerData: String? = if (isFutureSale()) {
-            componentData.value?.data?.get(0)?.startDate
+            components.data?.get(0)?.startDate
         } else {
-            componentData.value?.data?.get(0)?.endDate
+            components.data?.get(0)?.endDate
         }
         if (!timerData.isNullOrEmpty()) {
             val currentSystemTime = Calendar.getInstance().time
@@ -89,12 +89,6 @@ class TimerSprintSaleItemViewModel(val application: Application, components: Com
         }
     }
 
-    fun getTimerData(): LiveData<TimerDataModel> {
-        return timerWithBannerCounter?.mutableTimeDiffModel ?: MutableLiveData()
-    }
+    fun getTimerData() = timerWithBannerCounter?.mutableTimeDiffModel ?: MutableLiveData()
 
-
-    override fun initDaggerInject() {
-
-    }
 }
