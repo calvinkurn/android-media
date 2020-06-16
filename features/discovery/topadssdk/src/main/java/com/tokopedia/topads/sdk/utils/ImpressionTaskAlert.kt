@@ -20,8 +20,6 @@ class ImpressionTaskAlert(private val className: String) {
         val timeSpan = currentTime - lastImpression
         if (timeSpan < impressionTreshold && !uri.toString().contains(VIEWS)) {
             Timber.w("P2#$TOPADS_TRACKING#impression;class='$className';diff_time=$timeSpan;url='$uri'")
-        } else if (timeSpan < impressionTreshold && uri.toString().contains(CLICKS)) {
-            Timber.w("P2#$TOPADS_TRACKING#click;class='$className';diff_time=$timeSpan;url='$uri'")
         }
         lastImpression = currentTime
     }
