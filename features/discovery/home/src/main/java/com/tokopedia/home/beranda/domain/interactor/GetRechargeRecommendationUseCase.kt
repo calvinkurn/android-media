@@ -56,36 +56,14 @@ class GetRechargeRecommendationUseCase @Inject constructor(
     }
     //endregion
 
-    private val dummyResponse by lazy {
-        "{\n" +
-                "            \"rechargeRecommendation\": {\n" +
-                "            \"UUID\": \"recharge_watf_6757678\",\n" +
-                "            \"recommendations\": [\n" +
-                "            {\n" +
-                "                \"contentID\": \"2\",\n" +
-                "                \"mainText\": \"Hi, Resa!\",\n" +
-                "                \"subText\": \"Tagihan Listrik PLN sebesar Rp 269.939 jatuh tempo pada hari ini\",\n" +
-                "                \"applink\": \"tokopedia://digital/form?category_id=3&client_number=547300824920&is_from_widget=true&operator_id=18&product_id=291\",\n" +
-                "                \"link\": \"https://pulsa.tokopedia.com?action=init_data&client_number=547300824920&instant_checkout=false&operator_id=18&product_id=291\",\n" +
-                "                \"iconURL\": \"https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/15/21181130/21181130_d593aa6d-5f53-4674-b1da-5988041541f4.png\",\n" +
-                "                \"title\": \"Yuk, segera bayar tagihanmu!\",\n" +
-                "                \"backgroundColor\": \"#ff8b00\",\n" +
-                "                \"buttonText\": \"Bayar Sekarang\"\n" +
-                "            }\n" +
-                "            ]\n" +
-                "        }\n" +
-                "        }"
-    }
-
     override suspend fun executeOnBackground(): RechargeRecommendation {
         graphqlUseCase.clearCache()
         graphqlUseCase.setGraphqlQuery(query)
         graphqlUseCase.setRequestParams(params.parameters)
-        //val response = graphqlUseCase.executeOnBackground().response
+        val response = graphqlUseCase.executeOnBackground().response
 
-        //if (response != null) return response
-       // else throw (MessageErrorException(NULL_RESPONSE))
-        return Gson().fromJson(dummyResponse, RechargeRecommendation.Response::class.java).response!!
+        if (response != null) return response
+        else throw (MessageErrorException(NULL_RESPONSE))
     }
 
     fun setParams(type: Int = DEFAULT_TYPE) {

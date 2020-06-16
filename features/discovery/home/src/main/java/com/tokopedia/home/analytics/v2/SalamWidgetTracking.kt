@@ -14,7 +14,7 @@ object SalamWidgetTracking : BaseTracking(){
             trackingQueue: TrackingQueue,
             salamWidgetData: SalamWidgetData
     ){
-        val productName = salamWidgetData.title
+        val productName = salamWidgetData.appLink
         trackingQueue.putEETracking(getBasicPromotionView(
                 Event.PROMO_VIEW,
                 SALAM_WIDGET_EVENT_CATEGORY,
@@ -29,7 +29,7 @@ object SalamWidgetTracking : BaseTracking(){
             trackingQueue: TrackingQueue,
             salamWidgetData: SalamWidgetData
     ){
-        val productName = salamWidgetData.title
+        val productName = salamWidgetData.appLink
         val promotionClickData = DataLayer.mapOf(
                 Event.KEY, Event.PROMO_CLICK,
                 Category.KEY, SALAM_WIDGET_EVENT_CATEGORY,
@@ -41,7 +41,7 @@ object SalamWidgetTracking : BaseTracking(){
     }
 
     fun homeSalamWidgetOnCloseTracker(salamWidgetData: SalamWidgetData){
-        val productName = salamWidgetData.title
+        val productName = salamWidgetData.appLink
         getTracker().sendGeneralEvent(
                 SALAM_WIDGET_CLICK_EVENT,
                 SALAM_WIDGET_EVENT_CATEGORY,

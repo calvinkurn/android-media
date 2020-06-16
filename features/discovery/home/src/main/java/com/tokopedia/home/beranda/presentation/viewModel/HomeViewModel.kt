@@ -675,7 +675,6 @@ open class HomeViewModel @Inject constructor(
                     getReviewData()
                     getPlayBanner()
                     getPopularKeyword()
-                    //getReminderWidget()
                     getSalamWidget()
                     getRechargeRecommendation()
                     _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>() ?: listOf()))
@@ -830,23 +829,6 @@ open class HomeViewModel @Inject constructor(
             insertSalamWidget(data)
         }){
             removeSalamWidget()
-        }
-    }
-
-    private fun getReminderWidget(){
-        if(!isReminderWidgetAvailable()) return
-        _homeLiveData.value?.list?.run {
-            val findReminderWidgetModel = find { visitable -> visitable is ReminderWidgetModel }
-            val newReminderWidgetModel = findReminderWidgetModel as ReminderWidgetModel
-            when(newReminderWidgetModel.source){
-                ReminderEnum.SALAM -> {
-                    getSalamWidget()
-                }
-
-                ReminderEnum.RECHARGE -> {
-                    getRechargeRecommendation()
-                }
-            }
         }
     }
 
