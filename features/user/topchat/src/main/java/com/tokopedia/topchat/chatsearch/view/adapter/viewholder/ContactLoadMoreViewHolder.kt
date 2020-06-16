@@ -26,9 +26,12 @@ class ContactLoadMoreViewHolder(
         bindCtaDetail(element)
     }
 
-    @SuppressLint("SetTextI18n")
     private fun bindTitle(element: ContactLoadMoreUiModel) {
-        tittle?.text = "Pengguna (${element.totalCount})"
+        var title = "Pengguna"
+        if (element.totalCount.isNotEmpty()) {
+           title += " (${element.totalCount})"
+        }
+        tittle?.text = title
     }
 
     private fun bindCtaDetail(element: ContactLoadMoreUiModel) {
