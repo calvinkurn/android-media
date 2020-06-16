@@ -6,7 +6,7 @@ package com.tokopedia.play.broadcaster.ui.model
  */
 data class ConfigurationUiModel(
         val streamAllowed: Boolean,
-        val activeOnDifferentDevices: Boolean,
+        val activeOnOtherDevices: Boolean,
         val haveOnGoingLive: Boolean,
         val activeChannelId: Int,
         val draftChannelId: Int,

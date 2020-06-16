@@ -175,7 +175,7 @@ class PlayBeforeLiveFragment @Inject constructor(
                 setTitle(getString(R.string.play_prepare_broadcast_dialog_end_title))
                 setDescription(getString(R.string.play_prepare_broadcast_dialog_end_desc))
                 setPrimaryCTAText(getString(R.string.play_prepare_broadcast_dialog_end_primary))
-                setSecondaryCTAText(getString(R.string.play_prepare_broadcast_dialog_end_secondary))
+                setSecondaryCTAText(getString(R.string.play_broadcast_exit))
                 setPrimaryCTAClickListener { this.dismiss() }
                 setSecondaryCTAClickListener {
                     activity?.finish()

@@ -32,6 +32,7 @@
     <string name="play_cancel">Cancel</string>
     <string name="play_change">Ganti</string>
     <string name="play_broadcast_try_again">Coba Lagi</string>
+    <string name="play_broadcast_exit">Keluar</string>
 
     <string name="play_selected_products">Produk Dipilih (%d)</string>
 
@@ -77,7 +78,6 @@
     <string name="play_prepare_broadcast_dialog_end_title">Eh, kamu mau ke mana?</string>
     <string name="play_prepare_broadcast_dialog_end_desc">Tinggal selangkah lagi lho untuk kamu memulai live streaming.</string>
     <string name="play_prepare_broadcast_dialog_end_primary">Lanjut</string>
-    <string name="play_prepare_broadcast_dialog_end_secondary">Keluar</string>
 
     <string name="play_live_broadcast_stat_info_default">0</string>
     <string name="play_live_broadcast_time_default">00:00</string>
@@ -93,6 +93,8 @@
     <string name="play_live_broadcast_network_recover">Yay, koneksi internetmu kembali terhubung!</string>
     <string name="play_live_broadcast_network_loss">Koneksi internetmu terputus, nih.</string>
     <string name="play_live_broadcast_network_poor">Koneksi internetmu melambat, nih.</string>
+    <string name="play_dialog_error_active_other_devices_title">Tokomu sedang siaran di\n perangkat lain</string>
+    <string name="play_dialog_error_active_other_devices_desc">Akhiri siaran live streaming di perangkat lain\n jika ingin mengambil alih siaran</string>
 
     <string name="play_summary_title">Laporan Live Streaming</string>
     <string name="play_summary_button_finish">Selesai</string>
