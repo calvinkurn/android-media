@@ -25,7 +25,7 @@ class PartialButtonActionView private constructor(val view: View,
     var addToCartClick: ((String) -> Unit)? = null
     var buttonCartTypeClick: ((String, String, Boolean) -> Unit)? = null
 
-    var byMeClick: ((TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate, Boolean) -> Unit)? = null
+    var byMeClick: ((Boolean) -> Unit)? = null
     var visibility: Boolean = false
         set(value) {
             field = value
@@ -246,11 +246,11 @@ class PartialButtonActionView private constructor(val view: View,
         view.base_btn_action.gone()
     }
 
-    fun showByMe(show: Boolean, pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate) {
+    fun showByMe(show: Boolean) {
         with(view) {
             if (show && !isWarehouseProduct) {
                 showByMe = true
-                btn_byme.setOnClickListener { byMeClick?.invoke(pdpAffiliate, true) }
+                btn_byme.setOnClickListener { byMeClick?.invoke(true) }
                 btn_byme.visible()
             } else {
                 showByMe = false

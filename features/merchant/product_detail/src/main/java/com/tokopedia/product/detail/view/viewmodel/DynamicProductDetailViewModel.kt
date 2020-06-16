@@ -311,7 +311,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false) {
+    fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, isAffiliate: Boolean = false) {
         launchCatchError(block = {
             shopDomain = productParams.shopDomain
             forceRefresh = refreshPage
@@ -320,7 +320,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 addStaticComponent(it)
                 getDynamicProductInfoP1 = it.layoutData
                 //Remove any unused component based on P1 / PdpLayout
-                removeDynamicComponent(it.listOfLayout)
+                removeDynamicComponent(it.listOfLayout, isAffiliate)
                 //Render initial data first
                 _productLayout.value = it.listOfLayout.asSuccess()
             }
@@ -473,7 +473,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 ?: 30000 else shippingPriceValue
     }
 
-    private fun removeDynamicComponent(initialLayoutData: MutableList<DynamicPdpDataModel>) {
+    private fun removeDynamicComponent(initialLayoutData: MutableList<DynamicPdpDataModel>, isAffiliate: Boolean) {
         val isTradein = getDynamicProductInfoP1?.data?.isTradeIn == true
         val hasWholesale = getDynamicProductInfoP1?.data?.hasWholesale == true
         val isOfficialStore = getDynamicProductInfoP1?.data?.isOS == true
@@ -500,6 +500,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             } else if (GlobalConfig.isSellerApp() && it.type() == ProductDetailConstant.PRODUCT_LIST) {
                 it
             } else if ((it.type() == ProductDetailConstant.SOCIAL_PROOF || it.type() == ProductDetailConstant.VALUE_PROP) && headNshoulderView) {
+                it
+            } else if(it.name() == ProductDetailConstant.BY_ME && !isAffiliate && !GlobalConfig.isSellerApp()) {
                 it
             } else {
                 null
