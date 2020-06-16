@@ -3,7 +3,7 @@
     package="com.tokopedia.df.category.explore_category">
 
     <dist:module
-        dist:title="@string/title_explore_category">
+        dist:title="@string/label_category_explore">
         <dist:delivery>
             <dist:on-demand/>
         </dist:delivery>
