@@ -237,6 +237,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private void performLibraryInitialisation(){
+        String ENABLE_ASYNC_CMPUSHNOTIF_INIT = "android_async_cmpushnotif_init";
         WeaveInterface initWeave = new WeaveInterface() {
             @NotNull
             @Override
@@ -244,7 +245,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 return initLibraries();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(initWeave, RemoteConfigKey.ENABLE_ASYNC_CMPUSHNOTIF_INIT, ConsumerRouterApplication.this);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(initWeave, ENABLE_ASYNC_CMPUSHNOTIF_INIT, ConsumerRouterApplication.this);
     }
 
     private boolean initLibraries(){
@@ -279,6 +280,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private void initIris() {
         mIris = IrisAnalytics.Companion.getInstance(ConsumerRouterApplication.this);
+        String ENABLE_ASYNC_IRIS_INIT = "android_async_iris_init";
         WeaveInterface irisInitializeWeave = new WeaveInterface() {
             @NotNull
             @Override
@@ -286,7 +288,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 return executeIrisInitialize();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(irisInitializeWeave, RemoteConfigKey.ENABLE_ASYNC_IRIS_INIT, ConsumerRouterApplication.this);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(irisInitializeWeave, ENABLE_ASYNC_IRIS_INIT, ConsumerRouterApplication.this);
     }
 
     private boolean executeIrisInitialize(){

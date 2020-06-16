@@ -224,6 +224,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
     }
 
     public static void createApplinkDelegateInBackground(Context context){
+        String ENABLE_ASYNC_APPLINK_DELEGATE_CREATION = "android_async_applink_delegate_creation";
         WeaveInterface appLinkDelegateWeave = new WeaveInterface() {
             @NotNull
             @Override
@@ -231,7 +232,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                 return getAppLinkDelegate();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(appLinkDelegateWeave, RemoteConfigKey.ENABLE_ASYNC_APPLINK_DELEGATE_CREATION, context.getApplicationContext());
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(appLinkDelegateWeave, ENABLE_ASYNC_APPLINK_DELEGATE_CREATION, context.getApplicationContext());
     }
 
     private static boolean getAppLinkDelegate(){

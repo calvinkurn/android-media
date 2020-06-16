@@ -54,6 +54,7 @@ public abstract class MainApplication extends MainRouterApplication{
     }
 
     protected void initRemoteConfig() {
+        String ENABLE_ASYNC_REMOTECONFIG_MAINAPP_INIT = "android_async_remoteconfig_mainapp_init";
         WeaveInterface remoteConfigWeave = new WeaveInterface() {
             @NotNull
             @Override
@@ -61,7 +62,7 @@ public abstract class MainApplication extends MainRouterApplication{
                 return remoteConfig = new FirebaseRemoteConfigImpl(MainApplication.this);
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(remoteConfigWeave, RemoteConfigKey.ENABLE_ASYNC_REMOTECONFIG_MAINAPP_INIT, MainApplication.this);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(remoteConfigWeave, ENABLE_ASYNC_REMOTECONFIG_MAINAPP_INIT, MainApplication.this);
     }
 
     @Override
