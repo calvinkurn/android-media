@@ -85,7 +85,7 @@ class GetSearchQueryUseCase @Inject constructor(
     }
 
     private val query = """
-            query ($$paramKeyword: String, $$paramPage: Int, $$paramIsSeller: Int){
+            query chatSearchByContactAndReply($$paramKeyword: String, $$paramPage: Int, $$paramIsSeller: Int){
               searchByName: chatSearch(
                 keyword:$$paramKeyword, 
                 page: $$paramPage, 
