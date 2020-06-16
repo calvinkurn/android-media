@@ -12,7 +12,6 @@ import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.EtalaseContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
-import com.tokopedia.play.broadcaster.ui.model.SearchSuggestionUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.PageResult
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.view.state.NotSelectable
@@ -20,10 +19,6 @@ import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.consumeAsFlow
-import kotlinx.coroutines.flow.debounce
 import javax.inject.Inject
 import javax.inject.Named
 import kotlin.math.min
@@ -59,13 +54,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
         get() = _observableSelectedProducts
     private val _observableSelectedProducts = MutableLiveData<List<ProductContentUiModel>>()
 
-    val observableSuggestionList: LiveData<List<SearchSuggestionUiModel>>
-        get() = _observableSuggestionList
-    private val _observableSuggestionList = MutableLiveData<List<SearchSuggestionUiModel>>()
-
     val maxProduct = PlayBroadcastMocker.getMaxSelectedProduct()
-
-    private val searchChannel: Channel<String> = Channel()
 
     val selectedProductList: List<ProductContentUiModel>
         get() = observableSelectedProducts.value.orEmpty()
@@ -80,13 +69,11 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
     init {
         _observableSelectedProducts.value = emptyList()
-        scope.launch { initSearchChannel() }
         loadEtalaseList()
     }
 
     override fun onCleared() {
         super.onCleared()
-        searchChannel.cancel()
         job.cancelChildren()
     }
 
@@ -120,10 +107,6 @@ class PlayEtalasePickerViewModel @Inject constructor(
     /**
      * Search
      */
-    fun loadSuggestionsFromKeyword(keyword: String) {
-        searchChannel.offer(keyword)
-    }
-
     fun searchProductsByKeyword(keyword: String, page: Int) {
         val currentValue = _observableSearchedProducts.value?.currentValue.orEmpty()
         _observableSearchedProducts.value = PageResult.Loading(
@@ -131,6 +114,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
         )
         scope.launch {
             val (searchedProducts, totalData) = getProductsByKeyword(keyword, page)
+            updateProductMap(searchedProducts)
             _observableSearchedProducts.value = getSearchedProducts(searchedProducts, totalData)
         }
     }
@@ -157,13 +141,6 @@ class PlayEtalasePickerViewModel @Inject constructor(
         _observableSelectedProducts.value = selectedProductIdList.flatMap {
             val product = productsMap[it]
             if (product != null) listOf(product) else emptyList()
-        }
-    }
-
-    private suspend fun initSearchChannel() = withContext(mainDispatcher) {
-        searchChannel.consumeAsFlow().debounce(500).collect {
-            val searchSuggestions = getSearchSuggestions(it)
-            _observableSuggestionList.value = searchSuggestions
         }
     }
 

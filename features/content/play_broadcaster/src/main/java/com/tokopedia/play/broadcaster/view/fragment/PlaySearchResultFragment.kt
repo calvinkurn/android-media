@@ -39,6 +39,8 @@ class PlaySearchResultFragment @Inject constructor(
 
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
 
+    private var shouldLoadFirst = true
+
     private val keyword: String
         get() = arguments?.getString(EXTRA_KEYWORD) ?: ""
 
@@ -113,7 +115,10 @@ class PlaySearchResultFragment @Inject constructor(
         rvSearchedProducts.addOnScrollListener(scrollListener)
         rvSearchedProducts.addOnScrollListener(StopFlingScrollListener())
 
-        scrollListener.loadMoreNextPage()
+        if (shouldLoadFirst) {
+            scrollListener.loadMoreNextPage()
+            shouldLoadFirst = false
+        }
     }
 
     //region observe

@@ -1,6 +1,8 @@
 package com.tokopedia.play.broadcaster.view.custom
 
 import android.content.Context
+import android.os.Parcel
+import android.os.Parcelable
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
@@ -77,6 +79,21 @@ class PlaySearchBar : ConstraintLayout {
     fun forceFocus() {
         etSearch.requestFocus()
         showKeyboard()
+    }
+
+    override fun onSaveInstanceState(): Parcelable? {
+        val superState = super.onSaveInstanceState()
+        val newState = SavedState(superState)
+        newState.cancelBtnVisibility = tvCancel.visibility
+        newState.clearBtnVisibility = ivClear.visibility
+        return newState
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        val savedState = state as SavedState
+        super.onRestoreInstanceState(savedState.superState)
+        tvCancel.visibility = savedState.cancelBtnVisibility
+        ivClear.visibility = savedState.clearBtnVisibility
     }
 
     private fun setupView(view: View) {
@@ -187,6 +204,35 @@ class PlaySearchBar : ConstraintLayout {
 
     private fun updateClearButton() {
         ivClear.visibility = if (etSearch.text.isNotEmpty()) View.VISIBLE else View.GONE
+    }
+
+    class SavedState : BaseSavedState {
+
+        var cancelBtnVisibility: Int = View.GONE
+        var clearBtnVisibility: Int = View.GONE
+
+        constructor(superState: Parcelable?) : super(superState)
+        constructor(source: Parcel?) : super(source) {
+            cancelBtnVisibility = source?.readInt() ?: View.GONE
+            clearBtnVisibility = source?.readInt() ?: View.GONE
+        }
+
+        override fun writeToParcel(out: Parcel?, flags: Int) {
+            super.writeToParcel(out, flags)
+            out?.writeInt(cancelBtnVisibility)
+            out?.writeInt(clearBtnVisibility)
+        }
+
+        companion object CREATOR : Parcelable.Creator<SavedState> {
+
+            override fun createFromParcel(parcel: Parcel): SavedState {
+                return SavedState(parcel)
+            }
+
+            override fun newArray(size: Int): Array<SavedState?> {
+                return arrayOfNulls(size)
+            }
+        }
     }
 
     interface Listener {

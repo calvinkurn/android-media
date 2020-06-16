@@ -162,13 +162,12 @@ class PlayEtalaseDetailFragment @Inject constructor(
         enterTransition = TransitionSet()
                 .addTransition(Slide(Gravity.END))
                 .addTransition(Fade(Fade.IN))
-                .setStartDelay(200)
                 .setDuration(300)
 
         sharedElementEnterTransition = TransitionSet()
                 .addTransition(ChangeTransform())
                 .addTransition(ChangeBounds())
-                .setDuration(450)
+                .setDuration(300)
     }
 
     private fun setupReturnTransition() {
@@ -180,7 +179,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
         sharedElementReturnTransition = TransitionSet()
                 .addTransition(ChangeTransform())
                 .addTransition(ChangeBounds())
-                .setDuration(450)
+                .setDuration(300)
     }
 
     private fun setupExitTransition() {
@@ -194,7 +193,6 @@ class PlayEtalaseDetailFragment @Inject constructor(
         reenterTransition = TransitionSet()
                 .addTransition(Slide(Gravity.START))
                 .addTransition(Fade(Fade.IN))
-                .setStartDelay(200)
                 .setDuration(300)
     }
 

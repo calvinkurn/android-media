@@ -137,7 +137,7 @@ class PlayEtalasePickerFragment @Inject constructor(
             }
 
             override fun onNextButtonClicked() {
-//                showCoverTitlePage()
+                showCoverTitlePage()
             }
         })
     }
@@ -213,6 +213,12 @@ class PlayEtalasePickerFragment @Inject constructor(
         (currentFragment as? PlayBaseEtalaseSetupFragment)?.refresh()
     }
 
+    private fun showCoverTitlePage() {
+        bottomSheetCoordinator.navigateToFragment(
+                fragmentClass = PlayCoverTitleSetupFragment::class.java
+        )
+    }
+
     /**
      * Observe
      */
@@ -242,7 +248,6 @@ class PlayEtalasePickerFragment @Inject constructor(
         reenterTransition = TransitionSet()
                 .addTransition(Slide(Gravity.START))
                 .addTransition(Fade(Fade.IN))
-                .setStartDelay(200)
                 .setDuration(300)
     }
 
