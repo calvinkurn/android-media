@@ -10,6 +10,7 @@ import com.tokopedia.search.result.presentation.model.CpmViewModel;
 import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
+import com.tokopedia.search.result.presentation.model.InspirationCardViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.QuickFilterViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
@@ -43,6 +44,8 @@ public interface ProductListTypeFactory {
     int type(EmptySearchProductViewModel emptySearchViewModel);
 
     int type(BroadMatchViewModel broadMatchViewModel);
+
+    int type(InspirationCardViewModel inspirationCardViewModel);
 
     int getRecyclerViewItem();
 

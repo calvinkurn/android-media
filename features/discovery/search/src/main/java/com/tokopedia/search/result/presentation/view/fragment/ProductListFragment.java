@@ -66,6 +66,7 @@ import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
+import com.tokopedia.search.result.presentation.model.InspirationCardOptionViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
@@ -77,6 +78,7 @@ import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener;
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener;
+import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener;
 import com.tokopedia.search.result.presentation.view.listener.ProductListener;
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterListener;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
@@ -131,7 +133,8 @@ public class ProductListFragment
         RecommendationListener,
         InspirationCarouselListener,
         BannedProductsRedirectToBrowserListener,
-        BroadMatchListener {
+        BroadMatchListener,
+        InspirationCardListener {
 
     private static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
@@ -302,12 +305,10 @@ public class ProductListFragment
 
     private void initAdapter() {
         ProductListTypeFactory productListTypeFactory = new ProductListTypeFactoryImpl(
-                this,
-                this,
-                this, this,
-                this, this,
                 this, this, this,
-                this, this, topAdsConfig);
+                this, this, this,
+                this, this, this,
+                this, this, this, topAdsConfig);
 
         adapter = new ProductListAdapter(this, productListTypeFactory);
     }
@@ -1724,5 +1725,17 @@ public class ProductListFragment
     @Override
     public void trackBroadMatchImpression(String alternativeKeyword, List<Object> impressionObjectDataLayer) {
         SearchTracking.trackEventImpressionBroadMatch(getQueryKey(), alternativeKeyword, impressionObjectDataLayer);
+    }
+
+    @Override
+    public void onInspirationCardOptionClicked(@NotNull InspirationCardOptionViewModel option) {
+        trackEventClickInspirationCardOption(option);
+
+        redirectionStartActivity(option.getApplink(), option.getUrl());
+    }
+
+    private void trackEventClickInspirationCardOption(InspirationCardOptionViewModel option) {
+        String label = option.getInspirationCardType() + " - " + getQueryKey() + " - " + option.getText();
+        SearchTracking.trackEventClickInspirationCardOption(label);
     }
 }
