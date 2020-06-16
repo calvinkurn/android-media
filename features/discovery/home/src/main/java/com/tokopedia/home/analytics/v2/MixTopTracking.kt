@@ -146,7 +146,11 @@ object MixTopTracking : BaseTracking() {
             UserId.KEY, userId,
             BusinessUnit.KEY, BusinessUnit.DEFAULT,
             ChannelId.KEY, channels.id,
-            CampaignCode.KEY, channels.trackingAttributionModel.campaignCode
+            CampaignCode.KEY, channels.trackingAttributionModel.campaignCode,
+            Label.ATTRIBUTION_LABEL, channels.channelBanner.attribution,
+            Label.AFFINITY_LABEL, channels.trackingAttributionModel.persona,
+            Label.CATEGORY_LABEL, channels.trackingAttributionModel.categoryId,
+            Label.SHOP_LABEL, channels.trackingAttributionModel.brandId
     )
 
     //end of home component section

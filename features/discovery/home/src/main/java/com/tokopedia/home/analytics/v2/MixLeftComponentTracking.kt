@@ -108,7 +108,7 @@ object MixLeftComponentTracking: BaseTracking()  {
             event = Event.PRODUCT_CLICK,
             eventCategory = Category.HOMEPAGE,
             eventAction = CLICK_MIX_LEFT,
-            eventLabel = channel.channelHeader.name,
+            eventLabel = channel.id +  " - " + channel.channelHeader.name,
             channelId = channel.id,
             campaignCode = channel.trackingAttributionModel.campaignCode,
             products = listOf(
