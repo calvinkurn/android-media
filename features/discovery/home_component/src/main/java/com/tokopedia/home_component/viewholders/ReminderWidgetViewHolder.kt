@@ -70,10 +70,10 @@ class ReminderWidgetViewHolder(
 
                 btn_reminder_recommendation.setOnClickListener {
                     if(element.source == ReminderEnum.RECHARGE) {
-
+                        rechargeListener.onRechargeRecommendationClickListener(reminder)
+                        rechargeListener.onRechargeRecommendationDeclineClickListener(reminder)
                     } else if(element.source == ReminderEnum.SALAM){
                         salamListener.onSalamWidgetClickListener(reminder)
-                        salamListener.onSalamWidgetDeclineClickListener(reminder)
                     }
                 }
 

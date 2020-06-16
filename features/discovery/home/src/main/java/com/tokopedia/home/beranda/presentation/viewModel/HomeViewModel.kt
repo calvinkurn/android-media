@@ -23,6 +23,7 @@ import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
+import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidgetData
 import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.helper.RateLimiter
 import com.tokopedia.home.beranda.helper.Result
@@ -827,7 +828,7 @@ open class HomeViewModel @Inject constructor(
         getSalamWidgetJob = launchCatchError(coroutineContext,  block = {
             val data = getSalamWidgetUseCase.get().executeOnBackground()
             insertSalamWidget(data)
-            if (data.salamWidget.mainText.isNotEmpty()) {
+            if (isReminderWidgetAvailable(data.salamWidget)) {
                 _homeLiveData.value?.list?.run {
                     val findSalamWidgetModel = find { visitable -> visitable is ReminderWidgetModel
                             && (visitable.source == ReminderEnum.SALAM)}
@@ -1236,5 +1237,14 @@ open class HomeViewModel @Inject constructor(
             )
         }
     }
+
+    private fun isReminderWidgetAvailable(salamWidgetData: SalamWidgetData):Boolean{
+        return (salamWidgetData.iD!=0 && salamWidgetData.backgroundColor.isNotEmpty() &&
+                salamWidgetData.appLink.isNotEmpty() && salamWidgetData.buttonText.isNotEmpty() &&
+                salamWidgetData.iconURL.isNotEmpty() && salamWidgetData.mainText.isNotEmpty() &&
+                salamWidgetData.subText.isNotEmpty() && salamWidgetData.title.isNotEmpty())
+    }
+
+
 
 }

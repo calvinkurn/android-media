@@ -19,7 +19,7 @@ object SalamWidgetTracking : BaseTracking(){
                 Event.PROMO_VIEW,
                 SALAM_WIDGET_EVENT_CATEGORY,
                 Action.IMPRESSION_ON.format(SALAM_WIDGET_NAME),
-                productName,
+                "",
                 listOf(mapToPromotionTracker(salamWidgetData))
         ) as? HashMap<String, Any>)
     }
@@ -34,7 +34,7 @@ object SalamWidgetTracking : BaseTracking(){
                 Event.KEY, Event.PROMO_CLICK,
                 Category.KEY, SALAM_WIDGET_EVENT_CATEGORY,
                 Action.KEY, Action.CLICK_ON.format(SALAM_WIDGET_NAME),
-                Label.KEY, productName,
+                Label.KEY, "",
                 Ecommerce.KEY, Ecommerce.getEcommercePromoClick(listOf(mapToPromotionTracker(salamWidgetData)))
         )
         trackingQueue.putEETracking(promotionClickData as? HashMap<String, Any>)
@@ -46,14 +46,14 @@ object SalamWidgetTracking : BaseTracking(){
                 SALAM_WIDGET_CLICK_EVENT,
                 SALAM_WIDGET_EVENT_CATEGORY,
                 CLICK_CLOSE_ON.format(SALAM_WIDGET_NAME),
-                productName
+                ""
         )
     }
 
     private fun mapToPromotionTracker(model: SalamWidgetData) = Promotion(
             id = model.iD.toString(),
-            creative = model.iconURL,
-            name = "$SALAM_WIDGET_NAME - ${model.appLink}",
+            creative = model.title,
+            name = "$SALAM_WIDGET_NAME - ${model.iD}",
             position = "none/other")
 
 
