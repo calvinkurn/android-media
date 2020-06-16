@@ -263,17 +263,19 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         })
     }
 
-    private fun onSuccessCheckWishlist(data: List<Pair<ShopHomeCarousellProductUiModel, List<CheckWishlistResult>>>) {
-        data.onEach {
-            it.second.onEach { checkWishlistResult ->
-                val productData = it.first.productList.find { shopHomeProductViewModel ->
-                    shopHomeProductViewModel.id == checkWishlistResult.productId
+    private fun onSuccessCheckWishlist(data: List<Pair<ShopHomeCarousellProductUiModel, List<CheckWishlistResult>>?>) {
+        data.onEach { pairCheckWishlistData ->
+            pairCheckWishlistData?.let {
+                it.second.onEach { checkWishlistResult ->
+                    val productData = it.first.productList.find { shopHomeProductViewModel ->
+                        shopHomeProductViewModel.id == checkWishlistResult.productId
+                    }
+                    productData?.let { shopHomeProductViewModel ->
+                        shopHomeProductViewModel.isWishList = checkWishlistResult.isWishlist
+                    }
                 }
-                productData?.let { shopHomeProductViewModel ->
-                    shopHomeProductViewModel.isWishList = checkWishlistResult.isWishlist
-                }
+                shopHomeAdapter.updateProductWidgetData(it.first)
             }
-            shopHomeAdapter.updateProductWidgetData(it.first)
         }
     }
 

@@ -68,7 +68,7 @@ class HotelDetailViewModelTest {
         } returns Success(mutableListOf())
 
         //when
-        hotelDetailViewModel.getHotelDetailData("", "", "", 0, HotelHomepageModel())
+        hotelDetailViewModel.getHotelDetailData("", "", "", 0, HotelHomepageModel(), "")
 
         //then
         assert(hotelDetailViewModel.hotelInfoResult.value is Success)
@@ -98,7 +98,7 @@ class HotelDetailViewModelTest {
         } returns Success(mutableListOf())
 
         //when
-        hotelDetailViewModel.getHotelDetailData("", "", "", 0, HotelHomepageModel())
+        hotelDetailViewModel.getHotelDetailData("", "", "", 0, HotelHomepageModel(), "")
 
         //then
         assert(hotelDetailViewModel.hotelInfoResult.value is Fail)
@@ -128,7 +128,7 @@ class HotelDetailViewModelTest {
         } returns Success(mutableListOf())
 
         //when
-        hotelDetailViewModel.getHotelDetailData("", "", "", 0, HotelHomepageModel())
+        hotelDetailViewModel.getHotelDetailData("", "", "", 0, HotelHomepageModel(), "")
 
         //then
         assert(hotelDetailViewModel.hotelInfoResult.value is Success)
@@ -158,7 +158,7 @@ class HotelDetailViewModelTest {
         } returns Fail(Throwable())
 
         //when
-        hotelDetailViewModel.getHotelDetailData("", "", "", 0, HotelHomepageModel())
+        hotelDetailViewModel.getHotelDetailData("", "", "", 0, HotelHomepageModel(), "")
 
         //then
         assert(hotelDetailViewModel.hotelInfoResult.value is Success)
@@ -184,7 +184,7 @@ class HotelDetailViewModelTest {
         } returnsMany listOf(graphqlSuccessResponse, graphqlSuccessResponse1)
 
         //when
-        hotelDetailViewModel.getHotelDetailDataWithoutRoom("", "", 0)
+        hotelDetailViewModel.getHotelDetailDataWithoutRoom("", "", 0, "")
 
         //then
         assert(hotelDetailViewModel.hotelInfoResult.value is Success)
