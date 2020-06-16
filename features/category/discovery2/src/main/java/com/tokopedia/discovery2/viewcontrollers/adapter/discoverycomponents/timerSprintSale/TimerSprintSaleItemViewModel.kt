@@ -26,31 +26,37 @@ class TimerSprintSaleItemViewModel(val application: Application, components: Com
     }
 
     fun isFutureSale(): Boolean {
+        val startData = componentData.value?.data?.get(0)?.startDate
+        if (startData.isNullOrEmpty()) return false
         val currentSystemTime = Calendar.getInstance().time
         val parsedStartDate = SimpleDateFormat(Utils.TIMER_SPRINT_SALE_DATE_FORMAT, Locale.getDefault())
-                .parse(componentData.value?.data?.get(0)?.startDate)
-
+                .parse(startData)
         return currentSystemTime < parsedStartDate
+
     }
 
     fun isSaleOver(): Boolean {
+        val endDate = componentData.value?.data?.get(0)?.endDate
+        if (endDate.isNullOrEmpty()) return false
         val currentSystemTime = Calendar.getInstance().time
         val parsedEndDate = SimpleDateFormat(Utils.TIMER_SPRINT_SALE_DATE_FORMAT, Locale.getDefault())
-                .parse(componentData.value?.data?.get(0)?.endDate)
-
+                .parse(endDate)
         return currentSystemTime > parsedEndDate
     }
 
     fun startTimer() {
-        val currentSystemTime = Calendar.getInstance().time
-        val parsedEndDate = SimpleDateFormat(Utils.TIMER_SPRINT_SALE_DATE_FORMAT, Locale.getDefault())
-                .parse(componentData.value?.data?.get(0)?.endDate)
+        val endDate = componentData.value?.data?.get(0)?.endDate
+        if (!endDate.isNullOrEmpty()) {
+            val currentSystemTime = Calendar.getInstance().time
+            val parsedEndDate = SimpleDateFormat(Utils.TIMER_SPRINT_SALE_DATE_FORMAT, Locale.getDefault())
+                    .parse(componentData.value?.data?.get(0)?.endDate)
 
-        val saleTimeMillis = parsedEndDate.time - currentSystemTime.time
+            val saleTimeMillis = parsedEndDate.time - currentSystemTime.time
 
-        if (saleTimeMillis > 0) {
-            timerWithBannerCounter = SaleCountDownTimer(saleTimeMillis, elapsedTime)
-            timerWithBannerCounter?.start()
+            if (saleTimeMillis > 0) {
+                timerWithBannerCounter = SaleCountDownTimer(saleTimeMillis, elapsedTime)
+                timerWithBannerCounter?.start()
+            }
         }
     }
 
