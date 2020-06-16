@@ -80,7 +80,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     }
 
     private fun setUIConfig(config: String?) {
-        discoveryUIConfig.postValue(Success(config ?: NATIVE))
+        discoveryUIConfig.postValue(Success(config ?: REACT_NATIVE))
     }
 
     private fun setPageInfo(pageInfo: PageInfo?) {
