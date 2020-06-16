@@ -61,12 +61,9 @@ class ShareVoucherBottomSheet(
         return listOf(
                 ShareVoucherUiModel(R.drawable.ic_mvc_link, parent.context.getString(R.string.mvc_copy_link), SocmedType.COPY_LINK),
                 ShareVoucherUiModel(R.drawable.ic_mvc_instagram, parent.context.getString(R.string.mvc_instagram), SocmedType.INSTAGRAM),
-                ShareVoucherUiModel(R.drawable.ic_mvc_facebook, parent.context.getString(R.string.mvc_facebook), SocmedType.FACEBOOK),
-                ShareVoucherUiModel(R.drawable.ic_mvc_fb_messenger, parent.context.getString(R.string.mvc_facebook_messenger), SocmedType.FACEBOOK_MESSENGER),
                 ShareVoucherUiModel(R.drawable.ic_mvc_whatsapp, parent.context.getString(R.string.mvc_whatsapp), SocmedType.WHATSAPP),
                 ShareVoucherUiModel(R.drawable.ic_mvc_line, parent.context.getString(R.string.mvc_line), SocmedType.LINE),
                 ShareVoucherUiModel(R.drawable.ic_mvc_twitter, parent.context.getString(R.string.mvc_twitter), SocmedType.TWITTER),
-                ShareVoucherUiModel(R.drawable.ic_mvc_broadcast_chat, parent.context.getString(R.string.mvc_broadcast_chat), SocmedType.BROADCAST),
                 ShareVoucherUiModel(R.drawable.ic_mvc_lainnya, parent.context.getString(R.string.mvc_others), SocmedType.LAINNYA)
         )
     }

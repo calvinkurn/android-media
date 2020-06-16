@@ -43,7 +43,7 @@ import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.exception.VoucherCancellationException
 import com.tokopedia.vouchercreation.common.utils.SharingUtil
-import com.tokopedia.vouchercreation.common.utils.SocmedPackage
+import com.tokopedia.vouchercreation.common.utils.Socmed
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
@@ -90,6 +90,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         const val VOUCHER_ID_KEY = "voucher_id"
 
         private const val DOWNLOAD_REQUEST_CODE = 223
+        private const val SHARE_REQUEST_CODE = 224
 
         fun newInstance(isActiveVoucher: Boolean): VoucherListFragment {
             return VoucherListFragment().apply {
@@ -454,6 +455,11 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                 downloadImagesAction = {}
             }
         }
+        if (grantResults.size == 1 && requestCode == SHARE_REQUEST_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                Toast.makeText(activity, getString(R.string.mvc_storage_permission_enabled_needed), Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -535,52 +541,76 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         ShareVoucherBottomSheet(parent)
                 .setOnItemClickListener { socmedType ->
                     context?.run {
-                        shopBasicData?.let { shopData ->
-                            val shareUrl = "${TokopediaUrl.getInstance().WEB}${shopData.shopDomain}"
-                            val shareMessage =
-                                    if (voucher.isPublic) {
-                                        String.format(
-                                                getString(R.string.mvc_share_message_public).toBlankOrString(),
-                                                voucher.typeFormatted,
-                                                shopData.shopName,
-                                                shareUrl)
-                                    } else {
-                                        String.format(
-                                                getString(R.string.mvc_share_message_private).toBlankOrString(),
-                                                voucher.typeFormatted,
-                                                voucher.code,
-                                                shopData.shopName,
-                                                shareUrl)
-                                    }
-                            when(socmedType) {
-                                SocmedType.COPY_LINK -> {
-                                    SharingUtil.copyTextToClipboard(this, COPY_PROMO_CODE_LABEL, shareMessage)
+                        if (socmedType != SocmedType.COPY_LINK || socmedType != SocmedType.LAINNYA) {
+                            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    val missingPermissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                    requestPermissions(missingPermissions, SHARE_REQUEST_CODE)
+                                } else {
+                                    shareVoucher(socmedType, voucher)
                                 }
-                                SocmedType.INSTAGRAM -> {
-                                    SharingUtil.shareToSocialMedia(SocmedPackage.INSTAGRAM, this, voucher.imageSquare)
-                                }
-                                SocmedType.FACEBOOK_MESSENGER -> {
-                                    SharingUtil.shareToSocialMedia(SocmedPackage.MESSENGER, this, voucher.imageSquare, shareMessage)
-                                }
-                                SocmedType.WHATSAPP -> {
-                                    SharingUtil.shareToSocialMedia(SocmedPackage.WHATSAPP, this, voucher.imageSquare, shareMessage)
-                                }
-                                SocmedType.LINE -> {
-                                    SharingUtil.shareToSocialMedia(SocmedPackage.LINE, this, voucher.imageSquare, shareMessage)
-                                }
-                                SocmedType.LAINNYA -> {
-                                    SharingUtil.otherShare(this, shareMessage)
-                                }
+                            } else {
+                                shareVoucher(socmedType, voucher)
                             }
                         }
-                        VoucherCreationTracking.sendShareClickTracking(
-                                socmedType = socmedType,
-                                userId = userSession.userId,
-                                isDetail = false
-                        )
                     }
                 }
                 .show(childFragmentManager)
+    }
+
+    private fun shareVoucher(@SocmedType socmedType: Int,
+                             voucher: VoucherUiModel) {
+        context?.run {
+            shopBasicData?.let { shopData ->
+                val shareUrl = "${TokopediaUrl.getInstance().WEB}${shopData.shopDomain}"
+                val shareMessage =
+                        if (voucher.isPublic) {
+                            StringBuilder().apply {
+                                append(String.format(
+                                        getString(R.string.mvc_share_message_public).toBlankOrString(),
+                                        voucher.typeFormatted,
+                                        shopData.shopName))
+                                append("\n")
+                                append(shareUrl)
+                            }.toString()
+                        } else {
+                            StringBuilder().apply {
+                                append(String.format(
+                                        getString(R.string.mvc_share_message_private).toBlankOrString(),
+                                        voucher.typeFormatted,
+                                        voucher.code,
+                                        shopData.shopName))
+                                append("\n")
+                                append(shareUrl)
+                            }.toString()
+                        }
+                when(socmedType) {
+                    SocmedType.COPY_LINK -> {
+                        SharingUtil.copyTextToClipboard(this, COPY_PROMO_CODE_LABEL, shareMessage)
+                    }
+                    SocmedType.INSTAGRAM -> {
+                        SharingUtil.shareToSocialMedia(Socmed.INSTAGRAM, this, voucher.imageSquare)
+                    }
+                    SocmedType.WHATSAPP -> {
+                        SharingUtil.shareToSocialMedia(Socmed.WHATSAPP, this, voucher.imageSquare, shareMessage)
+                    }
+                    SocmedType.LINE -> {
+                        SharingUtil.shareToSocialMedia(Socmed.LINE, this, voucher.imageSquare, shareMessage)
+                    }
+                    SocmedType.TWITTER -> {
+                        SharingUtil.shareToSocialMedia(Socmed.TWITTER, this, voucher.imageSquare, shareMessage)
+                    }
+                    SocmedType.LAINNYA -> {
+                        SharingUtil.otherShare(this, shareMessage)
+                    }
+                }
+            }
+            VoucherCreationTracking.sendShareClickTracking(
+                    socmedType = socmedType,
+                    userId = userSession.userId,
+                    isDetail = false
+            )
+        }
     }
 
     private fun showDownloadBottomSheet(voucher: VoucherUiModel) {
