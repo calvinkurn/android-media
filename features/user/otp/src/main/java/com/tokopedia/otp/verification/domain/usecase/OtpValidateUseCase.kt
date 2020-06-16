@@ -60,15 +60,15 @@ class OtpValidateUseCase @Inject constructor(
     }.getSuccessData()
 
     companion object {
-        private const val PARAM_CODE = "\$code"
-        private const val PARAM_OTP_TYPE = "\$otpType"
-        private const val PARAM_MSISDN = "\$msisdn"
-        private const val PARAM_FP_DATA = "\$fpData"
-        private const val PARAM_GET_SL = "\$getSL"
-        private const val PARAM_EMAIL = "\$email"
-        private const val PARAM_MODE = "\$mode"
-        private const val PARAM_SIGNATURE = "\$signature"
-        private const val PARAM_TIME_UNIX = "\$timeUnix"
-        private const val PARAM_USERID = "\$userId"
+        private const val PARAM_CODE = "code"
+        private const val PARAM_OTP_TYPE = "otpType"
+        private const val PARAM_MSISDN = "msisdn"
+        private const val PARAM_FP_DATA = "fpData"
+        private const val PARAM_GET_SL = "getSL"
+        private const val PARAM_EMAIL = "email"
+        private const val PARAM_MODE = "mode"
+        private const val PARAM_SIGNATURE = "signature"
+        private const val PARAM_TIME_UNIX = "timeUnix"
+        private const val PARAM_USERID = "userId"
     }
 }

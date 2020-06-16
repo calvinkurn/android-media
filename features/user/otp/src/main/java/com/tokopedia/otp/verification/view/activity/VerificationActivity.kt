@@ -76,7 +76,8 @@ class VerificationActivity : BaseSimpleActivity(), HasComponent<VerificationComp
             setHomeAsUpIndicator(R.drawable.ic_toolbar_back)
             setDisplayShowTitleEnabled(false)
             setDisplayHomeAsUpEnabled(true)
-            setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this@VerificationActivity, R.color.transparent)))
+            elevation = 0f
+            setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this@VerificationActivity, R.color.Neutral_N0)))
         }
     }
 
@@ -92,7 +93,7 @@ class VerificationActivity : BaseSimpleActivity(), HasComponent<VerificationComp
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setWindowFlag(false)
-            window.statusBarColor = Color.TRANSPARENT
+            window.statusBarColor = ContextCompat.getColor(this, R.color.Neutral_N0)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

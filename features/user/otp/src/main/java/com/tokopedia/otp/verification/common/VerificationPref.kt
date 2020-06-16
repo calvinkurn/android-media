@@ -27,7 +27,7 @@ class VerificationPref @Inject constructor(
         timestamp = System.currentTimeMillis() / 1000
     }
 
-    fun isExpired(): Boolean = (System.currentTimeMillis() / 1000) - timestamp > expiredTime
+    fun isExpired(): Boolean = ((System.currentTimeMillis() / 1000) - timestamp) > expiredTime
 
     fun getRemainingTime(): Int = (expiredTime - ((System.currentTimeMillis() / 1000) - timestamp)).toInt()
 

@@ -19,8 +19,9 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/method_icon"
-            android:layout_width="@dimen/layout_lvl6"
-            android:layout_height="@dimen/layout_lvl6"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/layout_lvl5"
+            android:adjustViewBounds="true"
             android:layout_gravity="center_vertical"
             app:unify_image_type="rect" />
 

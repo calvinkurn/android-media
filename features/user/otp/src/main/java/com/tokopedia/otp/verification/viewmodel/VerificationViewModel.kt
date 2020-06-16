@@ -26,7 +26,7 @@ class VerificationViewModel @Inject constructor(
         private val otpValidateUseCase: OtpValidateUseCase,
         private val sendOtpUseCase: SendOtpUseCase,
         dispatcherProvider: DispatcherProvider
-) : BaseViewModel(dispatcherProvider.io()) {
+) : BaseViewModel(dispatcherProvider.ui()) {
 
     private val _getVerificationMethodResult = MutableLiveData<Result<OtpModeListData>>()
     val getVerificationMethodResult: LiveData<Result<OtpModeListData>>

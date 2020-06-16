@@ -78,6 +78,8 @@ class VerificationMethodFragment : BaseVerificationFragment() {
     }
 
     private fun initView() {
+        (activity as VerificationActivity).title = "Verifikasi"
+
         adapter = VerificationMethodAdapter.createInstance(object : VerificationMethodAdapter.ClickListener {
             override fun onModeListClick(modeList: ModeListData, position: Int) {
                 analytics.eventClickMethodOtp(otpData.otpType, modeList.modeText)

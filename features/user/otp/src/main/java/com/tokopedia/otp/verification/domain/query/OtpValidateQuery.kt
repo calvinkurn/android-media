@@ -19,7 +19,7 @@ object OtpValidateQuery {
 
     val query: String = """
         query otp_validate(
-            $code: String!,
+            $code: String,
             $otpType: String,
             $msisdn: String,
             $fpData: String,

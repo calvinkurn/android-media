@@ -7,6 +7,7 @@ import com.tokopedia.otp.R
 import com.tokopedia.pin.PinUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by Ade Fulki on 21/04/20.
@@ -19,6 +20,7 @@ class VerificationViewBinding : BaseVerificationViewBinding() {
 
     var containerView: View? = null
     var methodIcon: ImageUnify? = null
+    var prefixTextMethodIcon: Typography? = null
     var pin: PinUnify? = null
     var loader: LoaderUnify? = null
 
@@ -26,6 +28,7 @@ class VerificationViewBinding : BaseVerificationViewBinding() {
             layoutInflater.inflate(layoutResId, container, false).apply {
                 containerView = findViewById(R.id.container)
                 methodIcon = findViewById(R.id.method_icon)
+                prefixTextMethodIcon = findViewById(R.id.prefix_text_method_icon)
                 pin = findViewById(R.id.pin)
                 loader = findViewById(R.id.loader)
             }

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Otp</string>
     <string name="choose_verification_method">Pilih Metode Verifikasi</string>
     <string name="my_phone_number_is_inactive">Nomor saya sudah tidak aktif</string>
@@ -50,7 +50,7 @@
     <string name="cotp_miscall_onboarding_send_call">Missed Call Saya</string>
     <string name="cotp_miscall_verification_title">Masukkan 4 digit terakhir dari nomor yang menelpon kamu</string>
     <string name="cotp_miscall_verification_resend">Missed call ulang</string>
-    <string name="cotp_miscall_verification_phone_code">000-00</string>
+    <string name="cotp_miscall_verification_phone_code" tools:ignore="TypographyDashes">000-0000-</string>
     <string name="cotp_miscall_verification_invalid_code">Kode verifikasi salah. Silakan coba lagi.</string>
     <string name="cotp_miscall_verification_not_received_code">Tidak menerima missed call?</string>
     <string name="cotp_miscall_verification_please_wait_to_resend">Mohon tunggu ***** untuk kirim ulang</string>
@@ -77,10 +77,10 @@
 
 
 
-    <string name="validation_resend_email">Tidak menerima kode? kirim ulang %s</string>
-    <string name="or_with_other_method">\n atau gunakan metode verifikasi lain</string>
+    <string name="validation_resend_email">Tidak menerima kode? kirim ulang </string>
+    <string name="validation_resend_email_or_with_other_method">Tidak menerima kode? kirim ulang \natau gunakan metode verifikasi lain</string>
     <string name="with_other_method">gunakan metode verifikasi lain</string>
-    <string name="resend">kirim ulang</string>
+    <string name="resend_otp">kirim ulang</string>
     <string name="verification_coundown_text"><![CDATA[Mohon tunggu dalam <b>%d detik</b> untuk kirim ulang.]]></string>
     <string name="miscall_verification_coundown_text"><![CDATA[Mohon tunggu dalam <b>%d detik</b> untuk kirim miscall ulang.]]></string>
 </resources>

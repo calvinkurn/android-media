@@ -1,25 +1,31 @@
 package com.tokopedia.otp.verification.view.fragment
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Html
+import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.util.TypedValue
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.otp.R
@@ -86,13 +92,13 @@ class VerificationFragment : BaseVerificationFragment() {
 
         initView()
         initObserver()
-        sendOtp()
     }
 
-//    override fun onStart() {
-//        super.onStart()
+    override fun onStart() {
+        super.onStart()
+        sendOtp()
 //        analytics.sendScreen(activity, screenName)
-//    }
+    }
 
     override fun onResume() {
         super.onResume()
@@ -109,8 +115,7 @@ class VerificationFragment : BaseVerificationFragment() {
     }
 
     private fun sendOtp() {
-        if (!isCountdownFinished()) {
-            showLoading()
+        if (isCountdownFinished()) {
             viewModel.sendOtp(
                     otpType = otpData.otpType.toString(),
                     mode = modeListData.modeText,
@@ -124,6 +129,7 @@ class VerificationFragment : BaseVerificationFragment() {
     }
 
     private fun validate(code: String) {
+        KeyboardHandler.hideSoftKeyboard(activity)
         showLoading()
         viewModel.otpValidate(
                 code = code,
@@ -184,14 +190,28 @@ class VerificationFragment : BaseVerificationFragment() {
 
     private fun onSuccessOtpValidate(): (OtpValidateData) -> Unit {
         return { otpValidateData ->
-            if (otpValidateData.success) {
-                analytics.trackSuccessClickActivationButton()
-                hideLoading()
-                resetCountDown()
-            } else if (otpValidateData.errorMessage.isNotEmpty()) {
-                onFailedOtpValidate().invoke(MessageErrorException(otpValidateData.errorMessage))
-            } else {
-                onFailedOtpValidate().invoke(Throwable())
+            when {
+                otpValidateData.success -> {
+                    analytics.trackSuccessClickActivationButton()
+                    hideLoading()
+                    resetCountDown()
+
+                    activity?.let { activity ->
+                        val bundle = Bundle().apply {
+                            putString(ApplinkConstInternalGlobal.PARAM_UUID, otpValidateData.validateToken)
+                            putString(ApplinkConstInternalGlobal.PARAM_MSISDN, otpData.msisdn)
+                            putString(ApplinkConstInternalGlobal.PARAM_OTP_CODE, viewBound.pin?.value.toString())
+                        }
+                        activity.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
+                        activity.finish()
+                    }
+                }
+                otpValidateData.errorMessage.isNotEmpty() -> {
+                    onFailedOtpValidate().invoke(MessageErrorException(otpValidateData.errorMessage))
+                }
+                else -> {
+                    onFailedOtpValidate().invoke(Throwable())
+                }
             }
         }
     }
@@ -237,8 +257,10 @@ class VerificationFragment : BaseVerificationFragment() {
                 }
 
                 override fun onTick(millisUntilFinished: Long) {
-                    isRunningCountDown = true
-                    setRunningCountdownText(TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished).toInt())
+                    if(isAdded){
+                        isRunningCountDown = true
+                        setRunningCountdownText(TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished).toInt())
+                    }
                 }
 
             }.start()
@@ -253,8 +275,19 @@ class VerificationFragment : BaseVerificationFragment() {
 
         setPrefixMiscall()
 
-        if (modeListData.otpListImgUrl.isNotEmpty()) {
-            viewBound.methodIcon?.setImageUrl(modeListData.otpListImgUrl)
+        if(modeListData.modeText == OtpConstant.OtpMode.MISCALL){
+            viewBound.prefixTextMethodIcon?.visible()
+            val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 270f, resources.displayMetrics)
+            viewBound.methodIcon?.layoutParams.apply {
+                this?.height = height.toInt()
+                viewBound.methodIcon?.layoutParams = this
+            }
+            viewBound.methodIcon?.setMargin(0,0,0,0)
+            viewBound.methodIcon?.setImageUrl(MISSCALL_IMAGE_URL)
+        } else {
+            if (modeListData.otpListImgUrl.isNotEmpty()) {
+                viewBound.methodIcon?.setImageUrl(modeListData.otpListImgUrl)
+            }
         }
 
         if (modeListData.afterOtpListTextHtml.isNotEmpty()) {
@@ -274,18 +307,11 @@ class VerificationFragment : BaseVerificationFragment() {
             }
 
             override fun onPinChanged(value: CharSequence?) {
-                if (value?.length == modeListData.otpDigit) {
-                    validate(value.toString())
-                    viewBound.pin?.isDisabled = false
-                } else {
-                    viewBound.pin?.isDisabled = true
-                }
+                viewBound.pin?.isError = false
             }
-
         }
 
         setFooterText()
-        showKeyboard()
     }
 
     private fun showKeyboard() {
@@ -306,26 +332,23 @@ class VerificationFragment : BaseVerificationFragment() {
     }
 
     private fun setFooterText() {
-        var message = String.format(getString(R.string.validation_resend_email), "")
-        var spannable = SpannableString(message)
+        val spannable: Spannable
         if (otpData.canUseOtherMethod) {
-            message = String.format(getString(R.string.validation_resend_email), getString(R.string.or_with_other_method))
+            val message = getString(R.string.validation_resend_email_or_with_other_method)
             spannable = SpannableString(message)
-            spannable.setSpan(
-                    object : ClickableSpan() {
-                        override fun onClick(view: View) {
-                            (activity as VerificationActivity).goToVerificationMethodPage()
-                        }
-
-                        override fun updateDrawState(ds: TextPaint) {
-                            ds.color = MethodChecker.getColor(context, R.color.Green_G500)
-                        }
-                    },
-                    message.indexOf(getString(R.string.with_other_method)),
-                    message.length,
-                    0
-            )
+            setResendOtpFooterSpan(message, spannable)
+            setOtherMethodFooterSpan(message, spannable)
+        } else {
+            val message = getString(R.string.validation_resend_email)
+            spannable = SpannableString(message)
+            setResendOtpFooterSpan(message, spannable)
         }
+        viewBound.pin?.pinMessageView?.visible()
+        viewBound.pin?.pinMessageView?.movementMethod = LinkMovementMethod.getInstance()
+        viewBound.pin?.pinMessageView?.setText(spannable, TextView.BufferType.SPANNABLE)
+    }
+
+    private fun setResendOtpFooterSpan(message: String, spannable: Spannable) {
         spannable.setSpan(
                 object : ClickableSpan() {
                     override fun onClick(view: View) {
@@ -337,12 +360,27 @@ class VerificationFragment : BaseVerificationFragment() {
                         ds.color = MethodChecker.getColor(context, R.color.Green_G500)
                     }
                 },
-                message.indexOf(getString(R.string.resend)),
-                message.length,
+                message.indexOf(getString(R.string.resend_otp)),
+                message.indexOf(getString(R.string.resend_otp)) + getString(R.string.resend_otp).length,
                 0
         )
-        viewBound.pin?.pinMessageView?.movementMethod = LinkMovementMethod.getInstance();
-        viewBound.pin?.pinMessageView?.setText(spannable, TextView.BufferType.SPANNABLE)
+    }
+
+    private fun setOtherMethodFooterSpan(message: String, spannable: Spannable) {
+        spannable.setSpan(
+                object : ClickableSpan() {
+                    override fun onClick(view: View) {
+                        (activity as VerificationActivity).goToVerificationMethodPage()
+                    }
+
+                    override fun updateDrawState(ds: TextPaint) {
+                        ds.color = MethodChecker.getColor(context, R.color.Green_G500)
+                    }
+                },
+                message.indexOf(getString(R.string.with_other_method)),
+                message.indexOf(getString(R.string.with_other_method)) + getString(R.string.with_other_method).length,
+                0
+        )
     }
 
     private fun setRunningCountdownText(countdown: Int) {
@@ -372,6 +410,7 @@ class VerificationFragment : BaseVerificationFragment() {
     companion object {
 
         private const val DEFAULT_PREFIX_MISCALL = "000-00"
+        private const val MISSCALL_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/otp_miscall_img.png"
 
         private const val INTERVAL = 1000
         private const val COUNTDOWN_LENGTH = 30
