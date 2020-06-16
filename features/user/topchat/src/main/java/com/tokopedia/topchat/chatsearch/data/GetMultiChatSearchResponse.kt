@@ -9,6 +9,7 @@ class GetMultiChatSearchResponse(
         val searchByReply: ChatSearch = ChatSearch()
 ) {
 
+    val replyHasNext: Boolean get() = searchByReply.contact.hasNext
     val contactHasNext: Boolean get() = searchByName.contact.hasNext
     val contactSearchResults get() = searchByName.contact.searchResults
     val contactCount get() = searchByName.contact.count

@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.topchat.chatsearch.data.GetChatSearchResponse
+import com.tokopedia.topchat.chatsearch.data.GetMultiChatSearchResponse
 import com.tokopedia.topchat.chatsearch.usecase.GetSearchQueryUseCase
 import com.tokopedia.topchat.chatsearch.view.uimodel.ContactLoadMoreUiModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -82,17 +83,18 @@ class ChatSearchViewModel @Inject constructor(
         getSearchQueryUseCase.doSearch(::onSuccessDoSearch, ::onErrorDoSearch, query, page)
     }
 
-    private fun onSuccessDoSearch(response: GetChatSearchResponse, contactLoadMore: ContactLoadMoreUiModel?) {
+    private fun onSuccessDoSearch(response: GetMultiChatSearchResponse, contactLoadMore: ContactLoadMoreUiModel?) {
         canRetry = false
+        val searchContactResponse = GetChatSearchResponse(response.searchByName)
         if (isFirstPage()) {
-            firstContactSearchResults = response
+            firstContactSearchResults = searchContactResponse
         }
         if (isFirstPage() && contactLoadMore != null) {
-            val searchResults: MutableList<Visitable<*>> = response.searchResults.subList(0, 5).toMutableList()
+            val searchResults: MutableList<Visitable<*>> = searchContactResponse.searchResults.subList(0, 5).toMutableList()
             searchResults.add(0, contactLoadMore)
             _searchResults.value = searchResults
         } else {
-            _searchResults.value = response.searchResults
+            _searchResults.value = searchContactResponse.searchResults
         }
     }
 

@@ -4,7 +4,6 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
-import com.tokopedia.topchat.chatsearch.data.GetChatSearchResponse
 import com.tokopedia.topchat.chatsearch.data.GetMultiChatSearchResponse
 import com.tokopedia.topchat.chatsearch.view.uimodel.ContactLoadMoreUiModel
 import kotlinx.coroutines.CoroutineScope
@@ -28,7 +27,7 @@ class GetSearchQueryUseCase @Inject constructor(
     private val paramIsSeller = "isSeller"
 
     fun doSearch(
-            onSuccess: (GetChatSearchResponse, ContactLoadMoreUiModel?) -> Unit,
+            onSuccess: (GetMultiChatSearchResponse, ContactLoadMoreUiModel?) -> Unit,
             onError: (Throwable) -> Unit,
             keyword: String,
             page: Int
@@ -43,11 +42,10 @@ class GetSearchQueryUseCase @Inject constructor(
                         setGraphqlQuery(query)
                     }.executeOnBackground()
                     val contactLoadMore = createContactLoadMore(response)
-                    val searchContactResponse = GetChatSearchResponse(response.searchByName)
                     isSearching = false
-                    hasNext = response.contactHasNext
+                    hasNext = response.replyHasNext
                     withContext(dispatchers.Main) {
-                        onSuccess(searchContactResponse, contactLoadMore)
+                        onSuccess(response, contactLoadMore)
                     }
                 },
                 {
