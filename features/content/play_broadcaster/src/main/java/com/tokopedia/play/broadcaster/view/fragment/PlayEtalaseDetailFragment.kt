@@ -19,8 +19,11 @@ import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 import com.tokopedia.play.broadcaster.util.doOnPreDraw
 import com.tokopedia.play.broadcaster.util.scroll.EndlessRecyclerViewScrollListener
+import com.tokopedia.play.broadcaster.util.scroll.StopFlingScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
+import com.tokopedia.play.broadcaster.view.partial.BottomActionPartialView
+import com.tokopedia.play.broadcaster.view.partial.SelectedProductPagePartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
@@ -40,6 +43,11 @@ class PlayEtalaseDetailFragment @Inject constructor(
     private lateinit var tvInfo: TextView
     private lateinit var rvProduct: RecyclerView
 
+    private lateinit var selectedProductPage: SelectedProductPagePartialView
+    private lateinit var bottomActionView: BottomActionPartialView
+
+    private var shouldLoadFirst = true
+
     private val selectableProductAdapter = ProductSelectableAdapter(object : ProductSelectableViewHolder.Listener {
         override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
             viewModel.selectProduct(productId, isSelected)
@@ -58,10 +66,6 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
 
-//    override fun refresh() {
-//        selectableProductAdapter.notifyDataSetChanged()
-//    }
-
     override fun getScreenName(): String = "Etalase Detail"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,7 +76,6 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         postponeEnterTransition()
-//        bottomSheetCoordinator.showBottomAction(true)
         return inflater.inflate(R.layout.fragment_play_etalase_detail, container, false)
     }
 
@@ -86,6 +89,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
         super.onActivityCreated(savedInstanceState)
 
         observeProductsInSelectedEtalase()
+        observeSelectedProducts()
     }
 
     override fun onInterceptBackPressed(): Boolean {
@@ -97,6 +101,23 @@ class PlayEtalaseDetailFragment @Inject constructor(
             tvInfo = findViewById(R.id.tv_info)
             rvProduct = findViewById(R.id.rv_product)
         }
+
+        selectedProductPage = SelectedProductPagePartialView(view as ViewGroup, object : SelectedProductPagePartialView.Listener {
+            override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
+                viewModel.selectProduct(productId, isSelected)
+                onSelectedProductChanged()
+            }
+        })
+
+        bottomActionView = BottomActionPartialView(view as ViewGroup, object : BottomActionPartialView.Listener {
+            override fun onInventoryIconClicked() {
+                showSelectedProductPage()
+            }
+
+            override fun onNextButtonClicked() {
+                showCoverTitlePage()
+            }
+        })
     }
 
     private fun setupView(view: View) {
@@ -116,10 +137,19 @@ class PlayEtalaseDetailFragment @Inject constructor(
                 viewModel.loadEtalaseProducts(etalaseId, page)
             }
         }
-        scrollListener.loadMoreNextPage()
+
         rvProduct.addOnScrollListener(scrollListener)
+        rvProduct.addOnScrollListener(StopFlingScrollListener())
+
+        if (shouldLoadFirst) {
+            scrollListener.loadMoreNextPage()
+            shouldLoadFirst = false
+        }
     }
 
+    /**
+     * Observe
+     */
     private fun observeProductsInSelectedEtalase() {
         viewModel.observableSelectedEtalase.observe(viewLifecycleOwner, Observer {
             bottomSheetCoordinator.setupTitle(it.currentValue.name)
@@ -146,6 +176,30 @@ class PlayEtalaseDetailFragment @Inject constructor(
                 }
             }
         })
+    }
+
+    private fun observeSelectedProducts() {
+        viewModel.observableSelectedProducts.observe(viewLifecycleOwner, Observer {
+            bottomActionView.setupBottomActionWithProducts(it)
+            selectedProductPage.onSelectedProductsUpdated(it)
+        })
+    }
+
+    private fun onSelectedProductChanged() {
+        selectableProductAdapter.notifyDataSetChanged()
+    }
+
+    private fun showSelectedProductPage() {
+        if (selectedProductPage.isShown) return
+
+        selectedProductPage.setSelectedProductList(viewModel.selectedProductList)
+        selectedProductPage.show()
+    }
+
+    private fun showCoverTitlePage() {
+        bottomSheetCoordinator.navigateToFragment(
+                fragmentClass = PlayCoverTitleSetupFragment::class.java
+        )
     }
 
     /**

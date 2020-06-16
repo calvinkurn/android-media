@@ -93,10 +93,6 @@ class PlayEtalaseListFragment @Inject constructor(
         rvEtalase.adapter = etalaseAdapter
         rvEtalase.addItemDecoration(PlayGridTwoItemDecoration(requireContext()))
         rvEtalase.addOnScrollListener(StopFlingScrollListener())
-
-//        flSearchClick.setOnClickListener {
-//            etalaseSetupCoordinator.openSearchPage("", listOf(psbSearch))
-//        }
     }
 
     /**
