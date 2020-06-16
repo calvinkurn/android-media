@@ -322,14 +322,22 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         )
     }
 
-    fun eventClickPromoLastSeenItem(page: Int, promoCode: String){
+    fun eventClickPromoLastSeenItem(page: Int, promoCode: String) {
         sendEventByPage(
                 page,
                 EVENT_NAME_CLICK,
                 EventAction.SELECT_PROMO_CODE_FROM_LAST_SEEN,
                 promoCode
         )
+    }
 
+    fun eventDismissLastSeen(page: Int) {
+        sendEventByPage(
+                page,
+                EVENT_NAME_CLICK,
+                EventAction.DISMISS_LAST_SEEN,
+                ""
+        )
     }
 
 }

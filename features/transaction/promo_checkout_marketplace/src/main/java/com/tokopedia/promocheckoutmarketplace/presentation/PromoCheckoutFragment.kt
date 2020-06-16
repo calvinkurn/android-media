@@ -272,6 +272,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
         bottomsheetCloseButton?.let { bottomsheetCloseButton ->
             bottomsheetCloseButton.setOnClickListener {
+                viewModel.sendAnalyticsDismissLastSeen()
                 hidePromoCheckoutLastSeenBottomsheet()
             }
         }

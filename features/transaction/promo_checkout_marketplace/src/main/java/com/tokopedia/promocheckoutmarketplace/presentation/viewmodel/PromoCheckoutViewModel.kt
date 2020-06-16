@@ -1457,4 +1457,8 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     fun sendAnalyticsClickBeliTanpaPromo() {
         analytics.eventClickBeliTanpaPromo(getPageSource())
     }
+
+    fun sendAnalyticsDismissLastSeen() {
+        analytics.eventDismissLastSeen(getPageSource())
+    }
 }

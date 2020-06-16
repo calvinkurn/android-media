@@ -397,6 +397,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_BELI_TANPA_PROMO = "click beli tanpa promo";
         String VIEW_PROMO_MESSAGE = "view promo message";
         String SELECT_PROMO_CODE_FROM_LAST_SEEN = "select promo code from Last Seen";
+        String DISMISS_LAST_SEEN = "dismiss Last Seen";
 
         //OCC
         String ADD_PREFERENCE_OCC = "click tambah preferensi from tambah pilihan";
