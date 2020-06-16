@@ -141,6 +141,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
 
     private static ApplinkDelegate applinkDelegate;
     private Subscription clearNotifUseCase;
+    private static final String ENABLE_ASYNC_APPLINK_DELEGATE_CREATION = "android_async_applink_delegate_creation";
+
 
     public static ApplinkDelegate getApplinkDelegateInstance() {
         if (applinkDelegate == null) {
@@ -224,7 +226,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
     }
 
     public static void createApplinkDelegateInBackground(Context context){
-        String ENABLE_ASYNC_APPLINK_DELEGATE_CREATION = "android_async_applink_delegate_creation";
         WeaveInterface appLinkDelegateWeave = new WeaveInterface() {
             @NotNull
             @Override

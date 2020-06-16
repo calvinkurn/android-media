@@ -21,8 +21,8 @@ import static io.hansel.hanselsdk.HanselRequestType.init;
 
 public class DeferredResourceInitializer implements DeferredCallback{
     private static String RELATIVE_URL = "/android/res/";
+    private static final String ENABLE_ASYNC_REMOTERESOURCE_INIT = "android_async_remoteresource_init";
     public void initializeResourceDownloadManager(Context context){
-        String ENABLE_ASYNC_REMOTERESOURCE_INIT = "android_async_remoteresource_init";
         WeaveInterface libInitWeave = new WeaveInterface() {
             @NotNull
             @Override

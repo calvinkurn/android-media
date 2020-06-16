@@ -47,6 +47,7 @@ public abstract class MainApplication extends MainRouterApplication{
     private UserSession userSession;
     protected RemoteConfig remoteConfig;
     private String MAINAPP_ADDGAIDTO_BRANCH = "android_addgaid_to_branch";
+    private static final String ENABLE_ASYNC_REMOTECONFIG_MAINAPP_INIT = "android_async_remoteconfig_mainapp_init";
 
 
     public static MainApplication getInstance() {
@@ -54,7 +55,6 @@ public abstract class MainApplication extends MainRouterApplication{
     }
 
     protected void initRemoteConfig() {
-        String ENABLE_ASYNC_REMOTECONFIG_MAINAPP_INIT = "android_async_remoteconfig_mainapp_init";
         WeaveInterface remoteConfigWeave = new WeaveInterface() {
             @NotNull
             @Override

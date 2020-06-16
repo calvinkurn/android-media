@@ -222,6 +222,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private TetraDebugger tetraDebugger;
     private Iris mIris;
+    private static final String ENABLE_ASYNC_CMPUSHNOTIF_INIT = "android_async_cmpushnotif_init";
+    private static final String ENABLE_ASYNC_IRIS_INIT = "android_async_iris_init";
+
 
     @Override
     public void onCreate() {
@@ -237,7 +240,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private void performLibraryInitialisation(){
-        String ENABLE_ASYNC_CMPUSHNOTIF_INIT = "android_async_cmpushnotif_init";
         WeaveInterface initWeave = new WeaveInterface() {
             @NotNull
             @Override
@@ -280,7 +282,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private void initIris() {
         mIris = IrisAnalytics.Companion.getInstance(ConsumerRouterApplication.this);
-        String ENABLE_ASYNC_IRIS_INIT = "android_async_iris_init";
         WeaveInterface irisInitializeWeave = new WeaveInterface() {
             @NotNull
             @Override
