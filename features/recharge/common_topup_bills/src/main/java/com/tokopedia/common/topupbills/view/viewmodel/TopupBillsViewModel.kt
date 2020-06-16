@@ -36,7 +36,7 @@ import javax.inject.Inject
 class TopupBillsViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                               private val digitalCheckVoucherUseCase: DigitalCheckVoucherUseCase,
                                               val dispatcher: TopupBillsDispatchersProvider)
-    : BaseViewModel(dispatcher.Main) {
+    : BaseViewModel(dispatcher.IO) {
 
     private val _enquiryData = MutableLiveData<Result<TopupBillsEnquiryData>>()
     val enquiryData: LiveData<Result<TopupBillsEnquiryData>>
@@ -93,7 +93,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
 
     fun getMenuDetail(rawQuery: String, mapParam: Map<String, Any>, isLoadFromCloud: Boolean = false) {
         launchCatchError(block = {
-            val data = withContext(Dispatchers.IO) {
+            val data = withContext(dispatcher.IO) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogMenuDetailData::class.java, mapParam)
                 val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
                         .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
@@ -125,7 +125,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
 
     fun getFavoriteNumbers(rawQuery: String, mapParam: Map<String, Any>, isLoadFromCloud: Boolean = false) {
         launchCatchError(block = {
-            val data = withContext(Dispatchers.IO) {
+            val data = withContext(dispatcher.IO) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TopupBillsFavNumberData::class.java, mapParam)
                 val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
                         .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
@@ -176,7 +176,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
 
     fun processExpressCheckout(rawQuery: String, mapParam: Map<String, Any>) {
         launchCatchError(block = {
-            val data = withContext(Dispatchers.IO) {
+            val data = withContext(dispatcher.IO) {
                 val graphqlRequest = GraphqlRequest(rawQuery, RechargeExpressCheckout.Response::class.java, mapParam)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<RechargeExpressCheckout.Response>().response
