@@ -46,6 +46,7 @@
     <color name="gf_box_disabled_2">#B5BBC5</color>
     <color name="gf_box_white_80">#80FFFFFF</color>
     <color name="gf_box_text_shadow">#4A000000</color>
+    <color name="gf_n600">#40454C</color>
 
 
 </resources>

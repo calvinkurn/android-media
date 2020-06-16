@@ -161,6 +161,8 @@
                 app:typographyType="heading_5"
                 app:typographyWeight="reguler" />
         </LinearLayout>
+
+        <include layout="@layout/fragment_gift_box_inactive"/>
     </ViewFlipper>
 
     <include layout="@layout/gami_gift_box_toolbar" />

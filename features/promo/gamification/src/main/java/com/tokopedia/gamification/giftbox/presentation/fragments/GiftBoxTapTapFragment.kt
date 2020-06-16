@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity
 import com.tokopedia.gamification.di.ActivityContextModule
+import com.tokopedia.gamification.giftbox.InactiveImageLoader
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
 import com.tokopedia.gamification.giftbox.data.entities.GetCouponDetail
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
@@ -46,13 +47,23 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     lateinit var fmWaktuHabis: FrameLayout
     lateinit var rewardSummary: RewardSummaryView
 
+    //Inactive views
+    lateinit var tvInactiveTitle: Typography
+    lateinit var tvInactiveMessage: Typography
+    lateinit var imageInactive: AppCompatImageView
+    lateinit var btnInactiveFirst: Typography
+    lateinit var imageInactiveBg: AppCompatImageView
+
     var colorDim: Int = 0
     var colorBlackTransParent: Int = 0
     var hourCountDownTimer: CountDownTimer? = null
     var minuteCountDownTimer: CountDownTimer? = null
     var isTimeOut = false
+
     @RewardContainer.RewardState
     var rewardState: Int = RewardContainer.RewardState.COUPON_ONLY
+
+    val CONTAINER_INACTIVE = 2
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -201,9 +212,45 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                     if (it.data != null) {
 
                         //toolbar
-                        val toolbarTitle = it.data?.gamiTapEggHome?.tokensUser?.title
+                        val toolbarTitle = it.data.gamiTapEggHome?.tokensUser?.title
                         toolbarTitle?.let { title ->
                             tvTapHint.text = title
+                        }
+
+                        //for empty state
+                        val state = it.data.gamiTapEggHome?.tokensUser?.state
+                        state?.let { tokenUserState ->
+                            when (tokenUserState) {
+                                "empty" -> {
+                                    val title = it.data.gamiTapEggHome?.tokensUser?.text
+                                    val desc = it.data.gamiTapEggHome?.tokensUser?.desc
+
+                                    tvInactiveTitle.text = title
+                                    tvInactiveMessage.text = desc
+                                    val inactiveImageLoader = InactiveImageLoader()
+
+                                    val tokenAsset = it.data.gamiTapEggHome?.tokenAsset
+                                    if (tokenAsset != null) {
+                                        inactiveImageLoader.loadImages(imageInactive, imageInactiveBg, tokenAsset) {
+                                            loadInactiveContainer()
+                                        }
+                                    } else {
+                                        loadInactiveContainer()
+                                    }
+
+                                    val actionButtonList = it.data.gamiTapEggHome.actionButton
+                                    if (!actionButtonList.isNullOrEmpty()) {
+                                        btnInactiveFirst.text = actionButtonList[0].text
+                                    }
+
+                                }
+                                "lobby" -> {
+                                }
+                                "crackUnlimited" -> {
+                                }
+                                else -> {
+                                }
+                            }
                         }
 
 
@@ -306,6 +353,11 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         })
     }
 
+    private fun loadInactiveContainer() {
+        viewFlipper.displayedChild = CONTAINER_INACTIVE
+        loader.visibility = View.GONE
+    }
+
     fun setPositionOfViewsAtBoxOpen(@TokenUserState state: String) {
 
         giftBoxDailyView.fmGiftBox.doOnLayout { fmGiftBox ->
@@ -374,6 +426,12 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         imageWaktu = v.findViewById(R.id.image_waktu)
         fmWaktuHabis = v.findViewById(R.id.fm_waktu_habis)
         rewardSummary = v.findViewById(R.id.rewardSummary)
+        tvInactiveTitle = v.findViewById(R.id.tvInactiveTitle)
+        tvInactiveMessage = v.findViewById(R.id.tvInactiveMessage)
+        imageInactive = v.findViewById(R.id.imageInactive)
+        btnInactiveFirst = v.findViewById(R.id.btnInactiveFirst)
+        imageInactiveBg = v.findViewById(R.id.imageInactiveBg)
+
         super.initViews(v)
         setShadows()
         setDynamicSize()
@@ -393,6 +451,8 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
             tvProgressCount.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
             tvTimer.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
+            tvInactiveMessage.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
+            tvInactiveTitle.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
         }
     }
 

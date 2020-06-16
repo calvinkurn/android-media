@@ -35,4 +35,5 @@
     <dimen name="gami_rv_coupons_height">148dp</dimen>
     <dimen name="gami_rv_coupons_width">0dp</dimen>
     <dimen name="gami_dp_68">68dp</dimen>
+    <dimen name="gami_inactive_vertical_bias">0.5</dimen>
 </resources>

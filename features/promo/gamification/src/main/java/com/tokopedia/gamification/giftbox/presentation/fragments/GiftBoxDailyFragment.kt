@@ -664,8 +664,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                     frontImageUrl = ""
                 }
             }
-
-            fadeInActiveStateViews(frontImageUrl, bgUrl)
+            if (!bgUrl.isNullOrEmpty())
+                fadeInActiveStateViews(frontImageUrl, bgUrl)
         }
     }
 
