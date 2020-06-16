@@ -293,8 +293,4 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
 
     }
 
-    @Override
-    public Fragment getReviewSellerFragment() {
-        return null;
-    }
 }
