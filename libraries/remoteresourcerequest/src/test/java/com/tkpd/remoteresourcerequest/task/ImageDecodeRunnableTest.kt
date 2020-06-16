@@ -8,13 +8,13 @@ import org.junit.Before
 import org.junit.Test
 
 class ImageDecodeRunnableTest {
-    var task = mockk< ImageDecodeRunnable.TaskDecodeProperties>(relaxed = true)
+    private var task = mockk< ImageDecodeRunnable.TaskDecodeProperties>(relaxed = true)
     private lateinit var decodeRunnable : ImageDecodeRunnable
 
     @Before
     fun setup(){
         decodeRunnable =
-            ImageDecodeRunnable(task)
+                ImageDecodeRunnable(task)
     }
     @Test
     fun runTest(){

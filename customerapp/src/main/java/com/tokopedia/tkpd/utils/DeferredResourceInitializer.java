@@ -6,13 +6,14 @@ import com.tkpd.remoteresourcerequest.callback.DeferredCallback;
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
 
 import timber.log.Timber;
+
+import static com.tkpd.remoteresourcerequest.task.ResourceDownloadManager.MANAGER_TAG;
 
 public class DeferredResourceInitializer implements DeferredCallback {
     private static String RELATIVE_URL = "/android/res/";
@@ -33,13 +34,18 @@ public class DeferredResourceInitializer implements DeferredCallback {
                 .Companion.getManager()
                 .setBaseAndRelativeUrl(AccountHomeUrl.CDN_URL, RELATIVE_URL)
                 .addDeferredCallback(this)
-                .initialize(context, R.raw.url_list, BuildConfig.VERSION_NAME);
+                .initialize(context, R.raw.resources_description);
         return true;
     }
 
     @Override
     public void logDeferred(@NotNull String message) {
-        Timber.w("P1%s#%s", ResourceDownloadManager.MANAGER_TAG, message);
+        String[] msg = message.split(",");
+        if (msg.length > 2)
+            Timber.e("P1%s#%s;worker=%s;url=%s", MANAGER_TAG, msg[0], msg[1], msg[2]);
+        else
+            Timber.e("P1%s#%s;worker=%s;url=%s", MANAGER_TAG, message, null, null);
+
     }
 
     @Override

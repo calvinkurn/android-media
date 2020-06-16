@@ -3,7 +3,6 @@ package com.tkpd.remoteresourcerequest.view
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Build
-import android.text.TextUtils
 import android.util.AttributeSet
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
@@ -49,21 +48,22 @@ class DeferredImageView : AppCompatImageView {
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
-        context,
-        attrs,
-        defStyle
+            context,
+            attrs,
+            defStyle
     ) {
         init(attrs, defStyle)
     }
 
     private fun init(attrs: AttributeSet?, defStyle: Int) {
         val typedArray = context.obtainStyledAttributes(
-            attrs, R.styleable.DeferredImageView, defStyle, 0
+                attrs, R.styleable.DeferredImageView, defStyle, 0
         )
         mRemoteFileName = typedArray.getString(
-            R.styleable.DeferredImageView_remoteFileName
+                R.styleable.DeferredImageView_remoteFileName
         ) ?: mRemoteFileName
-        dpiSupportType = typedArray.getInt(R.styleable.DeferredImageView_imageDpiSupportType, 0)
+        dpiSupportType =
+                typedArray.getInt(R.styleable.DeferredImageView_imageDpiSupportType, 0)
         typedArray.recycle()
         downloadAndSetResource()
     }
@@ -76,16 +76,18 @@ class DeferredImageView : AppCompatImageView {
         //start with originally no image
         setImageDrawable(null)
         task = ResourceDownloadManager.getManager()
-            .startDownload(getDensitySupportType(), null)
+                .startDownload(getDensitySupportType(), null)
 
     }
 
-    private fun getDensitySupportType(): RequestedResourceType = ImageTypeMapper.getImageType(this)
+    private fun getDensitySupportType(): RequestedResourceType {
+        return ImageTypeMapper.getImageType(this)
+    }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         ResourceDownloadManager.getManager()
-            .stopDeferredImageViewRendering(task)
+                .stopDeferredImageViewRendering(task)
 
     }
 

@@ -24,13 +24,14 @@ class ResourceDownloadRunnable(
     private val downloadFailMessage = "Failed to download file: %s"
 
     interface TaskDownloadProperties {
-        val appVersion: String
+        fun resourceVersion(): String
         fun handleDownloadState(state: Int)
         fun getFileLocationFromDirectory(): File
         fun getDownloadUrl(): String
         fun setByteBuffer(byteArray: ByteArray?)
     }
 
+    @Throws(Exception::class)
     fun downloadFileSync() {
         var hasSomeExceptionOccurred = false
         /**
@@ -68,9 +69,7 @@ class ResourceDownloadRunnable(
                  * another thread) is still pending.
                  * Using Semaphore here ensures that Producer Thread (whichever starts the download
                  * first) should complete and till then Consumer Threads (those waiting to download
-                 * from the same url) should wait, otherwise, you may get SQLiteConstraintException
-                 * if more than 2 thread start the download for same url and try to create entry
-                 * for same url (PRIMARY_KEY in db).
+                 * from the same url) should wait.
                  *
                  * Example: Suppose 2 threads, T1 and T2, are requesting to download same resource
                  * (i.e. same [url])
@@ -157,7 +156,7 @@ class ResourceDownloadRunnable(
                         fileName,
                         filePath,
                         "",
-                        task.appVersion,
+                        task.resourceVersion(),
                         System.currentTimeMillis(),
                         System.currentTimeMillis()
                 )
@@ -171,7 +170,7 @@ class ResourceDownloadRunnable(
         try {
             out = FileOutputStream(file)
             out.write(byteArray)
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         } finally {
             check(file.length() == byteArray.size.toLong()) { CORRUPT_FILE_MESSAGE }

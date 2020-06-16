@@ -1,18 +1,21 @@
 package com.tkpd.remoteresourcerequest.type
 
 import android.util.DisplayMetrics
+import com.tkpd.remoteresourcerequest.utils.CSVArrayListHelper
 import com.tkpd.remoteresourcerequest.utils.Constants
 import com.tkpd.remoteresourcerequest.utils.DensityFinder
-import com.tkpd.remoteresourcerequest.utils.JsonArrayListHelper
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
 
 /** A class to defining any resource type to be downloaded from remote **/
 sealed class RequestedResourceType {
     internal val commonPath: String = "%s/%s"
-    abstract val relativeFilePath: String
+    internal var isRequestedFromWorker: Boolean = false
+    internal abstract val relativeFilePath: String
+    internal abstract var isUsedAnywhere: Boolean
+
     abstract var remoteFileName: String
     abstract var imageView: DeferredImageView?
-    internal var isRequestedFromWorker: Boolean = false
+    abstract var resourceVersion: String
 
     fun checkFileName() {
         require(remoteFileName.isNotEmpty()) {
@@ -23,14 +26,16 @@ sealed class RequestedResourceType {
 
 sealed class ImageType : RequestedResourceType() {
     abstract var densityType: Int
+    override var resourceVersion = ""
+    override var isUsedAnywhere = true
 }
 
 /**
  * @link MultiDPIImageType
  */
 data class MultiDPIImageType(
-    override var imageView: DeferredImageView?,
-    override var remoteFileName: String
+        override var imageView: DeferredImageView?,
+        override var remoteFileName: String
 ) : ImageType() {
 
     init {
@@ -49,13 +54,13 @@ data class MultiDPIImageType(
     }
 
     override val relativeFilePath =
-        commonPath.format(DensityFinder.densityUrlPath, remoteFileName)
+            commonPath.format(DensityFinder.densityUrlPath, remoteFileName)
     override var densityType = DensityFinder.decidedImageDensity
 }
 
 data class SingleDPIImageType(
-    override var imageView: DeferredImageView?,
-    override var remoteFileName: String
+        override var imageView: DeferredImageView?,
+        override var remoteFileName: String
 ) : ImageType() {
 
     init {
@@ -63,14 +68,14 @@ data class SingleDPIImageType(
     }
 
     override val relativeFilePath =
-        commonPath.format(JsonArrayListHelper.SINGLE_DPI_ARRAY, remoteFileName)
+            commonPath.format(CSVArrayListHelper.SINGLE_DPI_ARRAY, remoteFileName)
     override var densityType = DisplayMetrics.DENSITY_MEDIUM
 
 }
 
 data class NoDPIImageType(
-    override var imageView: DeferredImageView?,
-    override var remoteFileName: String
+        override var imageView: DeferredImageView?,
+        override var remoteFileName: String
 ) : ImageType() {
 
     init {
@@ -78,7 +83,7 @@ data class NoDPIImageType(
     }
 
     override val relativeFilePath =
-        commonPath.format(JsonArrayListHelper.NO_DPI_ARRAY, remoteFileName)
+            commonPath.format(CSVArrayListHelper.NO_DPI_ARRAY, remoteFileName)
     override var densityType = 0
 }
 
@@ -88,13 +93,17 @@ data class AudioType(override var remoteFileName: String) : RequestedResourceTyp
         checkFileName()
     }
 
+    override var isUsedAnywhere = true
     override val relativeFilePath: String = commonPath.format("raw", remoteFileName)
     override var imageView: DeferredImageView? = null
+    override var resourceVersion = ""
 }
 
 data class PendingType(override var remoteFileName: String) : RequestedResourceType() {
+    override var isUsedAnywhere = true
     override val relativeFilePath: String = remoteFileName
     override var imageView: DeferredImageView? = null
+    override var resourceVersion = ""
 }
 
 object ImageTypeMapper {

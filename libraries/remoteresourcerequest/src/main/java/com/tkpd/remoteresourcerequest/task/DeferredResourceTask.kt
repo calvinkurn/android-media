@@ -30,6 +30,7 @@ class DeferredResourceTask(
     private val downloadManager by lazy { resourceDownloadManager }
     internal var deferredImageView: WeakReference<DeferredImageView>? = null
     private var deferredTaskCallback: DeferredTaskCallback? = null
+    private var mResVersion: String = ""
 
     private var byteArray: ByteArray? = null
 
@@ -53,6 +54,7 @@ class DeferredResourceTask(
     ) {
         mUrl = url
         deferredImageView = resourceType.imageView?.let { WeakReference(it) }
+        mResVersion = resourceType.resourceVersion
         isRequestedFromWorker = resourceType.isRequestedFromWorker
         if (resourceType is ImageType)
             requestedDensity = resourceType.densityType
@@ -109,13 +111,12 @@ class DeferredResourceTask(
     }
 
     /**
-     *  Creating separate [appVersion] for separate task objects since in future it can be used
+     *  Creating separate [resourceVersion] for separate task objects since in future it can be used
      *  to purge specific file if it gets updated in server using remote config from firebase.
      *  Current behavior is similar to that of an apk update. Unless you don't update the app, you
      *  can't get updated resources.
      */
-    override val appVersion: String
-        get() = downloadManager.appVersion
+    override fun resourceVersion() = mResVersion
 
     override fun handleDecodeState(state: Int) {
         when (state) {
@@ -161,11 +162,16 @@ class DeferredResourceTask(
     }
 
     fun notifyDownloadComplete() {
-        deferredTaskCallback?.onTaskCompleted(mUrl, filePath = getFilePath())
+        deferredTaskCallback?.onTaskCompleted(
+                mUrl.substring(mUrl.lastIndexOf(URL_SEPARATOR) + 1),
+                filePath = getFilePath()
+        )
     }
 
     fun notifyDownloadFailed() {
-        deferredTaskCallback?.onTaskFailed(mUrl)
+        deferredTaskCallback?.onTaskFailed(
+                mUrl.substring(mUrl.lastIndexOf(URL_SEPARATOR) + 1)
+        )
     }
 
     private fun getFilePath(): String? = getFileLocationFromDirectory().absolutePath

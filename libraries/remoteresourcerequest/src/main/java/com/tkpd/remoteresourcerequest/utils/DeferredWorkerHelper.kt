@@ -5,69 +5,96 @@ import androidx.annotation.RawRes
 import com.tkpd.remoteresourcerequest.R
 import com.tkpd.remoteresourcerequest.database.ResourceDB
 import com.tkpd.remoteresourcerequest.type.RequestedResourceType
-import com.tkpd.remoteresourcerequest.utils.JsonArrayListHelper.Companion.getResourceNameList
-import org.json.JSONException
-import org.json.JSONObject
+import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream
+import java.io.InputStreamReader
 
-class DeferredWorkerHelper(val context: Context) {
+class DeferredWorkerHelper(
+        val context: Context
+) {
+
+    companion object {
+        private const val FILE_NAME_INDEX = 0
+        private const val FILE_TYPE_INDEX = 1
+        private const val FILE_VERSION_INDEX = 2
+        private const val IS_FILE_USED_ANYWHERE_INDEX = 3
+    }
 
     private var resourceDB: ResourceDB = ResourceDB.getDatabase(context)
 
     internal fun getPendingDeferredResourceURLs(
-        @RawRes resourceId: Int
+            @RawRes resourceId: Int
     ): List<RequestedResourceType> {
         val pendingList = arrayListOf<RequestedResourceType>()
-        val downloadedList = resourceDB.resourceEntryDao.getAllDownloadedResourceURLEntry()
-        val rawResList = getDeferredResourceFromFile(resourceId, getResourceNameList())
-        rawResList.forEach {
-            if (!downloadedList.contains(it.remoteFileName))
-                pendingList.add(it)
+        val downloadedList = resourceDB.resourceEntryDao.getAllResourceEntry()
+        val rawResList = getDeferredResourceFromFile(resourceId)
+
+        rawResList.forEach { type ->
+            var shouldAdd = true
+            for (entry in downloadedList) {
+                if (entry.url.contains(type.remoteFileName)) {
+                    shouldAdd = false
+
+                    /**
+                     * Need to check version saved in database for this [type]. If it is unmatched
+                     * then we purge corresponding entry from database and let the download start
+                     * from fresh. Also we need to delete db entries which are not used anywhere.
+                     */
+                    if (entry.appVersion != type.resourceVersion) {
+                        resourceDB.resourceEntryDao.deleteEntry(type.remoteFileName)
+                        shouldAdd = true
+                    } else if (!type.isUsedAnywhere) {
+                        resourceDB.resourceEntryDao.deleteEntry(type.remoteFileName)
+                        shouldAdd = false
+                    }
+                    break
+                } else shouldAdd = type.isUsedAnywhere
+            }
+            if (shouldAdd) {
+                pendingList.add(type)
+
+            }
         }
         return pendingList
     }
 
-    internal fun checkAppVersionAndManageDB(appVersion: String) {
-        val existingAppVersion = resourceDB.resourceEntryDao.getAppVersion() ?: return
-        if (appVersion != existingAppVersion) {
-            resourceDB.resourceEntryDao.deleteEntries()
-        }
-    }
-
-    @Throws(JSONException::class)
     private fun getDeferredResourceFromFile(
-        @RawRes resourceId: Int,
-        diffFileList: ArrayList<String>
+            @RawRes resourceId: Int
     ): ArrayList<RequestedResourceType> {
         val resUrl = arrayListOf<RequestedResourceType>()
-        val json: String?
+
+        var reader: BufferedReader? = null
+        var inputStream: InputStream? = null
         try {
-            val inputStream: InputStream = context.resources.openRawResource(resourceId)
-            val size: Int = inputStream.available()
-            val buffer = ByteArray(size)
-            inputStream.read(buffer)
-            inputStream.close()
-            json = String(buffer)
-            val jsonObject = JSONObject(json)
-            for (arrayName in diffFileList) {
-                try {
-                    val tempList = jsonObject.getJSONArray(arrayName)
-                    for (element in 0 until tempList.length()) {
-                        val url = tempList[element] as String
-                        val fileTypeObject =
-                            JsonArrayListHelper.getResourceTypeObject(arrayName, url)
-                        resUrl.add(fileTypeObject)
-                    }
-                } catch (exception: JSONException) {
-                    // this requested key doesn't exist in JSON file so throwing exception.
-                    throw JSONException(
-                        context.getString(R.string.msg_json_exception).format(arrayName)
-                    )
+            inputStream = context.resources.openRawResource(resourceId)
+            val inputStreamReader = InputStreamReader(inputStream)
+
+            reader = BufferedReader(inputStreamReader)
+            reader.readLine()
+            var line: String?
+            while (reader.readLine().also { line = it } != null) {
+                val row = line?.split(",")
+                if (!row.isNullOrEmpty()) {
+                    val fileTypeObject =
+                            CSVArrayListHelper.getResourceTypeObject(
+                                    row[FILE_NAME_INDEX],
+                                    row[FILE_TYPE_INDEX],
+                                    row[FILE_VERSION_INDEX],
+                                    row[IS_FILE_USED_ANYWHERE_INDEX]
+                            )
+
+                    resUrl.add(fileTypeObject)
                 }
+
             }
         } catch (e: IOException) {
-            e.printStackTrace()
+            throw IOException(
+                    context.getString(R.string.msg_unable_to_read_file)
+            )
+        } finally {
+            inputStream?.close()
+            reader?.close()
         }
         return resUrl
     }

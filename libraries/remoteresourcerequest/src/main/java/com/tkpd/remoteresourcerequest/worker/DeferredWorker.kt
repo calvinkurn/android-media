@@ -28,7 +28,6 @@ class DeferredWorker(val context: Context, params: WorkerParameters) :
 
         val list = deferredWorkerHelper.getPendingDeferredResourceURLs(resId)
 
-
         val deferredList: ArrayList<Deferred<Boolean>> = arrayListOf()
         coroutineScope {
             list.forEach {
@@ -47,13 +46,13 @@ class DeferredWorker(val context: Context, params: WorkerParameters) :
                         resId
                 )
         ) {
-            resourceDownloadManager.deferredCallback?.logDeferred(
+            resourceDownloadManager.logCurrentState(
                     context.getString(R.string.worker_completed_message).format(WORKER_TAG, list.size)
             )
             return Result.success()
 
         }
-        resourceDownloadManager.deferredCallback?.logDeferred(
+        resourceDownloadManager.logCurrentState(
                 context.getString(R.string.worker_retry_message).format(WORKER_TAG)
         )
         return Result.retry()
@@ -87,38 +86,15 @@ class DeferredWorker(val context: Context, params: WorkerParameters) :
 
         private const val RESOURCE_FILE_ID = "resource_file_id"
 
-        /**
-         * This [APP_VERSION] will be used to decide whether database needs to be cleared or not.
-         * By default it is kept as this library version_name i.e.
-         * [com.tkpd.remoteresourcerequest.BuildConfig.VERSION_NAME].
-         * For older apks, all their table entries will be cleared whenever first attempt to
-         * download any resource is done. This will allow this WorkManager to reschedule all
-         * downloads.
-         */
-        private const val APP_VERSION = "app_version"
         private const val WORKER_TAG = "DEFERRED_WORKER_#1"
 
         fun schedulePeriodicWorker(
                 context: Context,
                 resourceDownloadManager: ResourceDownloadManager,
-                @RawRes resourceId: Int,
-                appVersion: String
+                @RawRes resourceId: Int
         ) {
             try {
                 launch {
-                    /**
-                     * Need to check [appVersion] saved in database as the very first internal step.
-                     * If it is unmatched then we purge all entries from database and let the
-                     * download start from fresh as this will be the case when we update the
-                     * library/ update the app. Right now it has been handled in the download
-                     * thread. But this place will be more efficient. Also to extend from here we
-                     * can set firebase remote config for appversion and if needed, anytime we
-                     * can set a different appversion and all user's database will be refreshed.
-                     */
-
-                    val helper = DeferredWorkerHelper(context)
-                    helper.checkAppVersionAndManageDB(appVersion)
-
                     if (!isDeferredWorkCompleted(
                                     context,
                                     resourceId
@@ -133,26 +109,23 @@ class DeferredWorker(val context: Context, params: WorkerParameters) :
                                         TimeUnit.MILLISECONDS
                                 )
                                 .setInputData(
-                                        createInputData(
-                                                resourceId,
-                                                appVersion
-                                        )
+                                        createInputData(resourceId)
                                 )
                                 .build()
                         WorkManager.getInstance()
                                 .enqueueUniqueWork(WORKER_TAG, ExistingWorkPolicy.KEEP, pushWorker)
-                        resourceDownloadManager.deferredCallback?.logDeferred(
+                        resourceDownloadManager.logCurrentState(
                                 context.getString(R.string.worker_scheduled_message).format(WORKER_TAG)
                         )
                     } else {
-                        resourceDownloadManager.deferredCallback?.logDeferred(
+                        resourceDownloadManager.logCurrentState(
                                 context.getString(R.string.worker_schedule_not_required_message)
                                         .format(WORKER_TAG)
                         )
                     }
                 }
             } catch (ex: Exception) {
-                resourceDownloadManager.deferredCallback?.logDeferred(
+                resourceDownloadManager.logCurrentState(
                         context.getString(R.string.worker_schedule_not_required_message)
                                 .format(WORKER_TAG)
                 )
@@ -169,10 +142,9 @@ class DeferredWorker(val context: Context, params: WorkerParameters) :
                     .getPendingDeferredResourceURLs(resourceId).isEmpty()
         }
 
-        private fun createInputData(@RawRes resourceId: Int, appVersion: String): Data {
+        private fun createInputData(@RawRes resourceId: Int): Data {
             return Data.Builder()
                     .putInt(RESOURCE_FILE_ID, resourceId)
-                    .putString(APP_VERSION, appVersion)
                     .build()
         }
 
@@ -185,5 +157,3 @@ class DeferredWorker(val context: Context, params: WorkerParameters) :
     }
 
 }
-
-

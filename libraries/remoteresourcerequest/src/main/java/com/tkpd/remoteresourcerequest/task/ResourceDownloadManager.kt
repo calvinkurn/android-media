@@ -7,7 +7,6 @@ import android.os.Looper
 import android.os.Message
 import android.widget.ImageView
 import androidx.annotation.RawRes
-import com.tkpd.remoteresourcerequest.BuildConfig
 import com.tkpd.remoteresourcerequest.R
 import com.tkpd.remoteresourcerequest.callback.CallbackDispatcher
 import com.tkpd.remoteresourcerequest.callback.DeferredCallback
@@ -20,7 +19,6 @@ import com.tkpd.remoteresourcerequest.utils.DensityFinder
 import com.tkpd.remoteresourcerequest.worker.DeferredWorker
 import okhttp3.OkHttpClient
 import java.lang.ref.WeakReference
-import java.util.*
 import java.util.concurrent.BlockingQueue
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.ThreadPoolExecutor
@@ -48,7 +46,6 @@ class ResourceDownloadManager private constructor() {
 
 
     internal var deferredCallback: DeferredCallback? = null
-    internal var appVersion = BuildConfig.VERSION_NAME
 
     companion object {
 
@@ -73,7 +70,8 @@ class ResourceDownloadManager private constructor() {
         private var INSTANCE: ResourceDownloadManager? = null
 
         fun getManager(): ResourceDownloadManager {
-            val tempInstance = INSTANCE
+            val tempInstance =
+                    INSTANCE
             if (tempInstance != null) {
                 return tempInstance
             }
@@ -93,15 +91,13 @@ class ResourceDownloadManager private constructor() {
      **/
     fun initialize(
             context: Context,
-            @RawRes resourceId: Int,
-            appVersion: String = BuildConfig.VERSION_NAME
+            @RawRes resourceId: Int
     ): ResourceDownloadManager {
         initializeFields()
         this.context = WeakReference(context.applicationContext)
-        this.appVersion = appVersion
         roomDB = ResourceDB.getDatabase(context)
         initDensityPathToAppendInUrl(context)
-        scheduleWorker(context, resourceId, appVersion)
+        scheduleWorker(context, resourceId)
         return this
     }
 
@@ -122,18 +118,14 @@ class ResourceDownloadManager private constructor() {
         return this
     }
 
-    internal fun scheduleWorker(context: Context, resourceId: Int, appVersion: String) {
-        DeferredWorker.schedulePeriodicWorker(context, this, resourceId, appVersion)
+    internal fun scheduleWorker(context: Context, resourceId: Int) {
+        DeferredWorker
+                .schedulePeriodicWorker(context, this, resourceId)
     }
 
     private fun initDensityPathToAppendInUrl(context: Context): String {
         DensityFinder.initializeDensityPath(context)
-        val densityPath = DensityFinder.densityUrlPath
-        logCurrentState(
-                context.getString(R.string.log_device_density)
-                        .format(densityPath.toUpperCase(Locale.getDefault()))
-        )
-        return densityPath
+        return DensityFinder.densityUrlPath
     }
 
     private fun initializeFields() {
@@ -211,37 +203,37 @@ class ResourceDownloadManager private constructor() {
     fun handleMessage(message: Message): Boolean {
 
         val task = message.obj as DeferredResourceTask
-        var urlAndWorkerInfo = "%s, startedFromWorker = %s"
+        var urlAndWorkerInfo = "%s,%s"
         urlAndWorkerInfo =
-                urlAndWorkerInfo.format(task.getDownloadUrl(), task.isRequestedFromWorker)
+                urlAndWorkerInfo.format(task.isRequestedFromWorker, task.getDownloadUrl())
 
         when (message.what) {
             /******************** DOWNLOAD state handling starts ********************/
             DOWNLOAD_STARTED -> {
-                logCurrentState("DOWNLOAD_STARTED $urlAndWorkerInfo")
+                logCurrentState("DOWNLOAD_STARTED,$urlAndWorkerInfo")
                 return true
             }
             DOWNLOAD_SKIPPED -> {
-                logCurrentState("DOWNLOAD_SKIPPED $urlAndWorkerInfo")
+                logCurrentState("DOWNLOAD_SKIPPED,$urlAndWorkerInfo")
                 CallbackDispatcher.onCacheHit(deferredCallback, task.getDownloadUrl())
                 onDownloadCompleted(task)
                 return true
             }
             DOWNLOAD_COMPLETED -> {
-                logCurrentState("DOWNLOAD_COMPLETED $urlAndWorkerInfo")
+                logCurrentState("DOWNLOAD_COMPLETED,$urlAndWorkerInfo")
                 CallbackDispatcher.onDownloadState(
                         deferredCallback,
-                        task.getDownloadUrl(), false
+                        task.getDownloadUrl(), true
                 )
 
                 onDownloadCompleted(task)
                 return true
             }
             DOWNLOAD_FAILED -> {
-                logCurrentState("DOWNLOAD_FAILED $urlAndWorkerInfo")
+                logCurrentState("DOWNLOAD_FAILED,$urlAndWorkerInfo")
                 CallbackDispatcher.onDownloadState(
                         deferredCallback,
-                        task.getDownloadUrl(), true
+                        task.getDownloadUrl(), false
                 )
                 onDownloadFailed(task)
                 offerTask(task)
@@ -251,17 +243,17 @@ class ResourceDownloadManager private constructor() {
 
             /******************* DECODE state handling starts ***********************/
             DECODE_STARTED -> {
-                logCurrentState("DECODE_STARTED $urlAndWorkerInfo")
+                logCurrentState("DECODE_STARTED,$urlAndWorkerInfo")
                 return true
             }
             DECODE_COMPLETED -> {
-                logCurrentState("DECODE_COMPLETED $urlAndWorkerInfo")
+                logCurrentState("DECODE_COMPLETED,$urlAndWorkerInfo")
 
                 onDecodeCompleted(task)
                 return true
             }
             DECODE_FAILED -> {
-                logCurrentState("DECODE_FAILED $urlAndWorkerInfo")
+                logCurrentState("DECODE_FAILED,$urlAndWorkerInfo")
 
                 offerTask(task)
                 return true
@@ -269,7 +261,7 @@ class ResourceDownloadManager private constructor() {
             /******************* DECODE state handling ends *************************/
 
             TASK_COMPLETED -> {
-                logCurrentState("TASK_COMPLETED $urlAndWorkerInfo")
+                logCurrentState("TASK_COMPLETED,$urlAndWorkerInfo")
                 offerTask(task)
                 return true
             }
@@ -277,15 +269,20 @@ class ResourceDownloadManager private constructor() {
         return false
     }
 
-    private fun logCurrentState(logMessage: String) {
-        CallbackDispatcher.dispatchLog(deferredCallback, logMessage)
-    }
-
     private fun onDownloadFailed(task: DeferredResourceTask) {
         task.deferredImageView?.let { imageReference ->
             imageReference.get()?.setImageResource(R.drawable.ic_loading_error)
         }
         task.notifyDownloadFailed()
+    }
+
+    internal fun logCurrentState(logMessage: String) {
+        CallbackDispatcher.dispatchLog(deferredCallback, logMessage)
+    }
+
+    private fun offerTask(task: DeferredResourceTask) {
+        task.recycleTask()
+        resourceDownloadTaskQueue.offer(task)
     }
 
     private fun onDownloadCompleted(completedTask: DeferredResourceTask) {
@@ -321,11 +318,6 @@ class ResourceDownloadManager private constructor() {
 
     private fun startDecoding(task: DeferredResourceTask) {
         mDecodeTaskThreadPool.execute(task.getDecodeRunnable())
-    }
-
-    private fun offerTask(task: DeferredResourceTask) {
-        task.recycleTask()
-        resourceDownloadTaskQueue.offer(task)
     }
 
     fun stopDeferredImageViewRendering(task: DeferredResourceTask?) {

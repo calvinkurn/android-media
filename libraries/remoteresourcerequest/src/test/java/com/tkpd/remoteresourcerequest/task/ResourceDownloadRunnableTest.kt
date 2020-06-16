@@ -21,16 +21,17 @@ class ResourceDownloadRunnableTest {
     private var task = mockk<ResourceDownloadRunnable.TaskDownloadProperties>(relaxed = true)
     private lateinit var resourceDownloadRunnable: ResourceDownloadRunnable
     private lateinit var dao: ResourceEntryDao
+
     @Before
     fun setUp() {
         dao = mockk(relaxed = true)
         every { roomdb.resourceEntryDao } returns dao
         resourceDownloadRunnable = spyk(
-            ResourceDownloadRunnable(
-                task,
-                okHttpClient,
-                roomdb
-            )
+                ResourceDownloadRunnable(
+                        task,
+                        okHttpClient,
+                        roomdb
+                )
         )
     }
 

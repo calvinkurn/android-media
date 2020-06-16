@@ -21,21 +21,20 @@ import java.lang.ref.WeakReference
 class ResourceDownloadManagerTest {
 
     var task = mockk<DeferredResourceTask>(relaxed = true)
-    val context = mockk<Context>(relaxed = true)
-    val manager = spyk<ResourceDownloadManager>()
+    private val context = mockk<Context>(relaxed = true)
+    private val manager = spyk<ResourceDownloadManager>()
     lateinit var imageType: ImageType
-    val deferredCallback = mockk<DeferredCallback>(relaxed = true)
-    val taskCallback = mockk<DeferredTaskCallback>(relaxed = true)
+    private val deferredCallback = mockk<DeferredCallback>(relaxed = true)
+    private val taskCallback = mockk<DeferredTaskCallback>(relaxed = true)
     private val imageView = mockk<DeferredImageView>(relaxed = true)
-    val handler = mockk<Handler>()
+    private val handler = mockk<Handler>()
 
     @Before
     fun setUp() {
         every { task.deferredImageView } returns WeakReference(imageView)
         every { manager.getMainHandler() } returns handler
         every { manager.getNewDownloadTaskInstance() } returns task
-        every { manager.scheduleWorker(context, any(), any()) } just Runs
-
+        every { manager.scheduleWorker(context, any()) } just Runs
 
     }
 
@@ -47,12 +46,12 @@ class ResourceDownloadManagerTest {
     fun initialize() {
         every { manager.deferredCallback } returns deferredCallback
         manager.initialize(context, 1)
-        verify(exactly = 1) { manager.scheduleWorker(context, 1, BuildConfig.VERSION_NAME) }
+        verify(exactly = 1) { manager.scheduleWorker(context, 1) }
     }
 
     @Test
     fun setBaseAndRelativeUrl() {
-        manager.initialize(context, 1, "2.0")
+        manager.initialize(context, 1)
         imageType = MultiDPIImageType(null, "abc.png")
         manager.setBaseAndRelativeUrl("www.abc.com/", "relative/")
 
