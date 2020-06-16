@@ -1,6 +1,6 @@
 package com.tokopedia.shop.common.data.source.cloud.query
 
-internal object GetShopFreeShippingStatus {
+internal object GetShopFreeShippingEligibility {
 
     private const val userID = "\$userID"
     private const val shopIDs = "\$shopIDs"
@@ -14,8 +14,6 @@ internal object GetShopFreeShippingStatus {
                 shops{
                     shopID
                     status
-                    statusEligible
-                    statusSellerApproval
                 }
             }
         }
