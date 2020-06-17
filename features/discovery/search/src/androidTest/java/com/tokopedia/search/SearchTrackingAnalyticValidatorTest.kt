@@ -1,6 +1,5 @@
 package com.tokopedia.search
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +12,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.validator.Utils
 import com.tokopedia.analyticsdebugger.validator.core.*
@@ -29,68 +28,54 @@ import org.junit.Test
 import rx.Observable
 import rx.schedulers.Schedulers
 
+private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/search/search_product.json"
+
 internal class SearchTrackingAnalyticValidatorTest {
 
     @get:Rule
-    var activityRule = ActivityTestRule<SearchActivity>(SearchActivity::class.java, false, false)
+    var activityRule = ActivityTestRuleIntent(createIntent("samsung"), SearchActivity::class.java, false)
 
+    private fun createIntent(query: String): Intent {
+        return Intent(InstrumentationRegistry.getInstrumentation().targetContext, SearchActivity::class.java).also {
+            it.data = Uri.parse(ApplinkConstInternalDiscovery.SEARCH_RESULT + "?q=" + query)
+        }
+    }
+
+    private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val recyclerViewId = R.id.recyclerview
     private var recyclerView: RecyclerView? = null
     private var recyclerViewIdlingResource: IdlingResource? = null
-
-    private val dao: GtmLogDBSource by lazy { GtmLogDBSource(InstrumentationRegistry.getInstrumentation().targetContext) }
-    private val engine: ValidatorEngine by lazy { ValidatorEngine(dao) }
-
-    private fun setUpActivity() {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val intent = createIntent(context, "samsung")
-        activityRule.launchActivity(intent)
-    }
-
-    private fun createIntent(context: Context?, query: String): Intent? {
-        val intent = Intent(context, SearchActivity::class.java)
-        intent.data = Uri.parse(ApplinkConstInternalDiscovery.SEARCH_RESULT + "?q=" + query)
-        return intent
-    }
+    private val gtmLogDBSource: GtmLogDBSource by lazy { GtmLogDBSource(context) }
 
     @Before
     fun setUp() {
-        dao.deleteAll().subscribe()
+        recyclerView = activityRule.activity.findViewById(recyclerViewId)
+        recyclerViewIdlingResource = RecyclerViewIdlingResource(recyclerView)
+
+        IdlingRegistry.getInstance().register(recyclerViewIdlingResource)
+
+        gtmLogDBSource.deleteAll().subscribe()
     }
 
     @After
     fun tearDown() {
-        dao.deleteAll().subscribe()
-    }
-
-    @Test
-    fun testTracking() {
-        setUpActivity()
-
-        recyclerView = activityRule.activity.findViewById<RecyclerView>(recyclerViewId).also {
-            recyclerViewIdlingResource = RecyclerViewIdlingResource(it)
-        }
-
-        IdlingRegistry.getInstance().register(recyclerViewIdlingResource)
-
-        onPageLoaded {
-            performUserJourney()
-            assertTracking()
-        }
+        gtmLogDBSource.deleteAll().subscribe()
 
         IdlingRegistry.getInstance().unregister(recyclerViewIdlingResource)
     }
 
-    private fun onPageLoaded(onLoaded: () -> Unit) {
-        onLoaded()
+    @Test
+    fun testTracking() {
+        performUserJourney()
+        assertTracking()
     }
 
     private fun performUserJourney() {
         onView(withId(recyclerViewId)).check(matches(isDisplayed()))
 
-        val productListAdapter = recyclerView?.adapter as? ProductListAdapter ?: throw AssertionError("Adapter is not ${ProductListAdapter::class.java.simpleName}")
-        val organicItemPosition = productListAdapter.itemList.indexOfFirst { it is ProductItemViewModel && !it.isTopAds }
-        val topAdsItemPosition = productListAdapter.itemList.indexOfFirst { it is ProductItemViewModel && it.isTopAds }
+        val productListAdapter = recyclerView.getProductListAdapter()
+        val topAdsItemPosition = productListAdapter.itemList.getFirstTopAdsProductPosition()
+        val organicItemPosition = productListAdapter.itemList.getFirstOrganicProductPosition()
 
         onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<ProductItemViewHolder>(topAdsItemPosition, click()))
         onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<ProductItemViewHolder>(organicItemPosition, click()))
@@ -98,18 +83,43 @@ internal class SearchTrackingAnalyticValidatorTest {
         activityRule.activity.finish()
     }
 
-    private fun assertTracking() {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val searchProductAnalyticValidatorQuery = Utils.getJsonDataFromAsset(context, "tracker/search/search_product.json")
-        searchProductAnalyticValidatorQuery ?: throw AssertionError("Validator Query not found")
+    private fun RecyclerView?.getProductListAdapter(): ProductListAdapter {
+        val productListAdapter = this?.adapter as? ProductListAdapter
 
-        val testCases = searchProductAnalyticValidatorQuery.toJsonMap().getQuery().map { it.toDefaultValidator() }
+        if (productListAdapter == null) {
+            val detailMessage = "Adapter is not ${ProductListAdapter::class.java.simpleName}"
+            throw AssertionError(detailMessage)
+        }
+
+        return productListAdapter
+    }
+
+    private fun List<Visitable<*>>.getFirstTopAdsProductPosition(): Int {
+        return indexOfFirst { it is ProductItemViewModel && it.isTopAds }
+    }
+
+    private fun List<Visitable<*>>.getFirstOrganicProductPosition(): Int {
+        return indexOfFirst { it is ProductItemViewModel && !it.isTopAds }
+    }
+
+    private fun assertTracking() {
+        val testCases = getTestCases()
+        val engine = ValidatorEngine(gtmLogDBSource)
+
         engine.compute(testCases).test {
             it.assertSuccessEvent()
         }
     }
 
-    private fun Map<String, Any>.getQuery(): List<Map<String, Any>> {
+    private fun getTestCases(): List<Validator> {
+        val searchProductAnalyticValidator =
+                Utils.getJsonDataFromAsset(context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
+                        ?: throw AssertionError("Validator Query not found")
+
+        return searchProductAnalyticValidator.toJsonMap().getQueryMap().map { it.toDefaultValidator() }
+    }
+
+    private fun Map<String, Any>.getQueryMap(): List<Map<String, Any>> {
         return this["query"] as List<Map<String, Any>>
     }
 

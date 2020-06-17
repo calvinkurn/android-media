@@ -6,21 +6,28 @@ import androidx.test.espresso.IdlingResource
 private const val NAME = "Recycler view idling resource"
 
 internal class RecyclerViewIdlingResource(
-        private val recyclerView: RecyclerView,
+        private val recyclerView: RecyclerView?,
         private val name: String? = NAME
 ): IdlingResource {
+
     private var resourceCallback: IdlingResource.ResourceCallback? = null
 
     override fun getName() = name
 
     override fun isIdleNow(): Boolean {
-        val isIdle = recyclerView.adapter != null && recyclerView.adapter?.itemCount ?: 0 > 0
+        val recyclerView = recyclerView ?: return true
+
+        val isIdle = recyclerView.adapter.hasItem()
         if (isIdle) resourceCallback?.onTransitionToIdle()
 
         return isIdle
     }
 
+    private fun RecyclerView.Adapter<*>?.hasItem(): Boolean {
+        return this != null && this.itemCount > 0
+    }
+
     override fun registerIdleTransitionCallback(callback: IdlingResource.ResourceCallback?) {
-        this.resourceCallback = callback;
+        this.resourceCallback = callback
     }
 }
