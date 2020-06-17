@@ -19,9 +19,9 @@ class BottomActionPartialView(
         listener: Listener
 ) : PartialView(container, R.id.bottom_sheet_action) {
 
-    private val ivInventory: ImageView = container.findViewById(R.id.iv_inventory)
-    private val btnAction: UnifyButton = container.findViewById(R.id.btn_action)
-    private val tvBadgeCount: TextView = container.findViewById(R.id.tv_badge_count)
+    private val ivInventory: ImageView = findViewById(R.id.iv_inventory)
+    private val btnAction: UnifyButton = findViewById(R.id.btn_action)
+    private val tvBadgeCount: TextView = findViewById(R.id.tv_badge_count)
 
     init {
         ivInventory.setOnClickListener { listener.onInventoryIconClicked() }

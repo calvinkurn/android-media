@@ -1,42 +1,30 @@
 package com.tokopedia.play.broadcaster.view.fragment
 
+import android.graphics.Bitmap
+import android.graphics.RectF
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.text.Editable
-import android.text.InputFilter
-import android.text.SpannableStringBuilder
-import android.text.Spanned.SPAN_INCLUSIVE_EXCLUSIVE
-import android.text.TextWatcher
-import android.text.style.ForegroundColorSpan
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.transition.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.CoverSourceEnum
-import com.tokopedia.play.broadcaster.ui.model.CoverStarterEnum
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastChooseCoverBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastCoverFromGalleryBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
+import com.tokopedia.play.broadcaster.view.partial.CoverCropPartialView
+import com.tokopedia.play.broadcaster.view.partial.CoverSetupPartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastCoverSetupViewModel
-import com.tokopedia.play.broadcaster.view.widget.PlayCropImageView
 import com.yalantis.ucrop.callback.BitmapCropCallback
-import com.yalantis.ucrop.util.RectUtils
+import com.yalantis.ucrop.model.ExifInfo
 import kotlinx.android.synthetic.*
-import kotlinx.android.synthetic.main.fragment_play_cover_title_setup.*
-import kotlinx.android.synthetic.main.layout_play_cover_crop.*
 import kotlinx.android.synthetic.main.layout_play_cover_title_setup.*
 import java.io.File
 import javax.inject.Inject
@@ -48,24 +36,16 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
     : PlayBaseSetupFragment(), PlayBroadcastChooseCoverBottomSheet.Listener,
         PlayBroadcastCoverFromGalleryBottomSheet.Listener {
 
-    var listenerForCropOnly: ListenerForCropOnly? = null
-
     private var selectedImageUrlList = arrayListOf<Pair<Long, String>>()
     private lateinit var viewModel: PlayBroadcastCoverSetupViewModel
 
     private var selectedCoverUri: Uri? = null
     private var coverSource: CoverSourceEnum = CoverSourceEnum.NONE
-    private var starterState: CoverStarterEnum = CoverStarterEnum.NORMAL
 
-    private lateinit var etCoverTitle: EditText
-    private lateinit var tvCoverTitleLabel: TextView
-    private lateinit var tvCoverTitleCounter: TextView
-    private lateinit var ivCoverImage: ImageView
-    private lateinit var llChangeCover: LinearLayout
     private lateinit var bottomSheetHeader: PlayBottomSheetHeader
 
-    private val liveTitle: String
-        get() = etCoverTitle.text?.toString() ?: ""
+    private lateinit var coverSetupView: CoverSetupPartialView
+    private lateinit var coverCropView: CoverCropPartialView
 
     override fun getScreenName(): String = "Play Cover Title Setup"
 
@@ -135,65 +115,79 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
     }
 
     private fun initView(view: View) {
-        with (view) {
-            etCoverTitle = findViewById(R.id.et_cover_title)
-            tvCoverTitleLabel = findViewById(R.id.tv_cover_title_label)
-            tvCoverTitleCounter = findViewById(R.id.tv_cover_title_counter)
-            ivCoverImage = findViewById(R.id.iv_cover_image)
-            llChangeCover = findViewById(R.id.ll_change_cover)
+        with(view) {
             bottomSheetHeader = findViewById(R.id.bottom_sheet_header)
         }
+
+        coverSetupView = CoverSetupPartialView(
+                container = view as ViewGroup,
+                dataSource = object : CoverSetupPartialView.DataSource {
+                    override fun isValidCoverTitle(coverTitle: String): Boolean {
+                        return viewModel.isValidCoverTitle(coverTitle)
+                    }
+
+                    override fun getCurrentCoverUri(): Uri? {
+                        return selectedCoverUri
+                    }
+                },
+                listener = object : CoverSetupPartialView.Listener {
+                    override fun onImageAreaClicked(view: CoverSetupPartialView) {
+                        onChangeCoverClicked()
+                    }
+
+                    override fun onNextButtonClicked(view: CoverSetupPartialView) {
+                        //next
+                    }
+                }
+        )
+
+        coverCropView = CoverCropPartialView(view, object : CoverCropPartialView.Listener {
+            override fun onAddButtonClicked(
+                    view: CoverCropPartialView,
+                    imageInputPath: String,
+                    cropRect: RectF,
+                    currentImageRect: RectF,
+                    currentScale: Float,
+                    currentAngle: Float,
+                    exifInfo: ExifInfo,
+                    viewBitmap: Bitmap
+            ) {
+                viewModel.cropImage(requireContext(),
+                        imageInputPath,
+                        cropRect,
+                        currentImageRect,
+                        currentScale,
+                        currentAngle,
+                        exifInfo,
+                        viewBitmap,
+                        object : BitmapCropCallback {
+                            override fun onBitmapCropped(resultUri: Uri, offsetX: Int, offsetY: Int, imageWidth: Int, imageHeight: Int) {
+                                val finalResultUri = viewModel.validateImageMinSize(resultUri)
+                                onImageCropped(finalResultUri)
+                            }
+
+                            override fun onCropFailure(t: Throwable) {
+                                t.printStackTrace()
+                            }
+                        }
+                )
+            }
+
+            override fun onChangeButtonClicked(view: CoverCropPartialView) {
+                onCancelCropImage()
+            }
+        })
     }
 
     private fun setupView() {
         bottomSheetHeader.setHeader(getString(R.string.play_prepare_cover_title_title), isRoot = false)
 
-        llChangeCover.setOnClickListener { onChangeCoverClicked() }
-        ivCoverImage.setOnClickListener { onChangeCoverClicked() }
-
-        btnPlayPrepareBroadcastNext.setOnClickListener {
-            onFinishCoverTitleSetup()
-        }
-
         setupCoverTitleField()
-
-        tvCoverTitleLabel.text = getCoverTitleLabelText(tvCoverTitleLabel.text.toString(), liveTitle)
-
-        setupNextButton()
         setupCoverLabelText()
-
-        if (starterState == CoverStarterEnum.CROP_ONLY) {
-            showCoverCropLayout()
-            if (coverSource == CoverSourceEnum.GALLERY || coverSource == CoverSourceEnum.CAMERA) {
-                selectedCoverUri?.let {
-                    renderCoverCropLayout(it)
-                }
-            } else {
-                viewModel.getOriginalImageUrl(requireContext(),
-                        selectedImageUrlList[0].first,
-                        selectedImageUrlList[0].second)
-            }
-        }
     }
 
     private fun setupCoverTitleField() {
-        etCoverTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N0))
-        etCoverTitle.setHintTextColor(resources.getColor(R.color.play_white_68))
-        etCoverTitle.setSingleLine(false)
-        etCoverTitle.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
-            }
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(text: CharSequence, p1: Int, p2: Int, p3: Int) {
-                setupTitleLabel(text)
-                setupTitleCounter()
-                setupNextButton()
-            }
-        })
-        etCoverTitle.filters = arrayOf(InputFilter.LengthFilter(viewModel.maxTitleChars))
     }
 
     private fun onChangeCoverClicked() {
@@ -204,90 +198,41 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
     }
 
     private fun showCoverCropLayout() {
-        containerPlayCoverTitleSetup.visibility = View.GONE
-        containerPlayCoverCropSetup.visibility = View.VISIBLE
+        coverSetupView.hide()
+        coverCropView.show()
     }
 
     private fun hideCoverCropLayout() {
-        containerPlayCoverTitleSetup.visibility = View.VISIBLE
-        containerPlayCoverCropSetup.visibility = View.GONE
+        coverSetupView.show()
+        coverCropView.hide()
     }
 
     private fun renderCoverTitleLayout(resultImageUri: Uri?) {
         resultImageUri?.let {
-            selectedCoverUri = resultImageUri
-            ivCoverImage.setImageURI(selectedCoverUri)
+            selectedCoverUri = it
+            coverSetupView.setImage(it)
         }
         setupCoverLabelText()
-        setupNextButton()
+        coverSetupView.updateButtonState()
     }
 
     private fun renderCoverCropLayout(imageUri: Uri) {
-        containerPlayCoverCropImage.removeAllViews()
-        val ivPlayCoverCropImage = PlayCropImageView(requireContext())
-        ivPlayCoverCropImage.setImageUri(imageUri, null)
-        ivPlayCoverCropImage.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT)
-        ivPlayCoverCropImage.isScaleEnabled = true
-        ivPlayCoverCropImage.isRotateEnabled = false
-
-        // need delay until onDraw for overlay is called to get the crop points
-        Handler().postDelayed({
-            ivPlayCoverCropImage.setCropRect(ivPlayCoverCropOverlay.getCropRect())
-        }, SECONDS)
-
-        containerPlayCoverCropImage.addView(ivPlayCoverCropImage)
-
-        btnPlayCoverCropNext.setOnClickListener {
-            context?.let { context ->
-                ivPlayCoverCropImage.viewBitmap?.let {
-                    viewModel.cropImage(context,
-                            ivPlayCoverCropImage.imageInputPath,
-                            ivPlayCoverCropOverlay.getCropRect(),
-                            RectUtils.trapToRect(ivPlayCoverCropImage.getCurrentImageCorners()),
-                            ivPlayCoverCropImage.currentScale,
-                            ivPlayCoverCropImage.currentAngle,
-                            ivPlayCoverCropImage.exifInfo,
-                            it, object : BitmapCropCallback {
-                        override fun onBitmapCropped(resultUri: Uri, offsetX: Int, offsetY: Int, imageWidth: Int, imageHeight: Int) {
-                            val finalResultUri = viewModel.validateImageMinSize(resultUri)
-                            onImageCropped(finalResultUri)
-                        }
-
-                        override fun onCropFailure(t: Throwable) {
-                            t.printStackTrace()
-                        }
-                    })
-                }
-            }
-        }
-        btnPlayCoverCropChange.setOnClickListener {
-            containerPlayCoverCropImage.removeAllViews()
-            onCancelCropImage()
-        }
+        coverCropView.setImageForCrop(imageUri)
     }
 
     private fun onCancelCropImage() {
         hideCoverCropLayout()
         renderCoverTitleLayout(null)
-        if (starterState == CoverStarterEnum.NORMAL) {
-            when (coverSource) {
-                CoverSourceEnum.GALLERY -> onChooseFromGalleryClicked()
-                else -> onChangeCoverClicked()
-            }
-        } else if (starterState == CoverStarterEnum.CROP_ONLY) {
-            listenerForCropOnly?.onCancelCrop(coverSource)
+        when (coverSource) {
+            CoverSourceEnum.GALLERY -> onChooseFromGalleryClicked()
+            else -> onChangeCoverClicked()
         }
     }
 
     private fun onImageCropped(resultImageUri: Uri) {
         selectedCoverUri = resultImageUri
-        if (starterState == CoverStarterEnum.CROP_ONLY) {
-            onFinishCoverTitleSetup()
-        } else {
-            hideCoverCropLayout()
-            renderCoverTitleLayout(resultImageUri)
-        }
+        hideCoverCropLayout()
+        renderCoverTitleLayout(resultImageUri)
     }
 
     private fun setupCoverLabelText() {
@@ -298,43 +243,10 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
         }
     }
 
-    private fun setupTitleLabel(currentTitle: CharSequence) {
-        val currentLabel = tvCoverTitleLabel.text.toString()
-        val newText = getCoverTitleLabelText(currentLabel, currentTitle.toString())
-        if (currentLabel != newText.toString()) tvCoverTitleLabel.text = newText
-    }
-
-    private fun setupTitleCounter() {
-        tvCoverTitleCounter.text = getString(R.string.play_prepare_cover_title_counter,
-                liveTitle.length, viewModel.maxTitleChars)
-    }
-
-    private fun setupNextButton() {
-        btnPlayPrepareBroadcastNext.isEnabled = liveTitle.isNotEmpty() && selectedCoverUri != null
-    }
-
     private fun onFinishCoverTitleSetup() {
         if (::viewModel.isInitialized && selectedCoverUri != null) {
             viewModel.uploadCover(File(selectedCoverUri?.path).absolutePath)
         }
-    }
-
-    private fun getCoverTitleLabelText(label: String, coverTitle: String): CharSequence {
-        val isCoverValid = viewModel.isValidCoverTitle(coverTitle)
-        val asterisk = '*'
-        val finalText =
-                if (!isCoverValid && label.last() != asterisk) "$label*"
-                else if (isCoverValid && label.last() == asterisk) label.removeSuffix(asterisk.toString())
-                else label
-
-        val spanBuilder = SpannableStringBuilder(finalText)
-        if (spanBuilder.contains(asterisk)) {
-            spanBuilder.setSpan(ForegroundColorSpan(
-                    MethodChecker.getColor(requireContext(), R.color.Red_R500)
-            ), finalText.indexOf(asterisk), finalText.length, SPAN_INCLUSIVE_EXCLUSIVE)
-        }
-
-        return spanBuilder
     }
 
     //region observe
@@ -359,11 +271,7 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
         viewModel.imageEcsLink.observe(viewLifecycleOwner, Observer {
             selectedCoverUri?.let { selectedCover ->
                 if (it.isNotEmpty()) {
-                    if (starterState == CoverStarterEnum.CROP_ONLY) {
-                        listenerForCropOnly?.onFinishedCrop(selectedCover, it)
-                    } else if (etCoverTitle.text?.isNotEmpty() == true) {
-                        bottomSheetCoordinator.saveCoverAndTitle(selectedCover, it, liveTitle)
-                    }
+
                 }
             }
         })
@@ -403,16 +311,9 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
                 .setDuration(450)
     }
 
-    interface ListenerForCropOnly {
-        fun onFinishedCrop(imageUri: Uri, imageUrl: String)
-        fun onCancelCrop(coverSource: CoverSourceEnum)
-    }
-
     companion object {
         const val EXTRA_STARTER_STATE = "EXTRA_STARTER_STATE"
         const val EXTRA_COVER_SOURCE = "EXTRA_COVER_SOURCE"
         const val EXTRA_COVER_URI = "EXTRA_COVER_URI"
-
-        private const val SECONDS: Long = 1000
     }
 }
