@@ -1,35 +1,58 @@
 package com.tokopedia.topchat.chatsearch.view.adapter.viewholder
 
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder
 import com.tokopedia.topchat.chatsearch.view.uimodel.ChatReplyUiModel
+import com.tokopedia.topchat.common.util.ChatHelper
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
 class ItemSearchChatReplyViewHolder(itemView: View?) : AbstractViewHolder<ChatReplyUiModel>(itemView) {
 
-    private var counter: Typography? = itemView?.findViewById(R.id.unread_counter)
-    private var username: Typography? = itemView?.findViewById(R.id.user_name)
-    private var message: Typography? = itemView?.findViewById(R.id.message)
-    private var time: Typography? = itemView?.findViewById(R.id.time)
-    private var thumbnail: SquareImageView? = itemView?.findViewById(R.id.thumbnail)
+    private val userName: Typography? = itemView?.findViewById(R.id.user_name)
+    private val thumbnail: ImageView? = itemView?.findViewById(R.id.thumbnail)
+    private val message: TextView? = itemView?.findViewById(R.id.message)
+    private val unreadCounter: Typography? = itemView?.findViewById(R.id.unread_counter)
+    private val time: Typography? = itemView?.findViewById(R.id.time)
+    private val label: Label? = itemView?.findViewById(R.id.user_label)
 
     override fun bind(element: ChatReplyUiModel) {
-        hideUnusedElement()
+        bindUnreadCounter(element)
         bindUserImageProfile(element)
         bindUserName(element)
         bindLastMessage(element)
         bindTimeStamp(element)
+        bindLabel(element)
         bindClick(element)
     }
 
-    private fun hideUnusedElement() {
+    private fun bindUnreadCounter(element: ChatReplyUiModel) {
+        unreadCounter?.hide()
+    }
 
+    private fun bindLabel(element: ChatReplyUiModel) {
+        when (element.tag) {
+            ChatItemListViewHolder.OFFICIAL_TAG -> {
+                label?.text = element.tag
+                label?.setLabelType(Label.GENERAL_LIGHT_BLUE)
+                label?.show()
+            }
+            ChatItemListViewHolder.SELLER_TAG -> {
+                label?.text = element.tag
+                label?.setLabelType(Label.GENERAL_LIGHT_GREEN)
+                label?.show()
+            }
+            else -> label?.hide()
+        }
     }
 
     private fun bindUserImageProfile(element: ChatReplyUiModel) {
@@ -37,8 +60,8 @@ class ItemSearchChatReplyViewHolder(itemView: View?) : AbstractViewHolder<ChatRe
     }
 
     private fun bindUserName(element: ChatReplyUiModel) {
-        username?.text = element.contact.attributes.name
-        username?.setWeight(Typography.REGULAR)
+        userName?.text = element.contact.attributes.name
+        userName?.setWeight(Typography.REGULAR)
     }
 
     private fun bindLastMessage(element: ChatReplyUiModel) {
@@ -46,7 +69,8 @@ class ItemSearchChatReplyViewHolder(itemView: View?) : AbstractViewHolder<ChatRe
     }
 
     private fun bindTimeStamp(element: ChatReplyUiModel) {
-        time?.hide()
+        if (element.timeStamp.isEmpty()) return
+        time?.text = ChatHelper.convertToRelativeDate(element.timeStamp)
     }
 
     private fun bindClick(element: ChatReplyUiModel) {

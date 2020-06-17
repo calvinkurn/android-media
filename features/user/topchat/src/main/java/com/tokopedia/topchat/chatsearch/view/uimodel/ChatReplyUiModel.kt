@@ -11,6 +11,8 @@ data class ChatReplyUiModel(
         val contact: ContactProfile = ContactProfile(),
         @SerializedName("lastMessage")
         val lastMessage: String = "",
+        @SerializedName("createTimeStr")
+        val timeStamp: String = "",
         @SerializedName("msgId")
         val msgId: Int = 0,
         @SerializedName("productId")
@@ -19,6 +21,7 @@ data class ChatReplyUiModel(
         val replyId: Int = 0
 ) : Visitable<ChatSearchTypeFactory> {
 
+    val tag get() = contact.attributes.tag
     val thumbnailUrl: String get() = contact.attributes.thumbnail
 
     override fun type(typeFactory: ChatSearchTypeFactory): Int {
