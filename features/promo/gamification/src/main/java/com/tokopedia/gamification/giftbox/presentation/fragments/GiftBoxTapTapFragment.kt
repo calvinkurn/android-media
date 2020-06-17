@@ -217,6 +217,13 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                         toolbarTitle?.let { title ->
                             tvTapHint.text = title
                         }
+                        val tokenUser = it.data.gamiTapEggHome?.tokensUser
+                        tokenUser?.apply {
+                            viewModel.campaignId = campaignID
+
+                            if (!tokenUserID.isNullOrEmpty())
+                                viewModel.tokenId = tokenUserID
+                        }
 
                         //for empty state
                         val state = it.data.gamiTapEggHome?.tokensUser?.state

@@ -24,7 +24,7 @@ class GiftBoxTapTapViewModel @Inject constructor(@Named(IO) workerDispatcher: Co
     @Volatile
     var tokenId: String = ""
     @Volatile
-    var campaignId: String = ""
+    var campaignId: Long = 0
 
     val giftHomeLiveData: MutableLiveData<LiveDataResult<TapTapBaseEntity>> = MutableLiveData()
     val giftCrackLiveData: MutableLiveData<LiveDataResult<Pair<CouponDetailResponse?, ResponseCrackResultEntity>>> = MutableLiveData()
@@ -41,7 +41,7 @@ class GiftBoxTapTapViewModel @Inject constructor(@Named(IO) workerDispatcher: Co
 
     fun crackGiftBox() {
         launchCatchError(block = {
-            val response = crackUseCase.getResponse(crackUseCase.getQueryParams(tokenId, campaignId))
+            val response = crackUseCase.getResponse(crackUseCase.getQueryParams(tokenId, campaignId.toLong()))
             val couponDetail = composeApi(response)
             giftCrackLiveData.postValue(LiveDataResult.success(Pair(couponDetail, response)))
         }, onError = {
