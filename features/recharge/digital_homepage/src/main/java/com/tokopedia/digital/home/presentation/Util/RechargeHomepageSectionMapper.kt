@@ -3,9 +3,7 @@ package com.tokopedia.digital.home.presentation.Util
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.digital.home.model.*
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageViewModel
-import com.tokopedia.home_component.model.ChannelGrid
-import com.tokopedia.home_component.model.ChannelHeader
-import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.model.*
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 
 object RechargeHomepageSectionMapper {
@@ -31,6 +29,7 @@ object RechargeHomepageSectionMapper {
         return DynamicLegoBannerDataModel(ChannelModel(
                 section.id.toString(),
                 section.id.toString(),
+                channelConfig = ChannelConfig(DynamicChannelLayout.LAYOUT_6_IMAGE),
                 channelHeader = ChannelHeader(name = section.title, subtitle = section.subTitle),
                 channelGrids = section.items.map { item ->
                     ChannelGrid(item.id.toString(), imageUrl = item.mediaUrl, applink = item.applink)

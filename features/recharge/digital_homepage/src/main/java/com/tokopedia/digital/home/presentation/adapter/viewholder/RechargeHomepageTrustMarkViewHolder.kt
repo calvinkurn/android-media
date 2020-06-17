@@ -30,6 +30,7 @@ class RechargeHomepageTrustMarkViewHolder(itemView: View?, val listener: OnItemB
                 while (rv_digital_homepage_trust_mark.itemDecorationCount > 0) {
                     rv_digital_homepage_trust_mark.removeItemDecorationAt(0)
                 }
+                // TODO: Hide decoration on last item
                 rv_digital_homepage_trust_mark.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL))
 
                 // Only use first 3 items or less

@@ -228,29 +228,31 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
     }
 
     override fun onRechargeBannerAllItemClicked() {
-
+        // TODO: Set banner see all redirect
     }
 
     override fun onRechargeSectionItemClicked(element: RechargeHomepageSections.Item, position: Int, sectionType: String) {
+        // TODO: Click tracking
         RouteManager.route(context, element.applink)
     }
 
     override fun onRechargeSectionItemImpression(elements: List<RechargeHomepageSections.Item>, sectionType: String) {
-
+        // TODO: Impression tracking
     }
 
     override fun onSeeAllSixImage(channelModel: ChannelModel, position: Int) {
-
+        // Do nothing
     }
 
     override fun onSeeAllFourImage(channelModel: ChannelModel, position: Int) {
-
+        // Do nothing
     }
 
     override fun onSeeAllThreemage(channelModel: ChannelModel, position: Int) {
-
+        // Do nothing
     }
 
+    // TODO: Add lego banner click listener; current default is to 6 image
     override fun onClickGridSixImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
 
     }
@@ -263,6 +265,7 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
 
     }
 
+    // TODO: Add lego banner item impression listener; current default is to 6 image
     override fun onImpressionGridSixImage(channelModel: ChannelModel, parentPosition: Int) {
 
     }
@@ -275,6 +278,7 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
 
     }
 
+    // TODO: Add lego banner section impression listener; current default is to 6 image
     override fun onChannelImpressionSixImage(channelModel: ChannelModel, parentPosition: Int) {
 
     }
@@ -288,7 +292,7 @@ class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTy
     }
 
     override fun onChannelExpired(channelModel: ChannelModel, channelPosition: Int, visitable: Visitable<*>) {
-
+        // Do nothing
     }
 
     override fun getAdapterTypeFactory(): DigitalHomePageTypeFactory {

@@ -31,7 +31,6 @@ class RechargeHomepageBannerViewHolder(itemView: View,
     private val indicatorView: CircularPageIndicator = itemView.findViewById(R.id.indicator_banner)
     private val seeAllPromo: TextView = itemView.findViewById(R.id.see_all_promo)
     private val adapter = RechargeItemBannerAdapter(listOf(), this)
-    // set auto scroll & infinite loop in layout
 
     override fun bind(element: RechargeHomepageBannerModel) {
         if (!isEmpty) {
@@ -80,19 +79,6 @@ class RechargeHomepageBannerViewHolder(itemView: View,
 
     private fun onPromoAllClick() {
         listener.onRechargeBannerAllItemClicked()
-    }
-
-    fun onResume(){
-        circularViewPager.resetImpressions()
-        circularViewPager.resumeAutoScroll()
-    }
-
-    fun resetImpression(){
-        circularViewPager.resetImpressions()
-    }
-
-    fun onPause(){
-        circularViewPager.pauseAutoScroll()
     }
 
     companion object {

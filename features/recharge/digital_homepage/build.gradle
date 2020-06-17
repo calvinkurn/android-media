@@ -26,6 +26,7 @@ dependencies {
 
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.homeComponent)
+    implementation project(rootProject.ext.features.playCommon)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
