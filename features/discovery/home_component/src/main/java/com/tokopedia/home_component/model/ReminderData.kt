@@ -12,7 +12,7 @@ data class ReminderData(
         val appLink: String = "",
         val backgroundColor: String = "",
         val buttonText: String = "",
-        val id: Int = 0,
+        val id: String = "",
         val iconURL: String = "",
         val link: String = "",
         val mainText: String = "",

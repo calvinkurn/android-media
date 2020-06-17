@@ -509,7 +509,7 @@ open class HomeViewModel @Inject constructor(
         getTokocashBalance()
     }
 
-    private fun insertRechargeRecommendation(data: RechargeRecommendation) {
+   fun insertRechargeRecommendation(data: RechargeRecommendation) {
         if (data.recommendations.isNotEmpty()) {
             _homeLiveData.value?.list?.run {
                 val findRechargeRecommendationViewModel = find { visitable -> visitable is ReminderWidgetModel
@@ -520,7 +520,7 @@ open class HomeViewModel @Inject constructor(
                            data = mapperRechargetoReminder(data),
                            source = ReminderEnum.RECHARGE
                     )
-                    launch(coroutineContext){ updateWidget(UpdateLiveDataModel(ACTION_UPDATE, newFindRechargeRecommendationViewModel, indexOfRechargeRecommendationViewModel)) }
+                    launch(coroutineContext){updateWidget(UpdateLiveDataModel(ACTION_UPDATE, newFindRechargeRecommendationViewModel, indexOfRechargeRecommendationViewModel))}
                 }
             }
         } else {
@@ -529,7 +529,7 @@ open class HomeViewModel @Inject constructor(
     }
 
     fun insertSalamWidget(data: SalamWidget) {
-        if (data.salamWidget.mainText.isNotEmpty()) {
+        if (isSalamWidgetAvailable(data.salamWidget)) {
             _homeLiveData.value?.list?.run {
                 val findSalamWidgetModel = find { visitable -> visitable is ReminderWidgetModel
                         && (visitable.source == ReminderEnum.SALAM)}
@@ -539,7 +539,7 @@ open class HomeViewModel @Inject constructor(
                             data = mapperSalamtoReminder(data),
                             source = ReminderEnum.SALAM
                     )
-                    launch(coroutineContext) {updateWidget(UpdateLiveDataModel(ACTION_UPDATE, newFindSalamWidgetModel, indexOfSalamWidgetModel)) }
+                    launch(coroutineContext){updateWidget(UpdateLiveDataModel(ACTION_UPDATE, newFindSalamWidgetModel, indexOfSalamWidgetModel))}
                 }
             }
         } else {
@@ -682,8 +682,8 @@ open class HomeViewModel @Inject constructor(
                     getReviewData()
                     getPlayBanner()
                     getPopularKeyword()
-                    getSalamWidget()
                     getRechargeRecommendation()
+                    getSalamWidget()
                     _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>() ?: listOf()))
                 } else {
                     if (homeDataModel?.list?.size?:0 > 1) {
@@ -821,13 +821,37 @@ open class HomeViewModel @Inject constructor(
         getRechargeRecommendationJob = launchCatchError(coroutineContext, block = {
             getRechargeRecommendationUseCase.get().setParams()
             val data = getRechargeRecommendationUseCase.get().executeOnBackground()
-            insertRechargeRecommendation(data)
+            _rechargeRecommendationLiveData.postValue(Event(data))
+        }) {
+            removeRechargeRecommendation()
+        }
+    }
+
+    fun getRechargeRecommendation(position: Int){
+        if(getRechargeRecommendationJob?.isActive == true) return
+        if(!isReminderWidgetAvailable()) return
+        getRechargeRecommendationJob = launchCatchError(coroutineContext, block = {
+            getRechargeRecommendationUseCase.get().setParams()
+            val data = getRechargeRecommendationUseCase.get().executeOnBackground()
+            _rechargeRecommendationLiveData.postValue(Event(data))
         }) {
             removeRechargeRecommendation()
         }
     }
 
     private fun getSalamWidget(){
+        if(getSalamWidgetJob?.isActive == true) return
+        if(!isReminderWidgetAvailable()) return
+
+        getSalamWidgetJob = launchCatchError(coroutineContext,  block = {
+            val data = getSalamWidgetUseCase.get().executeOnBackground()
+            _salamWidgetLiveData.postValue(Event(data))
+        }){
+            removeSalamWidget()
+        }
+    }
+
+    fun getSalamWidget(position: Int){
         if(getSalamWidgetJob?.isActive == true) return
         if(!isReminderWidgetAvailable()) return
 
@@ -1196,7 +1220,7 @@ open class HomeViewModel @Inject constructor(
                                     appLink = it.applink,
                                     backgroundColor = it.backgroundColor,
                                     buttonText = it.buttonText,
-                                    id = it.contentID.toInt(),
+                                    id = it.contentID,
                                     iconURL = it.iconURL,
                                     link = it.link,
                                     mainText = it.mainText,
@@ -1216,7 +1240,7 @@ open class HomeViewModel @Inject constructor(
                                     appLink = it.appLink,
                                     backgroundColor = it.backgroundColor,
                                     buttonText = it.buttonText,
-                                    id = it.iD,
+                                    id = it.iD.toString(),
                                     iconURL = it.iconURL,
                                     link = it.link,
                                     mainText = it.mainText,
@@ -1228,12 +1252,11 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun isReminderWidgetAvailable(salamWidgetData: SalamWidgetData):Boolean{
-//        return (salamWidgetData.iD!=0 && salamWidgetData.backgroundColor.isNotEmpty() &&
-//                salamWidgetData.appLink.isNotEmpty() && salamWidgetData.buttonText.isNotEmpty() &&
-//                salamWidgetData.iconURL.isNotEmpty() && salamWidgetData.mainText.isNotEmpty() &&
-//                salamWidgetData.subText.isNotEmpty() && salamWidgetData.title.isNotEmpty())
-        return true
+    private fun isSalamWidgetAvailable(salamWidgetData: SalamWidgetData):Boolean{
+        return (salamWidgetData.iD!=0 && salamWidgetData.backgroundColor.isNotEmpty() &&
+                salamWidgetData.appLink.isNotEmpty() && salamWidgetData.buttonText.isNotEmpty() &&
+                salamWidgetData.iconURL.isNotEmpty() && salamWidgetData.mainText.isNotEmpty() &&
+                salamWidgetData.subText.isNotEmpty() && salamWidgetData.title.isNotEmpty())
     }
 
 

@@ -7,5 +7,5 @@ interface SalamWidgetListener {
     fun onSalamWidgetDeclineClickListener(reminderData: ReminderData)
     fun onSalamWidgetDeclineTrackingListener(reminderData: ReminderData)
     fun onSalamWidgetImpressionListener(reminderData: ReminderData)
-
+    fun getSalamWidget(position:Int)
 }

@@ -8,4 +8,6 @@ interface RechargeRecommendationListener {
     fun onRechargeRecommendationDeclineTrackingListener(reminderData: ReminderData)
     fun onRechargeRecommendationImpressionListener(reminderData: ReminderData)
 
+    fun getRechargeRecommendation(position: Int)
+
 }

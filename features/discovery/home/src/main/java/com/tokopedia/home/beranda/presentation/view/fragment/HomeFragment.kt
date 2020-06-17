@@ -777,9 +777,8 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun observeRechargeRecommendation(){
         context?.let {
             viewModel.get().rechargeRecommendationLiveData.observe(this, Observer {
-
-            }
-            )
+                viewModel.get().insertRechargeRecommendation(it.peekContent())
+            })
         }
     }
 

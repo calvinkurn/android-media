@@ -65,7 +65,7 @@ class ReminderWidgetComponentCallback (val context: Context?,val viewModel: Home
 
     override fun onSalamWidgetDeclineClickListener(reminderData: ReminderData) {
         val requestParams = mapOf(
-            PARAM_WIDGET_ID to reminderData.id
+            PARAM_WIDGET_ID to reminderData.id.toInt()
         )
         viewModel.declineSalamItem(requestParams)
     }
@@ -82,10 +82,18 @@ class ReminderWidgetComponentCallback (val context: Context?,val viewModel: Home
         SalamWidgetTracking.homeSalamWidgetOnCloseTracker(mapRemindertoSalamWidgetData(reminderData))
     }
 
+    override fun getSalamWidget(position: Int) {
+        viewModel.getSalamWidget(position)
+    }
+
+    override fun getRechargeRecommendation(position: Int) {
+        viewModel.getRechargeRecommendation(position)
+    }
+
     private fun mapRemindertoRechargeRecommendationData(reminderData: ReminderData): RechargeRecommendationData{
         reminderData.let {
             return RechargeRecommendationData(
-                    contentID = it.id.toString(),
+                    contentID = it.id,
                     mainText = it.mainText,
                     subText = it.subText,
                     applink = it.appLink,
@@ -101,7 +109,7 @@ class ReminderWidgetComponentCallback (val context: Context?,val viewModel: Home
     private fun mapRemindertoSalamWidgetData(reminderData: ReminderData): SalamWidgetData{
         reminderData.let {
             return SalamWidgetData(
-                    iD = it.id,
+                    iD = it.id.toInt(),
                     mainText = it.mainText,
                     subText = it.subText,
                     appLink = it.appLink,

@@ -300,7 +300,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                             parentRecycledViewPool
                     )
             ReminderWidgetViewHolder.LAYOUT -> viewHolder =
-                    ReminderWidgetViewHolder(view,rechargeRecommendationListener,salamWidgetListener,homeComponentListener)
+                    ReminderWidgetViewHolder(view,rechargeRecommendationListener,salamWidgetListener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

@@ -15,6 +15,10 @@ import com.tokopedia.home_component.model.ReminderData
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.model.ReminderWidget
 import com.tokopedia.kotlin.extensions.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlin.coroutines.CoroutineContext
 
 /**
  * @author by firman on 10-06-2020
@@ -23,8 +27,7 @@ import com.tokopedia.kotlin.extensions.view.*
 class ReminderWidgetViewHolder(
         itemView: View,
         private val rechargeListener: RechargeRecommendationListener,
-        private val salamListener : SalamWidgetListener,
-        val homeComponentListener: HomeComponentListener
+        private val salamListener : SalamWidgetListener
         ): AbstractViewHolder<ReminderWidgetModel>(itemView){
 
     companion object {
@@ -40,11 +43,15 @@ class ReminderWidgetViewHolder(
         bind(element)
     }
 
-
     fun initView(element: ReminderWidgetModel, itemView: View){
         with(itemView) {
             if(element.data.reminders.isEmpty()){
                 home_reminder_recommendation_loading.show()
+                if(element.source == ReminderEnum.RECHARGE) {
+                    rechargeListener.getRechargeRecommendation(adapterPosition)
+                } else if(element.source == ReminderEnum.SALAM){
+                    salamListener.getSalamWidget(adapterPosition)
+                }
             } else {
                 home_reminder_recommendation_loading.hide()
 
