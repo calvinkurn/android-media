@@ -59,12 +59,11 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
 
         getAbTestPlatform()?.fetch(null)
 
-        // TODO :: DO NOT PUSH THIS
-//        if (isDirectToWebView) {
-//            RouteManager.route(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlResetPassword()))
-//            finish()
-//            return
-//        }
+        if (isDirectToWebView) {
+            RouteManager.route(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlResetPassword()))
+            finish()
+            return
+        }
     }
 
     private fun getAbTestPlatform(): AbTestPlatform? {
