@@ -94,7 +94,10 @@ internal open class BannerView(activity: Activity) {
 
         lstActionButton.layoutManager = when (layout.getBtnOrientation()) {
             ORIENTATION_VERTICAL -> LinearLayoutManager(mActivity.get())
-            ORIENTATION_HORIZONTAL -> GridLayoutManager(mActivity.get(), 2)
+            ORIENTATION_HORIZONTAL -> GridLayoutManager(
+                    mActivity.get(),
+                    layout.getButton().size
+            )
             else -> LinearLayoutManager(mActivity.get())
         }
 
