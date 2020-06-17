@@ -162,12 +162,12 @@ class GetPlayWidgetUseCase(
                                 channelCreator = "Google",
                                 applink = "https://cobacoba.com",
                                 countView = "10rb",
-                                isLive = true,
+                                isLive = false,
                                 isShowTotalView = true,
                                 isPromo = false,
                                 coverUrl = "https://i.ibb.co/hgg0W75/Screen-Shot-2020-04-28-at-13-16-3.png",
                                 videoUrl = "https://vod2.tokopedia.net/6631531405a44f70aac24123784f8407/d09df6538e02440ab306a5d6399d316e-f5bde57f0c52d84b4bcc40caf18aee5f-fd.m3u8",
-                                widgetType = PlayBannerWidgetType.VOD
+                                widgetType = PlayBannerWidgetType.UPCOMING
                         ),
                         PlayBannerCarouselBannerDataModel(
                                 applink = "",

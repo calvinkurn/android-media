@@ -1,6 +1,7 @@
 package com.tokopedia.play_common.widget.playBannerCarousel.viewHolder
 
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.kotlin.extensions.toFormattedString
@@ -16,7 +17,7 @@ import kotlinx.android.synthetic.main.layout_viewer_badge.view.*
 
 class PlayBannerCarouselItemViewHolder (private val parent: View): BasePlayBannerCarouselViewHolder<PlayBannerCarouselItemDataModel>(parent){
 
-    val playerView: PlayerView = parent.player_view
+    val containerPlayer: FrameLayout = parent.container_player
     val thumbnail: ImageView = parent.thumbnail
     override fun bind(dataModel: PlayBannerCarouselItemDataModel, listener: PlayBannerCarouselViewEventListener?) {
         parent.tag = this

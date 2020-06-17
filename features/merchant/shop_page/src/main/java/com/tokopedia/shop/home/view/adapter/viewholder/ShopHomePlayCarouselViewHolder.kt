@@ -47,11 +47,11 @@ class ShopHomePlayCarouselViewHolder(
     }
 
     override fun onItemImpress(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
-        // tracker imprpession
+        // tracker impression
     }
 
     override fun onReminderClick(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
-
+        listener.onReminderClick(dataModel, position)
     }
 
     override fun onSeeMoreClick(dataModel: PlayBannerCarouselBannerDataModel, position: Int) {
@@ -59,7 +59,11 @@ class ShopHomePlayCarouselViewHolder(
     }
 
     override fun onOverlayImageBannerClick(dataModel: PlayBannerCarouselOverlayImageDataModel) {
-        TODO("Not yet implemented")
+
+    }
+
+    override fun onOverlayImageBannerImpress(dataModel: PlayBannerCarouselOverlayImageDataModel) {
+
     }
 
     override fun onRefreshView(dataModel: PlayBannerCarouselDataModel) {
