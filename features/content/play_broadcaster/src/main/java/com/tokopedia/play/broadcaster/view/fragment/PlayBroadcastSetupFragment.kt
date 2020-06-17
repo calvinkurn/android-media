@@ -37,7 +37,7 @@ class PlayBroadcastSetupFragment @Inject constructor(
 
     private lateinit var btnSetup: UnifyButton
     private lateinit var followerView: PlayShareFollowerView
-    private lateinit var tvPrivacyPolicy: TextView
+    private lateinit var tvTermsCondition: TextView
 
     private val setupListener = object : PlayBroadcastSetupBottomSheet.Listener {
         override fun onSetupCanceled() {
@@ -78,7 +78,7 @@ class PlayBroadcastSetupFragment @Inject constructor(
         with (view) {
             btnSetup = findViewById(R.id.btn_setup)
             followerView = findViewById(R.id.follower_view)
-            tvPrivacyPolicy = findViewById(R.id.tv_privacy_policy)
+            tvTermsCondition = findViewById(R.id.tv_terms_condition)
         }
     }
 
@@ -88,28 +88,28 @@ class PlayBroadcastSetupFragment @Inject constructor(
              openBroadcastSetupPage()
         }
 
-        setupPrivacyPolicy()
+        setupTermsCondition()
     }
 
-    private fun setupPrivacyPolicy() {
-        val privacyPolicyText = getString(R.string.play_privacy_policy)
-        val fullPrivacyPolicyText = getString(
-                R.string.play_privacy_policy_full,
+    private fun setupTermsCondition() {
+        val termsConditionText = getString(R.string.play_terms_condition)
+        val fullTermsConditionText = getString(
+                R.string.play_terms_condition_full,
                 btnSetup.text,
-                privacyPolicyText
+                termsConditionText
         )
-        val privacyPolicyIndex = fullPrivacyPolicyText.indexOf(privacyPolicyText)
-        val spannedPrivacyText = SpannableString(fullPrivacyPolicyText)
-        spannedPrivacyText.setSpan(
+        val termsConditionIndex = fullTermsConditionText.indexOf(termsConditionText)
+        val spannedTermsConditionText = SpannableString(fullTermsConditionText)
+        spannedTermsConditionText.setSpan(
                 ForegroundColorSpan(
                         MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.dark_G500)
-                ), privacyPolicyIndex, privacyPolicyIndex + privacyPolicyText.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+                ), termsConditionIndex, termsConditionIndex + termsConditionText.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
         )
 
-        tvPrivacyPolicy.text = spannedPrivacyText
+        tvTermsCondition.text = spannedTermsConditionText
 
-        tvPrivacyPolicy.setOnClickListener {
-            openPrivacyPolicyPage()
+        tvTermsCondition.setOnClickListener {
+            openTermsConditionPage()
         }
     }
 
@@ -121,10 +121,10 @@ class PlayBroadcastSetupFragment @Inject constructor(
         setupFragment.show(childFragmentManager)
     }
 
-    private fun openPrivacyPolicyPage() {
+    private fun openTermsConditionPage() {
         RouteManager.route(
                 context,
-                String.format(APPLINK_WEBVIEW_FORMAT, ApplinkConst.WEBVIEW, PRIVACY_POLICY_URL)
+                String.format(APPLINK_WEBVIEW_FORMAT, ApplinkConst.WEBVIEW, TERMS_CONDITION_URL)
         )
     }
 
@@ -159,6 +159,6 @@ class PlayBroadcastSetupFragment @Inject constructor(
     companion object {
 
         private const val APPLINK_WEBVIEW_FORMAT = "%s?url=%s"
-        private const val PRIVACY_POLICY_URL = "https://www.tokopedia.com/help/article/syarat-dan-ketentuan-tokopedia-play"
+        private const val TERMS_CONDITION_URL = "https://www.tokopedia.com/help/article/syarat-dan-ketentuan-tokopedia-play"
     }
 }

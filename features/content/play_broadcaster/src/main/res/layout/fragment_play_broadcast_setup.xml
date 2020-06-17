@@ -39,11 +39,11 @@
         />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_privacy_policy"
+        android:id="@+id/tv_terms_condition"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_lvl4"
-        android:background="@drawable/bg_play_privacy_policy"
+        android:background="@drawable/bg_play_terms_condition"
         android:paddingStart="@dimen/play_dp_12"
         android:paddingTop="@dimen/spacing_lvl3"
         android:paddingEnd="@dimen/play_dp_12"
