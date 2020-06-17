@@ -659,7 +659,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void sendATCTrackingUrl(String url) {
         String clickUrl = url + "&click_source=ATC_direct_click";
-        new ImpresionTask(userSession).execute(clickUrl);
+        new ImpresionTask(getActivity().getClass().getSimpleName(), userSession).execute(clickUrl);
     }
 
     @Override

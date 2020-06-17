@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -398,11 +397,13 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), PlayFragmentContract {
     ) {
         when (bottomSheetType) {
             BottomInsetsType.ProductSheet ->
-                Toaster.make(requireView(),
-                        message,
-                        toasterType,
+                Toaster.make(
+                        view = requireView(),
+                        text = message,
+                        type = toasterType,
                         actionText = actionText,
-                        clickListener = actionClickListener)
+                        clickListener = actionClickListener
+                )
             BottomInsetsType.VariantSheet ->
                 sendVariantToaster(toasterType, message, actionText, actionClickListener)
             else -> {

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/spacing_lvl4"
+    android:paddingTop="@dimen/layout_lvl3">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_lvl2"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <com.elyeproj.loaderviewlibrary.LoaderImageView
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="@dimen/layout_lvl8"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_lvl3" />
+
+    </LinearLayout>
+
+    <include
+        layout="@layout/view_smart_bills_item_shimmering"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <include
+        layout="@layout/view_smart_bills_item_shimmering"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <include
+        layout="@layout/view_smart_bills_item_shimmering"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <include
+        layout="@layout/view_smart_bills_item_shimmering"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <include
+        layout="@layout/view_smart_bills_item_shimmering"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
