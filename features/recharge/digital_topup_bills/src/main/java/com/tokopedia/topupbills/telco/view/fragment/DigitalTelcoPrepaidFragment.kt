@@ -30,7 +30,6 @@ import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.showcase.ShowCaseBuilder
 import com.tokopedia.showcase.ShowCaseDialog
@@ -157,26 +156,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         getCatalogMenuDetail()
         getDataFromBundle(savedInstanceState)
         sendOpenScreenTracking()
-
-        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(p0: Int) {
-
-            }
-
-            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
-
-            }
-
-            override fun onPageSelected(pos: Int) {
-                if (showProducts) {
-                    topupAnalytics.eventClickTelcoPrepaidCategory(listProductTab[pos].title)
-                    sharedModelPrepaid.setShowTotalPrice(false)
-                    sharedModelPrepaid.setProductCatalogSelected(getEmptyProduct())
-                } else {
-                    setTrackingOnTabMenu(listMenu[pos].title)
-                }
-            }
-        })
     }
 
     /**
@@ -203,6 +182,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     override fun renderPromoAndRecommendation() {
         if (listMenu.size > 0 && !showProducts) {
             viewPager.adapter = null
+            viewPager.clearOnPageChangeListeners()
+
             val pagerAdapter = TopupBillsProductTabAdapter(listMenu, childFragmentManager)
             viewPager.adapter = pagerAdapter
             viewPager.offscreenPageLimit = listMenu.size
@@ -217,6 +198,20 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 tabLayout.hide()
                 separator.hide()
             }
+
+            viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+                override fun onPageScrollStateChanged(p0: Int) {
+
+                }
+
+                override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
+
+                }
+
+                override fun onPageSelected(pos: Int) {
+                    if (!showProducts && listMenu.size > 0) setTrackingOnTabMenu(listMenu[pos].title)
+                }
+            })
         }
     }
 
@@ -349,6 +344,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     private fun renderProductViewPager() {
         viewPager.adapter = null
+        viewPager.clearOnPageChangeListeners()
         listProductTab.clear()
 
         listProductTab.add(
@@ -363,12 +359,30 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
         val pagerAdapter = TopupBillsProductTabAdapter(listProductTab, childFragmentManager)
         viewPager.adapter = pagerAdapter
-        viewPager.offscreenPageLimit = 3
+        viewPager.offscreenPageLimit = listProductTab.size
 
         tabLayout.show()
         separator.show()
         tabLayout.setupWithViewPager(viewPager)
         setTabFromProductSelected()
+
+        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(p0: Int) {
+
+            }
+
+            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
+
+            }
+
+            override fun onPageSelected(pos: Int) {
+                if (showProducts) {
+                    topupAnalytics.eventClickTelcoPrepaidCategory(listProductTab[pos].title)
+                    sharedModelPrepaid.setShowTotalPrice(false)
+                    sharedModelPrepaid.setProductCatalogSelected(getEmptyProduct())
+                }
+            }
+        })
     }
 
     private fun setTabFromProductSelected() {
