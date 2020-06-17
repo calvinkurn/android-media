@@ -5,13 +5,13 @@ import android.os.Trace
 
 object BenchmarkHelper {
     fun beginSystraceSection(sectionName: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && BuildConfig.DEBUG) {
             Trace.beginSection(sectionName)
         }
     }
 
     fun endSystraceSection() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && BuildConfig.DEBUG) {
             Trace.endSection()
         }
     }
