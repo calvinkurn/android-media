@@ -58,6 +58,8 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.kotlinMockito2
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.powerMockito
+    androidTestImplementation project(rootProject.ext.libraries.tkpddesign)
+    testImplementation project(rootProject.ext.libraries.tkpddesign)
 
     // Debug tools
     implementation rootProject.ext.debugToolsDependencies.chuck
