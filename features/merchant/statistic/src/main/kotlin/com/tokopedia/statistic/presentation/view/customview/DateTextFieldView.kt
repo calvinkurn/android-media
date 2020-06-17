@@ -18,11 +18,6 @@ class DateTextFieldView(
         attrs: AttributeSet?
 ) : LinearLayout(context, attrs) {
 
-    companion object {
-        const val ALIGNMENT_LEFT = 0
-        const val ALIGNMENT_RIGHT = 1
-    }
-
     init {
         View.inflate(context, R.layout.view_stc_date_text_field, this)
     }
