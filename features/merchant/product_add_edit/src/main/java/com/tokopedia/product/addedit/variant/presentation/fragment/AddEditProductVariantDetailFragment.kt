@@ -13,11 +13,12 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.di.AddEditProductVariantComponent
 import com.tokopedia.product.addedit.variant.presentation.dialog.MultipleVariantEditSelectBottomSheet
+import com.tokopedia.product.addedit.variant.presentation.dialog.SelectVariantMainBottomSheet
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.product.addedit.variant.presentation.viewmodel.AddEditProductVariantDetailViewModel
 import javax.inject.Inject
 
-class AddEditProductVariantDetailFragment : BaseDaggerFragment(), MultipleVariantEditSelectBottomSheet.MultipleVariantEditListener {
+class AddEditProductVariantDetailFragment : BaseDaggerFragment(), MultipleVariantEditSelectBottomSheet.MultipleVariantEditListener, SelectVariantMainBottomSheet.SelectVariantMainListener {
 
     companion object {
         fun createInstance(cacheManagerId: String): Fragment {
@@ -61,7 +62,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(), MultipleVarian
         super.onViewCreated(view, savedInstanceState)
 
         // TODO move to atur semua button onclick
-        val multipleVariantEditSelectBottomSheet = MultipleVariantEditSelectBottomSheet(this)
+        val multipleVariantEditSelectBottomSheet = SelectVariantMainBottomSheet(this)
         val variantInputModel = viewModel.productInputModel.value?.variantInputModel
         multipleVariantEditSelectBottomSheet.setData(variantInputModel)
         multipleVariantEditSelectBottomSheet.show(fragmentManager)
@@ -73,6 +74,10 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(), MultipleVarian
 
     fun onBackPressed() {
         activity?.finish()
+    }
+
+    override fun onSelectVariantMainFinished(combination: List<Int>) {
+        print("$combination")
     }
 
 }
