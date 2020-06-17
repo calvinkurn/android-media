@@ -219,8 +219,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     override fun loadInitialData() {
-        clearAllData()
-        rvRatingProduct?.visible()
+        isLoadingInitialData = true
+        reviewSellerAdapter.clearAllElements()
+        rvRatingProduct?.show()
         filter_and_sort_layout?.hide()
         search_bar_layout?.hide()
         globalError_reviewSeller?.hide()
@@ -234,6 +235,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 reviewSellerAdapter.showLoading()
                 loadNextPage(page)
+            }
+            override fun isDataEmpty(): Boolean {
+                return reviewSellerAdapter.list.isEmpty()
             }
         }
     }

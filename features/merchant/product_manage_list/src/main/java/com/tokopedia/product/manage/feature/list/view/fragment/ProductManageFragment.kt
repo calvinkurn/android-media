@@ -31,7 +31,6 @@ import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -43,11 +42,10 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMA
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.product.manage.BuildConfig
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
 import com.tokopedia.product.manage.feature.cashback.presentation.activity.ProductManageSetCashbackActivity
-import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.PARAM_SET_CASHBACK_PRODUCT_PRICE
-import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.PARAM_SET_CASHBACK_VALUE
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_CACHE_MANAGER_KEY
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_RESULT
 import com.tokopedia.product.manage.feature.etalase.view.activity.EtalasePickerActivity
@@ -62,6 +60,8 @@ import com.tokopedia.product.manage.feature.list.constant.ProductManageListConst
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_PRODUCT_NAME
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_THRESHOLD
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.INSTAGRAM_SELECT_REQUEST_CODE
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_ADD_PRODUCT
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_EDIT_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_STOCK_REMINDER
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.SET_CASHBACK_REQUEST_CODE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.URL_TIPS_TRICK
@@ -97,6 +97,7 @@ import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantPriceBottomSheet
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantStockBottomSheet
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
@@ -200,6 +201,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         getGoldMerchantStatus()
 
         setupDialogFeaturedProduct()
+
+        context?.let { UpdateShopActiveService.startService(it) }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -219,7 +222,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             val importFromInstagramMenu = subMenu.findItem(R.id.label_view_import_from_instagram)
 
             addProductMenu.setOnMenuItemClickListener {
-                RouteManager.route(requireContext(), ApplinkConst.PRODUCT_ADD)
+                val intent = RouteManager.getIntent(requireContext(), ApplinkConst.PRODUCT_ADD)
+                startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT)
                 true
             }
 
@@ -956,7 +960,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             val errorMessage = getString(R.string.product_manage_desc_product_on_supervision, product.title)
             NetworkErrorHelper.showSnackbar(activity, errorMessage)
         } else {
-            productManageBottomSheet?.show(product)
+            val isPowerMerchantOrOfficialStore = viewModel.isPowerMerchant() || isOfficialStore
+            productManageBottomSheet?.show(product, isPowerMerchantOrOfficialStore)
         }
     }
 
@@ -1132,13 +1137,15 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                     .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, ApplinkConstInternalMechant.MODE_DUPLICATE_PRODUCT)
                     .build()
                     .toString()
-            RouteManager.route(context, uri)
+            val intent = RouteManager.getIntent(requireContext(), uri)
+            startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT)
         }
     }
 
     private fun goToEditProduct(productId: String) {
         context?.let {
-            RouteManager.route(it, ApplinkConst.PRODUCT_EDIT, productId)
+            val intent = RouteManager.getIntent(requireContext(), ApplinkConst.PRODUCT_EDIT, productId)
+            startActivityForResult(intent, REQUEST_CODE_EDIT_PRODUCT)
         }
     }
 
@@ -1601,6 +1608,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         if(isLoadingInitialData && showProductEmptyState()) {
             searchBar.showWithCondition(productList.isNotEmpty())
             tabSortFilter.showWithCondition(productList.isNotEmpty())
+            tabSortFilter.textView.text = getString(R.string.product_manage_filter)
         }
     }
 

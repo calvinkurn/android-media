@@ -12,6 +12,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.kotlin.extensions.view.getNumberFormatted
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.ProductManageInstance
@@ -103,7 +104,7 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
                 override fun afterTextChanged(s: Editable?) {
                     val newValue = s.toString()
                     if(newValue.isNotEmpty()) {
-                        val stock = newValue.replace(".","").toIntOrZero()
+                        val stock = newValue.toInt()
                         when {
                             stock >= MAXIMUM_STOCK -> setMaxStockBehavior()
                             stock <= MINIMUM_STOCK -> setZeroStockBehavior()
@@ -160,6 +161,8 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
         observeStatus()
         observeStock()
         quickEditStockQuantityEditor.editText.requestFocus()
+        setAddButtonClickListener()
+        setSubtractButtonClickListener()
     }
 
     private fun observeStock() {
@@ -199,6 +202,50 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
             quickEditStockActivateSwitch.isSelected = true
             quickEditStockQuantityEditor.addButton.isEnabled = false
         }
+    }
+
+    private fun setAddButtonClickListener() {
+        quickEditStockQuantityEditor.apply {
+            addButton.setOnClickListener {
+                val input = editText.text.toString()
+
+                var stock = if(input.isNotEmpty()) {
+                    input.toInt()
+                } else {
+                    MINIMUM_STOCK
+                }
+
+                stock++
+
+                if(stock <= MAXIMUM_STOCK) {
+                    editText.setText(stock.getNumberFormatted())
+                }
+            }
+        }
+    }
+
+    private fun setSubtractButtonClickListener() {
+        quickEditStockQuantityEditor.apply {
+            subtractButton.setOnClickListener {
+                val input = editText.text.toString()
+
+                var stock = if(input.isNotEmpty()) {
+                    input.toInt()
+                } else {
+                    MINIMUM_STOCK
+                }
+
+                stock--
+
+                if(stock >= MINIMUM_STOCK) {
+                    editText.setText(stock.getNumberFormatted())
+                }
+            }
+        }
+    }
+
+    private fun String.toInt(): Int {
+        return replace(".", "").toIntOrZero()
     }
 
     private fun removeObservers() {

@@ -78,4 +78,8 @@ object ProductManageDataLayer {
     const val EVENT_ACTION_CLICK_ON_EDIT_STOCK_VARIANT_SAVE = "$EVENT_ACTION_CLICK_ON_EDIT_STOCK_VARIANT - save"
     const val STATUS_TOGGLE_ON = "{on}"
     const val STATUS_TOGGLE_OFF = "{off}"
+
+    const val CUSTOM_DIMENSION_PAGE_SOURCE = "pageSource"
+    const val CUSTOM_DIMENSION_PAGE_SOURCE_ADD_PRODUCT = "/add-product"
+    const val CUSTOM_DIMENSION_PAGE_SOURCE_EDIT_PRODUCT = "/edit-product"
 }

@@ -9,10 +9,7 @@ import com.tokopedia.sellerhome.R
 
 
 object PromoCreationStaticData {
-
-    private const val BROADCAST_CHAT_URL = "https://m.tokopedia.com/broadcast-chat/create"
-
-    fun provideStaticData(context: Context, broadcastChatExtra: String): PromoCreationListUiModel = with(context) {
+    fun provideStaticData(context: Context, broadcastChatExtra: String, broadcastChatUrl: String): PromoCreationListUiModel = with(context) {
         PromoCreationListUiModel(
                 items = arrayListOf(
                         PromoCreationUiModel(
@@ -27,7 +24,7 @@ object PromoCreationStaticData {
                                 getString(R.string.centralized_promo_promo_creation_broadcast_chat_title),
                                 getString(R.string.centralized_promo_promo_creation_broadcast_chat_description),
                                 broadcastChatExtra,
-                                String.format("%s?url=%s", ApplinkConst.WEBVIEW, BROADCAST_CHAT_URL)
+                                String.format("%s?url=%s", ApplinkConst.WEBVIEW, broadcastChatUrl)
                         ),
                         PromoCreationUiModel(
                                 R.drawable.ic_voucher_cashback,

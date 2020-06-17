@@ -91,7 +91,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = EditKeywordListAdapter(EditKeywordListAdapterTypeFactoryImpl(this::onDeleteKeyword, this::onAddKeyword, this::getMinMax, this::actionEnable))
+        adapter = EditKeywordListAdapter(EditKeywordListAdapterTypeFactoryImpl(this::onDeleteKeyword, this::onAddKeyword, this::getMinMax, this::actionEnable,this::actionStatusChange))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -115,6 +115,19 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private fun actionEnable() {
         val enable = !adapter.isError()
         callBack.buttonDisable(enable)
+    }
+
+    private fun actionStatusChange(position:Int) {
+        if(isExistsOriginal(position)) {
+            deletedKeywords?.add((adapter.items[position] as EditKeywordItemViewModel).data)
+            addedKeywords?.add((adapter.items[position] as EditKeywordItemViewModel).data)
+        }
+        else{
+            addedKeywords?.forEach {
+                if(it.tag == (adapter.items[position] as EditKeywordItemViewModel).data.tag)
+                    it.type = (adapter.items[position] as EditKeywordItemViewModel).data.type
+            }
+        }
     }
 
     private fun onSuccessSuggestion(data: List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) {
@@ -318,8 +331,13 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         if (adapter.items[0] !is EditKeywordEmptyViewModel) {
             adapter.items.forEachIndexed { index, item ->
                 if ((item as EditKeywordItemViewModel).data.priceBid != adapter.data[index]) {
-                    (adapter.items[index] as EditKeywordItemViewModel).data.priceBid = adapter.data[index]
-                    editedKeywords?.add((adapter.items[index] as EditKeywordItemViewModel).data)
+                    item.data.priceBid = adapter.data[index]
+                    addedKeywords?.forEach {
+                        if (it.tag == item.data.tag)
+                            it.priceBid = adapter.data[index]
+                    }
+                    if (isExistsOriginal(item.data.tag))
+                        editedKeywords?.add(item.data)
                 }
             }
         }
