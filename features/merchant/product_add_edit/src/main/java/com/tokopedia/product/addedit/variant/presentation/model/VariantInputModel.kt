@@ -26,6 +26,8 @@ data class SelectionInputModel(
         var variantId: String = "",
         var variantName: String = "",
         var unitID: String = "",
+        var unitName: String = "",
+        var identifier: String = "",
         var options: List<OptionInputModel> = listOf()
 ) : Parcelable
 

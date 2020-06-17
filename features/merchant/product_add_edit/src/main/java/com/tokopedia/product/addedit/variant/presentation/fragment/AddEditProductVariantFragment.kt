@@ -164,6 +164,8 @@ class AddEditProductVariantFragment :
         }
 
         buttonSave.setOnClickListener {
+            val variantDetails = variantTypeAdapter?.getItems().orEmpty()
+            viewModel.updateVariantInputModel(variantDetails)
             startAddEditProductVariantDetailActivity()
         }
     }
@@ -387,7 +389,7 @@ class AddEditProductVariantFragment :
                 REQUEST_CODE_SIZECHART_IMAGE -> {
                     val imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS)
                     imageUrlOrPathList.forEach {
-                        viewModel.variantSizechartUrl.value = it
+                        viewModel.updateSizechart(it)
                     }
                 }
                 REQUEST_CODE_VARIANT_PHOTO_IMAGE -> {
@@ -458,7 +460,7 @@ class AddEditProductVariantFragment :
     }
 
     private fun onSizechartClicked() {
-        if (viewModel.variantSizechartUrl.value.isNullOrEmpty()) {
+        if (viewModel.variantSizechart.value?.filePath.isNullOrEmpty()) {
             showSizechartPicker()
         } else {
             val fm = activity!!.supportFragmentManager
@@ -508,8 +510,8 @@ class AddEditProductVariantFragment :
     }
 
     private fun observeSizechartUrl() {
-        viewModel.variantSizechartUrl.observe(this, Observer {
-            if (it.isEmpty()) {
+        viewModel.variantSizechart.observe(this, Observer {
+            if (it.filePath.isEmpty()) {
                 ivSizechartAddSign.visible()
                 ivSizechartEditSign.gone()
                 ivSizechart.gone()
@@ -520,7 +522,7 @@ class AddEditProductVariantFragment :
                 ivSizechart.visible()
                 typographySizechartDescription.text = getString(R.string.label_variant_sizechart_edit_description)
             }
-            ivSizechart.setImage(it, 0F)
+            ivSizechart.setImage(it.filePath, 0F)
         })
     }
 
@@ -531,8 +533,8 @@ class AddEditProductVariantFragment :
     }
 
     private fun removeSizechart() {
-        val url = viewModel.variantSizechartUrl.value.orEmpty()
-        viewModel.variantSizechartUrl.value = ""
+        val url = viewModel.variantSizechart.value?.filePath.orEmpty()
+        viewModel.updateSizechart("")
         FileUtils.deleteFileInTokopediaFolder(url)
     }
 
@@ -544,7 +546,7 @@ class AddEditProductVariantFragment :
     }
 
     private fun showEditorSizechartPicker() {
-        val url = viewModel.variantSizechartUrl.value.orEmpty()
+        val url = viewModel.variantSizechart.value?.filePath.orEmpty()
         context?.apply {
             val editorIntent = SizechartPickerEditPhotoActivity.createIntent(this, url)
             startActivityForResult(editorIntent, REQUEST_CODE_SIZECHART_IMAGE)

@@ -66,6 +66,10 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
         return items[position]
     }
 
+    fun getItems(): List<VariantDetail> {
+        return items
+    }
+
     private fun getSelectedCount(): Int {
         return selectedItems.count { it == VariantTypeViewHolder.ViewHolderState.SELECTED }
     }

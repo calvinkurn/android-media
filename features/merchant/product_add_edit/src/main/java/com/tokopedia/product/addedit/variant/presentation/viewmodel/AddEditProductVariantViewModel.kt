@@ -5,12 +5,18 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE_STRING
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.data.model.GetCategoryVariantCombinationResponse
 import com.tokopedia.product.addedit.variant.data.model.Unit
 import com.tokopedia.product.addedit.variant.data.model.UnitValue
+import com.tokopedia.product.addedit.variant.data.model.VariantDetail
 import com.tokopedia.product.addedit.variant.domain.GetCategoryVariantCombinationUseCase
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
+import com.tokopedia.product.addedit.variant.presentation.model.OptionInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.PictureVariantInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -40,12 +46,13 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     private val mSelectedVariantUnitValuesLevel2 = MutableLiveData<List<UnitValue>>()
 
+
     private val mGetCategoryVariantCombinationResult = MutableLiveData<Result<GetCategoryVariantCombinationResponse>>()
     val getCategoryVariantCombinationResult: LiveData<Result<GetCategoryVariantCombinationResponse>>
         get() = mGetCategoryVariantCombinationResult
 
     var productInputModel = MutableLiveData<ProductInputModel>()
-    var variantSizechartUrl = MutableLiveData<String>("")
+    var variantSizechart = MutableLiveData<PictureVariantInputModel>(PictureVariantInputModel())
 
     private val mIsInputValid = MediatorLiveData<Boolean>().apply {
 
@@ -112,16 +119,31 @@ class AddEditProductVariantViewModel @Inject constructor(
         selectedVariantUnitValuesMap[layoutPosition] = selectedVariantUnitValues
     }
 
-    fun updateSelectedVariantUnit() {
-
-    }
-
     fun updateSelectedVariantUnitValuesLevel1(selectedVariantUnitValues: List<UnitValue>) {
         mSelectedVariantUnitValuesLevel1.value = selectedVariantUnitValues
     }
 
     fun updateSelectedVariantUnitValuesLevel2(selectedVariantUnitValues: List<UnitValue>) {
         mSelectedVariantUnitValuesLevel2.value = selectedVariantUnitValues
+    }
+
+    fun updateVariantInputModel(variantDetails: List<VariantDetail>) {
+        val variantInputModel = productInputModel.value?.variantInputModel
+        val variantTypesSelected = variantValuesLayoutMap.map { it.key }
+        val variantDetailsSelected =
+                variantDetails.filterIndexed { index, _ -> variantTypesSelected.contains(index) }
+
+        variantInputModel?.apply {
+            this.products = mapProducts()
+            this.selections = mapSelections(variantDetailsSelected)
+            this.sizecharts = variantSizechart.value ?: PictureVariantInputModel()
+        }
+    }
+
+    fun updateSizechart(url: String) {
+        val newSizechart = PictureVariantInputModel()
+        newSizechart.filePath = url
+        variantSizechart.value = newSizechart
     }
 
     fun getSelectedVariantUnitValues(layoutPosition: Int): MutableList<UnitValue> {
@@ -137,4 +159,54 @@ class AddEditProductVariantViewModel @Inject constructor(
         selectedVariantUnitValues?.removeAt(position)
     }
 
+    private fun mapSelections(variantDetailsSelected: List<VariantDetail>): List<SelectionInputModel> {
+        val result: MutableList<SelectionInputModel> = mutableListOf()
+        var index = 0
+        selectedVariantUnitValuesMap.forEach {
+            val variantDetail = variantDetailsSelected.getOrElse(index) { VariantDetail() }
+            val unit = mapUnit(variantDetail, it.value)
+            result.add(SelectionInputModel(
+                    variantDetail.variantID.toString(),
+                    variantDetail.name,
+                    unit.variantUnitID.toString(),
+                    unit.unitName,
+                    variantDetail.identifier,
+                    mapOptions(it.value)
+            ))
+            index++
+        }
+        return result
+    }
+
+    private fun mapUnit(variantDetail: VariantDetail, value: List<UnitValue>): Unit {
+        val unitValue = value.firstOrNull()
+        val result = variantDetail.units.filter {
+            it.unitValues.contains(unitValue)
+        }.firstOrNull()
+        return result ?: Unit()
+    }
+
+    private fun mapOptions(unit: List<UnitValue>): List<OptionInputModel> =
+            unit.map {
+                OptionInputModel(
+                        it.variantUnitValueID.toString(),
+                        it.value,
+                        it.hex
+                )
+            }
+
+    private fun mapProducts(): List<ProductVariantInputModel> {
+        val result: MutableList<ProductVariantInputModel> = mutableListOf()
+        selectedVariantUnitValuesMap.forEach {
+            it.value.forEachIndexed { index, unitValue ->
+                result.add(
+                        ProductVariantInputModel(
+                                combination = listOf(it.key, index),
+                                status = STATUS_ACTIVE_STRING
+                        )
+                )
+            }
+        }
+        return result
+    }
 }

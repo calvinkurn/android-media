@@ -19,6 +19,8 @@ import com.tokopedia.product.addedit.variant.presentation.adapter.VariantDetailI
 import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantDetailHeaderViewHolder
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
+import com.tokopedia.product.addedit.variant.presentation.dialog.MultipleVariantEditSelectBottomSheet
+import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.OptionInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
@@ -26,7 +28,9 @@ import com.tokopedia.product.addedit.variant.presentation.viewmodel.AddEditProdu
 import kotlinx.android.synthetic.main.fragment_add_edit_product_variant_detail.*
 import javax.inject.Inject
 
-class AddEditProductVariantDetailFragment : BaseDaggerFragment(), VariantDetailHeaderViewHolder.OnCollapsibleHeaderClickListener {
+
+class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
+        VariantDetailHeaderViewHolder.OnCollapsibleHeaderClickListener, MultipleVariantEditSelectBottomSheet.MultipleVariantEditListener {
 
     companion object {
         fun createInstance(cacheManagerId: String): Fragment {
@@ -82,6 +86,11 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(), VariantDetailH
             else variantDetailFieldsAdapter?.updateAllField(viewModel.showSkuFields())
         }
 
+        val multipleVariantEditSelectBottomSheet = MultipleVariantEditSelectBottomSheet(this)
+        val variantInputModel = viewModel.productInputModel.value?.variantInputModel
+        multipleVariantEditSelectBottomSheet.setData(variantInputModel)
+        multipleVariantEditSelectBottomSheet.show(fragmentManager)
+
         observeSelectedVariantSize()
     }
 
@@ -134,6 +143,10 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(), VariantDetailH
                 fieldAdapterPosition?.let { viewModel.updateVariantDetailInputMap(fieldAdapterPosition, variantDetailInputModel) }
             }
         }
+    }
+
+    override fun onMultipleEditFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel) {
+        println("$multipleVariantEditInputModel")
     }
 
     fun onBackPressed() {

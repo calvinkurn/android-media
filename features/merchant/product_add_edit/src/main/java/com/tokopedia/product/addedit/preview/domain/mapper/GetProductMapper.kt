@@ -92,6 +92,8 @@ class GetProductMapper @Inject constructor() {
                         it.variantId,
                         it.variantName,
                         it.unitID,
+                        it.unitName,
+                        it.identifier,
                         mapProductVariantOptions(it.options)
                 )
             }
