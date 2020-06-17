@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.broadcast.message.common.di.module.BroadcastMessageModule
 import com.tokopedia.broadcast.message.common.di.scope.BroadcastMessageScope
-import com.tokopedia.broadcast.message.view.fragment.BroadcastMessageListFragment
 import dagger.Component
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -20,5 +19,4 @@ interface BroadcastMessageComponent {
     fun getAbstractionRouter(): AbstractionRouter
     fun retrofitBuilder(): Retrofit.Builder
 
-    fun inject(fragment: BroadcastMessageListFragment)
 }
