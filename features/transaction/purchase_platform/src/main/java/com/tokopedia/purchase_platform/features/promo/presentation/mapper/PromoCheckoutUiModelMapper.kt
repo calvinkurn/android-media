@@ -2,7 +2,6 @@ package com.tokopedia.purchase_platform.features.promo.presentation.mapper
 
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.promocheckout.common.view.model.clearpromo.SuccessDataUiModel
-import com.tokopedia.purchase_platform.common.feature.tokopointstnc.TokoPointsTncUiModel
 import com.tokopedia.purchase_platform.features.promo.data.response.*
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
 import javax.inject.Inject
@@ -157,14 +156,6 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
 
                 }
         )
-    }
-
-    fun mapTokoPointsTncDetails(tncDetail: List<TncDetail>): ArrayList<TokoPointsTncUiModel> {
-        val tokoPointsTncDetails = ArrayList<TokoPointsTncUiModel>()
-        tncDetail.forEach {
-            tokoPointsTncDetails.add(TokoPointsTncUiModel(imageUrl = it.iconImageUrl, description = it.description))
-        }
-        return tokoPointsTncDetails
     }
 
     fun mapClearPromoResponse(response: ClearPromoResponse): ClearPromoUiModel {

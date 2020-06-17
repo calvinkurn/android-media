@@ -134,6 +134,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val USER_IDENTIFICATION_INFO = "$USER_IDENTIFICATION_INFO_BASE?projectId={projectId}"
 
+    // AddNameActivity
+    // tokopedia-android-internal://global/manage-name
+    @JvmField
+    val MANAGE_NAME = "$INTERNAL_GLOBAL/manage-name"
+
     @JvmField
     val PARAM_SOURCE_KYC_SELLER = "seller"
 
@@ -376,6 +381,19 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/ovoqrthanks/{transfer_id}
     @JvmField
     val OQR_PIN_URL_ENTRY_PATTERN = "$INTERNAL_GLOBAL/ovoqrthanks/{transfer_id}/"
+
+    // InstantDebitBcaActivity
+    // tokopedia-android-internal://global/instantdebitbca?callbackUrl={callbackUrl}
+    @JvmField
+    val INSTANT_DEBIT_BCA_ENTRY_PATTERN = "$INTERNAL_GLOBAL/instantdebitbca"
+
+    // BcaEditLimitActivity
+    // tokopedia-android-internal://global/editbcaoneklik?callbackUrl={callbackUrl}&xcoid={xcoid}
+    @JvmField
+    val EDIT_BCA_ONE_KLICK_ENTRY_PATTERN = "$INTERNAL_GLOBAL/editbcaoneklik"
+
+    @JvmField
+    val DISCOVERY = "$INTERNAL_GLOBAL/discovery"
 
 
     @JvmField

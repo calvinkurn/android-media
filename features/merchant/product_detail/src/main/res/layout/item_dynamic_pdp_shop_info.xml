@@ -5,7 +5,6 @@
     android:id="@+id/base_shop_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
     android:paddingBottom="@dimen/dp_16"
     android:visibility="visible">
 
@@ -131,7 +130,6 @@
             android:ellipsize="end"
             android:lines="1"
             android:maxLines="1"
-            android:textColor="@color/charcoal_grey_88"
             app:layout_constraintEnd_toStartOf="@+id/shop_feature"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintHorizontal_chainStyle="packed"

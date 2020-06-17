@@ -8,7 +8,7 @@ import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.helper.getOrAwaitValue
 import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
-import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.Event
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent

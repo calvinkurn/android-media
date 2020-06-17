@@ -21,12 +21,7 @@ class InstrumentationShopPageTestActivity : AppCompatActivity(),
     private var shopPageHomeTabLoadTimePerformanceCallback: PageLoadTimePerformanceInterface? = null
     private var shopPageProductTabLoadTimePerformanceCallback: PageLoadTimePerformanceInterface? = null
 
-    companion object{
-        private const val SAMPLE_SHOP_ID = "3418893"
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        intent.putExtra(SHOP_ID, SAMPLE_SHOP_ID)
         initShopPageHeaderPerformanceMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_instrumentation_shop_page_test)
