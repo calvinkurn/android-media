@@ -39,10 +39,24 @@ class DeferredResourceTaskTest {
     }
 
     @Test
-    fun initTest() {
+    fun initTestForUrl() {
         task.initTask("abc", imageType, callback)
         assert(task.deferredImageView!!.get() == imageType.imageView)
         assert(task.getDownloadUrl() == "abc")
+    }
+
+    @Test
+    fun initTestForVersion() {
+        task.initTask("abc", imageType, callback)
+        assert(task.deferredImageView!!.get() == imageType.imageView)
+        assert(task.resourceVersion() == imageType.resourceVersion)
+    }
+
+    @Test
+    fun initTestForWorkerInfo() {
+        task.initTask("abc", imageType, callback)
+        assert(task.deferredImageView!!.get() == imageType.imageView)
+        assert(task.isRequestedFromWorker == imageType.isRequestedFromWorker)
     }
 
     @Test
@@ -67,7 +81,7 @@ class DeferredResourceTaskTest {
         every { imageView.height } returns 10
         assert(task.mTargetWidth == imageType.imageView?.width)
         assertEquals(10, task.mTargetHeight)
-        every { imageType.imageView } returns  null
+        every { imageType.imageView } returns null
         task.initTask("abc", imageType, callback)
         assert(task.mTargetHeight == 0)
         assert(task.mTargetWidth == 0)
@@ -89,29 +103,29 @@ class DeferredResourceTaskTest {
         task.handleDownloadState(ResourceDownloadRunnable.DOWNLOAD_STATE_STARTED)
         verify {
             resourceDownloadManager.handleState(
-                task,
-                ResourceDownloadManager.DOWNLOAD_STARTED
+                    task,
+                    ResourceDownloadManager.DOWNLOAD_STARTED
             )
         }
         task.handleDownloadState(ResourceDownloadRunnable.DOWNLOAD_STATE_COMPLETED)
         verify {
             resourceDownloadManager.handleState(
-                task,
-                ResourceDownloadManager.DOWNLOAD_COMPLETED
+                    task,
+                    ResourceDownloadManager.DOWNLOAD_COMPLETED
             )
         }
         task.handleDownloadState(ResourceDownloadRunnable.DOWNLOAD_STATE_FAILED)
         verify {
             resourceDownloadManager.handleState(
-                task,
-                ResourceDownloadManager.DOWNLOAD_FAILED
+                    task,
+                    ResourceDownloadManager.DOWNLOAD_FAILED
             )
         }
         task.handleDownloadState(ResourceDownloadRunnable.DOWNLOAD_STATE_SKIPPED)
         verify {
             resourceDownloadManager.handleState(
-                task,
-                ResourceDownloadManager.DOWNLOAD_SKIPPED
+                    task,
+                    ResourceDownloadManager.DOWNLOAD_SKIPPED
             )
         }
     }
@@ -124,8 +138,8 @@ class DeferredResourceTaskTest {
         task.handleDecodeState(ImageDecodeRunnable.DECODE_STATE_COMPLETED)
         verify {
             resourceDownloadManager.handleState(
-                task,
-                ResourceDownloadManager.DECODE_COMPLETED
+                    task,
+                    ResourceDownloadManager.DECODE_COMPLETED
             )
         }
         task.handleDecodeState(ImageDecodeRunnable.DECODE_STATE_FAILED)
