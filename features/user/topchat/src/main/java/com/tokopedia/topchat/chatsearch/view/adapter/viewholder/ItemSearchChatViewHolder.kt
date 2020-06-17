@@ -26,8 +26,7 @@ class ItemSearchChatViewHolder(
         fun finishSearchActivity()
     }
 
-    override fun bind(element: SearchResultUiModel?) {
-        if (element == null) return
+    override fun bind(element: SearchResultUiModel) {
         hideUnusedElement()
         bindUserImageProfile(element)
         bindUserName(element)
