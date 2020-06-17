@@ -89,7 +89,7 @@ public class  InboxReputationActivity extends BaseTabActivity implements HasComp
 
     private void initView() {
         viewPager = findViewById(R.id.pager);
-        indicator = findViewById(R.id.indicator);
+        indicator = findViewById(R.id.indicator_unify);
 
         if (getApplicationContext() != null
                 && getApplicationContext() instanceof ReputationRouter) {

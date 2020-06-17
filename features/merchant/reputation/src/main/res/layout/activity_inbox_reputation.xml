@@ -7,7 +7,7 @@
     android:background="@color/white">
 
     <com.tokopedia.unifycomponents.TabsUnify
-        android:id="@+id/indicator"
+        android:id="@+id/indicator_unify"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
