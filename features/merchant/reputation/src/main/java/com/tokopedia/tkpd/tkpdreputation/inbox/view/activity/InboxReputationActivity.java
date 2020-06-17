@@ -83,15 +83,12 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
         viewPager = findViewById(R.id.pager_reputation);
         indicator = findViewById(R.id.indicator_unify);
 
-        sectionAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), getFragmentList(), indicator.getUnifyTabLayout());
-
         if (getApplicationContext() != null
                 && getApplicationContext() instanceof ReputationRouter) {
             ReputationRouter applicationContext = (ReputationRouter) getApplicationContext();
             reviewSellerFragment = applicationContext.getReviewSellerFragment();
         }
         viewPager.setOffscreenPageLimit(OFFSCREEN_PAGE_LIMIT);
-        viewPager.setAdapter(sectionAdapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator.getUnifyTabLayout()));
         indicator.getUnifyTabLayout().addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager, this) {
             @Override
@@ -134,6 +131,9 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
         if (goToReputationHistory) {
             viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
         }
+
+        sectionAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), getFragmentList(), indicator.getUnifyTabLayout());
+        viewPager.setAdapter(sectionAdapter);
 
         wrapTabIndicatorToTitle(indicator.getUnifyTabLayout(), (int) ReputationUtil.DptoPx(this, MARGIN_START_END_TAB), (int) ReputationUtil.DptoPx(this, MARGIN_TAB));
     }
