@@ -45,6 +45,10 @@ class SellerMigrationAccountBottomSheet : BottomSheetUnify() {
         val sellerMigrationBottomSheetContent: Typography? = view.findViewById(R.id.sellerMigrationBottomSheetContent)
         val sellerMigrationAccountBottomSheetLink: Typography? = view.findViewById(R.id.sellerMigrationAccountBottomSheetLink)
         val sellerMigrationAccountBottomSheetButton: UnifyButton? = view.findViewById(R.id.sellerMigrationAccountBottomSheetButton)
+        if(listOf(sellerMigrationAccountBottomSheetImage, sellerMigrationBottomSheetContent, sellerMigrationAccountBottomSheetLink, sellerMigrationAccountBottomSheetButton).any { it == null }) {
+            this.dismiss()
+            return
+        }
         sellerMigrationAccountBottomSheetImage?.loadImage(SellerMigrationConstants.SELLER_MIGRATION_ACCOUNT_IMAGE_LINK)
         sellerMigrationBottomSheetContent?.text = context?.let { HtmlLinkHelper(it, getString(R.string.seller_migration_account_home_bottom_sheet_content)).spannedString }
         sellerMigrationAccountBottomSheetLink?.apply {
