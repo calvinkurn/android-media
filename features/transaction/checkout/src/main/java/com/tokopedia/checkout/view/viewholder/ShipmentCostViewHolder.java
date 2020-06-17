@@ -99,7 +99,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvTotalItemLabel.setText(getTotalItemLabel(mTvTotalItemLabel.getContext(), shipmentCost.getTotalItem()));
         mTvTotalItemPrice.setText(shipmentCost.getTotalItemPrice() == 0 ? "-" :
                 CurrencyFormatUtil.convertPriceValueToIdrFormat((long) shipmentCost.getTotalItemPrice(), false));
-        mTvShippingFeeLabel.setText(mTvShippingFeeLabel.getContext().getString(R.string.label_shipment_fee));
+        mTvShippingFeeLabel.setText(mTvShippingFeeLabel.getContext().getString(com.tokopedia.purchase_platform.common.R.string.label_shipment_fee));
         mTvShippingFee.setText(getPriceFormat(mTvShippingFeeLabel, mTvShippingFee, shipmentCost.getShippingFee()));
         mTvInsuranceFee.setText(getPriceFormat(mTvInsuranceFeeLabel, mTvInsuranceFee, shipmentCost.getInsuranceFee()));
         mTvOrderPrioritasFee.setText(getPriceFormat(mTvOrderPrioritasLabel, mTvOrderPrioritasFee, shipmentCost.getPriorityFee()));
@@ -144,15 +144,15 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void renderProductDiscount(ShipmentCostModel shipmentCost) {
-        mTvProductDiscountLabel.setText(mTvProductDiscountLabel.getContext().getString(R.string.label_product_discount));
+        mTvProductDiscountLabel.setText(mTvProductDiscountLabel.getContext().getString(com.tokopedia.purchase_platform.common.R.string.label_product_discount));
         mTvProductDiscountPrice.setText(getPriceFormat(mTvProductDiscountLabel, mTvProductDiscountPrice, shipmentCost.getProductDiscountAmount() * -1));
     }
 
     private void renderShippingDiscount(ShipmentCostModel shipmentCost) {
-        mTvShippingDiscountLabel.setText(mTvShippingDiscountLabel.getContext().getString(R.string.label_shipping_discount));
+        mTvShippingDiscountLabel.setText(mTvShippingDiscountLabel.getContext().getString(com.tokopedia.purchase_platform.common.R.string.label_shipping_discount));
         if (shipmentCost.getShippingDiscountAmount() > 0) {
             if (shipmentCost.getShippingDiscountAmount() >= shipmentCost.getShippingFee()) {
-                mTvShippingFee.setText(mTvShippingFee.getContext().getString(R.string.label_free_shipping));
+                mTvShippingFee.setText(mTvShippingFee.getContext().getString(com.tokopedia.purchase_platform.common.R.string.label_free_shipping));
                 mTvShippingDiscountPrice.setVisibility(View.GONE);
                 mTvShippingDiscountLabel.setVisibility(View.GONE);
             } else {

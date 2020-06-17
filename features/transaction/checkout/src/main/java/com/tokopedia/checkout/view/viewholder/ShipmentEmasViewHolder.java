@@ -54,7 +54,7 @@ public class ShipmentEmasViewHolder extends RecyclerView.ViewHolder {
         Tooltip tooltip = new Tooltip(imgEmasInfo.getContext());
         tooltip.setTitle(egoldAttributeModel.getTitleText());
         tooltip.setDesc(egoldAttributeModel.getTooltipText());
-        tooltip.setTextButton(imgEmasInfo.getContext().getString(R.string.label_button_bottomsheet_close));
+        tooltip.setTextButton(imgEmasInfo.getContext().getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close));
         tooltip.setWithIcon(false);
         tooltip.getBtnAction().setOnClickListener(v -> tooltip.dismiss());
         tooltip.show();

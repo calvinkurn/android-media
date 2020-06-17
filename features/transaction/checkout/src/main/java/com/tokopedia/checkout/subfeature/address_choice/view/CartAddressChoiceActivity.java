@@ -227,7 +227,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         updateTitle(getString(R.string.button_choose_corner));
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.checkout_module_slide_in_up, R.anim.checkout_module_stay_still)
-                .replace(R.id.parent_view, CornerListFragment.newInstance(), TAG_CORNER_FRAGMENT)
+                .replace(com.tokopedia.abstraction.R.id.parent_view, CornerListFragment.newInstance(), TAG_CORNER_FRAGMENT)
                 .addToBackStack(null)
                 .commit();
     }
