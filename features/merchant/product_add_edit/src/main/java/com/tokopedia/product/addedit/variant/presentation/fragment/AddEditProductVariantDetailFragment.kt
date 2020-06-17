@@ -20,6 +20,7 @@ import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.Var
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.product.addedit.variant.presentation.dialog.MultipleVariantEditSelectBottomSheet
+import com.tokopedia.product.addedit.variant.presentation.dialog.SelectVariantMainBottomSheet
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.OptionInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
@@ -30,7 +31,9 @@ import javax.inject.Inject
 
 
 class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
-        VariantDetailHeaderViewHolder.OnCollapsibleHeaderClickListener, MultipleVariantEditSelectBottomSheet.MultipleVariantEditListener {
+        VariantDetailHeaderViewHolder.OnCollapsibleHeaderClickListener,
+        MultipleVariantEditSelectBottomSheet.MultipleVariantEditListener,
+        SelectVariantMainBottomSheet.SelectVariantMainListener {
 
     companion object {
         fun createInstance(cacheManagerId: String): Fragment {
@@ -86,10 +89,13 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             else variantDetailFieldsAdapter?.updateAllField(viewModel.showSkuFields())
         }
 
-        val multipleVariantEditSelectBottomSheet = MultipleVariantEditSelectBottomSheet(this)
-        val variantInputModel = viewModel.productInputModel.value?.variantInputModel
-        multipleVariantEditSelectBottomSheet.setData(variantInputModel)
-        multipleVariantEditSelectBottomSheet.show(fragmentManager)
+        imageViewMultipleEdit.setOnClickListener {
+            showMultipleEditBottomSheet()
+        }
+
+        variantListButton.setOnClickListener {
+            showSelectPrimaryBottomSheet()
+        }
 
         observeSelectedVariantSize()
     }
@@ -98,6 +104,18 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         // get target fields (indexes)
         // remove indexes from visitables
+    }
+
+    override fun onMultipleEditFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel) {
+        viewModel.updateProductInputModel(multipleVariantEditInputModel)
+    }
+
+    override fun onSelectVariantMainFinished(combination: List<Int>) {
+        println(combination)
+    }
+
+    fun onBackPressed() {
+        activity?.finish()
     }
 
     private fun observeSelectedVariantSize() {
@@ -145,12 +163,18 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onMultipleEditFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel) {
-        viewModel.updateProductInputModel(multipleVariantEditInputModel)
+    private fun showMultipleEditBottomSheet() {
+        val variantInputModel = viewModel.productInputModel.value?.variantInputModel
+        val bottomSheet = MultipleVariantEditSelectBottomSheet(this)
+        bottomSheet.setData(variantInputModel)
+        bottomSheet.show(fragmentManager)
     }
 
-    fun onBackPressed() {
-        activity?.finish()
+    private fun showSelectPrimaryBottomSheet() {
+        val variantInputModel = viewModel.productInputModel.value?.variantInputModel
+        val bottomSheet = SelectVariantMainBottomSheet(this)
+        bottomSheet.setData(variantInputModel)
+        bottomSheet.show(fragmentManager)
     }
 
 }
