@@ -8,6 +8,7 @@ import com.tokopedia.gm.common.domain.interactor.GetPowerMerchantStatusUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.power_merchant.subscribe.common.coroutine.CoroutineDispatchers
+import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantFreeShippingTracker
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment.Companion.MINIMUM_SCORE_ACTIVATE_IDLE
 import com.tokopedia.power_merchant.subscribe.view.model.PowerMerchantFreeShippingStatus
 import com.tokopedia.power_merchant.subscribe.view.model.ViewState
@@ -45,6 +46,8 @@ class PmSubscribeViewModel @Inject constructor(
     private val _getPmStatusInfoResult = MutableLiveData<Result<PowerMerchantStatus>>()
     private val _getPmFreeShippingStatusResult = MutableLiveData<Result<PowerMerchantFreeShippingStatus>>()
     private val _onActivatePmSuccess = MutableLiveData<PowerMerchantFreeShippingStatus>()
+
+    private var freeShippingImpressionTracked = false
 
     fun getPmStatusInfo(){
         showLoading()
@@ -113,6 +116,19 @@ class PmSubscribeViewModel @Inject constructor(
             )
 
         _onActivatePmSuccess.value = freeShippingStatus
+    }
+
+    fun trackFreeShippingImpression() {
+        if(!freeShippingImpressionTracked) {
+            val isTransitionPeriod = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD)
+            PowerMerchantFreeShippingTracker.sendImpressionFreeShipping(userSession, isTransitionPeriod)
+            freeShippingImpressionTracked = true
+        }
+    }
+
+    fun trackFreeShippingClick() {
+        val isTransitionPeriod = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD)
+        PowerMerchantFreeShippingTracker.sendClickFreeShipping(userSession, isTransitionPeriod)
     }
 
     fun detachView() {

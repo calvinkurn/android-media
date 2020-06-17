@@ -438,21 +438,37 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
                     val freeShipping = it.data
 
                     if(freeShipping.isTransitionPeriod && !freeShipping.isActive) {
-                        freeShippingError.hide()
-                        freeShippingLayout.hide()
+                        hideFreeShippingWidget()
                     } else {
-                        freeShippingError.hide()
-                        freeShippingLayout.show(freeShipping)
+                        viewModel.trackFreeShippingImpression()
+                        showFreeShippingWidget(freeShipping)
                     }
                 }
-                is Fail -> {
-                    freeShippingLayout.hide()
-                    freeShippingError.apply {
-                        progressState = false
-                        show()
-                    }
-                }
+                is Fail -> showFreeShippingError()
             }
+        }
+    }
+
+    private fun showFreeShippingWidget(freeShipping: PowerMerchantFreeShippingStatus) {
+        freeShippingError.hide()
+        freeShippingLayout.apply {
+            onClickListener = {
+                viewModel.trackFreeShippingClick()
+            }
+            show(freeShipping)
+        }
+    }
+
+    private fun hideFreeShippingWidget() {
+        freeShippingError.hide()
+        freeShippingLayout.hide()
+    }
+
+    private fun showFreeShippingError() {
+        freeShippingLayout.hide()
+        freeShippingError.apply {
+            progressState = false
+            show()
         }
     }
 
