@@ -133,7 +133,7 @@ class DiscoveryDataMapper {
             componentsItem.name = subComponentName
             componentsItem.properties = properties
             val dataItem = mutableListOf<DataItem>()
-            it.typeProductCard = typeProductCard
+            it.typeProductCard = subComponentName
             dataItem.add(it)
             componentsItem.data = dataItem
             list.add(componentsItem)

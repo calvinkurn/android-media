@@ -6,16 +6,10 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
-import kotlin.collections.List
-import kotlin.collections.Map
-import kotlin.collections.MutableMap
-import kotlin.collections.firstOrNull
-import kotlin.collections.isNotEmpty
-import kotlin.collections.mapOf
-import kotlin.collections.mutableMapOf
 import kotlin.collections.set
 
 class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
@@ -241,15 +235,16 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
         productCardImpressionLabel = "$login ${dataItem?.typeProductCard}"
         val map = HashMap<String, Any>()
         dataItem?.let {
-            productCardItemList = "/$pagePath - $pageType - ${it.positionForParentItem.plus(1)} - $login - ${it.typeProductCard}"
-            map[KEY_ID] = it.productId.toString()
-            map[KEY_VARIANT] = NONE_OTHER
-            map[KEY_BRAND] = NONE_OTHER
-            map[KEY_POSITION] = position + 1
+            productCardItemList = "/$pagePath - $pageType - ${it.positionForParentItem.plus(1)} - $login - ${it.typeProductCard} - - ${if (it.isTopads == true) TOPADS else NON_TOPADS}"
             map[KEY_NAME] = it.name.toString()
+            map[KEY_ID] = it.productId.toString()
+            map[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price ?: "")
+            map[KEY_BRAND] = NONE_OTHER
             map[KEY_ITEM_CATEGORY] = NONE_OTHER
-            map[DIMENSION40] = "bebas ongkir"
-            map[DIMENSION83] = productCardItemList
+            map[KEY_VARIANT] = NONE_OTHER
+            map[KEY_POSITION] = position + 1
+            map[LIST] = productCardItemList
+            map[DIMENSION83] = if (it.freeOngkir?.isActive == true) BEBAS_ONGKIR else NONE_OTHER
         }
         pcDataLayerList.add(map)
     }
@@ -257,14 +252,46 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
     fun trackEventImpressionProductCard() {
         val list = ArrayList<Map<String, Any>>()
         list.addAll(pcDataLayerList)
-        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
-                EVENT_PROMO_VIEW to mapOf(
-                        KEY_PROMOTIONS to list))
+        val eCommerce: Map<String, Any> = mapOf(
+                CURRENCY_CODE to IDR,
+                IMPRESSION to list)
         val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW,
                 eventAction = PRODUCT_LIST_IMPRESSION, eventLabel = productCardImpressionLabel)
         map[KEY_E_COMMERCE] = eCommerce
-        map[ITEM_LIST] = productCardItemList
         trackingQueue.putEETracking(map as HashMap<String, Any>)
+        pcDataLayerList.clear()
+        productCardImpressionLabel = EMPTY_STRING
+        productCardItemList = EMPTY_STRING
+    }
+
+    fun trackProductCardClick(dataItem: DataItem?, isLogin: Boolean, position: Int) {
+        val login = if (isLogin) "login" else "nonlogin"
+        productCardImpressionLabel = "$login ${dataItem?.typeProductCard}"
+        val map = createGeneralEvent(eventName = EVENT_PRODUCT_CLICK, eventAction = CLICK_PRODUCT_LIST, eventLabel = productCardImpressionLabel)
+        val listMap = HashMap<String, Any>()
+        dataItem?.let {
+            productCardItemList = "/$pagePath - $pageType - ${it.positionForParentItem.plus(1)} - $login - ${it.typeProductCard} - - ${if (it.isTopads == true) TOPADS else NON_TOPADS}"
+            listMap[KEY_NAME] = it.name.toString()
+            listMap[KEY_ID] = it.productId.toString()
+            listMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price ?: "")
+            listMap[KEY_BRAND] = NONE_OTHER
+            listMap[KEY_ITEM_CATEGORY] = NONE_OTHER
+            listMap[KEY_VARIANT] = NONE_OTHER
+            listMap[KEY_POSITION] = position + 1
+            listMap[LIST] = productCardItemList
+            listMap[DIMENSION83] = if (it.freeOngkir?.isActive == true) BEBAS_ONGKIR else NONE_OTHER
+        }
+        pcDataLayerList.add(listMap)
+
+        val list = ArrayList<Map<String, Any>>()
+        list.addAll(pcDataLayerList)
+        val eCommerce: Map<String, Map<String, Any>> = mapOf(
+                CLICK to mapOf(
+                        ACTION_FIELD to productCardItemList,
+                        PRODUCTS to list
+                ))
+        map[KEY_E_COMMERCE] = eCommerce
+        getTracker().sendEnhanceEcommerceEvent(map)
         pcDataLayerList.clear()
         productCardImpressionLabel = EMPTY_STRING
         productCardItemList = EMPTY_STRING
