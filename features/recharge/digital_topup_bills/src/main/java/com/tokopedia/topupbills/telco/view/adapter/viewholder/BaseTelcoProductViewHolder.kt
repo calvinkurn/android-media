@@ -75,11 +75,20 @@ abstract class BaseTelcoProductViewHolder(itemView: View, val listener: DigitalP
     protected fun setItemSelected(viewGroup: ViewGroup) {
         var drawableResources = com.tokopedia.common.topupbills.R.drawable.common_topup_bg_transparent_round
         if (productItem.attributes.selected) {
-            listener.onClickItemProduct(productItem, adapterPosition)
+            listener.onClickItemProduct(productItem, adapterPosition, getLabelList())
             drawableResources = com.tokopedia.common.topupbills.R.drawable.common_topup_bg_green_light_rounded
         }
         viewGroup.setBackgroundResource(0)
         viewGroup.setBackgroundResource(drawableResources)
+    }
+
+    private fun getLabelList(): String {
+        for (i in adapterPosition downTo 0 step 1) {
+            if (productList[i].isTitle) {
+                return productList[i].titleSection
+            }
+        }
+        return ""
     }
 
     companion object {
