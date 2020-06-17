@@ -84,7 +84,7 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
 
     companion object {
         private const val SCREEN_FORGOT_PASSWORD = "Forgot password page"
-        private const val URL_FORGOT_PASSWORD = "http://m.tokopedia.com/reset-password"
+        private const val URL_FORGOT_PASSWORD = "https://m.tokopedia.com/reset-password"
         private const val REMOTE_FORGOT_PASSWORD_DIRECT_TO_WEBVIEW_URL = "android_forgot_password_webview_url"
         private const val AB_TEST_RESET_PASSWORD_KEY = "Reset Password AND"
         private const val AB_TEST_RESET_PASSWORD = "Reset Password AND"
