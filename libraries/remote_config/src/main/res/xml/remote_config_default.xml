@@ -436,7 +436,7 @@
     </entry>
     <entry>
         <key>android_async_home_dagger</key>
-        <value>true</value>
+        <value>false</value>
     </entry>
     <entry>
         <key>excluded_amp</key>
