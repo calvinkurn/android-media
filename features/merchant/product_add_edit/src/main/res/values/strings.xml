@@ -229,4 +229,6 @@
     <string name="label_variant_multiple_select_all">Semua</string>
     <string name="label_variant_multiple_select_bottom_sheet_title">Pilih variant yang ingin diatur</string>
     <string name="label_variant_multiple_input_bottom_sheet_title">Atur sekaligus di sini</string>
+    <string name="label_variant_main_select_bottom_sheet_title">Pilih satu varian utama</string>
+
 </resources>
