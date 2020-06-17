@@ -108,6 +108,15 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         handleFocusClientNumber()
         getCatalogMenuDetail()
         getDataFromBundle(savedInstanceState)
+        sendOpenScreenTracking()
+    }
+
+    override fun getTelcoMenuId(): Int {
+        return menuId
+    }
+
+    override fun getTelcoCategoryId(): Int {
+        return categoryId
     }
 
     override fun renderPromoAndRecommendation() {
@@ -166,6 +175,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             arguments?.run {
                 val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM) as TopupBillsExtraParam
                 clientNumber = digitalTelcoExtraParam.clientNumber
+                if (digitalTelcoExtraParam.menuId.isNotEmpty()) { menuId = digitalTelcoExtraParam.menuId.toInt() }
+                if (digitalTelcoExtraParam.categoryId.isNotEmpty()) { categoryId = digitalTelcoExtraParam.categoryId.toInt() }
             }
         } else {
             clientNumber = savedInstanceState.getString(CACHE_CLIENT_NUMBER)
@@ -231,7 +242,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     fun getEnquiryNumber() {
         operatorSelected?.let { selectedOperator ->
-            topupAnalytics.eventClickCheckEnquiry(categoryName, operatorName, userSession.userId)
+            topupAnalytics.eventClickCheckEnquiry(categoryId, operatorName, userSession.userId)
             var mapParam = HashMap<String, Any>()
             mapParam.put(KEY_CLIENT_NUMBER, postpaidClientNumberWidget.getInputNumber())
             mapParam.put(KEY_PRODUCT_ID, selectedOperator.operator.attributes.defaultProductId.toString())
