@@ -245,4 +245,9 @@ object ProductManageTracking {
     fun sendScreen(screenName: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
+
+    fun sendScreen(screenName: String, pageSource: String) {
+        val customDimension = mapOf(ProductManageDataLayer.CUSTOM_DIMENSION_PAGE_SOURCE to pageSource)
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, customDimension)
+    }
 }
