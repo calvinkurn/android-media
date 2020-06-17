@@ -138,8 +138,9 @@ open class WebsocketMessageMapper @Inject constructor() {
                 invoiceSentPojo.invoiceLink.attributes.code,
                 invoiceSentPojo.invoiceLink.attributes.hrefUrl,
                 invoiceSentPojo.invoiceLink.attributes.createTime
-        )
-
+        ).apply {
+            finishLoading()
+        }
     }
 
     private fun canShowFooterProductAttachment(isOpposite: Boolean, role: String): Boolean {

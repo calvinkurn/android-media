@@ -94,7 +94,6 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
-    implementation rootProject.ext.viewDependencies.ahBottomNavigation
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.parcelerApi
