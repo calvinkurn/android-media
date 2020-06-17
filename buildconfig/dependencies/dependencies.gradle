@@ -90,9 +90,9 @@ ext {
     ]
 
     unifyIconVersion = '0.0.4'
-    unifyCoachMarkVersion = '1.2.5'
+    unifyCoachMarkVersion = '1.2.3'
     unifyPrinciplesVersion = '1.1.8'
-    unifyComponentsVersion = '1.1.38'
+    unifyComponentsVersion = '1.1.40'
     unifyCalendarVersion = '1.0.2'
     unifyBannerVersion = '1.0.4'
     unifyDialogVersion = '1.0.3'

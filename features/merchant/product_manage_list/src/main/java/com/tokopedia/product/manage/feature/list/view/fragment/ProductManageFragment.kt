@@ -42,6 +42,7 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMA
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.product.manage.BuildConfig
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
 import com.tokopedia.product.manage.feature.cashback.presentation.activity.ProductManageSetCashbackActivity
@@ -94,6 +95,7 @@ import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantPriceBottomSheet
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantStockBottomSheet
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
@@ -197,6 +199,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         getGoldMerchantStatus()
 
         setupDialogFeaturedProduct()
+
+        context?.let { UpdateShopActiveService.startService(it) }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -953,7 +957,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             val errorMessage = getString(R.string.product_manage_desc_product_on_supervision, product.title)
             NetworkErrorHelper.showSnackbar(activity, errorMessage)
         } else {
-            productManageBottomSheet?.show(product)
+            val isPowerMerchantOrOfficialStore = viewModel.isPowerMerchant() || isOfficialStore
+            productManageBottomSheet?.show(product, isPowerMerchantOrOfficialStore)
         }
     }
 

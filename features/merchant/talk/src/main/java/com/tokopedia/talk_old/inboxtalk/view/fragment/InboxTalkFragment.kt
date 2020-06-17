@@ -21,6 +21,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.talk.BuildConfig
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_PRODUCT_ID
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
 import com.tokopedia.talk_old.R
@@ -136,6 +138,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
 
         setupView()
         initData()
+        context?.let { UpdateShopActiveService.startService(it) }
     }
 
     private fun setupView() {

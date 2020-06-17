@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">product_detail</string>
+
+    <string name="GOOGLE_API_KEY">AIzaSyAqJLm1orGnm6BYnTu0a9uIjwS4gd8ThRY</string>
+
     <string name="label_flash_sale">Flash Sale</string>
     <string name="product_detail_discussion">Diskusi</string>
     <string name="product_detail_courier">Pengiriman</string>
@@ -54,7 +57,6 @@
     <string name="label_product_installment">Cicilan</string>
     <string name="label_format_wholesale">Mulai dari %1$s</string>
 
-    <string name="GOOGLE_API_KEY">AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo</string>
     <string name="label_weight">Berat</string>
     <string name="label_asuransi">Asuransi</string>
     <string name="label_category">Kategori</string>

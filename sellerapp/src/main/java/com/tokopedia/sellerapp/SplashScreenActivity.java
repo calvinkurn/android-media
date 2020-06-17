@@ -53,6 +53,21 @@ public class SplashScreenActivity extends SplashScreen {
         syncFcmToken();
     }
 
+    /**
+     * handle/forward app link redirection from customer app to seller app
+     * */
+    private boolean handleAppLink() {
+        Uri uri = getIntent().getData();
+        if (null != uri) {
+            boolean isFromMainApp = uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false);
+            if (isFromMainApp) {
+                return RouteManager.route(this, uri.toString());
+            }
+            return false;
+        }
+        return false;
+    }
+
     private void syncFcmToken() {
         SyncFcmTokenService.Companion.startService(this);
     }
@@ -62,6 +77,12 @@ public class SplashScreenActivity extends SplashScreen {
         if (isApkTempered) {
             return;
         }
+
+        if (handleAppLink()) {
+            finish();
+            return;
+        }
+
         UserSessionInterface userSession = new UserSession(this);
         if (userSession.hasShop()) {
             if (getIntent().hasExtra(Constants.EXTRA_APPLINK)) {

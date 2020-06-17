@@ -172,7 +172,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     private lateinit var somBottomSheetCourierProblemsAdapter: SomBottomSheetCourierProblemsAdapter
     private val FLAG_CONFIRM_REQ_PICKUP = 3535
     private val FLAG_CONFIRM_SHIPPING = 3553
-    private lateinit var reasonCourierProblemText: String
+    private var reasonCourierProblemText: String = ""
     private val tagConfirm = "tag_confirm"
     private var refreshHandler: RefreshHandler? = null
     private var bottomSheetCourierProblems: BottomSheetUnify? = null
@@ -180,7 +180,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     private val coachMarkItems: ArrayList<CoachMarkItem> = arrayListOf()
 
     private var secondaryBottomSheet: BottomSheetUnify? = null
-    private lateinit var progressBar: ProgressBar
+    private var progressBar: ProgressBar? = null
 
     private val somDetailViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomDetailViewModel::class.java]
@@ -541,8 +541,8 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     detailResponse.button.filterIndexed { index, _ -> (index != 0) }.forEach { btn ->
                         mapKey[btn.key] = btn.displayName
                     }
-                    somBottomSheetRejectOrderAdapter.mapKey = mapKey
-                    somBottomSheetRejectOrderAdapter.notifyDataSetChanged()
+                    somBottomSheetRejectOrderAdapter?.mapKey = mapKey
+                    somBottomSheetRejectOrderAdapter?.notifyDataSetChanged()
                 }
             } else {
                 btn_secondary?.visibility = View.GONE
@@ -596,9 +596,9 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
 
     private fun setLoadingIndicator(active: Boolean) {
         if (active) {
-            progressBar.visibility = View.VISIBLE
+            progressBar?.visibility = View.VISIBLE
         } else {
-            progressBar.visibility = View.GONE
+            progressBar?.visibility = View.GONE
         }
     }
 
