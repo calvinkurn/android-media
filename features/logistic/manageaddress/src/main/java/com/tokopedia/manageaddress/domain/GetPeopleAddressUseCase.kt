@@ -1,13 +1,11 @@
 package com.tokopedia.manageaddress.domain
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.manageaddress.data.query.GetPeopleAddressQuery
 import com.tokopedia.manageaddress.domain.response.GetPeopleAddressResponse
 import javax.inject.Inject
 
-class GetPeopleAddressUseCase @Inject constructor(@ApplicationContext val context: Context, val graphqlUseCase: GraphqlUseCase<GetPeopleAddressResponse>) {
+class GetPeopleAddressUseCase @Inject constructor(val graphqlUseCase: GraphqlUseCase<GetPeopleAddressResponse>) {
 
     fun execute(query: String, onSuccess: (GetPeopleAddressResponse) -> Unit, onError: (Throwable) -> Unit) {
         graphqlUseCase.setGraphqlQuery(GetPeopleAddressQuery.keroAddressCorner)
