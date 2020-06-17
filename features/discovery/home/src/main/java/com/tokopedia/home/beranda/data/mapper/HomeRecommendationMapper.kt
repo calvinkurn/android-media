@@ -51,7 +51,7 @@ class HomeRecommendationMapper {
                             banner.buAttribution,
                             banner.creativeName,
                             banner.target,
-                            ((pageNumber * DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE) + position + 1).toInt(),
+                            (((pageNumber-1) * DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE) + position + 1).toInt(),
                             banner.galaxyAttribution,
                             banner.persona,
                             banner.brandId,
