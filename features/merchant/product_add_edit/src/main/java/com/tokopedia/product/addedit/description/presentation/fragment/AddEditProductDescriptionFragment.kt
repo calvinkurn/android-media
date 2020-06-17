@@ -642,5 +642,6 @@ class AddEditProductDescriptionFragment:
 
     private fun updateSaveButtonStatus() {
         btnSave.isEnabled = descriptionViewModel.validateInputVideo(adapter.data)
+        btnNext.isEnabled = descriptionViewModel.validateInputVideo(adapter.data)
     }
 }
