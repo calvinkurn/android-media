@@ -7,9 +7,6 @@
             android:label="@string/bm_list_title"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
-        <activity android:name=".view.activity.BroadcastMessageCreateActivity"
-            android:theme="@style/Theme.White"
-            android:label="@string/create_bm"/>
         <activity android:name=".view.activity.BroadcastMessagePreviewActivity"
             android:theme="@style/Theme.White"
             android:label="@string/preview_bm"/>
