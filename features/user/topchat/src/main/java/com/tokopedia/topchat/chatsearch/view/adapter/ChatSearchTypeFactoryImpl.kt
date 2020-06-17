@@ -7,12 +7,11 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder
 import com.tokopedia.topchat.chatsearch.data.RecentSearch
-import com.tokopedia.topchat.chatsearch.view.uimodel.ChatReplyUiModel
-import com.tokopedia.topchat.chatsearch.view.uimodel.SearchResultUiModel
 import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.*
+import com.tokopedia.topchat.chatsearch.view.uimodel.ChatReplyUiModel
 import com.tokopedia.topchat.chatsearch.view.uimodel.ContactLoadMoreUiModel
+import com.tokopedia.topchat.chatsearch.view.uimodel.SearchResultUiModel
 
 class ChatSearchTypeFactoryImpl(
         private val searchListener: ItemSearchChatViewHolder.Listener? = null,
@@ -21,7 +20,7 @@ class ChatSearchTypeFactoryImpl(
 ) : BaseAdapterTypeFactory(), ChatSearchTypeFactory {
 
     override fun type(searchResultUiModel: SearchResultUiModel): Int {
-        return ChatItemListViewHolder.LAYOUT
+        return ItemSearchChatViewHolder.LAYOUT
     }
 
     override fun type(viewModel: LoadingModel): Int {
@@ -53,7 +52,7 @@ class ChatSearchTypeFactoryImpl(
             ItemSearchChatReplyViewHolder.LAYOUT -> ItemSearchChatReplyViewHolder(parent)
             ContactLoadMoreViewHolder.LAYOUT -> ContactLoadMoreViewHolder(parent, contactLoadMoreListener)
             ChatSearchErrorNetworkViewHolder.LAYOUT -> ChatSearchErrorNetworkViewHolder(parent)
-            ChatItemListViewHolder.LAYOUT -> ItemSearchChatViewHolder(parent, searchListener)
+            ItemSearchChatViewHolder.LAYOUT -> ItemSearchChatViewHolder(parent, searchListener)
             LoadingSearchChatViewHolder.LAYOUT -> LoadingSearchChatViewHolder(parent)
             EmptySearchChatViewHolder.LAYOUT -> EmptySearchChatViewHolder(parent, emptySearchListener)
             RecentSearchChatViewHolder.LAYOUT -> RecentSearchChatViewHolder(parent)
