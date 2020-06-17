@@ -13,6 +13,24 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
 
     var productInputModel = MutableLiveData<ProductInputModel>()
 
+    val selectedVariantSize = MediatorLiveData<Int>().apply {
+        addSource(productInputModel) {
+            productInputModel.value?.run {
+                value = this.variantInputModel.selections.size
+            }
+        }
+    }
+
+    private val variantDetailFieldMapLayout: HashMap<Int, VariantDetailInputLayoutModel> = hashMapOf()
+
+    fun hasVariantCombination(selectedVariantSize: Int): Boolean {
+        return selectedVariantSize == MAX_SELECTED_VARIANT_TYPE
+    }
+
+    fun updateVariantDetailInputMap(fieldPosition: Int, variantDetailInputLayoutModel: VariantDetailInputLayoutModel) {
+        variantDetailFieldMapLayout[fieldPosition] = variantDetailInputLayoutModel
+    }
+
     fun updateProductInputModel(inputModel: MultipleVariantEditInputModel) {
         // get combination from selected input
         inputModel.selection.forEachIndexed { index, values ->
@@ -36,5 +54,32 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
             it.stock = inputModel.stock
             it.sku = inputModel.sku
         }
+    }
+
+    fun getVariantDetailFieldMap(): HashMap<Int, VariantDetailInputLayoutModel> {
+        return this.variantDetailFieldMapLayout
+    }
+
+    fun showSkuFields(): HashMap<Int, VariantDetailInputLayoutModel> {
+        variantDetailFieldMapLayout.forEach {
+            it.value.isSkuFieldVisible = true
+        }
+        return variantDetailFieldMapLayout
+    }
+
+    fun hideSkuFields(): HashMap<Int, VariantDetailInputLayoutModel> {
+        variantDetailFieldMapLayout.forEach {
+            it.value.isSkuFieldVisible = false
+        }
+        return variantDetailFieldMapLayout
+    }
+
+    fun validatePriceField() {
+
+    }
+
+    fun validateStockField() {
+
+
     }
 }

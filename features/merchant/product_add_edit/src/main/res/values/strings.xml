@@ -223,6 +223,17 @@
     <string name="label_variant_choose">Pilih</string>
     <string name="label_variant_custom_input_message">Tulis nama varian yang kamu inginkan.</string>
     <string name="label_variant_sizechart_edit_description">Klik gambar jika ingin ubah panduan.</string>
+    <string name="label_manage_at_once">Atur Sekaligus</string>
+    <string name="label_manage_at_once_desc">Atur harga, stok, dan SKU sekaligus.</string>
+    <string name="label_add_sku">Tambah SKU</string>
+    <string name="label_optional">(Opsional)</string>
+    <string name="label_variant_list">Daftar Varian</string>
+    <string name="action_pick_main_variant">Pilih Varian Utama</string>
+    <string name="label_variant_price">Harga</string>
+    <string name="label_variant_stock">Stok</string>
+    <string name="label_variant_sku">SKU</string>
+    <string name="label_variant_sku_long">SKU (Stock Keeping Unit)</string>
+    <string name="label_rupiah">Rp</string>
     <string name="label_variant_multiple_price">Harga</string>
     <string name="label_variant_multiple_stock">Stok</string>
     <string name="label_variant_multiple_sku">SKU (Stock Keeping Unit)</string>
