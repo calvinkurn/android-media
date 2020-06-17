@@ -10,7 +10,7 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
-        android:text="@string/mvc_download_voucher_description"
+        android:text="@string/mvc_download_general"
         android:textColor="@color/light_N700_96"
         
         app:layout_constraintEnd_toEndOf="parent"

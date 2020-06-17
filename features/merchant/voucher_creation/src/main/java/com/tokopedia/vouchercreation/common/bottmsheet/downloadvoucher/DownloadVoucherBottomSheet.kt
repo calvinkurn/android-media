@@ -89,15 +89,6 @@ class DownloadVoucherBottomSheet(
                         onImageOpened = ::onImageExpanded,
                         onCheckBoxClicked = ::onCheckBoxClicked,
                         onChevronIconClicked = ::onChevronItemClicked
-                ),
-                DownloadVoucherUiModel(
-                        isSelected = true,
-                        ratioStr = parent.context.getString(R.string.mvc_shop_cover),
-                        description = parent.context.getString(R.string.mvc_for_cover_of_your_shop),
-                        downloadVoucherType = DownloadVoucherType.Banner(bannerUrl),
-                        onImageOpened = ::onImageExpanded,
-                        onCheckBoxClicked = ::onCheckBoxClicked,
-                        onChevronIconClicked = ::onChevronItemClicked
                 )
         )
     }

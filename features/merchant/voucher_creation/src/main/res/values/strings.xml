@@ -195,6 +195,7 @@
     <string name="mvc_download_voucher">Download Voucher</string>
     <string name="mvc_select_voucher_size">Pilih Ukuran Voucher</string>
     <string name="mvc_download_voucher_description">Download voucher menggunakan ukuran yang sesuai kebutuhan kamu dari 2 ukuran berikut :</string>
+    <string name="mvc_download_general">Download voucher menggunakan ukuran yang sesuai dengan kebutuhanmu dari pilihan berikut:</string>
     <string name="mvc_ratio_1_1">Ratio 1:1</string>
     <string name="mvc_for_instagram_facebook_post">Untuk post Instagram, Facebook.</string>
     <string name="mvc_ratio_16_9">Ratio 16:9</string>
