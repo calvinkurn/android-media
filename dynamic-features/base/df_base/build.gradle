@@ -52,6 +52,7 @@ dependencies {
     //Base
     implementation project(rootProject.ext.features.onboarding)
     //Category
+    implementation project(rootProject.ext.features.exploreCategory)
     //implementation project(rootProject.ext.features.agerestriction) //Need to fix the structure
     //Content
     implementation project(rootProject.ext.features.affiliate)
