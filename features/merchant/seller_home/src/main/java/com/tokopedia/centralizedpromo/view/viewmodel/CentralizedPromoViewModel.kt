@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.domain.usecase.GetChatBlastSellerMetadataUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetPostUseCase
@@ -99,5 +100,15 @@ class CentralizedPromoViewModel @Inject constructor(
         } catch (t: Throwable) {
             Fail(t)
         }
+    }
+
+    fun trackFreeShippingImpression() {
+        val isTransitionPeriod = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED)
+        CentralizedPromoTracking.sendImpressionFreeShipping(userSession, isTransitionPeriod)
+    }
+
+    fun trackFreeShippingClick() {
+        val isTransitionPeriod = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED)
+        CentralizedPromoTracking.sendClickFreeShipping(userSession, isTransitionPeriod)
     }
 }
