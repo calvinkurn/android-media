@@ -92,10 +92,10 @@ class LayananFragment : BaseListFragment<LayananSectionModel,LayananViewHolderFa
     }
 
     companion object{
-        val LAYANAN_PLT = "layanan_plt"
-        val LAYANAN_PLT_PREPARE_METRICS = "layanan_plt_prepare_metrics"
-        val LAYANAN_PLT_NETWORK_METRICS = "layanan_plt_network_metrics"
-        val LAYANAN_PLT_RENDER_METRICS = "layanan_plt_render_metrics"
+       private const val LAYANAN_PLT = "layanan_plt"
+       private const val LAYANAN_PLT_PREPARE_METRICS = "layanan_plt_prepare_metrics"
+       private const val LAYANAN_PLT_NETWORK_METRICS = "layanan_plt_network_metrics"
+       private const val LAYANAN_PLT_RENDER_METRICS = "layanan_plt_render_metrics"
 
     }
 }
