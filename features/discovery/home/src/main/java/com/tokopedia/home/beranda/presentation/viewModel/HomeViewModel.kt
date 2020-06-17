@@ -275,11 +275,9 @@ open class HomeViewModel @Inject constructor(
             newList.addAll(_homeLiveData.value?.list ?: listOf())
             val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCarouselCardDataModel }
             if(playIndex != -1 && newList[playIndex] is PlayCarouselCardDataModel){
-                launch {
-                    updateWidget(UpdateLiveDataModel(ACTION_UPDATE, playCarouselCardDataModel.copy(
-                            playBannerCarouselDataModel = newPlayCarouselDataModel
-                    ), playIndex))
-                }
+                updateWidget(UpdateLiveDataModel(ACTION_UPDATE, playCarouselCardDataModel.copy(
+                        playBannerCarouselDataModel = newPlayCarouselDataModel
+                ), playIndex))
             }
         }
     }
