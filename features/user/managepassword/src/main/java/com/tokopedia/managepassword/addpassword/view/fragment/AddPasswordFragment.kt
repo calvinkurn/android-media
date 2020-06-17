@@ -81,7 +81,7 @@ class AddPasswordFragment : BaseDaggerFragment() {
             val password = txtPassword?.textFieldInput?.text?.toString() ?: ""
             val passwordConfirmation = txtPasswordConfirmation?.textFieldInput?.text?.toString() ?: ""
 
-            if (txtPassword?.textFieldInput?.text.toString() != txtPasswordConfirmation?.textFieldInput?.text.toString()) {
+            if (password != passwordConfirmation) {
                 txtPasswordConfirmation?.let {
                     setPasswordFieldError(it, resources.getString(R.string.add_password_confirmation_not_match))
                 }
