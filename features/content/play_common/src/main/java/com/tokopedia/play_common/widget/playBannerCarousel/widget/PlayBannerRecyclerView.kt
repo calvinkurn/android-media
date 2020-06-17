@@ -128,15 +128,8 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
 
             log(this::class.simpleName ?: "", "Position play: $targetPositions")
 
-
-            val newPositions = mutableListOf<Int>()
-
             // find new position
-            for (targetPosition in targetPositions){
-                if(!previousPosition.contains(targetPosition)){
-                    newPositions.add(targetPosition)
-                }
-            }
+            val newPositions = targetPositions.filter { !previousPosition.contains(it) }
 
             log(this::class.simpleName ?: "", "New Position: $newPositions")
 
