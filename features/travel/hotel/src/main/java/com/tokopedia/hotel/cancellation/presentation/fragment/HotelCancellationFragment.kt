@@ -218,7 +218,10 @@ class HotelCancellationFragment : HotelBaseFragment() {
                     hotel_cancellation_refund_price_detail.addView(widget)
                 }
             }
-            if (it.detail.isEmpty()) hotel_cancellation_refund_price_detail.hide()
+            if (it.detail.isEmpty()) {
+                hotel_cancellation_refund_price_detail.hide()
+                hotel_cancellation_refund_detail_seperator.hide()
+            }
 
             hotel_cancellation_total_price_refund.removeAllViews()
             for (paymentSummary in it.summary) {

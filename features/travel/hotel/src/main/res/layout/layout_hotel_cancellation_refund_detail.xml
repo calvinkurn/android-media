@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingTop="@dimen/layout_lvl3"
     android:id="@+id/layout_payment_info">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -16,7 +15,8 @@
         android:layout_marginRight="@dimen/layout_lvl2"
         android:textColor="@color/Neutral_N700_96"
         app:typographyType="heading_4"
-        tools:text="Detail Refund" />
+        tools:text="Detail Refund"
+        android:layout_marginTop="@dimen/hotel_20dp" />
 
     <!--    need to adjust margin-->
 
@@ -29,7 +29,7 @@
         android:layout_marginRight="@dimen/layout_lvl2"
         tools:layout_height="@dimen/layout_lvl3"
         app:tickerType="announcement"
-        app:closeButtonVisibility="gone"/>
+        app:closeButtonVisibility="gone" />
 
     <!--    margin top to be changed to 12dp-->
     <LinearLayout
@@ -46,6 +46,7 @@
     <!--    View garisgaris-->
 
     <View
+        android:id="@+id/hotel_cancellation_refund_detail_seperator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl1"
         android:background="@drawable/bg_dash_stroke_hotel"

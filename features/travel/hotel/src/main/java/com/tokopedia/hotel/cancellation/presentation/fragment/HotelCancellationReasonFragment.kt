@@ -1,11 +1,15 @@
 package com.tokopedia.hotel.cancellation.presentation.fragment
 
+import android.app.Activity
 import android.graphics.Color
+import android.graphics.Rect
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -16,7 +20,6 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.cancellation.data.HotelCancellationModel
-import com.tokopedia.hotel.cancellation.data.HotelCancellationSubmitModel
 import com.tokopedia.hotel.cancellation.data.HotelCancellationSubmitParam
 import com.tokopedia.hotel.cancellation.di.HotelCancellationComponent
 import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationActivity
@@ -26,10 +29,13 @@ import com.tokopedia.hotel.cancellation.presentation.viewmodel.HotelCancellation
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.util.HotelTextHyperlinkUtil
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_cancellation_reason.*
 import javax.inject.Inject
+
 
 /**
  * @author by jessica on 30/04/20
@@ -48,6 +54,8 @@ class HotelCancellationReasonFragment : HotelBaseFragment() {
     @Inject
     lateinit var trackingHotelUtil: TrackingHotelUtil
 
+    private val SOFT_KEYBOARD_HEIGHT = 500
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -58,6 +66,36 @@ class HotelCancellationReasonFragment : HotelBaseFragment() {
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             cancellationViewModel = viewModelProvider.get(HotelCancellationViewModel::class.java)
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupKeyboardBehaviour()
+    }
+
+    private fun setupKeyboardBehaviour() {
+        view?.let {
+            it.viewTreeObserver.addOnGlobalLayoutListener(keyboardAppearsListener)
+        }
+    }
+
+    private var keyboardAppearsListener = ViewTreeObserver.OnGlobalLayoutListener {
+        view?.apply {
+            val r = Rect()
+            getWindowVisibleDisplayFrame(r)
+            if (rootView.height - (r.bottom - r.top) > SOFT_KEYBOARD_HEIGHT) {
+                hotel_cancellation_page_footer.hide()
+            } else {
+                hotel_cancellation_page_footer.show()
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        view?.apply {
+            viewTreeObserver.removeOnGlobalLayoutListener(keyboardAppearsListener)
         }
     }
 

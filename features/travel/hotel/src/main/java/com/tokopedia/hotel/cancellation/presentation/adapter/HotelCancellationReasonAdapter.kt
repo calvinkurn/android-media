@@ -76,18 +76,19 @@ class HotelCancellationReasonAdapter: RecyclerView.Adapter<RecyclerView.ViewHold
                 hotel_cancellation_reason_radio_button.isChecked = reason.id == selectedId
                 if (!hotel_cancellation_reason_radio_button.isChecked) hotel_cancellation_reason_free_text_tf.hide()
 
-                itemView.setOnClickListener {
-                    if (reason.freeText) hotel_cancellation_reason_free_text_tf.show()
-                    listener?.onClick(reason.id, !reason.freeText)
-                }
-
-                hotel_cancellation_reason_radio_button.setOnClickListener {
-                    if (reason.freeText) hotel_cancellation_reason_free_text_tf.show()
-                    listener?.onClick(reason.id, !reason.freeText)
-                }
+                itemView.setOnClickListener { setUpFreeText(reason, listener) }
+                hotel_cancellation_reason_radio_button.setOnClickListener { setUpFreeText(reason, listener) }
 
                 if (reason.freeText) setUpFreeTextTextField(listener, reason.id)
                 if (isLastItem) hotel_cancellation_seperator.hide()
+            }
+        }
+
+        private fun setUpFreeText(reason: HotelCancellationModel.Reason, listener: OnClickItemListener?) {
+            with(itemView) {
+                if (reason.freeText) hotel_cancellation_reason_free_text_tf.show()
+                val isValid = !reason.freeText || hotel_cancellation_reason_free_text_tf.getEditableValue().length >= 10
+                listener?.onClick(reason.id, isValid)
             }
         }
 

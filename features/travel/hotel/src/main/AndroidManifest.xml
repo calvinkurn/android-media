@@ -131,7 +131,7 @@
         <activity android:name=".cancellation.presentation.activity.HotelCancellationActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustResize">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 

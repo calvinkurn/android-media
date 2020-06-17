@@ -28,7 +28,8 @@
             android:text="@string/hotel_cancellation_button_submit"
             app:unifyButtonSize="large"
             app:unifyButtonType="main"
-            tools:text="Lanjutkan" />
+            tools:text="Lanjutkan"
+            android:layout_alignParentBottom="true"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/hotel_cancellation_page_footer"
