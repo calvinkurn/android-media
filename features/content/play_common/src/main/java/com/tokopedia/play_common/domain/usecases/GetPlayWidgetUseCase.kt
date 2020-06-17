@@ -3,6 +3,7 @@ package com.tokopedia.play_common.domain.usecases
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.play_common.domain.mapper.PlayWidgetMapper
 import com.tokopedia.play_common.domain.model.PlayGetWidgetEntity
 import com.tokopedia.play_common.widget.playBannerCarousel.model.*
 import com.tokopedia.usecase.RequestParams
@@ -16,10 +17,9 @@ class GetPlayWidgetUseCase(
     private val authorId = "\$authorId"
     private val authorType = "\$authorType"
     private val query = """
-        {
-          query playGetWidgetV2(
-            widgetType: String, authodId:String, authorType:String
-          ){
+        query qPlayGetWidgetV2(
+          $widgetType: String, $authorId:String, $authorType:String
+        ){
             playGetWidgetV2(
               req: {
                 widgetType:     $widgetType    ,
@@ -91,7 +91,7 @@ class GetPlayWidgetUseCase(
               }
             } 
           }
-        }
+        
     """.trimIndent()
     private val params = RequestParams.create()
 
@@ -104,7 +104,7 @@ class GetPlayWidgetUseCase(
 
     override suspend fun executeOnBackground(): PlayBannerCarouselDataModel {
         graphqlUseCase.setRequestParams(params.parameters)
-//        return PlayWidgetMapper.mapperToPlayBannerCarouselDataModel(graphqlUseCase.executeOnBackground().playGetWidgetV2)
+        return PlayWidgetMapper.mapperToPlayBannerCarouselDataModel(graphqlUseCase.executeOnBackground().playGetWidgetV2)
         return PlayBannerCarouselDataModel(
                 title = "Yuk, tonton sekarang!",
                 seeMoreApplink = "https://cobacoba.com",

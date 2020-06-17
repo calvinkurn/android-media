@@ -3,6 +3,7 @@ package com.tokopedia.shop.home.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
+import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
 import com.tokopedia.shop.common.domain.interactor.GQLCheckWishlistUseCase
@@ -50,6 +51,7 @@ class ShopHomeViewModelTest {
     private val removeWishListUseCase: RemoveWishListUseCase = mockk(relaxed = true)
     private val userSessionInterface: UserSessionInterface = mockk(relaxed = true)
     private val getPlayWidgetUseCase: GetPlayWidgetUseCase = mockk(relaxed = true)
+    private val playToggleChannelReminderUseCase: PlayToggleChannelReminderUseCase = mockk(relaxed = true)
     @RelaxedMockK
     lateinit var gqlCheckWishlistUseCaseProvider: Provider<GQLCheckWishlistUseCase>
     @RelaxedMockK
@@ -67,6 +69,7 @@ class ShopHomeViewModelTest {
                 testCoroutineDispatcherProvider,
                 addToCartUseCase,
                 getPlayWidgetUseCase,
+                playToggleChannelReminderUseCase,
                 addWishListUseCase,
                 removeWishListUseCase,
                 gqlCheckWishlistUseCaseProvider
@@ -197,7 +200,7 @@ class ShopHomeViewModelTest {
             getShopProductUseCase.executeOnBackground()
         }
 
-        assertTrue(viewModel.shopHomeLayoutData.value is Success && (viewModel.shopHomeLayoutData.value as? Success)!!.data.listWidget.filterIsInstance<ShopHomePlayCarouselUiModel>().isNotEmpty())
+        assertTrue(viewModel.shopHomeLayoutData.value is Success && (viewModel.shopHomeLayoutData.value as Success).data.listWidget.filterIsInstance<ShopHomePlayCarouselUiModel>().isNotEmpty())
     }
 
 }
