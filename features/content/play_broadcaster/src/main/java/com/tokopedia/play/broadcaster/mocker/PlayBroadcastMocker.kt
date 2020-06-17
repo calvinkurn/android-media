@@ -80,12 +80,12 @@ object PlayBroadcastMocker {
     fun getMockConfiguration() = ConfigurationUiModel(
             streamAllowed = true,
             activeOnOtherDevices = false, // IsLiveActive
-            haveOnGoingLive = false, // activeChannelId != 0
+            haveOnGoingLive = true, // activeChannelId != 0
             activeChannelId = 0,
             draftChannelId = 12,
             durationConfig = DurationConfigUiModel(
                     duration = (30 * 60 * 1000),
-                    pauseDuration = (1 * 60 * 1000),
+                    pauseDuration = (5 * 1000),
                     errorMessage = "Maks. siaran 30 menit"
             ),
             productTagConfig = ProductTagConfigUiModel(

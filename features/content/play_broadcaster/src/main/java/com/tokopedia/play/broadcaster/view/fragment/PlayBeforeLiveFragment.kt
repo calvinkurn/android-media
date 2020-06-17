@@ -16,6 +16,7 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.LiveStreamInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.PlayShareWrapper
+import com.tokopedia.play.broadcaster.util.getDialog
 import com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
 import com.tokopedia.play.broadcaster.view.custom.PlayStartStreamingButton
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
@@ -171,16 +172,15 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private fun getExitDialog(): DialogUnify {
         if (!::exitDialog.isInitialized) {
-            exitDialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(getString(R.string.play_prepare_broadcast_dialog_end_title))
-                setDescription(getString(R.string.play_prepare_broadcast_dialog_end_desc))
-                setPrimaryCTAText(getString(R.string.play_prepare_broadcast_dialog_end_primary))
-                setSecondaryCTAText(getString(R.string.play_broadcast_exit))
-                setPrimaryCTAClickListener { this.dismiss() }
-                setSecondaryCTAClickListener {
-                    activity?.finish()
-                }
-            }
+            exitDialog = requireContext().getDialog(
+                    actionType = DialogUnify.HORIZONTAL_ACTION,
+                    title = getString(R.string.play_prepare_broadcast_dialog_end_title),
+                    desc = getString(R.string.play_prepare_broadcast_dialog_end_desc),
+                    primaryCta = getString(R.string.play_prepare_broadcast_dialog_end_primary),
+                    primaryListener = { dialog -> dialog.dismiss() },
+                    secondaryCta = getString(R.string.play_broadcast_exit),
+                    secondaryListener = { dialog -> activity?.finish() }
+            )
         }
         return exitDialog
     }

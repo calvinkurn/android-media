@@ -13,12 +13,12 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.di.DaggerPlayBroadcasterComponent
 import com.tokopedia.play.broadcaster.di.PlayBroadcasterModule
+import com.tokopedia.play.broadcaster.util.getDialog
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
 import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
 import com.tokopedia.play.broadcaster.view.custom.PlayRequestPermissionView
@@ -230,7 +230,7 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
     }
 
     private fun showDialogWhenActiveOnOtherDevices() {
-        getDialog(
+        this.getDialog(
                 title = getString(R.string.play_dialog_error_active_other_devices_title),
                 desc = getString(R.string.play_dialog_error_active_other_devices_desc),
                 primaryCta = getString(R.string.play_broadcast_exit),
@@ -239,27 +239,5 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
                     finish()
                 }
         ).show()
-    }
-
-    private fun getDialog(
-            title: String,
-            desc: String,
-            @DialogUnify.ActionType actionType: Int = DialogUnify.SINGLE_ACTION,
-            @DialogUnify.ImageType imageType: Int = DialogUnify.NO_IMAGE,
-            primaryCta: String,
-            primaryListener: (DialogUnify) -> Unit = {},
-            secondaryCta: String = "",
-            secondaryListener: (DialogUnify) -> Unit = {},
-            cancelable: Boolean = false,
-            overlayClose: Boolean = false
-    ): DialogUnify = DialogUnify(this, actionType, imageType).apply {
-        setTitle(title)
-        setDescription(desc)
-        setPrimaryCTAText(primaryCta)
-        setSecondaryCTAText(secondaryCta)
-        setPrimaryCTAClickListener { primaryListener(this) }
-        setSecondaryCTAClickListener { secondaryListener(this) }
-        setCancelable(cancelable)
-        setOverlayClose(overlayClose)
     }
 }

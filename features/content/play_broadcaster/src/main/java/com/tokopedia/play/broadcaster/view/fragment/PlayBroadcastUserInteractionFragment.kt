@@ -10,12 +10,14 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.pusher.state.PlayPusherErrorType
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
 import com.tokopedia.play.broadcaster.util.PlayShareWrapper
+import com.tokopedia.play.broadcaster.util.getDialog
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
@@ -69,7 +71,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        observeCountDownDuration()
+        observeLiveInfoDuration()
         observeTotalViews()
         observeTotalLikes()
         observeChatList()
@@ -103,6 +105,16 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 //            ingestUrl -> parentViewModel.startPushBroadcast(ingestUrl)
 //        }
         parentViewModel.startPushBroadcast("rtmp://192.168.0.110:1935/stream/")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        parentViewModel.getPlayPusher().resume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        parentViewModel.getPlayPusher().pause()
     }
 
     override fun onDestroy() {
@@ -158,37 +170,32 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun getExitDialog(): DialogUnify {
         if (!::exitDialog.isInitialized) {
-           exitDialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-               setTitle(getString(R.string.play_live_broadcast_dialog_end_title))
-               setDescription(getString(R.string.play_live_broadcast_dialog_end_desc))
-               setPrimaryCTAText(getString(R.string.play_live_broadcast_dialog_end_primary))
-               setSecondaryCTAText(getString(R.string.play_live_broadcast_dialog_end_secondary))
-               setPrimaryCTAClickListener { dismiss() }
-               setSecondaryCTAClickListener {
-                   dismiss()
-                   doEndStreaming()
-               }
-               setCancelable(false)
-               setOverlayClose(false)
-           }
+           exitDialog =  requireContext().getDialog(
+                   actionType = DialogUnify.HORIZONTAL_ACTION,
+                   title = getString(R.string.play_live_broadcast_dialog_end_title),
+                   desc = getString(R.string.play_live_broadcast_dialog_end_desc),
+                   primaryCta = getString(R.string.play_live_broadcast_dialog_end_primary),
+                   primaryListener = { dialog -> dialog.dismiss() },
+                   secondaryCta = getString(R.string.play_broadcast_exit),
+                   secondaryListener = { dialog ->
+                       activity?.finish()
+                       doEndStreaming()
+                   }
+           )
         }
         return exitDialog
     }
 
     private fun showDialogWhenTimeout() {
-        context?.let {
-            val dialog =  DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
-            dialog.setTitle(getString(R.string.play_live_broadcast_dialog_end_timeout_title))
-            dialog.setDescription(getString(R.string.play_live_broadcast_dialog_end_timeout_desc))
-            dialog.setPrimaryCTAText(getString(R.string.play_live_broadcast_dialog_end_timeout_primary))
-            dialog.setPrimaryCTAClickListener {
-                dialog.dismiss()
-                navigateToSummary()
-            }
-            dialog.setCancelable(false)
-            dialog.setOverlayClose(false)
-            dialog.show()
-        }
+        requireContext().getDialog(
+                title = getString(R.string.play_live_broadcast_dialog_end_timeout_title),
+                desc = getString(R.string.play_live_broadcast_dialog_end_timeout_desc),
+                primaryCta = getString(R.string.play_live_broadcast_dialog_end_timeout_primary),
+                primaryListener = { dialog ->
+                    dialog.dismiss()
+                    navigateToSummary()
+                }
+        ).show()
     }
 
     private fun showToast(
@@ -239,7 +246,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     /**
      * Observe
      */
-    private fun observeCountDownDuration() {
+    private fun observeLiveInfoDuration() {
         parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, EventObserver {
             when (it) {
                 is PlayPusherInfoState.Active -> {
@@ -252,8 +259,21 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     parentViewModel.stopPushBroadcast()
                     showDialogWhenTimeout()
                 }
+                is PlayPusherInfoState.Error -> handlePusherErrorState(it.errorType)
             }
         })
+    }
+
+    private fun handlePusherErrorState(errorType: PlayPusherErrorType) {
+        when(errorType) {
+            PlayPusherErrorType.UnSupportedDevice -> {
+                // TODO("handle unsupported devices")
+                // Perangkat tidak mendukung\n layanan siaran live streaming
+                // Layanan live streaming tidak didukung pada perangkat Anda.
+                // showDialogWhenUnSupportedDevices()
+            }
+            PlayPusherErrorType.ReachMaximumDuration -> doEndStreaming()
+        }
     }
 
     private fun observeTotalViews() {
