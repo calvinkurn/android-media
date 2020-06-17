@@ -1,4 +1,3 @@
-include ':shop_score'
 ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {

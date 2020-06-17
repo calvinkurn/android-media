@@ -5,10 +5,6 @@ import com.tokopedia.shop_score.data.mapper.ShopScoreDetailMapper;
 import com.tokopedia.shop_score.data.source.cloud.ShopScoreCloud;
 import com.tokopedia.shop_score.data.source.disk.ShopScoreCache;
 import com.tokopedia.shop_score.domain.model.ShopScoreDetailDomainModel;
-//import com.tokopedia.seller.shopscore.data.mapper.ShopScoreDetailMapper;
-//import com.tokopedia.seller.shopscore.data.source.cloud.ShopScoreCloud;
-//import com.tokopedia.seller.shopscore.data.source.disk.ShopScoreCache;
-//import com.tokopedia.seller.shopscore.domain.model.ShopScoreDetailDomainModel;
 
 import rx.Observable;
 import rx.functions.Action1;
