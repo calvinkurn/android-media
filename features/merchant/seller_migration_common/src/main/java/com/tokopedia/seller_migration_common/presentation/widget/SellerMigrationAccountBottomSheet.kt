@@ -12,16 +12,20 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller_migration_common.R
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.seller_migration_common.getSellerMigrationDate
 import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.toPx
-import kotlinx.android.synthetic.main.partial_seller_migration_warning.*
 import kotlinx.android.synthetic.main.widget_seller_migration_account_bottom_sheet.*
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.unifyprinciples.Typography
 
 class SellerMigrationAccountBottomSheet : BottomSheetUnify() {
+
     companion object {
         fun createNewInstance(context: Context) : SellerMigrationAccountBottomSheet {
             return SellerMigrationAccountBottomSheet().apply{
@@ -30,9 +34,11 @@ class SellerMigrationAccountBottomSheet : BottomSheetUnify() {
             }
         }
     }
+    private var userId = ""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        userId = UserSession(context).userId
         setupPadding()
         sellerMigrationAccountBottomSheetImage.loadImage(SellerMigrationConstants.SELLER_MIGRATION_ACCOUNT_IMAGE_LINK)
         sellerMigrationBottomSheetContent.text = context?.let { HtmlLinkHelper(it, getString(R.string.seller_migration_account_home_bottom_sheet_content)).spannedString }
@@ -49,8 +55,9 @@ class SellerMigrationAccountBottomSheet : BottomSheetUnify() {
     private fun setupWarningCard() {
         val remoteConfigDate = getSellerMigrationDate(context)
         if(remoteConfigDate.isNotBlank()) {
-            sellerMigrationAccountWarning.show()
-            sellerMigrationWarningDate.text = remoteConfigDate
+            val sellerMigrationWarningDate: Typography? = view?.findViewById(R.id.sellerMigrationWarningDate)
+            sellerMigrationAccountWarning?.show()
+            sellerMigrationWarningDate?.text = remoteConfigDate
         }
     }
 
@@ -69,13 +76,24 @@ class SellerMigrationAccountBottomSheet : BottomSheetUnify() {
                 if(intent != null) {
                     intent.putExtra(SELLER_MIGRATION_KEY_AUTO_LOGIN, true)
                     activity?.startActivity(intent)
+                    trackGoToSellerApp()
                 } else {
                     activity?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(APPLINK_PLAYSTORE + PACKAGE_SELLER_APP)))
+                    trackGoToPlayStore()
                 }
             } catch (anfe: ActivityNotFoundException) {
                 activity?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(URL_PLAYSTORE + PACKAGE_SELLER_APP)))
+                trackGoToPlayStore()
             }
         }
+    }
+
+    private fun trackGoToSellerApp() {
+        SellerMigrationTracking.eventGoToSellerApp(this.userId, SellerMigrationTrackingConstants.EVENT_CLICK_GO_TO_SELLER_APP_ACCOUNT)
+    }
+
+    private fun trackGoToPlayStore() {
+        SellerMigrationTracking.eventGoToPlayStore(this.userId, SellerMigrationTrackingConstants.EVENT_CLICK_GO_TO_SELLER_APP_ACCOUNT)
     }
 
     private fun goToInformationWebview(link: String) : Boolean {

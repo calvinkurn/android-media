@@ -8,6 +8,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.TextView
+import androidx.core.text.HtmlCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -58,8 +59,7 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
                 setOnClickListener {
                     threadListener.onThreadClicked(questionId)
                 }
-                setCustomMovementMethod(fun(link: String) : Boolean {return threadListener.onLinkClicked(link)})
-                HtmlLinkHelper(context, content).spannedString
+                HtmlCompat.fromHtml(content, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
             }
         }
     }

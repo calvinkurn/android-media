@@ -774,10 +774,10 @@ public class ProductListFragment
     }
 
     @Override
-    public void onProductImpressed(ProductItemViewModel item, int adapterPosition) {
+    public void onProductImpressed(ProductItemViewModel item) {
         if (presenter == null) return;
 
-        presenter.onProductImpressed(item, adapterPosition);
+        presenter.onProductImpressed(item);
     }
 
     @Override
@@ -786,10 +786,10 @@ public class ProductListFragment
     }
 
     @Override
-    public void sendTopAdsGTMTrackingProductImpression(ProductItemViewModel item, int adapterPosition) {
+    public void sendTopAdsGTMTrackingProductImpression(ProductItemViewModel item) {
         Product product = createTopAdsProductForTracking(item);
 
-        TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, adapterPosition);
+        TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, item.getPosition());
     }
 
     private Product createTopAdsProductForTracking(ProductItemViewModel item) {
@@ -848,10 +848,10 @@ public class ProductListFragment
     }
 
     @Override
-    public void sendTopAdsGTMTrackingProductClick(ProductItemViewModel item, int adapterPosition) {
+    public void sendTopAdsGTMTrackingProductClick(ProductItemViewModel item) {
         Product product = createTopAdsProductForTracking(item);
 
-        TopAdsGtmTracker.eventSearchResultProductClick(getContext(), getQueryKey(), product, adapterPosition, SCREEN_SEARCH_PAGE_PRODUCT_TAB);
+        TopAdsGtmTracker.eventSearchResultProductClick(getContext(), getQueryKey(), product, item.getPosition(), SCREEN_SEARCH_PAGE_PRODUCT_TAB);
     }
 
     @Override

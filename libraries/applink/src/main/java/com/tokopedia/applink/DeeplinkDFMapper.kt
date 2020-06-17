@@ -12,7 +12,8 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital.DIGITAL_PRODUCT
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.GENERAL_TEMPLATE
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.INTERNAL_SMARTCARD_BRIZZI
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.INTERNAL_SMARTCARD_EMONEY
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_DIGITAL
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_POSTPAID_DIGITAL
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.VOUCHER_GAME
 import com.tokopedia.applink.internal.ApplinkConsInternalHome.HOME_WISHLIST
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.AGE_RESTRICTION
@@ -153,7 +154,8 @@ object DeeplinkDFMapper : CoroutineScope {
             // Digital
             add(DFP({
                 it.startsWith(DIGITAL_SUBHOMEPAGE_HOME) ||
-                    it.startsWith(TELCO_DIGITAL) ||
+                    it.startsWith(TELCO_POSTPAID_DIGITAL) ||
+                    it.startsWith(TELCO_PREPAID_DIGITAL) ||
                     it.startsWith(DIGITAL_PRODUCT_FORM) ||
                     it.startsWith(GENERAL_TEMPLATE) ||
                     it.startsWith(CAMERA_OCR) ||
@@ -256,6 +258,7 @@ object DeeplinkDFMapper : CoroutineScope {
                     || it.startsWith(ADD_PIN_COMPLETE)
                     )
             }, DF_USER_SETTINGS, R.string.applink_profile_completion_title, { DFWebviewFallbackUrl.USER_PROFILE_SETTINGS }))
+            add(DFP({ it.startsWith(ApplinkConstInternalGlobal.PROFILE_COMPLETION) }, DF_USER_SETTINGS, R.string.applink_profile_completion_title))
             add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DF_USER_SETTINGS, R.string.applink_report_title, ::getDefaultFallbackUrl))
             add(DFP({ it.startsWith(CHANGE_PHONE_NUMBER) }, DF_BASE, R.string.applink_change_phone_number))
             add(DFP({ it.startsWith(CHANGE_PASSWORD) }, DF_BASE, R.string.applink_change_password))
