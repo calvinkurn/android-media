@@ -499,13 +499,13 @@ public class MainParentActivity extends BaseActivity implements
 
     private int getPositionFragmentByMenu(int i) {
         int position = HOME_MENU;
-        if (i == R.id.menu_feed) {
+        if (i == FEED_MENU) {
             position = FEED_MENU;
-        } else if (i == R.id.menu_os) {
+        } else if (i ==OS_MENU) {
             position = OS_MENU;
-        } else if (i == R.id.menu_cart) {
+        } else if (i == CART_MENU) {
             position = CART_MENU;
-        } else if (i == R.id.menu_account) {
+        } else if (i == ACCOUNT_MENU) {
             position = ACCOUNT_MENU;
         }
         return position;
