@@ -89,7 +89,7 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
         view?.findViewById<VerticalRecyclerView>(recyclerViewResourceId)?.apply {
             clearItemDecoration()
             enableLoadMore()
-            addItemDecoration(SearchResultsSeparatorItemDecoration(context))
+//            addItemDecoration(SearchResultsSeparatorItemDecoration(context))
             adapter = this@ChatSearchFragment.adapter
             layoutManager = recyclerViewLayoutManager
             overScrollMode = RecyclerView.OVER_SCROLL_NEVER

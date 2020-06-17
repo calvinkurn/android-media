@@ -121,6 +121,16 @@ class GetSearchQueryUseCase @Inject constructor(
               ){
                 replies{
                 data {
+                  contact {
+                    id
+                    role
+                    attributes {
+                      domain
+                      name
+                      tag
+                      thumbnail
+                    }
+                  }
                   createBy
                   createTimeStr
                   lastMessage

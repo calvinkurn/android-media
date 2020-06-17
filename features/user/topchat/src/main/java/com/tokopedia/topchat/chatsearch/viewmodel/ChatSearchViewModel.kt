@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.topchat.chatsearch.data.GetChatSearchResponse
 import com.tokopedia.topchat.chatsearch.data.GetMultiChatSearchResponse
 import com.tokopedia.topchat.chatsearch.usecase.GetSearchQueryUseCase
+import com.tokopedia.topchat.chatsearch.view.uimodel.BigDividerUiModel
 import com.tokopedia.topchat.chatsearch.view.uimodel.ContactLoadMoreUiModel
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
@@ -91,7 +92,9 @@ class ChatSearchViewModel @Inject constructor(
         }
         if (isFirstPage() && contactLoadMore != null) {
             val searchResults: MutableList<Visitable<*>> = searchContactResponse.searchResults.subList(0, 5).toMutableList()
+            searchResults.add(BigDividerUiModel())
             searchResults.add(0, contactLoadMore)
+            searchResults.addAll(response.replySearchResults)
             _searchResults.value = searchResults
         } else {
             _searchResults.value = searchContactResponse.searchResults

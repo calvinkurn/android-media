@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.topchat.chatsearch.data.RecentSearch
 import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.*
+import com.tokopedia.topchat.chatsearch.view.uimodel.BigDividerUiModel
 import com.tokopedia.topchat.chatsearch.view.uimodel.ChatReplyUiModel
 import com.tokopedia.topchat.chatsearch.view.uimodel.ContactLoadMoreUiModel
 import com.tokopedia.topchat.chatsearch.view.uimodel.SearchResultUiModel
@@ -47,8 +48,13 @@ class ChatSearchTypeFactoryImpl(
         return ItemSearchChatReplyViewHolder.LAYOUT
     }
 
+    override fun type(bigDividerUiModel: BigDividerUiModel): Int {
+        return ChatBigDividerViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
+            ChatBigDividerViewHolder.LAYOUT -> ChatBigDividerViewHolder(parent)
             ItemSearchChatReplyViewHolder.LAYOUT -> ItemSearchChatReplyViewHolder(parent)
             ContactLoadMoreViewHolder.LAYOUT -> ContactLoadMoreViewHolder(parent, contactLoadMoreListener)
             ChatSearchErrorNetworkViewHolder.LAYOUT -> ChatSearchErrorNetworkViewHolder(parent)

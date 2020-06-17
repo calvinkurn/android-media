@@ -3,12 +3,12 @@ package com.tokopedia.topchat.chatsearch.view.uimodel
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.topchat.chatsearch.data.reply.ChatReplyContact
+import com.tokopedia.topchat.chatsearch.data.ContactProfile
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactory
 
 data class ChatReplyUiModel(
         @SerializedName("contact")
-        val contact: ChatReplyContact = ChatReplyContact(),
+        val contact: ContactProfile = ContactProfile(),
         @SerializedName("lastMessage")
         val lastMessage: String = "",
         @SerializedName("msgId")
@@ -17,10 +17,12 @@ data class ChatReplyUiModel(
         val productId: String = "",
         @SerializedName("replyId")
         val replyId: Int = 0
-): Visitable<ChatSearchTypeFactory> {
+) : Visitable<ChatSearchTypeFactory> {
 
-        override fun type(typeFactory: ChatSearchTypeFactory): Int {
-                return typeFactory.type(this)
-        }
+    val thumbnailUrl: String get() = contact.attributes.thumbnail
+
+    override fun type(typeFactory: ChatSearchTypeFactory): Int {
+        return typeFactory.type(this)
+    }
 
 }
