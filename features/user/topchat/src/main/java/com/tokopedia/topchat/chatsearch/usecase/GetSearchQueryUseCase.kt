@@ -27,7 +27,7 @@ class GetSearchQueryUseCase @Inject constructor(
     private val paramIsSeller = "isSeller"
 
     fun doSearch(
-            onSuccess: (GetMultiChatSearchResponse, SearchListHeaderUiModel?) -> Unit,
+            onSuccess: (GetMultiChatSearchResponse, SearchListHeaderUiModel?, SearchListHeaderUiModel?) -> Unit,
             onError: (Throwable) -> Unit,
             keyword: String,
             page: Int
@@ -42,10 +42,11 @@ class GetSearchQueryUseCase @Inject constructor(
                         setGraphqlQuery(query)
                     }.executeOnBackground()
                     val contactLoadMore = createContactLoadMore(response, page)
+                    val replyHeader = createReplyHeader(response, page)
                     isSearching = false
                     hasNext = response.replyHasNext
                     withContext(dispatchers.Main) {
-                        onSuccess(response, contactLoadMore)
+                        onSuccess(response, contactLoadMore, replyHeader)
                     }
                 },
                 {
@@ -55,6 +56,15 @@ class GetSearchQueryUseCase @Inject constructor(
                     }
                 }
         )
+    }
+
+    private fun createReplyHeader(response: GetMultiChatSearchResponse, page: Int): SearchListHeaderUiModel? {
+        if (page != 1) return null
+        val contactCount = response.replySearchResults.size
+        if (contactCount > 5) {
+            return SearchListHeaderUiModel(SearchListHeaderUiModel.TITLE_REPLY, response.replyCount, true)
+        }
+        return null
     }
 
     private fun createContactLoadMore(response: GetMultiChatSearchResponse, page: Int): SearchListHeaderUiModel? {

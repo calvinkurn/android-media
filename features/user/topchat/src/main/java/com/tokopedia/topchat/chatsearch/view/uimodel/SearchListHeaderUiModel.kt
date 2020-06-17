@@ -15,5 +15,6 @@ data class SearchListHeaderUiModel(
 
     companion object {
         const val TITLE_CONTACT = "Pengguna"
+        const val TITLE_REPLY = "Pesan"
     }
 }

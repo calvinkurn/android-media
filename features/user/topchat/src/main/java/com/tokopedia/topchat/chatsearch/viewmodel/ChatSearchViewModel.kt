@@ -84,7 +84,11 @@ class ChatSearchViewModel @Inject constructor(
         getSearchQueryUseCase.doSearch(::onSuccessDoSearch, ::onErrorDoSearch, query, page)
     }
 
-    private fun onSuccessDoSearch(response: GetMultiChatSearchResponse, searchListHeader: SearchListHeaderUiModel?) {
+    private fun onSuccessDoSearch(
+            response: GetMultiChatSearchResponse,
+            searchListHeader: SearchListHeaderUiModel?,
+            replyHeader: SearchListHeaderUiModel?
+    ) {
         canRetry = false
         val searchContactResponse = GetChatSearchResponse(response.searchByName)
         if (isFirstPage()) {
@@ -94,7 +98,10 @@ class ChatSearchViewModel @Inject constructor(
             val searchResults: MutableList<Visitable<*>> = searchContactResponse.searchResults.subList(0, 5).toMutableList()
             searchResults.add(BigDividerUiModel())
             searchResults.add(0, searchListHeader)
-            searchResults.addAll(response.replySearchResults)
+            if (replyHeader != null) {
+                searchResults.add(replyHeader)
+                searchResults.addAll(response.replySearchResults)
+            }
             _searchResults.value = searchResults
         } else {
             _searchResults.value = searchContactResponse.searchResults
