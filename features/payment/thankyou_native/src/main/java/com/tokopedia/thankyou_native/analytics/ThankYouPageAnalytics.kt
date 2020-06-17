@@ -201,8 +201,8 @@ class ThankYouPageAnalytics @Inject constructor(
                 afValue[AFInAppEventType.ORDER_ID] = orderIds
                 afValue[ParentTrackingKey.AF_SHIPPING_PRICE] = shipping
                 afValue[ParentTrackingKey.AF_PURCHASE_SITE] = when(ThankPageTypeMapper.getThankPageType(thanksPageData)){
-                    MarketPlaceThankPage -> "MarketPlace"
-                    else -> "Digital"
+                    MarketPlaceThankPage -> MARKET_PLACE
+                    else -> DIGITAL
                 }
                 afValue[AFInAppEventParameterName.CURRENCY] = ParentTrackingKey.VALUE_IDR
                 afValue[ParentTrackingKey.AF_VALUE_PRODUCTTYPE] = productList
