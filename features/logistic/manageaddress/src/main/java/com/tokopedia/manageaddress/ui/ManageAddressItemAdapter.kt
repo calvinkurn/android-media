@@ -9,20 +9,20 @@ import com.example.manageaddress.R
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.manageaddress.domain.model.PeopleAddress
+import com.tokopedia.logisticdata.data.entity.address.AddressModel
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_manage_people_address.view.*
 
-class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.ManageAddressViewHolder>() {
+class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterListener) : RecyclerView.Adapter<ManageAddressItemAdapter.ManageAddressViewHolder>() {
 
-    var addressList = mutableListOf<PeopleAddress>()
+    var addressList = mutableListOf<AddressModel>()
 
     interface ManageAddressItemAdapterListener {
-        fun onManageAddressEditClicked(peopleAddress: PeopleAddress)
+        fun onManageAddressEditClicked(peopleAddress: AddressModel)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ManageAddressViewHolder {
-      return ManageAddressViewHolder(parent.inflateLayout(R.layout.item_manage_people_address))
+      return ManageAddressViewHolder(parent.inflateLayout(R.layout.item_manage_people_address), listener)
     }
 
     override fun getItemCount(): Int {
@@ -33,31 +33,33 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
         holder.bindData(addressList[position])
     }
 
-    inner class ManageAddressViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ManageAddressViewHolder(itemView: View, private val listener: ManageAddressItemAdapterListener) : RecyclerView.ViewHolder(itemView) {
         val pinpointText = itemView.findViewById<Typography>(R.id.tv_pinpoint_state)
         val imageLocation = itemView.findViewById<ImageView>(R.id.img_location_state)
+        val editButton = itemView.findViewById<Typography>(R.id.action_edit)
 
-        fun bindData(data: PeopleAddress) {
+        fun bindData(data: AddressModel) {
             with(itemView) {
                 setVisibility(data)
                 setPrimary(data)
                 address_name.text = data.addressName
                 receiver_name.text = data.receiverName
-                receiver_phone.text = data.phoneNumber
-                address_detail.text = data.receiverAddress + ", " + data.districtName + ", " + data.cityName + ", " + data.postalCode
+                receiver_phone.text = data.receiverPhone
+                address_detail.text = data.addressStreet + ", " + data.districtName + ", " + data.cityName + ", " + data.postalCode
+                setListener(data)
 
             }
         }
 
-        private fun setPrimary(peopleAddress: PeopleAddress) {
-            if (peopleAddress.status == 2) {
+        private fun setPrimary(peopleAddress: AddressModel) {
+            if (peopleAddress.addressStatus == 2) {
                 itemView.lbl_main_address.visible()
             } else {
                 itemView.lbl_main_address.gone()
             }
         }
 
-        private fun setVisibility(peopleAddress: PeopleAddress) {
+        private fun setVisibility(peopleAddress: AddressModel) {
             if(( peopleAddress.latitude.isNullOrEmpty())|| peopleAddress.longitude.isNullOrEmpty()) {
                 val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_no_pinpoint)
                 imageLocation.setImageDrawable(icon)
@@ -66,6 +68,12 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
                 val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_pinpoint_green)
                 imageLocation.setImageDrawable(icon)
                 pinpointText.text = itemView.context.getString(R.string.pinpoint)
+            }
+        }
+
+        private fun setListener(peopleAddress: AddressModel) {
+            editButton.setOnClickListener  {
+                listener.onManageAddressEditClicked(peopleAddress)
             }
         }
     }

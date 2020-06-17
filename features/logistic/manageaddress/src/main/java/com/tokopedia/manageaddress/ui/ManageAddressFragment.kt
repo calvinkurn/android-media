@@ -16,9 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity
 import com.tokopedia.logisticdata.data.entity.address.AddressModel
-import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.manageaddress.di.ManageAddressComponent
-import com.tokopedia.manageaddress.domain.model.PeopleAddress
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_manage_address.*
 import javax.inject.Inject
@@ -28,7 +26,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val adapter = ManageAddressItemAdapter()
+    private val adapter = ManageAddressItemAdapter(this)
 
     private val viewModel : ManageAddressViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[ManageAddressViewModel::class.java]
@@ -85,7 +83,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private fun initViewModel() {
         viewModel.addressList.observe(this, Observer {
             when (it) {
-                is Success -> renderData(it.data.liistAddress)
+                is Success -> renderData(it.data.listAddress)
             }
         })
     }
@@ -121,23 +119,20 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         }
     }
 
-    private fun renderData(data: List<PeopleAddress>) {
+    private fun renderData(data: List<AddressModel>) {
         adapter.addressList.clear()
         adapter.addressList.addAll(data)
         adapter.notifyDataSetChanged()
     }
 
-    override fun onManageAddressEditClicked(peopleAddress: PeopleAddress) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onManageAddressEditClicked(peopleAddress: AddressModel) {
+       openFormAddressView(peopleAddress)
     }
 
-    private fun openFormAddressView(data: PeopleAddress){
+    private fun openFormAddressView(data: AddressModel){
         val token = viewModel.getToken()
         startActivityForResult(activity?.let {
-            AddAddressActivity.createInstanceEditAddress(
-                    it,
-                data as AddressModel,
-                    token as Token)
+            AddAddressActivity.createInstanceEditAddress(it, data, token)
         }, 102)
     }
 }
