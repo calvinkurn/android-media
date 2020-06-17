@@ -48,9 +48,9 @@ class ReminderWidgetViewHolder(
             if(element.data.reminders.isEmpty()){
                 home_reminder_recommendation_loading.show()
                 if(element.source == ReminderEnum.RECHARGE) {
-                    rechargeListener.getRechargeRecommendation(adapterPosition)
+                    rechargeListener.getRechargeRecommendation()
                 } else if(element.source == ReminderEnum.SALAM){
-                    salamListener.getSalamWidget(adapterPosition)
+                    salamListener.getSalamWidget()
                 }
             } else {
                 home_reminder_recommendation_loading.hide()

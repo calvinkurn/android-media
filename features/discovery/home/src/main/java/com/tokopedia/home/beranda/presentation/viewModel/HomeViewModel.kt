@@ -815,7 +815,7 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun getRechargeRecommendation() {
+    fun getRechargeRecommendation() {
         if(getRechargeRecommendationJob?.isActive == true) return
         if(!isReminderWidgetAvailable()) return
         getRechargeRecommendationJob = launchCatchError(coroutineContext, block = {
@@ -827,19 +827,8 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getRechargeRecommendation(position: Int){
-        if(getRechargeRecommendationJob?.isActive == true) return
-        if(!isReminderWidgetAvailable()) return
-        getRechargeRecommendationJob = launchCatchError(coroutineContext, block = {
-            getRechargeRecommendationUseCase.get().setParams()
-            val data = getRechargeRecommendationUseCase.get().executeOnBackground()
-            _rechargeRecommendationLiveData.postValue(Event(data))
-        }) {
-            removeRechargeRecommendation()
-        }
-    }
 
-    private fun getSalamWidget(){
+    fun getSalamWidget(){
         if(getSalamWidgetJob?.isActive == true) return
         if(!isReminderWidgetAvailable()) return
 
@@ -851,17 +840,6 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getSalamWidget(position: Int){
-        if(getSalamWidgetJob?.isActive == true) return
-        if(!isReminderWidgetAvailable()) return
-
-        getSalamWidgetJob = launchCatchError(coroutineContext,  block = {
-            val data = getSalamWidgetUseCase.get().executeOnBackground()
-            _salamWidgetLiveData.postValue(Event(data))
-        }){
-            removeSalamWidget()
-        }
-    }
 
     private fun isReminderWidgetAvailable() : Boolean{
         return _homeLiveData.value?.list?.find {

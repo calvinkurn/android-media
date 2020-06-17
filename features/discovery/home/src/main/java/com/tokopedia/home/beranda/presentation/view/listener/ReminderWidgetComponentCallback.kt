@@ -82,12 +82,12 @@ class ReminderWidgetComponentCallback (val context: Context?,val viewModel: Home
         SalamWidgetTracking.homeSalamWidgetOnCloseTracker(mapRemindertoSalamWidgetData(reminderData))
     }
 
-    override fun getSalamWidget(position: Int) {
-        viewModel.getSalamWidget(position)
+    override fun getSalamWidget() {
+        viewModel.getSalamWidget()
     }
 
-    override fun getRechargeRecommendation(position: Int) {
-        viewModel.getRechargeRecommendation(position)
+    override fun getRechargeRecommendation() {
+        viewModel.getRechargeRecommendation()
     }
 
     private fun mapRemindertoRechargeRecommendationData(reminderData: ReminderData): RechargeRecommendationData{
