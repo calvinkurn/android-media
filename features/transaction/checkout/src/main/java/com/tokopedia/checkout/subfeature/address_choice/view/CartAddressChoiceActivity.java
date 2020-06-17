@@ -226,7 +226,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     public void requestCornerList() {
         updateTitle(getString(R.string.button_choose_corner));
         getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_up, R.anim.stay_still)
+                .setCustomAnimations(R.anim.checkout_module_slide_in_up, R.anim.checkout_module_stay_still)
                 .replace(R.id.parent_view, CornerListFragment.newInstance(), TAG_CORNER_FRAGMENT)
                 .addToBackStack(null)
                 .commit();

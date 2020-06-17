@@ -471,9 +471,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void renderShippingVibrationAnimation(ShipmentCartItemModel shipmentCartItemModel) {
         if (shipmentCartItemModel.isShippingBorderRed()) {
-            containerShippingExperience.setBackgroundResource(R.drawable.bg_rounded_red);
+            containerShippingExperience.setBackgroundResource(R.drawable.checkout_module_bg_rounded_red);
         } else {
-            containerShippingExperience.setBackgroundResource(R.drawable.bg_rounded_grey);
+            containerShippingExperience.setBackgroundResource(R.drawable.checkout_module_bg_rounded_grey);
         }
         if (shipmentCartItemModel.isTriggerShippingVibrationAnimation()) {
             containerShippingExperience.animate()
@@ -722,14 +722,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             rvCartItem.setVisibility(View.VISIBLE);
             vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
             tvExpandOtherProduct.setText(R.string.label_hide_other_item_new);
-            ivExpandOtherProduct.setImageResource(R.drawable.ic_up);
+            ivExpandOtherProduct.setImageResource(R.drawable.checkout_module_ic_up);
         } else {
             rvCartItem.setVisibility(View.GONE);
             vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
             tvExpandOtherProduct.setText(String.format(tvExpandOtherProduct.getContext().getString(R.string.label_other_item_count_format),
                     String.valueOf(cartItemModels.size())));
             tvExpandOtherProduct.setTextColor(ContextCompat.getColor(tvExpandOtherProduct.getContext(), R.color.medium_green));
-            ivExpandOtherProduct.setImageResource(R.drawable.ic_down);
+            ivExpandOtherProduct.setImageResource(R.drawable.checkout_module_ic_down);
         }
     }
 
@@ -751,7 +751,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
             llShippingExperienceStateLoading.setVisibility(View.GONE);
             containerShippingExperience.setVisibility(View.VISIBLE);
-            containerShippingExperience.setBackgroundResource(R.drawable.bg_rounded_grey);
+            containerShippingExperience.setBackgroundResource(R.drawable.checkout_module_bg_rounded_grey);
             if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
                 // Is free ongkir shipping
                 layoutStateHasSelectedNormalShipping.setVisibility(View.GONE);
@@ -1226,11 +1226,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         if (shipmentCartItemModel.isStateDetailSubtotalViewExpanded()) {
             rlShipmentCost.setVisibility(View.VISIBLE);
             // ivDetailOptionChevron.setImageResource(R.drawable.ic_keyboard_arrow_up_24dp);
-            ivDetailOptionChevron.setImageResource(R.drawable.ic_up);
+            ivDetailOptionChevron.setImageResource(R.drawable.checkout_module_ic_up);
         } else {
             rlShipmentCost.setVisibility(View.GONE);
             // ivDetailOptionChevron.setImageResource(R.drawable.ic_keyboard_arrow_down_24dp);
-            ivDetailOptionChevron.setImageResource(R.drawable.ic_down);
+            ivDetailOptionChevron.setImageResource(R.drawable.checkout_module_ic_down);
         }
 
         String shippingFeeLabel = tvShippingFee.getContext().getString(R.string.label_delivery_price);
@@ -1391,14 +1391,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     imgDropshipperInfo.setOnClickListener(v -> showBottomSheet(imgDropshipperInfo.getContext(),
                             imgDropshipperInfo.getContext().getString(R.string.title_dropshipper_army),
                             imgDropshipperInfo.getContext().getString(R.string.desc_dropshipper_army),
-                            R.drawable.ic_dropshipper));
+                            R.drawable.checkout_module_ic_dropshipper));
                 } else {
                     tvDropshipper.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.font_black_primary_70));
                     llDropshipper.setOnClickListener(getDropshipperClickListener());
                     imgDropshipperInfo.setOnClickListener(view -> showBottomSheet(imgDropshipperInfo.getContext(),
                             imgDropshipperInfo.getContext().getString(R.string.label_dropshipper_new),
                             imgDropshipperInfo.getContext().getString(R.string.label_dropshipper_info),
-                            R.drawable.ic_dropshipper));
+                            R.drawable.checkout_module_ic_dropshipper));
                 }
 
                 etShipperName.addTextChangedListener(new TextWatcher() {

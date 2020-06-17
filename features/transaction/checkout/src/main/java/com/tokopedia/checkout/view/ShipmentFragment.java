@@ -1931,7 +1931,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             tooltip.setTitle(getActivity().getString(R.string.label_no_courier_bottomsheet_title));
             tooltip.setDesc(message);
             tooltip.setTextButton(getActivity().getString(R.string.label_no_courier_bottomsheet_button));
-            tooltip.setIcon(R.drawable.ic_dropshipper);
+            tooltip.setIcon(R.drawable.checkout_module_ic_dropshipper);
             tooltip.getBtnAction().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

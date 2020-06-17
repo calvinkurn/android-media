@@ -209,7 +209,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
             tvDropOffAddressTitle.setVisibility(View.GONE);
             tvDropOffAddressDescription.setVisibility(View.GONE);
             imgPinpoint.setVisibility(View.GONE);
-            tvChangeDropOff.setBackground(ContextCompat.getDrawable(tvChangeDropOff.getContext(), R.drawable.bg_green_button));
+            tvChangeDropOff.setBackground(ContextCompat.getDrawable(tvChangeDropOff.getContext(), R.drawable.checkout_module_bg_green_button));
             tvChangeDropOff.setTextColor(ContextCompat.getColor(tvChangeDropOff.getContext(), R.color.white));
         } else {
             tvDropOffAddressTitle.setVisibility(View.VISIBLE);
