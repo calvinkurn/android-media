@@ -59,6 +59,7 @@ class LayananFragment : BaseListFragment<LayananSectionModel,LayananViewHolderFa
                     performanceInterface.stopRenderPerformanceMonitoring()
                 }
             }
+            performanceInterface.stopMonitoring()
         }
     })
 
@@ -88,11 +89,6 @@ class LayananFragment : BaseListFragment<LayananSectionModel,LayananViewHolderFa
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
         return false
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        performanceInterface.stopMonitoring()
     }
 
     companion object{
