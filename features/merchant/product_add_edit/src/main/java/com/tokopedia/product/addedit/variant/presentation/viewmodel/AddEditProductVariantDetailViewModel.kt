@@ -1,9 +1,12 @@
 package com.tokopedia.product.addedit.variant.presentation.viewmodel
 
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_TYPE
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 

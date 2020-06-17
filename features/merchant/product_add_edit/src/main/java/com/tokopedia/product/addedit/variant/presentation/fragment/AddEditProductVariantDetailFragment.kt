@@ -20,7 +20,6 @@ import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.Var
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.product.addedit.variant.presentation.dialog.MultipleVariantEditSelectBottomSheet
-import com.tokopedia.product.addedit.variant.presentation.dialog.SelectVariantMainBottomSheet
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.OptionInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
