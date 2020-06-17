@@ -79,7 +79,7 @@ class HotelSearchResultViewModelTest {
 
         //when
         hotelSearchResultViewModel.initSearchParam(HotelSearchModel(checkIn, checkOut, destinationId, cityName
-        , type, totalRoom, totalAdult, latitude, longitude))
+        , type, totalRoom, totalAdult, latitude, longitude, "", ""))
 
         //then
         assert(hotelSearchResultViewModel.searchParam.location.cityID == destinationId)
@@ -107,7 +107,7 @@ class HotelSearchResultViewModelTest {
 
         //when
         hotelSearchResultViewModel.initSearchParam(HotelSearchModel(checkIn, checkOut, destinationId, cityName
-                , type, totalRoom, totalAdult, latitude, longitude))
+                , type, totalRoom, totalAdult, latitude, longitude, "", ""))
 
         //then
         assert(hotelSearchResultViewModel.searchParam.location.cityID == 0.toLong())
@@ -136,7 +136,7 @@ class HotelSearchResultViewModelTest {
 
         //when
         hotelSearchResultViewModel.initSearchParam(HotelSearchModel(checkIn, checkOut, destinationId, cityName
-                , type, totalRoom, totalAdult, latitude, longitude))
+                , type, totalRoom, totalAdult, latitude, longitude, "", ""))
 
         //then
         assert(hotelSearchResultViewModel.searchParam.location.cityID == 0.toLong())
@@ -166,7 +166,7 @@ class HotelSearchResultViewModelTest {
 
         //when
         hotelSearchResultViewModel.initSearchParam(HotelSearchModel(checkIn, checkOut, destinationId, cityName
-                , "", totalRoom, totalAdult, latitude, longitude))
+                , "", totalRoom, totalAdult, latitude, longitude, searchType, ""))
 
         //then
         assert(hotelSearchResultViewModel.searchParam.location.cityID == 0.toLong())
@@ -178,6 +178,7 @@ class HotelSearchResultViewModelTest {
         assert(hotelSearchResultViewModel.searchParam.checkOut == checkOut)
         assert(hotelSearchResultViewModel.searchParam.room == totalRoom)
         assert(hotelSearchResultViewModel.searchParam.guest.adult == totalAdult)
+        assert(hotelSearchResultViewModel.searchParam.location.searchType == searchType)
 
     }
 

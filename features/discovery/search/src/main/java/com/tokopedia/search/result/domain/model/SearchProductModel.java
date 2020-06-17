@@ -551,9 +551,12 @@ public class SearchProductModel {
         @SerializedName("image_url")
         @Expose
         private String imageUrl;
+        @SerializedName("image_url_300")
+        @Expose
+        private String imageUrl300;
         @SerializedName("image_url_700")
         @Expose
-        private String imageUrlLarge;
+        private String imageUrl700;
         @SerializedName("price")
         @Expose
         private String price;
@@ -672,8 +675,12 @@ public class SearchProductModel {
             return imageUrl;
         }
 
-        public String getImageUrlLarge() {
-            return imageUrlLarge;
+        public String getImageUrl300() {
+            return imageUrl300;
+        }
+
+        public String getImageUrl700() {
+            return imageUrl700;
         }
 
         public String getPrice() {

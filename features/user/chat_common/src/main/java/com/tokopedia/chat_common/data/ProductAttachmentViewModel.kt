@@ -337,7 +337,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
         return productId.toString()
     }
 
-    fun finishLoading() {
+    override fun finishLoading() {
         this.isLoading = false
         this.isError = false
     }

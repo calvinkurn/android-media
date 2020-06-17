@@ -209,7 +209,8 @@ public class ProductViewModelMapper {
         productItem.setWarehouseID(productModel.getWarehouseId());
         productItem.setProductName(productModel.getName());
         productItem.setImageUrl(productModel.getImageUrl());
-        productItem.setImageUrl700(productModel.getImageUrlLarge());
+        productItem.setImageUrl300(productModel.getImageUrl300());
+        productItem.setImageUrl700(productModel.getImageUrl700());
         productItem.setRatingString(useRatingString ? productModel.getRatingAverage() : "");
         productItem.setRating(useRatingString ? 0 : productModel.getRating());
         productItem.setCountReview(productModel.getCountReview());
