@@ -53,7 +53,7 @@ class ProductManageFilterTab(
             val filter = sortFilterTab.chipItems.getOrNull(index)
             if(filter != null) {
                 val chipText = context.getString(tab.titleId, tab.count)
-                val chipType = filter.refChipUnify.chipType
+                val chipType = filter.type
                 sortFilterTab.chipItems[index] = filter.apply {
                     title = chipText
                     listener = { toggleFilterTab(filter, tab) }
@@ -63,8 +63,8 @@ class ProductManageFilterTab(
                 }
             } else {
                 val title = context.getString(tab.titleId, tab.count)
-                val item = arrayListOf(SortFilterItem(title))
-                sortFilterTab.addItem(item)
+                val item = SortFilterItem(title)
+                sortFilterTab.chipItems.add(item)
             }
         }
     }
