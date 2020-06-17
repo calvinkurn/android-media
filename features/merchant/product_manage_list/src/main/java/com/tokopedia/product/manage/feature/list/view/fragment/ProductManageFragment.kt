@@ -235,10 +235,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         return super.onOptionsItemSelected(item)
     }
 
-    private fun onClickMoreFilter(filter: FilterTabViewModel) {
+    private fun onClickMoreFilter() {
         showFilterBottomSheet()
 
-        val tabName = getString(filter.titleId)
+        val tabName = getString(R.string.product_manage_filter)
         ProductManageTracking.eventInventory(tabName)
     }
 
@@ -253,7 +253,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         getFiltersTab(withDelay = true)
         getProductList(withDelay = true)
 
-        val tabName = getString(filter.titleId)
+        val tabName = getString(filter.titleId, filter.count)
         ProductManageTracking.eventInventory(tabName)
     }
 
@@ -451,7 +451,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun setupFiltersTab() {
         filterTab = ProductManageFilterTab(tabSortFilter, {
-            onClickMoreFilter(it)
+            onClickMoreFilter()
         }, {
             onClickFilterTab(it)
         })
