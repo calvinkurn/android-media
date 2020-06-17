@@ -16,7 +16,6 @@ import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
@@ -276,12 +275,15 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
         IntentFilter intentFilters = new IntentFilter();
         intentFilters.addAction(UploadProductService.ACTION_DRAFT_CHANGED);
         intentFilters.addAction(TkpdState.ProductService.BROADCAST_ADD_PRODUCT);
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(
-                draftBroadCastReceiver, intentFilters);
+        if (getActivity() != null) {
+            getActivity().registerReceiver(draftBroadCastReceiver, intentFilters);
+        }
     }
 
     private void unregisterDraftReceiver() {
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(draftBroadCastReceiver);
+        if (getActivity() != null) {
+            getActivity().unregisterReceiver(draftBroadCastReceiver);
+        }
     }
 
     @Override
