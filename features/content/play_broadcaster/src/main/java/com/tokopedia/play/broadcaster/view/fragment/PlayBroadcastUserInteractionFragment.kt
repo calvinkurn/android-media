@@ -71,7 +71,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        observeLiveInfoDuration()
+        observeLiveInfo()
         observeTotalViews()
         observeTotalLikes()
         observeChatList()
@@ -242,11 +242,23 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         })
     }
 
+    private fun handleLiveError(errorType: PlayPusherErrorType) {
+        when(errorType) {
+            PlayPusherErrorType.UnSupportedDevice -> {
+                // TODO("handle unsupported devices")
+                // Perangkat tidak mendukung\n layanan siaran live streaming
+                // Layanan live streaming tidak didukung pada perangkat Anda.
+                // showDialogWhenUnSupportedDevices()
+            }
+            PlayPusherErrorType.ReachMaximumDuration -> doEndStreaming()
+        }
+    }
+
     //region observe
     /**
      * Observe
      */
-    private fun observeLiveInfoDuration() {
+    private fun observeLiveInfo() {
         parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, EventObserver {
             when (it) {
                 is PlayPusherInfoState.Active -> {
@@ -259,21 +271,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     parentViewModel.stopPushBroadcast()
                     showDialogWhenTimeout()
                 }
-                is PlayPusherInfoState.Error -> handlePusherErrorState(it.errorType)
+                is PlayPusherInfoState.Error -> handleLiveError(it.errorType)
             }
         })
-    }
-
-    private fun handlePusherErrorState(errorType: PlayPusherErrorType) {
-        when(errorType) {
-            PlayPusherErrorType.UnSupportedDevice -> {
-                // TODO("handle unsupported devices")
-                // Perangkat tidak mendukung\n layanan siaran live streaming
-                // Layanan live streaming tidak didukung pada perangkat Anda.
-                // showDialogWhenUnSupportedDevices()
-            }
-            PlayPusherErrorType.ReachMaximumDuration -> doEndStreaming()
-        }
     }
 
     private fun observeTotalViews() {
