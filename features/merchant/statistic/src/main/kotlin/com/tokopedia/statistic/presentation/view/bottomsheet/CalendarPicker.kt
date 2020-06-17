@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
+import com.tokopedia.statistic.presentation.view.customview.DateTextFieldView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottomsheet_stc_calendar_picker.view.*
 import java.util.*
@@ -19,6 +20,9 @@ import java.util.*
 class CalendarPicker(
         mContext: Context
 ) : BottomSheetUnify() {
+
+    var selectedDates: List<Date> = emptyList()
+        private set
 
     private val calendarView: CalendarPickerView?
 
@@ -48,7 +52,14 @@ class CalendarPicker(
             cpv.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
 
                 override fun onDateSelected(date: Date) {
-                    //will implement selected date here
+                    this@CalendarPicker.selectedDates = cpv.selectedDates
+
+                    showSelectedDate(view?.edtStcDateStart, cpv.selectedDates.firstOrNull())
+                    if (cpv.selectedDates.size > 1) {
+                        showSelectedDate(view?.edtStcDateUntil, cpv.selectedDates.last())
+                    } else {
+                        showSelectedDate(view?.edtStcDateUntil, null)
+                    }
                 }
 
                 override fun onDateUnselected(date: Date) {
@@ -57,6 +68,16 @@ class CalendarPicker(
             })
         }
         return this
+    }
+
+    private fun showSelectedDate(edt: DateTextFieldView?, date: Date?) {
+        edt?.run {
+            if (null != date) {
+                valueStr = DateTimeUtil.format(date.time, "dd MMM yyyy")
+            } else {
+                reset()
+            }
+        }
     }
 
     fun showDatePicker(fm: FragmentManager, tag: String = CalendarPicker::class.java.simpleName) {
