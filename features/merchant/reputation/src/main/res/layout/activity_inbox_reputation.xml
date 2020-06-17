@@ -17,7 +17,7 @@
         android:background="@drawable/tab_shadow"/>
 
     <com.tokopedia.abstraction.base.view.widget.TouchViewPager
-        android:id="@+id/pager"
+        android:id="@+id/pager_reputation"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>
