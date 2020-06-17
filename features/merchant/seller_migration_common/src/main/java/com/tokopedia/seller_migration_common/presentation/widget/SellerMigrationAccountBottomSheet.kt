@@ -20,8 +20,8 @@ import com.tokopedia.seller_migration_common.getSellerMigrationDate
 import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
-import kotlinx.android.synthetic.main.widget_seller_migration_account_bottom_sheet.*
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.unifyprinciples.Typography
 
@@ -42,13 +42,18 @@ class SellerMigrationAccountBottomSheet : BottomSheetUnify() {
         userId = UserSession(context).userId
         setupPadding()
         val sellerMigrationAccountBottomSheetImage: ImageView? = view.findViewById(R.id.sellerMigrationAccountBottomSheetImage)
+        val sellerMigrationBottomSheetContent: Typography? = view.findViewById(R.id.sellerMigrationBottomSheetContent)
+        val sellerMigrationAccountBottomSheetLink: Typography? = view.findViewById(R.id.sellerMigrationAccountBottomSheetLink)
+        val sellerMigrationAccountBottomSheetButton: UnifyButton? = view.findViewById(R.id.sellerMigrationAccountBottomSheetButton)
         sellerMigrationAccountBottomSheetImage?.loadImage(SellerMigrationConstants.SELLER_MIGRATION_ACCOUNT_IMAGE_LINK)
-        sellerMigrationBottomSheetContent.text = context?.let { HtmlLinkHelper(it, getString(R.string.seller_migration_account_home_bottom_sheet_content)).spannedString }
-        sellerMigrationAccountBottomSheetLink.text = context?.let { HtmlLinkHelper(it, getString(R.string.seller_migration_account_home_bottom_sheet_footer)).spannedString }
-        sellerMigrationAccountBottomSheetLink.setOnTouchListener(SellerMigrationTouchListener {
-            goToInformationWebview(it)
-        })
-        sellerMigrationAccountBottomSheetButton.setOnClickListener {
+        sellerMigrationBottomSheetContent?.text = context?.let { HtmlLinkHelper(it, getString(R.string.seller_migration_account_home_bottom_sheet_content)).spannedString }
+        sellerMigrationAccountBottomSheetLink?.apply {
+            text = context?.let { HtmlLinkHelper(it, getString(R.string.seller_migration_account_home_bottom_sheet_footer)).spannedString }
+            setOnTouchListener(SellerMigrationTouchListener {
+                goToInformationWebview(it)
+            })
+        }
+        sellerMigrationAccountBottomSheetButton?.setOnClickListener {
             goToSellerApp()
         }
         setupWarningCard()
@@ -58,6 +63,7 @@ class SellerMigrationAccountBottomSheet : BottomSheetUnify() {
         val remoteConfigDate = getSellerMigrationDate(context)
         if(remoteConfigDate.isNotBlank()) {
             val sellerMigrationWarningDate: Typography? = view?.findViewById(R.id.sellerMigrationWarningDate)
+            val sellerMigrationAccountWarning: View? = view?.findViewById(R.id.sellerMigrationAccountWarning)
             sellerMigrationAccountWarning?.show()
             sellerMigrationWarningDate?.text = remoteConfigDate
         }
