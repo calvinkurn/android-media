@@ -205,6 +205,7 @@ open class HomeFragment : BaseDaggerFragment(),
         private const val SCROLL_RECOMMEND_LIST = "recommend_list"
         private const val KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar"
         private const val CLICK_TIME_INTERVAL: Long = 500
+
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeFragment {
             val fragment = HomeFragment()
@@ -1085,13 +1086,6 @@ open class HomeFragment : BaseDaggerFragment(),
                     getHomeViewModel().onRemoveSuggestedReview()
                 }
             }
-            REQUEST_CODE_LOGIN_TOKOPOINTS -> {
-                activity?.let {
-                    if (resultCode == Activity.RESULT_OK) {
-                        RouteManager.route(activity, ApplinkConstInternalPromo.TOKOPOINTS_HOME)
-                    }
-                }
-            }
             REQUEST_CODE_PLAY_ROOM -> if (data != null && data.hasExtra(EXTRA_TOTAL_VIEW)) getHomeViewModel().updateBannerTotalView(data.getStringExtra(EXTRA_TOTAL_VIEW))
         }
     }
@@ -1813,10 +1807,6 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onTokopointCheckNowClicked(applink: String) {
         activity?.let {
-            if (::userSession.isInitialized && !userSession.isLoggedIn) {
-                startActivityForResult(RouteManager.getIntent(activity, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN_TOKOPOINTS)
-                return
-            }
             if (!TextUtils.isEmpty(applink)) {
                 RouteManager.route(activity, applink)
             }
