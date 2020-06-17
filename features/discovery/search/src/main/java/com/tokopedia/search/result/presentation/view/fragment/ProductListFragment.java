@@ -568,7 +568,7 @@ public class ProductListFragment
     public void setProductList(List<Visitable> list) {
         adapter.clearData();
 
-        stopSearchResultPagePerformanceMonitoring(list);
+        stopSearchResultPagePerformanceMonitoring();
         addProductList(list);
     }
 
@@ -578,7 +578,7 @@ public class ProductListFragment
         adapter.appendItems(list);
     }
 
-    private void stopSearchResultPagePerformanceMonitoring(List<Visitable> list) {
+    private void stopSearchResultPagePerformanceMonitoring() {
         recyclerView.getViewTreeObserver()
                 .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
