@@ -62,7 +62,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
                 banner.let {
                     hashMap[KEY_ID] = it.id ?: 0
                     hashMap[KEY_NAME] = "$eventDiscoveryCategory - ${banner.positionForParentItem + 1} - ${getTargetingType(banner.action ?: EMPTY_STRING)} - $componentName"
-                    hashMap[KEY_CREATIVE] = it.persona ?: EMPTY_STRING
+                    hashMap[KEY_CREATIVE] = it.name ?: EMPTY_STRING
                     hashMap[KEY_POSITION] = ++index
                 }
                 list.add(hashMap)
@@ -91,7 +91,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
                 EVENT_PROMO_CLICK to mapOf(
                         KEY_PROMOTIONS to list))
         map[KEY_ATTRIBUTION] = banner.attribution ?: EMPTY_STRING
-        map[KEY_AFFINITY_LABEL] = banner.persona ?: EMPTY_STRING
+        map[KEY_AFFINITY_LABEL] = banner.name ?: EMPTY_STRING
         map[KEY_CATEGORY_ID] = banner.category ?: EMPTY_STRING
         map[KEY_SHOP_ID] = banner.shopId ?: EMPTY_STRING
         map[KEY_E_COMMERCE] = eCommerce
