@@ -14,6 +14,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -57,6 +59,9 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
 
     private lateinit var etCoverTitle: EditText
     private lateinit var tvCoverTitleLabel: TextView
+    private lateinit var tvCoverTitleCounter: TextView
+    private lateinit var ivCoverImage: ImageView
+    private lateinit var llChangeCover: LinearLayout
     private lateinit var bottomSheetHeader: PlayBottomSheetHeader
 
     private val liveTitle: String
@@ -69,30 +74,6 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupTransition()
-        savedInstanceState?.let {
-            starterState = if (it.getInt(EXTRA_STARTER_STATE) == CoverStarterEnum.CROP_ONLY.value)
-                CoverStarterEnum.CROP_ONLY else CoverStarterEnum.NORMAL
-            coverSource = when (it.getInt(EXTRA_COVER_SOURCE)) {
-                CoverSourceEnum.CAMERA.value -> CoverSourceEnum.CAMERA
-                CoverSourceEnum.PRODUCT.value -> CoverSourceEnum.PRODUCT
-                CoverSourceEnum.GALLERY.value -> CoverSourceEnum.GALLERY
-                else -> CoverSourceEnum.NONE
-            }
-        } ?: arguments?.let {
-            starterState = if (it.getInt(EXTRA_STARTER_STATE) == CoverStarterEnum.CROP_ONLY.value)
-                CoverStarterEnum.CROP_ONLY else CoverStarterEnum.NORMAL
-            coverSource = when (it.getInt(EXTRA_COVER_SOURCE)) {
-                CoverSourceEnum.CAMERA.value -> CoverSourceEnum.CAMERA
-                CoverSourceEnum.PRODUCT.value -> CoverSourceEnum.PRODUCT
-                CoverSourceEnum.GALLERY.value -> CoverSourceEnum.GALLERY
-                else -> CoverSourceEnum.NONE
-            }
-
-            // if crop mode and from gallery/camera, there will be Image Uri provided
-            if (it.containsKey(EXTRA_COVER_URI)) {
-                selectedCoverUri = it.getParcelable(EXTRA_COVER_URI)
-            }
-        }
         viewModel = ViewModelProviders.of(this, viewModelFactory)
                 .get(PlayBroadcastCoverSetupViewModel::class.java)
 
@@ -120,12 +101,6 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
     override fun onDestroyView() {
         super.onDestroyView()
         clearFindViewByIdCache()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putInt(EXTRA_STARTER_STATE, starterState.value)
-        outState.putInt(EXTRA_COVER_SOURCE, coverSource.value)
     }
 
     override fun onGetCoverFromCamera(imageUri: Uri?) {
@@ -163,6 +138,9 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
         with (view) {
             etCoverTitle = findViewById(R.id.et_cover_title)
             tvCoverTitleLabel = findViewById(R.id.tv_cover_title_label)
+            tvCoverTitleCounter = findViewById(R.id.tv_cover_title_counter)
+            ivCoverImage = findViewById(R.id.iv_cover_image)
+            llChangeCover = findViewById(R.id.ll_change_cover)
             bottomSheetHeader = findViewById(R.id.bottom_sheet_header)
         }
     }
@@ -170,12 +148,9 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
     private fun setupView() {
         bottomSheetHeader.setHeader(getString(R.string.play_prepare_cover_title_title), isRoot = false)
 
-        containerChangeCover.setOnClickListener {
-            onChangeCoverClicked()
-        }
-        ivPlayCoverImage.setOnClickListener {
-            onChangeCoverClicked()
-        }
+        llChangeCover.setOnClickListener { onChangeCoverClicked() }
+        ivCoverImage.setOnClickListener { onChangeCoverClicked() }
+
         btnPlayPrepareBroadcastNext.setOnClickListener {
             onFinishCoverTitleSetup()
         }
@@ -241,7 +216,7 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
     private fun renderCoverTitleLayout(resultImageUri: Uri?) {
         resultImageUri?.let {
             selectedCoverUri = resultImageUri
-            ivPlayCoverImage.setImageURI(selectedCoverUri)
+            ivCoverImage.setImageURI(selectedCoverUri)
         }
         setupCoverLabelText()
         setupNextButton()
@@ -330,8 +305,8 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
     }
 
     private fun setupTitleCounter() {
-        tvPlayTitleCounter.text = getString(R.string.play_prepare_cover_title_counter,
-                liveTitle.length, 28)
+        tvCoverTitleCounter.text = getString(R.string.play_prepare_cover_title_counter,
+                liveTitle.length, viewModel.maxTitleChars)
     }
 
     private fun setupNextButton() {

@@ -19,14 +19,12 @@ class PlayRectCropImageOverlay @JvmOverloads constructor(context: Context, attrs
     private var mPath = Path()
 
     private val centerOfX: Float
-    private var rectWidth: Int
-    private var rectHeight: Int
     private var bottomDetailHeight: Int
 
-    var leftPosition: Float = 0f
-    var topPosition: Float = 0f
-    var rightPosition: Float = 0f
-    var bottomPosition: Float = 0f
+    private var leftPosition: Float = 0f
+    private var topPosition: Float = 0f
+    private var rightPosition: Float = 0f
+    private var bottomPosition: Float = 0f
 
     init {
         mTransparentPaint.color = Color.TRANSPARENT
@@ -40,8 +38,6 @@ class PlayRectCropImageOverlay @JvmOverloads constructor(context: Context, attrs
         mBlackTransparentPaint.color = resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_68)
 
         centerOfX = (right - left).toFloat() / 2
-        rectWidth = resources.getDimensionPixelSize(R.dimen.play_cover_width)
-        rectHeight = resources.getDimensionPixelSize(R.dimen.play_cover_height)
         bottomDetailHeight = resources.getDimensionPixelSize(R.dimen.play_cover_bottom_detail)
     }
 
@@ -50,10 +46,13 @@ class PlayRectCropImageOverlay @JvmOverloads constructor(context: Context, attrs
 
         mPath.reset()
 
+        val rectHeight = height.toFloat()
+        val rectWidth = height.toFloat() * 9 / 16
+
         leftPosition = left + (((right - left).toFloat() / 2) - (rectWidth / 2))
         topPosition = 0f
-        rightPosition = right - ((right - left) / 2) + (rectWidth / 2).toFloat()
-        bottomPosition = rectHeight.toFloat()
+        rightPosition = right - ((right - left) / 2) + (rectWidth / 2)
+        bottomPosition = rectHeight
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             mPath.addRect(leftPosition,

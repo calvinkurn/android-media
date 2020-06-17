@@ -14,7 +14,6 @@ import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastCoverCropBot
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastCoverFromGalleryBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastEditTitleBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
-import kotlinx.android.synthetic.main.layout_play_cover_title_setup.*
 import javax.inject.Inject
 
 /**
@@ -47,9 +46,9 @@ class DummyFragment @Inject constructor()
 //        etPlayCoverTitleText.setOnClickListener {
 //            showEditTitleBottomSheet("Dummy Title")
 //        }
-        containerChangeCover.setOnClickListener {
-            showEditCoverBottomSheet(dummyPairOfProductIdAndImageUrlList)
-        }
+//        containerChangeCover.setOnClickListener {
+//            showEditCoverBottomSheet(dummyPairOfProductIdAndImageUrlList)
+//        }
     }
 
     /**
@@ -123,7 +122,7 @@ class DummyFragment @Inject constructor()
      * you can use this method to get the edited cover
      */
     override fun onCoverEdited(imageUri: Uri, imageUrl: String) {
-        ivPlayCoverImage.setImageURI(imageUri)
+//        ivPlayCoverImage.setImageURI(imageUri)
     }
 
     /**
