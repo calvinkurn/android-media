@@ -200,6 +200,7 @@ open class HomeFragment : BaseDaggerFragment(),
         private const val SCROLL_RECOMMEND_LIST = "recommend_list"
         private const val KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar"
         private const val CLICK_TIME_INTERVAL: Long = 500
+
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeFragment {
             val fragment = HomeFragment()
@@ -307,13 +308,13 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
 
-    protected open fun initHomePageFlows():Boolean{
+    protected open fun initHomePageFlows(): Boolean {
         initInjectorHome()
         return true
     }
 
-    private fun getUserSession() : UserSessionInterface{
-        if(!::userSession.isInitialized){
+    private fun getUserSession(): UserSessionInterface {
+        if (!::userSession.isInitialized) {
             activity?.let {
                 userSession = UserSession(it)
             }
@@ -321,8 +322,8 @@ open class HomeFragment : BaseDaggerFragment(),
         return userSession
     }
 
-    private fun getIrisAnalytics() : Iris{
-        if(!::irisAnalytics.isInitialized){
+    private fun getIrisAnalytics(): Iris {
+        if (!::irisAnalytics.isInitialized) {
             activity?.let {
                 irisAnalytics = getInstance(it)
             }
@@ -330,8 +331,8 @@ open class HomeFragment : BaseDaggerFragment(),
         return irisAnalytics
     }
 
-    private fun getIrisSession() : IrisSession{
-        if(!::irisSession.isInitialized){
+    private fun getIrisSession(): IrisSession {
+        if (!::irisSession.isInitialized) {
             activity?.let {
                 irisSession = IrisSession(it)
             }
@@ -339,8 +340,8 @@ open class HomeFragment : BaseDaggerFragment(),
         return irisSession
     }
 
-    private fun getRemoteConfig() : RemoteConfig{
-        if(!::remoteConfig.isInitialized){
+    private fun getRemoteConfig(): RemoteConfig {
+        if (!::remoteConfig.isInitialized) {
             activity?.let {
                 remoteConfig = FirebaseRemoteConfigImpl(it)
             }
@@ -348,8 +349,8 @@ open class HomeFragment : BaseDaggerFragment(),
         return remoteConfig
     }
 
-    override fun getTrackingQueueObj() : TrackingQueue?{
-        if(trackingQueue == null){
+    override fun getTrackingQueueObj(): TrackingQueue? {
+        if (trackingQueue == null) {
             activity?.let {
                 trackingQueue = TrackingQueue(it)
             }
@@ -557,8 +558,8 @@ open class HomeFragment : BaseDaggerFragment(),
         adjustStatusBarColor()
     }
 
-    private fun conditionalViewModelRefresh(){
-        if(!fragmentCreatedForFirstTime) {
+    private fun conditionalViewModelRefresh() {
+        if (!fragmentCreatedForFirstTime) {
             getHomeViewModel().refresh(isFirstInstall())
         }
     }
@@ -641,7 +642,7 @@ open class HomeFragment : BaseDaggerFragment(),
             val isViewModelInitialized = data.peekContent()
             if (isViewModelInitialized) {
                 callSubordinateTasks();
-                if(getPageLoadTimeCallback() != null) {
+                if (getPageLoadTimeCallback() != null) {
                     getPageLoadTimeCallback()?.stopPreparePagePerformanceMonitoring()
                 }
             }
@@ -768,7 +769,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun setData(data: List<HomeVisitable?>, isCache: Boolean) {
-        if(!data.isEmpty()) {
+        if (!data.isEmpty()) {
             if (needToPerformanceMonitoring() && getPageLoadTimeCallback() != null) {
                 setOnRecyclerViewLayoutReady(isCache);
                 adapter?.submitList(data);
@@ -879,7 +880,7 @@ open class HomeFragment : BaseDaggerFragment(),
                 this,
                 this,
                 this,
-                homeRecyclerView?.recycledViewPool?: RecyclerView.RecycledViewPool(),
+                homeRecyclerView?.recycledViewPool ?: RecyclerView.RecycledViewPool(),
                 this,
                 this,
                 HomeComponentCallback(getHomeViewModel()),
@@ -1069,7 +1070,7 @@ open class HomeFragment : BaseDaggerFragment(),
         adapter?.resetImpressionHomeBanner()
         resetFeedState()
         removeNetworkError()
-        if(::viewModel.isInitialized) {
+        if (::viewModel.isInitialized) {
             getHomeViewModel().getSearchHint(isFirstInstall())
             getHomeViewModel().refreshHomeData()
             stickyContent
@@ -1087,7 +1088,7 @@ open class HomeFragment : BaseDaggerFragment(),
         resetFeedState()
         removeNetworkError()
         homeRecyclerView?.isEnabled = false
-        if(::viewModel.isInitialized) {
+        if (::viewModel.isInitialized) {
             getHomeViewModel().refresh(isFirstInstall())
             stickyContent
         }
@@ -1111,7 +1112,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private val stickyContent: Unit
-        private get(){
+        private get() {
             val stickyContentWeave: WeaveInterface = object : WeaveInterface {
                 @NotNull
                 override fun execute(): Any {
@@ -1121,15 +1122,15 @@ open class HomeFragment : BaseDaggerFragment(),
             Weaver.executeWeaveCoRoutineNow(stickyContentWeave)
         }
 
-    private fun executeGetStickyContent():Boolean{
+    private fun executeGetStickyContent(): Boolean {
         val isShowSticky = getRemoteConfig().getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true)
         if (isShowSticky && !getUserSession().isLoggedIn) getHomeViewModel().getStickyContent()
         return true
     }
 
     private fun injectCouponTimeBased() {
-         if(getUserSession().isLoggedIn) getHomeViewModel().injectCouponTimeBased();
-     }
+        if (getUserSession().isLoggedIn) getHomeViewModel().injectCouponTimeBased();
+    }
 
     private fun hideLoading() {
         refreshLayout.isRefreshing = false
@@ -1142,7 +1143,7 @@ open class HomeFragment : BaseDaggerFragment(),
             homePerformanceMonitoringListener?.stopHomePerformanceMonitoring(isCache);
             homePerformanceMonitoringListener = null;
             fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
-            if(fragmentCreatedForFirstTime){
+            if (fragmentCreatedForFirstTime) {
                 fragmentCreatedForFirstTime = false
                 conditionalViewModelRefresh()
             }
@@ -1475,7 +1476,7 @@ open class HomeFragment : BaseDaggerFragment(),
         get() = userVisibleHint
 
     override val parentPool: RecyclerView.RecycledViewPool
-        get() = homeRecyclerView?.recycledViewPool?: RecyclerView.RecycledViewPool()
+        get() = homeRecyclerView?.recycledViewPool ?: RecyclerView.RecycledViewPool()
 
     override val isHomeFragment: Boolean
         get() {
@@ -1600,7 +1601,7 @@ open class HomeFragment : BaseDaggerFragment(),
         get() {
             var height = 0
             if (homeMainToolbar != null) {
-                height = homeMainToolbar?.height?:0
+                height = homeMainToolbar?.height ?: 0
                 homeMainToolbar?.let {
                     if (!it.isShadowApplied()) {
                         height += resources.getDimensionPixelSize(R.dimen.dp_8)
@@ -1780,8 +1781,10 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onTokopointCheckNowClicked(applink: String) {
-        if (!TextUtils.isEmpty(applink)) {
-            RouteManager.route(activity, applink)
+        activity?.let {
+            if (!TextUtils.isEmpty(applink)) {
+                RouteManager.route(activity, applink)
+            }
         }
     }
 
@@ -1901,7 +1904,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun getPageLoadTimeCallback(): PageLoadTimePerformanceInterface? {
         if (homePerformanceMonitoringListener != null && homePerformanceMonitoringListener?.pageLoadTimePerformanceInterface != null) {
-           pageLoadTimeCallback =  homePerformanceMonitoringListener?.pageLoadTimePerformanceInterface
+            pageLoadTimeCallback = homePerformanceMonitoringListener?.pageLoadTimePerformanceInterface
         }
         return pageLoadTimeCallback
     }
@@ -1923,8 +1926,8 @@ open class HomeFragment : BaseDaggerFragment(),
         super.onDetach()
     }
 
-    private fun getHomeViewModel() : HomeViewModel{
-        if(!::viewModel.isInitialized){
+    private fun getHomeViewModel(): HomeViewModel {
+        if (!::viewModel.isInitialized) {
             initInjectorHome()
         }
         return viewModel.get()
