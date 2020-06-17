@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -32,12 +33,14 @@ import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageTypeFactor
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageTransactionViewHolder
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageViewModel
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.layout_digital_home.*
 import javax.inject.Inject
 
-class DigitalHomePageFragment : BaseListFragment<RechargeHomepageAbstractSectionModel, DigitalHomePageTypeFactory>(),
+class DigitalHomePageFragment : BaseListFragment<Visitable<*>, DigitalHomePageTypeFactory>(),
         OnItemBindListener,
         DigitalHomePageTransactionViewHolder.TransactionListener,
         SearchInputView.FocusChangeListener {
@@ -236,11 +239,63 @@ class DigitalHomePageFragment : BaseListFragment<RechargeHomepageAbstractSection
 
     }
 
+    override fun onSeeAllSixImage(channelModel: ChannelModel, position: Int) {
+
+    }
+
+    override fun onSeeAllFourImage(channelModel: ChannelModel, position: Int) {
+
+    }
+
+    override fun onSeeAllThreemage(channelModel: ChannelModel, position: Int) {
+
+    }
+
+    override fun onClickGridSixImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
+
+    }
+
+    override fun onClickGridFourImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
+
+    }
+
+    override fun onClickGridThreeImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
+
+    }
+
+    override fun onImpressionGridSixImage(channelModel: ChannelModel, parentPosition: Int) {
+
+    }
+
+    override fun onImpressionGridFourImage(channelModel: ChannelModel, parentPosition: Int) {
+
+    }
+
+    override fun onImpressionGridThreeImage(channelModel: ChannelModel, parentPosition: Int) {
+
+    }
+
+    override fun onChannelImpressionSixImage(channelModel: ChannelModel, parentPosition: Int) {
+
+    }
+
+    override fun onChannelImpressionFourImage(channelModel: ChannelModel, parentPosition: Int) {
+
+    }
+
+    override fun onChannelImpressionThreeImage(channelModel: ChannelModel, parentPosition: Int) {
+
+    }
+
+    override fun onChannelExpired(channelModel: ChannelModel, channelPosition: Int, visitable: Visitable<*>) {
+
+    }
+
     override fun getAdapterTypeFactory(): DigitalHomePageTypeFactory {
         return DigitalHomePageTypeFactory(this, this)
     }
 
-    override fun onItemClicked(t: RechargeHomepageAbstractSectionModel) {
+    override fun onItemClicked(t: Visitable<*>) {
         // do nothing
     }
 

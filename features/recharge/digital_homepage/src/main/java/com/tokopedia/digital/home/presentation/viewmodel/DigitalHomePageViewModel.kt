@@ -2,8 +2,8 @@ package com.tokopedia.digital.home.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.digital.home.model.RechargeHomepageAbstractSectionModel
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.Util.DigitalHomePageDispatchersProvider
 import com.tokopedia.digital.home.presentation.Util.RechargeHomepageSectionMapper
@@ -24,8 +24,8 @@ class DigitalHomePageViewModel @Inject constructor(
         private val dispatcher: DigitalHomePageDispatchersProvider)
     : BaseViewModel(dispatcher.Main) {
 
-    private val mutableRechargeHomepageSections = MutableLiveData<Result<List<RechargeHomepageAbstractSectionModel>>>()
-    val rechargeHomepageSections: LiveData<Result<List<RechargeHomepageAbstractSectionModel>>>
+    private val mutableRechargeHomepageSections = MutableLiveData<Result<List<Visitable<*>>>>()
+    val rechargeHomepageSections: LiveData<Result<List<Visitable<*>>>>
         get() = mutableRechargeHomepageSections
 
     fun getRechargeHomepageSections(rawQuery: String, mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {

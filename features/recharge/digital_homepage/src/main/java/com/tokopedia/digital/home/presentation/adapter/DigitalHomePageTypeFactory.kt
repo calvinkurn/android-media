@@ -7,10 +7,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.digital.home.model.*
 import com.tokopedia.digital.home.presentation.adapter.viewholder.*
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
+import com.tokopedia.home_component.HomeComponentTypeFactory
+import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
+import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 
 class DigitalHomePageTypeFactory(val listener: OnItemBindListener,
                                  val transactionListener: DigitalHomePageTransactionViewHolder.TransactionListener?)
-    : BaseAdapterTypeFactory() {
+    : BaseAdapterTypeFactory(), HomeComponentTypeFactory {
 
     fun type(digitalHomePageBannerModel: DigitalHomePageBannerModel): Int {
         return DigitalHomePageBannerViewHolder.LAYOUT
@@ -72,6 +76,14 @@ class DigitalHomePageTypeFactory(val listener: OnItemBindListener,
         return RechargeHomepageVideoHighlightViewHolder.LAYOUT
     }
 
+    override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
+        return DynamicLegoBannerViewHolder.LAYOUT
+    }
+
+    override fun type(recommendationListCarouselDataModel: RecommendationListCarouselDataModel): Int {
+        return 0
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             // TODO: Finish the rest of viewholders and add them to the list
@@ -81,6 +93,7 @@ class DigitalHomePageTypeFactory(val listener: OnItemBindListener,
             RechargeHomepageBannerViewHolder.LAYOUT -> RechargeHomepageBannerViewHolder(parent, listener)
             RechargeHomepageBannerViewHolder.LAYOUT_EMPTY -> RechargeHomepageBannerViewHolder(parent, listener, true)
             RechargeHomepageVideoHighlightViewHolder.LAYOUT -> RechargeHomepageVideoHighlightViewHolder(parent, listener)
+            DynamicLegoBannerViewHolder.LAYOUT -> DynamicLegoBannerViewHolder(parent, listener, listener)
             else -> super.createViewHolder(parent, type)
         }
     }

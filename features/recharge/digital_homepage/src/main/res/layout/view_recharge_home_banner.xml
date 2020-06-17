@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/spacing_lvl3">
     <com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
         android:id="@+id/circular_view_pager"
         android:layout_width="match_parent"

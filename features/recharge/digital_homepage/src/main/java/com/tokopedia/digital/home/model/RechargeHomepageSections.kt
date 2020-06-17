@@ -84,11 +84,9 @@ data class RechargeHomepageSections (
     )
 }
 
-abstract class RechargeHomepageAbstractSectionModel: Visitable<DigitalHomePageTypeFactory> {
+abstract class RechargeHomepageSectionModel(val section: RechargeHomepageSections.Section): Visitable<DigitalHomePageTypeFactory> {
         abstract override fun type(typeFactory: DigitalHomePageTypeFactory): Int
 }
-
-abstract class RechargeHomepageSectionModel(val section: RechargeHomepageSections.Section): RechargeHomepageAbstractSectionModel()
 
 class RechargeHomepageBannerModel(section: RechargeHomepageSections.Section): RechargeHomepageSectionModel(section) {
         override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
