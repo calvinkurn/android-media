@@ -72,8 +72,9 @@ class HeaderViewHolder(
                     textColorResId = R.color.Green_G500
                 }
                 VoucherStatusConst.ENDED -> {
+                    headerContainer?.visible()
                     statusResId = R.string.mvc_ended
-                    containerColor = resources?.run { ResourcesCompat.getColor(this, R.color.mvc_grey_container, null) } ?: Color.TRANSPARENT
+                    containerColor = ContainerUnify.GREY
                     textColorResId = R.color.Neutral_N700_96
                 }
                 VoucherStatusConst.STOPPED -> {
