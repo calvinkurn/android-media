@@ -1,0 +1,115 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+
+repositories {
+    mavenCentral()
+    maven { url 'https://hansel.io/maven' }
+    jcenter()
+    google()
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+
+dependencies {
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.core_legacy)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.dynamicFeatures)
+    implementation project(rootProject.ext.libraries.coreNetwork)
+
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.goldMerchantResource)
+    implementation project(rootProject.ext.features.tkpdcore)
+
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
+
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+
+
+//    implementation project(rootProject.ext.features.goldMerchantCommon)
+
+
+
+    //    implementation project(rootProject.ext.libraries.baseList)
+//    implementation project(rootProject.ext.libraries.imagePicker)
+//    implementation project(rootProject.ext.libraries.imageuploader)
+//    implementation project(rootProject.ext.libraries.baseListSeller)
+
+//    implementation project(rootProject.ext.libraries.track)
+//    implementation project(rootProject.ext.libraries.trackingOptimizer)
+//    implementation project(rootProject.ext.libraries.analytics)
+
+//    implementation project(rootProject.ext.features.tkpdseller)
+//    implementation project(rootProject.ext.features.productManageItem)
+//    implementation project(rootProject.ext.features.logisticdata)
+
+//    implementation project(rootProject.ext.libraries.remoteConfig)
+//    implementation project(rootProject.ext.libraries.kotlinExtensions)
+//
+
+//    implementation rootProject.ext.unifyDependencies.components
+//    implementation rootProject.ext.unifyDependencies.global_error
+//    implementation rootProject.ext.unifyDependencies.dialog
+
+//    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
+//    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+//    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+//    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+//    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+//    implementation rootProject.ext.tkpdInternalLibDependencies.network
+//    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
+//
+//    implementation rootProject.ext.supportLibDependencies.constraintLayout
+//    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+//
+//    implementation rootProject.ext.miscDependencies.cameraView
+//    implementation rootProject.ext.miscDependencies.scannerZxing
+//    implementation (rootProject.ext.miscDependencies.ucrop){
+//        exclude group: 'com.android.support'
+//    }
+//    implementation (rootProject.ext.miscDependencies.imagecropper){
+//        exclude group: "com.android.support"
+//    }
+//    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
+//        exclude group: "com.android.support"
+//    }
+//    implementation rootProject.ext.miscDependencies.dagger
+//    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+//    kapt rootProject.ext.miscDependencies.daggerCompiler
+//    implementation rootProject.ext.miscDependencies.multiDex
+//    implementation rootProject.ext.playServicesDependencies.maps
+//    implementation rootProject.ext.networkDependencies.glide
+//    implementation rootProject.ext.miscDependencies.parcelerApi
+//    implementation rootProject.ext.miscDependencies.lottie
+//    testImplementation rootProject.ext.testDependencies.mockk
+//    testImplementation rootProject.ext.testDependencies.archCoreTesting
+//    kapt  rootProject.ext.miscDependencies.parceler
+//    implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
+//        exclude group: "com.android.support"
+//    }
+//    api (rootProject.ext.serviceDependencies.crashlytics) {
+//        transitive = true
+//    }
+}
+
+project.ext {
+    artifactId = 'shop-score'
+    groupId = 'com.tokopedia.merchant'
+    versionName = "0.0.1"
+    artifactName ="shop_score-release"
+}
+
+//apply from: '../../../publish_local.gradle'

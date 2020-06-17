@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">shop-score</string>
+    <string name="description_shop_score_gold_badge_state">Mulai tanggal 27 Maret 2017, ikon %1$s hanya akan diberikan kepada seller dengan skor minimal 75 poin.</string>
+    <string name="subtitle_first_shop_score_detail_summary">Perfoma Toko Anda</string>
+    <string name="subtitle_second_shop_score_detail_summary">dengan nilai rata-rata</string>
+
+    <string name="error_title_shop_score_failed">Data Gagal Ditampilkan</string>
+    <string name="error_subtitle_shop_score_failed">Periksa koneksi internet Anda dan coba lagi</string>
+    <string name="label_try_again">Coba Lagi</string>
+    <string name="error_no_browser">\"Tidak ada aplikasi untuk membuka link\"</string>
+    <string name="shop_score_point_value">%1s poin</string>
+
+</resources>
