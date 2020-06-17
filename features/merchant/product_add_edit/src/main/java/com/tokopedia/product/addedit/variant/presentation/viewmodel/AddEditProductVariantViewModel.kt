@@ -197,14 +197,29 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     private fun mapProducts(): List<ProductVariantInputModel> {
         val result: MutableList<ProductVariantInputModel> = mutableListOf()
-        selectedVariantUnitValuesMap.forEach {
-            it.value.forEachIndexed { index, unitValue ->
-                result.add(
-                        ProductVariantInputModel(
-                                combination = listOf(it.key, index),
-                                status = STATUS_ACTIVE_STRING
+        val selectedLevel1 = selectedVariantUnitValuesMap[0]
+        selectedLevel1?.let { unitValueLevel1 ->
+            val selectedLevel2 = selectedVariantUnitValuesMap[1]
+            if (selectedLevel2 != null) {
+                unitValueLevel1.forEachIndexed { optionIndexLevel1, _ ->
+                    selectedLevel2.forEachIndexed { optionIndexLevel2, _ ->
+                        result.add(
+                                ProductVariantInputModel(
+                                        combination = listOf(optionIndexLevel1, optionIndexLevel2),
+                                        status = STATUS_ACTIVE_STRING
+                                )
                         )
-                )
+                    }
+                }
+            } else {
+                unitValueLevel1.forEachIndexed { optionIndex, _ ->
+                    result.add(
+                            ProductVariantInputModel(
+                                    combination = listOf(optionIndex),
+                                    status = STATUS_ACTIVE_STRING
+                            )
+                    )
+                }
             }
         }
         return result

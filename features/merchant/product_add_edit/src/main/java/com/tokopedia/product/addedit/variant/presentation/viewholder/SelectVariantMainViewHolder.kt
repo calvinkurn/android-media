@@ -1,17 +1,11 @@
 package com.tokopedia.product.addedit.variant.presentation.viewholder
 
 import android.content.Context
-import android.os.Build
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.LinearLayout.LayoutParams
-import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.setPrimarySelected
 import com.tokopedia.product.addedit.variant.presentation.model.OptionInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
-import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import kotlinx.android.synthetic.main.item_multiple_variant_edit_select.view.*
 
@@ -25,7 +19,7 @@ class SelectVariantMainViewHolder(itemView: View, val clickListener: OnFieldClic
     private var dataList: ArrayList<ListItemUnify> = arrayListOf()
     private var context: Context? = null
 
-    fun bindData(selectionInputModel: SelectionInputModel, selectedItemMap: HashMap<Int, Boolean>) {
+    fun bindData(selectionInputModel: SelectionInputModel, selectedItemMap: MutableList<Boolean>) {
         dataList = mapOptionsToListItems(selectionInputModel.options)
         context = itemView.context
         itemView.textSelection.text = selectionInputModel.variantName
@@ -37,7 +31,7 @@ class SelectVariantMainViewHolder(itemView: View, val clickListener: OnFieldClic
             }
 
             dataList.forEachIndexed { position, listItemUnify ->
-                val isPositionChecked = selectedItemMap[position] ?: false
+                val isPositionChecked = selectedItemMap.getOrNull(position) ?: false
                 listItemUnify.setPrimarySelected(context, isPositionChecked)
 
                 listItemUnify.listRightRadiobtn?.setOnClickListener {
