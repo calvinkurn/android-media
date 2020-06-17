@@ -38,6 +38,7 @@ class ItemSearchChatReplyViewHolder(itemView: View?) : AbstractViewHolder<ChatRe
 
     private fun bindUserName(element: ChatReplyUiModel) {
         username?.text = element.contact.attributes.name
+        username?.setWeight(Typography.REGULAR)
     }
 
     private fun bindLastMessage(element: ChatReplyUiModel) {
