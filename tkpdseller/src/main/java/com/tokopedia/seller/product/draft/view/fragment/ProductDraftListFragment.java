@@ -20,6 +20,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
@@ -266,14 +267,17 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
             draftBroadCastReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-                    if (intent.getAction().equals(UploadProductService.ACTION_DRAFT_CHANGED)) {
+                    if (intent.getAction().equals(UploadProductService.ACTION_DRAFT_CHANGED) || intent.getAction().equals(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)) {
                         resetPageAndSearch();
                     }
                 }
             };
         }
+        IntentFilter intentFilters = new IntentFilter();
+        intentFilters.addAction(UploadProductService.ACTION_DRAFT_CHANGED);
+        intentFilters.addAction(TkpdState.ProductService.BROADCAST_ADD_PRODUCT);
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(
-                draftBroadCastReceiver, new IntentFilter(UploadProductService.ACTION_DRAFT_CHANGED));
+                draftBroadCastReceiver, intentFilters);
     }
 
     private void unregisterDraftReceiver() {
