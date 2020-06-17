@@ -172,6 +172,7 @@ class LottieBottomNavbar : LinearLayout {
 
             // add image view to display menu icon
             val icon = LottieAnimationView(context)
+            icon.tag = context.getString(R.string.tag_lottie_animation_view)+bottomMenu.id
             icon.layoutParams = imgLayoutParam
             icon.setPadding(DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING)
             icon.setAnimation(bottomMenu.animName)
@@ -187,6 +188,7 @@ class LottieBottomNavbar : LinearLayout {
                         .inflate(R.layout.badge_layout, imageContainer, false)
                 badge.layoutParams = badgeLayoutParam
                 val badgeTextView = badge.findViewById<TextView>(R.id.notification_badge)
+                badgeTextView.tag = context.getString(R.string.tag_badge_textview)+bottomMenu.id.toString()
                 badgeTextView.visibility = View.INVISIBLE
                 imageContainer.addView(badge)
                 badge.bringToFront()
@@ -199,6 +201,7 @@ class LottieBottomNavbar : LinearLayout {
             val title = TextView(context)
             title.layoutParams = txtLayoutParam
             title.text = bottomMenu.title
+            title.tag = context.getString(R.string.tag_title_textview)+bottomMenu.id
             title.textSize = DEFAULT_TEXT_SIZE
             if (selectedItem != null && selectedItem == index) {
                 title.setTextColor(menu[selectedItem!!].activeButtonColor)
@@ -235,7 +238,10 @@ class LottieBottomNavbar : LinearLayout {
     }
 
     private fun changeColor(newPosition: Int) {
-        if (selectedItem == newPosition) return
+        if (selectedItem == newPosition) {
+            listener?.menuReselected(newPosition, menu[newPosition].id)
+            return
+        }
 
         selectedItem?.let {
             iconList[it].setColorFilter(buttonColor, PorterDuff.Mode.SRC_ATOP)
@@ -265,9 +271,6 @@ class LottieBottomNavbar : LinearLayout {
 
     fun setSelected(position: Int) {
         if (menu.size > position) {
-            if (menu[position].overrideFragmentClick != null && menu[position].overrideFragmentClick!!.invoke()) {
-                return
-            }
             handleItemClicked(position, menu[position])
         }
         selectedItem = position
@@ -294,9 +297,10 @@ class LottieBottomNavbar : LinearLayout {
     }
 }
 
-data class BottomMenu(val id: Long, val title: String, val animName: Int, val activeButtonColor: Int, val useBadge: Boolean = true, val overrideFragmentClick: (() -> Boolean)? = null)
+data class BottomMenu(val id: Long, val title: String, val animName: Int, val activeButtonColor: Int, val useBadge: Boolean = true)
 interface IBottomClickListener {
     fun menuClicked(position: Int, id: Long)
+    fun menuReselected(position: Int, id: Long)
 }
 
 fun Float.toDp(context: Context): Int {

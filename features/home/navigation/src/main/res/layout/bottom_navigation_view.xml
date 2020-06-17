@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.design.component.BottomNavigation
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/bottomnav"
+<com.tokopedia.navigation.presentation.customview.LottieBottomNavbar android:id="@+id/bottom_navbar"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:itemTextColor="@color/bottom_sheet_text_selector"
-    app:labelVisibilityMode="labeled"
-    app:theme="@style/NavigationMenuItemTextAppearance"
-    app:menu="@menu/menu_parent_main"/>
+    android:layout_height="100dp"
+    android:elevation="15dp"
+    android:orientation="vertical"
+    app:buttonColor="#525A67"
+    app:buttonContainerBackgroundColor="@android:color/white"
+    app:buttonsHeight="56dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:offscreenPageLimit="4"
+    app:setViewPagerSwipeable="false"
+    app:navbarElevation="15dp"
+    app:viewPagerBackground="@android:color/white"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" />
