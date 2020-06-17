@@ -13,10 +13,11 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.di.AddEditProductVariantComponent
 import com.tokopedia.product.addedit.variant.presentation.dialog.MultipleVariantEditSelectBottomSheet
+import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.product.addedit.variant.presentation.viewmodel.AddEditProductVariantDetailViewModel
 import javax.inject.Inject
 
-class AddEditProductVariantDetailFragment : BaseDaggerFragment() {
+class AddEditProductVariantDetailFragment : BaseDaggerFragment(), MultipleVariantEditSelectBottomSheet.MultipleVariantEditListener {
 
     companion object {
         fun createInstance(cacheManagerId: String): Fragment {
@@ -59,8 +60,14 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val multipleVariantEditSelectBottomSheet = MultipleVariantEditSelectBottomSheet()
-        multipleVariantEditSelectBottomSheet.show(fragmentManager!!, null)
+        val multipleVariantEditSelectBottomSheet = MultipleVariantEditSelectBottomSheet(this)
+        val variantInputModel = viewModel.productInputModel.value?.variantInputModel
+        multipleVariantEditSelectBottomSheet.setData(variantInputModel)
+        multipleVariantEditSelectBottomSheet.show(fragmentManager)
+    }
+
+    override fun onMultipleEditFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel) {
+        println("$multipleVariantEditInputModel")
     }
 
     fun onBackPressed() {
