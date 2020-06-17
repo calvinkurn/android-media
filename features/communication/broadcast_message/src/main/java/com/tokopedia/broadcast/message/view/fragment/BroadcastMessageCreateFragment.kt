@@ -4,9 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.*
 import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
@@ -14,12 +11,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.broadcast.message.R
 import com.tokopedia.broadcast.message.common.BroadcastMessageRouter
-import com.tokopedia.broadcast.message.common.constant.BroadcastMessageConstant
 import com.tokopedia.broadcast.message.common.di.component.BroadcastMessageComponent
 import com.tokopedia.broadcast.message.common.di.component.DaggerBroadcastMessageCreateComponent
 import com.tokopedia.broadcast.message.data.model.BlastMessageMutation
@@ -29,15 +28,10 @@ import com.tokopedia.broadcast.message.view.activity.BroadcastMessagePreviewActi
 import com.tokopedia.broadcast.message.view.adapter.BroadcastMessageProductItemAdapter
 import com.tokopedia.broadcast.message.view.listener.BroadcastMessageCreateView
 import com.tokopedia.broadcast.message.view.presenter.BroadcastMessageCreatePresenter
-import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
-import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.track.TrackApp
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_broadcast_message_create.*
 import javax.inject.Inject
 
@@ -106,14 +100,6 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
                             list_product_upload.addItemDecoration(itemDecoration)}
         list_product_upload.adapter = productAdapter
         list_product_upload.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        switch_upload_product.setOnCheckedChangeListener { _, isChecked ->
-            TrackApp.getInstance().gtm.sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
-                        BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
-                        BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_TOGGLE_ATTACH_PRODUCT, "")
-            isShowDialogWhenBack = true
-            list_product_upload.visibility = if (isChecked) View.VISIBLE else View.GONE
-            needEnabledSubmitButton()
-        }
         edit_text_message.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 isShowDialogWhenBack = true
@@ -124,20 +110,6 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
-
-        button_save.setOnClickListener {
-            if (switch_upload_product.isChecked && productIds.isEmpty()){
-                ToasterError.make(view, getString(R.string.empty_attached_product),
-                        BaseToaster.LENGTH_INDEFINITE).setAction(R.string.OK){
-                    TrackApp.getInstance().gtm.sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_CONFIRMATION,
-                                BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
-                                BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_ERROR_ATTACH_PRODUCT,
-                                BroadcastMessageConstant.VALUE_GTM_EVENT_LABEL_ERROR_OK)
-                }.show()
-            } else {
-                moveToPreview()
-            }
-        }
 
         val spannableBuilder = SpannableStringBuilder()
         spannableBuilder.append(getString(R.string.attach_my_product))
@@ -166,20 +138,6 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
     }
 
     private fun openImagePicker() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
-                    BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
-                    BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_CLICK_IMG_UPLOAD, "")
-        context?.let {
-            val builder = ImagePickerBuilder(getString(R.string.bm_choose_picture),
-                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_INSTAGRAM),
-                    GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
-                    ImagePickerEditorBuilder(
-                            intArrayOf(ImageEditActionTypeDef.ACTION_BRIGHTNESS, ImageEditActionTypeDef.ACTION_CONTRAST, ImageEditActionTypeDef.ACTION_CROP, ImageEditActionTypeDef.ACTION_ROTATE),
-                            false, null), null)
-            val intent = ImagePickerActivity.getIntent(it, builder)
-            startActivityForResult(intent, REQUEST_CODE_IMAGE)
-        }
 
     }
 
@@ -187,9 +145,6 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && data != null){
             if (requestCode == REQUEST_CODE_IMAGE) {
-                TrackApp.getInstance().gtm.sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
-                            BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
-                            BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_PICK_IMG, "")
 
                 val imageUrlOrPathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
                 if (imageUrlOrPathList != null && imageUrlOrPathList.size > 0) {
@@ -218,12 +173,6 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
                 needEnabledSubmitButton()
                 isShowDialogWhenBack = true
             } else if (requestCode == REQUEST_MOVE_PREVIEW){
-                val needRefresh = data.getBooleanExtra(BroadcastMessageConstant.PARAM_NEED_REFRESH, false)
-                val isNeedRefresh = Intent().putExtra(BroadcastMessageConstant.PARAM_NEED_REFRESH, needRefresh)
-                activity?.run {
-                    setResult(Activity.RESULT_OK, isNeedRefresh)
-                    finish()
-                }
             }
         }
     }

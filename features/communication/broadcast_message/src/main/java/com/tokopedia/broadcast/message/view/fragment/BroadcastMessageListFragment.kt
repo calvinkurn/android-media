@@ -5,34 +5,30 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.style.StyleSpan
 import android.view.*
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
+import com.tokopedia.broadcast.message.R
+import com.tokopedia.broadcast.message.common.data.model.TopChatBlastSellerMetaData
+import com.tokopedia.broadcast.message.common.di.component.BroadcastMessageComponent
+import com.tokopedia.broadcast.message.common.extensions.dateToShow
+import com.tokopedia.broadcast.message.common.extensions.toStringDayMonth
 import com.tokopedia.broadcast.message.data.model.TopChatBlastSeller
 import com.tokopedia.broadcast.message.view.adapter.BroadcastMessageTypeFactory
-import com.tokopedia.broadcast.message.R
-import com.tokopedia.broadcast.message.common.BroadcastMessageRouter
-import com.tokopedia.broadcast.message.common.constant.BroadcastMessageConstant
-import com.tokopedia.broadcast.message.common.di.component.BroadcastMessageComponent
-import com.tokopedia.broadcast.message.common.extensions.toStringDayMonth
-import com.tokopedia.broadcast.message.common.data.model.TopChatBlastSellerMetaData
-import com.tokopedia.broadcast.message.common.extensions.dateToShow
-import com.tokopedia.broadcast.message.view.activity.BroadcastMessageCreateActivity
 import com.tokopedia.broadcast.message.view.listener.BroadcastMessageListView
 import com.tokopedia.broadcast.message.view.presenter.BroadcastMessageListPresenter
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.track.TrackApp
 import kotlinx.android.synthetic.main.fragment_broadcast_message_list.*
 import javax.inject.Inject
 
@@ -122,22 +118,11 @@ class BroadcastMessageListFragment: BaseListFragment<TopChatBlastSeller, Broadca
     }
 
     private fun gotoCreateBroadcast() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
-                        BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
-                        BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_CREATE_CLICK,"")
-        context?.let {
-            startActivityForResult(BroadcastMessageCreateActivity.createIntent(it),
-                REQUEST_ADD_BROADCAST_MESSAGE) }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_ADD_BROADCAST_MESSAGE && data != null){
-            val needRefresh = data.getBooleanExtra(BroadcastMessageConstant.PARAM_NEED_REFRESH, false)
-            if (needRefresh){
-                presenter.getMetaData()
-                loadInitialData()
-            }
         }
     }
 
