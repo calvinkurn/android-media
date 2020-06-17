@@ -3,7 +3,6 @@ package com.tokopedia.product.addedit.variant.presentation.widget
 import android.content.Context
 import android.view.View
 import android.widget.LinearLayout
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -30,7 +29,7 @@ class VariantDetailValuesPicker(context: Context?) : LinearLayout(context) {
 
 
     interface OnVariantUnitPickerClickListener {
-        fun onVariantUnitPickerClicked(selectedVariantUnit: Unit, layoutPosition: Int)
+        fun onVariantUnitSelected(selectedVariantUnit: Unit, layoutPosition: Int)
     }
 
     interface OnAddCustomVariantUnitValueListener {
@@ -93,13 +92,14 @@ class VariantDetailValuesPicker(context: Context?) : LinearLayout(context) {
             textFieldUnifyVariantUnit.textFieldInput.isActivated = false
             textFieldUnifyVariantUnit.textFieldInput.setOnClickListener {
                 layoutPosition?.let {
-                    onVariantUnitPickerClickListener?.onVariantUnitPickerClicked(selectedVariantUnit, it)
+                    onVariantUnitPickerClickListener?.onVariantUnitSelected(selectedVariantUnit, it)
                 }
             }
         } else variantUnitLayout.hide()
     }
 
     private fun setupVariantUnitValuePicker(variantId: Int, unitName: String, variantUnitValues: List<UnitValue>) {
+
         val variantUnitData = ArrayList<ListItemUnify>()
 
         variantUnitValues.forEach {
@@ -115,6 +115,7 @@ class VariantDetailValuesPicker(context: Context?) : LinearLayout(context) {
         listUnifyVariantUnitValues.setData(variantUnitData)
         listUnifyVariantUnitValues.onLoadFinish {
 
+            // set selected values to check box
             selectedVariantUnitValues.forEach {
                 val unitValueName = it.value
                 val selectedListItemUnify = variantUnitData.find { listItemUnify ->
@@ -123,6 +124,7 @@ class VariantDetailValuesPicker(context: Context?) : LinearLayout(context) {
                 selectedListItemUnify?.listRightCheckbox?.isChecked = true
             }
 
+            // on item click listener
             listUnifyVariantUnitValues.setOnItemClickListener { _, _, position, _ ->
                 if (position != variantUnitData.lastIndex) {
                     val selectedItem = variantUnitData[position]
@@ -137,6 +139,7 @@ class VariantDetailValuesPicker(context: Context?) : LinearLayout(context) {
                 }
             }
 
+            //
             variantUnitData.forEachIndexed { index, listItemUnify ->
                 if (index != variantUnitData.lastIndex) {
                     listItemUnify.listRightCheckbox?.setOnCheckedChangeListener { _, isChecked ->

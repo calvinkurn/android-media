@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.variant.presentation.model.VariantPhoto
-import com.tokopedia.product.addedit.variant.presentation.viewholder.VariantPhotoViewHolder
+import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantPhotoViewHolder
 
 class VariantPhotoAdapter(private val onItemClickedListener: OnItemClickListener) :
         RecyclerView.Adapter<VariantPhotoViewHolder>(), VariantPhotoViewHolder.OnItemClickListener {
@@ -38,6 +38,11 @@ class VariantPhotoAdapter(private val onItemClickedListener: OnItemClickListener
     fun addData(item: VariantPhoto) {
         this.items.add(item)
         notifyDataSetChanged()
+    }
+
+    fun removeData(position: Int) {
+        this.items.removeAt(position)
+        notifyItemRemoved(position)
     }
 
     fun updateImageData(imageUrlOrPath: String, position: Int) {

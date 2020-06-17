@@ -46,6 +46,8 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.product.addedit.variant.presentation.dialog.AddEditProductVariantSizechartDialogFragment
+import com.tokopedia.product.addedit.variant.presentation.model.OptionInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantPhoto
 import com.tokopedia.product.addedit.variant.presentation.viewmodel.AddEditProductVariantViewModel
 import com.tokopedia.product.addedit.variant.presentation.widget.CustomVariantUnitValueForm
@@ -92,7 +94,7 @@ class AddEditProductVariantFragment :
     private var variantTypeAdapter: VariantTypeAdapter? = null
     private var variantValueAdapterLevel1: VariantValueAdapter? = null
     private var variantValueAdapterLevel2: VariantValueAdapter? = null
-    private var variantPhotoAdapterAdapter: VariantPhotoAdapter? = null
+    private var variantPhotoAdapter: VariantPhotoAdapter? = null
 
     private var variantValuePicker: BottomSheetUnify? = null
     private var variantUnitPicker: BottomSheetUnify? = null
@@ -129,12 +131,12 @@ class AddEditProductVariantFragment :
         variantTypeAdapter = VariantTypeAdapter(this)
         variantValueAdapterLevel1 = VariantValueAdapter(this, VARIANT_VALUE_LEVEL_ONE_POSITION)
         variantValueAdapterLevel2 = VariantValueAdapter(this, VARIANT_VALUE_LEVEL_TWO_POSITION)
-        variantPhotoAdapterAdapter = VariantPhotoAdapter(this)
+        variantPhotoAdapter = VariantPhotoAdapter(this)
 
         recyclerViewVariantType.adapter = variantTypeAdapter
         recyclerViewVariantValueLevel1.adapter = variantValueAdapterLevel1
         recyclerViewVariantValueLevel2.adapter = variantValueAdapterLevel2
-        recyclerViewVariantPhoto.adapter = variantPhotoAdapterAdapter
+        recyclerViewVariantPhoto.adapter = variantPhotoAdapter
         setRecyclerViewToFlex(recyclerViewVariantType)
         setRecyclerViewToFlex(recyclerViewVariantValueLevel1)
         setRecyclerViewToFlex(recyclerViewVariantValueLevel2)
@@ -160,14 +162,13 @@ class AddEditProductVariantFragment :
             if (variantDetail.units.isEmpty()) showVariantCustomInputForm(VARIANT_VALUE_LEVEL_ONE_POSITION, variantDetail.variantID, variantDetail.name)
             showVariantValuePicker(variantDetail, VARIANT_VALUE_LEVEL_TWO_POSITION, null)
         }
-      
+
         buttonSave.setOnClickListener {
             startAddEditProductVariantDetailActivity()
         }
     }
 
     override fun onVariantTypeSelected(adapterPosition: Int, variantDetail: VariantDetail) {
-
 
         if (viewModel.isVariantUnitValuesLayoutEmpty()) {
 
@@ -220,7 +221,8 @@ class AddEditProductVariantFragment :
         }
     }
 
-    override fun onVariantTypeDeselected(adapterPosition: Int) {
+    override fun onVariantTypeDeselected(adapterPosition: Int, variantDetail: VariantDetail) {
+        val variantId = variantDetail.variantID
         viewModel.isSingleVariantTypeIsSelected = true
         val layoutPosition = viewModel.getVariantValuesLayoutPosition(adapterPosition)
         resetVariantValueSection(layoutPosition)
@@ -233,6 +235,10 @@ class AddEditProductVariantFragment :
             VARIANT_VALUE_LEVEL_TWO_POSITION -> {
                 viewModel.updateSelectedVariantUnitValuesLevel2(mutableListOf())
             }
+        }
+
+        if (variantId == COLOUR_VARIANT_TYPE_ID) {
+            variantPhotoLayout.hide()
         }
     }
 
@@ -276,7 +282,7 @@ class AddEditProductVariantFragment :
             selectedVariantUnitValues.forEach {
                 variantPhotoList.add(VariantPhoto(it.value, ""))
             }
-            variantPhotoAdapterAdapter?.setData(variantPhotoList)
+            variantPhotoAdapter?.setData(variantPhotoList)
         }
     }
 
@@ -294,7 +300,7 @@ class AddEditProductVariantFragment :
         }
     }
 
-    override fun onVariantUnitPickerClicked(selectedVariantUnit: Unit, layoutPosition: Int) {
+    override fun onVariantUnitSelected(selectedVariantUnit: Unit, layoutPosition: Int) {
         variantValuePicker?.dismiss()
         when (layoutPosition) {
             VARIANT_VALUE_LEVEL_ONE_POSITION -> {
@@ -311,6 +317,7 @@ class AddEditProductVariantFragment :
     //
     override fun onAddButtonClicked(layoutPosition: Int, variantId: Int, unitName: String) {
         variantValuePicker?.dismiss()
+        viewModel.isSingleVariantTypeIsSelected
         showVariantCustomInputForm(layoutPosition, variantId, unitName)
     }
 
@@ -331,12 +338,29 @@ class AddEditProductVariantFragment :
         if (variantId == COLOUR_VARIANT_TYPE_ID) {
             variantPhotoLayout.show()
             val variantPhoto = VariantPhoto(customVariantUnitValue.value, "")
-            variantPhotoAdapterAdapter?.addData(variantPhoto)
+            variantPhotoAdapter?.addData(variantPhoto)
         }
     }
 
     override fun onRemoveButtonClicked(position: Int, layoutPosition: Int) {
         viewModel.removeSelectedVariantUnitValue(layoutPosition, position)
+
+        var variantId = 0
+
+        when (layoutPosition) {
+            VARIANT_VALUE_LEVEL_ONE_POSITION -> {
+                val variantDetail: VariantDetail = linkAddVariantValueLevel1.getTag(R.id.variant_detail) as VariantDetail
+                variantId = variantDetail.variantID
+            }
+            VARIANT_VALUE_LEVEL_TWO_POSITION -> {
+                val variantDetail: VariantDetail = linkAddVariantValueLevel2.getTag(R.id.variant_detail) as VariantDetail
+                variantId = variantDetail.variantID
+            }
+        }
+
+        if (variantId == COLOUR_VARIANT_TYPE_ID) {
+            variantPhotoAdapter?.removeData(position)
+        }
     }
 
     override fun onItemClicked(position: Int) {
@@ -368,9 +392,11 @@ class AddEditProductVariantFragment :
                 }
                 REQUEST_CODE_VARIANT_PHOTO_IMAGE -> {
                     val imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS)
-                    val imageUrlOrPath = imageUrlOrPathList.first()
-                    val position = viewModel.clickedVariantPhotoItemPosition ?: 0
-                    variantPhotoAdapterAdapter?.updateImageData(imageUrlOrPath, position)
+                    if (imageUrlOrPathList.isNotEmpty()) {
+                        val imageUrlOrPath = imageUrlOrPathList.first()
+                        val position = viewModel.clickedVariantPhotoItemPosition ?: 0
+                        variantPhotoAdapter?.updateImageData(imageUrlOrPath, position)
+                    }
                 }
             }
         }
@@ -383,7 +409,8 @@ class AddEditProductVariantFragment :
         variantDetail.let {
             variantValuePicker = BottomSheetUnify()
             variantValuePicker?.setTitle("Pilih " + variantDetail.name)
-            variantValuePicker?.showCloseIcon = true
+            variantValuePicker?.showCloseIcon = false
+            variantValuePicker?.showKnob = true
             val variantValuePickerLayout = VariantDetailValuesPicker(context)
             variantValuePickerLayout.setLayoutPosition(layoutPosition)
 

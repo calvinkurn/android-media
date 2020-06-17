@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.variant.data.model.UnitValue
-import com.tokopedia.product.addedit.variant.presentation.viewholder.VariantValueViewHolder
+import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantValueViewHolder
 
 class VariantValueAdapter(private val removeButtonClickListener: OnRemoveButtonClickListener, private val layoutPosition: Int) :
         RecyclerView.Adapter<VariantValueViewHolder>(),

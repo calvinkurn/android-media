@@ -24,6 +24,7 @@ data class ProductVariantInputModel(
 @Parcelize
 data class SelectionInputModel(
         var variantId: String = "",
+        var variantName: String = "",
         var unitID: String = "",
         var options: List<OptionInputModel> = listOf()
 ) : Parcelable

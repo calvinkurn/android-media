@@ -5,14 +5,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.variant.data.model.VariantDetail
-import com.tokopedia.product.addedit.variant.presentation.viewholder.VariantTypeViewHolder
+import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantTypeViewHolder
 
 class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
     : RecyclerView.Adapter<VariantTypeViewHolder>(), VariantTypeViewHolder.OnVariantTypeViewHolderClickListener {
 
     interface OnVariantTypeClickListener {
         fun onVariantTypeSelected(adapterPosition: Int, variantDetail: VariantDetail)
-        fun onVariantTypeDeselected(adapterPosition: Int)
+        fun onVariantTypeDeselected(adapterPosition: Int, variantDetail: VariantDetail)
     }
 
     private var items: List<VariantDetail> = listOf()
@@ -46,8 +46,9 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
                 clickListener.onVariantTypeSelected(position, items[position])
             }
             // handle variant type deselection
-            VariantTypeViewHolder.ViewHolderState.NORMAL -> clickListener.onVariantTypeDeselected(position)
-            else -> { }
+            VariantTypeViewHolder.ViewHolderState.NORMAL -> clickListener.onVariantTypeDeselected(position, items[position])
+            else -> {
+            }
         }
     }
 

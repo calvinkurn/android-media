@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.data.model.GetCategoryVariantCombinationResponse
+import com.tokopedia.product.addedit.variant.data.model.Unit
 import com.tokopedia.product.addedit.variant.data.model.UnitValue
-import com.tokopedia.product.addedit.variant.data.model.VariantDetail
 import com.tokopedia.product.addedit.variant.domain.GetCategoryVariantCombinationUseCase
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.usecase.coroutines.Fail
@@ -32,15 +32,13 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     private var variantValuesLayoutMap: TreeMap<Int, Int> = TreeMap()
 
+    private var selectedVariantUnit: HashMap<Int, MutableList<Unit>> = HashMap()
+
     private var selectedVariantUnitValuesMap: HashMap<Int, MutableList<UnitValue>> = HashMap()
 
-    private var selectedVariantDetailValues: HashMap<Int, VariantDetail> = HashMap()
-
     private val mSelectedVariantUnitValuesLevel1 = MutableLiveData<List<UnitValue>>()
-    val selectedVariantUnitValuesLevel1: LiveData<List<UnitValue>> get() = mSelectedVariantUnitValuesLevel1
 
     private val mSelectedVariantUnitValuesLevel2 = MutableLiveData<List<UnitValue>>()
-    val selectedVariantUnitValues2: LiveData<List<UnitValue>> get() = mSelectedVariantUnitValuesLevel2
 
     private val mGetCategoryVariantCombinationResult = MutableLiveData<Result<GetCategoryVariantCombinationResponse>>()
     val getCategoryVariantCombinationResult: LiveData<Result<GetCategoryVariantCombinationResponse>>
@@ -112,6 +110,10 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     fun updateSelectedVariantUnitValuesMap(layoutPosition: Int, selectedVariantUnitValues: MutableList<UnitValue>) {
         selectedVariantUnitValuesMap[layoutPosition] = selectedVariantUnitValues
+    }
+
+    fun updateSelectedVariantUnit() {
+
     }
 
     fun updateSelectedVariantUnitValuesLevel1(selectedVariantUnitValues: List<UnitValue>) {

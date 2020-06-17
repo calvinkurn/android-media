@@ -1,4 +1,4 @@
-package com.tokopedia.product.addedit.variant.presentation.viewholder
+package com.tokopedia.product.addedit.variant.presentation.adapter.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView

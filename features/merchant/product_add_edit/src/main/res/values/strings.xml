@@ -221,4 +221,15 @@
     <string name="action_clear_sizechart">Hapus</string>
     <string name="action_replace_sizechart">Ubah Foto</string>
     <string name="action_edit_sizechart">Edit Foto</string>
+    <string name="label_manage_at_once">Atur Sekaligus</string>
+    <string name="label_manage_at_once_desc">Atur harga, stok, dan SKU sekaligus.</string>
+    <string name="label_add_sku">Tambah SKU</string>
+    <string name="label_optional">(Opsional)</string>
+    <string name="label_variant_list">Daftar Varian</string>
+    <string name="action_pick_main_variant">Pilih Varian Utama</string>
+    <string name="label_variant_price">Harga</string>
+    <string name="label_variant_stock">Stok</string>
+    <string name="label_variant_sku">SKU</string>
+    <string name="label_variant_sku_long">SKU (Stock Keeping Unit)</string>
+    <string name="label_rupiah">Rp</string>
 </resources>
