@@ -253,7 +253,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                                 }
                                 "crackUnlimited" -> {
                                     it.data.gamiTapEggHome?.let { gamiTapEggHome ->
-                                        setupcrackUnlimitedUi(gamiTapEggHome)
+                                        setupCrackUnlimitedUi(gamiTapEggHome)
                                     }
                                 }
                                 else -> {
@@ -323,7 +323,45 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         })
     }
 
-    private fun setupcrackUnlimitedUi(gamiTapEggHome: GamiTapEggHome) {}
+    private fun setupCrackUnlimitedUi(gamiTapEggHome: GamiTapEggHome) {
+        val timeLeftSeconds = gamiTapEggHome.timeRemaining?.seconds
+        val showTimer = gamiTapEggHome.timeRemaining?.isShow
+
+
+        val tokenAsset = gamiTapEggHome.tokenAsset
+        var imageFrontUrl = ""
+        val bgImageUrl = tokenAsset?.backgroundImgURL
+        val imageUrlList = tokenAsset?.imageV2URLs
+
+        if (imageUrlList != null && imageUrlList.isNotEmpty()) {
+            imageFrontUrl = imageUrlList[0]
+        }
+        if (!bgImageUrl.isNullOrEmpty() && imageFrontUrl.isNotEmpty()) {
+            getTapTapView().loadFilesForTapTap(
+                    null,
+                    null,
+                    imageFrontUrl,
+                    bgImageUrl,
+                    imageCallback = { _ ->
+                        setPositionOfViewsAtBoxOpen()
+                        hideLoader()
+                        fadeInActiveStateViews()
+                    }
+            )
+        }
+
+
+        if (showTimer != null && timeLeftSeconds != null) {
+            (giftBoxDailyView as GiftBoxTapTapView).apply {
+                imageBoxGlow.alpha = 0f
+                imageBoxWhite.alpha = 0f
+                fmGiftBox.alpha = 1f
+                isGiftTapAble = true
+            }
+            animateTvTimerAndProgressBar()
+            startOneMinuteCounter(timeLeftSeconds)
+        }
+    }
 
     private fun setupLobbyUi(gamiTapEggHome: GamiTapEggHome) {
         //timer
@@ -351,13 +389,13 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             if (showTimer != null && showTimer && timeLeftHours != null && timeLeftSeconds != null) {
                 renderBottomHourTimer(timeLeftSeconds)
 
-                getTapTapView().loadFilesForTapTap(tokenUserState!!,
+                getTapTapView().loadFilesForTapTap(
                         glowImageUrl,
                         glowShadowImageUrl,
                         imageFrontUrl,
                         bgImageUrl,
                         imageCallback = { _ ->
-                            setPositionOfViewsAtBoxOpen(tokenUserState)
+                            setPositionOfViewsAtBoxOpen()
                             hideLoader()
                             fadeInActiveStateViews()
                             getTapTapView().startInitialAnimation()?.start()
@@ -372,7 +410,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         loader.visibility = View.GONE
     }
 
-    fun setPositionOfViewsAtBoxOpen(@TokenUserState state: String) {
+    fun setPositionOfViewsAtBoxOpen() {
 
         giftBoxDailyView.fmGiftBox.doOnLayout { fmGiftBox ->
             val heightOfRvCoupons = fmGiftBox.context.resources.getDimension(com.tokopedia.gamification.R.dimen.gami_rv_coupons_height)
@@ -487,9 +525,8 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 //
 //    }
 
-    fun startOneMinuteCounter() {
-        //todo this time should come from backend
-        val time = 7 * 1000L
+    fun startOneMinuteCounter(seconds: Long) {
+        val time = seconds * 1000L
         minuteCountDownTimer = object : CountDownTimer(time, 1000) {
             override fun onFinish() {
                 timeUpAnimation()
@@ -497,7 +534,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             }
 
             override fun onTick(millisUntilFinished: Long) {
-                var seconds = millisUntilFinished / 1000
+                val seconds = millisUntilFinished / 1000
                 tvProgressCount.text = "$seconds"
                 progressBarTimer.progress = 100 - (seconds / 60f * 100).toInt()
             }
@@ -517,7 +554,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 })
                 anim1.start()
                 animateTvTimerAndProgressBar()
-                startOneMinuteCounter()
+                startOneMinuteCounter(60)
             }
 
             override fun onTick(millisUntilFinished: Long) {
@@ -558,9 +595,6 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         animatorSet.playTogether(tapHintAnim, giftBoxAnim)
         animatorSet.duration = FADE_IN_DURATION
 
-//        animatorSet.addListener(onEnd = {
-//            //            giftBoxDailyView.startInitialAnimation()
-//        })
         animatorSet.start()
     }
 

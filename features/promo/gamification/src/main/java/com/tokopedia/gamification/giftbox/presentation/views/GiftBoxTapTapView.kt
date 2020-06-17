@@ -202,8 +202,7 @@ class GiftBoxTapTapView : GiftBoxDailyView {
         return animatorSet
     }
 
-    fun loadFilesForTapTap(@TokenUserState state: String,
-                           glowImageUrl: String?,
+    fun loadFilesForTapTap(glowImageUrl: String?,
                            glowImageShadowUrl: String?,
                            imageFrontUrl: String,
                            bgUrl: String,
