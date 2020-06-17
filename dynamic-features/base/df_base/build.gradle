@@ -117,4 +117,6 @@ dependencies {
     implementation project(rootProject.ext.features.orderhistory)
     //Logistic
     implementation project(rootProject.ext.features.logisticorder)
+    //Transaction
+    implementation project(rootProject.ext.features.checkout)
 }
