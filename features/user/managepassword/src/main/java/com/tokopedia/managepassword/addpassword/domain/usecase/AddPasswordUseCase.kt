@@ -1,19 +1,33 @@
 package com.tokopedia.managepassword.addpassword.domain.usecase
 
-import com.tokopedia.managepassword.addpassword.domain.data.AddPasswordDataModel
-import com.tokopedia.managepassword.common.network.ManagePasswordApi
-import com.tokopedia.managepassword.common.network.ManagePasswordApiClient
-import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.coroutines.UseCase
-import javax.inject.Inject
+import android.content.Context
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.managepassword.R
+import com.tokopedia.managepassword.addpassword.domain.data.AddPasswordResponseModel
+import com.tokopedia.managepassword.di.ManagePasswordContext
 
-class AddPasswordUseCase @Inject constructor(
-        private val managePasswordApiClient: ManagePasswordApiClient<ManagePasswordApi>
-) : UseCase<AddPasswordDataModel>() {
+class AddPasswordUseCase constructor(
+        @ManagePasswordContext private val context: Context,
+        private val graphqlUseCase: GraphqlUseCase<AddPasswordResponseModel>
+) {
+    lateinit var params: Map<String, Any>
 
-    lateinit var params: RequestParams
+    fun submit(onSuccess: (AddPasswordResponseModel) -> Unit, onError: (Throwable) -> Unit) {
+        val rawQuery = GraphqlHelper.loadRawString(context.resources, R.raw.query_add_password)
+        graphqlUseCase.apply {
+            setTypeClass(AddPasswordResponseModel::class.java)
+            setGraphqlQuery(rawQuery)
+            setRequestParams(params)
+            execute(onSuccess = {
+                onSuccess(it)
+            }, onError = {
+                onError(it)
+            })
+        }
+    }
 
-    override suspend fun executeOnBackground(): AddPasswordDataModel {
-        return managePasswordApiClient.call().createPassword(params.parameters)
+    fun cancelJobs() {
+        graphqlUseCase.cancelJobs()
     }
 }

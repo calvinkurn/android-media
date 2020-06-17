@@ -3,8 +3,6 @@ package com.tokopedia.managepassword.addpassword.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,9 +12,12 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.managepassword.R
 import com.tokopedia.managepassword.addpassword.analytics.AddPasswordAnalytics
 import com.tokopedia.managepassword.addpassword.view.viewmodel.AddPasswordViewModel
+import com.tokopedia.managepassword.common.util.setAfterTextChanged
 import com.tokopedia.managepassword.di.ManagePasswordComponent
+import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -62,39 +63,66 @@ class AddPasswordFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(com.tokopedia.managepassword.R.layout.fragment_add_password, container, false)
+        return inflater.inflate(R.layout.fragment_add_password, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        txtPassword?.textFieldInput?.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: Editable) {
-                viewModel.validatePassword(s)
-            }
-        })
+        txtPassword?.textFieldInput?.setAfterTextChanged {
+            viewModel.validatePassword(it)
+        }
+
+        txtPasswordConfirmation?.textFieldInput?.setAfterTextChanged {
+            viewModel.validatePasswordConfirmation(it)
+        }
 
         btnSubmit?.setOnClickListener {
             val password = txtPassword?.textFieldInput?.text?.toString() ?: ""
-            if (txtPassword?.isTextFieldError != true && password.isNotEmpty()) {
+            val passwordConfirmation = txtPasswordConfirmation?.textFieldInput?.text?.toString()
+                    ?: ""
+
+            if (txtPassword?.textFieldInput?.text.toString() != txtPasswordConfirmation?.textFieldInput?.text.toString()) {
+                txtPasswordConfirmation?.let {
+                    setPasswordFieldError(it, resources.getString(R.string.add_password_confirmation_not_match))
+                }
+            } else if (txtPassword?.isTextFieldError == false && txtPasswordConfirmation?.isTextFieldError == false && password.isNotEmpty()) {
                 showLoading()
                 btnSubmit?.isEnabled = false
                 tracker.onClickSubmit()
-                viewModel.createPassword(password)
+                viewModel.createPassword(password, passwordConfirmation)
             }
         }
     }
 
     private fun initObserver() {
-        viewModel.validate.observe(this, Observer {
+        viewModel.validatePassword.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    clearErrorMessage()
+                    txtPassword?.let { txtField ->
+                        clearErrorMessage(txtField)
+                    }
                 }
                 is Fail -> {
-                    setTextFieldError(it.throwable.message.toString())
+                    txtPassword?.let { txtField ->
+                        setPasswordFieldError(txtField, it.throwable.message.toString())
+                    }
+                }
+            }
+        })
+
+        viewModel.validatePasswordConfirmation.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    txtPasswordConfirmation?.let { txtField ->
+                        clearErrorMessage(txtField)
+                        btnSubmit?.isEnabled = true
+                    }
+                }
+                is Fail -> {
+                    txtPasswordConfirmation?.let { txtField ->
+                        setPasswordFieldError(txtField, it.throwable.message.toString())
+                    }
                 }
             }
         })
@@ -124,15 +152,14 @@ class AddPasswordFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun clearErrorMessage() {
-        txtPassword?.setError(false)
-        txtPassword?.setMessage("")
-        btnSubmit?.isEnabled = true
+    private fun clearErrorMessage(textFieldUnify: TextFieldUnify) {
+        textFieldUnify.setError(false)
+        textFieldUnify.setMessage("")
     }
 
-    private fun setTextFieldError(message: String) {
-        txtPassword?.setError(true)
-        txtPassword?.setMessage(message)
+    private fun setPasswordFieldError(textFieldUnify: TextFieldUnify, message: String) {
+        textFieldUnify.setError(true)
+        textFieldUnify.setMessage(message)
         btnSubmit?.isEnabled = false
     }
 
