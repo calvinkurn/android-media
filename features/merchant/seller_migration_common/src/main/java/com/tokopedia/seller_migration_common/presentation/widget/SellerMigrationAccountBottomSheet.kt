@@ -20,11 +20,12 @@ import com.tokopedia.seller_migration_common.presentation.util.touchlistener.Sel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.toPx
-import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.partial_seller_migration_warning.*
 import kotlinx.android.synthetic.main.widget_seller_migration_account_bottom_sheet.*
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.unifyprinciples.Typography
 
 class SellerMigrationAccountBottomSheet : BottomSheetUnify() {
+
     companion object {
         fun createNewInstance(context: Context) : SellerMigrationAccountBottomSheet {
             return SellerMigrationAccountBottomSheet().apply{
@@ -54,8 +55,9 @@ class SellerMigrationAccountBottomSheet : BottomSheetUnify() {
     private fun setupWarningCard() {
         val remoteConfigDate = getSellerMigrationDate(context)
         if(remoteConfigDate.isNotBlank()) {
-            sellerMigrationAccountWarning.show()
-            sellerMigrationWarningDate.text = remoteConfigDate
+            val sellerMigrationWarningDate: Typography? = view?.findViewById(R.id.sellerMigrationWarningDate)
+            sellerMigrationAccountWarning?.show()
+            sellerMigrationWarningDate?.text = remoteConfigDate
         }
     }
 

@@ -24,7 +24,6 @@ class BrandlistSearchResultAdapter(
 
     private var recyclerView: RecyclerView? = null
     private var onStickySingleHeaderViewListener: OnStickySingleHeaderListener? = null
-    private var isStickyChipsShowed = false
 
     fun getVisitables(): MutableList<Visitable<*>> {
         return visitables
@@ -52,13 +51,13 @@ class BrandlistSearchResultAdapter(
         notifyDataSetChanged()
     }
 
-    fun updateHeaderChipsBrandSearch(listener: BrandlistHeaderBrandInterface, totalBrands: Int, selectedChip: Int, recyclerViewLastState: Parcelable?) {
+    fun updateHeaderChipsBrandSearch(listener: BrandlistHeaderBrandInterface, totalBrands: Int, selectedChip: Int, lastTimeChipIsClicked: Long, recyclerViewLastState: Parcelable?) {
         val filteredList = getVisitables().filterIsInstance<BrandlistSearchResultViewModel>()
         if (filteredList.size == 0) {
-            visitables.add(ALL_BRAND_GROUP_HEADER_POSITION, BrandlistSearchAllBrandGroupHeaderViewModel(listener, totalBrands, selectedChip, recyclerViewLastState))
+            visitables.add(ALL_BRAND_GROUP_HEADER_POSITION, BrandlistSearchAllBrandGroupHeaderViewModel(listener, totalBrands, selectedChip, lastTimeChipIsClicked, recyclerViewLastState))
             notifyItemChanged(ALL_BRAND_GROUP_HEADER_POSITION)
         } else if (filteredList.size > 0) {
-            visitables.set(ALL_BRAND_GROUP_HEADER_POSITION, BrandlistSearchAllBrandGroupHeaderViewModel(listener, totalBrands, selectedChip, recyclerViewLastState))
+            visitables.set(ALL_BRAND_GROUP_HEADER_POSITION, BrandlistSearchAllBrandGroupHeaderViewModel(listener, totalBrands, selectedChip, lastTimeChipIsClicked, recyclerViewLastState))
             notifyItemChanged(ALL_BRAND_GROUP_HEADER_POSITION)
         }
     }
@@ -74,8 +73,6 @@ class BrandlistSearchResultAdapter(
         if (!isLoadMore && totalBrands == 0) {
             getVisitables().removeAll(getVisitables().filterIsInstance<BrandlistSearchResultViewModel>())
             notifyItemRangeRemoved(_startIndex, _totalUnusedData)
-//            getVisitables().subList(_startIndex, _totalUnusedData).clear()
-//            notifyItemRangeRemoved(_startIndex, _totalUnusedData)
             getVisitables().add(_startIndex, BrandlistSearchRecommendationNotFoundViewModel())
             notifyItemChanged(_startIndex)
         }
@@ -90,14 +87,10 @@ class BrandlistSearchResultAdapter(
         val _startIndex = 1
 
         val _totalUnusedViewModel = getVisitables().filterIsInstance<BrandlistSearchRecommendationNotFoundViewModel>().size
-//        val _totalUnusedData = getVisitables().filterIsInstance<BrandlistSearchResultViewModel>().size // getVisitables().size - 1
         if (_totalUnusedViewModel != 0) {
             getVisitables().let {
                 getVisitables().removeAll(getVisitables().filterIsInstance<BrandlistSearchRecommendationNotFoundViewModel>())
                 notifyItemRangeRemoved(_startIndex, _totalUnusedViewModel)
-//                val _itemPosition = it.indexOf(BrandlistSearchRecommendationNotFoundViewModel())
-//                it.remove(BrandlistSearchRecommendationNotFoundViewModel())
-//                notifyItemRemoved(_itemPosition)
             }
         }
 
@@ -193,9 +186,5 @@ class BrandlistSearchResultAdapter(
         Handler().post {
             notifyItemChanged(ALL_BRAND_GROUP_HEADER_POSITION)
         }
-    }
-
-    override fun updateStickyStatus(isStickyShowed: Boolean) {
-        isStickyChipsShowed = isStickyShowed
     }
 }

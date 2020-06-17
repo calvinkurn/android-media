@@ -51,6 +51,7 @@ import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomDoneAppLin
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomNewOrderAppLink
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomReadyToShipAppLink
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomShippedAppLink
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory.getDiscoveryDeeplink
 
 /**
  * Function to map the deeplink to applink (registered in manifest)
@@ -85,7 +86,7 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.SALAM_UMRAH_SHOP, true) -> getRegisteredNavigationSalamUmrahShop(deeplink, context)
                     deeplink.startsWith(ApplinkConst.TOP_CHAT, true) && isChatBotTrue(deeplink) ->
                         getChatbotDeeplink(deeplink)
-                    deeplink.startsWith(ApplinkConst.TOP_CHAT, true) -> AppLinkMapperSellerHome.getTopChatAppLink(deeplink)
+                    deeplink.startsWith(ApplinkConst.TOP_CHAT, true) && AppLinkMapperSellerHome.shouldRedirectToSellerApp(deeplink) -> AppLinkMapperSellerHome.getTopChatAppLink(deeplink)
                     deeplink.startsWith(ApplinkConst.HOTEL, true) -> deeplink
                     deeplink.startsWith(ApplinkConst.DIGITAL, true) ->
                         getRegisteredNavigationDigital(context, deeplink)
@@ -172,6 +173,9 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.ORDER_HISTORY, true) -> getRegisteredNavigationOrderHistory(uri)
                     deeplink.startsWith(ApplinkConst.RESET_PASSWORD, true) -> ApplinkConstInternalGlobal.FORGOT_PASSWORD
                     deeplink.startsWith(ApplinkConst.PRODUCT_ADD, true) -> getRegisteredNavigationMarketplace(deeplink)
+                    deeplink.startsWith(ApplinkConst.DISCOVERY, true) ->
+                        getDiscoveryDeeplink(deeplink)
+
                     else -> {
                         if (specialNavigationMapper(deeplink, ApplinkConst.HOST_CATEGORY_P)) {
                             getRegisteredCategoryNavigation(deeplink)
@@ -191,7 +195,7 @@ object DeeplinkMapper {
             deeplink.startsWith(ApplinkConst.SellerApp.SELLER_APP_HOME) -> AppLinkMapperSellerHome.getSellerHomeAppLink(deeplink)
             deeplink.startsWith(DeeplinkConstant.SCHEME_SELLERAPP, true) -> getRegisteredNavigationFromSellerapp(context,deeplink)
             deeplink.startsWith(ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST) -> DeepLinkMapperProductManage.getProductListInternalAppLink(deeplink)
-            deeplink.startsWith(ApplinkConstInternalGlobal.TOPCHAT) -> AppLinkMapperSellerHome.getTopChatAppLink(deeplink)
+            deeplink.startsWith(ApplinkConstInternalGlobal.TOPCHAT) && AppLinkMapperSellerHome.shouldRedirectToSellerApp(deeplink) -> AppLinkMapperSellerHome.getTopChatAppLink(deeplink)
             deeplink.startsWith(ApplinkConstInternalOrder.NEW_ORDER) -> getSomNewOrderAppLink(deeplink)
             deeplink.startsWith(ApplinkConstInternalOrder.READY_TO_SHIP) -> getSomReadyToShipAppLink(deeplink)
             deeplink.startsWith(ApplinkConstInternalOrder.SHIPPED) -> getSomShippedAppLink(deeplink)

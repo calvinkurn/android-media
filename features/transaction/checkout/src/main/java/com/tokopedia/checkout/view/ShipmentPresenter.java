@@ -1705,7 +1705,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     dataChangeAddressRequest.setQuantity(cartItemModel.getQuantity());
                     dataChangeAddressRequest.setProductId(cartItemModel.getProductId());
                     dataChangeAddressRequest.setNotes(cartItemModel.getNoteToSeller());
-                    dataChangeAddressRequest.setCartId(cartItemModel.getCartId());
+                    dataChangeAddressRequest.setCartIdStr(String.valueOf(cartItemModel.getCartId()));
                     if (isTradeInDropOff) {
                         dataChangeAddressRequest.setAddressId(newRecipientAddressModel != null ?
                                 newRecipientAddressModel.getLocationDataModel().getAddrId() : 0

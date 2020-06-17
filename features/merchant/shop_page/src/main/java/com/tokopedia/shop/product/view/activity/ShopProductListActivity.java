@@ -159,10 +159,7 @@ public class ShopProductListActivity extends BaseSimpleActivity
             if (null != shopPageTracking)
                 shopPageTracking.clickSearchBox(SCREEN_SHOP_PAGE);
             if (null != shopInfo) {
-                String cacheManagerId = saveShopInfoModelToCacheManager(shopInfo);
-                if (null != cacheManagerId) {
-                    redirectToShopSearchProduct(cacheManagerId);
-                }
+                redirectToShopSearchProduct();
             }
         });
         textViewCancel.setOnClickListener(view -> {
@@ -170,20 +167,17 @@ public class ShopProductListActivity extends BaseSimpleActivity
         });
     }
 
-    private void redirectToShopSearchProduct(String cacheManagerId) {
+    private void redirectToShopSearchProduct() {
         startActivity(ShopSearchProductActivity.createIntent(
                 this,
+                shopId,
+                shopInfo.getShopCore().getName(),
+                shopInfo.getGoldOS().isOfficial() == 1,
+                shopInfo.getGoldOS().isGold() == 1,
                 keyword,
-                cacheManagerId,
                 attribution,
                 shopRef
         ));
-    }
-
-    private String saveShopInfoModelToCacheManager(ShopInfo shopInfo) {
-        CacheManager cacheManager = new SaveInstanceCacheManager(this, true);
-        cacheManager.put(ShopInfo.TAG, shopInfo, TimeUnit.DAYS.toMillis(7));
-        return cacheManager.getId();
     }
 
     @Override

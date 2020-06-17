@@ -381,7 +381,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             DisabledShopViewHolder.LAYOUT -> {
                 val view = LayoutInflater.from(parent.context)
                         .inflate(DisabledShopViewHolder.LAYOUT, parent, false)
-                return DisabledShopViewHolder(view)
+                return DisabledShopViewHolder(view, actionListener)
             }
             else -> throw RuntimeException("No view holder type found")
         }
@@ -1074,5 +1074,15 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 notifyItemRemoved(0)
             }
         }
+    }
+
+    fun getItemCountBeforeCartItem(): Int {
+        var count = 0
+        cartDataList.forEach {
+            if (it is CartShopHolderData) return@forEach
+            count++
+        }
+
+        return count
     }
 }

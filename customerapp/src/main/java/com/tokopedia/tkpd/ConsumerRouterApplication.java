@@ -222,6 +222,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private TetraDebugger tetraDebugger;
     private Iris mIris;
+    private static final String ENABLE_ASYNC_CMPUSHNOTIF_INIT = "android_async_cmpushnotif_init";
+    private static final String ENABLE_ASYNC_IRIS_INIT = "android_async_iris_init";
+
 
     @Override
     public void onCreate() {
@@ -230,8 +233,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initFirebase();
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
+        initIris();
         performLibraryInitialisation();
-        DeeplinkHandlerActivity.createApplinkDelegateInBackground();
+        DeeplinkHandlerActivity.createApplinkDelegateInBackground(ConsumerRouterApplication.this);
         initResourceDownloadManager();
     }
 
@@ -243,12 +247,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 return initLibraries();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineNow(initWeave);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(initWeave, ENABLE_ASYNC_CMPUSHNOTIF_INIT, ConsumerRouterApplication.this);
     }
 
     private boolean initLibraries(){
         initCMPushNotification();
-        initIris();
         initTetraDebugger();
         return true;
     }
@@ -278,7 +281,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private void initIris() {
-        mIris = IrisAnalytics.Companion.getInstance(this);
+        mIris = IrisAnalytics.Companion.getInstance(ConsumerRouterApplication.this);
         WeaveInterface irisInitializeWeave = new WeaveInterface() {
             @NotNull
             @Override
@@ -286,7 +289,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 return executeIrisInitialize();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineNow(irisInitializeWeave);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(irisInitializeWeave, ENABLE_ASYNC_IRIS_INIT, ConsumerRouterApplication.this);
     }
 
     private boolean executeIrisInitialize(){
