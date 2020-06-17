@@ -39,6 +39,8 @@ class VerificationMethodFragment : BaseVerificationFragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
     lateinit var userSession: UserSessionInterface
+    @Inject
+    override lateinit var viewBound: VerificationMethodViewBinding
 
     private lateinit var otpData: OtpData
     private lateinit var adapter: VerificationMethodAdapter
@@ -46,8 +48,6 @@ class VerificationMethodFragment : BaseVerificationFragment() {
     private val viewmodel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(VerificationViewModel::class.java)
     }
-
-    override val viewBound = VerificationMethodViewBinding()
 
     override fun getScreenName(): String = OTPAnalytics.Screen.SCREEN_SELECT_VERIFICATION_METHOD
 

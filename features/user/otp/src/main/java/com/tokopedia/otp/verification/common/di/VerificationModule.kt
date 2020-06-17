@@ -7,10 +7,15 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.otp.common.analytics.TrackingValidatorUtil
 import com.tokopedia.otp.verification.common.DispatcherProvider
+import com.tokopedia.otp.verification.view.viewbinding.OnboardingMisscallViewBinding
+import com.tokopedia.otp.verification.view.viewbinding.VerificationMethodViewBinding
+import com.tokopedia.otp.verification.view.viewbinding.VerificationViewBinding
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
+import dagger.multibindings.IntoMap
+import dagger.multibindings.StringKey
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
@@ -39,4 +44,15 @@ class VerificationModule{
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
 
+    @VerificationScope
+    @Provides
+    fun provideOnboardingMisscallViewBinding() = OnboardingMisscallViewBinding()
+
+    @VerificationScope
+    @Provides
+    fun provideVerificationViewBinding() = VerificationViewBinding()
+
+    @VerificationScope
+    @Provides
+    fun provideVerificationMethodViewBinding() = VerificationMethodViewBinding()
 }
