@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:background="@drawable/cards_ui_selected"
+        android:background="@drawable/favorite_cards_ui_selected"
         android:orientation="horizontal"
         android:padding="@dimen/padding_small">
 
@@ -47,7 +47,7 @@
                 android:id="@+id/shop_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/href_link"
+                android:textColor="@color/favorite_href_link"
                 android:textSize="@dimen/fontvs"
                 tool:text="Shop Name"/>
         </LinearLayout>

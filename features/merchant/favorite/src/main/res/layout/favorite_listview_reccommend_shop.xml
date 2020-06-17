@@ -10,7 +10,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/recommend_shop_image_height"
-        android:background="@drawable/cards_ui_2"
+        android:background="@drawable/favorite_cards_ui_2"
         >
 
         <ImageView
