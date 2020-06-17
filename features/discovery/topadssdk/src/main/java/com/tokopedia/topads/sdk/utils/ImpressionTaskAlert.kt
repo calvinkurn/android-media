@@ -1,4 +1,4 @@
-package com.tokopedia.entertainment.home.alert
+package com.tokopedia.topads.sdk.utils
 
 import android.net.Uri
 import timber.log.Timber

@@ -2,7 +2,6 @@ package com.tokopedia.topads.sdk.utils;
 
 import android.os.AsyncTask;
 
-import com.tokopedia.entertainment.home.alert.ImpressionTaskAlert;
 import com.tokopedia.topads.sdk.listener.ImpressionListener;
 import com.tokopedia.topads.sdk.network.HttpMethod;
 import com.tokopedia.topads.sdk.network.HttpRequest;
