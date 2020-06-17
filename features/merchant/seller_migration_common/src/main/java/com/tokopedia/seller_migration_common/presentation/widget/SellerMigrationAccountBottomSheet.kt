@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -40,7 +41,8 @@ class SellerMigrationAccountBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         userId = UserSession(context).userId
         setupPadding()
-        sellerMigrationAccountBottomSheetImage.loadImage(SellerMigrationConstants.SELLER_MIGRATION_ACCOUNT_IMAGE_LINK)
+        val sellerMigrationAccountBottomSheetImage: ImageView? = view.findViewById(R.id.sellerMigrationAccountBottomSheetImage)
+        sellerMigrationAccountBottomSheetImage?.loadImage(SellerMigrationConstants.SELLER_MIGRATION_ACCOUNT_IMAGE_LINK)
         sellerMigrationBottomSheetContent.text = context?.let { HtmlLinkHelper(it, getString(R.string.seller_migration_account_home_bottom_sheet_content)).spannedString }
         sellerMigrationAccountBottomSheetLink.text = context?.let { HtmlLinkHelper(it, getString(R.string.seller_migration_account_home_bottom_sheet_footer)).spannedString }
         sellerMigrationAccountBottomSheetLink.setOnTouchListener(SellerMigrationTouchListener {
