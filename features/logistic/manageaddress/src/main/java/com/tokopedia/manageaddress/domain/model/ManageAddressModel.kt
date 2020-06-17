@@ -3,7 +3,8 @@ package com.tokopedia.manageaddress.domain.model
 sealed class ManageAddressModelSealed
 
 data class ManageAddressModel(
-        var liistAddress: List<PeopleAddress> = emptyList()
+        var liistAddress: List<PeopleAddress> = emptyList(),
+        var token: Token? = null
 )
 
 data class PeopleAddress(
@@ -24,4 +25,9 @@ data class PeopleAddress(
         var longitude: String? = null,
         var isPrimary: Boolean? = false,
         var status: Int? = null
+)
+
+data class Token(
+        var ut: Int? = -1,
+        var districtRecommendation: String? = null
 )

@@ -17,6 +17,10 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
 
     var addressList = mutableListOf<PeopleAddress>()
 
+    interface ManageAddressItemAdapterListener {
+        fun onManageAddressEditClicked(peopleAddress: PeopleAddress)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ManageAddressViewHolder {
       return ManageAddressViewHolder(parent.inflateLayout(R.layout.item_manage_people_address))
     }

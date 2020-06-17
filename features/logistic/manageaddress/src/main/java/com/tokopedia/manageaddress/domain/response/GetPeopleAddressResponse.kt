@@ -17,7 +17,9 @@ data class KeroAddressCorner(
         @SerializedName("status")
         var status: String = "",
         @SerializedName("has_next")
-        var hasNext: Boolean = false
+        var hasNext: Boolean = false,
+        @SerializedName("token")
+        var token: Token = Token()
 )
 
 data class ManageAddressData(
@@ -69,4 +71,11 @@ data class ManageAddressData(
         var status: Int = 0,
         @SerializedName("type")
         var type: Int = 0
+)
+
+data class Token(
+        @SerializedName("ut")
+        var ut: Int = 0,
+        @SerializedName("district_recommendation")
+        var districtReccomendation: String = ""
 )

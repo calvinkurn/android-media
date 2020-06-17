@@ -14,13 +14,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.manageaddress.R
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.design.text.SearchInputView
+import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity
+import com.tokopedia.logisticdata.data.entity.address.AddressModel
+import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.manageaddress.di.ManageAddressComponent
 import com.tokopedia.manageaddress.domain.model.PeopleAddress
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_manage_address.*
 import javax.inject.Inject
 
-class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener{
+class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, ManageAddressItemAdapter.ManageAddressItemAdapterListener{
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -124,6 +127,17 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener{
         adapter.notifyDataSetChanged()
     }
 
+    override fun onManageAddressEditClicked(peopleAddress: PeopleAddress) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
-
+    private fun openFormAddressView(data: PeopleAddress){
+        val token = viewModel.getToken()
+        startActivityForResult(activity?.let {
+            AddAddressActivity.createInstanceEditAddress(
+                    it,
+                data as AddressModel,
+                    token as Token)
+        }, 102)
+    }
 }

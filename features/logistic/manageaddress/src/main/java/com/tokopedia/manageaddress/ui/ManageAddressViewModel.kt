@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.tokopedia.manageaddress.domain.GetPeopleAddressUseCase
 import com.tokopedia.manageaddress.domain.mapper.ManageAddressMapper
 import com.tokopedia.manageaddress.domain.model.ManageAddressModel
+import com.tokopedia.manageaddress.domain.model.Token
 import com.tokopedia.manageaddress.domain.response.GetPeopleAddressResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 class ManageAddressViewModel @Inject constructor(
         private val getPeopleAddressUseCase: GetPeopleAddressUseCase,
-        private val mapper: ManageAddressMapper) : ViewModel() {
+        private val mapper: ManageAddressMapper,
+        private val token: Token) : ViewModel() {
 
     private val _addressList = MutableLiveData<Result<ManageAddressModel>>()
     val addressList: LiveData<Result<ManageAddressModel>>
@@ -37,4 +39,7 @@ class ManageAddressViewModel @Inject constructor(
         return mapper.mapAddress(responses)
     }
 
+    fun getToken(): Token {
+        return token
+    }
 }
