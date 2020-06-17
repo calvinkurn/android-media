@@ -10,6 +10,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.DaggerBaseAppComponent
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.layanan_finansial.R
 import com.tokopedia.layanan_finansial.di.LayananComponent
 import com.tokopedia.layanan_finansial.view.adapter.LayananViewHolderFactory
@@ -17,8 +19,6 @@ import com.tokopedia.layanan_finansial.view.customview.LayananSectionView
 import com.tokopedia.layanan_finansial.view.models.LayananFinansialModel
 import com.tokopedia.layanan_finansial.view.models.LayananSectionModel
 import com.tokopedia.layanan_finansial.view.viewModel.LayananFinansialViewModel
-import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
-import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -29,17 +29,18 @@ class LayananFragment : BaseListFragment<LayananSectionModel,LayananViewHolderFa
     @Inject
     lateinit var factory: ViewModelFactory
     val viewModel by lazy { ViewModelProviders.of(this,factory)[LayananFinansialViewModel::class.java] }
-    private val performanceInterface by lazy { PageLoadTimePerformanceCallback(LAYANAN_FINANCAIL_PLT_PREPARE_METRICS, LAYANAN_FINANCAIL_PLT_NETWORK_METRICS, LAYANAN_FINANCAIL_PLT_RENDER_METRICS) as PageLoadTimePerformanceInterface}
+    private val performanceInterface by lazy { PageLoadTimePerformanceCallback(LAYANAN_PLT_PREPARE_METRICS, LAYANAN_PLT_NETWORK_METRICS, LAYANAN_PLT_RENDER_METRICS) as PageLoadTimePerformanceInterface }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        performanceInterface.startMonitoring(LAYANAN_FINANCAIL_PLT)
-        performanceInterface.startPreparePagePerformanceMonitoring()
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         addObserver()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        performanceInterface.startMonitoring(LAYANAN_PLT)
+        performanceInterface.startPreparePagePerformanceMonitoring()
+        super.onCreate(savedInstanceState)
     }
 
     private fun addObserver()  = viewModel.liveData.observe(this, Observer {
@@ -53,7 +54,9 @@ class LayananFragment : BaseListFragment<LayananSectionModel,LayananViewHolderFa
                 }
                 is Fail -> {
                     performanceInterface.stopNetworkRequestPerformanceMonitoring()
+                    performanceInterface.startRenderPerformanceMonitoring()
                     showGetListError(it.throwable)
+                    performanceInterface.stopRenderPerformanceMonitoring()
                 }
             }
         }
@@ -92,10 +95,11 @@ class LayananFragment : BaseListFragment<LayananSectionModel,LayananViewHolderFa
         performanceInterface.stopMonitoring()
     }
 
-    companion object {
-        val LAYANAN_FINANCAIL_PLT = "layananfinancial_fintech_plt"
-        val LAYANAN_FINANCAIL_PLT_PREPARE_METRICS = "layananfinancial_fintech_plt_prepare_metrics"
-        val LAYANAN_FINANCAIL_PLT_NETWORK_METRICS = "layananfinancial_fintech_plt_network_metrics"
-        val LAYANAN_FINANCAIL_PLT_RENDER_METRICS = "layananfinancial_fintech_plt_render_metrics"
+    companion object{
+        val LAYANAN_PLT = "layanan_plt"
+        val LAYANAN_PLT_PREPARE_METRICS = "layanan_plt_prepare_metrics"
+        val LAYANAN_PLT_NETWORK_METRICS = "layanan_plt_network_metrics"
+        val LAYANAN_PLT_RENDER_METRICS = "layanan_plt_render_metrics"
+
     }
 }
