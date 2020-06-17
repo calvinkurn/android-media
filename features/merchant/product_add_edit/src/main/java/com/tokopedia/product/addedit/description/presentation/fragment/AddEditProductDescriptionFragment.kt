@@ -129,6 +129,7 @@ class AddEditProductDescriptionFragment:
         }
         textViewAddVideo.visibility =
                 if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
+        updateSaveButtonStatus()
     }
 
     override fun onTextChanged(url: String, position: Int) {
