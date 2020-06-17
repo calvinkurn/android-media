@@ -25,7 +25,7 @@ import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.ElapsedTime
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
 import com.tokopedia.notifications.model.BaseNotificationModel;
 
-@Database(entities = {CMInApp.class, ElapsedTime.class, BaseNotificationModel.class}, version = 9)
+@Database(entities = {CMInApp.class, ElapsedTime.class, BaseNotificationModel.class}, version = 10)
 @TypeConverters({ButtonListConverter.class,
         NotificationModeConverter.class,
         NotificationStatusConverter.class,
@@ -212,6 +212,47 @@ public abstract class RoomDB extends RoomDatabase {
         }
     };
 
+    private static final Migration MIGRATION_9_10 = new Migration(9, 10) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("DROP TABLE IF EXISTS `inapp_data`");
+
+            database.execSQL("CREATE TABLE IF NOT EXISTS `inapp_data` (" +
+                    "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                    "`campaignId` TEXT, `freq` INTEGER NOT NULL, " +
+                    "`notificationType` TEXT, " +
+                    "`campaignUserToken` TEXT, " +
+                    "`parentId` TEXT, `e` INTEGER, " +
+                    "`inAnim` TEXT, " +
+                    "`s` TEXT, " +
+                    "`d` INTEGER, " +
+                    "`st` INTEGER, " +
+                    "`et` INTEGER, " +
+                    "`ct` INTEGER, " +
+                    "`buf_time` INTEGER, " +
+                    "`shown` INTEGER, " +
+                    "`last_shown` INTEGER, " +
+                    "`is_test` INTEGER, " +
+                    "`perst_on` INTEGER, " +
+                    "`is_interacted` INTEGER, " +
+                    "`ui_img` TEXT, " +
+                    "`ui_appLink` TEXT, " +
+                    "`ui_btnOri` TEXT, " +
+                    "`ui_inAppButtons` TEXT, " +
+                    "`ui_bg_img` TEXT, " +
+                    "`ui_bg_clr` TEXT, " +
+                    "`ui_bg_sc` TEXT, " +
+                    "`ui_bg_sw` INTEGER, " +
+                    "`ui_bg_rd` REAL, " +
+                    "`ui_ttl_txt` TEXT, " +
+                    "`ui_ttl_clr` TEXT, " +
+                    "`ui_ttl_sz` TEXT, " +
+                    "`ui_msg_txt` TEXT, " +
+                    "`ui_msg_clr` TEXT, " +
+                    "`ui_msg_sz` TEXT)");
+        }
+    };
+
     public static RoomDB getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (RoomDB.class) {
@@ -226,7 +267,8 @@ public abstract class RoomDB extends RoomDatabase {
                                     MIGRATION_5_6,
                                     MIGRATION_6_7,
                                     MIGRATION_7_8,
-                                    MIGRATION_8_9
+                                    MIGRATION_8_9,
+                                    MIGRATION_9_10
                             )
                             .build();
                 }
