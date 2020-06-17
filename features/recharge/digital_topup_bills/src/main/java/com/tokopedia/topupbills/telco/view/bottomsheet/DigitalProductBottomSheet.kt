@@ -1,56 +1,66 @@
 package com.tokopedia.topupbills.telco.view.bottomsheet
 
-import android.app.Dialog
 import android.os.Bundle
-import android.util.DisplayMetrics
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
-import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.topupbills.R
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.UnifyButton
 
-class DigitalProductBottomSheet : BottomSheets() {
+class DigitalProductBottomSheet : BottomSheetUnify() {
 
     private lateinit var details: TextView
     private lateinit var productPrice: TextView
+    private lateinit var selectItemBtn: UnifyButton
+    private lateinit var listener: ActionListener
 
-    override fun getLayoutResourceId(): Int {
-        return R.layout.bottom_sheet_product_see_more
+    private var productId: String = ""
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        initChildLayout()
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    override fun title(): String {
-        arguments?.let {
-            return it.getString(TITLE)
-        }
-        return ""
+    private fun initChildLayout() {
+        val view = View.inflate(context, R.layout.bottom_sheet_product_see_more, null)
+        setChild(view)
+        initView(view)
     }
 
-    override fun initView(view: View?) {
+    fun setListener(listener: ActionListener) {
+        this.listener = listener
+    }
+
+    private fun initView(view: View?) {
         view?.run {
             details = view.findViewById(R.id.details)
             productPrice = view.findViewById(R.id.product_price)
+            selectItemBtn = view.findViewById(R.id.button_select_item)
 
             arguments?.let {
-                details.setText(it.getString(DETAILS))
-                productPrice.setText(it.getString(PRICE))
+                setTitle(it.getString(TITLE))
+                details.text = it.getString(DETAILS)
+                productPrice.text = it.getString(PRICE)
+
+                selectItemBtn.setOnClickListener {
+                    listener.onClickOnProduct()
+                    dismiss()
+                }
             }
         }
     }
 
-    override fun setupDialog(dialog: Dialog, style: Int) {
-        super.setupDialog(dialog, style)
-        val metrics = DisplayMetrics()
-        activity!!.windowManager.defaultDisplay.getMetrics(metrics)
-        if (metrics.heightPixels > 0) {
-            if (bottomSheetBehavior != null)
-                bottomSheetBehavior.peekHeight = metrics.heightPixels / 3
-        }
+    interface ActionListener {
+        fun onClickOnProduct()
     }
 
     companion object {
 
-        private val TITLE = "title"
-        private val DETAILS = "details"
-        private val PRICE = "price"
+        private const val TITLE = "title"
+        private const val DETAILS = "details"
+        private const val PRICE = "price"
 
         fun newInstance(title: String, details: String, price: String): DigitalProductBottomSheet {
             val fragment = DigitalProductBottomSheet()

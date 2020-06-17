@@ -228,6 +228,7 @@
     <string name="message_share_shop">Klik link ini untuk menemukan toko dari Tokopedia. </string>
     <string name="shop_sort_filter_default_label">Urutkan</string>
     <string name="shop_etalase_filter_default_label">Etalase Toko</string>
+    <string name="shop_page_retry">Ulangi</string>
 
 
 </resources>

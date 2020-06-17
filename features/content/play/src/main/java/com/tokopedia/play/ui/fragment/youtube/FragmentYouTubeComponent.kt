@@ -40,9 +40,6 @@ class FragmentYouTubeComponent(
                             is ScreenStateEvent.SetVideo -> if (it.videoPlayer.isYouTube) {
                                 uiView.init()
                                 uiView.show()
-                            } else {
-                                uiView.release()
-                                uiView.hide()
                             }
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if (it.event.isBanned || it.event.isFreeze) {
                                 uiView.release()

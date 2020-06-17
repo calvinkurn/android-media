@@ -33,6 +33,7 @@ include "features:category:basemvvm"
 include "features:category:tradein"
 include "features:category:age_restriction"
 include "features:category:explore_category"
+include "features:category:discovery2"
 
 include "features:digital:digital_browse"
 
@@ -49,6 +50,7 @@ include "features:recharge:digital_homepage"
 include "features:recharge:rechargeocr"
 include "features:recharge:recharge_credit_card"
 include "features:recharge:recharge_slice"
+include "features:recharge:smart_bills"
 
 include "features:travel:travel_homepage"
 include "features:travel:travel_country_code"

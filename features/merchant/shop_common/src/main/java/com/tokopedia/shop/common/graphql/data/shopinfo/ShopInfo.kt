@@ -68,7 +68,15 @@ data class ShopInfo(
 
         @SerializedName("shopHomeType")
         @Expose
-        val shopHomeType: String = ""
+        val shopHomeType: String = "",
+
+        @SerializedName("os")
+        @Expose
+        val os: Os = Os(),
+
+        @SerializedName("gold")
+        @Expose
+        val gold: Gold = Gold()
 
 ) {
     fun mapToShopInfoData(): ShopInfoData {

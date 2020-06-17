@@ -166,7 +166,7 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
     override fun onPause() {
         super.onPause()
         activity?.let {
-            if (brizziInstance.nfcAdapter != null) {
+            if (this::brizziInstance.isInitialized && brizziInstance.nfcAdapter != null) {
                 brizziInstance.nfcAdapter.disableForegroundDispatch(it)
             }
         }
@@ -174,7 +174,7 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     override fun onResume() {
         super.onResume()
-        if (brizziInstance.nfcAdapter != null) {
+        if (this::brizziInstance.isInitialized && brizziInstance.nfcAdapter != null) {
             if (!::permissionCheckerHelper.isInitialized) {
                 permissionCheckerHelper = PermissionCheckerHelper()
             }

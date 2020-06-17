@@ -856,6 +856,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         renderFooter(data)
     }
 
+    override fun onLoadingMenuDetail(showLoading: Boolean) {
+        // do nothing
+    }
+
     override fun processFavoriteNumbers(data: TopupBillsFavNumber) {
         favoriteNumbers = data.favNumberList
         updateFavoriteNumberInputField()
