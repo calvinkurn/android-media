@@ -68,7 +68,7 @@ class HomeRecommendationMapper {
         for (position in products.indices) {
             val product = products[position]
 
-            homeFeedViewModels.add(HomeRecommendationItemDataModel(product, ((pageNumber * DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE) + position + 1).toInt(), tabName))
+            homeFeedViewModels.add(HomeRecommendationItemDataModel(product, (((pageNumber-1) * DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE) + position + 1).toInt(), tabName))
         }
         return homeFeedViewModels
     }
