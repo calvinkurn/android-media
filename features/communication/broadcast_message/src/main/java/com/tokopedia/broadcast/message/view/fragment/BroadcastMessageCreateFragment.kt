@@ -24,7 +24,6 @@ import com.tokopedia.broadcast.message.common.di.component.DaggerBroadcastMessag
 import com.tokopedia.broadcast.message.data.model.BlastMessageMutation
 import com.tokopedia.broadcast.message.data.model.MyProduct
 import com.tokopedia.broadcast.message.data.model.ProductPayloadMutation
-import com.tokopedia.broadcast.message.view.activity.BroadcastMessagePreviewActivity
 import com.tokopedia.broadcast.message.view.adapter.BroadcastMessageProductItemAdapter
 import com.tokopedia.broadcast.message.view.listener.BroadcastMessageCreateView
 import com.tokopedia.broadcast.message.view.presenter.BroadcastMessageCreatePresenter
@@ -134,7 +133,6 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
         }
         val modelMutation = BlastMessageMutation(edit_text_message.text.toString(), "", savedLocalImageUrl!!,
                 switch_upload_product.isChecked, productsPayload.toTypedArray())
-        context?.let { startActivityForResult(BroadcastMessagePreviewActivity.createIntent(it, modelMutation), REQUEST_MOVE_PREVIEW) }
     }
 
     private fun openImagePicker() {
