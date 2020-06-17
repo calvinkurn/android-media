@@ -45,7 +45,7 @@
             app:srcCompat="@drawable/ic_play_action_camera_white" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvPlayChangeCoverLabel"
+            android:id="@+id/tv_add_change_cover"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"

@@ -1,29 +1,31 @@
 package com.tokopedia.play.broadcaster.ui.viewholder
 
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
+import android.widget.ImageView
+import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play_common.widget.playBannerCarousel.extension.loadImage
-import kotlinx.android.synthetic.main.item_play_cover_from_product.view.*
 
 /**
  * @author by furqan on 07/06/2020
  */
-class PlayCoverProductViewHolder(itemView: View,
-                                 private val listener: Listener)
-    : RecyclerView.ViewHolder(itemView) {
+class PlayCoverProductViewHolder(
+        itemView: View,
+        private val listener: Listener
+) : BaseViewHolder(itemView) {
 
-    fun bind(item: String) {
-        with(itemView) {
-            ivPlayCoverThumbnail.loadImage(item)
-            ivPlayCoverThumbnail.setOnClickListener {
-                listener.onCoverSelectedFromProduct(adapterPosition)
-            }
+    private val ivThumbnail = itemView.findViewById<ImageView>(R.id.iv_thumbnail)
+
+    fun bind(item: ProductContentUiModel) {
+        ivThumbnail.loadImage(item.imageUrl)
+        ivThumbnail.setOnClickListener {
+            listener.onProductCoverClicked(item.id, item.imageUrl)
         }
     }
 
     interface Listener {
-        fun onCoverSelectedFromProduct(position: Int)
+        fun onProductCoverClicked(productId: Long, imageUrl: String)
     }
 
     companion object {

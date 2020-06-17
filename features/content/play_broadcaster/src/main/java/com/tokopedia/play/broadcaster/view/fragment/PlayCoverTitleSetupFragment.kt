@@ -25,18 +25,17 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastCoverSetupView
 import com.yalantis.ucrop.callback.BitmapCropCallback
 import com.yalantis.ucrop.model.ExifInfo
 import kotlinx.android.synthetic.*
-import kotlinx.android.synthetic.main.layout_play_cover_title_setup.*
 import java.io.File
 import javax.inject.Inject
 
 /**
  * Created by furqan on 02/06/20
  */
-class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFactory: ViewModelFactory)
-    : PlayBaseSetupFragment(), PlayBroadcastChooseCoverBottomSheet.Listener,
+class PlayCoverTitleSetupFragment @Inject constructor(
+        private val viewModelFactory: ViewModelFactory
+) : PlayBaseSetupFragment(), PlayBroadcastChooseCoverBottomSheet.Listener,
         PlayBroadcastCoverFromGalleryBottomSheet.Listener {
 
-    private var selectedImageUrlList = arrayListOf<Pair<Long, String>>()
     private lateinit var viewModel: PlayBroadcastCoverSetupViewModel
 
     private var selectedCoverUri: Uri? = null
@@ -56,8 +55,6 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
         setupTransition()
         viewModel = ViewModelProviders.of(this, viewModelFactory)
                 .get(PlayBroadcastCoverSetupViewModel::class.java)
-
-        selectedImageUrlList = ArrayList(viewModel.observableSelectedProducts.value.orEmpty().map { Pair(it.id, it.imageUrl) })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -91,11 +88,12 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
         }
     }
 
-    override fun onGetCoverFromProduct(position: Int) {
+    override fun onGetCoverFromProduct(productId: Long, imageUrl: String) {
         coverSource = CoverSourceEnum.PRODUCT
         viewModel.getOriginalImageUrl(requireContext(),
-                selectedImageUrlList[position].first,
-                selectedImageUrlList[position].second)
+                productId,
+                imageUrl
+        )
         showCoverCropLayout()
     }
 
@@ -181,17 +179,11 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
 
     private fun setupView() {
         bottomSheetHeader.setHeader(getString(R.string.play_prepare_cover_title_title), isRoot = false)
-
-        setupCoverTitleField()
-        setupCoverLabelText()
-    }
-
-    private fun setupCoverTitleField() {
-
     }
 
     private fun onChangeCoverClicked() {
-        val changeCoverBottomSheet = PlayBroadcastChooseCoverBottomSheet.getInstance(selectedImageUrlList)
+        val changeCoverBottomSheet =
+                childFragmentManager.fragmentFactory.instantiate(requireContext().classLoader, PlayBroadcastChooseCoverBottomSheet::class.java.name) as PlayBroadcastChooseCoverBottomSheet
         changeCoverBottomSheet.listener = this
         changeCoverBottomSheet.setShowListener { changeCoverBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
         changeCoverBottomSheet.show(requireFragmentManager(), PlayBroadcastChooseCoverBottomSheet.TAG_CHOOSE_COVER)
@@ -212,8 +204,8 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
             selectedCoverUri = it
             coverSetupView.setImage(it)
         }
-        setupCoverLabelText()
-        coverSetupView.updateButtonState()
+
+        coverSetupView.updateViewState()
     }
 
     private fun renderCoverCropLayout(imageUri: Uri) {
@@ -233,14 +225,6 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
         selectedCoverUri = resultImageUri
         hideCoverCropLayout()
         renderCoverTitleLayout(resultImageUri)
-    }
-
-    private fun setupCoverLabelText() {
-        if (selectedCoverUri != null) {
-            tvPlayChangeCoverLabel.text = getString(R.string.play_prepare_cover_title_change_cover_label)
-        } else {
-            tvPlayChangeCoverLabel.text = getString(R.string.play_prepare_cover_title_add_cover_label)
-        }
     }
 
     private fun onFinishCoverTitleSetup() {
@@ -309,11 +293,5 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
                 .addTransition(ChangeTransform())
                 .addTransition(ChangeBounds())
                 .setDuration(450)
-    }
-
-    companion object {
-        const val EXTRA_STARTER_STATE = "EXTRA_STARTER_STATE"
-        const val EXTRA_COVER_SOURCE = "EXTRA_COVER_SOURCE"
-        const val EXTRA_COVER_URI = "EXTRA_COVER_URI"
     }
 }

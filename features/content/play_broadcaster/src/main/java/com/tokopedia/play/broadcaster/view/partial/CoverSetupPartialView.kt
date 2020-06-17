@@ -27,6 +27,7 @@ class CoverSetupPartialView(
     private val etCoverTitle: EditText = findViewById(R.id.et_cover_title)
     private val tvCoverTitleLabel: TextView = findViewById(R.id.tv_cover_title_label)
     private val tvCoverTitleCounter: TextView = findViewById(R.id.tv_cover_title_counter)
+    private val tvAddChangeCover: TextView = findViewById(R.id.tv_add_change_cover)
     private val btnNext: UnifyButton = findViewById(R.id.btn_next)
 
     private var mMaxTitleChars = DEFAULT_MAX_CHAR
@@ -39,7 +40,7 @@ class CoverSetupPartialView(
         setupTitleTextField()
         tvCoverTitleLabel.text = getCoverTitleLabelText(tvCoverTitleLabel.text.toString(), liveTitle)
 
-        updateButtonState()
+        updateViewState()
     }
 
     fun show() {
@@ -56,6 +57,18 @@ class CoverSetupPartialView(
 
     fun setMaxTitleChar(maxChar: Int) {
         mMaxTitleChars = maxChar
+    }
+
+    fun updateViewState() {
+        updateAddChangeCover()
+        updateButtonState()
+    }
+
+    private fun updateAddChangeCover() {
+        tvAddChangeCover.text = getString(
+                if (dataSource.getCurrentCoverUri() != null) R.string.play_prepare_cover_title_change_cover_label
+                else R.string.play_prepare_cover_title_add_cover_label
+        )
     }
 
     fun updateButtonState() {
