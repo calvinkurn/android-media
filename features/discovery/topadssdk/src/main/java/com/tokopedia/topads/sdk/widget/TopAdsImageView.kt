@@ -2,9 +2,9 @@ package com.tokopedia.topads.sdk.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -50,11 +50,16 @@ class TopAdsImageView : AppCompatImageView, HasComponent<TopAdsComponent> {
 
     private fun init() {
         component.inject(this)
+        val activity: FragmentActivity by lazy {
+            try {
+                context as FragmentActivity
+            } catch (exception: ClassCastException) {
+                throw ClassCastException("Please ensure that the provided Context is a valid FragmentActivity")
+            }
+        }
         topAdsImageViewViewModel = ViewModelProviders
-                .of(context as FragmentActivity, viewModelProvider)
+                .of(activity, viewModelProvider)
                 .get(TopAdsImageViewViewModel::class.java)
-
-
     }
 
     /**
@@ -86,7 +91,7 @@ class TopAdsImageView : AppCompatImageView, HasComponent<TopAdsComponent> {
         val queryParams = topAdsImageViewViewModel.getQueryParams(source, pageToken, adsCount, dimens, depId)
         topAdsImageViewViewModel.getImageData(query, queryParams)
 
-        topAdsImageViewViewModel.getResponse().observe(context as AppCompatActivity, Observer {
+        topAdsImageViewViewModel.getResponse().observe(context as LifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     topAdsImageVieWApiResponseListener?.onImageViewResponse(it.data)
@@ -124,7 +129,7 @@ class TopAdsImageView : AppCompatImageView, HasComponent<TopAdsComponent> {
                     this,
                     imageData.imageUrl,
                     context.resources.displayMetrics.widthPixels,
-                    getHeight(imageData.imageWidth)
+                    getHeight(imageData.imageWidth, imageData.imageHeight)
             )
             topadsImageViewImpressionListener?.onTopAdsImageViewImpression(imageData.adViewUrl
                     ?: "")
@@ -138,12 +143,16 @@ class TopAdsImageView : AppCompatImageView, HasComponent<TopAdsComponent> {
 
     }
 
-    private fun getHeight(width: Int): Int {
+    private fun getHeight(width: Int, height: Int): Int {
         val metrics = context.resources.displayMetrics
         val deviceWidth = metrics.widthPixels.toFloat()
         val widthRatio = deviceWidth / width.toFloat()
-        val height = widthRatio * metrics.heightPixels.toFloat()
-        return height.toInt()
+        return (widthRatio * height).toInt()
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        topAdsImageViewViewModel.onClear()
     }
 
 }
