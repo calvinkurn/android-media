@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.view.partial
 
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -25,7 +26,7 @@ class BottomActionPartialView(
 
     init {
         ivInventory.setOnClickListener { listener.onInventoryIconClicked() }
-        btnAction.setOnClickListener { listener.onNextButtonClicked() }
+        btnAction.setOnClickListener { listener.onNextButtonClicked(btnAction) }
     }
 
     fun setupBottomActionWithProducts(productList: List<ProductContentUiModel>) {
@@ -63,6 +64,6 @@ class BottomActionPartialView(
 
     interface Listener {
         fun onInventoryIconClicked()
-        fun onNextButtonClicked()
+        fun onNextButtonClicked(nextBtnView: View)
     }
 }

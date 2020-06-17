@@ -57,8 +57,10 @@
             android:layout_marginBottom="@dimen/spacing_lvl3"
             android:layout_weight="1"
             android:text="@string/play_change"
+            app:unifyButtonSize="medium"
             app:unifyButtonType="alternate"
-            app:unifyButtonVariant="ghost" />
+            app:unifyButtonVariant="ghost"
+            />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_crop_add"
@@ -67,7 +69,9 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginBottom="@dimen/spacing_lvl3"
             android:layout_weight="1"
-            android:text="@string/play_next" />
+            android:text="@string/play_next"
+            app:unifyButtonSize="medium"
+            />
 
     </LinearLayout>
 

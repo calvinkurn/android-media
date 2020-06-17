@@ -138,8 +138,8 @@ class PlayEtalasePickerFragment @Inject constructor(
                 showSelectedProductPage()
             }
 
-            override fun onNextButtonClicked() {
-                showCoverTitlePage()
+            override fun onNextButtonClicked(nextBtnView: View) {
+                showCoverTitlePage(nextBtnView)
             }
         })
     }
@@ -222,9 +222,10 @@ class PlayEtalasePickerFragment @Inject constructor(
         (currentFragment as? PlayBaseEtalaseSetupFragment)?.refresh()
     }
 
-    private fun showCoverTitlePage() {
+    private fun showCoverTitlePage(nextBtnView: View) {
         bottomSheetCoordinator.navigateToFragment(
-                fragmentClass = PlayCoverTitleSetupFragment::class.java
+                fragmentClass = PlayCoverTitleSetupFragment::class.java,
+                sharedElements = listOf(nextBtnView)
         )
     }
 
