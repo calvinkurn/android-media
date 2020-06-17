@@ -180,13 +180,28 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/iv_payment" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnShopAgain"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:text="@string/thank_shop_again"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btn_see_transaction_list"
+                app:unifyButtonSize="medium"
+                app:unifyButtonType="main"
+                app:unifyButtonVariant="ghost" />
             <View
                 android:id="@+id/view_divider_2"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_16"
                 android:background="@color/thank_divider_color"
-                app:layout_constraintTop_toBottomOf="@id/btn_see_transaction_list" />
+                app:layout_constraintTop_toBottomOf="@id/btnShopAgain" />
 
             <LinearLayout
                 android:id="@+id/recommendationContainer"

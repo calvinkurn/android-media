@@ -128,9 +128,10 @@
     <string name="product_report">Laporkan Produk</string>
     <string name="detail_report">Detail Laporan</string>
 
-    <!--Age Restriction-->
+    <!--Category-->
     <string name="title_module_age_restriction">Konten Dewasa</string>
     <string name="title_trade_in">Tukar Tambah</string>
+    <string name="label_category_explore">Jelajah Tokopedia</string>
     <string name="label_dob">Tanggal Lahir</string>
 
     <!--Contact Us-->
