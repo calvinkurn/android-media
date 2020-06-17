@@ -4,20 +4,20 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.design.utils.CurrencyFormatHelper;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.kotlin.model.ImpressHolder;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProductItemViewModel extends ImpressHolder implements Parcelable, Visitable<ProductListTypeFactory> {
 
-    private static final String ACTION_FIELD = "/searchproduct - p$1 - product";
+    private static final String ACTION_FIELD = "/searchproduct - %s";
+    private static final String ORGANIC = "organic";
+    private static final String ORGANIC_ADS = "organic ads";
 
     private String productID;
     private String warehouseID;
@@ -65,7 +65,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         return isOrganicAds;
     }
 
-    public void setIsOrganicAds(boolean isOrganicAds) {
+    public void setOrganicAds(boolean isOrganicAds) {
         this.isOrganicAds = isOrganicAds;
     }
 
@@ -337,7 +337,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
                 "brand", "none / other",
                 "category", getCategoryBreadcrumb(),
                 "variant", "none / other",
-                "list", getActionFieldString(getPageNumber()),
+                "list", getActionFieldString(),
                 "position", Integer.toString(getPosition()),
                 "userId", userId,
                 "shopId", getShopID(),
@@ -355,8 +355,10 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         return freeOngkirViewModel != null && freeOngkirViewModel.isActive();
     }
 
-    private String getActionFieldString(int pageNumber) {
-        return ACTION_FIELD.replace("$1", Integer.toString(pageNumber));
+    private String getActionFieldString() {
+        String organicStatus = isOrganicAds() ? ORGANIC_ADS : ORGANIC;
+
+        return String.format(ACTION_FIELD, organicStatus);
     }
 
     @Override

@@ -23,6 +23,7 @@
           "item_brand": "{{.*}}",
           "item_variant": "{{.*}}",
           "item_category": "{{.*}}",
+          "index": "{{\\d*.\\d*}}",
           "price": "{{\\d*.\\d*}}",
           "dimension40": "/searchproduct - topads productlist",
           "dimension83": "{{bebas ongkir|none / other}}"
@@ -34,7 +35,7 @@
       "eventCategory": "search result",
       "eventAction": "impression - product",
       "eventLabel": "{{.*}}",
-      "item_list": "{{/searchproduct - .* - product}}",
+      "item_list": "{{/searchproduct - organic|organic ads}}",
       "items": [
         {
           "item_id": "{{.*}}",
@@ -45,7 +46,8 @@
           "userId": "{{.*}}",
           "price": "{{\\d*.\\d*}}",
           "shopId": "{{.*}}",
-          "dimension40": "{{/searchproduct - .* - product}}",
+          "index": "{{\\d*.\\d*}}",
+          "dimension40": "{{/searchproduct - organic|organic ads}}",
           "dimension61": "{{.*}}",
           "dimension83": "{{bebas ongkir|none / other}}",
           "dimension87": "search result",
@@ -68,6 +70,7 @@
           "item_brand": "{{.*}}",
           "item_variant": "{{.*}}",
           "item_category": "{{.*}}",
+          "index": "{{\\d*.\\d*}}",
           "price": "{{\\d*.\\d*}}",
           "dimension40": "{{.*}}",
           "dimension83": "{{bebas ongkir|none / other}}"
@@ -80,7 +83,7 @@
       "eventAction": "click - product",
       "eventLabel": "{{.*}}",
       "searchFilter": "{{.*}}",
-      "item_list": "{{/searchproduct - .* - product}}",
+      "item_list": "{{/searchproduct - organic|organic ads}}",
       "items": [
         {
           "item_id": "{{.*}}",
@@ -91,7 +94,8 @@
           "userId": "{{.*}}",
           "price": "{{\\d*.\\d*}}",
           "shopId": "{{.*}}",
-          "dimension40": "{{/searchproduct - .* - product}}",
+          "index": "{{\\d*.\\d*}}",
+          "dimension40": "{{/searchproduct - organic|organic ads}}",
           "dimension61": "{{.*}}",
           "dimension83": "{{bebas ongkir|none / other}}",
           "dimension87": "search result",

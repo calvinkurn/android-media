@@ -1350,12 +1350,21 @@ final class ProductListPresenter
     public void onProductImpressed(ProductItemViewModel item) {
         if (getView() == null || item == null) return;
 
-        if (item.isTopAds()) {
-            getView().sendTopAdsTrackingUrl(item.getTopadsImpressionUrl());
-            getView().sendTopAdsGTMTrackingProductImpression(item);
-        } else if (enableTrackingViewPort) {
-            getView().sendProductImpressionTrackingEvent(item);
-        }
+        if (item.isTopAds())
+            getViewToTrackImpressedTopAdsProduct(item);
+        else if (enableTrackingViewPort)
+            getViewToTrackImpressedOrganicProduct(item);
+    }
+
+    private void getViewToTrackImpressedTopAdsProduct(ProductItemViewModel item) {
+        getView().sendTopAdsTrackingUrl(item.getTopadsImpressionUrl());
+        getView().sendTopAdsGTMTrackingProductImpression(item);
+    }
+
+    private void getViewToTrackImpressedOrganicProduct(ProductItemViewModel item) {
+        if (item.isOrganicAds()) getView().sendTopAdsTrackingUrl(item.getTopadsImpressionUrl());
+
+        getView().sendProductImpressionTrackingEvent(item);
     }
 
     @Override
@@ -1367,15 +1376,23 @@ final class ProductListPresenter
     public void onProductClick(ProductItemViewModel item, int adapterPosition) {
         if (getView() == null || item == null) return;
 
-        if (item.isTopAds()) {
-            getView().sendTopAdsTrackingUrl(item.getTopadsClickUrl());
-            getView().sendTopAdsGTMTrackingProductClick(item);
-        }
-        else {
-            getView().sendGTMTrackingProductClick(item, adapterPosition, getUserId());
-        }
+        if (item.isTopAds())
+            getViewToTrackOnClickTopAdsProduct(item);
+        else
+            getViewToTrackOnClickOrganicProduct(item);
 
         getView().routeToProductDetail(item, adapterPosition);
+    }
+
+    private void getViewToTrackOnClickTopAdsProduct(ProductItemViewModel item) {
+        getView().sendTopAdsTrackingUrl(item.getTopadsClickUrl());
+        getView().sendTopAdsGTMTrackingProductClick(item);
+    }
+
+    private void getViewToTrackOnClickOrganicProduct(ProductItemViewModel item) {
+        if (item.isOrganicAds()) getView().sendTopAdsTrackingUrl(item.getTopadsClickUrl());
+
+        getView().sendGTMTrackingProductClick(item, getUserId());
     }
 
     @Override

@@ -610,10 +610,10 @@ public class ProductListFragment
             }
         }
         if(irisSession != null){
-            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey(),
+            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, getQueryKey(),
                     irisSession.getSessionId());
         }else {
-            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey(), "");
+            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, getQueryKey(), "");
         }
     }
 
@@ -630,10 +630,10 @@ public class ProductListFragment
         productItemViewModels.add(item);
 
         if(irisSession != null){
-            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey(),
+            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, getQueryKey(),
                     irisSession.getSessionId());
         }else {
-            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey(), "");
+            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, getQueryKey(), "");
         }
     }
 
@@ -839,14 +839,13 @@ public class ProductListFragment
     }
 
     @Override
-    public void sendGTMTrackingProductClick(ProductItemViewModel item, int adapterPosition, String userId) {
+    public void sendGTMTrackingProductClick(ProductItemViewModel item, String userId) {
         String filterSortParams
                 = SearchTracking.generateFilterAndSortEventLabel(getSelectedFilter(), getSelectedSort());
         String searchRef = getSearchRef();
         SearchTracking.trackEventClickSearchResultProduct(
-                item,
                 item.getProductAsObjectDataLayer(userId, filterSortParams, searchRef),
-                item.getPageNumber(),
+                item.isOrganicAds(),
                 getQueryKey(),
                 filterSortParams
         );

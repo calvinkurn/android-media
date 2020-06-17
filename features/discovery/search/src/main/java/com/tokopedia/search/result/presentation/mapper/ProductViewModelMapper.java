@@ -235,7 +235,7 @@ public class ProductViewModelMapper {
         productItem.setLabelGroupList(convertToLabelGroupList(productModel.getLabelGroupList()));
         productItem.setFreeOngkirViewModel(convertToFreeOngkirViewModel(productModel.getFreeOngkir()));
         productItem.setBoosterList(productModel.getBoosterList());
-        productItem.setIsOrganicAds(productModel.isOrganicAds());
+        productItem.setOrganicAds(productModel.isOrganicAds());
         productItem.setTopadsImpressionUrl(productModel.getAds().getProductViewUrl());
         productItem.setTopadsClickUrl(productModel.getAds().getProductClickUrl());
         productItem.setTopadsWishlistUrl(productModel.getAds().getProductWishlistUrl());

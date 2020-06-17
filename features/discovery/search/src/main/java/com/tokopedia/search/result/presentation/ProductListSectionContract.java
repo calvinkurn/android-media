@@ -152,7 +152,7 @@ public interface ProductListSectionContract {
 
         void sendTopAdsGTMTrackingProductClick(ProductItemViewModel item);
 
-        void sendGTMTrackingProductClick(ProductItemViewModel item, int adapterPosition, String userId);
+        void sendGTMTrackingProductClick(ProductItemViewModel item, String userId);
 
         void routeToProductDetail(ProductItemViewModel item, int adapterPosition);
 
