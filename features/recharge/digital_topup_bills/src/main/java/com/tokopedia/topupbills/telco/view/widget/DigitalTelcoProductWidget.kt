@@ -40,8 +40,8 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
                           selectedProductPos: Int) {
         adapter = DigitalProductAdapter(productList, productType)
         adapter.setListener(object : DigitalProductAdapter.ActionListener {
-            override fun onClickItemProduct(itemProduct: TelcoProduct, position: Int) {
-                listener.onClickProduct(itemProduct, position)
+            override fun onClickItemProduct(itemProduct: TelcoProduct, position: Int, labelList: String) {
+                listener.onClickProduct(itemProduct, position, labelList)
             }
 
             override fun onClickSeeMoreProduct(itemProduct: TelcoProduct) {
@@ -116,7 +116,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
     }
 
     interface ActionListener {
-        fun onClickProduct(itemProduct: TelcoProduct, position: Int)
+        fun onClickProduct(itemProduct: TelcoProduct, position: Int, labelList: String)
         fun onSeeMoreProduct(itemProduct: TelcoProduct)
         fun onTrackImpressionProductsList(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>)
     }
