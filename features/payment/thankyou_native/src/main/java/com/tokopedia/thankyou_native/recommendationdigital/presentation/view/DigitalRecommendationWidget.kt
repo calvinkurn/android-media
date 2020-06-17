@@ -46,8 +46,13 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
     }
 
     open fun renderTitle(element: RecommendationsItem) {
-        if (element.title.isNullOrBlank()) {
-            thanks_dg_rec_text_sub.visibility = View.GONE
+        if (element.productName.isNullOrBlank()) {
+            if (element.description.isNullOrBlank()) {
+                thanks_dg_rec_text_sub.visibility = View.GONE
+            }else{
+                thanks_dg_rec_text_sub.visibility = View.VISIBLE
+                thanks_dg_rec_text_sub.text = element.description
+            }
         } else {
             thanks_dg_rec_text_sub.visibility = View.VISIBLE
             thanks_dg_rec_text_sub.text = element.productName
