@@ -44,7 +44,7 @@ import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.*
-import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.SellerHomeBottomSheetContent
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -190,10 +190,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
             }
         }
-        with (recyclerView) {
+        with(recyclerView) {
             layoutManager = gridLayoutManager
 
-            addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         requestVisibleWidgetsData()
@@ -343,21 +343,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun onTooltipClicked(tooltip: TooltipUiModel) {
-        val bottomSheetContentView = SellerHomeBottomSheetContent(context ?: return)
-
-        with(tooltipBottomSheet) {
-            setTitle(tooltip.title)
-            clearClose(false)
-            clearHeader(false)
-            setCloseClickListener {
-                this.dismiss()
-            }
-
-            bottomSheetContentView.setTooltipData(tooltip)
-
-            setChild(bottomSheetContentView)
-            show(this@SellerHomeFragment.childFragmentManager, TAG_TOOLTIP)
-        }
+        if (!isAdded || context == null) return
+        TooltipBottomSheet(requireContext(), tooltip)
+                .show(childFragmentManager, TAG_TOOLTIP)
     }
 
     override fun removeWidget(position: Int, widget: BaseWidgetUiModel<*>) {

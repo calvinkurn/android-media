@@ -3,6 +3,14 @@
     <string name="app_name">Statistic</string>
     <string name="stc_shop_statistic">Statistik Toko</string>
     <string name="stc_select_date">Pilih Tanggal</string>
+    <string name="stc_select_date_">Pilih tanggal</string>
     <string name="stc_failed_to_get_information">Informasi gagal dimuat</string>
     <string name="stc_reload">Muat ulang</string>
+    <string name="stc_change_date_range">Ubah Rentang Waktu</string>
+    <string name="stc_last_n_days">%1$d hari terakhir</string>
+    <string name="stc_last_n_days_cc">%1$d Hari Terakhir</string>
+    <string name="stc_start_from">Mulai dari</string>
+    <string name="stc_until">Sampai dengan</string>
+    <string name="stc_show">Tampilkan</string>
+    <string name="stc_custom">Custom</string>
 </resources>
