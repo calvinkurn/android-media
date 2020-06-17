@@ -28,7 +28,7 @@ class CalendarPicker(
         setChild(child)
         setupView(child)
         setTitle(mContext.getString(R.string.stc_select_date))
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.StcDialogStyle)
     }
 
     private fun setupView(child: View) = with(child) {
@@ -48,7 +48,7 @@ class CalendarPicker(
             cpv.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
 
                 override fun onDateSelected(date: Date) {
-
+                    //will implement selected date here
                 }
 
                 override fun onDateUnselected(date: Date) {
