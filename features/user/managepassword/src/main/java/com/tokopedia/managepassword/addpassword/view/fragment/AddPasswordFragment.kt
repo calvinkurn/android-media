@@ -12,10 +12,10 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.managepassword.R
 import com.tokopedia.managepassword.addpassword.analytics.AddPasswordAnalytics
 import com.tokopedia.managepassword.addpassword.view.viewmodel.AddPasswordViewModel
-import com.tokopedia.managepassword.common.util.setAfterTextChanged
 import com.tokopedia.managepassword.di.ManagePasswordComponent
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -69,18 +69,17 @@ class AddPasswordFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        txtPassword?.textFieldInput?.setAfterTextChanged {
+        txtPassword?.textFieldInput?.afterTextChanged {
             viewModel.validatePassword(it)
         }
 
-        txtPasswordConfirmation?.textFieldInput?.setAfterTextChanged {
+        txtPasswordConfirmation?.textFieldInput?.afterTextChanged {
             viewModel.validatePasswordConfirmation(it)
         }
 
         btnSubmit?.setOnClickListener {
             val password = txtPassword?.textFieldInput?.text?.toString() ?: ""
-            val passwordConfirmation = txtPasswordConfirmation?.textFieldInput?.text?.toString()
-                    ?: ""
+            val passwordConfirmation = txtPasswordConfirmation?.textFieldInput?.text?.toString() ?: ""
 
             if (txtPassword?.textFieldInput?.text.toString() != txtPasswordConfirmation?.textFieldInput?.text.toString()) {
                 txtPasswordConfirmation?.let {

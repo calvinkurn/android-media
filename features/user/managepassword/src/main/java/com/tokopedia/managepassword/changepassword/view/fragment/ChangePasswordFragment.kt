@@ -16,11 +16,11 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.managepassword.R
 import com.tokopedia.managepassword.changepassword.analytics.ChangePasswordAnalytics
 import com.tokopedia.managepassword.changepassword.view.viewmodel.ChangePasswordViewModel
 import com.tokopedia.managepassword.changepassword.view.viewmodel.LiveDataValidateResult
-import com.tokopedia.managepassword.common.util.setAfterTextChanged
 import com.tokopedia.managepassword.di.ManagePasswordComponent
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -70,19 +70,19 @@ class ChangePasswordFragment : BaseDaggerFragment() {
     }
 
     private fun setupViewListener() {
-        textOldPassword?.textFieldInput?.setAfterTextChanged {
-            oldPassword = textOldPassword?.textFiedlLabelText?.text.toString()
-            textOldPassword?.setError(oldPassword.isBlank())
+        textOldPassword?.textFieldInput?.afterTextChanged {
+            oldPassword = it
+            textOldPassword?.setError(it.isEmpty())
         }
 
-        textNewPassword?.textFieldInput?.setAfterTextChanged {
-            newPassword = textNewPassword?.textFiedlLabelText?.text.toString()
-            textNewPassword?.setError(newPassword.isBlank())
+        textNewPassword?.textFieldInput?.afterTextChanged {
+            newPassword = it
+            textNewPassword?.setError(it.isEmpty())
         }
 
-        textConfirmationPassword?.textFieldInput?.setAfterTextChanged {
-            confirmationPassword = textConfirmationPassword?.textFiedlLabelText?.text.toString()
-            textConfirmationPassword?.setError(confirmationPassword.isBlank())
+        textConfirmationPassword?.textFieldInput?.afterTextChanged {
+            confirmationPassword = it
+            textConfirmationPassword?.setError(it.isEmpty())
 
             if (confirmationPassword.isNotEmpty()) {
                 buttonSubmit?.isEnabled = true
