@@ -11,13 +11,16 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
  */
 
 class TooltipBottomSheet(
-    mContext: Context,
-    tooltip: TooltipUiModel
+        mContext: Context,
+        tooltip: TooltipUiModel
 ) : BottomSheetUnify() {
 
     init {
         setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
         setTitle(tooltip.title)
+        showCloseIcon = false
+        showKnob = true
+        isHideable = true
 
         val bottomSheetContentView = SellerHomeBottomSheetContent(mContext)
         bottomSheetContentView.setTooltipData(tooltip)
