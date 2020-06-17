@@ -617,6 +617,8 @@ open class HomeFragment : BaseDaggerFragment(),
         observeStickyLogin()
         observeTrackingData()
         observeRequestImagePlayBanner()
+        observeSalamWidget()
+        observeRechargeRecommendation()
         observeViewModelInitialized();
         observeHomeRequestNetwork();
     }
@@ -761,6 +763,23 @@ open class HomeFragment : BaseDaggerFragment(),
                             }
                         })
             })
+        }
+    }
+
+    private fun observeSalamWidget(){
+        context?.let{
+            viewModel.get().salamWidgetLiveData.observe(this, Observer {
+                viewModel.get().insertSalamWidget(it.peekContent())
+            })
+        }
+    }
+
+    private fun observeRechargeRecommendation(){
+        context?.let {
+            viewModel.get().rechargeRecommendationLiveData.observe(this, Observer {
+
+            }
+            )
         }
     }
 

@@ -171,6 +171,12 @@ open class HomeViewModel @Inject constructor(
         get() = _isRequestNetworkLiveData
     private val _isRequestNetworkLiveData = MutableLiveData<Event<Boolean>>(null)
 
+    private val _salamWidgetLiveData = MutableLiveData<Event<SalamWidget>>()
+    val salamWidgetLiveData: LiveData<Event<SalamWidget>> get() = _salamWidgetLiveData
+
+    private val _rechargeRecommendationLiveData = MutableLiveData<Event<RechargeRecommendation>>()
+    val rechargeRecommendationLiveData: LiveData<Event<RechargeRecommendation>> get() = _rechargeRecommendationLiveData
+
 // ============================================================================================
 // ==================================== Helper Local Job ======================================
 // ================================= PLEASE SORT BY NAME A-Z ==================================
@@ -522,23 +528,23 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun insertSalamWidget(data: SalamWidget) {
-//        if (data.salamWidget.mainText.isNotEmpty()) {
-//            _homeLiveData.value?.list?.run {
-//                val findSalamWidgetModel = find { visitable -> visitable is ReminderWidgetModel
-//                        && (visitable.source == ReminderEnum.SALAM)}
-//                val indexOfSalamWidgetModel = indexOf(findSalamWidgetModel)
-//                if (indexOfSalamWidgetModel > -1 && findSalamWidgetModel is ReminderWidgetModel) {
-//                    val newFindSalamWidgetModel = findSalamWidgetModel.copy(
-//                            data = mapperSalamtoReminder(data),
-//                            source = ReminderEnum.SALAM
-//                    )
-//                    updateWidget(UpdateLiveDataModel(ACTION_UPDATE, newFindSalamWidgetModel, indexOfSalamWidgetModel))
-//                }
-//            }
-//        } else {
-//            removeSalamWidget()
-//        }
+    fun insertSalamWidget(data: SalamWidget) {
+        if (data.salamWidget.mainText.isNotEmpty()) {
+            _homeLiveData.value?.list?.run {
+                val findSalamWidgetModel = find { visitable -> visitable is ReminderWidgetModel
+                        && (visitable.source == ReminderEnum.SALAM)}
+                val indexOfSalamWidgetModel = indexOf(findSalamWidgetModel)
+                if (indexOfSalamWidgetModel > -1 && findSalamWidgetModel is ReminderWidgetModel) {
+                    val newFindSalamWidgetModel = findSalamWidgetModel.copy(
+                            data = mapperSalamtoReminder(data),
+                            source = ReminderEnum.SALAM
+                    )
+                    launch(coroutineContext) {updateWidget(UpdateLiveDataModel(ACTION_UPDATE, newFindSalamWidgetModel, indexOfSalamWidgetModel)) }
+                }
+            }
+        } else {
+            removeSalamWidget()
+        }
     }
 
     private fun removeRechargeRecommendation() {
@@ -827,23 +833,7 @@ open class HomeViewModel @Inject constructor(
 
         getSalamWidgetJob = launchCatchError(coroutineContext,  block = {
             val data = getSalamWidgetUseCase.get().executeOnBackground()
-            insertSalamWidget(data)
-            if (isReminderWidgetAvailable(data.salamWidget)) {
-                _homeLiveData.value?.list?.run {
-                    val findSalamWidgetModel = find { visitable -> visitable is ReminderWidgetModel
-                            && (visitable.source == ReminderEnum.SALAM)}
-                    val indexOfSalamWidgetModel = indexOf(findSalamWidgetModel)
-                    if (indexOfSalamWidgetModel > -1 && findSalamWidgetModel is ReminderWidgetModel) {
-                        val newFindSalamWidgetModel = findSalamWidgetModel.copy(
-                                data = mapperSalamtoReminder(data),
-                                source = ReminderEnum.SALAM
-                        )
-                        updateWidget(UpdateLiveDataModel(ACTION_UPDATE, newFindSalamWidgetModel, indexOfSalamWidgetModel))
-                    }
-                }
-            } else {
-                removeSalamWidget()
-            }
+            _salamWidgetLiveData.postValue(Event(data))
         }){
             removeSalamWidget()
         }
@@ -1239,10 +1229,11 @@ open class HomeViewModel @Inject constructor(
     }
 
     private fun isReminderWidgetAvailable(salamWidgetData: SalamWidgetData):Boolean{
-        return (salamWidgetData.iD!=0 && salamWidgetData.backgroundColor.isNotEmpty() &&
-                salamWidgetData.appLink.isNotEmpty() && salamWidgetData.buttonText.isNotEmpty() &&
-                salamWidgetData.iconURL.isNotEmpty() && salamWidgetData.mainText.isNotEmpty() &&
-                salamWidgetData.subText.isNotEmpty() && salamWidgetData.title.isNotEmpty())
+//        return (salamWidgetData.iD!=0 && salamWidgetData.backgroundColor.isNotEmpty() &&
+//                salamWidgetData.appLink.isNotEmpty() && salamWidgetData.buttonText.isNotEmpty() &&
+//                salamWidgetData.iconURL.isNotEmpty() && salamWidgetData.mainText.isNotEmpty() &&
+//                salamWidgetData.subText.isNotEmpty() && salamWidgetData.title.isNotEmpty())
+        return true
     }
 
 
