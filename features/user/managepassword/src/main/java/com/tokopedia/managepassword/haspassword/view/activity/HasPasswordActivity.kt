@@ -100,7 +100,7 @@ class HasPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePasswordCom
     private fun isPasswordAvailable(hasPassword: Boolean) {
         userSession.setHasPassword(hasPassword)
         val intent: Intent = if (hasPassword) {
-            RouteManager.getIntent(this, ApplinkConstInternalGlobal.CHANGE_PASSWORD)
+            RouteManager.getIntent(this, ApplinkConstInternalGlobal.FORGOT_PASSWORD)
         } else {
             RouteManager.getIntent(this, ApplinkConstInternalGlobal.ADD_PASSWORD)
         }
