@@ -144,7 +144,6 @@ class ProductManageFilterTab(
 
     private fun resetSelectedFilter() {
         selectedTab?.filter?.apply {
-            refChipUnify.chipType = ChipsUnify.TYPE_NORMAL
             type = ChipsUnify.TYPE_NORMAL
         }
         selectedTab = null
