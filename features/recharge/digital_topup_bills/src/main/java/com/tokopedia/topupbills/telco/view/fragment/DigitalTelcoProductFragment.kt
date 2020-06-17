@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
@@ -47,6 +48,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
     private var titleProduct: String = ""
     private var selectedProductId: Int = 0
+    private var hasTitle = false
     private var productType = TelcoProductType.PRODUCT_LIST
 
     @Inject
@@ -163,6 +165,11 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                     telcoTelcoProductView.show()
 
                     val dataCollections = wrapDataCollections(it)
+                    if (hasTitle) {
+                        setMarginProductList(MARGIN_0,  telcoTelcoProductView)
+                    } else {
+                        setMarginProductList(MARGIN_18, telcoTelcoProductView)
+                    }
 
                     //set true on selected product datacollection list
                     var position = -1
@@ -182,10 +189,17 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun setMarginProductList(spaceTop: Int, view: View) {
+        val params =  RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT)
+        params.setMargins(MARGIN_0, spaceTop, MARGIN_0, MARGIN_16)
+        view.layoutParams = params
+    }
+
     private fun wrapDataCollections(productInput: TelcoCatalogProductInput): List<TelcoProduct> {
         val dataCollections = mutableListOf<TelcoProduct>()
+        hasTitle = productInput.product.dataCollections.size > 1 && productInput.label != TelcoComponentName.PRODUCT_PULSA
         productInput.product.dataCollections.map {
-            if (productInput.product.dataCollections.size > 1 && productInput.label != TelcoComponentName.PRODUCT_PULSA) {
+            if (hasTitle) {
                 if (it.name.isNotEmpty()) {
                     dataCollections.add(TelcoProduct(titleSection = it.name, isTitle = true))
                 } else {
@@ -230,10 +244,14 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
     companion object {
 
-        val PRODUCT_TYPE = "product_type"
-        val TITLE_PAGE = "title_page"
-        val SELECTED_PRODUCT_ID = "selected_product_id"
-        val OPERATOR_NAME = "operator_name"
+        const val PRODUCT_TYPE = "product_type"
+        const val TITLE_PAGE = "title_page"
+        const val SELECTED_PRODUCT_ID = "selected_product_id"
+        const val OPERATOR_NAME = "operator_name"
+
+        const val MARGIN_18 = 18
+        const val MARGIN_16 = 16
+        const val MARGIN_0 = 0
 
         fun newInstance(titlePage: String, operatorName: String, productType: Int,
                         selectedProductId: Int): Fragment {

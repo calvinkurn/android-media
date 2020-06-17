@@ -39,6 +39,7 @@ import com.tokopedia.showcase.ShowCasePreference
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.generateRechargeCheckoutToken
 import com.tokopedia.topupbills.telco.data.RechargePrefix
+import com.tokopedia.topupbills.telco.data.TelcoProduct
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
@@ -88,36 +89,42 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         return null
     }
 
+    private fun isProductExist(telcoProduct: TelcoProduct): Boolean {
+        return telcoProduct.id != ID_PRODUCT_EMPTY
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         sharedModelPrepaid.productCatalogItem.observe(this, Observer {
-            it?.run {
-                buyWidget.setTotalPrice(it.attributes.price)
-                it.attributes.productPromo?.run {
-                    if (this.newPrice.isNotEmpty()) {
-                        buyWidget.setTotalPrice(this.newPrice)
+            if (isProductExist(it)) {
+                it?.run {
+                    buyWidget.setTotalPrice(it.attributes.price)
+                    it.attributes.productPromo?.run {
+                        if (this.newPrice.isNotEmpty()) {
+                            buyWidget.setTotalPrice(this.newPrice)
+                        }
                     }
+
+                    productId = it.id.toIntOrZero()
+                    price = it.attributes.pricePlain
+                    checkVoucherWithDelay()
+
+                    checkoutPassData = DigitalCheckoutPassData.Builder()
+                            .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+                            .categoryId(it.attributes.categoryId.toString())
+                            .clientNumber(telcoClientNumberWidget.getInputNumber())
+                            .instantCheckout("0")
+                            .isPromo(if (it.attributes.productPromo != null) "1" else "0")
+                            .operatorId(it.attributes.operatorId.toString())
+                            .productId(it.id)
+                            .utmCampaign(it.attributes.categoryId.toString())
+                            .utmContent(GlobalConfig.VERSION_NAME)
+                            .idemPotencyKey(userSession.userId.generateRechargeCheckoutToken())
+                            .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
+                            .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
+                            .voucherCodeCopied("")
+                            .build()
                 }
-
-                productId = it.id.toIntOrZero()
-                price = it.attributes.pricePlain
-                checkVoucherWithDelay()
-
-                checkoutPassData = DigitalCheckoutPassData.Builder()
-                        .action(DigitalCheckoutPassData.DEFAULT_ACTION)
-                        .categoryId(it.attributes.categoryId.toString())
-                        .clientNumber(telcoClientNumberWidget.getInputNumber())
-                        .instantCheckout("0")
-                        .isPromo(if (it.attributes.productPromo != null) "1" else "0")
-                        .operatorId(it.attributes.operatorId.toString())
-                        .productId(it.id)
-                        .utmCampaign(it.attributes.categoryId.toString())
-                        .utmContent(GlobalConfig.VERSION_NAME)
-                        .idemPotencyKey(userSession.userId.generateRechargeCheckoutToken())
-                        .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
-                        .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
-                        .voucherCodeCopied("")
-                        .build()
             }
         })
         sharedModelPrepaid.showTotalPrice.observe(this, Observer {
@@ -163,11 +170,20 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             override fun onPageSelected(pos: Int) {
                 if (showProducts) {
                     topupAnalytics.eventClickTelcoPrepaidCategory(listProductTab[pos].title)
+                    sharedModelPrepaid.setShowTotalPrice(false)
+                    sharedModelPrepaid.setProductCatalogSelected(getEmptyProduct())
                 } else {
                     setTrackingOnTabMenu(listMenu[pos].title)
                 }
             }
         })
+    }
+
+    /**
+     * handle reset selected item every move to other tab product
+     */
+    private fun getEmptyProduct(): TelcoProduct {
+        return TelcoProduct(id = ID_PRODUCT_EMPTY)
     }
 
     override fun getTelcoMenuId(): Int {
@@ -195,12 +211,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 tabLayout.show()
                 separator.show()
                 tabLayout.setupWithViewPager(viewPager)
-                if (viewPager.getChildAt(0) != null) {
-                    (viewPager.getChildAt(0) as TopupBillsWidgetInterface).toggleTitle(false)
-                }
-                if (viewPager.getChildAt(1) != null) {
-                    (viewPager.getChildAt(1) as TopupBillsWidgetInterface).toggleTitle(false)
-                }
+                (viewPager.getChildAt(0) as? TopupBillsWidgetInterface)?.toggleTitle(false)
+                (viewPager.getChildAt(1) as? TopupBillsWidgetInterface)?.toggleTitle(false)
             } else {
                 tabLayout.hide()
                 separator.hide()
@@ -214,8 +226,12 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM) as TopupBillsExtraParam
                 clientNumber = digitalTelcoExtraParam.clientNumber
                 productId = digitalTelcoExtraParam.productId.toIntOrNull() ?: 0
-                if (digitalTelcoExtraParam.categoryId.isNotEmpty()) { categoryId = digitalTelcoExtraParam.categoryId.toInt() }
-                if (digitalTelcoExtraParam.menuId.isNotEmpty()) { menuId = digitalTelcoExtraParam.menuId.toInt() }
+                if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
+                    categoryId = digitalTelcoExtraParam.categoryId.toInt()
+                }
+                if (digitalTelcoExtraParam.menuId.isNotEmpty()) {
+                    menuId = digitalTelcoExtraParam.menuId.toInt()
+                }
             }
         } else {
             clientNumber = savedInstanceState.getString(CACHE_CLIENT_NUMBER) ?: ""
@@ -476,6 +492,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         private const val CACHE_CLIENT_NUMBER = "cache_client_number"
         private const val EXTRA_PARAM = "extra_param"
         private const val DG_TELCO_PREPAID_TRACE = "dg_telco_prepaid_pdp"
+        private const val ID_PRODUCT_EMPTY = "-1"
 
         fun newInstance(telcoExtraParam: TopupBillsExtraParam): Fragment {
             val fragment = DigitalTelcoPrepaidFragment()

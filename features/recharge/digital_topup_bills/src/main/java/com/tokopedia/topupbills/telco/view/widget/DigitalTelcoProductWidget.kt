@@ -14,6 +14,7 @@ import com.tokopedia.topupbills.telco.view.adapter.DigitalProductAdapter
 import com.tokopedia.topupbills.telco.view.adapter.DigitalProductGridDecorator
 import com.tokopedia.topupbills.telco.view.model.DigitalTrackProductTelco
 
+
 /**
  * Created by nabillasabbaha on 11/04/19.
  */
@@ -121,7 +122,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
     }
 
     companion object {
-        const val CELL_MARGIN_DP: Int = 4
+        const val CELL_MARGIN_DP: Int = 5
     }
 
 }
