@@ -15,7 +15,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
+import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
@@ -40,7 +40,7 @@ import java.util.List;
  * @author by nisie on 8/10/17.
  */
 
-public class  InboxReputationActivity extends BaseTabActivity implements HasComponent {
+public class  InboxReputationActivity extends BaseActivity implements HasComponent {
 
     public static final String GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY";
 
@@ -57,6 +57,8 @@ public class  InboxReputationActivity extends BaseTabActivity implements HasComp
 
     private ViewPager viewPager;
     private TabsUnify indicator;
+    private PagerAdapter sectionAdapter;
+
     private UserSessionInterface userSession;
 
     private boolean goToReputationHistory;
@@ -73,23 +75,14 @@ public class  InboxReputationActivity extends BaseTabActivity implements HasComp
         reputationTracking = new ReputationTracking();
         super.onCreate(savedInstanceState);
         clearCacheIfFromNotification();
-    }
-
-    @Override
-    protected void setupLayout(Bundle savedInstanceState) {
-        super.setupLayout(savedInstanceState);
         initView();
     }
 
-    @Override
-    protected void setupFragment(Bundle savedinstancestate) {
-        super.setupFragment(savedinstancestate);
-        viewPager.setAdapter(getViewPagerAdapter());
-    }
-
     private void initView() {
-        viewPager = findViewById(R.id.pager);
+        viewPager = findViewById(R.id.pager_reputation);
         indicator = findViewById(R.id.indicator_unify);
+
+        sectionAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), getFragmentList(), indicator.getUnifyTabLayout());
 
         if (getApplicationContext() != null
                 && getApplicationContext() instanceof ReputationRouter) {
@@ -97,7 +90,8 @@ public class  InboxReputationActivity extends BaseTabActivity implements HasComp
             sellerReputationFragment = applicationContext.getReputationHistoryFragment();
             reviewSellerFragment = applicationContext.getReviewSellerFragment();
         }
-        viewPager.setOffscreenPageLimit(getPageLimit());
+        viewPager.setOffscreenPageLimit(OFFSCREEN_PAGE_LIMIT);
+        viewPager.setAdapter(sectionAdapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator.getUnifyTabLayout()));
         indicator.getUnifyTabLayout().addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager, this) {
             @Override
@@ -175,16 +169,6 @@ public class  InboxReputationActivity extends BaseTabActivity implements HasComp
             layoutParams.leftMargin = start;
             layoutParams.rightMargin = end;
         }
-    }
-
-    @Override
-    protected PagerAdapter getViewPagerAdapter() {
-        return new SectionsPagerAdapter(getSupportFragmentManager(), getFragmentList(), indicator.getUnifyTabLayout());
-    }
-
-    @Override
-    protected int getPageLimit() {
-        return OFFSCREEN_PAGE_LIMIT;
     }
 
     protected List<Fragment> getFragmentList() {
