@@ -73,20 +73,20 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
 
     override fun bindThanksPageDataToUI(thanksPageData: ThanksPageData) {
         //thanksPageData.thanksCustomization ==null
-        if (thanksPageData.thanksCustomization.customTitle.isNullOrBlank()){
+        if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customTitle.isNullOrBlank()) {
             tv_payment_success.text = getString(R.string.thank_instant_payment_successful)
-        }else{
+        } else {
             tv_payment_success.text = thanksPageData.thanksCustomization.customTitle
         }
-        if (thanksPageData.thanksCustomization.customSubtitle.isNullOrBlank()){
+        if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customSubtitle.isNullOrBlank()) {
             tv_payment_success_check_order.text = getString(R.string.thank_instant_payment_check_order)
-        }else{
+        } else {
             tv_payment_success_check_order.text = thanksPageData.thanksCustomization.customSubtitle
         }
 
-        if (thanksPageData.thanksCustomization.customTitleOrderButton.isNullOrBlank()){
+        if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customTitleOrderButton.isNullOrBlank()) {
             btn_see_transaction_list.text = getString(R.string.thank_see_transaction_list)
-        }else{
+        } else {
             btn_see_transaction_list.text = thanksPageData.thanksCustomization.customTitleOrderButton
         }
 
@@ -100,7 +100,13 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
         } else
             tv_payment_method_name.text = thanksPageData.gatewayName
         tv_payment_amount.text = getString(R.string.thankyou_rp_without_space, thanksPageData.amountStr)
-        btn_see_transaction_list.setOnClickListener { gotoOrderList(thanksPageData.thanksCustomization.customTitleOrderButton) }
+        btn_see_transaction_list.setOnClickListener {
+            if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customTitleOrderButton.isNullOrBlank()) {
+                gotoOrderList()
+            } else {
+                gotoOrderList(thanksPageData.thanksCustomization.customTitleOrderButton)
+            }
+        }
     }
 
     private fun observeViewModel() {
