@@ -26,4 +26,5 @@
     <string name="path_voucher_list" translatable="false">/voucher-list</string>
     <string name="path_voucher_list_active" translatable="false">/voucher-list/active</string>
     <string name="path_voucher_list_history" translatable="false">/voucher-list/history</string>
+    <string name="path_voucher_detail" translatable="false">/voucher-detail</string>
 </resources>

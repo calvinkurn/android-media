@@ -10,6 +10,7 @@
         android:supportsRtl="true">
         <activity
             android:name=".voucherlist.view.activity.VoucherListActivity"
+            android:label="@string/title_voucher_creation"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
@@ -39,7 +40,7 @@
         <activity
             android:name=".create.view.activity.CreateMerchantVoucherStepsActivity"
             android:exported="true"
-            android:label="@string/create_voucher_title"
+            android:label="@string/title_voucher_creation"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize"
@@ -59,8 +60,22 @@
 
         <activity
             android:name=".detail.view.activity.VoucherDetailActivity"
+            android:label="@string/title_voucher_creation"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_sellerapp"
+                    android:path="@string/path_voucher_detail"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

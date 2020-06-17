@@ -77,4 +77,7 @@ object ApplinkConstInternalSellerapp {
     val VOUCHER_ACTIVE = "$INTERNAL_SELLERAPP/voucher-list/active"
     @JvmField
     val VOUCHER_HISTORY = "$INTERNAL_SELLERAPP/voucher-list/history"
+
+    @JvmStatic
+    val VOUCHER_DETAIL = "$INTERNAL_SELLERAPP/voucher-detail"
 }
