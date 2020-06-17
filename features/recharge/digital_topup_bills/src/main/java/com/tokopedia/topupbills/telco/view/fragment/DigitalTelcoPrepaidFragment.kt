@@ -8,6 +8,7 @@ import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
@@ -67,6 +68,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     override var menuId = TelcoComponentType.TELCO_PREPAID
     private var inputNumberActionType = InputNumberActionType.MANUAL
     private val listProductTab = mutableListOf<TopupBillsTabItem>()
+    private var pagerAdapter: TopupBillsProductTabAdapter ?= null
 
     private var clientNumber = ""
     private var traceStop = false
@@ -150,6 +152,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        pagerAdapter = TopupBillsProductTabAdapter(mutableListOf(), childFragmentManager)
+
         getPrefixOperatorData()
         renderInputNumber()
         handleFocusClientNumber()
@@ -184,7 +188,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             viewPager.adapter = null
             viewPager.clearOnPageChangeListeners()
 
-            val pagerAdapter = TopupBillsProductTabAdapter(listMenu, childFragmentManager)
+            pagerAdapter?.addTabItem(listMenu)
             viewPager.adapter = pagerAdapter
             viewPager.offscreenPageLimit = listMenu.size
 
@@ -345,8 +349,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private fun renderProductViewPager() {
         viewPager.adapter = null
         viewPager.clearOnPageChangeListeners()
-        listProductTab.clear()
 
+        listProductTab.clear()
         listProductTab.add(
                 TopupBillsTabItem(DigitalTelcoProductFragment.newInstance(TelcoComponentName.PRODUCT_PULSA,
                         operatorName, TelcoProductType.PRODUCT_GRID, productId), TelcoComponentName.PRODUCT_PULSA))
@@ -357,7 +361,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 TopupBillsTabItem(DigitalTelcoProductFragment.newInstance(TelcoComponentName.PRODUCT_ROAMING,
                         operatorName, TelcoProductType.PRODUCT_LIST, productId), TelcoComponentName.PRODUCT_ROAMING))
 
-        val pagerAdapter = TopupBillsProductTabAdapter(listProductTab, childFragmentManager)
+        pagerAdapter?.addTabItem(listProductTab)
         viewPager.adapter = pagerAdapter
         viewPager.offscreenPageLimit = listProductTab.size
 
