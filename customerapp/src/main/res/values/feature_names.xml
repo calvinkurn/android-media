@@ -260,4 +260,9 @@
     <string name="title_gamification_df">Gamification</string>
     <string name="title_tokopoints_df">Tokopoints</string>
 
+    <!--Transaction-->
+    <string name="title_checkout">Checkout</string>
+    <string name="checkout_module_title_activity_checkout">Pengiriman</string>
+    <string name="checkout_module_title_activity_shipping_address">Alamat Pengiriman</string>
+
 </resources>
