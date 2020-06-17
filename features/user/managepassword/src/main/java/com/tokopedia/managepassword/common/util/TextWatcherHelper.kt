@@ -9,10 +9,10 @@ import android.widget.EditText
  * @created 20/02/2020
  */
 
-fun EditText.setAfterTextChanged(listener: (char: CharSequence?) -> Unit) {
+fun EditText.setAfterTextChanged(listener: (char: CharSequence) -> Unit) {
     this.addTextChangedListener(
             object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
+                override fun afterTextChanged(s: Editable) {
                     listener(s)
                 }
 

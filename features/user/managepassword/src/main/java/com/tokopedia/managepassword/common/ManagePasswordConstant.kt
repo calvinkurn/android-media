@@ -6,4 +6,6 @@ object ManagePasswordConstant {
     const val QUERY_FORGOT_PASSWORD = "queryForgotPassword"
 
     const val PARAM_INPUT = "input"
+    const val PARAM_PASSWORD = "password"
+    const val PARAM_PASSWORD_CONFIRMATION = "password_confirm"
 }

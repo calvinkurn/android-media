@@ -2,8 +2,6 @@ package com.tokopedia.managepassword.di.module
 
 import android.content.Context
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.managepassword.common.network.ManagePasswordApi
-import com.tokopedia.managepassword.common.network.ManagePasswordApiClient
 import com.tokopedia.managepassword.di.ManagePasswordContext
 import com.tokopedia.managepassword.di.ManagePasswordScope
 import com.tokopedia.user.session.UserSession
@@ -32,10 +30,4 @@ class ManagePasswordModule(private val context: Context) {
     @ManagePasswordScope
     @Provides
     fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
-
-    @ManagePasswordScope
-    @Provides
-    fun provideApiClient(@ManagePasswordContext context: Context): ManagePasswordApiClient<ManagePasswordApi> {
-        return ManagePasswordApiClient(context.applicationContext, ManagePasswordApi::class.java)
-    }
 }
