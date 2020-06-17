@@ -49,7 +49,6 @@ class CpmTopadsShopItemViewHolder(itemView: View, private val fragment: Fragment
         shopData.setsUrl(data?.imageUrlMobile ?: "")
         view.addOnImpressionListener(shopData, object : ViewHintListener {
             override fun onViewHint() {
-//                sendUrlTrack(shopData.getsUrl())
                 sendTopAdsShopImpression(data)
             }
         })
