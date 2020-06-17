@@ -140,7 +140,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
 
     @Override
     protected void initView() {
-        updateTitle(getString(R.string.checkout_module_title_shipping_dest_multiple_address));
+        updateTitle(getString(R.string.checkout_module_title_activity_shipping_address));
         Intent intent;
         switch (typeRequest) {
             case TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS:
@@ -234,7 +234,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
 
     @Override
     public void onCornerChosen(@NotNull RecipientAddressModel corner) {
-        updateTitle(getString(R.string.checkout_module_title_shipping_dest_multiple_address));
+        updateTitle(getString(R.string.checkout_module_title_activity_shipping_address));
         getSupportFragmentManager().popBackStack();
         ((ShipmentAddressListFragment) getFragment()).onChooseCorner(corner);
     }
@@ -260,7 +260,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         if (getCurrentFragment() instanceof ShipmentAddressListFragment) {
             mAnalytics.eventClickAtcCartChangeAddressClickArrowBackFromGantiAlamat();
         } else if (getCurrentFragment() instanceof CornerListFragment) {
-            updateTitle(getString(R.string.checkout_module_title_shipping_dest_multiple_address));
+            updateTitle(getString(R.string.checkout_module_title_activity_shipping_address));
         }
         super.onBackPressed();
     }
