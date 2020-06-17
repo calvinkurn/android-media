@@ -95,7 +95,6 @@ public class SearchActivity extends BaseActivity
         BottomSheetListener,
         SearchNavigationListener,
         SearchPerformanceMonitoringListener,
-        ProductListFragment.PageLoadCallback,
         HasComponent<BaseAppComponent> {
 
     private Toolbar toolbar;
@@ -873,18 +872,5 @@ public class SearchActivity extends BaseActivity
             return pageLoadTimePerformanceMonitoring.getPltPerformanceData();
         }
         return null;
-    }
-
-    private ProductListFragment.PageLoadCallback delegate;
-
-    public void setPageLoadCallback(ProductListFragment.PageLoadCallback pageLoadCallback) {
-        delegate = pageLoadCallback;
-    }
-
-    @Override
-    public void onPageLoadFinished(RecyclerView recyclerView, List<Visitable> list) {
-        if (delegate == null) return;
-
-        delegate.onPageLoadFinished(recyclerView, list);
     }
 }

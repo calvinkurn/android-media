@@ -5,53 +5,41 @@ import android.content.Intent
 import android.net.Uri
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.validator.Utils
 import com.tokopedia.analyticsdebugger.validator.core.*
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
+import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ProductItemViewHolder
-import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import rx.Observable
 import rx.schedulers.Schedulers
-import java.lang.AssertionError
 
-internal class SearchTrackingAnalyticValidatorTest: ProductListFragment.PageLoadCallback {
-
-    class PageLoadCallbackActivityTestRule(
-            private val callback: ProductListFragment.PageLoadCallback
-    ): ActivityTestRule<SearchActivity>(SearchActivity::class.java, false, false) {
-
-        override fun afterActivityLaunched() {
-            super.afterActivityLaunched()
-            activity.setPageLoadCallback(callback)
-        }
-    }
+internal class SearchTrackingAnalyticValidatorTest {
 
     @get:Rule
-    var activityRule = PageLoadCallbackActivityTestRule(this)
+    var activityRule = ActivityTestRule<SearchActivity>(SearchActivity::class.java, false, false)
 
-    private var isPageLoaded = false
+    private val recyclerViewId = R.id.recyclerview
     private var recyclerView: RecyclerView? = null
-    private var visitableList: List<Visitable<*>>? = null
+    private var recyclerViewIdlingResource: IdlingResource? = null
+
     private val dao: GtmLogDBSource by lazy { GtmLogDBSource(InstrumentationRegistry.getInstrumentation().targetContext) }
     private val engine: ValidatorEngine by lazy { ValidatorEngine(dao) }
-
-    override fun onPageLoadFinished(recyclerView: RecyclerView?, visitableList: List<Visitable<*>>) {
-        isPageLoaded = true
-        this.recyclerView = recyclerView
-        this.visitableList = visitableList
-    }
 
     private fun setUpActivity() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -70,27 +58,39 @@ internal class SearchTrackingAnalyticValidatorTest: ProductListFragment.PageLoad
         dao.deleteAll().subscribe()
     }
 
+    @After
+    fun tearDown() {
+        dao.deleteAll().subscribe()
+    }
+
     @Test
     fun testTracking() {
         setUpActivity()
+
+        recyclerView = activityRule.activity.findViewById<RecyclerView>(recyclerViewId).also {
+            recyclerViewIdlingResource = RecyclerViewIdlingResource(it)
+        }
+
+        IdlingRegistry.getInstance().register(recyclerViewIdlingResource)
 
         onPageLoaded {
             performUserJourney()
             assertTracking()
         }
+
+        IdlingRegistry.getInstance().unregister(recyclerViewIdlingResource)
     }
 
     private fun onPageLoaded(onLoaded: () -> Unit) {
-        while(!isPageLoaded) { }
-
         onLoaded()
     }
 
     private fun performUserJourney() {
-        val recyclerViewId = recyclerView?.id ?: throw AssertionError("RecyclerView is null")
+        onView(withId(recyclerViewId)).check(matches(isDisplayed()))
 
-        val organicItemPosition = visitableList!!.indexOfFirst { it is ProductItemViewModel && !it.isTopAds }
-        val topAdsItemPosition = visitableList!!.indexOfFirst { it is ProductItemViewModel && it.isTopAds }
+        val productListAdapter = recyclerView?.adapter as? ProductListAdapter ?: throw AssertionError("Adapter is not ${ProductListAdapter::class.java.simpleName}")
+        val organicItemPosition = productListAdapter.itemList.indexOfFirst { it is ProductItemViewModel && !it.isTopAds }
+        val topAdsItemPosition = productListAdapter.itemList.indexOfFirst { it is ProductItemViewModel && it.isTopAds }
 
         onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<ProductItemViewHolder>(topAdsItemPosition, click()))
         onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<ProductItemViewHolder>(organicItemPosition, click()))

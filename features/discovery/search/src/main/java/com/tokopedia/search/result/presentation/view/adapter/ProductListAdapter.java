@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -288,6 +289,10 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
                 notifyItemChanged(i);
             }
         }
+    }
+
+    public List<Visitable> getItemList() {
+        return list;
     }
 
     public interface OnItemChangeView {
