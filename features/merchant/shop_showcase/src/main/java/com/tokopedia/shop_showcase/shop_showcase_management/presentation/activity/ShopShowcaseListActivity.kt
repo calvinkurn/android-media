@@ -85,7 +85,7 @@ class ShopShowcaseListActivity : BaseActivity(), ShopShowcaseFragmentNavigation 
         val window: Window = getWindow()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            getWindow().statusBarColor = resources.getColor(android.R.color.white)
+            getWindow().statusBarColor = ContextCompat.getColor(this, android.R.color.white)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
