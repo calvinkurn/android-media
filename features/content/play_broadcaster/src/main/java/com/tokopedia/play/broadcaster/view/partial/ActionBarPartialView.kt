@@ -17,9 +17,9 @@ class ActionBarPartialView(
         listener: Listener
 ) : PartialView(container, R.id.action_bar){
 
-    private var ivSwitchCamera: AppCompatImageView = container.findViewById(R.id.iv_switch)
-    private var tvClose: AppCompatTextView = container.findViewById(R.id.tv_close)
-    private var tvTitle: Typography = container.findViewById(R.id.tv_title)
+    private var ivSwitchCamera: AppCompatImageView = findViewById(R.id.iv_switch)
+    private var tvClose: AppCompatTextView = findViewById(R.id.tv_close)
+    private var tvTitle: Typography = findViewById(R.id.tv_title)
 
     init {
         ivSwitchCamera.setOnClickListener { listener.onCameraIconClicked() }

@@ -18,21 +18,17 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.ui.model.CoverSourceEnum
-import com.tokopedia.play.broadcaster.ui.model.CoverStarterEnum
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.util.BreadcrumbsModel
 import com.tokopedia.play.broadcaster.util.compatTransitionName
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
-import com.tokopedia.play.broadcaster.view.fragment.PlayCoverTitleSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSetupViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 /**
  * Created by jegul on 26/05/20
@@ -203,15 +199,6 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
                 coverUri = viewModel.coverImageUri,
                 title = viewModel.liveTitle
         )
-    }
-
-    private fun showCoverTitlePage() {
-        val productImageList: ArrayList<Pair<Long, String>> = ArrayList(viewModel.selectedProductList
-                .map { Pair(it.id, it.originalImageUrl) }.toList())
-        navigateToFragment(PlayCoverTitleSetupFragment::class.java, Bundle().apply {
-            putInt(PlayCoverTitleSetupFragment.EXTRA_STARTER_STATE, CoverStarterEnum.NORMAL.value)
-            putInt(PlayCoverTitleSetupFragment.EXTRA_COVER_SOURCE, CoverSourceEnum.NONE.value)
-        })
     }
 
     /**

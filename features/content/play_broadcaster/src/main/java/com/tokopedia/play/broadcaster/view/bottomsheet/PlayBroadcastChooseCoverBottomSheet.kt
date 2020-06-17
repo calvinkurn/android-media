@@ -7,41 +7,58 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayCoverProductViewHolder
 import com.tokopedia.play.broadcaster.view.activity.PlayCoverCameraActivity
 import com.tokopedia.play.broadcaster.view.adapter.PlayCoverProductAdapter
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastCoverSetupViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.*
-import kotlinx.android.synthetic.main.bottom_sheet_play_choose_cover.*
+import javax.inject.Inject
 
 /**
  * @author by furqan on 03/06/2020
  */
-class PlayBroadcastChooseCoverBottomSheet : BottomSheetUnify() {
+class PlayBroadcastChooseCoverBottomSheet @Inject constructor(
+        private val viewModelFactory: ViewModelFactory
+) : BottomSheetUnify() {
 
     var listener: Listener? = null
 
-    private var imageUrlList = arrayListOf<Pair<String, String>>()
+    private lateinit var viewModel: PlayBroadcastCoverSetupViewModel
+
+    private lateinit var llOpenCamera: LinearLayout
+    private lateinit var rvProductCover: RecyclerView
+    private lateinit var llOpenGallery: LinearLayout
+
+    private val pdpCoverAdapter = PlayCoverProductAdapter(object : PlayCoverProductViewHolder.Listener {
+        override fun onProductCoverClicked(productId: Long, imageUrl: String) {
+            if (isAllPermissionGranted()) {
+                listener?.onGetCoverFromProduct(productId, imageUrl)
+                dismiss()
+            } else {
+                requestPermissions(arrayOf(Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE))
+            }
+        }
+    })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        savedInstanceState?.let {
-            imageUrlList = it.getSerializable(EXTRA_IMAGE_URL) as ArrayList<Pair<String, String>>?
-                    ?: arrayListOf()
-        } ?: arguments?.let {
-            imageUrlList = it.getSerializable(EXTRA_IMAGE_URL) as ArrayList<Pair<String, String>>?
-                    ?: arrayListOf()
-        }
+        viewModel = ViewModelProviders.of(requireParentFragment(), viewModelFactory).get(PlayBroadcastCoverSetupViewModel::class.java)
         initBottomSheet()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView()
+        setupView(view)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -54,14 +71,15 @@ class PlayBroadcastChooseCoverBottomSheet : BottomSheetUnify() {
         }
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        observeSelectedProduct()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         clearFindViewByIdCache()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putSerializable(EXTRA_IMAGE_URL, imageUrlList)
     }
 
     private fun initBottomSheet() {
@@ -71,17 +89,27 @@ class PlayBroadcastChooseCoverBottomSheet : BottomSheetUnify() {
         isDragable = true
         isHideable = true
 
-        setChild(View.inflate(requireContext(), R.layout.bottom_sheet_play_choose_cover, null))
+        val view = View.inflate(requireContext(), R.layout.bottom_sheet_play_choose_cover, null)
+        setChild(view)
+        initView(view)
     }
 
-    private fun initView() {
+    private fun initView(view: View) {
+        with (view) {
+            llOpenCamera = findViewById(R.id.ll_open_camera)
+            rvProductCover = findViewById(R.id.rv_product_cover)
+            llOpenGallery = findViewById(R.id.ll_open_gallery)
+        }
+    }
+
+    private fun setupView(view: View) {
         bottomSheetHeader.visibility = View.GONE
         bottomSheetWrapper.setPadding(0,
                 bottomSheetWrapper.paddingTop,
                 0,
                 bottomSheetWrapper.paddingBottom)
 
-        containerPlayTakePicture.setOnClickListener {
+        llOpenCamera.setOnClickListener {
             if (isAllPermissionGranted()) {
                 takeCoverFromCamera()
             } else {
@@ -91,7 +119,7 @@ class PlayBroadcastChooseCoverBottomSheet : BottomSheetUnify() {
             }
         }
 
-        containerPlayChooseFromGallery.setOnClickListener {
+        llOpenGallery.setOnClickListener {
             if (isAllPermissionGranted()) {
                 chooseCoverFromGallery()
             } else {
@@ -101,21 +129,7 @@ class PlayBroadcastChooseCoverBottomSheet : BottomSheetUnify() {
             }
         }
 
-        rvPlayCoverProduct.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-        rvPlayCoverProduct.setHasFixedSize(true)
-        val imageUrls = imageUrlList.map { it.second }.toList()
-        rvPlayCoverProduct.adapter = PlayCoverProductAdapter(imageUrls, object : PlayCoverProductViewHolder.Listener {
-            override fun onCoverSelectedFromProduct(position: Int) {
-                if (isAllPermissionGranted()) {
-                    listener?.onGetCoverFromProduct(position)
-                    dismiss()
-                } else {
-                    requestPermissions(arrayOf(Manifest.permission.CAMERA,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.READ_EXTERNAL_STORAGE))
-                }
-            }
-        })
+        rvProductCover.adapter = pdpCoverAdapter
 
         if (!isAllPermissionGranted()) {
             requestPermissions(arrayOf(Manifest.permission.CAMERA,
@@ -146,9 +160,18 @@ class PlayBroadcastChooseCoverBottomSheet : BottomSheetUnify() {
         dismiss()
     }
 
+    /**
+     * Observe
+     */
+    private fun observeSelectedProduct() {
+        viewModel.observableSelectedProducts.observe(viewLifecycleOwner, Observer {
+            pdpCoverAdapter.setItemsAndAnimateChanges(it)
+        })
+    }
+
     interface Listener {
         fun onGetCoverFromCamera(imageUri: Uri?)
-        fun onGetCoverFromProduct(productPosition: Int)
+        fun onGetCoverFromProduct(productId: Long, imageUrl: String)
         fun onChooseFromGalleryClicked()
     }
 
@@ -159,13 +182,6 @@ class PlayBroadcastChooseCoverBottomSheet : BottomSheetUnify() {
 
         private const val PERMISSION_CODE = 1111
         private const val REQUEST_IMAGE_CAPTURE = 2222
-
-        fun getInstance(imageUrlList: ArrayList<Pair<Long, String>>): PlayBroadcastChooseCoverBottomSheet =
-                PlayBroadcastChooseCoverBottomSheet().also {
-                    it.arguments = Bundle().apply {
-                        putSerializable(EXTRA_IMAGE_URL, imageUrlList)
-                    }
-                }
     }
 
 }

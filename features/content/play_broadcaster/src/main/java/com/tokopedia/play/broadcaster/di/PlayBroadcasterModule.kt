@@ -13,6 +13,8 @@ import com.tokopedia.imageuploader.domain.UploadImageRepository
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils
 import com.tokopedia.play.broadcaster.data.model.PlayCoverUploadEntity
+import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastSetupDataStore
+import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastSetupDataStoreImpl
 import com.tokopedia.play.broadcaster.dispatcher.PlayBroadcastDispatcher
 import com.tokopedia.play.broadcaster.pusher.PlayPusher
 import com.tokopedia.play.broadcaster.pusher.PlayPusherBuilder
@@ -79,5 +81,9 @@ class PlayBroadcasterModule(val mContext: Context) {
             @ImageUploaderQualifier imageUploaderUtils: ImageUploaderUtils): UploadImageUseCase<PlayCoverUploadEntity> {
         return UploadImageUseCase(uploadImageRepository, generateHostRepository, gson, userSession, PlayCoverUploadEntity::class.java, imageUploaderUtils)
     }
+
+    @PlayBroadcasterScope
+    @Provides
+    fun provideSetupDataStore(): PlayBroadcastSetupDataStore = PlayBroadcastSetupDataStoreImpl()
 
 }

@@ -15,27 +15,44 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
-    <include
-        android:id="@+id/containerPlayCoverTitleSetup"
-        layout="@layout/layout_play_cover_title_setup"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_info"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/layout_lvl0"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/play_dp_12"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/play_dp_12"
+        android:textColor="@color/Neutral_N700_68"
+        android:text="@string/play_prepare_cover_title_header_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/bottom_sheet_header"
+        app:typographyType="body_3"
         />
 
     <include
-        android:id="@+id/containerPlayCoverCropSetup"
+        android:id="@+id/cl_cover_setup"
+        layout="@layout/layout_play_cover_title_setup"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_info"
+        />
+
+    <include
+        android:id="@+id/cl_cover_crop"
         layout="@layout/layout_play_cover_crop"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
         android:visibility="gone"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/bottom_sheet_header"
+        app:layout_constraintTop_toBottomOf="@id/tv_info"
         tools:visibility="visible"
         />
 
