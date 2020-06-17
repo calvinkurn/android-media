@@ -2,6 +2,8 @@ package com.tokopedia.oneclickcheckout.order.view
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartOccExternalUseCase
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.*
@@ -66,6 +68,7 @@ import kotlin.math.max
 
 class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                                                     private val executorSchedulers: ExecutorSchedulers,
+                                                    private val atcOccExternalUseCase: AddToCartOccExternalUseCase,
                                                     private val getOccCartUseCase: GetOccCartUseCase,
                                                     private val ratesUseCase: GetRatesUseCase,
                                                     val getPreferenceListUseCase: GetPreferenceListUseCase,
@@ -102,6 +105,32 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
     fun getCurrentShipperId(): Int {
         return _orderPreference?.shipping?.shipperId ?: 0
+    }
+
+    fun atcOcc(productId: String) {
+        globalEvent.value = OccGlobalEvent.Loading
+        atcOccExternalUseCase.createObservable(
+                RequestParams().apply {
+                    putString(AddToCartOccExternalUseCase.REQUEST_PARAM_KEY_PRODUCT_ID, productId)
+                }
+        ).subscribeOn(executorSchedulers.io).observeOn(executorSchedulers.main)
+                .subscribe(object : Observer<AddToCartDataModel> {
+                    override fun onError(e: Throwable) {
+                        globalEvent.value = OccGlobalEvent.AtcError(e)
+                    }
+
+                    override fun onNext(result: AddToCartDataModel) {
+                        if (result.isDataError()) {
+                            globalEvent.value = OccGlobalEvent.AtcError(errorMessage = result.getAtcErrorMessage() ?: "")
+                        } else {
+                            globalEvent.value = OccGlobalEvent.AtcSuccess(result.data.message.firstOrNull() ?: "")
+                        }
+                    }
+
+                    override fun onCompleted() {
+                        // do nothing
+                    }
+                })
     }
 
     fun getOccCart(isFullRefresh: Boolean, source: String) {

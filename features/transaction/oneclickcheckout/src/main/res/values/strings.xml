@@ -84,4 +84,7 @@
     <string name="lbl_order_summary">Ringkasan Belanja</string>
     <string name="lbl_total_item_price">Total Harga Barang</string>
     <string name="lbl_additional_fee">Biaya Layanan</string>
+
+    <string name="lbl_try_again">Coba Lagi</string>
+    <string name="lbl_go_to_home">Ke Homepage</string>
 </resources>

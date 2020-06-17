@@ -36,7 +36,9 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
         graphqlUseCase.setRequestParams(useCaseRequestParams.parameters)
         val response = graphqlUseCase.executeOnBackground()
         if (response.response.status.equals(STATUS_OK, true)) {
-            if (response.response.data.cartList.isNotEmpty()) {
+            if (response.response.data.errors.isNotEmpty()) {
+                throw MessageErrorException(response.response.data.errors[0])
+            } else if (response.response.data.cartList.isNotEmpty()) {
                 val cart = response.response.data.cartList[0]
                 val orderCart = OrderCart().apply {
                     product = generateOrderProduct(cart.product)
@@ -48,8 +50,6 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
                 }
                 return OrderData(response.response.data.occMainOnboarding, orderCart, response.response.data.profileIndex, response.response.data.profileRecommendation,
                         response.response.data.profileResponse, LastApplyMapper.mapPromo(response.response.data.promo))
-            } else if (response.response.data.errors.isNotEmpty()) {
-                throw MessageErrorException(response.response.data.errors[0])
             } else {
                 throw MessageErrorException(DEFAULT_ERROR_MESSAGE)
             }

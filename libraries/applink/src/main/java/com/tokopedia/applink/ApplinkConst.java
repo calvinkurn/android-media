@@ -305,6 +305,8 @@ public interface ApplinkConst {
 
     String DFFALLBACKURL_KEY = "dffallbackurl";
 
+    String OCC = "tokopedia://occ";
+
     interface Discovery {
         String CATEGORY = "tokopedia://category";
     }
