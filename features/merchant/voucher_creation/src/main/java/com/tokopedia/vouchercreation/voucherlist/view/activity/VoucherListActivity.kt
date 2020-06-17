@@ -100,9 +100,11 @@ class VoucherListActivity : BaseActivity(), VoucherListFragment.Listener {
             val willShowSuccessCreationDialog = !isSuccessDialogAlreadyShowed && isActiveVoucher && successVoucherId != 0
             if (willShowSuccessCreationDialog) {
                 val bundle = Bundle().apply bun@{
-                    isUpdateVoucherSuccess?.run {
-                        putBoolean(VoucherListFragment.IS_UPDATE_VOUCHER, true)
-                        return@bun
+                    isUpdateVoucherSuccess?.let { isUpdate ->
+                        if (isUpdate) {
+                            putBoolean(VoucherListFragment.IS_UPDATE_VOUCHER, true)
+                            return@bun
+                        }
                     }
                     successVoucherId?.run {
                         putBoolean(VoucherListFragment.IS_SUCCESS_VOUCHER, true)

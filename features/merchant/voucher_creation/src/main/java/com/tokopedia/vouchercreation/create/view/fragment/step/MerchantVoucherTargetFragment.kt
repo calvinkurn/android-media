@@ -155,6 +155,7 @@ class MerchantVoucherTargetFragment : BaseCreateMerchantVoucherFragment<VoucherT
     override fun onDismissBottomSheet(bottomSheetType: CreateVoucherBottomSheetType) {
         when(bottomSheetType) {
             CreateVoucherBottomSheetType.CREATE_PROMO_CODE -> {
+                fillVoucherNameTextfield?.clearFocus()
                 if (shouldReturnToInitialValue) {
                     viewModel.setDefaultVoucherTargetListData()
                     viewModel.setActiveVoucherTargetType(VoucherTargetType.PUBLIC)

@@ -358,7 +358,6 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                                         edit().putBoolean(IS_MVC_FIRST_TIME, false).apply()
                                     }
                                 }
-                                activity?.finish()
                             }
                         }
                         is Fail -> {

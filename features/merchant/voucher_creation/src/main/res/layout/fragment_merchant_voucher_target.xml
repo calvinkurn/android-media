@@ -1,61 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:isScrollContainer="true"
-    android:fillViewport="true"
-    android:id="@+id/voucherTargetScrollView"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <RelativeLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_above="@id/fillVoucherNameDivider"
+        tools:itemCount="1"
+        tools:listitem="@layout/mvc_voucher_target_widget"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_above="@id/fillVoucherNameDivider"
-            tools:itemCount="1"
-            tools:listitem="@layout/mvc_voucher_target_widget"/>
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/fillVoucherNameDivider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl1"
+        android:layout_marginTop="8dp"
+        android:layout_above="@id/fillVoucherNameTitle"/>
 
-        <com.tokopedia.unifycomponents.DividerUnify
-            android:id="@+id/fillVoucherNameDivider"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/layout_lvl1"
-            android:layout_marginTop="8dp"
-            android:layout_above="@id/fillVoucherNameTitle"/>
+    <com.tokopedia.vouchercreation.create.view.customview.VoucherCreateTitleView
+        android:id="@+id/fillVoucherNameTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        app:title="@string/mvc_create_voucher_name_widget_title"
+        android:layout_above="@id/fillVoucherNameTextfield"/>
 
-        <com.tokopedia.vouchercreation.create.view.customview.VoucherCreateTitleView
-            android:id="@+id/fillVoucherNameTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            app:title="@string/mvc_create_voucher_name_widget_title"
-            android:layout_above="@id/fillVoucherNameTextfield"/>
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/fillVoucherNameTextfield"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
+        android:layout_marginBottom="@dimen/layout_lvl3"
+        app:text_field_placeholder="@string/mvc_create_voucher_name_textfield_hint"
+        app:text_field_counter="@integer/create_voucher_name_max_length"
+        android:layout_above="@id/voucherTargetNextButton"/>
 
-        <com.tokopedia.unifycomponents.TextFieldUnify
-            android:id="@+id/fillVoucherNameTextfield"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/layout_lvl2"
-            android:layout_marginLeft="@dimen/layout_lvl2"
-            android:layout_marginEnd="@dimen/layout_lvl2"
-            android:layout_marginRight="@dimen/layout_lvl2"
-            android:layout_marginBottom="@dimen/layout_lvl3"
-            app:text_field_placeholder="@string/mvc_create_voucher_name_textfield_hint"
-            app:text_field_counter="@integer/create_voucher_name_max_length"
-            android:layout_above="@id/voucherTargetNextButton"/>
+    <com.tokopedia.vouchercreation.create.view.customview.NextStepButton
+        android:id="@+id/voucherTargetNextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
 
-        <com.tokopedia.vouchercreation.create.view.customview.NextStepButton
-            android:id="@+id/voucherTargetNextButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"/>
-
-    </RelativeLayout>
-</androidx.core.widget.NestedScrollView>
+</RelativeLayout>
