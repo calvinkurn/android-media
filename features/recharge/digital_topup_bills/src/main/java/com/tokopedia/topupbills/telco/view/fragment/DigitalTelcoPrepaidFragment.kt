@@ -88,7 +88,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         return null
     }
 
-    private fun isProductExist(telcoProduct: TelcoProduct): Boolean{
+    private fun isProductExist(telcoProduct: TelcoProduct): Boolean {
         return telcoProduct.id != ID_PRODUCT_EMPTY
     }
 
@@ -182,7 +182,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
      * handle reset selected item every move to other tab product
      */
     private fun getEmptyProduct(): TelcoProduct {
-        return TelcoProduct(id= ID_PRODUCT_EMPTY)
+        return TelcoProduct(id = ID_PRODUCT_EMPTY)
     }
 
     override fun getTelcoMenuId(): Int {
@@ -209,12 +209,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 tabLayout.show()
                 separator.show()
                 tabLayout.setupWithViewPager(viewPager)
-                if (viewPager.getChildAt(0) != null) {
-                    (viewPager.getChildAt(0) as TopupBillsWidgetInterface).toggleTitle(false)
-                }
-                if (viewPager.getChildAt(1) != null) {
-                    (viewPager.getChildAt(1) as TopupBillsWidgetInterface).toggleTitle(false)
-                }
+                (viewPager.getChildAt(0) as? TopupBillsWidgetInterface)?.toggleTitle(false)
+                (viewPager.getChildAt(1) as? TopupBillsWidgetInterface)?.toggleTitle(false)
             } else {
                 tabLayout.hide()
                 separator.hide()
@@ -228,8 +224,12 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM) as TopupBillsExtraParam
                 clientNumber = digitalTelcoExtraParam.clientNumber
                 productId = digitalTelcoExtraParam.productId.toIntOrNull() ?: 0
-                if (digitalTelcoExtraParam.categoryId.isNotEmpty()) { categoryId = digitalTelcoExtraParam.categoryId.toInt() }
-                if (digitalTelcoExtraParam.menuId.isNotEmpty()) { menuId = digitalTelcoExtraParam.menuId.toInt() }
+                if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
+                    categoryId = digitalTelcoExtraParam.categoryId.toInt()
+                }
+                if (digitalTelcoExtraParam.menuId.isNotEmpty()) {
+                    menuId = digitalTelcoExtraParam.menuId.toInt()
+                }
             }
         } else {
             clientNumber = savedInstanceState.getString(CACHE_CLIENT_NUMBER) ?: ""
