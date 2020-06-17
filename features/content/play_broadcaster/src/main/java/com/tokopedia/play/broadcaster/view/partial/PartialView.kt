@@ -21,5 +21,5 @@ abstract class PartialView(
 
     protected fun getColor(@ColorRes colorRes: Int): Int = MethodChecker.getColor(rootView.context, colorRes)
 
-    protected fun getString(@StringRes stringRes: Int, vararg value: Any): String = getString(stringRes, *value)
+    protected fun getString(@StringRes stringRes: Int, vararg value: Any): String = rootView.context.getString(stringRes, *value)
 }
