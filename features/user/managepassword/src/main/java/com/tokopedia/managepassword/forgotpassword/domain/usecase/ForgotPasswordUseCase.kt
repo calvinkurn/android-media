@@ -16,14 +16,14 @@ class ForgotPasswordUseCase @Inject constructor(
 
     fun sendRequest(onSuccess: (ForgotPasswordResponseModel) -> Unit, onError: (Throwable) -> Unit) {
         val rawQuery = GraphqlHelper.loadRawString(context.resources, R.raw.query_reset_password)
-        graphqlUseCase.apply {
+        graphqlUseCase.run {
             setTypeClass(ForgotPasswordResponseModel::class.java)
             setGraphqlQuery(rawQuery)
             setRequestParams(params)
-            execute(onSuccess = {
-                onSuccess(it)
-            }, onError = {
-                onError(it)
+            execute({ result ->
+                onSuccess(result)
+            },{throwable ->
+                onError(throwable)
             })
         }
     }

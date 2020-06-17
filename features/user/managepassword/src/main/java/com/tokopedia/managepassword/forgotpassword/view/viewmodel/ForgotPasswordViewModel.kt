@@ -27,10 +27,10 @@ class ForgotPasswordViewModel @Inject constructor(
         launchCatchError(coroutineContext, {
             usecase.params = generateParam(email)
             usecase.sendRequest(onSuccess = {
-                if (it.isSuccess) {
+                if (it.resetPassword.isSuccess) {
                     _response.postValue(Success(it))
                 } else {
-                    _response.postValue(Fail(Throwable(it.message)))
+                    _response.postValue(Fail(Throwable(it.resetPassword.message)))
                 }
             }, onError = {
                 _response.postValue(Fail(it))

@@ -17,6 +17,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.managepassword.R
 import com.tokopedia.managepassword.di.ManagePasswordComponent
 import com.tokopedia.managepassword.forgotpassword.analytics.ForgotPasswordAnalytics
+import com.tokopedia.managepassword.forgotpassword.domain.data.ForgotPasswordResponseModel
 import com.tokopedia.managepassword.forgotpassword.view.viewmodel.ForgotPasswordViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -46,9 +47,6 @@ class ForgotPasswordFragment : BaseDaggerFragment() {
     private val email: String
         get() = arguments?.getString(ApplinkConstInternalGlobal.PARAM_EMAIL, "") ?: ""
 
-    private val isAutoReset: Boolean
-        get() = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_AUTO_RESET, false) ?: false
-
     private val isRemoveFooter: Boolean
         get() = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_REMOVE_FOOTER, false) ?: false
 
@@ -71,11 +69,6 @@ class ForgotPasswordFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (isAutoReset) {
-            /* TODO :: not sure for this flow, just follow the legacy code */
-            onSuccessReset()
-        }
-
         if (userSession.isLoggedIn || isRemoveFooter) {
             btnRegister?.visibility = View.GONE
         }
@@ -120,7 +113,7 @@ class ForgotPasswordFragment : BaseDaggerFragment() {
         viewModel.response.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    onSuccessReset()
+                    onSuccessReset(it.data.resetPassword)
                 }
                 is Fail -> {
                     onFailedReset(it.throwable.message.toString())
@@ -129,11 +122,18 @@ class ForgotPasswordFragment : BaseDaggerFragment() {
         })
     }
 
-    private fun onSuccessReset() {
+    private fun onSuccessReset(forgotPasswordResponseModel: ForgotPasswordResponseModel.ForgotPasswordModel) {
         hideLoading()
         tracker.onSuccessReset()
         layoutForgotPassword?.visibility = View.GONE
-        setOnSuccessView()
+        if (forgotPasswordResponseModel.redirectUrl.isNotEmpty()) {
+            activity?.let {
+                RouteManager.route(it, String.format("%s?url=%s", ApplinkConst.WEBVIEW, forgotPasswordResponseModel.redirectUrl))
+                it.finish()
+            }
+        } else {
+            setOnSuccessView()
+        }
     }
 
     private fun setOnSuccessView() {

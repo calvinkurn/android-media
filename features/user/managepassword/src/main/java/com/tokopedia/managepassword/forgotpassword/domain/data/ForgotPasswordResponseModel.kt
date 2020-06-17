@@ -5,12 +5,18 @@ import com.google.gson.annotations.SerializedName
 
 data class ForgotPasswordResponseModel(
         @Expose
-        @SerializedName("redirect_url")
-        val redirectUrl: String = "",
-        @Expose
-        @SerializedName("is_success")
-        val isSuccess: Boolean = false,
-        @Expose
-        @SerializedName("message")
-        val message: String = ""
-)
+        @SerializedName("resetPassword")
+        val resetPassword: ForgotPasswordModel = ForgotPasswordModel()
+) {
+    data class ForgotPasswordModel(
+            @Expose
+            @SerializedName("redirect_url")
+            val redirectUrl: String = "",
+            @Expose
+            @SerializedName("is_success")
+            val isSuccess: Boolean = false,
+            @Expose
+            @SerializedName("message")
+            val message: String = ""
+    )
+}
