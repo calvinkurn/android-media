@@ -7,4 +7,8 @@
     <string name="receiver_name">Nama</string>
     <string name="receiver_number">0821112233445</string>
     <string name="address_detail">Detail Alamat</string>
+    <string name="no_pinpoint">Belum Pinpoint</string>
+    <string name="pinpoint">Sudah Pinpoint</string>
+    
+    <string name="label_manage_address">Daftar Alamat</string>
 </resources>
