@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.helper.benchmark
 
 import android.os.Build
 import android.os.Trace
+import com.tokopedia.network.BuildConfig
 
 object BenchmarkHelper {
     fun beginSystraceSection(sectionName: String) {
