@@ -33,7 +33,8 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_close"
-        android:layout_width="@dimen/layout_lvl3"
+        android:minWidth="@dimen/layout_lvl3"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/layout_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl4"

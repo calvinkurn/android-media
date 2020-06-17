@@ -9,8 +9,11 @@ import com.alivc.live.pusher.SurfaceStatus
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.pusher.state.PlayPusherErrorType
+import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play_common.util.event.EventObserver
 import javax.inject.Inject
 
 /**
@@ -82,7 +85,6 @@ class PlayBroadcastFragment @Inject constructor(
     /**
      * Observe
      */
-
     private fun observePermissionStateEvent() {
         parentViewModel.observablePermissionState.observe(this, Observer {
             when(it) {

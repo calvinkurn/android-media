@@ -2,7 +2,6 @@ package com.tokopedia.play.broadcaster.pusher.timer
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.CountDownTimer
 import android.preference.PreferenceManager
 import java.util.concurrent.TimeUnit
 
@@ -11,75 +10,50 @@ import java.util.concurrent.TimeUnit
  * Created by mzennis on 25/05/20.
  */
 class PlayPusherTimer(val context: Context,
-                      private var liveStreamDuration: Long,
+                      private val duration: Long,
                       private var callback: PlayPusherTimerListener) {
 
     var timeoutList: List<Timeout> = Timeout.Default()
+    var pauseDuration: Long? = null
 
-    private var countDownTimer: CountDownTimer? = null
-    private var lastMillis: Long = liveStreamDuration
-    private var sharedPreferences: SharedPreferences? = PreferenceManager.getDefaultSharedPreferences(context)
+    private var countDownTimer: PlayCountDownTimer = getCountDownTimer(duration)
+    private var localStorage: SharedPreferences? = PreferenceManager.getDefaultSharedPreferences(context)
 
     fun start() {
-        var liveStreamDuration = sharedPreferences?.getLong(PLAY_TIMER_LAST_STATE, liveStreamDuration)
-                ?:DEFAULT_MAX_LIVE_STREAM_DURATION
-        liveStreamDuration += DEFAULT_INTERVAL
-        countDownTimer = getCountDownTimer(liveStreamDuration)
-        countDownTimer?.start()
+        countDownTimer.start()
     }
 
     fun stop() {
-        countDownTimer?.cancel()
-        clearLastState()
-        destroy()
+        countDownTimer.cancel()
+    }
+
+    fun resume() {
+        pauseDuration?.let { maxPauseMillis ->
+            getLongValue(PLAY_TIMER_LAST_MILLIS)?.let { lastMillis ->
+                if (reachMaximumPauseDuration(lastMillis, maxPauseMillis)) {
+                    callback.onReachMaximumPauseDuration()
+                    removeValue(PLAY_TIMER_LAST_MILLIS)
+                }
+            }
+        }
+        countDownTimer.resume()
     }
 
     fun pause() {
-        countDownTimer?.cancel()
-        saveLastState()
-        destroy()
+        countDownTimer.pause()
+        saveLongValue(PLAY_TIMER_LAST_MILLIS, System.currentTimeMillis())
     }
 
-    private fun onCountDownTimerActive(millisUntilFinished: Long) {
-        lastMillis = millisUntilFinished
-
-        val timeout = timeoutList.firstOrNull { millisUntilFinished in it.minMillis..it.maxMillis }
-        if (timeout != null) callback.onCountDownAlmostFinish(timeout.minute)
-        else callback.onCountDownActive(millisToMinuteSecond(millisUntilFinished))
-    }
-
-    private fun onCountDownTimerFinish() {
-        callback.onCountDownFinish()
-    }
-
-    private fun destroy() {
-        countDownTimer = null
-        sharedPreferences = null
-        lastMillis = 0L
-    }
-
-    private fun saveLastState() {
-        if (lastMillis > 0) {
-            val editor = sharedPreferences?.edit()
-            editor?.putLong(PLAY_TIMER_LAST_STATE, lastMillis)
-            editor?.apply()
-        }
-    }
-
-    private fun clearLastState() {
-        val editor = sharedPreferences?.edit()
-        editor?.remove(PLAY_TIMER_LAST_STATE)
-        editor?.apply()
-    }
-
-    private fun getCountDownTimer(liveStreamDuration: Long): CountDownTimer {
-        return object : CountDownTimer(liveStreamDuration, DEFAULT_INTERVAL) {
+    private fun getCountDownTimer(liveStreamDuration: Long): PlayCountDownTimer {
+        return object : PlayCountDownTimer(liveStreamDuration, DEFAULT_INTERVAL) {
             override fun onFinish() {
-                onCountDownTimerFinish()
+                callback.onCountDownFinish()
             }
 
             override fun onTick(millisUntilFinished: Long) {
-               onCountDownTimerActive(millisUntilFinished)
+                val timeout = timeoutList.firstOrNull { millisUntilFinished in it.minMillis..it.maxMillis }
+                if (timeout != null) callback.onCountDownAlmostFinish(timeout.minute)
+                else callback.onCountDownActive(millisToMinuteSecond(millisUntilFinished))
             }
         }
     }
@@ -93,9 +67,28 @@ class PlayPusherTimer(val context: Context,
     private fun millisToSecond(millis: Long): Long = TimeUnit.MILLISECONDS.toSeconds(millis) -
             TimeUnit.MINUTES.toSeconds(millisToMinute(millis))
 
+    private fun reachMaximumPauseDuration(lastMillis: Long, maxPauseMillis: Long): Boolean {
+        val currentMillis = System.currentTimeMillis()
+        return ((currentMillis - lastMillis) > maxPauseMillis)
+    }
+
+    /**
+     * Store
+     */
+    private fun saveLongValue(key: String, value: Long) {
+        localStorage?.edit()?.putLong(key, value)?.apply()
+    }
+
+    private fun getLongValue(key: String, defaultValue: Long = 0L): Long? =
+            localStorage?.getLong(key, defaultValue)
+
+    private fun removeValue(key: String) {
+        localStorage?.edit()?.remove(key)?.apply()
+    }
+
+
     companion object {
-        const val DEFAULT_MAX_LIVE_STREAM_DURATION = 1800000L
         const val DEFAULT_INTERVAL = 1000L
-        const val PLAY_TIMER_LAST_STATE = "play_broadcast_timer_last_state"
+        const val PLAY_TIMER_LAST_MILLIS = "play_broadcast_last_millis"
     }
 }
