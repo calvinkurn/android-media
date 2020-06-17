@@ -1,4 +1,4 @@
-package com.tkpd.remoteresourcerequest.task
+package com.tkpd.remoteresourcerequest.runnable
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -6,7 +6,7 @@ import android.util.DisplayMetrics
 import kotlin.math.max
 
 class ImageDecodeRunnable(
-        private val task: TaskDecodeProperties
+    private val task: TaskDecodeProperties
 ) : Runnable {
 
     interface TaskDecodeProperties {
@@ -46,7 +46,7 @@ class ImageDecodeRunnable(
 
         bitmapOptions.inJustDecodeBounds = true
         BitmapFactory
-                .decodeByteArray(imageBuffer, 0, imageBuffer.size, bitmapOptions)
+            .decodeByteArray(imageBuffer, 0, imageBuffer.size, bitmapOptions)
 
         val metrics = task.getDisplayMetrics()
 
@@ -72,11 +72,11 @@ class ImageDecodeRunnable(
 
         bitmapOptions.inJustDecodeBounds = false
         var i = 0
-        while (i < NUMBER_OF_DECODE_TRIES) {
+        while (i < NUMBER_OF_DECODE_ATTEMPT) {
             try {
                 returnBitmap = BitmapFactory.decodeByteArray(
-                        imageBuffer, 0, imageBuffer.size,
-                        bitmapOptions
+                    imageBuffer, 0, imageBuffer.size,
+                    bitmapOptions
                 )
                 break
             } catch (e: Exception) {
@@ -123,7 +123,7 @@ class ImageDecodeRunnable(
         const val DECODE_STATE_STARTED = 1
         const val DECODE_STATE_COMPLETED = 2
 
-        private const val NUMBER_OF_DECODE_TRIES = 2
+        private const val NUMBER_OF_DECODE_ATTEMPT = 2
 
         private const val SLEEP_TIME_MILLISECONDS = 100L
     }

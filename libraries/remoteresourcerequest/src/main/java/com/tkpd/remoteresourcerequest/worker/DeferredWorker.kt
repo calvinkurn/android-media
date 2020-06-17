@@ -1,8 +1,13 @@
-package com.tkpd.remoteresourcerequest.task
+package com.tkpd.remoteresourcerequest.worker
 
 import android.content.Context
 import androidx.annotation.RawRes
 import androidx.work.*
+import com.tkpd.remoteresourcerequest.R
+import com.tkpd.remoteresourcerequest.callback.DeferredTaskCallback
+import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager
+import com.tkpd.remoteresourcerequest.type.RequestedResourceType
+import com.tkpd.remoteresourcerequest.utils.DeferredWorkerHelper
 import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
@@ -12,8 +17,9 @@ import kotlin.coroutines.resume
 class DeferredWorker(val context: Context, params: WorkerParameters) :
         CoroutineWorker(context, params), CoroutineScope {
 
-    private val resourceDownloadManager = ResourceDownloadManager.getManager()
-    private val deferredWorkerHelper = DeferredWorkerHelper(context, resourceDownloadManager)
+    private val resourceDownloadManager =
+            ResourceDownloadManager.getManager()
+    private val deferredWorkerHelper = DeferredWorkerHelper(context)
 
     override suspend fun doWork(): Result {
         val resId = inputData.getInt(RESOURCE_FILE_ID, -1)
@@ -23,7 +29,6 @@ class DeferredWorker(val context: Context, params: WorkerParameters) :
         val list = deferredWorkerHelper.getPendingDeferredResourceURLs(resId)
 
         val deferredList: ArrayList<Deferred<Boolean>> = arrayListOf()
-
         coroutineScope {
             list.forEach {
                 val deferred =
@@ -36,26 +41,39 @@ class DeferredWorker(val context: Context, params: WorkerParameters) :
         }
         deferredList.clear()
 
-        if (isDeferredWorkCompleted(context, resourceDownloadManager, resId)) {
-            resourceDownloadManager.deferredCallback?.logDeferred("$WORKER_TAG successfully completed with #taskcount ${list.size}")
+        if (isDeferredWorkCompleted(
+                        context,
+                        resId
+                )
+        ) {
+            resourceDownloadManager.logCurrentState(
+                    context.getString(R.string.worker_completed_message).format(WORKER_TAG, list.size)
+            )
             return Result.success()
 
         }
-        resourceDownloadManager.deferredCallback?.logDeferred("$WORKER_TAG RETRY NEXT TIME")
+        resourceDownloadManager.logCurrentState(
+                context.getString(R.string.worker_retry_message).format(WORKER_TAG)
+        )
         return Result.retry()
     }
 
-    private suspend fun startDownload(remoteFileName: String): Boolean =
+    private suspend fun startDownload(resourceType: RequestedResourceType): Boolean =
             suspendCancellableCoroutine { cont ->
                 cont.invokeOnCancellation {
                     cont.cancel()
                 }
+                resourceType.isRequestedFromWorker = true
                 resourceDownloadManager.startDownload(
-                        remoteFileName,
-                        null,
-                        object : DeferredTaskCallback {
-                            override fun onTaskCompleted(resourceUrl: String?) {
+                        resourceType,
+                        object :
+                                DeferredTaskCallback {
+                            override fun onTaskCompleted(resourceUrl: String?, filePath: String?) {
                                 cont.resume(true)
+                            }
+
+                            override fun onTaskFailed(resourceUrl: String?) {
+                                cont.resume(false)
                             }
                         })
 
@@ -67,6 +85,7 @@ class DeferredWorker(val context: Context, params: WorkerParameters) :
             get() = Dispatchers.Default
 
         private const val RESOURCE_FILE_ID = "resource_file_id"
+
         private const val WORKER_TAG = "DEFERRED_WORKER_#1"
 
         fun schedulePeriodicWorker(
@@ -76,7 +95,11 @@ class DeferredWorker(val context: Context, params: WorkerParameters) :
         ) {
             try {
                 launch {
-                    if (!isDeferredWorkCompleted(context, resourceDownloadManager, resourceId)) {
+                    if (!isDeferredWorkCompleted(
+                                    context,
+                                    resourceId
+                            )
+                    ) {
                         val pushWorker = OneTimeWorkRequest
                                 .Builder(DeferredWorker::class.java)
                                 .setConstraints(getWorkerConstraints())
@@ -85,27 +108,37 @@ class DeferredWorker(val context: Context, params: WorkerParameters) :
                                         30 * 60 * 1000,
                                         TimeUnit.MILLISECONDS
                                 )
-                                .setInputData(createInputData(resourceId))
+                                .setInputData(
+                                        createInputData(resourceId)
+                                )
                                 .build()
                         WorkManager.getInstance()
                                 .enqueueUniqueWork(WORKER_TAG, ExistingWorkPolicy.KEEP, pushWorker)
-                        resourceDownloadManager.deferredCallback?.logDeferred("$WORKER_TAG Worker Scheduled")
+                        resourceDownloadManager.logCurrentState(
+                                context.getString(R.string.worker_scheduled_message).format(WORKER_TAG)
+                        )
                     } else {
-                        resourceDownloadManager.deferredCallback?.logDeferred("$WORKER_TAG Worker Scheduling not required")
+                        resourceDownloadManager.logCurrentState(
+                                context.getString(R.string.worker_schedule_not_required_message)
+                                        .format(WORKER_TAG)
+                        )
                     }
                 }
             } catch (ex: Exception) {
-                resourceDownloadManager.deferredCallback?.logDeferred("$WORKER_TAG Worker Scheduling not required")
+                resourceDownloadManager.logCurrentState(
+                        context.getString(R.string.worker_schedule_not_required_message)
+                                .format(WORKER_TAG)
+                )
 
 
             }
         }
 
         private fun isDeferredWorkCompleted(
-                context: Context, resourceDownloadManager: ResourceDownloadManager,
+                context: Context,
                 resourceId: Int
         ): Boolean {
-            return DeferredWorkerHelper(context, resourceDownloadManager)
+            return DeferredWorkerHelper(context)
                     .getPendingDeferredResourceURLs(resourceId).isEmpty()
         }
 
@@ -124,5 +157,3 @@ class DeferredWorker(val context: Context, params: WorkerParameters) :
     }
 
 }
-
-
