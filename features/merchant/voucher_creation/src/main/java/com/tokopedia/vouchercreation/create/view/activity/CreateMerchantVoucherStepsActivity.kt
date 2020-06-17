@@ -452,7 +452,13 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                     } else {
                         VoucherTargetType.PRIVATE
                     }
-            setVoucherName(targetType, name, code)
+            val promoCode =
+                    if (isPublic) {
+                        ""
+                    } else {
+                        code
+                    }
+            setVoucherName(targetType, name, promoCode)
 
             if (isEdit && startTime.isNotEmpty() && finishTime.isNotEmpty()) {
                 val startDate = DateTimeUtils.convertFullDateToDateParam(startTime, DateTimeUtils.DATE_FORMAT)

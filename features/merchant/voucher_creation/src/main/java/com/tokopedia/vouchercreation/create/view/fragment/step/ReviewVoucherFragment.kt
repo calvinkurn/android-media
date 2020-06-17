@@ -412,10 +412,10 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                 getDisplayedDateString(startDate, startHour, endDate, endHour)
             }
             val displayedPromoCode =
-                    if (promoCode.isBlank()) {
-                        promoCode
-                    } else {
-                        getPromoCodePrefix() + promoCode
+                    when {
+                        targetType == VoucherTargetType.PUBLIC -> ""
+                        promoCode.isBlank() -> promoCode
+                        else -> getPromoCodePrefix() + promoCode
                     }
 
             voucherInfoSection = getVoucherInfoSection(targetType, voucherName, displayedPromoCode, true)
