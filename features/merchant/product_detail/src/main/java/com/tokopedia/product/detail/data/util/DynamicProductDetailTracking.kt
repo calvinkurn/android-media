@@ -852,7 +852,7 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_SEND_QUESTION)
         }
 
-        fun eventClickByMe(productInfo: DynamicProductInfoP1?) {
+        fun eventClickByMe(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel?) {
             val shopId = productInfo?.basic?.shopID ?: ""
             val productId = productInfo?.basic?.productID ?: ""
             val eventLabel = "{$shopId} - {$productId}"
@@ -863,7 +863,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Action.CLICK_BY_ME,
                     eventLabel)
 
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, "")
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_BY_ME)
         }
     }
 
