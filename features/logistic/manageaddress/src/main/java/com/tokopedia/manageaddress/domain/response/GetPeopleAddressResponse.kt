@@ -24,7 +24,7 @@ data class KeroAddressCorner(
 
 data class ManageAddressData(
         @SerializedName("addr_id")
-        var addrId: Int = 0,
+        var addrId: String = "",
         @SerializedName("addr_name")
         var addrName: String = "",
         @SerializedName("address_1")

@@ -25,6 +25,7 @@ class ManageAddressMapper @Inject constructor() {
 
     private val peopleAddressModel: (ManageAddressData) -> AddressModel = {
         AddressModel().apply {
+            this.addressId = it.addrId
             this.addressName = it.addrName
             this.receiverName = it.receiverName
             this.receiverPhone = it.phone
