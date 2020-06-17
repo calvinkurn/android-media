@@ -336,6 +336,7 @@ class MerchantVoucherTargetFragment : BaseCreateMerchantVoucherFragment<VoucherT
     }
 
     private fun onRadioButtonClicked(@VoucherTargetType targetType: Int) {
+        fillVoucherNameTextfield?.textFieldInput?.clearFocus()
         VoucherCreationTracking.sendCreateVoucherClickTracking(
                 step = VoucherCreationStep.TARGET,
                 action =

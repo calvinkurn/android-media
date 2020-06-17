@@ -9,7 +9,7 @@
     android:id="@+id/voucherTargetScrollView"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -18,7 +18,8 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_alignParentTop="true"
+            android:layout_above="@id/fillVoucherNameDivider"
             tools:itemCount="1"
             tools:listitem="@layout/mvc_voucher_target_widget"/>
 
@@ -26,14 +27,16 @@
             android:id="@+id/fillVoucherNameDivider"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl1"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="8dp"
+            android:layout_above="@id/fillVoucherNameTitle"/>
 
         <com.tokopedia.vouchercreation.create.view.customview.VoucherCreateTitleView
             android:id="@+id/fillVoucherNameTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            app:title="@string/mvc_create_voucher_name_widget_title"/>
+            app:title="@string/mvc_create_voucher_name_widget_title"
+            android:layout_above="@id/fillVoucherNameTextfield"/>
 
         <com.tokopedia.unifycomponents.TextFieldUnify
             android:id="@+id/fillVoucherNameTextfield"
@@ -45,12 +48,14 @@
             android:layout_marginRight="@dimen/layout_lvl2"
             android:layout_marginBottom="@dimen/layout_lvl3"
             app:text_field_placeholder="@string/mvc_create_voucher_name_textfield_hint"
-            app:text_field_counter="@integer/create_voucher_name_max_length"/>
+            app:text_field_counter="@integer/create_voucher_name_max_length"
+            android:layout_above="@id/voucherTargetNextButton"/>
 
         <com.tokopedia.vouchercreation.create.view.customview.NextStepButton
             android:id="@+id/voucherTargetNextButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 </androidx.core.widget.NestedScrollView>
