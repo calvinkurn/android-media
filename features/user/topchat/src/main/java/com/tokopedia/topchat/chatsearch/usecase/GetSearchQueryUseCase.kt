@@ -41,7 +41,7 @@ class GetSearchQueryUseCase @Inject constructor(
                         setRequestParams(params)
                         setGraphqlQuery(query)
                     }.executeOnBackground()
-                    val contactLoadMore = createContactLoadMore(response)
+                    val contactLoadMore = createContactLoadMore(response, page)
                     isSearching = false
                     hasNext = response.replyHasNext
                     withContext(dispatchers.Main) {
@@ -57,10 +57,11 @@ class GetSearchQueryUseCase @Inject constructor(
         )
     }
 
-    private fun createContactLoadMore(response: GetMultiChatSearchResponse): SearchListHeaderUiModel? {
+    private fun createContactLoadMore(response: GetMultiChatSearchResponse, page: Int): SearchListHeaderUiModel? {
+        if (page != 1) return null
         val contactCount = response.contactSearchResults.size
         if (contactCount > 5) {
-            return SearchListHeaderUiModel(response.contactCount)
+            return SearchListHeaderUiModel(SearchListHeaderUiModel.TITLE_CONTACT, response.contactCount)
         }
         return null
     }

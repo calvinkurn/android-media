@@ -84,7 +84,7 @@ class ContactLoadMoreChatFragment : BaseListFragment<Visitable<*>, ChatSearchTyp
     private fun setupSearchResultContactObserver() {
         viewModel.searchResult.observe(this, Observer {
             if (viewModel.isFirstPage()) {
-                val header = SearchListHeaderUiModel(it.contactCount, true)
+                val header = SearchListHeaderUiModel(SearchListHeaderUiModel.TITLE_CONTACT, it.contactCount, true)
                 val results: MutableList<Visitable<*>> = it.searchResults.toMutableList()
                 results.add(0, header)
                 renderList(results, it.hasNext)

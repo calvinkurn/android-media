@@ -26,7 +26,7 @@ class ContactLoadMoreViewHolder(
     }
 
     private fun bindTitle(element: SearchListHeaderUiModel) {
-        var title = "Pengguna "
+        var title = "${element.title} "
         if (element.totalCount.isNotEmpty()) {
            title += "(${element.totalCount})"
         }
