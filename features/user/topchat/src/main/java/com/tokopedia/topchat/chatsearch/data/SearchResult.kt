@@ -7,7 +7,7 @@ import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactory
 
 data class SearchResult(
         @SerializedName("contact")
-        val contact: ContactX = ContactX(),
+        val contact: ContactProfile = ContactProfile(),
         @SerializedName("createBy")
         val createBy: Int = 0,
         @SerializedName("createTimeStr")
