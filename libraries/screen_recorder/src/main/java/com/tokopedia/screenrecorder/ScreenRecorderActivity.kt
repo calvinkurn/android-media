@@ -30,7 +30,7 @@ class ScreenRecorderActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(com.tokopedia.screenrecorder.R.layout.screen_recorder_activity_screen_record)
+        setContentView(R.layout.screen_recorder_activity_screen_record)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             showFeatureNotSupported()
             finish()
@@ -39,7 +39,7 @@ class ScreenRecorderActivity : AppCompatActivity() {
     }
 
     private fun showFeatureNotSupported() {
-        Toast.makeText(this, this.resources.getString(com.tokopedia.screenrecorder.R.string.screen_recorder_os_below_lollipop_info), Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.screen_recorder_os_below_lollipop_info), Toast.LENGTH_SHORT).show()
     }
 
     private fun activateScreenRecorder() {
@@ -113,6 +113,6 @@ class ScreenRecorderActivity : AppCompatActivity() {
     }
 
     private fun showNeedPermissionsInfo() {
-        Toast.makeText(this, this.resources.getString(com.tokopedia.screenrecorder.R.string.screen_recorder_access_denied_info), Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.screen_recorder_access_denied_info), Toast.LENGTH_SHORT).show()
     }
 }
