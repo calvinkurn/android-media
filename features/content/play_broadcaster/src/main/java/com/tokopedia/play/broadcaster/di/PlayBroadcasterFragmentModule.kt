@@ -5,7 +5,6 @@ import androidx.fragment.app.FragmentFactory
 import com.tokopedia.play.broadcaster.di.key.FragmentKey
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastChooseCoverBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayPrivacyPolicyBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.*
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
@@ -27,11 +26,6 @@ abstract class PlayBroadcasterFragmentModule {
     @IntoMap
     @FragmentKey(PlayBroadcastSetupBottomSheet::class)
     abstract fun getBroadcastSetupBottomSheet(fragment: PlayBroadcastSetupBottomSheet): Fragment
-
-    @Binds
-    @IntoMap
-    @FragmentKey(PlayPrivacyPolicyBottomSheet::class)
-    abstract fun getPrivacyPolicyBottomSheet(fragment: PlayPrivacyPolicyBottomSheet): Fragment
 
     @Binds
     @IntoMap

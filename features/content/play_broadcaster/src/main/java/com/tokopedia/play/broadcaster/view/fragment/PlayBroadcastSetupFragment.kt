@@ -12,11 +12,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayPrivacyPolicyBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSetupViewModel
@@ -48,8 +49,6 @@ class PlayBroadcastSetupFragment @Inject constructor(
             openFinalPreparationPage()
         }
     }
-
-    private lateinit var privacyPolicyBottomSheet: PlayPrivacyPolicyBottomSheet
 
     override fun getScreenName(): String = "Play Prepare Page"
 
@@ -123,16 +122,10 @@ class PlayBroadcastSetupFragment @Inject constructor(
     }
 
     private fun openPrivacyPolicyPage() {
-        getPrivacyPolicyBottomSheet().show(childFragmentManager)
-    }
-
-    private fun getPrivacyPolicyBottomSheet(): PlayPrivacyPolicyBottomSheet {
-        if (!::privacyPolicyBottomSheet.isInitialized) {
-            val setupClass = PlayPrivacyPolicyBottomSheet::class.java
-            val fragmentFactory = childFragmentManager.fragmentFactory
-            privacyPolicyBottomSheet = fragmentFactory.instantiate(requireContext().classLoader, setupClass.name) as PlayPrivacyPolicyBottomSheet
-        }
-        return privacyPolicyBottomSheet
+        RouteManager.route(
+                context,
+                String.format(APPLINK_WEBVIEW_FORMAT, ApplinkConst.WEBVIEW, PRIVACY_POLICY_URL)
+        )
     }
 
     private fun populateSetupData(selectedProducts: List<ProductContentUiModel>, cover: PlayCoverUiModel) {
@@ -162,4 +155,10 @@ class PlayBroadcastSetupFragment @Inject constructor(
         })
     }
     //endregion
+
+    companion object {
+
+        private const val APPLINK_WEBVIEW_FORMAT = "%s?url=%s"
+        private const val PRIVACY_POLICY_URL = "https://www.tokopedia.com/help/article/syarat-dan-ketentuan-tokopedia-play"
+    }
 }

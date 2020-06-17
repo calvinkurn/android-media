@@ -12,5 +12,5 @@ sealed class PlayPusherInfoState {
 
     object Finish : PlayPusherInfoState()
 
-    object Error : PlayPusherInfoState()
+    data class Error(val errorType: PlayPusherErrorType) : PlayPusherInfoState()
 }
