@@ -98,7 +98,7 @@ class ProductVariantStockViewHolder(
             if(!isFocus) {
                 val currentStock = quantityEditor.getValue()
                 tempStock?.let { previousStock ->
-                    // if previous stock does not equal to current stock hit the tracker
+                    // if previous stock is not the same as current stock, hit the tracker
                     if(previousStock != currentStock) {
                         ProductManageTracking.eventClickChangeAmountVariant()
                         tempStock = currentStock
