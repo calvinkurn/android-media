@@ -6,11 +6,11 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatsearch.view.uimodel.SearchResultUiModel
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.item_chat_list.view.*
 
 class ItemSearchChatViewHolder(
         itemView: View?,
@@ -21,6 +21,7 @@ class ItemSearchChatViewHolder(
     private var username: Typography? = itemView?.findViewById(R.id.user_name)
     private var message: Typography? = itemView?.findViewById(R.id.message)
     private var time: Typography? = itemView?.findViewById(R.id.time)
+    private var thumbnail: SquareImageView? = itemView?.findViewById(R.id.thumbnail)
 
     interface Listener {
         fun finishSearchActivity()
@@ -40,7 +41,7 @@ class ItemSearchChatViewHolder(
     }
 
     private fun bindUserImageProfile(element: SearchResultUiModel) {
-        ImageHandler.loadImageCircle2(itemView.context, itemView.thumbnail, element.thumbnailUrl)
+        ImageHandler.loadImageCircle2(itemView.context, thumbnail, element.thumbnailUrl)
     }
 
     private fun bindUserName(element: SearchResultUiModel) {
@@ -69,6 +70,6 @@ class ItemSearchChatViewHolder(
     }
 
     companion object {
-        val LAYOUT = R.layout.item_chat_list
+        val LAYOUT = R.layout.item_chat_search_contact
     }
 }
