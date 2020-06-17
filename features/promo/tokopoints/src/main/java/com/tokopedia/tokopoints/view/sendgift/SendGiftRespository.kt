@@ -31,7 +31,7 @@ class SendGiftRespository @Inject constructor(private val mStartSendGift: MultiR
         mRedeemCouponUseCase.executeOnBackground().getSuccessData<RedeemCouponBaseEntity>()
     }
 
-    suspend fun preValidateGift(id: Int?, email: String) = withContext(Dispatchers.Main){
+    suspend fun preValidateGift(id: Int?, email: String) = withContext(Dispatchers.IO){
         val variables: MutableMap<String, Any?> = HashMap()
         variables[CommonConstant.GraphqlVariableKeys.CATALOG_ID] = id
         variables[CommonConstant.GraphqlVariableKeys.IS_GIFT] = 1
@@ -40,6 +40,6 @@ class SendGiftRespository @Inject constructor(private val mStartSendGift: MultiR
                 ValidateCouponBaseEntity::class.java, variables, false)
         mStartSendGift.clearRequest()
         mStartSendGift.addRequest(graphqlRequest)
-        mRedeemCouponUseCase.executeOnBackground().getSuccessData<ValidateCouponBaseEntity>()
+        mStartSendGift.executeOnBackground().getSuccessData<ValidateCouponBaseEntity>()
     }
 }

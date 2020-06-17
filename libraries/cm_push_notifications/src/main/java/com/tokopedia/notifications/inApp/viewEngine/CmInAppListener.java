@@ -15,6 +15,8 @@ public interface CmInAppListener {
 
     void onCMinAppDismiss();
 
+    void onCMinAppInteraction(CMInApp cmInApp);
+
     void onCMInAppLinkClick(Uri deepLinkUri, CMInApp cmInApp, ElementType elementType);
 
     void onCMInAppClosed(CMInApp cmInApp);

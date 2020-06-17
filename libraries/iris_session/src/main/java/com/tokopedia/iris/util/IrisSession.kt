@@ -11,14 +11,6 @@ class IrisSession(val context: Context) : Session {
     private val sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
     private val editor = sharedPreferences.edit()
 
-    override fun getUserId(): String {
-        return sharedPreferences.getString(KEY_USER_ID, "")?: ""
-    }
-
-    override fun getDeviceId(): String {
-        return sharedPreferences.getString(KEY_DEVICE_ID, "")?:""
-    }
-
     override fun getSessionId(): String {
 
         val beginningCurrent = Calendar.getInstance().timeInMillis
@@ -75,16 +67,6 @@ class IrisSession(val context: Context) : Session {
 
     private fun generateUuid() : String {
         return UUID.randomUUID().toString().replace("-", "").toUpperCase()
-    }
-
-    override fun setUserId(id: String) {
-        editor.putString(KEY_USER_ID, id)
-        editor.commit()
-    }
-
-    override fun setDeviceId(id: String) {
-        editor.putString(KEY_DEVICE_ID, id)
-        editor.commit()
     }
 
     private fun setTimestampPrevious(timestamp: String) {

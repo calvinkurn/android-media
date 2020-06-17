@@ -46,6 +46,7 @@ public abstract class MainApplication extends MainRouterApplication{
     private AppComponent appComponent;
     private UserSession userSession;
     protected RemoteConfig remoteConfig;
+    private String MAINAPP_ADDGAIDTO_BRANCH = "android_addgaid_to_branch";
 
 
     public static MainApplication getInstance() {
@@ -96,8 +97,6 @@ public abstract class MainApplication extends MainRouterApplication{
                 .appModule(new AppModule(this));
         getApplicationComponent().inject(this);
 
-        locationUtils = new LocationUtils(this);
-        locationUtils.initLocationBackground();
         initBranch();
         NotificationUtils.setNotificationChannel(this);
         if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
@@ -120,6 +119,8 @@ public abstract class MainApplication extends MainRouterApplication{
 
     @NotNull
     private Boolean executeInBackground(){
+        locationUtils = new LocationUtils(MainApplication.this);
+        locationUtils.initLocationBackground();
         TooLargeTool.startLogging(MainApplication.this);
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
             upgradeSecurityProvider();
@@ -143,7 +144,9 @@ public abstract class MainApplication extends MainRouterApplication{
     @Override
     public void onTerminate() {
         super.onTerminate();
-        locationUtils.deInitLocationBackground();
+        if(locationUtils != null) {
+            locationUtils.deInitLocationBackground();
+        }
     }
 
     private void init() {
@@ -176,10 +179,13 @@ public abstract class MainApplication extends MainRouterApplication{
         this.appComponent = appComponent;
     }
 
+    //this method needs to be called from here in case of migration get it tested from CM team
     @NotNull
     private Boolean initBranch(){
-        LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
-
+        LinkerManager.initLinkerManager(getApplicationContext());
+        if(remoteConfig.getBoolean(MAINAPP_ADDGAIDTO_BRANCH, false)){
+            LinkerManager.getInstance().setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
+        }
         if(userSession.isLoggedIn()) {
             UserData userData = new UserData();
             userData.setUserId(userSession.getUserId());

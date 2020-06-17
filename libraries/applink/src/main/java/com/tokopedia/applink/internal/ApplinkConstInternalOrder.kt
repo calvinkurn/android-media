@@ -35,9 +35,6 @@ object ApplinkConstInternalOrder {
     val HISTORY = "$INTERNAL_SELLER/history"
 
     @JvmField
-    val OPPORTUNITY = "$INTERNAL_SELLER/opportunity"
-
-    @JvmField
     val TRACK = "$INTERNAL_ORDER/track"
 
     @JvmField

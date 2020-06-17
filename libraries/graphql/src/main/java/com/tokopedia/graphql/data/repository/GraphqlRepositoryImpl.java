@@ -52,6 +52,8 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
 
     @Override
     public Observable<GraphqlResponse> getResponse(List<GraphqlRequest> requests, GraphqlCacheStrategy cacheStrategy) {
+        mResults.clear();
+
         return Observable.defer(() -> {
             if (cacheStrategy == null
                     || cacheStrategy.getType() == CacheType.NONE

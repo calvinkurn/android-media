@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -18,6 +16,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.auth.api.phone.SmsRetriever;
@@ -442,9 +443,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         inputOtp.setFocusableInTouchMode(true);
         inputOtp.post(new Runnable() {
             public void run() {
-                inputOtp.requestFocusFromTouch();
-                InputMethodManager lManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                lManager.showSoftInput(inputOtp, 0);
+                showKeyboard();
             }
         });
         errorImage.setVisibility(View.VISIBLE);
@@ -669,7 +668,10 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     }
 
     private void showKeyboard() {
-        InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.toggleSoftInputFromWindow(inputOtp.getWindowToken(), InputMethodManager.SHOW_FORCED, 0);
+        if(getActivity() != null) {
+            inputOtp.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(inputOtp, InputMethodManager.SHOW_IMPLICIT);
+        }
     }
 }
