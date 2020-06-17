@@ -5,17 +5,22 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
 import android.text.InputFilter
+import android.text.SpannableStringBuilder
+import android.text.Spanned.SPAN_INCLUSIVE_EXCLUSIVE
 import android.text.TextWatcher
+import android.text.style.ForegroundColorSpan
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.text.HtmlCompat
+import android.widget.EditText
+import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.transition.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.CoverSourceEnum
 import com.tokopedia.play.broadcaster.ui.model.CoverStarterEnum
@@ -23,8 +28,7 @@ import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastChooseCoverB
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastCoverFromGalleryBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastCoverTitleViewModel
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastCoverSetupViewModel
 import com.tokopedia.play.broadcaster.view.widget.PlayCropImageView
 import com.yalantis.ucrop.callback.BitmapCropCallback
 import com.yalantis.ucrop.util.RectUtils
@@ -45,15 +49,18 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
     var listenerForCropOnly: ListenerForCropOnly? = null
 
     private var selectedImageUrlList = arrayListOf<Pair<Long, String>>()
-    private lateinit var viewModel: PlayBroadcastCoverTitleViewModel
-    private lateinit var etalaseViewModel: PlayEtalasePickerViewModel
+    private lateinit var viewModel: PlayBroadcastCoverSetupViewModel
 
-    private var liveTitle: String = ""
     private var selectedCoverUri: Uri? = null
     private var coverSource: CoverSourceEnum = CoverSourceEnum.NONE
     private var starterState: CoverStarterEnum = CoverStarterEnum.NORMAL
 
+    private lateinit var etCoverTitle: EditText
+    private lateinit var tvCoverTitleLabel: TextView
     private lateinit var bottomSheetHeader: PlayBottomSheetHeader
+
+    private val liveTitle: String
+        get() = etCoverTitle.text?.toString() ?: ""
 
     override fun getScreenName(): String = "Play Cover Title Setup"
 
@@ -63,7 +70,6 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
         super.onCreate(savedInstanceState)
         setupTransition()
         savedInstanceState?.let {
-            liveTitle = it.getString(EXTRA_LIVE_TITLE, "") ?: ""
             starterState = if (it.getInt(EXTRA_STARTER_STATE) == CoverStarterEnum.CROP_ONLY.value)
                 CoverStarterEnum.CROP_ONLY else CoverStarterEnum.NORMAL
             coverSource = when (it.getInt(EXTRA_COVER_SOURCE)) {
@@ -87,13 +93,10 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
                 selectedCoverUri = it.getParcelable(EXTRA_COVER_URI)
             }
         }
-        viewModel = ViewModelProviders.of(requireParentFragment(), viewModelFactory)
-                .get(PlayBroadcastCoverTitleViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, viewModelFactory)
+                .get(PlayBroadcastCoverSetupViewModel::class.java)
 
-        etalaseViewModel = ViewModelProviders.of(requireParentFragment(), viewModelFactory)
-                .get(PlayEtalasePickerViewModel::class.java)
-
-        selectedImageUrlList = ArrayList(etalaseViewModel.observableSelectedProducts.value.orEmpty().map { Pair(it.id, it.imageUrl) })
+        selectedImageUrlList = ArrayList(viewModel.observableSelectedProducts.value.orEmpty().map { Pair(it.id, it.imageUrl) })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -109,6 +112,7 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        observeSelectedCover()
         observeImageEcsLink()
         observeOriginalImageUri()
     }
@@ -120,7 +124,6 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(EXTRA_LIVE_TITLE, liveTitle)
         outState.putInt(EXTRA_STARTER_STATE, starterState.value)
         outState.putInt(EXTRA_COVER_SOURCE, coverSource.value)
     }
@@ -158,6 +161,8 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
 
     private fun initView(view: View) {
         with (view) {
+            etCoverTitle = findViewById(R.id.et_cover_title)
+            tvCoverTitleLabel = findViewById(R.id.tv_cover_title_label)
             bottomSheetHeader = findViewById(R.id.bottom_sheet_header)
         }
     }
@@ -175,26 +180,9 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
             onFinishCoverTitleSetup()
         }
 
-        etPlayCoverTitleText.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N0))
-        etPlayCoverTitleText.setHintTextColor(resources.getColor(R.color.play_white_68))
-        etPlayCoverTitleText.setSingleLine(false)
-        etPlayCoverTitleText.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
-            }
+        setupCoverTitleField()
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(text: CharSequence, p1: Int, p2: Int, p3: Int) {
-                liveTitle = text.toString()
-                setupTitleCounter()
-                setupNextButton()
-            }
-        })
-        tvPlayCoverTitleLabel.text = HtmlCompat.fromHtml(getString(R.string.play_prepare_cover_title_default_title_label),
-                HtmlCompat.FROM_HTML_MODE_LEGACY)
-        etPlayCoverTitleText.hint = getString(R.string.play_prepare_cover_title_default_title_placeholder)
-        etPlayCoverTitleText.filters = arrayOf(InputFilter.LengthFilter(MAX_CHARS))
+        tvCoverTitleLabel.text = getCoverTitleLabelText(tvCoverTitleLabel.text.toString(), liveTitle)
 
         setupNextButton()
         setupCoverLabelText()
@@ -211,6 +199,26 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
                         selectedImageUrlList[0].second)
             }
         }
+    }
+
+    private fun setupCoverTitleField() {
+        etCoverTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N0))
+        etCoverTitle.setHintTextColor(resources.getColor(R.color.play_white_68))
+        etCoverTitle.setSingleLine(false)
+        etCoverTitle.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(text: CharSequence, p1: Int, p2: Int, p3: Int) {
+                setupTitleLabel(text)
+                setupTitleCounter()
+                setupNextButton()
+            }
+        })
+        etCoverTitle.filters = arrayOf(InputFilter.LengthFilter(viewModel.maxTitleChars))
     }
 
     private fun onChangeCoverClicked() {
@@ -233,7 +241,6 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
     private fun renderCoverTitleLayout(resultImageUri: Uri?) {
         resultImageUri?.let {
             selectedCoverUri = resultImageUri
-            if (liveTitle.isNotEmpty()) etPlayCoverTitleText.setText(liveTitle)
             ivPlayCoverImage.setImageURI(selectedCoverUri)
         }
         setupCoverLabelText()
@@ -316,9 +323,15 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
         }
     }
 
+    private fun setupTitleLabel(currentTitle: CharSequence) {
+        val currentLabel = tvCoverTitleLabel.text.toString()
+        val newText = getCoverTitleLabelText(currentLabel, currentTitle.toString())
+        if (currentLabel != newText.toString()) tvCoverTitleLabel.text = newText
+    }
+
     private fun setupTitleCounter() {
         tvPlayTitleCounter.text = getString(R.string.play_prepare_cover_title_counter,
-                liveTitle.length, MAX_CHARS)
+                liveTitle.length, 28)
     }
 
     private fun setupNextButton() {
@@ -331,10 +344,34 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
         }
     }
 
+    private fun getCoverTitleLabelText(label: String, coverTitle: String): CharSequence {
+        val isCoverValid = viewModel.isValidCoverTitle(coverTitle)
+        val asterisk = '*'
+        val finalText =
+                if (!isCoverValid && label.last() != asterisk) "$label*"
+                else if (isCoverValid && label.last() == asterisk) label.removeSuffix(asterisk.toString())
+                else label
+
+        val spanBuilder = SpannableStringBuilder(finalText)
+        if (spanBuilder.contains(asterisk)) {
+            spanBuilder.setSpan(ForegroundColorSpan(
+                    MethodChecker.getColor(requireContext(), R.color.Red_R500)
+            ), finalText.indexOf(asterisk), finalText.length, SPAN_INCLUSIVE_EXCLUSIVE)
+        }
+
+        return spanBuilder
+    }
+
     //region observe
     /**
      * Observe
      */
+    private fun observeSelectedCover() {
+        viewModel.observableSelectedCover.observe(viewLifecycleOwner, Observer {
+
+        })
+    }
+
     private fun observeOriginalImageUri() {
         viewModel.originalImageUri.observe(viewLifecycleOwner, Observer {
             if (coverSource == CoverSourceEnum.PRODUCT) {
@@ -349,7 +386,7 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
                 if (it.isNotEmpty()) {
                     if (starterState == CoverStarterEnum.CROP_ONLY) {
                         listenerForCropOnly?.onFinishedCrop(selectedCover, it)
-                    } else if (liveTitle.isNotEmpty()) {
+                    } else if (etCoverTitle.text?.isNotEmpty() == true) {
                         bottomSheetCoordinator.saveCoverAndTitle(selectedCover, it, liveTitle)
                     }
                 }
@@ -401,8 +438,6 @@ class PlayCoverTitleSetupFragment @Inject constructor(private val viewModelFacto
         const val EXTRA_COVER_SOURCE = "EXTRA_COVER_SOURCE"
         const val EXTRA_COVER_URI = "EXTRA_COVER_URI"
 
-        private const val EXTRA_LIVE_TITLE = "EXTRA_LIVE_TITLE"
-        private const val MAX_CHARS = 38
         private const val SECONDS: Long = 1000
     }
 }

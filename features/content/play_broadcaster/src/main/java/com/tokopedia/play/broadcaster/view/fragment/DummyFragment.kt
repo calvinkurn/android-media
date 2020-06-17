@@ -44,9 +44,9 @@ class DummyFragment @Inject constructor()
     }
 
     private fun initView() {
-        etPlayCoverTitleText.setOnClickListener {
-            showEditTitleBottomSheet("Dummy Title")
-        }
+//        etPlayCoverTitleText.setOnClickListener {
+//            showEditTitleBottomSheet("Dummy Title")
+//        }
         containerChangeCover.setOnClickListener {
             showEditCoverBottomSheet(dummyPairOfProductIdAndImageUrlList)
         }
@@ -57,7 +57,7 @@ class DummyFragment @Inject constructor()
      * you can use this method to get the edited title
      */
     override fun onSaveEditedTitle(title: String) {
-        etPlayCoverTitleText.setText(title)
+//        etPlayCoverTitleText.setText(title)
     }
 
     /**

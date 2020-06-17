@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.dispatcher.PlayBroadcastDispatcher
 import com.tokopedia.play.broadcaster.domain.usecase.GetProductsInEtalaseUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetSelfEtalaseListUseCase
@@ -30,6 +31,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
         @Named(PlayBroadcastDispatcher.MAIN) private val mainDispatcher: CoroutineDispatcher,
         @Named(PlayBroadcastDispatcher.IO) private val ioDispatcher: CoroutineDispatcher,
         @Named(PlayBroadcastDispatcher.COMPUTATION) private val computationDispatcher: CoroutineDispatcher,
+        private val setupDataStore: PlayBroadcastSetupDataStore,
         private val getSelfEtalaseListUseCase: GetSelfEtalaseListUseCase,
         private val getProductsInEtalaseUseCase: GetProductsInEtalaseUseCase,
         private val userSession: UserSessionInterface
@@ -51,13 +53,12 @@ class PlayEtalasePickerViewModel @Inject constructor(
     private val _observableSelectedEtalase = MutableLiveData<PageResult<EtalaseContentUiModel>>()
 
     val observableSelectedProducts: LiveData<List<ProductContentUiModel>>
-        get() = _observableSelectedProducts
-    private val _observableSelectedProducts = MutableLiveData<List<ProductContentUiModel>>()
+        get() = setupDataStore.getObservableSelectedProducts()
 
     val maxProduct = PlayBroadcastMocker.getMaxSelectedProduct()
 
     val selectedProductList: List<ProductContentUiModel>
-        get() = observableSelectedProducts.value.orEmpty()
+        get() = setupDataStore.getSelectedProducts()
 
     var coverImageUri: Uri? = null
     var coverImageUrl: String = ""
@@ -65,10 +66,8 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
     private val etalaseMap = mutableMapOf<String, EtalaseContentUiModel>()
     private val productsMap = mutableMapOf<Long, ProductContentUiModel>()
-    private val selectedProductIdList = mutableListOf<Long>()
 
     init {
-        _observableSelectedProducts.value = emptyList()
         loadEtalaseList()
     }
 
@@ -91,10 +90,9 @@ class PlayEtalasePickerViewModel @Inject constructor(
     }
 
     fun selectProduct(productId: Long, isSelected: Boolean) {
-        if (isSelected) selectedProductIdList.add(productId)
-        else selectedProductIdList.remove(productId)
-
-        updateSelectedProducts()
+        productsMap[productId]?.let {
+            setupDataStore.selectProduct(it, isSelected)
+        }
     }
 
     fun loadEtalaseProductPreview(etalaseId: String) {
@@ -129,19 +127,12 @@ class PlayEtalasePickerViewModel @Inject constructor(
     }
 
     private fun isProductSelected(productId: Long): Boolean {
-        return selectedProductIdList.contains(productId)
+        return setupDataStore.isProductSelected(productId)
     }
 
     private fun isSelectable(): SelectableState {
-        return if (selectedProductIdList.size < maxProduct) Selectable
+        return if (setupDataStore.getTotalSelectedProduct() < maxProduct) Selectable
         else NotSelectable(SelectForbiddenException("Oops, kamu sudah memilih $maxProduct produk"))
-    }
-
-    private fun updateSelectedProducts() {
-        _observableSelectedProducts.value = selectedProductIdList.flatMap {
-            val product = productsMap[it]
-            if (product != null) listOf(product) else emptyList()
-        }
     }
 
     private suspend fun fetchEtalaseProduct(etalaseId: String, page: Int): PageResult<EtalaseContentUiModel> = withContext(computationDispatcher) {

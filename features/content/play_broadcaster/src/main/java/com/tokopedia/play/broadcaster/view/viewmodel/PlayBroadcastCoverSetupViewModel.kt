@@ -16,8 +16,11 @@ import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.model.PlayCoverUploadEntity
+import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.dispatcher.PlayBroadcastDispatcher
 import com.tokopedia.play.broadcaster.domain.usecase.GetOriginalProductImageUseCase
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.util.PlayBroadcastCoverTitleUtil
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastCoverFromGalleryBottomSheet.Companion.MINIMUM_COVER_HEIGHT
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastCoverFromGalleryBottomSheet.Companion.MINIMUM_COVER_WIDTH
@@ -38,13 +41,20 @@ import javax.inject.Named
 /**
  * @author by furqan on 09/06/2020
  */
-class PlayBroadcastCoverTitleViewModel @Inject constructor(
+class PlayBroadcastCoverSetupViewModel @Inject constructor(
         @Named(PlayBroadcastDispatcher.MAIN) dispatcher: CoroutineDispatcher,
         @Named(PlayBroadcastDispatcher.IO) private val ioDispatcher: CoroutineDispatcher,
+        private val setupDataStore: PlayBroadcastSetupDataStore,
         private val uploadImageUseCase: UploadImageUseCase<PlayCoverUploadEntity>,
         private val getOriginalProductImageUseCase: GetOriginalProductImageUseCase,
         private val userSession: UserSessionInterface)
     : BaseViewModel(dispatcher) {
+
+    val observableSelectedProducts: LiveData<List<ProductContentUiModel>>
+        get() = setupDataStore.getObservableSelectedProducts()
+
+    val observableSelectedCover: LiveData<PlayCoverUiModel>
+        get() = setupDataStore.getObservableSelectedCover()
 
     private val mutableOriginalImageUri = MutableLiveData<Uri>()
     val originalImageUri: LiveData<Uri>
@@ -52,6 +62,13 @@ class PlayBroadcastCoverTitleViewModel @Inject constructor(
     private val mutableImageEcsLink = MutableLiveData<String>()
     val imageEcsLink: LiveData<String>
         get() = mutableImageEcsLink
+
+    val maxTitleChars: Int
+        get() = MAX_CHARS
+
+    fun isValidCoverTitle(coverTitle: String): Boolean {
+        return coverTitle.isNotEmpty() && coverTitle.length <= MAX_CHARS
+    }
 
     fun getOriginalImageUrl(context: Context, productId: Long, resizedImageUrl: String) {
         launchCatchError(ioDispatcher, block = {
@@ -171,6 +188,8 @@ class PlayBroadcastCoverTitleViewModel @Inject constructor(
         private const val DEFAULT_UPLOAD_TYPE = "fileToUpload\"; filename=\"image.jpg"
         private const val TEXT_PLAIN = "text/plain"
         private const val RESOLUTION_700 = "700"
+
+        private const val MAX_CHARS = 38
 
         private const val DEFAULT_COMPRESS_QUALITY = 90
         private val DEFAULT_COMPRESS_FORMAT = Bitmap.CompressFormat.JPEG
