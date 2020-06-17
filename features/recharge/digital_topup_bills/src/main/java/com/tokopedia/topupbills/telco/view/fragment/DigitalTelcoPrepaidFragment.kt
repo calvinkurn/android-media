@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -24,26 +24,27 @@ import com.tokopedia.common.topupbills.view.model.TopupBillsTabItem
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.EXPRESS_PARAM_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.EXPRESS_PARAM_OPERATOR_ID
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
+import com.tokopedia.common.topupbills.widget.TopupBillsWidgetInterface
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.network.utils.ErrorHandler.getErrorMessage
 import com.tokopedia.showcase.ShowCaseBuilder
 import com.tokopedia.showcase.ShowCaseDialog
 import com.tokopedia.showcase.ShowCaseObject
 import com.tokopedia.showcase.ShowCasePreference
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.generateRechargeCheckoutToken
-import com.tokopedia.topupbills.telco.data.TelcoCustomComponentData
-import com.tokopedia.topupbills.telco.data.TelcoCustomData
+import com.tokopedia.topupbills.telco.data.RechargePrefix
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 import com.tokopedia.topupbills.telco.view.activity.DigitalSearchNumberActivity
-import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
+import com.tokopedia.topupbills.telco.view.viewmodel.SharedTelcoPrepaidViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_digital_telco_prepaid.*
@@ -55,20 +56,22 @@ import java.util.*
 class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     private lateinit var telcoClientNumberWidget: DigitalClientNumberWidget
+    private lateinit var buyWidget: TopupBillsCheckoutWidget
+    private lateinit var sharedModelPrepaid: SharedTelcoPrepaidViewModel
+    private lateinit var loadingShimmering: LinearLayout
     private lateinit var viewPager: ViewPager
     private lateinit var tabLayout: TabLayout
-    private lateinit var buyWidget: TopupBillsCheckoutWidget
-    private lateinit var sharedModel: SharedProductTelcoViewModel
-    private lateinit var layoutProgressBar: ProgressBar
     private lateinit var performanceMonitoring: PerformanceMonitoring
+    private lateinit var separator: View
+
+    override var menuId = TelcoComponentType.TELCO_PREPAID
     private var inputNumberActionType = InputNumberActionType.MANUAL
+    private val listProductTab = mutableListOf<TopupBillsTabItem>()
+
     private var clientNumber = ""
     private var traceStop = false
-
+    private var showProducts = false
     private val favNumberList = mutableListOf<TopupBillsFavNumberItem>()
-    private var operatorData: TelcoCustomComponentData =
-            TelcoCustomComponentData(TelcoCustomData(mutableListOf()))
-    override var menuId = TelcoComponentType.TELCO_PREPAID
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,8 +79,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             performanceMonitoring = PerformanceMonitoring.start(DG_TELCO_PREPAID_TRACE)
 
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
-            sharedModel = viewModelProvider.get(SharedProductTelcoViewModel::class.java)
-            sharedModel.setShowTotalPrice(false)
+            sharedModelPrepaid = viewModelProvider.get(SharedTelcoPrepaidViewModel::class.java)
+            sharedModelPrepaid.setShowTotalPrice(false)
         }
     }
 
@@ -87,28 +90,28 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        sharedModel.productItem.observe(this, Observer {
+        sharedModelPrepaid.productCatalogItem.observe(this, Observer {
             it?.run {
-                buyWidget.setTotalPrice(it.product.attributes.price)
-                it.product.attributes.productPromo?.run {
+                buyWidget.setTotalPrice(it.attributes.price)
+                it.attributes.productPromo?.run {
                     if (this.newPrice.isNotEmpty()) {
                         buyWidget.setTotalPrice(this.newPrice)
                     }
                 }
 
-                productId = it.product.id.toIntOrZero()
-                price = it.product.attributes.pricePlain
+                productId = it.id.toIntOrZero()
+                price = it.attributes.pricePlain
                 checkVoucherWithDelay()
 
                 checkoutPassData = DigitalCheckoutPassData.Builder()
                         .action(DigitalCheckoutPassData.DEFAULT_ACTION)
-                        .categoryId(it.product.attributes.categoryId.toString())
+                        .categoryId(it.attributes.categoryId.toString())
                         .clientNumber(telcoClientNumberWidget.getInputNumber())
                         .instantCheckout("0")
-                        .isPromo(if (it.product.attributes.productPromo != null) "1" else "0")
-                        .operatorId(it.product.attributes.operatorId.toString())
-                        .productId(it.product.id)
-                        .utmCampaign(it.product.attributes.categoryId.toString())
+                        .isPromo(if (it.attributes.productPromo != null) "1" else "0")
+                        .operatorId(it.attributes.operatorId.toString())
+                        .productId(it.id)
+                        .utmCampaign(it.attributes.categoryId.toString())
                         .utmContent(GlobalConfig.VERSION_NAME)
                         .idemPotencyKey(userSession.userId.generateRechargeCheckoutToken())
                         .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
@@ -117,14 +120,9 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                         .build()
             }
         })
-        sharedModel.showTotalPrice.observe(this, Observer {
+        sharedModelPrepaid.showTotalPrice.observe(this, Observer {
             it?.run {
                 buyWidget.setVisibilityLayout(it)
-            }
-        })
-        sharedModel.promoItem.observe(this, Observer {
-            it?.run {
-                promoListWidget.notifyPromoItemChanges(this)
             }
         })
     }
@@ -132,34 +130,52 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_digital_telco_prepaid, container, false)
         mainContainer = view.findViewById(R.id.main_container)
-        recentNumbersWidget = view.findViewById(R.id.recent_numbers)
+        pageContainer = view.findViewById(R.id.page_container)
         telcoClientNumberWidget = view.findViewById(R.id.telco_input_number)
-        promoListWidget = view.findViewById(R.id.promo_widget)
-        viewPager = view.findViewById(R.id.product_view_pager)
+        viewPager = view.findViewById(R.id.view_pager)
         tabLayout = view.findViewById(R.id.tab_layout)
         buyWidget = view.findViewById(R.id.buy_widget)
         tickerView = view.findViewById(R.id.ticker_view)
-        layoutProgressBar = view.findViewById(R.id.layout_progress_bar)
+        loadingShimmering = view.findViewById(R.id.loading_telco_shimmering)
+        separator = view.findViewById(R.id.separator)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        promoListWidget.hide()
-        recentNumbersWidget.hide()
-
-        getInputFilterDataCollections()
+        getPrefixOperatorData()
         renderInputNumber()
         handleFocusClientNumber()
         getCatalogMenuDetail()
         getDataFromBundle(savedInstanceState)
+        sendOpenScreenTracking()
+
+        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(p0: Int) {
+
+            }
+
+            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
+
+            }
+
+            override fun onPageSelected(pos: Int) {
+                if (showProducts) {
+                    topupAnalytics.eventClickTelcoPrepaidCategory(listProductTab[pos].title)
+                } else {
+                    setTrackingOnTabMenu(listMenu[pos].title)
+                }
+            }
+        })
     }
 
-    fun getInputFilterDataCollections() {
-        customViewModel.getCustomDataPrepaid(GraphqlHelper.loadRawString(resources,
-                R.raw.query_custom_digital_telco),
-                this::onSuccessCustomData, this::onErrorCustomData)
+    override fun getTelcoMenuId(): Int {
+        return menuId
+    }
+
+    override fun getTelcoCategoryId(): Int {
+        return categoryId
     }
 
     private fun getCatalogMenuDetail() {
@@ -168,15 +184,38 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         getFavoriteNumbers(TelcoComponentType.FAV_NUMBER_PREPAID)
     }
 
+    override fun renderPromoAndRecommendation() {
+        if (listMenu.size > 0 && !showProducts) {
+            viewPager.adapter = null
+            val pagerAdapter = TopupBillsProductTabAdapter(listMenu, childFragmentManager)
+            viewPager.adapter = pagerAdapter
+            viewPager.offscreenPageLimit = listMenu.size
+
+            if (listMenu.size > 1) {
+                tabLayout.show()
+                separator.show()
+                tabLayout.setupWithViewPager(viewPager)
+                if (viewPager.getChildAt(0) != null) {
+                    (viewPager.getChildAt(0) as TopupBillsWidgetInterface).toggleTitle(false)
+                }
+                if (viewPager.getChildAt(1) != null) {
+                    (viewPager.getChildAt(1) as TopupBillsWidgetInterface).toggleTitle(false)
+                }
+            } else {
+                tabLayout.hide()
+                separator.hide()
+            }
+        }
+    }
+
     private fun getDataFromBundle(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
             arguments?.run {
                 val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM) as TopupBillsExtraParam
                 clientNumber = digitalTelcoExtraParam.clientNumber
                 productId = digitalTelcoExtraParam.productId.toIntOrNull() ?: 0
-                if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
-                    categoryId = digitalTelcoExtraParam.categoryId.toInt()
-                }
+                if (digitalTelcoExtraParam.categoryId.isNotEmpty()) { categoryId = digitalTelcoExtraParam.categoryId.toInt() }
+                if (digitalTelcoExtraParam.menuId.isNotEmpty()) { menuId = digitalTelcoExtraParam.menuId.toInt() }
             }
         } else {
             clientNumber = savedInstanceState.getString(CACHE_CLIENT_NUMBER) ?: ""
@@ -194,101 +233,59 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
-        onLoadingMenuDetail(false)
         super.processMenuDetail(data)
         showOnBoarding()
     }
 
-    override fun onSuccessCustomData(telcoData: TelcoCustomComponentData) {
-        this.operatorData = telcoData
-        renderProductFromCustomData()
-    }
-
-    fun renderProductFromCustomData() {
+    override fun renderProductFromCustomData() {
         try {
             if (telcoClientNumberWidget.getInputNumber().isNotEmpty()) {
-                val selectedOperator = this.operatorData.rechargeCustomData.customDataCollections.single {
+                showProducts = true
+                val selectedOperator = this.operatorData.rechargeCatalogPrefixSelect.prefixes.single {
                     telcoClientNumberWidget.getInputNumber().startsWith(it.value)
                 }
-                operatorName = selectedOperator.operator.attributes.name
-                when (inputNumberActionType) {
-                    InputNumberActionType.MANUAL -> {
-                        topupAnalytics.eventInputNumberManual(categoryId, operatorName)
-                    }
-                    InputNumberActionType.CONTACT -> {
-                        topupAnalytics.eventInputNumberContactPicker(categoryId, operatorName)
-                    }
-                    InputNumberActionType.FAVORITE -> {
-                        topupAnalytics.eventInputNumberFavorites(categoryId, operatorName)
-                    }
-                    InputNumberActionType.CONTACT_HOMEPAGE -> {
-                        topupAnalytics.eventInputNumberContactPicker(categoryId, operatorName)
-                    }
-                }
-                getDataProductList(selectedOperator.operator.id)
                 telcoClientNumberWidget.setIconOperator(selectedOperator.operator.attributes.imageUrl)
 
-                recentNumbersWidget.visibility = View.GONE
-                promoListWidget.visibility = View.GONE
-                tabLayout.visibility = View.VISIBLE
-                viewPager.visibility = View.VISIBLE
-                separator.visibility = View.VISIBLE
+                validatePhoneNumber(this.operatorData, telcoClientNumberWidget)
+                hitTrackingForInputNumber(selectedOperator)
+                renderProductViewPager()
+                getProductListData(selectedOperator.operator.id)
             }
         } catch (exception: Exception) {
-            view?.run {
-                telcoClientNumberWidget.setErrorInputNumber(
-                        getString(R.string.telco_number_error_not_found))
+            telcoClientNumberWidget.setErrorInputNumber(
+                    getString(R.string.telco_number_error_not_found))
+        }
+    }
+
+    private fun hitTrackingForInputNumber(selectedOperator: RechargePrefix) {
+        operatorName = selectedOperator.operator.attributes.name
+        when (inputNumberActionType) {
+            InputNumberActionType.MANUAL -> {
+                topupAnalytics.eventInputNumberManual(categoryId, operatorName)
+            }
+            InputNumberActionType.CONTACT -> {
+                topupAnalytics.eventInputNumberContactPicker(categoryId, operatorName)
+            }
+            InputNumberActionType.FAVORITE -> {
+                topupAnalytics.eventInputNumberFavorites(categoryId, operatorName)
+            }
+            InputNumberActionType.CONTACT_HOMEPAGE -> {
+                topupAnalytics.eventInputNumberContactPicker(categoryId, operatorName)
             }
         }
     }
 
-    private fun getDataProductList(operatorId: String) {
-        val mapParamRequest = mutableMapOf<String, Map<String, Any>>()
-        val mapParamPulsa = mutableMapOf<String, Any>()
-        mapParamPulsa[DigitalTelcoProductFragment.KEY_COMPONENT_ID] = TelcoComponentType.PRODUCT_PULSA
-        mapParamPulsa[DigitalTelcoProductFragment.KEY_OPERATOR_ID] = operatorId
-        mapParamRequest[TelcoComponentName.PRODUCT_PULSA] =  mapParamPulsa
-
-        val mapParamPaketData = mutableMapOf<String, Any>()
-        mapParamPaketData[DigitalTelcoProductFragment.KEY_COMPONENT_ID] = TelcoComponentType.PRODUCT_PAKET_DATA
-        mapParamPaketData[DigitalTelcoProductFragment.KEY_OPERATOR_ID] = operatorId
-        mapParamRequest[TelcoComponentName.PRODUCT_PAKET_DATA] =  mapParamPaketData
-
-        val mapParamRoaming = mutableMapOf<String, Any>()
-        mapParamRoaming[DigitalTelcoProductFragment.KEY_COMPONENT_ID] = TelcoComponentType.PRODUCT_ROAMING
-        mapParamRoaming[DigitalTelcoProductFragment.KEY_OPERATOR_ID] = operatorId
-        mapParamRequest[TelcoComponentName.PRODUCT_ROAMING] =  mapParamRoaming
-
-        sharedModel.getProductList(GraphqlHelper.loadRawString(resources, R.raw.query_product_digital_telco),
-                mapParamRequest, this::onSuccessProductList)
-    }
-
-    override fun onErrorCustomData(throwable: Throwable) {
-        view?.run {
-            Toaster.showError(this, getErrorMessage(activity, throwable), Snackbar.LENGTH_LONG)
-        }
-    }
-
-    private fun onSuccessProductList() {
-        renderViewPager()
-    }
-
-    private fun onLoadingMenuDetail(showLoading: Boolean) {
+    override fun onLoadingMenuDetail(showLoading: Boolean) {
         if (showLoading) {
-            layoutProgressBar.visibility = View.VISIBLE
-            recentNumbersWidget.visibility = View.GONE
-            promoListWidget.visibility = View.GONE
+            loadingShimmering.show()
+            mainContainer.hide()
         } else {
-            layoutProgressBar.visibility = View.GONE
-            // If client number auto fill is done (product tabs are visible), do not show recent numbers & promo list
-            if (tabLayout.visibility == View.GONE && viewPager.visibility == View.GONE) {
-                recentNumbersWidget.visibility = View.VISIBLE
-                promoListWidget.visibility = View.VISIBLE
-            }
+            loadingShimmering.hide()
+            mainContainer.show()
         }
     }
 
-    fun renderInputNumber() {
+    private fun renderInputNumber() {
         telcoClientNumberWidget.setListener(object : DigitalClientNumberWidget.ActionListener {
             override fun onNavigateToContact() {
                 inputNumberActionType = InputNumberActionType.CONTACT
@@ -296,9 +293,9 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             }
 
             override fun onRenderOperator() {
-                operatorData.rechargeCustomData.customDataCollections.isEmpty()?.let {
+                operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty()?.let {
                     if (it) {
-                        getInputFilterDataCollections()
+                        getPrefixOperatorData()
                     } else {
                         renderProductFromCustomData()
                     }
@@ -307,13 +304,9 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
             override fun onClearAutoComplete() {
                 topupAnalytics.eventClearInputNumber()
-
-                separator.visibility = View.GONE
-                recentNumbersWidget.visibility = View.VISIBLE
-                promoListWidget.visibility = View.VISIBLE
-                tabLayout.visibility = View.GONE
-                viewPager.visibility = View.GONE
-                sharedModel.setShowTotalPrice(false)
+                showProducts = false
+                renderPromoAndRecommendation()
+                sharedModelPrepaid.setShowTotalPrice(false)
                 productId = 0
             }
 
@@ -333,41 +326,33 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         telcoClientNumberWidget.setInputNumber(contactNumber)
     }
 
-    override fun clickCopyOnPromoCode(promoId: Int) {
-        sharedModel.setPromoSelected(promoId)
+    private fun getProductListData(operatorId: String) {
+        sharedModelPrepaid.getCatalogProductList(GraphqlHelper.loadRawString(activity?.resources,
+                R.raw.query_catalog_product_telco), menuId, operatorId)
     }
 
-    override fun errorMenuDetail() {
-        onLoadingMenuDetail(false)
-    }
+    private fun renderProductViewPager() {
+        viewPager.adapter = null
+        listProductTab.clear()
 
-    private fun renderViewPager() {
-        val listProductTab = mutableListOf<TopupBillsTabItem>()
-        listProductTab.add(TopupBillsTabItem(DigitalTelcoProductFragment.newInstance(
-                TelcoComponentName.PRODUCT_PULSA, operatorName, productId), TelcoComponentName.PRODUCT_PULSA))
-        listProductTab.add(TopupBillsTabItem(DigitalTelcoProductFragment.newInstance(
-                TelcoComponentName.PRODUCT_PAKET_DATA, operatorName, productId), TelcoComponentName.PRODUCT_PAKET_DATA))
-        listProductTab.add(TopupBillsTabItem(DigitalTelcoProductFragment.newInstance(
-                TelcoComponentName.PRODUCT_ROAMING, operatorName, productId), TelcoComponentName.PRODUCT_ROAMING))
+        listProductTab.add(
+                TopupBillsTabItem(DigitalTelcoProductFragment.newInstance(TelcoComponentName.PRODUCT_PULSA,
+                        operatorName, TelcoProductType.PRODUCT_GRID, productId), TelcoComponentName.PRODUCT_PULSA))
+        listProductTab.add(
+                TopupBillsTabItem(DigitalTelcoProductFragment.newInstance(TelcoComponentName.PRODUCT_PAKET_DATA,
+                        operatorName, TelcoProductType.PRODUCT_LIST, productId), TelcoComponentName.PRODUCT_PAKET_DATA))
+        listProductTab.add(
+                TopupBillsTabItem(DigitalTelcoProductFragment.newInstance(TelcoComponentName.PRODUCT_ROAMING,
+                        operatorName, TelcoProductType.PRODUCT_LIST, productId), TelcoComponentName.PRODUCT_ROAMING))
+
         val pagerAdapter = TopupBillsProductTabAdapter(listProductTab, childFragmentManager)
         viewPager.adapter = pagerAdapter
         viewPager.offscreenPageLimit = 3
+
+        tabLayout.show()
+        separator.show()
         tabLayout.setupWithViewPager(viewPager)
         setTabFromProductSelected()
-
-        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(p0: Int) {
-
-            }
-
-            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
-
-            }
-
-            override fun onPageSelected(pos: Int) {
-                topupAnalytics.eventClickTelcoPrepaidCategory(listProductTab[pos].title)
-            }
-        })
     }
 
     private fun setTabFromProductSelected() {
@@ -395,9 +380,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         telcoClientNumberWidget.setInputNumber(orderClientNumber.clientNumber)
         telcoClientNumberWidget.clearFocusAutoComplete()
 
-        if (::viewPager.isInitialized) {
-            setTabFromProductSelected()
-        }
+        setTabFromProductSelected()
     }
 
     override fun handleCallbackSearchNumberCancel() {
@@ -456,7 +439,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             val showCaseList = ArrayList<ShowCaseObject>()
             showCaseList.add(ShowCaseObject(telcoClientNumberWidget, getString(R.string.Telco_title_showcase_client_number),
                     getString(R.string.telco_label_showcase_client_number)))
-            showCaseList.add(ShowCaseObject(promoListWidget, getString(R.string.telco_title_showcase_promo),
+            showCaseList.add(ShowCaseObject(viewPager, getString(R.string.telco_title_showcase_promo),
                     getString(R.string.telco_label_showcase_promo)))
             showCaseDialog.show(activity, showcaseTag, showCaseList)
         }
@@ -469,14 +452,14 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 .textColorRes(com.tokopedia.design.R.color.grey_400)
                 .textSizeRes(com.tokopedia.design.R.dimen.sp_12)
                 .titleTextSizeRes(com.tokopedia.design.R.dimen.sp_16)
-                .finishStringRes(com.tokopedia.showcase.R.string.finish)
+                .finishStringRes(R.string.telco_showcase_finish)
                 .clickable(true)
                 .useArrow(true)
                 .build()
     }
 
     override fun onDestroy() {
-        sharedModel.flush()
+        sharedModelPrepaid.flush()
         super.onDestroy()
     }
 
