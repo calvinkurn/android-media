@@ -31,14 +31,14 @@ class PlayBannerCardViewHolder(
     }
 
     override fun bind(element: PlayCarouselCardDataModel?) {
-        itemView.visibility = if(element?.playBannerCarouselDataModel == null) View.GONE else View.VISIBLE
+        itemView.visibility = if(element?.playBannerCarouselDataModel?.channelList?.isEmpty() == true) View.GONE else View.VISIBLE
         playCarouselCardDataModel = element
         itemView.visibility = if(element == null) View.GONE else View.VISIBLE
         element?.playBannerCarouselDataModel?.let { itemView.play_banner_carousel?.setItem(it) }
     }
 
     override fun bind(element: PlayCarouselCardDataModel?, payloads: MutableList<Any>) {
-        itemView.visibility = if(element?.playBannerCarouselDataModel == null) View.GONE else View.VISIBLE
+        itemView.visibility = if(element?.playBannerCarouselDataModel?.channelList?.isEmpty() == true) View.GONE else View.VISIBLE
         playCarouselCardDataModel = element
         itemView.visibility = if(element == null) View.GONE else View.VISIBLE
         element?.playBannerCarouselDataModel?.let { itemView.play_banner_carousel?.setItem(it) }
