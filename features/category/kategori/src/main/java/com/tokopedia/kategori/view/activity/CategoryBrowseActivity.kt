@@ -69,7 +69,7 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
 
     override fun setupLayout(savedInstanceState: Bundle?) {
         super.setupLayout(savedInstanceState)
-        toolbar.setNavigationIcon(R.drawable.ic_action_back)
+        toolbar.setNavigationIcon(com.tokopedia.abstraction.R.drawable.ic_action_back)
         updateTitle(toolbarName)
     }
 
