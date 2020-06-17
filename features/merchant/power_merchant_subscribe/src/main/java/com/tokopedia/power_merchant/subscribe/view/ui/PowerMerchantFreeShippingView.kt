@@ -17,6 +17,8 @@ import kotlinx.android.synthetic.main.layout_power_merchant_free_shipping_inacti
 
 class PowerMerchantFreeShippingView: FrameLayout {
 
+    var onClickListener: (() -> Unit)? = null
+
     constructor (context: Context): super(context)
 
     constructor(context: Context, attrs: AttributeSet): super(context, attrs)
@@ -45,6 +47,7 @@ class PowerMerchantFreeShippingView: FrameLayout {
         transitionLayout.textDescription.text = MethodChecker.fromHtml(description)
 
         transitionLayout.setOnClickListener {
+            onClickListener?.invoke()
             openFreeShippingPage()
         }
 
@@ -116,12 +119,14 @@ class PowerMerchantFreeShippingView: FrameLayout {
 
     private fun setCTABtnClickListener() {
         btnCTA.setOnClickListener {
+            onClickListener?.invoke()
             openFreeShippingPage()
         }
     }
 
     private fun setActiveLayoutClickListener() {
         activeLayout.setOnClickListener {
+            onClickListener?.invoke()
             openFreeShippingPage()
         }
     }
