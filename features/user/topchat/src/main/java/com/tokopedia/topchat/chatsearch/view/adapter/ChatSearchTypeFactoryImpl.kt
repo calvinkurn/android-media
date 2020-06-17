@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder
 import com.tokopedia.topchat.chatsearch.data.RecentSearch
-import com.tokopedia.topchat.chatsearch.data.SearchResult
+import com.tokopedia.topchat.chatsearch.view.uimodel.SearchResultUiModel
 import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.*
 import com.tokopedia.topchat.chatsearch.view.uimodel.ContactLoadMoreUiModel
 
@@ -19,7 +19,7 @@ class ChatSearchTypeFactoryImpl(
         private val contactLoadMoreListener: ContactLoadMoreViewHolder.Listener? = null
 ) : BaseAdapterTypeFactory(), ChatSearchTypeFactory {
 
-    override fun type(searchResult: SearchResult): Int {
+    override fun type(searchResultUiModel: SearchResultUiModel): Int {
         return ChatItemListViewHolder.LAYOUT
     }
 

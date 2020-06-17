@@ -1,11 +1,12 @@
-package com.tokopedia.topchat.chatsearch.data
+package com.tokopedia.topchat.chatsearch.view.uimodel
 
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.topchat.chatsearch.data.ContactProfile
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactory
 
-data class SearchResult(
+data class SearchResultUiModel(
         @SerializedName("contact")
         val contact: ContactProfile = ContactProfile(),
         @SerializedName("createBy")
