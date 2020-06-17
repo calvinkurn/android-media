@@ -125,8 +125,10 @@ class ResourceDownloadRunnable(
                         e.printStackTrace()
                         hasSomeExceptionOccurred = true
                     } finally {
-                        if (hasSomeExceptionOccurred)
+                        if (hasSomeExceptionOccurred) {
+                            task.handleDownloadState(DOWNLOAD_STATE_FAILED)
                             semaphore.release()
+                        }
                     }
                 }
             }
@@ -173,10 +175,9 @@ class ResourceDownloadRunnable(
         } catch (e: Exception) {
             e.printStackTrace()
         } finally {
-            check(file.length() == byteArray.size.toLong()) { CORRUPT_FILE_MESSAGE }
             out?.flush()
             out?.close()
-
+            check(file.length() == byteArray.size.toLong()) { CORRUPT_FILE_MESSAGE }
         }
         return file.absolutePath
     }
