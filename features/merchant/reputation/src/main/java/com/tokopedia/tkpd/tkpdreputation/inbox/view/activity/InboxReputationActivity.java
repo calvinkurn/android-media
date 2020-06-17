@@ -98,8 +98,8 @@ public class  InboxReputationActivity extends BaseTabActivity implements HasComp
             reviewSellerFragment = applicationContext.getReviewSellerFragment();
         }
         viewPager.setOffscreenPageLimit(getPageLimit());
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator.getTabLayout()));
-        indicator.getTabLayout().addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager, this) {
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator.getUnifyTabLayout()));
+        indicator.getUnifyTabLayout().addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager, this) {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 super.onTabSelected(tab);
@@ -138,7 +138,7 @@ public class  InboxReputationActivity extends BaseTabActivity implements HasComp
             viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
         }
 
-        wrapTabIndicatorToTitle(indicator.getTabLayout(), (int) ReputationUtil.DptoPx(this, MARGIN_START_END_TAB), (int) ReputationUtil.DptoPx(this, MARGIN_TAB));
+        wrapTabIndicatorToTitle(indicator.getUnifyTabLayout(), (int) ReputationUtil.DptoPx(this, MARGIN_START_END_TAB), (int) ReputationUtil.DptoPx(this, MARGIN_TAB));
     }
 
     public void wrapTabIndicatorToTitle(TabLayout tabLayout, int externalMargin, int internalMargin) {
@@ -179,7 +179,7 @@ public class  InboxReputationActivity extends BaseTabActivity implements HasComp
 
     @Override
     protected PagerAdapter getViewPagerAdapter() {
-        return new SectionsPagerAdapter(getSupportFragmentManager(), getFragmentList(), indicator.getTabLayout());
+        return new SectionsPagerAdapter(getSupportFragmentManager(), getFragmentList(), indicator.getUnifyTabLayout());
     }
 
     @Override
@@ -218,7 +218,7 @@ public class  InboxReputationActivity extends BaseTabActivity implements HasComp
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        reputationTracking.onBackPressedInboxReviewClickTracker(indicator.getTabLayout().getSelectedTabPosition());
+        reputationTracking.onBackPressedInboxReviewClickTracker(indicator.getUnifyTabLayout().getSelectedTabPosition());
         return super.onOptionsItemSelected(item);
     }
 
