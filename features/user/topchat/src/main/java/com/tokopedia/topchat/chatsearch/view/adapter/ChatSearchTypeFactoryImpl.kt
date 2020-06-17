@@ -11,7 +11,7 @@ import com.tokopedia.topchat.chatsearch.data.RecentSearch
 import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.*
 import com.tokopedia.topchat.chatsearch.view.uimodel.BigDividerUiModel
 import com.tokopedia.topchat.chatsearch.view.uimodel.ChatReplyUiModel
-import com.tokopedia.topchat.chatsearch.view.uimodel.ContactLoadMoreUiModel
+import com.tokopedia.topchat.chatsearch.view.uimodel.SearchListHeaderUiModel
 import com.tokopedia.topchat.chatsearch.view.uimodel.SearchResultUiModel
 
 class ChatSearchTypeFactoryImpl(
@@ -40,7 +40,7 @@ class ChatSearchTypeFactoryImpl(
         return RecentSearchChatViewHolder.LAYOUT
     }
 
-    override fun type(contactLoadMoreUiModel: ContactLoadMoreUiModel): Int {
+    override fun type(searchListHeaderUiModel: SearchListHeaderUiModel): Int {
         return ContactLoadMoreViewHolder.LAYOUT
     }
 

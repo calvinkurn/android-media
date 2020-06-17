@@ -1,18 +1,17 @@
 package com.tokopedia.topchat.chatsearch.view.adapter.viewholder
 
-import android.annotation.SuppressLint
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatsearch.view.uimodel.ContactLoadMoreUiModel
+import com.tokopedia.topchat.chatsearch.view.uimodel.SearchListHeaderUiModel
 import com.tokopedia.unifyprinciples.Typography
 
 class ContactLoadMoreViewHolder(
         itemView: View?,
         private val listener: Listener?
-) : AbstractViewHolder<ContactLoadMoreUiModel>(itemView) {
+) : AbstractViewHolder<SearchListHeaderUiModel>(itemView) {
 
     private var tittle: Typography? = itemView?.findViewById(R.id.txt_tittle)
     private var ctaDetail: Typography? = itemView?.findViewById(R.id.txt_action_detail)
@@ -21,20 +20,20 @@ class ContactLoadMoreViewHolder(
         fun onClickContactLoadMore()
     }
 
-    override fun bind(element: ContactLoadMoreUiModel) {
+    override fun bind(element: SearchListHeaderUiModel) {
         bindTitle(element)
         bindCtaDetail(element)
     }
 
-    private fun bindTitle(element: ContactLoadMoreUiModel) {
-        var title = "Pengguna"
+    private fun bindTitle(element: SearchListHeaderUiModel) {
+        var title = "Pengguna "
         if (element.totalCount.isNotEmpty()) {
-           title += " (${element.totalCount})"
+           title += "(${element.totalCount})"
         }
         tittle?.text = title
     }
 
-    private fun bindCtaDetail(element: ContactLoadMoreUiModel) {
+    private fun bindCtaDetail(element: SearchListHeaderUiModel) {
         if (element.hideCta) {
             ctaDetail?.hide()
         } else {

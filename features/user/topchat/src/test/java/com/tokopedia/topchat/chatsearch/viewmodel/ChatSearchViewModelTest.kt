@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.topchat.InstantTaskExecutorRuleSpek
 import com.tokopedia.topchat.chatsearch.data.GetChatSearchResponse
 import com.tokopedia.topchat.chatsearch.usecase.GetSearchQueryUseCase
-import com.tokopedia.topchat.chatsearch.view.uimodel.ContactLoadMoreUiModel
+import com.tokopedia.topchat.chatsearch.view.uimodel.SearchListHeaderUiModel
 import io.mockk.*
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.Dispatchers
@@ -54,7 +54,7 @@ object ChatSearchViewModelTest : Spek({
             Given("New query") {
                 viewModel.searchResult.observeForever(searchResultObserver)
                 every { getSearchQueryUseCase.doSearch(any(), any(), any(), any()) } answers {
-                    val onSuccess = firstArg<(GetChatSearchResponse, ContactLoadMoreUiModel?) -> Unit>()
+                    val onSuccess = firstArg<(GetChatSearchResponse, SearchListHeaderUiModel?) -> Unit>()
                     onSuccess.invoke(exGetChatSearchResponse, null)
                 }
             }
