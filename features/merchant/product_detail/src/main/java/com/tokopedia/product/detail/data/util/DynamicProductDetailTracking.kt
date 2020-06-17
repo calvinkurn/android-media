@@ -863,7 +863,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Action.CLICK_BY_ME,
                     eventLabel)
 
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_BY_ME)
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, "")
         }
     }
 

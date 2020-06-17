@@ -265,7 +265,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
 
     fun updateByMeData(context: Context?) {
         productByMeMap?.run {
-            data.first().subtitle = context?.getString(R.string.product_detail_by_me_subtitle) ?: ""
+            data.firstOrNull()?.subtitle = context?.getString(R.string.product_detail_by_me_subtitle) ?: ""
         }
     }
 
