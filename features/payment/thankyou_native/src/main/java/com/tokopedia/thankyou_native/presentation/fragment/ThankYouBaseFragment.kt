@@ -226,6 +226,27 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         }
     }
 
+    override fun gotoOrderList(applink: String) {
+        try {
+            if(applink.isNullOrBlank()){
+                gotoOrderList()
+            }else {
+                thankYouPageAnalytics.get().sendCheckTransactionListEvent()
+                val homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME, "")
+                val orderListListIntent = RouteManager.getIntent(context, applink)//getOrderListPageIntent()//will check if applink not valid
+                orderListListIntent?.let {
+                    TaskStackBuilder.create(context)
+                            .addNextIntent(homeIntent)
+                            .addNextIntent(orderListListIntent)
+                            .startActivities()
+                }
+                activity?.finish()
+            }
+        } catch (e: Exception) {
+        }
+    }
+
+
     private fun getOrderListPageIntent(): Intent? {
         //todo need multi deeplink once other type of transaction integrated.
         // ..currently it is for only market place

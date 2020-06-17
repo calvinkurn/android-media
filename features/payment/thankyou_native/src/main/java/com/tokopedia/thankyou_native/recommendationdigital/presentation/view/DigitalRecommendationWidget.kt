@@ -28,7 +28,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
         renderImage(element)
         renderProduct(element)
         renderTitle(element)
-      //  renderSubtitle(element)
+        renderSubtitle(element)
         //renderFooter(element)
     }
 
@@ -50,7 +50,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
             thanks_dg_rec_text_sub.visibility = View.GONE
         } else {
             thanks_dg_rec_text_sub.visibility = View.VISIBLE
-            thanks_dg_rec_text_sub.text = element.title
+            thanks_dg_rec_text_sub.text = element.productName
         }
 
 //        if (element.description.isNullOrBlank()) {
@@ -64,14 +64,14 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
 //        }
     }
 
-//    open fun renderSubtitle(element: RecommendationsItem) {
-//        if (element.desc1st.isEmpty()) {
-//            subtitle.visibility = View.GONE
-//        } else {
-//            subtitle.visibility = View.VISIBLE
-//            subtitle.text = element.desc1st
-//        }
-//
+    open fun renderSubtitle(element: RecommendationsItem) {
+        if (element.clientNumber.isNullOrBlank()) {
+            thanks_dg_rec_text_desc.visibility = View.GONE
+        } else {
+            thanks_dg_rec_text_desc.visibility = View.VISIBLE
+            thanks_dg_rec_text_desc.text = element.clientNumber
+        }
+
 //        if (element.title1st.isEmpty() &&
 //                element.tagName.isEmpty()) {
 //            if (hasPrice(element) || hasTagLabel(element)) {
@@ -82,7 +82,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
 //        } else {
 //            subtitle.maxLines = 1
 //        }
-//    }
+    }
 //
 //    open fun renderFooter(element: RecommendationsItem) {
 //        if (hasPrice(element) || hasTagLabel(element)) {

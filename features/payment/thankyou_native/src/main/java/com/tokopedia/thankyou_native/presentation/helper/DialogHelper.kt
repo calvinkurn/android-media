@@ -90,5 +90,6 @@ interface OnDialogRedirectListener {
     fun gotoHomePage()
     fun gotoPaymentWaitingPage()
     fun gotoOrderList()
+    fun gotoOrderList(applink: String)
 }
 
