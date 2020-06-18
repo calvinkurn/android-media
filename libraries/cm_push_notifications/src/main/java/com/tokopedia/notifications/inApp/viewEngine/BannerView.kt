@@ -82,7 +82,7 @@ internal open class BannerView(activity: Activity) {
     private fun setActionButton(data: CMInApp) {
         val layout = data.getCmLayout()
 
-        if (layout.getButton().isEmpty()) {
+        if (layout.getButton() == null || layout.getButton().isEmpty()) {
             lstActionButton.visibility = View.GONE
             return
         }
