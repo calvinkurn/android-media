@@ -44,6 +44,9 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
 }
 
 
