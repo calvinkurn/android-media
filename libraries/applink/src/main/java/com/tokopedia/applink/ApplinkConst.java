@@ -512,6 +512,5 @@ public interface ApplinkConst {
     interface ResCenter {
         String MOBILE =  "/mobile";
         String RESO_CREATE = "resolution-center/create/%s" + MOBILE;
-        String RESO_INBOX =  "resolution-center/inbox/";
     }
 }
