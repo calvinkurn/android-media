@@ -161,6 +161,8 @@ class HotelCancellationFragment : HotelBaseFragment() {
             hotel_cancellation_room_duration_view.setRoomDatesFormatted(checkIn.checkInOut.date, checkOut.checkInOut.date, it.stayLength)
             hotel_cancellation_room_duration_view.setRoomCheckTimes("${checkIn.checkInOut.day}, ${checkIn.checkInOut.time}",
                     "${checkIn.checkInOut.day}, ${checkOut.checkInOut.time}")
+
+            if (it.isDirectPayment) content_cancellation_pay_at_hotel.hide() else content_cancellation_pay_at_hotel.show()
         }
 
         hotelCancellationModel.cancelPolicy.let {
