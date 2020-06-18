@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.topchat.R
@@ -18,6 +19,7 @@ import com.tokopedia.topchat.chatsearch.analytic.ChatSearchAnalytic
 import com.tokopedia.topchat.chatsearch.data.RecentSearch
 import com.tokopedia.topchat.chatsearch.di.ChatSearchComponent
 import com.tokopedia.topchat.chatsearch.view.activity.ChatSearchActivity
+import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchAdapter
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactory
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactoryImpl
 import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.ContactLoadMoreViewHolder
@@ -38,6 +40,7 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    private lateinit var adapter: ChatSearchAdapter
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(ChatSearchViewModel::class.java) }
     private var listener: ChatSearchFragmentListener? = null
@@ -45,8 +48,15 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
 
+    override fun isAutoLoadEnabled(): Boolean = true
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_chat_search, container, false)
+    }
+
+    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, ChatSearchTypeFactory> {
+        this.adapter = ChatSearchAdapter(adapterTypeFactory)
+        return this.adapter
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,8 +68,7 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
             setupObserver()
             alreadyLoaded = true
         } else {
-            isLoadingInitialData = true
-            viewModel.disableEmptyQuery()
+            viewModel.resetLiveData()
             setupRecyclerView()
             setupObserver()
         }
@@ -87,11 +96,11 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
     private fun setupRecyclerView() {
         view?.findViewById<VerticalRecyclerView>(recyclerViewResourceId)?.apply {
             clearItemDecoration()
-            enableLoadMore()
             adapter = this@ChatSearchFragment.adapter
-            layoutManager = recyclerViewLayoutManager
             overScrollMode = RecyclerView.OVER_SCROLL_NEVER
             clipToPadding = false
+            endlessRecyclerViewScrollListener.updateLayoutManager(layoutManager)
+            addOnScrollListener(endlessRecyclerViewScrollListener)
         }
     }
 
@@ -136,6 +145,7 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
 
     private fun observeSearchResult() {
         viewModel.searchResult.observe(viewLifecycleOwner, Observer {
+            if (it == null) return@Observer
             renderList(it, viewModel.hasNext)
         })
     }

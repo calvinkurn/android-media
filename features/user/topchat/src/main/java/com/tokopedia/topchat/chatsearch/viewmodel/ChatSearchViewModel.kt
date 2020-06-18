@@ -62,8 +62,10 @@ class ChatSearchViewModel @Inject constructor(
         }
     }
 
-    fun disableEmptyQuery() {
+    fun resetLiveData() {
         _emptyQuery.value = false
+        _searchResults.value = null
+        _loadInitialData.value = false
     }
 
     fun isFirstPage(): Boolean {
