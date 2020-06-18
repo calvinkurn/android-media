@@ -9,7 +9,7 @@
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
-  
+
       <!-- TODO :: Delete soon -->
         <activity
             android:name=".forgotpassword.activity.ForgotPasswordActivity"
@@ -19,7 +19,7 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
         </activity>
       <!--END-->
-      
+
         <activity
             android:name="com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity"
             android:label="@string/profile_completion_title"
@@ -42,7 +42,7 @@
             android:windowSoftInputMode="adjustResize">
         </activity>
       <!--END-->
-      
+
         <activity
             android:name=".changename.view.activity.ChangeNameActivity"
             android:label="@string/title_change_name"
@@ -75,7 +75,20 @@
 
                 <data android:scheme="launch.TermPrivacy" />
             </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_global"
+                    android:path="@string/path_add_password"/>
+            </intent-filter>
+
         </activity>
+
     </application>
 
 </manifest>
