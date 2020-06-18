@@ -149,7 +149,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         handleFocusClientNumber()
         getCatalogMenuDetail()
         getDataFromBundle(savedInstanceState)
-        sendOpenScreenTracking()
 
         viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(p0: Int) {

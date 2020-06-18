@@ -108,7 +108,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         handleFocusClientNumber()
         getCatalogMenuDetail()
         getDataFromBundle(savedInstanceState)
-        sendOpenScreenTracking()
     }
 
     override fun getTelcoMenuId(): Int {
