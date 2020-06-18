@@ -67,21 +67,21 @@ class FindNavModule {
     @Named(FindNavConstants.GQL_NAV_SEARCH_PRODUCT)
     @Provides
     fun provideProductListQuery(resources: Resources): String {
-        return GraphqlHelper.loadRawString(resources, R.raw.gql_nav_search_product)
+        return GraphqlHelper.loadRawString(resources, com.tokopedia.common_category.R.raw.gql_nav_search_product)
     }
 
     @FindNavScope
     @Named(FindNavConstants.GQL_NAV_QUICK_FILTER)
     @Provides
     fun provideQuickFilterListQuery(resources: Resources): String {
-        return GraphqlHelper.loadRawString(resources, R.raw.gql_nav_quick_filter)
+        return GraphqlHelper.loadRawString(resources, com.tokopedia.common_category.R.raw.gql_nav_quick_filter)
     }
 
     @FindNavScope
     @Named(FindNavConstants.GQL_NAV_DYNAMIC_FILTER)
     @Provides
     fun provideDynamicFilterListQuery(resources: Resources): String {
-        return GraphqlHelper.loadRawString(resources, R.raw.gql_nav_dynamic_attribute)
+        return GraphqlHelper.loadRawString(resources, com.tokopedia.common_category.R.raw.gql_nav_dynamic_attribute)
     }
 
     @FindNavScope
