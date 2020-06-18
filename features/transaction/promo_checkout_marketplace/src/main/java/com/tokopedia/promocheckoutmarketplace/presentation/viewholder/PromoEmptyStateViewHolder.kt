@@ -16,7 +16,7 @@ class PromoEmptyStateViewHolder(private val view: View,
     }
 
     companion object {
-        val LAYOUT = R.layout.item_promo_empty
+        val LAYOUT = R.layout.promo_checkout_marketplace_module_item_promo_empty
     }
 
     override fun bind(element: PromoEmptyStateUiModel) {

@@ -11,7 +11,7 @@ import com.tokopedia.promocheckoutmarketplace.R
 class PromoLoadingViewHolder(val view: View) : LoadingViewholder(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_loading_promo_page
+        val LAYOUT = R.layout.promo_checkout_marketplace_module_item_loading_promo_page
     }
 
 }

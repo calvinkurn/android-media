@@ -49,7 +49,7 @@ class ToolbarPromoCheckout : Toolbar {
     }
 
     private fun init() {
-        val view = View.inflate(context, R.layout.toolbar_promo_checkout, this)
+        val view = View.inflate(context, R.layout.promo_checkout_marketplace_module_toolbar_promo_checkout, this)
         buttonBack = view.findViewById(R.id.button_back)
         labelTitle = view.findViewById(R.id.label_title)
         buttonResetPromo = view.findViewById(R.id.button_reset_promo)

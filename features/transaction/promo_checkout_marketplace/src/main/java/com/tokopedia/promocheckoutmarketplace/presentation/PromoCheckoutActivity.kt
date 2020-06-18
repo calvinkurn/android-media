@@ -24,7 +24,7 @@ class PromoCheckoutActivity : BaseSimpleActivity() {
     }
 
     override fun getLayoutRes(): Int {
-        return R.layout.activity_promo_checkout
+        return R.layout.promo_checkout_marketplace_module_activity
     }
 
     override fun onBackPressed() {

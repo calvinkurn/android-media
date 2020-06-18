@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
-        android:background="@drawable/ic_promo_recommendation"
+        android:background="@drawable/promo_checkout_marketplace_module_ic_promo_recommendation"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/dp_12"
         android:paddingTop="@dimen/dp_8"
@@ -28,7 +28,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_check_circle" />
+            app:srcCompat="@drawable/promo_checkout_marketplace_module_ic_check_circle" />
 
         <LinearLayout
             android:id="@+id/container_text"

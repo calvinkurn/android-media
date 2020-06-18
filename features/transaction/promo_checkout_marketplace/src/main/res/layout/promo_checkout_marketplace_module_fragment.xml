@@ -115,7 +115,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_4"
                     android:layout_gravity="top"
-                    android:background="@drawable/shadow_bottom" />
+                    android:background="@drawable/promo_checkout_marketplace_module_shadow_bottom" />
 
             </LinearLayout>
 
@@ -200,6 +200,6 @@
 
     </RelativeLayout>
 
-    <include layout="@layout/promo_checkout_marketplace_bottom_sheet_layout" />
+    <include layout="@layout/promo_checkout_marketplace_module_bottom_sheet_layout" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

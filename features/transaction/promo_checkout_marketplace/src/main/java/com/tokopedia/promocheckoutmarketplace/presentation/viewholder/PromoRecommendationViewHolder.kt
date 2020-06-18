@@ -36,7 +36,7 @@ class PromoRecommendationViewHolder(private val view: View,
     }
 
     companion object {
-        val LAYOUT = R.layout.item_promo_recommendation
+        val LAYOUT = R.layout.promo_checkout_marketplace_module_item_promo_recommendation
     }
 
     override fun bind(element: PromoRecommendationUiModel) {

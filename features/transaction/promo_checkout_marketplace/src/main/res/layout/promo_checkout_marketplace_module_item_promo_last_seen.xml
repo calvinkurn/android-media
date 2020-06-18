@@ -45,6 +45,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_arrow_diagonal" />
+        app:srcCompat="@drawable/promo_checkout_matketplace_module_ic_arrow_diagonal" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

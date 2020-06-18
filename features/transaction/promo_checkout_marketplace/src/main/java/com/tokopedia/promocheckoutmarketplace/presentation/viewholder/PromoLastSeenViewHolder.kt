@@ -25,7 +25,7 @@ class PromoLastSeenViewHolder(view: View, val actionListener: PromoCheckoutLastS
     }
 
     companion object {
-        val LAYOUT = R.layout.item_promo_last_seen
+        val LAYOUT = R.layout.promo_checkout_marketplace_module_item_promo_last_seen
     }
 
 }

@@ -24,7 +24,7 @@ class PromoListHeaderDisabledViewHolder(private val view: View,
     }
 
     companion object {
-        val LAYOUT = R.layout.item_promo_list_header_disabled
+        val LAYOUT = R.layout.promo_checkout_marketplace_module_item_promo_list_header_disabled
     }
 
     override fun bind(element: PromoListHeaderUiModel) {

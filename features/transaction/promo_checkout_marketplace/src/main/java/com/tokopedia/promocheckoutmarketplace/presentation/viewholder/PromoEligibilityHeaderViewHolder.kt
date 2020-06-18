@@ -27,7 +27,7 @@ class PromoEligibilityHeaderViewHolder(private val view: View,
     }
 
     companion object {
-        val LAYOUT = R.layout.item_promo_eligibility_header
+        val LAYOUT = R.layout.promo_checkout_marketplace_module_item_promo_eligibility_header
     }
 
     override fun bind(element: PromoEligibilityHeaderUiModel) {
