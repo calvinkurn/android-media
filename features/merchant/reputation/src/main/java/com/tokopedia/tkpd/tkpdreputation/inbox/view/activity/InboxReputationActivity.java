@@ -224,6 +224,7 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(true);
             getSupportActionBar().setTitle(this.getTitle());
         }
