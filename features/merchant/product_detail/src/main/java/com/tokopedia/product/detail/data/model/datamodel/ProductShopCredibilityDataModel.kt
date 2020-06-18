@@ -40,7 +40,7 @@ class ProductShopCredibilityDataModel(
         /**
          * The first position have their own hierarchy
          */
-        val firstPosition = when {
+        val firstPositionData = when {
             shopRating > 0 -> {
                 ShopCredibilityUiData(shopRating.toString(), "rating toko", R.drawable.ic_review_gray)
             }
@@ -51,17 +51,26 @@ class ProductShopCredibilityDataModel(
                 ShopCredibilityUiData(shopInfo?.activeProduct.toString(), "total produk", R.drawable.ic_product_grey)
             }
             else -> {
-                ShopCredibilityUiData()
+                null
             }
         }
 
-        val createdDated = SimpleDateFormat("yyyy-MM-dd", getIdLocale()).parse(shopInfo?.createdInfo?.shopCreated ?: "").toFormattedString("MMM yyyy", getIdLocale())
+        val createdDated = SimpleDateFormat("yyyy-MM-dd", getIdLocale()).parse(shopInfo?.createdInfo?.shopCreated
+                ?: "").toFormattedString("MMM yyyy", getIdLocale())
 
-        return listOf(firstPosition,
+        val listOfData = mutableListOf(
                 ShopCredibilityUiData(shopSpeed.getRelativeDateByHours(context), "pesanan diproses", R.drawable.ic_time_grey),
                 ShopCredibilityUiData(shopChatSpeed.getRelativeDateByMinute(context), "chat dibalas", R.drawable.ic_chat_grey),
-                ShopCredibilityUiData(createdDated, "mulai jualan", R.drawable.ic_merchant_grey)
-        ).filter { it.value.isNotEmpty() }.take(3)
+                ShopCredibilityUiData(createdDated, "mulai jualan", R.drawable.ic_merchant_grey))
+
+        // This logic is for fail over purpose
+        if (firstPositionData != null) {
+            listOfData.add(0, firstPositionData)
+        }
+
+        return listOfData
+                .filter { it.value.isNotEmpty() }
+                .take(3)
     }
 }
 

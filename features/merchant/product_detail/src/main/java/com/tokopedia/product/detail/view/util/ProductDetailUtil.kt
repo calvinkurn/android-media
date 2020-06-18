@@ -38,6 +38,10 @@ object ProductDetailUtil {
     }
 }
 
+const val MINUTE_DIVIDER = 60
+const val DAY_DIVIDER_IN_MINUTE = MINUTE_DIVIDER * 24
+
+
 fun String.linkTextWithGiven(context: Context, vararg textToBold: Pair<String, () -> Unit>): SpannableString {
     val builder = SpannableString(this)
 
@@ -77,15 +81,12 @@ fun String.linkTextWithGiven(context: Context, vararg textToBold: Pair<String, (
 }
 
 fun Int.getRelativeDateByMinute(context: Context): String {
-    val MINUTE_PER_HOUR = 60
-    val MINUTE_PER_DAY = MINUTE_PER_HOUR * 24
-
     val minuteInput = this
 
-    return if (minuteInput / MINUTE_PER_DAY > 0) {
-        context.getString(R.string.shop_chat_speed_in_days, minuteInput / MINUTE_PER_DAY)
-    } else if (minuteInput / MINUTE_PER_HOUR > 0) {
-        context.getString(R.string.shop_chat_speed_in_hours, minuteInput / MINUTE_PER_HOUR)
+    return if (minuteInput / DAY_DIVIDER_IN_MINUTE > 0) {
+        context.getString(R.string.shop_chat_speed_in_days, minuteInput / DAY_DIVIDER_IN_MINUTE)
+    } else if (minuteInput / MINUTE_DIVIDER > 0) {
+        context.getString(R.string.shop_chat_speed_in_hours, minuteInput / MINUTE_DIVIDER)
     } else {
         if (minuteInput > 0) {
             context.getString(R.string.shop_chat_speed_in_minute, minuteInput)
@@ -98,15 +99,13 @@ fun Int.getRelativeDateByMinute(context: Context): String {
 
 fun Int.getRelativeDateByHours(context: Context): String {
     if (this < 1) return ""
-    val MINUTE_PER_HOUR = 60
-    val MINUTE_PER_DAY = MINUTE_PER_HOUR * 24
 
     val minuteInput = this * 60
 
-    return if (minuteInput / MINUTE_PER_DAY > 0) {
+    return if (minuteInput / DAY_DIVIDER_IN_MINUTE > 0) {
         context.getString(R.string.shop_chat_speed_in_one_two_days)
-    } else if (minuteInput / MINUTE_PER_HOUR > 0) {
-        context.getString(R.string.shop_chat_speed_in_hours, minuteInput / MINUTE_PER_HOUR)
+    } else if (minuteInput / MINUTE_DIVIDER > 0) {
+        context.getString(R.string.shop_chat_speed_in_hours, minuteInput / MINUTE_DIVIDER)
     } else {
         if (minuteInput > 0) {
             context.getString(R.string.shop_chat_speed_in_minute, minuteInput)
@@ -154,7 +153,7 @@ fun String.getRelativeDate(context: Context): String {
         context.getString(R.string.shop_online_hours_ago, diff / hourDivider)
     } else {
         val minutes = diff / minuteDivider
-        if (minutes in 0..5) "Online" else
+        if (minutes in 0..5) context.getString(R.string.shop_online) else
             context.getString(R.string.shop_online_minute_ago, minutes)
     }
     return status

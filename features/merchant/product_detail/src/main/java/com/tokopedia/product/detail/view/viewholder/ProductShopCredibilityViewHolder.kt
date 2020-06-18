@@ -28,7 +28,7 @@ class ProductShopCredibilityViewHolder(private val view: View) : AbstractViewHol
             element.shopInfo?.let {
                 shop_ava.loadImageCircle(it.shopAssets.avatar)
                 shop_name.text = it.shopCore.name
-                shop_location_online.text = MethodChecker.fromHtml(it.location)
+                shop_location_online.text = context.getString(R.string.location_dot_builder, it.location)
                 setupLastActive(element.shopInfo?.shopLastActive ?: "")
                 setupBadge(it)
 
@@ -39,13 +39,13 @@ class ProductShopCredibilityViewHolder(private val view: View) : AbstractViewHol
 
     private fun setupLastActive(shopLastActive: String) = with(view) {
         val lastActive = shopLastActive.getRelativeDate(context)
-        shop_last_active.text = MethodChecker.fromHtml(lastActive)
-
         if (lastActive.toLowerCase() == "online") {
             shop_last_active.setTextColor(MethodChecker.getColor(context, R.color.g_500))
         } else {
             shop_last_active.setTextColor(MethodChecker.getColor(context, R.color.Neutral_N700_68))
         }
+
+        shop_last_active.text = MethodChecker.fromHtml(lastActive)
     }
 
     private fun setupInfoRegion(element: ProductShopCredibilityDataModel) = with(view) {
