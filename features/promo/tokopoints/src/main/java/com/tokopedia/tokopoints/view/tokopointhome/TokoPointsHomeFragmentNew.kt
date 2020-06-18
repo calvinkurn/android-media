@@ -33,6 +33,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -42,7 +43,6 @@ import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager
 import com.tokopedia.tokopoints.notification.model.PopupNotification
 import com.tokopedia.tokopoints.view.adapter.SectionCategoryAdapter
-import com.tokopedia.tokopoints.view.adapter.SectionTickerPagerAdapter
 import com.tokopedia.tokopoints.view.cataloglisting.ValidateMessageDialog
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
 import com.tokopedia.tokopoints.view.customview.CustomViewPager
@@ -64,14 +64,16 @@ import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListIte
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.util.*
-import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.NotificationUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.tp_fragment_homepage_new.*
 import kotlinx.android.synthetic.main.tp_home_point.*
 import kotlinx.android.synthetic.main.tp_item_dynamic_action.view.*
 import kotlinx.android.synthetic.main.tp_item_layout_dynamic_action.view.*
 import kotlinx.android.synthetic.main.tp_layout_section_category_parent.*
-import kotlinx.android.synthetic.main.tp_tooltip_es.view.*
 import javax.inject.Inject
 
 /*
@@ -602,21 +604,49 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             return
         }
 
-        val pager: ViewPager? = view?.findViewById(R.id.view_pager_ticker)
-        pager?.adapter = SectionTickerPagerAdapter(context, content.layoutTickerAttr.tickerList)
-        val pageIndicator: PageControl? = view?.findViewById(R.id.page_indicator_ticker)
-        val hideTickerView = view?.findViewById<View>(R.id.ic_close_ticker)
-        hideTickerView?.visibility = View.GONE
-        if (content.layoutTickerAttr.tickerList.size > 1) { //adding bottom dots(Page Indicator)
-            pageIndicator?.setIndicator(2)
-            pageIndicator?.visibility = View.VISIBLE
-        } else {
-            pageIndicator?.visibility = View.GONE
+        val pager: Ticker? = view?.findViewById(R.id.ticker_new)
+        val emptyTitle = ""
+        var link = ""
+        var desc = ""
+        val tickerDataList: MutableList<TickerData> = java.util.ArrayList()
+        for ((i, tickerItem) in content.layoutTickerAttr.tickerList.withIndex()) {
+            link = if (tickerItem.metadata[i].link[CommonConstant.TickerMapKeys.APP_LINK]?.length != 0) {
+                tickerItem.metadata[i].link[CommonConstant.TickerMapKeys.APP_LINK].toString()
+            } else {
+                tickerItem.metadata[i].link[CommonConstant.TickerMapKeys.URL].toString()
+            }
+            desc = tickerItem.metadata[i].text[CommonConstant.TickerMapKeys.CONTENT].toString()
+            tickerDataList.add(TickerData(emptyTitle, "$desc $link", Ticker.TYPE_ANNOUNCEMENT, true))
         }
-        tickerContainer?.visibility = View.VISIBLE
-        pager?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-            override fun onPageSelected(position: Int) {
+        val adapter = TickerPagerAdapter(context, tickerDataList)
+        pager?.addPagerView(adapter, tickerDataList)
+
+        pager?.setDescriptionClickEvent(object : TickerCallback {
+
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+
+                if (linkUrl.startsWith(CommonConstant.TickerMapKeys.TOKOPEDIA)) {
+                    RouteManager.route(context, linkUrl.toString())
+
+                } else {
+                    RouteManager.route(context, String.format("%s?url=%", ApplinkConst.WEBVIEW, linkUrl.toString()))
+
+                }
+
+                AnalyticsTrackerUtil.sendEvent(context,
+                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_TICKER,
+                        "$desc $link")
+
+            }
+
+            override fun onDismiss() {
+            }
+
+        })
+        adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+            override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
                 AnalyticsTrackerUtil.sendEvent(context,
                         AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_TOKOPOINT,
                         AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
@@ -624,8 +654,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                         "")
             }
 
-            override fun onPageScrollStateChanged(state: Int) {}
         })
+        tickerContainer?.visibility = View.VISIBLE
     }
 
     override fun renderCategory(content: SectionContent) {

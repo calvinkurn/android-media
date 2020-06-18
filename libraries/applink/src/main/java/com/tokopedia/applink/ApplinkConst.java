@@ -186,7 +186,7 @@ public interface ApplinkConst {
     String ORDER_LIST = "tokopedia://order";
     String ORDER_LIST_WEBVIEW = "tokopedia://order_list";
     String TOKOPOINTS = "tokopedia://tokopoints";
-    String TOKOPEDIA_REWARD = "tokopedia://reward";
+    String TOKOPEDIA_REWARD = "tokopedia://rewards";
     String COUPON_LISTING = "tokopedia://tokopoints/kupon-saya";
 
     String DEVELOPER_OPTIONS = "tokopedia://setting/dev-opts";
@@ -332,8 +332,8 @@ public interface ApplinkConst {
     interface TokoPoints {
         String HOMEPAGE = "tokopedia://tokopoints";
         String HOMEPAGE2 = "tokopedia://tokopoints/";
-        String HOMEPAGE_REWARD1 = "tokopedia://reward";
-        String HOMEPAGE_REWARD2 = "tokopedia://reward/";
+        String HOMEPAGE_REWARD1 = "tokopedia://rewards";
+        String HOMEPAGE_REWARD2 = "tokopedia://rewards/";
         String COUPON_DETAIL = "kupon-saya/detail";
         String COUPON_DETAIL_VALUE = "kupon-detail";
         String CATALOG_DETAIL = "tukar-point/detail";

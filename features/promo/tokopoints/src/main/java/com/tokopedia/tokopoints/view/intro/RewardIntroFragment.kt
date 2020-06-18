@@ -11,6 +11,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.rewardintro.TokopediaRewardIntroPage
+import com.tokopedia.tokopoints.view.util.NetworkDetector
 import kotlinx.android.synthetic.main.tp_layout_reward_intro.*
 
 class RewardIntroFragment : Fragment() {
@@ -31,28 +32,42 @@ class RewardIntroFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val data = arguments?.get("intro") as TokopediaRewardIntroPage
+        container_main.displayedChild = 0
+        val data = arguments?.get("intro") as? TokopediaRewardIntroPage
 
-        data.imageURL?.let {
-            iv_intro_reward.loadImage(data.imageURL)
-        }
-        tv_intro_title.text = data.title
+        if (data != null) {
+            container_main.displayedChild = 1
+            data.imageURL?.let {
+                iv_intro_reward.loadImage(data.imageURL)
+            }
+            if (data.title != null && data.title.isNotEmpty()) {
+                tv_intro_title.text = data.title
+            }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            tv_intro_desc.text = Html.fromHtml(data.subtitle, Html.FROM_HTML_MODE_LEGACY)
+            if (data.subtitle != null && data.subtitle.isNotEmpty()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    tv_intro_desc.text = Html.fromHtml(data.subtitle, Html.FROM_HTML_MODE_LEGACY)
+                } else {
+                    tv_intro_desc.text = Html.fromHtml(data.subtitle)
+                }
+            }
+
+            if (data.cTA?.size != 0) {
+                btn_learn.text = data.cTA?.get(0)?.text
+                btn_learn.setOnClickListener {
+                    RouteManager.route(context, data?.cTA?.get(0)?.appLink)
+                }
+
+                if (data.cTA?.size == 2) {
+                    btn_check.text = data.cTA[1]?.text
+                    btn_check.setOnClickListener {
+                        RouteManager.route(context, data.cTA[1]?.appLink)
+                    }
+                }
+            }
         } else {
-            tv_intro_desc.text = Html.fromHtml(data.subtitle)
-        }
-
-        btn_learn.text = data.cTA?.get(0)?.text
-        btn_learn.setOnClickListener {
-            RouteManager.route(context, data.cTA?.get(0)?.appLink)
-        }
-
-        btn_check.text = data.cTA?.get(0)?.text
-        btn_check.setOnClickListener {
-            RouteManager.route(context, data.cTA?.get(0)?.appLink)
+            container_main.displayedChild = 2
+            server_error_view.showErrorUi(NetworkDetector.isConnectedToInternet(this.context))
         }
     }
-
 }

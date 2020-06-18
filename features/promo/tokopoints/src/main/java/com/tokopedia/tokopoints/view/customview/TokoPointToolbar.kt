@@ -98,9 +98,9 @@ class TokoPointToolbar : Toolbar, View.OnClickListener {
     }
 
     override fun setTitle(title: CharSequence) {
-        if (title == "Tokopedia Reward") return
-        super.setTitle("Tokopedia Reward")
-        tvToolbarTitle!!.text = "Tokopedia Reward"
+        if (title == "Rewards") return
+        super.setTitle(title)
+        tvToolbarTitle?.text = title
     }
 
     override fun onClick(v: View) {
@@ -203,7 +203,7 @@ class TokoPointToolbar : Toolbar, View.OnClickListener {
             if (dynamicActionList != null) {
                 for (item in dynamicActionList) {
                     val viewCntainer = View.inflate(context, R.layout.tp_item_dynamic_action, null)
-                    val param = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1F)
+                    val param = LinearLayout.LayoutParams(resources.getDimension(R.dimen.tp_toolbar_icon_wh).toInt(), resources.getDimension(R.dimen.tp_toolbar_icon_wh).toInt(), 1F)
                     param.rightMargin = 18
                     ImageUtil.loadImage(viewCntainer.iv_dynamic, item?.iconImageURLScrolled)
                     if (item?.counter?.isShowCounter != null && item.counter.counterStr != null && item.counter.counterStr.isNotEmpty()) {
