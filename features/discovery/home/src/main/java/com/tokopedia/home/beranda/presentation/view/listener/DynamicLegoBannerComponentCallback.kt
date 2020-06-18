@@ -9,7 +9,6 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.track.TrackApp
 import java.util.HashMap
 
 class DynamicLegoBannerComponentCallback(val context: Context?, val homeCategoryListener: HomeCategoryListener): DynamicLegoBannerListener {
@@ -68,20 +67,26 @@ class DynamicLegoBannerComponentCallback(val context: Context?, val homeCategory
     }
 
     override fun onChannelImpressionSixImage(channelModel: ChannelModel, parentPosition: Int) {
-        HomePageTracking.getEnhanceImpressionLegoBannerHomePage(
-                channelModel.id, channelModel.channelGrids, channelModel.channelHeader.name, parentPosition
+        homeCategoryListener.putEEToIris(
+                HomePageTracking.getEnhanceImpressionLegoBannerHomePage(
+                        channelModel.id, channelModel.channelGrids, channelModel.channelHeader.name, parentPosition
+                )
         )
     }
 
     override fun onChannelImpressionFourImage(channelModel: ChannelModel, parentPosition: Int) {
-        HomePageTracking.getIrisEnhanceImpressionLegoThreeBannerHomePage(
-                channelModel.id, channelModel.channelGrids, channelModel.channelHeader.name, parentPosition
+        homeCategoryListener.putEEToIris(
+                HomePageTracking.getIrisEnhanceImpressionLegoThreeBannerHomePage(
+                        channelModel.id, channelModel.channelGrids, channelModel.channelHeader.name, parentPosition
+                )
         )
     }
 
     override fun onChannelImpressionThreeImage(channelModel: ChannelModel, parentPosition: Int) {
-        HomePageTrackingV2.LegoBanner.getLegoBannerFourImageImpression(
-                channelModel, parentPosition, true
-        ) as HashMap<String, Any>
+        homeCategoryListener.putEEToIris(
+                HomePageTrackingV2.LegoBanner.getLegoBannerFourImageImpression(
+                        channelModel, parentPosition, true
+                ) as HashMap<String, Any>
+        )
     }
 }

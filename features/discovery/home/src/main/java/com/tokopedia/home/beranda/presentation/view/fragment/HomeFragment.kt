@@ -1861,21 +1861,6 @@ open class HomeFragment : BaseDaggerFragment(),
             DynamicChannelViewHolder.TYPE_SPRINT_LEGO -> putEEToIris(
                     getSprintSaleImpression(channel, true) as HashMap<String, Any>
             )
-            DynamicChannelViewHolder.TYPE_SIX_GRID_LEGO -> putEEToIris(
-                    HomePageTracking.getEnhanceImpressionLegoBannerHomePage(
-                            channel.id, channel.grids, channel.header.name, position
-                    )
-            )
-            DynamicChannelViewHolder.TYPE_THREE_GRID_LEGO -> putEEToIris(
-                    HomePageTracking.getIrisEnhanceImpressionLegoThreeBannerHomePage(
-                            channel.id, channel.grids, channel.header.name, position
-                    )
-            )
-            DynamicChannelViewHolder.TYPE_FOUR_GRID_LEGO -> putEEToIris(
-                    getLegoBannerFourImageImpression(
-                            channel, position, true
-                    ) as HashMap<String, Any>
-            )
             DynamicChannelViewHolder.TYPE_GIF_BANNER -> putEEToIris(
                     HomePageTracking.getEnhanceImpressionPromoGifBannerDC(channel))
             DynamicChannelViewHolder.TYPE_MIX_TOP -> putEEToIris(getMixTopViewIris(mapChannelToProductTracker(channel), channel.header.name, channel.id, position.toString()) as HashMap<String, Any>)
