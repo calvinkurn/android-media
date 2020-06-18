@@ -19,7 +19,7 @@ import com.tokopedia.favorite.view.adapter.TopAdsShopAdapter;
 public class TopAdsShopViewHolder extends AbstractViewHolder<TopAdsShopViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.child_favorite_rec_shop;
+    public static final int LAYOUT = R.layout.favorite_child_favorite_rec_shop;
     private final FavoriteClickListener favoriteClickListener;
 
     RecyclerView recShopRecyclerView;
