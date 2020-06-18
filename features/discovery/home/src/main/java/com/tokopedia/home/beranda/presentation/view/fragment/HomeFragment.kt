@@ -771,16 +771,16 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun observeSalamWidget(){
         context?.let{
-            viewModel.get().salamWidgetLiveData.observe(this, Observer {
-                viewModel.get().insertSalamWidget(it.peekContent())
+            getHomeViewModel().salamWidgetLiveData.observe(this, Observer {
+                getHomeViewModel().insertSalamWidget(it.peekContent())
             })
         }
     }
 
     private fun observeRechargeRecommendation(){
         context?.let {
-            viewModel.get().rechargeRecommendationLiveData.observe(this, Observer {
-                viewModel.get().insertRechargeRecommendation(it.peekContent())
+            getHomeViewModel().rechargeRecommendationLiveData.observe(this, Observer {
+                getHomeViewModel().insertRechargeRecommendation(it.peekContent())
             })
         }
     }

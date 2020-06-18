@@ -36,9 +36,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
-import com.tokopedia.home_component.model.ChannelGrid
-import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.model.*
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
+import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
@@ -1223,7 +1223,7 @@ open class HomeViewModel @Inject constructor(
         )
     }
 
-    private fun mapperRechargetoReminder(recharge : RechargeRecommendation): ReminderWidget{
+    private fun mapperRechargetoReminder(recharge : RechargeRecommendation): ReminderWidget {
         recharge.recommendations.first().let {
             return ReminderWidget(
                     listOf(
@@ -1269,7 +1269,4 @@ open class HomeViewModel @Inject constructor(
                 salamWidgetData.iconURL.isNotEmpty() && salamWidgetData.mainText.isNotEmpty() &&
                 salamWidgetData.subText.isNotEmpty() && salamWidgetData.title.isNotEmpty())
     }
-
-
-
 }
