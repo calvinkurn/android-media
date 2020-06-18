@@ -37,7 +37,6 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
     private lateinit var globalError: GlobalError
     private val EXTRA_CATEGORY_NAME = "CATEGORY_NAME"
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
-    private lateinit var mToolbar: Toolbar
 
     override fun getScreenName(): String = getString(R.string.belanja_screen_name)
 
@@ -71,9 +70,12 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
 
     override fun setupLayout(savedInstanceState: Bundle?) {
         super.setupLayout(savedInstanceState)
-        mToolbar = findViewById(com.tokopedia.abstraction.R.id.toolbar)
-        mToolbar.setNavigationIcon(com.tokopedia.abstraction.R.drawable.ic_action_back)
+        toolbar.setNavigationIcon(com.tokopedia.abstraction.R.drawable.ic_action_back)
         updateTitle(toolbarName)
+    }
+
+    override fun getToolbarResourceID(): Int {
+        return R.id.toolbar
     }
 
     override fun setupFragment(savedInstance: Bundle?) {
