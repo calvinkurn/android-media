@@ -53,8 +53,8 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor() : PlayBroadcastSetup
         return _selectedCoverLiveData
     }
 
-    override fun getSelectedCover(): PlayCoverUiModel {
-        return _selectedCoverLiveData.value ?: throw IllegalStateException("Cover is not set")
+    override fun getSelectedCover(): PlayCoverUiModel? {
+        return _selectedCoverLiveData.value
     }
 
     override fun setCover(cover: PlayCoverUiModel) {

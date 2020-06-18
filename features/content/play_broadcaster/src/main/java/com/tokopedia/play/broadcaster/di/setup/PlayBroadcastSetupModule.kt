@@ -17,7 +17,9 @@ import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastSetupDataStor
 import com.tokopedia.play.broadcaster.util.PlayCoverImageUtilImpl
 import com.tokopedia.play.broadcaster.util.coroutine.CommonCoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play.broadcaster.util.cover.ImageTransformer
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
+import com.tokopedia.play.broadcaster.util.cover.PlayMinimumCoverImageTransformer
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -57,4 +59,8 @@ class PlayBroadcastSetupModule {
     @Provides
     @PlayBroadcastSetupScope
     fun provideCoverImageUtil(@ApplicationContext context: Context): PlayCoverImageUtil = PlayCoverImageUtilImpl(context)
+
+    @Provides
+    @PlayBroadcastSetupScope
+    fun provideCoverImageTransformer(): ImageTransformer = PlayMinimumCoverImageTransformer()
 }

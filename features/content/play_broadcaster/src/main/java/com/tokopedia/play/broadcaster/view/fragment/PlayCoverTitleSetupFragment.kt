@@ -19,27 +19,37 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.type.PlayCoverImageType
 import com.tokopedia.play.broadcaster.ui.model.CoverSourceEnum
+import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play.broadcaster.util.cover.YalantisImageCropper
+import com.tokopedia.play.broadcaster.util.cover.YalantisImageCropperImpl
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayCoverImageChooserBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayGalleryImagePickerBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.partial.CoverCropPartialView
 import com.tokopedia.play.broadcaster.view.partial.CoverSetupPartialView
+import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastCoverSetupViewModel
 import com.tokopedia.unifycomponents.Toaster
-import com.yalantis.ucrop.callback.BitmapCropCallback
 import com.yalantis.ucrop.model.ExifInfo
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
  * Created by furqan on 02/06/20
  */
 class PlayCoverTitleSetupFragment @Inject constructor(
-        private val viewModelFactory: ViewModelFactory
+        private val viewModelFactory: ViewModelFactory,
+        private val dispatcher: CoroutineDispatcherProvider
 ) : PlayBaseSetupFragment(), PlayCoverImageChooserBottomSheet.Listener,
         PlayGalleryImagePickerBottomSheet.Listener {
 
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(dispatcher.main + job)
+
     private lateinit var viewModel: PlayBroadcastCoverSetupViewModel
+
+    private lateinit var yalantisImageCropper: YalantisImageCropper
 
     private var selectedCoverUri: Uri? = null
     private var coverSource: CoverSourceEnum = CoverSourceEnum.NONE
@@ -76,6 +86,7 @@ class PlayCoverTitleSetupFragment @Inject constructor(
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        observeCropState()
         observeSelectedCover()
         observeImageEcsLink()
         observeOriginalImageUri()
@@ -86,6 +97,11 @@ class PlayCoverTitleSetupFragment @Inject constructor(
             is PlayCoverImageType.Camera -> onGetCoverFromCamera(coverImage.uri)
             is PlayCoverImageType.Product -> onGetCoverFromProduct(coverImage.productId, coverImage.imageUrl)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        job.cancelChildren()
     }
 
     private fun onGetCoverFromCamera(imageUri: Uri?) {
@@ -168,25 +184,21 @@ class PlayCoverTitleSetupFragment @Inject constructor(
                     exifInfo: ExifInfo,
                     viewBitmap: Bitmap
             ) {
-                viewModel.cropImage(requireContext(),
-                        imageInputPath,
-                        cropRect,
-                        currentImageRect,
-                        currentScale,
-                        currentAngle,
-                        exifInfo,
-                        viewBitmap,
-                        object : BitmapCropCallback {
-                            override fun onBitmapCropped(resultUri: Uri, offsetX: Int, offsetY: Int, imageWidth: Int, imageHeight: Int) {
-                                val finalResultUri = viewModel.validateImageMinSize(resultUri)
-                                onImageCropped(finalResultUri)
-                            }
+                scope.launch {
+                    val croppedUri = withContext(dispatcher.io) {
+                         yalantisImageCropper.cropImage(
+                                inputPath = imageInputPath,
+                                cropRect = cropRect,
+                                currentRect = currentImageRect,
+                                currentScale = currentScale,
+                                currentAngle = currentAngle,
+                                exifInfo = exifInfo,
+                                viewBitmap = viewBitmap
+                        )
+                    }
 
-                            override fun onCropFailure(t: Throwable) {
-                                t.printStackTrace()
-                            }
-                        }
-                )
+                    viewModel.setCroppedCover(croppedUri)
+                }
             }
 
             override fun onChangeButtonClicked(view: CoverCropPartialView) {
@@ -196,6 +208,7 @@ class PlayCoverTitleSetupFragment @Inject constructor(
     }
 
     private fun setupView() {
+        yalantisImageCropper = YalantisImageCropperImpl(requireContext())
         bottomSheetHeader.setHeader(getString(R.string.play_prepare_cover_title_title), isRoot = false)
     }
 
@@ -213,9 +226,11 @@ class PlayCoverTitleSetupFragment @Inject constructor(
         coverCropView.show()
     }
 
-    private fun hideCoverCropLayout() {
+    private fun showInitCoverLayout(coverImageUri: Uri?) {
         coverSetupView.show()
         coverCropView.hide()
+
+        if (coverImageUri != null) coverSetupView.setImage(coverImageUri)
     }
 
     private fun renderCoverTitleLayout(resultImageUri: Uri?) {
@@ -232,7 +247,7 @@ class PlayCoverTitleSetupFragment @Inject constructor(
     }
 
     private fun onCancelCropImage() {
-        hideCoverCropLayout()
+        showInitCoverLayout(null)
         renderCoverTitleLayout(null)
         when (coverSource) {
             CoverSourceEnum.GALLERY -> onChooseFromGalleryClicked()
@@ -242,7 +257,7 @@ class PlayCoverTitleSetupFragment @Inject constructor(
 
     private fun onImageCropped(resultImageUri: Uri) {
         selectedCoverUri = resultImageUri
-        hideCoverCropLayout()
+        showInitCoverLayout(resultImageUri)
         renderCoverTitleLayout(resultImageUri)
     }
 
@@ -311,6 +326,16 @@ class PlayCoverTitleSetupFragment @Inject constructor(
     /**
      * Observe
      */
+    private fun observeCropState() {
+        viewModel.observableCropState.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                CoverSetupState.Blank -> showInitCoverLayout(null)
+                is CoverSetupState.Cropping -> showCoverCropLayout()
+                is CoverSetupState.Cropped -> showInitCoverLayout(it.coverImage)
+            }
+        })
+    }
+
     private fun observeSelectedCover() {
         viewModel.observableSelectedCover.observe(viewLifecycleOwner, Observer {
 
