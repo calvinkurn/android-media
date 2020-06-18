@@ -964,7 +964,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         loadData(1)
     }
 
-    private fun observeVoucherList() {
+    protected fun observeVoucherList() {
         viewLifecycleOwner.run {
             observe(mViewModel.voucherList) {
                 when (it) {
