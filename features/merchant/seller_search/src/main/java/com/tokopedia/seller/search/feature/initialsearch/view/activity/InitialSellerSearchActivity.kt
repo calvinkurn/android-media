@@ -36,8 +36,8 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
     override fun onCreate(savedInstanceState: Bundle?) {
         overridePendingTransition(0, 0)
         super.onCreate(savedInstanceState)
-        window?.decorView?.setBackgroundColor(Color.WHITE)
         setContentView(R.layout.activity_initial_seller_search)
+        window?.decorView?.setBackgroundColor(Color.WHITE)
         setStatusBarColor()
         proceed()
     }
