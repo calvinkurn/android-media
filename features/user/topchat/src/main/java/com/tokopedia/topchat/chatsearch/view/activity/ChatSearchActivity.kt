@@ -39,7 +39,7 @@ import kotlin.coroutines.CoroutineContext
 class ChatSearchActivity : BaseSimpleActivity(), HasComponent<ChatSearchComponent>,
         CoroutineScope, ChatSearchFragmentListener, ContactLoadMoreChatListener {
 
-    private val textDebounce = 200L
+    private val textDebounce = 500L
     private var containerSearch: RelativeLayout? = null
     private var txtToolbarTittle: Typography? = null
     override val coroutineContext: CoroutineContext = Dispatchers.Main
