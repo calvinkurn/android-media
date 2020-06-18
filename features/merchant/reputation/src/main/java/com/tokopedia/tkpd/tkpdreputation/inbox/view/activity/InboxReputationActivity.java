@@ -211,10 +211,6 @@ public class  InboxReputationActivity extends BaseTabActivity implements HasComp
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
         reputationTracking.onBackPressedInboxReviewClickTracker(indicator.getSelectedTabPosition());
         return super.onOptionsItemSelected(item);
     }
