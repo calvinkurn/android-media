@@ -11,6 +11,7 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
+import com.tokopedia.purchase_platform.common.utils.Utils;
 
 /**
  * @author Aghny A. Putra on 02/03/18
@@ -98,7 +99,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
 
         mTvTotalItemLabel.setText(getTotalItemLabel(mTvTotalItemLabel.getContext(), shipmentCost.getTotalItem()));
         mTvTotalItemPrice.setText(shipmentCost.getTotalItemPrice() == 0 ? "-" :
-                CurrencyFormatUtil.convertPriceValueToIdrFormat((long) shipmentCost.getTotalItemPrice(), false));
+                Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) shipmentCost.getTotalItemPrice(), false)));
         mTvShippingFeeLabel.setText(mTvShippingFeeLabel.getContext().getString(com.tokopedia.purchase_platform.common.R.string.label_shipment_fee));
         mTvShippingFee.setText(getPriceFormat(mTvShippingFeeLabel, mTvShippingFee, shipmentCost.getShippingFee()));
         mTvInsuranceFee.setText(getPriceFormat(mTvInsuranceFeeLabel, mTvInsuranceFee, shipmentCost.getInsuranceFee()));
@@ -182,7 +183,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         } else {
             textViewLabel.setVisibility(View.VISIBLE);
             textViewPrice.setVisibility(View.VISIBLE);
-            return CurrencyFormatUtil.convertPriceValueToIdrFormat((long) price, false);
+            return Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) price, false));
         }
     }
 

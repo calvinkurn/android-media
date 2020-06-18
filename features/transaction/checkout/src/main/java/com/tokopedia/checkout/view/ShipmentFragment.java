@@ -1851,8 +1851,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     (serviceDataTracker.getIsPromo() == 1),
                     serviceDataTracker.getServiceName(),
                     (serviceDataTracker.getCodData().getIsCod() == 1),
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat(serviceDataTracker.getRangePrice().getMinPrice(), false),
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat(serviceDataTracker.getRangePrice().getMaxPrice(), false)
+                    Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(serviceDataTracker.getRangePrice().getMinPrice(), false)),
+                    Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(serviceDataTracker.getRangePrice().getMaxPrice(), false))
             );
         }
         if (flagNeedToSetPinpoint) {

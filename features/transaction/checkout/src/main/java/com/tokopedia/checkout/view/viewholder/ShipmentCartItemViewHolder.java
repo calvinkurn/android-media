@@ -19,6 +19,7 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.utils.WeightFormatterUtil;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
+import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;
 
@@ -116,10 +117,10 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void renderProductPrice(CartItemModel cartItem) {
-        mTvProductPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                (long) cartItem.getPrice(), false));
+        mTvProductPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                (long) cartItem.getPrice(), false)));
         if (cartItem.getOriginalPrice() > 0) {
-            mTvProductOriginalPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cartItem.getOriginalPrice(), false));
+            mTvProductOriginalPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cartItem.getOriginalPrice(), false)));
             mTvProductOriginalPrice.setPaintFlags(mTvProductOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             mTvProductOriginalPrice.setVisibility(View.VISIBLE);
         } else {
