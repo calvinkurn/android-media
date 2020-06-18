@@ -20,6 +20,7 @@ import com.tokopedia.gamification.R
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity
 import com.tokopedia.gamification.di.ActivityContextModule
 import com.tokopedia.gamification.giftbox.InactiveImageLoader
+import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
 import com.tokopedia.gamification.giftbox.data.entities.GetCouponDetail
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
@@ -139,6 +140,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 //                rewardContainer.imageGlowCircleLarge.alpha = 1f
 //                rewardContainer.imageGlowCircleSmall.alpha = 1f
 //                rewardContainer.imageGreenGlow.alpha = 1f
+
 
                 val anim = rewardContainer.showSingleLargeRewardAnimationFadeOut(startDelay)
                 anim.addListener(onEnd = { afterRewardAnimationEnds() })
@@ -472,7 +474,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             starsContainer.setStartPositionOfStars(starsContainer.width / 2f, translationY)
 
             //todo Rahul have to refacor this below code
-            giftBoxDailyView.adjustGlowImagePosition()
+//            giftBoxDailyView.adjustGlowImagePosition()
 
         }
     }
@@ -752,8 +754,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
     fun updateRewardStateAndRewards(couponDetailList: ArrayList<GetCouponDetail>?,
                                     benefits: List<CrackBenefitEntity>?,
-                                    imageUrl: String?
-    ) {
+                                    imageUrl: String?) {
         var hasPoints = false
         var hasCoupons = false
 
@@ -771,6 +772,16 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 if (benefit.benefitType != "coupons") {
                     hasPoints = true
                     iconUrl = imageUrl
+
+                    rewardContainer.tvSmallReward.text = benefit.text
+                    if (!benefit.color.isNullOrEmpty()) {
+                        rewardContainer.tvSmallReward.setTextColor(Color.parseColor(benefit.color))
+                    }
+                    GtmEvents.viewRewardsPoints(benefit.text, userSession?.userId)
+                } else if (benefit.benefitType == "coupon") {
+                    benefit.referenceID?.let {
+                        GtmEvents.viewRewards(it, userSession?.userId)
+                    }
                 }
             }
         }
@@ -782,6 +793,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             }
         } else if (hasPoints) {
             //only points
+
             rewardState = RewardContainer.RewardState.POINTS_ONLY
             if (!iconUrl.isNullOrEmpty()) {
                 ImageUtils.loadImage(rewardContainer.imageSmallReward, iconUrl!!)

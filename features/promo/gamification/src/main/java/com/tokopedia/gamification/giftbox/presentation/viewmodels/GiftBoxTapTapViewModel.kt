@@ -23,6 +23,7 @@ class GiftBoxTapTapViewModel @Inject constructor(@Named(IO) workerDispatcher: Co
 
     @Volatile
     var tokenId: String = ""
+
     @Volatile
     var campaignId: Long = 0
 
@@ -57,16 +58,12 @@ class GiftBoxTapTapViewModel @Inject constructor(@Named(IO) workerDispatcher: Co
         return getCatalogDetail(ids)
     }
 
-
-    //todo Rahul later, after clearing doubts from backend
     private fun mapperGratificationResponseToCouponIds(response: ResponseCrackResultEntity): List<String> {
         var ids = arrayListOf<String>()
         response.crackResultEntity.benefits?.forEach {
-            //            if (it.referenceID != null) {
-//                if (it.referenceID != 0) {
-//                    ids.add(it.referenceID.toString())
-//                }
-//            }
+            if (!it.referenceID.isNullOrEmpty()) {
+                ids.add(it.referenceID.toString())
+            }
         }
         return ids
     }

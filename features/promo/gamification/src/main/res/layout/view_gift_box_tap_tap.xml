@@ -3,6 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     android:layout_height="match_parent">
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -18,6 +20,7 @@
         android:layout_gravity="center">
 
         <androidx.appcompat.widget.AppCompatImageView
+            android:layout_gravity="center_horizontal"
             android:id="@+id/imageShadow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -25,6 +28,7 @@
             android:src="@drawable/gf_ic_box_shadow" />
 
         <RelativeLayout
+            android:layout_gravity="center_horizontal"
             android:id="@+id/ll_gift_box"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -55,19 +59,21 @@
 
         </RelativeLayout>
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/image_flat_glow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginEnd="@dimen/dp_7"
+            android:layout_marginRight="@dimen/dp_7"
+            android:alpha="0"
+            tools:alpha="0.3"
+            android:translationY="-92dp"
+            tools:background="@color/red_30"
+            app:srcCompat="@drawable/gf_ic_box_stage_glow" />
+
     </FrameLayout>
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/image_flat_glow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginEnd="@dimen/dp_7"
-        android:layout_marginRight="@dimen/dp_7"
-        android:alpha="0"
-        tools:alpha="1"
-        tools:translationY="160dp"
-        app:srcCompat="@drawable/gf_ic_box_stage_glow" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/image_box_glow"

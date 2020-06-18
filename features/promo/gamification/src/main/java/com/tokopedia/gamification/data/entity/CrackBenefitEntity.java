@@ -58,6 +58,10 @@ public class CrackBenefitEntity {
     @SerializedName("imageUrl")
     public String imageUrl;
 
+    @Ignore
+    @SerializedName("referenceID")
+    public String referenceID;
+
     public void setColor(String color) {
         this.color = color;
     }
