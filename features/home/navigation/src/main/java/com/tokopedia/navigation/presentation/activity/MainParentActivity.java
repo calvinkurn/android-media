@@ -1187,7 +1187,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @Override
-    public void menuClicked(int index, long id) {
+    public boolean menuClicked(int index, long id) {
         int position = getPositionFragmentByMenu(index);
         this.currentSelectedFragmentPosition = position;
         if (!isFirstNavigationImpression) {
@@ -1204,7 +1204,7 @@ public class MainParentActivity extends BaseActivity implements
             Intent intent = RouteManager.getIntent(this, ApplinkConst.LOGIN);
             intent.putExtra(PARAM_SOURCE, SOURCE_ACCOUNT);
             startActivity(intent);
-            return;
+            return false;
         }
 
         Fragment fragment = fragmentList.get(position);
@@ -1212,7 +1212,7 @@ public class MainParentActivity extends BaseActivity implements
             this.currentFragment = fragment;
             selectFragment(fragment);
         }
-        return;
+        return true;
     }
 
     @Override

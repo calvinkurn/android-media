@@ -230,10 +230,11 @@ class LottieBottomNavbar : LinearLayout {
     }
 
     private fun handleItemClicked(index: Int, bottomMenu: BottomMenu) {
-        changeColor(index)
         // invoke listener
         Handler().post {
-            listener?.menuClicked(index, bottomMenu.id)
+            if (listener?.menuClicked(index, bottomMenu.id)) {
+                changeColor(index)
+            }
         }
     }
 
@@ -299,7 +300,7 @@ class LottieBottomNavbar : LinearLayout {
 
 data class BottomMenu(val id: Long, val title: String, val animName: Int, val activeButtonColor: Int, val useBadge: Boolean = true)
 interface IBottomClickListener {
-    fun menuClicked(position: Int, id: Long)
+    fun menuClicked(position: Int, id: Long): Boolean
     fun menuReselected(position: Int, id: Long)
 }
 
