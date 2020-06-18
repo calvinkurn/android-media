@@ -465,8 +465,8 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         // 11 -> product
         // 12 -> product
         // 13 -> product
-        // 14 -> inspiration carousel (position 12)
-        // 15 -> inspiration card (position 12)
+        // 14 -> inspiration card (position 12)
+        // 15 -> inspiration carousel (position 12)
         // 16 -> product
         // 17 -> product
 
@@ -478,12 +478,12 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
                         "visitable list at index $index should be QuickFilterViewModel"
                 )
             }
-            else if (index == 14) {
+            else if (index == 15) {
                 visitable.shouldBeInstanceOf<InspirationCarouselViewModel>(
                         "visitable list at index $index should be InspirationCarouselViewModel"
                 )
             }
-            else if (index == 9 || index == 15) {
+            else if (index == 9 || index == 14) {
                 visitable.shouldBeInstanceOf<InspirationCardViewModel>(
                         "visitable list at index $index should be InspirationCardViewModel"
                 )
