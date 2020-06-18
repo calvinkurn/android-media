@@ -55,7 +55,7 @@ class ChatSearchTypeFactoryImpl(
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             ChatBigDividerViewHolder.LAYOUT -> ChatBigDividerViewHolder(parent)
-            ItemSearchChatReplyViewHolder.LAYOUT -> ItemSearchChatReplyViewHolder(parent)
+            ItemSearchChatReplyViewHolder.LAYOUT -> ItemSearchChatReplyViewHolder(parent, searchListener)
             ContactLoadMoreViewHolder.LAYOUT -> ContactLoadMoreViewHolder(parent, contactLoadMoreListener)
             ChatSearchErrorNetworkViewHolder.LAYOUT -> ChatSearchErrorNetworkViewHolder(parent)
             ItemSearchChatViewHolder.LAYOUT -> ItemSearchChatViewHolder(parent, searchListener)
