@@ -168,7 +168,7 @@ public class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
                 .spacingRes(com.tokopedia.abstraction.R.dimen.dp_12)
                 .arrowWidth(com.tokopedia.abstraction.R.dimen.dp_16)
                 .textColorRes(com.tokopedia.abstraction.R.color.grey_400)
-                .shadowColorRes(R.color.checkoutModule_shadow)
+                .shadowColorRes(R.color.checkout_module_shadow)
                 .backgroundContentColorRes(com.tokopedia.abstraction.R.color.black)
                 .circleIndicatorBackgroundDrawableRes(R.drawable.checkout_module_selector_circle_green)
                 .textSizeRes(com.tokopedia.design.R.dimen.sp_12)

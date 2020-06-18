@@ -22,5 +22,5 @@
     <color name="color_AD31353B">#AD31353B</color>
     <color name="color_F531353B">#F531353B</color>
 
-    <color name="checkoutModule_shadow">#B0000000</color>
+    <color name="checkout_module_shadow">#B0000000</color>
 </resources>
