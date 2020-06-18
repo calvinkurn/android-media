@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.promocheckoutmarketplace.R
 import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckoutActionListener
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoRecommendationUiModel
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
@@ -58,7 +59,7 @@ class PromoRecommendationViewHolder(private val view: View,
             buttonApplyPromoRecommendation.text = itemView.context.getString(R.string.label_promo_recommendation_selected)
             labelPromoRecommendationTitle.text = String.format(itemView.context.getString(R.string.promo_checkout_label_promo_recommendation_title_after_apply, element.uiData.promoCount))
         }
-        val totalBenefitFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.uiData.promoTotalBenefit, false)
+        val totalBenefitFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.uiData.promoTotalBenefit, false).removeDecimalSuffix()
         labelPromoRecommendationSubTitle.text = String.format(itemView.context.getString(R.string.promo_checkout_label_recommendation_benefit, totalBenefitFormatted))
     }
 

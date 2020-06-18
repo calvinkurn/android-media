@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.data.util
 
 import android.net.Uri
 import android.text.Spannable
+import android.text.method.ArrowKeyMovementMethod
 import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
 import android.view.MotionEvent
@@ -11,7 +12,7 @@ import com.tokopedia.product.detail.view.listener.ProductFullDescriptionListener
 /**
  * Created by Yehezkiel on 05/05/20
  */
-class ProductCustomMovementMethod(val listener: (String) -> Unit) : LinkMovementMethod() {
+class ProductCustomMovementMethod(val listener: (String) -> Unit) : ArrowKeyMovementMethod() {
 
     override fun onTouchEvent(widget: TextView, buffer: Spannable, event: MotionEvent): Boolean {
         val action = event.action
@@ -31,16 +32,24 @@ class ProductCustomMovementMethod(val listener: (String) -> Unit) : LinkMovement
             val off = layout.getOffsetForHorizontal(line, x)
 
             val link = buffer.getSpans(off, off, URLSpan::class.java)
-            if (link.isNotEmpty() && action == MotionEvent.ACTION_UP) {
-                val url = link[0].url
-
-                return if (isBranchIoLink(url)) {
-                    listener.invoke(url)
-                    true
-                } else {
-                    super.onTouchEvent(widget, buffer, event);
+            try {
+                if (link.isNotEmpty()) {
+                    val url = link[0].url
+                    if (action == MotionEvent.ACTION_UP) {
+                        return if (isBranchIoLink(url)) {
+                            listener.invoke(url)
+                            true
+                        } else {
+                            link[0].onClick(widget)
+                            true
+                        }
+                    } else {
+                        super.onTouchEvent(widget, buffer, event)
+                    }
                 }
+            } catch (e: Throwable) {
             }
+
         }
         return super.onTouchEvent(widget, buffer, event);
     }

@@ -25,7 +25,6 @@ class PartialButtonActionView private constructor(val view: View,
     var addToCartClick: ((String) -> Unit)? = null
     var buttonCartTypeClick: ((String, String, Boolean) -> Unit)? = null
 
-    var byMeClick: ((TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate, Boolean) -> Unit)? = null
     var visibility: Boolean = false
         set(value) {
             field = value
@@ -42,7 +41,6 @@ class PartialButtonActionView private constructor(val view: View,
     var isShopOwner: Boolean = false
     var preOrder: PreOrder? = PreOrder()
     var onSuccessGetCartType = false
-    var showByMe = false
     var cartTypeData: CartTypeData? = null
 
     companion object {
@@ -88,7 +86,6 @@ class PartialButtonActionView private constructor(val view: View,
         val availableButton = cartTypeData?.availableButtons ?: listOf()
 
         btn_topchat.showWithCondition(ProductDetailConstant.KEY_CHAT !in unavailableButton)
-        btn_byme.showWithCondition(showByMe && ProductDetailConstant.KEY_BYME !in unavailableButton)
 
         btn_buy_now.showWithCondition(availableButton.firstOrNull() != null)
         btn_add_to_cart.showWithCondition(availableButton.getOrNull(1) != null)
@@ -169,8 +166,7 @@ class PartialButtonActionView private constructor(val view: View,
     private fun resetTopChatLayoutParams() {
         with(view) {
             val topChatParams = btn_topchat.layoutParams as ConstraintLayout.LayoutParams
-            topChatParams.startToEnd = btn_byme.id
-            topChatParams.startToStart = UNSET
+            topChatParams.startToStart = PARENT_ID
             topChatParams.rightToLeft = btn_buy_now.id
             topChatParams.endToStart = btn_buy_now.id
             btn_topchat.layoutParams = topChatParams
@@ -226,7 +222,6 @@ class PartialButtonActionView private constructor(val view: View,
     private fun showNoStockButton() {
         with(view) {
             changeTopChatLayoutParamsToHandleWarehouseButton()
-            btn_byme.hide()
             seller_button_container.hide()
             btn_empty_stock.show()
             btn_topchat.showWithCondition(!isShopOwner)
@@ -244,19 +239,6 @@ class PartialButtonActionView private constructor(val view: View,
 
     fun gone() {
         view.base_btn_action.gone()
-    }
-
-    fun showByMe(show: Boolean, pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate) {
-        with(view) {
-            if (show && !isWarehouseProduct) {
-                showByMe = true
-                btn_byme.setOnClickListener { byMeClick?.invoke(pdpAffiliate, true) }
-                btn_byme.visible()
-            } else {
-                showByMe = false
-                btn_byme.gone()
-            }
-        }
     }
 
     fun setBackground(resource: Int) {

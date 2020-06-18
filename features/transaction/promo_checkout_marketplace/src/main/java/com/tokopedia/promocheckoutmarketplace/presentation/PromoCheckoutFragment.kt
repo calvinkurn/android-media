@@ -66,6 +66,7 @@ import com.tokopedia.promocheckoutmarketplace.presentation.viewmodel.*
 import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.dpToPx
@@ -615,7 +616,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 toolbar?.showResetButton()
                 activity?.let {
                     labelTotalPromoInfo?.show()
-                    labelTotalPromoAmount?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentUiModel.uiData.totalBenefit, false)
+                    labelTotalPromoAmount?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentUiModel.uiData.totalBenefit, false).removeDecimalSuffix()
                     labelTotalPromoAmount?.show()
                     buttonApplyPromo?.text = String.format(it.resources.getString(R.string.promo_checkout_label_button_apply_promo), fragmentUiModel.uiData.usedPromoCount)
                     buttonApplyPromo?.show()
