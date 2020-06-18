@@ -756,20 +756,21 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun inputAllDataInProductInputModel() {
-        viewModel.productInputModel.detailInputModel.productName = productNameField.getText()
-        viewModel.productInputModel.detailInputModel.categoryId = viewModel.productInputModel.detailInputModel.categoryId
-        viewModel.productInputModel.detailInputModel.price = productPriceField.getTextBigIntegerOrZero()
-        viewModel.productInputModel.detailInputModel.stock = productStockField.getTextIntOrZero()
-        viewModel.productInputModel.detailInputModel.minOrder = productMinOrderField.getTextIntOrZero()
-        viewModel.productInputModel.detailInputModel.condition = if (isProductConditionNew) CONDITION_NEW else CONDITION_USED
-        viewModel.productInputModel.detailInputModel.sku = productSkuField.getText()
-        viewModel.productInputModel.detailInputModel.imageUrlOrPathList = viewModel.productPhotoPaths
-        viewModel.productInputModel.detailInputModel.preorder.apply {
-            duration = preOrderDurationField.getTextIntOrZero()
-            timeUnit = selectedDurationPosition
-            isActive = preOrderSwitch?.isChecked ?: false
+        viewModel.productInputModel.detailInputModel.apply {
+            productName = productNameField.getText()
+            price = productPriceField.getTextBigIntegerOrZero()
+            stock = productStockField.getTextIntOrZero()
+            minOrder = productMinOrderField.getTextIntOrZero()
+            condition = if (isProductConditionNew) CONDITION_NEW else CONDITION_USED
+            sku = productSkuField.getText()
+            imageUrlOrPathList = viewModel.productPhotoPaths
+            preorder.apply {
+                duration = preOrderDurationField.getTextIntOrZero()
+                timeUnit = selectedDurationPosition
+                isActive = preOrderSwitch?.isChecked ?: false
+            }
+            wholesaleList = getWholesaleInput()
         }
-        viewModel.productInputModel.detailInputModel.wholesaleList = getWholesaleInput()
     }
 
     private fun validateWholeSaleInput(viewModel: AddEditProductDetailViewModel, wholesaleInputForms: RecyclerView?) {
@@ -1300,33 +1301,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun submitInput(cacheManagerId: String) {
-        val detailInputModel = DetailInputModel(
-                productNameField.getText(),
-                viewModel.productInputModel.detailInputModel.categoryName,
-                viewModel.productInputModel.detailInputModel.categoryId,
-                "",
-                productPriceField.getTextBigIntegerOrZero(),
-                productStockField.getTextIntOrZero(),
-                productMinOrderField.getTextIntOrZero(),
-                if (isProductConditionNew) CONDITION_NEW else CONDITION_USED,
-                productSkuField.getText(),
-                viewModel.productInputModel.detailInputModel.status,
-                viewModel.productPhotoPaths,
-                PreorderInputModel(
-                        preOrderDurationField.getTextIntOrZero(),
-                        selectedDurationPosition,
-                        preOrderSwitch?.isChecked ?: false
-                ),
-                getWholesaleInput()
-        )
-
-        updateImageList(detailInputModel)
+        inputAllDataInProductInputModel()
         SaveInstanceCacheManager(requireContext(), cacheManagerId).apply {
             val productInputModel = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java, ProductInputModel())
-            productInputModel?.apply {
-                this.detailInputModel = detailInputModel
-            }
-            put(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
+            productInputModel?.let { viewModel.productInputModel = it }
+            put(EXTRA_PRODUCT_INPUT_MODEL, viewModel.productInputModel)
         }
         val intent = Intent()
         intent.putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
