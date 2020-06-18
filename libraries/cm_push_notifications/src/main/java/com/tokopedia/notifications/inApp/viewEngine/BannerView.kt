@@ -9,8 +9,8 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.notifications.R
-import com.tokopedia.notifications.analytics.InAppAnalytics
 import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMLayout
@@ -47,8 +47,6 @@ internal open class BannerView(activity: Activity) {
                 R.layout.cm_layout_banner_inapp,
                 null
         )
-        // impression tracker
-        InAppAnalytics.impression(data)
 
         // pre view setup
         onViewCreated(parentView, data)
@@ -65,14 +63,14 @@ internal open class BannerView(activity: Activity) {
         // set data view
         val layout = data.getCmLayout()
         setBanner(layout)
-        setActionButton(layout)
+        setActionButton(data)
         setCloseButton(data)
     }
 
     private fun viewState(data: CMInApp) {
         when (data.getType()) {
             TYPE_FULL_SCREEN_IMAGE_ONLY -> {
-                fullScreenImageOnly()
+                fullScreenImageOnly(data)
             }
         }
     }
@@ -81,16 +79,13 @@ internal open class BannerView(activity: Activity) {
         imgBanner.setImage(layout.getImg(), 0f)
     }
 
-    private fun setActionButton(layout: CMLayout) {
+    private fun setActionButton(data: CMInApp) {
+        val layout = data.getCmLayout()
+
         if (layout.getButton().isEmpty()) {
             lstActionButton.visibility = View.GONE
             return
         }
-
-        val adapter = ActionButtonAdapter(
-                layout.getButton(),
-                ::onActionClicked
-        )
 
         lstActionButton.layoutManager = when (layout.getBtnOrientation()) {
             ORIENTATION_VERTICAL -> LinearLayoutManager(mActivity.get())
@@ -101,31 +96,42 @@ internal open class BannerView(activity: Activity) {
             else -> LinearLayoutManager(mActivity.get())
         }
 
+        val adapter = ActionButtonAdapter(data, ::onActionClicked)
         lstActionButton.setHasFixedSize(true)
         lstActionButton.adapter = adapter
     }
 
-    private fun onActionClicked() {
+    private fun onActionClicked(data: CMInApp) {
         dialog?.dismiss()
+        dismissInteractionTracking(data)
     }
 
     private fun setCloseButton(data: CMInApp) {
         btnClose.setOnClickListener {
             dialog.dismiss()
+            dismissInteractionTracking(data)
+        }
+    }
 
-            // source from legacy: ViewEngine
-            CMInAppManager.getCmInAppListener().apply {
-                if (this != null) {
-                    onCMInAppClosed(data)
-                    onCMinAppDismiss()
-                    onCMinAppInteraction(data)
-                }
+    private fun dismissInteractionTracking(data: CMInApp) {
+        CMInAppManager.getCmInAppListener().apply {
+            if (this != null) {
+                onCMInAppClosed(data)
+                onCMinAppDismiss(data)
+                onCMinAppInteraction(data)
             }
         }
     }
 
-    private fun fullScreenImageOnly() {
+    private fun fullScreenImageOnly(data: CMInApp) {
         lstActionButton.visibility = View.GONE
+
+        imgBanner.setOnClickListener {
+            RouteManager.route(
+                    mActivity.get(),
+                    data.getCmLayout().getAppLink()
+            )
+        }
     }
 
     companion object {
