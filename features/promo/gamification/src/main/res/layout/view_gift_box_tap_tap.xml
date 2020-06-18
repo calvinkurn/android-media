@@ -50,6 +50,7 @@
                 android:id="@+id/lottie_particles"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                app:lottie_rawRes="@raw/gami_confetti"
                 android:layout_centerHorizontal="true" />
 
         </RelativeLayout>
@@ -61,7 +62,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:layout_marginEnd="@dimen/dp_7"
+        android:layout_marginRight="@dimen/dp_7"
         android:alpha="0"
+        tools:alpha="1"
+        tools:translationY="160dp"
         app:srcCompat="@drawable/gf_ic_box_stage_glow" />
 
     <androidx.appcompat.widget.AppCompatImageView

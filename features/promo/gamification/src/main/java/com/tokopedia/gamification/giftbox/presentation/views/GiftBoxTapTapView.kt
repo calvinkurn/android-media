@@ -57,19 +57,20 @@ class GiftBoxTapTapView : GiftBoxDailyView {
     }
 
     override fun handleTapOnGiftBox() {
-        if (isTimeOut) {
-            //Do nothing
-        } else if (isGiftTapAble) {
-            if (isBoxAlreadyOpened) {
-                secondTimeBoxOpenAnimation()
-            } else {
-                //first time animations
-                isGiftTapAble = false
-                isBoxAlreadyOpened = true
-                firstTimeBoxOpenAnimation()
-                targetTapCount = getRandomNumber()
-            }
-        }
+        //todo Rahul needs to be deleted
+//        if (isTimeOut) {
+//            //Do nothing
+//        } else if (isGiftTapAble) {
+//            if (isBoxAlreadyOpened) {
+//                secondTimeBoxOpenAnimation()
+//            } else {
+//                //first time animations
+//                isGiftTapAble = false
+//                isBoxAlreadyOpened = true
+//                firstTimeBoxOpenAnimation()
+//                targetTapCount = getRandomNumber()
+//            }
+//        }
     }
 
     fun firstTimeBoxOpenAnimation() {
