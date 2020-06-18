@@ -16,7 +16,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
@@ -86,7 +86,7 @@ class CentralizedPromoViewModelTest {
     }
 
     @Test
-    fun `Success get layout data for on going promotion`() {
+    fun `Success get layout data for on going promotion`() = runBlocking {
         val successResult = OnGoingPromoListUiModel(
                 title = "Track your promotion",
                 items = listOf(
@@ -112,6 +112,8 @@ class CentralizedPromoViewModelTest {
 
         viewModel.getLayoutData(LayoutType.ON_GOING_PROMO)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             getOnGoingPromotionUseCase.executeOnBackground()
         }
@@ -128,18 +130,18 @@ class CentralizedPromoViewModelTest {
 
         viewModel.getLayoutData(LayoutType.ON_GOING_PROMO)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             getOnGoingPromotionUseCase.executeOnBackground()
         }
-
-        delay(100)
 
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.ON_GOING_PROMO)
         assert(result != null && result is Fail)
     }
 
     @Test
-    fun `Success get layout data for post`() {
+    fun `Success get layout data for post`() = runBlocking {
         val successResult = PostListUiModel(
                 items = listOf(
                         PostUiModel(
@@ -173,6 +175,8 @@ class CentralizedPromoViewModelTest {
 
         viewModel.getLayoutData(LayoutType.POST)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             getPostUseCase.executeOnBackground()
         }
@@ -189,11 +193,11 @@ class CentralizedPromoViewModelTest {
 
         viewModel.getLayoutData(LayoutType.POST)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             getPostUseCase.executeOnBackground()
         }
-
-        delay(100)
 
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.POST)
         assert(result != null && result is Fail)
@@ -212,11 +216,11 @@ class CentralizedPromoViewModelTest {
 
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             getChatBlastSellerMetadataUseCase.executeOnBackground()
         }
-
-        delay(100)
 
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
 
@@ -233,7 +237,7 @@ class CentralizedPromoViewModelTest {
 
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
 
-        delay(100)
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
 
@@ -250,7 +254,7 @@ class CentralizedPromoViewModelTest {
 
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
 
-        delay(100)
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
 
