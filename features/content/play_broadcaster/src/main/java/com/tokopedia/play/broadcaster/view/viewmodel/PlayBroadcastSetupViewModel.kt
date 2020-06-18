@@ -13,6 +13,7 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -58,7 +59,8 @@ class PlayBroadcastSetupViewModel @Inject constructor(
             _observableSetupChannel.value = ChannelSetupUiModel(
                     cover = PlayCoverUiModel(
                             coverImage = coverUri,
-                            title = title
+                            title = title,
+                            state = SetupDataState.Uploaded
                     ),
                     selectedProductList = productList
             )

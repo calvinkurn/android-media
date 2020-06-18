@@ -20,8 +20,11 @@ class CoverSetupPartialView(
         listener: Listener
 ) : PartialView(container, R.id.cl_cover_setup) {
 
-    val liveTitle: String
+    var coverTitle: String
         get() = etCoverTitle.text?.toString() ?: ""
+        set(value) {
+            etCoverTitle.setText(value)
+        }
 
     private val ivCoverImage: ImageView = findViewById(R.id.iv_cover_image)
     private val llChangeCover: LinearLayout = findViewById(R.id.ll_change_cover)
@@ -36,10 +39,10 @@ class CoverSetupPartialView(
     init {
         llChangeCover.setOnClickListener { listener.onImageAreaClicked(this) }
         ivCoverImage.setOnClickListener { listener.onImageAreaClicked(this) }
-        btnNext.setOnClickListener { listener.onNextButtonClicked(this, liveTitle) }
+        btnNext.setOnClickListener { listener.onNextButtonClicked(this, coverTitle) }
 
         setupTitleTextField()
-        tvCoverTitleLabel.text = getCoverTitleLabelText(tvCoverTitleLabel.text.toString(), liveTitle)
+        tvCoverTitleLabel.text = getCoverTitleLabelText(tvCoverTitleLabel.text.toString(), coverTitle)
 
         updateViewState()
     }
@@ -73,12 +76,12 @@ class CoverSetupPartialView(
     }
 
     fun updateButtonState() {
-        btnNext.isEnabled = liveTitle.isNotEmpty() && dataSource.getCurrentCoverUri() != null
+        btnNext.isEnabled = coverTitle.isNotEmpty() && dataSource.getCurrentCoverUri() != null
     }
 
     private fun setupTitleCounter() {
         tvCoverTitleCounter.text = getString(R.string.play_prepare_cover_title_counter,
-                liveTitle.length, mMaxTitleChars)
+                coverTitle.length, mMaxTitleChars)
     }
 
     private fun setupTitleLabel(currentTitle: CharSequence) {

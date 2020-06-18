@@ -3,7 +3,8 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -17,6 +18,7 @@ import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.cover.ImageTransformer
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
+import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -52,22 +54,19 @@ class PlayBroadcastCoverSetupViewModel @Inject constructor(
 
     val observableCropState: LiveData<CoverSetupState>
         get() = _observableCropState
-    private val _observableCropState = MutableLiveData<CoverSetupState>().apply {
-        val selectedCover = setupDataStore.getSelectedCover()
-        value =
-                if (selectedCover == null) CoverSetupState.Blank
-                else CoverSetupState.Cropped(selectedCover.coverImage)
+    private val _observableCropState = MediatorLiveData<CoverSetupState>().apply {
+        addSource(setupDataStore.getObservableSelectedCover()) {
+            value = if (it?.coverImage == null) CoverSetupState.Blank else CoverSetupState.Cropped(it.coverImage)
+        }
     }
+
+    val observableCoverTitle: LiveData<String>
+        get() = Transformations.map(setupDataStore.getObservableSelectedCover()) {
+            it.title
+        }
 
     val observableSelectedProducts: LiveData<List<ProductContentUiModel>>
         get() = setupDataStore.getObservableSelectedProducts()
-
-    private val mutableOriginalImageUri = MutableLiveData<Uri>()
-    val originalImageUri: LiveData<Uri>
-        get() = mutableOriginalImageUri
-    private val mutableImageEcsLink = MutableLiveData<String>()
-    val imageEcsLink: LiveData<String>
-        get() = mutableImageEcsLink
 
     val maxTitleChars: Int
         get() = MAX_CHARS
@@ -94,7 +93,7 @@ class PlayBroadcastCoverSetupViewModel @Inject constructor(
         }
     }
 
-    fun setCover(imagePath: String, coverTitle: String) {
+    fun uploadCover(imageUri: Uri, coverTitle: String) {
         launchCatchError(block = {
             val url = withContext(dispatcher.io) {
                 val params = hashMapOf<String, RequestBody>()
@@ -105,7 +104,7 @@ class PlayBroadcastCoverSetupViewModel @Inject constructor(
 
                 val dataUploadedImage = uploadImageUseCase
                         .createObservable(uploadImageUseCase.createRequestParam(
-                                imagePath,
+                                imageUri.path,
                                 DEFAULT_UPLOAD_PATH,
                                 DEFAULT_UPLOAD_TYPE,
                                 params))
@@ -119,9 +118,7 @@ class PlayBroadcastCoverSetupViewModel @Inject constructor(
                 }
             }
 
-            setupDataStore.setCover(
-                    PlayCoverUiModel(Uri.parse(url), coverTitle)
-            )
+            setupDataStore.setCover(PlayCoverUiModel(Uri.parse(url), coverTitle, SetupDataState.Uploaded))
         }) {
             it.printStackTrace()
         }
@@ -141,6 +138,12 @@ class PlayBroadcastCoverSetupViewModel @Inject constructor(
     fun setCroppedCover(coverUri: Uri) {
         val imageValidated = validateImageMinSize(coverUri)
         _observableCropState.value = CoverSetupState.Cropped(imageValidated)
+    }
+
+    fun saveCover(imagePath: Uri?, coverTitle: String) {
+        setupDataStore.setCover(
+                PlayCoverUiModel(imagePath, coverTitle, SetupDataState.Draft)
+        )
     }
 
     /**

@@ -27,6 +27,7 @@ import com.tokopedia.play.broadcaster.util.compatTransitionName
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
+import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSetupViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import java.util.*
@@ -123,7 +124,8 @@ class PlayBroadcastSetupBottomSheet : BottomSheetDialogFragment(), PlayBottomShe
                 selectedProducts = viewModel.selectedProductList,
                 cover = PlayCoverUiModel(
                         coverImage = Uri.parse(viewModel.coverImageUrl),
-                        title = viewModel.liveTitle
+                        title = viewModel.liveTitle,
+                        state = SetupDataState.Uploaded
                 )
         )
     }

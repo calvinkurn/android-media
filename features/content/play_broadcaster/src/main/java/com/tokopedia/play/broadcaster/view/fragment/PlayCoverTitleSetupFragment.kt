@@ -88,6 +88,7 @@ class PlayCoverTitleSetupFragment @Inject constructor(
         super.onActivityCreated(savedInstanceState)
 
         observeCropState()
+        observeCoverTitle()
     }
 
     override fun onCoverChosen(coverImage: PlayCoverImageType) {
@@ -100,6 +101,7 @@ class PlayCoverTitleSetupFragment @Inject constructor(
     override fun onDestroyView() {
         super.onDestroyView()
         job.cancelChildren()
+        viewModel.saveCover(viewModel.coverUri, coverSetupView.coverTitle)
     }
 
     private fun onGetCoverFromCamera(imageUri: Uri?) {
@@ -165,9 +167,9 @@ class PlayCoverTitleSetupFragment @Inject constructor(
                     }
 
                     override fun onNextButtonClicked(view: CoverSetupPartialView, coverTitle: String) {
-                        val coverImagePath = viewModel.coverUri
-                        if (coverImagePath != null && viewModel.isValidCoverTitle(coverTitle)) {
-                            if (isGalleryPermissionGranted()) viewModel.setCover(coverImagePath.path!!, coverTitle)
+                        val coverUri = viewModel.coverUri
+                        if (coverUri != null && viewModel.isValidCoverTitle(coverTitle)) {
+                            if (isGalleryPermissionGranted()) viewModel.uploadCover(coverUri, coverTitle)
                             else requestGalleryPermission(REQUEST_CODE_PERMISSION_CROP_COVER)
                         }
                     }
@@ -329,6 +331,12 @@ class PlayCoverTitleSetupFragment @Inject constructor(
                 is CoverSetupState.Cropping -> showCoverCropLayout(it.coverImage)
                 is CoverSetupState.Cropped -> showInitCoverLayout(it.coverImage)
             }
+        })
+    }
+
+    private fun observeCoverTitle() {
+        viewModel.observableCoverTitle.observe(viewLifecycleOwner, Observer {
+            coverSetupView.coverTitle = it
         })
     }
     //endregion
