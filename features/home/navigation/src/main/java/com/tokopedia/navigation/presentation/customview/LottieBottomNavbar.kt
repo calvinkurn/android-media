@@ -235,6 +235,7 @@ class LottieBottomNavbar : LinearLayout {
             if (listener?.menuClicked(index, bottomMenu.id) == true) {
                 changeColor(index)
             }
+            selectedItem = index
         }
     }
 
@@ -274,7 +275,6 @@ class LottieBottomNavbar : LinearLayout {
         if (menu.size > position) {
             handleItemClicked(position, menu[position])
         }
-        selectedItem = position
     }
 
     fun setMenu(menu: List<BottomMenu>) {
