@@ -88,10 +88,19 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val ADD_NAME_REGISTER = "$INTERNAL_GLOBAL/add-name-register"
 
-    // ForgotPasswordActivity
-    // tokopedia-android-internal://global/add-name-register
+    /**
+     * ForgotPasswordAcitivity
+     * @applink : tokopedia-android-internal://global/forgot-password
+     * @param
+     * required : [PARAM_EMAIL]
+     * optional : [PARAM_AUTO_RESET]
+     * optional : [PARAM_REMOVE_FOOTER]
+     **/
     @JvmField
     val FORGOT_PASSWORD = "$INTERNAL_GLOBAL/forgot-password"
+    @JvmField
+    val PARAM_AUTO_RESET = "auto_reset"
+    val PARAM_REMOVE_FOOTER = "remove_footer"
 
     // AddPasswordActivity
     // tokopedia-android-internal://global/add-password

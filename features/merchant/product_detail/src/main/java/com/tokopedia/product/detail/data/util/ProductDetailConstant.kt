@@ -131,6 +131,7 @@ object ProductDetailConstant {
     const val LAYOUT_HEAD_N_SHOULDERS = "head n shoulders"
     const val LAYOUT_DEFAULT = "Default Layout"
     const val LAYOUT_TAIL_N_SHOULDERS = "tail n shoulders"
+    const val BY_ME = "byme"
 
     //Arguments
     const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
