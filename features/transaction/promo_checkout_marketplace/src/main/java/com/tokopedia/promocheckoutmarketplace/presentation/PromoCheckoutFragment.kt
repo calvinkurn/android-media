@@ -218,6 +218,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         observeGetPromoLastSeenResult()
     }
 
+    override fun getRecyclerViewResourceId() = R.id.promo_checkout_marketplace_module_recycler_view
+
     private fun initializeSwipeRefreshLayout() {
         activity?.let {
             swipeRefreshLayout?.setColorSchemeColors(ContextCompat.getColor(it, com.tokopedia.abstraction.R.color.tkpd_main_green))
