@@ -1,6 +1,5 @@
 package com.tokopedia.product.detail.view.adapter.factory
 
-import android.content.SharedPreferences
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
@@ -100,6 +99,10 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
 
     override fun type(data: ProductTickerInfoDataModel): Int {
         return ProductTickerInfoViewHolder.LAYOUT
+    }
+
+    override fun type(data: ProductShopCredibilityDataModel): Int {
+        return ProductShopCredibilityViewHolder.LAYOUT
     }
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {

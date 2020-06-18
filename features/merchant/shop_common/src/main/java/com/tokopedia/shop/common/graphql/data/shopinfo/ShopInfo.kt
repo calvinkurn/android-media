@@ -215,7 +215,11 @@ data class ShopInfo(
     data class CreatedInfo(
             @SerializedName("openSince")
             @Expose
-            val openSince: String = ""
+            val openSince: String = "",
+
+            @SerializedName("shopCreated")
+            @Expose
+            val shopCreated: String = ""
     )
 
     data class TopContent(

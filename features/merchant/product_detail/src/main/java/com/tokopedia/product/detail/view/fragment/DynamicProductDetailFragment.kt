@@ -1458,7 +1458,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
             trackProductView(viewModel.tradeInParams.isEligible == 1)
 
-
             viewModel.shopInfo?.let { shopInfo ->
                 DynamicProductDetailTracking.Moengage.sendMoEngageOpenProduct(p1, shopInfo.shopCore.name)
                 DynamicProductDetailTracking.Moengage.eventAppsFylerOpenProduct(p1)

@@ -76,6 +76,46 @@ fun String.linkTextWithGiven(context: Context, vararg textToBold: Pair<String, (
     return builder
 }
 
+fun Int.getRelativeDateByMinute(context: Context): String {
+    val MINUTE_PER_HOUR = 60
+    val MINUTE_PER_DAY = MINUTE_PER_HOUR * 24
+
+    val minuteInput = this
+
+    return if (minuteInput / MINUTE_PER_DAY > 0) {
+        context.getString(R.string.shop_chat_speed_in_days, minuteInput / MINUTE_PER_DAY)
+    } else if (minuteInput / MINUTE_PER_HOUR > 0) {
+        context.getString(R.string.shop_chat_speed_in_hours, minuteInput / MINUTE_PER_HOUR)
+    } else {
+        if (minuteInput > 0) {
+            context.getString(R.string.shop_chat_speed_in_minute, minuteInput)
+        } else {
+            context.getString(R.string.shop_chat_speed_in_minute, 1)
+        }
+    }
+}
+
+
+fun Int.getRelativeDateByHours(context: Context): String {
+    if (this < 1) return ""
+    val MINUTE_PER_HOUR = 60
+    val MINUTE_PER_DAY = MINUTE_PER_HOUR * 24
+
+    val minuteInput = this * 60
+
+    return if (minuteInput / MINUTE_PER_DAY > 0) {
+        context.getString(R.string.shop_chat_speed_in_one_two_days)
+    } else if (minuteInput / MINUTE_PER_HOUR > 0) {
+        context.getString(R.string.shop_chat_speed_in_hours, minuteInput / MINUTE_PER_HOUR)
+    } else {
+        if (minuteInput > 0) {
+            context.getString(R.string.shop_chat_speed_in_minute, minuteInput)
+        } else {
+            context.getString(R.string.shop_chat_speed_in_minute, 1)
+        }
+    }
+}
+
 fun String.getRelativeDate(context: Context): String {
     if (this.isEmpty()) return ""
 
