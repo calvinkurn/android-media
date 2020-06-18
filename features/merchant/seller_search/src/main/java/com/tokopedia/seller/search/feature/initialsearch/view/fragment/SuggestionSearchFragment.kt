@@ -108,6 +108,7 @@ class SuggestionSearchFragment: BaseListFragment<Visitable<*>, InitialSearchAdap
 
     private fun observeLiveData() {
         viewModel?.getSellerSearch?.observe(this, Observer {
+            hideLoading()
             when(it) {
                 is Success -> {
                     setSuggestionSearch(it.data.first, it.data.second)
@@ -129,6 +130,7 @@ class SuggestionSearchFragment: BaseListFragment<Visitable<*>, InitialSearchAdap
     }
 
     private fun setSuggestionSearch(data: List<SellerSearchUiModel>, filterList: List<FilterSearchUiModel>) {
+        hideLoading()
         if(data.isEmpty()) {
             searchSellerAdapter.removeEmptyOrErrorState()
             searchSellerAdapter.addSellerSearchNoResult()

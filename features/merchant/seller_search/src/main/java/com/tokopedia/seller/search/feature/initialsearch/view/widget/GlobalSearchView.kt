@@ -47,11 +47,12 @@ class GlobalSearchView : BaseCustomView {
         View.inflate(context, R.layout.widget_global_search_view, this)
         initSearchBarView()
         btnBackHome()
+        showKeyboard(searchBarView.searchBarTextField)
     }
 
     override fun requestFocus(direction: Int, previouslyFocusedRect: Rect?): Boolean {
         if (mClearingFocus) return false
-        return if (!isFocusable) false else searchBarView.requestFocus(direction, previouslyFocusedRect)
+        return if (!isFocusable) false else searchBarView.searchBarTextField.requestFocus(direction, previouslyFocusedRect)
     }
 
     fun setSearchViewListener(searchViewListener: GlobalSearchViewListener) {
@@ -79,9 +80,11 @@ class GlobalSearchView : BaseCustomView {
     }
 
     override fun clearFocus() {
-        super.clearFocus()
+        mClearingFocus = true
         hideKeyboard(this)
+        super.clearFocus()
         searchBarView?.searchBarTextField?.clearFocus()
+        mClearingFocus = false
     }
 
     private fun initSearchBarView() {
@@ -106,14 +109,6 @@ class GlobalSearchView : BaseCustomView {
 
             searchBarTextField.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable) {
-                    for (span in s.getSpans(0, s.length, UnderlineSpan::class.java)) {
-                        s.removeSpan(span)
-                    }
-                }
-
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                     val keyword = s.trim().toString()
                     when {
                         keyword.isEmpty() -> {
@@ -133,7 +128,15 @@ class GlobalSearchView : BaseCustomView {
                                 searchViewListener?.onQueryTextChangeListener(searchKeyword)}, DEBOUNCE_DELAY_MILLIS)
                         }
                     }
+
+                    for (span in s.getSpans(0, s.length, UnderlineSpan::class.java)) {
+                        s.removeSpan(span)
+                    }
                 }
+
+                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+
+                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
             })
 
             searchBarTextField.setOnEditorActionListener { _, actionId, event ->

@@ -125,6 +125,7 @@ class InitialSearchFragment: BaseListFragment<Visitable<*>, InitialSearchAdapter
 
     private fun observeLiveData() {
        viewModel?.getSellerSearch?.observe(this, Observer {
+           hideLoading()
            when(it) {
                is Success -> {
                    setHistorySearch(it.data)
@@ -144,6 +145,7 @@ class InitialSearchFragment: BaseListFragment<Visitable<*>, InitialSearchAdapter
     }
 
     private fun setHistorySearch(data: List<SellerSearchUiModel>) {
+        hideLoading()
         if(data.isEmpty()) {
             searchSellerAdapter.removeEmptyOrErrorState()
             searchSellerAdapter.addSellerSearchNoHistory()
