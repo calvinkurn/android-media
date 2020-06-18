@@ -13,6 +13,9 @@ class MixTopComponentCallback(val homeCategoryListener: HomeCategoryListener)
     : MixTopComponentListener {
     override fun onMixTopImpressed(channel: ChannelModel, parentPos: Int) {
 
+        //iris
+        homeCategoryListener.putEEToIris(MixTopTracking.getMixTopViewIris(
+                MixTopTracking.mapChannelToProductTracker(channel), channel.channelHeader.name, channel.id, parentPos.toString()) as java.util.HashMap<String, Any>)
     }
 
     override fun onSeeAllBannerClicked(channel: ChannelModel, applink: String) {
@@ -43,9 +46,6 @@ class MixTopComponentCallback(val homeCategoryListener: HomeCategoryListener)
                         channel.channelHeader.name,
                         adapterPosition.toString()
                 ) as HashMap<String, Any>)
-        //iris
-        homeCategoryListener.putEEToIris(MixTopTracking.getMixTopViewIris(
-                MixTopTracking.mapChannelToProductTracker(channel), channel.channelHeader.name, channel.id, position.toString()) as java.util.HashMap<String, Any>)
 
     }
 
