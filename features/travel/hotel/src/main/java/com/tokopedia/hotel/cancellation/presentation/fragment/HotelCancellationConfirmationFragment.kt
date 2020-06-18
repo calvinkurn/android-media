@@ -156,7 +156,8 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
             if (actionButton.uri == RETRY_SUBMISSION) {
                 submitCancellation()
             } else {
-                RouteManager.route(requireContext(), actionButton.uri)
+                val intent = RouteManager.getIntent(requireContext(), actionButton.uri)
+                startActivityForResult(intent, REDIRECT_REQUEST_CODE)
                 activity?.finish()
             }
         }
@@ -166,6 +167,7 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
     companion object {
         const val HOTEL_ORDER_STATUS_RESULT_SCREEN_NAME = "/hotel/ordercancelresult"
         const val RETRY_SUBMISSION = "RETRYSUBMISSION"
+        const val REDIRECT_REQUEST_CODE = 33
         fun getInstance(invoiceId: String, orderAmount: String, cancellationFee: String, refundAmount: String,
                         cancellationSubmitParam: HotelCancellationSubmitParam): HotelCancellationConfirmationFragment =
                 HotelCancellationConfirmationFragment().also {

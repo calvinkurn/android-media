@@ -550,7 +550,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     protected void setActionVar() {
         initialData();
-        if (mOrderCategory.equalsIgnoreCase(OrderCategory.HOTELS)) doRefresh();
     }
 
     private void initialData() {
