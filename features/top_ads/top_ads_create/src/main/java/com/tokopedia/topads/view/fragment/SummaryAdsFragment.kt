@@ -41,9 +41,11 @@ import javax.inject.Inject
  */
 
 private const val CLICK_IKLANKAN_BUTTON = "click-iklankan"
+
 class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     private lateinit var viewModel: SummaryViewModel
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     var map = HashMap<String, Any>()
@@ -52,6 +54,9 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     var group = Group()
     private var keywordsList: MutableList<KeywordsItem> = mutableListOf()
     private var adsItemsList: MutableList<AdsItem> = mutableListOf()
+    private var selectedProductIds: MutableList<String> = mutableListOf()
+    private var selectedkeywordIds: MutableList<String> = mutableListOf()
+    private var selectedkeywordTags: MutableList<String> = mutableListOf()
     var isEnoughDeposit = false
     private var dailyBudget = 0
     private var suggestion = 0
@@ -124,7 +129,21 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         btn_submit.setOnClickListener {
             val map = convertToParam(view)
             viewModel.topAdsCreated(map, this::onSuccessActivation, this::onErrorActivation)
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_IKLANKAN_BUTTON, "")
+
+            adsItemsList.forEachIndexed { index, adsItem ->
+                selectedProductIds.add(adsItemsList[index].productID)
+            }
+
+            keywordsList.forEachIndexed { index, keywordsItem ->
+                selectedkeywordIds.add(keywordsList[index].keywordTypeID)
+            }
+
+            keywordsList.forEachIndexed { index, keywordsItem ->
+                selectedkeywordTags.add(keywordsList[index].keywordTag)
+            }
+
+            var eventLabel = "product_id:" + selectedProductIds.joinToString(",") + ",keyword:" + selectedkeywordTags.joinToString("::") + ",keyword_id:" + selectedkeywordIds.joinToString("::")
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_IKLANKAN_BUTTON, eventLabel)
         }
         suggestion = (stepperModel?.finalBidPerClick!!) * MULTIPLIER
         stepperModel?.dailyBudget = suggestion
