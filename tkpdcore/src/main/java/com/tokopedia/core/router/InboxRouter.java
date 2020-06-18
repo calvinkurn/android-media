@@ -30,7 +30,6 @@ public class InboxRouter {
 
     private static final String INBOX_MESSAGE_ACTIVITY = "com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity";
     public static final java.lang.String PARAM_SHOP_ID = "to_shop_id";
-    public static final String PARAM_URL = "PARAM_URL";
 
     //Trouble ID
 
