@@ -684,6 +684,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     }
                 }
             }
+            ProductDetailConstant.BY_ME -> {
+                onAffiliateClick()
+                DynamicProductDetailTracking.Click.eventClickByMe(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
+            }
         }
     }
 
@@ -1236,6 +1240,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun observeP2Login() {
         viewLifecycleOwner.observe(viewModel.p2Login) {
             topAdsGetProductManage = it.topAdsGetProductManage
+            if(it.pdpAffiliate == null) {
+                dynamicAdapter.removeComponentSection(pdpUiUpdater?.productByMeMap)
+            } else {
+                pdpUiUpdater?.updateByMeData(context)
+            }
             it.pdpAffiliate?.let { renderAffiliate(it) }
             actionButtonView.setTopAdsButton(hasTopAds())
             pdpUiUpdater?.updateWishlistData(it.isWishlisted)
@@ -2028,23 +2037,24 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             getCommissionPdp.visible()
             commissionPdp.visible()
             commissionPdp.text = pdpAffiliate.commissionValueDisplay
-            btn_affiliate_pdp.setOnClickListener { onAffiliateClick(pdpAffiliate, false) }
+            btn_affiliate_pdp.setOnClickListener {
+                viewModel.getDynamicProductInfoP1?.let { productInfo ->
+                    DynamicProductDetailTracking.Click.eventClickAffiliate(viewModel.userId, productInfo.basic.getShopId(), false,
+                            viewModel.getDynamicProductInfoP1)
+                }
+                onAffiliateClick()
+            }
             actionButtonView.gone()
             ticker_occ_layout.gone()
         } else if (!GlobalConfig.isSellerApp()) {
             base_btn_affiliate_dynamic.gone()
-            actionButtonView.byMeClick = this::onAffiliateClick
-            actionButtonView.showByMe(true, pdpAffiliate)
         }
     }
 
-    private fun onAffiliateClick(pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate,
-                                 isRegularPdp: Boolean) {
-        viewModel.getDynamicProductInfoP1?.let { productInfo ->
-            activity?.let {
-                DynamicProductDetailTracking.Click.eventClickAffiliate(viewModel.userId, productInfo.basic.getShopId(), isRegularPdp,
-                        viewModel.getDynamicProductInfoP1)
-                doActionOrLogin({
+    private fun onAffiliateClick() {
+        activity?.let {
+            doActionOrLogin({
+                viewModel.p2Login.value?.pdpAffiliate?.let{ pdpAffiliate ->
                     RouteManager.getIntent(it,
                             ApplinkConst.AFFILIATE_CREATE_POST,
                             pdpAffiliate.productId.toString(),
@@ -2053,10 +2063,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                             .let(::startActivity)
                     it.setResult(Activity.RESULT_OK)
                     it.finish()
-                })
-            }
+                }
+            })
         }
-        return
     }
 
     private fun trackProductView(isElligible: Boolean) {
