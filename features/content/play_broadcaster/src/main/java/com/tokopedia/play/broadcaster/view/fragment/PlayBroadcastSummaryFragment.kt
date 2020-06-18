@@ -37,11 +37,11 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastSummaryViewModel::class.java)
         parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
-        arguments?.let { it ->
-            it.getString(KEY_CHANNEL_ID)?.let {channelId ->
-                parentViewModel.getChannel(channelId)
-            }
-        }
+//        arguments?.let { it ->
+//            it.getString(KEY_CHANNEL_ID)?.let {channelId ->
+//                parentViewModel.getChannel(channelId)
+//            }
+//        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -66,18 +66,18 @@ class PlayBroadcastSummaryFragment @Inject constructor(private val viewModelFact
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        observeChannelInfo()
+//        observeChannelInfo()
         observeTotalViews()
         observeTotalLikes()
         observeLiveTrafficMetrics()
     }
 
-    private fun observeChannelInfo() {
-        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner, Observer {
-            viewModel.getLiveTrafficMetrics(it.channelId)
-            renderTitleAndCover(it)
-        })
-    }
+//    private fun observeChannelInfo() {
+//        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner, Observer {
+//            viewModel.getLiveTrafficMetrics(it.channelId)
+//            renderTitleAndCover(it)
+//        })
+//    }
 
     private fun observeTotalViews() {
         parentViewModel.observableTotalView.observe(viewLifecycleOwner, Observer(::setTotalView))

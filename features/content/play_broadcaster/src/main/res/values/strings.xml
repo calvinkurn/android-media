@@ -33,6 +33,7 @@
     <string name="play_change">Ganti</string>
     <string name="play_broadcast_try_again">Coba Lagi</string>
     <string name="play_broadcast_exit">Keluar</string>
+    <string name="play_broadcast_end">Akhiri</string>
 
     <string name="play_selected_products">Produk Dipilih (%d)</string>
 
@@ -92,6 +93,8 @@
     <string name="play_live_broadcast_network_recover">Yay, koneksi internetmu kembali terhubung!</string>
     <string name="play_live_broadcast_network_loss">Koneksi internetmu terputus, nih.</string>
     <string name="play_live_broadcast_network_poor">Koneksi internetmu melambat, nih.</string>
+    <string name="play_dialog_continue_live_title">Mau lanjutkan siaranmu?</string>
+    <string name="play_dialog_continue_live_desc">Live streaming tokomu berhenti sementara karena kamu sempat keluar dari apli</string>
     <string name="play_dialog_error_active_other_devices_title">Tokomu sedang siaran di\n perangkat lain</string>
     <string name="play_dialog_error_active_other_devices_desc">Akhiri siaran live streaming di perangkat lain\n jika ingin mengambil alih siaran</string>
 

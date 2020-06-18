@@ -177,7 +177,7 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
             if (it.streamAllowed) {
                 when {
                     it.activeOnOtherDevices -> showDialogWhenActiveOnOtherDevices()
-                    it.haveOnGoingLive -> openBroadcastActivePage(it.activeChannelId.toString())
+                    it.haveOnGoingLive -> openBroadcastActivePage()
                     else -> openBroadcastSetupPage()
                 }
             } else {
@@ -222,11 +222,8 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
         navigateToFragment(PlayBroadcastSetupFragment::class.java)
     }
 
-    private fun openBroadcastActivePage(channelId: String) {
-        navigateToFragment(PlayBroadcastUserInteractionFragment::class.java,
-                Bundle().apply {
-                    putString(PlayBroadcastUserInteractionFragment.KEY_CHANNEL_ID, channelId)
-                })
+    private fun openBroadcastActivePage() {
+        navigateToFragment(PlayBroadcastUserInteractionFragment::class.java)
     }
 
     private fun showDialogWhenActiveOnOtherDevices() {
