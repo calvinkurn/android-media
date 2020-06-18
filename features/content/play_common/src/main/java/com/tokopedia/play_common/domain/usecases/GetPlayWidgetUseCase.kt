@@ -37,6 +37,7 @@ class GetPlayWidgetUseCase(
                   webLink
                   config{
                     hasPromo
+                    isReminderSet
                   }
                   partner {
                     ID
@@ -105,76 +106,6 @@ class GetPlayWidgetUseCase(
     override suspend fun executeOnBackground(): PlayBannerCarouselDataModel {
         graphqlUseCase.setRequestParams(params.parameters)
         return PlayWidgetMapper.mapperToPlayBannerCarouselDataModel(graphqlUseCase.executeOnBackground().playGetWidgetV2)
-        return PlayBannerCarouselDataModel(
-                title = "Yuk, tonton sekarang!",
-                seeMoreApplink = "https://cobacoba.com",
-                backgroundUrl = "https://i.ibb.co/ZdMn09S/bg1.jpg",
-                imageUrl = "https://i.ibb.co/Wk4YrQR/imageorang.png",
-                isAutoPlay = true,
-                gradients = listOf("#2A7C82", "#1C3A41"),
-                isAutoRefreshTimer = 10000,
-                isAutoPlayAmount = 2,
-                isAutoRefresh = false,
-                channelList = listOf(
-                        PlayBannerCarouselOverlayImageDataModel(
-                                applink = "",
-                                imageUrl = "",
-                                weblink = ""
-                        ),
-                        PlayBannerCarouselItemDataModel(
-                                channelTitle = "Google Assistant review with me",
-                                channelCreator = "Google",
-                                applink = "https://cobacoba.com",
-                                countView = "10rb",
-                                isLive = true,
-                                isShowTotalView = true,
-                                widgetType = PlayBannerWidgetType.VOD,
-                                isPromo = true,
-                                coverUrl = "https://i.ibb.co/hgg0W75/Screen-Shot-2020-04-28-at-13-16-3.png",
-                                videoUrl = "https://vod2.tokopedia.net/2c9d97786944476ca6f851b43657a714/71e3acc038da4fd4887005125c6af51d-42ab79fb4dc46a6c087229f0737690a6-fd.m3u8"
-                        ),
-                        PlayBannerCarouselItemDataModel(
-                                channelTitle = "Google Assistant review with me",
-                                channelCreator = "Google",
-                                applink = "https://cobacoba.com",
-                                countView = "10rb",
-                                isLive = true,
-                                isShowTotalView = true,
-                                widgetType = PlayBannerWidgetType.VOD,
-                                isPromo = true,
-                                coverUrl = "https://i.ibb.co/hgg0W75/Screen-Shot-2020-04-28-at-13-16-3.png",
-                                videoUrl = "https://vod2.tokopedia.net/d83dd4e1602e47179378001f9ce07ed9/5e454ee1f28e49ab9e756501744df27c-4710b29f06e1c06e6b198e50594de075-fd.m3u8"
-                        ),
-                        PlayBannerCarouselItemDataModel(
-                                channelTitle = "Google Assistant review with me",
-                                channelCreator = "Google",
-                                applink = "https://cobacoba.com",
-                                countView = "10rb",
-                                isLive = true,
-                                isShowTotalView = true,
-                                widgetType = PlayBannerWidgetType.VOD,
-                                isPromo = false,
-                                coverUrl = "https://i.ibb.co/hgg0W75/Screen-Shot-2020-04-28-at-13-16-3.png",
-                                videoUrl = "https://vod2.tokopedia.net/d1be7fbc9e36499ab50cab2f7554f9f4/686f19c4a1434f9a9d1e52c055f27caa-11c234d89a25a6b24bb5b496f2ea02f4-fd.m3u8"
-                        ),
-                        PlayBannerCarouselItemDataModel(
-                                channelTitle = "Google Assistant review with me",
-                                channelCreator = "Google",
-                                applink = "https://cobacoba.com",
-                                countView = "10rb",
-                                isLive = false,
-                                isShowTotalView = true,
-                                isPromo = false,
-                                coverUrl = "https://i.ibb.co/hgg0W75/Screen-Shot-2020-04-28-at-13-16-3.png",
-                                videoUrl = "https://vod2.tokopedia.net/6631531405a44f70aac24123784f8407/d09df6538e02440ab306a5d6399d316e-f5bde57f0c52d84b4bcc40caf18aee5f-fd.m3u8",
-                                widgetType = PlayBannerWidgetType.UPCOMING
-                        ),
-                        PlayBannerCarouselBannerDataModel(
-                                applink = "",
-                                imageUrl = "https://i.ibb.co/Fm5Hwk4/item.png"
-                        )
-                )
-        )
     }
 
     fun setParams(widgetType: String, authorId: String, authorType: String){

@@ -207,6 +207,42 @@ class PlayWidgetCarouselTrackerTest {
         )))
     }
 
+    @Test
+    fun test_click_remind_me(){
+        val channelId = "channelID"
+        val notifierId = "notifierId"
+        val userId = "123"
+        every { testTracker.getTracker() } returns DataLayer.mapOf(
+            "event" , "clickHomepage",
+            "eventCategory" , "homepage-cmp",
+            "eventAction" , "click remind me",
+            "eventLabel" , "$channelId - $notifierId",
+            "userId", userId
+        )
+
+        Assert.assertTrue(areEqualKeyValues(testTracker.getTracker(), HomePageTrackingV2.PlayWidgetCarousel.getClickAddRemind(
+                channelId, notifierId, userId
+        )))
+    }
+
+    @Test
+    fun test_click_remove_remind_me(){
+        val channelId = "channelID"
+        val notifierId = "notifierId"
+        val userId = "123"
+        every { testTracker.getTracker() } returns DataLayer.mapOf(
+            "event" , "clickHomepage",
+            "eventCategory" , "homepage-cmp",
+            "eventAction" , "click on remove remind me",
+            "eventLabel" , "$channelId - $notifierId",
+            "userId", userId
+        )
+
+        Assert.assertTrue(areEqualKeyValues(testTracker.getTracker(), HomePageTrackingV2.PlayWidgetCarousel.getClickAddRemind(
+                channelId, notifierId, userId
+        )))
+    }
+
     private fun areEqualKeyValues(first: Map<String, Any>, second: Map<String,Any>): Boolean{
         first.forEach{
             if(it.value != second[it.key]) return false

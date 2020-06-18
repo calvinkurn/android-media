@@ -78,7 +78,17 @@ class PlayBannerCardViewHolder(
     }
 
     override fun onReminderClick(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
-        // todo add tracker reminder
+        listener.sendEETracking(
+                if(dataModel.remindMe) HomePageTrackingV2.PlayWidgetCarousel.getClickRemoveRemind(
+                        channelId = dataModel.channelId,
+                        userId = listener.userId,
+                        notifierId = (position + 1).toString()
+                ) else HomePageTrackingV2.PlayWidgetCarousel.getClickAddRemind(
+                        channelId = dataModel.channelId,
+                        userId = listener.userId,
+                        notifierId = (position + 1).toString()
+                )
+        )
         listener.onPlayBannerReminderClick(dataModel)
     }
 

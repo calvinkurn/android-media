@@ -24,6 +24,6 @@ data class Meta (
     @SerializedName("overlayImage") val overlayImage : String,
     @SerializedName("overlayImageApplink") val overlayImageApplink : String,
     @SerializedName("overlayImageWeblink") val overlayImageWeblink : String,
-    @SerializedName("gradient") val gradient : List<String> = listOf("#ffffff"),
+    @SerializedName("gradient") val gradient : List<String> = listOf(),
     @SerializedName("serverTimeOffset") val serverTimeOffset : Long
 )

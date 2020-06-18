@@ -24,7 +24,10 @@ data class BufferControl (
 data class Config (
     @SerializedName("hasPromo")
     @Expose
-    val hasPromo: Boolean = false
+    val hasPromo: Boolean = false,
+    @SerializedName("isReminderSet")
+    @Expose
+    val isReminderSet: Boolean = false
 )
 
 data class PlayWidgetItem (
