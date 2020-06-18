@@ -274,4 +274,16 @@
     <string name="bs_desc_info_shop_closed">Chat penjual atau akses Pusat Bantuan jika kamu ada transaksi bermasalah.</string>
     <string name="bs_btn_title">Ajukan Buka Toko</string>
 
+    <!--New Shop Info-->
+    <string name="shop_online_days_ago">Online <b>%1d hari lalu</b></string>
+    <string name="shop_online_hours_ago">Online <b>%1d jam lalu</b></string>
+    <string name="shop_online_minute_ago">Online <b>%1d menit lalu</b></string>
+    <string name="shop_online_yesterday">Online kemarin</string>
+    <string name="shop_online_last_date">Terakhir online <b>%1s</b></string>
+
+    <string name="shop_chat_speed_in_days">%1d hari</string>
+    <string name="shop_chat_speed_in_hours">%1d jam</string>
+    <string name="shop_chat_speed_in_minute">%1d menit</string>
+    <string name="shop_chat_speed_in_one_two_days">1–2 hari</string>
+
 </resources>

@@ -54,7 +54,6 @@ class GetProductInfoP2ShopUseCase @Inject constructor(private val rawQueries: Ma
         val getCartTypeRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_CART_TYPE],
                 CartRedirectionResponse::class.java, getCartTypeParams)
 
-
         val warehouseParam = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_IDS to productId,
                 ProductDetailCommonConstant.PARAM_WAREHOUSE_ID to warehouseId)
         val warehouseRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_MULTI_ORIGIN],

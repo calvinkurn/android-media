@@ -76,7 +76,15 @@ data class ShopInfo(
 
         @SerializedName("gold")
         @Expose
-        val gold: Gold = Gold()
+        val gold: Gold = Gold(),
+
+        @SerializedName("activeProduct")
+        @Expose
+        val activeProduct: Int = 0,
+
+        @SerializedName("shopStats")
+        @Expose
+        val shopStats: ShopStats = ShopStats()
 
 ) {
     fun mapToShopInfoData(): ShopInfoData {
@@ -244,5 +252,19 @@ data class ShopInfo(
             @SerializedName("fax")
             @Expose
             val fax: String = ""
+    )
+
+    data class ShopStats(
+            @SerializedName("productSold")
+            @Expose
+            val productSold: String = "",
+
+            @SerializedName("totalTx")
+            @Expose
+            val totalTx: String = "",
+
+            @SerializedName("totalShowcase")
+            @Expose
+            val totalShowcase: String = ""
     )
 }
