@@ -18,7 +18,7 @@ const val KEY_SESSION_IRIS = "sessionIris"
 data class ProductDetailViews(
         @Key(com.tokopedia.analytic_constant.Param.ITEM_LIST)
         val itemList: String,
-        @CustomChecker(ProductDetailViewsChecker::class, Level.ERROR, functionName = ["isOnlyOneProduct"])
+        @CustomChecker(ProductDetailViewsChecker::class, Level.ERROR, functionName = ["isOnlyOneProduct_"])
         @Key("items")
         val items: List<Product>,
         @Key("key")
@@ -64,6 +64,7 @@ data class ProductDetailViews(
         @DefaultValueString("")
         @Key("currentSite")
         val currentSite: String?,
+        @CustomChecker(ProductDetailViewsChecker::class, Level.ERROR, functionName = ["onlyViewItem"])
         @DefaultValueString("")
         @Key("event")
         val event: String?,
