@@ -13,6 +13,7 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherErrorType
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
+import com.tokopedia.play.broadcaster.ui.model.PlayChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
@@ -71,6 +72,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        observeChannelInfo()
         observeLiveInfo()
         observeTotalViews()
         observeTotalLikes()
@@ -98,13 +100,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun setupContent() {
-//        arguments?.getString(KEY_CHANNEL_ID)?.let {
-//            channelId -> parentViewModel.getChannel(channelId)
-//        }
-//        arguments?.getString(KEY_INGEST_URL)?.let {
-//            ingestUrl -> parentViewModel.startPushBroadcast(ingestUrl)
-//        }
-        parentViewModel.startPushBroadcast("rtmp://192.168.0.110:1935/stream/")
+        arguments?.getString(KEY_INGEST_URL)?.run {
+            if (this.isNotEmpty()) startLiveStreaming(this)
+        }
     }
 
     override fun onResume() {
@@ -127,6 +125,17 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         return true
     }
 
+    private fun startLiveStreaming(ingestUrl: String) {
+        parentViewModel.startPushBroadcast(ingestUrl)
+    }
+
+    private fun stopLiveStreaming() {
+        parentViewModel.stopPushBroadcast()
+    }
+
+    /**
+     * render to ui
+     */
     private fun showTimeLeft(timeLeft: String) {
         viewTimer.showTimeLeft(timeLeft)
     }
@@ -178,8 +187,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                    primaryListener = { dialog -> dialog.dismiss() },
                    secondaryCta = getString(R.string.play_broadcast_exit),
                    secondaryListener = { dialog ->
+                       dialog.dismiss()
+                       stopLiveStreaming()
                        activity?.finish()
-                       doEndStreaming()
                    }
            )
         }
@@ -194,6 +204,24 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 primaryListener = { dialog ->
                     dialog.dismiss()
                     navigateToSummary()
+                }
+        ).show()
+    }
+
+    private fun showDialogContinueLiveStreaming(channelId: String) {
+        requireContext().getDialog(
+                actionType = DialogUnify.HORIZONTAL_ACTION,
+                title = getString(R.string.play_dialog_continue_live_title),
+                desc = getString(R.string.play_dialog_continue_live_desc),
+                primaryCta = getString(R.string.play_next),
+                primaryListener = { dialog ->
+                    dialog.dismiss()
+                    startLiveStreaming(channelId)
+                },
+                secondaryCta = getString(R.string.play_broadcast_end),
+                secondaryListener = { dialog ->
+                    dialog.dismiss()
+                    doEndStreaming()
                 }
         ).show()
     }
@@ -232,14 +260,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun doEndStreaming() {
-        parentViewModel.stopPushBroadcast()
+        stopLiveStreaming()
         navigateToSummary()
     }
 
     private fun navigateToSummary() {
-        broadcastCoordinator.navigateToFragment(PlayBroadcastSummaryFragment::class.java, Bundle().apply {
-//            putString(PlayBroadcastSummaryFragment.KEY_LIVE_DURATION, tvTimeCounter.text.toString())
-        })
+        broadcastCoordinator.navigateToFragment(PlayBroadcastSummaryFragment::class.java)
     }
 
     private fun handleLiveError(errorType: PlayPusherErrorType) {
@@ -258,6 +284,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     /**
      * Observe
      */
+    private fun observeChannelInfo() {
+        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner, Observer {
+            if (it.status == PlayChannelStatus.Pause) showDialogContinueLiveStreaming(it.channelId)
+        })
+    }
+
     private fun observeLiveInfo() {
         parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, EventObserver {
             when (it) {
@@ -268,7 +300,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     showTimeRunOut(it.minutesUntilFinished)
                 }
                 is PlayPusherInfoState.Finish -> {
-                    parentViewModel.stopPushBroadcast()
+                    stopLiveStreaming()
                     showDialogWhenTimeout()
                 }
                 is PlayPusherInfoState.Error -> handleLiveError(it.errorType)
