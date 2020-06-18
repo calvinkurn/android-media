@@ -232,7 +232,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
             ProductManageTracking.eventAddProduct()
         }
-
         else if (item.itemId == R.id.action_more_menu) {
             showMoreMenuBottomSheet()
         }
