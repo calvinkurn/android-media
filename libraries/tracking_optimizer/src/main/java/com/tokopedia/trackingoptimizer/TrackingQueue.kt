@@ -7,7 +7,6 @@ import com.tokopedia.trackingoptimizer.db.model.TrackingEEFullDbModel
 import com.tokopedia.trackingoptimizer.db.model.TrackingRegularDbModel
 import com.tokopedia.trackingoptimizer.db.model.TrackingScreenNameDbModel
 import com.tokopedia.trackingoptimizer.model.EventModel
-import com.tokopedia.trackingoptimizer.model.ScreenCustomModel
 import com.tokopedia.trackingoptimizer.repository.ITrackingRepository
 import com.tokopedia.trackingoptimizer.repository.TrackingRepository
 import kotlinx.coroutines.CoroutineScope
