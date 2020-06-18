@@ -71,6 +71,7 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
 
     override fun setupLayout(savedInstanceState: Bundle?) {
         super.setupLayout(savedInstanceState)
+        mToolbar = findViewById(com.tokopedia.abstraction.R.id.toolbar)
         mToolbar.setNavigationIcon(com.tokopedia.abstraction.R.drawable.ic_action_back)
         updateTitle(toolbarName)
     }
@@ -81,7 +82,6 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
     }
 
     private fun initView() {
-        mToolbar = findViewById(com.tokopedia.abstraction.R.id.toolbar)
         globalError = findViewById(R.id.global_error)
     }
 
