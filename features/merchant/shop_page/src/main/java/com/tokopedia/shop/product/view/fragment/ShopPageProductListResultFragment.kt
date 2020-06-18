@@ -277,7 +277,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             when (it) {
                 is Success -> {
                     val productList = it.data.second
-                    shopPageTracking?.searchProduct(keyword, productList.isEmpty(), isMyShop, customDimensionShopPage)
                     renderProductList(productList, it.data.first)
                     isNeedToReloadData = false
                 }
