@@ -14,11 +14,11 @@ class TestBottomNavActivity: AppCompatActivity() {
         val bottomNav: LottieBottomNavbar = findViewById(R.id.bottom_navbar)
 
         val menu: ArrayList<BottomMenu> = ArrayList()
-        menu.add(BottomMenu(0L, "Home", R.raw.bottom_nav_home, R.color.color_active_bottom_nav))
-        menu.add(BottomMenu(1L, "Feed", R.raw.bottom_nav_feed, R.color.color_active_bottom_nav))
-        menu.add(BottomMenu(2L, "Official Store", R.raw.bottom_nav_official, R.color.color_active_bottom_nav_os))
-        menu.add(BottomMenu(3L, "Cart", R.raw.bottom_nav_cart, R.color.color_active_bottom_nav))
-        menu.add(BottomMenu(4L, "Account", R.raw.bottom_nav_account, R.color.color_active_bottom_nav))
+        menu.add(BottomMenu(0L, resources.getString(com.tokopedia.navigation.R.string.home), R.raw.bottom_nav_home, R.color.color_active_bottom_nav))
+        menu.add(BottomMenu(1L, resources.getString(com.tokopedia.navigation.R.string.feed), R.raw.bottom_nav_feed, R.color.color_active_bottom_nav))
+        menu.add(BottomMenu(2L, resources.getString(com.tokopedia.navigation.R.string.official), R.raw.bottom_nav_official, R.color.color_active_bottom_nav_os))
+        menu.add(BottomMenu(3L, resources.getString(com.tokopedia.navigation.R.string.keranjang), R.raw.bottom_nav_cart, R.color.color_active_bottom_nav))
+        menu.add(BottomMenu(4L, resources.getString(com.tokopedia.navigation.R.string.akun), R.raw.bottom_nav_account, R.color.color_active_bottom_nav))
 
         bottomNav.setMenu(menu)
         bottomNav.setSelected(0)

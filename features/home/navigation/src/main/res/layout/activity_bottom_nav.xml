@@ -8,19 +8,17 @@
     <com.tokopedia.navigation.presentation.customview.LottieBottomNavbar
         android:id="@+id/bottom_navbar"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:elevation="15dp"
+        android:layout_height="@dimen/mainparent_nav_bar_height"
+        android:elevation="@dimen/mainparent_nav_bar_elevation"
         android:orientation="vertical"
-        app:buttonColor="#525A67"
         app:buttonContainerBackgroundColor="@android:color/white"
-        app:buttonsHeight="56dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:offscreenPageLimit="4"
         app:setViewPagerSwipeable="false"
-        app:navbarElevation="15dp"
+        app:navbarElevation="@dimen/mainparent_nav_bar_elevation"
         app:viewPagerBackground="@android:color/white" />
 
 </FrameLayout>

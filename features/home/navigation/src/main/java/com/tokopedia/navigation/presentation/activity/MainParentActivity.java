@@ -397,11 +397,11 @@ public class MainParentActivity extends BaseActivity implements
     private void afterBottomNavigationInflation(Bundle savedInstanceState){
         bottomNavigation = findViewById(R.id.bottom_navbar);
         bottomNavigation.setMenuClickListener(this);
-        menu.add(new BottomMenu(0L, "Home", R.raw.bottom_nav_home, R.color.color_active_bottom_nav, true));
-        menu.add(new BottomMenu(1L, "Feed", R.raw.bottom_nav_feed, R.color.color_active_bottom_nav, true));
-        menu.add(new BottomMenu(2L, "Official Store", R.raw.bottom_nav_official, R.color.color_active_bottom_nav_os, true));
-        menu.add(new BottomMenu(3L, "Cart", R.raw.bottom_nav_cart, R.color.color_active_bottom_nav, true));
-        menu.add(new BottomMenu(4L, "Account", R.raw.bottom_nav_account, R.color.color_active_bottom_nav, true));
+        menu.add(new BottomMenu(0L, getResources().getString(R.string.home), R.raw.bottom_nav_home, R.color.color_active_bottom_nav, true));
+        menu.add(new BottomMenu(1L, getResources().getString(R.string.feed), R.raw.bottom_nav_feed, R.color.color_active_bottom_nav, true));
+        menu.add(new BottomMenu(2L, getResources().getString(R.string.official), R.raw.bottom_nav_official, R.color.color_active_bottom_nav_os, true));
+        menu.add(new BottomMenu(3L, getResources().getString(R.string.keranjang), R.raw.bottom_nav_cart, R.color.color_active_bottom_nav, true));
+        menu.add(new BottomMenu(4L, getResources().getString(R.string.akun), R.raw.bottom_nav_account, R.color.color_active_bottom_nav, true));
 
         bottomNavigation.setMenu(menu);
 
