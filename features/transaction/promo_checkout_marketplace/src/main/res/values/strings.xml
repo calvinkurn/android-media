@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="checkout_module_promo_activity_title">Pakai Kupon/Promo</string>
+    <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Kupon/Promo</string>
     <string name="promo_checkout_label_promo_recommendation_title">Ada %d promo terbaik untukmu</string>
     <string name="promo_checkout_label_promo_recommendation_title_after_apply">%d promo terbaik dipilih</string>
     <string name="promo_checkout_label_recommendation_benefit">Kamu bisa hemat %s</string>
