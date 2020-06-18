@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -25,6 +26,7 @@ import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.di.DaggerStatisticComponent
 import com.tokopedia.statistic.presentation.view.bottomsheet.SelectDateRageBottomSheet
+import com.tokopedia.statistic.presentation.view.viewhelper.StatisticLayoutManager
 import com.tokopedia.statistic.presentation.view.viewmodel.StatisticViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -65,6 +67,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private val defaultStartDate = Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DAYS))
     private val defaultEndDate = Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_END_DAYS))
 
+    private var tabItems = listOf<Pair<String, String>>()
     private var isFirstLoad = true
     private var isErrorToastShown = false
 
@@ -151,9 +154,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
 
         setDefaultRange()
-
         setupRecyclerView()
 
+        tabLayoutStc.customTabMode = TabLayout.MODE_SCROLLABLE
         swipeRefreshStc.setOnRefreshListener {
             reloadPage()
         }
@@ -177,27 +180,31 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun setupRecyclerView() = view?.run {
-        val gridLayoutManager = GridLayoutManager(context, 2).apply {
-            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                override fun getSpanSize(position: Int): Int {
-                    return try {
-                        val isCardWidget = adapter.data[position].widgetType == WidgetType.CARD
-                        if (isCardWidget) 1 else spanCount
-                    } catch (e: IndexOutOfBoundsException) {
-                        spanCount
-                    }
+        val spanCount = 2
+        val mLayoutManager = StatisticLayoutManager(context, spanCount)
+        mLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return try {
+                    val isCardWidget = adapter.data[position].widgetType == WidgetType.CARD
+                    if (isCardWidget) 1 else spanCount
+                } catch (e: IndexOutOfBoundsException) {
+                    spanCount
                 }
             }
         }
-        recyclerView.layoutManager = gridLayoutManager
+        mLayoutManager.setOnScrollVertically {
+            selectTabIfSectionWidget(mLayoutManager)
+        }
+
+        recyclerView.layoutManager = mLayoutManager
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     requestVisibleWidgetsData()
                 }
-                super.onScrollStateChanged(recyclerView, newState)
             }
         })
+
         (recyclerView.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
     }
 
@@ -260,11 +267,24 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         if (visibleWidgets.isNotEmpty()) getWidgetsData(visibleWidgets)
     }
 
+    private fun selectTabIfSectionWidget(layoutManager: GridLayoutManager) {
+        val firstVisible: Int = layoutManager.findFirstCompletelyVisibleItemPosition()
+        val mostTopVisibleWidget: BaseWidgetUiModel<*> = adapter.data[firstVisible]
+        val widgetPair: Pair<String, String> = Pair(mostTopVisibleWidget.title, mostTopVisibleWidget.dataKey)
+        val tabPair: Pair<String, String> = tabItems.firstOrNull {
+            it.second == widgetPair.second || it.second == widgetPair.first
+        } ?: return
+        val tabIndex: Int = tabItems.map { it.first }.distinct().indexOfFirst { it == tabPair.first }
+        view?.tabLayoutStc?.tabLayout?.getTabAt(tabIndex)?.select()
+    }
+
     private fun setOnSuccessGetLayout(widgets: List<BaseWidgetUiModel<*>>) {
         recyclerView.visible()
         view?.globalErrorStc?.gone()
+
         super.clearAllData()
         super.renderList(widgets)
+        setupTabItems()
 
         if (isFirstLoad) {
             recyclerView.post {
@@ -276,13 +296,27 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
     }
 
+    private fun setupTabItems() = view?.run {
+        tabLayoutStc.tabLayout.removeAllTabs()
+        var sectionTitle = ""
+        tabItems = adapter.data.map {
+            return@map if (it.widgetType == WidgetType.SECTION) {
+                tabLayoutStc.addNewTab(it.title)
+                sectionTitle = it.title
+                Pair(it.title, it.title)
+            } else {
+                Pair(sectionTitle, it.dataKey)
+            }
+        }
+    }
+
     private fun getWidgetsData(widgets: List<BaseWidgetUiModel<*>>) {
         val groupedWidgets: Map<String, List<BaseWidgetUiModel<*>>> = widgets.groupBy { it.widgetType }
-        groupedWidgets[WidgetType.CARD]?.run { getCardData(this) }
-        groupedWidgets[WidgetType.LINE_GRAPH]?.run { getLineGraphData(this) }
-        groupedWidgets[WidgetType.PROGRESS]?.run { getProgressData(this) }
-        groupedWidgets[WidgetType.CAROUSEL]?.run { getCarouselData(this) }
-        groupedWidgets[WidgetType.POST_LIST]?.run { getPostData(this) }
+        groupedWidgets[WidgetType.CARD]?.run { getCardData() }
+        groupedWidgets[WidgetType.LINE_GRAPH]?.run { getLineGraphData() }
+        groupedWidgets[WidgetType.PROGRESS]?.run { getProgressData() }
+        groupedWidgets[WidgetType.CAROUSEL]?.run { getCarouselData() }
+        groupedWidgets[WidgetType.POST_LIST]?.run { getPostData() }
     }
 
     private fun setOnErrorGetLayout(throwable: Throwable) = view?.run {
