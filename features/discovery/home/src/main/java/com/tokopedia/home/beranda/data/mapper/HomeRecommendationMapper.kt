@@ -51,7 +51,7 @@ class HomeRecommendationMapper {
                             banner.buAttribution,
                             banner.creativeName,
                             banner.target,
-                            (((pageNumber-1) * DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE) + position + 1).toInt(),
+                            (((pageNumber-1) * banners.size) + position + 1).toInt(),
                             banner.galaxyAttribution,
                             banner.persona,
                             banner.brandId,
@@ -68,7 +68,7 @@ class HomeRecommendationMapper {
         for (position in products.indices) {
             val product = products[position]
 
-            homeFeedViewModels.add(HomeRecommendationItemDataModel(product, (((pageNumber-1) * DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE) + position + 1).toInt(), tabName))
+            homeFeedViewModels.add(HomeRecommendationItemDataModel(product, (((pageNumber-1) * products.size) + position + 1), tabName))
         }
         return homeFeedViewModels
     }
