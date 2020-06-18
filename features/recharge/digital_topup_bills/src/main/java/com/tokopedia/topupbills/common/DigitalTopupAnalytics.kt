@@ -207,7 +207,7 @@ class DigitalTopupAnalytics {
     }
 
     fun clickEnhanceCommerceProduct(itemProduct: TelcoProduct, position: Int,
-                                    operatorName: String, userId: String) {
+                                    operatorName: String, userId: String, itemList: String) {
         val productTelcoList = ArrayList<Any>()
         productTelcoList.add(DataLayer.mapOf(
                 DigitalTopupEventTracking.EnhanceEccomerce.NAME, itemProduct.attributes.desc,
@@ -224,6 +224,7 @@ class DigitalTopupAnalytics {
                         "eventCategory", DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                         "eventAction", DigitalTopupEventTracking.Action.CLICK_PRODUCT_CARD,
                         "eventLabel", "${getCategoryName(itemProduct.attributes.categoryId)} - $operatorName - ${itemProduct.attributes.desc}",
+                        "item_list", itemList,
                         DigitalTopupEventTracking.Additional.CURRENT_SITE, DigitalTopupEventTracking.Additional.CURRENT_SITE_RECHARGE,
                         DigitalTopupEventTracking.Additional.USER_ID, userId,
                         DigitalTopupEventTracking.Additional.BUSINESS_UNIT, DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE,

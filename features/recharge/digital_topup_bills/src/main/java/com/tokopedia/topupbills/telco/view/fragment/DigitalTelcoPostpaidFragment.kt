@@ -129,8 +129,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 tabLayout.show()
                 separator.show()
                 tabLayout.setupWithViewPager(viewPager)
-                (viewPager.getChildAt(0) as TopupBillsWidgetInterface).toggleTitle(false)
-                (viewPager.getChildAt(1) as TopupBillsWidgetInterface).toggleTitle(false)
+                (viewPager.getChildAt(0) as? TopupBillsWidgetInterface)?.toggleTitle(false)
+                (viewPager.getChildAt(1) as? TopupBillsWidgetInterface)?.toggleTitle(false)
             } else {
                 tabLayout.hide()
                 separator.hide()
