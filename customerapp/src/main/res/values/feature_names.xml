@@ -134,6 +134,9 @@
     <string name="label_category_explore">Jelajah Tokopedia</string>
     <string name="label_find_native">Find</string>
     <string name="label_dob">Tanggal Lahir</string>
+    <string name="title_activity_catalog">Katalog</string>
+    <string name="catalog_host">catalog</string>
+    <string name="label_kategori">Belanja di Tokopedia</string>
 
     <!--Contact Us-->
     <string name="title_module_contact_us">Pusat Bantuan</string>
@@ -261,5 +264,8 @@
     <!--Promo-->
     <string name="title_gamification_df">Gamification</string>
     <string name="title_tokopoints_df">Tokopoints</string>
+
+
+    <string name="title_favorite_page">Favorit</string>
 
 </resources>
