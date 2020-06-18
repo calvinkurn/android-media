@@ -264,7 +264,7 @@ open class HomeViewModel @Inject constructor(
     }
 
     private fun getPlayBannerV2(playCarouselCardDataModel: PlayCarouselCardDataModel){
-        launch(coroutineContext){
+        launchCatchError(coroutineContext, block = {
             getPlayBannerUseCase.setParams(
                     widgetType = GetPlayWidgetUseCase.HOME_WIDGET_TYPE,
                     authorId = "",
@@ -279,6 +279,8 @@ open class HomeViewModel @Inject constructor(
                         playBannerCarouselDataModel = newPlayCarouselDataModel
                 ), playIndex))
             }
+        }){
+
         }
     }
 
