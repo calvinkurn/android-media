@@ -142,8 +142,9 @@ internal open class BannerView(activity: Activity) {
     ) {
         listener?.let {
             val uri = Uri.parse(appLink)
-            it.onCMinAppDismiss(data)
             it.onCMInAppLinkClick(uri, data, elementType)
+            it.onCMinAppDismiss(data)
+            it.onCMinAppInteraction(data)
         }
     }
 

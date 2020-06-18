@@ -169,10 +169,6 @@ public class CMInAppManager implements CmInAppListener {
 
     @Override
     public void onCMInAppLinkClick(Uri deepLinkUri, CMInApp cmInApp, ElementType elementType) {
-        Log.d("InApp", deepLinkUri.toString());
-        Intent appLinkIntent = RouteManager.getIntent(application.getApplicationContext(), deepLinkUri.toString());
-        if (getCurrentActivity() != null)
-            getCurrentActivity().startActivity(appLinkIntent);
         switch (elementType.getViewType()) {
             case ElementType.BUTTON:
                 sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_CLICKED, elementType.getElementId());
@@ -181,7 +177,6 @@ public class CMInAppManager implements CmInAppListener {
             default:
                 sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_CLICKED, null);
         }
-
     }
 
     private void sendPushEvent(CMInApp cmInApp, String eventName, String elementId) {
