@@ -96,22 +96,16 @@ fun Int.getRelativeDateByMinute(context: Context): String {
     }
 }
 
-
 fun Int.getRelativeDateByHours(context: Context): String {
-    if (this < 1) return ""
+    if (this == 0) return ""
 
-    val minuteInput = this * 60
+    val hourInput = this
+    val dayDivider = 24
 
-    return if (minuteInput / DAY_DIVIDER_IN_MINUTE > 0) {
-        context.getString(R.string.shop_chat_speed_in_one_two_days)
-    } else if (minuteInput / MINUTE_DIVIDER > 0) {
-        context.getString(R.string.shop_chat_speed_in_hours, minuteInput / MINUTE_DIVIDER)
+    return if (hourInput / dayDivider > 0) {
+        context.getString(R.string.shop_chat_speed_in_days, hourInput/dayDivider)
     } else {
-        if (minuteInput > 0) {
-            context.getString(R.string.shop_chat_speed_in_minute, minuteInput)
-        } else {
-            context.getString(R.string.shop_chat_speed_in_minute, 1)
-        }
+        context.getString(R.string.shop_chat_speed_in_hours, hourInput)
     }
 }
 

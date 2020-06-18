@@ -277,6 +277,10 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 shopBadge = it.shopBadge
             }
 
+            shopCredibility?.run {
+                shopFeature = it.shopFeature
+            }
+
             mediaMap?.run {
                 shouldShowImageReview = it.imageReviews.isNotEmpty()
             }

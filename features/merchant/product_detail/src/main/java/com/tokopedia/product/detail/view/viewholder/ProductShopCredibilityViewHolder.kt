@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
+import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureData
 import com.tokopedia.product.detail.view.util.getRelativeDate
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import kotlinx.android.synthetic.main.item_dynamic_new_shop_info.view.*
@@ -31,21 +32,26 @@ class ProductShopCredibilityViewHolder(private val view: View) : AbstractViewHol
                 shop_location_online.text = context.getString(R.string.location_dot_builder, it.location)
                 setupLastActive(element.shopInfo?.shopLastActive ?: "")
                 setupBadge(it)
-
+                setupGoApotik(element.shopFeature)
                 setupInfoRegion(element)
             }
         }
     }
 
+    private fun setupGoApotik(shopFeature: ShopFeatureData) = with(view) {
+        shop_feature.shouldShowWithAction(shopFeature.value) {
+            shop_feature.text = shopFeature.title
+        }
+    }
+
     private fun setupLastActive(shopLastActive: String) = with(view) {
         val lastActive = shopLastActive.getRelativeDate(context)
-        if (lastActive.toLowerCase() == "online") {
+        shop_last_active.text = MethodChecker.fromHtml(lastActive)
+        if (lastActive == context.getString(R.string.shop_online)) {
             shop_last_active.setTextColor(MethodChecker.getColor(context, R.color.g_500))
         } else {
             shop_last_active.setTextColor(MethodChecker.getColor(context, R.color.Neutral_N700_68))
         }
-
-        shop_last_active.text = MethodChecker.fromHtml(lastActive)
     }
 
     private fun setupInfoRegion(element: ProductShopCredibilityDataModel) = with(view) {

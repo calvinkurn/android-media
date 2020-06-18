@@ -51,6 +51,7 @@
             android:layout_marginLeft="@dimen/dp_5"
             android:ellipsize="end"
             android:maxLines="1"
+            app:layout_goneMarginStart="@dimen/dp_12"
             app:layout_constrainedWidth="true"
             app:layout_constraintEnd_toStartOf="@+id/shop_feature"
             app:layout_constraintHorizontal_bias="0"
@@ -90,9 +91,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_4"
             android:textColor="@color/Neutral_N700_68"
-            app:layout_constraintStart_toStartOf="@+id/iv_badge"
+            app:layout_constraintStart_toEndOf="@+id/shop_ava"
             app:layout_constraintTop_toBottomOf="@+id/shop_name"
             app:typographyType="body_3"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_12"
             tools:text="Online 20 menit lalu" />
 
         <com.tokopedia.unifyprinciples.Typography
