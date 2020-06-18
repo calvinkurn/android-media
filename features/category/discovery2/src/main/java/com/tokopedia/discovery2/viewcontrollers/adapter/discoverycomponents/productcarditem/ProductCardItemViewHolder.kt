@@ -112,7 +112,6 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
 
 
     private fun populateData(dataItem: DataItem) {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().addProductCardImpressions(dataItem, productCardItemViewModel.isUserLoggedIn(), adapterPosition)
         if (productCardName == ComponentNames.ProductCardRevampItem.componentName || productCardName == ComponentNames.ProductCardCarouselItem.componentName) {
             productName.setTextAndCheckShow(dataItem.name)
             setSlashedPrice(dataItem.discountedPrice)
