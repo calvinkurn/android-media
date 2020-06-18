@@ -6,18 +6,17 @@
     android:orientation="vertical"
     android:layout_height="wrap_content"
     android:layout_width="@dimen/power_merchant_feature_card_width"
-    android:paddingTop="@dimen/spacing_lvl5"
-    android:paddingBottom="@dimen/spacing_lvl5"
-    android:paddingLeft="@dimen/spacing_lvl4"
-    android:paddingRight="@dimen/spacing_lvl4">
-    <LinearLayout
+    android:padding="@dimen/spacing_lvl4">
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
         <ImageView
             android:id="@+id/imageIcon"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/power_merchant_image_icon_large"
             android:layout_height="@dimen/power_merchant_image_icon_large"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
             tools:src="@drawable/ic_free_shipping"
             tools:ignore="ContentDescription" />
 
@@ -25,11 +24,14 @@
             android:id="@+id/textTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl4"
-            android:layout_marginBottom="@dimen/spacing_lvl3"
             android:textColor="@color/light_N700"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            app:layout_constraintLeft_toRightOf="@id/imageIcon"
+            app:layout_constraintBottom_toBottomOf="@id/imageIcon"
+            app:layout_constraintTop_toTopOf="parent"
             app:typographyWeight="bold"
-            app:typographyType="heading_4"
+            app:typographyType="heading_5"
             tools:text="Fitur Unggulan" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -37,7 +39,10 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/power_merchant_feature_description_height"
             android:textColor="@color/light_N700"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            app:layout_constraintTop_toBottomOf="@id/textTitle"
+            app:layout_constraintLeft_toLeftOf="parent"
             app:typographyType="body_3"
             tools:text="Optimalkan penjualan dengan **Broadcast Chat, Modal Toko,**dan **fitur eksklusif**lainnya. " />
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>
