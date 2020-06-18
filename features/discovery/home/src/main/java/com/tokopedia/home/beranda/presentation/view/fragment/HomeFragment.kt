@@ -887,7 +887,7 @@ open class HomeFragment : BaseDaggerFragment(),
                 this,
                 this,
                 HomeComponentCallback(getHomeViewModel()),
-                DynamicLegoBannerComponentCallback(context),
+                DynamicLegoBannerComponentCallback(context, this),
                 RecommendationListCarouselComponentCallback(getHomeViewModel(), this),
                 MixLeftComponentCallback(this),
                 MixTopComponentCallback(this))

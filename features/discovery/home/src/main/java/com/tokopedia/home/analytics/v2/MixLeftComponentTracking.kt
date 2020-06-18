@@ -139,6 +139,9 @@ object MixLeftComponentTracking: BaseTracking()  {
             eventCategory = Category.HOMEPAGE,
             eventAction = IMPRESSION_MIX_LEFT_BANNER,
             eventLabel = Label.NONE,
+            screen = Screen.DEFAULT,
+            currentSite = CurrentSite.DEFAULT,
+            businessUnit = BusinessUnit.DEFAULT,
             promotions = listOf(
                     Promotion(
                             id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, channel.channelBanner.id, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryPersona),
@@ -160,6 +163,9 @@ object MixLeftComponentTracking: BaseTracking()  {
             affinity = channel.trackingAttributionModel.persona,
             attribution = channel.trackingAttributionModel.galaxyAttribution,
             shopId = channel.trackingAttributionModel.brandId,
+            screen = Screen.DEFAULT,
+            currentSite = CurrentSite.DEFAULT,
+            businessUnit = BusinessUnit.DEFAULT,
             promotions = listOf(
                     Promotion(
                             id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, channel.channelBanner.id, channel.channelBanner.attribution, channel.trackingAttributionModel.categoryPersona),
