@@ -39,7 +39,7 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor() : BottomSheetUnify
         AlbumAdapter.OnAlbumAdapterListener,
         LoaderManager.LoaderCallbacks<Cursor> {
 
-    lateinit var listener: Listener
+    var mListener: Listener? = null
 
     private lateinit var mChildView: View
     private lateinit var albumMediaAdapter: AlbumMediaAdapter
@@ -104,7 +104,7 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor() : BottomSheetUnify
     override fun onMediaClick(item: MediaItem?, checked: Boolean, adapterPosition: Int) {
         item?.let {
             if (isMediaPassValidation(it)) {
-                listener.onGetCoverFromGallery(it.contentUri)
+                mListener?.onGetCoverFromGallery(it.contentUri)
                 dismiss()
             }
         }

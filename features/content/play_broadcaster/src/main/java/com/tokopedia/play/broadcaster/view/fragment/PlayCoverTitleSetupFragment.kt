@@ -271,7 +271,7 @@ class PlayCoverTitleSetupFragment @Inject constructor(
                     PlayGalleryImagePickerBottomSheet::class.java.name
             ) as PlayGalleryImagePickerBottomSheet
 
-            imagePicker.listener = this
+            imagePicker.mListener = this
             imagePicker.setShowListener { imagePicker.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
 
             galleryImagePickerBottomSheet = imagePicker
