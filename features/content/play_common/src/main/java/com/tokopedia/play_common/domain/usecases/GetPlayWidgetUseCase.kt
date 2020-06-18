@@ -13,18 +13,15 @@ class GetPlayWidgetUseCase(
         private val graphqlUseCase: GraphqlUseCase<PlayGetWidgetEntity>
 ): UseCase<PlayBannerCarouselDataModel>(){
 
-    private val widgetType = "\$widgetType"
-    private val authorId = "\$authorId"
-    private val authorType = "\$authorType"
     private val query = """
         query qPlayGetWidgetV2(
-          $widgetType: String, $authorId:String, $authorType:String
+          ${'$'}widgetType: String, ${'$'}authorId:String, ${'$'}authorType:String
         ){
             playGetWidgetV2(
               req: {
-                widgetType:     $widgetType    ,
-                authorID:     $authorId    , 
-                authorType:     $authorType
+                widgetType:     ${'$'}widgetType,
+                authorID:     ${'$'}authorId, 
+                authorType:     ${'$'}authorType
               }
             )
             {  
@@ -93,7 +90,7 @@ class GetPlayWidgetUseCase(
             } 
           }
         
-    """.trimIndent()
+    """
     private val params = RequestParams.create()
 
     init {

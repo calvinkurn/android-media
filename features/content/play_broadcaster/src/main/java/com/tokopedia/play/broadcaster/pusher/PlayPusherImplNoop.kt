@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.pusher
 import android.view.SurfaceView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.play.broadcaster.pusher.state.PlayPusherErrorType
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
 import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherTimer
@@ -22,7 +23,7 @@ class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
     private var isPushing: Boolean = false
 
     override fun create() {
-        _observableInfoState.postValue(PlayPusherInfoState.Error)
+        _observableInfoState.postValue(PlayPusherInfoState.Error(PlayPusherErrorType.UnSupportedDevice))
     }
 
     override fun startPreview(surfaceView: SurfaceView) {
@@ -31,6 +32,7 @@ class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
     override fun stopPreview() {
     }
 
+    //TODO("for testing only")
     override fun startPush(ingestUrl: String) {
         if (!isPushing) {
             mTimer?.start()
@@ -41,6 +43,7 @@ class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
     override fun restartPush() {
     }
 
+    //TODO("for testing only")
     override fun stopPush() {
         if (isPushing) {
             mTimer?.stop()
@@ -51,12 +54,14 @@ class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
     override fun switchCamera() {
     }
 
+    //TODO("for testing only")
     override fun resume() {
         if (isPushing) {
-            mTimer?.start()
+            mTimer?.resume()
         }
     }
 
+    //TODO("for testing only")
     override fun pause() {
         if (isPushing) {
             mTimer?.pause()
@@ -64,11 +69,9 @@ class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
     }
 
     override fun destroy() {
-        if (isPushing) {
-            mTimer?.pause()
-        }
     }
 
+    //TODO("for testing only")
     override fun addMaxStreamDuration(millis: Long) {
         this.mTimer = PlayPusherTimer(builder.context, millis, object: PlayPusherTimerListener {
             override fun onCountDownActive(timeLeft: String) {
@@ -83,7 +86,16 @@ class PlayPusherImplNoop(private val builder: PlayPusherBuilder) : PlayPusher {
                 stopPush()
                 _observableInfoState.postValue(PlayPusherInfoState.Finish)
             }
+
+            override fun onReachMaximumPauseDuration() {
+                _observableInfoState.postValue(PlayPusherInfoState.Error(PlayPusherErrorType.ReachMaximumDuration))
+            }
         })
+    }
+
+    //TODO("for testing only")
+    override fun addMaxPauseDuration(millis: Long) {
+        this.mTimer?.pauseDuration = millis
     }
 
     override fun getObservablePlayPusherInfoState(): LiveData<PlayPusherInfoState> {

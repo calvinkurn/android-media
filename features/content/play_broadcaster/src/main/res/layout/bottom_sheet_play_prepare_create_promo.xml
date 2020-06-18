@@ -257,7 +257,7 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginRight="@dimen/spacing_lvl4"
             android:enabled="false"
-            android:text="@string/play_prepare_broadcast_label_next" />
+            android:text="@string/play_next" />
 
     </LinearLayout>
 

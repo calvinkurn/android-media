@@ -8,6 +8,9 @@ import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCarouselCardDataModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.play_common.widget.playBannerCarousel.PlayBannerCarousel
 import com.tokopedia.play_common.widget.playBannerCarousel.event.PlayBannerCarouselViewEventListener
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselBannerDataModel
 import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselDataModel
@@ -25,23 +28,38 @@ class PlayBannerCardViewHolder(
     }
 
     private var playCarouselCardDataModel: PlayCarouselCardDataModel? = null
+    private var playBannerCarouselView: PlayBannerCarousel? = null
 
     init {
-        itemView.play_banner_carousel?.setListener(this)
+        if(playBannerCarouselView == null) playBannerCarouselView = PlayBannerCarousel(view.context)
+        playBannerCarouselView?.setListener(this)
+        itemView.hide()
     }
 
     override fun bind(element: PlayCarouselCardDataModel?) {
-        itemView.visibility = if(element?.playBannerCarouselDataModel?.channelList?.isEmpty() == true) View.GONE else View.VISIBLE
         playCarouselCardDataModel = element
-        itemView.visibility = if(element == null) View.GONE else View.VISIBLE
-        element?.playBannerCarouselDataModel?.let { itemView.play_banner_carousel?.setItem(it) }
+        element?.playBannerCarouselDataModel?.let {
+            if(it.channelList.isNotEmpty()){
+                itemView.show()
+                if(playBannerCarouselView?.parent == null) {
+                    itemView.play_banner_container.addView(playBannerCarouselView)
+                }
+                playBannerCarouselView?.setItem(it)
+            }
+        }
     }
 
     override fun bind(element: PlayCarouselCardDataModel?, payloads: MutableList<Any>) {
-        itemView.visibility = if(element?.playBannerCarouselDataModel?.channelList?.isEmpty() == true) View.GONE else View.VISIBLE
         playCarouselCardDataModel = element
-        itemView.visibility = if(element == null) View.GONE else View.VISIBLE
-        element?.playBannerCarouselDataModel?.let { itemView.play_banner_carousel?.setItem(it) }
+        element?.playBannerCarouselDataModel?.let {
+            if(it.channelList.isNotEmpty()){
+                itemView.show()
+                if(playBannerCarouselView?.parent == null) {
+                    itemView.play_banner_container.addView(playBannerCarouselView)
+                }
+                playBannerCarouselView?.setItem(it)
+            }
+        }
     }
 
     override fun onItemClick(dataModel: PlayBannerCarouselItemDataModel, position: Int) {
@@ -128,6 +146,6 @@ class PlayBannerCardViewHolder(
     }
 
     fun onDestroy(){
-        itemView.play_banner_carousel?.onDestroy()
+//        itemView.play_banner_carousel?.onDestroy()
     }
 }

@@ -2,15 +2,14 @@ package com.tokopedia.play.broadcaster.pusher
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.util.Log
 import android.view.SurfaceView
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.alivc.live.pusher.AlivcLivePushConfig
-import com.alivc.live.pusher.AlivcLivePushNetworkListener
-import com.alivc.live.pusher.AlivcLivePusher
-import com.alivc.live.pusher.AlivcQualityModeEnum
+import com.alivc.live.pusher.*
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.play.broadcaster.pusher.state.PlayPusherErrorType
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
 import com.tokopedia.play.broadcaster.pusher.timer.PlayPusherTimer
@@ -23,37 +22,36 @@ import com.tokopedia.play.broadcaster.pusher.type.PlayPusherQualityMode
  */
 class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
-    private var mTimer: PlayPusherTimer? = null
+    private var mTimerDuration: PlayPusherTimer? = null
     private var mIngestUrl: String = ""
 
-    private var mAliVcLivePusher: AlivcLivePusher? = null
-    private var mAliVcLivePushConfig: AlivcLivePushConfig? = null
+    private var mAliVcLivePusher: AlivcLivePusher = AlivcLivePusher()
 
     private val _observableInfoState = MutableLiveData<PlayPusherInfoState>()
     private val _observableNetworkState = MutableLiveData<PlayPusherNetworkState>()
-
-    init {
-        mAliVcLivePushConfig = AlivcLivePushConfig()
-        mAliVcLivePushConfig?.setCameraType(builder.cameraType)
-        mAliVcLivePushConfig?.setPreviewOrientation(builder.orientation)
-        mAliVcLivePushConfig?.previewDisplayMode = builder.previewDisplayMode
-        mAliVcLivePushConfig?.setResolution(builder.resolution)
-        mAliVcLivePushConfig?.isEnableAutoResolution = builder.isEnableAutoResolution
-        mAliVcLivePushConfig?.setFps(builder.fps)
-        setQualityMode()
-        mAliVcLivePushConfig?.isEnableBitrateControl = builder.isEnableBitrateControl
-        mAliVcLivePushConfig?.setAudioChannels(builder.audioChannel)
-        mAliVcLivePushConfig?.audioProfile = builder.audioProfile
-        mAliVcLivePushConfig?.setAudioEncodeMode(builder.audioEncode)
-        mAliVcLivePushConfig?.setAudioSamepleRate(builder.audioSampleRate)
-        mAliVcLivePushConfig?.audioBitRate = builder.audioBitrate
+    
+    private val mAliVcLivePushConfig: AlivcLivePushConfig = AlivcLivePushConfig().apply {
+        setCameraType(builder.cameraType)
+        setPreviewOrientation(builder.orientation)
+        previewDisplayMode = builder.previewDisplayMode
+        setResolution(builder.resolution)
+        isEnableAutoResolution = builder.isEnableAutoResolution
+        setFps(builder.fps)
+        setAudioChannels(builder.audioChannel)
+        audioProfile = builder.audioProfile
+        setAudioEncodeMode(builder.audioEncode)
+        setAudioSamepleRate(builder.audioSampleRate)
+        audioBitRate = builder.audioBitrate
+        setQualityMode(this)
     }
 
     override fun create() {
         try {
             mAliVcLivePusher = AlivcLivePusher()
-            mAliVcLivePusher?.init(builder.context, mAliVcLivePushConfig)
-            mAliVcLivePusher?.setLivePushNetworkListener(mAliVcLivePushNetworkListener)
+            mAliVcLivePusher.init(builder.context, mAliVcLivePushConfig)
+            mAliVcLivePusher.setLivePushErrorListener(mAliVcLivePushErrorListener)
+//            mAliVcLivePusher.setLivePushInfoListener(mAliVcLivePushInfoListener)
+            mAliVcLivePusher.setLivePushNetworkListener(mAliVcLivePushNetworkListener)
         } catch (e: IllegalArgumentException) {
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
@@ -66,27 +64,25 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
     }
 
     override fun startPreview(surfaceView: SurfaceView) {
-        if (mAliVcLivePusher != null) {
-            try {
-                if (ActivityCompat.checkSelfPermission(builder.context, Manifest.permission.CAMERA)
-                        == PackageManager.PERMISSION_GRANTED) {
-                    mAliVcLivePusher?.startPreviewAysnc(surfaceView)
-                }
-            } catch (e: IllegalArgumentException) {
-                if (GlobalConfig.DEBUG) {
-                    e.printStackTrace()
-                }
-            } catch (e: IllegalStateException) {
-                if (GlobalConfig.DEBUG) {
-                    e.printStackTrace()
-                }
+        try {
+            if (ActivityCompat.checkSelfPermission(builder.context, Manifest.permission.CAMERA)
+                    == PackageManager.PERMISSION_GRANTED) {
+                mAliVcLivePusher.startPreviewAysnc(surfaceView)
+            }
+        } catch (e: IllegalArgumentException) {
+            if (GlobalConfig.DEBUG) {
+                e.printStackTrace()
+            }
+        } catch (e: IllegalStateException) {
+            if (GlobalConfig.DEBUG) {
+                e.printStackTrace()
             }
         }
     }
 
     override fun stopPreview() {
         try {
-            mAliVcLivePusher?.stopPreview()
+            mAliVcLivePusher.stopPreview()
         } catch (e: Exception) {
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
@@ -105,10 +101,8 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
             return
         }
         try {
-            if (mAliVcLivePusher?.isPushing == false) {
-                mAliVcLivePusher?.startPushAysnc(this.mIngestUrl)
-                mTimer?.start()
-            }
+            mAliVcLivePusher.startPushAysnc(this.mIngestUrl)
+            mTimerDuration?.start()
         } catch (e: Exception) {
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
@@ -118,7 +112,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
     override fun restartPush() {
         try {
-            mAliVcLivePusher?.restartPushAync()
+            mAliVcLivePusher.restartPushAync()
         } catch (e: Exception) {
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
@@ -128,10 +122,8 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
     override fun stopPush() {
         try {
-            if (mAliVcLivePusher?.isPushing == true) {
-                mTimer?.stop()
-                mAliVcLivePusher?.stopPush()
-            }
+            mAliVcLivePusher.stopPush()
+            mTimerDuration?.stop()
         } catch (e: Exception) {
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
@@ -141,7 +133,7 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
     override fun switchCamera() {
         try {
-            mAliVcLivePusher?.switchCamera()
+            mAliVcLivePusher.switchCamera()
         } catch (e: Exception) {
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
@@ -151,9 +143,9 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
     override fun resume() {
         try {
-            if (mAliVcLivePusher?.isPushing == true) {
-                mAliVcLivePusher?.resumeAsync()
-                mTimer?.start()
+            if (mAliVcLivePusher.isPushing) {
+                mAliVcLivePusher.resumeAsync()
+                mTimerDuration?.resume()
             }
         } catch (e: java.lang.IllegalStateException) {
             if (GlobalConfig.DEBUG) {
@@ -168,9 +160,9 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
     override fun pause() {
         try {
-            if (mAliVcLivePusher?.isPushing == true) {
-                mTimer?.pause()
-                mAliVcLivePusher?.pause()
+            if (mAliVcLivePusher.isPushing) {
+                mAliVcLivePusher.pause()
+                mTimerDuration?.pause()
             }
         } catch (e: java.lang.IllegalStateException) {
             if (GlobalConfig.DEBUG) {
@@ -181,26 +173,24 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
 
     override fun destroy() {
         try {
-            if (mAliVcLivePusher?.isPushing == true) {
-                mTimer?.pause()
-            }
-            mAliVcLivePusher?.destroy()
+            mAliVcLivePusher.destroy()
         } catch (e: java.lang.IllegalStateException) {
             if (GlobalConfig.DEBUG) {
                 e.printStackTrace()
             }
         }
-
-        mAliVcLivePusher = null
-        mAliVcLivePushConfig = null
     }
 
     override fun addMaxStreamDuration(millis: Long) {
-        this.mTimer = PlayPusherTimer(
+        this.mTimerDuration = PlayPusherTimer(
                 context = builder.context,
-                liveStreamDuration = millis,
+                duration = millis,
                 callback = mPlayPusherTimerListener
         )
+    }
+
+    override fun addMaxPauseDuration(millis: Long) {
+        this.mTimerDuration?.pauseDuration = millis
     }
 
     override fun getObservablePlayPusherInfoState(): LiveData<PlayPusherInfoState> {
@@ -211,20 +201,68 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         return _observableNetworkState
     }
 
-    private fun setQualityMode() {
+    private fun setQualityMode(mAliVcLivePushConfig: AlivcLivePushConfig) {
         builder.qualityMode.let {
             when(it) {
                 PlayPusherQualityMode.FluencyFirst ->
-                    mAliVcLivePushConfig?.qualityMode = AlivcQualityModeEnum.QM_FLUENCY_FIRST
+                    mAliVcLivePushConfig.qualityMode = AlivcQualityModeEnum.QM_FLUENCY_FIRST
                 PlayPusherQualityMode.ResolutionFirst ->
-                    mAliVcLivePushConfig?.qualityMode = AlivcQualityModeEnum.QM_RESOLUTION_FIRST
+                    mAliVcLivePushConfig.qualityMode = AlivcQualityModeEnum.QM_RESOLUTION_FIRST
                 is PlayPusherQualityMode.CustomBitrate -> {
-                    mAliVcLivePushConfig?.qualityMode = AlivcQualityModeEnum.QM_CUSTOM
-                    mAliVcLivePushConfig?.setTargetVideoBitrate(it.target)
-                    mAliVcLivePushConfig?.setMinVideoBitrate(it.min)
-                    mAliVcLivePushConfig?.setInitialVideoBitrate(it.init)
+                    mAliVcLivePushConfig.qualityMode = AlivcQualityModeEnum.QM_CUSTOM
+                    mAliVcLivePushConfig.setTargetVideoBitrate(it.target)
+                    mAliVcLivePushConfig.setMinVideoBitrate(it.min)
+                    mAliVcLivePushConfig.setInitialVideoBitrate(it.init)
                 }
             }
+        }
+    }
+
+    private val mAliVcLivePushErrorListener = object : AlivcLivePushErrorListener {
+        override fun onSystemError(pusher: AlivcLivePusher?, pusherError: AlivcLivePushError?) {
+            showLog("onSystemError currentStatus:${pusher?.currentStatus}, lastError:${pusher?.lastError}, isNetworkPushing:${pusher?.isNetworkPushing}, isPushing:${pusher?.isPushing}")
+        }
+
+        override fun onSDKError(pusher: AlivcLivePusher?, pusherError: AlivcLivePushError?) {
+            showLog("onSDKError currentStatus:${pusher?.currentStatus}, lastError:${pusher?.lastError}, isNetworkPushing:${pusher?.isNetworkPushing}, isPushing:${pusher?.isPushing}")
+        }
+    }
+
+    private val mAliVcLivePushInfoListener = object: AlivcLivePushInfoListener {
+        override fun onPushResumed(pusher: AlivcLivePusher?) {
+        }
+
+        override fun onPreviewStarted(pusher: AlivcLivePusher?) {
+        }
+
+        override fun onAdjustFps(pusher: AlivcLivePusher?, curFps: Int, targetFps: Int) {
+        }
+
+        override fun onFirstFramePreviewed(pusher: AlivcLivePusher?) {
+        }
+
+        override fun onPushStoped(pusher: AlivcLivePusher?) {
+        }
+
+        override fun onDropFrame(pusher: AlivcLivePusher?, countBef: Int, countAft: Int) {
+        }
+
+        override fun onFirstAVFramePushed(pusher: AlivcLivePusher?) {
+        }
+
+        override fun onPreviewStoped(pusher: AlivcLivePusher?) {
+        }
+
+        override fun onAdjustBitRate(pusher: AlivcLivePusher?, curBr: Int, targetBr: Int) {
+        }
+
+        override fun onPushStarted(pusher: AlivcLivePusher?) {
+        }
+
+        override fun onPushPauesed(pusher: AlivcLivePusher?) {
+        }
+
+        override fun onPushRestarted(pusher: AlivcLivePusher?) {
         }
     }
 
@@ -262,7 +300,6 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
         override fun onNetworkPoor(pusher: AlivcLivePusher?) {
             _observableNetworkState.postValue(PlayPusherNetworkState.Poor)
         }
-
     }
 
     private val mPlayPusherTimerListener = object : PlayPusherTimerListener{
@@ -278,9 +315,20 @@ class PlayPusherImpl(private val builder: PlayPusherBuilder) : PlayPusher {
             stopPush()
             _observableInfoState.postValue(PlayPusherInfoState.Finish)
         }
+
+        override fun onReachMaximumPauseDuration() {
+            _observableInfoState.postValue(PlayPusherInfoState.Error(PlayPusherErrorType.ReachMaximumDuration))
+        }
+    }
+
+    private fun showLog(message: String) {
+        if (GlobalConfig.DEBUG) {
+            Log.d(TAG_PLAY_PUSHER, message)
+        }
     }
 
     companion object {
         const val AUDIO_BITRATE_128Kbps = 128000
+        const val TAG_PLAY_PUSHER = "PlayPusher"
     }
 }

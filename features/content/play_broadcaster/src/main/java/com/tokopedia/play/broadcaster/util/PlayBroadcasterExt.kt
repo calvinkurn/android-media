@@ -1,10 +1,12 @@
 package com.tokopedia.play.broadcaster.util
 
+import android.content.Context
 import android.view.View
 import android.view.ViewTreeObserver
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.ViewCompat
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.play.broadcaster.R
@@ -49,4 +51,26 @@ internal fun GlobalError.productNotFoundState() {
     errorTitle.text = context.getString(R.string.play_product_not_found_title)
     errorDescription.text = context.getString(R.string.play_product_not_found_desc)
     errorAction.gone()
+}
+
+internal fun Context.getDialog(
+        title: String,
+        desc: String,
+        @DialogUnify.ActionType actionType: Int = DialogUnify.SINGLE_ACTION,
+        @DialogUnify.ImageType imageType: Int = DialogUnify.NO_IMAGE,
+        primaryCta: String,
+        primaryListener: (DialogUnify) -> Unit = {},
+        secondaryCta: String = "",
+        secondaryListener: (DialogUnify) -> Unit = {},
+        cancelable: Boolean = false,
+        overlayClose: Boolean = false
+): DialogUnify = DialogUnify(this, actionType, imageType).apply {
+    setTitle(title)
+    setDescription(desc)
+    setPrimaryCTAText(primaryCta)
+    setSecondaryCTAText(secondaryCta)
+    setPrimaryCTAClickListener { primaryListener(this) }
+    setSecondaryCTAClickListener { secondaryListener(this) }
+    setCancelable(cancelable)
+    setOverlayClose(overlayClose)
 }

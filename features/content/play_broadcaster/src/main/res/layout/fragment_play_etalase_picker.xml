@@ -1,23 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:transitionGroup="true"
-    >
+    android:transitionGroup="true">
+
+    <com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
+        android:id="@+id/bottom_sheet_header"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_info"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/play_dp_12"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/play_dp_12"
-        android:layout_marginRight="@dimen/play_dp_12"
         android:text="@string/play_etalase_picker_info"
-        app:layout_constraintEnd_toEndOf="@id/psb_search"
-        app:layout_constraintStart_toStartOf="@id/psb_search"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/Neutral_N700_68"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bottom_sheet_header"
         app:typographyType="body_3"
         />
 
@@ -25,72 +34,44 @@
         android:id="@+id/psb_search"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/play_dp_20"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tv_info"
+        app:layout_constraintTop_toBottomOf="@id/tv_info"
+        />
+
+    <FrameLayout
+        android:id="@+id/fl_etalase_flow"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_info"
+        app:layout_constraintTop_toBottomOf="@id/psb_search"
+        app:layout_constraintBottom_toTopOf="@id/bottom_sheet_action"
         app:layout_goneMarginTop="@dimen/play_dp_12"
         />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_etalase"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
-        android:layout_marginTop="@dimen/spacing_lvl5"
-        android:layout_marginEnd="@dimen/play_dp_12"
-        android:layout_marginRight="@dimen/play_dp_12"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/psb_search"
-        app:layout_constraintStart_toStartOf="@id/psb_search"
-        app:layout_constraintTop_toBottomOf="@id/psb_search"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_searched_products"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/layout_lvl0"
-        android:layout_marginTop="@dimen/spacing_lvl5"
-        android:layout_marginEnd="@dimen/play_dp_12"
-        android:layout_marginRight="@dimen/play_dp_12"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/psb_search"
-        app:layout_constraintStart_toStartOf="@id/psb_search"
-        app:layout_constraintTop_toBottomOf="@id/psb_search"
-        />
+        <include layout="@layout/layout_bottom_sheet_selected_product"/>
 
-    <com.tokopedia.globalerror.GlobalError
-        android:id="@+id/error_product_not_found"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/layout_lvl0"
-        android:layout_marginTop="@dimen/spacing_lvl5"
-        android:layout_marginEnd="@dimen/play_dp_12"
-        android:layout_marginRight="@dimen/play_dp_12"
-        android:gravity="center"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/psb_search"
-        app:layout_constraintStart_toStartOf="@id/psb_search"
-        app:layout_constraintTop_toBottomOf="@id/psb_search"
-        tools:visibility="visible"
-        />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_suggestions"
+    <include
+        android:id="@+id/bottom_sheet_action"
+        layout="@layout/layout_play_bottom_sheet_action"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/layout_lvl0"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginEnd="@dimen/play_dp_12"
-        android:layout_marginRight="@dimen/play_dp_12"
-        android:orientation="vertical"
-        android:visibility="gone"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/psb_search"
-        app:layout_constraintStart_toStartOf="@id/psb_search"
-        app:layout_constraintTop_toBottomOf="@id/psb_search"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

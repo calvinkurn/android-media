@@ -2,32 +2,31 @@ package com.tokopedia.play.broadcaster.view.bottomsheet
 
 import android.app.Dialog
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.util.BreadcrumbsModel
 import com.tokopedia.play.broadcaster.util.compatTransitionName
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
-import com.tokopedia.play.broadcaster.view.partial.BottomActionPartialView
-import com.tokopedia.play.broadcaster.view.partial.SelectedProductPagePartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSetupViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import java.util.*
@@ -36,31 +35,28 @@ import javax.inject.Inject
 /**
  * Created by jegul on 26/05/20
  */
-class PlayBroadcastSetupBottomSheet @Inject constructor(
-        private val viewModelFactory: ViewModelFactory
-) : BottomSheetDialogFragment(), PlayBottomSheetCoordinator {
+class PlayBroadcastSetupBottomSheet : BottomSheetDialogFragment(), PlayBottomSheetCoordinator {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var fragmentFactory: FragmentFactory
 
     private lateinit var parentViewModel: PlayBroadcastSetupViewModel
     private lateinit var viewModel: PlayEtalasePickerViewModel
 
     private lateinit var flFragment: FrameLayout
-    private lateinit var ivBack: ImageView
-    private lateinit var tvTitle: TextView
-    private lateinit var clContent: ConstraintLayout
     private lateinit var flOverlay: FrameLayout
-
-    private lateinit var selectedProductPage: SelectedProductPagePartialView
-    private lateinit var bottomActionView: BottomActionPartialView
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
     private val fragmentBreadcrumbs = Stack<BreadcrumbsModel>()
 
+    private var mListener: Listener? = null
+
     private val currentFragment: Fragment?
         get() = childFragmentManager.findFragmentById(R.id.fl_fragment)
-
-    private val fragmentFactory: FragmentFactory
-        get() = childFragmentManager.fragmentFactory
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : BottomSheetDialog(requireContext(), theme) {
@@ -71,13 +67,18 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
                 if (!fragmentBreadcrumbs.empty()) {
                     val lastFragmentBreadcrumbs = fragmentBreadcrumbs.pop()
                     childFragmentManager.popBackStack(lastFragmentBreadcrumbs.fragmentClass.name, 0)
-                    setupHeader()
-                } else cancel()
+                } else {
+                    cancel()
+                    mListener?.onSetupCanceled()
+                }
             }
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        inject()
+        childFragmentManager.fragmentFactory = fragmentFactory
+
         super.onCreate(savedInstanceState)
 //        setStyle(DialogFragment.STYLE_NORMAL, R.style.Style_FloatingBottomSheet)
         parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastSetupViewModel::class.java)
@@ -94,44 +95,22 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView(view)
-
-        selectedProductPage = SelectedProductPagePartialView(view as ViewGroup, object : SelectedProductPagePartialView.Listener {
-            override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
-                viewModel.selectProduct(productId, isSelected)
-                val activeFragment = currentFragment
-                if (activeFragment is PlayBaseSetupFragment) activeFragment.refresh()
-            }
-        })
-
-        bottomActionView = BottomActionPartialView(view as ViewGroup, object : BottomActionPartialView.Listener {
-            override fun onInventoryIconClicked() {
-                showSelectedProductPage()
-            }
-
-            override fun onNextButtonClicked() {
-                complete()
-            }
-        })
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        observeSelectedProducts()
     }
 
     override fun navigateToFragment(fragmentClass: Class<out Fragment>, extras: Bundle, sharedElements: List<View>, onFragment: (Fragment) -> Unit) {
         addBreadcrumb()
         openFragment(fragmentClass, extras, sharedElements, onFragment)
-        setupHeader()
     }
 
-    override fun setupTitle(title: String) {
-        tvTitle.text = title
+    override fun saveCoverAndTitle(coverUri: Uri, coverUrl: String, liveTitle: String) {
+        viewModel.coverImageUri = coverUri
+        viewModel.coverImageUrl = coverUrl
+        viewModel.liveTitle = liveTitle
+        complete()
     }
 
-    override fun showBottomAction(shouldShow: Boolean) {
-        if (shouldShow) bottomActionView.show() else bottomActionView.hide()
+    override fun goBack() {
+        dialog?.onBackPressed()
     }
 
     fun show(fragmentManager: FragmentManager) {
@@ -139,15 +118,26 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
     }
 
     fun complete() {
-        saveCompleteChannel()
         dismiss()
+        mListener?.onSetupCompletedWithData(
+                selectedProducts = viewModel.selectedProductList,
+                cover = PlayCoverUiModel(
+                        coverImageUri = viewModel.coverImageUri,
+                        coverImageUrl = viewModel.coverImageUrl,
+                        liveTitle = viewModel.liveTitle
+                )
+        )
     }
 
-    private fun setupHeader() {
-        ivBack.setImageResource(
-                if (fragmentBreadcrumbs.isEmpty()) com.tokopedia.unifycomponents.R.drawable.unify_bottomsheet_close
-                else R.drawable.ic_system_action_back_grayscale_24
-        )
+    fun setListener(listener: Listener) {
+        mListener = listener
+    }
+
+    private fun inject() {
+        DaggerPlayBroadcastSetupComponent.builder()
+                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
     }
 
     private fun setupDialog(dialog: Dialog) {
@@ -170,16 +160,12 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
     private fun initView(view: View) {
         with(view) {
             flFragment = findViewById(R.id.fl_fragment)
-            ivBack = findViewById(R.id.iv_back)
-            tvTitle = findViewById(R.id.tv_title)
-            clContent = findViewById(R.id.cl_content)
             flOverlay = findViewById(R.id.fl_overlay)
         }
     }
 
     private fun setupView(view: View) {
         flOverlay.setOnClickListener { dialog?.onBackPressed() }
-        ivBack.setOnClickListener { dialog?.onBackPressed() }
 
         navigateToFragment(PlayEtalasePickerFragment::class.java)
     }
@@ -219,32 +205,14 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
         }
     }
 
-    private fun showSelectedProductPage() {
-        if (selectedProductPage.isShown) return
-
-        selectedProductPage.setSelectedProductList(viewModel.selectedProductList)
-        selectedProductPage.show()
-    }
-
     private fun saveCompleteChannel() {
         parentViewModel.saveCompleteChannel(
                 productList = viewModel.selectedProductList,
-                coverUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
-                title = "Klarifikasi Tebak Siapa?"
+                coverUrl = viewModel.coverImageUrl,
+                coverUri = viewModel.coverImageUri,
+                title = viewModel.liveTitle
         )
     }
-
-    //region observe
-    /**
-     * Observe
-     */
-    private fun observeSelectedProducts() {
-        viewModel.observableSelectedProducts.observe(viewLifecycleOwner, Observer {
-            bottomActionView.setupBottomActionWithProducts(it)
-            selectedProductPage.onSelectedProductsUpdated(it)
-        })
-    }
-    //endregion
 
     /**
      * Want to test "Ubah Promo"? you only need to send percentage and quota params when `getInstance()`
@@ -267,5 +235,14 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
 
     companion object {
         private const val TAG = "PlayBroadcastSetupBottomSheet"
+    }
+
+    interface Listener {
+
+        fun onSetupCanceled()
+        fun onSetupCompletedWithData(
+                selectedProducts: List<ProductContentUiModel>,
+                cover: PlayCoverUiModel
+        )
     }
 }

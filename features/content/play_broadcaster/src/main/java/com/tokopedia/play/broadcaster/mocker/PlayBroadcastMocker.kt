@@ -5,7 +5,6 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.domain.model.Configuration
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
@@ -15,6 +14,8 @@ import kotlin.random.Random
  * Created by jegul on 20/05/20
  */
 object PlayBroadcastMocker {
+
+    private const val LOCAL_RTMP_URL: String = "rtmp://192.168.0.110:1935/stream/"
 
     /**
      * Follower
@@ -52,6 +53,12 @@ object PlayBroadcastMocker {
                     3 -> "https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5,q_80/rofxpoxehp6wznvzb1jk/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
                     else -> "https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5,q_80/udglgfg9ozu3erd3fubg/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
                 },
+                originalImageUrl = when (it) {
+                    1 -> "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,b_rgb:f5f5f5/oyhemtbkghuegy9gpo0i/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
+                    2 -> "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,b_rgb:f5f5f5/gueo3qthwrv8y5laemzs/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
+                    3 -> "https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5,q_80/rofxpoxehp6wznvzb1jk/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
+                    else -> "https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5,q_80/udglgfg9ozu3erd3fubg/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
+                },
                 isSelectedHandler = { false },
                 stock = (it % 2) * 10,
                 isSelectable = { Selectable }
@@ -72,24 +79,35 @@ object PlayBroadcastMocker {
         )
     }
 
-    fun getMockConfiguration() = Configuration(
-            isUserWhitelisted = true,
-            isHaveOnGoingLive = false,
-            isOfficial = false,
-            channelId = "1",
-            maxTaggedProduct = 15,
-            maxLiveStreamDuration = (5 * 60 * 1000) + ( 5 * 1000), // 05:05
-            countDownDuration = 10
+    fun getMockConfiguration() = ConfigurationUiModel(
+            streamAllowed = true,
+            activeOnOtherDevices = false, // IsLiveActive
+            haveOnGoingLive = false, // activeChannelId != 0
+            activeChannelId = 0,
+            draftChannelId = 12,
+            durationConfig = DurationConfigUiModel(
+                    duration = (30 * 60 * 1000),
+                    pauseDuration = (1 * 60 * 1000),
+                    errorMessage = "Maks. siaran 30 menit"
+            ),
+            productTagConfig = ProductTagConfigUiModel(
+                    maxProduct = 15,
+                    minProduct = 1,
+                    errorMessage = "Oops, kamu sudah memilih 15 produk"
+            )
     )
 
-    fun getMockActiveChannel() = ChannelInfoUiModel(
+    fun getMockActiveChannel() = getMockChannel(PlayChannelStatus.Active)
+
+    fun getMockPausedChannel() = getMockChannel(PlayChannelStatus.Pause)
+
+    private fun getMockChannel(status: PlayChannelStatus) = ChannelInfoUiModel(
             channelId = "1234",
             title = "Klarififikasi Bisa Tebak Siapa?",
             description = "Yuk gabung sekarang di Play Klarifikasi Bisa Tebak siapa?",
             coverUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
-            ingestUrl = "rtmp://192.168.0.102/live/Hy6ROIk6I",
-            shareUrl = "https://www.tokopedia.com/play/channels/1234",
-            status = PlayChannelStatus.Active
+            ingestUrl = LOCAL_RTMP_URL,
+            status = status
     )
 
     fun getMockTotalView() = TotalViewUiModel(
@@ -102,7 +120,7 @@ object PlayBroadcastMocker {
 
     fun getLiveStreamingInfo() = LiveStreamInfoUiModel(
             "1234",
-            ingestUrl = "rtmp://192.168.0.102/live/Hy6ROIk6I",
+            ingestUrl = LOCAL_RTMP_URL,
             streamUrl = "rtmp://test"
     )
 
@@ -127,4 +145,12 @@ object PlayBroadcastMocker {
                 fullSentence = fullSentence
         )
     }
+
+    fun getMockShare() = ShareUiModel(
+            id = "1234",
+            title = "Klarififikasi Bisa Tebak Siapa?",
+            description = "Yuk gabung sekarang di Play Klarifikasi Bisa Tebak siapa?",
+            imageUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
+            redirectUrl = "https://www.tokopedia.com/play/channels/1234"
+    )
 }

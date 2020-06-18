@@ -21,8 +21,8 @@ class ChatListPartialView(
 
     private val chatAdapter = ChatListAdapter()
 
-    private val rvChatList = rootView.findViewById<RecyclerView>(R.id.rv_chat_list)
-    private val csDownView = rootView.findViewById<ChatScrollDownView>(R.id.csdown_view).apply {
+    private val rvChatList = findViewById<RecyclerView>(R.id.rv_chat_list)
+    private val csDownView = findViewById<ChatScrollDownView>(R.id.csdown_view).apply {
         setOnClickListener {
             if (rvChatList.canScrollDown) rvChatList.smoothScrollToPosition(chatAdapter.lastIndex)
         }

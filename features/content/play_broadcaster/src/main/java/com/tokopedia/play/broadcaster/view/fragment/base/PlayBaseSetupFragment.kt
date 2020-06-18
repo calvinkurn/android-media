@@ -8,8 +8,6 @@ import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
  */
 abstract class PlayBaseSetupFragment : TkpdBaseV4Fragment() {
 
-    abstract fun refresh()
-
     /**
      * @return true means the back pressed has been intercepted, false otherwise
      */

@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.view.partial
 
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -19,13 +20,13 @@ class BottomActionPartialView(
         listener: Listener
 ) : PartialView(container, R.id.bottom_sheet_action) {
 
-    private val ivInventory: ImageView = container.findViewById(R.id.iv_inventory)
-    private val btnAction: UnifyButton = container.findViewById(R.id.btn_action)
-    private val tvBadgeCount: TextView = container.findViewById(R.id.tv_badge_count)
+    private val ivInventory: ImageView = findViewById(R.id.iv_inventory)
+    private val btnAction: UnifyButton = findViewById(R.id.btn_action)
+    private val tvBadgeCount: TextView = findViewById(R.id.tv_badge_count)
 
     init {
         ivInventory.setOnClickListener { listener.onInventoryIconClicked() }
-        btnAction.setOnClickListener { listener.onNextButtonClicked() }
+        btnAction.setOnClickListener { listener.onNextButtonClicked(btnAction) }
     }
 
     fun setupBottomActionWithProducts(productList: List<ProductContentUiModel>) {
@@ -62,9 +63,7 @@ class BottomActionPartialView(
     }
 
     interface Listener {
-
         fun onInventoryIconClicked()
-
-        fun onNextButtonClicked()
+        fun onNextButtonClicked(nextBtnView: View)
     }
 }

@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
@@ -26,9 +27,9 @@ class SelectedProductPagePartialView(
         get() = bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED
 
     private val clSelectedProduct: ConstraintLayout = rootView as ConstraintLayout
-    private val vDragArea: View = container.findViewById(R.id.v_drag_area)
-    private val tvSelectedProductTitle: TextView = container.findViewById(R.id.tv_selected_product_title)
-    private val rvSelectedProduct: RecyclerView = container.findViewById(R.id.rv_selected_product)
+    private val vDragArea: View = findViewById(R.id.v_drag_area)
+    private val tvSelectedProductTitle: TextView = findViewById(R.id.tv_selected_product_title)
+    private val rvSelectedProduct: RecyclerView = findViewById(R.id.rv_selected_product)
     private val parentCoordinator = clSelectedProduct.parent as View
 
     private val context: Context
@@ -59,7 +60,7 @@ class SelectedProductPagePartialView(
                 }
                 MotionEvent.ACTION_MOVE -> {
                     val currentY = event.rawY.toInt()
-                    bottomSheetBehavior.peekHeight = container.height - currentY
+                    bottomSheetBehavior.peekHeight = getScreenHeight() - currentY
                 }
                 MotionEvent.ACTION_UP -> {
                     parentCoordinator.parent.requestDisallowInterceptTouchEvent(false)
