@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/play_seller_widget_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/spacing_lvl3"
+    app:contentPadding="@dimen/dp_12"
+    android:layout_marginTop="@dimen/spacing_lvl2"
+    android:layout_marginBottom="@dimen/spacing_lvl2"
+    android:layout_marginLeft="@dimen/spacing_lvl4"
+    android:layout_marginRight="@dimen/spacing_lvl4"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Bikin tokomu terkenal dengan live streaming di Tokopedia Play!"
+            app:typographyType="body_2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/container_lottie" />
+        <FrameLayout
+            android:id="@+id/container_lottie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/title">
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottie"
+                android:layout_width="120dp"
+                android:layout_height="36dp"
+                app:lottie_fileName="sgc_entry_point.json"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="false" />
+        </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

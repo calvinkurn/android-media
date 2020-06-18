@@ -36,11 +36,15 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.play_common.domain.model.PlayToggleChannelReminder
 import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
+import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -77,6 +81,7 @@ open class HomeViewModel @Inject constructor(
         private val getPendingCashbackUseCase: GetCoroutinePendingCashbackUseCase,
         private val getPlayBannerUseCase: GetPlayWidgetUseCase,
         private val getPlayCardHomeUseCase: GetPlayLiveDynamicUseCase,
+        private val playToggleChannelReminderUseCase: PlayToggleChannelReminderUseCase,
         private val getRecommendationTabUseCase: GetRecommendationTabUseCase,
         private val getWalletBalanceUseCase: GetCoroutineWalletBalanceUseCase,
         private val popularKeywordUseCase: GetPopularKeywordUseCase,
@@ -121,6 +126,9 @@ open class HomeViewModel @Inject constructor(
     val stickyLogin: LiveData<Result<StickyLoginTickerPojo.TickerDetail>>
         get() = _stickyLogin
     private val _stickyLogin: MutableLiveData<Result<StickyLoginTickerPojo.TickerDetail>> = MutableLiveData()
+
+    val reminderPlayLiveData: LiveData<Result<Boolean>> get() = _reminderPlayLiveData
+    private val _reminderPlayLiveData = MutableLiveData<Result<Boolean>>()
 
 // ============================================================================================
 // ==================================== Helper Live Data ======================================
@@ -256,7 +264,7 @@ open class HomeViewModel @Inject constructor(
     }
 
     private fun getPlayBannerV2(playCarouselCardDataModel: PlayCarouselCardDataModel){
-        launch(coroutineContext){
+        launchCatchError(coroutineContext, block = {
             getPlayBannerUseCase.setParams(
                     widgetType = GetPlayWidgetUseCase.HOME_WIDGET_TYPE,
                     authorId = "",
@@ -267,12 +275,26 @@ open class HomeViewModel @Inject constructor(
             newList.addAll(_homeLiveData.value?.list ?: listOf())
             val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCarouselCardDataModel }
             if(playIndex != -1 && newList[playIndex] is PlayCarouselCardDataModel){
-                launch {
-                    updateWidget(UpdateLiveDataModel(ACTION_UPDATE, playCarouselCardDataModel.copy(
-                            playBannerCarouselDataModel = newPlayCarouselDataModel
-                    ), playIndex))
-                }
+                updateWidget(UpdateLiveDataModel(ACTION_UPDATE, playCarouselCardDataModel.copy(
+                        playBannerCarouselDataModel = newPlayCarouselDataModel
+                ), playIndex))
             }
+        }){
+
+        }
+    }
+
+    fun setToggleReminderPlayBanner(channelId: String, isSet: Boolean){
+        launchCatchError(block = {
+            playToggleChannelReminderUseCase.setParams(channelId, isSet)
+            val reminder = playToggleChannelReminderUseCase.executeOnBackground()
+            if(reminder.header.status == PlayToggleChannelReminder.SUCCESS_STATUS){
+                _reminderPlayLiveData.postValue(Result.success(isSet))
+            } else {
+                _reminderPlayLiveData.postValue(Result.error(Throwable(reminder.header.message)))
+            }
+        }){
+            _reminderPlayLiveData.postValue(Result.error(it))
         }
     }
 

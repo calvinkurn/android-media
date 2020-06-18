@@ -12,8 +12,11 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.rules.TestDispatcherProvider
+import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
+import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -43,6 +46,10 @@ fun TestBody.createHomeViewModel(): HomeViewModel{
     val userSessionInterface by memoized<UserSessionInterface>()
     val sendTopAdsUseCase by memoized<SendTopAdsUseCase>()
     val closeChannelUseCase by memoized<CloseChannelUseCase>()
+    val declineRechargeRecommendationUseCase by memoized<DeclineRechargeRecommendationUseCase>()
+    val getRechargeRecommendationUseCase by memoized<GetRechargeRecommendationUseCase>()
+    val getPlayBannerUseCase by memoized<GetPlayWidgetUseCase>()
+    val playToggleChannelReminderUseCase by memoized<PlayToggleChannelReminderUseCase>()
     return HomeViewModel(
             dismissHomeReviewUseCase = dismissHomeReviewUseCase,
             getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
@@ -56,14 +63,18 @@ fun TestBody.createHomeViewModel(): HomeViewModel{
             getRecommendationTabUseCase = getRecommendationTabUseCase,
             getWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
             homeDispatcher = TestDispatcherProvider(),
-            homeUseCase = getHomeUseCase,
+            homeUseCase = Lazy {getHomeUseCase },
             popularKeywordUseCase = getPopularKeywordUseCase,
             sendTopAdsUseCase = sendTopAdsUseCase,
-            sendGeolocationInfoUseCase = getSendGeolocationInfoUseCase,
+            sendGeolocationInfoUseCase = Lazy { getSendGeolocationInfoUseCase },
             stickyLoginUseCase = getStickyLoginUseCase,
             getAtcUseCase = getAtcUseCase,
             userSession = userSessionInterface,
-            closeChannelUseCase = closeChannelUseCase
+            closeChannelUseCase = closeChannelUseCase,
+            declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase,
+            getPlayBannerUseCase = getPlayBannerUseCase,
+            getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
+            playToggleChannelReminderUseCase = playToggleChannelReminderUseCase
     )
 }
 
@@ -88,6 +99,10 @@ fun FeatureBody.createHomeViewModelTestInstance() {
     val sendTopAdsUseCase by memoized<SendTopAdsUseCase> { mockk(relaxed = true) }
     val closeChannelUseCase by memoized<CloseChannelUseCase> { mockk(relaxed = true) }
     val homeDataMapper by memoized<HomeDataMapper> { mockk(relaxed = true) }
+    val declineRechargeRecommendationUseCase by memoized<DeclineRechargeRecommendationUseCase>() { mockk(relaxed = true)}
+    val getRechargeRecommendationUseCase by memoized<GetRechargeRecommendationUseCase>() { mockk(relaxed = true)}
+    val getPlayBannerUseCase by memoized<GetPlayWidgetUseCase>() { mockk(relaxed = true) }
+    val playToggleChannelReminderUseCase by memoized<PlayToggleChannelReminderUseCase>() { mockk(relaxed = true) }
 }
 
 fun GetPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(channel: PlayChannel) {

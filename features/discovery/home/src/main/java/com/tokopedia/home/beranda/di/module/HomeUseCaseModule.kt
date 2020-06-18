@@ -27,7 +27,9 @@ import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.play_common.domain.model.PlayGetWidgetEntity
+import com.tokopedia.play_common.domain.model.PlayToggleChannelReminder
 import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
+import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
@@ -441,5 +443,12 @@ class HomeUseCaseModule {
     fun provideGetPlayBannerV2UseCase(graphqlRepository: GraphqlRepository): GetPlayWidgetUseCase{
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<PlayGetWidgetEntity>(graphqlRepository)
         return GetPlayWidgetUseCase(useCase)
+    }
+
+    @Provides
+    @HomeScope
+    fun providePlayToggleChannelReminderUseCase(graphqlRepository: GraphqlRepository): PlayToggleChannelReminderUseCase {
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<PlayToggleChannelReminder>(graphqlRepository)
+        return PlayToggleChannelReminderUseCase(useCase)
     }
 }
