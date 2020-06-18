@@ -83,7 +83,9 @@ class ChatSearchViewModel @Inject constructor(
 
     private fun doSearch() {
         _triggerSearch.value = query
-        getSearchQueryUseCase.doSearch(::onSuccessDoSearch, ::onErrorDoSearch, query, page)
+        val isReplyOnly = !isFirstPage()
+        getSearchQueryUseCase.doSearch(::onSuccessDoSearch, ::onErrorDoSearch, query, page, isReplyOnly)
+
     }
 
     private fun onSuccessDoSearch(

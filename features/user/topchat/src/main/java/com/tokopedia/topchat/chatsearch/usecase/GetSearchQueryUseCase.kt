@@ -30,7 +30,8 @@ class GetSearchQueryUseCase @Inject constructor(
             onSuccess: (GetMultiChatSearchResponse, SearchListHeaderUiModel?, SearchListHeaderUiModel?) -> Unit,
             onError: (Throwable) -> Unit,
             keyword: String,
-            page: Int
+            page: Int,
+            isReplyOnly: Boolean = false
     ) {
         launchCatchError(dispatchers.IO,
                 {
@@ -39,7 +40,7 @@ class GetSearchQueryUseCase @Inject constructor(
                     val response = gqlUseCase.apply {
                         setTypeClass(GetMultiChatSearchResponse::class.java)
                         setRequestParams(params)
-                        setGraphqlQuery(query)
+                        setGraphqlQuery(if (isReplyOnly) querySearchReply else query)
                     }.executeOnBackground()
                     val contactLoadMore = createContactLoadMore(response, page)
                     val replyHeader = createReplyHeader(response, page)
@@ -124,6 +125,41 @@ class GetSearchQueryUseCase @Inject constructor(
                   }
                 }
               }
+              searchByReply: chatSearch(
+                keyword: $$paramKeyword, 
+                page: $$paramPage, 
+                isSeller: $$paramIsSeller, 
+                by:"reply"
+              ){
+                replies{
+                data {
+                  contact {
+                    id
+                    role
+                    attributes {
+                      domain
+                      name
+                      tag
+                      thumbnail
+                    }
+                  }
+                  createBy
+                  createTimeStr
+                  lastMessage
+                  msgId
+                  oppositeId
+                  oppositeType
+                  replyId
+                  roomId
+                }
+                hasNext
+              }
+              }
+            }
+        """.trimIndent()
+
+    private val querySearchReply = """
+            query chatSearchByReply($$paramKeyword: String, $$paramPage: Int, $$paramIsSeller: Int){
               searchByReply: chatSearch(
                 keyword: $$paramKeyword, 
                 page: $$paramPage, 
