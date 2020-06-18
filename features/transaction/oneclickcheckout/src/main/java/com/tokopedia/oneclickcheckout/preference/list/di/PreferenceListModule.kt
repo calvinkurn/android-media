@@ -1,7 +1,7 @@
 package com.tokopedia.oneclickcheckout.preference.list.di
 
+import android.app.Activity
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -14,7 +14,11 @@ import dagger.Provides
 
 @PreferenceListScope
 @Module
-class PreferenceListModule {
+class PreferenceListModule(private val activity: Activity) {
+
+    @PreferenceListScope
+    @Provides
+    internal fun provideContext(): Context = activity
 
     @PreferenceListScope
     @Provides
@@ -30,7 +34,7 @@ class PreferenceListModule {
 
     @PreferenceListScope
     @Provides
-    internal fun providesGetPreferenceListUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository, preferenceListModelMapper: PreferenceListModelMapper): GetPreferenceListUseCase {
+    internal fun providesGetPreferenceListUseCase(context: Context, graphqlRepository: GraphqlRepository, preferenceListModelMapper: PreferenceListModelMapper): GetPreferenceListUseCase {
         return GetPreferenceListUseCase(context, GraphqlUseCase(graphqlRepository), preferenceListModelMapper)
     }
 

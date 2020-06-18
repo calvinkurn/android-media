@@ -52,7 +52,7 @@ class OrderPriceSummaryBottomSheet {
         val tvTotalShippingDiscountValue = child.tv_total_shipping_discount_value
         val tvTotalShippingDiscountLabel = child.tv_total_shipping_discount_label
         if (orderCost.shippingDiscountAmount > 0 && orderCost.shippingDiscountAmount >= orderCost.shippingFee) {
-            tvTotalShippingPriceValue.setText(R.string.label_free_shipping)
+            tvTotalShippingPriceValue.setText(com.tokopedia.purchase_platform.common.R.string.label_free_shipping)
             tvTotalShippingDiscountValue.gone()
             tvTotalShippingDiscountLabel.gone()
         } else {

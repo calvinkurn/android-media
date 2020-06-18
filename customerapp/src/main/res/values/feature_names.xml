@@ -267,4 +267,8 @@
 
     <string name="title_favorite_page">Favorit</string>
 
+    <!--Transaction-->
+    <string name="title_one_click_checkout">Beli Langsung</string>
+    <string name="title_one_click_checkout_preference">Pengaturan Beli Langsung</string>
+
 </resources>

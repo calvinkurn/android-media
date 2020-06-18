@@ -162,9 +162,9 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             val completeText = product.productResponse.productInvenageTotal.byUserText.complete
             val totalInOtherCart = product.productResponse.productInvenageTotal.byUser.inCart
             val totalRemainingStock = product.productResponse.productInvenageTotal.byUser.lastStockLessThan
-            val invenageText = completeText.replace(view.context?.getString(R.string.product_invenage_remaining_stock)
+            val invenageText = completeText.replace(view.context?.getString(com.tokopedia.purchase_platform.common.R.string.product_invenage_remaining_stock)
                     ?: "", "" + totalRemainingStock)
-                    .replace(view.context?.getString(R.string.product_invenage_in_other_cart)
+                    .replace(view.context?.getString(com.tokopedia.purchase_platform.common.R.string.product_invenage_in_other_cart)
                             ?: "", "" + totalInOtherCart)
             tvQuantityStockAvailable?.text = Html.fromHtml(invenageText)
         } else {
@@ -175,8 +175,8 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     private fun validateQuantity() {
         var error: String? = null
         val element = product.quantity
-        btnQtyMin?.setImageResource(R.drawable.bg_button_counter_minus_checkout_enabled)
-        btnQtyPlus?.setImageResource(R.drawable.bg_button_counter_plus_checkout_enabled)
+        btnQtyMin?.setImageResource(com.tokopedia.purchase_platform.common.R.drawable.bg_button_counter_minus_checkout_enabled)
+        btnQtyPlus?.setImageResource(com.tokopedia.purchase_platform.common.R.drawable.bg_button_counter_plus_checkout_enabled)
 
         if (element.orderQuantity <= 0 || element.orderQuantity < element.minOrderQuantity) {
             error = String.format(view.context.getString(R.string.min_order_x), element.minOrderQuantity)
@@ -185,10 +185,10 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_MAX_QTY)
         }
         if (element.orderQuantity <= element.minOrderQuantity) {
-            btnQtyMin?.setImageResource(R.drawable.bg_button_counter_minus_checkout_disabled)
+            btnQtyMin?.setImageResource(com.tokopedia.purchase_platform.common.R.drawable.bg_button_counter_minus_checkout_disabled)
         }
         if (element.orderQuantity >= element.maxOrderQuantity) {
-            btnQtyPlus?.setImageResource(R.drawable.bg_button_counter_plus_checkout_disabled)
+            btnQtyPlus?.setImageResource(com.tokopedia.purchase_platform.common.R.drawable.bg_button_counter_plus_checkout_disabled)
         }
 
         if (error != null) {
