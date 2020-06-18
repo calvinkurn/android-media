@@ -301,6 +301,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             productCardView -> {
                 productCardItemViewModel.sendTopAdsClick()
                 productCardItemViewModel.handleNavigation()
+                sendClickEvent(adapterPosition)
             }
             notifyMeView -> productCardItemViewModel.subscribeUser()
         }
@@ -312,6 +313,10 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
         } else if (!toastData.second.isNullOrEmpty()) {
             Toaster.make(itemView.rootView, toastData.second!!, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
         }
+    }
+
+    private fun sendClickEvent(adapterPosition: Int) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackProductCardClick(dataItem, productCardItemViewModel.isUserLoggedIn(), adapterPosition)
     }
 
     override fun onViewAttachedToWindow() {
