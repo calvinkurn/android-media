@@ -113,12 +113,12 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         }
 
         telcoTelcoProductView.setListener(object : DigitalTelcoProductWidget.ActionListener {
-            override fun onClickProduct(itemProduct: TelcoProduct, position: Int) {
+            override fun onClickProduct(itemProduct: TelcoProduct, position: Int, labelList: String) {
                 sharedModelPrepaid.setProductCatalogSelected(itemProduct)
                 sharedModelPrepaid.setShowTotalPrice(true)
                 if (::selectedOperatorName.isInitialized) {
                     topupAnalytics.clickEnhanceCommerceProduct(itemProduct, position, selectedOperatorName,
-                            userSession.userId)
+                            userSession.userId, labelList)
                 }
             }
 

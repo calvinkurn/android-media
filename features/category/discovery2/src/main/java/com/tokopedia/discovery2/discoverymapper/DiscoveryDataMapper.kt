@@ -99,6 +99,8 @@ class DiscoveryDataMapper {
         val product = ProductItem()
         product.name = item.headline?.shop?.slogan
         product.buttonText = item.headline?.buttonText
+        product.shopAdsClickUrl = item.adClickUrl
+        product.shopAdsViewUrl = item.headline?.image?.fullUrl
         product.imageProduct = ImageProduct()
         product.imageProduct?.imageUrl = item.headline?.image?.fullEcs
         product.applinks = item.applinks
@@ -114,6 +116,8 @@ class DiscoveryDataMapper {
             val litDataItem = mutableListOf<DataItem>()
             val dataItem = DataItem()
             dataItem.name = element?.name
+            dataItem.shopAdsClickURL = element?.shopAdsClickUrl
+            dataItem.shopAdsViewURL = element?.shopAdsViewUrl
             dataItem.imageUrlMobile = element?.imageProduct?.imageUrl
             dataItem.applinks = element?.applinks
             dataItem.buttonText = element?.buttonText
