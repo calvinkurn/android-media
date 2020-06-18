@@ -106,7 +106,7 @@ class ChatSearchViewModel @Inject constructor(
             }
             _searchResults.value = searchResults
         } else {
-            _searchResults.value = searchContactResponse.searchResults
+            _searchResults.value = response.replySearchResults
         }
     }
 
