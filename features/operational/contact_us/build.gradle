@@ -56,7 +56,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.viewDependencies.expandableTextview
     implementation rootProject.ext.miscDependencies.multiDex
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation rootProject.ext.tkpdInternalLibDependencies.network

@@ -96,6 +96,10 @@ public class CMInApp {
 
     @ColumnInfo(name = "is_test")
     private boolean isTest;
+    @ColumnInfo(name = "perst_on")
+    private boolean persistentToggle = true;
+    @ColumnInfo(name = "is_interacted")
+    private boolean isInteracted = false;
 
 
 
@@ -254,5 +258,21 @@ public class CMInApp {
 
     public void setTest(boolean test) {
         isTest = test;
+    }
+
+    public boolean isPersistentToggle() {
+        return persistentToggle;
+    }
+
+    public void setPersistentToggle(boolean persistentToggle) {
+        this.persistentToggle = persistentToggle;
+    }
+
+    public boolean isInteracted() {
+        return isInteracted;
+    }
+
+    public void setInteracted(boolean interacted) {
+        isInteracted = interacted;
     }
 }

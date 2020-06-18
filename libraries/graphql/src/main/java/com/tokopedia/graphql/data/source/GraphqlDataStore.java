@@ -8,6 +8,10 @@ import java.util.List;
 
 import rx.Observable;
 
+/**
+ * Use kotlin version
+ */
+@Deprecated
 public interface GraphqlDataStore {
     Observable<GraphqlResponseInternal> getResponse(List<GraphqlRequest> requests, GraphqlCacheStrategy cacheType);
 }

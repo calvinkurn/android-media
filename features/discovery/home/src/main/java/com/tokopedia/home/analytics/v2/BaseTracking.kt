@@ -76,6 +76,10 @@ abstract class BaseTracking {
         const val KEY = "channelId"
     }
 
+    protected object CampaignCode{
+        const val KEY = "campaignCode"
+    }
+
     protected object Value{
         const val NONE_OTHER = "none / other"
         const val LIST_WITH_HEADER = "/ - p%s - %s - %s"
@@ -122,6 +126,7 @@ abstract class BaseTracking {
         private const val KEY_LIST = "list"
         private const val KEY_ATTRIBUTION = "attribution"
         private const val KEY_QUANTITY = "quantity"
+        private const val KEY_DIMENSION_11 = "dimension11"
         private const val KEY_DIMENSION_40 = "dimension40"
         private const val KEY_DIMENSION_45 = "dimension45"
         private const val KEY_DIMENSION_83 = "dimension83"
@@ -228,6 +233,7 @@ abstract class BaseTracking {
             map[KEY_POSITION] = product.productPosition
             map[KEY_DIMENSION_83] = if(product.isFreeOngkir) FREE_ONGKIR else NONE
             map[KEY_DIMENSION_40] = list + if(product.isTopAds) " - topads" else ""
+            if(product.clusterId != -1) map[KEY_DIMENSION_11] = product.clusterId.toString()
             if (product.channelId.isNotEmpty()) map[KEY_DIMENSION_84] = product.channelId else NONE
             if (product.categoryId.isNotEmpty() || product.persoType.isNotEmpty()) map[KEY_DIMENSION_96] = String.format(FORMAT_2_ITEMS_UNDERSCORE, product.persoType, product.categoryId) else NONE
             if (list.isNotEmpty()) map[KEY_LIST] = list + if(product.isTopAds) " - topads" else ""
@@ -252,6 +258,7 @@ abstract class BaseTracking {
             val isTopAds: Boolean = false,
             val cartId: String = "",
             val categoryId: String = "",
+            val clusterId: Int = -1,
             val quantity: String = ""): ImpressHolder()
 
     open fun getBasicPromotionView(

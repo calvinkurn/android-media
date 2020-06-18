@@ -5,10 +5,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
@@ -73,26 +70,11 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
                     itemView.notify_count_down?.visible()
                     itemView.product_notify_subtitle?.text = getString(R.string.notify_me_subtitle_main)
                 }
-                dayLeft < 2 -> {
-                    itemView.notify_count_down?.gone()
-                    itemView.product_notify_subtitle?.text = MethodChecker.fromHtml(
-                            getString(R.string.notify_me_subtitle, "<b>2 hari lagi</b>")
-                    )
-                }
-                dayLeft < 3 -> {
-                    itemView.notify_count_down?.gone()
-                    itemView.product_notify_subtitle?.text = MethodChecker.fromHtml(
-                            getString(R.string.notify_me_subtitle, "<b>3 hari lagi</b>")
-                    )
-                }
-                dayLeft < 4 -> {
-                    itemView.notify_count_down?.gone()
-                    itemView.product_notify_subtitle?.text = MethodChecker.fromHtml(
-                            getString(R.string.notify_me_subtitle, "<b>4 hari lagi</b>")
-                    )
-                }
                 else -> {
-                    hideContainer()
+                    itemView.notify_count_down?.gone()
+                    itemView.product_notify_subtitle?.text = MethodChecker.fromHtml(
+                            getString(R.string.notify_me_subtitle, dayLeft.toInt().toString())
+                    )
                 }
             }
         } catch (ex: Exception) {
