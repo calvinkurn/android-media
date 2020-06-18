@@ -2,6 +2,7 @@ package com.tokopedia.notifications.inApp.viewEngine
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.net.Uri
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.WindowManager
@@ -12,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.inApp.CMInAppManager
+import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMButton
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
-import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMLayout
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.*
 import com.tokopedia.notifications.inApp.viewEngine.adapter.ActionButtonAdapter
 import com.tokopedia.unifycomponents.setImage
@@ -27,6 +28,10 @@ internal open class BannerView(activity: Activity) {
     private lateinit var imgBanner: ImageView
     private lateinit var btnClose: ImageView
     private lateinit var lstActionButton: RecyclerView
+
+    private val listener by lazy {
+        CMInAppManager.getCmInAppListener()
+    }
 
     private val dialog by lazy {
         alertDialog.create()
@@ -101,9 +106,10 @@ internal open class BannerView(activity: Activity) {
         lstActionButton.adapter = adapter
     }
 
-    private fun onActionClicked(data: CMInApp) {
-        dialog?.dismiss()
+    private fun onActionClicked(button: CMButton, data: CMInApp) {
+        trackAppLinkClick(data, button.getAppLink(), ElementType(ElementType.BUTTON))
         dismissInteractionTracking(data)
+        dialog?.dismiss()
     }
 
     private fun setCloseButton(data: CMInApp) {
@@ -113,26 +119,33 @@ internal open class BannerView(activity: Activity) {
         }
     }
 
-    private fun dismissInteractionTracking(data: CMInApp) {
-        CMInAppManager.getCmInAppListener().apply {
-            if (this != null) {
-                onCMInAppClosed(data)
-                onCMinAppDismiss(data)
-                onCMinAppInteraction(data)
-            }
-        }
-    }
-
     private fun fullScreenImageOnly(data: CMInApp) {
         lstActionButton.visibility = View.GONE
 
         imgBanner.setOnClickListener {
+            trackAppLinkClick(data, data.getCmLayout().appLink, ElementType(ElementType.MAIN))
+            RouteManager.route(mActivity.get(), data.getCmLayout().getAppLink())
             dismissInteractionTracking(data)
+        }
+    }
 
-            RouteManager.route(
-                    mActivity.get(),
-                    data.getCmLayout().getAppLink()
-            )
+    private fun dismissInteractionTracking(data: CMInApp) {
+        listener?.let {
+            it.onCMInAppClosed(data)
+            it.onCMinAppDismiss(data)
+            it.onCMinAppInteraction(data)
+        }
+    }
+
+    private fun trackAppLinkClick(
+            data: CMInApp,
+            appLink: String,
+            elementType: ElementType
+    ) {
+        listener?.let {
+            val uri = Uri.parse(appLink)
+            it.onCMinAppDismiss(data)
+            it.onCMInAppLinkClick(uri, data, elementType)
         }
     }
 

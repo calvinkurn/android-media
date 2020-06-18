@@ -14,7 +14,7 @@ import kotlin.LazyThreadSafetyMode.NONE
 
 open class ActionButtonViewHolder(
         view: View,
-        private val onClick: (CMInApp) -> Unit
+        private val onClick: (CMButton, CMInApp) -> Unit
 ): RecyclerView.ViewHolder(view) {
 
     private val btnAction: UnifyButton = view.findViewById(R.id.btnAction)
@@ -26,7 +26,7 @@ open class ActionButtonViewHolder(
         btnAction.text = button.getTxt()
         btnAction.setOnClickListener {
             RouteManager.route(context, button.getAppLink())
-            onClick(cmInApp)
+            onClick(button, cmInApp)
         }
     }
 
@@ -35,7 +35,7 @@ open class ActionButtonViewHolder(
 
         fun create(
                 parent: ViewGroup,
-                onClick: (CMInApp) -> Unit
+                onClick: (CMButton, CMInApp) -> Unit
         ): ActionButtonViewHolder {
             val layout = LayoutInflater
                     .from(parent.context)

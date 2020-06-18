@@ -5,12 +5,10 @@ import android.app.Application;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
-import android.view.View;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.notifications.CMRouter;
-import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
@@ -99,7 +97,11 @@ public class CMInAppManager implements CmInAppListener {
     private void showDialog(CMInApp data) {
         if (getCurrentActivity() == null) return;
         Activity activity = getCurrentActivity();
-        BannerView.create(activity, data);
+        try {
+            BannerView.create(activity, data);
+        } catch (Exception e) {
+            onCMInAppInflateException(data);
+        }
     }
 
     private boolean canShowInApp(List<CMInApp> inAppDataList) {
@@ -153,15 +155,6 @@ public class CMInAppManager implements CmInAppListener {
             }
         } catch (Exception e) {
         }
-    }
-
-    @Override
-    public boolean showCmInAppMessage() {
-        return false;
-    }
-
-    @Override
-    public void onCMInAppShown(CMInApp cmInApp) {
     }
 
     @Override

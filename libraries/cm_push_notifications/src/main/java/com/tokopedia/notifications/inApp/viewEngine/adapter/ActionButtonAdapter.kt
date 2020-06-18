@@ -2,12 +2,13 @@ package com.tokopedia.notifications.inApp.viewEngine.adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMButton
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import com.tokopedia.notifications.inApp.viewEngine.adapter.viewholder.ActionButtonViewHolder
 
 open class ActionButtonAdapter(
         private val data: CMInApp,
-        private val onClick: (CMInApp) -> Unit
+        private val onClick: (CMButton, CMInApp) -> Unit
 ): RecyclerView.Adapter<ActionButtonViewHolder>() {
 
     private val buttons = data.getCmLayout().getButton()
