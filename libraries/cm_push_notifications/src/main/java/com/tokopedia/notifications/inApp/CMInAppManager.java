@@ -165,15 +165,8 @@ public class CMInAppManager implements CmInAppListener {
     }
 
     @Override
-    public void onCMinAppDismiss() {
-        Activity activity = getCurrentActivity();
-        if (activity != null) {
-            View mainView = activity.findViewById(R.id.mainContainer);
-            if (mainView != null && mainView.getTag() != null && mainView.getTag() instanceof CMInApp) {
-                CMInApp cmInApp = (CMInApp) mainView.getTag();
-                RulesManager.getInstance().viewDismissed(cmInApp.id);
-            }
-        }
+    public void onCMinAppDismiss(CMInApp inApp) {
+        RulesManager.getInstance().viewDismissed(inApp.id);
     }
 
     @Override

@@ -13,7 +13,7 @@ public interface CmInAppListener {
 
     void onCMInAppShown(CMInApp cmInApp);
 
-    void onCMinAppDismiss();
+    void onCMinAppDismiss(CMInApp inApp);
 
     void onCMinAppInteraction(CMInApp cmInApp);
 
