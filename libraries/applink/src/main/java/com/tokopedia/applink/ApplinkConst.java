@@ -513,10 +513,5 @@ public interface ApplinkConst {
         String MOBILE =  "/mobile";
         String RESO_CREATE = "resolution-center/create/%s" + MOBILE;
         String RESO_INBOX =  "resolution-center/inbox/";
-        String RESO_DETAIL =  "resolution-center/detail/%s" + MOBILE;
-        String RESO_DETAIL_NEW =  "resolution/detail/%s" + MOBILE;
-        String RESO_INBOX_SELLER =  RESO_INBOX + "seller" + MOBILE;
-        String RESO_INBOX_BUYER =  RESO_INBOX + "buyer" + MOBILE;
-        String RESO_APPLINK =  "tokopedia://webview?titlebar=true&url=";
     }
 }
