@@ -8,7 +8,10 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
@@ -58,6 +61,7 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
     private ViewPager viewPager;
     private TabsUnify indicator;
     private PagerAdapter sectionAdapter;
+    private Toolbar toolbar;
 
     private UserSessionInterface userSession;
 
@@ -75,6 +79,7 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
         reputationTracking = new ReputationTracking();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inbox_reputation);
+        setupStatusBar();
         clearCacheIfFromNotification();
         initView();
     }
@@ -82,6 +87,9 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
     private void initView() {
         viewPager = findViewById(R.id.pager_reputation);
         indicator = findViewById(R.id.indicator_unify);
+        toolbar = findViewById(R.id.toolbar);
+
+        setupToolbar();
 
         if (getApplicationContext() != null
                 && getApplicationContext() instanceof ReputationRouter) {
@@ -210,6 +218,22 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
     @Override
     public BaseAppComponent getComponent() {
         return ((BaseMainApplication) getApplication()).getBaseAppComponent();
+    }
+
+    private void setupToolbar() {
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
+            getSupportActionBar().setTitle(this.getTitle());
+        }
+    }
+
+    private void setupStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.abstraction.R.color.tkpdabstraction_green_600));
+        }
     }
 
     private void clearCacheIfFromNotification() {
