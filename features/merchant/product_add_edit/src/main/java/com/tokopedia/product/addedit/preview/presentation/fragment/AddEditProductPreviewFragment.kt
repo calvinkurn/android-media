@@ -2,6 +2,7 @@ package com.tokopedia.product.addedit.preview.presentation.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -365,12 +366,14 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                             val saveInstanceCacheManager = SaveInstanceCacheManager(it, true)
                             saveInstanceCacheManager.put(EXTRA_PRODUCT_INPUT_MODEL, this)
                             AddEditProductEditService.startService(it, saveInstanceCacheManager.id ?: "")
+                            activity?.setResult(RESULT_OK)
                             activity?.finish()
                         }
                     }
                 } else {
                     viewModel.productInputModel.value?.let { productInputModel ->
                         startProductAddService(productInputModel)
+                        activity?.setResult(RESULT_OK)
                         activity?.finish()
                     }
                 }
@@ -511,6 +514,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                                 saveInstanceCacheManager.put(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
                                 AddEditProductAddService.startService(this, saveInstanceCacheManager.id ?: "")
                             }
+                            activity?.setResult(RESULT_OK)
                             activity?.finish()
                         } else {
                             view?.let { view ->
