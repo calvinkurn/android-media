@@ -4,16 +4,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.viewholder.SelectVariantMainViewHolder
 
 class SelectVariantMainTypeAdapter: RecyclerView.Adapter<SelectVariantMainViewHolder>(),
         SelectVariantMainViewHolder.OnFieldClickListener {
 
-    private var items: List<SelectionInputModel> = listOf()
-    private var selectedIndices: MutableList<MutableList<Boolean>> = mutableListOf()
-    private var selectedCombination: MutableList<Int> = mutableListOf()
+    private var variantInputModel: VariantInputModel = VariantInputModel()
+    private var selectionIndices: MutableList<MutableList<Boolean>> = mutableListOf()
+    private var selectedCombination: List<Int> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SelectVariantMainViewHolder {
         val rootView = LayoutInflater.from(parent.context).inflate(R.layout.item_multiple_variant_edit_select, parent, false)
@@ -21,43 +21,50 @@ class SelectVariantMainTypeAdapter: RecyclerView.Adapter<SelectVariantMainViewHo
     }
 
     override fun getItemCount(): Int {
-        return items.size
+        return selectionIndices.size
     }
 
     override fun onBindViewHolder(holder: SelectVariantMainViewHolder, position: Int) {
-        holder.bindData(items[position], selectedIndices[position])
+        holder.bindData(selectionIndices[position], variantInputModel.selections)
     }
 
-    override fun onFieldClicked(selectionPosition: Int, optionPosition: Int, value: Boolean) {
-        selectedIndices = initializeSelectedIndex(items)
-        selectedIndices[selectionPosition][optionPosition] = value
+    override fun onFieldClicked(level1Position: Int, level2Position: Int, value: Boolean) {
+        selectionIndices = initializeSelectedIndex(variantInputModel.products)
+        selectionIndices[level1Position][level2Position] = value
+        updateSelectedCombination(level1Position, level2Position)
         notifyDataSetChanged()
     }
 
     fun setData(variantInputModel: VariantInputModel) {
-        items = variantInputModel.selections
-        selectedIndices = initializeSelectedIndex(variantInputModel.selections)
+        this.variantInputModel = variantInputModel
+        selectionIndices = initializeSelectedIndex(variantInputModel.products)
         notifyDataSetChanged()
     }
 
     fun getSelectedData(): List<Int> {
-        selectedIndices.forEachIndexed { selectionIndex, it ->
-            it.forEachIndexed { optionIndex, isSelected ->
-                if (isSelected) {
-                    selectedCombination.add(selectionIndex, optionIndex)
-                }
-            }
-        }
         return selectedCombination
     }
 
-    private fun initializeSelectedIndex(selections: List<SelectionInputModel>) =
-            selections.map {
-                val result = mutableListOf<Boolean>()
-                it.options.forEachIndexed { index, _ ->
-                    result.add(index, false)
-                }
-                result
+    private fun initializeSelectedIndex(
+            productVariants: List<ProductVariantInputModel>
+    ): MutableList<MutableList<Boolean>> {
+        val groups = productVariants.groupBy{ it.combination.getOrNull(0) }
+        return groups.map {
+            it.value.map {
+                false
             }.toMutableList()
+        }.toMutableList()
+    }
+
+    private fun updateSelectedCombination(level1Position: Int, level2Position: Int) {
+        val result = mutableListOf<Int>()
+        val levelCount = variantInputModel.selections.size
+        result.add(level1Position)
+        if (levelCount > 1) {
+            result.add(level2Position)
+        }
+
+        selectedCombination = result
+    }
 
 }

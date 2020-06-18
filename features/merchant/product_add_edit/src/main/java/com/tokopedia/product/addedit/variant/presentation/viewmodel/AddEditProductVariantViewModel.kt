@@ -165,25 +165,26 @@ class AddEditProductVariantViewModel @Inject constructor(
         selectedVariantUnitValuesMap.forEach {
             val variantDetail = variantDetailsSelected.getOrElse(index) { VariantDetail() }
             val unit = mapUnit(variantDetail, it.value)
-            result.add(SelectionInputModel(
-                    variantDetail.variantID.toString(),
-                    variantDetail.name,
-                    unit.variantUnitID.toString(),
-                    unit.unitName,
-                    variantDetail.identifier,
-                    mapOptions(it.value)
-            ))
+            unit?.run {
+                result.add(SelectionInputModel(
+                        variantDetail.variantID.toString(),
+                        variantDetail.name,
+                        unit.variantUnitID.toString(),
+                        unit.unitName,
+                        variantDetail.identifier,
+                        mapOptions(it.value)
+                ))
+            }
             index++
         }
         return result
     }
 
-    private fun mapUnit(variantDetail: VariantDetail, value: List<UnitValue>): Unit {
+    private fun mapUnit(variantDetail: VariantDetail, value: List<UnitValue>): Unit? {
         val unitValue = value.firstOrNull()
-        val result = variantDetail.units.filter {
+        return variantDetail.units.filter {
             it.unitValues.contains(unitValue)
         }.firstOrNull()
-        return result ?: Unit()
     }
 
     private fun mapOptions(unit: List<UnitValue>): List<OptionInputModel> =
@@ -200,7 +201,16 @@ class AddEditProductVariantViewModel @Inject constructor(
         val selectedLevel1 = selectedVariantUnitValuesMap[0]
         selectedLevel1?.let { unitValueLevel1 ->
             val selectedLevel2 = selectedVariantUnitValuesMap[1]
-            if (selectedLevel2 != null) {
+            if (selectedLevel2.isNullOrEmpty()) {
+                unitValueLevel1.forEachIndexed { optionIndex, _ ->
+                    result.add(
+                            ProductVariantInputModel(
+                                    combination = listOf(optionIndex),
+                                    status = STATUS_ACTIVE_STRING
+                            )
+                    )
+                }
+            } else {
                 unitValueLevel1.forEachIndexed { optionIndexLevel1, _ ->
                     selectedLevel2.forEachIndexed { optionIndexLevel2, _ ->
                         result.add(
@@ -210,15 +220,6 @@ class AddEditProductVariantViewModel @Inject constructor(
                                 )
                         )
                     }
-                }
-            } else {
-                unitValueLevel1.forEachIndexed { optionIndex, _ ->
-                    result.add(
-                            ProductVariantInputModel(
-                                    combination = listOf(optionIndex),
-                                    status = STATUS_ACTIVE_STRING
-                            )
-                    )
                 }
             }
         }
