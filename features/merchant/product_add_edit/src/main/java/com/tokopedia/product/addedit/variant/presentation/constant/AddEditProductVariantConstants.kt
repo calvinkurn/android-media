@@ -9,5 +9,7 @@ class AddEditProductVariantConstants {
         const val MAX_SELECTED_VARIANT_TYPE = 2
         const val VARIANT_VALUE_LEVEL_ONE_POSITION = 0
         const val VARIANT_VALUE_LEVEL_TWO_POSITION = 1
+        const val VARIANT_VALUE_LEVEL_ONE_COUNT = 1
+        const val VARIANT_VALUE_LEVEL_TWO_COUNT = 2
     }
 }

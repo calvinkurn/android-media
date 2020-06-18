@@ -3,6 +3,10 @@ package com.tokopedia.product.addedit.variant.presentation.viewholder
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_COUNT
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_COUNT
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import kotlinx.android.synthetic.main.item_multiple_variant_edit_select.view.*
@@ -40,11 +44,11 @@ class MultipleVariantEditSelectViewHolder(itemView: View, val clickListener: OnF
 
     private fun setupListTitle(selections: List<SelectionInputModel>) {
         when (levelCount) {
-            1 -> {
+            VARIANT_VALUE_LEVEL_ONE_COUNT -> {
                 itemView.textSelection.gone()
             }
-            2 -> {
-                selections.getOrNull(0)?.let {
+            VARIANT_VALUE_LEVEL_TWO_COUNT -> {
+                selections.getOrNull(VARIANT_VALUE_LEVEL_ONE_POSITION)?.let {
                     val title = it.options.getOrNull(adapterPosition)?.value.orEmpty()
                     itemView.textSelection.text = title
                 }
@@ -58,13 +62,13 @@ class MultipleVariantEditSelectViewHolder(itemView: View, val clickListener: OnF
     ) = ArrayList(selectedItem.mapIndexed { index, _ ->
         var title = ""
         when (levelCount) {
-            1 -> {
-                selections.getOrNull(0)?.let {
+            VARIANT_VALUE_LEVEL_ONE_COUNT -> {
+                selections.getOrNull(VARIANT_VALUE_LEVEL_ONE_POSITION)?.let {
                     title = it.options.getOrNull(adapterPosition)?.value.orEmpty()
                 }
             }
-            2 -> {
-                selections.getOrNull(1)?.let {
+            VARIANT_VALUE_LEVEL_TWO_COUNT -> {
+                selections.getOrNull(VARIANT_VALUE_LEVEL_TWO_POSITION)?.let {
                     title = it.options.getOrNull(index)?.value.orEmpty()
                 }
             }

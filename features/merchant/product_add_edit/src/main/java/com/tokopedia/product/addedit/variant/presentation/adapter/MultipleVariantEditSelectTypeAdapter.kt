@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
@@ -53,7 +54,7 @@ class MultipleVariantEditSelectTypeAdapter: RecyclerView.Adapter<MultipleVariant
             productVariants: List<ProductVariantInputModel>,
             isSelected: Boolean
     ): MutableList<MutableList<Boolean>> {
-        val groups = productVariants.groupBy{ it.combination.getOrNull(0) }
+        val groups = productVariants.groupBy{ it.combination.getOrNull(VARIANT_VALUE_LEVEL_ONE_POSITION) }
         return groups.map {
             it.value.map {
                 isSelected

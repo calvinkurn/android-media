@@ -5,6 +5,10 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.product.addedit.common.util.setPrimarySelected
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_COUNT
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_COUNT
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import kotlinx.android.synthetic.main.item_multiple_variant_edit_select.view.*
@@ -16,10 +20,12 @@ class SelectVariantMainViewHolder(itemView: View, val clickListener: OnFieldClic
         fun onFieldClicked(level1Position: Int, level2Position: Int, value: Boolean)
     }
 
+    private var levelCount = 0
     private var dataList: ArrayList<ListItemUnify> = arrayListOf()
     private var context: Context? = null
 
     fun bindData(selectedItemMap: MutableList<Boolean>, selections: List<SelectionInputModel>) {
+        levelCount = selections.size
         dataList = mapToListItems(selectedItemMap, selections)
         context = itemView.context
         itemView.listUnifySelection.setData(dataList)
@@ -43,30 +49,38 @@ class SelectVariantMainViewHolder(itemView: View, val clickListener: OnFieldClic
     }
 
     private fun setupListTitle(selections: List<SelectionInputModel>) {
-        if (selections.size > 1) {
-            val selection = selections.getOrNull(0)
-            selection?.let {
-                val title = it.options.getOrNull(adapterPosition)?.value.orEmpty()
-                itemView.textSelection.text = title
+        when (levelCount) {
+            VARIANT_VALUE_LEVEL_ONE_COUNT -> {
+                itemView.textSelection.gone()
             }
-        } else {
-            itemView.textSelection.gone()
+            VARIANT_VALUE_LEVEL_TWO_COUNT -> {
+                selections.getOrNull(VARIANT_VALUE_LEVEL_ONE_POSITION)?.let {
+                    val title = it.options.getOrNull(adapterPosition)?.value.orEmpty()
+                    itemView.textSelection.text = title
+                }
+            }
         }
     }
 
-    private fun mapToListItems(options: List<Boolean>, selections: List<SelectionInputModel>) = ArrayList(
-            options.mapIndexed { index, _ ->
-                val selectionLevel1 = selections.getOrNull(0)
-                val selectionLevel2 = selections.getOrNull(1)
-                var title = ""
-                if (selectionLevel1 != null && selectionLevel2 != null) {
-                    title = selectionLevel2.options.getOrNull(index)?.value.orEmpty()
-                } else if (selectionLevel1 != null) {
-                    title = selectionLevel1.options.getOrNull(adapterPosition)?.value.orEmpty()
+    private fun mapToListItems(
+            selectedItem: List<Boolean>,
+            selections: List<SelectionInputModel>
+    ) = ArrayList(selectedItem.mapIndexed { index, _ ->
+        var title = ""
+        when (levelCount) {
+            VARIANT_VALUE_LEVEL_ONE_COUNT -> {
+                selections.getOrNull(VARIANT_VALUE_LEVEL_ONE_POSITION)?.let {
+                    title = it.options.getOrNull(adapterPosition)?.value.orEmpty()
                 }
-                createListItem(title)
             }
-    )
+            VARIANT_VALUE_LEVEL_TWO_COUNT -> {
+                selections.getOrNull(VARIANT_VALUE_LEVEL_TWO_POSITION)?.let {
+                    title = it.options.getOrNull(index)?.value.orEmpty()
+                }
+            }
+        }
+        createListItem(title)
+    })
 
     private fun createListItem(text: String): ListItemUnify {
         val listItem = ListItemUnify(text, "")
