@@ -13,10 +13,7 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherErrorType
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
-import com.tokopedia.play.broadcaster.ui.model.PlayChannelStatus
-import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
-import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
-import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
+import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.util.PlayShareWrapper
 import com.tokopedia.play.broadcaster.util.getDialog
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
@@ -116,6 +113,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     override fun onDestroy() {
+        parentViewModel.getPlayPusher().destroy()
         try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
         super.onDestroy()
     }
@@ -188,8 +186,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                    secondaryCta = getString(R.string.play_broadcast_exit),
                    secondaryListener = { dialog ->
                        dialog.dismiss()
-                       stopLiveStreaming()
-                       activity?.finish()
+                       doEndStreaming()
                    }
            )
         }
@@ -222,6 +219,18 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 secondaryListener = { dialog ->
                     dialog.dismiss()
                     doEndStreaming()
+                }
+        ).show()
+    }
+
+    private fun showDialogWhenActiveOnOtherDevices() {
+        requireContext().getDialog(
+                title = getString(R.string.play_dialog_error_active_other_devices_title),
+                desc = getString(R.string.play_dialog_error_active_other_devices_desc),
+                primaryCta = getString(R.string.play_broadcast_exit),
+                primaryListener = { dialog ->
+                    dialog.dismiss()
+                    activity?.finish()
                 }
         ).show()
     }
@@ -268,6 +277,49 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         broadcastCoordinator.navigateToFragment(PlayBroadcastSummaryFragment::class.java)
     }
 
+    private fun handleChannelInfo(channelInfo: ChannelInfoUiModel) {
+        when(channelInfo.status) {
+            PlayChannelStatus.UnStarted -> startLiveStreaming(channelInfo.ingestUrl)
+            PlayChannelStatus.Active -> showDialogWhenActiveOnOtherDevices()
+            PlayChannelStatus.Pause -> showDialogContinueLiveStreaming(channelInfo.channelId)
+            PlayChannelStatus.Finish -> navigateToSummary()
+        }
+    }
+
+    private fun handleLiveInfo(pusherInfoState: PlayPusherInfoState) {
+        when (pusherInfoState) {
+            is PlayPusherInfoState.Active -> showTimeLeft(pusherInfoState.timeLeft)
+            is PlayPusherInfoState.AlmostFinish -> showTimeRunOut(pusherInfoState.minutesUntilFinished)
+            is PlayPusherInfoState.Finish -> {
+                stopLiveStreaming()
+                showDialogWhenTimeout()
+            }
+            is PlayPusherInfoState.Error -> handleLiveError(pusherInfoState.errorType)
+        }
+    }
+
+    private fun handleLiveNetworkInfo(pusherNetworkState: PlayPusherNetworkState) {
+        when(pusherNetworkState) {
+            is PlayPusherNetworkState.Recover -> {
+                showToast(message = getString(R.string.play_live_broadcast_network_recover),
+                        type = Toaster.TYPE_NORMAL)
+            }
+            is PlayPusherNetworkState.Poor -> {
+                showToast(message = getString(R.string.play_live_broadcast_network_loss),
+                        type = Toaster.TYPE_ERROR)
+            }
+            is PlayPusherNetworkState.Loss -> {
+                showToast(message = getString(R.string.play_live_broadcast_network_loss),
+                        type = Toaster.TYPE_ERROR,
+                        duration = Toaster.LENGTH_INDEFINITE,
+                        actionLabel = getString(R.string.play_broadcast_try_again),
+                        actionListener = View.OnClickListener {
+                            parentViewModel.getPlayPusher().restartPush()
+                        })
+            }
+        }
+    }
+
     private fun handleLiveError(errorType: PlayPusherErrorType) {
         when(errorType) {
             PlayPusherErrorType.UnSupportedDevice -> {
@@ -285,27 +337,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
      * Observe
      */
     private fun observeChannelInfo() {
-        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner, Observer {
-            if (it.status == PlayChannelStatus.Pause) showDialogContinueLiveStreaming(it.channelId)
-        })
+        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner, Observer(::handleChannelInfo))
     }
 
     private fun observeLiveInfo() {
-        parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, EventObserver {
-            when (it) {
-                is PlayPusherInfoState.Active -> {
-                    showTimeLeft(it.timeLeft)
-                }
-                is PlayPusherInfoState.AlmostFinish -> {
-                    showTimeRunOut(it.minutesUntilFinished)
-                }
-                is PlayPusherInfoState.Finish -> {
-                    stopLiveStreaming()
-                    showDialogWhenTimeout()
-                }
-                is PlayPusherInfoState.Error -> handleLiveError(it.errorType)
-            }
-        })
+        parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, Observer(::handleLiveInfo))
     }
 
     private fun observeTotalViews() {
@@ -332,33 +368,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun observeNetworkConnectionDuringLive() {
-        parentViewModel.observableLiveNetworkState.observe(viewLifecycleOwner, EventObserver{
-            when(it) {
-                is PlayPusherNetworkState.Recover -> {
-                    showToast(message = getString(R.string.play_live_broadcast_network_recover),
-                            type = Toaster.TYPE_NORMAL)
-                }
-                is PlayPusherNetworkState.Poor -> {
-                    showToast(message = getString(R.string.play_live_broadcast_network_loss),
-                            type = Toaster.TYPE_ERROR)
-                }
-                is PlayPusherNetworkState.Loss -> {
-                    showToast(message = getString(R.string.play_live_broadcast_network_loss),
-                            type = Toaster.TYPE_ERROR,
-                            duration = Toaster.LENGTH_INDEFINITE,
-                            actionLabel = getString(R.string.play_broadcast_try_again),
-                            actionListener = View.OnClickListener {
-                                parentViewModel.getPlayPusher().restartPush()
-                            })
-                }
-            }
-        })
+        parentViewModel.observableLiveNetworkState.observe(viewLifecycleOwner, EventObserver(::handleLiveNetworkInfo))
     }
     //endregion
 
     companion object {
-
-        const val KEY_CHANNEL_ID = "channel_id"
         const val KEY_INGEST_URL = "ingest_url"
     }
 }

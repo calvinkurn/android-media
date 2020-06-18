@@ -18,7 +18,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.di.broadcast.DaggerPlayBroadcastComponent
 import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastModule
-import com.tokopedia.play.broadcaster.util.getDialog
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
 import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
 import com.tokopedia.play.broadcaster.view.custom.PlayRequestPermissionView
@@ -176,7 +175,6 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
         viewModel.observableConfigInfo.observe(this, Observer {
             if (it.streamAllowed) {
                 when {
-                    it.activeOnOtherDevices -> showDialogWhenActiveOnOtherDevices()
                     it.haveOnGoingLive -> openBroadcastActivePage()
                     else -> openBroadcastSetupPage()
                 }
@@ -224,17 +222,5 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
 
     private fun openBroadcastActivePage() {
         navigateToFragment(PlayBroadcastUserInteractionFragment::class.java)
-    }
-
-    private fun showDialogWhenActiveOnOtherDevices() {
-        this.getDialog(
-                title = getString(R.string.play_dialog_error_active_other_devices_title),
-                desc = getString(R.string.play_dialog_error_active_other_devices_desc),
-                primaryCta = getString(R.string.play_broadcast_exit),
-                primaryListener = { dialog ->
-                    dialog.dismiss()
-                    finish()
-                }
-        ).show()
     }
 }

@@ -81,7 +81,6 @@ object PlayBroadcastMocker {
 
     fun getMockConfiguration() = ConfigurationUiModel(
             streamAllowed = true,
-            activeOnOtherDevices = false, // IsLiveActive
             haveOnGoingLive = false, // activeChannelId != 0
             activeChannelId = 0,
             draftChannelId = 12,
@@ -97,7 +96,7 @@ object PlayBroadcastMocker {
             )
     )
 
-    fun getMockActiveChannel() = getMockChannel(PlayChannelStatus.Active)
+    fun getMockUnStartedChannel() = getMockChannel(PlayChannelStatus.UnStarted)
 
     fun getMockPausedChannel() = getMockChannel(PlayChannelStatus.Pause)
 
@@ -152,5 +151,15 @@ object PlayBroadcastMocker {
             description = "Yuk gabung sekarang di Play Klarifikasi Bisa Tebak siapa?",
             imageUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
             redirectUrl = "https://www.tokopedia.com/play/channels/1234"
+    )
+
+    fun getMetricSummary(): List<TrafficMetricUiModel> = listOf(
+            TrafficMetricUiModel(TrafficMetricsEnum.TotalViews, "2328"),
+            TrafficMetricUiModel(TrafficMetricsEnum.VideoLikes, "1800"),
+            TrafficMetricUiModel(TrafficMetricsEnum.ShopVisit, "1200"),
+            TrafficMetricUiModel(TrafficMetricsEnum.ProductVisit, "1042"),
+            TrafficMetricUiModel(TrafficMetricsEnum.NumberOfAtc, "320"),
+            TrafficMetricUiModel(TrafficMetricsEnum.NumberOfPaidOrders, "200"),
+            TrafficMetricUiModel(TrafficMetricsEnum.NewFollowers, "50")
     )
 }
