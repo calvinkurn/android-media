@@ -705,6 +705,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     override fun onSortFilterClicked() {
+        shopPageTracking?.clickSort(isMyShop, customDimensionShopPage)
         redirectToShopSortPickerPage()
     }
 
