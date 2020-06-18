@@ -232,7 +232,7 @@ class LottieBottomNavbar : LinearLayout {
     private fun handleItemClicked(index: Int, bottomMenu: BottomMenu) {
         // invoke listener
         Handler().post {
-            if (listener?.menuClicked(index, bottomMenu.id)) {
+            if (listener?.menuClicked(index, bottomMenu.id) == true) {
                 changeColor(index)
             }
         }
