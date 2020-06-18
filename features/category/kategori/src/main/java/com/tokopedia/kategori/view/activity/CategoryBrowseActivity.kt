@@ -2,6 +2,7 @@ package com.tokopedia.kategori.view.activity
 
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
@@ -36,6 +37,7 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
     private lateinit var globalError: GlobalError
     private val EXTRA_CATEGORY_NAME = "CATEGORY_NAME"
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
+    private lateinit var mToolbar: Toolbar
 
     override fun getScreenName(): String = getString(R.string.belanja_screen_name)
 
@@ -69,7 +71,7 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
 
     override fun setupLayout(savedInstanceState: Bundle?) {
         super.setupLayout(savedInstanceState)
-        toolbar.setNavigationIcon(com.tokopedia.abstraction.R.drawable.ic_action_back)
+        mToolbar.setNavigationIcon(com.tokopedia.abstraction.R.drawable.ic_action_back)
         updateTitle(toolbarName)
     }
 
@@ -79,6 +81,7 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
     }
 
     private fun initView() {
+        mToolbar = findViewById(com.tokopedia.abstraction.R.id.toolbar)
         globalError = findViewById(R.id.global_error)
     }
 
