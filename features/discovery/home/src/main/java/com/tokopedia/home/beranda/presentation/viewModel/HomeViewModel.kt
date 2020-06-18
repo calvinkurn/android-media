@@ -11,6 +11,9 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.home.beranda.common.BaseCoRoutineScope
 import com.tokopedia.home.beranda.common.HomeDispatcherProvider
+import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper.isSalamWidgetAvailable
+import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper.mapperRechargetoReminder
+import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper.mapperSalamtoReminder
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawer
@@ -578,7 +581,7 @@ open class HomeViewModel @Inject constructor(
 
     private fun removeRechargeRecommendation() {
         val findRechargeRecommendationViewModel =
-                _homeLiveData.value?.list?.find { visitable -> visitable is ReminderWidgetModel }
+                _homeLiveData.value?.list?.find { visitable -> visitable is ReminderWidgetModel  && (visitable.source == ReminderEnum.RECHARGE)}
                         ?: return
         if (findRechargeRecommendationViewModel is ReminderWidgetModel && findRechargeRecommendationViewModel.source==ReminderEnum.RECHARGE) {
             launch { channel?.send(UpdateLiveDataModel(ACTION_DELETE, findRechargeRecommendationViewModel)) }
@@ -587,7 +590,7 @@ open class HomeViewModel @Inject constructor(
 
     private fun removeSalamWidget() {
         val findSalamWidgetModel =
-                _homeLiveData.value?.list?.find { visitable -> visitable is ReminderWidgetModel }
+                _homeLiveData.value?.list?.find { visitable -> visitable is ReminderWidgetModel  && (visitable.source == ReminderEnum.SALAM)}
                         ?: return
         if (findSalamWidgetModel is ReminderWidgetModel && findSalamWidgetModel.source==ReminderEnum.SALAM) {
             launch { channel?.send(UpdateLiveDataModel(ACTION_DELETE, findSalamWidgetModel)) }
@@ -1221,52 +1224,5 @@ open class HomeViewModel @Inject constructor(
                 walletType = walletBalanceModel.walletType,
                 isShowAnnouncement = walletBalanceModel.isShowAnnouncement
         )
-    }
-
-    private fun mapperRechargetoReminder(recharge : RechargeRecommendation): ReminderWidget {
-        recharge.recommendations.first().let {
-            return ReminderWidget(
-                    listOf(
-                            ReminderData(
-                                    appLink = it.applink,
-                                    backgroundColor = it.backgroundColor,
-                                    buttonText = it.buttonText,
-                                    id = it.contentID,
-                                    iconURL = it.iconURL,
-                                    link = it.link,
-                                    mainText = it.mainText,
-                                    subText = it.subText,
-                                    title = it.title
-                            )
-                    )
-            )
-        }
-    }
-
-    private fun mapperSalamtoReminder(salam : SalamWidget):ReminderWidget{
-        salam.salamWidget.let {
-            return ReminderWidget(
-                    listOf(
-                            ReminderData(
-                                    appLink = it.appLink,
-                                    backgroundColor = it.backgroundColor,
-                                    buttonText = it.buttonText,
-                                    id = it.iD.toString(),
-                                    iconURL = it.iconURL,
-                                    link = it.link,
-                                    mainText = it.mainText,
-                                    subText = it.subText,
-                                    title = it.title
-                            )
-                    )
-            )
-        }
-    }
-
-    private fun isSalamWidgetAvailable(salamWidgetData: SalamWidgetData):Boolean{
-        return (salamWidgetData.iD!=0 && salamWidgetData.backgroundColor.isNotEmpty() &&
-                salamWidgetData.appLink.isNotEmpty() && salamWidgetData.buttonText.isNotEmpty() &&
-                salamWidgetData.iconURL.isNotEmpty() && salamWidgetData.mainText.isNotEmpty() &&
-                salamWidgetData.subText.isNotEmpty() && salamWidgetData.title.isNotEmpty())
     }
 }

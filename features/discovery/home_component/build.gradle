@@ -20,8 +20,6 @@ buildscript {
 dependencies {
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.libraries.baseList)
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
-
     // Unify
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.global_error

@@ -1,24 +1,17 @@
 package com.tokopedia.home_component.viewholders
 
 import android.graphics.Color
+import android.text.Html
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
-import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.RechargeRecommendationListener
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import kotlinx.android.synthetic.main.home_component_reminder_widget.view.*
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.home_component.listener.SalamWidgetListener
-import com.tokopedia.home_component.model.ReminderData
 import com.tokopedia.home_component.model.ReminderEnum
-import com.tokopedia.home_component.model.ReminderWidget
 import com.tokopedia.kotlin.extensions.view.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlin.coroutines.CoroutineContext
 
 /**
  * @author by firman on 10-06-2020
@@ -68,8 +61,8 @@ class ReminderWidgetViewHolder(
                 }
 
                 ic_reminder_recommendation_product.loadImage(reminder.iconURL)
-                reminder_recommendation_text_main.text = MethodChecker.fromHtml(reminder.mainText)
-                reminder_recommendation_text_sub.text = MethodChecker.fromHtml(reminder.subText)
+                reminder_recommendation_text_main.text = Html.fromHtml(reminder.mainText)
+                reminder_recommendation_text_sub.text = Html.fromHtml(reminder.subText)
 
                 if (reminder.buttonText.isNotEmpty()) {
                     btn_reminder_recommendation.text = reminder.buttonText
