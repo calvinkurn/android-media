@@ -12,6 +12,7 @@ import com.tokopedia.product.addedit.variant.data.model.Unit
 import com.tokopedia.product.addedit.variant.data.model.UnitValue
 import com.tokopedia.product.addedit.variant.data.model.VariantDetail
 import com.tokopedia.product.addedit.variant.domain.GetCategoryVariantCombinationUseCase
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_IDENTIFIER_HAS_SIZECHART
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.model.OptionInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.PictureVariantInputModel
@@ -52,7 +53,9 @@ class AddEditProductVariantViewModel @Inject constructor(
         get() = mGetCategoryVariantCombinationResult
 
     var productInputModel = MutableLiveData<ProductInputModel>()
-    var variantSizechart = MutableLiveData<PictureVariantInputModel>(PictureVariantInputModel())
+    var variantSizechart = MutableLiveData(PictureVariantInputModel())
+    private var mIsVariantSizechartVisible = MutableLiveData(false)
+    val isVariantSizechartVisible: LiveData<Boolean> get() = mIsVariantSizechartVisible
 
     private val mIsInputValid = MediatorLiveData<Boolean>().apply {
 
@@ -144,6 +147,13 @@ class AddEditProductVariantViewModel @Inject constructor(
         val newSizechart = PictureVariantInputModel()
         newSizechart.filePath = url
         variantSizechart.value = newSizechart
+    }
+
+    fun updateSizechartFieldVisibility(variantDetail: VariantDetail) {
+        if (variantDetail.identifier == VARIANT_IDENTIFIER_HAS_SIZECHART) {
+            // toggle boolean for visibility
+            mIsVariantSizechartVisible.value = mIsVariantSizechartVisible.value != true
+        }
     }
 
     fun getSelectedVariantUnitValues(layoutPosition: Int): MutableList<UnitValue> {
