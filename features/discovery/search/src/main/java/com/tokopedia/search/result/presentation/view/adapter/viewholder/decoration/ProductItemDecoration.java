@@ -102,14 +102,18 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
         float maxElevation = cardView.getCardMaxElevation();
         float radius = cardView.getCardRadius();
 
-        return Math.round((float) (maxElevation + (1 - Math.cos(45)) * radius)) / 2;
+        return getHorizontalOffset(maxElevation, radius);
+    }
+
+    private int getHorizontalOffset(float maxElevation, float radius) {
+       return Math.round((float) (maxElevation + (1 - Math.cos(45)) * radius)) / 2;
     }
 
     private int getHorizontalOffsetForCardView(CardView cardView) {
         float maxElevation = cardView.getMaxCardElevation();
         float radius = cardView.getRadius();
 
-        return Math.round((float) (maxElevation + (1 - Math.cos(45)) * radius)) / 2;
+        return getHorizontalOffset(maxElevation, radius);
     }
 
     private int getVerticalCardViewOffset(View view) {
@@ -128,6 +132,10 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
         float maxElevation = cardView.getCardMaxElevation();
         float radius = cardView.getCardRadius();
 
+        return getVerticalOffset(maxElevation, radius);
+    }
+
+    private int getVerticalOffset(float maxElevation, float radius) {
         return Math.round((float)(maxElevation * 1.5 + (1 - Math.cos(45)) * radius)) / 2;
     }
 
@@ -135,7 +143,7 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
         float maxElevation = cardView.getMaxCardElevation();
         float radius = cardView.getRadius();
 
-        return Math.round((float)(maxElevation * 1.5 + (1 - Math.cos(45)) * radius)) / 2;
+        return getVerticalOffset(maxElevation, radius);
     }
 
     private int getLeftOffset(int relativePos, int totalSpanCount) {
