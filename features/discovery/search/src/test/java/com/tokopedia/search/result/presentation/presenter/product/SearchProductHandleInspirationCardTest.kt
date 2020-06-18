@@ -97,8 +97,8 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         // 12 -> product
         // 13 -> product
         // 14 -> inspiration carousel (position 12)
-        // 14 -> product
         // 15 -> product
+        // 16 -> product
         visitableList.size shouldBe 17
 
         visitableList.forEachIndexed { index, visitable ->
