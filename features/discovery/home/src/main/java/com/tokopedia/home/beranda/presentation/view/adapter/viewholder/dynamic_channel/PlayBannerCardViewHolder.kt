@@ -82,11 +82,11 @@ class PlayBannerCardViewHolder(
                 if(dataModel.remindMe) HomePageTrackingV2.PlayWidgetCarousel.getClickRemoveRemind(
                         channelId = dataModel.channelId,
                         userId = listener.userId,
-                        notifierId = dataModel.partnerId
+                        notifierId = (position + 1).toString()
                 ) else HomePageTrackingV2.PlayWidgetCarousel.getClickAddRemind(
                         channelId = dataModel.channelId,
                         userId = listener.userId,
-                        notifierId = dataModel.partnerId
+                        notifierId = (position + 1).toString()
                 )
         )
         listener.onPlayBannerReminderClick(dataModel)
