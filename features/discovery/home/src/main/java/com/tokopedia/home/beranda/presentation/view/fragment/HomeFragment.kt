@@ -889,7 +889,7 @@ open class HomeFragment : BaseDaggerFragment(),
                 this,
                 HomeComponentCallback(getHomeViewModel()),
                 DynamicLegoBannerComponentCallback(context),
-                RecommendationListCarouselComponentCallback(getHomeViewModel(), this)),
+                RecommendationListCarouselComponentCallback(getHomeViewModel(), this),
                 MixLeftComponentCallback(this),
                 MixTopComponentCallback(this))
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
