@@ -1,5 +1,6 @@
 package com.tokopedia.power_merchant.subscribe.tracking
 
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
@@ -8,6 +9,8 @@ object PowerMerchantFreeShippingTracker {
 
     // POWER MERCHANT
     private const val EVENT_CATEGORY_SELLER_APP = "tokopedia seller app"
+    private const val EVENT_CATEGORY_MAIN_APP = "tokopedia main app"
+
     private const val EVENT_NAME_PM_IMPRESSION = "viewPowerMerchantIris"
     private const val EVENT_NAME_PM_CLICK = "clickPowerMerchant"
 
@@ -25,12 +28,13 @@ object PowerMerchantFreeShippingTracker {
 
     fun sendImpressionFreeShipping(user: UserSessionInterface, transitionPeriod: Boolean) {
         val powerMerchant = user.isGoldMerchant
+        val eventCategory = getEventCategory()
         val shopType = getShopType(powerMerchant)
         val noticeType = getNoticeType(transitionPeriod)
 
         val data = TrackAppUtils.gtmData(
             EVENT_NAME_PM_IMPRESSION,
-            EVENT_CATEGORY_SELLER_APP,
+            eventCategory,
             EVENT_ACTION_FREE_SHIPPING_IMPRESSION,
             "$shopType - $noticeType"
         )
@@ -43,12 +47,13 @@ object PowerMerchantFreeShippingTracker {
 
     fun sendClickFreeShipping(user: UserSessionInterface, transitionPeriod: Boolean) {
         val powerMerchant = user.isGoldMerchant
+        val eventCategory = getEventCategory()
         val shopType = getShopType(powerMerchant)
         val noticeType = getNoticeType(transitionPeriod)
 
         val data = TrackAppUtils.gtmData(
             EVENT_NAME_PM_CLICK,
-            EVENT_CATEGORY_SELLER_APP,
+            eventCategory,
             EVENT_ACTION_FREE_SHIPPING_CLICK,
             "$shopType - $noticeType"
         )
@@ -72,6 +77,14 @@ object PowerMerchantFreeShippingTracker {
             EVENT_LABEL_PM_ACTIVE
         } else {
             EVENT_LABEL_PM_INACTIVE
+        }
+    }
+
+    private fun getEventCategory():  String {
+        return if(GlobalConfig.isSellerApp()) {
+            EVENT_CATEGORY_SELLER_APP
+        } else {
+            EVENT_CATEGORY_MAIN_APP
         }
     }
 }
