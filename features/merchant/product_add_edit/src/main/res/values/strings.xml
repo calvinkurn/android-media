@@ -208,19 +208,21 @@
     <string name="error_image_too_large">Oops, file foto kamu melebihi %1$dMB</string>
 
     <!-- Variant -->
+    <string name="action_variant_apply">Terapkan</string>
+    <string name="action_variant_next">Lanjut</string>
+    <string name="action_variant_save">Simpan</string>
+    <string name="action_variant_add">Tambah</string>
+    <string name="action_clear_sizechart">Hapus</string>
+    <string name="action_replace_sizechart">Ubah Foto</string>
+    <string name="action_edit_sizechart">Edit Foto</string>
     <string name="label_variant_type">Tipe Varian</string>
     <string name="label_variant_type_desc">Pilih maksimum 2 tipe varian.</string>
     <string name="label_variant_photo">Foto Varian</string>
     <string name="label_variant_sizechart">Panduan Ukuran</string>
     <string name="label_variant_sizechart_description">Tambah panduan ukuran produk dalam format JPG atau PNG.</string>
     <string name="label_variant_choose">Pilih</string>
-    <string name="action_variant_save">Simpan</string>
-    <string name="action_variant_add">Tambah</string>
     <string name="label_variant_custom_input_message">Tulis nama varian yang kamu inginkan.</string>
     <string name="label_variant_sizechart_edit_description">Klik gambar jika ingin ubah panduan.</string>
-    <string name="action_clear_sizechart">Hapus</string>
-    <string name="action_replace_sizechart">Ubah Foto</string>
-    <string name="action_edit_sizechart">Edit Foto</string>
     <string name="label_manage_at_once">Atur Sekaligus</string>
     <string name="label_manage_at_once_desc">Atur harga, stok, dan SKU sekaligus.</string>
     <string name="label_add_sku">Tambah SKU</string>
@@ -235,10 +237,9 @@
     <string name="label_variant_multiple_price">Harga</string>
     <string name="label_variant_multiple_stock">Stok</string>
     <string name="label_variant_multiple_sku">SKU (Stock Keeping Unit)</string>
-    <string name="action_variant_multiple_apply">Terapkan</string>
-    <string name="label_variant_multiple_currency">Rp</string>
     <string name="label_variant_multiple_select_all">Semua</string>
-    <string name="apply_variant_multiple_next">Lanjut</string>
     <string name="label_variant_multiple_select_bottom_sheet_title">Pilih variant yang ingin diatur</string>
     <string name="label_variant_multiple_input_bottom_sheet_title">Atur sekaligus di sini</string>
+    <string name="label_variant_main_select_bottom_sheet_title">Pilih satu varian utama</string>
+
 </resources>

@@ -146,6 +146,7 @@ class AddEditProductVariantFragment :
         observeGetCategoryVariantCombinationResult()
         observeProductInputModel()
         observeInputStatus()
+        observeSizechartVisibility()
 
         cardSizechart.setOnClickListener {
             onSizechartClicked()
@@ -221,6 +222,8 @@ class AddEditProductVariantFragment :
                 viewModel.updateSelectedVariantUnitValuesMap(VARIANT_VALUE_LEVEL_TWO_POSITION, selectedVariantUnitValues)
             }
         }
+
+        viewModel.updateSizechartFieldVisibility(variantDetail)
     }
 
     override fun onVariantTypeDeselected(adapterPosition: Int, variantDetail: VariantDetail) {
@@ -242,6 +245,8 @@ class AddEditProductVariantFragment :
         if (variantId == COLOUR_VARIANT_TYPE_ID) {
             variantPhotoLayout.hide()
         }
+
+        viewModel.updateSizechartFieldVisibility(variantDetail)
     }
 
     private fun setupVariantValueSection(layoutPosition: Int, variantTypeDetail: VariantDetail, selectedVariantUnitValues: List<UnitValue>) {
@@ -529,6 +534,12 @@ class AddEditProductVariantFragment :
     private fun observeInputStatus() {
         viewModel.isInputValid.observe(this, Observer {
             buttonSave.isEnabled = it
+        })
+    }
+
+    private fun observeSizechartVisibility() {
+        viewModel.isVariantSizechartVisible.observe(this, Observer {
+            layoutSizechart.visibility = if (it) View.VISIBLE else View.GONE
         })
     }
 

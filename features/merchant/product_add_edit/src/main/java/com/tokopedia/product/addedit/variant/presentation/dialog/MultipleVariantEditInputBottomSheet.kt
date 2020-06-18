@@ -18,12 +18,10 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.add_edit_product_multiple_variant_edit_input_bottom_sheet_content.*
 import kotlinx.android.synthetic.main.add_edit_product_multiple_variant_edit_input_bottom_sheet_content.view.*
-import kotlinx.android.synthetic.main.add_edit_product_multiple_variant_edit_input_bottom_sheet_content.view.buttonApply
-import kotlinx.android.synthetic.main.fragment_add_edit_product_description.*
 
 class MultipleVariantEditInputBottomSheet(
+        private var enableEditSku: Boolean,
         private val multipleVariantEditInputListener: MultipleVariantEditInputListener
 ): BottomSheetUnify() {
 
@@ -75,6 +73,7 @@ class MultipleVariantEditInputBottomSheet(
         overlayClickDismiss = false
         contentView = View.inflate(context,
                 R.layout.add_edit_product_multiple_variant_edit_input_bottom_sheet_content, null)
+        contentView?.tfuSku?.visibility = if (enableEditSku) View.VISIBLE else View.GONE
         contentView?.tfuPrice.setModeToNumberInput()
         contentView?.tfuPrice?.textFieldInput?.afterTextChanged {
             validatePrice()
