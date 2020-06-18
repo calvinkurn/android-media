@@ -104,7 +104,7 @@ class HeaderViewHolder(
                 setEndTime(StartEndVoucher.Model(endDate, endHour))
             }
 
-            imgMvcVoucherDetail?.loadImageRounded(element.voucherImageUrl, resources?.getDimensionPixelSize(R.dimen.layout_lvl1)?.toFloat() ?: DEFAULT_RADIUS)
+            imgMvcVoucherDetail?.loadImageRounded(element.voucherImageUrl, resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)?.toFloat() ?: DEFAULT_RADIUS)
             voucherStatus?.run {
                 setTextColor(resources?.run { ResourcesCompat.getColor(this, textColorResId, null) } ?: Color.BLACK)
                 text = context?.getString(statusResId).toBlankOrString()

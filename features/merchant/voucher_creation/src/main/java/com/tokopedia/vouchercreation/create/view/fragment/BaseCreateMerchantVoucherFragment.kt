@@ -39,6 +39,8 @@ abstract class BaseCreateMerchantVoucherFragment<F : CreateVoucherTypeFactory, W
         return inflater.inflate(layoutRes, container, false)
     }
 
+    override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
