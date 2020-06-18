@@ -1275,9 +1275,69 @@ public class HomePageTracking {
         );
     }
 
+    public static HashMap<String, Object> getEnhanceImpressionLegoBannerHomePage(
+            String channelId,
+            List<ChannelGrid> grids,
+            String headerName,
+            int position) {
+        String promoName = String.format(
+                VALUE_PROMO_NAME_SIX_BANNER,
+                String.valueOf(position),
+                headerName
+        );
+
+        List<Object> list = convertPromoEnhanceLegoBannerDataLayer(
+                grids,
+                promoName);
+        return (HashMap<String, Object>) DataLayer.mapOf(
+                EVENT, PROMO_VIEW_IRIS,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, EVENT_ACTION_LEGO_BANNER_IMPRESSION,
+                EVENT_LABEL, LABEL_EMPTY,
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMO_VIEW, DataLayer.mapOf(
+                                PROMOTIONS, DataLayer.listOf(
+                                        list.toArray(new Object[list.size()])
+                                )
+                        )
+                ),
+                CHANNEL_ID, channelId
+        );
+    }
+
     public static HashMap<String, Object> getIrisEnhanceImpressionLegoThreeBannerHomePage(
             String channelId,
             DynamicHomeChannel.Grid[] grids,
+            String headerName,
+            int position) {
+        String promoName = String.format(
+                VALUE_PROMO_NAME_THREE_BANNER,
+                String.valueOf(position),
+                headerName
+        );
+
+        List<Object> list = convertPromoEnhanceLegoBannerDataLayer(
+                grids,
+                promoName);
+        return (HashMap<String, Object>) DataLayer.mapOf(
+                EVENT, EVENT_PROMO_VIEW_IRIS,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, EVENT_ACTION_LEGO_BANNER_3_IMAGE_IMPRESSION,
+                EVENT_LABEL, LABEL_EMPTY,
+                CHANNEL_ID, channelId,
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMO_VIEW, DataLayer.mapOf(
+                                PROMOTIONS, DataLayer.listOf(
+                                        list.toArray(new Object[list.size()])
+                                )
+                        )
+                )
+        );
+    }
+
+    public static HashMap<String, Object> getIrisEnhanceImpressionLegoThreeBannerHomePage(
+            String channelId,
+            List<ChannelGrid> grids,
             String headerName,
             int position) {
         String promoName = String.format(
@@ -1311,6 +1371,26 @@ public class HomePageTracking {
         if (grids != null) {
             for (int i = 0; i < grids.length; i++) {
                 DynamicHomeChannel.Grid grid = grids[i];
+                list.add(
+                        DataLayer.mapOf(
+                                FIELD_ID, grid.getId(),
+                                FIELD_NAME, promoName,
+                                FIELD_CREATIVE, grid.getAttribution(),
+                                FIELD_CREATIVE_URL, grid.getImageUrl(),
+                                FIELD_POSITION, String.valueOf(i + 1)
+                        )
+                );
+            }
+        }
+        return list;
+    }
+
+    private static List<Object> convertPromoEnhanceLegoBannerDataLayer(List<ChannelGrid> grids, String promoName) {
+        List<Object> list = new ArrayList<>();
+
+        if (grids != null) {
+            for (int i = 0; i < grids.size(); i++) {
+                ChannelGrid grid = grids.get(i);
                 list.add(
                         DataLayer.mapOf(
                                 FIELD_ID, grid.getId(),

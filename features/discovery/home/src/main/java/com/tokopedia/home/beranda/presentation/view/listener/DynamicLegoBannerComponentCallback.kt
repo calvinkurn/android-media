@@ -9,6 +9,7 @@ import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.track.TrackApp
+import java.util.HashMap
 
 class DynamicLegoBannerComponentCallback(val context: Context?): DynamicLegoBannerListener {
     override fun onSeeAllSixImage(channelModel: ChannelModel, position: Int) {
@@ -66,14 +67,20 @@ class DynamicLegoBannerComponentCallback(val context: Context?): DynamicLegoBann
     }
 
     override fun onChannelImpressionSixImage(channelModel: ChannelModel, parentPosition: Int) {
-
+        HomePageTracking.getEnhanceImpressionLegoBannerHomePage(
+                channelModel.id, channelModel.channelGrids, channelModel.channelHeader.name, parentPosition
+        )
     }
 
     override fun onChannelImpressionFourImage(channelModel: ChannelModel, parentPosition: Int) {
-
+        HomePageTracking.getIrisEnhanceImpressionLegoThreeBannerHomePage(
+                channelModel.id, channelModel.channelGrids, channelModel.channelHeader.name, parentPosition
+        )
     }
 
     override fun onChannelImpressionThreeImage(channelModel: ChannelModel, parentPosition: Int) {
-
+        HomePageTrackingV2.LegoBanner.getLegoBannerFourImageImpression(
+                channelModel, parentPosition, true
+        ) as HashMap<String, Any>
     }
 }
