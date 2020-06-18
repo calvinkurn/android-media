@@ -15,7 +15,7 @@ object PowerMerchantFreeShippingTracker {
     private const val EVENT_NAME_PM_CLICK = "clickPowerMerchant"
 
     private const val EVENT_ACTION_FREE_SHIPPING_IMPRESSION = "impression on BBO Banner"
-    private const val EVENT_ACTION_FREE_SHIPPING_CLICK = "impression on BBO Banner"
+    private const val EVENT_ACTION_FREE_SHIPPING_CLICK = "click on BBO Banner"
 
     private const val EVENT_LABEL_PM_ACTIVE = "PM Active"
     private const val EVENT_LABEL_PM_INACTIVE = "PM Inactive"
