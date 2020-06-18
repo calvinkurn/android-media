@@ -14,7 +14,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="@dimen/img_height"
-        app:srcCompat="@drawable/ic_no_wishlist"
+        app:srcCompat="@drawable/favorite_ic_no_wishlist"
         android:adjustViewBounds="true"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/dp_24"/>

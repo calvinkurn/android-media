@@ -12,7 +12,7 @@
         android:visibility="gone"
         android:padding="@dimen/padding_small"/>
 
-    <include layout="@layout/partial_empty_wishlist"/>
+    <include layout="@layout/favorite_partial_empty_wishlist"/>
 
     <RelativeLayout
         android:id="@+id/main_content"
