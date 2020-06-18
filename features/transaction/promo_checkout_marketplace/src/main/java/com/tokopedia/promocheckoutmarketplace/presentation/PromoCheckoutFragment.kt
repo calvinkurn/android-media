@@ -562,9 +562,11 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 val isAvailableSpaceSufficient = availableSpaceHeight - totalSpaceNeededForPromoLastSeenItems >= 0
                 if (!isAvailableSpaceSufficient) {
                     promoCheckoutLastSeenBottomsheet?.peekHeight = availableSpaceHeight.toInt()
-                    rvPromoLastSeen?.layoutParams?.height = (availableSpaceHeight - (bottomsheetCloseButton?.height
-                            ?: 0)).toInt()
+//                    rvPromoLastSeen?.layoutParams?.height = (availableSpaceHeight - (bottomsheetCloseButton?.height
+//                            ?: 0)).toInt()
+//                } else {
                 }
+                rvPromoLastSeen?.layoutParams?.height = ConstraintLayout.LayoutParams.MATCH_PARENT
 
                 promoCheckoutLastSeenBottomsheet?.state = BottomSheetBehavior.STATE_COLLAPSED
             }
