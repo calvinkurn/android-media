@@ -1,5 +1,6 @@
 package com.tokopedia.flight.common.domain;
 
+import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationAttachmentUploadEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.Passenger;
@@ -13,6 +14,7 @@ import com.tokopedia.flight.orderlist.domain.FlightOrderRepository;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.RequestBody;
 import rx.Observable;
 
 /**
@@ -34,5 +36,7 @@ public interface FlightRepository extends FlightOrderRepository {
     Observable<EstimateRefundResultEntity> estimateRefund(FlightEstimateRefundRequest object);
 
     Observable<CancellationRequestEntity> cancellationRequest(FlightCancellationRequestBody request);
+
+    Observable<CancellationAttachmentUploadEntity> uploadCancellationAttachment(Map<String, RequestBody> params);
 
 }

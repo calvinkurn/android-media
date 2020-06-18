@@ -64,6 +64,7 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     private AppCompatButton btnNext;
 
     private List<FlightCancellationAttachmentModel> attachments;
+    private List<FlightCancellationAttachmentModel> viewAttachments;
     private FlightCancellationAttachmentAdapter adapter;
     private FlightCancellationWrapperModel flightCancellationViewModel;
     private OnFragmentInteractionListener interactionListener;
@@ -119,8 +120,11 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
         presenter.attachView(this);
         if (attachments == null) {
             attachments = presenter.buildAttachmentList();
+            viewAttachments = presenter.buildViewAttachmentList(0);
+        } else {
+            viewAttachments = presenter.buildViewAttachmentList(0);
         }
-        presenter.initialize(attachments);
+        presenter.initialize(viewAttachments);
         presenter.setNextButton();
 
         buildAttachmentReasonView();
@@ -230,8 +234,13 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     }
 
     @Override
+    public List<FlightCancellationAttachmentModel> getViewAttachments() {
+        return viewAttachments;
+    }
+
+    @Override
     public void setAttachment(FlightCancellationAttachmentModel attachment, int position) {
-        attachments.set(position, attachment);
+        viewAttachments.set(position, attachment);
         adapter.setElement(position, attachment);
     }
 
@@ -369,14 +378,19 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
         buildAttachmentReasonView();
 
         deleteAllAttachments();
-        addAttachments(attachments);
+        if (selectedReason.getRequiredDocs() != null && selectedReason.getRequiredDocs().size() > 0) {
+            viewAttachments = presenter.buildViewAttachmentList(selectedReason.getRequiredDocs().get(0).getDocId());
+        } else {
+            viewAttachments = presenter.buildViewAttachmentList(0);
+        }
+        addAttachments(viewAttachments);
         renderAttachment();
     }
 
     private void buildAttachmentReasonView() {
         if (selectedReason != null && selectedReason.getRequiredDocs() != null &&
                 selectedReason.getRequiredDocs().size() > 0 && attachments != null &&
-                attachments.size() > 0) {
+                attachments.size() > 0 && viewAttachments != null && viewAttachments.size() > 0) {
             showAttachmentContainer();
         } else {
             hideAttachmentContainer();

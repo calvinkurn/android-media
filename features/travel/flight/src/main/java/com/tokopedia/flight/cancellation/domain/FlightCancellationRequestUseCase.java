@@ -6,8 +6,8 @@ import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellati
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellationRequestAttribute;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellationRequestBody;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentModel;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerModel;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -72,7 +72,7 @@ public class FlightCancellationRequestUseCase extends UseCase<CancellationReques
             attachment.setDocsLinks(new ArrayList<>());
 
             for (FlightCancellationAttachmentModel item : attachments) {
-                attachment.getDocsLinks().add(item.getImageurl());
+//                attachment.getDocsLinks().add(item.imageurl);
             }
 
             requestAttachments.add(attachment);
