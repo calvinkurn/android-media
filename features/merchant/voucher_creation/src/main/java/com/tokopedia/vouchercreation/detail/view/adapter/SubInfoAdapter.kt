@@ -55,8 +55,8 @@ class SubInfoAdapter : RecyclerView.Adapter<SubInfoAdapter.SubInfoViewHolder>() 
 
         fun bind(model: SubInfoItemUiModel) = with(itemView) {
             if (model.isWarning) {
-                tvMvcInfoKey.setTextColor(context.getResColor(R.color.Red_R500))
-                tvMvcInfoValue.setTextColor(context.getResColor(R.color.Red_R500))
+                tvMvcInfoKey.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Red_R500))
+                tvMvcInfoValue.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Red_R500))
             }
             tvMvcInfoKey.text = context?.getString(model.infoKey).toBlankOrString()
             tvMvcInfoValue.text = model.infoValue.parseAsHtml()

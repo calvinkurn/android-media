@@ -54,7 +54,7 @@ class HeaderViewHolder(
             when(element.status) {
                 VoucherStatusConst.NOT_STARTED -> {
                     statusResId = R.string.mvc_future
-                    textColorResId = R.color.Neutral_N700_68
+                    textColorResId = com.tokopedia.unifyprinciples.R.color.Neutral_N700_68
                 }
                 VoucherStatusConst.ONGOING -> {
                     lblMvcRemainingTime?.visible()
@@ -69,16 +69,16 @@ class HeaderViewHolder(
                     headerContainer?.visible()
                     statusResId = R.string.mvc_ongoing
                     containerColor = ContainerUnify.GREEN
-                    textColorResId = R.color.Green_G500
+                    textColorResId = com.tokopedia.unifyprinciples.R.color.Green_G500
                 }
                 VoucherStatusConst.ENDED -> {
                     statusResId = R.string.mvc_ended
                     containerColor = resources?.run { ResourcesCompat.getColor(this, R.color.mvc_grey_container, null) } ?: Color.TRANSPARENT
-                    textColorResId = R.color.Neutral_N700_96
+                    textColorResId = com.tokopedia.unifyprinciples.R.color.Neutral_N700_96
                 }
                 VoucherStatusConst.STOPPED -> {
                     statusResId = R.string.mvc_stopped
-                    textColorResId = R.color.Red_R500
+                    textColorResId = com.tokopedia.unifyprinciples.R.color.Red_R500
                     startEndVoucher?.gone()
                     element.cancelTime?.let { time ->
                         val cancelDate = DateTimeUtils.reformatUnsafeDateTime(time, DATE_FORMAT)
@@ -90,12 +90,12 @@ class HeaderViewHolder(
                 }
                 VoucherStatusConst.DELETED -> {
                     statusResId = R.string.mvc_deleted
-                    textColorResId = R.color.Red_R500
+                    textColorResId = com.tokopedia.unifyprinciples.R.color.Red_R500
                     startEndVoucher?.gone()
                 }
                 else -> {
                     statusResId = R.string.mvc_ongoing
-                    textColorResId = R.color.Neutral_N700_68
+                    textColorResId = com.tokopedia.unifyprinciples.R.color.Neutral_N700_68
                 }
             }
 
