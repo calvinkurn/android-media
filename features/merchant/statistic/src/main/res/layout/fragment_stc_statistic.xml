@@ -20,10 +20,10 @@
         app:titleTextAppearance="?titleTextAppearance"
         app:unify_header_is_show_shadow="false" />
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayoutStcWidget"
+    <com.tokopedia.unifycomponents.TabsUnify
+        android:id="@+id/tabLayoutStc"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/headerStcStatistic" />
@@ -34,7 +34,7 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tabLayoutStcWidget">
+        app:layout_constraintTop_toBottomOf="@+id/tabLayoutStc">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
