@@ -15,9 +15,11 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.util.BreadcrumbsModel
@@ -33,9 +35,13 @@ import javax.inject.Inject
 /**
  * Created by jegul on 26/05/20
  */
-class PlayBroadcastSetupBottomSheet @Inject constructor(
-        private val viewModelFactory: ViewModelFactory
-) : BottomSheetDialogFragment(), PlayBottomSheetCoordinator {
+class PlayBroadcastSetupBottomSheet : BottomSheetDialogFragment(), PlayBottomSheetCoordinator {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var fragmentFactory: FragmentFactory
 
     private lateinit var parentViewModel: PlayBroadcastSetupViewModel
     private lateinit var viewModel: PlayEtalasePickerViewModel
@@ -51,9 +57,6 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
 
     private val currentFragment: Fragment?
         get() = childFragmentManager.findFragmentById(R.id.fl_fragment)
-
-    private val fragmentFactory: FragmentFactory
-        get() = childFragmentManager.fragmentFactory
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : BottomSheetDialog(requireContext(), theme) {
@@ -73,6 +76,9 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        inject()
+        childFragmentManager.fragmentFactory = fragmentFactory
+
         super.onCreate(savedInstanceState)
 //        setStyle(DialogFragment.STYLE_NORMAL, R.style.Style_FloatingBottomSheet)
         parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastSetupViewModel::class.java)
@@ -125,6 +131,13 @@ class PlayBroadcastSetupBottomSheet @Inject constructor(
 
     fun setListener(listener: Listener) {
         mListener = listener
+    }
+
+    private fun inject() {
+        DaggerPlayBroadcastSetupComponent.builder()
+                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
     }
 
     private fun setupDialog(dialog: Dialog) {

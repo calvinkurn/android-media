@@ -4,23 +4,24 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.play.broadcaster.dispatcher.PlayBroadcastDispatcher
-import com.tokopedia.play.broadcaster.domain.usecase.*
+import com.tokopedia.play.broadcaster.domain.usecase.AddMediaUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.AddProductTagUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.CreateLiveStreamChannelUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetLiveFollowersDataUseCase
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
+import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created by jegul on 20/05/20
  */
 class PlayBroadcastSetupViewModel @Inject constructor(
-        @Named(PlayBroadcastDispatcher.MAIN) dispatcher: CoroutineDispatcher,
-        @Named(PlayBroadcastDispatcher.IO) private val ioDispatcher: CoroutineDispatcher,
+        private val dispatcher: CoroutineDispatcherProvider,
         private val addProductTagUseCase: AddProductTagUseCase,
         private val getLiveFollowersDataUseCase: GetLiveFollowersDataUseCase,
         private val addMediaUseCase: AddMediaUseCase,
@@ -29,7 +30,7 @@ class PlayBroadcastSetupViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val job: Job = SupervisorJob()
-    private val scope = CoroutineScope(job + dispatcher)
+    private val scope = CoroutineScope(job + dispatcher.main)
 
     val observableFollowers: LiveData<FollowerDataUiModel>
         get() = _observableFollowers
@@ -86,7 +87,7 @@ class PlayBroadcastSetupViewModel @Inject constructor(
 
     private fun selectedProductIds(productList: List<ProductContentUiModel>): List<String> = productList.map { it.id.toString() }.toList()
 
-    private suspend fun updateProduct(channelId: String, productIds: List<String>) = withContext(ioDispatcher) {
+    private suspend fun updateProduct(channelId: String, productIds: List<String>) = withContext(dispatcher.io) {
         return@withContext addProductTagUseCase.apply {
             params = AddProductTagUseCase.createParams(
                     channelId = channelId,
@@ -95,7 +96,7 @@ class PlayBroadcastSetupViewModel @Inject constructor(
         }.executeOnBackground()
     }
 
-    private suspend fun updateCover(channelId: String, coverUrl: String) = withContext(ioDispatcher) {
+    private suspend fun updateCover(channelId: String, coverUrl: String) = withContext(dispatcher.io) {
         return@withContext addMediaUseCase.apply {
             params = AddMediaUseCase.createParams(
                     channelId = channelId,
@@ -104,7 +105,7 @@ class PlayBroadcastSetupViewModel @Inject constructor(
         }.executeOnBackground()
     }
 
-    private suspend fun createLiveStream(channelId: String) = withContext(ioDispatcher) {
+    private suspend fun createLiveStream(channelId: String) = withContext(dispatcher.io) {
         return@withContext createLiveStreamChannelUseCase.apply {
             params = CreateLiveStreamChannelUseCase.createParams(
                     channelId = channelId
@@ -112,7 +113,7 @@ class PlayBroadcastSetupViewModel @Inject constructor(
         }.executeOnBackground()
     }
 
-    private suspend fun getLiveFollowers(): FollowerDataUiModel = withContext(ioDispatcher) {
+    private suspend fun getLiveFollowers(): FollowerDataUiModel = withContext(dispatcher.io) {
         getLiveFollowersDataUseCase.params = GetLiveFollowersDataUseCase.createParams(userSession.shopId, MAX_FOLLOWERS_PREVIEW)
         return@withContext try {
             PlayBroadcastUiMapper.mapLiveFollowers(getLiveFollowersDataUseCase.executeOnBackground())

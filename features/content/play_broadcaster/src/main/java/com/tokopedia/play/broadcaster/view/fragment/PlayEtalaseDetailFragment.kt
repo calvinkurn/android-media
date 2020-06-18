@@ -112,13 +112,13 @@ class PlayEtalaseDetailFragment @Inject constructor(
             }
         })
 
-        bottomActionView = BottomActionPartialView(view as ViewGroup, object : BottomActionPartialView.Listener {
+        bottomActionView = BottomActionPartialView(view, object : BottomActionPartialView.Listener {
             override fun onInventoryIconClicked() {
                 showSelectedProductPage()
             }
 
-            override fun onNextButtonClicked() {
-                showCoverTitlePage()
+            override fun onNextButtonClicked(nextBtnView: View) {
+                showCoverTitlePage(nextBtnView)
             }
         })
     }
@@ -205,9 +205,10 @@ class PlayEtalaseDetailFragment @Inject constructor(
         selectedProductPage.show()
     }
 
-    private fun showCoverTitlePage() {
+    private fun showCoverTitlePage(nextBtnView: View) {
         bottomSheetCoordinator.navigateToFragment(
-                fragmentClass = PlayCoverTitleSetupFragment::class.java
+                fragmentClass = PlayCoverTitleSetupFragment::class.java,
+                sharedElements = listOf(nextBtnView)
         )
     }
 

@@ -16,8 +16,8 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.di.DaggerPlayBroadcasterComponent
-import com.tokopedia.play.broadcaster.di.PlayBroadcasterModule
+import com.tokopedia.play.broadcaster.di.broadcast.DaggerPlayBroadcastComponent
+import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastModule
 import com.tokopedia.play.broadcaster.util.getDialog
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
 import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
@@ -64,8 +64,8 @@ class PlayBroadcastActivity: BaseActivity(), PlayBroadcastCoordinator {
     }
 
     private fun inject() {
-        DaggerPlayBroadcasterComponent.builder()
-                .playBroadcasterModule(PlayBroadcasterModule(this))
+        DaggerPlayBroadcastComponent.builder()
+                .playBroadcastModule(PlayBroadcastModule(this))
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)

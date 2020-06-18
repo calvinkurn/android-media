@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.play.broadcaster.dispatcher.PlayBroadcastDispatcher
 import com.tokopedia.play.broadcaster.domain.usecase.CreateChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetConfigurationUseCase
 import com.tokopedia.play.broadcaster.mocker.PlayBroadcastMocker
@@ -13,6 +12,7 @@ import com.tokopedia.play.broadcaster.pusher.PlayPusher
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherInfoState
 import com.tokopedia.play.broadcaster.pusher.state.PlayPusherNetworkState
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionState
 import com.tokopedia.play.broadcaster.util.permission.PlayPermissionUtil
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
@@ -20,7 +20,6 @@ import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import javax.inject.Inject
-import javax.inject.Named
 
 
 /**
@@ -31,13 +30,12 @@ class PlayBroadcastViewModel  @Inject constructor(
         private val permissionUtil: PlayPermissionUtil,
         private val getConfigurationUseCase: GetConfigurationUseCase,
         private val createChannelUseCase: CreateChannelUseCase,
-        @Named(PlayBroadcastDispatcher.MAIN) private val mainDispatcher: CoroutineDispatcher,
-        @Named(PlayBroadcastDispatcher.IO) private val ioDispatcher: CoroutineDispatcher,
+        private val dispatcher: CoroutineDispatcherProvider,
         private val userSession: UserSessionInterface
 ) : ViewModel() {
 
     private val job: Job = SupervisorJob()
-    private val scope = CoroutineScope(job + mainDispatcher)
+    private val scope = CoroutineScope(job + dispatcher.main)
 
     val observableConfigInfo: LiveData<ConfigurationUiModel>
         get() = _observableConfigInfo
@@ -139,7 +137,7 @@ class PlayBroadcastViewModel  @Inject constructor(
         }
     }
 
-    private suspend fun createChannel() = withContext(ioDispatcher) {
+    private suspend fun createChannel() = withContext(dispatcher.io) {
         return@withContext createChannelUseCase.apply {
             params = CreateChannelUseCase.createParams(
                     authorId = userSession.shopId
@@ -183,13 +181,13 @@ class PlayBroadcastViewModel  @Inject constructor(
         // TODO("connect socket")
     }
 
-    private suspend fun onRetrievedNewChat(newChat: PlayChatUiModel) = withContext(mainDispatcher) {
+    private suspend fun onRetrievedNewChat(newChat: PlayChatUiModel) = withContext(dispatcher.main) {
         val currentChatList = _observableChatList.value ?: mutableListOf()
         currentChatList.add(newChat)
         _observableChatList.value = currentChatList
     }
 
-    private suspend fun onRetrievedNewMetric(newMetric: PlayMetricUiModel) = withContext(mainDispatcher) {
+    private suspend fun onRetrievedNewMetric(newMetric: PlayMetricUiModel) = withContext(dispatcher.main) {
         _observableNewMetric.value = Event(newMetric)
     }
 
@@ -205,7 +203,7 @@ class PlayBroadcastViewModel  @Inject constructor(
      * mock
      */
     private fun mockChatList() {
-        scope.launch(ioDispatcher) {
+        scope.launch(dispatcher.io) {
             while(isActive) {
                 delay(1000)
                 onRetrievedNewChat(
@@ -216,7 +214,7 @@ class PlayBroadcastViewModel  @Inject constructor(
     }
 
     private fun mockMetrics() {
-        scope.launch(ioDispatcher) {
+        scope.launch(dispatcher.io) {
             while(isActive) {
                 delay(3000)
                 onRetrievedNewMetric(
@@ -227,7 +225,7 @@ class PlayBroadcastViewModel  @Inject constructor(
     }
 
     private fun mockProductList() {
-        scope.launch(ioDispatcher) {
+        scope.launch(dispatcher.io) {
             delay(3000)
             _observableProductList.postValue(
                     PlayBroadcastMocker.getMockProductList(5)
@@ -236,7 +234,7 @@ class PlayBroadcastViewModel  @Inject constructor(
     }
 
     private fun mockShareData() {
-        scope.launch(ioDispatcher) {
+        scope.launch(dispatcher.io) {
             delay(3000)
             _observableShareInfo.postValue(PlayBroadcastMocker.getMockShare())
         }
