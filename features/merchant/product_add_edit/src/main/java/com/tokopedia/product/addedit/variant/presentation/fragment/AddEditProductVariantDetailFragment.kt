@@ -167,6 +167,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         val variantInputModel = viewModel.productInputModel.value?.variantInputModel
         val bottomSheet = MultipleVariantEditSelectBottomSheet(this)
         bottomSheet.setData(variantInputModel)
+        bottomSheet.setEnableEditSku(switchUnifySku.isChecked)
         bottomSheet.show(fragmentManager)
     }
 

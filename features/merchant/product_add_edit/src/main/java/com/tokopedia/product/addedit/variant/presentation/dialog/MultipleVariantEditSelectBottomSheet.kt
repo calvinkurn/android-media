@@ -25,6 +25,7 @@ class MultipleVariantEditSelectBottomSheet(
 
     private var contentView: View? = null
     private var selectAdapter: MultipleVariantEditSelectTypeAdapter? = null
+    private var enableEditSku = true
 
     interface MultipleVariantEditListener {
         fun onMultipleEditFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel)
@@ -56,6 +57,10 @@ class MultipleVariantEditSelectBottomSheet(
         items?.run {
             selectAdapter?.setData(this)
         }
+    }
+
+    fun setEnableEditSku(enabled: Boolean) {
+        enableEditSku = enabled
     }
 
     fun show(manager: FragmentManager?) {
@@ -95,7 +100,8 @@ class MultipleVariantEditSelectBottomSheet(
         }
         contentView?.buttonNext?.setOnClickListener {
             dismiss()
-            val multipleVariantEditSelectBottomSheet = MultipleVariantEditInputBottomSheet(this)
+            val multipleVariantEditSelectBottomSheet =
+                    MultipleVariantEditInputBottomSheet(enableEditSku, this)
             multipleVariantEditSelectBottomSheet.show(fragmentManager)
         }
         contentView?.checkboxSelectAll?.setOnClickListener {
