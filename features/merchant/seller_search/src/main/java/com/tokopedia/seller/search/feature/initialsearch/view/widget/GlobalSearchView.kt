@@ -10,6 +10,8 @@ import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AppCompatActivity
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.seller.search.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_global_search_view.view.*
@@ -24,6 +26,8 @@ class GlobalSearchView : BaseCustomView {
     private var mClearingFocus: Boolean = false
     private var searchKeyword = ""
     private var hint: String? = ""
+
+    private var activity: AppCompatActivity? = null
 
     private var searchViewListener: GlobalSearchViewListener? = null
 
@@ -42,6 +46,7 @@ class GlobalSearchView : BaseCustomView {
     private fun init() {
         View.inflate(context, R.layout.widget_global_search_view, this)
         initSearchBarView()
+        btnBackHome()
     }
 
     override fun requestFocus(direction: Int, previouslyFocusedRect: Rect?): Boolean {
@@ -51,6 +56,11 @@ class GlobalSearchView : BaseCustomView {
 
     fun setSearchViewListener(searchViewListener: GlobalSearchViewListener) {
         this.searchViewListener = searchViewListener
+    }
+
+
+    fun setActivity(activity: AppCompatActivity) {
+        this.activity = activity
     }
 
     private fun showKeyboard(view: View) {
@@ -139,7 +149,8 @@ class GlobalSearchView : BaseCustomView {
 
     private fun btnBackHome() {
         actionUpBtn?.setOnClickListener {
-            //TODO applink
+            KeyboardHandler.DropKeyboard(activity, searchBarView?.searchBarTextField)
+            activity?.finish()
         }
     }
 

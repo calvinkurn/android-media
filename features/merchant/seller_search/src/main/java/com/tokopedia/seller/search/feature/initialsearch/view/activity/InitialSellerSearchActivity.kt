@@ -57,6 +57,7 @@ class InitialSellerSearchActivity: BaseActivity(), HasComponent<InitialSearchCom
 
     private fun initSearchBarView() {
         searchBarView?.setSearchViewListener(this)
+        searchBarView?.setActivity(this)
         initialStateFragment?.setHistoryViewUpdateListener(this)
         suggestionFragment?.setSuggestionViewUpdateListener(this)
     }
