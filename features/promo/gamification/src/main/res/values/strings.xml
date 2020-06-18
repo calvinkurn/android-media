@@ -57,4 +57,7 @@
     <string name="gami_terima_kasih_sudah_ikutan">Terima kasih sudah ikutan serunya main Kotak Kejutan!</string>
     <string name="gami_walaupun_telah_berakhir">Walaupun telah berakhir, tapi kamu tetap bisa seseruan dengan belanja di Tokopedia!</string>
     <string name="gami_coba_serunya_belanja">Coba Serunya Belanja</string>
+    <string name="gami_hadiah_yang_didapatkan">Hadiah yang didapatkan</string>
+    <string name="gami_kamu_melewatkan">Yaah, kamu belum dapat hadiah</string>
+    <string name="gami_coba_ikutan">Coba ikutan Kotak Kejutan lagi di kesempatan berikutnya.</string>
 </resources>

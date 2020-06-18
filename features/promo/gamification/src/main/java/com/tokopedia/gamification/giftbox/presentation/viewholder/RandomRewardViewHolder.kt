@@ -18,7 +18,8 @@ class RandomRewardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     private val tvTitle: Typography = itemView.findViewById(R.id.tvTitle)
 
     fun bind(simpleReward: SimpleReward) {
-        ImageUtils.loadImage(image, simpleReward.imageUrl)
+        if(!simpleReward.imageUrl.isNullOrEmpty())
+            ImageUtils.loadImage(image, simpleReward.imageUrl)
         tvTitle.text = simpleReward.text
     }
 }

@@ -23,6 +23,8 @@ import com.tokopedia.gamification.giftbox.InactiveImageLoader
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
 import com.tokopedia.gamification.giftbox.data.entities.GetCouponDetail
+import com.tokopedia.gamification.giftbox.presentation.entities.RewardSummaryItem
+import com.tokopedia.gamification.giftbox.presentation.entities.SimpleReward
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
 import com.tokopedia.gamification.giftbox.presentation.helpers.doOnLayout
@@ -61,6 +63,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     var hourCountDownTimer: CountDownTimer? = null
     var minuteCountDownTimer: CountDownTimer? = null
     var isTimeOut = false
+    val rewardItems = arrayListOf<RewardSummaryItem>()
 
     @RewardContainer.RewardState
     var rewardState: Int = RewardContainer.RewardState.COUPON_ONLY
@@ -96,10 +99,11 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         colorBlackTransParent = ContextCompat.getColor(activity!!, com.tokopedia.gamification.R.color.gf_black_transparent)
 //        showLoader()
 //        v.postDelayed({
-//            hideLoader()
+//        hideLoader()
 //            renderHourTimerState()
 //            giftBoxDailyView.startInitialAnimation()?.start()
 //        }, 1000L)
+//        showRewardSummary()
         viewModel.getGiftBoxHome()
         return v
     }
@@ -251,6 +255,8 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                                 viewModel.tokenId = tokenUserID
                         }
 
+                        rewardSummary.setButtons(it.data.gamiTapEggHome?.rewardButton)
+
                         //for empty state
                         val state = it.data.gamiTapEggHome?.tokensUser?.state
                         state?.let { tokenUserState ->
@@ -344,7 +350,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
 //                                        getTapTapView().showRewardAnimation() //todo Rahul NEW -> old code
                                         getTapTapView().boxBounceAnimation().start()
-                                        showRewardAnimation(rewardState,0L,false)
+                                        showRewardAnimation(rewardState, 0L, false)
                                         //todo Rahul NEW - might need to handle - disableConfettiAnimation
                                     }
 
@@ -547,22 +553,18 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         }
     }
 
-    fun showRewardSummary() {
+    fun rewardSummaryAnimation():Animator {
         val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
         val alphaAnim = ObjectAnimator.ofPropertyValuesHolder(rewardSummary, alphaProp)
 
         alphaAnim.duration = 700L
-        alphaAnim.startDelay = 3000L
 
         alphaAnim.addListener(onEnd = {
             rewardSummary.playRewardItemAnimation()
+            rewardSummary.setRewardData(rewardItems)
         })
-        alphaAnim.start()
+        return alphaAnim
     }
-
-//    fun renderHourTimerState() {
-//
-//    }
 
     fun startOneMinuteCounter(seconds: Long) {
         val time = seconds * 1000L
@@ -730,7 +732,15 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         animatorSet.playTogether(translateHabisAnim, translateWaktuAnim, colorAnimator, waktuImageAnimation, habisImageAnimation)
         animatorSet.playSequentially(translateHabisAnim, animatorSetAfterCollision, finalImageAnimatorSet)
         animatorSet.interpolator = CubicBezierInterpolator(0.22, 1.0, 0.36, 1.0)
-        animatorSet.start()
+
+        val animatorSetFadeOut = AnimatorSet()
+        val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0f)
+        val fadeOutAnim = ObjectAnimator.ofPropertyValuesHolder(fmWaktuHabis, alphaProp)
+        fadeOutAnim.duration = 300L
+        fadeOutAnim.startDelay = 300L
+
+        animatorSetFadeOut.playSequentially(animatorSet, fadeOutAnim, rewardSummaryAnimation())
+        animatorSetFadeOut.start()
     }
 
     fun fadeOutViews() {
@@ -778,9 +788,18 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                         rewardContainer.tvSmallReward.setTextColor(Color.parseColor(benefit.color))
                     }
                     GtmEvents.viewRewardsPoints(benefit.text, userSession?.userId)
+
+                    rewardItems.add(RewardSummaryItem(null, SimpleReward(iconUrl, benefit.text)))
+
                 } else if (benefit.benefitType == "coupon") {
                     benefit.referenceID?.let {
                         GtmEvents.viewRewards(it, userSession?.userId)
+                    }
+
+                    if (!couponDetailList.isNullOrEmpty()) {
+                        couponDetailList.forEach { couponDetail ->
+                            rewardItems.add(RewardSummaryItem(couponDetail, null))
+                        }
                     }
                 }
             }

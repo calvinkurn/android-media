@@ -6,7 +6,7 @@
     android:layout_height="@dimen/dp_40"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:background="@drawable/gf_gift_reward_bg"
+    android:background="@drawable/gami_result_item_bg"
     android:padding="@dimen/dp_8">
 
     <androidx.appcompat.widget.AppCompatImageView
