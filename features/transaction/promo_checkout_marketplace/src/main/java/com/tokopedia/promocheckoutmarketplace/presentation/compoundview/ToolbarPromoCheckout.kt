@@ -32,12 +32,12 @@ class ToolbarPromoCheckout : Toolbar {
 
     fun disableResetButton() {
         buttonResetPromo.isEnabled = false
-        buttonResetPromo.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_20))
+        buttonResetPromo.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_20))
     }
 
     fun enableResetButton() {
         buttonResetPromo.isEnabled = true
-        buttonResetPromo.setTextColor(ContextCompat.getColor(context, R.color.Green_G500))
+        buttonResetPromo.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500))
     }
 
     fun hideResetButton() {

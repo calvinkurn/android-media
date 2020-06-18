@@ -190,7 +190,7 @@ class PromoListItemViewHolder(private val view: View,
                 override fun updateDrawState(textPaint: TextPaint) {
                     super.updateDrawState(textPaint)
                     textPaint.isUnderlineText = false
-                    textPaint.color = ContextCompat.getColor(itemView.context, R.color.Green_G500)
+                    textPaint.color = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Green_G500)
                 }
             }
             formattedClickableText.setSpan(clickableSpan, startSpan, endSpan, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)

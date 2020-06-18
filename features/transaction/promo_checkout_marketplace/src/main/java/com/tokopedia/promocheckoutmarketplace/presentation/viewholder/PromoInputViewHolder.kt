@@ -43,7 +43,7 @@ class PromoInputViewHolder(private val view: View,
 
         if (element.uiData.promoCode.isNotBlank()) {
             buttonApplyPromo.isEnabled = true
-            textFieldInputPromo.setFirstIcon(R.drawable.unify_chips_ic_close)
+            textFieldInputPromo.setFirstIcon(com.tokopedia.unifycomponents.R.drawable.unify_chips_ic_close)
         } else {
             buttonApplyPromo.isEnabled = false
             textFieldInputPromo.setFirstIcon(com.tokopedia.abstraction.R.color.white)
@@ -67,7 +67,7 @@ class PromoInputViewHolder(private val view: View,
                 if (text?.isNotEmpty() == true) {
                     element.uiState.isButtonSelectEnabled = true
                     buttonApplyPromo.isEnabled = true
-                    textFieldInputPromo.setFirstIcon(R.drawable.unify_chips_ic_close)
+                    textFieldInputPromo.setFirstIcon(com.tokopedia.unifycomponents.R.drawable.unify_chips_ic_close)
                 } else {
                     element.uiState.isButtonSelectEnabled = false
                     buttonApplyPromo.isEnabled = false
