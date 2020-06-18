@@ -19,6 +19,8 @@ object CentralizedPromoConstant {
 
     // POWER MERCHANT
     const val EVENT_CATEGORY_SELLER_APP = "tokopedia seller app"
+    const val EVENT_CATEGORY_MAIN_APP = "tokopedia main app"
+
     const val EVENT_NAME_PM_IMPRESSION = "viewPowerMerchantIris"
     const val EVENT_NAME_PM_CLICK = "clickPowerMerchant"
 

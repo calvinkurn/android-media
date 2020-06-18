@@ -9,6 +9,7 @@ import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_AC
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_PROMO_CREATION_CLICK
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_PROMO_CREATION_IMPRESSION
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_CATEGORY_ADS_AND_PROMO
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_CATEGORY_MAIN_APP
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_CATEGORY_SELLER_APP
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_LABEL_CHARGE_PERIOD
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_LABEL_PM_ACTIVE
@@ -19,6 +20,7 @@ import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_NA
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_NAME_PM_CLICK
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_NAME_PM_IMPRESSION
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.KEY_SHOP_TYPE
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iris.util.KEY_USER_ID
 import com.tokopedia.sellerhome.analytic.TrackingConstant
 import com.tokopedia.track.TrackApp
@@ -115,12 +117,13 @@ object CentralizedPromoTracking {
 
     fun sendImpressionFreeShipping(user: UserSessionInterface, transitionPeriod: Boolean) {
         val powerMerchant = user.isGoldMerchant
+        val eventCategory = getEventCategory()
         val shopType = getShopType(powerMerchant)
         val noticeType = getNoticeType(transitionPeriod)
 
         val data = createMap(
             event = EVENT_NAME_PM_IMPRESSION,
-            category = EVENT_CATEGORY_SELLER_APP,
+            category = eventCategory,
             action = EVENT_ACTION_FREE_SHIPPING_IMPRESSION,
             label = "$shopType - $noticeType"
         )
@@ -133,12 +136,13 @@ object CentralizedPromoTracking {
 
     fun sendClickFreeShipping(user: UserSessionInterface, transitionPeriod: Boolean) {
         val powerMerchant = user.isGoldMerchant
+        val eventCategory = getEventCategory()
         val shopType = getShopType(powerMerchant)
         val noticeType = getNoticeType(transitionPeriod)
 
         val data = createMap(
             event = EVENT_NAME_PM_CLICK,
-            category = EVENT_CATEGORY_SELLER_APP,
+            category = eventCategory,
             action = EVENT_ACTION_FREE_SHIPPING_CLICK,
             label = "$shopType - $noticeType"
         )
@@ -162,6 +166,14 @@ object CentralizedPromoTracking {
             EVENT_LABEL_PM_ACTIVE
         } else {
             EVENT_LABEL_PM_INACTIVE
+        }
+    }
+
+    private fun getEventCategory():  String {
+        return if(GlobalConfig.isSellerApp()) {
+            EVENT_CATEGORY_SELLER_APP
+        } else {
+            EVENT_CATEGORY_MAIN_APP
         }
     }
 }
