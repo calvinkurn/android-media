@@ -14,6 +14,7 @@ import com.tokopedia.flight.orderlist.domain.FlightOrderRepository;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import rx.Observable;
 
@@ -37,6 +38,6 @@ public interface FlightRepository extends FlightOrderRepository {
 
     Observable<CancellationRequestEntity> cancellationRequest(FlightCancellationRequestBody request);
 
-    Observable<CancellationAttachmentUploadEntity> uploadCancellationAttachment(Map<String, RequestBody> params);
+    Observable<CancellationAttachmentUploadEntity> uploadCancellationAttachment(Map<String, RequestBody> params, MultipartBody.Part file);
 
 }

@@ -20,6 +20,7 @@ import com.tokopedia.flight.orderlist.domain.model.mapper.FlightOrderMapper;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import rx.Observable;
 import rx.functions.Func1;
@@ -91,7 +92,7 @@ public class FlightRepositoryImpl extends FlightOrderRepositoryImpl implements F
     }
 
     @Override
-    public Observable<CancellationAttachmentUploadEntity> uploadCancellationAttachment(Map<String, RequestBody> params) {
-        return flightCancellationCloudDataSource.uploadCancellationAttachment(params);
+    public Observable<CancellationAttachmentUploadEntity> uploadCancellationAttachment(Map<String, RequestBody> params, MultipartBody.Part file) {
+        return flightCancellationCloudDataSource.uploadCancellationAttachment(params, file);
     }
 }

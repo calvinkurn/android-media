@@ -22,6 +22,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Response;
 import rx.Observable;
@@ -94,8 +95,8 @@ public class FlightCancellationCloudDataSource {
                 });
     }
 
-    public Observable<CancellationAttachmentUploadEntity> uploadCancellationAttachment(Map<String, RequestBody> params) {
-        return flightApi.uploadCancellationAttachment(params)
+    public Observable<CancellationAttachmentUploadEntity> uploadCancellationAttachment(Map<String, RequestBody> params, MultipartBody.Part file) {
+        return flightApi.uploadCancellationAttachment(params, file)
                 .flatMap(new Func1<Response<DataResponse<CancellationAttachmentUploadEntity>>, Observable<CancellationAttachmentUploadEntity>>() {
                     @Override
                     public Observable<CancellationAttachmentUploadEntity> call(Response<DataResponse<CancellationAttachmentUploadEntity>> dataResponseResponse) {
