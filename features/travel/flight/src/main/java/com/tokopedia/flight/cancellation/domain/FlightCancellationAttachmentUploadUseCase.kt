@@ -30,12 +30,12 @@ class FlightCancellationAttachmentUploadUseCase @Inject constructor(
                             docTypeId: Int): RequestParams {
         val requestParams = RequestParams.create()
         val file = File(pathFile)
-        val userId = RequestBody.create(MediaType.parse("text/plain"), userSession.userId)
-        val mInvoiceId = RequestBody.create(MediaType.parse("text/plain"), invoiceId)
-        val mJourneyId = RequestBody.create(MediaType.parse("text/plain"), journeyId)
-        val mPassengerId = RequestBody.create(MediaType.parse("text/plain"), passengerId)
-        val mDocTypeId = RequestBody.create(MediaType.parse("text/plain"), docTypeId.toString())
-        val fileToUpload = RequestBody.create(MediaType.parse("image/*"), file)
+        val userId = RequestBody.create(MediaType.parse("multipart/form-data"), userSession.userId)
+        val mInvoiceId = RequestBody.create(MediaType.parse("multipart/form-data"), invoiceId)
+        val mJourneyId = RequestBody.create(MediaType.parse("multipart/form-data"), journeyId)
+        val mPassengerId = RequestBody.create(MediaType.parse("multipart/form-data"), passengerId)
+        val mDocTypeId = RequestBody.create(MediaType.parse("multipart/form-data"), docTypeId.toString())
+        val fileToUpload = RequestBody.create(MediaType.parse("multipart/form-data"), file)
 
         requestParams.putAll(mapOf(
                 PARAM_USER_ID to userId,
