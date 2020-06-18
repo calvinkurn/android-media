@@ -56,7 +56,8 @@ object PlayWidgetMapper {
                 seeMoreApplink = playWidget.meta.buttonApplink,
                 imageUrl = playWidget.meta.overlayImage,
                 serverTimeOffset = playWidget.meta.serverTimeOffset,
-                channelList = list
+                channelList = list,
+                gradients = playWidget.meta.gradient
         )
     }
 }

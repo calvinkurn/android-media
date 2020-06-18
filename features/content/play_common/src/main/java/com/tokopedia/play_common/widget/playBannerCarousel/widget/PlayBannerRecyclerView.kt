@@ -70,6 +70,7 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
     private val mediaObjects: MutableList<BasePlayBannerCarouselModel> = mutableListOf()
     private val mediaObjectsLastPosition = mutableListOf<Int>()
     private var isAutoPlay: Boolean = false
+    private var delay: Int = 2500 // default from PO
     private val masterJob = Job()
 
     override val coroutineContext: CoroutineContext
@@ -305,6 +306,10 @@ class PlayBannerRecyclerView(context: Context, attrs: AttributeSet?, defStyleAtt
 
             videoPlayers.add(videoPlayer)
         }
+    }
+
+    fun setDelay(delay: Int){
+        this.delay = delay
     }
 
     private fun getMediaSourceBySource(context: Context, uri: Uri, appName: String): MediaSource {

@@ -519,6 +519,8 @@ object HomePageTrackingV2 : BaseTracking() {
     object PlayWidgetCarousel{
         private const val HOMEPAGE_CMP = "homepage-cmp"
         private const val CLICK_OTHER_CONTENT = "click other content"
+        private const val CLICK_REMIND_ME = "click remind me"
+        private const val CLICK_REMOVE_REMIND_ME = "click on remove remind me"
         private const val CLICK = "click"
         private const val PROMO_BANNER_NAME = "/ - p%s - play sgc banner - %s"
         private const val PROMO_CHANNEL_NAME = "/ - p%s - play sgc channel - %s"
@@ -647,5 +649,34 @@ object HomePageTrackingV2 : BaseTracking() {
                     UserId.KEY, userId
             ) as HashMap<String, Any>
         }
+
+        fun getClickAddRemind(
+                channelId: String,
+                notifierId: String,
+                userId: String
+        ): HashMap<String, Any>{
+            return DataLayer.mapOf(
+                    Event.KEY, CustomEvent.CLICK_HOMEPAGE,
+                    Category.KEY, HOMEPAGE_CMP,
+                    Action.KEY, CLICK_REMIND_ME,
+                    Label.KEY, "%s - %s".format(channelId, notifierId),
+                    UserId.KEY, userId
+            ) as HashMap<String, Any>
+        }
+
+        fun getClickRemoveRemind(
+                channelId: String,
+                notifierId: String,
+                userId: String
+        ): HashMap<String, Any>{
+            return DataLayer.mapOf(
+                    Event.KEY, CustomEvent.CLICK_HOMEPAGE,
+                    Category.KEY, HOMEPAGE_CMP,
+                    Action.KEY, CLICK_REMOVE_REMIND_ME,
+                    Label.KEY, "%s - %s".format(channelId, notifierId),
+                    UserId.KEY, userId
+            ) as HashMap<String, Any>
+        }
+
     }
 }
