@@ -7,7 +7,8 @@
     <com.tokopedia.header.HeaderUnify
         android:id="@+id/hotel_cancellation_header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_lvl1"/>
 
     <FrameLayout
         android:id="@+id/hotel_cancellation_parent_view"
