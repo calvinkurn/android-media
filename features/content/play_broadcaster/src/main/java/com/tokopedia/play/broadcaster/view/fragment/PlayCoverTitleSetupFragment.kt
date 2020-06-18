@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.RectF
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
@@ -14,6 +15,9 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.transition.*
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
@@ -51,9 +55,6 @@ class PlayCoverTitleSetupFragment @Inject constructor(
 
     private lateinit var yalantisImageCropper: YalantisImageCropper
 
-    private var selectedCoverUri: Uri? = null
-    private var coverSource: CoverSourceEnum = CoverSourceEnum.NONE
-
     private lateinit var bottomSheetHeader: PlayBottomSheetHeader
 
     private lateinit var coverSetupView: CoverSetupPartialView
@@ -87,9 +88,6 @@ class PlayCoverTitleSetupFragment @Inject constructor(
         super.onActivityCreated(savedInstanceState)
 
         observeCropState()
-        observeSelectedCover()
-        observeImageEcsLink()
-        observeOriginalImageUri()
     }
 
     override fun onCoverChosen(coverImage: PlayCoverImageType) {
@@ -106,19 +104,24 @@ class PlayCoverTitleSetupFragment @Inject constructor(
 
     private fun onGetCoverFromCamera(imageUri: Uri?) {
         imageUri?.let {
-            coverSource = CoverSourceEnum.CAMERA
-            showCoverCropLayout()
-            renderCoverCropLayout(it)
+            viewModel.setCroppingCover(it, CoverSourceEnum.CAMERA)
         }
     }
 
     private fun onGetCoverFromProduct(productId: Long, imageUrl: String) {
-        coverSource = CoverSourceEnum.PRODUCT
-        viewModel.getOriginalImageUrl(requireContext(),
-                productId,
-                imageUrl
-        )
-        showCoverCropLayout()
+        scope.launch {
+            val originalImageUrl = viewModel.getOriginalImageUrl(productId, imageUrl)
+            Glide.with(requireContext())
+                    .asBitmap()
+                    .load(originalImageUrl)
+                    .into(object : CustomTarget<Bitmap>() {
+                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                            viewModel.setCroppingCover(resource, CoverSourceEnum.PRODUCT)
+                        }
+
+                        override fun onLoadCleared(placeholder: Drawable?) {}
+                    })
+        }
     }
 
     override fun onChooseFromGalleryClicked() {
@@ -128,9 +131,7 @@ class PlayCoverTitleSetupFragment @Inject constructor(
 
     override fun onGetCoverFromGallery(imageUri: Uri?) {
         imageUri?.let {
-            coverSource = CoverSourceEnum.GALLERY
-            showCoverCropLayout()
-            renderCoverCropLayout(it)
+            viewModel.setCroppingCover(it, CoverSourceEnum.GALLERY)
         }
     }
 
@@ -155,7 +156,7 @@ class PlayCoverTitleSetupFragment @Inject constructor(
                     }
 
                     override fun getCurrentCoverUri(): Uri? {
-                        return selectedCoverUri
+                        return viewModel.coverUri
                     }
                 },
                 listener = object : CoverSetupPartialView.Listener {
@@ -164,9 +165,9 @@ class PlayCoverTitleSetupFragment @Inject constructor(
                     }
 
                     override fun onNextButtonClicked(view: CoverSetupPartialView, coverTitle: String) {
-                        val coverImagePath = selectedCoverUri
+                        val coverImagePath = viewModel.coverUri
                         if (coverImagePath != null && viewModel.isValidCoverTitle(coverTitle)) {
-                            if (isGalleryPermissionGranted()) viewModel.setCover(coverImagePath.toString(), coverTitle)
+                            if (isGalleryPermissionGranted()) viewModel.setCover(coverImagePath.path!!, coverTitle)
                             else requestGalleryPermission(REQUEST_CODE_PERMISSION_CROP_COVER)
                         }
                     }
@@ -221,9 +222,11 @@ class PlayCoverTitleSetupFragment @Inject constructor(
         }
     }
 
-    private fun showCoverCropLayout() {
+    private fun showCoverCropLayout(coverImageUri: Uri) {
         coverSetupView.hide()
         coverCropView.show()
+
+        coverCropView.setImageForCrop(coverImageUri)
     }
 
     private fun showInitCoverLayout(coverImageUri: Uri?) {
@@ -235,7 +238,6 @@ class PlayCoverTitleSetupFragment @Inject constructor(
 
     private fun renderCoverTitleLayout(resultImageUri: Uri?) {
         resultImageUri?.let {
-            selectedCoverUri = it
             coverSetupView.setImage(it)
         }
 
@@ -249,16 +251,10 @@ class PlayCoverTitleSetupFragment @Inject constructor(
     private fun onCancelCropImage() {
         showInitCoverLayout(null)
         renderCoverTitleLayout(null)
-        when (coverSource) {
-            CoverSourceEnum.GALLERY -> onChooseFromGalleryClicked()
-            else -> openCoverChooser()
-        }
-    }
-
-    private fun onImageCropped(resultImageUri: Uri) {
-        selectedCoverUri = resultImageUri
-        showInitCoverLayout(resultImageUri)
-        renderCoverTitleLayout(resultImageUri)
+//        when (coverSource) {
+//            CoverSourceEnum.GALLERY -> onChooseFromGalleryClicked()
+//            else -> openCoverChooser()
+//        }
     }
 
     private fun getPlayCoverImageChooserBottomSheet(): PlayCoverImageChooserBottomSheet {
@@ -330,32 +326,8 @@ class PlayCoverTitleSetupFragment @Inject constructor(
         viewModel.observableCropState.observe(viewLifecycleOwner, Observer {
             when (it) {
                 CoverSetupState.Blank -> showInitCoverLayout(null)
-                is CoverSetupState.Cropping -> showCoverCropLayout()
+                is CoverSetupState.Cropping -> showCoverCropLayout(it.coverImage)
                 is CoverSetupState.Cropped -> showInitCoverLayout(it.coverImage)
-            }
-        })
-    }
-
-    private fun observeSelectedCover() {
-        viewModel.observableSelectedCover.observe(viewLifecycleOwner, Observer {
-
-        })
-    }
-
-    private fun observeOriginalImageUri() {
-        viewModel.originalImageUri.observe(viewLifecycleOwner, Observer {
-            if (coverSource == CoverSourceEnum.PRODUCT) {
-                renderCoverCropLayout(it)
-            }
-        })
-    }
-
-    private fun observeImageEcsLink() {
-        viewModel.imageEcsLink.observe(viewLifecycleOwner, Observer {
-            selectedCoverUri?.let { selectedCover ->
-                if (it.isNotEmpty()) {
-
-                }
             }
         })
     }

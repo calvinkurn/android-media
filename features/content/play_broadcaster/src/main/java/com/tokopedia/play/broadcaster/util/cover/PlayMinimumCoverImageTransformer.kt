@@ -17,18 +17,16 @@ class PlayMinimumCoverImageTransformer : ImageTransformer {
         val imageBitmap = ImageUtils.getBitmapFromPath(imageFile.absolutePath, ImageUtils.DEF_WIDTH,
                 ImageUtils.DEF_HEIGHT, false)
         var newBitmap: Bitmap? = null
-        var newImageFile: File? = null
-        try {
+        val newImageFile = try {
             if (imageBitmap.width < PlayGalleryImagePickerBottomSheet.MINIMUM_COVER_WIDTH || imageBitmap.height < PlayGalleryImagePickerBottomSheet.MINIMUM_COVER_HEIGHT) {
                 newBitmap = Bitmap.createScaledBitmap(imageBitmap, PlayGalleryImagePickerBottomSheet.MINIMUM_COVER_WIDTH, PlayGalleryImagePickerBottomSheet.MINIMUM_COVER_HEIGHT, false)
             }
-            newBitmap?.let {
-                newImageFile = ImageUtils.writeImageToTkpdPath(
-                        ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA,
-                        it, isPng)
-            }
+            ImageUtils.writeImageToTkpdPath(
+                    ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA,
+                    newBitmap ?: imageBitmap, isPng)
         } catch (t: Throwable) {
             t.printStackTrace()
+            null
         } finally {
             imageBitmap.recycle()
             newBitmap?.recycle()

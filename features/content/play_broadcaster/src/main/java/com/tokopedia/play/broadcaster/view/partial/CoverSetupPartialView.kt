@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.unifycomponents.UnifyButton
@@ -52,7 +53,7 @@ class CoverSetupPartialView(
     }
 
     fun setImage(uri: Uri) {
-        ivCoverImage.setImageURI(uri)
+        ivCoverImage.loadImage(uri.toString())
     }
 
     fun setMaxTitleChar(maxChar: Int) {
