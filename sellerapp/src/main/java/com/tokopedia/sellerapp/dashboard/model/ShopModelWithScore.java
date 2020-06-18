@@ -1,7 +1,8 @@
 package com.tokopedia.sellerapp.dashboard.model;
 
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.seller.shopscore.domain.model.ShopScoreMainDomainModel;
+import com.tokopedia.shop_score.domain.model.ShopScoreMainDomainModel;
+//import com.tokopedia.seller.shopscore.domain.model.ShopScoreMainDomainModel;
 
 /**
  * Created by User on 9/12/2017.

@@ -1,6 +1,6 @@
 package com.tokopedia.topads.keyword.data.source.cloud;
 
-import com.tokopedia.seller.shopscore.data.common.GetData;
+import com.tokopedia.shop_score.data.common.GetData;
 import com.tokopedia.topads.common.model.request.DataRequest;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
