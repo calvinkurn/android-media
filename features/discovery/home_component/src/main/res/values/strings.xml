@@ -4,4 +4,7 @@
 
     <string name="home_reminder_button_label">Bayar Sekarang</string>
     <string name="home_reminder_title">Yuk, segara bayar tagihanmu!</string>
+    <string name="discovery_home_see_more_dc_mix">Lihat Produk Lainnya</string>
+
+    <string name="discovery_home_toaster_coupon_copied">Kode kupon berhasil disalin, gunakan saat transaksi.</string>
 </resources>

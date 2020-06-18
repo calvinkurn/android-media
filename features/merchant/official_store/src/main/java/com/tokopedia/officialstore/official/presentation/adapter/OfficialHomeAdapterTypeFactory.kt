@@ -10,9 +10,13 @@ import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
+import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
+import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
 import com.tokopedia.home_component.viewholders.RecommendationListCarouselViewHolder
 import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import com.tokopedia.home_component.visitable.MixLeftDataModel
+import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
@@ -97,5 +101,13 @@ class OfficialHomeAdapterTypeFactory(
             DynamicChannelLegoViewHolder.LAYOUT -> DynamicChannelLegoViewHolder(parent, dcEventHandler)
             else -> super.createViewHolder(parent, type)
         }
+    }
+
+    override fun type(mixLeftDataModel: MixLeftDataModel): Int {
+        return MixLeftComponentViewHolder.LAYOUT
+    }
+
+    override fun type(mixTopDataModel: MixTopDataModel): Int {
+        return MixTopComponentViewHolder.LAYOUT
     }
 }

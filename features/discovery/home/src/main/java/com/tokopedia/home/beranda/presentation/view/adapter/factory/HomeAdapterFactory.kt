@@ -29,9 +29,13 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendation
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.*
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
+import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
+import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
 import com.tokopedia.home_component.viewholders.RecommendationListCarouselViewHolder
 import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import com.tokopedia.home_component.visitable.MixLeftDataModel
+import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import java.util.*
@@ -48,6 +52,9 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val popularKeywordListener: PopularKeywordViewHolder.PopularKeywordListener,
                          private val homeComponentListener: HomeComponentListener,
                          private val legoListener: DynamicLegoBannerListener,
+                         private val recommendationListCarouselListener: RecommendationListCarouselListener,
+                         private val mixLeftComponentListener: MixLeftComponentListener,
+                         private val mixTopComponentListener: MixTopComponentListener
                          private val recommendationListCarouselListener: RecommendationListCarouselListener,
                          private val rechargeRecommendationListener: RechargeRecommendationListener,
                          private val salamWidgetListener: SalamWidgetListener
@@ -165,6 +172,15 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return ReminderWidgetViewHolder.LAYOUT
     }
 
+    override fun type(mixLeftDataModel: MixLeftDataModel): Int {
+        return MixLeftComponentViewHolder.LAYOUT
+    }
+
+    override fun type(mixTopDataModel: MixTopDataModel): Int {
+        return MixTopComponentViewHolder.LAYOUT
+    }
+    //end of Home-Component section
+
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder
@@ -179,13 +195,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
              * refer to dynamic channel sprint layout {@link com.tokopedia.home.R.layout#layout_sprint_product_item
              */
             return DynamicChannelSprintViewHolder.LAYOUT
-        } else if (bannerLayout.contains(layout)) {
-            /**
-             * Layout registered as sprint sale viewholder
-             * refer to banner organic layout {@link com.tokopedia.home.R.layout#home_banner_item}
-             * refer to banner organic carousel layout {@link com.tokopedia.home.R.layout#home_banner_item_carousel}
-             */
-            return BannerOrganicViewHolder.LAYOUT
         }
 
         return when (layout) {
@@ -276,7 +285,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             InspirationHeaderViewHolder.LAYOUT -> viewHolder = InspirationHeaderViewHolder(view)
             HomeRecommendationFeedViewHolder.LAYOUT -> viewHolder = HomeRecommendationFeedViewHolder(view, listener)
             GeolocationPromptViewHolder.LAYOUT -> viewHolder = GeolocationPromptViewHolder(view, listener)
-            BannerOrganicViewHolder.LAYOUT -> viewHolder = BannerOrganicViewHolder(view, listener, parentRecycledViewPool)
             BannerImageViewHolder.LAYOUT -> viewHolder = BannerImageViewHolder(view, listener)
             ReviewViewHolder.LAYOUT -> viewHolder = ReviewViewHolder(view, homeReviewListener, listener)
             PlayCardViewHolder.LAYOUT -> viewHolder = PlayCardViewHolder(view, listener)
@@ -298,6 +306,19 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                             view,
                             recommendationListCarouselListener,
                             parentRecycledViewPool
+                    )
+            MixLeftComponentViewHolder.LAYOUT -> viewHolder =
+                    MixLeftComponentViewHolder(
+                            view,
+                            mixLeftComponentListener,
+                            homeComponentListener,
+                            parentRecycledViewPool
+                    )
+            MixTopComponentViewHolder.LAYOUT -> viewHolder =
+                    MixTopComponentViewHolder(
+                            view,
+                            homeComponentListener,
+                            mixTopComponentListener
                     )
             ReminderWidgetViewHolder.LAYOUT -> viewHolder =
                     ReminderWidgetViewHolder(view,rechargeRecommendationListener,salamWidgetListener)
