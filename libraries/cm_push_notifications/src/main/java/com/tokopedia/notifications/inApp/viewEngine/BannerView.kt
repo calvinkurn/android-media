@@ -108,14 +108,13 @@ internal open class BannerView(activity: Activity) {
 
     private fun onActionClicked(button: CMButton, data: CMInApp) {
         trackAppLinkClick(data, button.getAppLink(), ElementType(ElementType.BUTTON))
-        dismissInteractionTracking(data)
         dialog?.dismiss()
     }
 
     private fun setCloseButton(data: CMInApp) {
         btnClose.setOnClickListener {
-            dialog.dismiss()
             dismissInteractionTracking(data)
+            dialog.dismiss()
         }
     }
 
@@ -125,7 +124,6 @@ internal open class BannerView(activity: Activity) {
         imgBanner.setOnClickListener {
             trackAppLinkClick(data, data.getCmLayout().appLink, ElementType(ElementType.MAIN))
             RouteManager.route(mActivity.get(), data.getCmLayout().getAppLink())
-            dismissInteractionTracking(data)
         }
     }
 
