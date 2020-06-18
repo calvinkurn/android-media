@@ -1,5 +1,7 @@
 package com.tokopedia.play.broadcaster.view.fragment
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.RectF
 import android.net.Uri
@@ -8,24 +10,25 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.transition.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.type.PlayCoverImageType
 import com.tokopedia.play.broadcaster.ui.model.CoverSourceEnum
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastChooseCoverBottomSheet
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastCoverFromGalleryBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayCoverImageChooserBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayGalleryImagePickerBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.partial.CoverCropPartialView
 import com.tokopedia.play.broadcaster.view.partial.CoverSetupPartialView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastCoverSetupViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.yalantis.ucrop.callback.BitmapCropCallback
 import com.yalantis.ucrop.model.ExifInfo
-import kotlinx.android.synthetic.*
-import java.io.File
 import javax.inject.Inject
 
 /**
@@ -33,8 +36,8 @@ import javax.inject.Inject
  */
 class PlayCoverTitleSetupFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory
-) : PlayBaseSetupFragment(), PlayBroadcastChooseCoverBottomSheet.Listener,
-        PlayBroadcastCoverFromGalleryBottomSheet.Listener {
+) : PlayBaseSetupFragment(), PlayCoverImageChooserBottomSheet.Listener,
+        PlayGalleryImagePickerBottomSheet.Listener {
 
     private lateinit var viewModel: PlayBroadcastCoverSetupViewModel
 
@@ -45,6 +48,9 @@ class PlayCoverTitleSetupFragment @Inject constructor(
 
     private lateinit var coverSetupView: CoverSetupPartialView
     private lateinit var coverCropView: CoverCropPartialView
+
+    private lateinit var coverImageChooserBottomSheet: PlayCoverImageChooserBottomSheet
+    private lateinit var galleryImagePickerBottomSheet: PlayGalleryImagePickerBottomSheet
 
     override fun getScreenName(): String = "Play Cover Title Setup"
 
@@ -75,12 +81,14 @@ class PlayCoverTitleSetupFragment @Inject constructor(
         observeOriginalImageUri()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        clearFindViewByIdCache()
+    override fun onCoverChosen(coverImage: PlayCoverImageType) {
+        when (coverImage) {
+            is PlayCoverImageType.Camera -> onGetCoverFromCamera(coverImage.uri)
+            is PlayCoverImageType.Product -> onGetCoverFromProduct(coverImage.productId, coverImage.imageUrl)
+        }
     }
 
-    override fun onGetCoverFromCamera(imageUri: Uri?) {
+    private fun onGetCoverFromCamera(imageUri: Uri?) {
         imageUri?.let {
             coverSource = CoverSourceEnum.CAMERA
             showCoverCropLayout()
@@ -88,7 +96,7 @@ class PlayCoverTitleSetupFragment @Inject constructor(
         }
     }
 
-    override fun onGetCoverFromProduct(productId: Long, imageUrl: String) {
+    private fun onGetCoverFromProduct(productId: Long, imageUrl: String) {
         coverSource = CoverSourceEnum.PRODUCT
         viewModel.getOriginalImageUrl(requireContext(),
                 productId,
@@ -98,10 +106,8 @@ class PlayCoverTitleSetupFragment @Inject constructor(
     }
 
     override fun onChooseFromGalleryClicked() {
-        val coverFromGalleryBottomSheet = PlayBroadcastCoverFromGalleryBottomSheet()
-        coverFromGalleryBottomSheet.listener = this
-        coverFromGalleryBottomSheet.setShowListener { coverFromGalleryBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
-        coverFromGalleryBottomSheet.show(requireFragmentManager(), PlayBroadcastChooseCoverBottomSheet.TAG_CHOOSE_COVER)
+        getGalleryImagePickerBottomSheet()
+                .show(childFragmentManager)
     }
 
     override fun onGetCoverFromGallery(imageUri: Uri?) {
@@ -109,6 +115,14 @@ class PlayCoverTitleSetupFragment @Inject constructor(
             coverSource = CoverSourceEnum.GALLERY
             showCoverCropLayout()
             renderCoverCropLayout(it)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when (requestCode) {
+            REQUEST_CODE_PERMISSION_COVER_CHOOSER -> onCoverChooserPermissionResult(grantResults)
+            REQUEST_CODE_PERMISSION_CROP_COVER -> onCoverCropAddPermissionResult(grantResults)
+            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
     }
 
@@ -130,11 +144,15 @@ class PlayCoverTitleSetupFragment @Inject constructor(
                 },
                 listener = object : CoverSetupPartialView.Listener {
                     override fun onImageAreaClicked(view: CoverSetupPartialView) {
-                        onChangeCoverClicked()
+                        openCoverChooser()
                     }
 
-                    override fun onNextButtonClicked(view: CoverSetupPartialView) {
-                        //next
+                    override fun onNextButtonClicked(view: CoverSetupPartialView, coverTitle: String) {
+                        val coverImagePath = selectedCoverUri
+                        if (coverImagePath != null && viewModel.isValidCoverTitle(coverTitle)) {
+                            if (isGalleryPermissionGranted()) viewModel.setCover(coverImagePath.toString(), coverTitle)
+                            else requestGalleryPermission(REQUEST_CODE_PERMISSION_CROP_COVER)
+                        }
                     }
                 }
         )
@@ -181,12 +199,13 @@ class PlayCoverTitleSetupFragment @Inject constructor(
         bottomSheetHeader.setHeader(getString(R.string.play_prepare_cover_title_title), isRoot = false)
     }
 
-    private fun onChangeCoverClicked() {
-        val changeCoverBottomSheet =
-                childFragmentManager.fragmentFactory.instantiate(requireContext().classLoader, PlayBroadcastChooseCoverBottomSheet::class.java.name) as PlayBroadcastChooseCoverBottomSheet
-        changeCoverBottomSheet.listener = this
-        changeCoverBottomSheet.setShowListener { changeCoverBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
-        changeCoverBottomSheet.show(requireFragmentManager(), PlayBroadcastChooseCoverBottomSheet.TAG_CHOOSE_COVER)
+    private fun openCoverChooser() {
+        if (isGalleryPermissionGranted()) {
+            getPlayCoverImageChooserBottomSheet()
+                    .show(childFragmentManager)
+        } else {
+            requestGalleryPermission(REQUEST_CODE_PERMISSION_COVER_CHOOSER)
+        }
     }
 
     private fun showCoverCropLayout() {
@@ -217,7 +236,7 @@ class PlayCoverTitleSetupFragment @Inject constructor(
         renderCoverTitleLayout(null)
         when (coverSource) {
             CoverSourceEnum.GALLERY -> onChooseFromGalleryClicked()
-            else -> onChangeCoverClicked()
+            else -> openCoverChooser()
         }
     }
 
@@ -227,9 +246,64 @@ class PlayCoverTitleSetupFragment @Inject constructor(
         renderCoverTitleLayout(resultImageUri)
     }
 
-    private fun onFinishCoverTitleSetup() {
-        if (::viewModel.isInitialized && selectedCoverUri != null) {
-            viewModel.uploadCover(File(selectedCoverUri?.path).absolutePath)
+    private fun getPlayCoverImageChooserBottomSheet(): PlayCoverImageChooserBottomSheet {
+        if (!::coverImageChooserBottomSheet.isInitialized) {
+            val fragmentFactory = childFragmentManager.fragmentFactory
+            val coverChooser = fragmentFactory.instantiate(
+                    requireContext().classLoader,
+                    PlayCoverImageChooserBottomSheet::class.java.name
+            ) as PlayCoverImageChooserBottomSheet
+
+            coverChooser.mListener = this
+            coverChooser.setShowListener { coverChooser.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
+
+            coverImageChooserBottomSheet = coverChooser
+        }
+
+        return coverImageChooserBottomSheet
+    }
+
+    private fun getGalleryImagePickerBottomSheet(): PlayGalleryImagePickerBottomSheet {
+        if (!::galleryImagePickerBottomSheet.isInitialized) {
+            val fragmentFactory = childFragmentManager.fragmentFactory
+            val imagePicker = fragmentFactory.instantiate(
+                    requireContext().classLoader,
+                    PlayGalleryImagePickerBottomSheet::class.java.name
+            ) as PlayGalleryImagePickerBottomSheet
+
+            imagePicker.listener = this
+            imagePicker.setShowListener { imagePicker.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
+
+            galleryImagePickerBottomSheet = imagePicker
+        }
+
+        return galleryImagePickerBottomSheet
+    }
+
+    /**
+     * Permission
+     */
+    private fun isGalleryPermissionGranted(): Boolean {
+        return arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE).map {
+            ContextCompat.checkSelfPermission(requireContext(), it)
+        }.all { it == PackageManager.PERMISSION_GRANTED }
+    }
+
+    private fun requestGalleryPermission(requestCode: Int) = requestPermissions(
+            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), requestCode
+    )
+
+    private fun onCoverChooserPermissionResult(grantResults: IntArray) {
+        if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) openCoverChooser()
+        else {
+            Toaster.make(requireView(), "Cover Chooser Permission Failed")
+        }
+    }
+
+    private fun onCoverCropAddPermissionResult(grantResults: IntArray) {
+        if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) coverCropView.clickAdd()
+        else {
+            Toaster.make(requireView(), "Cover Crop Permission Failed")
         }
     }
 
@@ -293,5 +367,10 @@ class PlayCoverTitleSetupFragment @Inject constructor(
                 .addTransition(ChangeTransform())
                 .addTransition(ChangeBounds())
                 .setDuration(450)
+    }
+
+    companion object {
+        private const val REQUEST_CODE_PERMISSION_COVER_CHOOSER = 9191
+        private const val REQUEST_CODE_PERMISSION_CROP_COVER = 9090
     }
 }

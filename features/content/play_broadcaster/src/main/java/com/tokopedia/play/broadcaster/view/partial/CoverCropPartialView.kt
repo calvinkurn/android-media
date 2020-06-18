@@ -34,6 +34,10 @@ class CoverCropPartialView(
         rootView.hide()
     }
 
+    fun clickAdd() {
+        btnCropAdd.performClick()
+    }
+
     fun setImageForCrop(imageUri: Uri) {
         llImageContainer.removeAllViews()
         val ivPlayCoverCropImage = PlayCropImageView(rootView.context)

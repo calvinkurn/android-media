@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.FragmentManager
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import androidx.recyclerview.widget.GridLayoutManager
@@ -28,11 +29,12 @@ import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.bottom_sheet_play_cover_from_gallery.*
 import kotlinx.android.synthetic.main.bottom_sheet_play_cover_from_gallery.view.*
 import java.io.File
+import javax.inject.Inject
 
 /**
  * @author by furqan on 08/06/2020
  */
-class PlayBroadcastCoverFromGalleryBottomSheet : BottomSheetUnify(),
+class PlayGalleryImagePickerBottomSheet @Inject constructor() : BottomSheetUnify(),
         AlbumMediaAdapter.OnMediaClickListener,
         AlbumAdapter.OnAlbumAdapterListener,
         LoaderManager.LoaderCallbacks<Cursor> {
@@ -142,6 +144,10 @@ class PlayBroadcastCoverFromGalleryBottomSheet : BottomSheetUnify(),
             MEDIA_LOADER_ID -> albumMediaAdapter.swapCursor(null)
             else -> albumMediaAdapter.swapCursor(null)
         }
+    }
+
+    fun show(fragmentManager: FragmentManager) {
+        show(fragmentManager, TAG)
     }
 
     private fun initBottomSheet() {
@@ -295,6 +301,8 @@ class PlayBroadcastCoverFromGalleryBottomSheet : BottomSheetUnify(),
     }
 
     companion object {
+        const val TAG = "Gallery Image Picker"
+
         const val MINIMUM_COVER_WIDTH = 300
         const val MINIMUM_COVER_HEIGHT = 533
 

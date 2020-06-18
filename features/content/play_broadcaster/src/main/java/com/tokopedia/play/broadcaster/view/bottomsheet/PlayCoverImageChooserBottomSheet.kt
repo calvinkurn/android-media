@@ -9,27 +9,28 @@ import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.type.PlayCoverImageType
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayCoverProductViewHolder
 import com.tokopedia.play.broadcaster.view.activity.PlayCoverCameraActivity
 import com.tokopedia.play.broadcaster.view.adapter.PlayCoverProductAdapter
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastCoverSetupViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.*
 import javax.inject.Inject
 
 /**
  * @author by furqan on 03/06/2020
  */
-class PlayBroadcastChooseCoverBottomSheet @Inject constructor(
+class PlayCoverImageChooserBottomSheet @Inject constructor(
         private val viewModelFactory: ViewModelFactory
 ) : BottomSheetUnify() {
 
-    var listener: Listener? = null
+    var mListener: Listener? = null
 
     private lateinit var viewModel: PlayBroadcastCoverSetupViewModel
 
@@ -39,14 +40,8 @@ class PlayBroadcastChooseCoverBottomSheet @Inject constructor(
 
     private val pdpCoverAdapter = PlayCoverProductAdapter(object : PlayCoverProductViewHolder.Listener {
         override fun onProductCoverClicked(productId: Long, imageUrl: String) {
-            if (isAllPermissionGranted()) {
-                listener?.onGetCoverFromProduct(productId, imageUrl)
-                dismiss()
-            } else {
-                requestPermissions(arrayOf(Manifest.permission.CAMERA,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.READ_EXTERNAL_STORAGE))
-            }
+            mListener?.onCoverChosen(PlayCoverImageType.Product(productId, imageUrl))
+            dismiss()
         }
     })
 
@@ -61,12 +56,25 @@ class PlayBroadcastChooseCoverBottomSheet @Inject constructor(
         setupView(view)
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when (requestCode) {
+            REQUEST_CODE_PERMISSION_CAMERA -> onCameraRequestPermissionResult(grantResults)
+            REQUEST_CODE_PERMISSION_GALLERY -> onGalleryRequestPermissionResult(grantResults)
+            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
             val imageUri = data?.getParcelableExtra<Uri>(PlayCoverCameraActivity.EXTRA_IMAGE_URI)
-            listener?.onGetCoverFromCamera(imageUri)
+            imageUri?.let { uri ->
+                mListener?.onCoverChosen(
+                        PlayCoverImageType.Camera(uri)
+                )
+            }
+
             dismiss()
         }
     }
@@ -77,9 +85,8 @@ class PlayBroadcastChooseCoverBottomSheet @Inject constructor(
         observeSelectedProduct()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        clearFindViewByIdCache()
+    fun show(fragmentManager: FragmentManager) {
+        show(fragmentManager, TAG)
     }
 
     private fun initBottomSheet() {
@@ -110,45 +117,48 @@ class PlayBroadcastChooseCoverBottomSheet @Inject constructor(
                 bottomSheetWrapper.paddingBottom)
 
         llOpenCamera.setOnClickListener {
-            if (isAllPermissionGranted()) {
-                takeCoverFromCamera()
-            } else {
-                requestPermissions(arrayOf(Manifest.permission.CAMERA,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.READ_EXTERNAL_STORAGE))
-            }
+            if (isCameraPermissionGranted()) takeCoverFromCamera()
+            else requestCameraPermission()
         }
 
         llOpenGallery.setOnClickListener {
-            if (isAllPermissionGranted()) {
-                chooseCoverFromGallery()
-            } else {
-                requestPermissions(arrayOf(Manifest.permission.CAMERA,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.READ_EXTERNAL_STORAGE))
-            }
+            if (isGalleryPermissionGranted()) chooseCoverFromGallery()
+            else requestGalleryPermission()
         }
 
         rvProductCover.adapter = pdpCoverAdapter
-
-        if (!isAllPermissionGranted()) {
-            requestPermissions(arrayOf(Manifest.permission.CAMERA,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.READ_EXTERNAL_STORAGE))
-        }
     }
 
-    private fun isAllPermissionGranted(): Boolean = isPermissionGranted(Manifest.permission.CAMERA) &&
-            isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE) &&
-            isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE)
+    private fun onCameraRequestPermissionResult(grantResults: IntArray) {
+        if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) llOpenCamera.performClick()
+    }
+
+    private fun onGalleryRequestPermissionResult(grantResults: IntArray) {
+        if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) llOpenGallery.performClick()
+    }
+
+    /**
+     * Camera Permission
+     */
+    private fun isCameraPermissionGranted(): Boolean = isPermissionGranted(Manifest.permission.CAMERA)
+
+    private fun requestCameraPermission() = requestPermissions(
+            arrayOf(Manifest.permission.CAMERA), REQUEST_CODE_PERMISSION_CAMERA
+    )
+
+    /**
+     * Gallery Permission
+     */
+    private fun isGalleryPermissionGranted(): Boolean =
+            isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE) && isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE)
+
+    private fun requestGalleryPermission() = requestPermissions(
+            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_CODE_PERMISSION_GALLERY
+    )
 
     private fun isPermissionGranted(permission: String): Boolean =
             ContextCompat.checkSelfPermission(requireContext(),
                     permission) == PackageManager.PERMISSION_GRANTED
-
-    private fun requestPermissions(permissionsArray: Array<String>) {
-        requestPermissions(permissionsArray, PERMISSION_CODE)
-    }
 
     private fun takeCoverFromCamera() {
         val cameraIntent = Intent(context, PlayCoverCameraActivity::class.java)
@@ -156,7 +166,7 @@ class PlayBroadcastChooseCoverBottomSheet @Inject constructor(
     }
 
     private fun chooseCoverFromGallery() {
-        listener?.onChooseFromGalleryClicked()
+        mListener?.onChooseFromGalleryClicked()
         dismiss()
     }
 
@@ -170,17 +180,15 @@ class PlayBroadcastChooseCoverBottomSheet @Inject constructor(
     }
 
     interface Listener {
-        fun onGetCoverFromCamera(imageUri: Uri?)
-        fun onGetCoverFromProduct(productId: Long, imageUrl: String)
+        fun onCoverChosen(coverImage: PlayCoverImageType)
         fun onChooseFromGalleryClicked()
     }
 
     companion object {
-        const val TAG_CHOOSE_COVER = "TagChooseCover"
+        private const val TAG = "Choose Cover"
 
-        private const val EXTRA_IMAGE_URL = "EXTRA_IMAGE_URL"
-
-        private const val PERMISSION_CODE = 1111
+        private const val REQUEST_CODE_PERMISSION_CAMERA = 1002
+        private const val REQUEST_CODE_PERMISSION_GALLERY = 1003
         private const val REQUEST_IMAGE_CAPTURE = 2222
     }
 

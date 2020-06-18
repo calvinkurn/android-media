@@ -52,15 +52,13 @@ class PlayBroadcastSetupViewModel @Inject constructor(
     }
 
     fun saveCompleteChannel(productList: List<ProductContentUiModel>,
-                            coverUrl: String,
-                            coverUri: Uri?,
+                            coverUri: Uri,
                             title: String) {
         scope.launch {
             _observableSetupChannel.value = ChannelSetupUiModel(
                     cover = PlayCoverUiModel(
-                            coverImageUri = coverUri,
-                            coverImageUrl = coverUrl,
-                            liveTitle = title
+                            coverImage = coverUri,
+                            title = title
                     ),
                     selectedProductList = productList
             )

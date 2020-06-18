@@ -122,9 +122,8 @@ class PlayBroadcastSetupBottomSheet : BottomSheetDialogFragment(), PlayBottomShe
         mListener?.onSetupCompletedWithData(
                 selectedProducts = viewModel.selectedProductList,
                 cover = PlayCoverUiModel(
-                        coverImageUri = viewModel.coverImageUri,
-                        coverImageUrl = viewModel.coverImageUrl,
-                        liveTitle = viewModel.liveTitle
+                        coverImage = Uri.parse(viewModel.coverImageUrl),
+                        title = viewModel.liveTitle
                 )
         )
     }
@@ -206,12 +205,11 @@ class PlayBroadcastSetupBottomSheet : BottomSheetDialogFragment(), PlayBottomShe
     }
 
     private fun saveCompleteChannel() {
-        parentViewModel.saveCompleteChannel(
-                productList = viewModel.selectedProductList,
-                coverUrl = viewModel.coverImageUrl,
-                coverUri = viewModel.coverImageUri,
-                title = viewModel.liveTitle
-        )
+//        parentViewModel.saveCompleteChannel(
+//                productList = viewModel.selectedProductList,
+//                coverUri = viewModel.coverImageUri,
+//                title = viewModel.liveTitle
+//        )
     }
 
     /**

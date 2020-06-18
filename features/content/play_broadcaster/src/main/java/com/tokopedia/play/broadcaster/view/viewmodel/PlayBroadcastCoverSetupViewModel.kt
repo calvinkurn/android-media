@@ -20,10 +20,10 @@ import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastSetupDataStor
 import com.tokopedia.play.broadcaster.domain.usecase.GetOriginalProductImageUseCase
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
-import com.tokopedia.play.broadcaster.util.PlayBroadcastCoverTitleUtil
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastCoverFromGalleryBottomSheet.Companion.MINIMUM_COVER_HEIGHT
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastCoverFromGalleryBottomSheet.Companion.MINIMUM_COVER_WIDTH
+import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayGalleryImagePickerBottomSheet.Companion.MINIMUM_COVER_HEIGHT
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayGalleryImagePickerBottomSheet.Companion.MINIMUM_COVER_WIDTH
 import com.tokopedia.user.session.UserSessionInterface
 import com.yalantis.ucrop.callback.BitmapCropCallback
 import com.yalantis.ucrop.model.CropParameters
@@ -44,7 +44,9 @@ class PlayBroadcastCoverSetupViewModel @Inject constructor(
         private val setupDataStore: PlayBroadcastSetupDataStore,
         private val uploadImageUseCase: UploadImageUseCase<PlayCoverUploadEntity>,
         private val getOriginalProductImageUseCase: GetOriginalProductImageUseCase,
-        private val userSession: UserSessionInterface)
+        private val userSession: UserSessionInterface,
+        private val coverImageUtil: PlayCoverImageUtil
+)
     : BaseViewModel(dispatcher.main) {
 
     val observableSelectedProducts: LiveData<List<ProductContentUiModel>>
@@ -83,7 +85,7 @@ class PlayBroadcastCoverSetupViewModel @Inject constructor(
         }
     }
 
-    fun uploadCover(imagePath: String) {
+    fun setCover(imagePath: String, coverTitle: String) {
         launchCatchError(dispatcher.io, block = {
             val params = hashMapOf<String, RequestBody>()
             params[PARAM_WEB_SERVICE] = RequestBody.create(MediaType.parse(TEXT_PLAIN), DEFAULT_WEB_SERVICE)
@@ -105,7 +107,7 @@ class PlayBroadcastCoverSetupViewModel @Inject constructor(
             if (url.contains(DEFAULT_RESOLUTION)) {
                 url = url.replaceFirst(DEFAULT_RESOLUTION, RESOLUTION_700)
             }
-            mutableImageEcsLink.postValue(url)
+//            setupDataStore.setCover()
         }) {
             it.printStackTrace()
         }
@@ -167,8 +169,9 @@ class PlayBroadcastCoverSetupViewModel @Inject constructor(
                 .load(imageUrl)
                 .into(object : CustomTarget<Bitmap>() {
                     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                        mutableOriginalImageUri.postValue(PlayBroadcastCoverTitleUtil
-                                .getImageUriFromBitmap(context, resource))
+                        mutableOriginalImageUri.postValue(
+                                coverImageUtil.getImagePathFromBitmap(resource)
+                        )
                     }
 
                     override fun onLoadCleared(placeholder: Drawable?) {}

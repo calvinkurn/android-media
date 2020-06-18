@@ -35,7 +35,7 @@ class CoverSetupPartialView(
     init {
         llChangeCover.setOnClickListener { listener.onImageAreaClicked(this) }
         ivCoverImage.setOnClickListener { listener.onImageAreaClicked(this) }
-        btnNext.setOnClickListener { listener.onNextButtonClicked(this) }
+        btnNext.setOnClickListener { listener.onNextButtonClicked(this, liveTitle) }
 
         setupTitleTextField()
         tvCoverTitleLabel.text = getCoverTitleLabelText(tvCoverTitleLabel.text.toString(), liveTitle)
@@ -130,7 +130,7 @@ class CoverSetupPartialView(
     interface Listener {
 
         fun onImageAreaClicked(view: CoverSetupPartialView)
-        fun onNextButtonClicked(view: CoverSetupPartialView)
+        fun onNextButtonClicked(view: CoverSetupPartialView, coverTitle: String)
     }
 
     interface DataSource {
