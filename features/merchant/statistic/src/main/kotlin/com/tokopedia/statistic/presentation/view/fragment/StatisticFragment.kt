@@ -69,7 +69,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private val defaultStartDate = Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DAYS))
     private val defaultEndDate = Date()
 
-    private var tabItems = listOf<Pair<String, String>>()
+    private var tabItems = emptyList<Pair<String, String>>()
     private var isFirstLoad = true
     private var isErrorToastShown = false
     private var isUserScrolling = false
@@ -258,9 +258,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun requestVisibleWidgetsData() {
-        val layoutManager = recyclerView.layoutManager as? GridLayoutManager ?: return
-        val firstVisible: Int = layoutManager.findFirstVisibleItemPosition()
-        val lastVisible: Int = layoutManager.findLastVisibleItemPosition()
+        val firstVisible: Int = mLayoutManager.findFirstVisibleItemPosition()
+        val lastVisible: Int = mLayoutManager.findLastVisibleItemPosition()
 
         val visibleWidgets = mutableListOf<BaseWidgetUiModel<*>>()
         adapter.data.forEachIndexed { index, widget ->
