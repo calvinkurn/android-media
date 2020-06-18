@@ -22,16 +22,16 @@ import com.tokopedia.util.logger.GTMLoggerImpl
 @AnalyticEvent(true, Event.VIEW_ITEM_LIST, ProductImpressionsRules::class)
 data class ProductListImpression(
         val item_list: String,
-        @CustomChecker(ProductListImpressionChecker::class, "isSizeBiggerThanOne", Level.ERROR)
+        @CustomChecker(ProductListImpressionChecker::class, Level.ERROR, functionName = ["isSizeBiggerThanOne"])
         val items: List<ProductListImpressionProduct>,
         @DefaultValueString("")
         val currentSite: String?,
-        @CustomChecker(ProductListImpressionChecker::class, "isContainValidTerm", Level.ERROR)
+        @CustomChecker(ProductListImpressionChecker::class, Level.ERROR, functionName = ["isContainValidTerm"])
         @DefaultValueString("")
         val event: String?,
         @DefaultValueString("")
         val eventCategory: String?,
-        @CustomChecker(ProductListImpressionChecker::class, "isContainInvalidTerm", Level.ERROR)
+        @CustomChecker(ProductListImpressionChecker::class, Level.ERROR, functionName = ["isContainInvalidTerm"])
         @DefaultValueString("")
         val eventAction: String?,
         @DefaultValueString("")
@@ -60,13 +60,13 @@ data class ProductListImpressionProduct(
         val category: String,
         @Key(Param.ITEM_VARIANT)
         val variant: String,
-        @CustomChecker(ProductListImpressionProductChecker::class, "isPriceNotZero", Level.ERROR)
+        @CustomChecker(ProductListImpressionProductChecker::class, Level.ERROR, functionName = ["isPriceNotZero"])
         @Key(Param.PRICE)
         val price: Double,
         @DefaultValueString("IDR")
         @Key(Param.CURRENCY)
         val currency: String?,
-        @CustomChecker(ProductListImpressionProductChecker::class, "isIndexNotZero", Level.ERROR)
+        @CustomChecker(ProductListImpressionProductChecker::class, Level.ERROR, functionName = ["isIndexNotZero"])
         @DefaultValueLong(1)
         @Key(Param.INDEX)
         val index: Long,
@@ -75,11 +75,11 @@ data class ProductListImpressionProduct(
         @DefaultValueString("none / other")
         @Key(KEY_DIMENSION_40)
         val dimension40: String?,
-        @CustomChecker(ProductListImpressionProductChecker::class, "isOnlyMainApp", Level.IGNORE)
+//        @CustomChecker(ProductListImpressionProductChecker::class, Level.IGNORE, "isOnlyMainApp")
         @DefaultValueString("")
         @Key("dimension87")
         val dimension87: String?,
-        @CustomChecker(ProductListImpressionProductChecker::class, "isOnlyMainApp", Level.IGNORE)
+//        @CustomChecker(ProductListImpressionProductChecker::class, Level.IGNORE, "isOnlyMainApp")
         @DefaultValueString("")
         @Key("dimension88")
         val dimension88: String?

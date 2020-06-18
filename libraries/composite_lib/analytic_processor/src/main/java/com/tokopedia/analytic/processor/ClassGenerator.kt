@@ -3,15 +3,13 @@ package com.tokopedia.analytic.processor
 import com.squareup.javapoet.*
 import com.sun.tools.javac.code.Symbol
 import com.sun.tools.javac.code.Type
-import com.tokopedia.analytic.annotation.CustomChecker
-import com.tokopedia.analytic.annotation.ErrorHandler
-import com.tokopedia.analytic.annotation.Level
-import com.tokopedia.analytic.annotation.Logger
+import com.tokopedia.analytic.annotation.*
 import com.tokopedia.analytic.processor.utils.*
 import java.io.Serializable
 import java.lang.reflect.Constructor
 import javax.lang.model.element.Modifier
 import javax.lang.model.element.TypeElement
+import javax.lang.model.element.VariableElement
 import javax.lang.model.type.MirroredTypeException
 import javax.lang.model.type.TypeMirror
 import javax.lang.model.util.ElementFilter
@@ -22,6 +20,10 @@ abstract class ClassGenerator(
 ) {
 
     companion object {
+        const val BUNDLE_NAME = "bundle"
+        const val objectTypeConditionCheckFormat = "\$T.INSTANCE.\$N(\$L)"
+        const val mapTypeConditionCheckFormat = "\$T.INSTANCE.\$N((\$T) \$L)"
+
         val bundleClassName = ClassName.get("android.os", "Bundle")
         val iteratorClassName = ClassName.get("java.util", "Iterator")
         val collectionClassName = ClassName.get("java.util", "Collection")
@@ -29,9 +31,9 @@ abstract class ClassGenerator(
         val listClassName = ClassName.get("java.util", "List")
         val setClassName = ClassName.get("java.util", "Set")
         val mapClassName = ClassName.get("java.util", "Map")
+        val entryClassName = ClassName.get("java.util.Map", "Entry")
         val levelClassName: ClassName = ClassName.get("com.tokopedia.analytic.annotation", "Level")
         val bundlerUtilClassName: ClassName = ClassName.get("com.tokopedia.gtmutil", "BundlerUtil")
-        val BUNDLE_NAME = "bundle"
     }
 
     private val CLASS_NAME_SUFFIX = "Bundler"
@@ -103,7 +105,7 @@ abstract class ClassGenerator(
         } else {
             checkerStatement.add(putStatement)
         }
-        return checkerStatement;
+        return checkerStatement
     }
 
     protected fun createCheckerFailedBlock(field: ModelClassField, checkerStatement: CodeBlock.Builder) {
@@ -129,7 +131,7 @@ abstract class ClassGenerator(
                     ClassName.get(loggerClass),
                     levelClassName,
                     customCheckerAnnotation.level,
-                    "${checkerClass.toString().split(".").last()} return false when checking ${field.element.asType()} ${field.key} using ${customCheckerAnnotation.functionName}")
+                    "${checkerClass.toString().split(".").last()} return false when checking ${field.element.asType()} ${field.key} using ${customCheckerAnnotation.functionName.joinToString(", ")}")
 
             val errorHandlerAnnotation = clazz.element.getAnnotation(ErrorHandler::class.java)
             var errorHandlerClass: TypeMirror? = null
@@ -150,7 +152,7 @@ abstract class ClassGenerator(
                 checkerStatement.addStatement("\$T.INSTANCE.onError(new \$T(\$S))",
                     ClassName.get(errorHandlerClass),
                     ClassName.get("java.lang", "Exception"),
-                    "${checkerClass.toString().split(".").last()} return false when checking ${field.element.asType()} ${field.key} using ${customCheckerAnnotation.functionName}")
+                    "${checkerClass.toString().split(".").last()} return false when checking ${field.element.asType()} ${field.key} using ${customCheckerAnnotation.functionName.joinToString(", ")}")
         }
     }
 
@@ -176,7 +178,7 @@ abstract class ClassGenerator(
                     ClassName.get(loggerClass),
                     levelClassName,
                     Level.SUCCESS,
-                    "${checkerClass.toString().split(".").last()} successfully check ${field.element.asType()} ${field.key} using ${customCheckerAnnotation.functionName}")
+                    "${checkerClass.toString().split(".").last()} successfully check ${field.element.asType()} ${field.key} using ${customCheckerAnnotation.functionName.joinToString(", ")}")
         } else {
             AnnotationProcessor.messenger?.printMessage(Diagnostic.Kind.ERROR, "Something went wrong when generating checker", clazz.element)
         }
@@ -201,7 +203,14 @@ abstract class ClassGenerator(
             isRawType(fieldTypeName) -> createPutRawStatementFromMap(field)
             isBundleable(field.element) -> createPutBundleStatementFromMap(field)
             isList(fieldTypeName) || isSet(fieldTypeName) -> createPutListStatementFromMap(field)
-            isMap(fieldTypeName) -> createPutMapStatementFromMap(field)
+            isMap(fieldTypeName) -> {
+                if (field.element.getAnnotation(CustomChecker::class.java) != null) {
+                    createPutMapStatementFromMap(field)
+                } else {
+                    AnnotationProcessor.messenger?.printMessage(Diagnostic.Kind.ERROR, "Map data type must have a custom checker!", field.element)
+                    throw Exception("Map data type must have a custom checker!")
+                }
+            }
             isSerializable(field.element) -> createPutSerializableStatementFromMap(field)
             isParcelable(field.element) -> createPutParcelableStatementFromMap(field)
             else -> throw java.lang.IllegalArgumentException("Unknown put statement")
@@ -260,8 +269,9 @@ abstract class ClassGenerator(
     private fun createPutMapStatementFromMap(field: ModelClassField): CodeBlock {
         val statementBuilder = CodeBlock.builder()
 
-        statementBuilder.beginControlFlow("if (data.containsKey(\$S))", field.key)
-
+        statementBuilder.beginControlFlow("if (data.containsKey(\$S))", field.element.simpleName)
+        val keyType = (field.element.asType() as Type.ClassType).typeArguments[0]
+        val keyTypeName = TypeName.get(keyType)
         val valueType = (field.element.asType() as Type.ClassType).typeArguments[1]
         val valueTypeName = TypeName.get(valueType)
 
@@ -295,50 +305,49 @@ abstract class ClassGenerator(
             )
             statementBuilder.add(createPutParcelableArrayListStatement(field))
         } else if (isRawType(valueTypeName)) {
-            // get values
-            val collectionOfType = ParameterGenerator.createParameterizedParameter(
-                    "data",
-                    collectionClassName,
-                    valueTypeName
-            )
-            val collectionName = "${field.key}Values"
-            val mapOfType = ParameterGenerator.createParameterizedParameter(
-                    "data",
-                    mapClassName,
-                    TypeName.get(String::class.java),
-                    valueTypeName
-            )
-            statementBuilder.addStatement(
-                "\$T \$N = ((\$T) data.get(\$S)).values()",
-                collectionOfType.type,
-                collectionName,
-                mapOfType.type,
-                field.key
-            )
-            val arrayListOfType = ParameterGenerator.createParameterizedParameter(
-                    "data",
-                    arrayListClassName,
-                    valueTypeName
-            )
-            val arrayListName = "${field.key}ArrayList"
+            val parameterizedMapEntryTypeName = ParameterizedTypeName.get(entryClassName, keyTypeName, valueTypeName)
+            val parameterizedIteratorTypeName = ParameterizedTypeName.get(iteratorClassName, parameterizedMapEntryTypeName)
 
-            // to arraylist
-            statementBuilder.addStatement(
-                "\$T \$N = new \$T(\$N)",
-                arrayListOfType.type,
-                arrayListName,
-                arrayListOfType.type,
-                collectionName
-            )
+            statementBuilder
+                    .addStatement("\$T \$N = (\$T) data.get(\$S)",
+                            field.element.asType(),
+                            field.element.simpleName,
+                            field.element.asType(),
+                            field.element.simpleName)
+                    .addStatement(
+                    "\$T \$N = \$N.entrySet().iterator()",
+                    parameterizedIteratorTypeName,
+                    "${field.element.simpleName}Entries",
+                    field.element.simpleName)
 
-            // put to bundle
-            statementBuilder.addStatement(
-                "\$N.put\$TArrayList(\$S, \$N)",
-                BUNDLE_NAME,
-                valueType,
-                field.key,
-                arrayListName
-            )
+            statementBuilder.beginControlFlow("while (\$N.hasNext())", "${field.element.simpleName}Entries")
+                    .addStatement("\$T \$N = \$N.next()",
+                            parameterizedMapEntryTypeName,
+                            "entry",
+                            "${field.element.simpleName}Entries")
+                    .addStatement("\$N.put\$N(entry.getKey(), entry.getValue())",
+                            BUNDLE_NAME,
+                            RAW_BUNDLE_TYPE[valueType.toString()])
+
+            val loggerAnnotation = clazz.element.getAnnotation(Logger::class.java)
+            if (loggerAnnotation != null) {
+                var loggerClass: TypeMirror? = null
+                try {
+                    loggerAnnotation.loggerClass
+                } catch (e: MirroredTypeException) {
+                    loggerClass = e.typeMirror
+                }
+                if (loggerClass == null) AnnotationProcessor.messenger?.printMessage(Diagnostic.Kind.ERROR, "Logger class not found", clazz.element)
+                statementBuilder.addStatement("\$T.INSTANCE.log(\$T.\$L, \$S + entry.getKey())",
+                        ClassName.get(loggerClass),
+                        levelClassName,
+                        Level.SUCCESS,
+                        "${clazz.getClassName()}: ")
+            } else {
+                AnnotationProcessor.messenger?.printMessage(Diagnostic.Kind.ERROR, "Something went wrong when generating checker", clazz.element)
+            }
+
+            statementBuilder.endControlFlow()
         }
 
         statementBuilder.endControlFlow()
@@ -590,7 +599,9 @@ abstract class ClassGenerator(
     // this function is used to generate a put expression for a map data type field
     private fun createPutMapStatement(field: ModelClassField): CodeBlock {
         val statementBuilder = CodeBlock.builder()
+        val keyType = (field.element.asType() as Type.ClassType).typeArguments[0]
         val valueType = (field.element.asType() as Type.ClassType).typeArguments[1]
+        val keyTypeName = TypeName.get(keyType)
         val valueTypeName = TypeName.get(valueType)
 
         if (isBundleable(valueType.asElement())) {
@@ -623,24 +634,46 @@ abstract class ClassGenerator(
             )
             statementBuilder.add(createPutParcelableArrayListStatement(field))
         } else if (isRawType(valueTypeName)) {
-            val parameterizedArrayListTypeName =
-                ParameterizedTypeName.get(arrayListClassName, valueTypeName)
-            val arrayListName = "${field.element.simpleName}ArrayList"
-            statementBuilder.addStatement(
-                "\$T \$N = new \$T(\$L.values())",
-                parameterizedArrayListTypeName,
-                arrayListName,
-                parameterizedArrayListTypeName,
-                getValueStatement(field)
-            )
-            statementBuilder.addStatement(
-                "\$N.put\$N(\$S, (\$T) \$L)",
-                BUNDLE_NAME,
-                RAW_LIST_BUNDLE_TYPE[valueType.toString()],
-                field.key,
-                parameterizedArrayListTypeName,
-                arrayListName
-            )
+            val parameterizedMapEntryTypeName = ParameterizedTypeName.get(entryClassName, keyTypeName, valueTypeName)
+            val parameterizedIteratorTypeName = ParameterizedTypeName.get(iteratorClassName, parameterizedMapEntryTypeName)
+
+            if (field.element.getAnnotation(DefinedInCollections::class.java) != null) {
+                statementBuilder.addStatement(
+                        "\$T \$N = \$N.entrySet().iterator()",
+                        parameterizedIteratorTypeName,
+                        "${field.element.simpleName}Entries",
+                        field.element.simpleName
+                )
+            }
+
+            statementBuilder.beginControlFlow("while (\$N.hasNext())", "${field.element.simpleName}Entries")
+                    .addStatement("\$T \$N = \$N.next()",
+                            parameterizedMapEntryTypeName,
+                            "entry",
+                            "${field.element.simpleName}Entries")
+                    .addStatement("\$N.put\$N(entry.getKey(), entry.getValue())",
+                            BUNDLE_NAME,
+                            RAW_BUNDLE_TYPE[valueType.toString()])
+
+            val loggerAnnotation = clazz.element.getAnnotation(Logger::class.java)
+            if (loggerAnnotation != null) {
+                var loggerClass: TypeMirror? = null
+                try {
+                    loggerAnnotation.loggerClass
+                } catch (e: MirroredTypeException) {
+                    loggerClass = e.typeMirror
+                }
+                if (loggerClass == null) AnnotationProcessor.messenger?.printMessage(Diagnostic.Kind.ERROR, "Logger class not found", clazz.element)
+                statementBuilder.addStatement("\$T.INSTANCE.log(\$T.\$L, \$S + entry.getKey())",
+                        ClassName.get(loggerClass),
+                        levelClassName,
+                        Level.SUCCESS,
+                        "${clazz.getClassName()}: ")
+            } else {
+                AnnotationProcessor.messenger?.printMessage(Diagnostic.Kind.ERROR, "Something went wrong when generating checker", clazz.element)
+            }
+
+            statementBuilder.endControlFlow()
         }
 
         return addNullCheck(field, statementBuilder.build(), "ParcelableArrayList")
@@ -895,24 +928,47 @@ abstract class ClassGenerator(
                 AnnotationProcessor.messenger?.printMessage(Diagnostic.Kind.ERROR, "Checker class not found", clazz.element)
             }
             if (!isFromMap) {
-                checkerStatement.beginControlFlow(
-                        "if (\$T.INSTANCE.\$N(\$L))",
-                        ClassName.get(checkerClass),
-                        checkerAnnotation.functionName,
-                        field.element
-                )
+                checkerStatement.beginControlFlow("if (${generateCheckerFormat(checkerAnnotation.functionName.size, objectTypeConditionCheckFormat)})", *getObjectTypeCheckerParams(ClassName.get(checkerClass), checkerAnnotation.functionName, field.element).toTypedArray())
             } else {
-                checkerStatement.beginControlFlow(
-                        "if (data.containsKey(\$S) && \$T.INSTANCE.\$N((\$T) \$L))",
-                        field.key,
-                        ClassName.get(checkerClass),
-                        checkerAnnotation.functionName,
-                        field.element,
-                        "data.get(\"${field.key}\")"
-                )
+                checkerStatement.beginControlFlow("if (${generateCheckerFormat(checkerAnnotation.functionName.size, mapTypeConditionCheckFormat)})", *getMapTypeCheckerParams(field.key, ClassName.get(checkerClass), checkerAnnotation.functionName, field.element).toTypedArray())
             }
         } else {
             AnnotationProcessor.messenger?.printMessage(Diagnostic.Kind.ERROR, "Something went wrong when generating checker", clazz.element)
         }
+    }
+
+    private fun generateCheckerFormat(size: Int, format: String): String {
+        val stringBuilder = StringBuilder()
+        for (i in 0 until size) {
+            if (stringBuilder.isNotBlank()) stringBuilder.append(" && ")
+            stringBuilder.append(format)
+        }
+        return stringBuilder.toString()
+    }
+
+    private fun getObjectTypeCheckerParams(checkerClass: TypeName, functionNames: Array<out String>, element: VariableElement): List<Any> {
+        val params = mutableListOf<Any>()
+        functionNames.forEach {
+            params.add(checkerClass)
+            params.add(it)
+            params.add(element)
+        }
+
+        return params
+    }
+
+    private fun getMapTypeCheckerParams(key: String, checkerClass: TypeName, functionNames: Array<out String>, element: VariableElement): List<Any> {
+        val params = mutableListOf<Any>()
+        functionNames.forEach {
+            params.add(checkerClass)
+            params.add(it)
+            params.add(element)
+            if (element.getAnnotation(DefinedInCollections::class.java) == null) {
+                params.add("data.get(\"$key\")")
+            } else {
+                params.add("data.get(\"${element.simpleName}\")")
+            }
+        }
+        return params
     }
 }

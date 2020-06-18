@@ -5,6 +5,7 @@ import com.squareup.javapoet.JavaFile
 import com.squareup.javapoet.TypeName
 import com.sun.tools.javac.code.Symbol
 import com.sun.tools.javac.code.Type
+import com.tokopedia.analytic.annotation.DefinedInCollections
 import com.tokopedia.analytic.annotation.Key
 import com.tokopedia.analytic.processor.utils.isList
 import com.tokopedia.analytic.processor.utils.isMap
@@ -91,7 +92,9 @@ class AnnotationProcessor : AbstractProcessor() {
         }?.getter?.call(rulesClass.companionObjectInstance) as Map<*, *>
         val keys = mutableListOf<String>()
         eventClass.fields.forEach {
-            keys.add(it.key)
+            if (it.value.element.getAnnotation(DefinedInCollections::class.java) == null) {
+                keys.add(it.key)
+            }
         }
         if (!keys.containsAll(required.keys)) {
             processingEnv.messager.printMessage(
@@ -218,6 +221,7 @@ class AnnotationProcessor : AbstractProcessor() {
             AnalyticEvent::class.java.name,
             Key::class.java.name,
             AnalyticRules::class.java.name,
+            DefinedInCollections::class.java.name,
             Default::class.java.name,
             DefaultValueString::class.java.name,
             DefaultValueLong::class.java.name,

@@ -1,8 +1,4 @@
 package com.tokopedia.checkers
-
-import com.tokopedia.abstraction.processor.ProductListClickProduct
-
-
 object ProductListClickChecker {
 
     fun notContainWords(eventAction: String?) =
@@ -12,5 +8,5 @@ object ProductListClickChecker {
     fun onlySelectContent(event: String?) =
             event?.toLowerCase()?.contains("select_content") ?: false
 
-    fun isOnlyOneProduct(items: ArrayList<ProductListClickProduct>) = items.size == 1
+    fun isOnlyOneProduct(items: List<Any>) = items.size == 1
 }

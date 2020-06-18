@@ -12,8 +12,8 @@ class EventClassGenerator(clazz: AnnotatedEventClass) : ClassGenerator(clazz) {
         .addStatement(
             "\$T $BUNDLE_NAME = new \$T()",
             bundleClassName,
-            bundleClassName
-        )
+            bundleClassName)
+
 
     override val getBundleFromMap: MethodSpec.Builder = MethodSpec
         .methodBuilder("getBundle")
