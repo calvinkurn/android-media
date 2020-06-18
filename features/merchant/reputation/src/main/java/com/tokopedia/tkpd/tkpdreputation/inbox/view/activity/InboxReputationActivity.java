@@ -74,6 +74,7 @@ public class  InboxReputationActivity extends BaseActivity implements HasCompone
         userSession = new UserSession(this);
         reputationTracking = new ReputationTracking();
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_inbox_reputation);
         clearCacheIfFromNotification();
         initView();
     }
