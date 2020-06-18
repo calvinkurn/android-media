@@ -259,10 +259,6 @@ class HomeVisitableFactoryImpl(
                         )
                     }
                 }
-                DynamicHomeChannel.Channels.LAYOUT_RECHARGE_RECOMMENDATION -> { createRechargeRecommendationWidget() }
-                DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> { createDynamicChannel(
-                        channel
-                ) }
                 DynamicHomeChannel.Channels.LAYOUT_RECHARGE_RECOMMENDATION -> { createReminderWidget(ReminderEnum.RECHARGE) }
                 DynamicHomeChannel.Channels.LAYOUT_SALAM_WIDGET -> {
                     createReminderWidget(ReminderEnum.SALAM)

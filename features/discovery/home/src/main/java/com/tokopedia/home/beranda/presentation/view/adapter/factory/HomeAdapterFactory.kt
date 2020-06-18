@@ -54,8 +54,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val legoListener: DynamicLegoBannerListener,
                          private val recommendationListCarouselListener: RecommendationListCarouselListener,
                          private val mixLeftComponentListener: MixLeftComponentListener,
-                         private val mixTopComponentListener: MixTopComponentListener
-                         private val recommendationListCarouselListener: RecommendationListCarouselListener,
+                         private val mixTopComponentListener: MixTopComponentListener,
                          private val rechargeRecommendationListener: RechargeRecommendationListener,
                          private val salamWidgetListener: SalamWidgetListener
 ) :
