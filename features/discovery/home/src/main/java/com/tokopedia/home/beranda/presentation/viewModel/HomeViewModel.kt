@@ -36,8 +36,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
-import com.tokopedia.home_component.model.*
-import com.tokopedia.home_component.visitable.ReminderWidgetModel
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
@@ -351,12 +352,15 @@ open class HomeViewModel @Inject constructor(
     private fun evaluateGeolocationComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
         homeDataModel?.let {
             if (!isNeedShowGeoLocation) {
-                val findGeolocationModel =
-                        homeDataModel.list.find { visitable -> visitable is GeoLocationPromptDataModel }
                 val currentList = homeDataModel.list.toMutableList()
-
                 currentList.let {
-                    it.remove(findGeolocationModel)
+                    val mutableIterator = currentList.iterator()
+                    for (e in mutableIterator) {
+                        if(e is GeoLocationPromptDataModel){
+                            mutableIterator.remove()
+                            break
+                        }
+                    }
                     return homeDataModel.copy(list = it)
                 }
             }
@@ -435,7 +439,13 @@ open class HomeViewModel @Inject constructor(
             val currentList = it.list.toMutableList()
             currentList.let { list->
                 if (findReviewViewModel is ReviewDataModel) {
-                    list.remove(findReviewViewModel)
+                    val mutableIterator = list.iterator()
+                    for (e in mutableIterator) {
+                        if(e is ReviewDataModel){
+                            mutableIterator.remove()
+                            break
+                        }
+                    }
                     return it.copy(
                             list = list
                     )
@@ -455,8 +465,13 @@ open class HomeViewModel @Inject constructor(
     }
 
     fun onCloseBuyAgain(channelId: String, position: Int){
-        val dynamicChannelDataModel = _homeLiveData.value?.list?.find { visitable -> visitable is DynamicChannelDataModel && visitable.channel?.id == channelId }
-        if (dynamicChannelDataModel is DynamicChannelDataModel){
+        val dynamicChannelDataModel = _homeLiveData.value?.list?.find { visitable ->
+            visitable is DynamicChannelDataModel && visitable.channel?.id == channelId }
+        val recommendationListHomeComponentModel = _homeLiveData.value?.list?.find {
+            visitable ->  visitable is RecommendationListCarouselDataModel && visitable.channelModel.id == channelId
+        }
+
+        if (dynamicChannelDataModel != null && dynamicChannelDataModel is DynamicChannelDataModel){
             launchCatchError(coroutineContext, block = {
                 closeChannelUseCase.get().setParams(channelId)
                 val closeChannel = closeChannelUseCase.get().executeOnBackground()
@@ -469,7 +484,21 @@ open class HomeViewModel @Inject constructor(
                 it.printStackTrace()
                 _errorEventLiveData.postValue(Event(it.message ?: ""))
             }
+        }
 
+        if (recommendationListHomeComponentModel != null && recommendationListHomeComponentModel is RecommendationListCarouselDataModel){
+            launchCatchError(coroutineContext, block = {
+                closeChannelUseCase.get().setParams(channelId)
+                val closeChannel = closeChannelUseCase.get().executeOnBackground()
+                if(closeChannel.success){
+                    updateWidget(UpdateLiveDataModel(ACTION_DELETE, recommendationListHomeComponentModel, position))
+                } else {
+                    _errorEventLiveData.postValue(Event(""))
+                }
+            }){
+                it.printStackTrace()
+                _errorEventLiveData.postValue(Event(it.message ?: ""))
+            }
         }
     }
 
@@ -631,9 +660,13 @@ open class HomeViewModel @Inject constructor(
                 homeDataModel.copy(list = currentList)
             } else {
                 val visitableMutableList: MutableList<Visitable<*>> = homeDataModel.list.toMutableList()
-                val findRetryModel = homeDataModel.list.find { visitable -> visitable is HomeRetryModel
+                val mutableIterator = visitableMutableList.iterator()
+                for (e in mutableIterator) {
+                    if(e is HomeRetryModel){
+                        mutableIterator.remove()
+                        break
+                    }
                 }
-                visitableMutableList.remove(findRetryModel)
                 if (!homeDataModel.isCache) {
                     visitableMutableList.add(HomeLoadingMoreModel())
                     getFeedTabData()

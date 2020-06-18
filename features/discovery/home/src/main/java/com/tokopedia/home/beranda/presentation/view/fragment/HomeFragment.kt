@@ -56,6 +56,7 @@ import com.tokopedia.design.keyboard.KeyboardHelper
 import com.tokopedia.design.keyboard.KeyboardHelper.OnKeyboardVisibilityChangedListener
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
+import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerClick
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerClick
@@ -149,6 +150,8 @@ import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import javax.inject.Inject
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
 
 /**
  * @author by errysuprayogi on 11/27/17.
@@ -189,6 +192,7 @@ open class HomeFragment : BaseDaggerFragment(),
         private const val SEE_ALL_CARD = "android_mainapp_home_see_all_card_config"
         private const val REQUEST_CODE_PLAY_ROOM = 256
         private const val PERFORMANCE_PAGE_NAME_HOME = "home"
+        private var lock = Object()
         var HIDE_TICKER = false
         private var HIDE_GEO = false
         private const val SOURCE_ACCOUNT = "account"
@@ -211,7 +215,7 @@ open class HomeFragment : BaseDaggerFragment(),
         get() = childFragmentManager
 
     override val userId: String
-        get() = viewModel.get().getUserId()
+        get() = getHomeViewModel().getUserId()
 
     override val windowHeight: Int
         get() = if (activity != null) {
@@ -225,6 +229,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     protected var trackingQueue: TrackingQueue? = null
 
+    //Get Viewmodel using getHomeViewModel() method
     @Inject
     lateinit var viewModel: Lazy<HomeViewModel>
     private lateinit var remoteConfig: RemoteConfig
@@ -266,16 +271,12 @@ open class HomeFragment : BaseDaggerFragment(),
     private var pageLoadTimeCallback: PageLoadTimePerformanceInterface? = null
     private var isOnRecylerViewLayoutAdded = false
     private var fragmentCreatedForFirstTime = false
+    private var lock = Object()
 
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        val homeInitWeave = object:WeaveInterface{
-            override fun execute(): Any {
-                return initHomePageFlows()
-            }
-        }
-        Weaver.executeWeaveCoRoutineNow(homeInitWeave)
+        initHomePageFlows()
         mainParentStatusBarListener = context as MainParentStatusBarListener
         homePerformanceMonitoringListener = castContextToHomePerformanceMonitoring(context)
         requestStatusBarDark()
@@ -306,7 +307,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
 
-    fun initHomePageFlows():Boolean{
+    protected open fun initHomePageFlows():Boolean{
         initInjectorHome()
         return true
     }
@@ -364,11 +365,13 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     fun initInjectorHome() {
-        if (activity != null) {
-            if (component == null) {
-                component = initBuilderComponent().build()
+        synchronized(lock) {
+            if (activity != null) {
+                if (component == null) {
+                    component = initBuilderComponent().build()
+                    component!!.inject(this)
+                }
             }
-            component!!.inject(this)
         }
     }
 
@@ -527,7 +530,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun scrollToRecommendList() {
-        homeRecyclerView?.smoothScrollToPosition(viewModel.get().getRecommendationFeedSectionPosition())
+        homeRecyclerView?.smoothScrollToPosition(getHomeViewModel().getRecommendationFeedSectionPosition())
         scrollToRecommendList = false
     }
 
@@ -556,7 +559,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun conditionalViewModelRefresh(){
         if(!fragmentCreatedForFirstTime) {
-            viewModel.get().refresh(isFirstInstall())
+            getHomeViewModel().refresh(isFirstInstall())
         }
     }
 
@@ -624,7 +627,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun observeHomeRequestNetwork() {
-        viewModel.get().isRequestNetworkLiveData.observe(viewLifecycleOwner, Observer {data: Event<Boolean> ->
+        getHomeViewModel().isRequestNetworkLiveData.observe(viewLifecycleOwner, Observer { data: Event<Boolean> ->
             val isRequestNetwork = data.peekContent()
             if (isRequestNetwork && getPageLoadTimeCallback() != null) {
                 getPageLoadTimeCallback()?.startNetworkRequestPerformanceMonitoring()
@@ -636,7 +639,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun observeViewModelInitialized() {
-        viewModel.get().isViewModelInitalized.observe(viewLifecycleOwner, Observer { data: Event<Boolean> ->
+        getHomeViewModel().isViewModelInitalized.observe(viewLifecycleOwner, Observer { data: Event<Boolean> ->
             val isViewModelInitialized = data.peekContent()
             if (isViewModelInitialized) {
                 callSubordinateTasks();
@@ -648,11 +651,11 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun observeErrorEvent() {
-        viewModel.get().errorEventLiveData.observe(viewLifecycleOwner, Observer { data: Event<String?>? -> showToaster(getString(R.string.home_error_connection), TYPE_ERROR) })
+        getHomeViewModel().errorEventLiveData.observe(viewLifecycleOwner, Observer { data: Event<String?>? -> showToaster(getString(R.string.home_error_connection), TYPE_ERROR) })
     }
 
     private fun observeHomeData() {
-        viewModel.get().homeLiveData.observe(this, Observer { data: HomeDataModel? ->
+        getHomeViewModel().homeLiveData.observe(this, Observer { data: HomeDataModel? ->
             if (data != null) {
                 if (data.list.size > VISITABLE_SIZE_WITH_DEFAULT_BANNER) {
                     configureHomeFlag(data.homeFlag)
@@ -665,7 +668,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun observeUpdateNetworkStatusData() {
-        viewModel.get().updateNetworkLiveData.observe(this, Observer { (status) ->
+        getHomeViewModel().updateNetworkLiveData.observe(this, Observer { (status) ->
             resetImpressionListener()
             if (status === Result.Status.SUCCESS) {
                 hideLoading()
@@ -679,7 +682,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun observeTrackingData() {
-        viewModel.get().trackingLiveData.observe(this, Observer<Event<List<HomeVisitable?>>> { trackingData: Event<List<HomeVisitable?>> ->
+        getHomeViewModel().trackingLiveData.observe(this, Observer<Event<List<HomeVisitable?>>> { trackingData: Event<List<HomeVisitable?>> ->
             val homeVisitables = trackingData.getContentIfNotHandled()
             homeVisitables?.let {
                 val visitables: List<Visitable<*>> = it as List<Visitable<*>>
@@ -690,13 +693,13 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun observeSearchHint() {
-        if (view != null && ::viewModel.isInitialized && !viewModel.get().searchHint.hasObservers() && homeMainToolbar != null && homeMainToolbar?.getViewHomeMainToolBar() != null) {
-            viewModel.get().searchHint.observe(viewLifecycleOwner, Observer { data: SearchPlaceholder -> setHint(data) })
+        if (view != null && ::viewModel.isInitialized && !getHomeViewModel().searchHint.hasObservers() && homeMainToolbar != null && homeMainToolbar?.getViewHomeMainToolBar() != null) {
+            getHomeViewModel().searchHint.observe(viewLifecycleOwner, Observer { data: SearchPlaceholder -> setHint(data) })
         }
     }
 
     private fun observeOneClickCheckout() {
-        viewModel.get().oneClickCheckout.observe(viewLifecycleOwner, Observer { event: Event<Any> ->
+        getHomeViewModel().oneClickCheckout.observe(viewLifecycleOwner, Observer { event: Event<Any> ->
             val data = event.peekContent()
             if (data is Throwable) { // error
                 showToaster(getString(R.string.home_error_connection), TYPE_ERROR)
@@ -707,7 +710,7 @@ open class HomeFragment : BaseDaggerFragment(),
                         (dataMap[HomeViewModel.GRID] as DynamicHomeChannel.Grid?)!!,
                         dataMap[HomeViewModel.POSITION] as Int,
                         (dataMap[HomeViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
-                        viewModel.get().getUserId()
+                        getHomeViewModel().getUserId()
                 ) as HashMap<String, Any>)
                 RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
             }
@@ -720,11 +723,11 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun observeSendLocation() {
-        viewModel.get().sendLocationLiveData.observe(viewLifecycleOwner, Observer { data: Event<Any?>? -> detectAndSendLocation() })
+        getHomeViewModel().sendLocationLiveData.observe(viewLifecycleOwner, Observer { data: Event<Any?>? -> detectAndSendLocation() })
     }
 
     private fun observePopupIntroOvo() {
-        viewModel.get().popupIntroOvoLiveData.observe(viewLifecycleOwner, Observer { data: Event<String?> ->
+        getHomeViewModel().popupIntroOvoLiveData.observe(viewLifecycleOwner, Observer { data: Event<String?> ->
             if (RouteManager.isSupportApplink(activity, data.peekContent())) {
                 val intentBalanceWallet = RouteManager.getIntent(activity, data.peekContent())
                 Objects.requireNonNull(context)?.startActivity(intentBalanceWallet)
@@ -736,7 +739,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun observeStickyLogin() {
-        viewModel.get().stickyLogin.observe(viewLifecycleOwner, Observer { (status, data) ->
+        getHomeViewModel().stickyLogin.observe(viewLifecycleOwner, Observer { (status, data) ->
             if (status === Result.Status.SUCCESS) {
                 setStickyContent(data!!)
             } else {
@@ -748,18 +751,18 @@ open class HomeFragment : BaseDaggerFragment(),
     @VisibleForTesting
     private fun observeRequestImagePlayBanner() {
         context?.let {
-            viewModel.get().requestImageTestLiveData.observe(this, Observer { playCardViewModelEvent: Event<PlayCardDataModel> ->
+            getHomeViewModel().requestImageTestLiveData.observe(this, Observer { playCardViewModelEvent: Event<PlayCardDataModel> ->
                 Glide.with(it)
                         .asBitmap()
                         .load(playCardViewModelEvent.peekContent().playCardHome?.coverUrl)
                         .into(object : CustomTarget<Bitmap>() {
                             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                                viewModel.get().setPlayBanner(playCardViewModelEvent.peekContent())
+                                getHomeViewModel().setPlayBanner(playCardViewModelEvent.peekContent())
                             }
 
                             override fun onLoadCleared(placeholder: Drawable?) {}
                             override fun onLoadFailed(errorDrawable: Drawable?) {
-                                viewModel.get().clearPlayBanner()
+                                getHomeViewModel().clearPlayBanner()
                             }
                         })
             })
@@ -897,7 +900,7 @@ open class HomeFragment : BaseDaggerFragment(),
                 this,
                 homeRecyclerView?.recycledViewPool?: RecyclerView.RecycledViewPool(),
                 this,
-                HomeComponentCallback(viewModel.get()),
+                HomeComponentCallback(getHomeViewModel()),
                 DynamicLegoBannerComponentCallback(context),
                 RecommendationListCarouselComponentCallback(viewModel.get(), this),
                 reminderWidgetCallback, reminderWidgetCallback)
@@ -971,7 +974,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onRequestPendingCashBack() {
-        viewModel.get().getTokocashPendingBalance()
+        getHomeViewModel().getTokocashPendingBalance()
     }
 
     override fun actionInfoPendingCashBackTokocash(cashBackData: CashBackData,
@@ -1058,7 +1061,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onCloseTicker() {
         HIDE_TICKER = true
-        viewModel.get().onCloseTicker()
+        getHomeViewModel().onCloseTicker()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -1073,7 +1076,7 @@ open class HomeFragment : BaseDaggerFragment(),
             REQUEST_CODE_REVIEW -> {
                 adapter?.notifyDataSetChanged()
                 if (resultCode == Activity.RESULT_OK) {
-                    viewModel.get().onRemoveSuggestedReview()
+                    getHomeViewModel().onRemoveSuggestedReview()
                 }
             }
             REQUEST_CODE_LOGIN_TOKOPOINTS -> {
@@ -1083,7 +1086,7 @@ open class HomeFragment : BaseDaggerFragment(),
                     }
                 }
             }
-            REQUEST_CODE_PLAY_ROOM -> if (data != null && data.hasExtra(EXTRA_TOTAL_VIEW)) viewModel.get().updateBannerTotalView(data.getStringExtra(EXTRA_TOTAL_VIEW))
+            REQUEST_CODE_PLAY_ROOM -> if (data != null && data.hasExtra(EXTRA_TOTAL_VIEW)) getHomeViewModel().updateBannerTotalView(data.getStringExtra(EXTRA_TOTAL_VIEW))
         }
     }
 
@@ -1092,9 +1095,9 @@ open class HomeFragment : BaseDaggerFragment(),
         adapter?.resetImpressionHomeBanner()
         resetFeedState()
         removeNetworkError()
-        if (viewModel != null) {
-            viewModel.get().getSearchHint(isFirstInstall())
-            viewModel.get().refreshHomeData()
+        if (this::viewModel.isInitialized) {
+            getHomeViewModel().getSearchHint(isFirstInstall())
+            getHomeViewModel().refreshHomeData()
             stickyContent
         }
         if (activity is RefreshNotificationListener) {
@@ -1110,8 +1113,8 @@ open class HomeFragment : BaseDaggerFragment(),
         resetFeedState()
         removeNetworkError()
         homeRecyclerView?.isEnabled = false
-        if (viewModel != null) {
-            viewModel.get().refresh(isFirstInstall())
+        if(::viewModel.isInitialized) {
+            getHomeViewModel().refresh(isFirstInstall())
             stickyContent
         }
         if (activity is RefreshNotificationListener) {
@@ -1126,7 +1129,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onCountDownFinished() {
-        viewModel?.get().refreshHomeData()
+        getHomeViewModel().refreshHomeData()
     }
 
     private fun showLoading() {
@@ -1146,12 +1149,12 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun executeGetStickyContent():Boolean{
         val isShowSticky = getRemoteConfig().getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true)
-        if (isShowSticky && !getUserSession().isLoggedIn) viewModel.get().getStickyContent()
+        if (isShowSticky && !getUserSession().isLoggedIn) getHomeViewModel().getStickyContent()
         return true
     }
 
     private fun injectCouponTimeBased() {
-         if(getUserSession().isLoggedIn) viewModel.get().injectCouponTimeBased();
+         if(getUserSession().isLoggedIn) getHomeViewModel().injectCouponTimeBased();
      }
 
     private fun hideLoading() {
@@ -1175,7 +1178,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun needToShowGeolocationComponent() {
         val firebaseShowGeolocationComponent = getRemoteConfig().getBoolean(RemoteConfigKey.SHOW_HOME_GEOLOCATION_COMPONENT, true)
         if (!firebaseShowGeolocationComponent) {
-            viewModel.get().setNeedToShowGeolocationComponent(false)
+            getHomeViewModel().setNeedToShowGeolocationComponent(false)
             return
         }
         var needToShowGeolocationComponent = true
@@ -1185,26 +1188,26 @@ open class HomeFragment : BaseDaggerFragment(),
                         .shouldShowRequestPermissionRationale(it,
                                 PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION)
                 if (userHasDeniedPermissionBefore) {
-                    viewModel.get().setNeedToShowGeolocationComponent(false)
+                    getHomeViewModel().setNeedToShowGeolocationComponent(false)
                     return
                 }
             }
         }
         if (activity != null) {
-            if (viewModel.get().hasGeolocationPermission()) {
+            if (getHomeViewModel().hasGeolocationPermission()) {
                 needToShowGeolocationComponent = false
             }
         }
         if (needToShowGeolocationComponent && HIDE_GEO) {
-            viewModel.get().setNeedToShowGeolocationComponent(false)
+            getHomeViewModel().setNeedToShowGeolocationComponent(false)
             return
         }
-        viewModel.get().setNeedToShowGeolocationComponent(needToShowGeolocationComponent)
+        getHomeViewModel().setNeedToShowGeolocationComponent(needToShowGeolocationComponent)
     }
 
     private fun setGeolocationPermission() {
-        if (activity == null) viewModel.get().setGeolocationPermission(false)
-        else viewModel.get().setGeolocationPermission(permissionCheckerHelper.get().hasPermission(
+        if (activity == null) getHomeViewModel().setGeolocationPermission(false)
+        else getHomeViewModel().setGeolocationPermission(permissionCheckerHelper.get().hasPermission(
                 activity!!,
                 arrayOf(PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION)))
     }
@@ -1215,7 +1218,7 @@ open class HomeFragment : BaseDaggerFragment(),
                 object : PermissionCheckListener {
                     override fun onPermissionDenied(permissionText: String) {
                         HomePageTracking.eventClickNotAllowGeolocation(activity)
-                        viewModel.get().onCloseGeolocation()
+                        getHomeViewModel().onCloseGeolocation()
                         showNotAllowedGeolocationSnackbar()
                     }
 
@@ -1223,7 +1226,7 @@ open class HomeFragment : BaseDaggerFragment(),
                     override fun onPermissionGranted() {
                         HomePageTracking.eventClickAllowGeolocation(activity)
                         detectAndSendLocation()
-                        viewModel.get().onCloseGeolocation()
+                        getHomeViewModel().onCloseGeolocation()
                         showAllowedGeolocationSnackbar()
                     }
                 }, "")
@@ -1247,7 +1250,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun onGetLocation(): Function1<DeviceLocation, Unit> {
         return { (latitude, longitude) ->
             saveLocation(activity, latitude, longitude)
-            viewModel.get().sendGeolocationData()
+            getHomeViewModel().sendGeolocationData()
             null
         }
     }
@@ -1355,16 +1358,16 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun updateExpiredChannel(dynamicChannelDataModel: DynamicChannelDataModel, position: Int) {
-        viewModel.get().getDynamicChannelData(dynamicChannelDataModel, position)
+        getHomeViewModel().getDynamicChannelData(dynamicChannelDataModel, position)
     }
 
     override fun onBuyAgainOneClickCheckOutClick(grid: DynamicHomeChannel.Grid, channel: DynamicHomeChannel.Channels, position: Int) {
-        viewModel.get().getOneClickCheckout(channel, grid, position)
+        getHomeViewModel().getOneClickCheckout(channel, grid, position)
     }
 
     override fun onBuyAgainCloseChannelClick(channel: DynamicHomeChannel.Channels, position: Int) {
-        viewModel.get().onCloseBuyAgain(channel.id, position)
-        TrackApp.getInstance().gtm.sendGeneralEvent(getCloseClickOnDynamicListCarousel(channel, viewModel.get().getUserId()))
+        getHomeViewModel().onCloseBuyAgain(channel.id, position)
+        TrackApp.getInstance().gtm.sendGeneralEvent(getCloseClickOnDynamicListCarousel(channel, getHomeViewModel().getUserId()))
     }
 
     private fun onActionLinkClicked(actionLink: String, trackingAttribution: String = "") {
@@ -1431,23 +1434,23 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun getTabBusinessWidget(position: Int) {
-        viewModel.get().getBusinessUnitTabData(position)
+        getHomeViewModel().getBusinessUnitTabData(position)
     }
 
     override fun getBusinessUnit(tabId: Int, position: Int) {
-        viewModel.get().getBusinessUnitData(tabId, position)
+        getHomeViewModel().getBusinessUnitData(tabId, position)
     }
 
     override fun getPlayChannel(position: Int) {
-        viewModel.get().getPlayBanner(position)
+        getHomeViewModel().getPlayBanner(position)
     }
 
     override fun onRefreshTokoPointButtonClicked() {
-        viewModel.get().onRefreshTokoPoint()
+        getHomeViewModel().onRefreshTokoPoint()
     }
 
     override fun onRefreshTokoCashButtonClicked() {
-        viewModel.get().onRefreshTokoCash()
+        getHomeViewModel().onRefreshTokoCash()
     }
 
     override fun onLegoBannerClicked(actionLink: String, trackingAttribution: String) {
@@ -1526,7 +1529,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onPopularKeywordSectionReloadClicked(position: Int, channel: DynamicHomeChannel.Channels) {
-        viewModel.get().getPopularKeywordData()
+        getHomeViewModel().getPopularKeywordData()
         sendPopularKeywordClickReload(channel)
     }
 
@@ -1561,14 +1564,14 @@ open class HomeFragment : BaseDaggerFragment(),
             if (extras != null) {
                 activity?.let {
                     val data = extras.getString(it.getString(R.string.broadcast_wallet))
-                    if (data != null && !data.isEmpty()) viewModel.get().getHeaderData() // update header data
+                    if (data != null && !data.isEmpty()) getHomeViewModel().getHeaderData() // update header data
                 }
             }
         }
     }
 
     override fun onRetryLoadFeeds() {
-        viewModel.get().getFeedTabData()
+        getHomeViewModel().getFeedTabData()
     }
 
     private val isUserLoggedIn: Boolean
@@ -1635,7 +1638,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun showFeedSectionViewHolderShadow(show: Boolean) {
         val feedViewHolder = homeRecyclerView?.findViewHolderForAdapterPosition(
-                viewModel.get().getRecommendationFeedSectionPosition()
+                getHomeViewModel().getRecommendationFeedSectionPosition()
         )
         if (feedViewHolder is HomeRecommendationFeedViewHolder) {
             feedViewHolder.showFeedTabShadow(show)
@@ -1644,7 +1647,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun inheritScrollVelocityToRecommendation(velocity: Int) {
         val feedViewHolder = homeRecyclerView?.findViewHolderForAdapterPosition(
-                viewModel.get().getRecommendationFeedSectionPosition()
+                getHomeViewModel().getRecommendationFeedSectionPosition()
         )
         if (feedViewHolder is HomeRecommendationFeedViewHolder) {
             feedViewHolder.scrollByVelocity(velocity)
@@ -1670,7 +1673,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     override fun onCloseGeolocationView() {
         HIDE_GEO = true
-        viewModel.get().onCloseGeolocation()
+        getHomeViewModel().onCloseGeolocation()
     }
 
     private fun getSnackbar(text: String, duration: Int): Snackbar {
@@ -1766,7 +1769,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onCloseClick() {
-        viewModel.get().dismissReview()
+        getHomeViewModel().dismissReview()
     }
 
     private fun updateEggBottomMargin(floatingEggButtonFragment: FloatingEggButtonFragment) {
@@ -1902,13 +1905,13 @@ open class HomeFragment : BaseDaggerFragment(),
             }
             DynamicChannelViewHolder.TYPE_MIX_TOP -> putEEToIris(getMixTopViewIris(mapChannelToProductTracker(channel), channel.header.name, channel.id, position.toString()) as HashMap<String, Any>)
             DynamicChannelViewHolder.TYPE_MIX_LEFT -> putEEToIris(getMixLeftIrisProductView(channel) as HashMap<String, Any>)
-            DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST -> putEEToIris(getRecommendationListImpression(channel, true, viewModel.get().getUserId()) as HashMap<String, Any>)
+            DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST -> putEEToIris(getRecommendationListImpression(channel, true, getHomeViewModel().getUserId()) as HashMap<String, Any>)
             DynamicChannelViewHolder.TYPE_PRODUCT_HIGHLIGHT -> putEEToIris(getProductHighlightImpression(
                     channel, true
             ) as HashMap<String, Any>)
             DynamicChannelViewHolder.TYPE_CATEGORY_WIDGET -> putEEToIris(CategoryWidgetTracking.getCategoryWidgetBanneImpression(
                     channel.grids.toList(),
-                    viewModel.get().getUserId(),
+                    getHomeViewModel().getUserId(),
                     true,
                     channel
             ) as HashMap<String, Any>)
@@ -1940,7 +1943,16 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onDetach() {
-        viewModel.get().onCleared()
+        if(this::viewModel.isInitialized){
+            this.viewModel.get().onCleared()
+        }
         super.onDetach()
+    }
+
+    fun getHomeViewModel(): HomeViewModel{
+        if(!this::viewModel.isInitialized){
+            initInjectorHome()
+        }
+        return viewModel.get()
     }
 }
