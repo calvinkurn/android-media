@@ -110,7 +110,7 @@ public class FragmentFavorite extends BaseDaggerFragment
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View parentView = inflater.inflate(R.layout.fragment_index_favorite_v2, container, false);
+        View parentView = inflater.inflate(R.layout.favorite_fragment_index_favorite_v2, container, false);
         recyclerView = (RecyclerView) parentView.findViewById(R.id.index_favorite_recycler_view);
         swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
         progressBar = (ProgressBar) parentView.findViewById(R.id.include_loading);
