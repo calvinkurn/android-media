@@ -152,7 +152,6 @@ include "features:fintech:merchant_lending_widget"
 include 'tkpdloyalty'
 include 'tkpdcore'
 include 'tkpdinbox'
-include 'tkpdsession'
 include 'tkpddesign'
 include 'tkpdseller'
 include 'tkpdabstraction'
