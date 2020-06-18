@@ -2,9 +2,9 @@ package com.tokopedia.topchat.chatsearch.view.adapter.viewholder
 
 import android.view.View
 import android.widget.ImageView
-import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
@@ -20,7 +20,7 @@ class ItemSearchChatReplyViewHolder(itemView: View?) : AbstractViewHolder<ChatRe
 
     private val userName: Typography? = itemView?.findViewById(R.id.user_name)
     private val thumbnail: ImageView? = itemView?.findViewById(R.id.thumbnail)
-    private val message: TextView? = itemView?.findViewById(R.id.message)
+    private val message: Typography? = itemView?.findViewById(R.id.message)
     private val unreadCounter: Typography? = itemView?.findViewById(R.id.unread_counter)
     private val time: Typography? = itemView?.findViewById(R.id.time)
     private val label: Label? = itemView?.findViewById(R.id.user_label)
@@ -65,7 +65,8 @@ class ItemSearchChatReplyViewHolder(itemView: View?) : AbstractViewHolder<ChatRe
     }
 
     private fun bindLastMessage(element: ChatReplyUiModel) {
-        message?.text = element.lastMessage
+        message?.text = MethodChecker.fromHtml(element.lastMessage)
+        message?.setWeight(Typography.REGULAR)
     }
 
     private fun bindTimeStamp(element: ChatReplyUiModel) {
