@@ -1,11 +1,14 @@
 package com.tokopedia.seller_migration_common.presentation.widget
 
 import android.content.Context
-import android.os.Bundle
 import android.view.View
+import android.os.Bundle
 import com.tokopedia.seller_migration_common.R
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.SELLER_MIGRATION_CHAT_FIRST_IMAGE
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.SELLER_MIGRATION_CHAT_SECOND_IMAGE
+import com.tokopedia.user.session.UserSession
 
 class SellerMigrationChatBottomSheet(titles: List<String>,
                                      contents: List<String>,
@@ -24,5 +27,20 @@ class SellerMigrationChatBottomSheet(titles: List<String>,
                 }
             }
         }
+    }
+
+    private var userId = ""
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        userId = UserSession(context).userId
+    }
+
+    override fun trackGoToSellerApp() {
+        SellerMigrationTracking.eventGoToSellerApp(this.userId, SellerMigrationTrackingConstants.EVENT_CLICK_GO_TO_SELLER_APP_CHAT)
+    }
+
+    override fun trackGoToPlayStore() {
+        SellerMigrationTracking.eventGoToPlayStore(this.userId, SellerMigrationTrackingConstants.EVENT_CLICK_GO_TO_SELLER_APP_CHAT)
     }
 }

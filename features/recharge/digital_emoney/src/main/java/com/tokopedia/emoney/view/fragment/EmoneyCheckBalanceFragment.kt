@@ -57,8 +57,12 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         initInjector()
 
         activity?.let {
-            nfcAdapter = NfcAdapter.getDefaultAdapter(it)
-            processTagIntent(it.intent)
+            try {
+                nfcAdapter = NfcAdapter.getDefaultAdapter(it)
+                processTagIntent(it.intent)
+            } catch (e : Exception){
+                e.printStackTrace()
+            }
         }
     }
 
@@ -149,7 +153,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
     override fun onPause() {
         super.onPause()
         activity?.let {
-            if (nfcAdapter != null) {
+            if (this::nfcAdapter.isInitialized && nfcAdapter != null) {
                 nfcAdapter.disableForegroundDispatch(it)
             }
         }
@@ -157,7 +161,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     override fun onResume() {
         super.onResume()
-        if (nfcAdapter != null) {
+        if (this::nfcAdapter.isInitialized && nfcAdapter != null) {
             if (!::permissionCheckerHelper.isInitialized) {
                 permissionCheckerHelper = PermissionCheckerHelper()
             }

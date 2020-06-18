@@ -85,4 +85,7 @@
 
     <string name="broad_match_title">Pot tanaman alumunium IKEA</string>
     <string name="broad_match_see_more">Lihat Semua</string>
+
+    <string name="search_inspiration_card_title">Mungkin maksud kamu ini?</string>
+    <string name="search_inspiration_card_option">putih</string>
 </resources>
