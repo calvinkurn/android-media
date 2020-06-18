@@ -17,11 +17,11 @@ import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.model.PlayCoverUploadEntity
 import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastSetupDataStore
-import com.tokopedia.play.broadcaster.dispatcher.PlayBroadcastDispatcher
 import com.tokopedia.play.broadcaster.domain.usecase.GetOriginalProductImageUseCase
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.util.PlayBroadcastCoverTitleUtil
+import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastCoverFromGalleryBottomSheet.Companion.MINIMUM_COVER_HEIGHT
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastCoverFromGalleryBottomSheet.Companion.MINIMUM_COVER_WIDTH
 import com.tokopedia.user.session.UserSessionInterface
@@ -30,25 +30,22 @@ import com.yalantis.ucrop.model.CropParameters
 import com.yalantis.ucrop.model.ExifInfo
 import com.yalantis.ucrop.model.ImageState
 import com.yalantis.ucrop.task.BitmapCropTask
-import kotlinx.coroutines.CoroutineDispatcher
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import java.io.File
 import java.util.*
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * @author by furqan on 09/06/2020
  */
 class PlayBroadcastCoverSetupViewModel @Inject constructor(
-        @Named(PlayBroadcastDispatcher.MAIN) dispatcher: CoroutineDispatcher,
-        @Named(PlayBroadcastDispatcher.IO) private val ioDispatcher: CoroutineDispatcher,
+        private val dispatcher: CoroutineDispatcherProvider,
         private val setupDataStore: PlayBroadcastSetupDataStore,
         private val uploadImageUseCase: UploadImageUseCase<PlayCoverUploadEntity>,
         private val getOriginalProductImageUseCase: GetOriginalProductImageUseCase,
         private val userSession: UserSessionInterface)
-    : BaseViewModel(dispatcher) {
+    : BaseViewModel(dispatcher.main) {
 
     val observableSelectedProducts: LiveData<List<ProductContentUiModel>>
         get() = setupDataStore.getObservableSelectedProducts()
@@ -71,7 +68,7 @@ class PlayBroadcastCoverSetupViewModel @Inject constructor(
     }
 
     fun getOriginalImageUrl(context: Context, productId: Long, resizedImageUrl: String) {
-        launchCatchError(ioDispatcher, block = {
+        launchCatchError(dispatcher.io, block = {
             val originalImageUrlList = getOriginalProductImageUseCase.apply {
                 params = GetOriginalProductImageUseCase.createParams(productId)
             }.executeOnBackground()
@@ -87,7 +84,7 @@ class PlayBroadcastCoverSetupViewModel @Inject constructor(
     }
 
     fun uploadCover(imagePath: String) {
-        launchCatchError(ioDispatcher, block = {
+        launchCatchError(dispatcher.io, block = {
             val params = hashMapOf<String, RequestBody>()
             params[PARAM_WEB_SERVICE] = RequestBody.create(MediaType.parse(TEXT_PLAIN), DEFAULT_WEB_SERVICE)
             params[PARAM_RESOLUTION] = RequestBody.create(MediaType.parse(TEXT_PLAIN), RESOLUTION_700)

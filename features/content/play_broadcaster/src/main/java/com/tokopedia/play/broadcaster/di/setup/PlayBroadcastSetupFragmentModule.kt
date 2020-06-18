@@ -1,23 +1,18 @@
-package com.tokopedia.play.broadcaster.di
+package com.tokopedia.play.broadcaster.di.setup
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.play.broadcaster.di.key.FragmentKey
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastChooseCoverBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.*
-import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
 import com.tokopedia.play.broadcaster.view.fragment.factory.PlayBroadcastFragmentFactory
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
-/**
- * Created by jegul on 27/05/20
- */
 @Module
-abstract class PlayBroadcasterFragmentModule {
+abstract class PlayBroadcastSetupFragmentModule {
 
     @Binds
     abstract fun bindFragmentFactory(fragmentFactory: PlayBroadcastFragmentFactory): FragmentFactory
@@ -26,7 +21,9 @@ abstract class PlayBroadcasterFragmentModule {
     @IntoMap
     @FragmentKey(PlayBroadcastSetupBottomSheet::class)
     abstract fun getBroadcastSetupBottomSheet(fragment: PlayBroadcastSetupBottomSheet): Fragment
-
+    /**
+     * Etalase Setup
+     */
     @Binds
     @IntoMap
     @FragmentKey(PlayEtalasePickerFragment::class)
@@ -37,39 +34,6 @@ abstract class PlayBroadcasterFragmentModule {
     @FragmentKey(PlayEtalaseDetailFragment::class)
     abstract fun getPlayEtalaseDetailFragment(fragment: PlayEtalaseDetailFragment): Fragment
 
-    @Binds
-    @IntoMap
-    @FragmentKey(PlayBroadcastSetupFragment::class)
-    abstract fun getPlayPrepareBroadcastFragment(fragment: PlayBroadcastSetupFragment): Fragment
-
-    @Binds
-    @IntoMap
-    @FragmentKey(PlayBroadcastSummaryFragment::class)
-    abstract fun getPlayBroadcastSummaryFragment(fragment: PlayBroadcastSummaryFragment): Fragment
-
-    @Binds
-    @IntoMap
-    @FragmentKey(PlayBroadcastUserInteractionFragment::class)
-    abstract fun getPlayLiveBroadcastFragment(fragment: PlayBroadcastUserInteractionFragment): Fragment
-
-    @Binds
-    @IntoMap
-    @FragmentKey(PlayBroadcastFragment::class)
-    abstract fun getParentBroadcastFragment(fragment: PlayBroadcastFragment): Fragment
-
-    @Binds
-    @IntoMap
-    @FragmentKey(PlayProductLiveBottomSheet::class)
-    abstract fun getProductLiveBottomSheet(fragment: PlayProductLiveBottomSheet): Fragment
-
-    @Binds
-    @IntoMap
-    @FragmentKey(PlayBeforeLiveFragment::class)
-    abstract fun getBeforeLiveFragment(fragment: PlayBeforeLiveFragment): Fragment
-
-    /**
-     * Etalase Setup
-     */
     @Binds
     @IntoMap
     @FragmentKey(PlayEtalaseListFragment::class)
@@ -97,5 +61,4 @@ abstract class PlayBroadcasterFragmentModule {
     @IntoMap
     @FragmentKey(PlayBroadcastChooseCoverBottomSheet::class)
     abstract fun getPlayBroadcastChooseCoverBottomSheet(fragment: PlayBroadcastChooseCoverBottomSheet): Fragment
-
 }

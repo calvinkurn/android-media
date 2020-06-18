@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.di
+package com.tokopedia.play.broadcaster.di.broadcast
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
@@ -9,12 +9,12 @@ import dagger.Component
  */
 @Component(
         dependencies = [BaseAppComponent::class],
-        modules = [PlayBroadcasterViewModelModule::class,
-            PlayBroadcasterModule::class,
-            PlayBroadcasterFragmentModule::class]
+        modules = [PlayBroadcastViewModelModule::class,
+            PlayBroadcastModule::class,
+            PlayBroadcastFragmentModule::class]
 )
-@PlayBroadcasterScope
-interface PlayBroadcasterComponent {
+@PlayBroadcastScope
+interface PlayBroadcastComponent {
 
     fun inject(broadcastActivity: PlayBroadcastActivity)
 }
