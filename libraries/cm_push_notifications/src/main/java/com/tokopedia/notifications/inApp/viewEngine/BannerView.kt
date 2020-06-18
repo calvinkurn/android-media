@@ -61,8 +61,7 @@ internal open class BannerView(activity: Activity) {
         lstActionButton = container.findViewById(R.id.lstActionButton)
 
         // set data view
-        val layout = data.getCmLayout()
-        setBanner(layout)
+        setBanner(data)
         setActionButton(data)
         setCloseButton(data)
     }
@@ -75,7 +74,8 @@ internal open class BannerView(activity: Activity) {
         }
     }
 
-    private fun setBanner(layout: CMLayout) {
+    private fun setBanner(data: CMInApp) {
+        val layout = data.getCmLayout()
         imgBanner.setImage(layout.getImg(), 0f)
     }
 
@@ -127,6 +127,8 @@ internal open class BannerView(activity: Activity) {
         lstActionButton.visibility = View.GONE
 
         imgBanner.setOnClickListener {
+            dismissInteractionTracking(data)
+
             RouteManager.route(
                     mActivity.get(),
                     data.getCmLayout().getAppLink()
