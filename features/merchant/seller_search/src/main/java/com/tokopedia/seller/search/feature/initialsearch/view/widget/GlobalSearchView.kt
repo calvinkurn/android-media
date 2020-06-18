@@ -2,7 +2,6 @@ package com.tokopedia.seller.search.feature.initialsearch.view.widget
 
 import android.content.Context
 import android.graphics.Rect
-import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.style.UnderlineSpan
@@ -15,13 +14,16 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.seller.search.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_global_search_view.view.*
+import java.util.*
 
 class GlobalSearchView : BaseCustomView {
 
     companion object {
-        const val DEBOUNCE_DELAY_MILLIS = 200L
+        const val DEBOUNCE_DELAY_MILLIS = 1000L
         const val MIN_CHARACTER_SEARCH = 3
     }
+
+    private var timer = Timer()
 
     private var mClearingFocus: Boolean = false
     private var searchKeyword = ""
@@ -47,7 +49,10 @@ class GlobalSearchView : BaseCustomView {
         View.inflate(context, R.layout.widget_global_search_view, this)
         initSearchBarView()
         btnBackHome()
-        showKeyboard(searchBarView.searchBarTextField)
+        searchBarView.searchBarTextField.postDelayed({
+            showKeyboard(searchBarView.searchBarTextField)
+            searchBarView?.searchBarTextField?.text?.length?.let { searchBarView.searchBarTextField.setSelection(it) }
+        }, 200)
     }
 
     override fun requestFocus(direction: Int, previouslyFocusedRect: Rect?): Boolean {
@@ -92,12 +97,12 @@ class GlobalSearchView : BaseCustomView {
             isClearable = true
             iconListener = {
                 if (searchBarPlaceholder.isNotEmpty()) {
-                    //TODO refresh
                     searchBarTextField.text.clear()
-                    searchKeyword = searchBarTextField.text.toString()
-                    Handler().postDelayed({
+                    searchKeyword = searchBarTextField.text.trim().toString()
+
+                    onEditTextChangeListener {
                         searchViewListener?.onQueryTextChangeListener(searchKeyword)
-                    }, DEBOUNCE_DELAY_MILLIS)
+                    }
                 }
             }
 
@@ -113,19 +118,20 @@ class GlobalSearchView : BaseCustomView {
                     when {
                         keyword.isEmpty() -> {
                             searchKeyword = keyword
-                            Handler().postDelayed({
+                            onEditTextChangeListener {
                                 searchViewListener?.onQueryTextChangeListener(searchKeyword)
-                            }, DEBOUNCE_DELAY_MILLIS)
+                            }
                         }
                         keyword.length < MIN_CHARACTER_SEARCH -> {
-                            Handler().postDelayed({
+                            onEditTextChangeListener {
                                 searchViewListener?.onMinCharState()
-                            }, DEBOUNCE_DELAY_MILLIS)
+                            }
                         }
                         else -> {
-                            searchKeyword = s.trim().toString()
-                            Handler().postDelayed({
-                                searchViewListener?.onQueryTextChangeListener(searchKeyword)}, DEBOUNCE_DELAY_MILLIS)
+                            searchKeyword = keyword
+                            onEditTextChangeListener {
+                                searchViewListener?.onQueryTextChangeListener(searchKeyword)
+                            }
                         }
                     }
 
@@ -148,6 +154,16 @@ class GlobalSearchView : BaseCustomView {
                 return@setOnEditorActionListener false
             }
         }
+    }
+
+    private fun onEditTextChangeListener(editTextListener: () -> Unit) {
+        timer.cancel()
+        timer = Timer()
+        timer.schedule(object : TimerTask() {
+            override fun run() {
+                editTextListener.invoke()
+            }
+        }, DEBOUNCE_DELAY_MILLIS)
     }
 
     private fun btnBackHome() {
