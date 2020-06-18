@@ -25,7 +25,7 @@ object CentralizedPromoConstant {
     const val EVENT_NAME_PM_CLICK = "clickPowerMerchant"
 
     const val EVENT_ACTION_FREE_SHIPPING_IMPRESSION = "impression on BBO Banner"
-    const val EVENT_ACTION_FREE_SHIPPING_CLICK = "impression on BBO Banner"
+    const val EVENT_ACTION_FREE_SHIPPING_CLICK = "click on BBO Banner"
 
     const val EVENT_LABEL_PM_ACTIVE = "PM Active"
     const val EVENT_LABEL_PM_INACTIVE = "PM Inactive"
