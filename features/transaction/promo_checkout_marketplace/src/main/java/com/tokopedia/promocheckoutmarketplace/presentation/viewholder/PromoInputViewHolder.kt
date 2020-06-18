@@ -46,7 +46,7 @@ class PromoInputViewHolder(private val view: View,
             textFieldInputPromo.setFirstIcon(R.drawable.unify_chips_ic_close)
         } else {
             buttonApplyPromo.isEnabled = false
-            textFieldInputPromo.setFirstIcon(R.color.white)
+            textFieldInputPromo.setFirstIcon(com.tokopedia.abstraction.R.color.white)
         }
 
         textFieldInputPromo.textFieldInput.setOnClickListener { listener.onClickPromoManualInputTextField() }
@@ -71,7 +71,7 @@ class PromoInputViewHolder(private val view: View,
                 } else {
                     element.uiState.isButtonSelectEnabled = false
                     buttonApplyPromo.isEnabled = false
-                    textFieldInputPromo.setFirstIcon(R.color.white)
+                    textFieldInputPromo.setFirstIcon(com.tokopedia.abstraction.R.color.white)
                 }
             }
         })
@@ -104,19 +104,19 @@ class PromoInputViewHolder(private val view: View,
 
     private fun setPaddingViewHasNoError() {
         view.setPadding(
-                itemView.context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0,
-                itemView.context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0,
-                itemView.context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0,
-                itemView.context?.resources?.getDimension(R.dimen.dp_0)?.toInt() ?: 0
+                itemView.context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_16)?.toInt() ?: 0,
+                itemView.context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_16)?.toInt() ?: 0,
+                itemView.context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_16)?.toInt() ?: 0,
+                itemView.context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_0)?.toInt() ?: 0
         )
     }
 
     private fun setPaddingViewHasError() {
         view.setPadding(
-                itemView.context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0,
-                itemView.context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0,
-                itemView.context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0,
-                itemView.context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0
+                itemView.context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_16)?.toInt() ?: 0,
+                itemView.context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_16)?.toInt() ?: 0,
+                itemView.context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_16)?.toInt() ?: 0,
+                itemView.context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_16)?.toInt() ?: 0
         )
     }
 

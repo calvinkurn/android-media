@@ -65,10 +65,10 @@ class PromoListItemViewHolder(private val view: View,
                     hasNonBlankUrl = true
                     val imageView = ImageView(itemView.context)
                     imageView.layoutParams = LinearLayout.LayoutParams(
-                            itemView.context.resources.getDimensionPixelSize(R.dimen.dp_30),
+                            itemView.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_30),
                             LinearLayout.LayoutParams.MATCH_PARENT
                     )
-                    imageView.setMargin(0, 0, itemView.context.resources.getDimensionPixelSize(R.dimen.dp_4), 0)
+                    imageView.setMargin(0, 0, itemView.context.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_4), 0)
                     imageView.scaleType = ImageView.ScaleType.FIT_START
                     ImageHandler.loadImageRounded2(itemView.context, imageView, it)
                     containerImagePromoItem.addView(imageView)
@@ -77,11 +77,11 @@ class PromoListItemViewHolder(private val view: View,
             if (hasNonBlankUrl) {
                 containerImagePromoItem.show()
             } else {
-                labelPromoItemTitle.setMargin(0, 0, itemView.context.resources.getDimension(R.dimen.dp_12).toInt(), 0)
+                labelPromoItemTitle.setMargin(0, 0, itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_12).toInt(), 0)
                 containerImagePromoItem.gone()
             }
         } else {
-            labelPromoItemTitle.setMargin(0, 0, itemView.context.resources.getDimension(R.dimen.dp_12).toInt(), 0)
+            labelPromoItemTitle.setMargin(0, 0, itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_12).toInt(), 0)
             containerImagePromoItem.gone()
         }
 
@@ -117,8 +117,8 @@ class PromoListItemViewHolder(private val view: View,
 
     private fun renderEnablePromoItem(element: PromoListItemUiModel) {
         labelPromoItemErrorMessage.gone()
-        labelPromoItemSubTitle.setMargin(0, itemView.context.resources.getDimension(R.dimen.dp_2).toInt(),
-                itemView.context.resources.getDimension(R.dimen.dp_12).toInt(), 0)
+        labelPromoItemSubTitle.setMargin(0, itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_2).toInt(),
+                itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_12).toInt(), 0)
         if (element.uiState.isSelected) {
             cardPromoItem.cardType = CardUnify.TYPE_BORDER_ACTIVE
             imageSelectPromo.show()
@@ -135,11 +135,11 @@ class PromoListItemViewHolder(private val view: View,
             }
         }
 
-        labelPromoItemTitle.setTextColor(ContextCompat.getColor(itemView.context, R.color.clr_f531353b))
-        labelPromoCodeInfo.setTextColor(ContextCompat.getColor(itemView.context, R.color.black_70))
-        labelPromoCodeValue.setTextColor(ContextCompat.getColor(itemView.context, R.color.black_70))
-        labelPromoItemErrorMessage.setTextColor(ContextCompat.getColor(itemView.context, R.color.black_70))
-        labelPromoItemSubTitle.setTextColor(ContextCompat.getColor(itemView.context, R.color.black_70))
+        labelPromoItemTitle.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.clr_f531353b))
+        labelPromoCodeInfo.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.black_70))
+        labelPromoCodeValue.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.black_70))
+        labelPromoItemErrorMessage.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.black_70))
+        labelPromoItemSubTitle.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.black_70))
     }
 
     private fun renderDisablePromoItem(element: PromoListItemUiModel) {
@@ -150,8 +150,8 @@ class PromoListItemViewHolder(private val view: View,
         } else {
             labelPromoItemErrorMessage.gone()
         }
-        labelPromoItemSubTitle.setMargin(0, itemView.context.resources.getDimension(R.dimen.dp_8).toInt(),
-                itemView.context.resources.getDimension(R.dimen.dp_12).toInt(), 0)
+        labelPromoItemSubTitle.setMargin(0, itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_8).toInt(),
+                itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_12).toInt(), 0)
         imageSelectPromo.gone()
 
         val childcount = containerImagePromoItem.childCount
@@ -162,7 +162,7 @@ class PromoListItemViewHolder(private val view: View,
             }
         }
 
-        val disabledColor = ContextCompat.getColor(itemView.context, R.color.n_700_44)
+        val disabledColor = ContextCompat.getColor(itemView.context, com.tokopedia.purchase_platform.common.R.color.n_700_44)
         labelPromoItemTitle.setTextColor(disabledColor)
         labelPromoCodeInfo.setTextColor(disabledColor)
         labelPromoCodeValue.setTextColor(disabledColor)

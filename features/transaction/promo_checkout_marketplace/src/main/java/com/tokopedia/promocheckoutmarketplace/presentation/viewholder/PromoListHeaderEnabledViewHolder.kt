@@ -49,7 +49,7 @@ class PromoListHeaderEnabledViewHolder(private val view: View,
             labelPromoListHeaderSubTitle.setTextColor(ContextCompat.getColor(itemView.context, R.color.light_T500))
         } else {
             labelPromoListHeaderSubTitle.text = itemView.context.getString(R.string.label_subtitle_only_one_promo)
-            labelPromoListHeaderSubTitle.setTextColor(ContextCompat.getColor(itemView.context, R.color.n_700_44))
+            labelPromoListHeaderSubTitle.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.purchase_platform.common.R.color.n_700_44))
         }
 
         if (!element.uiState.isCollapsed) {
