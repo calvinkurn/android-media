@@ -24,7 +24,7 @@ class PromoCheckoutActivity : BaseSimpleActivity() {
     }
 
     override fun getLayoutRes(): Int {
-        return R.layout.promo_checkout_marketplace_module_activity
+        return com.tokopedia.abstraction.R.layout.activity_base_simple
     }
 
     override fun onBackPressed() {
