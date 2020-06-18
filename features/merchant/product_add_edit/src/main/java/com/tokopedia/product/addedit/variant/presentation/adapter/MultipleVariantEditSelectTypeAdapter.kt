@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.viewholder.MultipleVariantEditSelectViewHolder
@@ -11,8 +12,9 @@ import com.tokopedia.product.addedit.variant.presentation.viewholder.MultipleVar
 class MultipleVariantEditSelectTypeAdapter: RecyclerView.Adapter<MultipleVariantEditSelectViewHolder>(),
         MultipleVariantEditSelectViewHolder.OnFieldClickListener {
 
-    private var items: List<SelectionInputModel> = listOf()
-    private var selectedIndex: List<HashMap<Int, Boolean>> = arrayListOf()
+    private var productVariants: List<ProductVariantInputModel> = listOf()
+    private var selections: List<SelectionInputModel> = listOf()
+    private var selectedIndex: MutableList<MutableList<Boolean>> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MultipleVariantEditSelectViewHolder {
         val rootView = LayoutInflater.from(parent.context).inflate(R.layout.item_multiple_variant_edit_select, parent, false)
@@ -20,11 +22,11 @@ class MultipleVariantEditSelectTypeAdapter: RecyclerView.Adapter<MultipleVariant
     }
 
     override fun getItemCount(): Int {
-        return items.size
+        return selectedIndex.size
     }
 
     override fun onBindViewHolder(holder: MultipleVariantEditSelectViewHolder, position: Int) {
-        holder.bindData(items[position], selectedIndex[position])
+        holder.bindData(selectedIndex[position], selections)
     }
 
     override fun onFieldClicked(selectionPosition: Int, optionPosition: Int, value: Boolean) {
@@ -32,27 +34,31 @@ class MultipleVariantEditSelectTypeAdapter: RecyclerView.Adapter<MultipleVariant
     }
 
     fun setData(variantInputModel: VariantInputModel) {
-        items = variantInputModel.selections
-        selectedIndex = initializeSelectedIndex(variantInputModel.selections, false)
+        selections = variantInputModel.selections
+        productVariants = variantInputModel.products
+        selectedIndex = initializeSelectedIndex(variantInputModel.products, false)
         notifyDataSetChanged()
     }
 
     fun setAllDataSelected(isSelected: Boolean) {
-        selectedIndex = initializeSelectedIndex(items, isSelected)
+        selectedIndex = initializeSelectedIndex(productVariants, isSelected)
         notifyDataSetChanged()
     }
 
     fun getSelectedData(): List<HashMap<Int, Boolean>> {
-        return selectedIndex
+        return emptyList()
     }
 
-    private fun initializeSelectedIndex(selections: List<SelectionInputModel>, isSelected: Boolean) =
-            selections.map {
-                val result = hashMapOf<Int, Boolean>()
-                it.options.forEachIndexed { index, _ ->
-                    result[index] = isSelected
-                }
-                result
-            }
+    private fun initializeSelectedIndex(
+            productVariants: List<ProductVariantInputModel>,
+            isSelected: Boolean
+    ): MutableList<MutableList<Boolean>> {
+        val groups = productVariants.groupBy{ it.combination.getOrNull(0) }
+        return groups.map {
+            it.value.map {
+                isSelected
+            }.toMutableList()
+        }.toMutableList()
+    }
 
 }
