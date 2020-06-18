@@ -27,7 +27,7 @@ abstract class BaseCreateMerchantVoucherFragment<F : CreateVoucherTypeFactory, W
     open var extraWidget : List<Visitable<F>> = listOf()
 
     @LayoutRes
-    open var layoutRes: Int = R.layout.fragment_base_list
+    open var layoutRes: Int = R.layout.fragment_mvc_base_list
 
     abstract fun onDismissBottomSheet(bottomSheetType: CreateVoucherBottomSheetType)
 
