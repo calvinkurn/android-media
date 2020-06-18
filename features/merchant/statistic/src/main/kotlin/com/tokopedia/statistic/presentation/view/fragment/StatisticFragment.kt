@@ -1,5 +1,6 @@
 package com.tokopedia.statistic.presentation.view.fragment
 
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
@@ -14,6 +15,7 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.common.WidgetListener
@@ -194,7 +196,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             }
 
             setOnScrollVertically {
-                selectTabIfSectionWidget(this)
+                showTabLayout()
+                selectTabOnScrolling()
             }
         }
         recyclerView.layoutManager = mLayoutManager
@@ -269,8 +272,26 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         if (visibleWidgets.isNotEmpty()) getWidgetsData(visibleWidgets)
     }
 
-    private fun selectTabIfSectionWidget(layoutManager: GridLayoutManager) {
-        val firstVisible: Int = layoutManager.findFirstCompletelyVisibleItemPosition()
+    private fun showTabLayout() = view?.run {
+        val firstVisible: Int = mLayoutManager.findFirstVisibleItemPosition()
+        if (firstVisible > 0) {
+            tabLayoutStc.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            setAppBarElevation(context.dpToPx(4))
+        } else {
+            setAppBarElevation(0f)
+            tabLayoutStc.layoutParams.height = 0
+        }
+        tabLayoutStc.requestLayout()
+    }
+
+    private fun setAppBarElevation(elevation: Float) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            view?.appBarStc?.elevation = elevation
+        }
+    }
+
+    private fun selectTabOnScrolling() {
+        val firstVisible: Int = mLayoutManager.findFirstCompletelyVisibleItemPosition()
         if (firstVisible == RecyclerView.NO_POSITION) return
 
         val mostTopVisibleWidget: BaseWidgetUiModel<*> = adapter.data[firstVisible]
@@ -315,7 +336,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         tabLayoutStc.tabLayout.setOnTabSelectedListener { tab ->
             scrollToPosition()
         }
-        selectTabIfSectionWidget(mLayoutManager)
+        selectTabOnScrolling()
     }
 
     private fun scrollToPosition() = view?.run {

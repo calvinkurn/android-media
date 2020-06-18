@@ -5,28 +5,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.header.HeaderUnify
-        android:id="@+id/headerStcStatistic"
-        android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        android:theme="?toolbarTheme"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
-        app:contentInsetStartWithNavigation="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:subtitleTextAppearance="?subtitleTextAppearance"
-        app:titleTextAppearance="?titleTextAppearance"
-        app:unify_header_is_show_shadow="false" />
-
-    <com.tokopedia.unifycomponents.TabsUnify
-        android:id="@+id/tabLayoutStc"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarStc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/headerStcStatistic" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.header.HeaderUnify
+            android:id="@+id/headerStcStatistic"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:theme="?toolbarTheme"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:contentInsetStartWithNavigation="0dp"
+            app:subtitleTextAppearance="?subtitleTextAppearance"
+            app:titleTextAppearance="?titleTextAppearance"
+            app:unify_header_is_show_shadow="false" />
+
+        <com.tokopedia.unifycomponents.TabsUnify
+            android:id="@+id/tabLayoutStc"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/dimen_stc_minus2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/headerStcStatistic" />
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshStc"
@@ -34,7 +42,7 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tabLayoutStc">
+        app:layout_constraintTop_toBottomOf="@+id/appBarStc">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -44,6 +52,10 @@
                 android:id="@+id/rvStcWidgets"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/layout_lvl1"
+                android:layout_marginLeft="@dimen/layout_lvl1"
+                android:layout_marginEnd="@dimen/layout_lvl1"
+                android:layout_marginRight="@dimen/layout_lvl1"
                 android:background="@android:color/transparent"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
