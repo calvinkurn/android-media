@@ -200,6 +200,6 @@
 
     </RelativeLayout>
 
-    <include layout="@layout/bottom_sheet_layout" />
+    <include layout="@layout/promo_checkout_marketplace_bottom_sheet_layout" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
