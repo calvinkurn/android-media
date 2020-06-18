@@ -453,8 +453,6 @@ public class DigitalProductFragment extends BaseDaggerFragment
 
     @Override
     public void renderCategory(BaseDigitalProductView digitalProductView, CategoryData categoryData, HistoryClientNumber historyClientNumber) {
-        rechargeAnalytics.eventDigitalCategoryScreenLaunch(categoryData.getName(), categoryData.getCategoryId());
-
         this.categoryDataState = categoryData;
         this.historyClientNumberState = historyClientNumber;
         actionListener.updateTitleToolbar(categoryData.getName());

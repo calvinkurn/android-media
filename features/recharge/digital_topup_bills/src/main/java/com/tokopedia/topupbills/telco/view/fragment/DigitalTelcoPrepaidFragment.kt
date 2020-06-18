@@ -159,7 +159,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         handleFocusClientNumber()
         getCatalogMenuDetail()
         getDataFromBundle(savedInstanceState)
-        sendOpenScreenTracking()
     }
 
     /**

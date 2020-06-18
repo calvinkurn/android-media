@@ -245,6 +245,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         super.processMenuDetail(data)
 
         renderTicker(data.tickers)
+        sendOpenScreenTracking()
         initiateMenuTelco(data.recommendations, data.promos)
     }
 
@@ -293,7 +294,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         NetworkErrorHelper.showRedSnackbar(activity, error.message)
     }
 
-    protected fun sendOpenScreenTracking() {
+    private fun sendOpenScreenTracking() {
         topupAnalytics.eventOpenScreen(userSession.userId, getTelcoCategoryId())
     }
 
