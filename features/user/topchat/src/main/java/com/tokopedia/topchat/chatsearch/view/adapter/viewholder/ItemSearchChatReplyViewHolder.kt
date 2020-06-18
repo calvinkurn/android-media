@@ -27,6 +27,7 @@ class ItemSearchChatReplyViewHolder(
     private val unreadCounter: Typography? = itemView?.findViewById(R.id.unread_counter)
     private val time: Typography? = itemView?.findViewById(R.id.time)
     private val label: Label? = itemView?.findViewById(R.id.user_label)
+    private var productIcon: ImageView? = itemView?.findViewById(R.id.img_product_icon)
 
     override fun bind(element: ChatReplyUiModel) {
         bindUnreadCounter(element)
@@ -36,6 +37,7 @@ class ItemSearchChatReplyViewHolder(
         bindTimeStamp(element)
         bindLabel(element)
         bindClick(element)
+        bindProductIcon(element)
     }
 
     private fun bindUnreadCounter(element: ChatReplyUiModel) {
@@ -82,6 +84,14 @@ class ItemSearchChatReplyViewHolder(
             val chatRoomIntent = RouteManager.getIntent(it.context, ApplinkConst.TOPCHAT, element.msgId.toString())
             it.context.startActivity(chatRoomIntent)
             listener?.finishSearchActivity()
+        }
+    }
+
+    private fun bindProductIcon(element: ChatReplyUiModel) {
+        if (element.productId.isEmpty()) {
+            productIcon?.hide()
+        } else {
+            productIcon?.show()
         }
     }
 
