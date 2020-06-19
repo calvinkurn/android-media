@@ -172,8 +172,10 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
 
     private fun observeActivatePowerMerchant() {
         observe(viewModel.onActivatePmSuccess) {
-            showBottomSheetSuccess(it)
-            refreshData()
+            if(it is Success) {
+                showBottomSheetSuccess(it.data)
+                refreshData()
+            }
         }
     }
 
