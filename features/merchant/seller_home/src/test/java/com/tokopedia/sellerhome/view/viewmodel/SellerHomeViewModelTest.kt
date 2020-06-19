@@ -317,10 +317,11 @@ class SellerHomeViewModelTest {
                 getCardDataUseCase.executeOnBackground()
             } throws throwable
             mViewModel.getCardWidgetData(dataKeys)
-        }
 
-        val result = mViewModel.cardWidgetData.value
-        assert(result is Fail)
+            delay(100)
+            val result = mViewModel.cardWidgetData.value
+            assert(result is Fail)
+        }
     }
 
     @Test
