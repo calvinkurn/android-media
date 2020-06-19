@@ -51,7 +51,7 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
                 isApplied = false
             }
             else -> {
-                titleValue = itemView.context.getString(R.string.promo_funnel_label)
+                titleValue = itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label)
                 isApplied = false
             }
         }
@@ -113,7 +113,7 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
             }
 
             val label: Typography = Typography(itemView.context).apply {
-                setTextColor(resources.getColor(R.color.text_black))
+                setTextColor(resources.getColor(com.tokopedia.purchase_platform.common.R.color.text_black))
                 setWeight(Typography.REGULAR)
                 setType(Typography.BODY_3)
                 text = lastApplyUsageSummary.description
@@ -127,7 +127,7 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
             label.layoutParams = labelParams
 
             val value: Typography = Typography(itemView.context).apply {
-                setTextColor(resources.getColor(R.color.text_black))
+                setTextColor(resources.getColor(com.tokopedia.purchase_platform.common.R.color.text_black))
                 setWeight(Typography.REGULAR)
                 setType(Typography.BODY_3)
                 text = lastApplyUsageSummary.amountStr

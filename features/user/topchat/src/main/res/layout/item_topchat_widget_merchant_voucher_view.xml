@@ -129,7 +129,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_topchat_chat_voucher_read_status"
-        android:gravity="end"
+        android:gravity="end|center_vertical"
         android:orientation="horizontal"
         android:paddingTop="@dimen/spacing_lvl2"
         android:paddingEnd="@dimen/spacing_lvl4"

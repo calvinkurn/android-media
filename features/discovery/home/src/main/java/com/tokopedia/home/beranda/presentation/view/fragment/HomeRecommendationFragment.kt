@@ -220,7 +220,10 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
 
     override fun onProductImpression(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int) {
         if (homeRecommendationItemDataModel.product.isTopads) {
-            TopAdsUrlHitter(this::class.qualifiedName).hitImpressionUrl(context, homeRecommendationItemDataModel.product.trackerImageUrl)
+            TopAdsUrlHitter(className).hitImpressionUrl(context, homeRecommendationItemDataModel.product.trackerImageUrl,
+                    homeRecommendationItemDataModel.product.id,
+                    homeRecommendationItemDataModel.product.name,
+                    homeRecommendationItemDataModel.product.imageUrl)
             if (userSessionInterface.isLoggedIn) {
                 trackingQueue.putEETracking(getRecommendationProductViewLoginTopAds(
                         tabName.toLowerCase(Locale.ROOT),
@@ -249,7 +252,11 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
 
     override fun onProductClick(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int) {
         if (homeRecommendationItemDataModel.product.isTopads){
-            TopAdsUrlHitter(this::class.qualifiedName).hitClickUrl(context, homeRecommendationItemDataModel.product.clickUrl)
+            TopAdsUrlHitter(className).hitClickUrl(context,
+                    homeRecommendationItemDataModel.product.clickUrl,
+                    homeRecommendationItemDataModel.product.id,
+                    homeRecommendationItemDataModel.product.name,
+                    homeRecommendationItemDataModel.product.imageUrl)
             if (userSessionInterface.isLoggedIn) {
                 TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(getRecommendationProductClickLoginTopAds(
                         tabName.toLowerCase(Locale.ROOT),
@@ -432,6 +439,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     }
 
     companion object {
+        private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeRecommendationFragment"
         const val ARG_TAB_INDEX = "ARG_TAB_INDEX"
         const val ARG_RECOM_ID = "ARG_RECOM_ID"
         const val ARG_TAB_NAME = "ARG_TAB_NAME"

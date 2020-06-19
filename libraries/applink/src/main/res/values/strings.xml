@@ -16,6 +16,7 @@
 
     <!--Merchant Seller-->
     <string name="merchant_seller">Penjualan</string>
+    <string name="favorite_shop">Toko Favorit</string>
 
     <!--Digital Topup-->
     <string name="instant_loan_title">Dana Instan</string>
@@ -50,4 +51,6 @@
 
     <string name="fingerprint_onboarding">Daftar Fingerprint</string>
 
+    <!--Transaction-->
+    <string name="title_one_click_checkout">Beli Langsung</string>
 </resources>
