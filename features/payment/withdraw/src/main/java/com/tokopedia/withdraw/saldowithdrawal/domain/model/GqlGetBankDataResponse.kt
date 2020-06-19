@@ -72,6 +72,22 @@ data class BankAccount(
         @SerializedName("accountName")
         @Expose
         var accountName: String? = null,
+        @SerializedName("is_fraud")
+        @Expose
+        var isFraud: Boolean = false,
+
+        @SerializedName("have_rp_program")
+        @Expose
+        var haveRPProgram: Boolean = false,
+
+        @SerializedName("have_special_offer")
+        @Expose
+        var haveSpecialOffer: Boolean = false,
+
+        @SerializedName("default_bank_account")
+        @Expose
+        var defaultBankAccount: Boolean = false,
+
         var isChecked: Boolean = false
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
@@ -87,6 +103,10 @@ data class BankAccount(
             parcel.readString(),
             parcel.readInt(),
             parcel.readString(),
+            parcel.readByte() != 0.toByte(),
+            parcel.readByte() != 0.toByte(),
+            parcel.readByte() != 0.toByte(),
+            parcel.readByte() != 0.toByte(),
             parcel.readByte() != 0.toByte()) {
     }
 
@@ -103,6 +123,10 @@ data class BankAccount(
         parcel.writeString(bankImageUrl)
         parcel.writeInt(isDefaultBank)
         parcel.writeString(accountName)
+        parcel.writeByte(if (isFraud) 1 else 0)
+        parcel.writeByte(if (haveRPProgram) 1 else 0)
+        parcel.writeByte(if (haveSpecialOffer) 1 else 0)
+        parcel.writeByte(if (defaultBankAccount) 1 else 0)
         parcel.writeByte(if (isChecked) 1 else 0)
     }
 

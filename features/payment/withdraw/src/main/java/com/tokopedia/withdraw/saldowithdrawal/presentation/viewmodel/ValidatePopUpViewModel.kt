@@ -34,4 +34,9 @@ class ValidatePopUpViewModel @Inject constructor(
         validatePopUpWithdrawalMutableData.value = Fail(throwable)
     }
 
+    override fun onCleared() {
+        gqlValidateWithdrawalUseCase.cancelJobs()
+        super.onCleared()
+    }
+
 }

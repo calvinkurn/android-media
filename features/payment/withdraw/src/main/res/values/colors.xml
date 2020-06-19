@@ -3,4 +3,12 @@
     <color name="swd_grey">#888888</color>
     <color name="swd_hint_red">#d6001c</color>
     <color name="swd_lock_tint">#abadb1</color>
+
+
+    <color category="global-color" name="Tile_T100">#EBF6F6</color>
+    <color category="global-color" name="Tile_T200">#D2F2F2</color>
+    <color category="global-color" name="Tile_T300">#B0E2E5</color>
+    <color category="global-color" name="Tile_T400">#84C6C9</color>
+    <color category="global-color" name="Tile_T500">#689C9E</color>
+    <color category="global-color" name="Tile_T600">#3A6E70</color>
 </resources>

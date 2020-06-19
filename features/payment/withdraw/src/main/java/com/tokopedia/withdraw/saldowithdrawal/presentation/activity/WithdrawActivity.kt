@@ -16,6 +16,7 @@ import com.tokopedia.withdraw.saldowithdrawal.domain.model.WithdrawalRequest
 import com.tokopedia.withdraw.saldowithdrawal.presentation.fragment.SaldoWithdrawalFragment
 import com.tokopedia.withdraw.saldowithdrawal.presentation.fragment.SuccessFragmentWithdrawal
 import com.tokopedia.withdraw.saldowithdrawal.presentation.listener.WithdrawalFragmentCallback
+import com.tokopedia.withdraw.saldowithdrawal.presentation.listener.WithdrawalJoinRPCallback
 import kotlinx.android.synthetic.main.activity_saldo_withdraw.*
 import javax.inject.Inject
 
@@ -23,7 +24,8 @@ import javax.inject.Inject
  * For navigating to this class
  * @see com.tokopedia.applink.internal.ApplinkConstInternalGlobal
  */
-class WithdrawActivity : BaseSimpleActivity(), WithdrawalFragmentCallback, HasComponent<WithdrawComponent?> {
+class WithdrawActivity : BaseSimpleActivity(), WithdrawalFragmentCallback,
+        HasComponent<WithdrawComponent?>, WithdrawalJoinRPCallback {
 
 
     @Inject
@@ -76,11 +78,16 @@ class WithdrawActivity : BaseSimpleActivity(), WithdrawalFragmentCallback, HasCo
 
     override fun openSuccessFragment(withdrawalRequest: WithdrawalRequest,
                                      submitWithdrawalResponse: SubmitWithdrawalResponse) {
+        swd_header.setNavigationIcon(R.drawable.unify_bottomsheet_close)
         updateHeaderTitle(getString(R.string.swd_success_page_title))
         val successFragment = SuccessFragmentWithdrawal.getInstance(withdrawalRequest, submitWithdrawalResponse)
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.parent_view, successFragment, TAG_SUCCESS_FRAGMENT)
         fragmentTransaction.commitAllowingStateLoss()
+    }
+
+    override fun getTagFragment(): String {
+        return TAG_SALDO_FRAGMENT
     }
 
     override fun getComponent(): WithdrawComponent {
@@ -90,6 +97,16 @@ class WithdrawActivity : BaseSimpleActivity(), WithdrawalFragmentCallback, HasCo
     }
 
     companion object {
+        const val TAG_SALDO_FRAGMENT = "TAG_SALDO_FRAGMENT"
         const val TAG_SUCCESS_FRAGMENT = "TAG_SUCCESS_FRAGMENT"
+    }
+
+    override fun onWithdrawalAndJoinRekening(isJoinRP: Boolean) {
+        val fragment = supportFragmentManager.findFragmentByTag(TAG_SALDO_FRAGMENT)
+        fragment?.let {
+            if (fragment is WithdrawalJoinRPCallback) {
+                fragment.onWithdrawalAndJoinRekening(isJoinRP)
+            }
+        }
     }
 }

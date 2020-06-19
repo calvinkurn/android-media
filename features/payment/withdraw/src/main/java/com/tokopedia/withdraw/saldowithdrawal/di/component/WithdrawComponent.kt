@@ -8,9 +8,12 @@ import com.tokopedia.withdraw.saldowithdrawal.di.module.ViewModelModule
 import com.tokopedia.withdraw.saldowithdrawal.di.module.WithdrawModule
 import com.tokopedia.withdraw.saldowithdrawal.di.scope.WithdrawScope
 import com.tokopedia.withdraw.saldowithdrawal.presentation.activity.WithdrawActivity
+import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.DisabledAccountBottomSheet
+import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.JoinRPOnWithdrawalBottomSheet
+import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.RekPremBankAccountInfoBottomSheet
 import com.tokopedia.withdraw.saldowithdrawal.presentation.fragment.SaldoWithdrawalFragment
 import com.tokopedia.withdraw.saldowithdrawal.presentation.fragment.SuccessFragmentWithdrawal
-import com.tokopedia.withdraw.saldowithdrawal.presentation.fragment.WithdrawalBaseFragment
+import com.tokopedia.withdraw.saldowithdrawal.presentation.fragment.BaseWithdrawalFragment
 import dagger.Component
 
 /**
@@ -26,8 +29,11 @@ interface WithdrawComponent {
     @ApplicationContext
     fun context(): Context
 
-    fun inject(withdrawActivity: WithdrawActivity?)
-    fun inject(successFragmentWithdrawal: SuccessFragmentWithdrawal?)
-    fun inject(withdrawalBaseFragment: WithdrawalBaseFragment?)
-    fun inject(withdrawalParentFragment: SaldoWithdrawalFragment?)
+    fun inject(withdrawActivity: WithdrawActivity)
+    fun inject(successFragmentWithdrawal: SuccessFragmentWithdrawal)
+    fun inject(baseWithdrawalFragment: BaseWithdrawalFragment)
+    fun inject(withdrawalParentFragment: SaldoWithdrawalFragment)
+    fun inject(joinRPOnWithdrawalBottomSheet: JoinRPOnWithdrawalBottomSheet)
+    fun inject(disabledAccountBottomSheet: DisabledAccountBottomSheet)
+    fun inject(rekPremBankAccountInfoBottomSheet: RekPremBankAccountInfoBottomSheet)
 }

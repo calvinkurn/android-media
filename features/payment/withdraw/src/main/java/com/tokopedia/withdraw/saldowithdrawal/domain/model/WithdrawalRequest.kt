@@ -9,7 +9,9 @@ data class WithdrawalRequest(
         val withdrawal: Long,
         val bankAccount: BankAccount,
         val isSellerWithdrawal: Boolean,
-        val programName: String
+        val programName: String,
+        var isJoinRekeningPremium: Boolean,
+        var showJoinRekeningWidget: Boolean = false
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
@@ -17,7 +19,9 @@ data class WithdrawalRequest(
             parcel.readLong(),
             parcel.readParcelable(BankAccount::class.java.classLoader),
             parcel.readByte() != 0.toByte(),
-            parcel.readString() ?: "") {
+            parcel.readString() ?: "",
+            parcel.readByte() != 0.toByte(),
+            parcel.readByte() != 0.toByte()) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -27,6 +31,8 @@ data class WithdrawalRequest(
         parcel.writeParcelable(bankAccount, flags)
         parcel.writeByte(if (isSellerWithdrawal) 1 else 0)
         parcel.writeString(programName)
+        parcel.writeByte(if (isJoinRekeningPremium) 1 else 0)
+        parcel.writeByte(if (showJoinRekeningWidget) 1 else 0)
     }
 
     override fun describeContents(): Int {

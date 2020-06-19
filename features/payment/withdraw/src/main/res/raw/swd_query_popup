@@ -3,9 +3,16 @@ query ValidatePopUpWithdrawal($bankID : String!, $language:String){
         status
         message
         data{
-        title
-        note
-        needShow
+            title
+            note
+            needShow
         }
+        joinData{
+            title
+            desc
+            isJoinPrompt
+            programID
+            programName
+           }
     }
 }

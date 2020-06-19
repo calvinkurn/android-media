@@ -16,7 +16,8 @@ mutation richieSubmitWithdrawal(
      $bankId:String!,
      $bankName: String!,
      $validateToken:String!,
-     $program:String
+     $program:String,
+     $isJoinRP:Boolean
 ){
  richieSubmitWithdrawal(
         input : {
@@ -38,6 +39,7 @@ mutation richieSubmitWithdrawal(
              bankName:$bankName,
              validateToken:$validateToken,
              program:$program
+             isJoinRP:$isJoinRP
         }
  ){
    process_time
@@ -50,5 +52,15 @@ mutation richieSubmitWithdrawal(
    amount
    adminFee
    withdrawalNote
+   joinPromptMessageResponse{
+       title
+       desc
+       actionText
+       actionLink
+       isSuccess
+       statusCode
+   }
+   errorCode
+   errorMessageAutoWD
  }
 }

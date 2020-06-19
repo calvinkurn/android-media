@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.withdraw.saldowithdrawal.di.scope.WithdrawScope
 import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.*
 import dagger.Binds
 import dagger.Module
@@ -36,5 +35,10 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SubmitWithdrawalViewModel::class)
     internal abstract fun provideSubmitWithdrawalViewModel(viewModel: SubmitWithdrawalViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(JoinRekeningTermsConditionViewModel::class)
+    internal abstract fun provideJoinRekeningTermsConditionViewModel(viewModel: JoinRekeningTermsConditionViewModel): ViewModel
 
 }

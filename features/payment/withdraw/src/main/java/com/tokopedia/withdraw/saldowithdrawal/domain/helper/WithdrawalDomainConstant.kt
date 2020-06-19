@@ -8,4 +8,5 @@ object WithdrawalDomainConstant {
     const val GQL_QUERY_SUBMIT_WITHDRAWAL = "gql_query_submit_withdrawal"
 
     const val GQL_QUERY_WITHDRAWAL_BANNER = "gql_query_withdrawal_banner"
+    const val GQL_JOIN_REKE_PREM_TNC_QUERY = "gql_join_reke_prem_tnc_query"
 }

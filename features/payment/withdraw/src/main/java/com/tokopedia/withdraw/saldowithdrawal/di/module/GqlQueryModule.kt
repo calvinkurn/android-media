@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.withdraw.R
+import com.tokopedia.withdraw.saldowithdrawal.domain.helper.WithdrawalDomainConstant.GQL_JOIN_REKE_PREM_TNC_QUERY
 import com.tokopedia.withdraw.saldowithdrawal.domain.helper.WithdrawalDomainConstant.GQL_QUERY_GET_BANK_ACCOUNT
 import com.tokopedia.withdraw.saldowithdrawal.domain.helper.WithdrawalDomainConstant.GQL_QUERY_GET_REKENING_PREMIUM
 import com.tokopedia.withdraw.saldowithdrawal.domain.helper.WithdrawalDomainConstant.GQL_QUERY_SUBMIT_WITHDRAWAL
@@ -40,6 +41,11 @@ class GqlQueryModule {
     @Named(GQL_QUERY_SUBMIT_WITHDRAWAL)
     fun provideSubmitWithdrawalQuery(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.swd_query_otp_withdrawal)
+
+    @Provides
+    @Named(GQL_JOIN_REKE_PREM_TNC_QUERY)
+    fun provideJoinRekeingPremiumTncQuery(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.swd_query_join_reke_prem_tnc)
 
 
 }

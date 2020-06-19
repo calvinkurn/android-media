@@ -13,6 +13,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.coachmark.CoachMarkBuilder
+import com.tokopedia.coachmark.CoachMarkContentPosition
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -25,19 +29,18 @@ import com.tokopedia.utils.text.currency.StringUtils
 import com.tokopedia.webview.TkpdWebView
 import com.tokopedia.withdraw.R
 import com.tokopedia.withdraw.saldowithdrawal.WithdrawAnalytics
-import com.tokopedia.withdraw.saldowithdrawal.constant.BuyerSaldoWithdrawal
-import com.tokopedia.withdraw.saldowithdrawal.constant.SaldoWithdrawal
-import com.tokopedia.withdraw.saldowithdrawal.constant.SellerSaldoWithdrawal
-import com.tokopedia.withdraw.saldowithdrawal.constant.WithdrawConstant
+import com.tokopedia.withdraw.saldowithdrawal.constant.*
 import com.tokopedia.withdraw.saldowithdrawal.di.component.WithdrawComponent
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.BankAccount
 import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.BankAccountAdapter
 import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.layoutmanager.NonScrollableLinerLayoutManager
+import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.DisabledAccountBottomSheet
+import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.RekPremBankAccountInfoBottomSheet
 import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.SaldoWithdrawalViewModel
 import kotlinx.android.synthetic.main.swd_fragment_base_withdrawal.*
 import javax.inject.Inject
 
-abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter.BankAdapterListener {
+abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter.BankAdapterListener {
 
     @Inject
     lateinit var userSession: UserSession
@@ -47,6 +50,9 @@ abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+
+    @Inject
+    lateinit var localCacheHandler: dagger.Lazy<LocalCacheHandler>
 
     private val saldoWithdrawalViewModel: SaldoWithdrawalViewModel? by lazy(LazyThreadSafetyMode.NONE) {
         parentFragment?.let {
@@ -157,7 +163,7 @@ abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter
     private fun initBankAccountRecycler() {
         context?.let {
             recyclerBankList.layoutManager = NonScrollableLinerLayoutManager(context!!)
-            bankAccountAdapter = BankAccountAdapter(analytics, this)
+            bankAccountAdapter = BankAccountAdapter(analytics, this, canShowRekeningPremiumCoachMark())
             recyclerBankList.adapter = bankAccountAdapter
         }
     }
@@ -269,6 +275,40 @@ abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter
         updateWithdrawalButtonState(bankAccountAdapter.getSelectedBankAccount(), withdrawal)
     }
 
+    override fun showCoachMarkOnRPIcon(iconView: View) {
+        if (!canShowRekeningPremiumCoachMark()) {
+            return
+        }
+        updateRekeningPremiumCoachMarkShown()
+        recyclerBankList.post {
+            val coachMarks = ArrayList<CoachMarkItem>()
+            coachMarks.add(CoachMarkItem(iconView,
+                    getString(R.string.swd_join_premium_account_icon_title),
+                    getString(R.string.swd_join_premium_account_icon_description),
+                    CoachMarkContentPosition.TOP, ContextCompat.getColor(context!!,
+                    R.color.Neutral_N700_68), scrollView))
+            val coachMark = CoachMarkBuilder().build()
+            coachMark.show(activity, TAG_RP_COACH_MARK, coachMarks)
+        }
+
+    }
+
+    override fun onDisabledBankClick() {
+        activity?.let {
+            val disabledAccountBottomSheet = DisabledAccountBottomSheet()
+            disabledAccountBottomSheet.isFullpage = false
+            disabledAccountBottomSheet.show(it.supportFragmentManager, "")
+        }
+    }
+
+    override fun showPremiumAccountDialog() {
+        activity?.let {
+            val premiumAccountBottomSheet = RekPremBankAccountInfoBottomSheet()
+            premiumAccountBottomSheet.isFullpage = false
+            premiumAccountBottomSheet.show(it.supportFragmentManager, "")
+        }
+    }
+
     private fun initiateWithdrawal() {
         analytics.eventClickTarikSaldo()
         bankAccountAdapter.getSelectedBankAccount()?.let { bankAccount ->
@@ -290,5 +330,19 @@ abstract class WithdrawalBaseFragment : BaseDaggerFragment(), BankAccountAdapter
         }
     }
 
+    private fun canShowRekeningPremiumCoachMark(): Boolean {
+        return localCacheHandler.get()
+                .getBoolean(LocalCacheConstant.KEY_CAN_SHOW_RP_COACH_MARK, true)
+    }
+
+    private fun updateRekeningPremiumCoachMarkShown() {
+        localCacheHandler.get()
+                .putBoolean(LocalCacheConstant.KEY_CAN_SHOW_RP_COACH_MARK, false)
+        localCacheHandler.get().applyEditor()
+    }
+
+    companion object {
+        const val TAG_RP_COACH_MARK = "RP_COACH_MARK"
+    }
 }
 

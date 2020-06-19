@@ -1,6 +1,7 @@
 package com.tokopedia.withdraw.saldowithdrawal.presentation.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.withdraw.saldowithdrawal.WithdrawAnalytics
@@ -9,10 +10,12 @@ import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.viewholder.Ba
 import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.viewholder.BankSettingButtonViewHolder
 
 class BankAccountAdapter(private val withdrawAnalytics: WithdrawAnalytics,
-                         private val listener: BankAdapterListener)
+                         private val listener: BankAdapterListener,
+                         private var needToShowRPCoachMark: Boolean)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val bankAccountList: ArrayList<BankAccount> = arrayListOf()
+
 
     /**
      * it is used to put extra item in List for setting
@@ -41,10 +44,20 @@ class BankAccountAdapter(private val withdrawAnalytics: WithdrawAnalytics,
             BankAccountViewHolder.LAYOUT_ID
     }
 
+    override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        if (needToShowRPCoachMark && holder is BankAccountViewHolder
+                && holder.isPowerMerchantVisible()) {
+            needToShowRPCoachMark = false
+            val coachMarchView = holder.getPowerMerchantImageView()
+            listener.showCoachMarkOnRPIcon(coachMarchView)
+        }
+    }
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val bankAccount = bankAccountList[position]
         if (holder is BankAccountViewHolder)
-            holder.bindData(bankAccount, ::onBankAccountSelected)
+            holder.bindData(bankAccount, ::onBankAccountSelected, listener)
         else
             (holder as BankSettingButtonViewHolder).bindData(
                     bankAccountList.size - 1,
@@ -60,7 +73,7 @@ class BankAccountAdapter(private val withdrawAnalytics: WithdrawAnalytics,
 
     private fun updateDefaultBankList(newBankList: ArrayList<BankAccount>): ArrayList<BankAccount> {
         newBankList.forEach {
-            if (it.isDefaultBank == DEFAULT_BANK_STATUS) {
+            if (it.defaultBankAccount) {
                 it.isChecked = true
                 currentSelectedBankAccount = it
                 return@forEach
@@ -106,9 +119,12 @@ class BankAccountAdapter(private val withdrawAnalytics: WithdrawAnalytics,
         fun openAddBankAccount()
 
         fun openBankAccountSetting()
+
+        fun showCoachMarkOnRPIcon(iconView: View)
+
+        fun showPremiumAccountDialog()
+
+        fun onDisabledBankClick()
     }
 
-    companion object {
-        private const val DEFAULT_BANK_STATUS = 1
-    }
 }

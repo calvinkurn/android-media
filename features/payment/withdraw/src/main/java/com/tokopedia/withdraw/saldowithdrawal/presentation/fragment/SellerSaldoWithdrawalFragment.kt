@@ -6,7 +6,7 @@ import com.tokopedia.withdraw.R
 import com.tokopedia.withdraw.saldowithdrawal.constant.SellerSaldoWithdrawal
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.BankAccount
 
-class SellerSaldoWithdrawalFragment : WithdrawalBaseFragment() {
+class SellerSaldoWithdrawalFragment : BaseWithdrawalFragment() {
 
     private var sellerSaldoBalance: Long = 0L
     private var showMclBlockTickerFirebaseFlag: Boolean = false

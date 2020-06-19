@@ -42,7 +42,7 @@
     <string name="swd_ttl_total">Total Penarikan</string>
     <string name="swd_destination_account">Rekening Tujuan</string>
     <string name="swd_ttl_withdraw_dtl">Detail penarikan saldo</string>
-    <string name="swd_withdrawal_being_processed">Penarikanmu sedang diproses, harap tunggu maks. 1x24 jam di hari kerja</string>
+    <string name="swd_withdrawal_being_processed">Penarikanmu sedang diproses</string>
 
     <string name="swd_success_page_title">Penarikan Diproses</string>
     <string name="swd_admin_fee">Dikenai biaya admin %s</string>
@@ -60,5 +60,31 @@
     <string name="swd_penghasilan_empty_msg">Kamu tidak punya Saldo Penghasilan untuk ditarik</string>
     <string name="swd_account_number_name">"%1$s • %2$s"</string>
     <string name="swd_special_offer">Penawaran Khusus</string>
+    <string name="swd_join_premium_account_icon_title">Gabung ke rekening premium</string>
+    <string name="swd_join_premium_account_icon_description">Temukan akun bank bertanda ini untuk tarik saldo sekaligus gabung ke rekening premium. Eksklusif untuk Power Merchant.</string>
+    <string name="swd_premium_account_info_title">Tarik saldo lebih untung dengan Rekening Premium</string>
+    <string name="swd_premium_account_info_line_one">Khusus Power Merchant</string>
+    <string name="swd_premium_account_info_line_Two">Kumpulkan poin tiap tarik saldo di Tokopedia dan dapatkan hadiahnya.</string>
+    <string name="swd_premium_account_info_line_Three">Gabung program Rekening Premium GRATIS dan tanpa syarat apa pun.</string>
+    <string name="swd_more_info">Info Selengkapnya</string>
+    <string name="swd_join_premium_account">Gabung Rekening Premium</string>
+    <string name="swd_can_withdraw_to_premium_account">Kamu hanya bisa tarik saldo ke Rekening Premium</string>
+    <string name="swd_deactivated_account_description">Jika ingin tarik saldo ke bank lain, kamu harus keluar dari program Rekening Premium dulu.</string>
+    <string name="swd_check_premium_account">Cek Rekening Premium</string>
+    <string name="swd_come_on_join_rp">Gabung Rekening Premium Yuk</string>
+    <string name="swd_come_on_join_rp_description">Upgrade ke Rekening Premium untuk dapat keuntungan tiap tarik saldo.</string>
+    <string name="swd_try_now">Coba Sekarang</string>
+    <string name="swd_withdrawal_process_time">Harap tunggu maks. 1x24 jam di hari kerja</string>
+
+    <string name="swd_lock_tickerTitle">Saldo Penghasilan tidak bisa ditarik</string>
+    <string name="swd_lock_tickerDescription">Karena belum membayar tagihan pinjaman Modal Toko selama %d hari.</string>
+    <string name="swd_lock_pay_now">Bayar Sekarang</string>
+    <string name="swd_withdrawand_join">Tarik Saldo &amp; Bergabung</string>
+    <string name="swd_withdrawal_only">Tarik Saldo Saja</string>
+    <string name="swd_tnc_rekening_account">Dengan klik \"Gabung\", kamu menyetujui syarat dan ketentuan Rekening Premium %s.</string>
+    <string name="swd_tnc">syarat dan ketentuan</string>
+
+    <string name="swd_ticker_description_html">%1$s &lt;a href="#"&gt;%2$s&lt;/a&gt;</string>
+
 
 </resources>

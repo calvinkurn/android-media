@@ -15,9 +15,9 @@ class GQLSubmitWithdrawalUseCase @Inject constructor(
     : GraphqlUseCase<GQLSubmitWithdrawalResponse>(graphqlRepository) {
 
     fun submitWithdrawal(withdrawalRequest: WithdrawalRequest,
-                               validateToken: String,
-                               onRequestSubmitted: (response: SubmitWithdrawalResponse) -> Unit,
-                               onRequestSubmitError: (Throwable) -> Unit) {
+                         validateToken: String,
+                         onRequestSubmitted: (response: SubmitWithdrawalResponse) -> Unit,
+                         onRequestSubmitError: (Throwable) -> Unit) {
         try {
             this.setTypeClass(GQLSubmitWithdrawalResponse::class.java)
             this.setGraphqlQuery(query)
@@ -54,7 +54,8 @@ class GQLSubmitWithdrawalUseCase @Inject constructor(
                 PARAM_BANK_ACC_NUMBER to withdrawalRequest.bankAccount.accountNo,
                 PARAM_BANK_ID to withdrawalRequest.bankAccount.bankID.toString(),
                 PARAM_BANK_NAME to withdrawalRequest.bankAccount.bankName,
-                AMOUNT to withdrawalRequest.withdrawal.toString())
+                AMOUNT to withdrawalRequest.withdrawal.toString(),
+                PARAM_IS_JOIN_RP to withdrawalRequest.isJoinRekeningPremium)
     }
 
 
@@ -82,5 +83,6 @@ class GQLSubmitWithdrawalUseCase @Inject constructor(
         private const val PARAM_BANK_NAME = "bankName"
         private const val VALIDATE_TOKEN = "validateToken"
         private const val PROGRAM = "program"
+        private const val PARAM_IS_JOIN_RP = "isJoinRP"
     }
 }

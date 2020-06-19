@@ -5,25 +5,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/tickerLayout"
-        layout="@layout/layout_holdwithdrawl_ticker"
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/saldoLockTicker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        app:closeButtonVisibility="visible"
+        app:descriptionText="description"
         app:layout_constraintStart_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tickerShapeType="full"
+        tools:visibility="visible"
+        app:tickerType="warning"
+        app:titleText="title" />
+
+
 
     <com.tokopedia.carousel.CarouselUnify
         android:id="@+id/withdrawalRekeningCarouselView"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintDimensionRatio="h,4:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tickerLayout"
+        app:layout_constraintTop_toBottomOf="@+id/saldoLockTicker"
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.TabsUnify
@@ -85,7 +92,6 @@
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
     <!--
         <include
             android:id="@+id/withdrawalRekeningCarouselView"
@@ -95,4 +101,4 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tickerLayout" />-->
+            app:layout_constraintTop_toBottomOf="@+id/saldoLockTicker" />-->

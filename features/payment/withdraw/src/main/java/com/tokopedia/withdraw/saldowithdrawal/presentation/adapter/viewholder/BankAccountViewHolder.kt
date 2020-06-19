@@ -10,10 +10,12 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.withdraw.R
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.BankAccount
+import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.BankAccountAdapter
 import kotlinx.android.synthetic.main.swd_item_bank_account.view.*
 
 class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -22,10 +24,11 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val bankName: TextView = view.tvBankName
     private val bankAccountNumber: TextView = view.tvBankAccountHolderName
     private val bankAdminFee: TextView = view.tvAdminFee
-    private val ivPowerMerchant: ImageView = view.ivPowerMerchant
+    private val ivPremiumAccount: ImageView = view.ivPremiumAccount
     private val tvSpecialOffer: TextView = view.tvSpecialOffer
 
-    fun bindData(bankAccount: BankAccount, onBankAccountSelected: (BankAccount) -> Unit) {
+    fun bindData(bankAccount: BankAccount, onBankAccountSelected: (BankAccount) -> Unit,
+                 listener: BankAccountAdapter.BankAdapterListener) {
         val context = itemView.context
 
         bankName.text = bankAccount.bankName
@@ -53,22 +56,44 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             }
         }
         ivButtonRadio.setImageDrawable(drawable)
+
+        if(bankAccount.haveRPProgram){
+            ivPremiumAccount.visible()
+        }else{
+            ivPremiumAccount.gone()
+        }
+
+        if(bankAccount.haveSpecialOffer){
+            tvSpecialOffer.visible()
+        }else{
+            tvSpecialOffer.gone()
+        }
+
         if (bankAccount.status == INACTIVE_BANK_STATUS) {
             val disabledColor = ContextCompat.getColor(context, R.color.Neutral_N700_32)
             bankName.setTextColor(disabledColor)
             bankAccountNumber.setTextColor(disabledColor)
             bankAdminFee.setTextColor(disabledColor)
-            ivPowerMerchant.alpha = ALPHA_DISABLED
+            ivPremiumAccount.alpha = ALPHA_DISABLED
             tvSpecialOffer.alpha = ALPHA_DISABLED
-            itemView.setOnClickListener { }
+            itemView.setOnClickListener { listener.onDisabledBankClick() }
+            ivPremiumAccount.setOnClickListener { listener.onDisabledBankClick() }
         } else {
-            ivPowerMerchant.alpha = ALPHA_ENABLED
+            ivPremiumAccount.alpha = ALPHA_ENABLED
             tvSpecialOffer.alpha = ALPHA_ENABLED
             bankName.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_96))
             bankAccountNumber.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_68))
             bankAdminFee.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_68))
             itemView.setOnClickListener { onBankAccountSelected(bankAccount) }
+            ivPremiumAccount.setOnClickListener { listener.showPremiumAccountDialog() }
         }
+
+    }
+
+    fun getPowerMerchantImageView(): View = ivPremiumAccount
+
+    fun isPowerMerchantVisible(): Boolean {
+        return ivPremiumAccount.isVisible
     }
 
     companion object {

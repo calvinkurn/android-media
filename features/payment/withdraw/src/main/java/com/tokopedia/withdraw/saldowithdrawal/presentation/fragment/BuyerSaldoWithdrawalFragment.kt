@@ -6,7 +6,7 @@ import com.tokopedia.withdraw.R
 import com.tokopedia.withdraw.saldowithdrawal.constant.BuyerSaldoWithdrawal
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.BankAccount
 
-class BuyerSaldoWithdrawalFragment : WithdrawalBaseFragment() {
+class BuyerSaldoWithdrawalFragment : BaseWithdrawalFragment() {
 
     private var buyerSaldoBalance: Long = 0L
 

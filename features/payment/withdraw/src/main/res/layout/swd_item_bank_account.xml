@@ -44,18 +44,18 @@
         app:layout_goneMarginRight="@dimen/spacing_lvl4"
         app:layout_goneMarginEnd="@dimen/spacing_lvl4"
         app:layout_goneMarginTop="@dimen/spacing_lvl4"
-        app:layout_constraintBottom_toBottomOf="@id/ivPowerMerchant"
-        app:layout_constraintEnd_toStartOf="@+id/ivPowerMerchant"
+        app:layout_constraintBottom_toBottomOf="@id/ivPremiumAccount"
+        app:layout_constraintEnd_toStartOf="@+id/ivPremiumAccount"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/ivPowerMerchant"
+        app:layout_constraintTop_toTopOf="@id/ivPremiumAccount"
         app:typographyType="body_3"
         tools:text="PT Bank Bank Bank Bank BankBankBankBankBank BankBankBankBankBankBankBankBankBankBank" />
 
 
     <ImageView
-        android:id="@+id/ivPowerMerchant"
+        android:id="@+id/ivPremiumAccount"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
         android:layout_marginStart="@dimen/spacing_lvl4"

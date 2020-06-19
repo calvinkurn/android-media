@@ -1,32 +1,47 @@
 package com.tokopedia.withdraw.saldowithdrawal.presentation.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.*
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.withdraw.R
 import com.tokopedia.withdraw.saldowithdrawal.WithdrawAnalytics
+import com.tokopedia.withdraw.saldowithdrawal.constant.WithdrawConstant
 import com.tokopedia.withdraw.saldowithdrawal.di.component.WithdrawComponent
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.BankAccount
+import com.tokopedia.withdraw.saldowithdrawal.domain.model.JoinPromptMessageResponse
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.SubmitWithdrawalResponse
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.WithdrawalRequest
 import kotlinx.android.synthetic.main.swd_success_page.*
 import javax.inject.Inject
 
-class SuccessFragmentWithdrawal : BaseDaggerFragment() {
+class SuccessFragmentWithdrawal : BaseDaggerFragment(), TickerCallback {
 
     @Inject
-    lateinit var analytics: WithdrawAnalytics
+    lateinit var analytics: dagger.Lazy<WithdrawAnalytics>
 
-    lateinit var withdrawalRequest: WithdrawalRequest
-    lateinit var withdrawalResponse: SubmitWithdrawalResponse
+    @Inject
+    lateinit var userSession: dagger.Lazy<UserSession>
+
+    private lateinit var withdrawalRequest: WithdrawalRequest
+    private lateinit var withdrawalResponse: SubmitWithdrawalResponse
 
     override fun initInjector() {
         getComponent(WithdrawComponent::class.java).inject(this)
@@ -38,7 +53,7 @@ class SuccessFragmentWithdrawal : BaseDaggerFragment() {
 
     override fun onStart() {
         super.onStart()
-        analytics.sendScreen(screenName)
+        analytics.get().sendScreen(screenName)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,7 +69,8 @@ class SuccessFragmentWithdrawal : BaseDaggerFragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater,
+                              container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.swd_success_page, container, false)
     }
 
@@ -71,20 +87,78 @@ class SuccessFragmentWithdrawal : BaseDaggerFragment() {
             if (bankAccount.adminFee > 0) {
                 tvAdminFees.text = String.format(activity.resources.getString(R.string.swd_admin_fee_msg)
                         ?: "", bankAccount.adminFee.toString())
-                tvAdminFees.visibility = View.VISIBLE
+                tvAdminFees.visible()
             }
             tvAccountNumber.text = bankAccount.accountNo + "-" + bankAccount.accountName
             tvTotalWithdrawalAmount.text = CurrencyFormatHelper.convertToRupiah(withdrawalRequest.withdrawal.toString())
+            showRekeningWidgets(activity)
         }
         btnOpenSaldoDetail.setOnClickListener { onGoToSaldoDetail() }
-        btnShopOnTokopedia.setOnClickListener { onGoToHome() }
     }
+
+    private fun showRekeningWidgets(context: Context) {
+        when {
+            withdrawalRequest.isJoinRekeningPremium -> {
+                withdrawalSuccessTicker.visible()
+                cardUnifyJoinRekeningProgram.gone()
+                showJoinRekeningRequestTicker(withdrawalResponse.joinPromptMessageResponse)
+            }
+            withdrawalRequest.showJoinRekeningWidget -> {
+                tvComeOnJoinRPDescriptionClickable.movementMethod = LinkMovementMethod()
+                tvComeOnJoinRPDescriptionClickable
+                        .text = getJoinRPProgramSpannableDescription(context)
+                withdrawalSuccessTicker.gone()
+                cardUnifyJoinRekeningProgram.visible()
+            }
+            else -> {
+                withdrawalSuccessTicker.gone()
+                cardUnifyJoinRekeningProgram.gone()
+            }
+        }
+    }
+
+    private fun showJoinRekeningRequestTicker(joinPromptMessageResponse: JoinPromptMessageResponse) {
+        if (joinPromptMessageResponse.isSuccess)
+            withdrawalSuccessTicker.tickerType = Ticker.TYPE_ANNOUNCEMENT
+        else
+            withdrawalSuccessTicker.tickerType = Ticker.TYPE_WARNING
+        withdrawalSuccessTicker.tickerTitle = joinPromptMessageResponse.title
+        withdrawalSuccessTicker
+                .setHtmlDescription(getString(R.string.swd_ticker_description_html,
+                        joinPromptMessageResponse.description, joinPromptMessageResponse.actionText))
+        withdrawalSuccessTicker.setDescriptionClickEvent(this)
+    }
+
+
+    private fun getJoinRPProgramSpannableDescription(context: Context): SpannableStringBuilder? {
+        val originalText = getString(R.string.swd_come_on_join_rp_description)
+        val tryNowStr = getString(R.string.swd_try_now)
+        val spannableString = SpannableString(tryNowStr)
+        val startIndex = 0
+        val endIndex = spannableString.length
+        val color = ContextCompat.getColor(context, R.color.Green_G500)
+        spannableString.setSpan(color, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableString.setSpan(object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                WithdrawConstant.openRekeningAccountInfoPage(context, userSession.get())
+
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.isUnderlineText = false
+                ds.color = color
+            }
+        }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        return SpannableStringBuilder.valueOf(originalText).append(" ").append(spannableString)
+    }
+
 
     private fun onGoToSaldoDetail() {
         activity?.let { activity ->
             val resultIntent = Intent()
             activity.setResult(Activity.RESULT_OK, resultIntent)
-            analytics.eventClickBackToSaldoPage()
+            analytics.get().eventClickBackToSaldoPage()
             activity.finish()
         }
     }
@@ -92,7 +166,7 @@ class SuccessFragmentWithdrawal : BaseDaggerFragment() {
     private fun onGoToHome() {
         activity?.let { activity ->
             RouteManager.route(context, ApplinkConst.HOME, "")
-            analytics.eventClicGoToHomePage()
+            analytics.get().eventClicGoToHomePage()
             activity.finish()
         }
 
@@ -111,5 +185,14 @@ class SuccessFragmentWithdrawal : BaseDaggerFragment() {
             successFragment.arguments = bundle
             return successFragment
         }
+    }
+
+    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+        WithdrawConstant.openSessionBaseURL(context, userSession.get(),
+                withdrawalResponse.joinPromptMessageResponse.actionLink)
+    }
+
+    override fun onDismiss() {
+        //no required as ticker don't have close button
     }
 }

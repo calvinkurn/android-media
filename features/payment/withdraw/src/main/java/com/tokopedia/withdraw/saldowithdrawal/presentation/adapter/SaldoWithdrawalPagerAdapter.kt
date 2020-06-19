@@ -7,14 +7,14 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import com.tokopedia.withdraw.R
 import com.tokopedia.withdraw.saldowithdrawal.presentation.fragment.BuyerSaldoWithdrawalFragment
 import com.tokopedia.withdraw.saldowithdrawal.presentation.fragment.SellerSaldoWithdrawalFragment
-import com.tokopedia.withdraw.saldowithdrawal.presentation.fragment.WithdrawalBaseFragment
+import com.tokopedia.withdraw.saldowithdrawal.presentation.fragment.BaseWithdrawalFragment
 
 class SaldoWithdrawalPagerAdapter(val context: Context,
                                   fragmentManager: FragmentManager)
     : FragmentStatePagerAdapter(fragmentManager,
         BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
-    val fragmentList: ArrayList<WithdrawalBaseFragment> = arrayListOf()
+    val fragmentList: ArrayList<BaseWithdrawalFragment> = arrayListOf()
 
     override fun getPageTitle(position: Int): CharSequence? {
         return when (getItem(position)) {

@@ -1,22 +1,17 @@
 package com.tokopedia.withdraw.saldowithdrawal.presentation.fragment
 
 import android.app.Activity
-import android.content.DialogInterface
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.text.Html
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextPaint
-import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.URLUtil
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.Group
+import androidx.core.text.HtmlCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -24,14 +19,18 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.carousel.CarouselUnify
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.network.utils.URLGenerator
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -43,14 +42,16 @@ import com.tokopedia.withdraw.saldowithdrawal.domain.exception.SubmitWithdrawalE
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.*
 import com.tokopedia.withdraw.saldowithdrawal.presentation.activity.WithdrawActivity
 import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.SaldoWithdrawalPagerAdapter
+import com.tokopedia.withdraw.saldowithdrawal.presentation.dialog.JoinRPOnWithdrawalBottomSheet
+import com.tokopedia.withdraw.saldowithdrawal.presentation.listener.WithdrawalJoinRPCallback
+import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.RekeningPremiumViewModel
 import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.SaldoWithdrawalViewModel
 import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.SubmitWithdrawalViewModel
 import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.ValidatePopUpViewModel
 import kotlinx.android.synthetic.main.swd_fragment_saldo_withdrawal.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
-class SaldoWithdrawalFragment : BaseDaggerFragment() {
+class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -83,8 +84,13 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
         viewModelProvider.get(SaldoWithdrawalViewModel::class.java)
     }
 
+    private val rekeningPremiumViewModel: RekeningPremiumViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        viewModelProvider.get(RekeningPremiumViewModel::class.java)
+    }
 
-    private lateinit var validatePopUpAlertDialog: AlertDialog
+    private lateinit var validatePopUpAlertDialog: DialogUnify
+
+    private lateinit var bannerList: ArrayList<BannerData>
 
     override fun getScreenName(): String? {
         return null
@@ -121,19 +127,31 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
         loadingLayout.setOnClickListener { }
         loadingLayout.visible()
         observeViewModel()
-        saldoWithdrawalViewModel.getRekeningBannerDataList()
     }
 
     private fun observeViewModel() {
+        rekeningPremiumViewModel.rekeningPremiumMutableData.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    checkEligible = it.data
+                    saldoWithdrawalViewModel.getRekeningBannerDataList()
+                }
+                is Fail -> {
+                    handleGlobalError(it.throwable) { rekeningPremiumViewModel.loadRekeningPremiumData() }
+                }
+            }
+        })
+
         saldoWithdrawalViewModel.bannerListLiveData.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    addBannerToUI(it.data)
+                    bannerList = it.data
+                    addBannerToUI(bannerList)
                     showUIComponent()
                     saldoWithdrawalViewModel.getBankList()
                 }
                 is Fail -> {
-                    handleGlobalError(it.throwable)
+                    handleGlobalError(it.throwable) { saldoWithdrawalViewModel.getRekeningBannerDataList() }
                 }
             }
         })
@@ -146,7 +164,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
                     }
                 }
                 is Fail -> {
-                    //todo handle no bank list Loaded
+                    handleGlobalError(it.throwable) { saldoWithdrawalViewModel.getBankList() }
                 }
             }
         })
@@ -177,36 +195,46 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
     }
 
     private fun addBannerToUI(data: ArrayList<BannerData>) {
+        bannerList = data
         if (data.isNotEmpty()) {
             withdrawalRekeningCarouselView.visible()
             withdrawalRekeningCarouselView.apply {
+                indicatorPosition = CarouselUnify.INDICATOR_BL
                 activeIndex = 0
                 autoplay = false
                 slideToShow = 1.1f
                 centerMode = true
-                indicatorWrapper.gone()
                 addItems(R.layout.swd_widget_banner_item, data as ArrayList<Any>, ::carouselItemListener)
             }
 
         }
     }
 
+    private fun onCarouselItemClick(bannerData: BannerData) {
+        WithdrawConstant.openSessionBaseURL(context, userSession, bannerData.cta)
+    }
+
     private fun carouselItemListener(view: View, data: Any) {
         val img: ImageUnify = view.findViewById(R.id.imageUnifyBackground)
-        val tvBannerTitle : TextView = view.findViewById(R.id.tvBannerTitle)
-        val tvBannerDescriptionOne : TextView = view.findViewById(R.id.tvBannerDescriptionOne)
-        val tvBannerDescriptionTwo : TextView = view.findViewById(R.id.tvBannerDescriptionTwo)
-        val bannerTextGroup : Group = view.findViewById(R.id.bannerTextGroup)
+        val tvBannerTitle: TextView = view.findViewById(R.id.tvBannerTitle)
+        val tvBannerDescriptionOne: TextView = view.findViewById(R.id.tvBannerDescriptionOne)
+        val tvBannerDescriptionTwo: TextView = view.findViewById(R.id.tvBannerDescriptionTwo)
+        val bannerTextGroup: Group = view.findViewById(R.id.bannerTextGroup)
         val bannerData = data as BannerData
-        if (bannerData.status == 2){
+        if (bannerData.status == 2) {
             bannerTextGroup.visible()
             tvBannerTitle.text = bannerData.title
             tvBannerDescriptionOne.text = bannerData.text1
             tvBannerDescriptionTwo.text = bannerData.text2
             img.setImageUrl(bannerData.bgURL)
-        }else{
+        } else {
             bannerTextGroup.gone()
             img.setImageUrl(bannerData.imgURL)
+        }
+        view.tag = bannerData
+        view.setOnClickListener {
+            if (it.tag is BannerData)
+                onCarouselItemClick(it.tag as BannerData)
         }
     }
 
@@ -236,7 +264,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun handleGlobalError(throwable: Throwable) {
+    private fun handleGlobalError(throwable: Throwable, retry: () -> Unit) {
         loadingLayout.gone()
         if (throwable is MessageErrorException) {
             swdGlobalError.setType(GlobalError.SERVER_ERROR)
@@ -244,35 +272,35 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
             swdGlobalError.setType(GlobalError.NO_CONNECTION)
         }
         swdGlobalError.visible()
-        swdGlobalError.setActionClickListener { retryToLoadData() }
-    }
-
-    private fun retryToLoadData() {
-        swdGlobalError.gone()
-        loadingLayout.visible()
-        saldoWithdrawalViewModel.getRekeningBannerDataList()
+        swdGlobalError.setActionClickListener {
+            swdGlobalError.gone()
+            loadingLayout.visible()
+            retry.invoke()
+        }
     }
 
     private fun showMustVerify() {
-        AlertDialog.Builder(activity!!)
-                .setTitle(activity!!.getString(R.string.swd_alert_not_verified_yet_title))
-                .setMessage(activity!!.getString(R.string.swd_alert_not_verified_yet_body))
-                .setPositiveButton(activity!!.getString(R.string.swd_alert_not_verified_yet_positive))
-                { dialog: DialogInterface?, which: Int ->
-                    if (activity != null) {
-                        val intent = RouteManager.getIntent(context,
-                                ApplinkConstInternalGlobal.SETTING_PROFILE)
-                        startActivity(intent)
-                        activity!!.finish()
-                    }
+        context?.let { context ->
+            DialogUnify(context = context,
+                    actionType = DialogUnify.HORIZONTAL_ACTION,
+                    imageType = DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.swd_alert_not_verified_yet_title))
+                setDescription(getString(R.string.swd_alert_not_verified_yet_body))
+                setPrimaryCTAText(getString(R.string.swd_alert_not_verified_yet_positive))
+                setSecondaryCTAText(getString(R.string.swd_alert_not_verified_yet_negative))
+                setPrimaryCTAClickListener {
+                    val intent = RouteManager.getIntent(context,
+                            ApplinkConstInternalGlobal.SETTING_PROFILE)
+                    startActivity(intent)
+                    activity?.finish()
                 }
-                .setNegativeButton(activity!!.getString(R.string.swd_alert_not_verified_yet_negative)) { _: DialogInterface?, _: Int ->
-                    if (activity != null) {
-                        activity!!.finish()
-                    }
+                setSecondaryCTAClickListener {
+                    activity?.finish()
                 }
-                .setCancelable(false)
-                .show()
+                setCancelable(false)
+                show()
+            }
+        }
     }
 
     private fun initializeViewPager() {
@@ -282,42 +310,33 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
             saldoWithdrawalPagerAdapter.fragmentList.add(SellerSaldoWithdrawalFragment.getInstance(it))
             viewPagerSaldoWithdrawal.adapter = saldoWithdrawalPagerAdapter
             tabSaldoWithdrawal.tabLayout.setupWithViewPager(viewPagerSaldoWithdrawal)
-            selectInitialPage()
-        }
-    }
-
-    private fun selectInitialPage() {
-        if (buyerSaldoBalance == 0L) {
-            tabSaldoWithdrawal.tabLayout.getTabAt(1)?.select()
+            if (buyerSaldoBalance == 0L) {
+                tabSaldoWithdrawal.tabLayout.getTabAt(1)?.select()
+            }
         }
     }
 
     private fun showSellerBlockedTicker() {
         if ((sellerWithdrawalLocked == MCL_STATUS_BLOCK1
                         || sellerWithdrawalLocked == MCL_STATUS_BLOCK3) && showMclBlockTickerFirebaseFlag) {
-            var tickerMsg = getString(R.string.saldolock_tickerDescription)
-            val startIndex = tickerMsg.indexOf("Bayar Sekarang")
-            val late = mclLateCount.toString()
-            tickerMsg = String.format(resources.getString(R.string.saldolock_tickerDescription), late)
-            val spannableString = SpannableString(tickerMsg)
-            tickerLayout.findViewById<TextView>(R.id.tv_desc_info)
-                    .movementMethod = LinkMovementMethod.getInstance()
-            spannableString.setSpan(object : ClickableSpan() {
-                override fun onClick(view: View) {
-                    RouteManager.route(context, String.format("%s?url=%s",
-                            ApplinkConst.WEBVIEW, WithdrawConstant.SALDO_LOCK_PAY_NOW_URL))
+            saldoLockTicker.visible()
+            saldoLockTicker.tickerTitle = getString(R.string.swd_lock_tickerTitle)
+            val descriptionStr = getString(R.string.swd_lock_tickerDescription, mclLateCount)
+            val payNowLinkStr = getString(R.string.swd_lock_pay_now)
+            val combinedHtmlDescription = getString(R.string.swd_ticker_description_html,
+                    descriptionStr, payNowLinkStr)
+            saldoLockTicker.setHtmlDescription(combinedHtmlDescription)
+            saldoLockTicker.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    WithdrawConstant.openSessionBaseURL(context, userSession,
+                            WithdrawConstant.SALDO_LOCK_PAY_NOW_URL)
                 }
 
-                override fun updateDrawState(ds: TextPaint) {
-                    super.updateDrawState(ds)
-                    ds.isUnderlineText = false
-                    ds.color = resources.getColor(R.color.tkpd_main_green)
+                override fun onDismiss() {
+                    saldoLockTicker.gone()
                 }
-            }, startIndex - 1, tickerMsg.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            tickerLayout.findViewById<TextView>(R.id.tv_desc_info).text = spannableString
-            tickerLayout.findViewById<View>(R.id.iv_dismiss_ticker)
-                    .setOnClickListener { tickerLayout.visibility = View.GONE }
-            tickerLayout.visibility = View.VISIBLE
+
+            })
         }
 
     }
@@ -368,7 +387,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
         withdrawalRequest = WithdrawalRequest(
                 userId = userSession.userId, email = userSession.email,
                 withdrawal = withdrawalAmount, bankAccount = selectedBankAccount,
-                isSellerWithdrawal = false, programName = getProgramName())
+                isSellerWithdrawal = false, programName = getProgramName(), isJoinRekeningPremium = false)
         validatePopUpViewModel.checkForValidatePopup(selectedBankAccount)
     }
 
@@ -377,49 +396,60 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
         withdrawalRequest = WithdrawalRequest(
                 userId = userSession.userId, email = userSession.email,
                 withdrawal = withdrawalAmount, bankAccount = selectedBankAccount,
-                isSellerWithdrawal = true, programName = getProgramName())
+                isSellerWithdrawal = true, programName = getProgramName(), isJoinRekeningPremium = false)
         validatePopUpViewModel.checkForValidatePopup(selectedBankAccount)
     }
 
     private fun checkAndCreateValidatePopup(validatePopUpWithdrawal: ValidatePopUpWithdrawal) {
-        validatePopUpWithdrawal.data?.let {
-            if (it.needShow) {
-                showValidationPopUp(it)
-            } else {
+        when {
+            validatePopUpWithdrawal.joinData.isJoinPrompt -> {
+                activity?.let {
+                    JoinRPOnWithdrawalBottomSheet
+                            .getJoinRPOnWithdrawalBottomSheetInstance(validatePopUpWithdrawal.joinData)
+                            .show(it.supportFragmentManager, "")
+                }
+            }
+            validatePopUpWithdrawal.data.needShow -> {
+                context?.let {
+                    showValidationPopUp(it, validatePopUpWithdrawal.data)
+                }
+            }
+            else -> {
                 openUserVerificationScreen()
             }
-        } ?: run {
-            openUserVerificationScreen()
         }
     }
 
-    private fun showValidationPopUp(data: ValidatePopUpData) {
-        validatePopUpAlertDialog = getConfirmationDialog(data.title, data.note,
-                onContinue = {
-                    analytics.eventClickContinueBtn()
-                    validatePopUpAlertDialog.cancel()
-                    openUserVerificationScreen()
-                },
-                onCancelClick = {
-                    validatePopUpAlertDialog.cancel()
-                }).create()
-        validatePopUpAlertDialog.show()
+    override fun onWithdrawalAndJoinRekening(isJoinRP: Boolean) {
+        withdrawalRequest.isJoinRekeningPremium = isJoinRP
+        withdrawalRequest.showJoinRekeningWidget = !isJoinRP
+        openUserVerificationScreen()
     }
 
-    private fun getConfirmationDialog(heading: String, description: String,
-                                      onContinue: () -> Unit,
-                                      onCancelClick: () -> Unit): AlertDialog.Builder {
-        val dialogBuilder = AlertDialog.Builder(activity!!)
-        val inflater = activity!!.layoutInflater
-        val dialogView = inflater.inflate(R.layout.swd_confirmation_dialog, null)
-        (dialogView.findViewById<View>(R.id.heading) as TextView).text = heading
-        (dialogView.findViewById<View>(R.id.description) as TextView).text = Html.fromHtml(description)
-        dialogView.findViewById<View>(R.id.continue_btn).setOnClickListener { onContinue() }
-        dialogView.findViewById<View>(R.id.back_btn).setOnClickListener { onCancelClick() }
-        return dialogBuilder.setView(dialogView)
+    private fun showValidationPopUp(context: Context, data: ValidatePopUpData) {
+        val note = HtmlCompat.fromHtml(data.note, HtmlCompat.FROM_HTML_MODE_LEGACY);
+        validatePopUpAlertDialog = DialogUnify(context = context,
+                actionType = DialogUnify.HORIZONTAL_ACTION,
+                imageType = DialogUnify.NO_IMAGE).apply {
+            setTitle(data.title)
+            setDescription(note)
+            setPrimaryCTAText(getString(R.string.swd_continue_pull))
+            setSecondaryCTAText(getString(R.string.swd_back))
+            setPrimaryCTAClickListener {
+                analytics.eventClickContinueBtn()
+                validatePopUpAlertDialog.cancel()
+                openUserVerificationScreen()
+            }
+            setSecondaryCTAClickListener {
+                validatePopUpAlertDialog.cancel()
+            }
+            show()
+        }
     }
 
     private fun openUserVerificationScreen() {
+        withdrawalRequest.showJoinRekeningWidget = true
+        withdrawalRequest.isJoinRekeningPremium = false
         val OTP_TYPE_ADD_BANK_ACCOUNT = 120
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.COTP)
         val bundle = Bundle()
@@ -464,9 +494,6 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
 
     companion object {
         const val WITHDRAWAL_REQUEST_DATA = "withdrawal_request_data"
-
-        const val REKENING_ACCOUNT_APPROVED_IN: Int = 4
-
         const val BANK_SETTING_REQUEST_CODE = 3001
         const val VERIFICATION_REQUEST_CODE = 3002
 
@@ -488,92 +515,3 @@ class SaldoWithdrawalFragment : BaseDaggerFragment() {
 
     }
 }
-
-
-/*private fun inflateRekeningPremiumWidget() {
-    if (!::checkEligible.isInitialized)
-        return
-    val rekeningData = checkEligible.data
-    val isClicked = withdrawalCache.isRekeningPremiumWidgetClicked(context)
-    if (rekeningData.isPowerMerchant) {
-        val copyWriting = rekeningData.copyWriting
-        copyWriting.let {
-            layoutRekeningWidget.visibility = View.VISIBLE
-            if (!isClicked)
-                tv_baru_tag.visibility = View.VISIBLE
-            tv_rekeningTitle.text = copyWriting.title
-            tv_briProgramDescription.text = Html.fromHtml(copyWriting.subtitle)
-            tv_briProgramButton.text = copyWriting.cta
-            tv_briProgramButton.setOnClickListener { onRekeningWidgetClick() }
-        }
-    }
-}*/
-
-/*rekeningPremiumViewModel.rekeningPremiumMutableData.observe(this, Observer {
-    when (it) {
-        is Success -> {
-            checkEligible = it.data
-            inflateRekeningPremiumWidget()
-
-        }
-        is Fail -> {
-        }
-    }
-})
-*/
-
-/* private fun onRekeningWidgetClick() {
-     if (!::checkEligible.isInitialized)
-         return
-     when (checkEligible.data.statusInt) {
-         REKENING_ACCOUNT_APPROVED_IN -> {
-             openBottomSheetForRekeningProgram(checkEligible.data.isIsPowerWD,
-                     checkEligible.data.copyWriting)
-         }
-         else -> openRekeningAccountWebLink(checkEligible.data.copyWriting.url)
-     }
-     analytics.eventOnPremiumProgramWidgetClick()
- }*/
-
-/*  private fun openBottomSheetForRekeningProgram(isRegisterForProgram: Boolean,
-                                                copyWriting: CopyWriting) {
-      *//*val briProgramBottomSheet = CloseableBottomSheetDialog
-                .createInstanceRounded(activity);
-        val view = layoutInflater.inflate(R.layout.swd_program_tarik_saldo,
-                null, true)
-        if (isRegisterForProgram) {
-            (view.findViewById<View>(R.id.tv_wdProgramTitle) as TextView)
-                    .text = getString(R.string.swd_rekening_premium)
-            (view.findViewById<View>(R.id.tv_wdProgramDescription) as TextView)
-                    .text = getString(R.string.swd_rekening_premium_description)
-            (view.findViewById<View>(R.id.wdProgramContinue) as TextView)
-                    .text = getString(R.string.swd_rekening_premium_btn)
-            analytics.eventClickInfo()
-        } else {
-            (view.findViewById<View>(R.id.tv_wdProgramTitle) as TextView)
-                    .text = getString(R.string.swd_rekening_premium)
-            (view.findViewById<View>(R.id.tv_wdProgramDescription) as TextView)
-                    .text = getString(R.string.swd_program_tarik_saldo_description)
-            (view.findViewById<View>(R.id.wdProgramContinue) as TextView)
-                    .text = getString(R.string.swd_program_tarik_btn)
-            analytics.eventClickJoinNow()
-        }
-
-        view.findViewById<View>(R.id.wdProgramContinue).setOnClickListener {
-            withdrawalCache.saveRekeningPremiumWidgetClicked(context)
-            briProgramBottomSheet.dismiss()
-            openRekeningAccountWebLink(copyWriting.url)
-        }
-
-        briProgramBottomSheet.setContentView(view)
-        briProgramBottomSheet.show()*//*
-    }*/
-/*
-    private fun openRekeningAccountWebLink(url: String?) {
-        url?.let {
-            val resultGenerateUrl = URLGenerator.generateURLSessionLogin(
-                    Uri.encode(url), userSession.deviceId, userSession.userId)
-            RouteManager.route(context, resultGenerateUrl)
-            analytics.eventClickGotoDashboard()
-        }
-    }*/

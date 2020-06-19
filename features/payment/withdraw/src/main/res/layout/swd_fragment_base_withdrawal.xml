@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -38,7 +39,6 @@
             app:typographyType="heading_4"
             tools:text="Rp5.000.000" />
 
-
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvCopyAllSaldoAmount"
             android:layout_width="wrap_content"
@@ -53,7 +53,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tfWithdrawal"
             app:typographyType="body_3" />
-
 
         <com.tokopedia.unifycomponents.TextFieldUnify
             android:id="@+id/tfWithdrawal"
@@ -82,7 +81,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tfWithdrawal" />
 
-
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title_choose_bank"
             android:layout_width="wrap_content"
@@ -96,7 +94,6 @@
             app:layout_constraintTop_toBottomOf="@+id/dividerAmountAndBank"
             app:typographyType="heading_4" />
 
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerBankList"
             android:layout_width="0dp"
@@ -109,7 +106,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title_choose_bank" />
 
-
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/dividerBankAndTNC"
             android:layout_width="match_parent"
@@ -120,7 +116,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/recyclerBankList" />
-
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvTermsAndCondition"
@@ -140,7 +135,7 @@
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/withdrawalButton"
             android:layout_width="0dp"
-            android:layout_height="@dimen/layout_lvl6"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl5"
@@ -149,7 +144,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvTermsAndCondition"
-            app:unifyButtonSize="medium"
+            app:unifyButtonSize="large"
             app:unifyButtonType="main"
             app:unifyButtonVariant="filled"
             tools:background="@color/Neutral_N700_96" />
@@ -166,7 +161,6 @@
             app:layout_constraintStart_toStartOf="@+id/withdrawalButton"
             app:layout_constraintTop_toTopOf="@+id/withdrawalButton"
             app:srcCompat="@drawable/ic_icon_lock" />
-
 
         <com.tkpd.remoteresourcerequest.view.DeferredImageView
             android:id="@+id/iv_emptySaldo"
@@ -205,7 +199,6 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             app:constraint_referenced_ids="emptySaldoDescription,iv_emptySaldo" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
