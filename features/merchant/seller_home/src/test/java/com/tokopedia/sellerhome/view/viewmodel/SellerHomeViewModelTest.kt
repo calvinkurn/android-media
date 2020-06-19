@@ -434,7 +434,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `get post widget data then returns success result`() {
+    fun `get post widget data then returns success result`() = runBlocking {
         val shopId = 12345
         val dataKeys = listOf("x", "x")
         val startDate = "02-02-2020"
@@ -467,7 +467,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `get post widget data then returns failed result`() {
+    fun `get post widget data then returns failed result`() = runBlocking {
         val shopId = 12345
         val dataKeys = listOf("x", "x")
         val startDate = "02-02-2020"
