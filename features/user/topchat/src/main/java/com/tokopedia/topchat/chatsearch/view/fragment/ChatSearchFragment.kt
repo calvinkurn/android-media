@@ -142,6 +142,7 @@ class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFactory>
 
     private fun observeErrorSearch() {
         viewModel.errorMessage.observe(viewLifecycleOwner, Observer { error ->
+            if (error == null) return@Observer
             if (viewModel.isFirstPage()) {
                 clearAllData()
             }

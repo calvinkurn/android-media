@@ -66,6 +66,8 @@ class ChatSearchViewModel @Inject constructor(
         _emptyQuery.value = false
         _searchResults.value = null
         _loadInitialData.value = false
+        _errorMessage.value = null
+        _triggerSearch.value = null
     }
 
     fun isFirstPage(): Boolean {
