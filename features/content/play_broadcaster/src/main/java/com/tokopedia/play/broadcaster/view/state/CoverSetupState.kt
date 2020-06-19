@@ -12,3 +12,6 @@ sealed class CoverSetupState {
     data class Cropping(val coverImage: Uri, val coverSource: CoverSourceEnum) : CoverSetupState()
     object Blank : CoverSetupState()
 }
+
+val CoverSetupState.isCropping: Boolean
+    get() = this is CoverSetupState.Cropping

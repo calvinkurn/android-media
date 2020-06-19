@@ -1,10 +1,7 @@
 package com.tokopedia.play.broadcaster.view.bottomsheet
 
 import android.Manifest
-import android.app.Activity
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
@@ -15,9 +12,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.type.PlayCoverImageType
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayCoverProductViewHolder
-import com.tokopedia.play.broadcaster.view.activity.PlayCoverCameraActivity
 import com.tokopedia.play.broadcaster.view.adapter.PlayCoverProductAdapter
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastCoverSetupViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -40,8 +35,7 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
 
     private val pdpCoverAdapter = PlayCoverProductAdapter(object : PlayCoverProductViewHolder.Listener {
         override fun onProductCoverClicked(productId: Long, imageUrl: String) {
-            mListener?.onCoverChosen(PlayCoverImageType.Product(productId, imageUrl))
-            dismiss()
+            mListener?.onChooseProductCover(this@PlayCoverImageChooserBottomSheet, productId, imageUrl)
         }
     })
 
@@ -61,21 +55,6 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
             REQUEST_CODE_PERMISSION_CAMERA -> onCameraRequestPermissionResult(grantResults)
             REQUEST_CODE_PERMISSION_GALLERY -> onGalleryRequestPermissionResult(grantResults)
             else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-            val imageUri = data?.getParcelableExtra<Uri>(PlayCoverCameraActivity.EXTRA_IMAGE_URI)
-            imageUri?.let { uri ->
-                mListener?.onCoverChosen(
-                        PlayCoverImageType.Camera(uri)
-                )
-            }
-
-            dismiss()
         }
     }
 
@@ -117,7 +96,7 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
                 bottomSheetWrapper.paddingBottom)
 
         llOpenCamera.setOnClickListener {
-            if (isCameraPermissionGranted()) takeCoverFromCamera()
+            if (isCameraPermissionGranted()) mListener?.onGetFromCamera(this@PlayCoverImageChooserBottomSheet)
             else requestCameraPermission()
         }
 
@@ -161,13 +140,8 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
             ContextCompat.checkSelfPermission(requireContext(),
                     permission) == PackageManager.PERMISSION_GRANTED
 
-    private fun takeCoverFromCamera() {
-        val cameraIntent = Intent(context, PlayCoverCameraActivity::class.java)
-        startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE)
-    }
-
     private fun chooseCoverFromGallery() {
-        mListener?.onChooseFromGalleryClicked()
+        mListener?.onChooseFromGalleryClicked(this@PlayCoverImageChooserBottomSheet)
         dismiss()
     }
 
@@ -181,8 +155,9 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
     }
 
     interface Listener {
-        fun onCoverChosen(coverImage: PlayCoverImageType)
-        fun onChooseFromGalleryClicked()
+        fun onChooseProductCover(bottomSheet: PlayCoverImageChooserBottomSheet, productId: Long, imageUrl: String)
+        fun onGetFromCamera(bottomSheet: PlayCoverImageChooserBottomSheet)
+        fun onChooseFromGalleryClicked(bottomSheet: PlayCoverImageChooserBottomSheet)
     }
 
     companion object {
@@ -190,7 +165,6 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
 
         private const val REQUEST_CODE_PERMISSION_CAMERA = 1002
         private const val REQUEST_CODE_PERMISSION_GALLERY = 1003
-        private const val REQUEST_IMAGE_CAPTURE = 2222
     }
 
 }

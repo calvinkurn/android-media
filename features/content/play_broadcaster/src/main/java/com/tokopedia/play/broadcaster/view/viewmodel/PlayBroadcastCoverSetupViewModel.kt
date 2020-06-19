@@ -43,6 +43,11 @@ class PlayBroadcastCoverSetupViewModel @Inject constructor(
         private val coverImageTransformer: ImageTransformer
 ) : BaseViewModel(dispatcher.main) {
 
+    val cropState: CoverSetupState
+        get() {
+            return _observableCropState.value ?: CoverSetupState.Blank
+        }
+
     val coverUri: Uri?
         get() {
             return when(val cropState = observableCropState.value) {
