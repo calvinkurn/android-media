@@ -18,7 +18,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
@@ -99,7 +99,7 @@ class CentralizedPromoViewModelTest {
     }
 
     @Test
-    fun `Success get layout data for on going promotion`() {
+    fun `Success get layout data for on going promotion`() = runBlocking {
         val successResult = OnGoingPromoListUiModel(
                 title = "Track your promotion",
                 items = listOf(
@@ -125,6 +125,8 @@ class CentralizedPromoViewModelTest {
 
         viewModel.getLayoutData(LayoutType.ON_GOING_PROMO)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             getOnGoingPromotionUseCase.executeOnBackground()
         }
@@ -141,61 +143,59 @@ class CentralizedPromoViewModelTest {
 
         viewModel.getLayoutData(LayoutType.ON_GOING_PROMO)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             getOnGoingPromotionUseCase.executeOnBackground()
         }
-
-        delay(100)
 
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.ON_GOING_PROMO)
         assert(result != null && result is Fail)
     }
 
     @Test
-    fun `Success get layout data for post`() {
-        runBlocking {
-            val successResult = PostListUiModel(
+    fun `Success get layout data for post`() = runBlocking {
+        val successResult = PostListUiModel(
                 items = listOf(
-                    PostUiModel(
-                        title = "Test Post",
-                        applink = "https://static-staging.tokopedia.net/seller/merchant-info/test-post/",
-                        url = "https://static-staging.tokopedia.net/seller/merchant-info/test-post/",
-                        featuredMediaUrl = "https://ecs7.tokopedia.net/img/blog/seller/2019/09/217_AM_-seller-center-1.jpg",
-                        subtitle = "<p>Info &#183; 20 SEP 19</p>"
-                    ),
-                    PostUiModel(
-                        title = "Test ke 2",
-                        applink = "https://static-staging.tokopedia.net/seller/merchant-info/test-ke-2/",
-                        url = "https://static-staging.tokopedia.net/seller/merchant-info/test-ke-2/",
-                        featuredMediaUrl = "https://ecs7.tokopedia.net/img/blog/seller/2019/09/217_AM_-seller-center-1.jpg",
-                        subtitle = "<p>Info &#183; 6 SEP 19</p>"
-                    ),
-                    PostUiModel(
-                        title = "Kumpul Keluarga Tokopedia Bersama Toko Cabang",
-                        applink = "https://seller.tokopedia.com/edu/seller-events/kumpul-keluarga-tc050320/",
-                        url = "https://seller.tokopedia.com/edu/seller-events/kumpul-keluarga-tc050320/",
-                        featuredMediaUrl = "https://seller.tokopedia.com/edu/seller-events/kumpul-keluarga-tc050320/tokocabang-event-seller-center_1024x439/",
-                        subtitle = "<p>Seller Event &#183; 5 MAR 20</p>"
-                    )
+                        PostUiModel(
+                                title = "Test Post",
+                                applink = "https://static-staging.tokopedia.net/seller/merchant-info/test-post/",
+                                url = "https://static-staging.tokopedia.net/seller/merchant-info/test-post/",
+                                featuredMediaUrl = "https://ecs7.tokopedia.net/img/blog/seller/2019/09/217_AM_-seller-center-1.jpg",
+                                subtitle = "<p>Info &#183; 20 SEP 19</p>"
+                        ),
+                        PostUiModel(
+                                title = "Test ke 2",
+                                applink = "https://static-staging.tokopedia.net/seller/merchant-info/test-ke-2/",
+                                url = "https://static-staging.tokopedia.net/seller/merchant-info/test-ke-2/",
+                                featuredMediaUrl = "https://ecs7.tokopedia.net/img/blog/seller/2019/09/217_AM_-seller-center-1.jpg",
+                                subtitle = "<p>Info &#183; 6 SEP 19</p>"
+                        ),
+                        PostUiModel(
+                                title = "Kumpul Keluarga Tokopedia Bersama Toko Cabang",
+                                applink = "https://seller.tokopedia.com/edu/seller-events/kumpul-keluarga-tc050320/",
+                                url = "https://seller.tokopedia.com/edu/seller-events/kumpul-keluarga-tc050320/",
+                                featuredMediaUrl = "https://seller.tokopedia.com/edu/seller-events/kumpul-keluarga-tc050320/tokocabang-event-seller-center_1024x439/",
+                                subtitle = "<p>Seller Event &#183; 5 MAR 20</p>"
+                        )
                 ),
                 errorMessage = ""
-            )
+        )
 
-            coEvery {
-                getPostUseCase.executeOnBackground()
-            } returns successResult
+        coEvery {
+            getPostUseCase.executeOnBackground()
+        } returns successResult
 
-            viewModel.getLayoutData(LayoutType.POST)
+        viewModel.getLayoutData(LayoutType.POST)
 
-            coVerify {
-                getPostUseCase.executeOnBackground()
-            }
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
-            delay(100)
-
-            val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.POST)
-            assert(result != null && result == Success(successResult))
+        coVerify {
+            getPostUseCase.executeOnBackground()
         }
+
+        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.POST)
+        assert(result != null && result == Success(successResult))
     }
 
     @Test
@@ -206,11 +206,11 @@ class CentralizedPromoViewModelTest {
 
         viewModel.getLayoutData(LayoutType.POST)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             getPostUseCase.executeOnBackground()
         }
-
-        delay(100)
 
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.POST)
         assert(result != null && result is Fail)
@@ -233,11 +233,11 @@ class CentralizedPromoViewModelTest {
 
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             getChatBlastSellerMetadataUseCase.executeOnBackground()
         }
-
-        delay(100)
 
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
 
@@ -254,7 +254,7 @@ class CentralizedPromoViewModelTest {
 
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
 
-        delay(100)
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
 
@@ -271,7 +271,7 @@ class CentralizedPromoViewModelTest {
 
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
 
-        delay(100)
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
 

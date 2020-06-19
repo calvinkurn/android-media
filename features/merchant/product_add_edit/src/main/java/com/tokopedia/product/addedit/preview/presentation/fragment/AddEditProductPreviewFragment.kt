@@ -2,6 +2,7 @@ package com.tokopedia.product.addedit.preview.presentation.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -116,7 +117,6 @@ import javax.inject.Inject
 
 class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHolder.OnPhotoChangeListener {
 
-    private var isProductStatusSwitchFirstTime = false
     private var countTouchPhoto = 0
     private var dataBackPressed: Int? = null
 
@@ -330,14 +330,16 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             }
         }
 
-        productStatusSwitch?.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isProductStatusSwitchFirstTime && isChecked) {
-                if (viewModel.isEditing.value == true) {
-                    ProductEditStepperTracking.trackChangeProductStatus(shopId)
-                }
-            }
-            isProductStatusSwitchFirstTime = true
+        productStatusSwitch?.setOnCheckedChangeListener { _, isChecked ->
             viewModel.updateProductStatus(isChecked)
+        }
+
+        // track switch status on click
+        productStatusSwitch?.setOnClickListener {
+            val isChecked = productStatusSwitch?.isChecked
+            if (isChecked == true && viewModel.isEditing.value == true) {
+                ProductEditStepperTracking.trackChangeProductStatus(shopId)
+            }
         }
 
         doneButton?.setOnClickListener {
@@ -364,12 +366,14 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                             val saveInstanceCacheManager = SaveInstanceCacheManager(it, true)
                             saveInstanceCacheManager.put(EXTRA_PRODUCT_INPUT_MODEL, this)
                             AddEditProductEditService.startService(it, saveInstanceCacheManager.id ?: "")
+                            activity?.setResult(RESULT_OK)
                             activity?.finish()
                         }
                     }
                 } else {
                     viewModel.productInputModel.value?.let { productInputModel ->
                         startProductAddService(productInputModel)
+                        activity?.setResult(RESULT_OK)
                         activity?.finish()
                     }
                 }
@@ -510,6 +514,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                                 saveInstanceCacheManager.put(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
                                 AddEditProductAddService.startService(this, saveInstanceCacheManager.id ?: "")
                             }
+                            activity?.setResult(RESULT_OK)
                             activity?.finish()
                         } else {
                             view?.let { view ->

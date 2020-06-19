@@ -3,17 +3,13 @@ package com.tokopedia.shop_showcase.shop_showcase_management.domain
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.shop_showcase.common.GQLQueryConstant
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseListBuyer.ShopShowcaseListBuyerResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 import javax.inject.Named
 
-class GetShopShowcaseListBuyerUseCase @Inject constructor(
-        private val graphqlUseCase: MultiRequestGraphqlUseCase,
-        @Named(GQLQueryConstant.QUERY_SHOP_SHOWCASE_LIST_AS_BUYER) val queryGetShowcaseList: String
-): UseCase<ShopShowcaseListBuyerResponse>() {
+class GetShopShowcaseListBuyerUseCase @Inject constructor(private val graphqlUseCase: MultiRequestGraphqlUseCase): UseCase<ShopShowcaseListBuyerResponse>() {
 
     var params: RequestParams = RequestParams.EMPTY
 
@@ -22,6 +18,25 @@ class GetShopShowcaseListBuyerUseCase @Inject constructor(
         private const val HIDE_NO_COUNT = "hideNoCount"
         private const val HIDE_SHOWCASE_GROUP = "hideShowcaseGroup"
         private const val IS_OWNER = "isOwner"
+        private const val MUTATION = "query shopShowcasesByShopID(\$shopId: String!, \$hideNoCount: Boolean!, \$hideShowcaseGroup: Boolean!, \$isOwner: Boolean!) {\n" +
+                "  shopShowcasesByShopID(shopId: \$shopId, hideNoCount: \$hideNoCount, hideShowcaseGroup: \$hideShowcaseGroup, isOwner: \$isOwner) {\n" +
+                "    result {\n" +
+                "      id\n" +
+                "      name\n" +
+                "      count\n" +
+                "      type\n" +
+                "      highlighted\n" +
+                "      alias\n" +
+                "      uri\n" +
+                "      useAce\n" +
+                "      badge\n" +
+                "      aceDefaultSort\n" +
+                "    }\n" +
+                "    error {\n" +
+                "      message\n" +
+                "    }\n" +
+                "  }\n" +
+                "}"
 
         object BuyerQueryParam {
             const val HIDE_NO_COUNT_VALUE = true
@@ -50,7 +65,7 @@ class GetShopShowcaseListBuyerUseCase @Inject constructor(
     }
 
     override suspend fun executeOnBackground(): ShopShowcaseListBuyerResponse {
-        val listShowcase = GraphqlRequest(queryGetShowcaseList, ShopShowcaseListBuyerResponse::class.java, params.parameters)
+        val listShowcase = GraphqlRequest(MUTATION, ShopShowcaseListBuyerResponse::class.java, params.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(listShowcase)
         val gqlResponse = graphqlUseCase.executeOnBackground()

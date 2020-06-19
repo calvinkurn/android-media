@@ -318,7 +318,11 @@ class ShopOpenRevampQuisionerFragment :
 
     private fun saveShipmentLocation(shopId: Int, postalCode: String, courierOrigin: Int,
                                      addrStreet: String, lat: String, long: String) {
-        viewModel.saveShippingLocation(shopId, postalCode, courierOrigin, addrStreet, lat, long)
+        viewModel.saveShippingLocation(
+                viewModel.getSaveShopShippingLocationData(
+                        shopId, postalCode, courierOrigin, addrStreet, lat, long
+                )
+        )
     }
 
     private fun closeKeyboard() {
@@ -335,8 +339,12 @@ class ShopOpenRevampQuisionerFragment :
                 showLoader()
                 data?.let {
                     val saveAddressDataModel = it.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_MODEL)
-                    val latitudeString = saveAddressDataModel.latitude.toString()
-                    val longitudeString = saveAddressDataModel.longitude.toString()
+                    var latitudeString: String = ""
+                    var longitudeString: String = ""
+                    if (saveAddressDataModel != null){
+                        latitudeString = saveAddressDataModel.latitude.toString()
+                        longitudeString = saveAddressDataModel.longitude.toString()
+                    }
                     val _shopId = if (userSession.shopId.isNotEmpty()) userSession.shopId.toInt() else 0 // Get shopId from create Shop
 
                     if (!_shopId.equals(0) &&

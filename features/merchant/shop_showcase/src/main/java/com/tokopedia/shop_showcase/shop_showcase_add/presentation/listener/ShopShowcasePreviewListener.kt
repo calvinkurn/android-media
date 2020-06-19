@@ -6,7 +6,8 @@ interface ShopShowcasePreviewListener {
 
     fun deleteSelectedProduct(position: Int)
     fun showChooseProduct()
-    fun showDeleteCounter(firstDeletedItem: ShowcaseProduct)
+    fun setupDeleteCounter(firstDeletedItem: ShowcaseProduct)
+    fun showDeleteCounter()
     fun hideDeleteCounter()
 
 }
