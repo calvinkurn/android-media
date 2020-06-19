@@ -142,11 +142,11 @@
 /features/transaction/atc_common/               		@tokopedia/minion-bob
 /features/transaction/sellerorder/                      @tokopedia/minion-bob
 /features/transaction/buyerorder/                       @tokopedia/minion-bob
-/features/transaction/purchase_platform/        		@tokopedia/minion-bob
 /features/transaction/purchase_platform_common/ 		@tokopedia/minion-bob
 /features/transaction/cart/        		                @tokopedia/minion-bob
 /features/transaction/checkout/        		            @tokopedia/minion-bob
 /features/transaction/oneclickcheckout/        		    @tokopedia/minion-bob
+/features/transaction/promo_checkout_marketplace/       @tokopedia/minion-bob
 /features/logistic/logisticdata/                		@tokopedia/minion-bob
 /features/logistic/logisticaddaddress/          		@tokopedia/minion-bob
 /features/logistic/logisticorder/                    	@tokopedia/minion-bob
