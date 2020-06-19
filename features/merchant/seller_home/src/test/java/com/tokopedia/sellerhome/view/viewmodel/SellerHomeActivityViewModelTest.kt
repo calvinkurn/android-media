@@ -102,14 +102,15 @@ class SellerHomeActivityViewModelTest {
             getShopInfoUseCase.executeOnBackground()
         } returns shopInfo
 
-        mViewModel.getShopInfo()
-
-        verify {
-            userSession.userId
-        }
-
-        coVerify {
-            getShopInfoUseCase.executeOnBackground()
+        runBlocking {
+            mViewModel.getShopInfo()
+            delay(100)
+            coVerify {
+                userSession.userId
+            }
+            coVerify {
+                getShopInfoUseCase.executeOnBackground()
+            }
         }
 
         assertEquals(Success(shopInfo), mViewModel.shopInfo.value)

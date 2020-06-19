@@ -318,7 +318,7 @@ class SellerHomeViewModelTest {
             } throws throwable
             mViewModel.getCardWidgetData(dataKeys)
 
-            delay(100)
+            delay(300)
             val result = mViewModel.cardWidgetData.value
             assert(result is Fail)
         }
