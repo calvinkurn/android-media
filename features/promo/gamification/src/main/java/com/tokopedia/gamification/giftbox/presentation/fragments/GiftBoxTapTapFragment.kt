@@ -259,7 +259,10 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                                 viewModel.tokenId = tokenUserID
                         }
 
-                        rewardSummary.setButtons(it.data.gamiTapEggHome?.rewardButton)
+                        rewardSummary.apply {
+                            setButtons(it.data.gamiTapEggHome?.rewardButton)
+                            imageBoxUrl = it.data.gamiTapEggHome?.tokenAsset?.rewardImgURL
+                        }
 
                         //for empty state
                         val state = it.data.gamiTapEggHome?.tokensUser?.state

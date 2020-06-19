@@ -16,6 +16,9 @@ data class TokenAsset(
         @SerializedName("imageURL")
         val imageURL: String? = null,
 
+        @SerializedName("rewardImgURL")
+        val rewardImgURL: String? = null,
+
         @SerializedName("imageV2URLs")
         val imageV2URLs: List<String>? = null,
 

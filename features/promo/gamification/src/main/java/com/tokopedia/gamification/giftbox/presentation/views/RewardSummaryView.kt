@@ -32,6 +32,7 @@ import com.tokopedia.gamification.taptap.data.entiity.RewardButton
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.gami_gift_result.view.*
 
 class RewardSummaryView : FrameLayout {
@@ -42,6 +43,7 @@ class RewardSummaryView : FrameLayout {
     lateinit var image: AppCompatImageView
     lateinit var tvTitle: AppCompatTextView
     lateinit var tvMessage: AppCompatTextView
+    lateinit var imageBox: AppCompatImageView
 
     lateinit var rvAdapter: RewardSummaryAdapter
     val dataList = arrayListOf<RewardSummaryItem>()
@@ -49,6 +51,8 @@ class RewardSummaryView : FrameLayout {
 
     val CONTAINER_REWARD = 0
     val CONTAINER_EMPTY = 1
+
+    var imageBoxUrl: String? = null
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         init(attrs)
@@ -74,6 +78,7 @@ class RewardSummaryView : FrameLayout {
         image = findViewById(R.id.image)
         tvTitle = findViewById(R.id.tvTitle)
         tvMessage = findViewById(R.id.tvMessage)
+        imageBox = findViewById(R.id.imageBox)
 
         rvAdapter = RewardSummaryAdapter(dataList)
 
@@ -121,6 +126,10 @@ class RewardSummaryView : FrameLayout {
     }
 
     fun setRewardData(rewardSummaryItemList: List<RewardSummaryItem>) {
+        if (!imageBoxUrl.isNullOrEmpty()) {
+            ImageUtils.loadImage(imageBox, imageBoxUrl!!)
+        }
+
         if (rewardSummaryItemList.isEmpty()) {
             showEmpty()
         } else {
