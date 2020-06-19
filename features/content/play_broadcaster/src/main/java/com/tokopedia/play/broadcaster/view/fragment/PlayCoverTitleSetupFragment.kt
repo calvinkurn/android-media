@@ -141,6 +141,8 @@ class PlayCoverTitleSetupFragment @Inject constructor(
         when (requestCode) {
             REQUEST_CODE_PERMISSION_COVER_CHOOSER -> onCoverChooserPermissionResult(grantResults)
             REQUEST_CODE_PERMISSION_CROP_COVER -> onCoverCropAddPermissionResult(grantResults)
+            REQUEST_CODE_PERMISSION_START_CROP_COVER -> {}
+            REQUEST_CODE_PERMISSION_UPLOAD -> onUploadPermissionResult(grantResults)
             else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
     }
@@ -170,7 +172,7 @@ class PlayCoverTitleSetupFragment @Inject constructor(
                         val coverUri = viewModel.coverUri
                         if (coverUri != null && viewModel.isValidCoverTitle(coverTitle)) {
                             if (isGalleryPermissionGranted()) viewModel.uploadCover(coverUri, coverTitle)
-                            else requestGalleryPermission(REQUEST_CODE_PERMISSION_CROP_COVER)
+                            else requestGalleryPermission(REQUEST_CODE_PERMISSION_UPLOAD)
                         }
                     }
                 }
@@ -187,21 +189,24 @@ class PlayCoverTitleSetupFragment @Inject constructor(
                     exifInfo: ExifInfo,
                     viewBitmap: Bitmap
             ) {
-                scope.launch {
-                    val croppedUri = withContext(dispatcher.io) {
-                         yalantisImageCropper.cropImage(
-                                inputPath = imageInputPath,
-                                cropRect = cropRect,
-                                currentRect = currentImageRect,
-                                currentScale = currentScale,
-                                currentAngle = currentAngle,
-                                exifInfo = exifInfo,
-                                viewBitmap = viewBitmap
-                        )
-                    }
+                if (isGalleryPermissionGranted()) {
+                    scope.launch {
+                        val croppedUri = withContext(dispatcher.io) {
+                            yalantisImageCropper.cropImage(
+                                    inputPath = imageInputPath,
+                                    cropRect = cropRect,
+                                    currentRect = currentImageRect,
+                                    currentScale = currentScale,
+                                    currentAngle = currentAngle,
+                                    exifInfo = exifInfo,
+                                    viewBitmap = viewBitmap
+                            )
+                        }
 
-                    viewModel.setCroppedCover(croppedUri)
-                }
+                        viewModel.setCroppedCover(croppedUri)
+                    }
+                } else requestGalleryPermission(REQUEST_CODE_PERMISSION_CROP_COVER)
+
             }
 
             override fun onChangeButtonClicked(view: CoverCropPartialView) {
@@ -216,15 +221,13 @@ class PlayCoverTitleSetupFragment @Inject constructor(
     }
 
     private fun openCoverChooser() {
-        if (isGalleryPermissionGranted()) {
-            getPlayCoverImageChooserBottomSheet()
-                    .show(childFragmentManager)
-        } else {
-            requestGalleryPermission(REQUEST_CODE_PERMISSION_COVER_CHOOSER)
-        }
+        getPlayCoverImageChooserBottomSheet()
+                .show(childFragmentManager)
     }
 
     private fun showCoverCropLayout(coverImageUri: Uri) {
+        requestGalleryPermission(REQUEST_CODE_PERMISSION_START_CROP_COVER)
+
         coverSetupView.hide()
         coverCropView.show()
 
@@ -316,6 +319,13 @@ class PlayCoverTitleSetupFragment @Inject constructor(
         }
     }
 
+    private fun onUploadPermissionResult(grantResults: IntArray) {
+        if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) coverSetupView.clickNext()
+        else {
+            Toaster.make(requireView(), "Upload Permission Failed")
+        }
+    }
+
     //region observe
     /**
      * Observe
@@ -371,7 +381,9 @@ class PlayCoverTitleSetupFragment @Inject constructor(
     }
 
     companion object {
-        private const val REQUEST_CODE_PERMISSION_COVER_CHOOSER = 9191
-        private const val REQUEST_CODE_PERMISSION_CROP_COVER = 9090
+        private const val REQUEST_CODE_PERMISSION_COVER_CHOOSER = 9090
+        private const val REQUEST_CODE_PERMISSION_CROP_COVER = 9191
+        private const val REQUEST_CODE_PERMISSION_START_CROP_COVER = 9292
+        private const val REQUEST_CODE_PERMISSION_UPLOAD = 9393
     }
 }

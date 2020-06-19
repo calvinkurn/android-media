@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.view.partial
 
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.text.*
 import android.text.style.ForegroundColorSpan
@@ -8,10 +9,14 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
 class CoverSetupPartialView(
@@ -27,6 +32,7 @@ class CoverSetupPartialView(
         }
 
     private val ivCoverImage: ImageView = findViewById(R.id.iv_cover_image)
+    private val loaderImage: LoaderUnify = findViewById(R.id.loader_image)
     private val llChangeCover: LinearLayout = findViewById(R.id.ll_change_cover)
     private val etCoverTitle: EditText = findViewById(R.id.et_cover_title)
     private val tvCoverTitleLabel: TextView = findViewById(R.id.tv_cover_title_label)
@@ -56,8 +62,27 @@ class CoverSetupPartialView(
     }
 
     fun setImage(uri: Uri?) {
-        if (uri != null) ivCoverImage.loadImage(uri.toString())
-        else ivCoverImage.setImageDrawable(null)
+        if (uri != null) {
+            loaderImage.show()
+            Glide.with(ivCoverImage.context)
+                    .load(uri)
+                    .addListener(object : RequestListener<Drawable> {
+                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                            loaderImage.hide()
+                            return false
+                        }
+
+                        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: com.bumptech.glide.load.DataSource?, isFirstResource: Boolean): Boolean {
+                            loaderImage.hide()
+                            return false
+                        }
+                    })
+                    .into(ivCoverImage)
+        }
+        else {
+            ivCoverImage.setImageDrawable(null)
+            loaderImage.hide()
+        }
 
         updateAddChangeCover()
     }
@@ -71,15 +96,19 @@ class CoverSetupPartialView(
         updateButtonState()
     }
 
+    fun updateButtonState() {
+        btnNext.isEnabled = coverTitle.isNotEmpty() && dataSource.getCurrentCoverUri() != null
+    }
+
+    fun clickNext() {
+        btnNext.performClick()
+    }
+
     private fun updateAddChangeCover() {
         tvAddChangeCover.text = getString(
                 if (dataSource.getCurrentCoverUri() != null) R.string.play_prepare_cover_title_change_cover_label
                 else R.string.play_prepare_cover_title_add_cover_label
         )
-    }
-
-    fun updateButtonState() {
-        btnNext.isEnabled = coverTitle.isNotEmpty() && dataSource.getCurrentCoverUri() != null
     }
 
     private fun setupTitleCounter() {

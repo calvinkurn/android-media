@@ -140,10 +140,11 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
     /**
      * Camera Permission
      */
-    private fun isCameraPermissionGranted(): Boolean = isPermissionGranted(Manifest.permission.CAMERA)
+    private fun isCameraPermissionGranted(): Boolean =
+            isPermissionGranted(Manifest.permission.CAMERA) && isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE) && isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE)
 
     private fun requestCameraPermission() = requestPermissions(
-            arrayOf(Manifest.permission.CAMERA), REQUEST_CODE_PERMISSION_CAMERA
+            arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_CODE_PERMISSION_CAMERA
     )
 
     /**
