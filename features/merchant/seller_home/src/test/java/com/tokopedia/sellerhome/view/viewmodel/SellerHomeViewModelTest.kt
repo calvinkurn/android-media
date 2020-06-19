@@ -114,11 +114,10 @@ class SellerHomeViewModelTest {
 
         mViewModel.getShopStatus()
 
-        verify {
+        delay(100)
+        coVerify {
             userSession.shopId
         }
-
-        delay(100)
         coVerify {
             getShopStatusUseCase.executeOnBackground()
         }
@@ -144,7 +143,7 @@ class SellerHomeViewModelTest {
 
         mViewModel.getShopStatus()
 
-        verify {
+        coVerify {
             userSession.shopId
         }
 
@@ -172,11 +171,11 @@ class SellerHomeViewModelTest {
 
         mViewModel.getWidgetLayout()
 
-        verify {
+        delay(100)
+        coVerify {
             userSession.shopId
         }
-
-        coEvery {
+        coVerify {
             getLayoutUseCase.executeOnBackground()
         }
 
@@ -200,11 +199,11 @@ class SellerHomeViewModelTest {
 
         mViewModel.getWidgetLayout()
 
-        verify {
+        coVerify {
             userSession.shopId
         }
 
-        coEvery {
+        coVerify {
             getLayoutUseCase.executeOnBackground()
         }
 
@@ -228,11 +227,10 @@ class SellerHomeViewModelTest {
 
         mViewModel.getShopLocation()
 
-        verify {
+        delay(100)
+        coVerify {
             userSession.shopId
         }
-
-        delay(100)
         coVerify {
             getShopLocationUseCase.executeOnBackground()
         }
@@ -285,11 +283,10 @@ class SellerHomeViewModelTest {
 
         runBlocking {
             mViewModel.getCardWidgetData(dataKeys)
+            delay(100)
             verify {
                 userSession.shopId
             }
-
-            delay(100)
             coVerify {
                 getCardDataUseCase.executeOnBackground()
             }
@@ -347,11 +344,10 @@ class SellerHomeViewModelTest {
 
         mViewModel.getLineGraphWidgetData(dataKeys)
 
-        verify {
+        delay(100)
+        coVerify {
             userSession.shopId
         }
-
-        delay(100)
         coVerify {
             getLineGraphDataUseCase.executeOnBackground()
         }
@@ -465,11 +461,11 @@ class SellerHomeViewModelTest {
 
         mViewModel.getPostWidgetData(dataKeys)
 
-        verify {
+        delay (100)
+        coVerify {
             userSession.shopId
         }
 
-        delay (100)
         coVerify {
             getPostDataUseCase.executeOnBackground()
         }
@@ -499,11 +495,10 @@ class SellerHomeViewModelTest {
 
         runBlocking {
             mViewModel.getPostWidgetData(dataKeys)
+            delay (100)
             verify {
                 userSession.shopId
             }
-
-            delay (100)
             coVerify {
                 getPostDataUseCase.executeOnBackground()
             }
