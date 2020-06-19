@@ -96,7 +96,8 @@ buildscript {
 }
 ext.lintchecks = [
         'SetColourUsageError',
-        'CoreResourcesUsageError'
+        'CoreResourcesUsageError',
+        'VectorDrawableCompat'
 ] as String[]
 
 
