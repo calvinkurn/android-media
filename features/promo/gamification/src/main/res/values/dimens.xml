@@ -40,4 +40,7 @@
     <dimen name="gami_dp_108">108dp</dimen>
     <dimen name="gami_dp_67">67dp</dimen>
     <dimen name="gami_dp_17">17dp</dimen>
+    <dimen name="gami_dp_43">43dp</dimen>
+    <dimen name="gami_dp_40">40dp</dimen>
+    <dimen name="gami_dp_12">12dp</dimen>
 </resources>

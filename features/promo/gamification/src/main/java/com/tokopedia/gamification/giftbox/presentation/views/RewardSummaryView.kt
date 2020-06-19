@@ -2,15 +2,17 @@ package com.tokopedia.gamification.giftbox.presentation.views
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.ViewFlipper
 import androidx.annotation.StringDef
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
@@ -23,7 +25,12 @@ import com.tokopedia.gamification.giftbox.presentation.views.RewardButtonType.Co
 import com.tokopedia.gamification.giftbox.presentation.views.RewardButtonType.Companion.EXIT
 import com.tokopedia.gamification.giftbox.presentation.views.RewardButtonType.Companion.PLAY_WITH_POINTS
 import com.tokopedia.gamification.giftbox.presentation.views.RewardButtonType.Companion.REDIRECT
+import com.tokopedia.gamification.giftbox.presentation.views.RewardButtons.Companion.GREEN
+import com.tokopedia.gamification.giftbox.presentation.views.RewardButtons.Companion.ORANGE
+import com.tokopedia.gamification.giftbox.presentation.views.RewardButtons.Companion.OUTLINE
 import com.tokopedia.gamification.taptap.data.entiity.RewardButton
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.gami_gift_result.view.*
 
@@ -35,12 +42,10 @@ class RewardSummaryView : FrameLayout {
     lateinit var image: AppCompatImageView
     lateinit var tvTitle: AppCompatTextView
     lateinit var tvMessage: AppCompatTextView
-    lateinit var btnFirst: Typography
-    lateinit var btnSecond: Typography
-    lateinit var fmParent: FrameLayout
 
     lateinit var rvAdapter: RewardSummaryAdapter
     val dataList = arrayListOf<RewardSummaryItem>()
+    val buttonsMap = HashMap<@RewardButtonType String, Typography>()
 
     val CONTAINER_REWARD = 0
     val CONTAINER_EMPTY = 1
@@ -69,9 +74,6 @@ class RewardSummaryView : FrameLayout {
         image = findViewById(R.id.image)
         tvTitle = findViewById(R.id.tvTitle)
         tvMessage = findViewById(R.id.tvMessage)
-        btnFirst = findViewById(R.id.btnFirst)
-        btnSecond = findViewById(R.id.btnSecond)
-        fmParent = findViewById(R.id.fmParent)
 
         rvAdapter = RewardSummaryAdapter(dataList)
 
@@ -89,20 +91,29 @@ class RewardSummaryView : FrameLayout {
         rvRewards.adapter = rvAdapter
     }
 
-    //todo Rahul - create buttons at runtime
     fun setButtons(rewardButtons: List<RewardButton>?) {
         if (!rewardButtons.isNullOrEmpty()) {
-            rewardButtons.forEach { rb ->
-                if (rb.type == RewardButtonType.EXIT) {
-                    btnSecond.text = rb.text
-                    btnSecond.setOnClickListener {
-                        (it.context as? AppCompatActivity)?.finish()
-                        RouteManager.route(it.context, rb.applink)
-                    }
-                } else if (rb.type == RewardButtonType.REDIRECT) {
-                    btnFirst.text = rb.text
-                    btnFirst.setOnClickListener {
-                        RouteManager.route(it.context, rb.applink)
+            rewardButtons.forEachIndexed { index, rb ->
+                if (rb.backgroundColor != null) {
+                    val button = getRewardButton(rb.backgroundColor)
+
+                    if (button != null) {
+                        llButton.addView(button)
+
+                        button.text = rb.text
+                        button.setOnClickListener {
+                            if (rb.type == RewardButtonType.EXIT) {
+                                (it.context as? AppCompatActivity)?.finish()
+                            }
+                            RouteManager.route(it.context, rb.applink)
+                        }
+
+                        if (index == 0) {
+                            (button.layoutParams as LinearLayout.LayoutParams).rightMargin = context.resources.getDimensionPixelSize(R.dimen.gami_dp_12)
+                        }
+
+                        if (rb.type != null)
+                            buttonsMap[rb.type] = button
                     }
                 }
             }
@@ -119,7 +130,7 @@ class RewardSummaryView : FrameLayout {
 
     private fun showEmpty() {
         viewFlipper.displayedChild = CONTAINER_EMPTY
-        btnFirst.visibility = View.GONE
+        buttonsMap.filter { it.key != RewardButtonType.EXIT }.forEach { it.value.gone() }
 
         viewFlipper.animate().alpha(1f).setDuration(300L).start()
         llButton.animate().alpha(1f).setDuration(300L).start()
@@ -127,7 +138,7 @@ class RewardSummaryView : FrameLayout {
 
     private fun setRewardSummaryData(rewardSummaryItemList: List<RewardSummaryItem>) {
         viewFlipper.displayedChild = CONTAINER_REWARD
-        btnFirst.visibility = View.VISIBLE
+        buttonsMap.forEach { it.value.visible() }
 
         viewFlipper.alpha = 1f
         llButton.alpha = 1f
@@ -144,6 +155,49 @@ class RewardSummaryView : FrameLayout {
         rvAdapter.notifyDataSetChanged()
     }
 
+    fun getRewardButton(@RewardButtons rewardButtonType: String): Typography? {
+        val typography = Typography(context)
+        val heightLarge = context.resources.getDimensionPixelSize(R.dimen.gami_dp_43)
+        val heightSmall = context.resources.getDimensionPixelSize(R.dimen.gami_dp_40)
+
+        when (rewardButtonType) {
+            ORANGE -> {
+                val lp = LinearLayout.LayoutParams(0, heightLarge)
+                lp.gravity = Gravity.CENTER
+                lp.weight = 1f
+
+                typography.layoutParams = lp
+                typography.background = ContextCompat.getDrawable(context, R.drawable.gf_bg_orange_3d)
+                typography.setTextColor(ContextCompat.getColor(context, R.color.white))
+            }
+            GREEN -> {
+                val lp = LinearLayout.LayoutParams(0, heightLarge)
+                lp.gravity = Gravity.CENTER
+                lp.weight = 1f
+
+                typography.layoutParams = lp
+                typography.background = ContextCompat.getDrawable(context, R.drawable.gf_bg_green_3d)
+                typography.setTextColor(ContextCompat.getColor(context, R.color.white))
+            }
+            OUTLINE -> {
+                val lp = LinearLayout.LayoutParams(0, heightSmall)
+                lp.gravity = Gravity.CENTER
+                lp.weight = 1f
+
+                typography.layoutParams = lp
+                typography.background = ContextCompat.getDrawable(context, R.drawable.gami_grey_bg)
+            }
+            else -> {
+                return null
+            }
+        }
+
+        typography.gravity = Gravity.CENTER
+        typography.setType(Typography.HEADING_5)
+        typography.setWeight(Typography.BOLD)
+        return typography
+    }
+
 }
 
 @Retention(AnnotationRetention.SOURCE)
@@ -154,5 +208,15 @@ annotation class RewardButtonType {
         const val EXIT = "exit"
         const val PLAY_WITH_POINTS = "playwithpoints"
         const val DEFAULT = "default"
+    }
+}
+
+@Retention(AnnotationRetention.SOURCE)
+@StringDef(ORANGE, OUTLINE, GREEN)
+annotation class RewardButtons {
+    companion object {
+        const val ORANGE = "orange"
+        const val OUTLINE = "outline"
+        const val GREEN = "green"
     }
 }
