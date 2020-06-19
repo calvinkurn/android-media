@@ -1,4 +1,4 @@
-package com.tokopedia.withdraw.saldowithdrawal
+package com.tokopedia.withdraw.saldowithdrawal.analytics
 
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils

@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.withdraw.R
-import com.tokopedia.withdraw.saldowithdrawal.constant.WithdrawConstant
+import com.tokopedia.withdraw.saldowithdrawal.util.WithdrawConstant
 import com.tokopedia.withdraw.saldowithdrawal.di.component.DaggerWithdrawComponent
 import com.tokopedia.withdraw.saldowithdrawal.helper.BulletPointSpan
 import javax.inject.Inject

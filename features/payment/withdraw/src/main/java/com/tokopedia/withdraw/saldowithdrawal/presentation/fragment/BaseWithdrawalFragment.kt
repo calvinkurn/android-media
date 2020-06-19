@@ -28,8 +28,8 @@ import com.tokopedia.utils.text.currency.NumberTextWatcher
 import com.tokopedia.utils.text.currency.StringUtils
 import com.tokopedia.webview.TkpdWebView
 import com.tokopedia.withdraw.R
-import com.tokopedia.withdraw.saldowithdrawal.WithdrawAnalytics
-import com.tokopedia.withdraw.saldowithdrawal.constant.*
+import com.tokopedia.withdraw.saldowithdrawal.analytics.WithdrawAnalytics
+import com.tokopedia.withdraw.saldowithdrawal.util.*
 import com.tokopedia.withdraw.saldowithdrawal.di.component.WithdrawComponent
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.BankAccount
 import com.tokopedia.withdraw.saldowithdrawal.presentation.adapter.BankAccountAdapter

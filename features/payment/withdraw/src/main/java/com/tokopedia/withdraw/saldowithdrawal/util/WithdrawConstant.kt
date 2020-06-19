@@ -1,4 +1,4 @@
-package com.tokopedia.withdraw.saldowithdrawal.constant
+package com.tokopedia.withdraw.saldowithdrawal.util
 
 import android.content.Context
 import android.net.Uri

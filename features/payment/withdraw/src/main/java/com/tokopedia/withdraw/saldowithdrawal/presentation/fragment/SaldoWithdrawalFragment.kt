@@ -3,12 +3,10 @@ package com.tokopedia.withdraw.saldowithdrawal.presentation.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.URLUtil
 import android.widget.TextView
 import androidx.constraintlayout.widget.Group
 import androidx.core.text.HtmlCompat
@@ -16,7 +14,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.carousel.CarouselUnify
@@ -27,7 +24,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.network.utils.URLGenerator
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -35,8 +31,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.withdraw.R
-import com.tokopedia.withdraw.saldowithdrawal.WithdrawAnalytics
-import com.tokopedia.withdraw.saldowithdrawal.constant.WithdrawConstant
+import com.tokopedia.withdraw.saldowithdrawal.analytics.WithdrawAnalytics
+import com.tokopedia.withdraw.saldowithdrawal.util.WithdrawConstant
 import com.tokopedia.withdraw.saldowithdrawal.di.component.WithdrawComponent
 import com.tokopedia.withdraw.saldowithdrawal.domain.exception.SubmitWithdrawalException
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.*

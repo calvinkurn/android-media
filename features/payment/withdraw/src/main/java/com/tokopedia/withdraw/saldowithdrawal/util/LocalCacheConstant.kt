@@ -1,4 +1,4 @@
-package com.tokopedia.withdraw.saldowithdrawal.constant
+package com.tokopedia.withdraw.saldowithdrawal.util
 
 object LocalCacheConstant {
     const val CACHE_FILE_NAME = "com.tokopedia.withdraw.saldowithdrawal"

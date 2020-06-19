@@ -3,7 +3,7 @@ package com.tokopedia.withdraw.saldowithdrawal.presentation.fragment
 import android.os.Bundle
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.withdraw.R
-import com.tokopedia.withdraw.saldowithdrawal.constant.SellerSaldoWithdrawal
+import com.tokopedia.withdraw.saldowithdrawal.util.SellerSaldoWithdrawal
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.BankAccount
 
 class SellerSaldoWithdrawalFragment : BaseWithdrawalFragment() {

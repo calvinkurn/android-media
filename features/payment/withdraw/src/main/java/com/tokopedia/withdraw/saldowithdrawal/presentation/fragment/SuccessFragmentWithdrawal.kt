@@ -22,8 +22,8 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.withdraw.R
-import com.tokopedia.withdraw.saldowithdrawal.WithdrawAnalytics
-import com.tokopedia.withdraw.saldowithdrawal.constant.WithdrawConstant
+import com.tokopedia.withdraw.saldowithdrawal.analytics.WithdrawAnalytics
+import com.tokopedia.withdraw.saldowithdrawal.util.WithdrawConstant
 import com.tokopedia.withdraw.saldowithdrawal.di.component.WithdrawComponent
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.BankAccount
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.JoinPromptMessageResponse

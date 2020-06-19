@@ -1,4 +1,4 @@
-package com.tokopedia.withdraw.saldowithdrawal.constant
+package com.tokopedia.withdraw.saldowithdrawal.util
 
 sealed class SaldoWithdrawal
 object BuyerSaldoWithdrawal : SaldoWithdrawal()
