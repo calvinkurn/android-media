@@ -108,6 +108,10 @@ abstract class BaseAnalyticsDebuggerFragment : BaseSearchListFragment<Visitable<
 
     }
 
+    override fun onSearchDone(text: String?) {
+
+    }
+
     override fun onLoadMoreCompleted(visitables: List<Visitable<*>>) {
         renderList(visitables, !visitables.isEmpty())
     }

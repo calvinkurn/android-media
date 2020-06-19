@@ -106,6 +106,10 @@ class TopAdsDebuggerFragment : BaseSearchListFragment<Visitable<*>, TopAdsDebugg
 
     }
 
+    override fun onSearchDone(text: String?) {
+
+    }
+
     override fun onLoadMoreCompleted(visitables: List<Visitable<*>>) {
         renderList(visitables, !visitables.isEmpty())
     }
