@@ -42,7 +42,6 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMA
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.product.manage.BuildConfig
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
 import com.tokopedia.product.manage.feature.cashback.presentation.activity.ProductManageSetCashbackActivity
@@ -70,18 +69,17 @@ import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductManageListAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.decoration.ProductListItemDecoration
 import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactoryImpl
+import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductManageMoreMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
-import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel
+import com.tokopedia.product.manage.feature.list.view.model.*
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.ShowFilterTab
-import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.*
-import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageBottomSheet
+import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageMoreMenuBottomSheet
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.StockInformationBottomSheet
 import com.tokopedia.product.manage.feature.list.view.ui.tab.ProductManageFilterTab
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
@@ -123,7 +121,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     ProductMultiEditBottomSheet.MultiEditListener,
     ProductManageFilterFragment.OnFinishedListener,
     ProductManageQuickEditPriceFragment.OnFinishedListener,
-    ProductManageQuickEditStockFragment.OnFinishedListener {
+    ProductManageQuickEditStockFragment.OnFinishedListener,
+    ProductManageMoreMenuViewHolder.ProductManageMoreMenuListener {
 
     @Inject
     lateinit var viewModel: ProductManageViewModel
@@ -137,6 +136,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private var dialogFeaturedProduct: DialogUnify? = null
     private var productManageBottomSheet: ProductManageBottomSheet? = null
     private var filterProductBottomSheet: ProductManageFilterFragment? = null
+    private var productManageMoreMenuBottomSheet: ProductManageMoreMenuBottomSheet? = null
     private var multiEditBottomSheet: ProductMultiEditBottomSheet? = null
     private val stockInfoBottomSheet by lazy { StockInformationBottomSheet(view, fragmentManager) }
 
@@ -235,7 +235,19 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
             ProductManageTracking.eventAddProduct()
         }
+        else if (item.itemId == R.id.action_more_menu) {
+            showMoreMenuBottomSheet()
+        }
+
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onMoreMenuClicked(menu: ProductMoreMenuModel) {
+        if(menu.title == getString(R.string.product_manage_shop_showcase_more_menu_text)) {
+            // goto showcase list
+            RouteManager.route(requireContext(), ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
+            productManageMoreMenuBottomSheet?.dismiss()
+        }
     }
 
     private fun onClickMoreFilter(filter: FilterTabViewModel) {
@@ -367,6 +379,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun setupBottomSheet() {
         productManageBottomSheet = ProductManageBottomSheet(view, this, fragmentManager)
         multiEditBottomSheet = ProductMultiEditBottomSheet(view, this, fragmentManager)
+        productManageMoreMenuBottomSheet = ProductManageMoreMenuBottomSheet(context, this, fragmentManager)
     }
 
     private fun setupMultiSelect() {
@@ -406,6 +419,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             ProductManageFilterFragment.createInstance(it, viewModel.selectedFilterAndSort.value,this)
         }
         this.childFragmentManager.let { filterProductBottomSheet?.show(it,"BottomSheetTag") }
+    }
+
+    private fun showMoreMenuBottomSheet() {
+        productManageMoreMenuBottomSheet?.show()
     }
 
     private fun setActiveFilterCount(filter: FilterOptionWrapper) {
