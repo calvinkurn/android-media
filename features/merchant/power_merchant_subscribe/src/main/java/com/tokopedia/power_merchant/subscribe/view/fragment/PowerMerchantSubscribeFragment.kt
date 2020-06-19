@@ -269,14 +269,16 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
 
     private fun showBottomSheetSuccess(freeShipping: PowerMerchantFreeShippingStatus) {
         val isFreeShippingEligible = freeShipping.isEligible
+        val chargePeriod = !freeShipping.isTransitionPeriod
+        val showFreeShipping = isFreeShippingEligible && chargePeriod
 
-        val primaryBtnLabel = if(isFreeShippingEligible) {
+        val primaryBtnLabel = if(showFreeShipping) {
             getString(R.string.power_merchant_free_shipping_learn_more)
         } else {
             getString(R.string.pm_label_bs_success_button)
         }
 
-        val description = if(isFreeShippingEligible) {
+        val description = if(showFreeShipping) {
             getString(R.string.power_merchant_success_free_shipping_description)
         } else {
             getString(R.string.power_merchant_success_description)
@@ -290,7 +292,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         )
         bottomSheet.setPrimaryButtonText(primaryBtnLabel)
         bottomSheet.setPrimaryButtonClickListener {
-            if(isFreeShippingEligible) {
+            if(showFreeShipping) {
                 openFreeShippingPage()
             }
             bottomSheet.dismiss()
