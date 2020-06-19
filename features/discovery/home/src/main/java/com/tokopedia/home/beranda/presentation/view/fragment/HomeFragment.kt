@@ -1014,7 +1014,10 @@ open class HomeFragment : BaseDaggerFragment(),
             openWebViewURL(slidesModel.redirectUrl, activity)
         }
         if (slidesModel.redirectUrl.isNotEmpty()) {
-            TopAdsUrlHitter(className).hitClickUrl(getContext(), slidesModel.redirectUrl)
+            TopAdsUrlHitter(className).hitClickUrl(getContext(),
+                    slidesModel.redirectUrl, slidesModel.id.toString(),
+                    slidesModel.title + " : " + slidesModel.creativeName,
+                    slidesModel.imageUrl)
         }
     }
 
@@ -1450,7 +1453,10 @@ open class HomeFragment : BaseDaggerFragment(),
             putEEToTrackingQueue(getOverlayBannerImpression(bannerSlidesModel) as HashMap<String, Any>)
         } else if (!bannerSlidesModel.isInvoke) {
             if (bannerSlidesModel.topadsViewUrl.isNotEmpty()) {
-                TopAdsUrlHitter(className).hitImpressionUrl(context, bannerSlidesModel.topadsViewUrl)
+                TopAdsUrlHitter(className).hitImpressionUrl(context, bannerSlidesModel.topadsViewUrl,
+                        bannerSlidesModel.id.toString(),
+                        bannerSlidesModel.title + " : " + bannerSlidesModel.creativeName,
+                        bannerSlidesModel.imageUrl)
             }
             val dataLayer = getBannerImpression(bannerSlidesModel) as HashMap<String, Any>
             dataLayer[KEY_SESSION_IRIS] = getIrisSession().getSessionId()
