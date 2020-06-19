@@ -129,7 +129,6 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         const val NO_ELEVATION = 0
         const val KEYBOARD_HEIGHT_THRESHOLD = 100
         const val DELAY_SHOW_BOTTOMSHEET_IN_MILIS = 250L
-        const val NO_DELAY_SHOW_BOTTOMSHEET_IN_MILIS = 0L
 
         fun createInstance(pageSource: Int,
                            promoRequest: PromoRequest,
