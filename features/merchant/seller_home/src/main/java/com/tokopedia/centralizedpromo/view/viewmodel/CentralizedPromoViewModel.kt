@@ -103,12 +103,12 @@ class CentralizedPromoViewModel @Inject constructor(
     }
 
     fun trackFreeShippingImpression() {
-        val isTransitionPeriod = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD)
+        val isTransitionPeriod = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
         CentralizedPromoTracking.sendImpressionFreeShipping(userSession, isTransitionPeriod)
     }
 
     fun trackFreeShippingClick() {
-        val isTransitionPeriod = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD)
+        val isTransitionPeriod = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
         CentralizedPromoTracking.sendClickFreeShipping(userSession, isTransitionPeriod)
     }
 }
