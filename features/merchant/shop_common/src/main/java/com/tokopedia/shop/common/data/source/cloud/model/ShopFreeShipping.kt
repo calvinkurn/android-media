@@ -16,6 +16,8 @@ class ShopFreeShipping(
         @SerializedName("shopID")
         val shopId:  Int,
         @SerializedName("status")
-        val status: Boolean
+        val status: Boolean,
+        @SerializedName("statusEligible")
+        val statusEligible: Boolean
     )
 }

@@ -31,12 +31,15 @@ class PowerMerchantFreeShippingView: FrameLayout {
 
     fun show(freeShipping: PowerMerchantFreeShippingStatus) {
         val transitionPeriod = freeShipping.isTransitionPeriod
+        val isPowerMerchantIdle = freeShipping.isPowerMerchantIdle
         showHideContainer(transitionPeriod)
 
         when {
             transitionPeriod -> showTransitionPeriod()
-            freeShipping.isActive -> showActiveFreeShipping(freeShipping.isShopScoreEligible)
-            else -> showInactiveFreeShipping(freeShipping.isEligible)
+            freeShipping.isActive || isPowerMerchantIdle -> {
+                showRegisteredFreeShippingWidget(isPowerMerchantIdle)
+            }
+            else -> showNotRegisteredFreeShippingWidget(freeShipping.isEligible)
         }
 
         showLayout()
@@ -54,9 +57,9 @@ class PowerMerchantFreeShippingView: FrameLayout {
         transitionLayout.show()
     }
 
-    private fun showActiveFreeShipping(shopScoreEligible: Boolean) {
-        setActiveTitleText(shopScoreEligible)
-        setActiveDescriptionText(shopScoreEligible)
+    private fun showRegisteredFreeShippingWidget(isPowerMerchantIdle: Boolean) {
+        setActiveTitleText(isPowerMerchantIdle)
+        setActiveDescriptionText(isPowerMerchantIdle)
         setActiveLayoutClickListener()
 
         activeLayout.show()
@@ -64,7 +67,7 @@ class PowerMerchantFreeShippingView: FrameLayout {
         transitionLayout.hide()
     }
 
-    private fun showInactiveFreeShipping(isEligible: Boolean) {
+    private fun showNotRegisteredFreeShippingWidget(isEligible: Boolean) {
         setInactiveTitleText(isEligible)
         setInactiveDescriptionText(isEligible)
         setCTABtnText(isEligible)
@@ -75,20 +78,20 @@ class PowerMerchantFreeShippingView: FrameLayout {
         transitionLayout.hide()
     }
 
-    private fun setActiveTitleText(shopScoreEligible: Boolean) {
-        val title = if(shopScoreEligible) {
-            context.getString(R.string.power_merchant_free_shipping_title)
-        } else  {
+    private fun setActiveTitleText(isPowerMerchantIdle: Boolean) {
+        val title = if(isPowerMerchantIdle) {
             context.getString(R.string.power_merchant_free_shipping_shop_score_title)
+        } else  {
+            context.getString(R.string.power_merchant_free_shipping_title)
         }
         activeLayout.textTitle.text = MethodChecker.fromHtml(title)
     }
 
-    private fun setActiveDescriptionText(shopScoreEligible: Boolean) {
-        activeLayout.textDescription.text = if(shopScoreEligible) {
-            context.getString(R.string.power_merchant_free_shipping_active_description)
-        } else  {
+    private fun setActiveDescriptionText(isPowerMerchantIdle: Boolean) {
+        activeLayout.textDescription.text = if(isPowerMerchantIdle) {
             context.getString(R.string.power_merchant_free_shipping_shop_score_description)
+        } else  {
+            context.getString(R.string.power_merchant_free_shipping_active_description)
         }
     }
 

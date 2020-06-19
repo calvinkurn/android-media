@@ -8,11 +8,9 @@ import com.tokopedia.shop.common.data.source.cloud.model.ShopFreeShipping
 import com.tokopedia.shop.common.data.source.cloud.model.ShopFreeShipping.*
 import com.tokopedia.shop.common.data.source.cloud.query.GetShopFreeShippingEligibility
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class GetShopFreeShippingEligibilityUseCase @Inject constructor(
-    private val userSession: UserSessionInterface,
     graphqlRepository: GraphqlRepository
 ): GraphqlUseCase<ShopFreeShipping>(graphqlRepository) {
 
@@ -20,8 +18,9 @@ class GetShopFreeShippingEligibilityUseCase @Inject constructor(
         private const val PARAM_USER_ID = "userID"
         private const val PARAM_SHOP_ID = "shopIDs"
 
-        fun createRequestParams(shopIds: List<Int>): RequestParams {
+        fun createRequestParams(userId: Int, shopIds: List<Int>): RequestParams {
             return RequestParams().apply {
+                putObject(PARAM_USER_ID, userId)
                 putObject(PARAM_SHOP_ID, shopIds)
             }
         }
@@ -36,8 +35,6 @@ class GetShopFreeShippingEligibilityUseCase @Inject constructor(
     }
 
     suspend fun execute(requestParams: RequestParams): List<Shop> {
-        val userId = userSession.userId.toInt()
-        requestParams.putInt(PARAM_USER_ID, userId)
         setRequestParams(requestParams.parameters)
         return executeOnBackground().response.shops
     }

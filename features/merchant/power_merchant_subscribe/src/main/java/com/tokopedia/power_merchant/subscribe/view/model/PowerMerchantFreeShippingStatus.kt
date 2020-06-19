@@ -4,5 +4,5 @@ data class PowerMerchantFreeShippingStatus(
     val isActive: Boolean,
     val isEligible: Boolean,
     val isTransitionPeriod: Boolean,
-    val isShopScoreEligible: Boolean
+    val isPowerMerchantIdle: Boolean
 )
