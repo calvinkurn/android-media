@@ -180,7 +180,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
                 userSession.userId)
 
         setupView()
-        observeVoucherList()
+        observeLiveData()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -964,7 +964,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         loadData(1)
     }
 
-    protected fun observeVoucherList() {
+    private fun observeLiveData() {
         viewLifecycleOwner.run {
             observe(mViewModel.voucherList) {
                 when (it) {
