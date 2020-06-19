@@ -93,10 +93,10 @@ class HotelCancellationReasonFragment : HotelBaseFragment() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         view?.apply {
             viewTreeObserver.removeOnGlobalLayoutListener(keyboardAppearsListener)
         }
+        super.onDestroy()
     }
 
     override fun onResume() {
