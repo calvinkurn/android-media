@@ -260,7 +260,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `get card widget data then returns success result`() = runBlocking {
+    fun `get card widget data then returns success result`() {
         val shopId = 12345
         val dataKeys = listOf("a", "b", "c")
         val startDate = "02-03-20202"
@@ -277,7 +277,9 @@ class SellerHomeViewModelTest {
             getCardDataUseCase.executeOnBackground()
         } returns cardDataResult
 
-        mViewModel.getCardWidgetData(dataKeys)
+        runBlocking {
+            mViewModel.getCardWidgetData(dataKeys)
+        }
 
         verify {
             userSession.shopId
@@ -467,7 +469,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `get post widget data then returns failed result`() = runBlocking {
+    fun `get post widget data then returns failed result`() {
         val shopId = 12345
         val dataKeys = listOf("x", "x")
         val startDate = "02-02-2020"
@@ -484,7 +486,9 @@ class SellerHomeViewModelTest {
             getPostDataUseCase.executeOnBackground()
         } throws exception
 
-        mViewModel.getPostWidgetData(dataKeys)
+        runBlocking {
+            mViewModel.getPostWidgetData(dataKeys)
+        }
 
         verify {
             userSession.shopId
