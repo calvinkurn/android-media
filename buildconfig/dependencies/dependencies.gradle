@@ -88,23 +88,19 @@ ext {
     ]
 
     unifyIconVersion = '0.0.4'
-    unifyPrinciplesVersion = '1.1.7'
-    unifyComponentsVersion = '1.1.36'
+    unifyPrinciplesVersion = '1.1.8'
+    unifyComponentsVersion = '1.1.39'
     unifyCoachMarkVersion = '1.2.3'
     unifyCalendarVersion = '1.0.2'
-    unifyBannerVersion = '1.0.3'
-    unifyDialogVersion = '1.0.0'
+    unifyBannerVersion = '1.0.4'
+    unifyDialogVersion = '1.0.3'
     unifyDatePickerVersion = '1.0.3'
     unifyPinVersion = '1.0.1'
     unifyEmptyStateVersion = '1.0.5'
-    unifyGlobalErrorVersion = '1.0.8'
+    unifyGlobalErrorVersion = '1.0.9'
     unifyHeaderVersion = '1.1.1'
     unifySortFilterVersion = '1.0.3'
-    unifyGlobalErrorVersion = '1.0.6'
-    unifyListVersion = "1.0.4"
-    unifyHeaderVersion = '1.1.0'
     unifyIconNotificationVersion = '1.0.0'
-    unifyHeaderVersion = '1.0.0'
     unifyCarouselVersion = '1.0.4'
     unifyListVersion = '1.0.5'
 
@@ -222,7 +218,6 @@ ext {
             chips                 : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar',
             roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3',
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
-            cardio                : "io.card:android-sdk:$cardioVersion",
             loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.5.0",
             imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion@aar",
