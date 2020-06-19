@@ -28,7 +28,7 @@ class RechargeRecommendationCallback (val context: Context?, val viewModel: Home
         // Trigger decline listener to remove widget from homepage
         val requestParams = mapOf(
                 DeclineRechargeRecommendationUseCase.PARAM_UUID to reminderData.UUID,
-                DeclineRechargeRecommendationUseCase.PARAM_CONTENT_ID to reminderData.id.toString())
+                DeclineRechargeRecommendationUseCase.PARAM_CONTENT_ID to reminderData.id)
         viewModel.declineRechargeRecommendationItem(requestParams)
     }
 
