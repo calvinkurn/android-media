@@ -312,11 +312,10 @@ class SellerHomeViewModelTest {
             userSession.shopId
         } returns shopId
 
-        coEvery {
-            getCardDataUseCase.executeOnBackground()
-        } throws throwable
-
         runBlocking {
+            coEvery {
+                getCardDataUseCase.executeOnBackground()
+            } throws throwable
             mViewModel.getCardWidgetData(dataKeys)
         }
 
