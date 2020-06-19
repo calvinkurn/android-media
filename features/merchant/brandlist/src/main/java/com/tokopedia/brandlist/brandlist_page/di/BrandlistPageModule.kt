@@ -23,7 +23,7 @@ class BrandlistPageModule {
         return UserSession(context)
     }
 
-    @BrandlistSearchScope
+    @BrandlistPageScope
     @Provides
     fun provideDispatcherProvider(): BrandlistDispatcherProvider = BrandlistDispatcherProviderImp()
 }

@@ -17,7 +17,7 @@ import javax.inject.Named
 @BrandlistCategoryScope
 class BrandlistCategoryModule {
 
-    @BrandlistSearchScope
+    @BrandlistCategoryScope
     @Provides
     fun provideDispatcherProvider(): BrandlistDispatcherProvider = BrandlistDispatcherProviderImp()
 
