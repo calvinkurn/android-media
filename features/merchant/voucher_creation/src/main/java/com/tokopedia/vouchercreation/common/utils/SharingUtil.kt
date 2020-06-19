@@ -7,14 +7,13 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Environment
-import android.provider.MediaStore
 import androidx.annotation.StringDef
+import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -210,23 +209,17 @@ object SharingUtil {
             val shareIntent = Intent().apply {
                 action = Intent.ACTION_SEND
                 type = SHARE_TYPE_IMAGE
-                setClassName(SocmedPackage.INSTAGRAM, SocmedClass.INSTAGRAM)
                 flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                setPackage(SocmedPackage.INSTAGRAM)
                 try {
-                    putExtra(Intent.EXTRA_STREAM, Uri.parse(pathFile))
-                    val imageMediaStore = MediaStore.Images.Media.insertImage(
-                            context.contentResolver,
-                            pathFile,
-                            messageString.toBlankOrString(),
-                            messageString.toBlankOrString()
-                    )
-                    val instagramShareUri = Uri.parse(imageMediaStore)
-                    val clipData = ClipData.newRawUri(IMAGE_LABEL, instagramShareUri)
-                    setClipData(clipData)
+                    val mediaFile = File(pathFile)
+                    val fileUri = FileProvider.getUriForFile(context, context.applicationContext.packageName+".provider", mediaFile)
+                    putExtra(Intent.EXTRA_STREAM, fileUri)
                 } catch (ex: Exception) {
                     ex.printStackTrace()
                 }
             }
+            context.startActivity(shareIntent)
         }
         else {
             // This block is reserved to handle unavailability of the socmed app.
