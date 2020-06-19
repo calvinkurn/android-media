@@ -24,13 +24,17 @@
             app:borderRadius="@dimen/dp_topchat_20"
             tools:srcCompat="@tools:sample/avatars" />
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_topchat_image_upload_gradient" />
+
         <LinearLayout
             android:id="@+id/llReadStatusContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:background="@drawable/bg_topchat_image_upload_gradient"
-            android:gravity="end|bottom"
+            android:gravity="end|center_vertical"
             android:orientation="horizontal"
             android:paddingTop="@dimen/spacing_lvl2"
             android:paddingEnd="@dimen/spacing_lvl4"

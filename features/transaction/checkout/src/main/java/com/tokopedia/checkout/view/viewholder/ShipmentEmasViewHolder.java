@@ -13,6 +13,7 @@ import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.purchase_platform.common.utils.Utils;
 
 public class ShipmentEmasViewHolder extends RecyclerView.ViewHolder {
 
@@ -45,7 +46,7 @@ public class ShipmentEmasViewHolder extends RecyclerView.ViewHolder {
         imgEmasInfo.setOnClickListener(v -> showBottomSheet(egoldAttributeModel));
         tvEmasDesc.setText(Html.fromHtml(String.format(llContainer.getContext()
                         .getString(R.string.emas_checkout_desc), egoldAttributeModel.getSubText(),
-                CurrencyFormatUtil.convertPriceValueToIdrFormat(egoldAttributeModel.getBuyEgoldValue(), false))));
+                Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(egoldAttributeModel.getBuyEgoldValue(), false)))));
 
         buyEmas.setOnCheckedChangeListener((buttonView, isChecked) -> shipmentAdapterActionListener.onEgoldChecked(isChecked));
     }
@@ -54,7 +55,7 @@ public class ShipmentEmasViewHolder extends RecyclerView.ViewHolder {
         Tooltip tooltip = new Tooltip(imgEmasInfo.getContext());
         tooltip.setTitle(egoldAttributeModel.getTitleText());
         tooltip.setDesc(egoldAttributeModel.getTooltipText());
-        tooltip.setTextButton(imgEmasInfo.getContext().getString(R.string.label_button_bottomsheet_close));
+        tooltip.setTextButton(imgEmasInfo.getContext().getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close));
         tooltip.setWithIcon(false);
         tooltip.getBtnAction().setOnClickListener(v -> tooltip.dismiss());
         tooltip.show();

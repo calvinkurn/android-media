@@ -851,6 +851,20 @@ object DynamicProductDetailTracking {
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_SEND_QUESTION)
         }
+
+        fun eventClickByMe(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel?) {
+            val shopId = productInfo?.basic?.shopID ?: ""
+            val productId = productInfo?.basic?.productID ?: ""
+            val eventLabel = "{$shopId} - {$productId}"
+
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Action.CLICK_BY_ME,
+                    eventLabel)
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, "")
+        }
     }
 
     object Iris {
