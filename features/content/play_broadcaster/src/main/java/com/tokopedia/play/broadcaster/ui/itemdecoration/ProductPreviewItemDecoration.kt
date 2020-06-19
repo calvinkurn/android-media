@@ -4,7 +4,7 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.play.broadcaster.ui.viewholder.ProductPreviewViewHolder
+import com.tokopedia.play.broadcaster.ui.viewholder.SpacingProvider
 
 /**
  * Created by jegul on 26/05/20
@@ -21,19 +21,19 @@ class ProductPreviewItemDecoration : RecyclerView.ItemDecoration() {
         val isSameSpanGroupIndexWithPrev = isSameSpanGroupIndexWithPrevious(position, gridLayoutManager)
 
         if (!isSameSpanGroupIndexWithPrev && spanSizeLookup.getSpanSize(position) != spanCount) {
-            if (viewHolder is ProductPreviewViewHolder) outRect.bottom = viewHolder.spacing / 2
+            if (viewHolder is SpacingProvider) outRect.bottom = viewHolder.spacing / 2
         }
 
         if (isSameSpanCountWithPrevious(position, gridLayoutManager) && isSameSpanGroupIndexWithPrev) {
-            if (viewHolder is ProductPreviewViewHolder) outRect.top = viewHolder.spacing / 2
+            if (viewHolder is SpacingProvider) outRect.top = viewHolder.spacing / 2
         }
 
         if (!isFirstSpanGroupIndex(position, gridLayoutManager)) {
-            if (viewHolder is ProductPreviewViewHolder) outRect.left = viewHolder.spacing / 2
+            if (viewHolder is SpacingProvider) outRect.left = viewHolder.spacing / 2
         }
 
         if (!isLastSpanGroupIndex(position, gridLayoutManager)) {
-            if (viewHolder is ProductPreviewViewHolder) outRect.right = viewHolder.spacing / 2
+            if (viewHolder is SpacingProvider) outRect.right = viewHolder.spacing / 2
         }
     }
 

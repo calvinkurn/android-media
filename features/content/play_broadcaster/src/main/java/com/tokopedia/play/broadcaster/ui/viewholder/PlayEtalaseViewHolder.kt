@@ -6,16 +6,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseViewHolder
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.ProductPreviewItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.EtalaseContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
+import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
 import com.tokopedia.play.broadcaster.util.doOnPreDraw
 import com.tokopedia.play.broadcaster.view.adapter.PlayProductPreviewAdapter
-import com.tokopedia.unifycomponents.LoaderUnify
+import kotlin.math.min
 
 /**
  * Created by jegul on 26/05/20
@@ -24,7 +22,6 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
 
     private val tvEtalaseTitle: TextView = itemView.findViewById(R.id.tv_etalase_title)
     private val tvEtalaseAmount: TextView = itemView.findViewById(R.id.tv_etalase_amount)
-    private val loaderImage: LoaderUnify = itemView.findViewById(R.id.loader_image)
     private val rvProductPreview: RecyclerView = itemView.findViewById(R.id.rv_product_preview)
     private val vClickArea: View = itemView.findViewById(R.id.v_click_area)
 
@@ -53,7 +50,7 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
     }
 
     fun bind(item: EtalaseContentUiModel) {
-        setupProductPreview(item.productMap)
+        setupProductPreview(item.productMap, item.totalProduct)
 
         listener.onEtalaseBound(item.id)
         vClickArea.setOnClickListener {
@@ -67,19 +64,17 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
         tvEtalaseAmount.text = getString(R.string.play_etalase_product_amount, item.totalProduct)
     }
 
-    private fun setupProductPreview(productPreviewMap: Map<Int, List<ProductContentUiModel>>) {
+    private fun setupProductPreview(productPreviewMap: Map<Int, List<ProductContentUiModel>>, totalProduct: Int) {
         if (productPreviewMap.isEmpty()) {
-            loaderImage.visible()
-            rvProductPreview.invisible()
+            productPreviewAdapter.setItemsAndAnimateChanges(List(min(MAX_PREVIEW, totalProduct)) { ProductLoadingUiModel })
         } else {
-            loaderImage.gone()
-            rvProductPreview.visible()
+            productPreviewAdapter.setItemsAndAnimateChanges(productPreviewMap.values.flatten())
         }
-
-        productPreviewAdapter.setItemsAndAnimateChanges(productPreviewMap.values.flatten())
     }
 
     companion object {
+        private const val MAX_PREVIEW = 4
+
         val LAYOUT = R.layout.item_play_etalase
     }
 
