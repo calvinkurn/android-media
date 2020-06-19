@@ -51,6 +51,8 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
     private var shouldLoadFirst = true
 
+    private var mListener: Listener? = null
+
     private val selectableProductAdapter = ProductSelectableAdapter(object : ProductSelectableViewHolder.Listener {
         override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
             viewModel.selectProduct(productId, isSelected)
@@ -98,6 +100,10 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
     override fun onInterceptBackPressed(): Boolean {
         return false
+    }
+
+    fun setListener(listener: Listener) {
+        mListener = listener
     }
 
     private fun initView(view: View) {
@@ -174,10 +180,8 @@ class PlayEtalaseDetailFragment @Inject constructor(
     }
 
     private fun showCoverTitlePage(nextBtnView: View) {
-        bottomSheetCoordinator.navigateToFragment(
-                fragmentClass = PlayCoverTitleSetupFragment::class.java,
-                sharedElements = listOf(nextBtnView)
-        )
+        mListener?.onProductSetupFinished(listOf(nextBtnView))
+
     }
 
     /**
@@ -296,5 +300,10 @@ class PlayEtalaseDetailFragment @Inject constructor(
         const val EXTRA_ETALASE_ID = "etalase_id"
 
         private const val SPAN_COUNT = 2
+    }
+
+    interface Listener {
+
+        fun onProductSetupFinished(sharedElements: List<View>)
     }
 }

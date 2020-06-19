@@ -47,6 +47,8 @@ class PlayEtalasePickerFragment @Inject constructor(
     private lateinit var selectedProductPage: SelectedProductPagePartialView
     private lateinit var bottomActionView: BottomActionPartialView
 
+    private var mListener: Listener? = null
+
     private val fragmentFactory: FragmentFactory
         get() = childFragmentManager.fragmentFactory
 
@@ -86,13 +88,7 @@ class PlayEtalasePickerFragment @Inject constructor(
     }
 
     override fun openEtalaseDetail(etalaseId: String, sharedElements: List<View>) {
-        bottomSheetCoordinator.navigateToFragment(
-                PlayEtalaseDetailFragment::class.java,
-                extras = Bundle().apply {
-                    putString(PlayEtalaseDetailFragment.EXTRA_ETALASE_ID, etalaseId)
-                },
-                sharedElements = sharedElements
-        )
+        mListener?.onEtalaseClicked(etalaseId, sharedElements)
     }
 
     override fun openSearchPage(keyword: String) {
@@ -118,6 +114,10 @@ class PlayEtalasePickerFragment @Inject constructor(
 
     override fun goBack(clazz: Class<out Fragment>) {
         if (childFragmentManager.fragments.isNotEmpty()) childFragmentManager.popBackStack(clazz.name, 0)
+    }
+
+    fun setListener(listener: Listener) {
+        mListener = listener
     }
 
     private fun initView(view: View) {
@@ -287,8 +287,8 @@ class PlayEtalasePickerFragment @Inject constructor(
                 .setDuration(300)
     }
 
-    companion object {
+    interface Listener {
 
-        private const val SPAN_COUNT = 2
+        fun onEtalaseClicked(id: String, sharedElements: List<View>)
     }
 }

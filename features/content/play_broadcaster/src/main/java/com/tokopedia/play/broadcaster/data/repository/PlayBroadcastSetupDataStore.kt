@@ -30,4 +30,6 @@ interface PlayBroadcastSetupDataStore {
     fun getSelectedCover(): PlayCoverUiModel?
 
     fun setCover(cover: PlayCoverUiModel)
+
+    suspend fun uploadSelectedCover(channelId: String): NetworkResult<Unit>
 }

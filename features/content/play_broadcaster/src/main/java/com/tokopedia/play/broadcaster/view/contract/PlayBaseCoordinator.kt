@@ -9,11 +9,11 @@ import androidx.fragment.app.Fragment
  */
 interface PlayBaseCoordinator {
 
-    fun navigateToFragment(
-            fragmentClass: Class<out Fragment>,
+    fun<T: Fragment> navigateToFragment(
+            fragmentClass: Class<out T>,
             extras: Bundle = Bundle.EMPTY,
             sharedElements: List<View> = emptyList(),
-            onFragment: (Fragment) -> Unit = {}
+            onFragment: (T) -> Unit = {}
     )
 
     fun setupTitle(title: String) {}

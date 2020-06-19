@@ -20,7 +20,7 @@ import com.tokopedia.play.broadcaster.util.getDialog
 import com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
 import com.tokopedia.play.broadcaster.view.custom.PlayStartStreamingButton
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSetupViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
@@ -40,7 +40,7 @@ class PlayBeforeLiveFragment @Inject constructor(
     private lateinit var followerView: PlayShareFollowerView
     private lateinit var ivShareLink: ImageView
 
-    private lateinit var setupViewModel: PlayBroadcastSetupViewModel
+    private lateinit var prepareViewModel: PlayBroadcastPrepareViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
     private lateinit var exitDialog: DialogUnify
@@ -49,7 +49,7 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastSetupViewModel::class.java)
+        prepareViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastPrepareViewModel::class.java)
         parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
     }
 
@@ -103,13 +103,13 @@ class PlayBeforeLiveFragment @Inject constructor(
      * Observe
      */
     private fun observeFollowers() {
-        setupViewModel.observableFollowers.observe(viewLifecycleOwner, Observer {
+        prepareViewModel.observableFollowers.observe(viewLifecycleOwner, Observer {
             followerView.setFollowersModel(it)
         })
     }
 
     private fun observeSetupChannel() {
-        setupViewModel.observableSetupChannel.observe(viewLifecycleOwner, Observer {
+        prepareViewModel.observableSetupChannel.observe(viewLifecycleOwner, Observer {
             tvSelectedProduct.text = getString(R.string.play_before_live_selected_product, it.selectedProductList.size)
             ivImagePreview.loadImageRounded(it.cover.coverImage.toString())
             tvCoverTitle.text = it.cover.title
@@ -117,7 +117,7 @@ class PlayBeforeLiveFragment @Inject constructor(
     }
 
     private fun observeCreateChannel() {
-        setupViewModel.observableCreateLiveStream.observe(viewLifecycleOwner, Observer {
+        prepareViewModel.observableCreateLiveStream.observe(viewLifecycleOwner, Observer {
             when (it) {
                 NetworkResult.Loading -> btnStartLive.setLoading(true)
                 is NetworkResult.Success -> {
@@ -166,7 +166,7 @@ class PlayBeforeLiveFragment @Inject constructor(
     }
 
     private fun startStreaming() {
-        setupViewModel.createLiveStream()
+        prepareViewModel.createLiveStream()
     }
 
     private fun getExitDialog(): DialogUnify {

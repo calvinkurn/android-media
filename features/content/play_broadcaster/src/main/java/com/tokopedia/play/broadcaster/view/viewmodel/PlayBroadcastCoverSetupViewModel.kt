@@ -3,7 +3,7 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
@@ -14,11 +14,13 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetOriginalProductImageUseC
 import com.tokopedia.play.broadcaster.ui.model.CoverSourceEnum
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
+import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.cover.ImageTransformer
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
+import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import okhttp3.MediaType
@@ -66,10 +68,9 @@ class PlayBroadcastCoverSetupViewModel @Inject constructor(
 
     val observableCropState: LiveData<CoverSetupState>
         get() = _observableCropState
-    private val _observableCropState = MediatorLiveData<CoverSetupState>().apply {
-        addSource(setupDataStore.getObservableSelectedCover()) {
-            value = if (it?.coverImage == null) CoverSetupState.Blank else CoverSetupState.Cropped(it.coverImage, it.source)
-        }
+    private val _observableCropState = MutableLiveData<CoverSetupState>().apply {
+        val selectedCover = setupDataStore.getSelectedCover()
+        value = if (selectedCover?.coverImage == null) CoverSetupState.Blank else CoverSetupState.Cropped(selectedCover.coverImage, selectedCover.source)
     }
 
     val observableCoverTitle: LiveData<String>
@@ -79,6 +80,10 @@ class PlayBroadcastCoverSetupViewModel @Inject constructor(
 
     val observableSelectedProducts: LiveData<List<ProductContentUiModel>>
         get() = setupDataStore.getObservableSelectedProducts()
+
+    val observableUploadCoverEvent: LiveData<NetworkResult<Event<Unit>>>
+        get() = _observableUploadCoverEvent
+    private val _observableUploadCoverEvent = MutableLiveData<NetworkResult<Event<Unit>>>()
 
     val maxTitleChars: Int
         get() = MAX_CHARS
@@ -105,35 +110,26 @@ class PlayBroadcastCoverSetupViewModel @Inject constructor(
         }
     }
 
-    fun uploadCover(imageUri: Uri, coverTitle: String) {
+    fun uploadCover(channelId: String, imageUri: Uri, coverTitle: String) {
+        _observableUploadCoverEvent.value = NetworkResult.Loading
         launchCatchError(block = {
-            val url = withContext(dispatcher.io) {
-                val params = hashMapOf<String, RequestBody>()
-                params[PARAM_WEB_SERVICE] = RequestBody.create(MediaType.parse(TEXT_PLAIN), DEFAULT_WEB_SERVICE)
-                params[PARAM_RESOLUTION] = RequestBody.create(MediaType.parse(TEXT_PLAIN), RESOLUTION_700)
-                params[PARAM_ID] = RequestBody.create(MediaType.parse(TEXT_PLAIN),
-                        "${userSession.userId}${UUID.randomUUID()}${System.currentTimeMillis()}")
-
-                val dataUploadedImage = uploadImageUseCase
-                        .createObservable(uploadImageUseCase.createRequestParam(
-                                imageUri.path,
-                                DEFAULT_UPLOAD_PATH,
-                                DEFAULT_UPLOAD_TYPE,
-                                params))
-                        .toBlocking()
-                        .first()
-                        .dataResultImageUpload
-
-                dataUploadedImage.data.picSrc.let {
-                    if (it.contains(DEFAULT_RESOLUTION)) it.replaceFirst(DEFAULT_RESOLUTION, RESOLUTION_700)
-                    else it
-                }
-            }
+            val path = imageUri.path ?: throw IllegalStateException("Image path should not be null")
+            val url = uploadCoverToCloud(path)
 
             setupDataStore.setCover(
                     PlayCoverUiModel(coverImage = Uri.parse(url), title = coverTitle, source = source, state = SetupDataState.Uploaded))
+
+//            val result = setupDataStore.uploadSelectedCover(channelId)
+//            if (result is NetworkResult.Success) _observableUploadCoverEvent.value = NetworkResult.Success(Event(Unit))
+//            else if (result is NetworkResult.Fail) throw result.error
+
+            //TODO("Remove mock behavior")
+            delay(3000)
+            _observableUploadCoverEvent.value = NetworkResult.Success(Event(Unit))
+
         }) {
             it.printStackTrace()
+            _observableUploadCoverEvent.value = NetworkResult.Fail(it)
         }
     }
 
@@ -173,6 +169,30 @@ class PlayBroadcastCoverSetupViewModel @Inject constructor(
                 )
         )
     }
+
+    private suspend fun uploadCoverToCloud(imagePath: String): String = withContext(dispatcher.io) {
+        val params = hashMapOf<String, RequestBody>()
+        params[PARAM_WEB_SERVICE] = RequestBody.create(MediaType.parse(TEXT_PLAIN), DEFAULT_WEB_SERVICE)
+        params[PARAM_RESOLUTION] = RequestBody.create(MediaType.parse(TEXT_PLAIN), RESOLUTION_700)
+        params[PARAM_ID] = RequestBody.create(MediaType.parse(TEXT_PLAIN),
+                "${userSession.userId}${UUID.randomUUID()}${System.currentTimeMillis()}")
+
+        val dataUploadedImage = uploadImageUseCase
+                .createObservable(uploadImageUseCase.createRequestParam(
+                        imagePath,
+                        DEFAULT_UPLOAD_PATH,
+                        DEFAULT_UPLOAD_TYPE,
+                        params))
+                .toBlocking()
+                .first()
+                .dataResultImageUpload
+
+        dataUploadedImage.data.picSrc.let {
+            if (it.contains(DEFAULT_RESOLUTION)) it.replaceFirst(DEFAULT_RESOLUTION, RESOLUTION_700)
+            else it
+        }
+    }
+
 
     /**
      * Make sure new image won't be smaller than required minimum size

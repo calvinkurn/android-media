@@ -2,7 +2,6 @@ package com.tokopedia.play.broadcaster.view.bottomsheet
 
 import android.app.Dialog
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,23 +18,29 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
-import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
-import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.util.BreadcrumbsModel
 import com.tokopedia.play.broadcaster.util.compatTransitionName
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
+import com.tokopedia.play.broadcaster.view.fragment.PlayCoverTitleSetupFragment
+import com.tokopedia.play.broadcaster.view.fragment.PlayEtalaseDetailFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSetupViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
 import java.util.*
 import javax.inject.Inject
 
 /**
  * Created by jegul on 26/05/20
  */
-class PlayBroadcastSetupBottomSheet : BottomSheetDialogFragment(), PlayBottomSheetCoordinator {
+class PlayBroadcastSetupBottomSheet(
+) : BottomSheetDialogFragment(),
+        PlayBottomSheetCoordinator,
+        PlayEtalasePickerFragment.Listener,
+        PlayEtalaseDetailFragment.Listener,
+        PlayCoverTitleSetupFragment.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -44,7 +49,7 @@ class PlayBroadcastSetupBottomSheet : BottomSheetDialogFragment(), PlayBottomShe
     lateinit var fragmentFactory: FragmentFactory
 
     private lateinit var broadcastViewModel: PlayBroadcastViewModel
-    private lateinit var viewModel: PlayEtalasePickerViewModel
+    private lateinit var viewModel: PlayBroadcastSetupViewModel
 
     private lateinit var flFragment: FrameLayout
     private lateinit var flOverlay: FrameLayout
@@ -85,7 +90,7 @@ class PlayBroadcastSetupBottomSheet : BottomSheetDialogFragment(), PlayBottomShe
         super.onCreate(savedInstanceState)
 //        setStyle(DialogFragment.STYLE_NORMAL, R.style.Style_FloatingBottomSheet)
         broadcastViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayEtalasePickerViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayBroadcastSetupViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -100,36 +105,44 @@ class PlayBroadcastSetupBottomSheet : BottomSheetDialogFragment(), PlayBottomShe
         setupView(view)
     }
 
-    override fun navigateToFragment(fragmentClass: Class<out Fragment>, extras: Bundle, sharedElements: List<View>, onFragment: (Fragment) -> Unit) {
+    override fun <T : Fragment> navigateToFragment(fragmentClass: Class<out T>, extras: Bundle, sharedElements: List<View>, onFragment: (T) -> Unit) {
         addBreadcrumb()
         openFragment(fragmentClass, extras, sharedElements, onFragment)
-    }
-
-    override fun saveCoverAndTitle(coverUri: Uri, coverUrl: String, liveTitle: String) {
-        viewModel.coverImageUri = coverUri
-        viewModel.coverImageUrl = coverUrl
-        viewModel.liveTitle = liveTitle
-        complete()
     }
 
     override fun goBack() {
         dialog?.onBackPressed()
     }
 
-    fun show(fragmentManager: FragmentManager) {
-        show(fragmentManager, TAG)
+    override fun onEtalaseClicked(id: String, sharedElements: List<View>) {
+        navigateToFragment(
+                PlayEtalaseDetailFragment::class.java,
+                extras = Bundle().apply {
+                    putString(PlayEtalaseDetailFragment.EXTRA_ETALASE_ID, id)
+                },
+                sharedElements = sharedElements,
+                onFragment = {
+                    it.setListener(this)
+                }
+        )
     }
 
-    fun complete() {
-        dismiss()
-//        mListener?.onSetupCompletedWithData(
-//                selectedProducts = viewModel.selectedProductList,
-//                cover = PlayCoverUiModel(
-//                        coverImage = Uri.parse(viewModel.coverImageUrl),
-//                        title = viewModel.liveTitle,
-//                        state = SetupDataState.Uploaded
-//                )
-//        )
+    override fun onProductSetupFinished(sharedElements: List<View>) {
+        navigateToFragment(
+                fragmentClass = PlayCoverTitleSetupFragment::class.java,
+                sharedElements = sharedElements,
+                onFragment = {
+                    it.setListener(this)
+                }
+        )
+    }
+
+    override fun onCoverSetupFinished() {
+        complete()
+    }
+
+    fun show(fragmentManager: FragmentManager) {
+        show(fragmentManager, TAG)
     }
 
     fun setListener(listener: Listener) {
@@ -170,16 +183,21 @@ class PlayBroadcastSetupBottomSheet : BottomSheetDialogFragment(), PlayBottomShe
     private fun setupView(view: View) {
         flOverlay.setOnClickListener { dialog?.onBackPressed() }
 
-        navigateToFragment(PlayEtalasePickerFragment::class.java)
+        navigateToFragment(
+                PlayEtalasePickerFragment::class.java,
+                onFragment = {
+                    it.setListener(this)
+                }
+        )
     }
 
     private fun maxHeight(): Int = getScreenHeight()
 
-    private fun openFragment(fragmentClass: Class<out Fragment>, extras: Bundle, sharedElements: List<View>, onFragment: (Fragment) -> Unit): Fragment {
+    private fun<T: Fragment> openFragment(fragmentClass: Class<out T>, extras: Bundle, sharedElements: List<View>, onFragment: (T) -> Unit): Fragment {
         val fragmentTransaction = childFragmentManager.beginTransaction()
         val destFragment = getFragmentByClassName(fragmentClass)
         destFragment.arguments = extras
-        onFragment(destFragment)
+        onFragment(destFragment as T)
         fragmentTransaction
                 .apply {
                     sharedElements.forEach {
@@ -208,31 +226,11 @@ class PlayBroadcastSetupBottomSheet : BottomSheetDialogFragment(), PlayBottomShe
         }
     }
 
-    private fun saveCompleteChannel() {
-//        parentViewModel.saveCompleteChannel(
-//                productList = viewModel.selectedProductList,
-//                coverUri = viewModel.coverImageUri,
-//                title = viewModel.liveTitle
-//        )
-    }
-
-    /**
-     * Want to test "Ubah Promo"? you only need to send percentage and quota params when `getInstance()`
-     * Want to test "Enter from Left"? you only need to send isBack param as true when `getInstance()`
-     * (animation that used when user back to create promo bottomsheets after
-     * navigate to choose live cover bottomsheets)
-     */
-    private fun navigateToVoucherCreationBottomSheet(isBack: Boolean = false) {
-        val voucherCreationBottomSheet = PlayPrepareBroadcastCreatePromoBottomSheet.getInstance(isBack = isBack)
-        voucherCreationBottomSheet.listener = object : PlayPrepareBroadcastCreatePromoBottomSheet.Listener {
-            override fun onVoucherSaved(isWithPromo: Boolean, promoPercentage: Int, promoQuota: Int) {
-                // set promo detail to parent model
-                // navigate to next page
-            }
-        }
-        fragmentManager?.let {
-            voucherCreationBottomSheet.show(it, PlayPrepareBroadcastCreatePromoBottomSheet.TAG_CREATE_PROMO_BOTTOM_SHEETS)
-        }
+    private fun complete() {
+        mListener?.onSetupCompletedWithData(
+                viewModel.setupDataStore
+        )
+        dismiss()
     }
 
     companion object {
@@ -242,9 +240,6 @@ class PlayBroadcastSetupBottomSheet : BottomSheetDialogFragment(), PlayBottomShe
     interface Listener {
 
         fun onSetupCanceled()
-        fun onSetupCompletedWithData(
-                selectedProducts: List<ProductContentUiModel>,
-                cover: PlayCoverUiModel
-        )
+        fun onSetupCompletedWithData(dataStore: PlayBroadcastSetupDataStore)
     }
 }

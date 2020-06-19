@@ -15,12 +15,13 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.data.repository.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSetupViewModel
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.unifycomponents.UnifyButton
 import javax.inject.Inject
@@ -28,11 +29,11 @@ import javax.inject.Inject
 /**
  * Created by jegul on 20/05/20
  */
-class PlayBroadcastSetupFragment @Inject constructor(
+class PlayBroadcastPrepareFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory
 ) : PlayBaseBroadcastFragment() {
 
-    private lateinit var viewModel: PlayBroadcastSetupViewModel
+    private lateinit var viewModel: PlayBroadcastPrepareViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
     private lateinit var btnSetup: UnifyButton
@@ -44,8 +45,8 @@ class PlayBroadcastSetupFragment @Inject constructor(
 
         }
 
-        override fun onSetupCompletedWithData(selectedProducts: List<ProductContentUiModel>, cover: PlayCoverUiModel) {
-            populateSetupData(selectedProducts, cover)
+        override fun onSetupCompletedWithData(dataStore: PlayBroadcastSetupDataStore) {
+//            populateSetupData(selectedProducts, cover)
             openFinalPreparationPage()
         }
     }
@@ -54,7 +55,7 @@ class PlayBroadcastSetupFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastSetupViewModel::class.java)
+        viewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastPrepareViewModel::class.java)
         parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
     }
 
