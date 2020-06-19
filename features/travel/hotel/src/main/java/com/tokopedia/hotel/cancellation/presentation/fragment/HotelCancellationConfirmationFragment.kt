@@ -18,8 +18,10 @@ import com.tokopedia.hotel.cancellation.di.HotelCancellationComponent
 import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationConfirmationActivity
 import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationConfirmationActivity.Companion.EXTRA_HOTEL_CANCELLATION_FEE
 import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationConfirmationActivity.Companion.EXTRA_HOTEL_CANCELLATION_INVOICE_ID
+import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationConfirmationActivity.Companion.EXTRA_HOTEL_CANCELLATION_IS_ORDER_NOT_FOUND
 import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationConfirmationActivity.Companion.EXTRA_HOTEL_CANCELLATION_ORDER_AMOUNT
 import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationConfirmationActivity.Companion.EXTRA_HOTEL_CANCELLATION_SUBMIT_DATA
+import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationConfirmationActivity.Companion.EXTRA_HOTEL_CANCELLATION_SUBMIT_PARAM
 import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationConfirmationActivity.Companion.EXTRA_HOTEL_REFUND_AMOUNT
 import com.tokopedia.hotel.cancellation.presentation.viewmodel.HotelCancellationViewModel
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
@@ -50,11 +52,17 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
     private var cancellationFee = ""
     private var refundAmount = ""
 
+    private var cancellationSubmitData: HotelCancellationSubmitModel? = null
+    private var isOrderNotFound: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         arguments?.let {
-            cancellationSubmitParam = it.getParcelable(EXTRA_HOTEL_CANCELLATION_SUBMIT_DATA) ?: HotelCancellationSubmitParam()
+            cancellationSubmitData = it.getParcelable(EXTRA_HOTEL_CANCELLATION_SUBMIT_DATA)
+            isOrderNotFound = it.getBoolean(EXTRA_HOTEL_CANCELLATION_IS_ORDER_NOT_FOUND, false)
+
+            cancellationSubmitParam = it.getParcelable(EXTRA_HOTEL_CANCELLATION_SUBMIT_PARAM) ?: HotelCancellationSubmitParam()
             invoiceId = it.getString(EXTRA_HOTEL_CANCELLATION_INVOICE_ID) ?: "0"
             orderAmount = it.getString(EXTRA_HOTEL_CANCELLATION_ORDER_AMOUNT) ?: "0"
             cancellationFee = it.getString(EXTRA_HOTEL_CANCELLATION_FEE) ?: "0"
@@ -80,7 +88,10 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        submitCancellation()
+        if (cancellationSubmitData == null) submitCancellation()
+        else {
+            cancellationSubmitData?.let { initView(it) }
+        }
     }
 
     private fun submitCancellation() {
@@ -94,13 +105,13 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
         super.onActivityCreated(savedInstanceState)
 
         cancellationViewModel.cancellationSubmitData.observe(this, Observer {
-            hideLoadingState()
             when (it) {
                 is Success -> {
                     initView(it.data)
                 }
                 is Fail -> { showErrorState(it.throwable) }
             }
+            hideLoadingState()
         })
     }
 
@@ -121,7 +132,8 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
             hotel_cancellation_confirmation_iv.setImageResource(R.drawable.ic_hotel_cancellation_success)
             (activity as HotelCancellationConfirmationActivity).setPageTitle(getString(R.string.hotel_cancellation_success))
         } else {
-            hotel_cancellation_confirmation_iv.setImageResource(R.drawable.ic_hotel_cancellation_error)
+            if (isOrderNotFound) hotel_cancellation_confirmation_iv.setImageResource(R.drawable.ic_order_not_found)
+            else hotel_cancellation_confirmation_iv.setImageResource(R.drawable.ic_hotel_cancellation_error)
             (activity as HotelCancellationConfirmationActivity).setPageTitle(getString(R.string.hotel_cancellation_failed))
         }
 
@@ -143,7 +155,11 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
             trackingHotelUtil.clickOnCancellationStatusActionButton(requireContext(), actionButton.label, HOTEL_ORDER_STATUS_RESULT_SCREEN_NAME)
             if (actionButton.uri == RETRY_SUBMISSION) {
                 submitCancellation()
-            } else RouteManager.route(requireContext(), actionButton.uri)
+            } else {
+                val intent = RouteManager.getIntent(requireContext(), actionButton.uri)
+                startActivityForResult(intent, REDIRECT_REQUEST_CODE)
+                activity?.finish()
+            }
         }
         return button
     }
@@ -151,15 +167,24 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
     companion object {
         const val HOTEL_ORDER_STATUS_RESULT_SCREEN_NAME = "/hotel/ordercancelresult"
         const val RETRY_SUBMISSION = "RETRYSUBMISSION"
+        const val REDIRECT_REQUEST_CODE = 33
         fun getInstance(invoiceId: String, orderAmount: String, cancellationFee: String, refundAmount: String,
                         cancellationSubmitParam: HotelCancellationSubmitParam): HotelCancellationConfirmationFragment =
                 HotelCancellationConfirmationFragment().also {
                     it.arguments = Bundle().apply {
-                        putParcelable(EXTRA_HOTEL_CANCELLATION_SUBMIT_DATA, cancellationSubmitParam)
+                        putParcelable(EXTRA_HOTEL_CANCELLATION_SUBMIT_PARAM, cancellationSubmitParam)
                         putString(EXTRA_HOTEL_CANCELLATION_INVOICE_ID, invoiceId)
                         putString(EXTRA_HOTEL_CANCELLATION_ORDER_AMOUNT, orderAmount)
                         putString(EXTRA_HOTEL_CANCELLATION_FEE, cancellationFee)
                         putString(EXTRA_HOTEL_REFUND_AMOUNT, refundAmount)
+                    }
+                }
+
+        fun getInstance(submitModel: HotelCancellationSubmitModel, isOrderNotFound: Boolean) =
+                HotelCancellationConfirmationFragment().also {
+                    it.arguments = Bundle().apply {
+                        putParcelable(EXTRA_HOTEL_CANCELLATION_SUBMIT_DATA, submitModel)
+                        putBoolean(EXTRA_HOTEL_CANCELLATION_IS_ORDER_NOT_FOUND, isOrderNotFound)
                     }
                 }
     }

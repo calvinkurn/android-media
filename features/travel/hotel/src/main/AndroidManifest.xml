@@ -127,6 +127,7 @@
             android:name=".globalsearch.presentation.activity.HotelChangeSearchActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+
         <activity android:name=".cancellation.presentation.activity.HotelCancellationActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"

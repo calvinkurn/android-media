@@ -2,9 +2,7 @@ package com.tokopedia.hotel.cancellation.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
@@ -12,14 +10,12 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.hotel.R
 import com.tokopedia.hotel.cancellation.data.*
+import com.tokopedia.hotel.common.data.HotelErrorException
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -48,8 +44,16 @@ class HotelCancellationViewModel @Inject constructor(private val graphqlReposito
             val graphqlRequest = GraphqlRequest(query, HotelCancellationModel.Response::class.java, params)
             graphqlUseCase.addRequest(graphqlRequest)
 
-            val data = graphqlUseCase.executeOnBackground().getSuccessData<HotelCancellationModel.Response>().response.data
-            mutableCancellationData.postValue(Success(data))
+            val graphqlResponse = graphqlUseCase.executeOnBackground()
+            val errors = graphqlResponse.getError(HotelCancellationModel.Response::class.java)
+
+            if (errors != null && errors.isNotEmpty() && errors.first().extensions != null) {
+                mutableCancellationData.postValue(Fail(HotelErrorException(errors.first().extensions.code, errors.first().extensions.developerMessage)))
+            } else {
+                val data = graphqlResponse.getSuccessData<HotelCancellationModel.Response>().response.data
+                mutableCancellationData.postValue(Success(data))
+            }
+
         }) {
             mutableCancellationData.postValue(Fail(it))
         }
