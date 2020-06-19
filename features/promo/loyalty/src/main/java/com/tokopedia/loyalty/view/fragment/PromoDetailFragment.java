@@ -296,7 +296,7 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
 
     @Override
     public void onWebViewLinkClicked(String url) {
-        RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, url);
+        RouteManager.route(getActivity(), url);
     }
 
 

@@ -30,6 +30,7 @@ object RawQueryKeyConstant {
     const val QUERY_RECOMMEN_PRODUCT = "query_recommendation_product"
     const val QUERY_SHOP_FEATURE = "query_shop_feature"
     const val QUERY_GET_PDP_LAYOUT = "query_get_pdp_layout"
+    const val QUERY_TICKER = "query_ticker"
     const val MUTATION_AFFILIATE_TRACKING = "mutation_af_tracking"
     const val QUERY_PDP_FINANCING_RECOMMENDATION = "pdpFinancingRecommendation"
     const val QUERY_PDP_FINANCING_CALCULATION = "pdpFinancingCalculation"

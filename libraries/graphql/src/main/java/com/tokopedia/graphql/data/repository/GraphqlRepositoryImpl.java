@@ -52,6 +52,8 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
 
     @Override
     public Observable<GraphqlResponse> getResponse(List<GraphqlRequest> requests, GraphqlCacheStrategy cacheStrategy) {
+        mResults.clear();
+
         return Observable.defer(() -> {
             if (cacheStrategy == null
                     || cacheStrategy.getType() == CacheType.NONE
@@ -72,7 +74,6 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
             }
         }).map(response -> {
             Map<Type, List<GraphqlError>> errors = new HashMap<>();
-            mResults.clear();
 
             if (response.getOriginalResponse() != null) {
                 for (int i = 0; i < response.getOriginalResponse().size(); i++) {
